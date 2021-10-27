@@ -4,10 +4,14 @@ export const StepWrapper = styled('div')`
   margin-top: auto;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
 `;
 
-export const StepItem = styled.div<{ active?: boolean; completed?: boolean; disabled?: boolean }>`
+export const StepItem = styled.div<{
+  active?: boolean;
+  completed?: boolean;
+  disabled?: boolean;
+  progressDot?: boolean;
+}>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -26,7 +30,7 @@ export const StepItem = styled.div<{ active?: boolean; completed?: boolean; disa
     content: '';
     border-bottom: 2px solid #717171;
     width: 100%;
-    top: 20px;
+    top: ${({ progressDot }) => (progressDot ? '20px' : '15px')};
     left: -50%;
     z-index: 2;
   }
@@ -36,7 +40,7 @@ export const StepItem = styled.div<{ active?: boolean; completed?: boolean; disa
     border-bottom: 2px solid;
     border-bottom-color: ${({ completed }) => (completed ? '#fff' : '#717171')};
     width: 100%;
-    top: 20px;
+    top: ${({ progressDot }) => (progressDot ? '20px' : '15px')};
     left: 50%;
     z-index: ${({ completed }) => (completed ? 3 : 2)};
   }
@@ -54,8 +58,8 @@ export const StepCounter = styled.div<{ completed?: boolean; active?: boolean }>
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: ${({ completed, active }) => (completed || active ? '#fff' : '#717171')};
   color: ${({ completed, active }) => (completed || active ? '#111111' : '#fff')};
@@ -67,6 +71,7 @@ export const StepName = styled('div')`
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  color: #fff;
 `;
 
 export const IconDot = styled.div<{ completed?: boolean; active?: boolean }>`

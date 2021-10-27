@@ -2,7 +2,7 @@ export { Button } from './components/Button';
 export { TextInput } from './components/TextInput';
 export { Box } from './components/Box';
 export { Text } from './components/Text';
-export { default as Steps } from './components/Steps';
+export { default as Steps, Step } from './components/Steps';
 export { Checkbox } from './components/Checkbox';
 export { CheckboxGroup } from './components/CheckboxGroup';
 export { RadioButton } from './components/RadioButton';

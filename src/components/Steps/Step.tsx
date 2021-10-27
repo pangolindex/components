@@ -26,7 +26,7 @@ const Step: React.FC<StepProps> = (props) => {
   };
 
   return (
-    <StepItem completed={completed} active={active} onClick={onClick} disabled={disabled}>
+    <StepItem completed={completed} active={active} onClick={onClick} disabled={disabled} progressDot={progressDot}>
       {renderIconNode()}
       {active && <StepName> {title}</StepName>}
     </StepItem>
