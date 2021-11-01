@@ -9,7 +9,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between">
+      <Box display="flex" justifyContent={label ? 'space-between' : 'flex-end'}>
         {label && <Text color="text4">{label}</Text>}
         {addonLabel && addonLabel}
       </Box>

@@ -8,7 +8,7 @@ export type ButtonProps = {
   /** type of the button */
   type?: 'button' | 'submit';
   /** varient of the button */
-  variant: 'primary' | 'secondary' | 'outline' | 'plain';
+  variant: 'primary' | 'secondary' | 'outline' | 'plain' | 'disable';
   /** icon before the button text **/
   iconBefore?: React.ReactNode | null;
   /** icon after the button text **/

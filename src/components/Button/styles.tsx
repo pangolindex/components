@@ -33,6 +33,13 @@ const Plain = (props: ButtonProps) =>
     align-items: center;
   `;
 
+const Disable = (props: ButtonProps) =>
+  props.isDisabled &&
+  css`
+    background-color: ${({ theme }) => theme.bg4};
+    color: ${({ theme }) => theme.text3};
+  `;
+
 export const Root = styled.button<ButtonProps>`
   padding: ${(props) => (props?.padding ? props?.padding : '18px')};
   width: ${({ width }) => (width ? width : '100%')};
@@ -57,6 +64,7 @@ export const Root = styled.button<ButtonProps>`
   ${Secondary}
   ${Outline}
   ${Plain}
+  ${Disable}
 
   > * {
     user-select: none;
