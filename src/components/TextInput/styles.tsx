@@ -6,7 +6,6 @@ import { TextInputProps } from './types';
 export const InputWrapper = styled(Box)`
   width: 100%;
   border-radius: 8px;
-  padding: 10px;
   border: 1px solid transparent;
   display: flex;
   position: relative;
@@ -17,6 +16,7 @@ export const InputWrapper = styled(Box)`
 export const StyledInput = styled.input<TextInputProps>`
   flex: 1;
   border: 1px solid transparent;
+  font-size: 24px;
   background-color: ${({ theme }) => theme.bg3};
   color: ${({ theme }) => theme.text1};
   outline: none;

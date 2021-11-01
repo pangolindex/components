@@ -30,7 +30,7 @@ export const StepItem = styled.div<{
     content: '';
     border-bottom: 2px solid #717171;
     width: 100%;
-    top: ${({ progressDot }) => (progressDot ? '20px' : '15px')};
+    top: ${({ progressDot }) => (progressDot ? '21px' : '15px')};
     left: -50%;
     z-index: 2;
   }
@@ -40,7 +40,7 @@ export const StepItem = styled.div<{
     border-bottom: 2px solid;
     border-bottom-color: ${({ completed }) => (completed ? '#fff' : '#717171')};
     width: 100%;
-    top: ${({ progressDot }) => (progressDot ? '20px' : '15px')};
+    top: ${({ progressDot }) => (progressDot ? '21px' : '15px')};
     left: 50%;
     z-index: ${({ completed }) => (completed ? 3 : 2)};
   }

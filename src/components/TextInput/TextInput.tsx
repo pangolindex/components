@@ -10,7 +10,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   return (
     <Box>
       <Box display="flex" justifyContent="space-between">
-        {label && <Text>{label}</Text>}
+        {label && <Text color="text4">{label}</Text>}
         {addonLabel && addonLabel}
       </Box>
       <InputWrapper>

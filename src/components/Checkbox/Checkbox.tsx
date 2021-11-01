@@ -23,7 +23,7 @@ const Checkbox: React.FC<CheckboxProps> = (props) => {
       <OuterSquare size={size as number}>
         <InnerSquare selected={internalChekced} size={size as number} />
       </OuterSquare>
-      {Boolean(label) && <Label>{label}</Label>}
+      {Boolean(label) && <Label color="text1">{label}</Label>}
     </Root>
   );
 };

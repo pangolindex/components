@@ -48,12 +48,10 @@ export const Root = styled.button<ButtonProps>`
   justify-content: center;
   flex-wrap: nowrap;
   align-items: center;
-  cursor: pointer;
+  cursor: ${(props) => (props?.isDisabled ? 'auto' : 'pointer')};
+  pointer-events: ${(props) => (props?.isDisabled ? 'none' : 'all')};
   position: relative;
   z-index: 1;
-  &:disabled {
-    cursor: auto;
-  }
 
   ${Primary}
   ${Secondary}
