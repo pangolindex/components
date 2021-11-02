@@ -3,11 +3,15 @@ import { IconAfter, IconBefore, Root } from './styles';
 import { ButtonProps } from './types';
 
 const Button: React.FC<ButtonProps> = (props) => {
-  const { iconBefore, children, iconAfter, loading, ...rest } = props;
+  const { iconBefore, children, iconAfter, loading, loadingText, ...rest } = props;
   return (
     <Root {...rest}>
       {loading ? (
-        'Loading...'
+        loadingText ? (
+          loadingText
+        ) : (
+          'Loading...'
+        )
       ) : (
         <>
           {iconBefore && <IconBefore>{iconBefore}</IconBefore>}

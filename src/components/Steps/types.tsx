@@ -9,7 +9,7 @@ export interface StepsProps {
 }
 
 export interface StepProps {
-  onStepClick?: (index: number) => void;
+  // onStepClick?: (index: number) => void;
   disabled?: boolean;
   title?: React.ReactNode;
   completed?: boolean;

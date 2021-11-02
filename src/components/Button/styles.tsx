@@ -1,3 +1,4 @@
+import { lighten } from 'polished';
 import styled, { css } from 'styled-components';
 import { ButtonProps } from './types';
 
@@ -34,10 +35,20 @@ const Plain = (props: ButtonProps) =>
   `;
 
 const Disable = (props: ButtonProps) =>
-  props.isDisabled &&
+  (props.isDisabled || props.loading) &&
   css`
     background-color: ${({ theme }) => theme.bg4};
     color: ${({ theme }) => theme.text3};
+  `;
+
+const Confirmed = (props: ButtonProps) =>
+  props.variant === 'confirm' &&
+  css`
+    background-color: ${({ theme }) => lighten(0.5, theme.green1)};
+    color: ${({ theme }) => theme.green1};
+    border: 1px solid ${({ theme }) => theme.green1};
+    opacity: 50%;
+    cursor: auto;
   `;
 
 export const Root = styled.button<ButtonProps>`
@@ -65,6 +76,7 @@ export const Root = styled.button<ButtonProps>`
   ${Outline}
   ${Plain}
   ${Disable}
+  ${Confirmed}
 
   > * {
     user-select: none;
