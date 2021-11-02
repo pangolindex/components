@@ -18,4 +18,5 @@ export type TextInputProps = Omit<React.HTMLProps<HTMLInputElement>, 'accept' | 
   addonLabel?: React.ReactNode | null;
   id?: string;
   fontSize?: number;
+  isNumeric?: boolean;
 };

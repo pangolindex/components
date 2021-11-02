@@ -5,7 +5,19 @@ import { AddonAfter, AddonBefore, ErrorText, InputWrapper, StyledInput } from '.
 import { TextInputProps } from './types';
 
 const TextInput: React.FC<TextInputProps> = (props) => {
-  const { label, addonLabel, addonAfter, addonBefore, error, showErrorMessage = true, ...rest } = props;
+  const {
+    label,
+    addonLabel,
+    addonAfter,
+    addonBefore,
+    error,
+    showErrorMessage = true,
+    onChange,
+    isNumeric,
+    ...rest
+  } = props;
+
+  const inputRegex = new RegExp(`^\\d+\\.?\\d*$`);
 
   return (
     <Box>
@@ -15,7 +27,20 @@ const TextInput: React.FC<TextInputProps> = (props) => {
       </Box>
       <InputWrapper>
         {addonBefore && <AddonBefore>{addonBefore}</AddonBefore>}
-        <StyledInput {...(rest as any)} />
+        <StyledInput
+          {...(rest as any)}
+          onChange={(e) => {
+            const value = e.target.value;
+
+            if (isNumeric && !!value) {
+              if (inputRegex.test(value)) {
+                onChange && onChange(value);
+              }
+            } else {
+              onChange && onChange(value);
+            }
+          }}
+        />
         {addonAfter && <AddonAfter>{addonAfter}</AddonAfter>}
       </InputWrapper>
       {showErrorMessage && <ErrorText>{error}</ErrorText>}

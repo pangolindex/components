@@ -35,6 +35,7 @@ export const defaultColors: Colors = {
   text3: '#888D9B',
   text4: '#C3C5CB',
   text5: '#EDEEF2',
+  text6: '#111111',
 
   // backgrounds / greys
   bg1: '#FFFFFF',

@@ -3,7 +3,7 @@ import { IconDot, StepCounter, StepItem, StepName } from './styles';
 import { StepProps } from './types';
 
 const Step: React.FC<StepProps> = (props) => {
-  const { active, completed, stepNumber, disabled, title, progressDot, stepIndex, onStepClick } = props;
+  const { active, completed, stepNumber, disabled, title, progressDot } = props;
 
   const renderIconNode = () => {
     let iconNode;
@@ -21,12 +21,12 @@ const Step: React.FC<StepProps> = (props) => {
     return iconNode;
   };
 
-  const onClick: React.MouseEventHandler<HTMLDivElement> = () => {
-    onStepClick && onStepClick(stepIndex || 0);
-  };
+  // const onClick: React.MouseEventHandler<HTMLDivElement> = () => {
+  //   onStepClick && onStepClick(stepIndex || 0);
+  // };
 
   return (
-    <StepItem completed={completed} active={active} onClick={onClick} disabled={disabled} progressDot={progressDot}>
+    <StepItem completed={completed} active={active} disabled={disabled} progressDot={progressDot}>
       {renderIconNode()}
       {active && <StepName> {title}</StepName>}
     </StepItem>
