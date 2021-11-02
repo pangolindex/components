@@ -26,6 +26,7 @@ export type ButtonProps = {
   loading?: boolean;
   /** loading icon **/
   loadingIcon?: React.ReactNode;
+  loadingText?: string;
   padding?: string;
   borderRadius?: string;
 };
