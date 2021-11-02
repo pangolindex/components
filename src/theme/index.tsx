@@ -35,6 +35,7 @@ export const defaultColors: Colors = {
   text3: '#888D9B',
   text4: '#C3C5CB',
   text5: '#EDEEF2',
+  text6: '#111111',
 
   // backgrounds / greys
   bg1: '#FFFFFF',
@@ -42,6 +43,8 @@ export const defaultColors: Colors = {
   bg3: '#EDEEF2',
   bg4: '#CED0D9',
   bg5: '#888D9B',
+  bg6: '#1C1C1C',
+  bg7: '#2C2D33',
 
   //specialty colors
   modalBG: 'rgba(0,0,0,0.3)',

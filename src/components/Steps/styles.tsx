@@ -28,9 +28,9 @@ export const StepItem = styled.div<{
   &:before {
     position: absolute;
     content: '';
-    border-bottom: 2px solid #717171;
+    border-bottom: ${({ theme }) => `2px solid ${theme.bg5}`};
     width: 100%;
-    top: ${({ progressDot }) => (progressDot ? '20px' : '15px')};
+    top: ${({ progressDot }) => (progressDot ? '21px' : '15px')};
     left: -50%;
     z-index: 2;
   }
@@ -38,9 +38,9 @@ export const StepItem = styled.div<{
     position: absolute;
     content: '';
     border-bottom: 2px solid;
-    border-bottom-color: ${({ completed }) => (completed ? '#fff' : '#717171')};
+    border-bottom-color: ${({ completed, theme }) => (completed ? theme.primary1 : theme.bg5)};
     width: 100%;
-    top: ${({ progressDot }) => (progressDot ? '20px' : '15px')};
+    top: ${({ progressDot }) => (progressDot ? '21px' : '15px')};
     left: 50%;
     z-index: ${({ completed }) => (completed ? 3 : 2)};
   }
@@ -61,8 +61,8 @@ export const StepCounter = styled.div<{ completed?: boolean; active?: boolean }>
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: ${({ completed, active }) => (completed || active ? '#fff' : '#717171')};
-  color: ${({ completed, active }) => (completed || active ? '#111111' : '#fff')};
+  background: ${({ completed, active, theme }) => (completed || active ? theme.primary1 : theme.bg5)};
+  color: ${({ completed, active, theme }) => (completed || active ? theme.text6 : theme.white)};
   margin-bottom: 6px;
 `;
 
@@ -71,19 +71,18 @@ export const StepName = styled('div')`
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
-  color: #fff;
+  color: ${({ theme }) => theme.text4};
 `;
 
 export const IconDot = styled.div<{ completed?: boolean; active?: boolean }>`
-position: relative;
-z-index: 5;
-display: flex;
-justify-content: center;
-align-items: center;
-width: 10px;
-height: 10px;
-border-radius: 50%;
-background: ${({ completed, active }) => (completed || active ? '#fff' : '#717171')};
-margin-top: 17px;
-}
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: ${({ completed, active, theme }) => (completed || active ? theme.primary1 : theme.bg5)};
+  margin-top: 17px;
 `;

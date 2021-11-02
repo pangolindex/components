@@ -11,15 +11,18 @@ export const InputWrapper = styled(Box)`
   display: flex;
   position: relative;
   box-sizing: border-box;
-  background-color: ${({ theme }) => theme.bg3};
-  color: ${({ theme }) => theme.text1};
+  background-color: ${({ theme }) => theme.bg6};
+  color: ${({ theme }) => theme.text4};
 `;
 export const StyledInput = styled.input<TextInputProps>`
   flex: 1;
   border: 1px solid transparent;
-  background-color: ${({ theme }) => theme.bg3};
-  color: ${({ theme }) => theme.text1};
+  font-size: ${(props) => (props?.fontSize ? `${props?.fontSize}px` : '18px')};
+  background-color: ${({ theme }) => theme.bg6};
+  color: ${({ theme }) => theme.text4};
   outline: none;
+  width: 100%;
+  padding: 0;
 `;
 export const AddonAfter = styled(Box)`
   position: relative;

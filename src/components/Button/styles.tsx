@@ -1,3 +1,4 @@
+import { lighten } from 'polished';
 import styled, { css } from 'styled-components';
 import { ButtonProps } from './types';
 
@@ -33,6 +34,23 @@ const Plain = (props: ButtonProps) =>
     align-items: center;
   `;
 
+const Disable = (props: ButtonProps) =>
+  (props.isDisabled || props.loading) &&
+  css`
+    background-color: ${({ theme }) => theme.bg4};
+    color: ${({ theme }) => theme.text3};
+  `;
+
+const Confirmed = (props: ButtonProps) =>
+  props.variant === 'confirm' &&
+  css`
+    background-color: ${({ theme }) => lighten(0.5, theme.green1)};
+    color: ${({ theme }) => theme.green1};
+    border: 1px solid ${({ theme }) => theme.green1};
+    opacity: 50%;
+    cursor: auto;
+  `;
+
 export const Root = styled.button<ButtonProps>`
   padding: ${(props) => (props?.padding ? props?.padding : '18px')};
   width: ${({ width }) => (width ? width : '100%')};
@@ -48,17 +66,17 @@ export const Root = styled.button<ButtonProps>`
   justify-content: center;
   flex-wrap: nowrap;
   align-items: center;
-  cursor: pointer;
+  cursor: ${(props) => (props?.isDisabled ? 'auto' : 'pointer')};
+  pointer-events: ${(props) => (props?.isDisabled ? 'none' : 'all')};
   position: relative;
   z-index: 1;
-  &:disabled {
-    cursor: auto;
-  }
 
   ${Primary}
   ${Secondary}
   ${Outline}
   ${Plain}
+  ${Disable}
+  ${Confirmed}
 
   > * {
     user-select: none;
