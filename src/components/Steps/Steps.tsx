@@ -5,10 +5,10 @@ import { StepWrapper } from './styles';
 import { StepsProps } from './types';
 
 const Steps: React.FC<StepsProps> = (props) => {
-  const { children, current, progressDot, onChange } = props;
+  const { children, current, progressDot, onChange, allowChangeOnClick = true } = props;
 
   const onStepClick = (next: number) => {
-    if (onChange && current !== next) {
+    if (onChange && current !== next && allowChangeOnClick) {
       onChange(next);
     }
   };
