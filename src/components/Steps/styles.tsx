@@ -75,15 +75,14 @@ export const StepName = styled('div')`
 `;
 
 export const IconDot = styled.div<{ completed?: boolean; active?: boolean }>`
-position: relative;
-z-index: 5;
-display: flex;
-justify-content: center;
-align-items: center;
-width: 10px;
-height: 10px;
-border-radius: 50%;
-background: ${({ completed, active, theme }) => (completed || active ? theme.primary1 : theme.bg5)};
-margin-top: 17px;
-}
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: ${({ completed, active, theme }) => (completed || active ? theme.primary1 : theme.bg5)};
+  margin-top: 17px;
 `;
