@@ -31,7 +31,7 @@ export const StepItem = styled.div<{
     border-bottom: ${({ theme }) => `2px solid ${theme.bg5}`};
     width: 100%;
     top: ${({ progressDot }) => (progressDot ? '21px' : '15px')};
-    left: -50%;
+    left: ${({ progressDot }) => (progressDot ? '-50%' : '-38%')};
     z-index: 2;
   }
   &:after {
@@ -41,7 +41,7 @@ export const StepItem = styled.div<{
     border-bottom-color: ${({ completed, theme }) => (completed ? theme.primary1 : theme.bg5)};
     width: 100%;
     top: ${({ progressDot }) => (progressDot ? '21px' : '15px')};
-    left: 50%;
+    left: ${({ progressDot }) => (progressDot ? '50%' : '38%')};
     z-index: ${({ completed }) => (completed ? 3 : 2)};
   }
   &:first-child:before {
