@@ -75,6 +75,8 @@ export const defaultColors: Colors = {
   blue1: '#2172E5',
 
   avaxRed: '#E84142',
+
+  color2: '#707070',
 };
 
 export const defaultTheme: DefaultTheme = {

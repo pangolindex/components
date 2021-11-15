@@ -50,6 +50,7 @@ export interface Colors {
   blue1: Color;
 
   avaxRed: Color;
+  color2: Color;
 }
 
 export interface Grids {
