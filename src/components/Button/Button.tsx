@@ -3,15 +3,11 @@ import { IconAfter, IconBefore, Root } from './styles';
 import { ButtonProps } from './types';
 
 const Button: React.FC<ButtonProps> = (props) => {
-  const { iconBefore, children, iconAfter, loading, loadingText, ...rest } = props;
+  const { iconBefore, children, iconAfter, loading, loadingText, as, target, ...rest } = props;
   return (
-    <Root {...rest}>
+    <Root {...rest} as={as} target={target}>
       {loading ? (
-        loadingText ? (
-          loadingText
-        ) : (
-          'Loading...'
-        )
+        loadingText || 'Loading...'
       ) : (
         <>
           {iconBefore && <IconBefore>{iconBefore}</IconBefore>}
@@ -21,6 +17,10 @@ const Button: React.FC<ButtonProps> = (props) => {
       )}
     </Root>
   );
+};
+
+Button.defaultProps = {
+  target: '_blank',
 };
 
 export default Button;

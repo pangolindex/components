@@ -70,6 +70,8 @@ export const Root = styled.button<ButtonProps>`
   pointer-events: ${(props) => (props?.isDisabled ? 'none' : 'all')};
   position: relative;
   z-index: 1;
+  text-decoration: none;
+  box-sizing: border-box;
 
   ${Primary}
   ${Secondary}

@@ -29,4 +29,7 @@ export type ButtonProps = {
   loadingText?: string;
   padding?: string;
   borderRadius?: string;
+  as?: string | React.ComponentType<any>;
+  href?: string;
+  target?: string;
 };

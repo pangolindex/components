@@ -13,6 +13,8 @@ const TemplateButton: ComponentStory<typeof Button> = (args: any) => <Button {..
 export const Primary = TemplateButton.bind({});
 Primary.args = {
   variant: 'primary',
+  loading: false,
+  loadingText: 'Loading',
 };
 
 export const AfterIcon = TemplateButton.bind({});
@@ -37,4 +39,11 @@ export const IconButton = TemplateIconButton.bind({});
 IconButton.args = {
   variant: 'primary',
   width: 'auto',
+};
+
+export const LinkButton = TemplateButton.bind({});
+LinkButton.args = {
+  variant: 'primary',
+  as: 'a',
+  href: 'https://pangolin.exchange/',
 };
