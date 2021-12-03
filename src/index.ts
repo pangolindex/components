@@ -10,3 +10,5 @@ export { RadioButtonGroup } from './components/RadioButtonGroup';
 export { DoubleCurrencyLogo } from './components/DoubleCurrencyLogo';
 export { default as Logo } from './components/Logo';
 export { default as ThemeProvider } from './theme';
+export { CurrencyInput } from './components/CurrencyInput';
+export { ToggleButtons } from './components/ToggleButtons';
