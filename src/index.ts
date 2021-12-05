@@ -12,3 +12,4 @@ export { default as Logo } from './components/Logo';
 export { default as ThemeProvider } from './theme';
 export { CurrencyInput } from './components/CurrencyInput';
 export { ToggleButtons } from './components/ToggleButtons';
+export { default as CurrencyLogo } from './components/CurrencyLogo';
