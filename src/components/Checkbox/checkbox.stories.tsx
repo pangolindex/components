@@ -4,7 +4,7 @@ import { Checkbox } from '.';
 
 export default {
   component: Checkbox,
-  title: 'Pangoline/Checkbox',
+  title: 'Pangolin/Checkbox',
 };
 
 const TemplateCheckbox: ComponentStory<typeof Checkbox> = (args: any) => <Checkbox {...args} />;

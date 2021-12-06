@@ -43,7 +43,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
         />
         {addonAfter && <AddonAfter>{addonAfter}</AddonAfter>}
       </InputWrapper>
-      {showErrorMessage && <ErrorText>{error}</ErrorText>}
+      {showErrorMessage && !!error && <ErrorText>{error}</ErrorText>}
     </Box>
   );
 };

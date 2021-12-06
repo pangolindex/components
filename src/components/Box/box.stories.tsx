@@ -4,14 +4,10 @@ import { Box } from '.';
 
 export default {
   component: Box,
-  title: 'Pangoline/Box',
+  title: 'Pangolin/Box',
 };
 
-const TemplateBox: ComponentStory<typeof Box> = (args: any) => (
-  <Box {...args} width={200} height={200}>
-    Sample Text
-  </Box>
-);
+const TemplateBox: ComponentStory<typeof Box> = (args: any) => <Box {...args} width={200} height={200} />;
 
 export const Default = TemplateBox.bind({});
 Default.args = {

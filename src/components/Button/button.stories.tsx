@@ -5,7 +5,7 @@ import { Button } from '.';
 
 export default {
   component: Button,
-  title: 'Pangoline/Buttons',
+  title: 'Pangolin/Buttons',
 };
 
 const TemplateButton: ComponentStory<typeof Button> = (args: any) => <Button {...args}>Button</Button>;

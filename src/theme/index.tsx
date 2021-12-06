@@ -1,5 +1,5 @@
-import React from 'react';
-import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, css } from 'styled-components';
+import React, { useContext } from 'react';
+import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, ThemeContext, css } from 'styled-components';
 import { Colors } from './styled';
 
 const MEDIA_WIDTHS = {
@@ -75,6 +75,12 @@ export const defaultColors: Colors = {
   blue1: '#2172E5',
 
   avaxRed: '#E84142',
+
+  switch: {
+    onColor: '#FF6B00',
+    offColor: '#CED0D9',
+    backgroundColor: '#717171',
+  },
 };
 
 export const defaultTheme: DefaultTheme = {
@@ -111,3 +117,12 @@ type ThemeProviderProps = {
 export default function ThemeProvider({ children, theme }: ThemeProviderProps) {
   return <StyledComponentsThemeProvider theme={theme || defaultTheme}>{children}</StyledComponentsThemeProvider>;
 }
+
+export const useTheme = () => {
+  const theme = useContext(ThemeContext);
+  if (!theme) {
+    throw Error('useTheme is used outside of ThemeContext');
+  }
+
+  return theme;
+};

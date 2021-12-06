@@ -4,7 +4,7 @@ import { Text } from '.';
 
 export default {
   component: Text,
-  title: 'Pangoline/Text',
+  title: 'Pangolin/Text',
 };
 
 const TemplateText: ComponentStory<typeof Text> = (args: any) => <Text {...args}>Sample Text</Text>;

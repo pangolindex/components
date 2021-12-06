@@ -50,6 +50,12 @@ export interface Colors {
   blue1: Color;
 
   avaxRed: Color;
+
+  switch?: {
+    onColor?: Color;
+    offColor?: Color;
+    backgroundColor?: Color;
+  };
 }
 
 export interface Grids {

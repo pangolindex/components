@@ -38,6 +38,7 @@ const Disable = (props: ButtonProps) =>
   (props.isDisabled || props.loading) &&
   css`
     background-color: ${({ theme }) => theme.bg4};
+    border: 1px solid transparent;
     color: ${({ theme }) => theme.text3};
   `;
 

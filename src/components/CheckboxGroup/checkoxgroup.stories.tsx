@@ -4,7 +4,7 @@ import { CheckboxGroup } from '.';
 
 export default {
   component: CheckboxGroup,
-  title: 'Pangoline/CheckboxGroup',
+  title: 'Pangolin/CheckboxGroup',
 };
 
 const TemplateCheckboxGroup: ComponentStory<typeof CheckboxGroup> = (args: any) => <CheckboxGroup {...args} />;
