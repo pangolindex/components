@@ -1,5 +1,6 @@
 import { Currency } from '@pangolindex/sdk';
 import React from 'react';
+import { Box } from '../Box';
 import { CoveredLogo, HigherLogo, Wrapper } from './styles';
 
 export interface DoubleCurrencyLogoProps {
@@ -13,7 +14,11 @@ const DoubleCurrencyLogo = ({ currency0, currency1, size = 16, margin = false }:
   return (
     <Wrapper sizeraw={size} margin={margin}>
       {currency0 && <HigherLogo currency={currency0} size={size.toString() + 'px'} />}
-      {currency1 && <CoveredLogo currency={currency1} size={size.toString() + 'px'} sizeraw={size} />}
+      {currency1 && (
+        <Box ml={'-5px'}>
+          <CoveredLogo currency={currency1} size={size.toString() + 'px'} sizeraw={size} />
+        </Box>
+      )}
     </Wrapper>
   );
 };
