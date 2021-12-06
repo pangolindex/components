@@ -14,6 +14,7 @@ const AvaxLogo: React.FC<AvaxLogoProps> = ({ size = '24px' }) => {
       viewBox="0 0 1000.000000 1000.000000"
       preserveAspectRatio="xMidYMid meet"
     >
+      <circle cx="500" cy="500" r="400" fill="white" />
       <g transform="translate(0.000000,1000.000000) scale(0.100000,-0.100000)" fill="#E84142" stroke="none">
         <path
           d="M4590 9989 c-1442 -124 -2734 -838 -3594 -1984 -572 -761 -904 -1642
