@@ -69,7 +69,7 @@ export const Root = styled.button<ButtonProps>`
   justify-content: center;
   flex-wrap: nowrap;
   align-items: center;
-  cursor: 'pointer';
+  cursor: pointer;
   position: relative;
   z-index: 1;
   text-decoration: none;
