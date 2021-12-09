@@ -32,4 +32,6 @@ export type ButtonProps = {
   as?: string | React.ComponentType<any>;
   href?: string;
   target?: string;
+  backgroundColor?: string;
+  color?: string;
 };

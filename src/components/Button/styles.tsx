@@ -40,6 +40,8 @@ const Disable = (props: ButtonProps) =>
     background-color: ${({ theme }) => theme.bg4};
     border: 1px solid transparent;
     color: ${({ theme }) => theme.text3};
+    cursor: auto;
+    pointer-events: none;
   `;
 
 const Confirmed = (props: ButtonProps) =>
@@ -55,10 +57,10 @@ const Confirmed = (props: ButtonProps) =>
 export const Root = styled.button<ButtonProps>`
   padding: ${(props) => (props?.padding ? props?.padding : '18px')};
   width: ${({ width }) => (width ? width : '100%')};
+  height: ${({ height }) => (height ? height : 'auto')};
   font-weight: 500;
   text-align: center;
-  border-radius: 10px;
-  border-radius: ${(props) => props?.borderRadius && props?.borderRadius};
+  border-radius: ${(props) => props?.borderRadius ?? '8px'};
   outline: none;
   border: 1px solid transparent;
   color: white;
@@ -67,8 +69,7 @@ export const Root = styled.button<ButtonProps>`
   justify-content: center;
   flex-wrap: nowrap;
   align-items: center;
-  cursor: ${(props) => (props?.isDisabled ? 'auto' : 'pointer')};
-  pointer-events: ${(props) => (props?.isDisabled ? 'none' : 'all')};
+  cursor: 'pointer';
   position: relative;
   z-index: 1;
   text-decoration: none;
@@ -80,6 +81,10 @@ export const Root = styled.button<ButtonProps>`
   ${Plain}
   ${Disable}
   ${Confirmed}
+
+  /* Customizable Colors */
+  color: ${({ color, theme }) => (color && theme[color]) || color};
+  background-color: ${({ backgroundColor, theme }) => (backgroundColor && theme[backgroundColor]) || backgroundColor};
 
   > * {
     user-select: none;
