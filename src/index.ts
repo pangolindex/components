@@ -1,16 +1,2 @@
-export { Button } from './components/Button';
-export { TextInput } from './components/TextInput';
-export { Box } from './components/Box';
-export { Text } from './components/Text';
-export { default as Steps, Step } from './components/Steps';
-export { Checkbox } from './components/Checkbox';
-export { CheckboxGroup } from './components/CheckboxGroup';
-export { RadioButton } from './components/RadioButton';
-export { RadioButtonGroup } from './components/RadioButtonGroup';
-export { DoubleCurrencyLogo } from './components/DoubleCurrencyLogo';
-export { default as Logo } from './components/Logo';
+export * from './components';
 export { default as ThemeProvider } from './theme';
-export { CurrencyInput } from './components/CurrencyInput';
-export { ToggleButtons } from './components/ToggleButtons';
-export { default as CurrencyLogo } from './components/CurrencyLogo';
-export { Switch } from './components/Switch';
