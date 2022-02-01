@@ -34,4 +34,5 @@ export type ButtonProps = {
   target?: string;
   backgroundColor?: string;
   color?: string;
+  borderColor?: string;
 };

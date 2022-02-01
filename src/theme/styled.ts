@@ -56,6 +56,53 @@ export interface Colors {
     offColor?: Color;
     backgroundColor?: Color;
   };
+
+  toggleButton?: {
+    backgroundColor?: Color;
+    selectedColor?: Color;
+    fontColor?: Color;
+  };
+
+  button?: {
+    primary?: {
+      background?: Color;
+      color?: Color;
+    };
+    secondary?: {
+      background?: Color;
+      color?: Color;
+    };
+    outline?: {
+      borderColor?: Color;
+      color?: Color;
+    };
+    plain?: {
+      color?: Color;
+    };
+    disable?: {
+      background?: Color;
+      color?: Color;
+    };
+    confirmed?: {
+      background?: Color;
+      color?: Color;
+      borderColor?: Color;
+    };
+  };
+
+  primary: Color;
+  mustardYellow: Color;
+  eerieBlack: Color;
+  ghostWhite: Color;
+  ghostWhite1: Color;
+  chineseBlack: Color;
+  darkGunmetal: Color;
+  platinum: Color;
+  darkSilver: Color;
+  venetianRed: Color;
+  oceanBlue: Color;
+
+  color2: Color;
 }
 
 export interface Grids {
