@@ -104,7 +104,7 @@ export const defaultColors: Colors = {
   button: {
     primary: {
       background: philippineYellow,
-      color: white,
+      color: black,
     },
     secondary: {
       background: chineseBlack,

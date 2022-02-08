@@ -38,7 +38,7 @@ const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
                 : currency?.symbol) || 'Select Token'}
             </StyledTokenName>
           )}
-          <ChevronDown />
+          <ChevronDown color={!Boolean(currency && currency.symbol) ? 'black' : undefined} />
         </Aligner>
       </CurrencySelect>
     );
