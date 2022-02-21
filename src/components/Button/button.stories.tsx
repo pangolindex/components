@@ -5,7 +5,7 @@ import { Button } from '.';
 
 export default {
   component: Button,
-  title: 'Pangoline/Buttons',
+  title: 'Pangolin/Buttons',
 };
 
 const TemplateButton: ComponentStory<typeof Button> = (args: any) => <Button {...args}>Button</Button>;
@@ -20,13 +20,13 @@ Primary.args = {
 export const AfterIcon = TemplateButton.bind({});
 AfterIcon.args = {
   variant: 'primary',
-  iconAfter: <CheckCircle size={'12'} />,
+  iconAfter: <CheckCircle size={'12'} color="black" />,
 };
 
 export const BeforeIcon = TemplateButton.bind({});
 BeforeIcon.args = {
   variant: 'primary',
-  iconBefore: <CheckCircle size={'14'} />,
+  iconBefore: <CheckCircle size={'14'} color="black" />,
 };
 
 const TemplateIconButton: ComponentStory<typeof Button> = (args: any) => (
@@ -38,7 +38,7 @@ const TemplateIconButton: ComponentStory<typeof Button> = (args: any) => (
 export const IconButton = TemplateIconButton.bind({});
 IconButton.args = {
   variant: 'primary',
-  width: 'auto',
+  width: '50px',
 };
 
 export const LinkButton = TemplateButton.bind({});

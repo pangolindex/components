@@ -1,5 +1,5 @@
-import React from 'react';
-import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, css } from 'styled-components';
+import React, { useContext } from 'react';
+import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, ThemeContext, css } from 'styled-components';
 import { Colors } from './styled';
 
 const MEDIA_WIDTHS = {
@@ -23,6 +23,19 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
 
 const white = '#FFFFFF';
 const black = '#000000';
+
+const philippineYellow = '#FFC800'; //primary
+const mustardYellow = '#E1AA00';
+
+const eerieBlack = '#1C1C1C';
+const ghostWhite = '#F7F8FA';
+const ghostWhite1 = '#FAF9FD';
+const chineseBlack = '#111111';
+const darkGunmetal = '#212427';
+const platinum = '#E5E5E5';
+const darkSilver = '#717171';
+const venetianRed = '#CC1512';
+const oceanBlue = '#18C145';
 
 export const defaultColors: Colors = {
   // base
@@ -75,6 +88,59 @@ export const defaultColors: Colors = {
   blue1: '#2172E5',
 
   avaxRed: '#E84142',
+
+  switch: {
+    onColor: philippineYellow,
+    offColor: '#CED0D9',
+    backgroundColor: darkSilver,
+  },
+
+  toggleButton: {
+    backgroundColor: darkSilver,
+    selectedColor: chineseBlack,
+    fontColor: platinum,
+  },
+
+  button: {
+    primary: {
+      background: philippineYellow,
+      color: black,
+    },
+    secondary: {
+      background: chineseBlack,
+      color: white,
+    },
+    outline: {
+      borderColor: philippineYellow,
+      color: black,
+    },
+    plain: {
+      color: black,
+    },
+    disable: {
+      background: platinum,
+      color: darkSilver,
+    },
+    confirmed: {
+      background: oceanBlue,
+      color: oceanBlue,
+      borderColor: oceanBlue,
+    },
+  },
+
+  primary: philippineYellow,
+  mustardYellow,
+  eerieBlack,
+  ghostWhite,
+  ghostWhite1,
+  chineseBlack,
+  darkGunmetal,
+  platinum,
+  darkSilver,
+  venetianRed,
+  oceanBlue,
+
+  color2: ghostWhite,
 };
 
 export const defaultTheme: DefaultTheme = {
@@ -111,3 +177,12 @@ type ThemeProviderProps = {
 export default function ThemeProvider({ children, theme }: ThemeProviderProps) {
   return <StyledComponentsThemeProvider theme={theme || defaultTheme}>{children}</StyledComponentsThemeProvider>;
 }
+
+export const useTheme = () => {
+  const theme = useContext(ThemeContext);
+  if (!theme) {
+    throw Error('useTheme is used outside of ThemeContext');
+  }
+
+  return theme;
+};

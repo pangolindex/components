@@ -1,6 +1,8 @@
-import { Currency, Token } from '@pangolindex/sdk';
+import { CAVAX, Currency, Token } from '@pangolindex/sdk';
+import deepEqual from 'deep-equal';
 import React, { useMemo } from 'react';
 import { getTokenLogoURL } from 'src/utils/getTokenLogoURL';
+import { AvaxLogo } from '../AvaxLogo';
 import { StyledLogo } from './styles';
 
 export default function CurrencyLogo({
@@ -13,12 +15,17 @@ export default function CurrencyLogo({
   style?: React.CSSProperties;
 }) {
   const srcs: string[] = useMemo(() => {
+    if (currency === CAVAX) return [];
     if (currency instanceof Token || !!(currency as Token).address) {
       return [getTokenLogoURL((currency as Token)?.address)];
     }
 
     return [];
   }, [currency]);
+
+  if (deepEqual(currency, CAVAX)) {
+    return <AvaxLogo size={size} />;
+  }
 
   return <StyledLogo size={size} srcs={srcs} alt={`${currency?.symbol ?? 'token'} logo`} style={style} />;
 }

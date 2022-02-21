@@ -14,6 +14,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     showErrorMessage = true,
     onChange,
     isNumeric,
+    getRef = () => {},
     ...rest
   } = props;
 
@@ -29,6 +30,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
         {addonBefore && <AddonBefore>{addonBefore}</AddonBefore>}
         <StyledInput
           {...(rest as any)}
+          ref={(ref) => getRef(ref)}
           onChange={(e) => {
             const value = e.target.value;
 
@@ -43,7 +45,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
         />
         {addonAfter && <AddonAfter>{addonAfter}</AddonAfter>}
       </InputWrapper>
-      {showErrorMessage && <ErrorText>{error}</ErrorText>}
+      {showErrorMessage && !!error && <ErrorText>{error}</ErrorText>}
     </Box>
   );
 };

@@ -7,7 +7,7 @@ import { TextInput } from '.';
 
 export default {
   component: TextInput,
-  title: 'Pangoline/TextInputs',
+  title: 'Pangolin/TextInputs',
 };
 
 const TemplateTextInput: ComponentStory<typeof TextInput> = (args: any) => <TextInput {...args} />;

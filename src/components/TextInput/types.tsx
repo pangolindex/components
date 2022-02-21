@@ -19,4 +19,6 @@ export type TextInputProps = Omit<React.HTMLProps<HTMLInputElement>, 'accept' | 
   id?: string;
   fontSize?: number;
   isNumeric?: boolean;
+  onChange?: (value: string) => void;
+  getRef?: (ref: any) => void;
 };

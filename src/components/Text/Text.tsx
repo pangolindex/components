@@ -11,7 +11,7 @@ const Text = styled.div<TextProps & TypographyProps & SpaceProps & PositionProps
   ${space}
   ${typography}
   ${position}
-  color: ${({ color, theme }) => color && theme[color]};
+  color: ${({ color, theme }) => color && (theme[color] as string)};
   cursor: ${(props) => props.cursor && props.cursor};
 `;
 export default Text;
