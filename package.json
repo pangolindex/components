@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "1.0.7-rc.9",
+  "version": "2.0.0-rc.1",
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
   "engines": {
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
-    "@pangolindex/sdk": "^1.1.0",
+    "@pangolindex/sdk": "2.0.0-rc.1",
     "@pangolindex/token-lists": "^1.0.1",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-json": "^4.1.0",
