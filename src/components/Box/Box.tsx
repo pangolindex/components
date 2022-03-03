@@ -21,8 +21,8 @@ export interface Props {
 }
 
 export type BoxProps = SpaceProps & LayoutProps & FlexboxProps & TypographyProps & BorderProps & PositionProps;
-
-const Box = styled.div<BoxProps & Props>`
+//TODO: set appropriate type
+const Box: any = styled.div<BoxProps & Props>`
   color: ${({ color, theme }) => (color ? (theme[color] as string) : 'black')};
   background-color: ${({ bgColor, theme }) => (bgColor ? (theme[bgColor] as string) : 'transparent')};
   ${space}
