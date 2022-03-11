@@ -12,6 +12,6 @@ const TemplateBox: ComponentStory<typeof CurrencyLogo> = (args: any) => <Currenc
 
 export const DoubleLogo = TemplateBox.bind({});
 DoubleLogo.args = {
-  size: '24px',
+  size: 24,
   currency: CAVAX[ChainId.AVALANCHE],
 };
