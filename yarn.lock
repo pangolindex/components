@@ -1731,10 +1731,10 @@
   dependencies:
     hardhat-tracer "^1.0.0-alpha.5"
 
-"@pangolindex/sdk@2.0.0-rc.1":
-  version "2.0.0-rc.1"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-2.0.0-rc.1.tgz#39de74633fe078f83f40ea445bd1e965f4742fc0"
-  integrity sha512-T6yuCTtNEEWgrPvbgEuamspWE8oPwlad9bl0mZBKHTmTBJuQH6wrNGHLI2rOxhBRehavGhyd345jPmZjjDHBaw==
+"@pangolindex/sdk@2.0.0-rc.2":
+  version "2.0.0-rc.2"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-2.0.0-rc.2.tgz#ad697f6b09284b1c3d612ac84ea8c481b95938bf"
+  integrity sha512-hxUTnp6Ofbp2v77hMTQ2Vt1tHxXEeFiJJov43gRhIVsucCRyrlrw+RxmfUFoTUCX3Zdx6wa1nAZTmMl+AVxnZQ==
   dependencies:
     "@pangolindex/exchange-contracts" "^1.0.1"
     big.js "^5.2.2"
