@@ -12,6 +12,7 @@ let plugins = [
   commonjs(),
   json(),
   typescript({
+    check: false,
     exclude: ['**/*.stories.tsx', '**/*.test.tsx'],
   }),
 ];
@@ -25,7 +26,7 @@ if (process.env.ENV === 'production') {
 }
 
 export default {
-  input: 'src/index.ts',
+  input: 'src/index.tsx',
   output: [
     {
       file: packageJson.main,

@@ -23,7 +23,7 @@ const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
           {pair ? (
             <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />
           ) : currency ? (
-            <CurrencyLogo currency={currency} size={'24px'} />
+            <CurrencyLogo currency={currency} size={24} />
           ) : null}
           {pair ? (
             <StyledTokenName className="pair-name-container">

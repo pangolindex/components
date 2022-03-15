@@ -13,6 +13,15 @@ export interface Colors {
   text4: Color;
   text5: Color;
   text6: Color;
+  text7: Color;
+  text8: Color;
+  text9: Color;
+  text10: Color;
+  text11: Color;
+  text12: Color;
+  text13: Color;
+  text14: Color;
+  text15: Color;
 
   // backgrounds / greys
   bg1: Color;
@@ -22,6 +31,8 @@ export interface Colors {
   bg5: Color;
   bg6: Color;
   bg7: Color;
+  bg8: Color;
+  bg9: Color;
 
   modalBG: Color;
   advancedBG: Color;
@@ -101,8 +112,16 @@ export interface Colors {
   darkSilver: Color;
   venetianRed: Color;
   oceanBlue: Color;
+  quickSilver: Color;
 
   color2: Color;
+  color3: Color;
+  color4: Color;
+  color5: Color;
+  color6: Color;
+  color7: Color;
+  color8: Color;
+  color9: Color;
 }
 
 export interface Grids {
