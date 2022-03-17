@@ -31,7 +31,7 @@ export function PangolinProvider({
   library: any | undefined;
   account: string | undefined;
   children?: React.ReactNode;
-  theme: any;
+  theme?: any;
 }) {
   return (
     <Web3Provider chainId={chainId} library={library} account={account}>
