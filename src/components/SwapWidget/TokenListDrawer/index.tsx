@@ -1,16 +1,16 @@
-import React, { useMemo, useState, useCallback } from 'react';
-import ReactGA from 'react-ga';
-import { Box, TextInput, Text, Button } from '../../';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, AppState } from 'src/state';
-import Drawer from 'src/components/Drawer';
-import TokenListRow from './TokenListRow';
-import { List, AddInputWrapper } from './styled';
+import React, { useCallback, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
+import ReactGA from 'react-ga';
+import { useDispatch, useSelector } from 'react-redux';
+import Drawer from 'src/components/Drawer';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';
+import { AppDispatch, AppState } from 'src/state';
 import { removeList } from 'src/state/plists/actions';
-import uriToHttp from 'src/utils/uriToHttp';
 import { parseENSAddress } from 'src/utils/parseENSAddress';
+import uriToHttp from 'src/utils/uriToHttp';
+import { Box, Button, Text, TextInput } from '../../';
+import TokenListRow from './TokenListRow';
+import { AddInputWrapper, List } from './styled';
 
 interface Props {
   isOpen: boolean;
@@ -32,6 +32,7 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
     fetchList(listUrlInput)
       .then(() => {
         setListUrlInput('');
+        // eslint-disable-next-line import/no-named-as-default-member
         ReactGA.event({
           category: 'Lists',
           action: 'Add List',
@@ -39,6 +40,7 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
         });
       })
       .catch((error) => {
+        // eslint-disable-next-line import/no-named-as-default-member
         ReactGA.event({
           category: 'Lists',
           action: 'Add List Failed',

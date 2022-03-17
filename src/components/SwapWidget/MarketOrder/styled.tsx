@@ -1,12 +1,12 @@
-import { Box, CurrencyInput } from '../../'
-import styled from 'styled-components'
+import styled from 'styled-components';
+import { Box, CurrencyInput } from '../../';
 
 export const Root = styled(Box)`
   width: 100%;
   /* min-width: 360px; */
   position: relative;
   overflow: hidden;
-`
+`;
 
 export const SwapWrapper = styled(Box)`
   border-bottom-left-radius: 10px;
@@ -16,13 +16,13 @@ export const SwapWrapper = styled(Box)`
   background-color: ${({ theme }) => theme.bg2};
   position: relative;
   overflow: hidden;
-`
+`;
 
 export const CurrencyInputTextBox = styled(CurrencyInput)`
   background-color: ${({ theme }) => theme.bg6};
   align-items: center;
   border-radius: 4px;
-`
+`;
 
 export const ArrowWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg6};
@@ -38,7 +38,7 @@ export const ArrowWrapper = styled.div`
     cursor: pointer;
     opacity: 0.8;
   }
-`
+`;
 
 export const PValue = styled(Box)<{ isActive: boolean }>`
   margin-left: 10px;
@@ -53,4 +53,4 @@ export const PValue = styled(Box)<{ isActive: boolean }>`
   &:hover {
     color: ${({ theme }) => theme.text1};
   }
-`
+`;

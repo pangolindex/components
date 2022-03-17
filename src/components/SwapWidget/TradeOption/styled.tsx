@@ -1,5 +1,5 @@
-import { Box } from '../../'
-import styled from 'styled-components'
+import styled from 'styled-components';
+import { Box } from '../../';
 
 export const SwapWrapper = styled(Box)`
   width: 100%;
@@ -7,7 +7,7 @@ export const SwapWrapper = styled(Box)`
   background-color: ${({ theme }) => theme.color2};
   position: relative;
   overflow: hidden;
-`
+`;
 
 export const SwapAlertBox = styled(Box)`
   border-top-left-radius: 10px;
@@ -16,4 +16,4 @@ export const SwapAlertBox = styled(Box)`
   padding: 7px;
   font-size: 12px;
   color: ${({ theme }) => theme.white};
-`
+`;

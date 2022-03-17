@@ -5,10 +5,10 @@ import { useActiveWeb3React } from '../../hooks';
 import { AppDispatch, AppState } from '../index';
 import {
   SerializedToken,
-  updateUserSlippageTolerance,
-  updateUserExpertMode,
   addSerializedToken,
   removeSerializedToken,
+  updateUserExpertMode,
+  updateUserSlippageTolerance,
 } from './actions';
 
 function serializeToken(token: Token): SerializedToken {

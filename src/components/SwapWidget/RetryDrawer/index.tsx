@@ -1,11 +1,11 @@
-import React from 'react'
-import { Divider } from './styled'
-import { Text, Box } from '../../'
-import Drawer from 'src/components/Drawer'
+import React from 'react';
+import Drawer from 'src/components/Drawer';
+import { Box, Text } from '../../';
+import { Divider } from './styled';
 
 interface Props {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const RetryDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
@@ -18,6 +18,6 @@ const RetryDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
         <Divider />
       </Box>
     </Drawer>
-  )
-}
-export default RetryDrawer
+  );
+};
+export default RetryDrawer;

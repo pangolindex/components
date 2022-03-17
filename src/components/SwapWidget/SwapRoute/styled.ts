@@ -1,5 +1,5 @@
-import { Box } from '../../'
-import styled from 'styled-components'
+import styled from 'styled-components';
+import { Box } from '../../';
 
 export const SwapRouteWrapper = styled(Box)`
   display: flex;
@@ -12,4 +12,4 @@ export const SwapRouteWrapper = styled(Box)`
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   justify-content: center;
-`
+`;

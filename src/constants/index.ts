@@ -1,4 +1,4 @@
-import { ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk'
+import { ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: '0x2D99ABD9008Dc933ff5c0CD271B88309593aB921',
@@ -21,12 +21,12 @@ export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: To
   [ChainId.AVALANCHE]: {},
 };
 
-export const NetworkContextName = 'NETWORK'
+export const NetworkContextName = 'NETWORK';
 
 // default allowed slippage, in bips
-export const INITIAL_ALLOWED_SLIPPAGE = 50
+export const INITIAL_ALLOWED_SLIPPAGE = 50;
 // 10 minutes, denominated in seconds
-export const DEFAULT_DEADLINE_FROM_NOW = 10 * 60
+export const DEFAULT_DEADLINE_FROM_NOW = 10 * 60;
 
 export const PNG: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(ChainId.FUJI, '0x83080D4b5fC60e22dFFA8d14AD3BB41Dde48F199', 18, 'PNG', 'Pangolin'),
@@ -137,20 +137,20 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
 };
 
 // one basis point
-export const ONE_BIPS = new Percent(JSBI.BigInt(1), JSBI.BigInt(10000))
-export const BIPS_BASE = JSBI.BigInt(10000)
+export const ONE_BIPS = new Percent(JSBI.BigInt(1), JSBI.BigInt(10000));
+export const BIPS_BASE = JSBI.BigInt(10000);
 
 // used for warning states
-export const ALLOWED_PRICE_IMPACT_LOW: Percent = new Percent(JSBI.BigInt(100), BIPS_BASE) // 1%
-export const ALLOWED_PRICE_IMPACT_MEDIUM: Percent = new Percent(JSBI.BigInt(300), BIPS_BASE) // 3%
-export const ALLOWED_PRICE_IMPACT_HIGH: Percent = new Percent(JSBI.BigInt(500), BIPS_BASE) // 5%
+export const ALLOWED_PRICE_IMPACT_LOW: Percent = new Percent(JSBI.BigInt(100), BIPS_BASE); // 1%
+export const ALLOWED_PRICE_IMPACT_MEDIUM: Percent = new Percent(JSBI.BigInt(300), BIPS_BASE); // 3%
+export const ALLOWED_PRICE_IMPACT_HIGH: Percent = new Percent(JSBI.BigInt(500), BIPS_BASE); // 5%
 // if the price slippage exceeds this number, force the user to type 'confirm' to execute
-export const PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN: Percent = new Percent(JSBI.BigInt(1000), BIPS_BASE) // 10%
+export const PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN: Percent = new Percent(JSBI.BigInt(1000), BIPS_BASE); // 10%
 // for non expert mode disable swaps above this
-export const BLOCKED_PRICE_IMPACT_NON_EXPERT: Percent = new Percent(JSBI.BigInt(1500), BIPS_BASE) // 15%
+export const BLOCKED_PRICE_IMPACT_NON_EXPERT: Percent = new Percent(JSBI.BigInt(1500), BIPS_BASE); // 15%
 
 // used to ensure the user doesn't send so much ETH so they end up with <.01
-export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
+export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)); // .01 ETH
 
 export const PANGOLIN_TOKENS_REPO_RAW_BASE_URL = `https://raw.githubusercontent.com/pangolindex/tokens`;
 

@@ -17,7 +17,7 @@ export const updateUserSlippageTolerance = createAction<{ userSlippageTolerance:
   'puser/updateUserSlippageTolerance',
 );
 
-export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('puser/updateUserExpertMode')
+export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('puser/updateUserExpertMode');
 
-export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('puser/addSerializedToken')
-export const removeSerializedToken = createAction<{ chainId: number; address: string }>('puser/removeSerializedToken')
+export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('puser/addSerializedToken');
+export const removeSerializedToken = createAction<{ chainId: number; address: string }>('puser/removeSerializedToken');

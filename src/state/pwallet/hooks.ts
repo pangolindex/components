@@ -1,11 +1,11 @@
-import { Currency, CurrencyAmount, CAVAX, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import { CAVAX, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
-import { useAllTokens } from 'src/hooks/Tokens';
 import { useActiveWeb3React } from 'src/hooks';
+import { useAllTokens } from 'src/hooks/Tokens';
 import { useMulticallContract } from 'src/hooks/useContract';
 import { isAddress } from '../../utils';
-import { useSingleContractMultipleData, useMultipleContractSingleData } from '../pmulticall/hooks';
+import { useMultipleContractSingleData, useSingleContractMultipleData } from '../pmulticall/hooks';
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.

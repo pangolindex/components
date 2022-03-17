@@ -1,12 +1,12 @@
+import { GELATO_PERSISTED_KEYS, gelatoReducers } from '@gelatonetwork/limit-orders-react';
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import { save, load } from 'redux-localstorage-simple';
+import { load, save } from 'redux-localstorage-simple';
 import papplication from './papplication/reducer';
-import ptransactions from './ptransactions/reducer';
-import pswap from './pswap/reducer';
 import plists from './plists/reducer';
 import pmulticall from './pmulticall/reducer';
+import pswap from './pswap/reducer';
+import ptransactions from './ptransactions/reducer';
 import puser from './puser/reducer';
-import { gelatoReducers, GELATO_PERSISTED_KEYS } from '@gelatonetwork/limit-orders-react';
 
 export const PANGOLIN_PERSISTED_KEYS: string[] = ['puser', 'plists', 'ptransactions', ...GELATO_PERSISTED_KEYS];
 

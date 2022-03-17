@@ -1,18 +1,18 @@
-import React, { useContext } from 'react'
-import { DrawerRoot, DrawerContent,CloseIcon } from './styled'
-import { Box, Text } from '../'
-import { ThemeContext } from 'styled-components'
+import React, { useContext } from 'react';
+import { ThemeContext } from 'styled-components';
+import { Box, Text } from '../';
+import { CloseIcon, DrawerContent, DrawerRoot } from './styled';
 
 interface DrawerProps {
-  isOpen: boolean
-  onClose: () => void
-  children?: React.ReactNode
-  title?: string
-  backgroundColor?: string
+  isOpen: boolean;
+  onClose: () => void;
+  children?: React.ReactNode;
+  title?: string;
+  backgroundColor?: string;
 }
 
 export default function Drawer({ isOpen, onClose, children, title, backgroundColor }: DrawerProps) {
-  const theme = useContext(ThemeContext)
+  const theme = useContext(ThemeContext);
   return (
     <DrawerRoot isOpen={isOpen} backgroundColor={backgroundColor}>
       {title && (
@@ -29,5 +29,5 @@ export default function Drawer({ isOpen, onClose, children, title, backgroundCol
 
       <DrawerContent>{children}</DrawerContent>
     </DrawerRoot>
-  )
+  );
 }

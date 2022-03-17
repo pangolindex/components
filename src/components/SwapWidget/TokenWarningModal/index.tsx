@@ -1,11 +1,11 @@
 import { Token } from '@pangolindex/sdk';
-import ReactGA from 'react-ga';
 import React, { HTMLProps, useCallback, useMemo, useState } from 'react';
-import { Wrapper, WarningContainer, StyledWarningIcon, StyledLink, AutoColumn } from './styled';
+import ReactGA from 'react-ga';
+import { getEtherscanLink, shortenAddress } from 'src/utils';
+import { Box, Button, CurrencyLogo, Modal, Text } from '../../';
 import { useActiveWeb3React } from '../../../hooks';
 import { useAllTokens } from '../../../hooks/Tokens';
-import { getEtherscanLink, shortenAddress } from 'src/utils';
-import { CurrencyLogo, Text, Modal, Button, Box } from '../../';
+import { AutoColumn, StyledLink, StyledWarningIcon, WarningContainer, Wrapper } from './styled';
 
 interface TokenWarningCardProps {
   token?: Token;
@@ -24,12 +24,14 @@ function ExternalLink({
     (event: React.MouseEvent<HTMLAnchorElement>) => {
       // don't prevent default, don't redirect if it's a new tab
       if (target === '_blank' || event.ctrlKey || event.metaKey) {
+        // eslint-disable-next-line import/no-named-as-default-member
         ReactGA.outboundLink({ label: href }, () => {
           console.debug('Fired outbound link event', href);
         });
       } else {
         event.preventDefault();
         // send a ReactGA event and then trigger a location change
+        // eslint-disable-next-line import/no-named-as-default-member
         ReactGA.outboundLink({ label: href }, () => {
           window.location.href = href;
         });

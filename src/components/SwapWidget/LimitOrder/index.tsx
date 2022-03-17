@@ -1,26 +1,27 @@
-import React, { useState, useContext, useCallback, useEffect } from 'react';
+/* eslint-disable max-lines */
 import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
-import { RefreshCcw, Divide, X } from 'react-feather';
-import { Text, Box, Button, ToggleButtons } from '../../';
-import { Token, Trade, JSBI, TokenAmount, CAVAX } from '@pangolindex/sdk';
+import { CAVAX, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Divide, RefreshCcw, X } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import SelectTokenDrawer from '../SelectTokenDrawer';
-import ConfirmLimitOrderDrawer from '../ConfirmLimitOrderDrawer';
-import { LimitField, LimitNewField } from 'src/state/pswap/actions';
-import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
-import { useActiveWeb3React } from 'src/hooks';
-import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { galetoMaxAmountSpend } from 'src/utils/maxAmountSpend';
-import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
-import { useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { DeprecatedWarning } from '../Warning';
-import { Root, SwapWrapper, CurrencyInputTextBox, InputText, ArrowWrapper, PValue } from './styled';
 import { NATIVE } from 'src/constants';
-import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
-import TradeOption from '../TradeOption';
-import { wrappedGelatoCurrency } from 'src/utils/wrappedCurrency';
+import { useActiveWeb3React } from 'src/hooks';
+import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
+import { useWalletModalToggle } from 'src/state/papplication/hooks';
+import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
+import { LimitField, LimitNewField } from 'src/state/pswap/actions';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks';
+import { useUserSlippageTolerance } from 'src/state/puser/hooks';
+import { galetoMaxAmountSpend } from 'src/utils/maxAmountSpend';
+import { wrappedGelatoCurrency } from 'src/utils/wrappedCurrency';
+import { Box, Button, Text, ToggleButtons } from '../../';
+import ConfirmLimitOrderDrawer from '../ConfirmLimitOrderDrawer';
+import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
+import SelectTokenDrawer from '../SelectTokenDrawer';
+import TradeOption from '../TradeOption';
+import { DeprecatedWarning } from '../Warning';
+import { ArrowWrapper, CurrencyInputTextBox, InputText, PValue, Root, SwapWrapper } from './styled';
 
 enum Rate {
   DIV = 'DIV',
@@ -554,3 +555,4 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType }) => {
   );
 };
 export default LimitOrder;
+/* eslint-enable max-lines */

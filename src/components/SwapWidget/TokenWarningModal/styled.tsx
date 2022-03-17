@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import { AlertTriangle } from 'react-feather';
 import { transparentize } from 'polished';
+import { AlertTriangle } from 'react-feather';
+import styled from 'styled-components';
 
 export const Wrapper = styled.div<{ error: boolean }>`
   background: ${({ theme }) => transparentize(0.6, theme.bg3)};

@@ -1,13 +1,13 @@
 import { Contract } from '@ethersproject/contracts';
-import { WAVAX } from '@pangolindex/sdk'
+import { WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
+import { ZERO_ADDRESS } from 'src/constants';
 import { ERC20_BYTES32_ABI } from 'src/constants/abis/erc20';
 import ERC20_ABI from 'src/constants/abis/erc20.json';
+import WETH_ABI from 'src/constants/abis/weth.json';
+import { MULTICALL_ABI, MULTICALL_NETWORKS } from 'src/constants/multicall';
 import { getContract } from 'src/utils';
 import { useActiveWeb3React } from './index';
-import { ZERO_ADDRESS } from 'src/constants';
-import WETH_ABI from 'src/constants/abis/weth.json'
-import { MULTICALL_ABI, MULTICALL_NETWORKS } from 'src/constants/multicall'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -33,11 +33,11 @@ export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossi
 }
 
 export function useWETHContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React()
-  return useContract(chainId ? WAVAX[chainId]?.address : undefined, WETH_ABI, withSignerIfPossible)
+  const { chainId } = useActiveWeb3React();
+  return useContract(chainId ? WAVAX[chainId]?.address : undefined, WETH_ABI, withSignerIfPossible);
 }
 
 export function useMulticallContract(): Contract | null {
-  const { chainId } = useActiveWeb3React()
-  return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false)
+  const { chainId } = useActiveWeb3React();
+  return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false);
 }

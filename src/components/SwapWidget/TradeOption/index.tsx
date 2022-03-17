@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, Box, ToggleButtons } from '../../';
-import { SwapWrapper, SwapAlertBox } from './styled';
+import { Box, Text, ToggleButtons } from '../../';
+import { SwapAlertBox, SwapWrapper } from './styled';
 
 interface Props {
   swapType: string;

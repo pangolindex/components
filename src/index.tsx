@@ -1,20 +1,24 @@
+import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
 import React from 'react';
-import { pangolinReducers, PANGOLIN_PERSISTED_KEYS } from './state';
+import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
+import { usePair } from 'src/data/Reserves';
+import { useAllTokens } from 'src/hooks/Tokens';
+import {
+  LimitOrderInfo,
+  useDerivedSwapInfo,
+  useGelatoLimitOrderDetail,
+  useGelatoLimitOrderList,
+  useSwapActionHandlers,
+} from 'src/state/pswap/hooks';
+import useUSDCPrice from 'src/utils/useUSDCPrice';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Web3Provider } from './hooks';
+import { PANGOLIN_PERSISTED_KEYS, pangolinReducers } from './state';
 import ApplicationUpdater from './state/papplication/updater';
 import ListsUpdater from './state/plists/updater';
 import MulticallUpdater from './state/pmulticall/updater';
 import TransactionUpdater from './state/ptransactions/updater';
-import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
 import { default as ThemeProvider } from './theme';
-import { useGelatoLimitOrderDetail, LimitOrderInfo, useGelatoLimitOrderList } from 'src/state/pswap/hooks';
-import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer'
-import { useDerivedSwapInfo,useSwapActionHandlers } from 'src/state/pswap/hooks'
-import useUSDCPrice from 'src/utils/useUSDCPrice'
-import { useAllTokens } from 'src/hooks/Tokens'
-import { usePair } from 'src/data/Reserves'
-import { wrappedCurrency } from 'src/utils/wrappedCurrency'
-
 
 export function PangolinProvider({
   chainId,
@@ -64,5 +68,5 @@ export {
   useAllTokens,
   usePair,
   useSwapActionHandlers,
-  wrappedCurrency
+  wrappedCurrency,
 };

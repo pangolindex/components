@@ -1,5 +1,5 @@
-import { Box, Text } from '../../';
 import styled from 'styled-components';
+import { Box, Text } from '../../';
 
 export const Warning = styled(Box)`
   padding: 10px;

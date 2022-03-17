@@ -1,26 +1,26 @@
-import React, { useContext, useMemo } from 'react';
-import { ArrowDown, AlertTriangle, ArrowUpCircle } from 'react-feather';
 import { Trade, TradeType } from '@pangolindex/sdk';
-import { CurrencyLogo, Text, Box, Button, Loader } from '../../';
+import React, { useContext, useMemo } from 'react';
+import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import { getEtherscanLink, tradeMeaningfullyDiffers } from 'src/utils';
 import Drawer from 'src/components/Drawer';
-import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
-import { Field } from 'src/state/pswap/actions';
-import {
-  TokenRow,
-  Header,
-  OutputText,
-  Footer,
-  Root,
-  PriceUpdateBlock,
-  ErrorWrapper,
-  ErrorBox,
-  SubmittedWrapper,
-  Link,
-} from './styled';
-import SwapDetailInfo from '../SwapDetailInfo';
 import { useActiveWeb3React } from 'src/hooks';
+import { Field } from 'src/state/pswap/actions';
+import { getEtherscanLink, tradeMeaningfullyDiffers } from 'src/utils';
+import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
+import { Box, Button, CurrencyLogo, Loader, Text } from '../../';
+import SwapDetailInfo from '../SwapDetailInfo';
+import {
+  ErrorBox,
+  ErrorWrapper,
+  Footer,
+  Header,
+  Link,
+  OutputText,
+  PriceUpdateBlock,
+  Root,
+  SubmittedWrapper,
+  TokenRow,
+} from './styled';
 
 interface Props {
   isOpen: boolean;

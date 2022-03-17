@@ -1,10 +1,10 @@
-import { Text } from '../../Text';
 import { Trade, TradeType } from '@pangolindex/sdk';
 import React from 'react';
 import { INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from 'src/constants';
 import { Field } from 'src/state/pswap/actions';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
+import { Text } from '../../Text';
 import { ContentBox, DataBox, ValueText } from './styled';
 
 type Props = { trade: Trade };

@@ -1,15 +1,15 @@
-import { Text, Switch, Box } from '../../';
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
+import { ChevronDown } from 'react-feather';
 import ReactGA from 'react-ga';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChevronDown } from 'react-feather';
-import { AppState } from 'src/state';
-import { useSelectedListUrl } from 'src/state/plists/hooks';
-import { selectList, removeList } from 'src/state/plists/actions';
-import TokenListOrigin from '../TokenListOrigin';
-import { ListLogo, RowRoot, DownArrow, PopoverContainer, Separator, ViewLink } from './styled';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
+import { AppState } from 'src/state';
+import { removeList, selectList } from 'src/state/plists/actions';
+import { useSelectedListUrl } from 'src/state/plists/hooks';
 import listVersionLabel from 'src/utils/listVersionLabel';
+import { Box, Switch, Text } from '../../';
+import TokenListOrigin from '../TokenListOrigin';
+import { DownArrow, ListLogo, PopoverContainer, RowRoot, Separator, ViewLink } from './styled';
 
 interface Props {
   listUrl: string;
@@ -34,6 +34,7 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
   useOnClickOutside(node, open ? handleClose : undefined);
 
   const selectThisList = useCallback(() => {
+    // eslint-disable-next-line import/no-named-as-default-member
     ReactGA.event({
       category: 'Lists',
       action: 'Select List',
@@ -45,6 +46,7 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
   }, [dispatch, isSelected, listUrl]);
 
   const handleRemoveList = useCallback(() => {
+    // eslint-disable-next-line import/no-named-as-default-member
     ReactGA.event({
       category: 'Lists',
       action: 'Start Remove List',
@@ -52,6 +54,7 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
     });
 
     if (window.prompt('Please confirm you would like to remove this list by typing REMOVE') === 'remove') {
+      // eslint-disable-next-line import/no-named-as-default-member
       ReactGA.event({
         category: 'Lists',
         action: 'Confirm Remove List',

@@ -1,6 +1,7 @@
-import { createReducer } from '@reduxjs/toolkit';
-import { getVersionUpgrade, VersionUpgrade } from '@pangolindex/token-lists';
+import { VersionUpgrade, getVersionUpgrade } from '@pangolindex/token-lists';
+// eslint-disable-next-line import/no-unresolved
 import { TokenList } from '@pangolindex/token-lists/dist/types';
+import { createReducer } from '@reduxjs/toolkit';
 import { DEFAULT_TOKEN_LISTS, DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { updateVersion } from '../pglobal/actions';
 import { acceptListUpdate, addList, fetchTokenList, removeList, selectList } from './actions';
@@ -45,10 +46,11 @@ export default createReducer(initialState, (builder) =>
   builder
     .addCase(fetchTokenList.pending, (state, { payload: { requestId, url } }) => {
       state.byUrl[url] = {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // eslint-disable-next-line  @typescript-eslint/ban-ts-comment
         // @ts-ignore
         current: null,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
+        // eslint-disable-next-line  @typescript-eslint/ban-ts-comment
         // @ts-ignore
         pendingUpdate: null,
         ...state.byUrl[url],

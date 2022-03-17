@@ -2,8 +2,8 @@ import { ChainId, Token } from '@pangolindex/sdk';
 import { Tags, TokenInfo, TokenList } from '@pangolindex/token-lists';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { AppState } from '../index';
 import { AEB_TOKENS } from 'src/constants/lists';
+import { AppState } from '../index';
 
 type TagDetails = Tags[keyof Tags];
 export interface TagInfo extends TagDetails {

@@ -1,36 +1,35 @@
-import { Version } from 'src/hooks/useToggledVersion';
+/* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
+import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import {
+  CAVAX,
+  ChainId,
   Currency,
   CurrencyAmount,
-  CAVAX,
+  FACTORY_ADDRESS,
   JSBI,
+  Price,
   Token,
   TokenAmount,
   Trade,
-  FACTORY_ADDRESS,
-  ChainId,
-  Price,
 } from '@pangolindex/sdk';
 import { ParsedQs } from 'qs';
-import { useCallback, useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { NATIVE, ROUTER_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
-// import useParsedQueryString from 'src/hooks/useParsedQueryString';
+import useParsedQueryString from 'src/hooks/useParsedQueryString';
+import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
+import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { isAddress } from '../../utils';
 import { AppDispatch, AppState } from '../index';
+import { useUserSlippageTolerance } from '../puser/hooks';
 import { useCurrencyBalances } from '../pwallet/hooks';
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions';
 import { SwapState } from './reducer';
-import useToggledVersion from 'src/hooks/useToggledVersion';
-import { useUserSlippageTolerance } from '../puser/hooks';
-import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
-import { ROUTER_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
-import { NATIVE } from 'src/constants';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { Order, useGelatoLimitOrdersLib, useGelatoLimitOrdersHistory } from '@gelatonetwork/limit-orders-react';
 
 export interface LimitOrderInfo extends Order {
   pending?: boolean;
@@ -295,27 +294,27 @@ export function useDefaultsFromURLSearch():
   | undefined {
   const { chainId } = useActiveWeb3React();
   const dispatch = useDispatch<AppDispatch>();
-  // const parsedQs = useParsedQueryString();
+  const parsedQs = useParsedQueryString();
   const [result, setResult] = useState<
     { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined
   >();
 
   useEffect(() => {
     if (!chainId) return;
-    //TODO
-    // const parsed = queryParametersToSwapState(parsedQs);
 
-    // dispatch(
-    //   replaceSwapState({
-    //     typedValue: parsed.typedValue,
-    //     field: parsed.independentField,
-    //     inputCurrencyId: parsed[Field.INPUT].currencyId || SWAP_DEFAULT_CURRENCY[chainId]?.inputCurrency,
-    //     outputCurrencyId: parsed[Field.OUTPUT].currencyId || SWAP_DEFAULT_CURRENCY[chainId]?.outputCurrnecy,
-    //     recipient: parsed.recipient,
-    //   }),
-    // );
+    const parsed = queryParametersToSwapState(parsedQs);
 
-    //setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId });
+    dispatch(
+      replaceSwapState({
+        typedValue: parsed.typedValue,
+        field: parsed.independentField,
+        inputCurrencyId: parsed[Field.INPUT].currencyId || SWAP_DEFAULT_CURRENCY[chainId]?.inputCurrency,
+        outputCurrencyId: parsed[Field.OUTPUT].currencyId || SWAP_DEFAULT_CURRENCY[chainId]?.outputCurrnecy,
+        recipient: parsed.recipient,
+      }),
+    );
+
+    setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, chainId]);
 
@@ -420,3 +419,4 @@ export function useGelatoLimitOrderList() {
     [allOrders, allOpenOrders, allCancelledOrders, executed],
   );
 }
+/* eslint-enable max-lines */

@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { X } from 'react-feather';
+import styled from 'styled-components';
 
 export const DrawerRoot = styled.div<{ isOpen: boolean; backgroundColor?: string }>`
   overflow: hidden;

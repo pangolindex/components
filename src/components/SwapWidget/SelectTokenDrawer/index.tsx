@@ -1,18 +1,18 @@
-import React, { useMemo, useState, useCallback, useEffect, useRef, memo } from 'react';
-import { TextInput, Box, Text } from '../../';
-import Drawer from 'src/components/Drawer';
-import { useAllTokens, useToken } from 'src/hooks/Tokens';
-import { useTokenComparator } from 'src/components/SearchModal/sorting';
-import { CAVAX, Currency, currencyEquals, Token } from '@pangolindex/sdk';
-import { filterTokens } from 'src/components/SearchModal/filtering';
-import { FixedSizeList } from 'react-window';
+import { CAVAX, Currency, Token, currencyEquals } from '@pangolindex/sdk';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { isAddress } from 'src/utils';
-import { CurrencyList, ManageList, ListLogo } from './styled';
-import CurrencyRow from './CurrencyRow';
-import { useSelectedListInfo } from 'src/state/plists/hooks';
-import TokenListDrawer from '../TokenListDrawer';
+import { FixedSizeList } from 'react-window';
+import Drawer from 'src/components/Drawer';
+import { filterTokens } from 'src/components/SearchModal/filtering';
+import { useTokenComparator } from 'src/components/SearchModal/sorting';
+import { useAllTokens, useToken } from 'src/hooks/Tokens';
 import usePrevious from 'src/hooks/usePrevious';
+import { useSelectedListInfo } from 'src/state/plists/hooks';
+import { isAddress } from 'src/utils';
+import { Box, Text, TextInput } from '../../';
+import TokenListDrawer from '../TokenListDrawer';
+import CurrencyRow from './CurrencyRow';
+import { CurrencyList, ListLogo, ManageList } from './styled';
 
 interface Props {
   isOpen: boolean;

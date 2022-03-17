@@ -1,7 +1,7 @@
-import React, { useRef, useCallback } from 'react'
-import { useOnClickOutside } from 'src/hooks/useOnClickOutside'
-import styled from 'styled-components'
-import { Portal } from 'react-portal'
+import React, { useCallback, useRef } from 'react';
+import { Portal } from 'react-portal';
+import styled from 'styled-components';
+import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledDialogOverlay = styled.div<{ background?: string; isOpen: boolean }>`
@@ -17,7 +17,7 @@ const StyledDialogOverlay = styled.div<{ background?: string; isOpen: boolean }>
   bottom: 0px;
   left: 0px;
   background-color: ${({ theme, background }) => (background ? background : theme.modalBG)};
-`
+`;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Container = styled.div`
@@ -28,22 +28,22 @@ const Container = styled.div`
     width: 100%;
     height: 100%;
   `};
-`
+`;
 
 interface ModalProps {
-  isOpen: boolean
-  onDismiss: () => void
-  children?: React.ReactNode
-  overlayBG?: string
+  isOpen: boolean;
+  onDismiss: () => void;
+  children?: React.ReactNode;
+  overlayBG?: string;
 }
 
 export default function Modal({ isOpen, onDismiss, children, overlayBG }: ModalProps) {
-  const node = useRef<HTMLDivElement>()
+  const node = useRef<HTMLDivElement>();
   const handleClose = useCallback(() => {
-    onDismiss()
-  }, [onDismiss])
+    onDismiss();
+  }, [onDismiss]);
 
-  useOnClickOutside(node, isOpen ? handleClose : undefined)
+  useOnClickOutside(node, isOpen ? handleClose : undefined);
 
   return (
     <Portal>
@@ -51,5 +51,5 @@ export default function Modal({ isOpen, onDismiss, children, overlayBG }: ModalP
         {isOpen && <Container ref={node as any}>{children}</Container>}
       </StyledDialogOverlay>
     </Portal>
-  )
+  );
 }

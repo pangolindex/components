@@ -1,18 +1,18 @@
-import { Currency, currencyEquals, CAVAX, WAVAX } from '@pangolindex/sdk'
-import { useMemo } from 'react'
-import { tryParseAmount } from '../state/pswap/hooks'
-import { useTransactionAdder } from '../state/ptransactions/hooks'
-import { useCurrencyBalance } from '../state/pwallet/hooks'
-import { useActiveWeb3React } from './index'
-import { useWETHContract } from './useContract'
+import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
+import { useMemo } from 'react';
+import { tryParseAmount } from '../state/pswap/hooks';
+import { useTransactionAdder } from '../state/ptransactions/hooks';
+import { useCurrencyBalance } from '../state/pwallet/hooks';
+import { useWETHContract } from './useContract';
+import { useActiveWeb3React } from './index';
 
 export enum WrapType {
   NOT_APPLICABLE,
   WRAP,
-  UNWRAP
+  UNWRAP,
 }
 
-const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
+const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE };
 /**
  * Given the selected input and output currency, return a wrap callback
  * @param inputCurrency the selected input currency
@@ -22,19 +22,19 @@ const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 export default function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
-  typedValue: string | undefined
+  typedValue: string | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { chainId, account } = useActiveWeb3React()
-  const wethContract = useWETHContract()
-  const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
+  const { chainId, account } = useActiveWeb3React();
+  const wethContract = useWETHContract();
+  const balance = useCurrencyBalance(account ?? undefined, inputCurrency);
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
-  const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
-  const addTransaction = useTransactionAdder()
+  const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue]);
+  const addTransaction = useTransactionAdder();
 
   return useMemo(() => {
-    if (!wethContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE
+    if (!wethContract || !chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE;
 
-    const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
+    const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount);
 
     if (inputCurrency === CAVAX && currencyEquals(WAVAX[chainId], outputCurrency)) {
       return {
@@ -43,15 +43,15 @@ export default function useWrapCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
-                  const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` })
-                  addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} AVAX to WAVAX` })
+                  const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` });
+                  addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} AVAX to WAVAX` });
                 } catch (error) {
-                  console.error('Could not deposit', error)
+                  console.error('Could not deposit', error);
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient AVAX balance'
-      }
+        inputError: sufficientBalance ? undefined : 'Insufficient AVAX balance',
+      };
     } else if (currencyEquals(WAVAX[chainId], inputCurrency) && outputCurrency === CAVAX) {
       return {
         wrapType: WrapType.UNWRAP,
@@ -59,17 +59,17 @@ export default function useWrapCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
-                  const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
-                  addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WAVAX to AVAX` })
+                  const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`);
+                  addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WAVAX to AVAX` });
                 } catch (error) {
-                  console.error('Could not withdraw', error)
+                  console.error('Could not withdraw', error);
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient WAVAX balance'
-      }
+        inputError: sufficientBalance ? undefined : 'Insufficient WAVAX balance',
+      };
     } else {
-      return NOT_APPLICABLE
+      return NOT_APPLICABLE;
     }
-  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction])
+  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction]);
 }

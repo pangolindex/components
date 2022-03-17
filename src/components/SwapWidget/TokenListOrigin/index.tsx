@@ -1,23 +1,23 @@
-import React, { useMemo } from 'react'
-import { parseENSAddress } from 'src/utils/parseENSAddress'
+import React, { useMemo } from 'react';
+import { parseENSAddress } from 'src/utils/parseENSAddress';
 
 function TokenListOrigin({ listUrl }: { listUrl: string }) {
-  const ensName = useMemo(() => parseENSAddress(listUrl)?.ensName, [listUrl])
+  const ensName = useMemo(() => parseENSAddress(listUrl)?.ensName, [listUrl]);
   const host = useMemo(() => {
-    if (ensName) return undefined
-    const lowerListUrl = listUrl.toLowerCase()
+    if (ensName) return undefined;
+    const lowerListUrl = listUrl.toLowerCase();
     if (lowerListUrl.startsWith('ipfs://') || lowerListUrl.startsWith('ipns://')) {
-      return listUrl
+      return listUrl;
     }
     try {
-      const url = new URL(listUrl)
-      return url.host
+      const url = new URL(listUrl);
+      return url.host;
     } catch (error) {
-      return undefined
+      return undefined;
     }
-  }, [listUrl, ensName])
+  }, [listUrl, ensName]);
 
-  return <>{ensName ?? host}</>
+  return <>{ensName ?? host}</>;
 }
 
-export default TokenListOrigin
+export default TokenListOrigin;

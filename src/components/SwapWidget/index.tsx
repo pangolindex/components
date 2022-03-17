@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Root } from './styled';
-import MarketOrder from './MarketOrder';
 import LimitOrder from './LimitOrder';
+import MarketOrder from './MarketOrder';
+import { Root } from './styled';
 
 const SwapWidget = () => {
   const [swapType, setSwapType] = useState('MARKET' as string);

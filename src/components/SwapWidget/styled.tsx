@@ -1,5 +1,5 @@
-import { Box } from '../Box'
-import styled from 'styled-components'
+import styled from 'styled-components';
+import { Box } from '../Box';
 
 export const Root = styled(Box)`
   width: 100%;
@@ -9,4 +9,4 @@ export const Root = styled(Box)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
       min-width: 100%;
   `};
-`
+`;

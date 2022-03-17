@@ -1,13 +1,13 @@
-import { useMemo } from 'react';
 import { parseBytes32String } from '@ethersproject/strings';
-import { Currency, CAVAX, Token, currencyEquals } from '@pangolindex/sdk';
+import { CAVAX, Currency, Token, currencyEquals } from '@pangolindex/sdk';
+import { useMemo } from 'react';
 import ERC20_INTERFACE, { ERC20_BYTES32_INTERFACE } from 'src/constants/abis/erc20';
 import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
 import { isAddress } from 'src/utils';
-import { useActiveWeb3React } from './index';
 import { useBytes32TokenContract, useTokenContract } from './useContract';
+import { useActiveWeb3React } from './index';
 
 export function useAllTokens(): { [address: string]: Token } {
   const { chainId } = useActiveWeb3React();

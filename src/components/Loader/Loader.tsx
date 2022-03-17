@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box, Text } from '../';
+import styled from 'styled-components';
 import LogoIcon from 'src/assets/svg/logoIcon.svg';
 import { Loading } from 'src/components/Icons';
-import styled from 'styled-components';
+import { Box, Text } from '../';
 
 const PendingWrapper = styled(Box)`
   display: flex;

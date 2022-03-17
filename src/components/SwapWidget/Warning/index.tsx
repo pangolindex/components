@@ -1,5 +1,6 @@
-import { Text, Box } from '../../';
-import { WarningWrapper, StyledWarningIcon, ConvertLink, AutoColumn } from './styled';
+import React from 'react';
+import { Box, Text } from '../../';
+import { AutoColumn, ConvertLink, StyledWarningIcon, WarningWrapper } from './styled';
 
 export function DeprecatedWarning() {
   return (

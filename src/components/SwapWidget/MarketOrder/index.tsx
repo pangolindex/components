@@ -1,49 +1,43 @@
-import React, { useState, useContext, useCallback, useMemo, useEffect } from 'react';
-import ReactGA from 'react-ga';
+/* eslint-disable max-lines */
+import { CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
-import { Text, Box, Button } from '../../';
-import { Token, Trade, JSBI, CurrencyAmount, TokenAmount } from '@pangolindex/sdk';
+import ReactGA from 'react-ga';
 import { ThemeContext } from 'styled-components';
-import RetryDrawer from '../RetryDrawer';
-import SelectTokenDrawer from '../SelectTokenDrawer';
-import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
+import { TRUSTED_TOKEN_ADDRESSES } from 'src/constants';
+import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
+import { useActiveWeb3React } from 'src/hooks';
+import { useCurrency } from 'src/hooks/Tokens';
+import { ApprovalState, useApproveCallbackFromTrade } from 'src/hooks/useApproveCallback';
+import useENS from 'src/hooks/useENS';
+import { useSwapCallback } from 'src/hooks/useSwapCallback';
+import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
+import useWrapCallback, { WrapType } from 'src/hooks/useWrapCallback';
+import { useWalletModalToggle } from 'src/state/papplication/hooks';
+import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
+import { Field } from 'src/state/pswap/actions';
 import {
+  useDefaultsFromURLSearch,
   useDerivedSwapInfo,
   useSwapActionHandlers,
   useSwapState,
-  useDefaultsFromURLSearch,
 } from 'src/state/pswap/hooks';
-import { Field } from 'src/state/pswap/actions';
-import { useCurrency } from 'src/hooks/Tokens';
-import useWrapCallback, { WrapType } from 'src/hooks/useWrapCallback';
-import useENS from 'src/hooks/useENS';
-import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
-import { ApprovalState, useApproveCallbackFromTrade } from 'src/hooks/useApproveCallback';
-import { useActiveWeb3React } from 'src/hooks';
-import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { maxAmountSpend } from 'src/utils/maxAmountSpend';
-import { useSwapCallback } from 'src/hooks/useSwapCallback';
-import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
-import confirmPriceImpactWithoutFee from '../confirmPriceImpactWithoutFee';
-import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
-import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
-import { TRUSTED_TOKEN_ADDRESSES } from 'src/constants';
 import { isTokenOnList } from 'src/utils';
-import TokenWarningModal from '../TokenWarningModal';
-import { DeprecatedWarning } from '../Warning';
+import { maxAmountSpend } from 'src/utils/maxAmountSpend';
+import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { Box, Button, Text } from '../../';
+import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
+import RetryDrawer from '../RetryDrawer';
+import SelectTokenDrawer from '../SelectTokenDrawer';
 import SwapDetailInfo from '../SwapDetailInfo';
 import SwapRoute from '../SwapRoute';
-import {
-  Root,
-  SwapWrapper,
-  CurrencyInputTextBox,
-  ArrowWrapper,
-  // AddARecipient
-  PValue,
-} from './styled';
+import TokenWarningModal from '../TokenWarningModal';
 import TradeOption from '../TradeOption';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { DeprecatedWarning } from '../Warning';
+import confirmPriceImpactWithoutFee from '../confirmPriceImpactWithoutFee';
+import { ArrowWrapper, CurrencyInputTextBox, PValue, Root, SwapWrapper } from './styled';
 
 interface Props {
   swapType: string;
@@ -207,6 +201,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType }) => {
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash });
 
+        // eslint-disable-next-line import/no-named-as-default-member
         ReactGA.event({
           category: 'Swap',
           action:
@@ -528,3 +523,4 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType }) => {
   );
 };
 export default MarketOrder;
+/* eslint-enable max-lines */

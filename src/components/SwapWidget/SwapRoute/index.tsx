@@ -1,20 +1,20 @@
-import { CurrencyLogo, Text, Box } from '../../'
-import { Trade } from '@pangolindex/sdk'
-import React, { useContext } from 'react'
-import { ChevronRight } from 'react-feather'
-import { ThemeContext } from 'styled-components'
-import { SwapRouteWrapper } from './styled'
+import { Trade } from '@pangolindex/sdk';
+import React, { useContext } from 'react';
+import { ChevronRight } from 'react-feather';
+import { ThemeContext } from 'styled-components';
+import { Box, CurrencyLogo, Text } from '../../';
+import { SwapRouteWrapper } from './styled';
 
 type Props = {
-  trade: Trade
-}
+  trade: Trade;
+};
 
 const SwapRoute: React.FC<Props> = ({ trade }) => {
-  const theme = useContext(ThemeContext)
+  const theme = useContext(ThemeContext);
   return (
     <SwapRouteWrapper>
       {trade.route.path.map((token, i, path) => {
-        const isLastItem = i === path.length - 1
+        const isLastItem = i === path.length - 1;
 
         return (
           <Box key={i} display="flex" alignItems="center">
@@ -28,10 +28,10 @@ const SwapRoute: React.FC<Props> = ({ trade }) => {
             </Box>
             {isLastItem ? null : <ChevronRight color={theme.text2} />}
           </Box>
-        )
+        );
       })}
     </SwapRouteWrapper>
-  )
-}
+  );
+};
 
-export default SwapRoute
+export default SwapRoute;

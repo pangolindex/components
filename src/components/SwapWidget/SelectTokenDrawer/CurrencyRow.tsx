@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
-import { Text, CurrencyLogo } from '../../';
-import { CurrencyRowRoot, Balance } from './styled';
 import { Currency } from '@pangolindex/sdk';
+import React, { useCallback } from 'react';
+import { LoaderIcon } from 'src/components/Icons';
 import { useActiveWeb3React } from 'src/hooks';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks';
-import { LoaderIcon } from 'src/components/Icons';
+import { CurrencyLogo, Text } from '../../';
+import { Balance, CurrencyRowRoot } from './styled';
 
 interface Props {
   currency: Currency;

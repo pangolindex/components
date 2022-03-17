@@ -1,28 +1,27 @@
-import React, { useContext, useState, useCallback } from 'react';
-import { ArrowDown, AlertTriangle, ArrowUpCircle } from 'react-feather';
-import { Token, Trade, TradeType, CAVAX } from '@pangolindex/sdk';
-import { CurrencyLogo, Text, Box, Button, Loader } from '../../';
-import { ThemeContext } from 'styled-components';
-import { getEtherscanLink } from 'src/utils';
-import Drawer from 'src/components/Drawer';
-import {
-  TokenRow,
-  Header,
-  Footer,
-  Root,
-  PriceUpdateBlock,
-  ErrorWrapper,
-  ErrorBox,
-  SubmittedWrapper,
-  Link,
-} from './styled';
-import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
-import { useActiveWeb3React } from 'src/hooks';
 import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
-import { shortenAddress, isAddress } from 'src/utils';
-import { FiatValue } from './FiateValue';
+import { CAVAX, Token, Trade, TradeType } from '@pangolindex/sdk';
+import React, { useCallback, useContext, useState } from 'react';
+import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
+import { ThemeContext } from 'styled-components';
+import Drawer from 'src/components/Drawer';
+import { useActiveWeb3React } from 'src/hooks';
+import { getEtherscanLink, isAddress, shortenAddress } from 'src/utils';
 import { computeFiatValuePriceImpact } from 'src/utils/computeFiatValuePriceImpact';
 import useUSDCPrice from 'src/utils/useUSDCPrice';
+import { Box, Button, CurrencyLogo, Loader, Text } from '../../';
+import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
+import { FiatValue } from './FiateValue';
+import {
+  ErrorBox,
+  ErrorWrapper,
+  Footer,
+  Header,
+  Link,
+  PriceUpdateBlock,
+  Root,
+  SubmittedWrapper,
+  TokenRow,
+} from './styled';
 
 interface Props {
   isOpen: boolean;
@@ -216,10 +215,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
     </Root>
   );
 
-  const PendingContent = (
-    <Loader size={100} label={pendingText} />
-   
-  );
+  const PendingContent = <Loader size={100} label={pendingText} />;
 
   const ErroContent = (
     <ErrorWrapper>

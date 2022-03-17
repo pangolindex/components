@@ -1,11 +1,11 @@
-import { Text } from '../../Text';
+import { formatUnits } from '@ethersproject/units';
+import { useGasOverhead, useGelatoLimitOrders, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
+import { TokenAmount } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
-import { formatUnits } from '@ethersproject/units'
 import { INITIAL_ALLOWED_SLIPPAGE } from 'src/constants';
 import { useActiveWeb3React } from 'src/hooks';
+import { Text } from '../../Text';
 import { ContentBox, DataBox, ValueText } from './styled';
-import { useGelatoLimitOrders, useGelatoLimitOrdersLib, useGasOverhead } from '@gelatonetwork/limit-orders-react';
-import { TokenAmount } from '@pangolindex/sdk';
 
 type Props = { trade: any };
 
