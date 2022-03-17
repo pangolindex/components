@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import LogoIcon from 'src/assets/svg/logoIcon.svg';
-import { Loading } from 'src/components/Icons';
+import { Loading, LogoIcon } from 'src/components/Icons';
 import { Box, Text } from '../';
 
 const PendingWrapper = styled(Box)`
@@ -25,7 +24,7 @@ const Loader: React.FC<Props> = (props) => {
           <Loading />
 
           <Box position="absolute">
-            <img src={LogoIcon} alt="logo" />
+            <LogoIcon />
           </Box>
         </Box>
         {label && (
