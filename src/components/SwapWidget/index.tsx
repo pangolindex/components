@@ -3,7 +3,11 @@ import LimitOrder from './LimitOrder';
 import MarketOrder from './MarketOrder';
 import { Root } from './styled';
 
-const SwapWidget = () => {
+interface Props {
+  isLimitOrderVisible?: boolean;
+}
+
+const SwapWidget: React.FC<Props> = ({ isLimitOrderVisible = false }) => {
   const [swapType, setSwapType] = useState('MARKET' as string);
 
   return (
@@ -14,6 +18,7 @@ const SwapWidget = () => {
           setSwapType={(type) => {
             setSwapType(type);
           }}
+          isLimitOrderVisible={isLimitOrderVisible}
         />
       ) : (
         <MarketOrder
@@ -21,6 +26,7 @@ const SwapWidget = () => {
           setSwapType={(type) => {
             setSwapType(type);
           }}
+          isLimitOrderVisible={isLimitOrderVisible}
         />
       )}
     </Root>

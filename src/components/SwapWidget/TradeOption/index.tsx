@@ -5,9 +5,10 @@ import { SwapAlertBox, SwapWrapper } from './styled';
 interface Props {
   swapType: string;
   setSwapType: (value: string) => void;
+  isLimitOrderVisible: boolean;
 }
 
-const TradeOption: React.FC<Props> = ({ swapType, setSwapType }) => {
+const TradeOption: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
   return (
     <SwapWrapper>
       <SwapAlertBox>This is a BETA release and should be used at your own risk!</SwapAlertBox>
@@ -17,13 +18,15 @@ const TradeOption: React.FC<Props> = ({ swapType, setSwapType }) => {
           <Text color="text1" fontSize={24} fontWeight={500}>
             Trade
           </Text>
-          <ToggleButtons
-            options={['MARKET', 'LIMIT']}
-            value={swapType}
-            onChange={(value) => {
-              setSwapType(value);
-            }}
-          />
+          {isLimitOrderVisible && (
+            <ToggleButtons
+              options={['MARKET', 'LIMIT']}
+              value={swapType}
+              onChange={(value) => {
+                setSwapType(value);
+              }}
+            />
+          )}
         </Box>
       </Box>
     </SwapWrapper>

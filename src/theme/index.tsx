@@ -66,8 +66,8 @@ export const defaultColors: Colors = {
   bg3: '#EDEEF2',
   bg4: '#CED0D9',
   bg5: '#888D9B',
-  bg6: '#1C1C1C',
-  bg7: '#2C2D33',
+  bg6: '#FFFFFF',
+  bg7: '#FFFFFF',
   bg8: '#FFFFFF',
   bg9: '#000000',
 
@@ -108,9 +108,9 @@ export const defaultColors: Colors = {
   },
 
   toggleButton: {
-    backgroundColor: darkSilver,
-    selectedColor: chineseBlack,
-    fontColor: platinum,
+    backgroundColor: platinum,
+    selectedColor: ghostWhite,
+    fontColor: chineseBlack,
   },
 
   button: {

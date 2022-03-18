@@ -31,9 +31,10 @@ enum Rate {
 interface Props {
   swapType: string;
   setSwapType: (value: string) => void;
+  isLimitOrderVisible: boolean;
 }
 
-const LimitOrder: React.FC<Props> = ({ swapType, setSwapType }) => {
+const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const [tokenDrawerType, setTokenDrawerType] = useState(LimitNewField.INPUT);
@@ -428,7 +429,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType }) => {
 
   return (
     <Root>
-      <TradeOption swapType={swapType} setSwapType={setSwapType} />
+      <TradeOption swapType={swapType} setSwapType={setSwapType} isLimitOrderVisible={isLimitOrderVisible} />
 
       <SwapWrapper>
         <Box textAlign="center" width="100%">

@@ -42,9 +42,10 @@ import { ArrowWrapper, CurrencyInputTextBox, PValue, Root, SwapWrapper } from '.
 interface Props {
   swapType: string;
   setSwapType: (value: string) => void;
+  isLimitOrderVisible: boolean;
 }
 
-const MarketOrder: React.FC<Props> = ({ swapType, setSwapType }) => {
+const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
   const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(0);
@@ -419,7 +420,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType }) => {
 
   return (
     <Root>
-      <TradeOption swapType={swapType} setSwapType={setSwapType} />
+      <TradeOption swapType={swapType} setSwapType={setSwapType} isLimitOrderVisible={isLimitOrderVisible} />
 
       <TokenWarningModal
         isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning && !urlLoadedTokens.every(isTrustedToken)}
