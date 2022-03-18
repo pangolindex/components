@@ -104,7 +104,7 @@ export const defaultColors: Colors = {
   switch: {
     onColor: philippineYellow,
     offColor: '#CED0D9',
-    backgroundColor: darkSilver,
+    backgroundColor: platinum,
   },
 
   toggleButton: {
