@@ -29,7 +29,8 @@
   "author": "Pangolin",
   "license": "ISC",
   "dependencies": {
-    "react-switch": "^6.0.0"
+    "react-switch": "^6.0.0",
+    "cids": "^1.1.9"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
@@ -58,7 +59,6 @@
     "@web3-react/core": "^6.1.9",
     "babel-loader": "^8.2.2",
     "chokidar-cli": "^3.0.0",
-    "cids": "^1.1.9",
     "concurrently": "^7.0.0",
     "deep-equal": "^2.0.5",
     "eslint": "^8.0.1",
