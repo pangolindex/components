@@ -1,7 +1,18 @@
 import React from 'react';
+import styled from 'styled-components';
+
+const Svg = styled.svg`
+  @keyframes spinners-react-dotted-shrink {
+    50% {
+      transform: translate(0, 0);
+      opacity: 0;
+    }
+  }
+`;
+
 const Loading = () => {
   return (
-    <svg
+    <Svg
       fill="none"
       viewBox="0 0 66 66"
       style={{ color: '#e1aa00', overflow: 'visible' }}
@@ -87,7 +98,7 @@ const Loading = () => {
           animation: '2s cubic-bezier(0, 0.9, 0, 0.9) 0.7s infinite normal none running spinners-react-dotted-shrink',
         }}
       ></circle>
-    </svg>
+    </Svg>
   );
 };
 

@@ -466,9 +466,9 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType }) => {
           <Box width="100%" textAlign="center" alignItems="center" display="flex" justifyContent={'center'} mt={10}>
             <ArrowWrapper>
               {rateType === Rate.MUL ? (
-                <X size="16" color={currencies.input && currencies.output ? theme.text1 : theme.text3} />
+                <X size="16" color={currencies.input && currencies.output ? theme.text1 : theme.text4} />
               ) : (
-                <Divide size="16" color={currencies.input && currencies.output ? theme.text1 : theme.text3} />
+                <Divide size="16" color={currencies.input && currencies.output ? theme.text1 : theme.text4} />
               )}
             </ArrowWrapper>
           </Box>
