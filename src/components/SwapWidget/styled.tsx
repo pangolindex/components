@@ -6,7 +6,8 @@ export const Root = styled(Box)`
   min-width: 320px;
   position: relative;
   overflow: hidden;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-      min-width: 100%;
-  `};
+
+  * {
+    box-sizing: border-box;
+  }
 `;

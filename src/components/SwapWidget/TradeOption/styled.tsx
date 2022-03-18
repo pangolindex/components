@@ -7,6 +7,8 @@ export const SwapWrapper = styled(Box)`
   background-color: ${({ theme }) => theme.color2};
   position: relative;
   overflow: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 `;
 
 export const SwapAlertBox = styled(Box)`

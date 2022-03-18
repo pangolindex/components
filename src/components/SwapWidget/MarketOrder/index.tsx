@@ -296,7 +296,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType }) => {
   const renderButton = () => {
     if (!account) {
       return (
-        <Button variant="primary" onClick={toggleWalletModal}>
+        <Button isDisabled={!account} variant="primary" onClick={toggleWalletModal}>
           Connect Wallet
         </Button>
       );
