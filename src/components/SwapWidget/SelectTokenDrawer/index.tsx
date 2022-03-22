@@ -1,15 +1,16 @@
-import { CAVAX, Currency, Token, currencyEquals } from '@pangolindex/sdk';
+import { CAVAX, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import Drawer from 'src/components/Drawer';
-import { filterTokens } from 'src/components/SearchModal/filtering';
-import { useTokenComparator } from 'src/components/SearchModal/sorting';
+import { useChainId } from 'src/hooks';
 import { useAllTokens, useToken } from 'src/hooks/Tokens';
 import usePrevious from 'src/hooks/usePrevious';
 import { useSelectedListInfo } from 'src/state/plists/hooks';
 import { isAddress } from 'src/utils';
 import { Box, Text, TextInput } from '../../';
+import { filterTokens } from '../SearchModal/filtering';
+import { useTokenComparator } from '../SearchModal/sorting';
 import TokenListDrawer from '../TokenListDrawer';
 import CurrencyRow from './CurrencyRow';
 import { CurrencyList, ListLogo, ManageList } from './styled';
@@ -22,8 +23,8 @@ interface Props {
   otherSelectedCurrency?: Currency;
 }
 
-const currencyKey = (currency: Currency): string => {
-  return currency instanceof Token ? currency.address : currency === CAVAX ? 'AVAX' : '';
+const currencyKey = (currency: Currency, chainId: ChainId): string => {
+  return currency instanceof Token ? currency.address : currency === CAVAX[chainId] ? 'AVAX' : '';
 };
 
 const SelectTokenDrawer: React.FC<Props> = (props) => {
@@ -54,6 +55,8 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   const allTokens = useAllTokens();
   const selectedListInfo = useSelectedListInfo();
 
+  const chainId = useChainId();
+
   const isAddressSearch = isAddress(searchQuery);
   const searchToken = useToken(searchQuery);
 
@@ -81,7 +84,8 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     ];
   }, [filteredTokens, searchQuery, searchToken, tokenComparator]);
 
-  const currencies = useMemo(() => [Currency.CAVAX, ...filteredSortedTokens], [filteredSortedTokens]);
+  const currencies = useMemo(() => [CAVAX[chainId], ...filteredSortedTokens], [filteredSortedTokens, chainId]);
+  //const currencies = useMemo(() => [Currency.CAVAX, ...filteredSortedTokens], [filteredSortedTokens]);
 
   const onSelect = useCallback(
     (currency) => {
@@ -134,7 +138,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
               itemCount={currencies.length}
               itemSize={56}
               itemData={currencies}
-              itemKey={(index, data) => currencyKey(data[index])}
+              itemKey={(index, data) => currencyKey(data[index], chainId)}
             >
               {Row}
             </FixedSizeList>

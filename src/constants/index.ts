@@ -3,6 +3,7 @@ import { ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: '0x2D99ABD9008Dc933ff5c0CD271B88309593aB921',
   [ChainId.AVALANCHE]: '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106',
+  [ChainId.WAGMI]: '0x2F99E88888ee24cbf1623FB7af7FD2e508123eb3',
 };
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -37,6 +38,13 @@ export const PNG: { [chainId in ChainId]: Token } = {
     'PNG',
     'Pangolin',
   ),
+  [ChainId.WAGMI]: new Token(
+    ChainId.WAGMI,
+    '0x25dbCAb8709E6222d74a56bD0184fc41439806CE',
+    18,
+    'wagmiPNG',
+    'Wagmi Pangolin',
+  ),
 };
 
 export const USDT: { [chainId in ChainId]: Token } = {
@@ -48,6 +56,7 @@ export const USDT: { [chainId in ChainId]: Token } = {
     'USDT',
     'Tether USD',
   ),
+  [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 6, 'USDT', 'Tether USD'),
 };
 
 export const USDTe: { [chainId in ChainId]: Token } = {
@@ -59,6 +68,7 @@ export const USDTe: { [chainId in ChainId]: Token } = {
     'USDT.e',
     'Tether USD',
   ),
+  [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 6, 'USDT.e', 'Tether USD'),
 };
 
 export const UST: { [chainId in ChainId]: Token } = {
@@ -70,6 +80,7 @@ export const UST: { [chainId in ChainId]: Token } = {
     'UST',
     'Axelar Wrapped UST',
   ),
+  [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 18, 'UST', 'Axelar Wrapped UST'),
 };
 
 export const USDC: { [chainId in ChainId]: Token } = {
@@ -81,6 +92,7 @@ export const USDC: { [chainId in ChainId]: Token } = {
     'USDC',
     'USD Coin',
   ),
+  [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 6, 'USDC', 'USD Coin'),
 };
 
 export const USDCe: { [chainId in ChainId]: Token } = {
@@ -92,12 +104,14 @@ export const USDCe: { [chainId in ChainId]: Token } = {
     'USDC.e',
     'USD Coin',
   ),
+  [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 6, 'USDC.e', 'USD Coin'),
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
 export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] } = {
   [ChainId.FUJI]: [],
   [ChainId.AVALANCHE]: [WAVAX[ChainId.AVALANCHE].address, PNG[ChainId.AVALANCHE].address],
+  [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI].address, PNG[ChainId.WAGMI].address],
 };
 
 export const SWAP_DEFAULT_CURRENCY = {
@@ -120,6 +134,7 @@ export const DAIe: { [chainId in ChainId]: Token } = {
     'DAI.e',
     'Dai Stablecoin',
   ),
+  [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 18, 'DAI.e', 'Dai Stablecoin'),
 };
 
 // used to construct intermediary pairs for trading
@@ -134,6 +149,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     UST[ChainId.AVALANCHE],
     USDC[ChainId.AVALANCHE],
   ],
+  [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI], PNG[ChainId.WAGMI]],
 };
 
 // one basis point

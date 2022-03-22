@@ -1,6 +1,6 @@
 import { Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { useAllTokenBalances } from '../../state/pwallet/hooks';
+import { useAllTokenBalances } from 'src/state/pwallet/hooks';
 
 // compare two token amounts with highest one coming first
 function balanceComparator(balanceA?: TokenAmount, balanceB?: TokenAmount) {

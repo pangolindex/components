@@ -1,4 +1,4 @@
-import { CAVAX, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import { CAVAX, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { useActiveWeb3React } from 'src/hooks';
@@ -10,9 +10,10 @@ import { useMultipleContractSingleData, useSingleContractMultipleData } from '..
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
-export function useETHBalances(uncheckedAddresses?: (string | undefined)[]): {
-  [address: string]: CurrencyAmount | undefined;
-} {
+export function useETHBalances(
+  chainId: ChainId,
+  uncheckedAddresses?: (string | undefined)[],
+): { [address: string]: CurrencyAmount | undefined } {
   const multicallContract = useMulticallContract();
 
   const addresses: string[] = useMemo(
@@ -36,10 +37,10 @@ export function useETHBalances(uncheckedAddresses?: (string | undefined)[]): {
     () =>
       addresses.reduce<{ [address: string]: CurrencyAmount }>((memo, address, i) => {
         const value = results?.[i]?.result?.[0];
-        if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()));
+        if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()), chainId);
         return memo;
       }, {}),
-    [addresses, results],
+    [chainId, addresses, results],
   );
 }
 
@@ -95,6 +96,7 @@ export function useTokenBalance(account?: string, token?: Token): TokenAmount | 
 }
 
 export function useCurrencyBalances(
+  chainId: ChainId,
   account?: string,
   currencies?: (Currency | undefined)[],
 ): (CurrencyAmount | undefined)[] {
@@ -104,23 +106,30 @@ export function useCurrencyBalances(
   );
 
   const tokenBalances = useTokenBalances(account, tokens);
-  const containsETH: boolean = useMemo(() => currencies?.some((currency) => currency === CAVAX) ?? false, [currencies]);
-  const ethBalance = useETHBalances(containsETH ? [account] : []);
+  const containsETH: boolean = useMemo(
+    () => currencies?.some((currency) => chainId && currency === CAVAX[chainId]) ?? false,
+    [chainId, currencies],
+  );
+  const ethBalance = useETHBalances(chainId, containsETH ? [account] : []);
 
   return useMemo(
     () =>
       currencies?.map((currency) => {
         if (!account || !currency) return undefined;
         if (currency instanceof Token) return tokenBalances[currency.address];
-        if (currency === CAVAX) return ethBalance[account];
+        if (currency === CAVAX[chainId]) return ethBalance[account];
         return undefined;
       }) ?? [],
-    [account, currencies, ethBalance, tokenBalances],
+    [chainId, account, currencies, ethBalance, tokenBalances],
   );
 }
 
-export function useCurrencyBalance(account?: string, currency?: Currency): CurrencyAmount | undefined {
-  return useCurrencyBalances(account, [currency])[0];
+export function useCurrencyBalance(
+  chainId: ChainId,
+  account?: string,
+  currency?: Currency,
+): CurrencyAmount | undefined {
+  return useCurrencyBalances(chainId, account, [currency])[0];
 }
 
 // mimics useAllBalances

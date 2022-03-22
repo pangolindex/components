@@ -6,7 +6,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { NATIVE } from 'src/constants';
-import { useActiveWeb3React } from 'src/hooks';
+import { useActiveWeb3React, useChainId } from 'src/hooks';
 import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
@@ -39,8 +39,8 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const [tokenDrawerType, setTokenDrawerType] = useState(LimitNewField.INPUT);
   const [activeTab, setActiveTab] = useState<'SELL' | 'BUY'>('SELL');
-  const { account, chainId } = useActiveWeb3React();
-
+  const { account } = useActiveWeb3React();
+  const chainId = useChainId();
   const theme = useContext(ThemeContext);
 
   const percentageValue = [25, 50, 75, 100];
@@ -66,7 +66,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
     orderState: { independentField, rateType },
   } = useGelatoLimitOrders();
 
-  const { onCurrencySelection: onSwapCurrencySelection } = useSwapActionHandlers();
+  const { onCurrencySelection: onSwapCurrencySelection } = useSwapActionHandlers(chainId);
 
   // get custom setting values for user
   const [allowedSlippage] = useUserSlippageTolerance();
@@ -80,10 +80,10 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   const outputTokenInfo = gelatoOutputCurrency?.tokenInfo;
 
   const inputCurrency =
-    gelatoInputCurrency && gelatoInputCurrency?.symbol === CAVAX.symbol
-      ? CAVAX
-      : inputTokenInfo && inputTokenInfo.symbol === CAVAX.symbol
-      ? CAVAX
+    gelatoInputCurrency && gelatoInputCurrency?.symbol === CAVAX[chainId].symbol
+      ? CAVAX[chainId]
+      : inputTokenInfo && inputTokenInfo.symbol === CAVAX[chainId].symbol
+      ? CAVAX[chainId]
       : inputTokenInfo
       ? new Token(
           inputTokenInfo?.chainId,
@@ -103,10 +103,10 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
       : undefined;
 
   const outputCurrency =
-    gelatoOutputCurrency && gelatoOutputCurrency?.symbol === CAVAX.symbol
-      ? CAVAX
-      : outputTokenInfo && outputTokenInfo?.symbol === CAVAX.symbol
-      ? CAVAX
+    gelatoOutputCurrency && gelatoOutputCurrency?.symbol === CAVAX[chainId].symbol
+      ? CAVAX[chainId]
+      : outputTokenInfo && outputTokenInfo?.symbol === CAVAX[chainId].symbol
+      ? CAVAX[chainId]
       : outputTokenInfo
       ? new Token(
           outputTokenInfo?.chainId,
@@ -189,6 +189,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   }, [approval, approvalSubmitted]);
 
   const maxAmountInput: CurrencyAmount<UniCurrency> | undefined = galetoMaxAmountSpend(
+    chainId,
     currencyBalances[LimitField.INPUT],
   );
 
@@ -313,7 +314,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
 
       // here need to add isToken because in Galato hook require this variable to select currency
       const newCurrency = { ...currency };
-      if (currency?.symbol === CAVAX.symbol) {
+      if (currency?.symbol === CAVAX[chainId].symbol) {
         newCurrency.isNative = true;
       } else {
         newCurrency.isToken = true;

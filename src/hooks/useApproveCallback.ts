@@ -10,7 +10,7 @@ import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransacti
 import { calculateGasMargin } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from '../utils/prices';
 import { useTokenContract } from './useContract';
-import { useActiveWeb3React } from './index';
+import { useActiveWeb3React, useChainId } from './index';
 
 export enum ApprovalState {
   UNKNOWN,
@@ -21,6 +21,7 @@ export enum ApprovalState {
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
 export function useApproveCallback(
+  chainId: ChainId,
   amountToApprove?: CurrencyAmount,
   spender?: string,
 ): [ApprovalState, () => Promise<void>] {
@@ -33,7 +34,7 @@ export function useApproveCallback(
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN;
-    if (amountToApprove.currency === CAVAX) return ApprovalState.APPROVED;
+    if (amountToApprove.currency === CAVAX[chainId]) return ApprovalState.APPROVED;
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance) return ApprovalState.UNKNOWN;
 
@@ -100,22 +101,26 @@ export function useApproveCallback(
 }
 
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromTrade(trade?: Trade, allowedSlippage = 0) {
-  const { chainId } = useActiveWeb3React();
+export function useApproveCallbackFromTrade(chainId: ChainId, trade?: Trade, allowedSlippage = 0) {
   const amountToApprove = useMemo(
     () => (trade ? computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT] : undefined),
     [trade, allowedSlippage],
   );
-  return useApproveCallback(amountToApprove, chainId ? ROUTER_ADDRESS[chainId] : ROUTER_ADDRESS[ChainId.AVALANCHE]);
+  return useApproveCallback(
+    chainId,
+    amountToApprove,
+    chainId ? ROUTER_ADDRESS[chainId] : ROUTER_ADDRESS[ChainId.AVALANCHE],
+  );
 }
 
 // wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromInputCurrencyAmount(currencyAmountIn: any | undefined) {
+  const chainId = useChainId();
   const gelatoLibrary = useGelatoLimitOrdersLib();
 
   const newCurrencyAmountIn = currencyAmountIn
     ? new TokenAmount(currencyAmountIn?.currency, currencyAmountIn?.numerator)
     : undefined;
 
-  return useApproveCallback(newCurrencyAmountIn, gelatoLibrary?.erc20OrderRouter.address ?? undefined);
+  return useApproveCallback(chainId, newCurrencyAmountIn, gelatoLibrary?.erc20OrderRouter.address ?? undefined);
 }

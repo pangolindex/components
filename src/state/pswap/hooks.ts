@@ -17,7 +17,7 @@ import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NATIVE, ROUTER_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
-import { useActiveWeb3React } from 'src/hooks';
+import { useActiveWeb3React, useChainId } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
@@ -39,7 +39,7 @@ export function useSwapState(): AppState['pswap'] {
   return useSelector<AppState, AppState['pswap']>((state) => state.pswap);
 }
 
-export function useSwapActionHandlers(): {
+export function useSwapActionHandlers(chainId: ChainId): {
   onCurrencySelection: (field: Field, currency: Currency) => void;
   onSwitchTokens: () => void;
   onUserInput: (field: Field, typedValue: string) => void;
@@ -51,7 +51,7 @@ export function useSwapActionHandlers(): {
       dispatch(
         selectCurrency({
           field,
-          currencyId: currency instanceof Token ? currency.address : currency === CAVAX ? 'AVAX' : '',
+          currencyId: currency instanceof Token ? currency.address : currency === CAVAX[chainId] ? 'AVAX' : '',
         }),
       );
     },
@@ -131,6 +131,7 @@ export function useDerivedSwapInfo(): {
   v1Trade: Trade | undefined;
 } {
   const { account } = useActiveWeb3React();
+  const chainId = useChainId();
 
   const toggledVersion = useToggledVersion();
 
@@ -147,7 +148,7 @@ export function useDerivedSwapInfo(): {
   const recipientAddress = isAddress(recipient);
   const to: string | null = (recipientAddress ? recipientAddress : account) ?? null;
 
-  const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
+  const relevantTokenBalances = useCurrencyBalances(chainId, account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
   ]);

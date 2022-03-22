@@ -1,5 +1,5 @@
 import { Token } from '@pangolindex/sdk';
-import { isAddress } from '../../utils';
+import { isAddress } from 'src/utils';
 
 export function filterTokens(tokens: Token[], search: string): Token[] {
   if (search.length === 0) return tokens;

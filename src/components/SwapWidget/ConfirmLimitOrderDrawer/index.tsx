@@ -4,7 +4,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import Drawer from 'src/components/Drawer';
-import { useActiveWeb3React } from 'src/hooks';
+import { useChainId } from 'src/hooks';
 import { getEtherscanLink, isAddress, shortenAddress } from 'src/utils';
 import { computeFiatValuePriceImpact } from 'src/utils/computeFiatValuePriceImpact';
 import useUSDCPrice from 'src/utils/useUSDCPrice';
@@ -41,7 +41,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
   const { isOpen, onClose, trade, onAcceptChanges, recipient, onConfirm, attemptingTxn, swapErrorMessage, txHash } =
     props;
   const [showInverted, setShowInverted] = useState<boolean>(false);
-  const { chainId } = useActiveWeb3React();
+  const chainId = useChainId();
   const theme = useContext(ThemeContext);
 
   const {
@@ -74,10 +74,10 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
   const outputTokenInfo = outputCurrency1?.tokenInfo;
 
   const inputCurrency =
-    inputCurrency1 && inputCurrency1?.symbol === CAVAX.symbol
-      ? CAVAX
-      : inputTokenInfo && inputTokenInfo.symbol === CAVAX.symbol
-      ? CAVAX
+    inputCurrency1 && inputCurrency1?.symbol === CAVAX[chainId].symbol
+      ? CAVAX[chainId]
+      : inputTokenInfo && inputTokenInfo.symbol === CAVAX[chainId].symbol
+      ? CAVAX[chainId]
       : inputTokenInfo
       ? new Token(
           inputTokenInfo?.chainId,
@@ -97,10 +97,10 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
       : undefined;
 
   const outputCurrency =
-    outputCurrency1 && outputCurrency1?.symbol === CAVAX.symbol
-      ? CAVAX
-      : outputTokenInfo && outputTokenInfo?.symbol === CAVAX.symbol
-      ? CAVAX
+    outputCurrency1 && outputCurrency1?.symbol === CAVAX[chainId].symbol
+      ? CAVAX[chainId]
+      : outputTokenInfo && outputTokenInfo?.symbol === CAVAX[chainId].symbol
+      ? CAVAX[chainId]
       : outputTokenInfo
       ? new Token(
           outputTokenInfo?.chainId,

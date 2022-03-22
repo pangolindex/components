@@ -6,7 +6,7 @@ import ReactGA from 'react-ga';
 import { ThemeContext } from 'styled-components';
 import { TRUSTED_TOKEN_ADDRESSES } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
-import { useActiveWeb3React } from 'src/hooks';
+import { useActiveWeb3React, useChainId } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import { ApprovalState, useApproveCallbackFromTrade } from 'src/hooks/useApproveCallback';
 import useENS from 'src/hooks/useENS';
@@ -71,7 +71,8 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
     setDismissTokenWarning(true);
   }, []);
 
-  const { account, chainId } = useActiveWeb3React();
+  const { account } = useActiveWeb3React();
+  const chainId = useChainId();
   const theme = useContext(ThemeContext);
 
   // toggle wallet when disconnected
@@ -121,7 +122,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
         [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
       };
 
-  const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers();
+  const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers(chainId);
   const isValid = !swapInputError;
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT;
 
@@ -171,7 +172,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
   const noRoute = !route;
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(trade, allowedSlippage);
+  const [approval, approveCallback] = useApproveCallbackFromTrade(chainId, trade, allowedSlippage);
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
@@ -183,7 +184,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
     }
   }, [approval, approvalSubmitted]);
 
-  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances[Field.INPUT]);
+  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT]);
 
   // the callback to execute the swap
   const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient);
@@ -285,8 +286,8 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
       if (!chainId || !selectedTokens) return true; // Assume trusted at first to avoid flashing a warning
       return (
         TRUSTED_TOKEN_ADDRESSES[chainId].includes(token.address) || // trust token from manually whitelisted token
-        isTokenOnList(selectedTokens, token) || // trust all tokens from selected token list by user
-        isTokenOnList(whitelistedTokens, token) // trust all tokens selected by default
+        isTokenOnList(selectedTokens, chainId, token) || // trust all tokens from selected token list by user
+        isTokenOnList(whitelistedTokens, chainId, token) // trust all defi + AB tokens
       );
     },
     [chainId, selectedTokens, whitelistedTokens],
