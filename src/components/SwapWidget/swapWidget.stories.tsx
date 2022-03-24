@@ -8,7 +8,7 @@ export default {
 };
 
 export const Swap = () => (
-  <Box width="100%" style={{ background: '#111111' }}>
+  <Box width="100%">
     <Box maxWidth="400px">
       <SwapWidget />
     </Box>

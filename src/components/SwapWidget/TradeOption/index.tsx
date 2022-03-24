@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, ToggleButtons } from '../../';
-import { SwapAlertBox, SwapWrapper } from './styled';
+import { SwapWrapper } from './styled';
 
 interface Props {
   swapType: string;
@@ -11,7 +11,7 @@ interface Props {
 const TradeOption: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
   return (
     <SwapWrapper>
-      <SwapAlertBox>This is a BETA release and should be used at your own risk!</SwapAlertBox>
+      {/* <SwapAlertBox>This is a BETA release and should be used at your own risk!</SwapAlertBox> */}
 
       <Box p={10}>
         <Box display="flex" alignItems="center" justifyContent="space-between">
