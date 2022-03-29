@@ -36,4 +36,4 @@ c-86 34 -158 108 -180 185 -19 63 -16 116 10 202 21 70 2972 5247 3025 5307
   );
 };
 
-export { AvaxLogo };
+export default AvaxLogo;

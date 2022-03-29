@@ -36,6 +36,7 @@ const platinum = '#E5E5E5';
 const darkSilver = '#717171';
 const venetianRed = '#CC1512';
 const oceanBlue = '#18C145';
+const quickSilver = '#A3A3A3';
 
 export const defaultColors: Colors = {
   // base
@@ -48,7 +49,16 @@ export const defaultColors: Colors = {
   text3: '#888D9B',
   text4: '#C3C5CB',
   text5: '#EDEEF2',
-  text6: '#111111',
+  text6: '#EDEEF2',
+  text7: '#000000',
+  text8: '#565A69',
+  text9: '#000000',
+  text10: '#000000',
+  text11: '#18C145',
+  text12: '#E84142',
+  text13: '#000000',
+  text14: '#000000',
+  text15: '#000000',
 
   // backgrounds / greys
   bg1: '#FFFFFF',
@@ -56,8 +66,10 @@ export const defaultColors: Colors = {
   bg3: '#EDEEF2',
   bg4: '#CED0D9',
   bg5: '#888D9B',
-  bg6: '#1C1C1C',
-  bg7: '#2C2D33',
+  bg6: '#FFFFFF',
+  bg7: '#FFFFFF',
+  bg8: '#FFFFFF',
+  bg9: '#000000',
 
   //specialty colors
   modalBG: 'rgba(0,0,0,0.3)',
@@ -92,13 +104,13 @@ export const defaultColors: Colors = {
   switch: {
     onColor: philippineYellow,
     offColor: '#CED0D9',
-    backgroundColor: darkSilver,
+    backgroundColor: platinum,
   },
 
   toggleButton: {
-    backgroundColor: darkSilver,
-    selectedColor: chineseBlack,
-    fontColor: platinum,
+    backgroundColor: platinum,
+    selectedColor: ghostWhite,
+    fontColor: chineseBlack,
   },
 
   button: {
@@ -139,8 +151,16 @@ export const defaultColors: Colors = {
   darkSilver,
   venetianRed,
   oceanBlue,
+  quickSilver,
 
   color2: ghostWhite,
+  color3: platinum,
+  color4: chineseBlack,
+  color5: white,
+  color6: chineseBlack,
+  color7: ghostWhite,
+  color8: platinum,
+  color9: quickSilver,
 };
 
 export const defaultTheme: DefaultTheme = {
@@ -171,7 +191,7 @@ export const defaultTheme: DefaultTheme = {
 
 type ThemeProviderProps = {
   children: React.ReactNode;
-  theme?: DefaultTheme;
+  theme: DefaultTheme;
 };
 
 export default function ThemeProvider({ children, theme }: ThemeProviderProps) {

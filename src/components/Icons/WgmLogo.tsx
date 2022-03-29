@@ -1,22 +1,30 @@
-import React from "react";
+/* eslint-disable max-lines */
+import React from 'react';
 
 interface WgmLogoProps {
-    size?: string;
+  size?: string;
 }
 
-const WgmLogo: React.FC<WgmLogoProps> = ({ size = '24px '}) => {
-    return (
-        <svg 
-        version="1.1" 
-        id="Layer_1" 
-        xmlns="http://www.w3.org/2000/svg" 
-        x="0px" y="0px"
-        width={size}
-        height={size} 
-        viewBox="0 0 1920 1920" 
-        enable-background="new 0 0 1920 1920" >  
-        <g transform="translate(0.000000,1000.000000) scale(0.100000,-0.100000)" fill="#ffe669" stroke="none"></g>
-        <image id="image0" width="1920" height="1920" x="0" y="0"
+const WgmLogo: React.FC<WgmLogoProps> = ({ size = '24px ' }) => {
+  return (
+    <svg
+      version="1.1"
+      id="Layer_1"
+      xmlns="http://www.w3.org/2000/svg"
+      x="0px"
+      y="0px"
+      width={size}
+      height={size}
+      viewBox="0 0 1920 1920"
+      enableBackground="new 0 0 1920 1920"
+    >
+      <g transform="translate(0.000000,1000.000000) scale(0.100000,-0.100000)" fill="#ffe669" stroke="none"></g>
+      <image
+        id="image0"
+        width="1920"
+        height="1920"
+        x="0"
+        y="0"
         href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4AAAAeACAYAAAAvokrGAAAABGdBTUEAALGPC/xhBQAAACBjSFJN
     AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QA/wD/AP+gvaeTAAAA
     CXBIWXMAAA7EAAAOxAGVKw4bAACAAElEQVR42uz9TZcdN5Ym6L4eCpESI6RwMYKZXXW7Mn0QOYke
@@ -10518,10 +10526,11 @@ const WgmLogo: React.FC<WgmLogoProps> = ({ size = '24px '}) => {
     fttWAH9BAK6fCNx/QnC7ROD9hOB2icH5y43BIAjnamQUBmHY1hORzV4n3tpaI0MviL25uhV4TNE3
     T6Jv/oTfMnmN33bNAL8wLv4Kv20rBL9L/3+p31xxXlEVpgAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAy
     Mi0wMi0yNlQxODoxNzo0OSswMzowMDbsQsUAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjItMDItMjZU
-    MTg6MTc6NDkrMDM6MDBHsfp5AAAAAElFTkSuQmCC" />
+    MTg6MTc6NDkrMDM6MDBHsfp5AAAAAElFTkSuQmCC"
+      />
     </svg>
-    
-    )
-}
+  );
+};
 
-export { WgmLogo };
+export default WgmLogo;
+/* eslint-enable max-lines */
