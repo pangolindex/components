@@ -72,15 +72,27 @@ export const USDTe: { [chainId in ChainId]: Token } = {
 };
 
 export const UST: { [chainId in ChainId]: Token } = {
-  [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 6, 'UST', 'Axelar Wrapped UST'),
+  [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 6, 'UST', 'Wormhole UST'),
+  [ChainId.AVALANCHE]: new Token(
+    ChainId.AVALANCHE,
+    '0xb599c3590F42f8F995ECfa0f85D2980B76862fc1',
+    6,
+    'UST',
+    'Wormhole UST',
+  ),
+  [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 6, 'UST', 'Wormhole UST'),
+};
+
+export const axlUST: { [chainId in ChainId]: Token } = {
+  [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 6, 'axlUST', 'Axelar Wrapped UST'),
   [ChainId.AVALANCHE]: new Token(
     ChainId.AVALANCHE,
     '0x260Bbf5698121EB85e7a74f2E45E16Ce762EbE11',
     6,
-    'UST',
+    'axlUST',
     'Axelar Wrapped UST',
   ),
-  [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 18, 'UST', 'Axelar Wrapped UST'),
+  [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 18, 'axlUST', 'Axelar Wrapped UST'),
 };
 
 export const USDC: { [chainId in ChainId]: Token } = {
@@ -117,11 +129,11 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
 export const SWAP_DEFAULT_CURRENCY = {
   [ChainId.AVALANCHE]: {
     inputCurrency: 'AVAX',
-    outputCurrnecy: UST[ChainId.AVALANCHE].address,
+    outputCurrency: axlUST[ChainId.AVALANCHE].address,
   },
   [ChainId.FUJI]: {
     inputCurrency: '',
-    outputCurrnecy: '',
+    outputCurrency: '',
   },
 };
 
@@ -147,6 +159,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     DAIe[ChainId.AVALANCHE],
     USDCe[ChainId.AVALANCHE],
     UST[ChainId.AVALANCHE],
+    axlUST[ChainId.AVALANCHE],
     USDC[ChainId.AVALANCHE],
   ],
   [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI], PNG[ChainId.WAGMI]],
