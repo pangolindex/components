@@ -536,7 +536,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
         />
       )}
       {/* Settings Drawer */}
-      {openSettings && <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} />}
+      {openSettings && <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} layout="MARKET" />}
     </Root>
   );
 };

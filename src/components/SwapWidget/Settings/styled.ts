@@ -13,10 +13,13 @@ export const SettingsText = styled(Text)`
 `;
 
 export const Frame = styled(Box)`
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   height: 100%;
   padding-left: 20px;
   padding-right: 20px;
+  justify-content: center;
 `;
 
 export const InputOptions = styled(Box)`

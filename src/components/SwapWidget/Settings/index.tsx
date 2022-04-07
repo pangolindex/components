@@ -14,9 +14,10 @@ import { Frame, InputOptions } from './styled';
 interface Props {
   isOpen: boolean;
   close: () => void;
+  layout: 'MARKET' | 'LIMIT';
 }
 
-const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
+const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close, layout }) => {
   const theme = useContext(ThemeContext);
 
   const [isExpertMode, setUserExpertMode] = useExpertModeManager();
@@ -38,7 +39,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
     <Drawer title="Settings" isOpen={isOpen} onClose={close}>
       <Frame>
         {/*SLIPPAGE INPUT */}
-        <Box marginBottom={15}>
+        <Box height="90px">
           <Text color="text1" style={{ gridArea: 'label' }}>
             Slippage
           </Text>
@@ -47,11 +48,11 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
               value={slippageTolerance / 100}
               addonAfter={
                 <Box bgColor="bg2" paddingX="8px" paddingY="4px" borderRadius={4}>
-                  <Text color="text4">Percentage</Text>
+                  <Text color="text4">Percent</Text>
                 </Box>
               }
               isNumeric={true}
-              placeholder="1%"
+              placeholder="1"
               onChange={(number) => setSlippageTolerance(number * 100)}
             />
             <NumberOptions
@@ -65,7 +66,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
           </InputOptions>
         </Box>
         {/*DEADLINE INPUT */}
-        <Box marginBottom={15}>
+        <Box height="90px">
           <Text color="text1">Time Limit</Text>
           <InputOptions>
             <TextInput
@@ -76,7 +77,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
                 </Box>
               }
               isNumeric={true}
-              placeholder="0"
+              placeholder="10"
               onChange={(number) => setDeadline(Number(number))}
             />
             <NumberOptions
@@ -89,7 +90,13 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
           </InputOptions>
         </Box>
         {/*EXPERT MODE INPUT */}
-        <Box marginBottom={20}>
+        <Box
+          display="flex"
+          flexDirection={layout == 'MARKET' ? 'row' : 'column'}
+          alignItems="center"
+          justifyContent="center"
+          style={{ gap: '15px' }}
+        >
           <Text color="text1">Toogle Expert Mode</Text>
           <ToggleButtons
             options={['ON', 'OFF']}
@@ -99,12 +106,16 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
             }}
           />
         </Box>
-        <Box marginBottom={10}>
+        <Box
+          display="flex"
+          flexDirection={layout == 'MARKET' ? 'row' : 'column'}
+          alignContent={layout == 'MARKET' ? 'center' : 'flex-start'}
+          style={{ gap: '10px' }}
+          height={layout == 'MARKET' ? '60px' : '130px'}
+        >
           <Button variant="primary" onClick={save}>
             Save &amp; Close
           </Button>
-        </Box>
-        <Box marginBottom={20}>
           <Button variant="plain" backgroundColor={theme.bg6} onClick={close} color="text1">
             Close
           </Button>

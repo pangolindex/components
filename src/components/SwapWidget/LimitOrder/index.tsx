@@ -564,7 +564,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
         />
       )}
       {/* Settings Drawer */}
-      {openSettings && <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} />}
+      {openSettings && <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} layout="LIMIT" />}
     </Root>
   );
 };
