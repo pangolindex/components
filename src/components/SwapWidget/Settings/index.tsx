@@ -20,18 +20,21 @@ interface Props {
 const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close, layout }) => {
   const theme = useContext(ThemeContext);
 
-  const [isExpertMode, setUserExpertMode] = useExpertModeManager();
-  const [slippage, setUserSlippageTolerance] = useUserSlippageTolerance();
+  const [userExpertMode, setUserExpertMode] = useExpertModeManager();
+  const [userslippage, setUserSlippageTolerance] = useUserSlippageTolerance();
   const [userDeadline, setUserDeadline] = useUserDeadline();
 
   const [deadline, setDeadline] = useState(userDeadline);
-  const [expertMode, setExpertMode] = useState(isExpertMode);
-  const [slippageTolerance, setSlippageTolerance] = useState(slippage);
+  const [expertMode, setExpertMode] = useState(userExpertMode);
+  const [slippageTolerance, setSlippageTolerance] = useState((userslippage / 100).toString());
 
   const save = useCallback(() => {
     setUserDeadline(deadline);
     setUserExpertMode(expertMode);
-    setUserSlippageTolerance(slippageTolerance);
+    if (slippageTolerance.length == 0) {
+      setUserSlippageTolerance(0);
+    }
+    setUserSlippageTolerance(Math.ceil(parseFloat(slippageTolerance) * 100));
     close();
   }, [deadline, expertMode, slippageTolerance]);
 
@@ -40,12 +43,10 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close, layout }) => {
       <Frame>
         {/*SLIPPAGE INPUT */}
         <Box height="90px">
-          <Text color="text1" style={{ gridArea: 'label' }}>
-            Slippage
-          </Text>
+          <Text color="text1">Slippage</Text>
           <InputOptions>
             <TextInput
-              value={slippageTolerance / 100}
+              value={slippageTolerance}
               addonAfter={
                 <Box bgColor="bg2" paddingX="8px" paddingY="4px" borderRadius={4}>
                   <Text color="text4">Percent</Text>
@@ -53,17 +54,25 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close, layout }) => {
               }
               isNumeric={true}
               placeholder="1"
-              onChange={(number) => setSlippageTolerance(number * 100)}
+              onChange={(value) => {
+                setSlippageTolerance(value);
+              }}
             />
             <NumberOptions
               options={[0.1, 0.5, 1]}
               isPercentage={true}
-              currentValue={slippageTolerance / 100}
+              currentValue={parseFloat(slippageTolerance)}
               variant="box"
-              onChange={(number) => setSlippageTolerance(number * 100)}
+              onChange={(number) => setSlippageTolerance(number.toString())}
               isDisabled={false}
             />
           </InputOptions>
+          {Number(slippageTolerance) == 0 && (
+            <Text color="text1" fontSize={12} marginBottom={10}>
+              {' '}
+              Your transaction may fail
+            </Text>
+          )}
         </Box>
         {/*DEADLINE INPUT */}
         <Box height="90px">
@@ -78,7 +87,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close, layout }) => {
               }
               isNumeric={true}
               placeholder="10"
-              onChange={(number) => setDeadline(Number(number))}
+              onChange={(number) => setDeadline(parseInt(number))}
             />
             <NumberOptions
               options={[60, 300, 600]}
