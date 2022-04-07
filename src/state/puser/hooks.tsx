@@ -7,6 +7,7 @@ import {
   SerializedToken,
   addSerializedToken,
   removeSerializedToken,
+  updateUserDeadline,
   updateUserExpertMode,
   updateUserSlippageTolerance,
 } from './actions';
@@ -39,7 +40,7 @@ export function useUserSlippageTolerance(): [number, (slippage: number) => void]
 
   const setUserSlippageTolerance = useCallback(
     (userSlippageTolerance: number) => {
-      dispatch(updateUserSlippageTolerance({ userSlippageTolerance }));
+      dispatch(updateUserSlippageTolerance({ userSlippageTolerance: userSlippageTolerance }));
     },
     [dispatch],
   );
@@ -81,13 +82,30 @@ export function useIsExpertMode(): boolean {
   return useSelector<AppState, AppState['puser']['userExpertMode']>((state) => state.puser.userExpertMode);
 }
 
-export function useExpertModeManager(): [boolean, () => void] {
+export function useExpertModeManager(): [boolean, (value: boolean) => void] {
   const dispatch = useDispatch<AppDispatch>();
   const expertMode = useIsExpertMode();
 
-  const toggleSetExpertMode = useCallback(() => {
-    dispatch(updateUserExpertMode({ userExpertMode: !expertMode }));
-  }, [expertMode, dispatch]);
+  const setExpertMode = useCallback(
+    (value: boolean) => {
+      dispatch(updateUserExpertMode({ userExpertMode: value }));
+    },
+    [dispatch],
+  );
 
-  return [expertMode, toggleSetExpertMode];
+  return [expertMode, setExpertMode];
+}
+
+export function useUserDeadline(): [number, (deadline: number) => void] {
+  const dispatch = useDispatch<AppDispatch>();
+  const userDeadline = useSelector<AppState, AppState['puser']['userDeadline']>((state) => state.puser.userDeadline);
+
+  const setUserDeadline = useCallback(
+    (userDeadline: number) => {
+      dispatch(updateUserDeadline({ userDeadline: userDeadline }));
+    },
+    [dispatch],
+  );
+
+  return [userDeadline, setUserDeadline];
 }

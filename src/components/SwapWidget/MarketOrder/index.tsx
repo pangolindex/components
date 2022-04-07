@@ -30,6 +30,8 @@ import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Box, Button, Text } from '../../';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
 import SelectTokenDrawer from '../SelectTokenDrawer';
+import SwapSettingsDrawer from '../Settings';
+import { SettingsText } from '../Settings/styled';
 import SwapDetailInfo from '../SwapDetailInfo';
 import SwapRoute from '../SwapRoute';
 import TokenWarningModal from '../TokenWarningModal';
@@ -47,6 +49,7 @@ interface Props {
 const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
   // const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const [tokenDrawerType, setTokenDrawerType] = useState(Field.INPUT);
 
@@ -291,6 +294,10 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
     [chainId, selectedTokens, whitelistedTokens],
   );
 
+  const closeSwapSettings = useCallback(() => {
+    setOpenSettings(false);
+  }, [setOpenSettings]);
+
   const showRoute = Boolean(trade && trade?.route?.path?.length > 2);
 
   const renderButton = () => {
@@ -491,6 +498,9 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
           <Box width="100%" mt={10}>
             {renderButton()}
           </Box>
+          <Box width="100%" mt={10} display="flex" justifyContent="center">
+            <SettingsText onClick={() => setOpenSettings(true)}>Settings</SettingsText>
+          </Box>
         </Box>
       </SwapWrapper>
 
@@ -525,6 +535,8 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
           onClose={handleConfirmDismiss}
         />
       )}
+      {/* Settings Drawer */}
+      {openSettings && <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} />}
     </Root>
   );
 };
