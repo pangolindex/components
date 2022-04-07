@@ -1,9 +1,9 @@
-import { ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
+import { ChainId, JSBI, Percent, Token, WAVAX, CHAINS } from '@pangolindex/sdk';
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
-  [ChainId.FUJI]: '0x2D99ABD9008Dc933ff5c0CD271B88309593aB921',
-  [ChainId.AVALANCHE]: '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106',
-  [ChainId.WAGMI]: '0x2F99E88888ee24cbf1623FB7af7FD2e508123eb3',
+  [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.router,
+  [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].contracts!.router,
+  [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].contracts!.router,
 };
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -30,19 +30,19 @@ export const INITIAL_ALLOWED_SLIPPAGE = 50;
 export const DEFAULT_DEADLINE_FROM_NOW = 10 * 60;
 
 export const PNG: { [chainId in ChainId]: Token } = {
-  [ChainId.FUJI]: new Token(ChainId.FUJI, '0x83080D4b5fC60e22dFFA8d14AD3BB41Dde48F199', 18, 'PNG', 'Pangolin'),
+  [ChainId.FUJI]: new Token(ChainId.FUJI, CHAINS[ChainId.FUJI].contracts!.png, 18, CHAINS[ChainId.FUJI].png_symbol!, 'Pangolin'),
   [ChainId.AVALANCHE]: new Token(
     ChainId.AVALANCHE,
-    '0x60781C2586D68229fde47564546784ab3fACA982',
+    CHAINS[ChainId.AVALANCHE].contracts!.png,
     18,
-    'PNG',
+    CHAINS[ChainId.AVALANCHE].png_symbol!,
     'Pangolin',
   ),
   [ChainId.WAGMI]: new Token(
     ChainId.WAGMI,
-    '0x25dbCAb8709E6222d74a56bD0184fc41439806CE',
+    CHAINS[ChainId.WAGMI].contracts!.png,
     18,
-    'wagmiPNG',
+    CHAINS[ChainId.WAGMI].png_symbol!,
     'Wagmi Pangolin',
   ),
 };

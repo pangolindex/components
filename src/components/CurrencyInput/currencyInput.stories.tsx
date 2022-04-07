@@ -1,4 +1,4 @@
-import { ChainId, Token } from '@pangolindex/sdk';
+import { ChainId, Token, CHAINS } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { CurrencyInput } from '.';
@@ -13,5 +13,5 @@ const TemplateCurrencyInput: ComponentStory<typeof CurrencyInput> = (args: any) 
 export const Default = TemplateCurrencyInput.bind({});
 Default.args = {
   label: 'To',
-  currency: new Token(ChainId.AVALANCHE, '0x60781C2586D68229fde47564546784ab3fACA982', 18, 'PNG', 'Pangolin'),
+  currency: new Token(ChainId.AVALANCHE, CHAINS[ChainId.AVALANCHE].contracts!.png, 18, CHAINS[ChainId.AVALANCHE].png_symbol!, 'Pangolin'),
 };
