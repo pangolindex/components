@@ -68,7 +68,7 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
     <Wrapper error={duplicateNameOrSymbol}>
       <Box display="flex" alignItems="center" width="100%" flexWrap="wrap" margin="-6px">
         <AutoColumn gap="24px">
-          <CurrencyLogo currency={token} size={24} />
+          <CurrencyLogo currency={token} size={24} imageSize={48} />
           <div> </div>
         </AutoColumn>
         <AutoColumn gap="10px" justify="flex-start">

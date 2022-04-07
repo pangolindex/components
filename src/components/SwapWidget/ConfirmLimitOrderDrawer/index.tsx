@@ -133,7 +133,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
     <Root>
       <Header>
         <TokenRow>
-          <CurrencyLogo currency={inputCurrency} size={24} />
+          <CurrencyLogo currency={inputCurrency} size={24} imageSize={48} />
           <Text
             fontSize={24}
             fontWeight={500}
@@ -148,7 +148,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
         </TokenRow>
         <ArrowDown size="16" color={theme.text2} style={{ marginLeft: '4px', minWidth: '16px' }} />
         <TokenRow>
-          <CurrencyLogo currency={outputCurrency} size={24} />
+          <CurrencyLogo currency={outputCurrency} size={24} imageSize={48} />
 
           <Box display="flex" alignItems="center">
             <Text
