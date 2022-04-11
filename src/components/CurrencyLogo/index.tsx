@@ -10,15 +10,17 @@ export default function CurrencyLogo({
   currency,
   size = 24,
   style,
+  imageSize = size,
 }: {
   currency?: Currency;
   size?: LogoSize;
   style?: React.CSSProperties;
+  imageSize?: LogoSize;
 }) {
   const srcs: string[] = useMemo(() => {
     if (currency === CAVAX[ChainId.AVALANCHE] || currency === CAVAX[ChainId.WAGMI]) return [];
     if (currency instanceof Token || !!(currency as Token).address) {
-      const primarySrc = getTokenLogoURL((currency as Token)?.address, size);
+      const primarySrc = getTokenLogoURL((currency as Token)?.address, imageSize);
 
       return [primarySrc];
     }
