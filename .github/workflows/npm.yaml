@@ -33,11 +33,11 @@ jobs:
           CI: true
       - name: Prod - Increment version & create build # incrementing version automatically creates build internally with new version
         run: npm version patch -m "[skip ci] %s"
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           CI: false
       - name: Push changes
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@main
         with:
           github_token: ${{ secrets.GIT_ACCESS_TOKEN }}
           branch: ${{ github.ref }}
