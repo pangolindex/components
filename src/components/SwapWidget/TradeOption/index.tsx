@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text, ToggleButtons } from '../../';
 import { SwapWrapper } from './styled';
-import { CHAINS } from '@pangolindex/sdk'
+import { CHAINS } from '@antiyro/sdk'
 import { useChainId } from 'src/hooks';
 
 interface Props {

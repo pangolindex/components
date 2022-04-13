@@ -1,4 +1,4 @@
-import { CAVAX, ChainId, Currency, Token } from '@pangolindex/sdk';
+import { CAVAX, ChainId, Currency, Token } from '@antiyro/sdk';
 import deepEqual from 'deep-equal';
 import React, { useMemo } from 'react';
 import { AvaxLogo, WgmLogo } from 'src/components/Icons';
@@ -18,7 +18,7 @@ export default function CurrencyLogo({
   imageSize?: LogoSize;
 }) {
   const srcs: string[] = useMemo(() => {
-    if (currency === CAVAX[ChainId.AVALANCHE] || currency === CAVAX[ChainId.WAGMI]) return [];
+    if (currency === CAVAX[ChainId.AVALANCHE] || currency === CAVAX[ChainId.WAGMI] || currency === CAVAX[ChainId.COSTON]) return [];
     if (currency instanceof Token || !!(currency as Token).address) {
       const primarySrc = getTokenLogoURL((currency as Token)?.address, imageSize);
 
@@ -31,6 +31,8 @@ export default function CurrencyLogo({
   if (deepEqual(currency, CAVAX[ChainId.AVALANCHE])) {
     return <AvaxLogo size={`${size}px`} />;
   } else if (deepEqual(currency, CAVAX[ChainId.WAGMI])) {
+    return <WgmLogo size={`${size}px`} />;
+  } else if (deepEqual(currency, CAVAX[ChainId.COSTON])) {
     return <WgmLogo size={`${size}px`} />;
   }
 

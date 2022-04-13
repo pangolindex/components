@@ -1,5 +1,5 @@
 import { Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
-import { ChainId } from '@pangolindex/sdk';
+import { ChainId } from '@antiyro/sdk';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 

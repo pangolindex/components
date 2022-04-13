@@ -1,4 +1,4 @@
-import { ChainId, Token } from '@pangolindex/sdk';
+import { ChainId, Token } from '@antiyro/sdk';
 import { Tags, TokenInfo, TokenList } from '@pangolindex/token-lists';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -37,6 +37,7 @@ const EMPTY_LIST: TokenAddressMap = {
   [ChainId.FUJI]: {},
   [ChainId.AVALANCHE]: {},
   [ChainId.WAGMI]: {},
+  [ChainId.COSTON]: {},
 };
 
 const listCache: WeakMap<TokenList, TokenAddressMap> | null =

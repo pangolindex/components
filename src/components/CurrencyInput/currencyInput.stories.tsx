@@ -1,4 +1,4 @@
-import { ChainId, Token, CHAINS } from '@pangolindex/sdk';
+import { ChainId, Token, CHAINS } from '@antiyro/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { CurrencyInput } from '.';

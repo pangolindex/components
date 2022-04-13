@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
-import { CAVAX, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import { CAVAX, JSBI, Token, TokenAmount, Trade } from '@antiyro/sdk';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';

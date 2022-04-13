@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings';
-import { CAVAX, Currency, Token } from '@pangolindex/sdk';
+import { CAVAX, Currency, Token } from '@antiyro/sdk';
 import { useMemo } from 'react';
 import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useSingleCallResult } from 'src/state/pmulticall/hooks';

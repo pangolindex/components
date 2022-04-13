@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { WAVAX } from '@pangolindex/sdk';
+import { WAVAX } from '@antiyro/sdk';
 import { useMemo } from 'react';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ERC20_BYTES32_ABI } from 'src/constants/abis/erc20';

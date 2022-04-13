@@ -1,4 +1,4 @@
-import { Currency, Pair } from '@pangolindex/sdk';
+import { Currency, Pair } from '@antiyro/sdk';
 import * as React from 'react';
 import { TextInputProps } from '../TextInput/types';
 export type CurrencyInputProps = TextInputProps & {

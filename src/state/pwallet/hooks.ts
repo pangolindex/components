@@ -1,4 +1,4 @@
-import { CAVAX, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import { CAVAX, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@antiyro/sdk';
 import { useMemo } from 'react';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { useActiveWeb3React } from 'src/hooks';

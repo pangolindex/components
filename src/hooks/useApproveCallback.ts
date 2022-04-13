@@ -1,7 +1,7 @@
 import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
-import { CAVAX, ChainId, CurrencyAmount, TokenAmount, Trade } from '@pangolindex/sdk';
+import { CAVAX, ChainId, CurrencyAmount, TokenAmount, Trade } from '@antiyro/sdk';
 import { useCallback, useMemo } from 'react';
 import { ROUTER_ADDRESS } from 'src/constants';
 import { useTokenAllowance } from 'src/data/Allowances';
