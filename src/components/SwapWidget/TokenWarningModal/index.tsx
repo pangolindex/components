@@ -1,4 +1,4 @@
-import { Token } from '@antiyro/sdk';
+import { Token } from '@pangolindex/sdk';
 import React, { HTMLProps, useCallback, useMemo, useState } from 'react';
 import ReactGA from 'react-ga';
 import { getEtherscanLink, shortenAddress } from 'src/utils';

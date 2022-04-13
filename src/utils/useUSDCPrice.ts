@@ -1,5 +1,5 @@
 // TODO: Actually calculate price
-import { ChainId, Currency, JSBI, Price, WAVAX, currencyEquals } from '@antiyro/sdk';
+import { ChainId, Currency, JSBI, Price, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { USDCe } from 'src/constants';
 import { PairState, usePairs } from '../data/Reserves';

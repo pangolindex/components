@@ -1,4 +1,4 @@
-import { CAVAX, ChainId } from '@antiyro/sdk';
+import { CAVAX, ChainId } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import CurrencyLogo from '.';

@@ -1,4 +1,4 @@
-import { CAVAX, ChainId, Currency, Token } from '@antiyro/sdk';
+import { CAVAX, ChainId, Currency, Token } from '@pangolindex/sdk';
 import deepEqual from 'deep-equal';
 import React, { useMemo } from 'react';
 import { AvaxLogo, WgmLogo } from 'src/components/Icons';

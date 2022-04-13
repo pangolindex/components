@@ -4,7 +4,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouter.sol/IPangolinRouter.json';
-import { CAVAX, ChainId, Currency, JSBI, Percent, Token, Trade, currencyEquals, CHAINS } from '@antiyro/sdk';
+import { CAVAX, ChainId, Currency, JSBI, Percent, Token, Trade, currencyEquals, CHAINS } from '@pangolindex/sdk';
 import { ROUTER_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 

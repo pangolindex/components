@@ -1,4 +1,4 @@
-import { Trade, TradeType } from '@antiyro/sdk';
+import { Trade, TradeType } from '@pangolindex/sdk';
 import React from 'react';
 import { INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from 'src/constants';
 import { Field } from 'src/state/pswap/actions';

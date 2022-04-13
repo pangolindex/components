@@ -1,4 +1,4 @@
-import { ChainId, JSBI, Percent, Token, WAVAX, CHAINS } from '@antiyro/sdk';
+import { ChainId, JSBI, Percent, Token, WAVAX, CHAINS } from '@pangolindex/sdk';
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.router,

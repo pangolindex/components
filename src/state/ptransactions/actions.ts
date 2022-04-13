@@ -1,4 +1,4 @@
-import { ChainId } from '@antiyro/sdk';
+import { ChainId } from '@pangolindex/sdk';
 import { createAction } from '@reduxjs/toolkit';
 
 export interface SerializableTransactionReceipt {

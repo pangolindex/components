@@ -1,4 +1,4 @@
-import { Currency } from '@antiyro/sdk';
+import { Currency } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import { LoaderIcon } from 'src/components/Icons';
 import { useActiveWeb3React, useChainId } from 'src/hooks';
