@@ -300,6 +300,11 @@ export function useDefaultsFromURLSearch():
     { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined
   >();
 
+  const {
+    [Field.INPUT]: { currencyId: inputCurrencyId },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+  } = useSwapState();
+
   useEffect(() => {
     if (!chainId) return;
 
@@ -309,15 +314,23 @@ export function useDefaultsFromURLSearch():
       replaceSwapState({
         typedValue: parsed.typedValue,
         field: parsed.independentField,
-        inputCurrencyId: parsed[Field.INPUT].currencyId || SWAP_DEFAULT_CURRENCY[chainId]?.inputCurrency,
-        outputCurrencyId: parsed[Field.OUTPUT].currencyId || SWAP_DEFAULT_CURRENCY[chainId]?.outputCurrency,
+        inputCurrencyId: parsed[Field.INPUT].currencyId
+          ? parsed[Field.INPUT].currencyId
+          : inputCurrencyId
+          ? inputCurrencyId
+          : SWAP_DEFAULT_CURRENCY[chainId]?.inputCurrency,
+        outputCurrencyId: parsed[Field.OUTPUT].currencyId
+          ? parsed[Field.OUTPUT].currencyId
+          : outputCurrencyId
+          ? outputCurrencyId
+          : SWAP_DEFAULT_CURRENCY[chainId]?.outputCurrency,
         recipient: parsed.recipient,
       }),
     );
 
     setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, chainId]);
+  }, [dispatch, chainId, inputCurrencyId, outputCurrencyId]);
 
   return result;
 }
