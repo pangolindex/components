@@ -3,7 +3,7 @@ import { ThemeContext } from 'styled-components';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import Drawer from 'src/components/Drawer';
-import NumberOptions from 'src/components/NumberOptions';
+import { NumberOptions } from 'src/components/NumberOptions';
 import { Text } from 'src/components/Text';
 import { TextInput } from 'src/components/TextInput';
 import { ToggleButtons } from 'src/components/ToggleButtons';
