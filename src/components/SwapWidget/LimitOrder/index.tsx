@@ -19,8 +19,6 @@ import { Box, Button, Text, ToggleButtons } from '../../';
 import ConfirmLimitOrderDrawer from '../ConfirmLimitOrderDrawer';
 import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
 import SelectTokenDrawer from '../SelectTokenDrawer';
-import SwapSettingsDrawer from '../Settings';
-import { SettingsText } from '../Settings/styled';
 import TradeOption from '../TradeOption';
 import { DeprecatedWarning } from '../Warning';
 import { ArrowWrapper, CurrencyInputTextBox, InputText, PValue, Root, SwapWrapper } from './styled';
@@ -39,7 +37,6 @@ interface Props {
 const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(0);
-  const [openSettings, setOpenSettings] = useState(false);
   const [tokenDrawerType, setTokenDrawerType] = useState(LimitNewField.INPUT);
   const [activeTab, setActiveTab] = useState<'SELL' | 'BUY'>('SELL');
   const { account } = useActiveWeb3React();
@@ -336,10 +333,6 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
 
   const isAEBToken = useIsSelectedAEBToken();
 
-  const closeSwapSettings = useCallback(() => {
-    setOpenSettings(false);
-  }, [setOpenSettings]);
-
   const renderButton = () => {
     if (!account) {
       return (
@@ -532,9 +525,6 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
           <Box width="100%" mt={10}>
             {renderButton()}
           </Box>
-          <Box width="100%" mt={10} display="flex" justifyContent="center">
-            <SettingsText onClick={() => setOpenSettings(true)}>Settings</SettingsText>
-          </Box>
         </Box>
       </SwapWrapper>
 
@@ -563,8 +553,6 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
           onClose={handleConfirmDismiss}
         />
       )}
-      {/* Settings Drawer */}
-      {openSettings && <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} layout="LIMIT" />}
     </Root>
   );
 };

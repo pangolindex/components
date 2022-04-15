@@ -56,4 +56,5 @@ const NumberOptions = ({
     </Box>
   );
 };
+
 export default NumberOptions;

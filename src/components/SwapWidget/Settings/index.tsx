@@ -14,10 +14,9 @@ import { Frame, InputOptions } from './styled';
 interface Props {
   isOpen: boolean;
   close: () => void;
-  layout: 'MARKET' | 'LIMIT';
 }
 
-const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close, layout }) => {
+const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
   const theme = useContext(ThemeContext);
 
   const [userExpertMode, setUserExpertMode] = useExpertModeManager();
@@ -99,13 +98,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close, layout }) => {
           </InputOptions>
         </Box>
         {/*EXPERT MODE INPUT */}
-        <Box
-          display="flex"
-          flexDirection={layout == 'MARKET' ? 'row' : 'column'}
-          alignItems="center"
-          justifyContent="center"
-          style={{ gap: '15px' }}
-        >
+        <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" style={{ gap: '15px' }}>
           <Text color="text1">Toogle Expert Mode</Text>
           <ToggleButtons
             options={['ON', 'OFF']}
@@ -115,13 +108,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close, layout }) => {
             }}
           />
         </Box>
-        <Box
-          display="flex"
-          flexDirection={layout == 'MARKET' ? 'row' : 'column'}
-          alignContent={layout == 'MARKET' ? 'center' : 'flex-start'}
-          style={{ gap: '10px' }}
-          height={layout == 'MARKET' ? '60px' : '130px'}
-        >
+        <Box display="flex" flexDirection="row" alignContent="center" style={{ gap: '10px' }} height="60px">
           <Button variant="primary" onClick={save}>
             Save &amp; Close
           </Button>
