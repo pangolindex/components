@@ -9,6 +9,7 @@ import { TextInput } from 'src/components/TextInput';
 import { ToggleButtons } from 'src/components/ToggleButtons';
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'src/state/puser/hooks';
 
+import WarningModal from './WarningModal';
 import { Frame, InputOptions } from './styled';
 
 interface Props {
@@ -27,6 +28,8 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
   const [expertMode, setExpertMode] = useState(userExpertMode);
   const [slippageTolerance, setSlippageTolerance] = useState((userslippage / 100).toString());
 
+  const [modalOpen, setModalOpen] = useState(false);
+
   const save = useCallback(() => {
     setUserDeadline(deadline);
     setUserExpertMode(expertMode);
@@ -39,6 +42,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
 
   return (
     <Drawer title="Settings" isOpen={isOpen} onClose={close}>
+      <WarningModal isOpen={modalOpen} close={() => setModalOpen(false)} setExpertMode={setExpertMode} />
       <Frame>
         {/*SLIPPAGE INPUT */}
         <Box height="90px">
@@ -103,8 +107,12 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
           <ToggleButtons
             options={['ON', 'OFF']}
             value={expertMode === true ? 'ON' : 'OFF'}
-            onChange={() => {
-              setExpertMode(!expertMode);
+            onChange={(value) => {
+              if (value === 'ON') {
+                setModalOpen(true);
+              } else {
+                setExpertMode(false);
+              }
             }}
           />
         </Box>
