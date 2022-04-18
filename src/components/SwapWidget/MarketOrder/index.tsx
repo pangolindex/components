@@ -23,11 +23,11 @@ import {
   useSwapState,
 } from 'src/state/pswap/hooks';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { isTokenOnList } from 'src/utils';
+import { isAddress, isTokenOnList } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { Box, Button, Text } from '../../';
+import { Box, Button, Text, TextInput } from '../../';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
 import SelectTokenDrawer from '../SelectTokenDrawer';
 import SwapSettingsDrawer from '../Settings';
@@ -38,7 +38,7 @@ import TokenWarningModal from '../TokenWarningModal';
 import TradeOption from '../TradeOption';
 import { DeprecatedWarning } from '../Warning';
 import confirmPriceImpactWithoutFee from '../confirmPriceImpactWithoutFee';
-import { ArrowWrapper, CurrencyInputTextBox, PValue, Root, SwapWrapper } from './styled';
+import { ArrowWrapper, CurrencyInputTextBox, LinkStyledButton, PValue, Root, SwapWrapper } from './styled';
 
 interface Props {
   swapType: string;
@@ -123,7 +123,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
         [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
       };
 
-  const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers(chainId);
+  const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers(chainId);
   const isValid = !swapInputError;
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT;
 
@@ -492,6 +492,40 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
               )
             }
           />
+
+          {recipient === null && !showWrap && isExpertMode ? (
+            <Box display="flex" flexDirection="column" marginTop={10}>
+              <LinkStyledButton
+                id="add-recipient-button"
+                onClick={() => onChangeRecipient('')}
+                style={{ alignSelf: 'end' }}
+              >
+                + Add Recipient
+              </LinkStyledButton>
+            </Box>
+          ) : null}
+
+          {recipient !== null && !showWrap ? (
+            <Box display="flex" flexDirection="column" marginTop={10} marginBottom={10}>
+              <LinkStyledButton
+                id="add-recipient-button"
+                onClick={() => onChangeRecipient(null)}
+                style={{ alignSelf: 'end' }}
+              >
+                - Remove Recipient
+              </LinkStyledButton>
+              <TextInput
+                label="Recipient"
+                placeholder="Wallet Address"
+                value={recipient}
+                onChange={(value) => {
+                  const withoutSpaces = value.replace(/\s+/g, '');
+                  onChangeRecipient(withoutSpaces);
+                }}
+                addonLabel={recipient && !isAddress(recipient) && <Text color="text1">Invalid Address</Text>}
+              />
+            </Box>
+          ) : null}
 
           {trade && <SwapDetailInfo trade={trade} />}
 
