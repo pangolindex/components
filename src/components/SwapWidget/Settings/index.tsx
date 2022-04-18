@@ -66,7 +66,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
               isDisabled={false}
             />
           </InputOptions>
-          {Number(slippageTolerance) == 0 && (
+          {Number(slippageTolerance) <= 0.1 && (
             <Text color="text1" fontSize={12} marginBottom={10}>
               {' '}
               Your transaction may fail
