@@ -241,7 +241,8 @@ function parseCurrencyFromURLParameter(urlParam: any): string {
     if (urlParam.toUpperCase() === 'AVAX') return 'AVAX';
     if (valid === false) return 'AVAX';
   }
-  return 'AVAX' ?? '';
+  //return 'AVAX' ?? '';
+  return '';
 }
 
 function parseTokenAmountURLParameter(urlParam: any): string {
@@ -330,7 +331,7 @@ export function useDefaultsFromURLSearch():
 
     setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, chainId, inputCurrencyId, outputCurrencyId]);
+  }, [dispatch, chainId]);
 
   return result;
 }
