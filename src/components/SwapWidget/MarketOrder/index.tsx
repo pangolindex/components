@@ -499,16 +499,18 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
       {/* <RetryDrawer isOpen={isRetryDrawerOpen} onClose={() => setIsRetryDrawerOpen(false)} /> */}
       {/* Token Drawer */}
 
-      <SelectTokenDrawer
-        isOpen={isTokenDrawerOpen}
-        onClose={handleSelectTokenDrawerClose}
-        onCurrencySelect={onCurrencySelect}
-        selectedCurrency={tokenDrawerType === Field.INPUT ? inputCurrency : outputCurrency}
-        otherSelectedCurrency={tokenDrawerType === Field.INPUT ? outputCurrency : inputCurrency}
-      />
+      {isTokenDrawerOpen && (
+        <SelectTokenDrawer
+          isOpen={isTokenDrawerOpen}
+          onClose={handleSelectTokenDrawerClose}
+          onCurrencySelect={onCurrencySelect}
+          selectedCurrency={tokenDrawerType === Field.INPUT ? inputCurrency : outputCurrency}
+          otherSelectedCurrency={tokenDrawerType === Field.INPUT ? outputCurrency : inputCurrency}
+        />
+      )}
 
       {/* Confirm Swap Drawer */}
-      {trade && (
+      {trade && showConfirm && (
         <ConfirmSwapDrawer
           isOpen={showConfirm}
           trade={trade}
