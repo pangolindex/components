@@ -44,9 +44,10 @@ interface Props {
   swapType: string;
   setSwapType: (value: string) => void;
   isLimitOrderVisible: boolean;
+  showSettings: boolean;
 }
 
-const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
+const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible, showSettings }) => {
   // const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
@@ -532,9 +533,11 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
           <Box width="100%" mt={10}>
             {renderButton()}
           </Box>
-          <Box width="100%" mt={10} display="flex" justifyContent="center">
-            <SettingsText onClick={() => setOpenSettings(true)}>Settings</SettingsText>
-          </Box>
+          {showSettings && (
+            <Box width="100%" mt={10} display="flex" justifyContent="center">
+              <SettingsText onClick={() => setOpenSettings(true)}>Settings</SettingsText>
+            </Box>
+          )}
         </Box>
       </SwapWrapper>
 
@@ -570,7 +573,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
         />
       )}
       {/* Settings Drawer */}
-      {openSettings && <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} />}
+      {openSettings && showSettings && <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} />}
     </Root>
   );
 };
