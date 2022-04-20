@@ -18,9 +18,7 @@ export const Frame = styled(Box)`
   flex-direction: column;
   gap: 10px;
   height: 100%;
-  padding-left: 20px;
-  padding-right: 20px;
-  justify-content: center;
+  padding: 10px;
 `;
 
 export const InputOptions = styled(Box)`

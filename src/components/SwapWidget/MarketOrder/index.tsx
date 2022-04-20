@@ -301,6 +301,17 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
 
   const showRoute = Boolean(trade && trade?.route?.path?.length > 2);
 
+  {
+    /* Settings */
+  }
+  if (openSettings && showSettings) {
+    return (
+      <Box height={420}>
+        <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} />
+      </Box>
+    );
+  }
+
   const renderButton = () => {
     if (!account) {
       return (
@@ -572,8 +583,6 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
           onClose={handleConfirmDismiss}
         />
       )}
-      {/* Settings Drawer */}
-      {openSettings && showSettings && <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} />}
     </Root>
   );
 };

@@ -116,7 +116,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
             }}
           />
         </Box>
-        <Box display="flex" flexDirection="row" alignContent="center" style={{ gap: '10px' }} height="60px">
+        <Box display="flex" flexDirection="column" alignContent="center" style={{ gap: '10px' }}>
           <Button variant="primary" onClick={save}>
             Save &amp; Close
           </Button>
