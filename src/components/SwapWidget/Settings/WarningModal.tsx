@@ -34,7 +34,7 @@ const WarningModal = ({ isOpen, close, setExpertMode }: Props) => {
         <Close variant="plain" onClick={close}>
           <X size={28} />
         </Close>
-        <Text fontSize={32} fontWeight={800} color="text1">
+        <Text fontSize={28} fontWeight={800} color="text1">
           Are you sure?
         </Text>
         <Box marginTop={20}>
