@@ -12,7 +12,7 @@ interface Props {
 }
 
 const WarningModal = ({ isOpen, close, setExpertMode }: Props) => {
-  const confirm_action = () => {
+  const confirmAction = () => {
     const text = prompt('Please type the word "confirm" to enable expert mode.');
     if (text === 'confirm') {
       setExpertMode(true);
@@ -32,7 +32,7 @@ const WarningModal = ({ isOpen, close, setExpertMode }: Props) => {
         position="relative"
       >
         <Close variant="plain" onClick={close}>
-          <X size={30} />
+          <X size={28} />
         </Close>
         <Text fontSize={32} fontWeight={800} color="text1">
           Are you sure?
@@ -42,10 +42,10 @@ const WarningModal = ({ isOpen, close, setExpertMode }: Props) => {
             Expert mode turns off the confirm transaction prompt and allows high slippage trades that often result in
             bad rates and lost funds.
           </Text>
-          <Text color="text1" fontWeight={800} fontSize={24} marginTop={20} marginBottom={40}>
+          <Text color="text1" fontWeight={800} fontSize={20} marginTop={20} marginBottom={40}>
             ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING.
           </Text>
-          <WarningButton variant="primary" onClick={confirm_action}>
+          <WarningButton variant="primary" onClick={confirmAction}>
             Turn on expert mode
           </WarningButton>
         </Box>
