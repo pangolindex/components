@@ -355,17 +355,13 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
           <Button
             variant="primary"
             onClick={() => {
-              if (isExpertMode) {
-                handleSwap();
-              } else {
-                setSwapState({
-                  tradeToConfirm: trade,
-                  attemptingTxn: false,
-                  swapErrorMessage: undefined,
-                  showConfirm: true,
-                  txHash: undefined,
-                });
-              }
+              setSwapState({
+                tradeToConfirm: trade,
+                attemptingTxn: false,
+                swapErrorMessage: undefined,
+                showConfirm: true,
+                txHash: undefined,
+              });
             }}
             id="swap-button"
             isDisabled={!isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)}
@@ -383,17 +379,13 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
       <Button
         variant="primary"
         onClick={() => {
-          if (isExpertMode) {
-            handleSwap();
-          } else {
-            setSwapState({
-              tradeToConfirm: trade,
-              attemptingTxn: false,
-              swapErrorMessage: undefined,
-              showConfirm: true,
-              txHash: undefined,
-            });
-          }
+          setSwapState({
+            tradeToConfirm: trade,
+            attemptingTxn: false,
+            swapErrorMessage: undefined,
+            showConfirm: true,
+            txHash: undefined,
+          });
         }}
         id="swap-button"
         isDisabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError || !!swapInputError}
