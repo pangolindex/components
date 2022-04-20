@@ -29,7 +29,6 @@ import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Box, Button, Text } from '../../';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
-import RetryDrawer from '../RetryDrawer';
 import SelectTokenDrawer from '../SelectTokenDrawer';
 import SwapDetailInfo from '../SwapDetailInfo';
 import SwapRoute from '../SwapRoute';
@@ -46,7 +45,7 @@ interface Props {
 }
 
 const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
-  const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
+  // const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const [tokenDrawerType, setTokenDrawerType] = useState(Field.INPUT);
@@ -427,6 +426,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
       />
+
       <SwapWrapper>
         <Box p={10}>
           {isAEBToken && <DeprecatedWarning />}
@@ -493,19 +493,24 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
           </Box>
         </Box>
       </SwapWrapper>
+
       {trade && showRoute && <SwapRoute trade={trade} />}
       {/* Retries Drawer */}
-      <RetryDrawer isOpen={isRetryDrawerOpen} onClose={() => setIsRetryDrawerOpen(false)} />
+      {/* <RetryDrawer isOpen={isRetryDrawerOpen} onClose={() => setIsRetryDrawerOpen(false)} /> */}
       {/* Token Drawer */}
-      <SelectTokenDrawer
-        isOpen={isTokenDrawerOpen}
-        onClose={handleSelectTokenDrawerClose}
-        onCurrencySelect={onCurrencySelect}
-        selectedCurrency={tokenDrawerType === Field.INPUT ? inputCurrency : outputCurrency}
-        otherSelectedCurrency={tokenDrawerType === Field.INPUT ? outputCurrency : inputCurrency}
-      />
+
+      {isTokenDrawerOpen && (
+        <SelectTokenDrawer
+          isOpen={isTokenDrawerOpen}
+          onClose={handleSelectTokenDrawerClose}
+          onCurrencySelect={onCurrencySelect}
+          selectedCurrency={tokenDrawerType === Field.INPUT ? inputCurrency : outputCurrency}
+          otherSelectedCurrency={tokenDrawerType === Field.INPUT ? outputCurrency : inputCurrency}
+        />
+      )}
+
       {/* Confirm Swap Drawer */}
-      {trade && (
+      {trade && showConfirm && (
         <ConfirmSwapDrawer
           isOpen={showConfirm}
           trade={trade}
