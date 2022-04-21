@@ -4,6 +4,7 @@ import {
   SerializedToken,
   addSerializedToken,
   removeSerializedToken,
+  updateUserDeadline,
   updateUserExpertMode,
   updateUserSlippageTolerance,
 } from './actions';
@@ -40,6 +41,10 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateUserExpertMode, (state, action) => {
       state.userExpertMode = action.payload.userExpertMode;
+      state.timestamp = currentTimestamp();
+    })
+    .addCase(updateUserDeadline, (state, action) => {
+      state.userDeadline = action.payload.userDeadline;
       state.timestamp = currentTimestamp();
     })
     .addCase(addSerializedToken, (state, { payload: { serializedToken } }) => {
