@@ -147,16 +147,16 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: axlUST[ChainId.AVALANCHE].address,
   },
   [ChainId.FUJI]: {
-    inputCurrency: '',
-    outputCurrency: '',
+    inputCurrency: 'AVAX',
+    outputCurrency: PNG[ChainId.FUJI].address,
   },
   [ChainId.WAGMI]: {
-    inputCurrency: '',
-    outputCurrency: '',
+    inputCurrency: 'WGM',
+    outputCurrency: PNG[ChainId.WAGMI].address,
   },
   [ChainId.COSTON]: {
-    inputCurrency: '',
-    outputCurrency: '',
+    inputCurrency: 'cFLR',
+    outputCurrency: PNG[ChainId.COSTON].address,
   },
 };
 

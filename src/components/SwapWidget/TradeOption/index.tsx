@@ -22,7 +22,7 @@ const TradeOption: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
           <Text color="text1" fontSize={24} fontWeight={500}>
             Trade
           </Text>
-          {isLimitOrderVisible && CHAINS[chainId].mainnet && (
+          {isLimitOrderVisible && (
             <ToggleButtons
               options={['MARKET', 'LIMIT']}
               value={swapType}
