@@ -48,6 +48,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
     attemptingTxn,
     swapErrorMessage,
     txHash,
+    recipient,
   } = props;
 
   const { chainId } = useActiveWeb3React();
@@ -137,6 +138,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
             </OutputText>
           )}
         </Box>
+        {recipient && <OutputText color="text1">Sending to: {recipient}</OutputText>}
       </Header>
       <Footer>
         <SwapDetailInfo trade={trade} />

@@ -54,3 +54,26 @@ export const PValue = styled(Box)<{ isActive: boolean }>`
     color: ${({ theme }) => theme.text1};
   }
 `;
+
+export const LinkStyledButton = styled.button<{ disabled?: boolean }>`
+  border: none;
+  text-decoration: none;
+  background: none;
+
+  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
+  color: ${({ theme, disabled }) => (disabled ? theme.text2 : theme.text1)};
+  font-weight: 500;
+
+  :hover {
+    text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
+  }
+
+  :focus {
+    outline: none;
+    text-decoration: ${({ disabled }) => (disabled ? null : 'underline')};
+  }
+
+  :active {
+    text-decoration: none;
+  }
+`;

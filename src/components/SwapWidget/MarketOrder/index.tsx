@@ -23,31 +23,34 @@ import {
   useSwapState,
 } from 'src/state/pswap/hooks';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { isTokenOnList } from 'src/utils';
+import { isAddress, isTokenOnList } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { Box, Button, Text } from '../../';
+import { Box, Button, Text, TextInput } from '../../';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
-import RetryDrawer from '../RetryDrawer';
 import SelectTokenDrawer from '../SelectTokenDrawer';
+import SwapSettingsDrawer from '../Settings';
+import { SettingsText } from '../Settings/styled';
 import SwapDetailInfo from '../SwapDetailInfo';
 import SwapRoute from '../SwapRoute';
 import TokenWarningModal from '../TokenWarningModal';
 import TradeOption from '../TradeOption';
 import { DeprecatedWarning } from '../Warning';
 import confirmPriceImpactWithoutFee from '../confirmPriceImpactWithoutFee';
-import { ArrowWrapper, CurrencyInputTextBox, PValue, Root, SwapWrapper } from './styled';
+import { ArrowWrapper, CurrencyInputTextBox, LinkStyledButton, PValue, Root, SwapWrapper } from './styled';
 
 interface Props {
   swapType: string;
   setSwapType: (value: string) => void;
   isLimitOrderVisible: boolean;
+  showSettings: boolean;
 }
 
-const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
-  const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
+const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible, showSettings }) => {
+  // const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const [tokenDrawerType, setTokenDrawerType] = useState(Field.INPUT);
 
@@ -121,7 +124,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
         [Field.OUTPUT]: independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
       };
 
-  const { onSwitchTokens, onCurrencySelection, onUserInput } = useSwapActionHandlers(chainId);
+  const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers(chainId);
   const isValid = !swapInputError;
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT;
 
@@ -292,7 +295,22 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
     [chainId, selectedTokens, whitelistedTokens],
   );
 
+  const closeSwapSettings = useCallback(() => {
+    setOpenSettings(false);
+  }, [setOpenSettings]);
+
   const showRoute = Boolean(trade && trade?.route?.path?.length > 2);
+
+  {
+    /* Settings */
+  }
+  if (openSettings && showSettings) {
+    return (
+      <Box height={420}>
+        <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} />
+      </Box>
+    );
+  }
 
   const renderButton = () => {
     if (!account) {
@@ -337,17 +355,13 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
           <Button
             variant="primary"
             onClick={() => {
-              if (isExpertMode) {
-                handleSwap();
-              } else {
-                setSwapState({
-                  tradeToConfirm: trade,
-                  attemptingTxn: false,
-                  swapErrorMessage: undefined,
-                  showConfirm: true,
-                  txHash: undefined,
-                });
-              }
+              setSwapState({
+                tradeToConfirm: trade,
+                attemptingTxn: false,
+                swapErrorMessage: undefined,
+                showConfirm: true,
+                txHash: undefined,
+              });
             }}
             id="swap-button"
             isDisabled={!isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)}
@@ -365,17 +379,13 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
       <Button
         variant="primary"
         onClick={() => {
-          if (isExpertMode) {
-            handleSwap();
-          } else {
-            setSwapState({
-              tradeToConfirm: trade,
-              attemptingTxn: false,
-              swapErrorMessage: undefined,
-              showConfirm: true,
-              txHash: undefined,
-            });
-          }
+          setSwapState({
+            tradeToConfirm: trade,
+            attemptingTxn: false,
+            swapErrorMessage: undefined,
+            showConfirm: true,
+            txHash: undefined,
+          });
         }}
         id="swap-button"
         isDisabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError || !!swapInputError}
@@ -427,6 +437,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
         tokens={urlLoadedTokens}
         onConfirm={handleConfirmTokenWarning}
       />
+
       <SwapWrapper>
         <Box p={10}>
           {isAEBToken && <DeprecatedWarning />}
@@ -486,26 +497,70 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
             }
           />
 
+          {recipient === null && !showWrap && isExpertMode ? (
+            <Box display="flex" flexDirection="column" marginTop={10}>
+              <LinkStyledButton
+                id="add-recipient-button"
+                onClick={() => onChangeRecipient('')}
+                style={{ alignSelf: 'end' }}
+              >
+                + Add Recipient
+              </LinkStyledButton>
+            </Box>
+          ) : null}
+
+          {recipient !== null && !showWrap ? (
+            <Box display="flex" flexDirection="column" marginTop={10} marginBottom={10}>
+              <LinkStyledButton
+                id="add-recipient-button"
+                onClick={() => onChangeRecipient(null)}
+                style={{ alignSelf: 'end' }}
+              >
+                - Remove Recipient
+              </LinkStyledButton>
+              <TextInput
+                label="Recipient"
+                placeholder="Wallet Address"
+                value={recipient}
+                onChange={(value) => {
+                  const withoutSpaces = value.replace(/\s+/g, '');
+                  onChangeRecipient(withoutSpaces);
+                }}
+                addonLabel={recipient && !isAddress(recipient) && <Text color="text1">Invalid Address</Text>}
+              />
+            </Box>
+          ) : null}
+
           {trade && <SwapDetailInfo trade={trade} />}
 
           <Box width="100%" mt={10}>
             {renderButton()}
           </Box>
+          {showSettings && (
+            <Box width="100%" mt={10} display="flex" justifyContent="center">
+              <SettingsText onClick={() => setOpenSettings(true)}>Settings</SettingsText>
+            </Box>
+          )}
         </Box>
       </SwapWrapper>
+
       {trade && showRoute && <SwapRoute trade={trade} />}
       {/* Retries Drawer */}
-      <RetryDrawer isOpen={isRetryDrawerOpen} onClose={() => setIsRetryDrawerOpen(false)} />
+      {/* <RetryDrawer isOpen={isRetryDrawerOpen} onClose={() => setIsRetryDrawerOpen(false)} /> */}
       {/* Token Drawer */}
-      <SelectTokenDrawer
-        isOpen={isTokenDrawerOpen}
-        onClose={handleSelectTokenDrawerClose}
-        onCurrencySelect={onCurrencySelect}
-        selectedCurrency={tokenDrawerType === Field.INPUT ? inputCurrency : outputCurrency}
-        otherSelectedCurrency={tokenDrawerType === Field.INPUT ? outputCurrency : inputCurrency}
-      />
+
+      {isTokenDrawerOpen && (
+        <SelectTokenDrawer
+          isOpen={isTokenDrawerOpen}
+          onClose={handleSelectTokenDrawerClose}
+          onCurrencySelect={onCurrencySelect}
+          selectedCurrency={tokenDrawerType === Field.INPUT ? inputCurrency : outputCurrency}
+          otherSelectedCurrency={tokenDrawerType === Field.INPUT ? outputCurrency : inputCurrency}
+        />
+      )}
+
       {/* Confirm Swap Drawer */}
-      {trade && (
+      {trade && showConfirm && (
         <ConfirmSwapDrawer
           isOpen={showConfirm}
           trade={trade}

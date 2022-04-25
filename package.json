@@ -1,6 +1,6 @@
 {
   "name": "@antiyro/components",
-  "version": "10.0.13",
+  "version": "10.0.14",
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
   "engines": {

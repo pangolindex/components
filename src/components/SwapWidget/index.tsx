@@ -5,9 +5,10 @@ import { Root } from './styled';
 
 interface Props {
   isLimitOrderVisible?: boolean;
+  showSettings?: boolean;
 }
 
-const SwapWidget: React.FC<Props> = ({ isLimitOrderVisible = false }) => {
+const SwapWidget: React.FC<Props> = ({ isLimitOrderVisible = false, showSettings = true }) => {
   const [swapType, setSwapType] = useState('MARKET' as string);
 
   return (
@@ -27,6 +28,7 @@ const SwapWidget: React.FC<Props> = ({ isLimitOrderVisible = false }) => {
             setSwapType(type);
           }}
           isLimitOrderVisible={isLimitOrderVisible}
+          showSettings={showSettings}
         />
       )}
     </Root>
