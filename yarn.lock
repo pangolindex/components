@@ -2,19 +2,6 @@
 # yarn lockfile v1
 
 
-"@pangolindex/sdk@10.0.12":
-  version "10.0.12"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-10.0.12.tgz#d8c594b2edd2d6a236f8e2734a7cfe145919885a"
-  integrity sha512-IVAngn0JgNDioK8DAU06NkAtC8LYhYTzB0sZMD3i7QpLV0HhFqsqhu4RWyAOZje0ReMCVbpN9NAUqSvzeI5+qw==
-  dependencies:
-    "@pangolindex/exchange-contracts" "^1.0.1"
-    big.js "^5.2.2"
-    decimal.js-light "^2.5.0"
-    jsbi "^3.1.1"
-    tiny-invariant "^1.1.0"
-    tiny-warning "^1.0.3"
-    toformat "^2.0.0"
-
 "@babel/code-frame@7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.4.tgz#168da1a36e90da68ae8d49c0f1b48c7c6249213a"
@@ -1989,6 +1976,19 @@
   integrity sha512-G0imyN39C/vGX1VT/dn5do9SB8rJjRViT4p76KbseKNZ2wPChtFsz6yRFkqEJjeDRvqhBk7TZZlPGcbNvz/mBA==
   dependencies:
     hardhat-tracer "^1.0.0-alpha.5"
+
+"@pangolindex/sdk@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-2.0.1.tgz#7a400aa05dad090e0fe56813ef06877b9c7dacce"
+  integrity sha512-s+7SpItuUWcxdDweWMlK58DvEE7+aS1pg+3OMdoWuMZWLCTBb3Wxwa8edVit1W+a5h0CibMu0Qg6LolqZDWFFg==
+  dependencies:
+    "@pangolindex/exchange-contracts" "^1.0.1"
+    big.js "^5.2.2"
+    decimal.js-light "^2.5.0"
+    jsbi "^3.1.1"
+    tiny-invariant "^1.1.0"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
 
 "@pangolindex/token-lists@^1.0.1":
   version "1.0.1"

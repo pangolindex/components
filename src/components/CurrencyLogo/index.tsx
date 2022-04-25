@@ -1,7 +1,7 @@
 import { CAVAX, ChainId, Currency, Token } from '@pangolindex/sdk';
 import deepEqual from 'deep-equal';
 import React, { useMemo } from 'react';
-import { AvaxLogo, WgmLogo } from 'src/components/Icons';
+import { AvaxLogo, WgmLogo, CflrLogo } from 'src/components/Icons';
 import { LogoSize } from 'src/constants';
 import { getTokenLogoURL } from 'src/utils/getTokenLogoURL';
 import { StyledLogo } from './styles';
@@ -33,7 +33,7 @@ export default function CurrencyLogo({
   } else if (deepEqual(currency, CAVAX[ChainId.WAGMI])) {
     return <WgmLogo size={`${size}px`} />;
   } else if (deepEqual(currency, CAVAX[ChainId.COSTON])) {
-    return <WgmLogo size={`${size}px`} />;
+    return <CflrLogo size={`${size}px`} />;
   }
 
   return <StyledLogo size={`${size}px`} srcs={srcs} alt={`${currency?.symbol ?? 'token'} logo`} style={style} />;
