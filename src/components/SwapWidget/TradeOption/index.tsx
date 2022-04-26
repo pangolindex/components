@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Text, ToggleButtons } from '../../';
 import { SwapWrapper } from './styled';
-import { useChainId } from 'src/hooks';
 
 interface Props {
   swapType: string;
