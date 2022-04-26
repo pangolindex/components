@@ -36,7 +36,7 @@
     "@babel/core": "^7.15.8",
     "@ethersproject/experimental": "^5.5.0",
     "@gelatonetwork/limit-orders-react": "^2.3.1",
-    "@pangolindex/sdk": "2.0.0-rc.2",
+    "@pangolindex/sdk": "2.0.1",
     "@pangolindex/token-lists": "^1.0.1",
     "@reduxjs/toolkit": "^1.7.2",
     "@rollup/plugin-commonjs": "^21.0.0",
