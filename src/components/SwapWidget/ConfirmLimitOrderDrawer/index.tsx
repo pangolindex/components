@@ -73,67 +73,73 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
   const inputTokenInfo = inputCurrency1?.tokenInfo;
   const outputTokenInfo = outputCurrency1?.tokenInfo;
 
-  const inputCurrency =
-    inputCurrency1 && inputCurrency1?.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : inputTokenInfo && inputTokenInfo.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : inputTokenInfo
-      ? new Token(
-          inputTokenInfo?.chainId,
-          inputTokenInfo?.address,
-          inputTokenInfo?.decimals,
-          inputTokenInfo?.symbol,
-          inputTokenInfo?.name,
-        )
-      : inputCurrency1
-      ? new Token(
-          inputCurrency1?.chainId,
-          inputCurrency1?.address,
-          inputCurrency1?.decimals,
-          inputCurrency1?.symbol,
-          inputCurrency1?.name,
-        )
-      : undefined;
+  const inputCurrency = () => {
+    if (inputCurrency1 && inputCurrency1?.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (inputTokenInfo && inputTokenInfo.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (inputTokenInfo) {
+      return new Token(
+        inputTokenInfo?.chainId,
+        inputTokenInfo?.address,
+        inputTokenInfo?.decimals,
+        inputTokenInfo?.symbol,
+        inputTokenInfo?.name,
+      );
+    } else if (inputCurrency1) {
+      return new Token(
+        inputCurrency1?.chainId,
+        inputCurrency1?.address,
+        inputCurrency1?.decimals,
+        inputCurrency1?.symbol,
+        inputCurrency1?.name,
+      );
+    } else {
+      return undefined;
+    }
+  };
 
-  const outputCurrency =
-    outputCurrency1 && outputCurrency1?.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : outputTokenInfo && outputTokenInfo?.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : outputTokenInfo
-      ? new Token(
-          outputTokenInfo?.chainId,
-          outputTokenInfo?.address,
-          outputTokenInfo?.decimals,
-          outputTokenInfo?.symbol,
-          outputTokenInfo?.name,
-        )
-      : outputCurrency1
-      ? new Token(
-          outputCurrency1.chainId,
-          outputCurrency1.address,
-          outputCurrency1.decimals,
-          outputCurrency1?.symbol,
-          outputCurrency1?.name,
-        )
-      : undefined;
+  const outputCurrency = () => {
+    if (outputCurrency1 && outputCurrency1?.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (outputTokenInfo && outputTokenInfo?.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (outputTokenInfo) {
+      return new Token(
+        outputTokenInfo?.chainId,
+        outputTokenInfo?.address,
+        outputTokenInfo?.decimals,
+        outputTokenInfo?.symbol,
+        outputTokenInfo?.name,
+      );
+    } else if (outputCurrency1) {
+      return new Token(
+        outputCurrency1?.chainId,
+        outputCurrency1?.address,
+        outputCurrency1?.decimals,
+        outputCurrency1?.symbol,
+        outputCurrency1?.name,
+      );
+    } else {
+      return undefined;
+    }
+  };
 
-  const fiatValueInput = useUSDCPrice(inputCurrency);
-  const fiatValueOutput = useUSDCPrice(outputCurrency);
+  const fiatValueInput = useUSDCPrice(inputCurrency());
+  const fiatValueOutput = useUSDCPrice(outputCurrency());
 
   if (!inputAmount || !outputAmount) return null;
 
   // text to show while loading
   const pendingText = `Submitting order to swap ${trade?.inputAmount?.toSignificant(6)} ${
-    inputCurrency?.symbol
-  } for ${trade?.outputAmount?.toSignificant(6)} ${outputCurrency?.symbol}`;
+    outputCurrency()?.symbol
+  } for ${trade?.outputAmount?.toSignificant(6)} ${outputCurrency()?.symbol}`;
 
   const ConfirmContent = (
     <Root>
       <Header>
         <TokenRow>
-          <CurrencyLogo currency={inputCurrency} size={24} imageSize={48} />
+          <CurrencyLogo currency={inputCurrency()} size={24} imageSize={48} />
           <Text
             fontSize={24}
             fontWeight={500}
@@ -143,12 +149,12 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
             {inputAmount.toSignificant(6)}
           </Text>
           <Text fontSize={24} fontWeight={500} color="text1" style={{ marginLeft: '10px' }}>
-            {inputCurrency?.symbol}
+            {inputCurrency()?.symbol}
           </Text>
         </TokenRow>
         <ArrowDown size="16" color={theme.text2} style={{ marginLeft: '4px', minWidth: '16px' }} />
         <TokenRow>
-          <CurrencyLogo currency={outputCurrency} size={24} imageSize={48} />
+          <CurrencyLogo currency={outputCurrency()} size={24} imageSize={48} />
 
           <Box display="flex" alignItems="center">
             <Text
@@ -166,7 +172,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
             />
           </Box>
           <Text fontSize={24} fontWeight={500} color="text1" style={{ marginLeft: '10px' }}>
-            {outputCurrency?.symbol}
+            {outputCurrency()?.symbol}
           </Text>
         </TokenRow>
         {showAcceptChanges && (
@@ -259,13 +265,25 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
     </SubmittedWrapper>
   );
 
+  const swapError = () => {
+    if (swapErrorMessage) {
+      return ErroContent;
+    } else if (txHash) {
+      return SubmittedContent;
+    } else if (attemptingTxn) {
+      return PendingContent;
+    } else {
+      return ConfirmContent;
+    }
+  };
+
   return (
     <Drawer
       title={swapErrorMessage || txHash || attemptingTxn ? '' : 'Confirm Order'}
       isOpen={isOpen}
       onClose={onClose}
     >
-      {swapErrorMessage ? ErroContent : txHash ? SubmittedContent : attemptingTxn ? PendingContent : ConfirmContent}
+      {swapError()}
     </Drawer>
   );
 };
