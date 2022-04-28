@@ -153,11 +153,11 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
           <Text color="text1">Toogle Expert Mode</Text>
           <ToggleButtons
             options={['ON', 'OFF']}
-            value={expertMode === true ? 'ON' : 'OFF'}
+            value={expertMode ? 'ON' : 'OFF'}
             onChange={(value) => {
-              if (value === 'ON') {
+              if (value === 'ON' && !expertMode) {
                 setModalOpen(true);
-              } else {
+              } else if (value === 'OFF' && expertMode) {
                 setExpertMode(false);
               }
             }}
