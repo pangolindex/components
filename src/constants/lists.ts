@@ -1,6 +1,6 @@
 // the Pangolin Default token list lives here
 export const AVALANCHE_LIST = 'https://raw.githubusercontent.com/pangolindex/tokenlists/main/pangolin.tokenlist.json';
-export const WAGMI_LIST = 'https://raw.githubusercontent.com/pangolindex/tokenlists/main/wgm.tokenlist.json'
+export const WAGMI_LIST = 'https://raw.githubusercontent.com/pangolindex/tokenlists/main/wgm.tokenlist.json';
 
 export const DEFAULT_TOKEN_LISTS_SELECTED: string[] = [AVALANCHE_LIST, WAGMI_LIST];
 

@@ -96,12 +96,12 @@ export function useExpertModeManager(): [boolean, (value: boolean) => void] {
   return [expertMode, setExpertMode];
 }
 
-export function useUserDeadline(): [number, (deadline: number) => void] {
+export function useUserDeadline(): [string, (deadline: string) => void] {
   const dispatch = useDispatch<AppDispatch>();
   const userDeadline = useSelector<AppState, AppState['puser']['userDeadline']>((state) => state.puser.userDeadline);
 
   const setUserDeadline = useCallback(
-    (userDeadline: number) => {
+    (userDeadline: string) => {
       dispatch(updateUserDeadline({ userDeadline: userDeadline }));
     },
     [dispatch],

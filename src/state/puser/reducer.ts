@@ -17,7 +17,7 @@ export interface UserState {
   timestamp: number;
   userExpertMode: boolean;
   // deadline set by user in minutes, used in all txns
-  userDeadline: number;
+  userDeadline: string;
   tokens: {
     [chainId: number]: {
       [address: string]: SerializedToken;

@@ -16,7 +16,7 @@ export const SettingsText = styled(Text)`
 export const Frame = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
   height: 100%;
   padding: 10px;
 `;
