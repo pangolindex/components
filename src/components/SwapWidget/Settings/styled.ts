@@ -30,7 +30,7 @@ export const InputOptions = styled(Box)`
 
 export const WarningButton = styled(Button)`
   background-color: ${({ theme }) => theme.red1};
-  color: ${({ theme }) => theme.text1};
+  color: white;
 `;
 
 export const Close = styled(Button)`
@@ -40,4 +40,23 @@ export const Close = styled(Button)`
   color: ${({ theme }) => theme.text1};
   width: 30px;
   height: 30px;
+`;
+
+export const ModalFrame = styled(Box)`
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: justify;
+  position: relative;
+
+  width: 25vw;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100% !important;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: 50vw;
+  `};
 `;

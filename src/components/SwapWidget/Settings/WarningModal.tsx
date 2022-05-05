@@ -3,7 +3,7 @@ import { X } from 'react-feather';
 import { Box } from 'src/components/Box';
 import Modal from 'src/components/Modal';
 import { Text } from 'src/components/Text';
-import { Close, WarningButton } from './styled';
+import { Close, ModalFrame, WarningButton } from './styled';
 
 interface Props {
   isOpen: boolean;
@@ -22,15 +22,7 @@ const WarningModal = ({ isOpen, close, setExpertMode }: Props) => {
 
   return (
     <Modal isOpen={isOpen} onDismiss={close}>
-      <Box
-        padding="20px"
-        width="25vw"
-        display="flex"
-        alignItems="center"
-        flexDirection="column"
-        textAlign="justify"
-        position="relative"
-      >
+      <ModalFrame>
         <Close variant="plain" onClick={close}>
           <X size={28} />
         </Close>
@@ -49,7 +41,7 @@ const WarningModal = ({ isOpen, close, setExpertMode }: Props) => {
             Turn on expert mode
           </WarningButton>
         </Box>
-      </Box>
+      </ModalFrame>
     </Modal>
   );
 };
