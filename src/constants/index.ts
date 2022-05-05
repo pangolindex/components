@@ -1,9 +1,10 @@
-import { ChainId, JSBI, Percent, Token, WAVAX, CHAINS } from '@pangolindex/sdk';
+import { CHAINS, ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.router,
   [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].contracts!.router,
   [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].contracts!.router,
+  [ChainId.COSTON]: CHAINS[ChainId.COSTON].contracts!.router,
 };
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -27,10 +28,16 @@ export const NetworkContextName = 'NETWORK';
 // default allowed slippage, in bips
 export const INITIAL_ALLOWED_SLIPPAGE = 50;
 // 10 minutes, denominated in seconds
-export const DEFAULT_DEADLINE_FROM_NOW = 10 * 60;
+export const DEFAULT_DEADLINE_FROM_NOW = '600';
 
 export const PNG: { [chainId in ChainId]: Token } = {
-  [ChainId.FUJI]: new Token(ChainId.FUJI, CHAINS[ChainId.FUJI].contracts!.png, 18, CHAINS[ChainId.FUJI].png_symbol!, 'Pangolin'),
+  [ChainId.FUJI]: new Token(
+    ChainId.FUJI,
+    CHAINS[ChainId.FUJI].contracts!.png,
+    18,
+    CHAINS[ChainId.FUJI].png_symbol!,
+    'Pangolin',
+  ),
   [ChainId.AVALANCHE]: new Token(
     ChainId.AVALANCHE,
     CHAINS[ChainId.AVALANCHE].contracts!.png,
@@ -45,6 +52,13 @@ export const PNG: { [chainId in ChainId]: Token } = {
     CHAINS[ChainId.WAGMI].png_symbol!,
     'Wagmi Pangolin',
   ),
+  [ChainId.COSTON]: new Token(
+    ChainId.COSTON,
+    CHAINS[ChainId.COSTON].contracts!.png,
+    18,
+    CHAINS[ChainId.COSTON].png_symbol!,
+    'Coston Pangolin',
+  ),
 };
 
 export const USDT: { [chainId in ChainId]: Token } = {
@@ -57,6 +71,7 @@ export const USDT: { [chainId in ChainId]: Token } = {
     'Tether USD',
   ),
   [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 6, 'USDT', 'Tether USD'),
+  [ChainId.COSTON]: new Token(ChainId.COSTON, ZERO_ADDRESS, 6, '', ''),
 };
 
 export const USDTe: { [chainId in ChainId]: Token } = {
@@ -69,6 +84,7 @@ export const USDTe: { [chainId in ChainId]: Token } = {
     'Tether USD',
   ),
   [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 6, 'USDT.e', 'Tether USD'),
+  [ChainId.COSTON]: new Token(ChainId.COSTON, ZERO_ADDRESS, 6, '', ''),
 };
 
 export const UST: { [chainId in ChainId]: Token } = {
@@ -81,6 +97,7 @@ export const UST: { [chainId in ChainId]: Token } = {
     'Wormhole UST',
   ),
   [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 6, 'UST', 'Wormhole UST'),
+  [ChainId.COSTON]: new Token(ChainId.COSTON, ZERO_ADDRESS, 6, '', ''),
 };
 
 export const axlUST: { [chainId in ChainId]: Token } = {
@@ -93,6 +110,7 @@ export const axlUST: { [chainId in ChainId]: Token } = {
     'Axelar Wrapped UST',
   ),
   [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 18, 'axlUST', 'Axelar Wrapped UST'),
+  [ChainId.COSTON]: new Token(ChainId.COSTON, ZERO_ADDRESS, 18, '', ''),
 };
 
 export const USDC: { [chainId in ChainId]: Token } = {
@@ -105,6 +123,7 @@ export const USDC: { [chainId in ChainId]: Token } = {
     'USD Coin',
   ),
   [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 6, 'USDC', 'USD Coin'),
+  [ChainId.COSTON]: new Token(ChainId.COSTON, ZERO_ADDRESS, 6, '', ''),
 };
 
 export const USDCe: { [chainId in ChainId]: Token } = {
@@ -117,6 +136,7 @@ export const USDCe: { [chainId in ChainId]: Token } = {
     'USD Coin',
   ),
   [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 6, 'USDC.e', 'USD Coin'),
+  [ChainId.COSTON]: new Token(ChainId.COSTON, ZERO_ADDRESS, 6, '', ''),
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
@@ -124,6 +144,7 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
   [ChainId.FUJI]: [],
   [ChainId.AVALANCHE]: [WAVAX[ChainId.AVALANCHE].address, PNG[ChainId.AVALANCHE].address],
   [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI].address, PNG[ChainId.WAGMI].address],
+  [ChainId.COSTON]: [WAVAX[ChainId.COSTON].address, PNG[ChainId.COSTON].address],
 };
 
 export const SWAP_DEFAULT_CURRENCY = {
@@ -132,6 +153,14 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: axlUST[ChainId.AVALANCHE].address,
   },
   [ChainId.FUJI]: {
+    inputCurrency: '',
+    outputCurrency: '',
+  },
+  [ChainId.WAGMI]: {
+    inputCurrency: '',
+    outputCurrency: '',
+  },
+  [ChainId.COSTON]: {
     inputCurrency: '',
     outputCurrency: '',
   },
@@ -147,6 +176,7 @@ export const DAIe: { [chainId in ChainId]: Token } = {
     'Dai Stablecoin',
   ),
   [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 18, 'DAI.e', 'Dai Stablecoin'),
+  [ChainId.COSTON]: new Token(ChainId.COSTON, ZERO_ADDRESS, 18, '', ''),
 };
 
 // used to construct intermediary pairs for trading
@@ -163,6 +193,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     USDC[ChainId.AVALANCHE],
   ],
   [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI], PNG[ChainId.WAGMI]],
+  [ChainId.COSTON]: [WAVAX[ChainId.COSTON], PNG[ChainId.COSTON]],
 };
 
 // one basis point

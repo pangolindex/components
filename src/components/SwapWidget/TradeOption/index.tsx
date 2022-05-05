@@ -1,8 +1,6 @@
 import React from 'react';
 import { Box, Text, ToggleButtons } from '../../';
 import { SwapWrapper } from './styled';
-import { CHAINS } from '@pangolindex/sdk'
-import { useChainId } from 'src/hooks';
 
 interface Props {
   swapType: string;
@@ -11,8 +9,6 @@ interface Props {
 }
 
 const TradeOption: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
-  const chainId = useChainId()
-
   return (
     <SwapWrapper>
       {/* <SwapAlertBox>This is a BETA release and should be used at your own risk!</SwapAlertBox> */}
@@ -22,7 +18,7 @@ const TradeOption: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
           <Text color="text1" fontSize={24} fontWeight={500}>
             Trade
           </Text>
-          {isLimitOrderVisible && CHAINS[chainId].mainnet && (
+          {isLimitOrderVisible && (
             <ToggleButtons
               options={['MARKET', 'LIMIT']}
               value={swapType}

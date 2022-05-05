@@ -306,7 +306,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
   }
   if (openSettings && showSettings) {
     return (
-      <Box height={420}>
+      <Box minHeight={450}>
         <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} />
       </Box>
     );
