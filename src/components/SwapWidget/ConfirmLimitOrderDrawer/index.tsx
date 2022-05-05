@@ -132,7 +132,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
 
   // text to show while loading
   const pendingText = `Submitting order to swap ${trade?.inputAmount?.toSignificant(6)} ${
-    outputCurrency()?.symbol
+    inputCurrency()?.symbol
   } for ${trade?.outputAmount?.toSignificant(6)} ${outputCurrency()?.symbol}`;
 
   const ConfirmContent = (

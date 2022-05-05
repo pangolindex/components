@@ -539,7 +539,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
         onClose={handleSelectTokenDrawerClose}
         onCurrencySelect={onCurrencySelect}
         selectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? inputCurrency() : outputCurrency()}
-        otherSelectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? outputCurrency : inputCurrency()}
+        otherSelectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? outputCurrency() : inputCurrency()}
       />
 
       {/* Confirm Swap Drawer */}
