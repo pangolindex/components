@@ -79,7 +79,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   const inputTokenInfo = gelatoInputCurrency?.tokenInfo;
   const outputTokenInfo = gelatoOutputCurrency?.tokenInfo;
 
-  const inputCurrency = () => {
+  const GetInputCurrency = () => {
     if (gelatoInputCurrency && gelatoInputCurrency?.symbol === CAVAX[chainId].symbol) {
       return CAVAX[chainId];
     } else if (inputTokenInfo && inputTokenInfo?.symbol === CAVAX[chainId].symbol) {
@@ -105,7 +105,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
     }
   };
 
-  const outputCurrency = () => {
+  const getOutputCurrency = () => {
     if (gelatoOutputCurrency && gelatoOutputCurrency?.symbol === CAVAX[chainId].symbol) {
       return CAVAX[chainId];
     } else if (outputTokenInfo && outputTokenInfo?.symbol === CAVAX[chainId].symbol) {
@@ -338,7 +338,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
 
   const isAEBToken = useIsSelectedAEBToken();
 
-  const primaryButton = () => {
+  const handlePlaceOrder = () => {
     setSwapState({
       tradeToConfirm: trade as any,
       attemptingTxn: false,
@@ -376,7 +376,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
 
           <Button
             variant="primary"
-            onClick={() => primaryButton()}
+            onClick={() => handlePlaceOrder()}
             id="swap-button"
             isDisabled={!isValid || approval !== ApprovalState.APPROVED}
             //error={isValid}
@@ -390,7 +390,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
     return (
       <Button
         variant="primary"
-        onClick={() => primaryButton()}
+        onClick={() => handlePlaceOrder()}
         id="swap-button"
         isDisabled={!isValid || !!swapInputError}
         backgroundColor={isValid ? 'primary' : undefined}
@@ -462,7 +462,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
               setTokenDrawerType(LimitNewField.INPUT as any);
               setIsTokenDrawerOpen(true);
             }}
-            currency={inputCurrency()}
+            currency={GetInputCurrency()}
             fontSize={24}
             isNumeric={true}
             placeholder="0.00"
@@ -511,7 +511,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
               setTokenDrawerType(LimitNewField.OUTPUT as any);
               setIsTokenDrawerOpen(true);
             }}
-            currency={outputCurrency()}
+            currency={getOutputCurrency()}
             fontSize={24}
             isNumeric={true}
             placeholder="0.00"
@@ -538,8 +538,10 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
         isOpen={isTokenDrawerOpen}
         onClose={handleSelectTokenDrawerClose}
         onCurrencySelect={onCurrencySelect}
-        selectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? inputCurrency() : outputCurrency()}
-        otherSelectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? outputCurrency() : inputCurrency()}
+        selectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? GetInputCurrency() : getOutputCurrency()}
+        otherSelectedCurrency={
+          tokenDrawerType === (LimitNewField.INPUT as any) ? getOutputCurrency() : GetInputCurrency()
+        }
       />
 
       {/* Confirm Swap Drawer */}
