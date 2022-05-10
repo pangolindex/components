@@ -79,7 +79,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   const inputTokenInfo = gelatoInputCurrency?.tokenInfo;
   const outputTokenInfo = gelatoOutputCurrency?.tokenInfo;
 
-  const GetInputCurrency = () => {
+  const getInputCurrency = () => {
     if (gelatoInputCurrency && gelatoInputCurrency?.symbol === CAVAX[chainId].symbol) {
       return CAVAX[chainId];
     } else if (inputTokenInfo && inputTokenInfo?.symbol === CAVAX[chainId].symbol) {
@@ -433,6 +433,9 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
     } else return theme.text4;
   };
 
+  const inputCurrency = getInputCurrency();
+  const outputCurrency = getOutputCurrency();
+
   return (
     <Root>
       <TradeOption swapType={swapType} setSwapType={setSwapType} isLimitOrderVisible={isLimitOrderVisible} />
@@ -462,7 +465,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
               setTokenDrawerType(LimitNewField.INPUT as any);
               setIsTokenDrawerOpen(true);
             }}
-            currency={GetInputCurrency()}
+            currency={inputCurrency}
             fontSize={24}
             isNumeric={true}
             placeholder="0.00"
@@ -511,7 +514,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
               setTokenDrawerType(LimitNewField.OUTPUT as any);
               setIsTokenDrawerOpen(true);
             }}
-            currency={getOutputCurrency()}
+            currency={outputCurrency}
             fontSize={24}
             isNumeric={true}
             placeholder="0.00"
@@ -538,10 +541,8 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
         isOpen={isTokenDrawerOpen}
         onClose={handleSelectTokenDrawerClose}
         onCurrencySelect={onCurrencySelect}
-        selectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? GetInputCurrency() : getOutputCurrency()}
-        otherSelectedCurrency={
-          tokenDrawerType === (LimitNewField.INPUT as any) ? getOutputCurrency() : GetInputCurrency()
-        }
+        selectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? inputCurrency : outputCurrency}
+        otherSelectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? outputCurrency : inputCurrency}
       />
 
       {/* Confirm Swap Drawer */}

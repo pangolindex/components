@@ -125,21 +125,23 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
     }
   };
 
-  const fiatValueInput = useUSDCPrice(getInputCurrency());
-  const fiatValueOutput = useUSDCPrice(getOutputCurrency());
+  const inputCurrency = getInputCurrency();
+  const outputCurrency = getOutputCurrency();
+  const fiatValueInput = useUSDCPrice(inputCurrency);
+  const fiatValueOutput = useUSDCPrice(outputCurrency);
 
   if (!inputAmount || !outputAmount) return null;
 
   // text to show while loading
   const pendingText = `Submitting order to swap ${trade?.inputAmount?.toSignificant(6)} ${
-    getInputCurrency()?.symbol
-  } for ${trade?.outputAmount?.toSignificant(6)} ${getOutputCurrency()?.symbol}`;
+    inputCurrency?.symbol
+  } for ${trade?.outputAmount?.toSignificant(6)} ${outputCurrency?.symbol}`;
 
   const ConfirmContent = (
     <Root>
       <Header>
         <TokenRow>
-          <CurrencyLogo currency={getInputCurrency()} size={24} imageSize={48} />
+          <CurrencyLogo currency={inputCurrency} size={24} imageSize={48} />
           <Text
             fontSize={24}
             fontWeight={500}
@@ -149,12 +151,12 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
             {inputAmount.toSignificant(6)}
           </Text>
           <Text fontSize={24} fontWeight={500} color="text1" style={{ marginLeft: '10px' }}>
-            {getInputCurrency()?.symbol}
+            {inputCurrency?.symbol}
           </Text>
         </TokenRow>
         <ArrowDown size="16" color={theme.text2} style={{ marginLeft: '4px', minWidth: '16px' }} />
         <TokenRow>
-          <CurrencyLogo currency={getOutputCurrency()} size={24} imageSize={48} />
+          <CurrencyLogo currency={outputCurrency} size={24} imageSize={48} />
 
           <Box display="flex" alignItems="center">
             <Text
@@ -172,7 +174,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
             />
           </Box>
           <Text fontSize={24} fontWeight={500} color="text1" style={{ marginLeft: '10px' }}>
-            {getOutputCurrency()?.symbol}
+            {outputCurrency?.symbol}
           </Text>
         </TokenRow>
         {showAcceptChanges && (
