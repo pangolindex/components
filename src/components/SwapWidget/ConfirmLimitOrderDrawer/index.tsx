@@ -73,52 +73,60 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
   const inputTokenInfo = inputCurrency1?.tokenInfo;
   const outputTokenInfo = outputCurrency1?.tokenInfo;
 
-  const inputCurrency =
-    inputCurrency1 && inputCurrency1?.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : inputTokenInfo && inputTokenInfo.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : inputTokenInfo
-      ? new Token(
-          inputTokenInfo?.chainId,
-          inputTokenInfo?.address,
-          inputTokenInfo?.decimals,
-          inputTokenInfo?.symbol,
-          inputTokenInfo?.name,
-        )
-      : inputCurrency1
-      ? new Token(
-          inputCurrency1?.chainId,
-          inputCurrency1?.address,
-          inputCurrency1?.decimals,
-          inputCurrency1?.symbol,
-          inputCurrency1?.name,
-        )
-      : undefined;
+  const getInputCurrency = () => {
+    if (inputCurrency1 && inputCurrency1?.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (inputTokenInfo && inputTokenInfo.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (inputTokenInfo) {
+      return new Token(
+        inputTokenInfo?.chainId,
+        inputTokenInfo?.address,
+        inputTokenInfo?.decimals,
+        inputTokenInfo?.symbol,
+        inputTokenInfo?.name,
+      );
+    } else if (inputCurrency1) {
+      return new Token(
+        inputCurrency1?.chainId,
+        inputCurrency1?.address,
+        inputCurrency1?.decimals,
+        inputCurrency1?.symbol,
+        inputCurrency1?.name,
+      );
+    } else {
+      return undefined;
+    }
+  };
 
-  const outputCurrency =
-    outputCurrency1 && outputCurrency1?.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : outputTokenInfo && outputTokenInfo?.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : outputTokenInfo
-      ? new Token(
-          outputTokenInfo?.chainId,
-          outputTokenInfo?.address,
-          outputTokenInfo?.decimals,
-          outputTokenInfo?.symbol,
-          outputTokenInfo?.name,
-        )
-      : outputCurrency1
-      ? new Token(
-          outputCurrency1.chainId,
-          outputCurrency1.address,
-          outputCurrency1.decimals,
-          outputCurrency1?.symbol,
-          outputCurrency1?.name,
-        )
-      : undefined;
+  const getOutputCurrency = () => {
+    if (outputCurrency1 && outputCurrency1?.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (outputTokenInfo && outputTokenInfo?.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (outputTokenInfo) {
+      return new Token(
+        outputTokenInfo?.chainId,
+        outputTokenInfo?.address,
+        outputTokenInfo?.decimals,
+        outputTokenInfo?.symbol,
+        outputTokenInfo?.name,
+      );
+    } else if (outputCurrency1) {
+      return new Token(
+        outputCurrency1?.chainId,
+        outputCurrency1?.address,
+        outputCurrency1?.decimals,
+        outputCurrency1?.symbol,
+        outputCurrency1?.name,
+      );
+    } else {
+      return undefined;
+    }
+  };
 
+  const inputCurrency = getInputCurrency();
+  const outputCurrency = getOutputCurrency();
   const fiatValueInput = useUSDCPrice(inputCurrency);
   const fiatValueOutput = useUSDCPrice(outputCurrency);
 
@@ -259,13 +267,25 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
     </SubmittedWrapper>
   );
 
+  const getSwapError = () => {
+    if (swapErrorMessage) {
+      return ErroContent;
+    } else if (txHash) {
+      return SubmittedContent;
+    } else if (attemptingTxn) {
+      return PendingContent;
+    } else {
+      return ConfirmContent;
+    }
+  };
+
   return (
     <Drawer
       title={swapErrorMessage || txHash || attemptingTxn ? '' : 'Confirm Order'}
       isOpen={isOpen}
       onClose={onClose}
     >
-      {swapErrorMessage ? ErroContent : txHash ? SubmittedContent : attemptingTxn ? PendingContent : ConfirmContent}
+      {getSwapError()}
     </Drawer>
   );
 };

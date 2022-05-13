@@ -51,6 +51,7 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-explicit-any': 'off',
     'import/named': 'off',
+    'no-nested-ternary': 'warn',
     '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '[Rr]eact' }],
     '@typescript-eslint/no-empty-function': 'off',
     'max-lines': ['error', { max: 300, skipBlankLines: true, skipComments: true }],
