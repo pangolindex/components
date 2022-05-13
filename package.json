@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "2.0.13",
+  "version": "3.0.0-rc.1",
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
   "engines": {
@@ -100,6 +100,7 @@
   },
   "peerDependencies": {
     "@gelatonetwork/limit-orders-react": "^2.3.1",
+    "@pangolindex/sdk": ">=2.0.1",
     "@reduxjs/toolkit": "^1.7.2",
     "react": ">=17.0.1",
     "react-dom": ">=17.0.1",

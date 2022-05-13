@@ -79,51 +79,57 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   const inputTokenInfo = gelatoInputCurrency?.tokenInfo;
   const outputTokenInfo = gelatoOutputCurrency?.tokenInfo;
 
-  const inputCurrency =
-    gelatoInputCurrency && gelatoInputCurrency?.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : inputTokenInfo && inputTokenInfo.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : inputTokenInfo
-      ? new Token(
-          inputTokenInfo?.chainId,
-          inputTokenInfo?.address,
-          inputTokenInfo?.decimals,
-          inputTokenInfo?.symbol,
-          inputTokenInfo?.name,
-        )
-      : gelatoInputCurrency && gelatoInputCurrency.isToken
-      ? new Token(
-          gelatoInputCurrency?.chainId,
-          gelatoInputCurrency?.address,
-          gelatoInputCurrency?.decimals,
-          gelatoInputCurrency?.symbol,
-          gelatoInputCurrency?.name,
-        )
-      : undefined;
+  const getInputCurrency = () => {
+    if (gelatoInputCurrency && gelatoInputCurrency?.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (inputTokenInfo && inputTokenInfo?.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (inputTokenInfo) {
+      return new Token(
+        inputTokenInfo?.chainId,
+        inputTokenInfo?.address,
+        inputTokenInfo?.decimals,
+        inputTokenInfo?.symbol,
+        inputTokenInfo?.name,
+      );
+    } else if (gelatoInputCurrency && gelatoInputCurrency?.isToken) {
+      return new Token(
+        gelatoInputCurrency?.chainId,
+        gelatoInputCurrency?.address,
+        gelatoInputCurrency?.decimals,
+        gelatoInputCurrency?.symbol,
+        gelatoInputCurrency?.name,
+      );
+    } else {
+      return undefined;
+    }
+  };
 
-  const outputCurrency =
-    gelatoOutputCurrency && gelatoOutputCurrency?.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : outputTokenInfo && outputTokenInfo?.symbol === CAVAX[chainId].symbol
-      ? CAVAX[chainId]
-      : outputTokenInfo
-      ? new Token(
-          outputTokenInfo?.chainId,
-          outputTokenInfo?.address,
-          outputTokenInfo?.decimals,
-          outputTokenInfo?.symbol,
-          outputTokenInfo?.name,
-        )
-      : gelatoOutputCurrency && gelatoOutputCurrency.isToken
-      ? new Token(
-          gelatoOutputCurrency?.chainId,
-          gelatoOutputCurrency?.address,
-          gelatoOutputCurrency?.decimals,
-          gelatoOutputCurrency?.symbol,
-          gelatoOutputCurrency?.name,
-        )
-      : undefined;
+  const getOutputCurrency = () => {
+    if (gelatoOutputCurrency && gelatoOutputCurrency?.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (outputTokenInfo && outputTokenInfo?.symbol === CAVAX[chainId].symbol) {
+      return CAVAX[chainId];
+    } else if (outputTokenInfo) {
+      return new Token(
+        outputTokenInfo?.chainId,
+        outputTokenInfo?.address,
+        outputTokenInfo?.decimals,
+        outputTokenInfo?.symbol,
+        outputTokenInfo?.name,
+      );
+    } else if (gelatoOutputCurrency && gelatoOutputCurrency?.isToken) {
+      return new Token(
+        gelatoOutputCurrency?.chainId,
+        gelatoOutputCurrency?.address,
+        gelatoOutputCurrency?.decimals,
+        gelatoOutputCurrency?.symbol,
+        gelatoOutputCurrency?.name,
+      );
+    } else {
+      return undefined;
+    }
+  };
 
   const handleActiveTab = (tab: 'SELL' | 'BUY') => {
     if (activeTab === tab) return;
@@ -172,7 +178,6 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
     txHash: undefined,
   });
 
-  // const route = trade?.route
   const tradePrice = trade?.executionPrice;
 
   // check whether the user has approved the router on the input token
@@ -333,6 +338,16 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
 
   const isAEBToken = useIsSelectedAEBToken();
 
+  const handlePlaceOrder = () => {
+    setSwapState({
+      tradeToConfirm: trade as any,
+      attemptingTxn: false,
+      swapErrorMessage: undefined,
+      showConfirm: true,
+      txHash: undefined,
+    });
+  };
+
   const renderButton = () => {
     if (!account) {
       return (
@@ -361,15 +376,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
 
           <Button
             variant="primary"
-            onClick={() => {
-              setSwapState({
-                tradeToConfirm: trade as any,
-                attemptingTxn: false,
-                swapErrorMessage: undefined,
-                showConfirm: true,
-                txHash: undefined,
-              });
-            }}
+            onClick={() => handlePlaceOrder()}
             id="swap-button"
             isDisabled={!isValid || approval !== ApprovalState.APPROVED}
             //error={isValid}
@@ -383,15 +390,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
     return (
       <Button
         variant="primary"
-        onClick={() => {
-          setSwapState({
-            tradeToConfirm: trade as any,
-            attemptingTxn: false,
-            swapErrorMessage: undefined,
-            showConfirm: true,
-            txHash: undefined,
-          });
-        }}
+        onClick={() => handlePlaceOrder()}
         id="swap-button"
         isDisabled={!isValid || !!swapInputError}
         backgroundColor={isValid ? 'primary' : undefined}
@@ -427,6 +426,15 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
       </Box>
     );
   };
+
+  const determineColor = () => {
+    if (currencies.input && currencies.output) {
+      return theme.text1;
+    } else return theme.text4;
+  };
+
+  const inputCurrency = getInputCurrency();
+  const outputCurrency = getOutputCurrency();
 
   return (
     <Root>
@@ -468,9 +476,9 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
           <Box width="100%" textAlign="center" alignItems="center" display="flex" justifyContent={'center'} mt={10}>
             <ArrowWrapper>
               {rateType === Rate.MUL ? (
-                <X size="16" color={currencies.input && currencies.output ? theme.text1 : theme.text4} />
+                <X size="16" color={determineColor()} />
               ) : (
-                <Divide size="16" color={currencies.input && currencies.output ? theme.text1 : theme.text4} />
+                <Divide size="16" color={determineColor()} />
               )}
             </ArrowWrapper>
           </Box>

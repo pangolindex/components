@@ -1,11 +1,10 @@
 import React, { cloneElement } from 'react';
 import toChildrenArray from '../../utils/toChildrenArray';
-import Step from './Step';
 import { StepWrapper } from './styles';
 import { StepsProps } from './types';
 
 const Steps: React.FC<StepsProps> = (props) => {
-  const { children, current, progressDot, onChange, allowChangeOnClick = true } = props;
+  const { children, current = 0, progressDot = false, onChange, allowChangeOnClick = true } = props;
 
   const onStepClick = (next: number) => {
     if (onChange && current !== next && allowChangeOnClick) {
@@ -32,13 +31,6 @@ const Steps: React.FC<StepsProps> = (props) => {
       })}
     </StepWrapper>
   );
-};
-
-Step;
-
-Steps.defaultProps = {
-  current: 0,
-  progressDot: false,
 };
 
 export default Steps;

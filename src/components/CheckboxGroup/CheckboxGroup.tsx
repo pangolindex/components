@@ -9,8 +9,8 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = (props) => {
 
   const [selected, setSelected] = useState([] as Array<any>);
 
-  const handleOnChange = (isChecked: boolean, checkValue: any) => {
-    const index = selected?.indexOf(checkValue as any);
+  const handleOnChange = (isChecked: boolean, checkValue: string) => {
+    const index = selected?.indexOf(checkValue);
     const newValues = [...selected];
 
     if (isChecked) {
@@ -26,8 +26,6 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = (props) => {
     if (value) {
       setSelected(value as Array<any>);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (
@@ -37,8 +35,8 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = (props) => {
           <Checkbox
             value={option.value}
             label={option.label}
-            onChange={(chekced: boolean, value: any) => {
-              handleOnChange(chekced, value);
+            onChange={(checked: boolean, someValue: string) => {
+              handleOnChange(checked, someValue);
             }}
             checked={selected?.indexOf(option.value) > -1 ? true : false}
             {...rest}
@@ -47,10 +45,6 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = (props) => {
       ))}
     </Root>
   );
-};
-
-CheckboxGroup.defaultProps = {
-  onChange: () => {},
 };
 
 export default CheckboxGroup;
