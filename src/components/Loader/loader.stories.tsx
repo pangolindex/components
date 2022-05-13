@@ -1,16 +1,16 @@
-// import { ComponentStory } from '@storybook/react';
-// import React from 'react';
-// import { Loader } from '.';
+import { ComponentStory } from '@storybook/react';
+import React from 'react';
+import { Loader } from '.';
 
-// export default {
-//   component: Loader,
-//   title: 'Pangolin/Loader',
-// };
+export default {
+  component: Loader,
+  title: 'Pangolin/Loader',
+};
 
-// const TemplateBox: ComponentStory<typeof Loader> = (args: any) => <Loader {...args} />;
+const TemplateBox: ComponentStory<typeof Loader> = (args: any) => <Loader {...args} />;
 
-// export const Default = TemplateBox.bind({});
-// Default.args = {
-//   size: 100,
-//   label: 'Loading',
-// };
+export const Default = TemplateBox.bind({});
+Default.args = {
+  size: 100,
+  label: 'Loading',
+};
