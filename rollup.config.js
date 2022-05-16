@@ -29,14 +29,16 @@ export default {
   input: 'src/index.tsx',
   output: [
     {
-      file: packageJson.main,
+      dir: 'dist',
       format: 'cjs',
       sourcemap: true,
+      inlineDynamicImports: true,
     },
     {
-      file: packageJson.module,
+      dir: 'dist',
       format: 'esm',
       sourcemap: true,
+      inlineDynamicImports: true,
     },
   ],
   plugins: plugins,
