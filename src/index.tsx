@@ -19,6 +19,10 @@ import ListsUpdater from './state/plists/updater';
 import MulticallUpdater from './state/pmulticall/updater';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+
+const queryClient = new QueryClient()
 
 export function PangolinProvider({
   chainId,
@@ -40,6 +44,7 @@ export function PangolinProvider({
       <MulticallUpdater />
       <TransactionUpdater />
       <ThemeProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
         <GelatoProvider
           library={library}
           chainId={chainId}
@@ -49,6 +54,7 @@ export function PangolinProvider({
         >
           {children}
         </GelatoProvider>
+      </QueryClientProvider>
       </ThemeProvider>
     </Web3Provider>
   );
