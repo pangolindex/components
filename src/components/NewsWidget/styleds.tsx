@@ -74,6 +74,7 @@ export const NewsContent = styled(Box)`
   font-size: 18px;
   line-height: 27px;
   height: 90% !important;
+  padding: 20px;
   & a {
     color: ${({ theme }) => theme.text7};
   }

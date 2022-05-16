@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from 'react';
-import Scrollbars from 'react-custom-scrollbars';
+// import Scrollbars from 'react-custom-scrollbars';
 import { ArrowLeft, ArrowRight } from 'react-feather';
 import ReactMarkdown from 'react-markdown';
 import Slider, { Settings } from 'react-slick';
@@ -7,7 +7,6 @@ import remarkGfm from 'remark-gfm';
 import { ThemeContext } from 'styled-components';
 import Earth from 'src/assets/images/earth.png';
 import { Box } from 'src/components/Box';
-
 import { Loader } from 'src/components/Loader';
 import { News, useGetNews } from 'src/state/pnews/hooks';
 
@@ -27,7 +26,7 @@ const NewsFeedSettings: Settings = {
 };
 
 const NewsWidget = () => {
-  const theme = useContext(ThemeContext);
+  // const theme = useContext(ThemeContext);
   const sliderRef = useRef<Slider | null>(null);
   const handleNewsNext = () => {
     sliderRef?.current?.slickNext();
@@ -54,15 +53,13 @@ const NewsWidget = () => {
               news.map((element: News) => (
                 <div key={element.id} style={{ height: '100%' }}>
                   <NewsContent>
-                    <Scrollbars
+                    {/* <Scrollbars
                       style={{ height: '100%', padding: '0px 10px' }}
-                      // eslint-disable-next-line react/prop-types
                       renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
                       renderThumbVertical={(props) => (
                         <div
                           {...props}
                           style={{
-                            // eslint-disable-next-line react/prop-types
                             ...props.style,
                             backgroundColor: theme.text1,
                             opacity: 0.2,
@@ -71,7 +68,7 @@ const NewsWidget = () => {
                           }}
                         />
                       )}
-                    >
+                    > */}
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         linkTarget={'_blank'}
@@ -88,7 +85,7 @@ const NewsWidget = () => {
                       >
                         {element.content}
                       </ReactMarkdown>
-                    </Scrollbars>
+                    {/* </Scrollbars> */}
                   </NewsContent>
                   <NewsDate>
                     {element?.updatedAt
@@ -96,7 +93,6 @@ const NewsWidget = () => {
                       : element?.createdAt.toLocaleTimeString()}
                     , {element.updatedAt ? element?.updatedAt?.toDateString() : element?.createdAt.toDateString()}
                   </NewsDate>
-                  {console.log(element.content)}
                 </div>
               ))}
           </Slider>
