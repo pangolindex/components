@@ -17,11 +17,13 @@ export const CloseColor = styled(Cross)`
   }
 `;
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ background?: string }>`
   ${({ theme }) => theme.flexColumnNoWrap}
   margin: 0;
   padding: 0;
   width: 100%;
+  max-width: 422px;
+  background-color: ${({ theme, background }) => (background ? background : theme.bg2)};
 `;
 
 export const HeaderRow = styled.div`
@@ -29,18 +31,14 @@ export const HeaderRow = styled.div`
   padding: 1rem 1rem;
   font-weight: 500;
   color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary : 'inherit')};
-  background-color: ${({ theme }) => theme.primary};
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 1rem;
   `};
 `;
 
 export const ContentWrapper = styled.div`
-  background-color: ${({ theme }) => theme.bg2};
-  padding: 2rem;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  ${({ theme }) => theme.mediaWidth.upToMedium`padding: 1rem`};
+  padding: 0 2rem 2rem 2rem;
+  ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0 1rem 1rem 1rem`};
 `;
 
 export const UpperSection = styled.div`

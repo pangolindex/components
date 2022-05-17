@@ -1,3 +1,5 @@
 export type WalletModalProps = {
-  visible: boolean;
+  open: boolean;
+  closeModal: () => void;
+  background?: string;
 };

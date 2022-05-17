@@ -5,9 +5,9 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import React, { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
-// import MetamaskIcon from 'src/assets/images/metamask.png';
-// import XDefiIcon from 'src/assets/images/xDefi.png';
-// import RabbyIcon from 'src/assets/images/rabby.svg';
+import MetamaskIcon from 'src/assets/images/metamask.png';
+import XDefiIcon from 'src/assets/images/xDefi.png';
+import RabbyIcon from 'src/assets/images/rabby.svg';
 import { gnosisSafe, injected, xDefi } from 'src/connectors';
 import { LANDING_PAGE, EVM_SUPPORTED_WALLETS, AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, WalletInfo } from 'src/constants';
 import usePrevious from 'src/hooks/usePrevious';
@@ -28,8 +28,6 @@ import { Modal, Box, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
 import { WalletModalProps } from './types';
-import { useModalOpen, useWalletModalToggle } from 'src/state/papplication/hooks';
-import { ApplicationModal } from 'src/state/papplication/actions';
 
 const WALLET_TUTORIAL = `${LANDING_PAGE}/tutorials/getting-started/#set-up-metamask`;
 
@@ -53,7 +51,7 @@ function addAvalancheNetwork() {
   });
 }
 
-const WalletModal: React.FC<WalletModalProps> = ({ visible }) => {
+const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background }) => {
   // important that these are destructed from the account-specific web3-react context
   const { active, account, connector, activate, error: web3Error } = useWeb3React();
   const [walletType, setWalletType] = useState('EVM CHAINS' as string);
@@ -69,15 +67,14 @@ const WalletModal: React.FC<WalletModalProps> = ({ visible }) => {
 
   const previousAccount = usePrevious(account);
 
-  const walletModalOpen = visible || useModalOpen(ApplicationModal.WALLET);
-  const toggleWalletModal = useWalletModalToggle();
+  const walletModalOpen = open;
 
   // close on connection, when logged out before
   useEffect(() => {
     if (account && !previousAccount && walletModalOpen) {
-      toggleWalletModal();
+      closeModal();
     }
-  }, [account, previousAccount, toggleWalletModal, walletModalOpen]);
+  }, [account, previousAccount, closeModal, walletModalOpen]);
 
   // always reset to account view
   useEffect(() => {
@@ -191,8 +188,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ visible }) => {
               link={option.href}
               header={option.name}
               subheader={null}
-              //icon={require('../../assets/images/' + option.iconName)} //TODO
-              icon={''}
+              icon={require('src/assets/images/' + option.iconName)}
             />
           );
         }
@@ -211,8 +207,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ visible }) => {
                 header={'Install Rabby Wallet'}
                 subheader={null}
                 link={'https://rabby.io/'}
-                // icon={RabbyIcon}
-                icon={''}
+                icon={RabbyIcon}
               />
             );
           }
@@ -229,8 +224,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ visible }) => {
                 header={'Install Metamask'}
                 subheader={null}
                 link={'https://metamask.io/'}
-                // icon={MetamaskIcon}
-                icon={''}
+                icon={MetamaskIcon}
               />
             );
           } else {
@@ -262,8 +256,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ visible }) => {
                 header={'Install XDEFI Wallet'}
                 subheader={null}
                 link={'https://www.xdefi.io/'}
-                // icon={XDefiIcon}
-                icon={''}
+                icon={XDefiIcon}
               />
             );
           } else {
@@ -299,81 +292,63 @@ const WalletModal: React.FC<WalletModalProps> = ({ visible }) => {
             link={option.href}
             header={option.name}
             subheader={null} //use option.descriptio to bring back multi-line
-            icon={''}
+            icon={require('src/assets/images/' + option.iconName)}
           />
         )
       );
     });
   }
 
-  function getModalContent() {
-    const isXDEFI = window.xfi && window.xfi.ethereum && window.xfi.ethereum.isXDEFI;
-    const isMetamaskOrCbWallet = isMetamask || isCbWallet || isXDEFI;
-
+  const renderHeader = () => {
     if (web3Error) {
       return (
-        <UpperSection>
-          <CloseIcon
+        <HeaderRow>{web3Error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}</HeaderRow>
+      );
+    } else if (walletView !== WALLET_VIEWS.ACCOUNT) {
+      return (
+        <HeaderRow>
+          <HoverText
             onClick={() => {
-              toggleWalletModal();
+              setPendingError(false);
+              setWalletView(WALLET_VIEWS.ACCOUNT);
             }}
           >
-            <CloseColor />
-          </CloseIcon>
-          <HeaderRow>{web3Error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}</HeaderRow>
-          <ContentWrapper>
-            {web3Error instanceof UnsupportedChainIdError ? (
-              <>
-                <h5>Please connect to the appropriate Avalanche network.</h5>
-                {isMetamaskOrCbWallet && (
-                  <Button variant="primary" onClick={addAvalancheNetwork}>
-                    Switch to Avalanche Chain
-                  </Button>
-                )}
-              </>
-            ) : (
-              'Error connecting. Try refreshing the page.'
-            )}
-          </ContentWrapper>
-        </UpperSection>
+            Back
+          </HoverText>
+        </HeaderRow>
+      );
+    } else {
+      return (
+        <HeaderRow>
+          <HoverText>Connect to a wallet</HoverText>
+        </HeaderRow>
       );
     }
+  };
 
-    return (
-      <UpperSection>
-        <CloseIcon
-          onClick={() => {
-            toggleWalletModal();
-          }}
-        >
-          <CloseColor />
-        </CloseIcon>
-        {walletView !== WALLET_VIEWS.ACCOUNT ? (
-          <HeaderRow color="blue">
-            <HoverText
-              onClick={() => {
-                setPendingError(false);
-                setWalletView(WALLET_VIEWS.ACCOUNT);
-              }}
-            >
-              Back
-            </HoverText>
-          </HeaderRow>
-        ) : (
-          <HeaderRow>
-            <HoverText>Connect to a wallet</HoverText>
-          </HeaderRow>
-        )}
+  const renderContent = () => {
+    const isXDEFI = window.xfi && window.xfi.ethereum && window.xfi.ethereum.isXDEFI;
+    const isMetamaskOrCbWallet = isMetamask || isCbWallet || isXDEFI;
+    if (web3Error) {
+      return (
         <ContentWrapper>
-          <Box mt="5px" width="100%" mb="5px">
-            <ToggleButtons
-              options={['EVM CHAINS', 'NON-EVM CHAINS']}
-              value={walletType}
-              onChange={(value) => {
-                setWalletType(value);
-              }}
-            />
-          </Box>
+          {web3Error instanceof UnsupportedChainIdError ? (
+            <>
+              <h5>Please connect to the appropriate Avalanche network.</h5>
+              {isMetamaskOrCbWallet && (
+                <Button variant="primary" onClick={addAvalancheNetwork}>
+                  Switch to Avalanche Chain
+                </Button>
+              )}
+            </>
+          ) : (
+            'Error connecting. Try refreshing the page.'
+          )}
+        </ContentWrapper>
+      );
+    } else {
+      return (
+        <ContentWrapper>
           {walletView === WALLET_VIEWS.PENDING ? (
             <PendingView
               option={selectedOption}
@@ -383,7 +358,18 @@ const WalletModal: React.FC<WalletModalProps> = ({ visible }) => {
               tryActivation={tryActivation}
             />
           ) : (
-            <OptionGrid>{getOptions()}</OptionGrid>
+            <>
+              <Box mt="5px" width="100%" mb="5px">
+                <ToggleButtons
+                  options={['EVM CHAINS', 'NON-EVM CHAINS']}
+                  value={walletType}
+                  onChange={(value) => {
+                    setWalletType(value);
+                  }}
+                />
+              </Box>
+              <OptionGrid>{getOptions()}</OptionGrid>
+            </>
           )}
           {walletView !== WALLET_VIEWS.PENDING && (
             <Blurb>
@@ -392,20 +378,34 @@ const WalletModal: React.FC<WalletModalProps> = ({ visible }) => {
             </Blurb>
           )}
         </ContentWrapper>
+      );
+    }
+  };
+
+  function getModalContent() {
+    return (
+      <UpperSection>
+        <CloseIcon
+          onClick={() => {
+            closeModal();
+          }}
+        >
+          <CloseColor />
+        </CloseIcon>
+        {renderHeader()}
+        {renderContent()}
       </UpperSection>
     );
   }
-
-  console.log('tets=====');
 
   return (
     <Modal
       isOpen={walletModalOpen}
       onDismiss={() => {
-        toggleWalletModal();
+        closeModal();
       }}
     >
-      <Wrapper>Test</Wrapper>
+      <Wrapper background={background}>{getModalContent()}</Wrapper>
     </Modal>
   );
 };

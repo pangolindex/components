@@ -49,8 +49,7 @@ export default function PendingView({
           color={option.color}
           header={option.name}
           subheader={option.description}
-          //icon={require('../../assets/images/' + option.iconName)} //TODO
-          icon={''}
+          icon={require('src/assets/images/' + option.iconName)}
         />
       )}
     </PendingSection>

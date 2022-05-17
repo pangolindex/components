@@ -29,16 +29,14 @@ export default {
   input: 'src/index.tsx',
   output: [
     {
-      dir: 'dist',
+      dir: 'lib/cjs',
       format: 'cjs',
       sourcemap: true,
-      inlineDynamicImports: true,
     },
     {
-      dir: 'dist',
+      dir: 'dist/esm',
       format: 'esm',
       sourcemap: true,
-      inlineDynamicImports: true,
     },
   ],
   plugins: plugins,

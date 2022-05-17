@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { ComponentStory } from '@storybook/react';
 import WalletModal from '.';
 
 export default {
@@ -6,4 +7,19 @@ export default {
   title: 'Pangolin/WalletModal',
 };
 
-export const Wallet = () => <WalletModal visible={true} />;
+const SampleWallet: ComponentStory<typeof WalletModal> = () => {
+  const [open, setOpen] = useState<boolean>(true);
+
+  return (
+    <div style={{ background: '#000', padding: 50 }}>
+      <WalletModal
+        open={open}
+        closeModal={() => {
+          setOpen(false);
+        }}
+      />
+    </div>
+  );
+};
+
+export const Wallet = SampleWallet.bind({});

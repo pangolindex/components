@@ -1,8 +1,8 @@
 {
   "name": "@pangolindex/components",
   "version": "2.0.13",
-  "main": "lib/index.js",
-  "module": "lib/index.esm.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
   "engines": {
     "node": ">=14.17.0"
   },
@@ -111,7 +111,12 @@
     "react": ">=17.0.1",
     "react-dom": ">=17.0.1",
     "react-redux": "^7.2.0",
-    "redux-localstorage-simple": "^2.4.1"
+    "redux-localstorage-simple": "^2.4.1",
+    "@web3-react/core": "6.0.9",
+    "@web3-react/fortmatic-connector": "^6.0.9",
+    "@web3-react/portis-connector": "6.0.9",
+    "@web3-react/walletconnect-connector": "6.1.1",
+    "@web3-react/walletlink-connector": "6.2.11"
   },
   "directories": {
     "lib": "lib"
