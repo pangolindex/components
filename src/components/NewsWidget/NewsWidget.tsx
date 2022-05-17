@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from 'react';
-// import Scrollbars from 'react-custom-scrollbars';
+import Scrollbars from 'react-custom-scrollbars';
 import { ArrowLeft, ArrowRight } from 'react-feather';
 import ReactMarkdown from 'react-markdown';
 import Slider, { Settings } from 'react-slick';
@@ -26,7 +26,7 @@ const NewsFeedSettings: Settings = {
 };
 
 const NewsWidget = () => {
-  // const theme = useContext(ThemeContext);
+  const theme = useContext(ThemeContext);
   const sliderRef = useRef<Slider | null>(null);
   const handleNewsNext = () => {
     sliderRef?.current?.slickNext();
@@ -53,8 +53,8 @@ const NewsWidget = () => {
               news.map((element: News) => (
                 <div key={element.id} style={{ height: '100%' }}>
                   <NewsContent>
-                    {/* <Scrollbars
-                      style={{ height: '100%', padding: '0px 10px' }}
+                    <Scrollbars
+                      style={{ minHeight: '400px', padding: '0px 10px' }}
                       renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
                       renderThumbVertical={(props) => (
                         <div
@@ -68,7 +68,7 @@ const NewsWidget = () => {
                           }}
                         />
                       )}
-                    > */}
+                    >
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         linkTarget={'_blank'}
@@ -85,7 +85,7 @@ const NewsWidget = () => {
                       >
                         {element.content}
                       </ReactMarkdown>
-                    {/* </Scrollbars> */}
+                    </Scrollbars>
                   </NewsContent>
                   <NewsDate>
                     {element?.updatedAt
