@@ -25,7 +25,11 @@ const NewsFeedSettings: Settings = {
   autoplaySpeed: 10000,
 };
 
-const NewsWidget = () => {
+interface Props {
+  boxHeight?: string;
+}
+
+const NewsWidget: React.FC<Props> = ({boxHeight = "400px"}) => {
   const theme = useContext(ThemeContext);
   const sliderRef = useRef<Slider | null>(null);
   const handleNewsNext = () => {
@@ -54,7 +58,7 @@ const NewsWidget = () => {
                 <div key={element.id} style={{ height: '100%' }}>
                   <NewsContent>
                     <Scrollbars
-                      style={{ minHeight: '400px', padding: '0px 10px' }}
+                      style={{ minHeight: boxHeight, padding: '0px 10px' }}
                       renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
                       renderThumbVertical={(props) => (
                         <div
