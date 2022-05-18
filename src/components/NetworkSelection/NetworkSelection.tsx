@@ -1,9 +1,7 @@
 import { ALL_CHAINS, Chain } from '@pangolindex/sdk';
 import React, { useEffect, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { Box, Text } from 'src/components';
-import Modal from 'src/components/Modal';
-import { ToggleButtons } from 'src/components/ToggleButtons';
+import { Box, Modal, Text, ToggleButtons } from 'src/components';
 import { ButtonFrame, ChainButton, ChainsList, CloseButton, Frame, Logo } from './styled';
 import { NetworkProps } from './types';
 
