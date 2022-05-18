@@ -1,9 +1,8 @@
 import { ALL_CHAINS, Chain } from '@pangolindex/sdk';
 import React, { useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { Box } from 'src/components/Box';
+import { Box, Text } from 'src/components';
 import Modal from 'src/components/Modal';
-import { Text } from 'src/components/Text';
 import { ToggleButtons } from 'src/components/ToggleButtons';
 import { ButtonFrame, ChainButton, ChainsList, CloseButton, Frame, Logo } from './styled';
 import { NetworkProps } from './types';
@@ -11,6 +10,11 @@ import { NetworkProps } from './types';
 interface MetamaskError {
   code: number;
   message: string;
+}
+
+enum NETWORK_TYPE {
+  MAINNET = 'Mainnet',
+  TESTNET = 'Testnet',
 }
 
 const NetworkSelection: React.FC<NetworkProps> = (props) => {
@@ -63,10 +67,10 @@ const NetworkSelection: React.FC<NetworkProps> = (props) => {
         </Text>
         <ButtonFrame>
           <ToggleButtons
-            options={['Mainnet', 'Testnet']}
-            value={mainnet === true ? 'Mainnet' : 'Testnet'}
+            options={[NETWORK_TYPE.MAINNET, NETWORK_TYPE.TESTNET]}
+            value={mainnet === true ? NETWORK_TYPE.MAINNET : NETWORK_TYPE.TESTNET}
             onChange={(value) => {
-              setMainnet(value === 'Mainnet');
+              setMainnet(value === NETWORK_TYPE.MAINNET);
             }}
           />
         </ButtonFrame>
