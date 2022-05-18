@@ -51,12 +51,12 @@ function addAvalancheNetwork() {
   });
 }
 
-const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background }) => {
+const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background, shouldShowBackButton }) => {
   // important that these are destructed from the account-specific web3-react context
   const { active, account, connector, activate, error: web3Error } = useWeb3React();
   const [walletType, setWalletType] = useState('EVM CHAINS' as string);
 
-  const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT);
+  const [walletView, setWalletView] = useState('');
 
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>();
   const [selectedOption, setSelectedOption] = useState<WalletInfo | undefined>();
@@ -68,6 +68,8 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background 
   const previousAccount = usePrevious(account);
 
   const walletModalOpen = open;
+
+  let walletOptions = walletType === 'EVM CHAINS' ? EVM_SUPPORTED_WALLETS : [];
 
   // close on connection, when logged out before
   useEffect(() => {
@@ -84,7 +86,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background 
     }
   }, [walletModalOpen]);
 
-  // close modal when a connection is successful
+  // // close modal when a connection is successful
   const activePrevious = usePrevious(active);
   const connectorPrevious = usePrevious(connector);
   useEffect(() => {
@@ -106,9 +108,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background 
     activationConnector: AbstractConnector | SafeAppConnector | undefined,
     option: WalletInfo | undefined,
   ) => {
-    const name = Object.keys(EVM_SUPPORTED_WALLETS).find(
-      (key) => EVM_SUPPORTED_WALLETS[key].connector === activationConnector,
-    );
+    const name = Object.keys(walletOptions).find((key) => walletOptions[key].connector === activationConnector);
     // log selected wallet
     ReactGA.event({
       category: 'Wallet',
@@ -159,9 +159,9 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background 
       }
       return EVM_SUPPORTED_WALLETS.INJECTED;
     }
-    const name = Object.keys(EVM_SUPPORTED_WALLETS).find((key) => EVM_SUPPORTED_WALLETS[key].connector === connector);
+    const name = Object.keys(walletOptions).find((key) => walletOptions[key].connector === connector);
     if (name) {
-      return EVM_SUPPORTED_WALLETS[name];
+      return walletOptions[name];
     }
     return undefined;
   }
@@ -171,8 +171,8 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background 
     const isXDEFI = window.ethereum && window.ethereum.isXDEFI;
     const activeOption = getActiveOption();
 
-    return Object.keys(EVM_SUPPORTED_WALLETS).map((key) => {
-      const option = EVM_SUPPORTED_WALLETS[key];
+    return Object.keys(walletOptions).map((key) => {
+      const option = walletOptions[key];
       // check for mobile options
       if (isMobile) {
         if (!window.web3 && !window.ethereum && option.mobile) {
@@ -304,7 +304,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background 
       return (
         <HeaderRow>{web3Error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}</HeaderRow>
       );
-    } else if (walletView !== WALLET_VIEWS.ACCOUNT) {
+    } else if (walletView !== WALLET_VIEWS.ACCOUNT || shouldShowBackButton) {
       return (
         <HeaderRow>
           <HoverText
@@ -385,14 +385,18 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background 
   function getModalContent() {
     return (
       <UpperSection>
-        <CloseIcon
-          onClick={() => {
-            closeModal();
-          }}
-        >
-          <CloseColor />
-        </CloseIcon>
-        {renderHeader()}
+        <Box display="flex" justifyContent="space-between" alignItems="center" padding="0 2rem">
+          {renderHeader()}
+
+          <CloseIcon
+            onClick={() => {
+              closeModal();
+            }}
+          >
+            <CloseColor />
+          </CloseIcon>
+        </Box>
+
         {renderContent()}
       </UpperSection>
     );

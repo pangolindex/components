@@ -2,9 +2,6 @@ import styled from 'styled-components';
 import { Cross } from '../Icons';
 
 export const CloseIcon = styled.div`
-  position: absolute;
-  right: 1rem;
-  top: 14px;
   &:hover {
     cursor: pointer;
     opacity: 0.6;
@@ -13,7 +10,7 @@ export const CloseIcon = styled.div`
 
 export const CloseColor = styled(Cross)`
   path {
-    stroke: ${({ theme }) => theme.text4};
+    stroke: ${({ theme }) => theme.color4};
   }
 `;
 
@@ -30,7 +27,7 @@ export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
   padding: 1rem 1rem;
   font-weight: 500;
-  color: ${(props) => (props.color === 'blue' ? ({ theme }) => theme.primary : 'inherit')};
+  color: ${({ theme }) => theme.color4};
   ${({ theme }) => theme.mediaWidth.upToMedium`
     padding: 1rem;
   `};

@@ -48,7 +48,11 @@ export default function Modal({ isOpen, onDismiss, children, overlayBG }: ModalP
   return (
     <Portal>
       <StyledDialogOverlay isOpen={isOpen} background={overlayBG}>
-        {isOpen && <Container ref={node as any}>{children}</Container>}
+        {isOpen && (
+          <Container id="test-modl" ref={node as any}>
+            {children}
+          </Container>
+        )}
       </StyledDialogOverlay>
     </Portal>
   );
