@@ -40,10 +40,6 @@ export default {
       format: 'esm',
       sourcemap: true,
     },
-    {
-      file: "dist/index.js",
-      format: "esm"
-    },
   ],
   plugins: plugins,
 };

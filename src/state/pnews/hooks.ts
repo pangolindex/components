@@ -1,6 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
 import { useQuery } from 'react-query'
+import { DIRECTUS_URL_NEWS } from 'src/constants'
 
 export interface News {
   id: number
@@ -23,7 +24,7 @@ export function useGetNews() {
   )
 
   return useQuery('getNews', async () => {
-    const response = await axios.get(`https://p7gm7mqi.directus.app/items/news?${query}`, {
+    const response = await axios.get(`${DIRECTUS_URL_NEWS}${query}`, {
       timeout: 1000
     })
     const data = response.data
