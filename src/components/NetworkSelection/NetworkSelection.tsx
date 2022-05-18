@@ -29,7 +29,6 @@ const NetworkSelection: React.FC<NetworkProps> = (props) => {
     else if (chains.length / 2 <= 2) setChainListHeight(116);
     else setChainListHeight(184);
   }, [mainnet]);
-
   const changeChain = async (chain: Chain) => {
     if (isMetaMask && ethereum) {
       try {
