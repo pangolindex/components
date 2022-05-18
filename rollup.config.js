@@ -5,10 +5,8 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 import packageJson from './package.json';
-import css from 'rollup-plugin-import-css'
 
 let plugins = [
-  css(),
   peerDepsExternal(),
   resolve(),
   commonjs(),

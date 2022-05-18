@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "3.0.0",
+  "version": "3.0.0-rc.1",
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
   "engines": {
@@ -30,8 +30,7 @@
   "license": "ISC",
   "dependencies": {
     "cids": "^1.1.9",
-    "react-switch": "^6.0.0",
-    "rollup-plugin-import-css": "^3.0.3"
+    "react-switch": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
@@ -50,6 +49,7 @@
     "@types/prop-types": "^15.7.4",
     "@types/qs": "^6.9.7",
     "@types/react": "^17.0.30",
+    "@types/react-custom-scrollbars": "^4.0.9",
     "@types/react-is": "^17.0.2",
     "@types/react-redux": "^7.1.23",
     "@types/react-router-dom": "^5.3.3",
@@ -58,7 +58,6 @@
     "@types/styled-system": "^5.1.13",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
-    "@types/react-custom-scrollbars": "^4.0.9",
     "@web3-react/core": "^6.1.9",
     "axios": "^0.26.0",
     "babel-loader": "^8.2.2",
@@ -93,7 +92,7 @@
     "react-query": "^3.34.16",
     "react-redux": "^7.2.0",
     "react-router-dom": "^6.2.2",
-    "react-slick": "^0.28.1",
+    "react-slick": "0.28.1",
     "redux-localstorage-simple": "^2.4.1",
     "remark-gfm": "^3.0.1",
     "rollup": "^2.58.0",

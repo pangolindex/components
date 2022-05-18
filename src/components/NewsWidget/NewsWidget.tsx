@@ -11,8 +11,6 @@ import { Loader } from 'src/components/Loader';
 import { News, useGetNews } from 'src/state/pnews/hooks';
 
 import { NewsContent, NewsDate, NewsSection, NewsTitle, SlickNext } from './styleds';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 
 const NewsFeedSettings: Settings = {
   dots: true,
@@ -29,7 +27,7 @@ interface Props {
   boxHeight?: string;
 }
 
-const NewsWidget: React.FC<Props> = ({boxHeight = "400px"}) => {
+const NewsWidget: React.FC<Props> = ({ boxHeight = '400px' }) => {
   const theme = useContext(ThemeContext);
   const sliderRef = useRef<Slider | null>(null);
   const handleNewsNext = () => {
@@ -59,11 +57,13 @@ const NewsWidget: React.FC<Props> = ({boxHeight = "400px"}) => {
                   <NewsContent>
                     <Scrollbars
                       style={{ minHeight: boxHeight, padding: '0px 10px' }}
+                      // eslint-disable-next-line react/prop-types
                       renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
                       renderThumbVertical={(props) => (
                         <div
                           {...props}
                           style={{
+                            // eslint-disable-next-line react/prop-types
                             ...props.style,
                             backgroundColor: theme.text1,
                             opacity: 0.2,
@@ -102,9 +102,7 @@ const NewsWidget: React.FC<Props> = ({boxHeight = "400px"}) => {
           </Slider>
         ) : (
           <Box display="flex" alignItems="center" justifyContent="center" height="100%">
-            <Loader
-              size={100}
-            />
+            <Loader size={100} />
           </Box>
         )}
       </Box>
