@@ -1,5 +1,5 @@
 import { ALL_CHAINS, Chain } from '@pangolindex/sdk';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Box, Text } from 'src/components';
 import Modal from 'src/components/Modal';
@@ -20,13 +20,17 @@ enum NETWORK_TYPE {
 const NetworkSelection: React.FC<NetworkProps> = (props) => {
   const { open, closeModal } = props;
   const [mainnet, setMainnet] = useState(true);
-
+  const [chainListHeight, setChainListHeight] = useState(48);
   const { ethereum } = window;
   const isMetaMask = ethereum && ethereum.isMetaMask;
 
   const chains = ALL_CHAINS.filter((chain) => chain.pangolin_is_live && chain.mainnet === mainnet);
 
-  const chainListHeight = chains.length / 2 <= 1 ? 48 : chains.length / 2 <= 2 ? 116 : 184;
+  useEffect(() => {
+    if (chains.length / 2 <= 1) setChainListHeight(48);
+    else if (chains.length / 2 <= 2) setChainListHeight(116);
+    else setChainListHeight(184);
+  }, [mainnet]);
 
   const changeChain = async (chain: Chain) => {
     if (isMetaMask && ethereum) {
