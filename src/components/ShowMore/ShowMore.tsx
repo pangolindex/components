@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { ChevronDown, ChevronUp } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Text } from 'src/components';
 import { Wrapper } from './styled';
@@ -12,13 +11,12 @@ interface Props {
 
 const ShowMore: React.FC<Props> = (props) => {
   const { onToggle, showMore } = props;
-  const { t } = useTranslation();
   const theme = useContext(ThemeContext);
 
   return (
     <Wrapper onClick={() => onToggle()}>
       <Text color="text2" fontSize={16} fontWeight={500} marginLeft={'6px'} textAlign="center">
-        {showMore ? t('swapPage.seeLess') : t('swapPage.seeMore')}
+        {showMore ? 'See Less' : 'See More'}
       </Text>
 
       {showMore ? (

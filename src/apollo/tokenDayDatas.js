@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import gql from 'graphql-tag';
 
 export const GET_TOKEN_DAY_DATAS = gql`
   query tokenDayDatas($token: String!) {
@@ -11,4 +11,4 @@ export const GET_TOKEN_DAY_DATAS = gql`
       }
     }
   }
-`
+`;

@@ -2,7 +2,6 @@ import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import React, { useContext, useMemo, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Plus } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, ShowMore } from 'src/components';
 import { PNG } from 'src/constants/tokens';
@@ -23,7 +22,6 @@ type Props = {
 
 const WatchList: React.FC<Props> = ({ isLimitOrders }) => {
   const { chainId = ChainId.AVALANCHE } = useActiveWeb3React();
-  const { t } = useTranslation();
   const [showMore, setShowMore] = useState(false as boolean);
   const allTokens = useAllTokens();
   const coins = Object.values(allTokens || {});
@@ -48,7 +46,7 @@ const WatchList: React.FC<Props> = ({ isLimitOrders }) => {
   return (
     <WatchListRoot>
       <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Title>{t('swapPage.watchList')}</Title>
+        <Title>Watchlist</Title>
         <Box bgColor={theme.bg5 as any} position="relative" p={'5px'} ref={node as any}>
           <Box ref={referenceElement} onClick={toggle}>
             <Button

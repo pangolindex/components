@@ -1,7 +1,6 @@
 import { Token } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import { Link } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { Box, Button, CurrencyLogo, Text } from 'src/components';
 import { ANALYTICS_PAGE, BETA_MENU_LINK, TIMEFRAME } from 'src/constants';
@@ -23,7 +22,6 @@ export const RedirectContext = React.createContext<boolean>(false);
 const CoinChart: React.FC<Props> = ({ coin }) => {
   const chainId = useChainId();
 
-  const { t } = useTranslation();
   const weekFrame = TIMEFRAME.find((value) => value.label === '1W');
 
   const [timeWindow, setTimeWindow] = useState(
@@ -105,7 +103,7 @@ const CoinChart: React.FC<Props> = ({ coin }) => {
               target=""
               as="a"
             >
-              {t('swapPage.trade')}
+              Trade
             </Button>
           ) : (
             <Button
@@ -118,7 +116,7 @@ const CoinChart: React.FC<Props> = ({ coin }) => {
                 onCurrencySelect(coin);
               }}
             >
-              {t('swapPage.trade')}
+              Trade
             </Button>
           )}
         </TrackIcons>

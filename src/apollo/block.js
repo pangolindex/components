@@ -1,4 +1,4 @@
-import gql from 'graphql-tag'
+import gql from 'graphql-tag';
 
 export const GET_BLOCK = gql`
   query blocks($timestampFrom: Int!, $timestampTo: Int!) {
@@ -13,38 +13,39 @@ export const GET_BLOCK = gql`
       timestamp
     }
   }
-`
+`;
 
-export const GET_BLOCKS = timestamps => {
-  let queryString = 'query blocks {'
-  queryString += timestamps.map(timestamp => {
-    return `t${timestamp}:blocks(first: 1, orderBy: timestamp, orderDirection: asc, where: { timestamp_gt: ${timestamp}, timestamp_lt: ${timestamp +
-      60 * 60 * 24 * 7} }) {
+export const GET_BLOCKS = (timestamps) => {
+  let queryString = 'query blocks {';
+  queryString += timestamps.map((timestamp) => {
+    return `t${timestamp}:blocks(first: 1, orderBy: timestamp, orderDirection: asc, where: { timestamp_gt: ${timestamp}, timestamp_lt: ${
+      timestamp + 60 * 60 * 24 * 7
+    } }) {
       number
-    }`
-  })
-  queryString += '}'
-  return gql(queryString)
-}
+    }`;
+  });
+  queryString += '}';
+  return gql(queryString);
+};
 
 export const PRICES_BY_BLOCK = (tokenAddress, blocks) => {
-  let queryString = 'query blocks {'
+  let queryString = 'query blocks {';
   queryString += blocks.map(
-    block => `
+    (block) => `
       t${block.timestamp}:token(id:"${tokenAddress}", block: { number: ${block.number} }) { 
         derivedETH
       }
-    `
-  )
-  queryString += ','
+    `,
+  );
+  queryString += ',';
   queryString += blocks.map(
-    block => `
+    (block) => `
       b${block.timestamp}: bundle(id:"1", block: { number: ${block.number} }) { 
         ethPrice
       }
-    `
-  )
+    `,
+  );
 
-  queryString += '}'
-  return gql(queryString)
-}
+  queryString += '}';
+  return gql(queryString);
+};
