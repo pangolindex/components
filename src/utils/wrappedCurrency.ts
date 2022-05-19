@@ -19,3 +19,8 @@ export function wrappedGelatoCurrency(
     ? convertToPangolinToken(currency)
     : undefined;
 }
+
+export function unwrappedToken(token: Token, chainId: ChainId): Currency | Token {
+  if (token?.equals?.(WAVAX[token.chainId])) return CAVAX[chainId];
+  return token;
+}

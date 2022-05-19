@@ -215,3 +215,58 @@ export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16))
 export const PANGOLIN_TOKENS_REPO_RAW_BASE_URL = `https://raw.githubusercontent.com/pangolindex/tokens`;
 
 export type LogoSize = 24 | 48;
+
+export const ANALYTICS_PAGE = 'https://info.pangolin.exchange';
+
+export enum BETA_MENU_LINK {
+  dashboard = '/beta/dashboard',
+  swap = '/beta/swap',
+  buy = '/beta/buy',
+  pool = '/beta/pool',
+  stake = '/beta/stake',
+  vote = '/beta/vote',
+  migrate = '/beta/migrate',
+  bridge = '/beta/bridge',
+  airdrop = '/beta/airdrop',
+}
+
+export const TIMEFRAME = [
+  {
+    description: 'HOUR',
+    label: '1H',
+    interval: 60,
+    momentIdentifier: 'hour',
+  },
+  {
+    description: 'DAY',
+    label: '1D',
+    interval: 3600,
+    momentIdentifier: 'day',
+  },
+  {
+    description: 'WEEK',
+    label: '1W',
+    interval: 86400,
+    momentIdentifier: 'week',
+  },
+  {
+    description: 'MONTH',
+    label: '1M',
+    interval: 604800,
+    momentIdentifier: 'month',
+  },
+  {
+    description: 'YEAR',
+    label: '1Y',
+    interval: 2629746,
+    momentIdentifier: 'year',
+  },
+  {
+    description: 'ALL',
+    label: 'ALL',
+    interval: 2629746,
+    momentIdentifier: '',
+  },
+];
+
+export const SUBGRAPH_BASE_URL = process.env.REACT_APP_SUBGRAPH_BASE_URL;

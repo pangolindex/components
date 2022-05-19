@@ -30,7 +30,8 @@
   "license": "ISC",
   "dependencies": {
     "cids": "^1.1.9",
-    "react-switch": "^6.0.0"
+    "react-switch": "^6.0.0",
+    "graphql-request": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
@@ -56,6 +57,10 @@
     "@types/styled-system": "^5.1.13",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
+    "@types/react-virtualized-auto-sizer": "^1.0.0",
+    "@types/numeral": "^2.0.2",
+    "@types/react-window": "^1.8.2",
+    "@types/react-custom-scrollbars": "^4.0.9",
     "@web3-react/core": "^6.1.9",
     "babel-loader": "^8.2.2",
     "chokidar-cli": "^3.0.0",
@@ -96,6 +101,16 @@
     "styled-system": "^5.1.5",
     "tslib": "^2.3.1",
     "typescript": "^4.4.4",
+    "recharts": "^2.1.6",
+    "graphql-tag": "^2.11.0",
+    "dayjs": "^1.10.7",
+    "apollo-client": "^2.6.10",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-link-http": "^1.5.17",
+    "react-virtualized-auto-sizer": "^1.0.2",
+    "numeral": "^2.0.6",
+    "react-i18next": "^10.7.0",
+    "react-window": "^1.8.5",
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
