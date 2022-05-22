@@ -3,11 +3,11 @@ Ui Kit for Pangolin
 
 ## Installation
 
-`yarn add @pangolindex/components @gelatonetwork/limit-orders-react@2.4.0`
+`yarn add @pangolindex/components @gelatonetwork/limit-orders-react@2.4.0 @pangolindex/sdk`
 
 or
 
-`npm install @pangolindex/components @gelatonetwork/limit-orders-react@2.4.0`
+`npm install @pangolindex/components @gelatonetwork/limit-orders-react@2.4.0 @pangolindex/sdk`
 
 ## Getting started
 
