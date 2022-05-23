@@ -24,8 +24,9 @@ const WatchList: React.FC<Props> = ({ isLimitOrders }) => {
   const { chainId = ChainId.AVALANCHE } = useActiveWeb3React();
   const [showMore, setShowMore] = useState(false as boolean);
   const allTokens = useAllTokens();
+
+  console.log('index coin :', allTokens);
   const coins = Object.values(allTokens || {});
-  console.log('index coin :', coins);
   const watchListCurrencies = useSelectedCurrencyLists();
   const theme = useContext(ThemeContext);
   const [selectedToken, setSelectedToken] = useState(watchListCurrencies?.[0] || ({} as Token));
