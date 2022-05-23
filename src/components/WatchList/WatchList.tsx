@@ -41,7 +41,6 @@ const WatchList: React.FC<Props> = ({ isLimitOrders }) => {
 
     [chainId, watchListCurrencies],
   );
-
   useOnClickOutside(node, open ? toggle : undefined);
   return (
     <WatchListRoot>
