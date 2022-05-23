@@ -9,8 +9,8 @@ import Earth from 'src/assets/images/earth.png';
 import { Box } from 'src/components/Box';
 import { Loader } from 'src/components/Loader';
 import { News, useGetNews } from 'src/state/pnews/hooks';
-
 import { NewsContent, NewsDate, NewsSection, NewsTitle, SlickNext } from './styleds';
+import { NewsProps } from './types';
 
 const NewsFeedSettings: Settings = {
   dots: true,
@@ -23,11 +23,7 @@ const NewsFeedSettings: Settings = {
   autoplaySpeed: 10000,
 };
 
-interface Props {
-  boxHeight?: string;
-}
-
-const NewsWidget: React.FC<Props> = ({ boxHeight = '400px' }) => {
+const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
   const theme = useContext(ThemeContext);
   const sliderRef = useRef<Slider | null>(null);
   const handleNewsNext = () => {
