@@ -13,7 +13,7 @@ export interface LogoProps {
 const Logo = ({ srcs, alt, ...rest }: LogoProps) => {
   const [, refresh] = useState<number>(0);
 
-  const src: string | undefined = srcs.find((src) => !BAD_SRCS[src]);
+  const src: string | undefined = srcs.find((srcVal) => !BAD_SRCS[srcVal]);
 
   if (src) {
     return (
@@ -22,7 +22,7 @@ const Logo = ({ srcs, alt, ...rest }: LogoProps) => {
         alt={alt}
         src={src}
         onError={() => {
-          if (src) BAD_SRCS[src] = true;
+          BAD_SRCS[src] = true;
           refresh((i) => i + 1);
         }}
       />

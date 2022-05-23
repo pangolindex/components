@@ -3,7 +3,7 @@ declare module '@metamask/jazzicon' {
 }
 
 declare module 'fortmatic';
-
+/// <reference types="react-scripts" />
 interface Window {
   WalletLinkProvider?: any;
   walletLinkExtension?: any;
