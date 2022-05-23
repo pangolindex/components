@@ -268,7 +268,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
           <Option
             id={`connect-${key}`}
             onClick={() => {
-              option.connector === connector && !option.href && tryActivation(option.connector, option);
+              option.connector !== connector && !option.href && tryActivation(option.connector, option);
             }}
             key={key}
             active={activeOption && option.name === activeOption.name}
