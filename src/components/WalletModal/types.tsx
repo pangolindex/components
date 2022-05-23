@@ -3,4 +3,6 @@ export type WalletModalProps = {
   closeModal: () => void;
   background?: string;
   shouldShowBackButton?: boolean;
+  onWalletConnect: () => void;
+  onClickBack?: () => void;
 };

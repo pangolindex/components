@@ -10,7 +10,6 @@ import XDefiIcon from 'src/assets/images/xDefi.png';
 import RabbyIcon from 'src/assets/images/rabby.svg';
 import { gnosisSafe, injected, xDefi } from 'src/connectors';
 import { LANDING_PAGE, EVM_SUPPORTED_WALLETS, AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, WalletInfo } from 'src/constants';
-import usePrevious from 'src/hooks/usePrevious';
 import { ExternalLink } from 'src/theme';
 import { Button } from 'src/components/Button';
 import {
@@ -30,6 +29,11 @@ import PendingView from './PendingView';
 import { WalletModalProps } from './types';
 
 const WALLET_TUTORIAL = `${LANDING_PAGE}/tutorials/getting-started/#set-up-metamask`;
+
+enum CHAIN_TYPE {
+  EVM_CHAINS = 'EVM CHAINS',
+  NON_EVM_CHAINS = 'NON-EVM CHAINS',
+}
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -51,10 +55,17 @@ function addAvalancheNetwork() {
   });
 }
 
-const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background, shouldShowBackButton }) => {
+const WalletModal: React.FC<WalletModalProps> = ({
+  open,
+  closeModal,
+  background,
+  shouldShowBackButton,
+  onWalletConnect,
+  onClickBack,
+}) => {
   // important that these are destructed from the account-specific web3-react context
-  const { active, account, connector, activate, error: web3Error } = useWeb3React();
-  const [walletType, setWalletType] = useState('EVM CHAINS' as string);
+  const { connector, activate, error: web3Error } = useWeb3React();
+  const [walletType, setWalletType] = useState(CHAIN_TYPE.EVM_CHAINS as string);
 
   const [walletView, setWalletView] = useState('');
 
@@ -65,38 +76,16 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background,
 
   const [triedSafe, setTriedSafe] = useState<boolean>(!IS_IN_IFRAME);
 
-  const previousAccount = usePrevious(account);
-
   const walletModalOpen = open;
 
-  let walletOptions = walletType === 'EVM CHAINS' ? EVM_SUPPORTED_WALLETS : [];
-
-  // close on connection, when logged out before
-  useEffect(() => {
-    if (account && !previousAccount && walletModalOpen) {
-      closeModal();
-    }
-  }, [account, previousAccount, closeModal, walletModalOpen]);
+  let walletOptions = walletType === CHAIN_TYPE.EVM_CHAINS ? EVM_SUPPORTED_WALLETS : [];
 
   // always reset to account view
   useEffect(() => {
     if (walletModalOpen) {
       setPendingError(false);
-      setWalletView(WALLET_VIEWS.ACCOUNT);
     }
   }, [walletModalOpen]);
-
-  // // close modal when a connection is successful
-  const activePrevious = usePrevious(active);
-  const connectorPrevious = usePrevious(connector);
-  useEffect(() => {
-    if (
-      walletModalOpen &&
-      ((active && !activePrevious) || (connector && connector !== connectorPrevious && !web3Error))
-    ) {
-      setWalletView(WALLET_VIEWS.ACCOUNT);
-    }
-  }, [setWalletView, active, web3Error, connector, walletModalOpen, activePrevious, connectorPrevious]);
 
   const isMetamask = window.ethereum && window.ethereum.isMetaMask;
   const isRabby = window.ethereum && window.ethereum.isRabby;
@@ -127,9 +116,13 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background,
     if (!triedSafe && activationConnector instanceof SafeAppConnector) {
       activationConnector.isSafeApp().then((loadedInSafe) => {
         if (loadedInSafe) {
-          activate(activationConnector, undefined, true).catch(() => {
-            setTriedSafe(true);
-          });
+          activate(activationConnector, undefined, true)
+            .then(() => {
+              onWalletConnect();
+            })
+            .catch(() => {
+              setTriedSafe(true);
+            });
         }
         setTriedSafe(true);
       });
@@ -139,10 +132,13 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background,
           if (isCbWallet) {
             addAvalancheNetwork();
           }
+          onWalletConnect();
         })
         .catch((error) => {
           if (error instanceof UnsupportedChainIdError) {
-            activate(activationConnector); // a little janky...can't use setError because the connector isn't set
+            activate(activationConnector).then(() => {
+              onWalletConnect();
+            }); // a little janky...can't use setError because the connector isn't set
           } else {
             setPendingError(true);
           }
@@ -282,9 +278,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background,
           <Option
             id={`connect-${key}`}
             onClick={() => {
-              option.connector === connector
-                ? setWalletView(WALLET_VIEWS.ACCOUNT)
-                : !option.href && tryActivation(option.connector, option);
+              option.connector === connector ? null : !option.href && tryActivation(option.connector, option);
             }}
             key={key}
             active={activeOption && option.name === activeOption.name}
@@ -304,13 +298,16 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background,
       return (
         <HeaderRow>{web3Error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}</HeaderRow>
       );
-    } else if (walletView !== WALLET_VIEWS.ACCOUNT || shouldShowBackButton) {
+    } else if (walletView === WALLET_VIEWS.PENDING || shouldShowBackButton) {
       return (
         <HeaderRow>
           <HoverText
             onClick={() => {
-              setPendingError(false);
-              setWalletView(WALLET_VIEWS.ACCOUNT);
+              if (onClickBack && shouldShowBackButton) {
+                onClickBack();
+              } else {
+                setPendingError(false);
+              }
             }}
           >
             Back
@@ -361,7 +358,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ open, closeModal, background,
             <>
               <Box mt="5px" width="100%" mb="5px">
                 <ToggleButtons
-                  options={['EVM CHAINS', 'NON-EVM CHAINS']}
+                  options={[CHAIN_TYPE.EVM_CHAINS, CHAIN_TYPE.NON_EVM_CHAINS]}
                   value={walletType}
                   onChange={(value) => {
                     setWalletType(value);
