@@ -11,8 +11,11 @@ import ListsUpdater from '../state/plists/updater';
 import ApplicationUpdater from '../state/papplication/updater';
 import MulticallUpdater from '../state/pmulticall/updater';
 import TransactionUpdater from '../state/ptransactions/updater';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
+
+const queryClient = new QueryClient();
 
 const Gelato = ({ children }) => {
   const { library, chainId, account } = useActiveWeb3React();
@@ -47,9 +50,11 @@ export const decorators = [
         <Provider store={store}>
           <Updaters />
           <ThemeProvider>
-            <Gelato>
-              <Story />
-            </Gelato>
+            <QueryClientProvider client={queryClient}>
+              <Gelato>
+                <Story />
+              </Gelato>
+            </QueryClientProvider>
           </ThemeProvider>
         </Provider>
       </Web3ProviderNetwork>
