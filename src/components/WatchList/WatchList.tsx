@@ -25,7 +25,7 @@ const WatchList: React.FC<Props> = ({ isLimitOrders }) => {
   const [showMore, setShowMore] = useState(false as boolean);
   const allTokens = useAllTokens();
   const coins = Object.values(allTokens || {});
-
+  console.log('index coin :', coins);
   const watchListCurrencies = useSelectedCurrencyLists();
   const theme = useContext(ThemeContext);
   const [selectedToken, setSelectedToken] = useState(watchListCurrencies?.[0] || ({} as Token));
@@ -41,7 +41,6 @@ const WatchList: React.FC<Props> = ({ isLimitOrders }) => {
 
     [chainId, watchListCurrencies],
   );
-  console.log(selectedToken);
   useOnClickOutside(node, open ? toggle : undefined);
   return (
     <WatchListRoot>
