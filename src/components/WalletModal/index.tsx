@@ -12,17 +12,7 @@ import { gnosisSafe, injected, xDefi } from 'src/connectors';
 import { LANDING_PAGE, EVM_SUPPORTED_WALLETS, AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, WalletInfo } from 'src/constants';
 import { ExternalLink } from 'src/theme';
 import { Button } from 'src/components/Button';
-import {
-  CloseIcon,
-  CloseColor,
-  Wrapper,
-  HeaderRow,
-  ContentWrapper,
-  UpperSection,
-  Blurb,
-  OptionGrid,
-  HoverText,
-} from './styles';
+import { CloseButton, Wrapper, HeaderRow, ContentWrapper, UpperSection, Blurb, OptionGrid, HoverText } from './styles';
 import { Modal, Box, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
@@ -278,7 +268,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
           <Option
             id={`connect-${key}`}
             onClick={() => {
-              option.connector === connector ? null : !option.href && tryActivation(option.connector, option);
+              option.connector === connector && !option.href && tryActivation(option.connector, option);
             }}
             key={key}
             active={activeOption && option.name === activeOption.name}
@@ -385,13 +375,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
         <Box display="flex" justifyContent="space-between" alignItems="center" padding="0 2rem">
           {renderHeader()}
 
-          <CloseIcon
-            onClick={() => {
-              closeModal();
-            }}
-          >
-            <CloseColor />
-          </CloseIcon>
+          <CloseButton onClick={closeModal} />
         </Box>
 
         {renderContent()}

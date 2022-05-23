@@ -34,7 +34,7 @@ export default {
       sourcemap: true,
     },
     {
-      dir: 'dist/esm',
+      dir: 'lib/esm',
       format: 'esm',
       sourcemap: true,
     },

@@ -1,17 +1,11 @@
 import styled from 'styled-components';
-import { Cross } from '../Icons';
+import { CloseIcon } from 'src/theme/components';
 
-export const CloseIcon = styled.div`
-  &:hover {
-    cursor: pointer;
-    opacity: 0.6;
-  }
-`;
-
-export const CloseColor = styled(Cross)`
-  path {
-    stroke: ${({ theme }) => theme.color4};
-  }
+export const CloseButton = styled(CloseIcon)`
+  color: ${({ theme }) => theme.text1};
+  position: relative;
+  right: 3px;
+  top: 3px;
 `;
 
 export const Wrapper = styled.div<{ background?: string }>`

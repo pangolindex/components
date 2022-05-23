@@ -4,4 +4,3 @@ export { default as LogoIcon } from './LogoIcon';
 export { default as AvaxLogo } from './AvaxLogo';
 export { default as WgmLogo } from './WgmLogo';
 export { default as CflrLogo } from './CflrLogo';
-export { default as Cross } from './Cross';
