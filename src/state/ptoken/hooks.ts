@@ -75,7 +75,10 @@ export function useTokenPriceData(tokenAddress: string, timeWindow: string, inte
     const startTime =
       type === 'ALL'
         ? dayjs('2021-02-11').startOf('hour').unix()
-        : currentTime.subtract(1, timeWindow).startOf('hour').unix();
+        : currentTime
+            .subtract(1, timeWindow as dayjs.ManipulateType)
+            .startOf('hour')
+            .unix();
 
     async function fetch() {
       const data = await getIntervalTokenData(tokenAddress, startTime, undefined, interval);
@@ -162,12 +165,17 @@ export const getIntervalTokenData = async (
   }
 };
 
+export interface Category {
+  timestamp?: string;
+  number?: any;
+}
+
 export async function getBlocksFromTimestamps(timestamps: Array<number>, skipCount = 500) {
   if (timestamps?.length === 0) {
     return [];
   }
   const fetchedData: any = await splitQuery(GET_BLOCKS, blockClient, [], timestamps, skipCount);
-  const blocks = [];
+  const blocks: Category[] = [];
   if (fetchedData) {
     for (const t in fetchedData) {
       if (fetchedData[t].length > 0) {

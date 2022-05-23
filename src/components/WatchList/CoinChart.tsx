@@ -66,6 +66,7 @@ const CoinChart: React.FC<Props> = ({ coin }) => {
       timestamp: `${timestampnow}`,
     });
   }
+  console.log(redirect);
   return (
     <Box>
       <SelectedCoinInfo>
@@ -102,6 +103,7 @@ const CoinChart: React.FC<Props> = ({ coin }) => {
               href={`/#${BETA_MENU_LINK.swap}?inputCurrency=${coin?.address}`}
               target=""
               as="a"
+              onClick={() => console.log('hey')}
             >
               Trade
             </Button>
