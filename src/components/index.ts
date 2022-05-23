@@ -19,3 +19,4 @@ export { default as SwapWidget } from './SwapWidget';
 export { default as Modal } from './Modal';
 export { NumberOptions } from './NumberOptions';
 export { NewsWidget } from './NewsWidget';
+export { NetworkSelection } from './NetworkSelection';
