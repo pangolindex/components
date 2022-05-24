@@ -39,6 +39,7 @@ export const NewsSection = styled(Box)<{ img: string }>`
 
   & .slick-list {
     height: 100%;
+    overflow: hidden;
   }
 
   & .slick-track {
