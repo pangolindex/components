@@ -7,6 +7,7 @@ import json from '@rollup/plugin-json';
 import includePaths from 'rollup-plugin-includepaths';
 import packageJson from './package.json';
 import url from '@rollup/plugin-url';
+import css from "rollup-plugin-import-css";
 import path from 'path';
 
 let plugins = [
@@ -22,6 +23,7 @@ let plugins = [
     fileName: '[dirname][hash][extname]',
     sourceDir: path.join(__dirname, 'src'),
   }),
+  css(),
   commonjs(),
   json(),
   typescript({

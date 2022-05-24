@@ -152,7 +152,7 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
 export const SWAP_DEFAULT_CURRENCY = {
   [ChainId.AVALANCHE]: {
     inputCurrency: 'AVAX',
-    outputCurrency: UST[ChainId.AVALANCHE].address,
+    outputCurrency: '',
   },
   [ChainId.FUJI]: {
     inputCurrency: '',
@@ -304,3 +304,4 @@ export interface WalletInfo {
   mobile?: true;
   mobileOnly?: true;
 }
+export const DIRECTUS_URL_NEWS = `https://p7gm7mqi.directus.app/items/news?`;

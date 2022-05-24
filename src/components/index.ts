@@ -18,5 +18,6 @@ export { default as Drawer } from './Drawer';
 export { default as SwapWidget } from './SwapWidget';
 export { default as Modal } from './Modal';
 export { NumberOptions } from './NumberOptions';
+export { NewsWidget } from './NewsWidget';
 export { NetworkSelection } from './NetworkSelection';
 export { default as WalletModal } from './WalletModal';
