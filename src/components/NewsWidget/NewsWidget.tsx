@@ -15,7 +15,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 const NewsFeedSettings: Settings = {
-  dots: true,
+  dots: false,
   infinite: true,
   speed: 500,
   slidesToShow: 1,
@@ -35,6 +35,7 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
     sliderRef?.current?.slickPrev();
   };
   const { data: news, isLoading } = useGetNews();
+  console.log('coucou');
   return (
     <NewsSection img={Earth}>
       <Box display="flex">
