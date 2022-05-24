@@ -1,21 +1,21 @@
-import { AbstractConnector } from '@web3-react/abstract-connector';
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
+import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import React, { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
 import MetamaskIcon from 'src/assets/images/metamask.png';
-import XDefiIcon from 'src/assets/images/xDefi.png';
 import RabbyIcon from 'src/assets/images/rabby.svg';
-import { gnosisSafe, injected, xDefi } from 'src/connectors';
-import { LANDING_PAGE, EVM_SUPPORTED_WALLETS, AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, WalletInfo } from 'src/constants';
-import { ExternalLink } from 'src/theme';
+import XDefiIcon from 'src/assets/images/xDefi.png';
 import { Button } from 'src/components/Button';
-import { CloseButton, Wrapper, HeaderRow, ContentWrapper, UpperSection, Blurb, OptionGrid, HoverText } from './styles';
-import { Modal, Box, ToggleButtons } from '../../';
+import { gnosisSafe, injected, xDefi } from 'src/connectors';
+import { AVALANCHE_CHAIN_PARAMS, EVM_SUPPORTED_WALLETS, IS_IN_IFRAME, LANDING_PAGE, WalletInfo } from 'src/constants';
+import { ExternalLink } from 'src/theme';
+import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
+import { Blurb, CloseButton, ContentWrapper, HeaderRow, HoverText, OptionGrid, UpperSection, Wrapper } from './styles';
 import { WalletModalProps } from './types';
 
 const WALLET_TUTORIAL = `${LANDING_PAGE}/tutorials/getting-started/#set-up-metamask`;
@@ -68,7 +68,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   const walletModalOpen = open;
 
-  let walletOptions = walletType === CHAIN_TYPE.EVM_CHAINS ? EVM_SUPPORTED_WALLETS : [];
+  const walletOptions = walletType === CHAIN_TYPE.EVM_CHAINS ? EVM_SUPPORTED_WALLETS : [];
 
   // always reset to account view
   useEffect(() => {

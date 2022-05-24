@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { ComponentStory } from '@storybook/react';
+import React, { useState } from 'react';
 import WalletModal from '.';
 
 export default {

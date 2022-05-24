@@ -1,13 +1,13 @@
 import React from 'react';
 import { ExternalLink } from 'src/theme';
 import {
-  OptionCardLeft,
-  OptionCardClickable,
-  GreenCircle,
   CircleWrapper,
+  GreenCircle,
   HeaderText,
-  SubHeader,
   IconWrapper,
+  OptionCardClickable,
+  OptionCardLeft,
+  SubHeader,
 } from './styles';
 
 export default function Option({

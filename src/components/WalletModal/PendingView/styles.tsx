@@ -1,6 +1,6 @@
+import { darken } from 'polished';
 import styled from 'styled-components';
 import CircleLoader from '../../CircleLoader';
-import { darken } from 'polished';
 
 export const PendingSection = styled.div`
   ${({ theme }) => theme.flexColumnNoWrap};

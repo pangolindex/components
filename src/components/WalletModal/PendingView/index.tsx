@@ -1,8 +1,8 @@
-import React from 'react';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import Option from '../Option';
+import React from 'react';
 import { WalletInfo } from 'src/constants';
-import { PendingSection, StyledLoader, LoadingMessage, ErrorGroup, ErrorButton, LoadingWrapper } from './styles';
+import Option from '../Option';
+import { ErrorButton, ErrorGroup, LoadingMessage, LoadingWrapper, PendingSection, StyledLoader } from './styles';
 
 export default function PendingView({
   option,

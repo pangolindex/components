@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components'
+import styled, { keyframes } from 'styled-components';
 
 const rotate = keyframes`
   from {
@@ -7,7 +7,7 @@ const rotate = keyframes`
   to {
     transform: rotate(360deg);
   }
-`
+`;
 
 export const StyledSVG = styled.svg<{ size: string; stroke?: string }>`
   animation: 2s ${rotate} linear infinite;
@@ -16,4 +16,4 @@ export const StyledSVG = styled.svg<{ size: string; stroke?: string }>`
   path {
     stroke: ${({ stroke, theme }) => stroke ?? theme.primary1};
   }
-`
+`;

@@ -1,4 +1,4 @@
-import React, { useContext, HTMLProps, useCallback } from 'react';
+import React, { HTMLProps, useCallback, useContext } from 'react';
 import ReactGA from 'react-ga';
 import styled, {
   DefaultTheme,
