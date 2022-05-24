@@ -91,7 +91,7 @@ class MiniRpcProvider implements AsyncSendable {
         reject,
         request: { method },
       } = byKey[result.id];
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line  @typescript-eslint/ban-ts-comment
       // @ts-ignore
       if (resolve && reject) {
         if ('error' in result) {

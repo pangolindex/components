@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
@@ -89,6 +90,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
   ) => {
     const name = Object.keys(walletOptions).find((key) => walletOptions[key].connector === activationConnector);
     // log selected wallet
+    // eslint-disable-next-line import/no-named-as-default-member
     ReactGA.event({
       category: 'Wallet',
       action: 'Change Wallet',
@@ -394,5 +396,5 @@ const WalletModal: React.FC<WalletModalProps> = ({
     </Modal>
   );
 };
-
 export default WalletModal;
+/* eslint-enable max-lines */

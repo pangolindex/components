@@ -17,6 +17,6 @@ interface Window {
     removeListener?: (...args: any[]) => void;
     request: (...args: any[]) => Promise<any>;
   };
-  web3?: {};
+  web3?: any;
   pendo?: any;
 }
