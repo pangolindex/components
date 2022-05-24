@@ -17,7 +17,7 @@ import WatchlistRow from './WatchlistRow';
 import { DesktopWatchList, GridContainer, MobileWatchList, Title, WatchListRoot } from './styleds';
 // import { useSelectedTokenList } from 'src/state/plists/hooks';
 
-type Props = {
+export type Props = {
   isLimitOrders?: boolean;
 };
 
