@@ -1,3 +1,4 @@
+import { X } from 'react-feather';
 import styled from 'styled-components';
 import { Box } from 'src/components';
 
@@ -30,4 +31,8 @@ export const Hidden = styled(Box)<{
     theme.mediaWidth.upToLarge`
       display: none;
     `};
+`;
+
+export const CloseIcon = styled(X)<{ onClick: () => void }>`
+  cursor: pointer;
 `;

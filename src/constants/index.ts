@@ -150,7 +150,7 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
 export const SWAP_DEFAULT_CURRENCY = {
   [ChainId.AVALANCHE]: {
     inputCurrency: 'AVAX',
-    outputCurrency: UST[ChainId.AVALANCHE].address,
+    outputCurrency: '',
   },
   [ChainId.FUJI]: {
     inputCurrency: '',
@@ -270,3 +270,5 @@ export const TIMEFRAME = [
 ];
 
 export const SUBGRAPH_BASE_URL = process.env.REACT_APP_SUBGRAPH_BASE_URL;
+
+export const DIRECTUS_URL_NEWS = `https://p7gm7mqi.directus.app/items/news?`;
