@@ -17,6 +17,9 @@ const SampleWallet: ComponentStory<typeof WalletModal> = () => {
         closeModal={() => {
           setOpen(false);
         }}
+        onWalletConnect={() => {
+          setOpen(false);
+        }}
       />
     </div>
   );
