@@ -33,19 +33,6 @@ const WALLET_VIEWS = {
   PENDING: 'pending',
 };
 
-function addAvalancheNetwork() {
-  injected.getProvider().then((provider) => {
-    provider
-      ?.request({
-        method: 'wallet_addEthereumChain',
-        params: [AVALANCHE_CHAIN_PARAMS],
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-  });
-}
-
 const WalletModal: React.FC<WalletModalProps> = ({
   open,
   closeModal,
@@ -70,6 +57,22 @@ const WalletModal: React.FC<WalletModalProps> = ({
   const walletModalOpen = open;
 
   const walletOptions = walletType === CHAIN_TYPE.EVM_CHAINS ? EVM_SUPPORTED_WALLETS : [];
+
+  function addAvalancheNetwork() {
+    injected.getProvider().then((provider) => {
+      provider
+        ?.request({
+          method: 'wallet_addEthereumChain',
+          params: [AVALANCHE_CHAIN_PARAMS],
+        })
+        .then(() => {
+          onWalletConnect();
+        })
+        .catch((error: any) => {
+          console.log(error);
+        });
+    });
+  }
 
   // always reset to account view
   useEffect(() => {
@@ -123,14 +126,13 @@ const WalletModal: React.FC<WalletModalProps> = ({
         .then(() => {
           if (isCbWallet) {
             addAvalancheNetwork();
+          } else {
+            onWalletConnect();
           }
-          onWalletConnect();
         })
         .catch((error) => {
           if (error instanceof UnsupportedChainIdError) {
-            activate(activationConnector).then(() => {
-              onWalletConnect();
-            }); // a little janky...can't use setError because the connector isn't set
+            activate(activationConnector); // a little janky...can't use setError because the connector isn't set
           } else {
             setPendingError(true);
           }
