@@ -37,7 +37,7 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
   const { data: news, isLoading } = useGetNews();
   return (
     <NewsSection img={Earth}>
-      <Box height="25%" display="flex">
+      <Box display="flex">
         <NewsTitle>News</NewsTitle>
         <SlickNext onClick={handleNewsBack} style={{ right: 60 }}>
           <ArrowLeft size={20} style={{ minWidth: 24 }} />
@@ -46,7 +46,7 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
           <ArrowRight size={20} style={{ minWidth: 24 }} />
         </SlickNext>
       </Box>
-      <Box height="90%" paddingTop="10px">
+      <Box paddingTop="90px">
         {!isLoading ? (
           <Slider ref={sliderRef} {...NewsFeedSettings}>
             {news &&

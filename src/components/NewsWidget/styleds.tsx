@@ -15,18 +15,17 @@ export const NewsSection = styled(Box)<{ img: string }>`
   flex-direction: column;
 
   & .slick-slider {
-    height: 100%
-    padding: 0 20px 0px;
+    height: 100%;
+    padding: 0px;
 
     .slick-dots {
       bottom: 0px;
-      li button:before{
+      li button:before {
         color: ${({ theme }) => theme.text1};
       }
-      li.slick-active button:before{
+      li.slick-active button:before {
         color: ${({ theme }) => theme.text1};
       }
-      
     }
   }
 
@@ -53,7 +52,6 @@ export const NewsSection = styled(Box)<{ img: string }>`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 600px;
   `};
-
 `;
 
 export const NewsTitle = styled(Box)`
@@ -74,7 +72,7 @@ export const NewsContent = styled(Box)`
   font-size: 18px;
   line-height: 27px;
   height: 90% !important;
-  padding: 20px;
+  padding: 0px 20px;
   & a {
     color: ${({ theme }) => theme.text7};
   }
@@ -86,7 +84,7 @@ export const NewsDate = styled(Box)`
   display: flex;
   align-items: center;
   color: #929292;
-  margin-button: 15px;
+  margin-bottom: 15px;
   height: 10% !important;
   padding: 0px 10px;
 `;
