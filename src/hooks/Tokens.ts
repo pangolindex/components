@@ -13,7 +13,7 @@ export function useAllTokens(): { [address: string]: Token } {
 
   const userAddedTokens = useUserAddedTokens();
   const allTokens = useSelectedTokenList();
-  console.log('to:', userAddedTokens);
+  // console.log('allTokens', allTokens );
   return useMemo(() => {
     if (!chainId) return {};
     return (
