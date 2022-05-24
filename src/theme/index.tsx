@@ -1,8 +1,12 @@
 import React, { useContext, HTMLProps, useCallback } from 'react';
 import ReactGA from 'react-ga';
-import { DefaultTheme, ThemeProvider as StyledComponentsThemeProvider, ThemeContext, css } from 'styled-components';
+import styled, {
+  DefaultTheme,
+  ThemeProvider as StyledComponentsThemeProvider,
+  ThemeContext,
+  css,
+} from 'styled-components';
 import { Colors } from './styled';
-import styled from 'styled-components';
 
 const MEDIA_WIDTHS = {
   upToExtraSmall: 500,

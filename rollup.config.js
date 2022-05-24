@@ -4,11 +4,24 @@ import cleaner from 'rollup-plugin-cleaner';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
+import includePaths from 'rollup-plugin-includepaths';
 import packageJson from './package.json';
+import url from '@rollup/plugin-url';
+import path from 'path';
 
 let plugins = [
   peerDepsExternal(),
+  includePaths({
+    paths: ['./'],
+    extensions: ['.tsx', '.ts', '.js'],
+  }),
   resolve(),
+  url({
+    include: ['**/*.svg', '**/*.png', '**/*.jp(e)?g', '**/*.gif', '**/*.webp'],
+    emitFiles: true,
+    fileName: '[dirname][hash][extname]',
+    sourceDir: path.join(__dirname, 'src'),
+  }),
   commonjs(),
   json(),
   typescript({
