@@ -35,7 +35,6 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
     sliderRef?.current?.slickPrev();
   };
   const { data: news, isLoading } = useGetNews();
-  console.log('coucou');
   return (
     <NewsSection img={Earth}>
       <Box display="flex">
