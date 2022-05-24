@@ -150,7 +150,7 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
 export const SWAP_DEFAULT_CURRENCY = {
   [ChainId.AVALANCHE]: {
     inputCurrency: 'AVAX',
-    outputCurrency: UST[ChainId.AVALANCHE].address,
+    outputCurrency: '',
   },
   [ChainId.FUJI]: {
     inputCurrency: '',
@@ -215,3 +215,5 @@ export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16))
 export const PANGOLIN_TOKENS_REPO_RAW_BASE_URL = `https://raw.githubusercontent.com/pangolindex/tokens`;
 
 export type LogoSize = 24 | 48;
+
+export const DIRECTUS_URL_NEWS = `https://p7gm7mqi.directus.app/items/news?`;
