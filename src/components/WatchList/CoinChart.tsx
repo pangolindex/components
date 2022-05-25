@@ -15,11 +15,12 @@ import { DurationBtns, SelectedCoinInfo, TrackIcons } from './styleds';
 
 type Props = {
   coin: Token;
+  visibleTradeButton: boolean | undefined;
 };
 
 export const RedirectContext = React.createContext<boolean>(false);
 
-const CoinChart: React.FC<Props> = ({ coin }) => {
+const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton }) => {
   const chainId = useChainId();
   const weekFrame = TIMEFRAME.find((value) => value.label === '1W');
 
@@ -91,33 +92,34 @@ const CoinChart: React.FC<Props> = ({ coin }) => {
           >
             <Link size={12} />
           </Button>
-          {redirect ? (
-            <Button
-              variant="plain"
-              backgroundColor="oceanBlue"
-              color="white"
-              padding="0px 10px"
-              height="32px"
-              href={`/#${BETA_MENU_LINK.swap}?inputCurrency=${coin?.address}`}
-              target=""
-              as="a"
-            >
-              Trade
-            </Button>
-          ) : (
-            <Button
-              variant="plain"
-              backgroundColor="oceanBlue"
-              color="white"
-              padding="0px 10px"
-              height="32px"
-              onClick={() => {
-                onCurrencySelect(coin);
-              }}
-            >
-              Trade
-            </Button>
-          )}
+          {visibleTradeButton &&
+            (redirect ? (
+              <Button
+                variant="plain"
+                backgroundColor="oceanBlue"
+                color="white"
+                padding="0px 10px"
+                height="32px"
+                href={`/#${BETA_MENU_LINK.swap}?inputCurrency=${coin?.address}`}
+                target=""
+                as="a"
+              >
+                Trade
+              </Button>
+            ) : (
+              <Button
+                variant="plain"
+                backgroundColor="oceanBlue"
+                color="white"
+                padding="0px 10px"
+                height="32px"
+                onClick={() => {
+                  onCurrencySelect(coin);
+                }}
+              >
+                Trade
+              </Button>
+            ))}
         </TrackIcons>
       </SelectedCoinInfo>
       <ResponsiveContainer height={150} width={'100%'}>
