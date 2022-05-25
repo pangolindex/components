@@ -39,7 +39,6 @@ const CurrencyPopover: React.FC<Props> = ({
   const chainId = useChainId();
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
-  console.log('coins:', coins);
 
   useEffect(() => {
     if (isOpen && !lastOpen) {

@@ -15,7 +15,6 @@ import CoinChart from './CoinChart';
 import CurrencyPopover from './CurrencyPopover';
 import WatchlistRow from './WatchlistRow';
 import { DesktopWatchList, GridContainer, MobileWatchList, Title, WatchListRoot } from './styleds';
-// import { useSelectedTokenList } from 'src/state/plists/hooks';
 
 export type Props = {
   isLimitOrders?: boolean;
@@ -25,9 +24,7 @@ const WatchList: React.FC<Props> = ({ isLimitOrders }) => {
   const { chainId = ChainId.AVALANCHE } = useActiveWeb3React();
   const [showMore, setShowMore] = useState(false as boolean);
   const allTokens = useAllTokens();
-  // const allTokens = useSelectedTokenList();
 
-  console.log('index coin :', allTokens);
   const coins = Object.values(allTokens || {});
   const watchListCurrencies = useSelectedCurrencyLists();
   const theme = useContext(ThemeContext);

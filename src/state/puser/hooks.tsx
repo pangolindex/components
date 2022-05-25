@@ -71,7 +71,7 @@ export function useRemoveUserAddedToken(): (chainId: number, address: string) =>
 export function useUserAddedTokens(): Token[] {
   const { chainId } = useActiveWeb3React();
   const serializedTokensMap = useSelector<AppState, AppState['puser']['tokens']>(({ puser: { tokens } }) => tokens);
-  console.log('serializedTokensMap', serializedTokensMap);
+
   return useMemo(() => {
     if (!chainId) return [];
     return Object.values(serializedTokensMap[chainId as ChainId] ?? {}).map(deserializeToken);
