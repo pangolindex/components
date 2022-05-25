@@ -7,7 +7,12 @@ export default {
   title: 'Pangolin/WatchList',
 };
 
-const TemplateWatchList: ComponentStory<typeof WatchList> = (args: any) => <WatchList {...args} />;
+const TemplateWatchList: ComponentStory<typeof WatchList> = (args: any) => (
+  <div style={{ width: '800px' }}>
+    {' '}
+    <WatchList {...args} />
+  </div>
+);
 
 export const Default = TemplateWatchList.bind({});
 Default.args = {

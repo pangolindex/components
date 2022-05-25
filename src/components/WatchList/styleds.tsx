@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Box, Text } from 'src/components';
 
 export const WatchListRoot = styled(Box)`
-  width: 100%;
+  widht: 100%;
   height: 100%;
   border-radius: 10px;
   padding: 20px;
