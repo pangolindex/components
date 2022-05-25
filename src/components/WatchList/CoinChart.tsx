@@ -1,5 +1,5 @@
 import { Token } from '@pangolindex/sdk';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Link } from 'react-feather';
 import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { Box, Button, CurrencyLogo, Text } from 'src/components';
@@ -17,11 +17,10 @@ type Props = {
   coin: Token;
   visibleTradeButton?: boolean | undefined;
   linkUrl?: string | undefined;
+  redirect?: boolean | undefined;
 };
 
-export const RedirectContext = React.createContext<boolean>(false);
-
-const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, linkUrl }) => {
+const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, linkUrl, redirect }) => {
   const chainId = useChainId();
   const weekFrame = TIMEFRAME.find((value) => value.label === '1W');
 
@@ -34,9 +33,6 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, linkUrl }) => {
         momentIdentifier: string;
       }),
   );
-
-  const redirect = useContext(RedirectContext);
-
   const usdcPrice = useUSDCPrice(coin);
 
   const { onCurrencySelection } = useSwapActionHandlers(chainId);

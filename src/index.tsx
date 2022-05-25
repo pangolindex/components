@@ -13,7 +13,6 @@ import {
 } from 'src/state/pswap/hooks';
 import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { RedirectContext } from './components/WatchList/CoinChart';
 import { Web3Provider } from './hooks';
 import { PANGOLIN_PERSISTED_KEYS, pangolinReducers } from './state';
 import ApplicationUpdater from './state/papplication/updater';
@@ -75,5 +74,4 @@ export {
   usePair,
   useSwapActionHandlers,
   wrappedCurrency,
-  RedirectContext,
 };

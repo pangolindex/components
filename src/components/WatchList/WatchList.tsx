@@ -20,9 +20,10 @@ export type Props = {
   isLimitOrders?: boolean;
   visibleTradeButton?: boolean;
   linkUrl?: string;
+  redirect?: boolean;
 };
 
-const WatchList: React.FC<Props> = ({ isLimitOrders, visibleTradeButton = true, linkUrl }) => {
+const WatchList: React.FC<Props> = ({ isLimitOrders, visibleTradeButton = true, linkUrl, redirect = false }) => {
   const { chainId = ChainId.AVALANCHE } = useActiveWeb3React();
   const [showMore, setShowMore] = useState(false as boolean);
   const allTokens = useAllTokens();
@@ -79,12 +80,22 @@ const WatchList: React.FC<Props> = ({ isLimitOrders, visibleTradeButton = true, 
         {CHAINS[chainId].mainnet
           ? !isLimitOrders && (
               <Hidden upToSmall={true}>
-                <CoinChart coin={selectedToken} visibleTradeButton={visibleTradeButton} linkUrl={linkUrl} />
+                <CoinChart
+                  coin={selectedToken}
+                  visibleTradeButton={visibleTradeButton}
+                  linkUrl={linkUrl}
+                  redirect={redirect}
+                />
               </Hidden>
             )
           : isLimitOrders && (
               <Hidden upToSmall={true}>
-                <CoinChart coin={selectedToken} visibleTradeButton={visibleTradeButton} linkUrl={linkUrl} />
+                <CoinChart
+                  coin={selectedToken}
+                  visibleTradeButton={visibleTradeButton}
+                  linkUrl={linkUrl}
+                  redirect={redirect}
+                />
               </Hidden>
             )}
 
