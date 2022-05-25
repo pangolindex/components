@@ -21,7 +21,6 @@ export const RedirectContext = React.createContext<boolean>(false);
 
 const CoinChart: React.FC<Props> = ({ coin }) => {
   const chainId = useChainId();
-
   const weekFrame = TIMEFRAME.find((value) => value.label === '1W');
 
   const [timeWindow, setTimeWindow] = useState(
