@@ -19,9 +19,10 @@ import { DesktopWatchList, GridContainer, MobileWatchList, Title, WatchListRoot 
 export type Props = {
   isLimitOrders?: boolean;
   visibleTradeButton?: boolean;
+  linkUrl?: string;
 };
 
-const WatchList: React.FC<Props> = ({ isLimitOrders, visibleTradeButton = true }) => {
+const WatchList: React.FC<Props> = ({ isLimitOrders, visibleTradeButton = true, linkUrl }) => {
   const { chainId = ChainId.AVALANCHE } = useActiveWeb3React();
   const [showMore, setShowMore] = useState(false as boolean);
   const allTokens = useAllTokens();
@@ -78,12 +79,12 @@ const WatchList: React.FC<Props> = ({ isLimitOrders, visibleTradeButton = true }
         {CHAINS[chainId].mainnet
           ? !isLimitOrders && (
               <Hidden upToSmall={true}>
-                <CoinChart coin={selectedToken} visibleTradeButton={visibleTradeButton} />
+                <CoinChart coin={selectedToken} visibleTradeButton={visibleTradeButton} linkUrl={linkUrl} />
               </Hidden>
             )
           : isLimitOrders && (
               <Hidden upToSmall={true}>
-                <CoinChart coin={selectedToken} visibleTradeButton={visibleTradeButton} />
+                <CoinChart coin={selectedToken} visibleTradeButton={visibleTradeButton} linkUrl={linkUrl} />
               </Hidden>
             )}
 

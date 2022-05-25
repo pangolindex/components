@@ -218,18 +218,6 @@ export type LogoSize = 24 | 48;
 
 export const ANALYTICS_PAGE = 'https://info.pangolin.exchange';
 
-export enum BETA_MENU_LINK {
-  dashboard = '/beta/dashboard',
-  swap = '/beta/swap',
-  buy = '/beta/buy',
-  pool = '/beta/pool',
-  stake = '/beta/stake',
-  vote = '/beta/vote',
-  migrate = '/beta/migrate',
-  bridge = '/beta/bridge',
-  airdrop = '/beta/airdrop',
-}
-
 export const TIMEFRAME = [
   {
     description: 'HOUR',

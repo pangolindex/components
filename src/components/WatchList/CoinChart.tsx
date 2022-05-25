@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import { Link } from 'react-feather';
 import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { Box, Button, CurrencyLogo, Text } from 'src/components';
-import { ANALYTICS_PAGE, BETA_MENU_LINK, TIMEFRAME } from 'src/constants';
+import { ANALYTICS_PAGE, TIMEFRAME } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import { Field } from 'src/state/pswap/actions';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks';
@@ -15,12 +15,13 @@ import { DurationBtns, SelectedCoinInfo, TrackIcons } from './styleds';
 
 type Props = {
   coin: Token;
-  visibleTradeButton: boolean | undefined;
+  visibleTradeButton?: boolean | undefined;
+  linkUrl?: string | undefined;
 };
 
 export const RedirectContext = React.createContext<boolean>(false);
 
-const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton }) => {
+const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, linkUrl }) => {
   const chainId = useChainId();
   const weekFrame = TIMEFRAME.find((value) => value.label === '1W');
 
@@ -100,7 +101,7 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton }) => {
                 color="white"
                 padding="0px 10px"
                 height="32px"
-                href={`/#${BETA_MENU_LINK.swap}?inputCurrency=${coin?.address}`}
+                href={`/#${linkUrl}?inputCurrency=${coin?.address}`}
                 target=""
                 as="a"
               >
