@@ -9,7 +9,6 @@ export default {
 
 const TemplateWatchList: ComponentStory<typeof WatchList> = (args: any) => (
   <div style={{ width: '800px' }}>
-    {' '}
     <WatchList {...args} />
   </div>
 );

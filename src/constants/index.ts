@@ -257,6 +257,6 @@ export const TIMEFRAME = [
   },
 ];
 
-export const SUBGRAPH_BASE_URL = process.env.REACT_APP_SUBGRAPH_BASE_URL;
+export const SUBGRAPH_BASE_URL = `https://api.thegraph.com/subgraphs/name/pangolindex`;
 
 export const DIRECTUS_URL_NEWS = `https://p7gm7mqi.directus.app/items/news?`;
