@@ -19,13 +19,15 @@ const TradeOption: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
             Trade
           </Text>
           {isLimitOrderVisible && (
-            <ToggleButtons
-              options={['MARKET', 'LIMIT']}
-              value={swapType}
-              onChange={(value) => {
-                setSwapType(value);
-              }}
-            />
+            <Box width="130px">
+              <ToggleButtons
+                options={['MARKET', 'LIMIT']}
+                value={swapType}
+                onChange={(value) => {
+                  setSwapType(value);
+                }}
+              />
+            </Box>
           )}
         </Box>
       </Box>

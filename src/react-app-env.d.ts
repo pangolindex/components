@@ -1,5 +1,9 @@
-/// <reference types="react-scripts" />
+declare module '@metamask/jazzicon' {
+  export default function (diameter: number, seed: number): HTMLElement;
+}
 
+declare module 'fortmatic';
+/// <reference types="react-scripts" />
 interface Window {
   WalletLinkProvider?: any;
   walletLinkExtension?: any;
@@ -13,4 +17,6 @@ interface Window {
     removeListener?: (...args: any[]) => void;
     request: (...args: any[]) => Promise<any>;
   };
+  web3?: any;
+  pendo?: any;
 }
