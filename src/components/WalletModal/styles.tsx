@@ -14,17 +14,15 @@ export const Wrapper = styled.div<{ background?: string }>`
   padding: 0;
   width: 100%;
   max-width: 422px;
+  border-radius: 10px;
   background-color: ${({ theme, background }) => (background ? background : theme.bg2)};
 `;
 
 export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
-  padding: 1rem 1rem;
+  padding: 1rem 0rem;
   font-weight: 500;
   color: ${({ theme }) => theme.color4};
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding: 1rem;
-  `};
 `;
 
 export const ContentWrapper = styled.div`

@@ -376,7 +376,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
   function getModalContent() {
     return (
       <UpperSection>
-        <Box display="flex" justifyContent="space-between" alignItems="center" padding="0 2rem">
+        <Box display="flex" justifyContent="space-between" alignItems="center" padding="0 1rem">
           {renderHeader()}
 
           <CloseButton onClick={closeModal} />
