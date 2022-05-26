@@ -13,7 +13,7 @@ export const NewsSection = styled(Box)<{ img: string }>`
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-
+  overflow: hidden;
   & .slick-slider {
     height: 100%;
     padding: 0px;
