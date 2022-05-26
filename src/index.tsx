@@ -60,6 +60,8 @@ export function PangolinProvider({
 }
 
 export * from './components';
+export * from './connectors';
+export * from './constants';
 export * from '@gelatonetwork/limit-orders-react';
 export type { LimitOrderInfo };
 export {

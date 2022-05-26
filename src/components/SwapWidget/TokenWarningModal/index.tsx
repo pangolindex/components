@@ -1,45 +1,14 @@
 import { Token } from '@pangolindex/sdk';
-import React, { HTMLProps, useCallback, useMemo, useState } from 'react';
-import ReactGA from 'react-ga';
+import React, { useCallback, useMemo, useState } from 'react';
+import { ExternalLink } from 'src/theme';
 import { getEtherscanLink, shortenAddress } from 'src/utils';
 import { Box, Button, CurrencyLogo, Modal, Text } from '../../';
 import { useActiveWeb3React } from '../../../hooks';
 import { useAllTokens } from '../../../hooks/Tokens';
-import { AutoColumn, StyledLink, StyledWarningIcon, WarningContainer, Wrapper } from './styled';
+import { AutoColumn, StyledWarningIcon, WarningContainer, Wrapper } from './styled';
 
 interface TokenWarningCardProps {
   token?: Token;
-}
-
-/**
- * Outbound link that handles firing google analytics events
- */
-function ExternalLink({
-  target = '_blank',
-  href,
-  rel = 'noopener noreferrer',
-  ...rest
-}: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & { href: string }) {
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLAnchorElement>) => {
-      // don't prevent default, don't redirect if it's a new tab
-      if (target === '_blank' || event.ctrlKey || event.metaKey) {
-        // eslint-disable-next-line import/no-named-as-default-member
-        ReactGA.outboundLink({ label: href }, () => {
-          console.debug('Fired outbound link event', href);
-        });
-      } else {
-        event.preventDefault();
-        // send a ReactGA event and then trigger a location change
-        // eslint-disable-next-line import/no-named-as-default-member
-        ReactGA.outboundLink({ label: href }, () => {
-          window.location.href = href;
-        });
-      }
-    },
-    [href, target],
-  );
-  return <StyledLink target={target} rel={rel} href={href} onClick={handleClick} {...rest} />;
 }
 
 function TokenWarningCard({ token }: TokenWarningCardProps) {

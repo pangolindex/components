@@ -1,8 +1,8 @@
 {
   "name": "@pangolindex/components",
   "version": "3.0.2-rc.1",
-  "main": "lib/index.js",
-  "module": "lib/index.esm.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
   "engines": {
     "node": ">=14.17.0"
   },
@@ -36,8 +36,10 @@
     "@babel/core": "^7.15.8",
     "@ethersproject/experimental": "^5.5.0",
     "@gelatonetwork/limit-orders-react": "^2.3.1",
+    "@gnosis.pm/safe-apps-web3-react": "^0.6.7",
     "@pangolindex/sdk": "2.0.1",
     "@pangolindex/token-lists": "^1.0.1",
+    "@pangolindex/web3-react-injected-connector": "^1.0.0",
     "@reduxjs/toolkit": "^1.7.2",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-json": "^4.1.0",
@@ -59,7 +61,11 @@
     "@types/styled-system": "^5.1.13",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
-    "@web3-react/core": "^6.1.9",
+    "@web3-react/core": "6.0.9",
+    "@web3-react/fortmatic-connector": "^6.0.9",
+    "@web3-react/portis-connector": "6.0.9",
+    "@web3-react/walletconnect-connector": "6.1.1",
+    "@web3-react/walletlink-connector": "6.2.11",
     "axios": "^0.26.0",
     "babel-loader": "^8.2.2",
     "chokidar-cli": "^3.0.0",
@@ -84,6 +90,7 @@
     "qs": "^6.10.3",
     "react": "^17.0.2",
     "react-custom-scrollbars": "^4.2.1",
+    "react-device-detect": "^1.6.2",
     "react-dom": "^17.0.2",
     "react-feather": "^2.0.9",
     "react-ga": "^3.3.0",
@@ -116,7 +123,14 @@
     "react": ">=17.0.1",
     "react-dom": ">=17.0.1",
     "react-redux": "^7.2.0",
-    "redux-localstorage-simple": "^2.4.1"
+    "redux-localstorage-simple": "^2.4.1",
+    "@web3-react/core": "6.0.9",
+    "@web3-react/fortmatic-connector": "^6.0.9",
+    "@web3-react/portis-connector": "6.0.9",
+    "@web3-react/walletconnect-connector": "6.1.1",
+    "@web3-react/walletlink-connector": "6.2.11",
+    "@pangolindex/web3-react-injected-connector": "^1.0.0",
+    "@gnosis.pm/safe-apps-web3-react": "^0.6.7"
   },
   "directories": {
     "lib": "lib"
