@@ -16,11 +16,11 @@ import { DurationBtns, SelectedCoinInfo, TrackIcons } from './styleds';
 type Props = {
   coin: Token;
   visibleTradeButton?: boolean | undefined;
-  linkUrl?: string | undefined;
+  tradeLinkUrl?: string | undefined;
   redirect?: boolean | undefined;
 };
 
-const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, linkUrl, redirect }) => {
+const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, redirect }) => {
   const chainId = useChainId();
   const weekFrame = TIMEFRAME.find((value) => value.label === '1W');
 
@@ -97,7 +97,7 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, linkUrl, redirec
                 color="white"
                 padding="0px 10px"
                 height="32px"
-                href={`/#${linkUrl}?inputCurrency=${coin?.address}`}
+                href={`/#${tradeLinkUrl}?inputCurrency=${coin?.address}`}
                 target=""
                 as="a"
               >
