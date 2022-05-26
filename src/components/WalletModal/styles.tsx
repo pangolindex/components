@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { CloseIcon } from 'src/theme/components';
+import { Box } from '../../';
 
 export const CloseButton = styled(CloseIcon)`
   color: ${({ theme }) => theme.text1};
   position: relative;
-  right: 3px;
+  right: -3px;
   top: 3px;
 `;
 
@@ -16,6 +17,15 @@ export const Wrapper = styled.div<{ background?: string }>`
   max-width: 422px;
   border-radius: 10px;
   background-color: ${({ theme, background }) => (background ? background : theme.bg2)};
+  ${({ theme }) => theme.mediaWidth.upToMedium`max-width: 100%`};
+`;
+
+export const ModalWrapper = styled(Box)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0rem 2rem;
+  ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0rem 1rem`};
 `;
 
 export const HeaderRow = styled.div`

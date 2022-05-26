@@ -16,7 +16,17 @@ import { ExternalLink } from 'src/theme';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
-import { Blurb, CloseButton, ContentWrapper, HeaderRow, HoverText, OptionGrid, UpperSection, Wrapper } from './styles';
+import {
+  Blurb,
+  CloseButton,
+  ContentWrapper,
+  HeaderRow,
+  HoverText,
+  ModalWrapper,
+  OptionGrid,
+  UpperSection,
+  Wrapper,
+} from './styles';
 import { WalletModalProps } from './types';
 
 const WALLET_TUTORIAL = `${LANDING_PAGE}/tutorials/getting-started/#set-up-metamask`;
@@ -376,11 +386,11 @@ const WalletModal: React.FC<WalletModalProps> = ({
   function getModalContent() {
     return (
       <UpperSection>
-        <Box display="flex" justifyContent="space-between" alignItems="center" padding="0 1rem">
+        <ModalWrapper>
           {renderHeader()}
 
           <CloseButton onClick={closeModal} />
-        </Box>
+        </ModalWrapper>
 
         {renderContent()}
       </UpperSection>
