@@ -88,6 +88,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
   useEffect(() => {
     if (walletModalOpen) {
       setPendingError(false);
+      setWalletView('');
     }
   }, [walletModalOpen]);
 
@@ -311,6 +312,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
                 onClickBack();
               } else {
                 setPendingError(false);
+                setWalletView('');
               }
             }}
           >
