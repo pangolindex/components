@@ -5,7 +5,7 @@ import { Plus } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, ShowMore } from 'src/components';
 import { PNG } from 'src/constants/tokens';
-import { useActiveWeb3React } from 'src/hooks';
+import { usePangolinWeb3 } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import useToggle from 'src/hooks/useToggle';
@@ -24,7 +24,7 @@ export type Props = {
 };
 
 const WatchList: React.FC<Props> = ({ isLimitOrders, visibleTradeButton = true, tradeLinkUrl, redirect = false }) => {
-  const { chainId = ChainId.AVALANCHE } = useActiveWeb3React();
+  const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
   const [showMore, setShowMore] = useState(false as boolean);
   const allTokens = useAllTokens();
 

@@ -1,5 +1,7 @@
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
+import { usePangolinWeb3 } from 'src/hooks';
+import { Button } from '../Button';
 import WalletModal from '.';
 
 export default {
@@ -9,9 +11,13 @@ export default {
 
 const SampleWallet: ComponentStory<typeof WalletModal> = () => {
   const [open, setOpen] = useState<boolean>(true);
+  const { account } = usePangolinWeb3();
 
   return (
-    <div style={{ background: '#000', padding: 50 }}>
+    <div style={{ padding: 20 }}>
+      <Button variant="primary" onClick={() => setOpen(true)}>
+        {account ? `Wallet connected: ${account}` : 'Connect Wallet'}
+      </Button>
       <WalletModal
         open={open}
         closeModal={() => {

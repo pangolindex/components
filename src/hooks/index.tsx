@@ -24,15 +24,20 @@ const initialWeb3State: Web3State = {
 
 const Web3Context = createContext<Web3State>({} as Web3State);
 
-export const useActiveWeb3React = () => {
+export const usePangolinWeb3 = () => {
   const context = useContext(Web3Context);
   if (context === undefined) {
-    throw new Error('useActiveWeb3React must be used within a component wrapped with Web3Provider');
+    throw new Error('usePangolinWeb3 must be used within a component wrapped with PangolinWeb3Provider');
   }
   return context;
 };
 
-export const Web3Provider: FC<Web3ProviderProps> = ({ children, library, chainId, account }: Web3ProviderProps) => {
+export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
+  children,
+  library,
+  chainId,
+  account,
+}: Web3ProviderProps) => {
   const [state, setState] = useState<Web3State>(initialWeb3State);
 
   useEffect(() => {
@@ -57,6 +62,6 @@ export const Web3Provider: FC<Web3ProviderProps> = ({ children, library, chainId
 export default Web3Context;
 
 export const useChainId = () => {
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = usePangolinWeb3();
   return chainId || ChainId.AVALANCHE;
 };

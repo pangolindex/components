@@ -4,28 +4,23 @@ import { PangolinProvider } from '..';
 import { useWeb3React as useWeb3ReactCore } from '@web3-react/core';
 import { NetworkContextName } from '../constants';
 import getLibrary from '../utils/getLibrary';
-import { InjectedConnector } from '@pangolindex/web3-react-injected-connector';
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core';
 import store from '../state';
+import { injected } from '../connectors';
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
 
-function useWeb3() {
-  const context = useWeb3ReactCore();
-  return context;
-}
-
-const injected = new InjectedConnector({
-  supportedChainIds: [1, 3, 4, 5, 42, 43114],
-});
-
 const InternalProvider = ({ children }) => {
-  const { library, chainId, account, activate } = useWeb3();
+  const context = useWeb3ReactCore();
+  const { library, chainId, account, activate } = context;
+
   useEffect(() => {
+    // try to connect on page reload
     if (activate) {
       activate(injected);
     }
   }, []);
+
   return (
     <PangolinProvider library={library} chainId={chainId} account={account ?? undefined}>
       {children}
