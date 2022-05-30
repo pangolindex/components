@@ -1,6 +1,6 @@
 import { parseBytes32String } from '@ethersproject/strings';
-import { CAVAX, Currency, Token } from '@pangolindex/sdk';
-import { useMemo } from 'react';
+import { CAVAX, CHAINS, ChainId, Currency, Token } from '@pangolindex/sdk';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
@@ -104,4 +104,61 @@ export function useCurrency(currencyId: string | undefined): Currency | null | u
   const isAVAX = currencyId?.toUpperCase() === 'AVAX';
   const token = useToken(isAVAX ? undefined : currencyId);
   return isAVAX ? chainId && CAVAX[chainId] : token;
+}
+
+export function useCoinGeckoTokenPrice(coin: Token) {
+  const [result, setResult] = useState({} as { tokenUsdPrice: string });
+
+  useEffect(() => {
+    const getCoinPriceData = async () => {
+      const chain = coin.chainId === 43113 ? CHAINS[ChainId.AVALANCHE] : CHAINS[coin.chainId];
+
+      const url = `https://api.coingecko.com/api/v3/simple/token_price/${
+        chain.coingecko_id
+      }?contract_addresses=${coin.address.toLowerCase()}&vs_currencies=usd`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      setResult({
+        tokenUsdPrice: data?.[coin.address.toLowerCase()]?.usd,
+      });
+    };
+    getCoinPriceData();
+  }, [coin]);
+
+  return result;
+}
+
+export function useCoinGeckoTokenPriceChart(coin: Token, days = '7') {
+  const [result, setResult] = useState([] as Array<{ timestamp: string; priceUSD: number }>);
+
+  useEffect(() => {
+    const getCoinData = async () => {
+      const chain = coin.chainId === 43113 ? CHAINS[ChainId.AVALANCHE] : CHAINS[coin.chainId];
+
+      const url = `https://api.coingecko.com/api/v3/coins/${
+        chain.coingecko_id
+      }/contract/${coin.address.toLowerCase()}/market_chart/?vs_currency=usd&days=${days}`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const formattedHistory = [] as Array<{ timestamp: string; priceUSD: number }>;
+
+      const priceData = data?.prices || [];
+
+      // for each hour, construct the open and close price
+      for (let i = 0; i < priceData.length - 1; i++) {
+        formattedHistory.push({
+          timestamp: (priceData[i]?.[0] / 1000).toFixed(0),
+          priceUSD: parseFloat(priceData[i]?.[1]),
+        });
+      }
+
+      setResult(formattedHistory);
+    };
+    getCoinData();
+  }, [coin, days]);
+
+  return result;
 }

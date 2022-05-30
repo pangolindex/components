@@ -5,6 +5,7 @@ import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { Box, Button, CurrencyLogo, Text } from 'src/components';
 import { ANALYTICS_PAGE, TIMEFRAME } from 'src/constants';
 import { useChainId } from 'src/hooks';
+import { useCoinGeckoTokenPrice, useCoinGeckoTokenPriceChart } from 'src/hooks/Tokens';
 import { Field } from 'src/state/pswap/actions';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks';
 import { useTokenPriceData } from 'src/state/ptoken/hooks';
@@ -24,6 +25,8 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
   const chainId = useChainId();
   const weekFrame = TIMEFRAME.find((value) => value.label === '1W');
 
+  const { tokenUsdPrice } = useCoinGeckoTokenPrice(coin);
+
   const [timeWindow, setTimeWindow] = useState(
     weekFrame ||
       ({} as {
@@ -31,9 +34,12 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
         label: string;
         interval: number;
         momentIdentifier: string;
+        days: string;
       }),
   );
-  const usdcPrice = useUSDCPrice(coin);
+  const tokenPrice = useUSDCPrice(coin);
+
+  const usdcPrice = tokenUsdPrice || tokenPrice?.toSignificant(4);
 
   const { onCurrencySelection } = useSwapActionHandlers(chainId);
   const onCurrencySelect = useCallback(
@@ -43,7 +49,7 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
     [onCurrencySelection],
   );
 
-  const priceData =
+  const pangolinData =
     useTokenPriceData(
       (coin?.address || '').toLowerCase(),
       timeWindow?.momentIdentifier,
@@ -51,15 +57,17 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
       timeWindow?.label,
     ) || [];
 
+  const coinGekoData = useCoinGeckoTokenPriceChart(coin, timeWindow?.days) || [];
+
   const token = unwrappedToken(coin, chainId);
 
-  const priceChart = [...priceData];
+  const priceChart = coinGekoData.length > 0 ? [...coinGekoData] : [...pangolinData];
   // add current price in chart
   if (priceChart.length > 0 && usdcPrice) {
     const timestampnow = Math.floor(Date.now() / 1000);
 
     priceChart.push({
-      priceUSD: parseFloat(usdcPrice?.toSignificant(4)),
+      priceUSD: parseFloat(usdcPrice),
       timestamp: `${timestampnow}`,
     });
   }
@@ -72,7 +80,7 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
             {token.symbol}
           </Text>
           <Text color="green1" fontSize="16px">
-            ${usdcPrice ? usdcPrice?.toSignificant(4, { groupSeparator: ',' }) : '-'}
+            ${usdcPrice ? usdcPrice : '-'}
           </Text>
         </Box>
         <TrackIcons>

@@ -7,6 +7,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, CurrencyLogo, Text } from 'src/components';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
+import { useCoinGeckoTokenPrice, useCoinGeckoTokenPriceChart } from 'src/hooks/Tokens';
 import { AppDispatch } from 'src/state';
 import { useTokenWeeklyChartData } from 'src/state/ptoken/hooks';
 import { removeCurrency } from 'src/state/pwatchlists/actions';
@@ -26,9 +27,15 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, onRemove, isSelected }) 
   const [showChart, setShowChart] = useState(false);
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const theme = useContext(ThemeContext);
-  const usdcPrice = useUSDCPrice(coin);
+  const { tokenUsdPrice } = useCoinGeckoTokenPrice(coin);
+  const tokenPrice = useUSDCPrice(coin);
 
-  const chartData = useTokenWeeklyChartData(coin?.address?.toLowerCase());
+  const usdcPrice = tokenUsdPrice || tokenPrice?.toSignificant(4);
+
+  const coinGekoData = useCoinGeckoTokenPriceChart(coin) || [];
+  const pangolinData = useTokenWeeklyChartData(coin?.address?.toLowerCase());
+
+  const chartData = coinGekoData.length > 0 ? coinGekoData : pangolinData;
 
   const currentUSDPrice = chartData?.[(chartData || []).length - 1]?.priceUSD || 0;
   const previousUSDPrice = chartData?.[0]?.priceUSD || 0;
@@ -93,7 +100,7 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, onRemove, isSelected }) 
         )}
         <Box display="flex" flexDirection="column" justifyContent="center" height="100%" onClick={onClick}>
           <Text color="text1" fontSize={14} fontWeight={500}>
-            {usdcPrice ? `$${usdcPrice?.toSignificant(4, { groupSeparator: ',' })}` : '-'}
+            {usdcPrice ? `$${usdcPrice}` : '-'}
           </Text>
           {!isNaN(perc) && (
             <Text color={diffPercent > 0 ? 'green1' : 'red1'} fontSize={'8px'} fontWeight={500}>
