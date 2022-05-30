@@ -4,7 +4,7 @@ import { WatchList } from '.';
 
 export default {
   component: WatchList,
-  title: 'Pangolin/WatchList',
+  title: 'Components/WatchList',
 };
 
 const TemplateWatchList: ComponentStory<typeof WatchList> = (args: any) => (

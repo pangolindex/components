@@ -24,7 +24,13 @@ const initialWeb3State: Web3State = {
 
 const Web3Context = createContext<Web3State>({} as Web3State);
 
-export const useActiveWeb3React = () => useContext(Web3Context);
+export const useActiveWeb3React = () => {
+  const context = useContext(Web3Context);
+  if (context === undefined) {
+    throw new Error('useActiveWeb3React must be used within a component wrapped with Web3Provider');
+  }
+  return context;
+};
 
 export const Web3Provider: FC<Web3ProviderProps> = ({ children, library, chainId, account }: Web3ProviderProps) => {
   const [state, setState] = useState<Web3State>(initialWeb3State);
@@ -32,7 +38,7 @@ export const Web3Provider: FC<Web3ProviderProps> = ({ children, library, chainId
   useEffect(() => {
     setState({
       library,
-      chainId,
+      chainId: chainId || ChainId.AVALANCHE,
       account,
     });
   }, [library, chainId, account]);

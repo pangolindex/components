@@ -4,7 +4,7 @@ import { Box } from '.';
 
 export default {
   component: Box,
-  title: 'Pangolin/Box',
+  title: 'Components/Box',
 };
 
 const TemplateBox: ComponentStory<typeof Box> = (args: any) => <Box {...args} width={200} height={200} />;

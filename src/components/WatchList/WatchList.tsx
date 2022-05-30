@@ -45,6 +45,32 @@ const WatchList: React.FC<Props> = ({ isLimitOrders, visibleTradeButton = true, 
     [chainId, watchListCurrencies],
   );
   useOnClickOutside(node, open ? toggle : undefined);
+
+  const renderWatchlistRow = (coin) => {
+    return (
+      <WatchlistRow
+        coin={coin}
+        key={coin.address}
+        onClick={() => setSelectedToken(coin)}
+        onRemove={() => setSelectedToken(PNG[chainId])}
+        isSelected={coin?.address === selectedToken?.address}
+      />
+    );
+  };
+
+  const renderCoinChart = () => {
+    return (
+      <Hidden upToSmall={true}>
+        <CoinChart
+          coin={selectedToken}
+          visibleTradeButton={visibleTradeButton}
+          tradeLinkUrl={tradeLinkUrl}
+          redirect={redirect}
+        />
+      </Hidden>
+    );
+  };
+
   return (
     <WatchListRoot>
       <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -77,65 +103,19 @@ const WatchList: React.FC<Props> = ({ isLimitOrders, visibleTradeButton = true, 
         </Box>
       </Box>
       <GridContainer isLimitOrders={isLimitOrders}>
-        {CHAINS[chainId].mainnet
-          ? !isLimitOrders && (
-              <Hidden upToSmall={true}>
-                <CoinChart
-                  coin={selectedToken}
-                  visibleTradeButton={visibleTradeButton}
-                  tradeLinkUrl={tradeLinkUrl}
-                  redirect={redirect}
-                />
-              </Hidden>
-            )
-          : isLimitOrders && (
-              <Hidden upToSmall={true}>
-                <CoinChart
-                  coin={selectedToken}
-                  visibleTradeButton={visibleTradeButton}
-                  tradeLinkUrl={tradeLinkUrl}
-                  redirect={redirect}
-                />
-              </Hidden>
-            )}
-
+        {/* render coin chart */}
+        {CHAINS[chainId].mainnet && !isLimitOrders && renderCoinChart()}
+        {/* render watchlist in desktop */}
         <DesktopWatchList>
-          <Scrollbars>
-            {(currencies || []).map((coin) => (
-              <WatchlistRow
-                coin={coin}
-                key={coin.address}
-                onClick={() => setSelectedToken(coin)}
-                onRemove={() => setSelectedToken(PNG[chainId])}
-                isSelected={coin?.address === selectedToken?.address}
-              />
-            ))}
-          </Scrollbars>
+          <Scrollbars>{(currencies || []).map(renderWatchlistRow)}</Scrollbars>
         </DesktopWatchList>
+        {/* render watchlist in mobile */}
         <MobileWatchList>
-          {(currencies || []).slice(0, 3).map((coin) => (
-            <WatchlistRow
-              coin={coin}
-              key={coin.address}
-              onClick={() => setSelectedToken(coin)}
-              onRemove={() => setSelectedToken(PNG[chainId])}
-              isSelected={coin?.address === selectedToken?.address}
-            />
-          ))}
-
-          {showMore &&
-            (currencies || [])
-              .slice(3)
-              .map((coin) => (
-                <WatchlistRow
-                  coin={coin}
-                  key={coin.address}
-                  onClick={() => setSelectedToken(coin)}
-                  onRemove={() => setSelectedToken(PNG[chainId])}
-                  isSelected={coin?.address === selectedToken?.address}
-                />
-              ))}
-
+          {/* initially render only 3 tokens */}
+          {(currencies || []).slice(0, 3).map(renderWatchlistRow)}
+          {/* if user click on more, then render other tokens */}
+          {showMore && (currencies || []).slice(3).map(renderWatchlistRow)}
+          {/* render show more */}
           {currencies.length > 3 && <ShowMore showMore={showMore} onToggle={() => setShowMore(!showMore)} />}
         </MobileWatchList>
       </GridContainer>
