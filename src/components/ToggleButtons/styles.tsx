@@ -7,6 +7,7 @@ export const Root = styled.div`
   border-radius: 4px;
   align-items: center;
   padding: 2px;
+  width: 100%;
 `;
 
 export const TextButton = styled.div<{
@@ -19,6 +20,8 @@ export const TextButton = styled.div<{
   border-radius: 4px;
   padding: 3px 5px;
   cursor: pointer;
+  text-align: center;
+  width: 100%;
 
   &:last-child {
     margin-right: 0px;

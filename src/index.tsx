@@ -1,5 +1,6 @@
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
 import React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { usePair } from 'src/data/Reserves';
 import { useAllTokens } from 'src/hooks/Tokens';
@@ -19,6 +20,8 @@ import ListsUpdater from './state/plists/updater';
 import MulticallUpdater from './state/pmulticall/updater';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
+
+const queryClient = new QueryClient();
 
 export function PangolinProvider({
   chainId,
@@ -40,21 +43,25 @@ export function PangolinProvider({
       <MulticallUpdater />
       <TransactionUpdater />
       <ThemeProvider theme={theme}>
-        <GelatoProvider
-          library={library}
-          chainId={chainId}
-          account={account ?? undefined}
-          useDefaultTheme={false}
-          handler={'pangolin'}
-        >
-          {children}
-        </GelatoProvider>
+        <QueryClientProvider client={queryClient}>
+          <GelatoProvider
+            library={library}
+            chainId={chainId}
+            account={account ?? undefined}
+            useDefaultTheme={false}
+            handler={'pangolin'}
+          >
+            {children}
+          </GelatoProvider>
+        </QueryClientProvider>
       </ThemeProvider>
     </Web3Provider>
   );
 }
 
 export * from './components';
+export * from './connectors';
+export * from './constants';
 export * from '@gelatonetwork/limit-orders-react';
 export type { LimitOrderInfo };
 export {
