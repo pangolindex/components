@@ -1,6 +1,7 @@
 import { parseBytes32String } from '@ethersproject/strings';
 import { CAVAX, CHAINS, ChainId, Currency, Token } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
+import { COINGEKO_BASE_URL } from 'src/constants';
 import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
@@ -111,17 +112,21 @@ export function useCoinGeckoTokenPrice(coin: Token) {
 
   useEffect(() => {
     const getCoinPriceData = async () => {
-      const chain = coin.chainId === 43113 ? CHAINS[ChainId.AVALANCHE] : CHAINS[coin.chainId];
+      try {
+        const chain = coin.chainId === 43113 ? CHAINS[ChainId.AVALANCHE] : CHAINS[coin.chainId];
 
-      const url = `https://api.coingecko.com/api/v3/simple/token_price/${
-        chain.coingecko_id
-      }?contract_addresses=${coin.address.toLowerCase()}&vs_currencies=usd`;
-      const response = await fetch(url);
-      const data = await response.json();
+        const url = `${COINGEKO_BASE_URL}simple/token_price/${
+          chain.coingecko_id
+        }?contract_addresses=${coin.address.toLowerCase()}&vs_currencies=usd`;
+        const response = await fetch(url);
+        const data = await response.json();
 
-      setResult({
-        tokenUsdPrice: data?.[coin.address.toLowerCase()]?.usd,
-      });
+        setResult({
+          tokenUsdPrice: data?.[coin.address.toLowerCase()]?.usd,
+        });
+      } catch (error) {
+        console.error('coingecko api error', error);
+      }
     };
     getCoinPriceData();
   }, [coin]);
@@ -134,28 +139,32 @@ export function useCoinGeckoTokenPriceChart(coin: Token, days = '7') {
 
   useEffect(() => {
     const getCoinData = async () => {
-      const chain = coin.chainId === 43113 ? CHAINS[ChainId.AVALANCHE] : CHAINS[coin.chainId];
+      try {
+        const chain = coin.chainId === 43113 ? CHAINS[ChainId.AVALANCHE] : CHAINS[coin.chainId];
 
-      const url = `https://api.coingecko.com/api/v3/coins/${
-        chain.coingecko_id
-      }/contract/${coin.address.toLowerCase()}/market_chart/?vs_currency=usd&days=${days}`;
+        const url = `${COINGEKO_BASE_URL}coins/${
+          chain.coingecko_id
+        }/contract/${coin.address.toLowerCase()}/market_chart/?vs_currency=usd&days=${days}`;
 
-      const response = await fetch(url);
-      const data = await response.json();
+        const response = await fetch(url);
+        const data = await response.json();
 
-      const formattedHistory = [] as Array<{ timestamp: string; priceUSD: number }>;
+        const formattedHistory = [] as Array<{ timestamp: string; priceUSD: number }>;
 
-      const priceData = data?.prices || [];
+        const priceData = data?.prices || [];
 
-      // for each hour, construct the open and close price
-      for (let i = 0; i < priceData.length - 1; i++) {
-        formattedHistory.push({
-          timestamp: (priceData[i]?.[0] / 1000).toFixed(0),
-          priceUSD: parseFloat(priceData[i]?.[1]),
-        });
+        // for each hour, construct the open and close price
+        for (let i = 0; i < priceData.length - 1; i++) {
+          formattedHistory.push({
+            timestamp: (priceData[i]?.[0] / 1000).toFixed(0),
+            priceUSD: parseFloat(priceData[i]?.[1]),
+          });
+        }
+
+        setResult(formattedHistory);
+      } catch (error) {
+        console.error('coingecko api error', error);
       }
-
-      setResult(formattedHistory);
     };
     getCoinData();
   }, [coin, days]);
