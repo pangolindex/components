@@ -44,12 +44,12 @@ export default {
   input: 'src/index.tsx',
   output: [
     {
-      file: packageJson.main,
+      dir: 'lib/cjs',
       format: 'cjs',
       sourcemap: true,
     },
     {
-      file: packageJson.module,
+      dir: 'lib/esm',
       format: 'esm',
       sourcemap: true,
     },
