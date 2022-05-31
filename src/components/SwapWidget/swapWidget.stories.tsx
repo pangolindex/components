@@ -4,7 +4,7 @@ import SwapWidget from '.';
 
 export default {
   component: Text,
-  title: 'Pangolin/SwapWidget',
+  title: 'Components/SwapWidget',
 };
 
 export const Swap = () => (

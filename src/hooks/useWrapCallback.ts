@@ -4,7 +4,7 @@ import { tryParseAmount } from '../state/pswap/hooks';
 import { useTransactionAdder } from '../state/ptransactions/hooks';
 import { useCurrencyBalance } from '../state/pwallet/hooks';
 import { useWETHContract } from './useContract';
-import { useActiveWeb3React, useChainId } from './index';
+import { useChainId, usePangolinWeb3 } from './index';
 
 export enum WrapType {
   NOT_APPLICABLE,
@@ -24,7 +24,7 @@ export default function useWrapCallback(
   outputCurrency: Currency | undefined,
   typedValue: string | undefined,
 ): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
-  const { account } = useActiveWeb3React();
+  const { account } = usePangolinWeb3();
 
   const chainId = useChainId();
 

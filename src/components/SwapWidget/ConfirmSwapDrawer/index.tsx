@@ -3,7 +3,7 @@ import React, { useContext, useMemo } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import Drawer from 'src/components/Drawer';
-import { useActiveWeb3React } from 'src/hooks';
+import { usePangolinWeb3 } from 'src/hooks';
 import { Field } from 'src/state/pswap/actions';
 import { getEtherscanLink, tradeMeaningfullyDiffers } from 'src/utils';
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
@@ -51,7 +51,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
     recipient,
   } = props;
 
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = usePangolinWeb3();
   const theme = useContext(ThemeContext);
 
   const slippageAdjustedAmounts = useMemo(

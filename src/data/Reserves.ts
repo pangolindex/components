@@ -2,7 +2,7 @@ import { Interface } from '@ethersproject/abi';
 import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
 import { ChainId, Currency, Pair, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { useActiveWeb3React } from '../hooks';
+import { usePangolinWeb3 } from '../hooks';
 
 import { useMultipleContractSingleData } from '../state/pmulticall/hooks';
 import { wrappedCurrency } from '../utils/wrappedCurrency';
@@ -17,7 +17,7 @@ export enum PairState {
 }
 
 export function usePairs(currencies: [Currency | undefined, Currency | undefined][]): [PairState, Pair | null][] {
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = usePangolinWeb3();
 
   const tokens = useMemo(
     () =>

@@ -4,7 +4,7 @@ import { NewsWidget } from '.';
 
 export default {
   component: NewsWidget,
-  title: 'Pangolin/NewsWidget',
+  title: 'Components/NewsWidget',
 };
 
 const TemplateNewsWidget: ComponentStory<typeof NewsWidget> = (args: any) => <NewsWidget {...args} />;

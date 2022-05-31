@@ -3,14 +3,14 @@ import { useGasOverhead, useGelatoLimitOrders, useGelatoLimitOrdersLib } from '@
 import { TokenAmount } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
 import { INITIAL_ALLOWED_SLIPPAGE } from 'src/constants';
-import { useActiveWeb3React } from 'src/hooks';
+import { usePangolinWeb3 } from 'src/hooks';
 import { Text } from '../../Text';
 import { ContentBox, DataBox, ValueText } from './styled';
 
 type Props = { trade: any };
 
 const LimitOrderDetailInfo: React.FC<Props> = ({ trade }) => {
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = usePangolinWeb3();
 
   const {
     derivedOrderInfo: { parsedAmounts, rawAmounts },

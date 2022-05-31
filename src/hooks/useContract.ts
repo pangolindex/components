@@ -7,11 +7,11 @@ import ERC20_ABI from 'src/constants/abis/erc20.json';
 import WETH_ABI from 'src/constants/abis/weth.json';
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from 'src/constants/multicall';
 import { getContract } from 'src/utils';
-import { useActiveWeb3React } from './index';
+import { usePangolinWeb3 } from './index';
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
-  const { library, account } = useActiveWeb3React();
+  const { library, account } = usePangolinWeb3();
 
   return useMemo(() => {
     if (!address || address === ZERO_ADDRESS || !ABI || !library) return null;
@@ -33,11 +33,11 @@ export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossi
 }
 
 export function useWETHContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = usePangolinWeb3();
   return useContract(chainId ? WAVAX[chainId]?.address : undefined, WETH_ABI, withSignerIfPossible);
 }
 
 export function useMulticallContract(): Contract | null {
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = usePangolinWeb3();
   return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false);
 }

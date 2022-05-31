@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { CHAINS, ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { gnosisSafe, injected, walletconnect, walletlink, xDefi } from '../connectors';
@@ -218,6 +219,48 @@ export const PANGOLIN_TOKENS_REPO_RAW_BASE_URL = `https://raw.githubusercontent.
 
 export type LogoSize = 24 | 48;
 
+export const ANALYTICS_PAGE = 'https://info.pangolin.exchange';
+
+export const TIMEFRAME = [
+  {
+    description: 'DAY',
+    label: '1D',
+    interval: 3600,
+    momentIdentifier: 'day',
+    days: '1',
+  },
+  {
+    description: 'WEEK',
+    label: '1W',
+    interval: 86400,
+    momentIdentifier: 'week',
+    days: '7',
+  },
+  {
+    description: 'MONTH',
+    label: '1M',
+    interval: 604800,
+    momentIdentifier: 'month',
+    days: '30',
+  },
+  {
+    description: 'YEAR',
+    label: '1Y',
+    interval: 2629746,
+    momentIdentifier: 'year',
+    days: '365',
+  },
+  {
+    description: 'ALL',
+    label: 'ALL',
+    interval: 2629746,
+    momentIdentifier: '',
+    days: 'max',
+  },
+];
+
+export const SUBGRAPH_BASE_URL = `https://api.thegraph.com/subgraphs/name/pangolindex`;
+
 export const LANDING_PAGE = 'https://pangolin.exchange';
 
 export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
@@ -305,3 +348,6 @@ export interface WalletInfo {
   mobileOnly?: true;
 }
 export const DIRECTUS_URL_NEWS = `https://p7gm7mqi.directus.app/items/news?`;
+
+export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3/`;
+/* eslint-enable max-lines */

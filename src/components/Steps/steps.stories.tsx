@@ -4,7 +4,7 @@ import Steps, { Step } from '.';
 
 export default {
   component: Steps,
-  title: 'Pangolin/Steps',
+  title: 'Components/Steps',
   args: {
     index: 0,
   },

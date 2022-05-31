@@ -4,7 +4,7 @@ import { NetworkSelection } from '.';
 
 export default {
   component: NetworkSelection,
-  title: 'Pangolin/NetworkSelection',
+  title: 'Components/NetworkSelection',
 };
 
 const TemplateNetworkSelection: ComponentStory<typeof NetworkSelection> = (args: any) => <NetworkSelection {...args} />;
