@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Box, Text } from 'src/components';
 
 export const WatchListRoot = styled(Box)`
-  widht: 100%;
+  width: 100%;
   height: 100%;
   border-radius: 10px;
   padding: 20px;
@@ -25,11 +25,12 @@ export const MobileWatchList = styled.div`
 `};
 `;
 
-export const GridContainer = styled(Box)<{ isLimitOrders?: boolean }>`
+export const GridContainer = styled(Box)<{ coinChartVisible?: boolean }>`
   display: grid;
-  grid-template-columns: ${({ isLimitOrders }) => (isLimitOrders ? `100%` : `minmax(auto, 50%) 50%`)};
+  grid-template-columns: ${({ coinChartVisible }) => (!coinChartVisible ? `100%` : `minmax(auto, 50%) 50%`)};
   grid-gap: 8px;
   flex: 1;
+  min-height: 263px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: none;
     grid-template-rows: max-content;

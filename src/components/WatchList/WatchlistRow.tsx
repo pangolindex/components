@@ -78,8 +78,11 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, onRemove, isSelected }) 
         {/* rechart has responsive container in mobile view when add 3rd row its gradually increase width so if we set width 99% then its resolved */}
         {/* ref: https://github.com/recharts/recharts/issues/172#issuecomment-307858843 */}
         {showChart && (
-          <ResponsiveContainer height={20} width={'99%'}>
-            <LineChart data={chartData}>
+          <ResponsiveContainer width={'99%'}>
+            <LineChart
+              data={chartData}
+              margin={{ top: 23 }} // this margin is to keep chart in center
+            >
               <Line
                 type="monotone"
                 dataKey="priceUSD"

@@ -17,13 +17,18 @@ import WatchlistRow from './WatchlistRow';
 import { DesktopWatchList, GridContainer, MobileWatchList, Title, WatchListRoot } from './styleds';
 
 export type Props = {
-  isLimitOrders?: boolean;
+  coinChartVisible?: boolean;
   visibleTradeButton?: boolean;
   tradeLinkUrl?: string;
   redirect?: boolean;
 };
 
-const WatchList: React.FC<Props> = ({ isLimitOrders, visibleTradeButton = true, tradeLinkUrl, redirect = false }) => {
+const WatchList: React.FC<Props> = ({
+  coinChartVisible = true,
+  visibleTradeButton = true,
+  tradeLinkUrl,
+  redirect = false,
+}) => {
   const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
   const [showMore, setShowMore] = useState(false as boolean);
   const allTokens = useAllTokens();
@@ -102,9 +107,9 @@ const WatchList: React.FC<Props> = ({ isLimitOrders, visibleTradeButton = true, 
           )}
         </Box>
       </Box>
-      <GridContainer isLimitOrders={isLimitOrders}>
+      <GridContainer coinChartVisible={coinChartVisible}>
         {/* render coin chart */}
-        {CHAINS[chainId].mainnet && !isLimitOrders && renderCoinChart()}
+        {CHAINS[chainId].mainnet && coinChartVisible && renderCoinChart()}
         {/* render watchlist in desktop */}
         <DesktopWatchList>
           <Scrollbars>{(currencies || []).map(renderWatchlistRow)}</Scrollbars>

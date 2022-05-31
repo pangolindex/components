@@ -15,6 +15,6 @@ const TemplateWatchList: ComponentStory<typeof WatchList> = (args: any) => (
 
 export const Default = TemplateWatchList.bind({});
 Default.args = {
-  isLimitOrders: false,
+  coinChartVisible: false,
   visibleTradeButton: true,
 };
