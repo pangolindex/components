@@ -13,7 +13,7 @@ import {
 } from 'src/state/pswap/hooks';
 import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { Web3Provider } from './hooks';
+import { PangolinWeb3Provider } from './hooks';
 import { PANGOLIN_PERSISTED_KEYS, pangolinReducers } from './state';
 import ApplicationUpdater from './state/papplication/updater';
 import ListsUpdater from './state/plists/updater';
@@ -37,7 +37,7 @@ export function PangolinProvider({
   theme?: any;
 }) {
   return (
-    <Web3Provider chainId={chainId} library={library} account={account}>
+    <PangolinWeb3Provider chainId={chainId} library={library} account={account}>
       <ListsUpdater />
       <ApplicationUpdater />
       <MulticallUpdater />
@@ -55,7 +55,7 @@ export function PangolinProvider({
           </GelatoProvider>
         </QueryClientProvider>
       </ThemeProvider>
-    </Web3Provider>
+    </PangolinWeb3Provider>
   );
 }
 

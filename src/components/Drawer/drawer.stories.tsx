@@ -4,7 +4,7 @@ import Drawer from '.';
 
 export default {
   component: Drawer,
-  title: 'Pangolin/Drawer',
+  title: 'Components/Drawer',
   args: {
     open: false,
   },

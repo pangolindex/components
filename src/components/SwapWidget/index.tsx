@@ -10,7 +10,6 @@ interface Props {
 
 const SwapWidget: React.FC<Props> = ({ isLimitOrderVisible = false, showSettings = true }) => {
   const [swapType, setSwapType] = useState('MARKET' as string);
-
   return (
     <Root>
       {swapType === 'LIMIT' ? (

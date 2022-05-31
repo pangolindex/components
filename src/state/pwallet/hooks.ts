@@ -1,7 +1,7 @@
 import { CAVAX, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
-import { useActiveWeb3React } from 'src/hooks';
+import { usePangolinWeb3 } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import { useMulticallContract } from 'src/hooks/useContract';
 import { isAddress } from '../../utils';
@@ -127,7 +127,7 @@ export function useCurrencyBalance(
 
 // mimics useAllBalances
 export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | undefined } {
-  const { account } = useActiveWeb3React();
+  const { account } = usePangolinWeb3();
   const allTokens = useAllTokens();
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens]);
   const balances = useTokenBalances(account ?? undefined, allTokensArray);

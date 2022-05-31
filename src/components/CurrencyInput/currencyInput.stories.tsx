@@ -5,7 +5,7 @@ import { CurrencyInput } from '.';
 
 export default {
   component: CurrencyInput,
-  title: 'Pangolin/CurrencyInputs',
+  title: 'Components/CurrencyInputs',
 };
 
 const TemplateCurrencyInput: ComponentStory<typeof CurrencyInput> = (args: any) => <CurrencyInput {...args} />;

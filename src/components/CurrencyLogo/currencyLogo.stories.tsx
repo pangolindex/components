@@ -5,7 +5,7 @@ import CurrencyLogo from '.';
 
 export default {
   component: CurrencyLogo,
-  title: 'Pangolin/CurrencyLogo',
+  title: 'Components/CurrencyLogo',
 };
 
 const TemplateBox: ComponentStory<typeof CurrencyLogo> = (args: any) => <CurrencyLogo {...args} />;

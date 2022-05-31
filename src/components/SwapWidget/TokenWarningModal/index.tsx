@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { ExternalLink } from 'src/theme';
 import { getEtherscanLink, shortenAddress } from 'src/utils';
 import { Box, Button, CurrencyLogo, Modal, Text } from '../../';
-import { useActiveWeb3React } from '../../../hooks';
+import { usePangolinWeb3 } from '../../../hooks';
 import { useAllTokens } from '../../../hooks/Tokens';
 import { AutoColumn, StyledWarningIcon, WarningContainer, Wrapper } from './styled';
 
@@ -12,7 +12,7 @@ interface TokenWarningCardProps {
 }
 
 function TokenWarningCard({ token }: TokenWarningCardProps) {
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = usePangolinWeb3();
 
   const tokenSymbol = token?.symbol?.toLowerCase() ?? '';
   const tokenName = token?.name?.toLowerCase() ?? '';

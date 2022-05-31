@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 import ReactGA from 'react-ga';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_TOKEN_LISTS } from 'src/constants/lists';
-import { useActiveWeb3React } from 'src/hooks';
+import { usePangolinWeb3 } from 'src/hooks';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';
 import useInterval from 'src/hooks/useInterval';
 import useIsWindowVisible from 'src/hooks/useIsWindowVisible';
@@ -11,7 +11,7 @@ import { AppDispatch, AppState } from '../index';
 import { acceptListUpdate } from './actions';
 
 export default function Updater(): null {
-  const { library } = useActiveWeb3React();
+  const { library } = usePangolinWeb3();
   const dispatch = useDispatch<AppDispatch>();
   const lists = useSelector<AppState, AppState['plists']['byUrl']>((state) => state.plists.byUrl);
 
