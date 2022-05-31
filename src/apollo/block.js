@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 
 export const GET_BLOCKS = (timestamps) => {
   let queryString = 'query blocks {';
