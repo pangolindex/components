@@ -86,6 +86,14 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     ];
   }, [filteredTokens, searchQuery, searchToken, tokenComparator]);
 
+  const currencies = useMemo(() => {
+    if (searchQuery === '') {
+      // remove AVAX/ETH from array and add in first position
+      const _tokens = filteredSortedTokens.filter((token) => token.symbol !== 'AVAX' && token.symbol !== 'ETH');
+      return [CAVAX[chainId], ..._tokens];
+    }
+    return filteredSortedTokens;
+  }, [filteredSortedTokens, chainId]);
   //const currencies = useMemo(() => [Currency.CAVAX, ...filteredSortedTokens], [filteredSortedTokens]);
 
   const onSelect = useCallback(
@@ -136,9 +144,9 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
             <FixedSizeList
               height={height}
               width="100%"
-              itemCount={filteredSortedTokens.length}
+              itemCount={currencies.length}
               itemSize={56}
-              itemData={filteredSortedTokens}
+              itemData={currencies}
               itemKey={(index, data) => currencyKey(data[index], chainId)}
             >
               {Row}
