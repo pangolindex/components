@@ -106,15 +106,13 @@ const Portfolio: React.FC = () => {
       ) : (
         <Box width="100%">
           <Box
-            style={{
-              backgroundColor: theme.bg6,
-            }}
             padding={10}
             borderRadius={4}
             display="flex"
             flexDirection="row"
             marginBottom={15}
             alignItems="center"
+            bgColor="bg6"
           >
             <Text fontSize={18} color="text1" style={{ flexGrow: 1 }}>
               Total Amount Invested
@@ -127,7 +125,7 @@ const Portfolio: React.FC = () => {
                 <Frame>{availableBalances.map((chain, key) => renderChain(chain, key))}</Frame>
               </Scrollbars>
             ) : (
-              <Text fontSize={18} color="text1">
+              <Text fontSize={18} color="text1" textAlign="center">
                 Not found balances
               </Text>
             )}

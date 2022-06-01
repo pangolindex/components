@@ -2,10 +2,11 @@ import { ALL_CHAINS } from '@pangolindex/sdk';
 import axios from 'axios';
 import qs from 'qs';
 import { useQuery } from 'react-query';
+import { OPEN_API_DEBANK } from 'src/constants';
 import { usePangolinWeb3 } from 'src/hooks';
 
 const openApi = axios.create({
-  baseURL: 'https://openapi.debank.com/v1/user',
+  baseURL: OPEN_API_DEBANK,
   timeout: 2000,
 });
 
@@ -50,6 +51,6 @@ export function useGetChainsBalances() {
       return chainbalances;
     }
 
-    return {} as Balances;
+    return { total: 0, chains: [] };
   });
 }

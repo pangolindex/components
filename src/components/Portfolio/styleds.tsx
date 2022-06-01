@@ -19,7 +19,7 @@ export const PortifolioRoot = styled(Box)`
 
 export const PortfolioHeader = styled(Box)`
   width: 100%;
-  display flex;
+  display: flex;
   gap: 5px;
 `;
 
