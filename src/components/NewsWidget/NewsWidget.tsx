@@ -9,7 +9,7 @@ import Earth from 'src/assets/images/earth.png';
 import { Box } from 'src/components/Box';
 import { Loader } from 'src/components/Loader';
 import { News, useGetNews } from 'src/state/pnews/hooks';
-import { NewsContent, NewsDate, NewsSection, NewsTitle, SlickNext } from './styleds';
+import { MainContent, NewsContent, NewsDate, NewsSection, NewsTitle, SlickNext } from './styleds';
 import { NewsProps } from './types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -46,7 +46,7 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
           <ArrowRight size={20} style={{ minWidth: 24 }} />
         </SlickNext>
       </Box>
-      <Box paddingTop="90px">
+      <MainContent>
         {!isLoading ? (
           <Slider ref={sliderRef} {...NewsFeedSettings}>
             {news &&
@@ -103,7 +103,7 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
             <Loader size={100} />
           </Box>
         )}
-      </Box>
+      </MainContent>
     </NewsSection>
   );
 };

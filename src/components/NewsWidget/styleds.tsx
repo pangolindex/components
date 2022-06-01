@@ -107,3 +107,9 @@ export const SlickNext = styled(Box)<{ onClick: () => void }>`
   }
   z-index: 9999;
 `;
+
+export const MainContent = styled(Box)`
+  position: relative;
+  top: 100%;
+  transform: translateY(-100%);
+`;
