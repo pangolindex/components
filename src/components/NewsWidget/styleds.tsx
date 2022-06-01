@@ -11,6 +11,7 @@ export const NewsSection = styled(Box)<{ img: string }>`
   border-radius: 8px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   overflow: hidden;
   & .slick-slider {
     height: 100%;
@@ -54,6 +55,7 @@ export const NewsSection = styled(Box)<{ img: string }>`
 `;
 
 export const NewsTitle = styled(Box)`
+  align-self: start;
   font-weight: bold;
   font-size: 32px;
   line-height: 48px;
