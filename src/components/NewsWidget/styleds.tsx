@@ -3,16 +3,15 @@ import { Box } from 'src/components/Box';
 
 // news section
 export const NewsSection = styled(Box)<{ img: string }>`
-  position: relative;
   background-color: ${({ theme }) => theme.bg2};
   background-image: url(${(props) => props.img});
   background-repeat: no-repeat;
   background-position: bottom right;
-  width: 100%;
   height: 100%;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   overflow: hidden;
   & .slick-slider {
     height: 100%;
@@ -56,9 +55,7 @@ export const NewsSection = styled(Box)<{ img: string }>`
 `;
 
 export const NewsTitle = styled(Box)`
-  position: absolute;
-  top: 0px;
-  left: 0px;
+  align-self: start;
   font-weight: bold;
   font-size: 32px;
   line-height: 48px;
@@ -95,9 +92,6 @@ export const SlickNext = styled(Box)<{ onClick: () => void }>`
   width: 32px;
   height: 32px;
   border-radius: 16px;
-  position: absolute;
-  top: 20px;
-  right: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -106,4 +100,15 @@ export const SlickNext = styled(Box)<{ onClick: () => void }>`
     cursor: pointer;
   }
   z-index: 9999;
+`;
+
+export const TitleWrapper = styled(Box)`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const ArrowWrapper = styled(Box)`
+  display: flex;
+  gap: 10px;
+  padding: 20px;
 `;
