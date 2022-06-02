@@ -53,7 +53,7 @@ export function useGetChainsBalances() {
         return chainbalances;
       }
 
-      return { total: 0, chains: [] };
+      return null;
     },
     { refetchInterval: 5 * 60 * 1000 }, // 5 minutes
   );

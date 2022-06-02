@@ -101,7 +101,7 @@ const Portfolio: React.FC = () => {
             Connect a wallet to see your portifolio
           </Text>
         </Box>
-      ) : isRefetching || isLoading ? (
+      ) : isRefetching || isLoading || !balance ? (
         <Loader size={100} />
       ) : (
         <Box width="100%">
