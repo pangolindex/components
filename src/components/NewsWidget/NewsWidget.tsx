@@ -48,7 +48,7 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
           </SlickNext>
         </ArrowWrapper>
       </TitleWrapper>
-      <div>
+      <div style={{ height: '100%' }}>
         {!isLoading ? (
           <Slider ref={sliderRef} {...NewsFeedSettings}>
             {news &&
