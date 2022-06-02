@@ -31,26 +31,30 @@ export function useGetChainsBalances() {
     },
   );
 
-  return useQuery('getChainsBalances', async () => {
-    if (account) {
-      const response = await openApi.get(`/total_balance?${query}`);
-      const data = response.data;
-      const chainbalances: Balances = {
-        total: data?.total_usd_value,
-        chains: [],
-      };
-      data?.chain_list?.forEach((chain: any) => {
-        const _chain = ALL_CHAINS.filter((value) => value.chain_id === chain?.community_id)[0];
-        if (_chain) {
-          chainbalances.chains.push({
-            chainID: chain?.community_id,
-            balance: chain?.usd_value,
-          });
-        }
-      });
-      return chainbalances;
-    }
+  return useQuery(
+    'getChainsBalances',
+    async () => {
+      if (account) {
+        const response = await openApi.get(`/total_balance?${query}`);
+        const data = response.data;
+        const chainbalances: Balances = {
+          total: data?.total_usd_value,
+          chains: [],
+        };
+        data?.chain_list?.forEach((chain: any) => {
+          const _chain = ALL_CHAINS.filter((value) => value.chain_id === chain?.community_id)[0];
+          if (_chain) {
+            chainbalances.chains.push({
+              chainID: chain?.community_id,
+              balance: chain?.usd_value,
+            });
+          }
+        });
+        return chainbalances;
+      }
 
-    return { total: 0, chains: [] };
-  });
+      return { total: 0, chains: [] };
+    },
+    { refetchInterval: 5 * 60 * 1000 }, // 5 minutes
+  );
 }

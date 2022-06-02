@@ -13,7 +13,7 @@ import { ChainCard, Frame, HideButton, PortfolioHeader, PortifolioFooter, Portif
 const Portfolio: React.FC = () => {
   const theme = useContext(ThemeContext);
   const { account } = usePangolinWeb3();
-  const { data: balance, isLoading } = useGetChainsBalances();
+  const { data: balance, isRefetching, isLoading } = useGetChainsBalances();
   const [availableBalances, setAvailableBalances] = useState<{ chainID: number; balance: number }[]>([]);
   const [showBalances, setShowBalances] = useState(true);
 
@@ -101,8 +101,8 @@ const Portfolio: React.FC = () => {
             Connect a wallet to see your portifolio
           </Text>
         </Box>
-      ) : isLoading ? (
-        <Loader size={40} />
+      ) : isRefetching || isLoading ? (
+        <Loader size={100} />
       ) : (
         <Box width="100%">
           <Box
