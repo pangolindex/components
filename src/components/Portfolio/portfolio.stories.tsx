@@ -7,6 +7,10 @@ export default {
   title: 'Components/Portifolio',
 };
 
-const TemplatePortfolio: ComponentStory<typeof Portifolio> = () => <Portifolio />;
+const TemplatePortfolio: ComponentStory<typeof Portifolio> = () => (
+  <div style={{ width: 600 }}>
+    <Portifolio />
+  </div>
+);
 
 export const Default = TemplatePortfolio.bind({});
