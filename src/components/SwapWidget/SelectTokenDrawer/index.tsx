@@ -88,8 +88,8 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
 
   const currencies = useMemo(() => {
     if (searchQuery === '') {
-      // remove AVAX/ETH from array and add in first position
-      const _tokens = filteredSortedTokens.filter((token) => token.symbol !== 'AVAX' && token.symbol !== 'ETH');
+      // remove Currency from array and add in first position
+      const _tokens = filteredSortedTokens.filter((token) => token !== CAVAX[chainId]);
       return [CAVAX[chainId], ..._tokens];
     }
     return filteredSortedTokens;
