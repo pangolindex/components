@@ -20,6 +20,7 @@ export const PortifolioRoot = styled(Box)`
 export const PortfolioHeader = styled(Box)`
   width: 100%;
   display: flex;
+  flex-direction: row;
   gap: 5px;
 `;
 
@@ -30,7 +31,6 @@ export const PortifolioFooter = styled(PortfolioHeader)`
 
   justify-content: center;
   align-items: center;
-  gap: 5px;
 
   padding: 5px;
 `;
@@ -38,6 +38,9 @@ export const PortifolioFooter = styled(PortfolioHeader)`
 export const HideButton = styled.button`
   background-color: ${({ theme }) => theme.bg6};
   color: ${({ theme }) => theme.text15};
+
+  min-width: 20px;
+  min-height: 20px;
 
   font-size: 12px;
   border-radius: 5px;
@@ -54,6 +57,8 @@ export const HideButton = styled.button`
     opacity: 0.8;
   }
 
+  align-self: flex-start;
+
   ${({ theme }) => theme.mediaWidth.upToMedium`
     #portfolio-text {
       display: none;
@@ -64,7 +69,7 @@ export const HideButton = styled.button`
 export const ChainCard = styled(Box)`
   padding: 10px;
   background-color: ${({ theme }) => theme.bg6};
-  border-radius: 8px;
+  border-radius: 4px;
   display: flex;
   flex-direction: row;
 
@@ -81,15 +86,6 @@ export const Frame = styled(Box)`
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 20px;
-
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    grid-template-columns: 1fr 1fr 1fr !important;
-  `}
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: 1fr 1fr !important;
-  `}
 `;

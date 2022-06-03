@@ -66,22 +66,21 @@ const Portfolio: React.FC = () => {
           ${balance ? balance.total.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
         </Text>
       );
-    } else {
-      return <Lock color={theme.text1} size={18} />;
     }
+    return <Lock color={theme.text1} size={18} />;
   };
 
   return (
     <PortifolioRoot>
       <PortfolioHeader>
-        <Text fontSize={24} color="text1" style={{ flexGrow: 1 }} fontWeight={600}>
+        <Text fontSize={['16px', '16px', '24px']} color="text1" fontWeight={600} style={{ flexGrow: 1 }}>
           Portfolio Value in All Chains
         </Text>
         <HideButton onClick={() => setShowBalances(!showBalances)}>
           {showBalances ? (
             <>
               <EyeOff size={12} id="portfolio-icon" />
-              <Text fontSize={12} id="portfolio-text" style={{ marginLeft: '5px' }}>
+              <Text fontSize={['8px', '10px', '12px']} id="portfolio-text" style={{ marginLeft: '5px' }}>
                 Hide Your Balance
               </Text>
             </>
@@ -97,7 +96,7 @@ const Portfolio: React.FC = () => {
       </PortfolioHeader>
       {!account ? (
         <Box>
-          <Text fontSize={20} color="text1">
+          <Text fontSize={20} color="text1" textAlign="center">
             Connect a wallet to see your portifolio
           </Text>
         </Box>
@@ -109,12 +108,12 @@ const Portfolio: React.FC = () => {
             padding={10}
             borderRadius={4}
             display="flex"
-            flexDirection="row"
             marginBottom={15}
             alignItems="center"
             bgColor="bg6"
+            flexWrap="wrap"
           >
-            <Text fontSize={18} color="text1" style={{ flexGrow: 1 }}>
+            <Text fontSize={18} color="text1" style={{ flexGrow: 1, minWidth: '200px' }}>
               Total Amount Invested
             </Text>
             {renderTotalBalance()}
@@ -134,7 +133,9 @@ const Portfolio: React.FC = () => {
       )}
       <PortifolioFooter>
         <Info size={12} />
-        <Text fontSize={12}>Includes coins, pools and other holdings in your current wallet</Text>
+        <Text fontSize={12} textAlign="center">
+          Includes coins, pools and other holdings in your current wallet
+        </Text>
       </PortifolioFooter>
     </PortifolioRoot>
   );
