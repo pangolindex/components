@@ -21,7 +21,9 @@ const Portfolio: React.FC = () => {
 
   useEffect(() => {
     if (balance) {
-      const _availableBalances = balance.chains.filter((chain) => chain.balance > 0.01);
+      const _availableBalances = balance.chains
+        .filter((chain) => chain.balance > 0.01)
+        .sort((a, b) => b.balance - a.balance);
       setAvailableBalances(_availableBalances);
       if (_availableBalances.length === 0) {
         setSize(25);
