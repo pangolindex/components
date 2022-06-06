@@ -4,7 +4,7 @@ import { Loader } from '.';
 
 export default {
   component: Loader,
-  title: 'Pangolin/Loader',
+  title: 'Components/Loader',
 };
 
 const TemplateBox: ComponentStory<typeof Loader> = (args: any) => <Loader {...args} />;

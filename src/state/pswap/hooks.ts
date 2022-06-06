@@ -17,7 +17,7 @@ import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NATIVE, ROUTER_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
-import { useActiveWeb3React, useChainId } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
@@ -130,7 +130,7 @@ export function useDerivedSwapInfo(): {
   inputError?: string;
   v1Trade: Trade | undefined;
 } {
-  const { account } = useActiveWeb3React();
+  const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
   const toggledVersion = useToggledVersion();
@@ -294,7 +294,7 @@ export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
 export function useDefaultsFromURLSearch():
   | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
   | undefined {
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = usePangolinWeb3();
   const dispatch = useDispatch<AppDispatch>();
   const parsedQs = useParsedQueryString();
   const [result, setResult] = useState<
@@ -337,7 +337,7 @@ export function useDefaultsFromURLSearch():
 }
 
 export function useGelatoLimitOrderDetail(order: Order) {
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = usePangolinWeb3();
   const gelatoLibrary = useGelatoLimitOrdersLib();
 
   const inputCurrency = order.inputToken === NATIVE && chainId ? 'AVAX' : order.inputToken;

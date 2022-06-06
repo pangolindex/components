@@ -53,7 +53,8 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
       label: listUrl,
     });
 
-    if (window.prompt('Please confirm you would like to remove this list by typing REMOVE') === 'remove') {
+    const answer = window.prompt('Please confirm you would like to remove this list by typing "remove"');
+    if (answer?.toLocaleLowerCase() === 'remove') {
       // eslint-disable-next-line import/no-named-as-default-member
       ReactGA.event({
         category: 'Lists',

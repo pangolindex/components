@@ -6,7 +6,7 @@ import ReactGA from 'react-ga';
 import { ThemeContext } from 'styled-components';
 import { TRUSTED_TOKEN_ADDRESSES } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
-import { useActiveWeb3React, useChainId } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import { ApprovalState, useApproveCallbackFromTrade } from 'src/hooks/useApproveCallback';
 import useENS from 'src/hooks/useENS';
@@ -73,7 +73,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
     setDismissTokenWarning(true);
   }, []);
 
-  const { account } = useActiveWeb3React();
+  const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const theme = useContext(ThemeContext);
 

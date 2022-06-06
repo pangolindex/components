@@ -1,56 +1,41 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
-import ThemeProvider from '../theme';
+import { PangolinProvider } from '..';
+import { useWeb3React as useWeb3ReactCore } from '@web3-react/core';
 import { NetworkContextName } from '../constants';
-import { useActiveWeb3React } from '../hooks';
 import getLibrary from '../utils/getLibrary';
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core';
-import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
 import store from '../state';
-import ListsUpdater from '../state/plists/updater';
-import ApplicationUpdater from '../state/papplication/updater';
-import MulticallUpdater from '../state/pmulticall/updater';
-import TransactionUpdater from '../state/ptransactions/updater';
+import { injected } from '../connectors';
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
 
-const Gelato = ({ children }) => {
-  const { library, chainId, account } = useActiveWeb3React();
+const InternalProvider = ({ children }) => {
+  const context = useWeb3ReactCore();
+  const { library, chainId, account, activate } = context;
+
+  useEffect(() => {
+    // try to connect on page reload
+    if (activate) {
+      activate(injected);
+    }
+  }, []);
+
   return (
-    <GelatoProvider
-      library={library}
-      chainId={chainId}
-      account={account ?? undefined}
-      useDefaultTheme={false}
-      handler={'pangolin'}
-    >
+    <PangolinProvider library={library} chainId={chainId} account={account ?? undefined}>
       {children}
-    </GelatoProvider>
+    </PangolinProvider>
   );
 };
-
-function Updaters() {
-  return (
-    <>
-      <ListsUpdater />
-      <ApplicationUpdater />
-      <TransactionUpdater />
-      <MulticallUpdater />
-    </>
-  );
-}
 
 export const decorators = [
   (Story) => (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
         <Provider store={store}>
-          <Updaters />
-          <ThemeProvider>
-            <Gelato>
-              <Story />
-            </Gelato>
-          </ThemeProvider>
+          <InternalProvider>
+            <Story />
+          </InternalProvider>
         </Provider>
       </Web3ProviderNetwork>
     </Web3ReactProvider>

@@ -6,7 +6,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { NATIVE } from 'src/constants';
-import { useActiveWeb3React, useChainId } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
@@ -39,7 +39,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const [tokenDrawerType, setTokenDrawerType] = useState(LimitNewField.INPUT);
   const [activeTab, setActiveTab] = useState<'SELL' | 'BUY'>('SELL');
-  const { account } = useActiveWeb3React();
+  const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const theme = useContext(ThemeContext);
 
@@ -441,14 +441,16 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
       <TradeOption swapType={swapType} setSwapType={setSwapType} isLimitOrderVisible={isLimitOrderVisible} />
 
       <SwapWrapper>
-        <Box textAlign="center" width="100%">
-          <ToggleButtons
-            options={['SELL', 'BUY']}
-            value={activeTab}
-            onChange={(value) => {
-              handleActiveTab(value);
-            }}
-          />
+        <Box width="100%" display="flex" justify-content="center">
+          <Box textAlign="center" width="120px">
+            <ToggleButtons
+              options={['SELL', 'BUY']}
+              value={activeTab}
+              onChange={(value) => {
+                handleActiveTab(value);
+              }}
+            />
+          </Box>
         </Box>
 
         <Box p={10}>

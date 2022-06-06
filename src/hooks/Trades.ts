@@ -5,10 +5,10 @@ import { BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES } from 'src/constants';
 import { PairState, usePairs } from 'src/data/Reserves';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 
-import { useActiveWeb3React } from './index';
+import { usePangolinWeb3 } from './index';
 
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
-  const { chainId } = useActiveWeb3React();
+  const { chainId } = usePangolinWeb3();
 
   const bases: Token[] = chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []; // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useActiveWeb3React } from '../../hooks';
+import { usePangolinWeb3 } from '../../hooks';
 import { AppDispatch, AppState } from '../index';
 import { useAddPopup, useBlockNumber } from '../papplication/hooks';
 import { checkedTransaction, finalizeTransaction } from './actions';
@@ -33,7 +33,7 @@ export function shouldCheck(
 }
 
 export default function Updater(): null {
-  const { chainId, library } = useActiveWeb3React();
+  const { chainId, library } = usePangolinWeb3();
 
   const lastBlockNumber = useBlockNumber();
 

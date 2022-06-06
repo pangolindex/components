@@ -151,17 +151,19 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
         {/*EXPERT MODE INPUT */}
         <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" style={{ gap: '15px' }}>
           <Text color="text1">Toogle Expert Mode</Text>
-          <ToggleButtons
-            options={['ON', 'OFF']}
-            value={expertMode ? 'ON' : 'OFF'}
-            onChange={(value) => {
-              if (value === 'ON' && !expertMode) {
-                setModalOpen(true);
-              } else if (value === 'OFF' && expertMode) {
-                setExpertMode(false);
-              }
-            }}
-          />
+          <Box width="120px">
+            <ToggleButtons
+              options={['ON', 'OFF']}
+              value={expertMode ? 'ON' : 'OFF'}
+              onChange={(value) => {
+                if (value === 'ON' && !expertMode) {
+                  setModalOpen(true);
+                } else if (value === 'OFF' && expertMode) {
+                  setExpertMode(false);
+                }
+              }}
+            />
+          </Box>
         </Box>
         <Box display="flex" flexDirection="column" alignContent="center" style={{ gap: '10px' }}>
           <Button variant="primary" onClick={save} isDisabled={!isValidValues}>

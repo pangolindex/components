@@ -10,7 +10,7 @@ import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransacti
 import { calculateGasMargin } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from '../utils/prices';
 import { useTokenContract } from './useContract';
-import { useActiveWeb3React, useChainId } from './index';
+import { useChainId, usePangolinWeb3 } from './index';
 
 export enum ApprovalState {
   UNKNOWN,
@@ -25,7 +25,7 @@ export function useApproveCallback(
   amountToApprove?: CurrencyAmount,
   spender?: string,
 ): [ApprovalState, () => Promise<void>] {
-  const { account } = useActiveWeb3React();
+  const { account } = usePangolinWeb3();
 
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined;
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender);

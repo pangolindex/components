@@ -5,10 +5,19 @@ import papplication from './papplication/reducer';
 import plists from './plists/reducer';
 import pmulticall from './pmulticall/reducer';
 import pswap from './pswap/reducer';
+import ptoken from './ptoken/reducer';
 import ptransactions from './ptransactions/reducer';
 import puser from './puser/reducer';
+import pwatchlists from './pwatchlists/reducer';
 
-export const PANGOLIN_PERSISTED_KEYS: string[] = ['puser', 'plists', 'ptransactions', ...GELATO_PERSISTED_KEYS];
+export const PANGOLIN_PERSISTED_KEYS: string[] = [
+  'puser',
+  'plists',
+  'ptransactions',
+  'pwatchlists',
+  'ptoken',
+  ...GELATO_PERSISTED_KEYS,
+];
 
 export const pangolinReducers = {
   papplication,
@@ -17,6 +26,8 @@ export const pangolinReducers = {
   plists,
   pmulticall,
   puser,
+  pwatchlists,
+  ptoken,
   ...gelatoReducers,
 };
 

@@ -4,7 +4,7 @@ import { NumberOptions } from '.';
 
 export default {
   component: NumberOptions,
-  title: 'Pangolin/NumberOptions',
+  title: 'Components/NumberOptions',
 };
 
 const TemplateNumberOptions: ComponentStory<typeof NumberOptions> = (args: any) => <NumberOptions {...args} />;
