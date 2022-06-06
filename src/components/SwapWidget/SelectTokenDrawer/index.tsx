@@ -64,7 +64,9 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
 
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : [];
-    return filterTokens(Object.values(allTokens), searchQuery);
+    const tokens = Object.values(allTokens);
+    tokens.unshift(CAVAX[chainId]);
+    return filterTokens(tokens, searchQuery);
   }, [isAddressSearch, searchToken, allTokens, searchQuery]);
 
   const filteredSortedTokens: Token[] = useMemo(() => {
@@ -84,7 +86,14 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     ];
   }, [filteredTokens, searchQuery, searchToken, tokenComparator]);
 
-  const currencies = useMemo(() => [CAVAX[chainId], ...filteredSortedTokens], [filteredSortedTokens, chainId]);
+  const currencies = useMemo(() => {
+    if (searchQuery === '') {
+      // remove Currency from array and add in first position
+      const _tokens = filteredSortedTokens.filter((token) => token !== CAVAX[chainId]);
+      return [CAVAX[chainId], ..._tokens];
+    }
+    return filteredSortedTokens;
+  }, [filteredSortedTokens, chainId]);
   //const currencies = useMemo(() => [Currency.CAVAX, ...filteredSortedTokens], [filteredSortedTokens]);
 
   const onSelect = useCallback(

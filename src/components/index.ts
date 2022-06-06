@@ -23,3 +23,4 @@ export { WatchList } from './WatchList';
 export { NewsWidget } from './NewsWidget';
 export { NetworkSelection } from './NetworkSelection';
 export { default as WalletModal } from './WalletModal';
+export { Portifolio } from './Portfolio';

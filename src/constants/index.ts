@@ -350,4 +350,7 @@ export interface WalletInfo {
 export const DIRECTUS_URL_NEWS = `https://p7gm7mqi.directus.app/items/news?`;
 
 export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3/`;
+
+export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
+
 /* eslint-enable max-lines */
