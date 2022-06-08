@@ -7,11 +7,12 @@ import ERC20_ABI from 'src/constants/abis/erc20.json';
 import WETH_ABI from 'src/constants/abis/weth.json';
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from 'src/constants/multicall';
 import { getContract } from 'src/utils';
-import { usePangolinWeb3 } from './index';
+import { usePangolinWeb3, useLibrary } from './index';
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
-  const { library, account } = usePangolinWeb3();
+  const { account } = usePangolinWeb3();
+  const { library } = useLibrary();
 
   return useMemo(() => {
     if (!address || address === ZERO_ADDRESS || !ABI || !library) return null;

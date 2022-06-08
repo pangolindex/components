@@ -9,7 +9,7 @@ import isZero from 'src/utils/isZero';
 import useENS from './useENS';
 import { Version } from './useToggledVersion';
 import useTransactionDeadline from './useTransactionDeadline';
-import { usePangolinWeb3 } from './index';
+import { usePangolinWeb3, useLibrary } from './index';
 
 export enum SwapCallbackState {
   INVALID,
@@ -45,7 +45,8 @@ function useSwapCallArguments(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): SwapCall[] {
-  const { account, chainId, library } = usePangolinWeb3();
+  const { account, chainId } = usePangolinWeb3();
+  const { library } = useLibrary();
 
   const { address: recipientAddress } = useENS(recipientAddressOrName);
   const recipient = recipientAddressOrName === null ? account : recipientAddress;
@@ -98,7 +99,8 @@ export function useSwapCallback(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
-  const { account, chainId, library } = usePangolinWeb3();
+  const { account, chainId } = usePangolinWeb3();
+  const { library } = useLibrary();
 
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, recipientAddressOrName);
 

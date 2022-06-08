@@ -2,6 +2,8 @@ import { Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { ChainId } from '@pangolindex/sdk';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
+import { SUPPORTED_WALLETS, PROVIDER_MAPPING } from 'src/constants';
+import { useWeb3React } from '@web3-react/core';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -65,3 +67,45 @@ export const useChainId = () => {
   const { chainId } = usePangolinWeb3();
   return chainId || ChainId.AVALANCHE;
 };
+
+// export function useLibrary(): { library: Web3ProviderEthers; provider: Web3ProviderEthers } {
+//   const { connector } = useWeb3React();
+
+//   return useMemo(() => {
+//     const selectedWallet = Object.values(SUPPORTED_WALLETS).find((wallet) => wallet.connector === connector);
+
+//     const provider = selectedWallet?.provider || window.ethereum;
+
+//     const library = new Web3ProviderEthers(provider, 'any');
+//     library.pollingInterval = 15000;
+
+//     console.log('provider', provider);
+
+//     return { library, provider };
+//   }, [connector]);
+// }
+
+export function useLibrary(): { library: Web3ProviderEthers; provider: Web3ProviderEthers } {
+  const [result, setResult] = useState({} as { library: Web3ProviderEthers; provider: Web3ProviderEthers });
+
+  const { connector } = useWeb3React();
+
+  useEffect(() => {
+    async function load() {
+      const walletKey = Object.keys(SUPPORTED_WALLETS).find(
+        (key) => SUPPORTED_WALLETS[key].connector === connector,
+      ) as string;
+
+      const selectedProvider = (await connector?.getProvider()) || window.ethereum;
+      let provider = selectedProvider || window.ethereum;
+      const extendedProvider = provider && walletKey && (PROVIDER_MAPPING as any)[walletKey]?.(provider);
+
+      const library = new Web3ProviderEthers(provider, 'any');
+
+      setResult({ library, provider: extendedProvider });
+    }
+    load();
+  }, [connector]);
+
+  return result;
+}

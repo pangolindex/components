@@ -1,7 +1,8 @@
 /* eslint-disable max-lines */
 import { CHAINS, ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { gnosisSafe, injected, walletconnect, walletlink, xDefi } from '../connectors';
+import { gnosisSafe, injected, walletconnect, walletlink, xDefi, near } from '../connectors';
+import { CommonEVMProvider } from '../connectors/WalletProviders/CommonEVMProvider';
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.router,
@@ -263,7 +264,7 @@ export const SUBGRAPH_BASE_URL = `https://api.thegraph.com/subgraphs/name/pangol
 
 export const LANDING_PAGE = 'https://pangolin.exchange';
 
-export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
+export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   INJECTED: {
     connector: injected,
     name: 'Injected',
@@ -272,6 +273,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     href: null,
     color: '#010101',
     primary: true,
+    isEVM: true,
   },
   METAMASK: {
     connector: injected,
@@ -280,6 +282,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D',
+    isEVM: true,
   },
   GNOSISSAFE: {
     connector: gnosisSafe,
@@ -288,6 +291,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Gnosis Safe Multisig Wallet.',
     href: null,
     color: '#010101',
+    isEVM: true,
   },
   WALLET_LINK: {
     connector: walletlink,
@@ -296,6 +300,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Use Coinbase Wallet app on mobile device',
     href: null,
     color: '#315CF5',
+    isEVM: true,
   },
   WALLET_CONNECT: {
     connector: walletconnect,
@@ -304,6 +309,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Use Wallet Connect',
     href: null,
     color: '#315CF5',
+    isEVM: true,
   },
   XDEFI: {
     connector: xDefi,
@@ -312,6 +318,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: window.xfi && window.xfi.ethereum ? 'Easy-to-use browser extension.' : 'Please Install',
     href: null,
     color: '#315CF5',
+    isEVM: true,
   },
   RABBY: {
     connector: injected,
@@ -320,7 +327,29 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#7a7cff',
+    isEVM: true,
   },
+
+  NEAR: {
+    connector: near,
+    name: 'Near',
+    iconName: 'near.png',
+    description: 'Near Web',
+    href: null,
+    color: '#315CF5',
+    primary: true,
+    isEVM: false,
+  },
+};
+
+export const PROVIDER_MAPPING = {
+  INJECTED: CommonEVMProvider,
+  METAMASK: CommonEVMProvider,
+  WALLET_LINK: CommonEVMProvider,
+  XDEFI: CommonEVMProvider,
+  GNOSISSAFE: CommonEVMProvider,
+  WALLET_CONNECT: CommonEVMProvider,
+  RABBY: CommonEVMProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {
@@ -337,7 +366,7 @@ export const AVALANCHE_CHAIN_PARAMS = {
 export const IS_IN_IFRAME = window.parent !== window;
 
 export interface WalletInfo {
-  connector?: AbstractConnector;
+  connector?: AbstractConnector | any;
   name: string;
   iconName: string;
   description: string;
@@ -346,6 +375,7 @@ export interface WalletInfo {
   primary?: true;
   mobile?: true;
   mobileOnly?: true;
+  isEVM?: boolean;
 }
 export const DIRECTUS_URL_NEWS = `https://p7gm7mqi.directus.app/items/news?`;
 

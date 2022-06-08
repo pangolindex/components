@@ -3,7 +3,7 @@ import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
 import MetamaskIcon from 'src/assets/images/metamask.png';
@@ -11,7 +11,7 @@ import RabbyIcon from 'src/assets/images/rabby.svg';
 import XDefiIcon from 'src/assets/images/xDefi.png';
 import { Button } from 'src/components/Button';
 import { gnosisSafe, injected, xDefi } from 'src/connectors';
-import { AVALANCHE_CHAIN_PARAMS, EVM_SUPPORTED_WALLETS, IS_IN_IFRAME, LANDING_PAGE, WalletInfo } from 'src/constants';
+import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, WalletInfo, SUPPORTED_WALLETS } from 'src/constants';
 import { ExternalLink } from 'src/theme';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
@@ -53,6 +53,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
 }) => {
   // important that these are destructed from the account-specific web3-react context
   const { connector, activate, error: web3Error } = useWeb3React();
+
+  console.log("connector -- compo",connector)
   const [walletType, setWalletType] = useState(CHAIN_TYPE.EVM_CHAINS as string);
 
   const [walletView, setWalletView] = useState('');
@@ -66,7 +68,46 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   const walletModalOpen = open;
 
-  const walletOptions = walletType === CHAIN_TYPE.EVM_CHAINS ? EVM_SUPPORTED_WALLETS : [];
+  // const walletOptions = walletType === CHAIN_TYPE.EVM_CHAINS ? SUPPORTED_WALLETS : NON_SUPPORTED_WALLETS;
+
+  // return useMemo(() => {
+  //   if (currencyIn && currencyAmountOut && allowedPairs.length > 0) {
+  //     return (
+  //       Trade.bestTradeExactOut(allowedPairs, currencyIn, currencyAmountOut, { maxHops: 3, maxNumResults: 1 })[0] ??
+  //       null
+  //     );
+  //   }
+  //   return null;
+  // }, [allowedPairs, currencyIn, currencyAmountOut]);
+
+  // const filteredUsers = Object.keys(users)
+  //   .filter((key) => selectedUsers.includes(key))
+  //   .reduce((obj, key) => {
+  //     obj[key] = users[key];
+  //     return obj;
+  //   }, {});
+
+  const walletOptions = useMemo(() => {
+    if (walletType === CHAIN_TYPE.EVM_CHAINS) {
+      // return Object.keys(SUPPORTED_WALLETS).filter((key) => SUPPORTED_WALLETS[key].isEVM);
+
+      return Object.keys(SUPPORTED_WALLETS)
+        .filter((key) => SUPPORTED_WALLETS[key].isEVM)
+        .reduce((obj, key) => {
+          obj[key] = SUPPORTED_WALLETS[key];
+          return obj;
+        }, {});
+    } else {
+      // return Object.keys(SUPPORTED_WALLETS).filter((key) => !SUPPORTED_WALLETS[key].isEVM);
+
+      return Object.keys(SUPPORTED_WALLETS)
+        .filter((key) => !SUPPORTED_WALLETS[key].isEVM)
+        .reduce((obj, key) => {
+          obj[key] = SUPPORTED_WALLETS[key];
+          return obj;
+        }, {});
+    }
+  }, [walletType]);
 
   function addAvalancheNetwork() {
     injected.getProvider().then((provider) => {
@@ -154,11 +195,11 @@ const WalletModal: React.FC<WalletModalProps> = ({
   function getActiveOption(): WalletInfo | undefined {
     if (connector === injected) {
       if (isRabby) {
-        return EVM_SUPPORTED_WALLETS.RABBY;
+        return SUPPORTED_WALLETS.RABBY;
       } else if (isMetamask) {
-        return EVM_SUPPORTED_WALLETS.METAMASK;
+        return SUPPORTED_WALLETS.METAMASK;
       }
-      return EVM_SUPPORTED_WALLETS.INJECTED;
+      return SUPPORTED_WALLETS.INJECTED;
     }
     const name = Object.keys(walletOptions).find((key) => walletOptions[key].connector === connector);
     if (name) {
