@@ -3,7 +3,7 @@ import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
 import MetamaskIcon from 'src/assets/images/metamask.png';
@@ -11,7 +11,7 @@ import RabbyIcon from 'src/assets/images/rabby.svg';
 import XDefiIcon from 'src/assets/images/xDefi.png';
 import { Button } from 'src/components/Button';
 import { gnosisSafe, injected, xDefi } from 'src/connectors';
-import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, WalletInfo, SUPPORTED_WALLETS } from 'src/constants';
+import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { ExternalLink } from 'src/theme';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
@@ -54,7 +54,6 @@ const WalletModal: React.FC<WalletModalProps> = ({
   // important that these are destructed from the account-specific web3-react context
   const { connector, activate, error: web3Error } = useWeb3React();
 
-  console.log("connector -- compo",connector)
   const [walletType, setWalletType] = useState(CHAIN_TYPE.EVM_CHAINS as string);
 
   const [walletView, setWalletView] = useState('');

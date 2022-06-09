@@ -1,9 +1,9 @@
 import { Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { ChainId } from '@pangolindex/sdk';
+import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
-import { SUPPORTED_WALLETS, PROVIDER_MAPPING } from 'src/constants';
-import { useWeb3React } from '@web3-react/core';
+import { PROVIDER_MAPPING, SUPPORTED_WALLETS } from 'src/constants';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -97,10 +97,16 @@ export function useLibrary(): { library: Web3ProviderEthers; provider: Web3Provi
       ) as string;
 
       const selectedProvider = (await connector?.getProvider()) || window.ethereum;
-      let provider = selectedProvider || window.ethereum;
+      const provider = selectedProvider || window.ethereum;
       const extendedProvider = provider && walletKey && (PROVIDER_MAPPING as any)[walletKey]?.(provider);
 
-      const library = new Web3ProviderEthers(provider, 'any');
+      let library;
+
+      try {
+        library = new Web3ProviderEthers(provider, 'any');
+      } catch (error) {
+        library = provider;
+      }
 
       setResult({ library, provider: extendedProvider });
     }

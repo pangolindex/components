@@ -1,19 +1,18 @@
-import * as nearAPI from 'near-api-js';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
+import { AbstractConnectorArguments } from '@web3-react/types';
+import { Near, WalletConnection, keyStores } from 'near-api-js';
 import { JsonRpcProvider } from 'near-api-js/lib/providers';
 
 export class NearConnector extends AbstractConnector {
-  private near!: nearAPI.Near;
-  private wallet!: nearAPI.WalletConnection;
+  private near!: Near;
+  private wallet!: WalletConnection;
   private provider!: JsonRpcProvider;
 
   public constructor(kwargs: AbstractConnectorArguments) {
     super(kwargs);
 
-    const { connect, keyStores, WalletConnection } = nearAPI;
-    // TODO
-    let config = {
+    // TODO:
+    const config = {
       networkId: 'testnet',
       nodeUrl: 'https://rpc.testnet.near.org',
       walletUrl: 'https://wallet.testnet.near.org',
@@ -24,11 +23,8 @@ export class NearConnector extends AbstractConnector {
     const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 
     // connect to NEAR
-    connect({ keyStore, headers: {}, ...config }).then((res) => {
-      this.near = res;
-      this.wallet = new WalletConnection(this.near, 'pangolin');
-      //this.connectEagerly();
-    });
+    this.near = new Near({ keyStore, headers: {}, ...config });
+    this.wallet = new WalletConnection(this.near, 'pangolin');
 
     this.handleNetworkChanged = this.handleNetworkChanged.bind(this);
     this.handleChainChanged = this.handleChainChanged.bind(this);
@@ -65,7 +61,8 @@ export class NearConnector extends AbstractConnector {
 
   public async getChainId(): Promise<number | string | any> {
     if (this.wallet) {
-      return this.wallet._networkId;
+      // TODO:
+      return 431114;
     }
     return null;
   }
