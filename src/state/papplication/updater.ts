@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { usePangolinWeb3, useLibrary } from 'src/hooks';
+import { useLibrary, usePangolinWeb3 } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
 import useIsWindowVisible from 'src/hooks/useIsWindowVisible';
 import { updateBlockNumber } from './actions';

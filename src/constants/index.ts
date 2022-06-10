@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { CHAINS, ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { gnosisSafe, injected, walletconnect, walletlink, xDefi, near } from '../connectors';
+import { gnosisSafe, injected, near, walletconnect, walletlink, xDefi } from '../connectors';
 import { CommonEVMProvider } from '../connectors/WalletProviders/CommonEVMProvider';
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {

@@ -4,8 +4,8 @@ import { InjectedConnector } from '@pangolindex/web3-react-injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { DefiConnector } from './DefiConnector';
-import { NetworkConnector } from './NetworkConnector';
 import { NearConnector } from './NearConnector';
+import { NetworkConnector } from './NetworkConnector';
 
 const NETWORK_URL = 'https://api.avax.network/ext/bc/C/rpc';
 

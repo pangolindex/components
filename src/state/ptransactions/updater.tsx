@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { usePangolinWeb3, useLibrary } from '../../hooks';
+import { useLibrary, usePangolinWeb3 } from '../../hooks';
 import { AppDispatch, AppState } from '../index';
 import { useAddPopup, useBlockNumber } from '../papplication/hooks';
 import { checkedTransaction, finalizeTransaction } from './actions';

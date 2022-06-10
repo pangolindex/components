@@ -9,7 +9,7 @@ import isZero from 'src/utils/isZero';
 import useENS from './useENS';
 import { Version } from './useToggledVersion';
 import useTransactionDeadline from './useTransactionDeadline';
-import { usePangolinWeb3, useLibrary } from './index';
+import { useLibrary, usePangolinWeb3 } from './index';
 
 export enum SwapCallbackState {
   INVALID,
