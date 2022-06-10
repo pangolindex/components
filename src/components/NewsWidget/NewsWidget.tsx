@@ -9,7 +9,7 @@ import Earth from 'src/assets/images/earth.png';
 import { Box } from 'src/components/Box';
 import { Loader } from 'src/components/Loader';
 import { News, useGetNews } from 'src/state/pnews/hooks';
-import { NewsContent, NewsDate, NewsSection, NewsTitle, SlickNext } from './styleds';
+import { ArrowWrapper, NewsContent, NewsDate, NewsSection, NewsTitle, SlickNext, TitleWrapper } from './styleds';
 import { NewsProps } from './types';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -37,21 +37,23 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
   const { data: news, isLoading } = useGetNews();
   return (
     <NewsSection img={Earth}>
-      <Box display="flex">
+      <TitleWrapper>
         <NewsTitle>News</NewsTitle>
-        <SlickNext onClick={handleNewsBack} style={{ right: 60 }}>
-          <ArrowLeft size={20} style={{ minWidth: 24 }} />
-        </SlickNext>
-        <SlickNext onClick={handleNewsNext}>
-          <ArrowRight size={20} style={{ minWidth: 24 }} />
-        </SlickNext>
-      </Box>
-      <Box paddingTop="90px">
+        <ArrowWrapper>
+          <SlickNext onClick={handleNewsBack} style={{ right: 60 }}>
+            <ArrowLeft size={20} style={{ minWidth: 24 }} />
+          </SlickNext>
+          <SlickNext onClick={handleNewsNext}>
+            <ArrowRight size={20} style={{ minWidth: 24 }} />
+          </SlickNext>
+        </ArrowWrapper>
+      </TitleWrapper>
+      <div style={{ height: '100%' }}>
         {!isLoading ? (
           <Slider ref={sliderRef} {...NewsFeedSettings}>
             {news &&
               news.map((element: News) => (
-                <div key={element.id} style={{ height: '100%' }}>
+                <div key={element.id}>
                   <NewsContent>
                     <Scrollbars
                       style={{ minHeight: boxHeight, padding: '0px 10px' }}
@@ -103,7 +105,7 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
             <Loader size={100} />
           </Box>
         )}
-      </Box>
+      </div>
     </NewsSection>
   );
 };

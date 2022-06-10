@@ -36,6 +36,7 @@ const NetworkSelection: React.FC<NetworkProps> = (props) => {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: `0x${chain.chain_id.toString(16)}` }],
         });
+        window.location.reload();
       } catch (error) {
         // This error code indicates that the chain has not been added to MetaMask.
         const metamask = error as MetamaskError;
