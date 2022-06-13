@@ -8,16 +8,16 @@ interface Props {
   swapType: string;
   setSwapType: (value: string) => void;
   isLimitOrderVisible: boolean;
-  showSettings: boolean;
-  openSwapSettings: () => void;
+  showSettings?: boolean;
+  openSwapSettings?: () => void;
 }
 
 const TradeOption: React.FC<Props> = ({
   swapType,
   setSwapType,
   isLimitOrderVisible,
-  showSettings,
-  openSwapSettings,
+  showSettings = false,
+  openSwapSettings = () => {},
 }) => {
   return (
     <SwapWrapper>
