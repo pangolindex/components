@@ -1,17 +1,6 @@
 import styled from 'styled-components';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
-import { Text } from 'src/components/Text';
-
-export const SettingsText = styled(Text)`
-  font-size: 16px;
-  color: ${({ theme }) => theme.text1};
-
-  &: hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-`;
 
 export const Frame = styled(Box)`
   display: flex;
@@ -59,4 +48,19 @@ export const ModalFrame = styled(Box)`
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 50vw;
   `};
+`;
+
+export const SettingsButton = styled(Box)`
+  background-color: ${({ theme }) => theme.bg6};
+  color ${({ theme }) => theme.text1};
+  border-radius: 4px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover, &:focus {
+    opacity: 0.8;
+  }
 `;
