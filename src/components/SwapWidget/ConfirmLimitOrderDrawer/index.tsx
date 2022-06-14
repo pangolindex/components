@@ -207,7 +207,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
           <Text color={'text1'} fontSize={16}>
             Output will be sent to{' '}
             <b title={recipient || ''}>
-              {isAddress(recipient || '') ? shortenAddress(recipient || '') : recipient || ''}
+              {isAddress(recipient || '') ? shortenAddress(recipient || '', chainId) : recipient || ''}
             </b>
           </Text>
         </Box>

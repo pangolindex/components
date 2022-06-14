@@ -68,23 +68,6 @@ export const useChainId = () => {
   return chainId || ChainId.AVALANCHE;
 };
 
-// export function useLibrary(): { library: Web3ProviderEthers; provider: Web3ProviderEthers } {
-//   const { connector } = useWeb3React();
-
-//   return useMemo(() => {
-//     const selectedWallet = Object.values(SUPPORTED_WALLETS).find((wallet) => wallet.connector === connector);
-
-//     const provider = selectedWallet?.provider || window.ethereum;
-
-//     const library = new Web3ProviderEthers(provider, 'any');
-//     library.pollingInterval = 15000;
-
-//     console.log('provider', provider);
-
-//     return { library, provider };
-//   }, [connector]);
-// }
-
 export function useLibrary(): { library: Web3ProviderEthers; provider: Web3ProviderEthers } {
   const [result, setResult] = useState({} as { library: Web3ProviderEthers; provider: Web3ProviderEthers });
 

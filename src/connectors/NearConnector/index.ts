@@ -7,8 +7,10 @@ export class NearConnector extends AbstractConnector {
   private near!: Near;
   private wallet!: WalletConnection;
   private provider!: JsonRpcProvider;
+  private normalizeChainId!: boolean;
+  private normalizeAccount!: boolean;
 
-  public constructor(kwargs: AbstractConnectorArguments) {
+  public constructor(kwargs: AbstractConnectorArguments & { normalizeChainId: boolean; normalizeAccount: boolean }) {
     super(kwargs);
 
     // TODO:
@@ -23,8 +25,11 @@ export class NearConnector extends AbstractConnector {
     const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 
     // connect to NEAR
+
     this.near = new Near({ keyStore, headers: {}, ...config });
     this.wallet = new WalletConnection(this.near, 'pangolin');
+    this.normalizeChainId = kwargs?.normalizeChainId;
+    this.normalizeAccount = kwargs?.normalizeAccount;
 
     this.handleNetworkChanged = this.handleNetworkChanged.bind(this);
     this.handleChainChanged = this.handleChainChanged.bind(this);
@@ -62,7 +67,8 @@ export class NearConnector extends AbstractConnector {
   public async getChainId(): Promise<number | string | any> {
     if (this.wallet) {
       // TODO:
-      return 431114;
+      //return 431114;
+      return this.wallet._networkId;
     }
     return null;
   }
@@ -74,11 +80,10 @@ export class NearConnector extends AbstractConnector {
   public async activate(): Promise<any> {
     if (this.wallet) {
       const isAuthorized = await this.isAuthorized();
-      console.log('isAuthorized', isAuthorized);
+
       if (isAuthorized) {
         const account = await this.getAccount();
         const chainId = await this.getChainId();
-        console.log('connectEagerly', account, isAuthorized, chainId);
 
         // this.emitUpdate({ chainId: chainId, provider: this.provider, account: account });
         return { chainId: chainId, provider: this.provider, account: account };
@@ -98,6 +103,12 @@ export class NearConnector extends AbstractConnector {
   }
 
   public async deactivate() {
+    // if (this.wallet) {
+    //   this.wallet.signOut();
+    // }
+  }
+
+  public async close() {
     if (this.wallet) {
       this.wallet.signOut();
     }
