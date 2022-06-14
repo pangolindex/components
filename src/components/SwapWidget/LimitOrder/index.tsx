@@ -441,7 +441,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
       <TradeOption swapType={swapType} setSwapType={setSwapType} isLimitOrderVisible={isLimitOrderVisible} />
 
       <SwapWrapper>
-        <Box width="100%" display="flex" justify-content="center">
+        <Box width="100%" display="flex" justifyContent="center">
           <Box textAlign="center" width="120px">
             <ToggleButtons
               options={['SELL', 'BUY']}
