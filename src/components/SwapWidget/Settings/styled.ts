@@ -52,7 +52,7 @@ export const ModalFrame = styled(Box)`
 
 export const SettingsButton = styled(Box)`
   background-color: ${({ theme }) => theme.bg6};
-  color ${({ theme }) => theme.text1};
+  color: ${({ theme }) => theme.text1};
   border-radius: 4px;
   padding: 6px;
   display: flex;
@@ -60,7 +60,8 @@ export const SettingsButton = styled(Box)`
   justify-content: center;
   cursor: pointer;
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     opacity: 0.8;
   }
 `;
