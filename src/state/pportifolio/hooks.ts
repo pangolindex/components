@@ -32,7 +32,7 @@ export function useGetChainsBalances() {
   );
 
   return useQuery(
-    'getChainsBalances',
+    ['getChainsBalances', account],
     async () => {
       if (account) {
         const response = await openApi.get(`/total_balance?${query}`);

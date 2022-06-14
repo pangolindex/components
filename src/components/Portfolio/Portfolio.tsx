@@ -96,43 +96,44 @@ const Portfolio: React.FC = () => {
           )}
         </HideButton>
       </PortfolioHeader>
-      {!account ? (
-        <Box>
+      <Box display="flex" flexGrow={1} width="100%" alignItems="center" justifyContent="center" flexDirection="column">
+        {!account ? (
           <Text fontSize={20} color="text1" textAlign="center">
             Connect a wallet to see your portifolio
           </Text>
-        </Box>
-      ) : isRefetching || isLoading || !balance ? (
-        <Loader size={100} />
-      ) : (
-        <Box width="100%">
-          <Box
-            padding={10}
-            borderRadius={4}
-            display="flex"
-            marginBottom={15}
-            alignItems="center"
-            bgColor="bg6"
-            flexWrap="wrap"
-          >
-            <Text fontSize={18} color="text1" style={{ flexGrow: 1, minWidth: '200px' }}>
-              Total Amount Invested
-            </Text>
-            {renderTotalBalance()}
-          </Box>
-          <Box height={size} width="100%">
-            {availableBalances.length > 0 ? (
-              <Scrollbars style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'row' }}>
-                <Frame>{availableBalances.map((chain, key) => renderChain(chain, key))}</Frame>
-              </Scrollbars>
-            ) : (
-              <Text fontSize={18} color="text1" textAlign="center">
-                Not found balances
+        ) : isRefetching || isLoading || !balance ? (
+          <Loader size={100} />
+        ) : (
+          <>
+            <Box
+              padding={10}
+              borderRadius={4}
+              display="flex"
+              marginBottom={15}
+              alignItems="center"
+              bgColor="bg6"
+              flexWrap="wrap"
+              width="100%"
+            >
+              <Text fontSize={18} color="text1" style={{ flexGrow: 1, minWidth: '200px' }}>
+                Total Amount Invested
               </Text>
-            )}
-          </Box>
-        </Box>
-      )}
+              {renderTotalBalance()}
+            </Box>
+            <Box height={size} width="100%">
+              {availableBalances.length > 0 ? (
+                <Scrollbars style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'row' }}>
+                  <Frame>{availableBalances.map((chain, key) => renderChain(chain, key))}</Frame>
+                </Scrollbars>
+              ) : (
+                <Text fontSize={18} color="text1" textAlign="center">
+                  Not found balances
+                </Text>
+              )}
+            </Box>
+          </>
+        )}
+      </Box>
       <PortifolioFooter>
         <Info size={12} />
         <Text fontSize={12} textAlign="center">
