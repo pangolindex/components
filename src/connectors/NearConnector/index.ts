@@ -80,11 +80,10 @@ export class NearConnector extends AbstractConnector {
   public async activate(): Promise<any> {
     if (this.wallet) {
       const isAuthorized = await this.isAuthorized();
-      console.log('isAuthorized', isAuthorized);
+
       if (isAuthorized) {
         const account = await this.getAccount();
         const chainId = await this.getChainId();
-        console.log('connectEagerly', account, isAuthorized, chainId);
 
         // this.emitUpdate({ chainId: chainId, provider: this.provider, account: account });
         return { chainId: chainId, provider: this.provider, account: account };
@@ -104,6 +103,12 @@ export class NearConnector extends AbstractConnector {
   }
 
   public async deactivate() {
+    // if (this.wallet) {
+    //   this.wallet.signOut();
+    // }
+  }
+
+  public async close() {
     if (this.wallet) {
       this.wallet.signOut();
     }

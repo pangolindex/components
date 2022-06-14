@@ -333,7 +333,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   NEAR: {
     connector: near,
     name: 'Near',
-    iconName: 'near.png',
+    iconName: 'near.svg',
     description: 'Near Web',
     href: null,
     color: '#315CF5',

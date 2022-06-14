@@ -54,3 +54,4 @@ export const xDefi = new DefiConnector({
 });
 
 export const near = new NearConnector({ normalizeChainId: false, normalizeAccount: false });
+export { NearConnector };
