@@ -10,23 +10,16 @@ export class NearConnector extends AbstractConnector {
   private normalizeChainId!: boolean;
   private normalizeAccount!: boolean;
 
-  public constructor(kwargs: AbstractConnectorArguments & { normalizeChainId: boolean; normalizeAccount: boolean }) {
+  public constructor(
+    kwargs: AbstractConnectorArguments & { normalizeChainId: boolean; normalizeAccount: boolean; config },
+  ) {
     super(kwargs);
-
-    // TODO:
-    const config = {
-      networkId: 'testnet',
-      nodeUrl: 'https://rpc.testnet.near.org',
-      walletUrl: 'https://wallet.testnet.near.org',
-      helperUrl: 'https://helper.testnet.near.org',
-      explorerUrl: 'https://explorer.testnet.near.org',
-    };
 
     const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 
     // connect to NEAR
 
-    this.near = new Near({ keyStore, headers: {}, ...config });
+    this.near = new Near({ keyStore, headers: {}, ...kwargs.config });
     this.wallet = new WalletConnection(this.near, 'pangolin');
     this.normalizeChainId = kwargs?.normalizeChainId;
     this.normalizeAccount = kwargs?.normalizeAccount;
@@ -97,7 +90,9 @@ export class NearConnector extends AbstractConnector {
     return null;
   }
 
-  public async deactivate() {}
+  public async deactivate() {
+    return null;
+  }
 
   public async close() {
     if (this.wallet) {
