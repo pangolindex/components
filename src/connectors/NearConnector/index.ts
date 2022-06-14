@@ -62,12 +62,8 @@ export class NearConnector extends AbstractConnector {
     this.emitUpdate({ chainId: networkId, provider: this.provider });
   }
 
-  // public connectEagerly = async () => {};
-
   public async getChainId(): Promise<number | string | any> {
     if (this.wallet) {
-      // TODO:
-      //return 431114;
       return this.wallet._networkId;
     }
     return null;
@@ -85,7 +81,6 @@ export class NearConnector extends AbstractConnector {
         const account = await this.getAccount();
         const chainId = await this.getChainId();
 
-        // this.emitUpdate({ chainId: chainId, provider: this.provider, account: account });
         return { chainId: chainId, provider: this.provider, account: account };
       } else {
         this.wallet.requestSignIn('example-contract.testnet');
@@ -102,11 +97,7 @@ export class NearConnector extends AbstractConnector {
     return null;
   }
 
-  public async deactivate() {
-    // if (this.wallet) {
-    //   this.wallet.signOut();
-    // }
-  }
+  public async deactivate() {}
 
   public async close() {
     if (this.wallet) {
