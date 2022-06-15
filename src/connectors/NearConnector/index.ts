@@ -9,6 +9,7 @@ export class NearConnector extends AbstractConnector {
   private provider!: JsonRpcProvider;
   private normalizeChainId!: boolean;
   private normalizeAccount!: boolean;
+  private chainId!: number;
 
   public constructor(
     kwargs: AbstractConnectorArguments & { normalizeChainId: boolean; normalizeAccount: boolean; config },
@@ -23,12 +24,13 @@ export class NearConnector extends AbstractConnector {
     this.wallet = new WalletConnection(this.near, 'pangolin');
     this.normalizeChainId = kwargs?.normalizeChainId;
     this.normalizeAccount = kwargs?.normalizeAccount;
+    this.chainId = kwargs?.config?.chainId;
 
     this.handleNetworkChanged = this.handleNetworkChanged.bind(this);
     this.handleChainChanged = this.handleChainChanged.bind(this);
     this.handleAccountsChanged = this.handleAccountsChanged.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.provider = new JsonRpcProvider('https://rpc.testnet.near.org') as JsonRpcProvider;
+    this.provider = new JsonRpcProvider(kwargs.config.nodeUrl) as JsonRpcProvider;
   }
 
   private handleChainChanged(chainId: string | number): void {
@@ -57,7 +59,7 @@ export class NearConnector extends AbstractConnector {
 
   public async getChainId(): Promise<number | string | any> {
     if (this.wallet) {
-      return this.wallet._networkId;
+      return this.chainId;
     }
     return null;
   }

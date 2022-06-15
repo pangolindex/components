@@ -54,14 +54,43 @@ export const xDefi = new DefiConnector({
   supportedChainIds: [1, 43114, 11111, 16],
 });
 
-// TODO: set configuration dynemically
-const config = {
-  networkId: ChainId.NEAR_TESTNET,
-  nodeUrl: 'https://rpc.testnet.near.org',
-  walletUrl: 'https://wallet.testnet.near.org',
-  helperUrl: 'https://helper.testnet.near.org',
-  explorerUrl: 'https://explorer.testnet.near.org',
-};
+function getNearMainnetConfig() {
+  return {
+    networkId: 'mainnet',
+    nodeUrl: 'https://rpc.mainnet.near.org',
+    walletUrl: 'https://wallet.near.org',
+    helperUrl: 'https://helper.mainnet.near.org',
+    explorerUrl: 'https://nearblocks.io',
+    indexerUrl: 'https://indexer.ref-finance.net',
+    chainId: ChainId.NEAR_MAINNET,
+  };
+}
 
-export const near = new NearConnector({ normalizeChainId: false, normalizeAccount: false, config: config });
+// TODO: set configuration dynemically
+
+export default function getNearConfig(env = 'testnet') {
+  switch (env) {
+    case 'production':
+    case 'mainnet':
+      return getNearMainnetConfig();
+
+    case 'testnet':
+      return {
+        networkId: 'testnet',
+        nodeUrl: 'https://rpc.testnet.near.org',
+        walletUrl: 'https://wallet.testnet.near.org',
+        helperUrl: 'https://helper.testnet.near.org',
+        explorerUrl: 'https://testnet.nearblocks.io',
+        chainId: ChainId.NEAR_TESTNET,
+      };
+    default:
+      return getNearMainnetConfig();
+  }
+}
+
+export const near = new NearConnector({
+  normalizeChainId: false,
+  normalizeAccount: false,
+  config: getNearConfig('testnet'),
+});
 export { NearConnector };
