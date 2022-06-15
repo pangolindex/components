@@ -22,6 +22,8 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   43114: CHAINS[ChainId.AVALANCHE].blockExplorerUrls![0],
   11111: CHAINS[ChainId.WAGMI].blockExplorerUrls![0],
   16: CHAINS[ChainId.COSTON].blockExplorerUrls![0],
+  329847900: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls![0],
+  329847901: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls![0],
 };
 
 export function getEtherscanLink(

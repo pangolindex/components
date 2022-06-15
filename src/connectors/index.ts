@@ -1,5 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
+import { ChainId } from '@pangolindex/sdk';
 import { InjectedConnector } from '@pangolindex/web3-react-injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
@@ -55,7 +56,7 @@ export const xDefi = new DefiConnector({
 
 // TODO: set configuration dynemically
 const config = {
-  networkId: 'testnet',
+  networkId: ChainId.NEAR_TESTNET,
   nodeUrl: 'https://rpc.testnet.near.org',
   walletUrl: 'https://wallet.testnet.near.org',
   helperUrl: 'https://helper.testnet.near.org',

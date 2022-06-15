@@ -29,4 +29,6 @@ export const PNG: { [chainId in ChainId]: Token } = {
     CHAINS[ChainId.COSTON].png_symbol,
     'Wagmi Pangolin',
   ),
+  [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, CHAINS[ChainId.NEAR_MAINNET].contracts!.png, 18, '', ''),
+  [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, CHAINS[ChainId.NEAR_TESTNET].contracts!.png, 18, '', ''),
 };
