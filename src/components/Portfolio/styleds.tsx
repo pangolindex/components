@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Box } from '../Box';
 
-export const PortifolioRoot = styled(Box)`
+export const PortfolioRoot = styled(Box)`
   width: 100%;
   height: 100%;
 
@@ -24,7 +24,7 @@ export const PortfolioHeader = styled(Box)`
   gap: 5px;
 `;
 
-export const PortifolioFooter = styled(PortfolioHeader)`
+export const PortfolioFooter = styled(PortfolioHeader)`
   background-color: ${({ theme }) => theme.bg6};
   color: ${({ theme }) => theme.text13};
   border-radius: 4px;
@@ -67,6 +67,7 @@ export const HideButton = styled.button`
 `;
 
 export const ChainCard = styled(Box)`
+  min-height: 60px;
   padding: 10px;
   background-color: ${({ theme }) => theme.bg6};
   border-radius: 4px;

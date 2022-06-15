@@ -4,11 +4,11 @@ import Scrollbars from 'react-custom-scrollbars';
 import { Eye, EyeOff, Info, Lock } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { usePangolinWeb3 } from 'src/hooks';
-import { useGetChainsBalances } from 'src/state/pportifolio/hooks';
+import { useGetChainsBalances } from 'src/state/pportfolio/hooks';
 import { Box } from '../Box';
 import { Loader } from '../Loader';
 import { Text } from '../Text';
-import { ChainCard, Frame, HideButton, PortfolioHeader, PortifolioFooter, PortifolioRoot } from './styleds';
+import { ChainCard, Frame, HideButton, PortfolioFooter, PortfolioHeader, PortfolioRoot } from './styleds';
 
 const Portfolio: React.FC = () => {
   const theme = useContext(ThemeContext);
@@ -17,21 +17,12 @@ const Portfolio: React.FC = () => {
   const [availableBalances, setAvailableBalances] = useState<{ chainID: number; balance: number }[]>([]);
   const [showBalances, setShowBalances] = useState(true);
 
-  const [size, setSize] = useState(25);
-
   useEffect(() => {
     if (balance) {
       const _availableBalances = balance.chains
         .filter((chain) => chain.balance > 0.01)
         .sort((a, b) => b.balance - a.balance);
       setAvailableBalances(_availableBalances);
-      if (_availableBalances.length === 0) {
-        setSize(25);
-      } else if (_availableBalances.length <= 4) {
-        setSize(95);
-      } else {
-        setSize(200);
-      }
     }
   }, [balance]);
 
@@ -73,7 +64,7 @@ const Portfolio: React.FC = () => {
   };
 
   return (
-    <PortifolioRoot>
+    <PortfolioRoot>
       <PortfolioHeader>
         <Text fontSize={['16px', '16px', '24px']} color="text1" fontWeight={600} style={{ flexGrow: 1 }}>
           Portfolio Value in All Chains
@@ -99,7 +90,7 @@ const Portfolio: React.FC = () => {
       <Box display="flex" flexGrow={1} width="100%" alignItems="center" justifyContent="center" flexDirection="column">
         {!account ? (
           <Text fontSize={20} color="text1" textAlign="center">
-            Connect a wallet to see your portifolio
+            Connect a wallet to see your Portfolio
           </Text>
         ) : isRefetching || isLoading || !balance ? (
           <Loader size={100} />
@@ -120,9 +111,9 @@ const Portfolio: React.FC = () => {
               </Text>
               {renderTotalBalance()}
             </Box>
-            <Box height={size} width="100%">
+            <Box width="100%" minHeight="100px" maxHeight="200px">
               {availableBalances.length > 0 ? (
-                <Scrollbars style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'row' }}>
+                <Scrollbars style={{ width: '100%', height: '100%' }}>
                   <Frame>{availableBalances.map((chain, key) => renderChain(chain, key))}</Frame>
                 </Scrollbars>
               ) : (
@@ -134,13 +125,13 @@ const Portfolio: React.FC = () => {
           </>
         )}
       </Box>
-      <PortifolioFooter>
+      <PortfolioFooter>
         <Info size={12} />
         <Text fontSize={12} textAlign="center">
           Includes coins, pools and other holdings in your current wallet
         </Text>
-      </PortifolioFooter>
-    </PortifolioRoot>
+      </PortfolioFooter>
+    </PortfolioRoot>
   );
 };
 
