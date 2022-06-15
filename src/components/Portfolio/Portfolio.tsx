@@ -13,18 +13,18 @@ import { ChainCard, Frame, HideButton, PortfolioFooter, PortfolioHeader, Portfol
 const Portfolio: React.FC = () => {
   const theme = useContext(ThemeContext);
   const { account } = usePangolinWeb3();
-  const { data: balance, isRefetching, isLoading } = useGetChainsBalances();
+  const { data: balances, isRefetching, isLoading } = useGetChainsBalances();
   const [availableBalances, setAvailableBalances] = useState<{ chainID: number; balance: number }[]>([]);
   const [showBalances, setShowBalances] = useState(true);
 
   useEffect(() => {
-    if (balance) {
-      const _availableBalances = balance.chains
+    if (balances) {
+      const _availableBalances = balances.chains
         .filter((chain) => chain.balance > 0.01)
         .sort((a, b) => b.balance - a.balance);
       setAvailableBalances(_availableBalances);
     }
-  }, [balance]);
+  }, [balances]);
 
   const renderChain = (_chain: { chainID: number; balance: number }, key: number) => {
     const chain = ALL_CHAINS.filter((value) => value.chain_id === _chain.chainID)[0];
@@ -42,8 +42,8 @@ const Portfolio: React.FC = () => {
             </Text>
           ) : (
             <Box display="flex" flexDirection="row">
-              {[...Array(4)].map((_value, key) => (
-                <Lock color={theme.text13} size={18} key={key} />
+              {[...Array(4)].map((_value, _key) => (
+                <Lock color={theme.text13} size={18} key={_key} />
               ))}
             </Box>
           )}
@@ -56,7 +56,7 @@ const Portfolio: React.FC = () => {
     if (showBalances) {
       return (
         <Text fontSize={18} color="text1" fontWeight={600}>
-          ${balance ? balance.total.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
+          ${balances ? balances.total.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
         </Text>
       );
     }
@@ -92,7 +92,7 @@ const Portfolio: React.FC = () => {
           <Text fontSize={20} color="text1" textAlign="center">
             Connect a wallet to see your Portfolio
           </Text>
-        ) : isRefetching || isLoading || !balance ? (
+        ) : isRefetching || isLoading || !balances ? (
           <Loader size={100} />
         ) : (
           <>

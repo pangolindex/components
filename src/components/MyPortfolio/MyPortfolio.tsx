@@ -19,12 +19,12 @@ const MyPortfolio: React.FC = () => {
   const [showBalances, setShowBalances] = useState(true);
   const [selectChain, setSelectChain] = useState(43114);
 
-  const { data: balance, isLoading } = useGetChainsBalances();
+  const { data: balances, isLoading } = useGetChainsBalances();
   const { data: chainTokens, isLoading: isLoadingTokens } = useGetWalletChainTokens(selectChain);
 
   useEffect(() => {
-    if (balance) {
-      const _availableBalances = balance.chains
+    if (balances) {
+      const _availableBalances = balances.chains
         .filter((chain) => chain.balance > 0.01)
         .sort((a, b) => b.balance - a.balance);
 
@@ -34,7 +34,7 @@ const MyPortfolio: React.FC = () => {
 
       setAvailableBalances(_availableBalances);
     }
-  }, [balance]);
+  }, [balances]);
 
   const renderChain = (_chain: { chainID: number; balance: number }, key: number) => {
     const chain = ALL_CHAINS.filter((value) => value.chain_id === _chain.chainID)[0];
@@ -53,8 +53,8 @@ const MyPortfolio: React.FC = () => {
             </Text>
           ) : (
             <Box display="flex" flexDirection="row">
-              {[...Array(4)].map((_value, key) => (
-                <Lock color={theme.text13} size={18} key={key} />
+              {[...Array(4)].map((_value, _key) => (
+                <Lock color={theme.text13} size={18} key={_key} />
               ))}
             </Box>
           )}
@@ -67,7 +67,7 @@ const MyPortfolio: React.FC = () => {
     if (showBalances) {
       return (
         <Text fontSize={18} color="text1" fontWeight={600}>
-          ${balance ? balance.total.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
+          ${balances ? balances.total.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
         </Text>
       );
     }
@@ -116,9 +116,9 @@ const MyPortfolio: React.FC = () => {
               Connect a wallet to see your portfolio
             </Text>
           </Box>
-        ) : isLoading || !balance ? (
+        ) : isLoading || !balances ? (
           <Loader size={100} />
-        ) : balance && availableBalances.length == 0 ? (
+        ) : balances && availableBalances.length == 0 ? (
           <Box height="100%" display="flex" alignItems="center" flexWrap="wrap">
             <Text fontSize={18} color="text1" textAlign="center">
               Not found balances
