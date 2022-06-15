@@ -6,6 +6,8 @@ const MULTICALL_NETWORKS: { [chainId in ChainId]: string } = {
   [ChainId.AVALANCHE]: '0x0FB54156B496b5a040b51A71817aED9e2927912E',
   [ChainId.WAGMI]: '0x5138349f3027F1e2c2f10eDAD83d38096C0D8Abe',
   [ChainId.COSTON]: '',
+  [ChainId.NEAR_MAINNET]: '',
+  [ChainId.NEAR_TESTNET]: '',
 };
 
 export { MULTICALL_ABI, MULTICALL_NETWORKS };
