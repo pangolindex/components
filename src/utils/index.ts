@@ -54,7 +54,7 @@ export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALA
   if (!parsed) {
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
-  return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`;
+  return `${parsed.substring(0, chars)}...${parsed.substring(parsed.length - chars)}`;
 }
 
 // add 10%

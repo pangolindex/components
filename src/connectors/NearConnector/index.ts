@@ -10,23 +10,16 @@ export class NearConnector extends AbstractConnector {
   private normalizeChainId!: boolean;
   private normalizeAccount!: boolean;
 
-  public constructor(kwargs: AbstractConnectorArguments & { normalizeChainId: boolean; normalizeAccount: boolean }) {
+  public constructor(
+    kwargs: AbstractConnectorArguments & { normalizeChainId: boolean; normalizeAccount: boolean; config },
+  ) {
     super(kwargs);
-
-    // TODO:
-    const config = {
-      networkId: 'testnet',
-      nodeUrl: 'https://rpc.testnet.near.org',
-      walletUrl: 'https://wallet.testnet.near.org',
-      helperUrl: 'https://helper.testnet.near.org',
-      explorerUrl: 'https://explorer.testnet.near.org',
-    };
 
     const keyStore = new keyStores.BrowserLocalStorageKeyStore();
 
     // connect to NEAR
 
-    this.near = new Near({ keyStore, headers: {}, ...config });
+    this.near = new Near({ keyStore, headers: {}, ...kwargs.config });
     this.wallet = new WalletConnection(this.near, 'pangolin');
     this.normalizeChainId = kwargs?.normalizeChainId;
     this.normalizeAccount = kwargs?.normalizeAccount;
@@ -62,12 +55,8 @@ export class NearConnector extends AbstractConnector {
     this.emitUpdate({ chainId: networkId, provider: this.provider });
   }
 
-  // public connectEagerly = async () => {};
-
   public async getChainId(): Promise<number | string | any> {
     if (this.wallet) {
-      // TODO:
-      //return 431114;
       return this.wallet._networkId;
     }
     return null;
@@ -85,7 +74,6 @@ export class NearConnector extends AbstractConnector {
         const account = await this.getAccount();
         const chainId = await this.getChainId();
 
-        // this.emitUpdate({ chainId: chainId, provider: this.provider, account: account });
         return { chainId: chainId, provider: this.provider, account: account };
       } else {
         this.wallet.requestSignIn('example-contract.testnet');
@@ -103,9 +91,7 @@ export class NearConnector extends AbstractConnector {
   }
 
   public async deactivate() {
-    // if (this.wallet) {
-    //   this.wallet.signOut();
-    // }
+    return null;
   }
 
   public async close() {

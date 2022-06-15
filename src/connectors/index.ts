@@ -53,5 +53,14 @@ export const xDefi = new DefiConnector({
   supportedChainIds: [1, 43114, 11111, 16],
 });
 
-export const near = new NearConnector({ normalizeChainId: false, normalizeAccount: false });
+// TODO: set configuration dynemically
+const config = {
+  networkId: 'testnet',
+  nodeUrl: 'https://rpc.testnet.near.org',
+  walletUrl: 'https://wallet.testnet.near.org',
+  helperUrl: 'https://helper.testnet.near.org',
+  explorerUrl: 'https://explorer.testnet.near.org',
+};
+
+export const near = new NearConnector({ normalizeChainId: false, normalizeAccount: false, config: config });
 export { NearConnector };

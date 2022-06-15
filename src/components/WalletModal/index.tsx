@@ -67,29 +67,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   const walletModalOpen = open;
 
-  // const walletOptions = walletType === CHAIN_TYPE.EVM_CHAINS ? SUPPORTED_WALLETS : NON_SUPPORTED_WALLETS;
-
-  // return useMemo(() => {
-  //   if (currencyIn && currencyAmountOut && allowedPairs.length > 0) {
-  //     return (
-  //       Trade.bestTradeExactOut(allowedPairs, currencyIn, currencyAmountOut, { maxHops: 3, maxNumResults: 1 })[0] ??
-  //       null
-  //     );
-  //   }
-  //   return null;
-  // }, [allowedPairs, currencyIn, currencyAmountOut]);
-
-  // const filteredUsers = Object.keys(users)
-  //   .filter((key) => selectedUsers.includes(key))
-  //   .reduce((obj, key) => {
-  //     obj[key] = users[key];
-  //     return obj;
-  //   }, {});
-
   const walletOptions = useMemo(() => {
     if (walletType === CHAIN_TYPE.EVM_CHAINS) {
-      // return Object.keys(SUPPORTED_WALLETS).filter((key) => SUPPORTED_WALLETS[key].isEVM);
-
       return Object.keys(SUPPORTED_WALLETS)
         .filter((key) => SUPPORTED_WALLETS[key].isEVM)
         .reduce((obj, key) => {
@@ -97,8 +76,6 @@ const WalletModal: React.FC<WalletModalProps> = ({
           return obj;
         }, {});
     } else {
-      // return Object.keys(SUPPORTED_WALLETS).filter((key) => !SUPPORTED_WALLETS[key].isEVM);
-
       return Object.keys(SUPPORTED_WALLETS)
         .filter((key) => !SUPPORTED_WALLETS[key].isEVM)
         .reduce((obj, key) => {
@@ -126,6 +103,17 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   // always reset to account view
   useEffect(() => {
+    const name = Object.keys(SUPPORTED_WALLETS).find((key) => SUPPORTED_WALLETS[key].connector === connector);
+    if (name) {
+      const activeOption = SUPPORTED_WALLETS[name];
+
+      if (activeOption && !activeOption?.isEVM) {
+        setWalletType(CHAIN_TYPE.NON_EVM_CHAINS);
+      } else {
+        setWalletType(CHAIN_TYPE.EVM_CHAINS);
+      }
+    }
+
     if (walletModalOpen) {
       setPendingError(false);
       setWalletView('');
