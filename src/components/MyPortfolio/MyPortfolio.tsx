@@ -1,15 +1,16 @@
 import { ALL_CHAINS } from '@pangolindex/sdk';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { Eye, EyeOff, Lock } from 'react-feather';
+import { Lock } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { usePangolinWeb3 } from 'src/hooks';
 import { PairDataUser, TokenDataUser, useGetChainsBalances, useGetWalletChainTokens } from 'src/state/pportfolio/hooks';
 import { Box } from '../Box';
 import { Loader } from '../Loader';
+import ToggleBalanceButton from '../Portfolio/ToogleBalanceButton';
 import { Text } from '../Text';
 import PortfolioRow from './PortfolioRow';
-import { Body, Frame, Header, HideButton, Root, SelectedCard } from './styleds';
+import { Body, Frame, Header, Root, SelectedCard } from './styleds';
 
 const MyPortfolio: React.FC = () => {
   const theme = useContext(ThemeContext);
@@ -35,6 +36,10 @@ const MyPortfolio: React.FC = () => {
       setAvailableBalances(_availableBalances);
     }
   }, [balances]);
+
+  const handleShowBalances = useCallback(() => {
+    setShowBalances(!showBalances);
+  }, [showBalances]);
 
   const renderChain = (_chain: { chainID: number; balance: number }, key: number) => {
     const chain = ALL_CHAINS.filter((value) => value.chain_id === _chain.chainID)[0];
@@ -91,23 +96,7 @@ const MyPortfolio: React.FC = () => {
         <Text fontSize={['16px', '16px', '24px']} color="text1" fontWeight={600} style={{ flexGrow: 1 }}>
           Your Portfolio
         </Text>
-        <HideButton onClick={() => setShowBalances(!showBalances)}>
-          {showBalances ? (
-            <>
-              <EyeOff size={12} id="portfolio-icon" />
-              <Text fontSize={['8px', '10px', '12px']} id="portfolio-text" style={{ marginLeft: '5px' }}>
-                Hide Your Balance
-              </Text>
-            </>
-          ) : (
-            <>
-              <Eye size={12} id="portfolio-icon" />
-              <Text fontSize={12} id="portfolio-text" style={{ marginLeft: '5px' }}>
-                Show Your Balance
-              </Text>
-            </>
-          )}
-        </HideButton>
+        <ToggleBalanceButton showBalances={showBalances} handleShowBalances={handleShowBalances} />
       </Header>
       <Box width="100%" display="flex" flexGrow={1} justifyContent="center">
         {!account ? (

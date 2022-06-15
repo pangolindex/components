@@ -46,37 +46,6 @@ export const SelectedCard = styled(Box)<{ selected: boolean }>`
   }
 `;
 
-export const HideButton = styled.button`
-  background-color: ${({ theme }) => theme.bg6};
-  color: ${({ theme }) => theme.text15};
-
-  min-width: 20px;
-  min-height: 20px;
-
-  font-size: 12px;
-  border-radius: 5px;
-  border: 0px;
-  padding: 5px;
-
-  display: flex;
-  align-items: center;
-
-  cursor: pointer;
-
-  :hover,
-  :focus {
-    opacity: 0.8;
-  }
-
-  align-self: flex-start;
-
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    #portfolio-text {
-      display: none;
-    }
-  `}
-`;
-
 export const Frame = styled(Box)`
   width: 100%;
   height: 100%;
