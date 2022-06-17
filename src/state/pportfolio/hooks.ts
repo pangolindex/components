@@ -1,10 +1,8 @@
 import { ALL_CHAINS, AVALANCHE_MAINNET, CAVAX, ChainId, Currency, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import axios from 'axios';
-import { ethers } from 'ethers';
 import qs from 'qs';
 import { useQuery } from 'react-query';
 import { OPEN_API_DEBANK, ZERO_ADDRESS } from 'src/constants';
-import { usePangolinWeb3 } from 'src/hooks';
 import { getChainByNumber, isAddress } from 'src/utils';
 
 const openApi = axios.create({
@@ -61,8 +59,8 @@ export class PairDataUser {
 
 // Get the USD balance of address of all chains (supported by Debank)
 export function useGetChainsBalances() {
-  const { account } = usePangolinWeb3();
-
+  //const { account } = usePangolinWeb3();
+  const account = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
   const query = qs.stringify(
     {
       id: account,
@@ -84,13 +82,14 @@ export function useGetChainsBalances() {
         };
         data?.chain_list?.forEach((chain: any) => {
           const _chain = ALL_CHAINS.filter((value) => value.chain_id === chain?.community_id)[0];
-          if (_chain) {
+          if (_chain && chain?.usd_value >= 0.01) {
             chainbalances.chains.push({
               chainID: chain?.community_id,
               balance: chain?.usd_value,
             });
           }
         });
+        chainbalances.chains.sort((a, b) => b.balance - a.balance);
         return chainbalances;
       }
 
@@ -102,7 +101,8 @@ export function useGetChainsBalances() {
 
 // Get the Tokens of wallet
 export function useGetWalletChainTokens(chainId: number) {
-  const { account } = usePangolinWeb3();
+  //const { account } = usePangolinWeb3();
+  const account = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
   let chain = getChainByNumber(chainId);
   // This functions is temporary for Pangolin birthday
   const getPangolinPairs = async () => {
@@ -125,25 +125,19 @@ export function useGetWalletChainTokens(chainId: number) {
         // If token2 does not exist its because this pair is not a pair but a single staking
         if (!token2) {
           return new TokenDataUser(
-            new Token(
-              chainId,
-              ethers.utils.getAddress(token1?.id),
-              token1?.decimals,
-              `${token1?.symbol} - Staked`,
-              token1?.name,
-            ),
+            new Token(chainId, token1?.id, token1?.decimals, `${token1?.symbol} - Staked`, token1?.name),
             token1?.price,
             token1?.amount,
           );
         }
 
         const tokenA = new TokenAmount(
-          new Token(chainId, ethers.utils.getAddress(token1?.id), token1?.decimals, token1?.symbol, token1?.name),
+          new Token(chainId, token1?.id, token1?.decimals, token1?.symbol, token1?.name),
           token1?.amount.toString().replace('.', ''),
         );
 
         const tokenB = new TokenAmount(
-          new Token(chainId, ethers.utils.getAddress(token2?.id), token2?.decimals, token2?.symbol, token2?.name),
+          new Token(chainId, token2?.id, token2?.decimals, token2?.symbol, token2?.name),
           token2?.amount.toString().replace('.', ''),
         );
 
@@ -157,7 +151,7 @@ export function useGetWalletChainTokens(chainId: number) {
     return [];
   };
 
-  const getBalance = async () => {
+  const getTokens = async () => {
     if (account) {
       if (!chain || !chain.mainnet) {
         chain = AVALANCHE_MAINNET;
@@ -175,37 +169,38 @@ export function useGetWalletChainTokens(chainId: number) {
 
       const response = await openApi.get(`/token_list?${query}`);
       const data = response.data;
+      let requestTokens: (TokenDataUser | PairDataUser)[] = data
+        .filter((token: any) => token?.is_wallet && token?.is_verified)
+        .map((token: any) => {
+          if (token?.id?.toLowerCase() === 'avax') {
+            return new TokenDataUser(CAVAX[chainId], token?.price, token?.amount);
+          }
 
-      const requestTokens: TokenDataUser[] = data.map((token: any) => {
-        if (token?.id?.toLowerCase() === 'avax') {
-          return new TokenDataUser(CAVAX[chainId], token?.price, token?.amount);
-        }
+          if (!isAddress(token?.id)) {
+            return new TokenDataUser(
+              new Token(chainId, ZERO_ADDRESS, token?.decimals, token?.symbol, token?.name),
+              token?.price,
+              token?.amount,
+              undefined,
+              token?.logo_url, // work around now for other coins of other chains
+            );
+          }
 
-        if (!isAddress(token?.id)) {
           return new TokenDataUser(
-            new Token(chainId, ZERO_ADDRESS, token?.decimals, token?.symbol, token?.name),
+            new Token(chainId, token?.id, token?.decimals, token?.symbol, token?.name),
             token?.price,
             token?.amount,
             undefined,
-            token?.logo_url, // work around now for other coins of other chains
+            token?.logo_url,
           );
-        }
-
-        return new TokenDataUser(
-          new Token(chainId, ethers.utils.getAddress(token?.id), token?.decimals, token?.symbol, token?.name),
-          token?.price,
-          token?.amount,
-          undefined,
-          token?.logo_url,
-        );
-      });
+        });
 
       if (chainId === ChainId.AVALANCHE) {
         const pairs = await getPangolinPairs();
-        return [...requestTokens, ...pairs];
+        requestTokens = [...requestTokens, ...pairs];
       }
 
-      return requestTokens;
+      return requestTokens.sort((a, b) => b.usdValue - a.usdValue).filter((token) => token.usdValue >= 0.01);
     }
     return null;
   };
@@ -213,15 +208,7 @@ export function useGetWalletChainTokens(chainId: number) {
   return useQuery(
     ['getWalletChainTokens', chainId.toString(), account],
     async () => {
-      const tokens = await getBalance();
-
-      if (!tokens) {
-        return undefined;
-      }
-
-      tokens.sort((a, b) => b.usdValue - a.usdValue);
-
-      return tokens.filter((token) => token.usdValue >= 0.01);
+      return await getTokens();
     },
     {
       refetchInterval: 600000,

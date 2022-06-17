@@ -3,11 +3,11 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Lock } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import { usePangolinWeb3 } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { PairDataUser, TokenDataUser, useGetChainsBalances, useGetWalletChainTokens } from 'src/state/pportfolio/hooks';
 import { Box } from '../Box';
 import { Loader } from '../Loader';
-import ToggleBalanceButton from '../Portfolio/ToogleBalanceButton';
+import ToggleBalanceButton from '../Portfolio/ToggleBalanceButton';
 import { Text } from '../Text';
 import PortfolioRow from './PortfolioRow';
 import { Body, Frame, Header, Root, SelectedCard } from './styleds';
@@ -15,8 +15,8 @@ import { Body, Frame, Header, Root, SelectedCard } from './styleds';
 const MyPortfolio: React.FC = () => {
   const theme = useContext(ThemeContext);
   const { account } = usePangolinWeb3();
+  const chainId = useChainId();
 
-  const [availableBalances, setAvailableBalances] = useState<{ chainID: number; balance: number }[]>([]);
   const [showBalances, setShowBalances] = useState(true);
   const [selectChain, setSelectChain] = useState(43114);
 
@@ -25,15 +25,11 @@ const MyPortfolio: React.FC = () => {
 
   useEffect(() => {
     if (balances) {
-      const _availableBalances = balances.chains
-        .filter((chain) => chain.balance > 0.01)
-        .sort((a, b) => b.balance - a.balance);
-
-      if (_availableBalances.length > 0) {
-        setSelectChain(_availableBalances[0].chainID);
+      if (balances.chains.length > 0) {
+        // if chainId in balances.chains then selectChain = chainId
+        const _chain = balances.chains.find((chain) => chain.chainID === chainId);
+        setSelectChain(_chain ? chainId : balances.chains[0].chainID);
       }
-
-      setAvailableBalances(_availableBalances);
     }
   }, [balances]);
 
@@ -59,7 +55,7 @@ const MyPortfolio: React.FC = () => {
           ) : (
             <Box display="flex" flexDirection="row">
               {[...Array(4)].map((_value, _key) => (
-                <Lock color={theme.text13} size={18} key={_key} />
+                <Lock color={theme.text13} size={14} key={_key} />
               ))}
             </Box>
           )}
@@ -71,7 +67,7 @@ const MyPortfolio: React.FC = () => {
   const renderTotalBalance = () => {
     if (showBalances) {
       return (
-        <Text fontSize={18} color="text1" fontWeight={600}>
+        <Text fontSize={16} color="text1" fontWeight={600}>
           ${balances ? balances.total.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
         </Text>
       );
@@ -107,7 +103,7 @@ const MyPortfolio: React.FC = () => {
           </Box>
         ) : isLoading || !balances ? (
           <Loader size={100} />
-        ) : balances && availableBalances.length == 0 ? (
+        ) : balances && balances.chains.length == 0 ? (
           <Box height="100%" display="flex" alignItems="center" flexWrap="wrap">
             <Text fontSize={18} color="text1" textAlign="center">
               Not found balances
@@ -132,7 +128,7 @@ const MyPortfolio: React.FC = () => {
               </Box>
               <Box width="100%" height="100%" minHeight="128px">
                 <Scrollbars style={{ width: '100%', height: '100%' }}>
-                  <Frame>{availableBalances.map((chain, key) => renderChain(chain, key))}</Frame>
+                  <Frame>{balances.chains.map((chain, key) => renderChain(chain, key))}</Frame>
                 </Scrollbars>
               </Box>
             </Box>

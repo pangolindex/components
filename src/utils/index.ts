@@ -129,5 +129,5 @@ export function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean 
 }
 
 export function getChainByNumber(chainId: ChainId | number): Chain | undefined {
-  return ALL_CHAINS.filter((chain) => chain.chain_id === chainId)[0];
+  return ALL_CHAINS.find((chain) => chain.chain_id === chainId);
 }

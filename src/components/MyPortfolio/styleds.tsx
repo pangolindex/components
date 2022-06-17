@@ -26,7 +26,7 @@ export const Header = styled(Box)`
 export const SelectedCard = styled(Box)<{ selected: boolean }>`
   height: 60px;
 
-  background-color: ${({ theme, selected }) => (selected ? theme.bg9 : theme.bg6)};
+  background-color: ${({ theme, selected }) => (selected ? theme.bg3 : theme.bg6)};
   padding: 2px;
   border-radius: 4px;
   display: flex;
@@ -48,7 +48,6 @@ export const SelectedCard = styled(Box)<{ selected: boolean }>`
 
 export const Frame = styled(Box)`
   width: 100%;
-  height: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 10px;

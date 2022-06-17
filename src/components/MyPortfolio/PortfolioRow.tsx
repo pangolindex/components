@@ -41,7 +41,7 @@ const PortfolioRow: React.FC<Props> = ({ coin, pair, showBalances }) => {
     }
 
     if (pair) {
-      if (pair.pair.chainId == ChainId.AVALANCHE) {
+      if (pair?.pair?.chainId == ChainId.AVALANCHE) {
         return <DoubleCurrencyLogo currency0={pair?.pair?.token0} currency1={pair?.pair?.token1} size={24} />;
       } else if (pair.logos) {
         return (
@@ -59,6 +59,8 @@ const PortfolioRow: React.FC<Props> = ({ coin, pair, showBalances }) => {
 
     return <HelpCircle size={size} />;
   };
+
+  const amount = coin && !pair ? coin.price * coin.amount : pair && !coin ? pair.usdValue : 0;
 
   return (
     <RowWrapper>
@@ -80,8 +82,7 @@ const PortfolioRow: React.FC<Props> = ({ coin, pair, showBalances }) => {
           <Lock color={theme.text13} size={16} />
         ) : (
           <Text color="text1" fontSize={16} fontWeight={500}>
-            ${coin && !pair ? (coin.price * coin.amount).toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
-            {pair && !coin ? pair.usdValue.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
+            ${amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
           </Text>
         )}
       </Box>

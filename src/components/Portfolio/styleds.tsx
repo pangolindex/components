@@ -80,7 +80,6 @@ export const ChainCard = styled(Box)`
   gap: 10px;
 
   font-weight: 500;
-  width: 100%;
 `;
 
 export const Frame = styled(Box)`
