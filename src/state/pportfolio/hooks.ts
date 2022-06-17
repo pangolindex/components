@@ -3,6 +3,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { useQuery } from 'react-query';
 import { OPEN_API_DEBANK, ZERO_ADDRESS } from 'src/constants';
+import { usePangolinWeb3 } from 'src/hooks';
 import { getChainByNumber, isAddress } from 'src/utils';
 
 const openApi = axios.create({
@@ -59,8 +60,7 @@ export class PairDataUser {
 
 // Get the USD balance of address of all chains (supported by Debank)
 export function useGetChainsBalances() {
-  //const { account } = usePangolinWeb3();
-  const account = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
+  const { account } = usePangolinWeb3();
   const query = qs.stringify(
     {
       id: account,
@@ -101,8 +101,7 @@ export function useGetChainsBalances() {
 
 // Get the Tokens of wallet
 export function useGetWalletChainTokens(chainId: number) {
-  //const { account } = usePangolinWeb3();
-  const account = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
+  const { account } = usePangolinWeb3();
   let chain = getChainByNumber(chainId);
   // This functions is temporary for Pangolin birthday
   const getPangolinPairs = async () => {
@@ -208,7 +207,8 @@ export function useGetWalletChainTokens(chainId: number) {
   return useQuery(
     ['getWalletChainTokens', chainId.toString(), account],
     async () => {
-      return await getTokens();
+      const tokens = await getTokens();
+      return tokens;
     },
     {
       refetchInterval: 600000,
