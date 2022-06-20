@@ -1,6 +1,13 @@
 /* eslint-disable max-lines */
 import { CHAINS, ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import arrowRightIcon from 'src/assets/images/arrow-right.svg';
+import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.svg';
+import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
+import metamaskIcon from 'src/assets/images/metamask.png';
+import rabbyIcon from 'src/assets/images/rabby.svg';
+import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
+import xDefiIcon from 'src/assets/images/xDefi.png';
 import { gnosisSafe, injected, walletconnect, walletlink, xDefi } from '../connectors';
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
@@ -267,7 +274,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   INJECTED: {
     connector: injected,
     name: 'Injected',
-    iconName: 'arrow-right.svg',
+    iconName: arrowRightIcon,
     description: 'Injected web3 provider.',
     href: null,
     color: '#010101',
@@ -276,7 +283,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   METAMASK: {
     connector: injected,
     name: 'MetaMask',
-    iconName: 'metamask.png',
+    iconName: metamaskIcon,
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#E8831D',
@@ -284,7 +291,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   GNOSISSAFE: {
     connector: gnosisSafe,
     name: 'Gnosis Safe',
-    iconName: 'gnosis_safe.png',
+    iconName: gnosisSafeIcon,
     description: 'Gnosis Safe Multisig Wallet.',
     href: null,
     color: '#010101',
@@ -292,7 +299,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   WALLET_LINK: {
     connector: walletlink,
     name: 'Coinbase Wallet',
-    iconName: 'coinbaseWalletIcon.svg',
+    iconName: coinbaseWalletIcon,
     description: 'Use Coinbase Wallet app on mobile device',
     href: null,
     color: '#315CF5',
@@ -300,7 +307,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   WALLET_CONNECT: {
     connector: walletconnect,
     name: 'Wallet Connect',
-    iconName: 'walletConnectIcon.svg',
+    iconName: walletConnectIcon,
     description: 'Use Wallet Connect',
     href: null,
     color: '#315CF5',
@@ -308,7 +315,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   XDEFI: {
     connector: xDefi,
     name: 'XDEFI Wallet',
-    iconName: 'xDefi.png',
+    iconName: xDefiIcon,
     description: window.xfi && window.xfi.ethereum ? 'Easy-to-use browser extension.' : 'Please Install',
     href: null,
     color: '#315CF5',
@@ -316,7 +323,7 @@ export const EVM_SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   RABBY: {
     connector: injected,
     name: 'Rabby Wallet',
-    iconName: 'rabby.svg',
+    iconName: rabbyIcon,
     description: 'Easy-to-use browser extension.',
     href: null,
     color: '#7a7cff',
