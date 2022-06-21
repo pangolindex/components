@@ -1,15 +1,15 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { Portifolio } from '.';
+import { Portfolio } from '.';
 
 export default {
-  component: Portifolio,
-  title: 'Components/Portifolio',
+  component: Portfolio,
+  title: 'Components/Portfolio',
 };
 
-const TemplatePortfolio: ComponentStory<typeof Portifolio> = () => (
+const TemplatePortfolio: ComponentStory<typeof Portfolio> = () => (
   <div style={{ width: 600 }}>
-    <Portifolio />
+    <Portfolio />
   </div>
 );
 

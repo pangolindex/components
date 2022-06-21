@@ -6,9 +6,6 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import React, { useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
-import MetamaskIcon from 'src/assets/images/metamask.png';
-import RabbyIcon from 'src/assets/images/rabby.svg';
-import XDefiIcon from 'src/assets/images/xDefi.png';
 import { Button } from 'src/components/Button';
 import { gnosisSafe, injected, xDefi } from 'src/connectors';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
@@ -217,7 +214,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
               link={option.href}
               header={option.name}
               subheader={null}
-              icon={require('src/assets/images/' + option.iconName)}
+              icon={option.iconName}
             />
           );
         }
@@ -236,7 +233,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
                 header={'Install Rabby Wallet'}
                 subheader={null}
                 link={'https://rabby.io/'}
-                icon={RabbyIcon}
+                icon={option.iconName}
               />
             );
           }
@@ -253,7 +250,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
                 header={'Install Metamask'}
                 subheader={null}
                 link={'https://metamask.io/'}
-                icon={MetamaskIcon}
+                icon={option.iconName}
               />
             );
           } else {
@@ -285,7 +282,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
                 header={'Install XDEFI Wallet'}
                 subheader={null}
                 link={'https://www.xdefi.io/'}
-                icon={XDefiIcon}
+                icon={option.iconName}
               />
             );
           } else {
@@ -319,7 +316,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
             link={option.href}
             header={option.name}
             subheader={null} //use option.descriptio to bring back multi-line
-            icon={require('src/assets/images/' + option.iconName)}
+            icon={option.iconName}
           />
         )
       );
