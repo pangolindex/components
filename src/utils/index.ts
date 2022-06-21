@@ -4,7 +4,19 @@ import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouter.sol/IPangolinRouter.json';
-import { CAVAX, CHAINS, ChainId, Currency, JSBI, Percent, Token, Trade, currencyEquals } from '@pangolindex/sdk';
+import {
+  ALL_CHAINS,
+  CAVAX,
+  CHAINS,
+  Chain,
+  ChainId,
+  Currency,
+  JSBI,
+  Percent,
+  Token,
+  Trade,
+  currencyEquals,
+} from '@pangolindex/sdk';
 import { ROUTER_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 
@@ -114,4 +126,8 @@ export function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean 
     !currencyEquals(tradeA.outputAmount.currency, tradeB.outputAmount.currency) ||
     !tradeA.outputAmount.equalTo(tradeB.outputAmount)
   );
+}
+
+export function getChainByNumber(chainId: ChainId | number): Chain | undefined {
+  return ALL_CHAINS.find((chain) => chain.chain_id === chainId);
 }
