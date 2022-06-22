@@ -2,7 +2,7 @@
 import { CHAINS, ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
-import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.svg';
+import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
 import rabbyIcon from 'src/assets/images/rabby.svg';
