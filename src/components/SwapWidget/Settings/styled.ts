@@ -51,7 +51,7 @@ export const ModalFrame = styled(Box)`
 `;
 
 export const SettingsButton = styled(Box)`
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.toggleButton?.backgroundColor};
   color: ${({ theme }) => theme.text1};
   border-radius: 4px;
   padding: 6px;
