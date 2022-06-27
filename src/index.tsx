@@ -13,7 +13,9 @@ import {
   useGelatoLimitOrderList,
   useSwapActionHandlers,
 } from 'src/state/pswap/hooks';
+import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { shortenAddress } from 'src/utils';
+import { nearFn } from 'src/utils/near';
 import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { PANGOLIN_PERSISTED_KEYS, pangolinReducers } from './state';
@@ -64,10 +66,10 @@ export function PangolinProvider({
     </PangolinWeb3Provider>
   );
 }
-
-export * from './components';
-export * from './connectors';
 export * from './constants';
+export * from './connectors';
+export * from './components';
+
 export * from '@gelatonetwork/limit-orders-react';
 export type { LimitOrderInfo };
 export {
@@ -84,4 +86,6 @@ export {
   wrappedCurrency,
   useLibrary,
   shortenAddress,
+  useAccountBalanceHook,
+  nearFn,
 };

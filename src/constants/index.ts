@@ -154,6 +154,14 @@ export const SWAP_DEFAULT_CURRENCY = {
     inputCurrency: '',
     outputCurrency: '',
   },
+  [ChainId.NEAR_MAINNET]: {
+    inputCurrency: WAVAX[ChainId.NEAR_MAINNET].address,
+    outputCurrency: PNG[ChainId.NEAR_MAINNET].address,
+  },
+  [ChainId.NEAR_TESTNET]: {
+    inputCurrency: WAVAX[ChainId.NEAR_TESTNET].address,
+    outputCurrency: PNG[ChainId.NEAR_TESTNET].address,
+  },
 };
 
 export const DAIe: { [chainId in ChainId]: Token } = {

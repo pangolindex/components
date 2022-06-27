@@ -1,15 +1,19 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
+import { parseUnits } from '@ethersproject/units';
 import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from '@pangolindex/sdk';
 import { useMemo } from 'react';
+import { NEAR_EXCHANGE_CONTRACT_ADDRESS } from 'src/connectors';
 import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE } from 'src/constants';
+import { useGetNearPoolId } from 'src/data/Reserves';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from 'src/utils';
 import isZero from 'src/utils/isZero';
+import { FunctionCallOptions, Transaction, nearFn } from 'src/utils/near';
 import useENS from './useENS';
 import { Version } from './useToggledVersion';
 import useTransactionDeadline from './useTransactionDeadline';
-import { useLibrary, usePangolinWeb3 } from './index';
+import { useChainId, useLibrary, usePangolinWeb3 } from './index';
 
 export enum SwapCallbackState {
   INVALID,
@@ -232,4 +236,89 @@ export function useSwapCallback(
       error: null,
     };
   }, [trade, library, account, chainId, recipient, recipientAddressOrName, swapCalls, addTransaction]);
+}
+
+export function useNearSwapCallback(
+  trade: Trade | undefined, // trade to execute, required
+  allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
+  recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+
+  const addTransaction = useTransactionAdder();
+
+  const poolId = useGetNearPoolId(trade?.inputAmount?.currency, trade?.outputAmount?.currency);
+
+  return useMemo(() => {
+    if (!trade || !library || !account || !chainId) {
+      return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' };
+    }
+
+    return {
+      state: SwapCallbackState.VALID,
+      callback: async function onSwap(): Promise<any> {
+        const transactions: Transaction[] = [];
+        const tokenInActions: FunctionCallOptions[] = [];
+        const tokenOutActions: FunctionCallOptions[] = [];
+
+        const inputCurrencyId = (trade.inputAmount as any)?.currency?.address;
+        const outputCurrencyId = (trade.outputAmount as any)?.currency?.address;
+        const inputAmount = trade.inputAmount.toExact();
+        const outputAmount = trade.outputAmount.toExact();
+
+        const tokenRegistered = await nearFn.getStorageBalance(outputCurrencyId, account).catch(() => {
+          throw new Error(`${trade.outputAmount.currency?.symbol} doesn't exist.`);
+        });
+
+        if (tokenRegistered === null) {
+          tokenOutActions.push({
+            methodName: 'storage_deposit',
+            args: {
+              registration_only: true,
+              account_id: account,
+            },
+            gas: '30000000000000',
+            amount: '1',
+          });
+
+          transactions.push({
+            receiverId: outputCurrencyId,
+            functionCalls: tokenOutActions,
+          });
+        }
+
+        const swapActions = {
+          pool_id: poolId,
+          token_in: inputCurrencyId,
+          token_out: outputCurrencyId,
+          amount_in: parseUnits(inputAmount, (trade.inputAmount as any)?.currency?.decimals).toString(),
+          min_amount_out: '0',
+        };
+
+        tokenInActions.push({
+          methodName: 'ft_transfer_call',
+          args: {
+            receiver_id: NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId],
+            amount: parseUnits(inputAmount, (trade.inputAmount as any)?.currency?.decimals).toString(),
+            msg: JSON.stringify({
+              force: 0,
+              actions: [swapActions],
+            }),
+          },
+          gas: '180000000000000',
+          amount: '1',
+        });
+
+        transactions.push({
+          receiverId: inputCurrencyId,
+          functionCalls: tokenInActions,
+        });
+
+        return nearFn.executeMultipleTransactions(transactions);
+      },
+      error: null,
+    };
+  }, [trade, poolId, library, account, chainId, recipientAddressOrName, addTransaction]);
 }

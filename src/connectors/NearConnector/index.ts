@@ -5,7 +5,7 @@ import { JsonRpcProvider } from 'near-api-js/lib/providers';
 
 export class NearConnector extends AbstractConnector {
   private near!: Near;
-  private wallet!: WalletConnection;
+  public wallet!: WalletConnection;
   private provider!: JsonRpcProvider;
   private normalizeChainId!: boolean;
   private normalizeAccount!: boolean;
@@ -78,7 +78,7 @@ export class NearConnector extends AbstractConnector {
 
         return { chainId: chainId, provider: this.provider, account: account };
       } else {
-        this.wallet.requestSignIn('example-contract.testnet');
+        this.wallet.requestSignIn(this.near.config.contractId);
 
         return { provider: this.provider };
       }
@@ -100,6 +100,14 @@ export class NearConnector extends AbstractConnector {
     if (this.wallet) {
       this.wallet.signOut();
     }
+  }
+
+  public async getAccountBalance() {
+    if (this.wallet) {
+      const account = this.wallet.account();
+      return await account.getAccountBalance();
+    }
+    return undefined;
   }
 
   public async isAuthorized(): Promise<boolean> {

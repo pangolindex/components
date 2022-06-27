@@ -10,6 +10,12 @@ import { NetworkConnector } from './NetworkConnector';
 
 const NETWORK_URL = 'https://api.avax.network/ext/bc/C/rpc';
 
+// Near Exchnage Contract
+export const NEAR_EXCHANGE_CONTRACT_ADDRESS = {
+  [ChainId.NEAR_MAINNET]: 'png-exchange-v1.mainnet',
+  [ChainId.NEAR_TESTNET]: 'png-exchange-v1.testnet',
+};
+
 export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '43114');
 
 if (typeof NETWORK_URL === 'undefined') {
@@ -63,11 +69,11 @@ function getNearMainnetConfig() {
     explorerUrl: 'https://nearblocks.io',
     indexerUrl: 'https://indexer.ref-finance.net',
     chainId: ChainId.NEAR_MAINNET,
+    contractId: NEAR_EXCHANGE_CONTRACT_ADDRESS[ChainId.NEAR_MAINNET],
   };
 }
 
-// TODO: set configuration dynemically
-
+// TODO: set configuration dynemically as per env
 export default function getNearConfig(env = 'testnet') {
   switch (env) {
     case 'production':
@@ -82,6 +88,7 @@ export default function getNearConfig(env = 'testnet') {
         helperUrl: 'https://helper.testnet.near.org',
         explorerUrl: 'https://testnet.nearblocks.io',
         chainId: ChainId.NEAR_TESTNET,
+        contractId: NEAR_EXCHANGE_CONTRACT_ADDRESS[ChainId.NEAR_TESTNET],
       };
     default:
       return getNearMainnetConfig();

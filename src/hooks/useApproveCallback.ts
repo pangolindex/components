@@ -114,6 +114,16 @@ export function useApproveCallbackFromTrade(chainId: ChainId, trade?: Trade, all
 }
 
 // wraps useApproveCallback in the context of a swap
+export function useApproveCallbackFromNearTrade(chainId: ChainId, trade?: Trade, allowedSlippage = 0) {
+  const approve = () => {
+    return new Promise((resolve) => {
+      resolve(0);
+    });
+  };
+  return [ApprovalState.APPROVED, approve];
+}
+
+// wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromInputCurrencyAmount(currencyAmountIn: any | undefined) {
   const chainId = useChainId();
   const gelatoLibrary = useGelatoLimitOrdersLib();

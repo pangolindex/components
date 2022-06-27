@@ -6,6 +6,8 @@ import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
 import { isAddress } from 'src/utils';
+import { nearFn } from 'src/utils/near';
+import { useTokenHook } from './multiChainsHooks';
 import { useBytes32TokenContract, useTokenContract } from './useContract';
 import { useChainId } from './index';
 
@@ -40,6 +42,14 @@ function parseStringOrBytes32(str: string | undefined, bytes32: string | undefin
     : bytes32 && BYTES32_REGEX.test(bytes32)
     ? parseBytes32String(bytes32)
     : defaultValue;
+}
+
+export interface TokenMetadata {
+  id: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  icon: string;
 }
 
 // undefined if invalid or does not exist
@@ -100,9 +110,44 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
   ]);
 }
 
+export function useNearToken(tokenAddress?: string): Token | undefined | null {
+  const [tokenData, setTokenData] = useState<TokenMetadata>();
+
+  const chainId = useChainId();
+  const tokens = useAllTokens();
+
+  const address = tokenAddress;
+
+  const token: Token | undefined = address ? tokens[address] : undefined;
+
+  useEffect(() => {
+    async function getTokenData() {
+      if (address) {
+        const tokenMetaData = await nearFn.getNearMetadata(address);
+
+        setTokenData(tokenMetaData);
+      }
+    }
+
+    getTokenData();
+  }, [address]);
+
+  return useMemo(() => {
+    if (token) return token;
+    if (!chainId || !address) return undefined;
+
+    if (tokenData) {
+      return new Token(chainId, address, tokenData?.decimals, tokenData?.symbol, tokenData?.name);
+    }
+
+    return undefined;
+  }, [address, chainId, token, tokenData]);
+}
+
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
   const chainId = useChainId();
   const isAVAX = currencyId?.toUpperCase() === 'AVAX';
+  const useToken = useTokenHook[chainId];
   const token = useToken(isAVAX ? undefined : currencyId);
   return isAVAX ? chainId && CAVAX[chainId] : token;
 }
