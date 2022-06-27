@@ -58,12 +58,12 @@ export const RowWrapper = styled(Box)<{ isSelected: boolean }>`
   border-bottom: 1px solid ${({ theme }) => theme.text9};
   cursor: pointer;
   border-radius: 4px;
-  background-color: ${({ theme, isSelected }) => (isSelected ? theme.color3 : theme.color2)};
+  background-color: ${({ theme, isSelected }) => (isSelected ? theme.bg6 : theme.color2)};
 
   height: 64px;
 
   &:hover {
-    background-color: ${({ theme }) => theme.color3};
+    background-color: ${({ theme }) => theme.bg6};
   }
 `;
 export const DeleteButton = styled.button`
