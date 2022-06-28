@@ -60,7 +60,6 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
           })
           ?.filter((x): x is TagInfo => Boolean(x)) ?? [];
 
-      //TODO : remove this condition as temporary added
       if (!CHAINS[tokenInfo.chainId]) {
         return tokenMap;
       }

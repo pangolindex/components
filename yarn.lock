@@ -3215,10 +3215,10 @@
   dependencies:
     hardhat-tracer "^1.0.0-alpha.5"
 
-"@pangolindex/sdk@2.0.12-near.0":
-  version "2.0.12-near.0"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-2.0.12-near.0.tgz#c299e9ab1aa21bdf4ac05ec4355b19475c9beec9"
-  integrity sha512-N3nfOpF1r+6vSK5fYmCswUVAtNGMlhl4wQ2+gdcN8TQs9o4Z63RyeUaR2wS6JBsZnP5Xf49ldS2ag1tIiZb99A==
+"@pangolindex/sdk@2.0.12-near.1":
+  version "2.0.12-near.1"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-2.0.12-near.1.tgz#cba551f324d5de58220a61b14426816a8f84d3d9"
+  integrity sha512-GwQ8epDApIjrhlplz26Bp7v1F7B/ElmAeZWVSVypMwcaHg2HTbK/VpTTrSAUG9mLEe3i4ozpip4J6i7yQ+DBbw==
   dependencies:
     "@pangolindex/exchange-contracts" "^1.0.1"
     big.js "^5.2.2"
@@ -3228,10 +3228,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@pangolindex/token-lists@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@pangolindex/token-lists/-/token-lists-1.0.1.tgz#922f6e9de22a71b5d4a7ec4dc8ad183afa8f6cb1"
-  integrity sha512-01MOB0lA5/Chc/g2fzzFPJVHzPAe1dNjBkD9XU6UFDupIAdwEUn9WB4ZqU0p6mAG0ASBdTB2pGEt7cWNBybyXw==
+"@pangolindex/token-lists@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@pangolindex/token-lists/-/token-lists-1.0.2.tgz#dfde1001dc1cb89704575bb44793b6eac9c6c0c0"
+  integrity sha512-+hU1kZ1vrHQwWWIZk7gQIOTStEIqZ0MVEVHiIGGE80/FOBK2Med+3gSdnVr5Gc9it/KN5zAGmxZbEXv083oT+Q==
 
 "@pangolindex/web3-react-injected-connector@^1.0.1":
   version "1.0.1"

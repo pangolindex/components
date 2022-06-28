@@ -105,7 +105,7 @@ export class NearConnector extends AbstractConnector {
   public async getAccountBalance() {
     if (this.wallet) {
       const account = this.wallet.account();
-      return await account.getAccountBalance();
+      return account.getAccountBalance();
     }
     return undefined;
   }

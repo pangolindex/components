@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
-import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from '@pangolindex/sdk';
+import { JSBI, Percent, Router, SwapParameters, Token, Trade, TradeType } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS } from 'src/connectors';
 import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE } from 'src/constants';
@@ -240,7 +240,7 @@ export function useSwapCallback(
 
 export function useNearSwapCallback(
   trade: Trade | undefined, // trade to execute, required
-  allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
+  _allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account } = usePangolinWeb3();
@@ -262,11 +262,16 @@ export function useNearSwapCallback(
         const transactions: Transaction[] = [];
         const tokenInActions: FunctionCallOptions[] = [];
         const tokenOutActions: FunctionCallOptions[] = [];
+        const inputToken = trade.inputAmount?.currency;
+        const outPutToken = trade.outputAmount?.currency;
 
-        const inputCurrencyId = (trade.inputAmount as any)?.currency?.address;
-        const outputCurrencyId = (trade.outputAmount as any)?.currency?.address;
+        const inputCurrencyId = inputToken instanceof Token ? inputToken?.address : undefined;
+        const outputCurrencyId = outPutToken instanceof Token ? outPutToken?.address : undefined;
         const inputAmount = trade.inputAmount.toExact();
-        const outputAmount = trade.outputAmount.toExact();
+
+        if (!inputCurrencyId || !outputCurrencyId) {
+          throw new Error(`Missing Currency`);
+        }
 
         const tokenRegistered = await nearFn.getStorageBalance(outputCurrencyId, account).catch(() => {
           throw new Error(`${trade.outputAmount.currency?.symbol} doesn't exist.`);
@@ -293,7 +298,7 @@ export function useNearSwapCallback(
           pool_id: poolId,
           token_in: inputCurrencyId,
           token_out: outputCurrencyId,
-          amount_in: parseUnits(inputAmount, (trade.inputAmount as any)?.currency?.decimals).toString(),
+          amount_in: parseUnits(inputAmount, inputToken?.decimals).toString(),
           min_amount_out: '0',
         };
 
@@ -301,7 +306,7 @@ export function useNearSwapCallback(
           methodName: 'ft_transfer_call',
           args: {
             receiver_id: NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId],
-            amount: parseUnits(inputAmount, (trade.inputAmount as any)?.currency?.decimals).toString(),
+            amount: parseUnits(inputAmount, inputToken?.decimals).toString(),
             msg: JSON.stringify({
               force: 0,
               actions: [swapActions],

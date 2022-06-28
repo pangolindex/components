@@ -87,7 +87,7 @@ export function useWrapNearCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined,
-): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType; execute?: () => Promise<void>; inputError?: string } {
   const { account } = usePangolinWeb3();
 
   const chainId = useChainId();
@@ -105,36 +105,36 @@ export function useWrapNearCallback(
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount);
 
+    const unWrapFunction = async () => {
+      if (sufficientBalance && inputAmount) {
+        try {
+          addTransaction({} as any, { summary: `Unwrap ${inputAmount.toSignificant(6)} WNear to Near` });
+        } catch (error) {
+          console.error('Could not withdraw', error);
+        }
+      }
+    };
+
+    const wrapFunction = async () => {
+      if (sufficientBalance && inputAmount) {
+        try {
+          addTransaction({} as any, { summary: `Wrap ${inputAmount.toSignificant(6)} NEAR to wNear` });
+        } catch (error) {
+          console.error('Could not withdraw', error);
+        }
+      }
+    };
+
     if (inputCurrency === CAVAX[chainId] && currencyEquals(WAVAX[chainId], outputCurrency)) {
       return {
         wrapType: WrapType.WRAP,
-        execute:
-          sufficientBalance && inputAmount
-            ? async () => {
-                try {
-                  // const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` });
-                  addTransaction({} as any, { summary: `Wrap ${inputAmount.toSignificant(6)} NEAR to wNear` });
-                } catch (error) {
-                  console.error('Could not deposit', error);
-                }
-              }
-            : undefined,
+        execute: wrapFunction,
         inputError: sufficientBalance ? undefined : 'Insufficient NEAR balance',
       };
     } else if (currencyEquals(WAVAX[chainId], inputCurrency) && outputCurrency === CAVAX[chainId]) {
       return {
         wrapType: WrapType.UNWRAP,
-        execute:
-          sufficientBalance && inputAmount
-            ? async () => {
-                try {
-                  // const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`);
-                  addTransaction({} as any, { summary: `Unwrap ${inputAmount.toSignificant(6)} WNear to Near` });
-                } catch (error) {
-                  console.error('Could not withdraw', error);
-                }
-              }
-            : undefined,
+        execute: unWrapFunction,
         inputError: sufficientBalance ? undefined : 'Insufficient wNear balance',
       };
     } else {
