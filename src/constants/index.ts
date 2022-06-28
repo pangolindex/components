@@ -6,6 +6,7 @@ import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
 import rabbyIcon from 'src/assets/images/rabby.svg';
+import nearIcon from 'src/assets/images/near.svg';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
 import { gnosisSafe, injected, near, walletconnect, walletlink, xDefi } from '../connectors';
@@ -338,7 +339,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   NEAR: {
     connector: near,
     name: 'Near',
-    iconName: 'near.svg',
+    iconName: nearIcon,
     description: 'Near Web',
     href: null,
     color: '#315CF5',

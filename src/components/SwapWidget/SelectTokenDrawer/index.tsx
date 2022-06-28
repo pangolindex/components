@@ -1,4 +1,4 @@
-import { CAVAX, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
+import { CAVAX, ChainId, Currency, Token, currencyEquals, CHAINS } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
@@ -90,7 +90,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     if (searchQuery === '') {
       // remove Currency from array and add in first position
       const _tokens = filteredSortedTokens.filter((token) => token !== CAVAX[chainId]);
-      return [CAVAX[chainId], ..._tokens];
+      return CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : [..._tokens];
     }
     return filteredSortedTokens;
   }, [filteredSortedTokens, chainId]);
