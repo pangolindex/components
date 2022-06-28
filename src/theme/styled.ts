@@ -122,6 +122,7 @@ export interface Colors {
   color7: Color;
   color8: Color;
   color9: Color;
+  color10: Color;
 }
 
 export interface Grids {
