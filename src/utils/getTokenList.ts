@@ -57,15 +57,14 @@ export default async function getTokenList(
 
     const json = await response.json();
 
-    // TODO : uncomment
-    // if (!tokenListValidator(json)) {
-    //   const validationErrors: string =
-    //     tokenListValidator.errors?.reduce<string>((memo, error) => {
-    //       const add = `${error.dataPath} ${error.message ?? ''}`;
-    //       return memo.length > 0 ? `${memo}; ${add}` : `${add}`;
-    //     }, '') ?? 'unknown error';
-    //   throw new Error(`Token list failed validation: ${validationErrors}`);
-    // }
+    if (!tokenListValidator(json)) {
+      const validationErrors: string =
+        tokenListValidator.errors?.reduce<string>((memo, error) => {
+          const add = `${error.dataPath} ${error.message ?? ''}`;
+          return memo.length > 0 ? `${memo}; ${add}` : `${add}`;
+        }, '') ?? 'unknown error';
+      throw new Error(`Token list failed validation: ${validationErrors}`);
+    }
 
     return json;
   }

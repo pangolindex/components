@@ -67,16 +67,15 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
 
 export function usePair(tokenA?: Currency, tokenB?: Currency): [PairState, Pair | null] {
   const chainId = useChainId();
-  const usePairs = usePairsHook[chainId];
-  return usePairs([[tokenA, tokenB]])[0];
+  const usePairs_ = usePairsHook[chainId];
+  return usePairs_([[tokenA, tokenB]])[0];
 }
 
 export function useGetNearAllPool() {
   const chainId = useChainId();
-  const allPools = useQuery(['get-near-pools'], async () => {
-    return await nearFn.getAllPools(chainId);
+  return useQuery(['get-near-pools'], async () => {
+    return nearFn.getAllPools(chainId);
   });
-  return allPools;
 }
 
 export function useNearPairs(currencies: [Currency | undefined, Currency | undefined][]): [PairState, Pair | null][] {
@@ -147,7 +146,7 @@ export function useGetNearPoolId(tokenA?: any, tokenB?: any): number | null {
     if (!allPools?.isLoading) {
       const results = allPools?.data || [];
 
-      const index = results.findIndex((element) => {
+      return results.findIndex((element) => {
         const tokenIds = element?.token_account_ids;
 
         if (tokenIds.includes(tokenA?.address) && tokenIds.includes(tokenB?.address)) {
@@ -156,8 +155,6 @@ export function useGetNearPoolId(tokenA?: any, tokenB?: any): number | null {
 
         return false;
       });
-
-      return index;
     }
     return null;
   }, [allPools?.data, allPools?.isLoading, tokenA, tokenB]);

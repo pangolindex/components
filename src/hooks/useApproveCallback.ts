@@ -114,11 +114,9 @@ export function useApproveCallbackFromTrade(chainId: ChainId, trade?: Trade, all
 }
 
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromNearTrade(chainId: ChainId, trade?: Trade, allowedSlippage = 0) {
+export function useApproveCallbackFromNearTrade(_chainId: ChainId, _trade?: Trade, _allowedSlippage = 0) {
   const approve = () => {
-    return new Promise((resolve) => {
-      resolve(0);
-    });
+    return Promise.resolve(42);
   };
   return [ApprovalState.APPROVED, approve];
 }

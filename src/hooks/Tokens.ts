@@ -147,8 +147,8 @@ export function useNearToken(tokenAddress?: string): Token | undefined | null {
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
   const chainId = useChainId();
   const isAVAX = currencyId?.toUpperCase() === 'AVAX';
-  const useToken = useTokenHook[chainId];
-  const token = useToken(isAVAX ? undefined : currencyId);
+  const useToken_ = useTokenHook[chainId];
+  const token = useToken_(isAVAX ? undefined : currencyId);
   return isAVAX ? chainId && CAVAX[chainId] : token;
 }
 

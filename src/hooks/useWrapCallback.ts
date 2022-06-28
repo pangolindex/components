@@ -112,7 +112,6 @@ export function useWrapNearCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
-                  // const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` });
                   addTransaction({} as any, { summary: `Wrap ${inputAmount.toSignificant(6)} NEAR to wNear` });
                 } catch (error) {
                   console.error('Could not deposit', error);
@@ -128,7 +127,6 @@ export function useWrapNearCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
-                  // const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`);
                   addTransaction({} as any, { summary: `Unwrap ${inputAmount.toSignificant(6)} WNear to Near` });
                 } catch (error) {
                   console.error('Could not withdraw', error);

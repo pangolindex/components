@@ -63,10 +63,10 @@ export function useNearBalance(
     async function checkNearBalance() {
       const balance = await near.getAccountBalance();
       if (balance && accounts?.[0]) {
-        const nearBalance = new TokenAmount(nearToken, balance.available);
+        const nearTokenBalance = new TokenAmount(nearToken, balance.available);
 
         const container = {} as { [address: string]: any | undefined };
-        container[accounts?.[0]] = nearBalance;
+        container[accounts?.[0]] = nearTokenBalance;
 
         setNearBalance(container);
       }
@@ -167,15 +167,15 @@ export function useCurrencyBalances(
     [currencies],
   );
 
-  const useTokenBalances = useTokenBalancesHook[chainId];
-  const useETHBalances = useAccountBalanceHook[chainId];
+  const useTokenBalances_ = useTokenBalancesHook[chainId];
+  const useETHBalances_ = useAccountBalanceHook[chainId];
 
-  const tokenBalances = useTokenBalances(account, tokens);
+  const tokenBalances = useTokenBalances_(account, tokens);
   const containsETH: boolean = useMemo(
     () => currencies?.some((currency) => chainId && currency === CAVAX[chainId]) ?? false,
     [chainId, currencies],
   );
-  const ethBalance = useETHBalances(chainId, containsETH ? [account] : []);
+  const ethBalance = useETHBalances_(chainId, containsETH ? [account] : []);
 
   return useMemo(
     () =>
@@ -203,11 +203,11 @@ export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | u
 
   const chainId = useChainId();
 
-  const useTokenBalances = useTokenBalancesHook[chainId];
+  const useTokenBalances_ = useTokenBalancesHook[chainId];
 
   const allTokens = useAllTokens();
 
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens]);
-  const balances = useTokenBalances(account ?? undefined, allTokensArray);
+  const balances = useTokenBalances_(account ?? undefined, allTokensArray);
   return balances ?? {};
 }
