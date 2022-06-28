@@ -262,18 +262,16 @@ export function useNearSwapCallback(
         const transactions: Transaction[] = [];
         const tokenInActions: FunctionCallOptions[] = [];
         const tokenOutActions: FunctionCallOptions[] = [];
-        const inputToken =
-          trade.inputAmount?.currency instanceof Token
-            ? (trade.inputAmount?.currency as Token)
-            : (trade.inputAmount?.currency as any);
-        const outPutToken =
-          trade.outputAmount?.currency instanceof Token
-            ? (trade.outputAmount?.currency as Token)
-            : (trade.outputAmount?.currency as any);
+        const inputToken = trade.inputAmount?.currency;
+        const outPutToken = trade.outputAmount?.currency;
 
-        const inputCurrencyId = inputToken?.address;
-        const outputCurrencyId = outPutToken?.address;
+        const inputCurrencyId = inputToken instanceof Token ? inputToken?.address : undefined;
+        const outputCurrencyId = outPutToken instanceof Token ? outPutToken?.address : undefined;
         const inputAmount = trade.inputAmount.toExact();
+
+        if (!inputCurrencyId || !outputCurrencyId) {
+          throw new Error(`Missing Currency`);
+        }
 
         const tokenRegistered = await nearFn.getStorageBalance(outputCurrencyId, account).catch(() => {
           throw new Error(`${trade.outputAmount.currency?.symbol} doesn't exist.`);
