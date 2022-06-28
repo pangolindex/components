@@ -87,7 +87,7 @@ export function useWrapNearCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined,
-): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType; execute?: () => Promise<void>; inputError?: string } {
   const { account } = usePangolinWeb3();
 
   const chainId = useChainId();

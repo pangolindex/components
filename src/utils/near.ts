@@ -83,7 +83,7 @@ class Near {
     const deployer = await near.wallet.account();
     const EXCHANGE = await this.NearExchangeContract(deployer, NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId]);
     const numberOfPools = await EXCHANGE.get_number_of_pools();
-    return await EXCHANGE.get_pools({
+    return EXCHANGE.get_pools({
       from_index: 0,
       limit: numberOfPools,
     });

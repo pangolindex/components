@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
-import { JSBI, Percent, Router, SwapParameters, Trade, TradeType, Token } from '@pangolindex/sdk';
+import { JSBI, Percent, Router, SwapParameters, Token, Trade, TradeType } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS } from 'src/connectors';
 import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE } from 'src/constants';
@@ -274,7 +274,6 @@ export function useNearSwapCallback(
         const inputCurrencyId = inputToken?.address;
         const outputCurrencyId = outPutToken?.address;
         const inputAmount = trade.inputAmount.toExact();
-        const outputAmount = trade.outputAmount.toExact();
 
         const tokenRegistered = await nearFn.getStorageBalance(outputCurrencyId, account).catch(() => {
           throw new Error(`${trade.outputAmount.currency?.symbol} doesn't exist.`);
