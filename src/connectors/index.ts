@@ -60,16 +60,6 @@ export const xDefi = new DefiConnector({
   supportedChainIds: [1, 43114, 11111, 16],
 });
 
-export interface NearConfigType {
-  networkId: string;
-  nodeUrl: string;
-  walletUrl: string;
-  helperUrl: string;
-  explorerUrl: string;
-  chainId: number;
-  contractId: string;
-}
-
 function getNearMainnetConfig() {
   return {
     networkId: 'mainnet',
@@ -84,7 +74,7 @@ function getNearMainnetConfig() {
 }
 
 // TODO: set configuration dynemically as per env
-export function getNearConfig(env = 'testnet') {
+function getNearConfig(env = 'testnet') {
   switch (env) {
     case 'production':
     case 'mainnet':

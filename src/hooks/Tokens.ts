@@ -44,7 +44,7 @@ function parseStringOrBytes32(str: string | undefined, bytes32: string | undefin
     : defaultValue;
 }
 
-export interface TokenMetadata {
+export interface NearTokenMetadata {
   id: string;
   name: string;
   symbol: string;
@@ -111,7 +111,7 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 }
 
 export function useNearToken(tokenAddress?: string): Token | undefined | null {
-  const [tokenData, setTokenData] = useState<TokenMetadata>();
+  const [tokenData, setTokenData] = useState<NearTokenMetadata>();
 
   const chainId = useChainId();
   const tokens = useAllTokens();

@@ -1,6 +1,6 @@
 import { Interface } from '@ethersproject/abi';
 import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
-import { ChainId, Currency, Pair, TokenAmount, Token } from '@pangolindex/sdk';
+import { ChainId, Currency, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { useChainId } from 'src/hooks';
