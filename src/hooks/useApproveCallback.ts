@@ -113,7 +113,7 @@ export function useApproveCallbackFromTrade(chainId: ChainId, trade?: Trade, all
   );
 }
 
-// wraps useApproveCallback in the context of a swap
+//TODO:  Near Swap Approve dummy hook
 export function useApproveCallbackFromNearTrade(_chainId: ChainId, _trade?: Trade, _allowedSlippage = 0) {
   const approve = () => {
     return Promise.resolve(42);

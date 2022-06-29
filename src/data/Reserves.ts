@@ -1,6 +1,6 @@
 import { Interface } from '@ethersproject/abi';
 import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
-import { ChainId, Currency, Pair, TokenAmount } from '@pangolindex/sdk';
+import { ChainId, Currency, Pair, TokenAmount, Token } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { useChainId } from 'src/hooks';
@@ -100,14 +100,13 @@ export function useNearPairs(currencies: [Currency | undefined, Currency | undef
         let indexOfToken0 = 0;
         let indexOfToken1 = 1;
         let reserveAmounts = [] as any;
-        let reserves = false;
 
         if (!tokenA || !tokenB || tokenA.equals(tokenB)) return [PairState.INVALID, null];
 
         const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA];
 
         const filterResults = results.filter((v) => {
-          const tokenIds = v?.token_account_ids;
+          const tokenIds = v?.token_account_ids || [];
 
           if (tokenIds.includes(token0?.address) && tokenIds.includes(token1?.address)) {
             return true;
@@ -119,11 +118,10 @@ export function useNearPairs(currencies: [Currency | undefined, Currency | undef
           const tokenIds = result?.token_account_ids || [];
           indexOfToken0 = tokenIds.findIndex((element) => element.includes(token0?.address));
           indexOfToken1 = tokenIds.findIndex((element) => element.includes(token1?.address));
-          reserves = true;
           reserveAmounts = result?.amounts;
         }
 
-        if (!reserves) return [PairState.NOT_EXISTS, null];
+        if (reserveAmounts.length === 0) return [PairState.NOT_EXISTS, null];
 
         return [
           PairState.EXISTS,
@@ -140,14 +138,14 @@ export function useNearPairs(currencies: [Currency | undefined, Currency | undef
   }, [allPools?.data, allPools?.isLoading, tokens, chainId]);
 }
 
-export function useGetNearPoolId(tokenA?: any, tokenB?: any): number | null {
+export function useGetNearPoolId(tokenA?: Token, tokenB?: Token): number | null {
   const allPools = useGetNearAllPool();
   return useMemo(() => {
     if (!allPools?.isLoading) {
       const results = allPools?.data || [];
 
       return results.findIndex((element) => {
-        const tokenIds = element?.token_account_ids;
+        const tokenIds = element?.token_account_ids || [];
 
         if (tokenIds.includes(tokenA?.address) && tokenIds.includes(tokenB?.address)) {
           return true;

@@ -123,7 +123,7 @@ export function useNearToken(tokenAddress?: string): Token | undefined | null {
   useEffect(() => {
     async function getTokenData() {
       if (address) {
-        const tokenMetaData = await nearFn.getNearMetadata(address);
+        const tokenMetaData = await nearFn.getMetadata(address);
 
         setTokenData(tokenMetaData);
       }

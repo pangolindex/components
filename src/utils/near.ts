@@ -34,7 +34,7 @@ class Near {
     return near.wallet.account().viewFunction(tokenId, methodName, args);
   }
 
-  public async getNearMetadata(tokenAddress: string) {
+  public async getMetadata(tokenAddress: string) {
     try {
       const metadata = await this.viewFunction(tokenAddress, {
         methodName: 'ft_metadata',
@@ -55,7 +55,7 @@ class Near {
     }
   }
 
-  public async getNearTokenBalance(tokenAddress: string, account?: string) {
+  public async getTokenBalance(tokenAddress: string, account?: string) {
     return this.viewFunction(tokenAddress, {
       methodName: 'ft_balance_of',
       args: {
@@ -64,26 +64,26 @@ class Near {
     });
   }
 
-  public async getNearTotalSupply(tokenAddress: string) {
+  public async getTotalSupply(tokenAddress: string) {
     return this.viewFunction(tokenAddress, {
       methodName: 'ft_total_supply',
       args: {},
     });
   }
 
-  public async NearExchangeContract(deployer, exchange) {
-    const EXCHANGE = new Contract(deployer, exchange, {
+  public async getExchangeContract(deployer, exchange) {
+    const contract = new Contract(deployer, exchange, {
       viewMethods: ['get_pools', 'get_number_of_pools'],
       changeMethods: [],
     });
-    return EXCHANGE as any;
+    return contract as any;
   }
 
   public async getAllPools(chainId: number) {
     const deployer = await near.wallet.account();
-    const EXCHANGE = await this.NearExchangeContract(deployer, NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId]);
-    const numberOfPools = await EXCHANGE.get_number_of_pools();
-    return EXCHANGE.get_pools({
+    const contract = await this.getExchangeContract(deployer, NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId]);
+    const numberOfPools = await contract.get_number_of_pools();
+    return contract.get_pools({
       from_index: 0,
       limit: numberOfPools,
     });

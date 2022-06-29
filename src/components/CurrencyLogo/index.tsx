@@ -5,6 +5,7 @@ import { AvaxLogo, CflrLogo, WgmLogo } from 'src/components/Icons';
 import { LogoSize } from 'src/constants';
 import { getTokenLogoURL } from 'src/utils/getTokenLogoURL';
 import { StyledLogo } from './styles';
+import { useChainId } from 'src/hooks';
 
 export default function CurrencyLogo({
   currency,
@@ -17,6 +18,8 @@ export default function CurrencyLogo({
   style?: React.CSSProperties;
   imageSize?: LogoSize;
 }) {
+  const chainId = useChainId();
+
   const srcs: string[] = useMemo(() => {
     if (
       currency === CAVAX[ChainId.AVALANCHE] ||
@@ -25,7 +28,7 @@ export default function CurrencyLogo({
     )
       return [];
     if (currency instanceof Token || !!(currency as Token).address) {
-      const primarySrc = getTokenLogoURL((currency as Token)?.address, imageSize);
+      const primarySrc = getTokenLogoURL((currency as Token)?.address, chainId, imageSize);
 
       return [primarySrc];
     }

@@ -2,6 +2,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { Near, WalletConnection, keyStores } from 'near-api-js';
 import { JsonRpcProvider } from 'near-api-js/lib/providers';
+import { NearConfigType } from '../index';
 
 export class NearConnector extends AbstractConnector {
   private near!: Near;
@@ -12,7 +13,11 @@ export class NearConnector extends AbstractConnector {
   private chainId!: number;
 
   public constructor(
-    kwargs: AbstractConnectorArguments & { normalizeChainId: boolean; normalizeAccount: boolean; config },
+    kwargs: AbstractConnectorArguments & {
+      normalizeChainId: boolean;
+      normalizeAccount: boolean;
+      config: NearConfigType;
+    },
   ) {
     super(kwargs);
 

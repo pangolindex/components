@@ -80,7 +80,7 @@ export function useNearBalance(
 
 const fetchNearTokenBalance = (token?: Token, account?: string) => async () => {
   if (token) {
-    const balance = await nearFn.getNearTokenBalance(token?.address, account);
+    const balance = await nearFn.getTokenBalance(token?.address, account);
 
     return new TokenAmount(token, balance);
   }
