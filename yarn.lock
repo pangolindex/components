@@ -3215,10 +3215,10 @@
   dependencies:
     hardhat-tracer "^1.0.0-alpha.5"
 
-"@pangolindex/sdk@2.0.12-near.1":
-  version "2.0.12-near.1"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-2.0.12-near.1.tgz#cba551f324d5de58220a61b14426816a8f84d3d9"
-  integrity sha512-GwQ8epDApIjrhlplz26Bp7v1F7B/ElmAeZWVSVypMwcaHg2HTbK/VpTTrSAUG9mLEe3i4ozpip4J6i7yQ+DBbw==
+"@pangolindex/sdk@2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-2.1.3.tgz#f04a75cbb889dfed1fdbdb4ba8639047af78499d"
+  integrity sha512-Ug1G4y1pLtOzHjUaFIookhajnnwBiuN9m5/qieHKgW1sBjuEFxHIttA/vhoKDeqlc1L7BprEUAx5FFi0K8jGIg==
   dependencies:
     "@pangolindex/exchange-contracts" "^1.0.1"
     big.js "^5.2.2"
