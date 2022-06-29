@@ -2,7 +2,16 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { Near, WalletConnection, keyStores } from 'near-api-js';
 import { JsonRpcProvider } from 'near-api-js/lib/providers';
-import { NearConfigType } from '../index';
+
+export interface NearConfigType {
+  networkId: string;
+  nodeUrl: string;
+  walletUrl: string;
+  helperUrl: string;
+  explorerUrl: string;
+  chainId: number;
+  contractId: string;
+}
 
 export class NearConnector extends AbstractConnector {
   private near!: Near;

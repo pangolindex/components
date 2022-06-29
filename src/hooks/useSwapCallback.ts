@@ -240,6 +240,7 @@ export function useSwapCallback(
 
 export function useNearSwapCallback(
   trade: Trade | undefined, // trade to execute, required
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
@@ -249,7 +250,7 @@ export function useNearSwapCallback(
 
   const addTransaction = useTransactionAdder();
 
-  const poolId = useGetNearPoolId(trade?.inputAmount?.currency, trade?.outputAmount?.currency);
+  const poolId = useGetNearPoolId(trade?.inputAmount?.currency as Token, trade?.outputAmount?.currency as Token);
 
   return useMemo(() => {
     if (!trade || !library || !account || !chainId) {
