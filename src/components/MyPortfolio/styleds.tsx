@@ -66,7 +66,6 @@ export const RowWrapper = styled(Box)`
 
   &:hover {
     background-color: ${({ theme }) => theme.color3};
-    border-radius: 4px;
   }
 `;
 
