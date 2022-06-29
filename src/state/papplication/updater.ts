@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { usePangolinWeb3 } from 'src/hooks';
+import { useLibrary, usePangolinWeb3 } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
 import useIsWindowVisible from 'src/hooks/useIsWindowVisible';
 import { updateBlockNumber } from './actions';
 
 export default function Updater(): null {
-  const { library, chainId } = usePangolinWeb3();
+  const { chainId } = usePangolinWeb3();
+  const { library, provider } = useLibrary();
   const dispatch = useDispatch();
 
   const windowVisible = useIsWindowVisible();
@@ -35,14 +36,14 @@ export default function Updater(): null {
 
     setState({ chainId, blockNumber: null });
 
-    library
-      .getBlockNumber()
+    (provider as any)
+      ?.getBlockNumber()
       .then(blockNumberCallback)
       .catch((error) => console.error(`Failed to get block number for chainId: ${chainId}`, error));
 
-    library.on('block', blockNumberCallback);
+    library.on && library.on('block', blockNumberCallback);
     return () => {
-      library.removeListener('block', blockNumberCallback);
+      library.removeListener && library.removeListener('block', blockNumberCallback);
     };
   }, [dispatch, chainId, library, blockNumberCallback, windowVisible]);
 

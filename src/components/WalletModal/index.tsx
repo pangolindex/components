@@ -3,12 +3,12 @@ import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
 import { Button } from 'src/components/Button';
 import { gnosisSafe, injected, xDefi } from 'src/connectors';
-import { AVALANCHE_CHAIN_PARAMS, EVM_SUPPORTED_WALLETS, IS_IN_IFRAME, LANDING_PAGE, WalletInfo } from 'src/constants';
+import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { ExternalLink } from 'src/theme';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
@@ -50,6 +50,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
 }) => {
   // important that these are destructed from the account-specific web3-react context
   const { connector, activate, error: web3Error } = useWeb3React();
+
   const [walletType, setWalletType] = useState(CHAIN_TYPE.EVM_CHAINS as string);
 
   const [walletView, setWalletView] = useState('');
@@ -63,7 +64,23 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   const walletModalOpen = open;
 
-  const walletOptions = walletType === CHAIN_TYPE.EVM_CHAINS ? EVM_SUPPORTED_WALLETS : [];
+  const walletOptions = useMemo(() => {
+    if (walletType === CHAIN_TYPE.EVM_CHAINS) {
+      return Object.keys(SUPPORTED_WALLETS)
+        .filter((key) => SUPPORTED_WALLETS[key].isEVM)
+        .reduce((obj, key) => {
+          obj[key] = SUPPORTED_WALLETS[key];
+          return obj;
+        }, {});
+    } else {
+      return Object.keys(SUPPORTED_WALLETS)
+        .filter((key) => !SUPPORTED_WALLETS[key].isEVM)
+        .reduce((obj, key) => {
+          obj[key] = SUPPORTED_WALLETS[key];
+          return obj;
+        }, {});
+    }
+  }, [walletType]);
 
   function addAvalancheNetwork() {
     injected.getProvider().then((provider) => {
@@ -83,6 +100,17 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   // always reset to account view
   useEffect(() => {
+    const name = Object.keys(SUPPORTED_WALLETS).find((key) => SUPPORTED_WALLETS[key].connector === connector);
+    if (name) {
+      const activeOption = SUPPORTED_WALLETS[name];
+
+      if (activeOption && !activeOption?.isEVM) {
+        setWalletType(CHAIN_TYPE.NON_EVM_CHAINS);
+      } else {
+        setWalletType(CHAIN_TYPE.EVM_CHAINS);
+      }
+    }
+
     if (walletModalOpen) {
       setPendingError(false);
       setWalletView('');
@@ -151,11 +179,11 @@ const WalletModal: React.FC<WalletModalProps> = ({
   function getActiveOption(): WalletInfo | undefined {
     if (connector === injected) {
       if (isRabby) {
-        return EVM_SUPPORTED_WALLETS.RABBY;
+        return SUPPORTED_WALLETS.RABBY;
       } else if (isMetamask) {
-        return EVM_SUPPORTED_WALLETS.METAMASK;
+        return SUPPORTED_WALLETS.METAMASK;
       }
-      return EVM_SUPPORTED_WALLETS.INJECTED;
+      return SUPPORTED_WALLETS.INJECTED;
     }
     const name = Object.keys(walletOptions).find((key) => walletOptions[key].connector === connector);
     if (name) {

@@ -109,7 +109,7 @@ const WatchList: React.FC<Props> = ({
       </Box>
       <GridContainer coinChartVisible={coinChartVisible}>
         {/* render coin chart */}
-        {CHAINS[chainId].mainnet && coinChartVisible && renderCoinChart()}
+        {CHAINS[chainId]?.mainnet && coinChartVisible && renderCoinChart()}
         {/* render watchlist in desktop */}
         <DesktopWatchList>
           <Scrollbars>{(currencies || []).map(renderWatchlistRow)}</Scrollbars>

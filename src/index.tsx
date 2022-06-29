@@ -1,8 +1,10 @@
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
+import { CHAINS, ChainId } from '@pangolindex/sdk';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { usePair } from 'src/data/Reserves';
+import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import {
   LimitOrderInfo,
@@ -11,9 +13,11 @@ import {
   useGelatoLimitOrderList,
   useSwapActionHandlers,
 } from 'src/state/pswap/hooks';
+import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { shortenAddress } from 'src/utils';
+import { nearFn } from 'src/utils/near';
 import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { PangolinWeb3Provider } from './hooks';
 import { PANGOLIN_PERSISTED_KEYS, pangolinReducers } from './state';
 import ApplicationUpdater from './state/papplication/updater';
 import ListsUpdater from './state/plists/updater';
@@ -24,7 +28,7 @@ import { default as ThemeProvider } from './theme';
 const queryClient = new QueryClient();
 
 export function PangolinProvider({
-  chainId,
+  chainId = ChainId.AVALANCHE,
   library,
   children,
   account,
@@ -44,24 +48,28 @@ export function PangolinProvider({
       <TransactionUpdater />
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
-          <GelatoProvider
-            library={library}
-            chainId={chainId}
-            account={account ?? undefined}
-            useDefaultTheme={false}
-            handler={'pangolin'}
-          >
-            {children}
-          </GelatoProvider>
+          {CHAINS[chainId]?.evm ? (
+            <GelatoProvider
+              library={library}
+              chainId={chainId}
+              account={account ?? undefined}
+              useDefaultTheme={false}
+              handler={'pangolin'}
+            >
+              {children}
+            </GelatoProvider>
+          ) : (
+            children
+          )}
         </QueryClientProvider>
       </ThemeProvider>
     </PangolinWeb3Provider>
   );
 }
-
-export * from './components';
-export * from './connectors';
 export * from './constants';
+export * from './connectors';
+export * from './components';
+
 export * from '@gelatonetwork/limit-orders-react';
 export type { LimitOrderInfo };
 export {
@@ -76,4 +84,8 @@ export {
   usePair,
   useSwapActionHandlers,
   wrappedCurrency,
+  useLibrary,
+  shortenAddress,
+  useAccountBalanceHook,
+  nearFn,
 };

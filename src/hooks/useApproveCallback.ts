@@ -113,6 +113,15 @@ export function useApproveCallbackFromTrade(chainId: ChainId, trade?: Trade, all
   );
 }
 
+//TODO:  Near Swap Approve dummy hook
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function useApproveCallbackFromNearTrade(_chainId: ChainId, _trade?: Trade, _allowedSlippage = 0) {
+  const approve = () => {
+    return Promise.resolve(42);
+  };
+  return [ApprovalState.APPROVED, approve];
+}
+
 // wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromInputCurrencyAmount(currencyAmountIn: any | undefined) {
   const chainId = useChainId();

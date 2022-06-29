@@ -8,11 +8,11 @@ import { TRUSTED_TOKEN_ADDRESSES } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
-import { ApprovalState, useApproveCallbackFromTrade } from 'src/hooks/useApproveCallback';
+import { useApproveCallbackFromTradeHook, useSwapCallbackHook, useWrapCallbackHook } from 'src/hooks/multiChainsHooks';
+import { ApprovalState } from 'src/hooks/useApproveCallback'; //useApproveCallbackFromTrade
 import useENS from 'src/hooks/useENS';
-import { useSwapCallback } from 'src/hooks/useSwapCallback';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
-import useWrapCallback, { WrapType } from 'src/hooks/useWrapCallback';
+import { WrapType } from 'src/hooks/useWrapCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
 import { Field } from 'src/state/pswap/actions';
@@ -75,6 +75,10 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const theme = useContext(ThemeContext);
+
+  const useWrapCallback = useWrapCallbackHook[chainId];
+  const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
+  const useSwapCallback = useSwapCallbackHook[chainId];
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
