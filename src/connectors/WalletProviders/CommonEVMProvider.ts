@@ -25,8 +25,9 @@ export const CommonEVMProvider = (provider) => {
       return Number(block);
     };
 
-    provider.execute = (method, params) => {
-      return (provider as any).send(method, params);
+    provider.execute = async (method, params) => {
+      const res = await (provider as any).send(method, params);
+      return res?.result;
     };
   }
   return provider;
