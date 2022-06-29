@@ -3,9 +3,9 @@ import deepEqual from 'deep-equal';
 import React, { useMemo } from 'react';
 import { AvaxLogo, CflrLogo, WgmLogo } from 'src/components/Icons';
 import { LogoSize } from 'src/constants';
+import { useChainId } from 'src/hooks';
 import { getTokenLogoURL } from 'src/utils/getTokenLogoURL';
 import { StyledLogo } from './styles';
-import { useChainId } from 'src/hooks';
 
 export default function CurrencyLogo({
   currency,
