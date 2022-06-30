@@ -29,9 +29,9 @@ import { PANGOLIN_PERSISTED_KEYS, pangolinReducers } from './state';
 import ApplicationUpdater from './state/papplication/updater';
 import ListsUpdater from './state/plists/updater';
 import MulticallUpdater from './state/pmulticall/updater';
+import * as transactionActions from './state/ptransactions/actions';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
-
 const queryClient = new QueryClient();
 
 export function PangolinProvider({
@@ -101,3 +101,6 @@ export {
   useAccountBalanceHook,
   nearFn,
 };
+
+//Actions
+export { transactionActions };
