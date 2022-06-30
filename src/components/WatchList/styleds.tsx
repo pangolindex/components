@@ -56,8 +56,7 @@ export const RowWrapper = styled(Box)<{ isSelected: boolean }>`
   grid-template-columns: 100px minmax(auto, 1fr) max-content;
   align-items: center;
   border-bottom: 1px solid ${({ theme }) => theme.text9};
-  cursor: pointer;
-  border-radius: 4px;
+  cursor: ${({ isSelected }) => (isSelected ? 'default' : 'pointer')} !important;
   background-color: ${({ theme, isSelected }) => (isSelected ? theme.color10 : theme.color2)};
 
   height: 64px;
