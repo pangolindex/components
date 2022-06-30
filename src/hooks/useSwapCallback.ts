@@ -4,7 +4,7 @@ import { parseUnits } from '@ethersproject/units';
 import { JSBI, Percent, Router, SwapParameters, Token, Trade, TradeType } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS } from 'src/connectors';
-import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE } from 'src/constants';
+import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE, ONE_YOCTO_NEAR } from 'src/constants';
 import { useGetNearPoolId } from 'src/data/Reserves';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from 'src/utils';
@@ -275,7 +275,7 @@ export function useNearSwapCallback(
         }
 
         const tokenRegistered = await nearFn.getStorageBalance(outputCurrencyId, account).catch(() => {
-          throw new Error(`${trade.outputAmount.currency?.symbol} doesn't exist.`);
+          throw new Error(`${outPutToken?.symbol} doesn't exist.`);
         });
 
         if (tokenRegistered === null) {
@@ -286,7 +286,7 @@ export function useNearSwapCallback(
               account_id: account,
             },
             gas: '30000000000000',
-            amount: '1',
+            amount: '0.00125',
           });
 
           transactions.push({
@@ -314,7 +314,7 @@ export function useNearSwapCallback(
             }),
           },
           gas: '180000000000000',
-          amount: '1',
+          amount: ONE_YOCTO_NEAR,
         });
 
         transactions.push({

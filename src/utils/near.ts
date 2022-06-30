@@ -1,8 +1,6 @@
 import BN from 'bn.js';
 import { baseDecode } from 'borsh';
-import { Contract, transactions } from 'near-api-js';
-import { Action, createTransaction } from 'near-api-js/lib/transaction';
-import { PublicKey } from 'near-api-js/lib/utils';
+import { Contract, transactions, utils } from 'near-api-js';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src/connectors';
 
 export interface ViewFunctionOptions {
@@ -12,7 +10,7 @@ export interface ViewFunctionOptions {
 
 export interface FunctionCallOptions extends ViewFunctionOptions {
   gas?: string;
-  amount?: string;
+  amount?: string | null;
 }
 
 export interface Transaction {
@@ -108,7 +106,7 @@ class Near {
     nonceOffset = 1,
   }: {
     receiverId: string;
-    actions: Action[];
+    actions: transactions.Action[];
     nonceOffset?: number;
   }) {
     const accountId = await near.wallet.getAccountId();
@@ -123,14 +121,21 @@ class Near {
     const block = await walletAccount.connection.provider.block({ finality: 'final' });
     const blockHash = baseDecode(block.header.hash);
 
-    const publicKey = PublicKey.from(accessKey.public_key);
+    const publicKey = utils.PublicKey.from(accessKey.public_key);
     const nonce = accessKey.access_key.nonce + nonceOffset;
 
-    return createTransaction(accountId, publicKey, receiverId, nonce, actions, blockHash);
+    return transactions.createTransaction(accountId, publicKey, receiverId, nonce, actions, blockHash);
   }
 
   public getGas = (gas?: string) => (gas ? new BN(gas) : new BN('100000000000000'));
-  public getAmount = (amount?: string) => (amount ? new BN(amount) : new BN('0'));
+  public getAmount = (amount?: string | null) => {
+    if (amount) {
+      const parseAmount = utils.format.parseNearAmount(amount);
+      return parseAmount ? new BN(parseAmount) : new BN('0');
+    } else {
+      return new BN('0');
+    }
+  };
 
   public async executeMultipleTransactions(allTransactions: Transaction[]) {
     const currentTransactions = await Promise.all(
@@ -143,7 +148,7 @@ class Near {
               fc.methodName,
               fc?.args ? fc?.args : {},
               this.getGas(fc.gas),
-              this.getAmount(fc.amount),
+              this.getAmount(fc?.amount),
             ),
           ),
         });

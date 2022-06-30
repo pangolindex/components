@@ -389,4 +389,6 @@ export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3/`;
 
 export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
 
+export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
+
 /* eslint-enable max-lines */
