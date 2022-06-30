@@ -13,6 +13,13 @@ import {
   useGelatoLimitOrderList,
   useSwapActionHandlers,
 } from 'src/state/pswap/hooks';
+import {
+  useAllTransactions,
+  useHasPendingApproval,
+  useIsTransactionPending,
+  useTransactionAdder as useTransactionAdderComponents,
+  useUserHasSubmittedClaim,
+} from 'src/state/ptransactions/hooks';
 import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
@@ -86,6 +93,11 @@ export {
   wrappedCurrency,
   useLibrary,
   shortenAddress,
+  useTransactionAdderComponents,
+  useAllTransactions,
+  useIsTransactionPending,
+  useHasPendingApproval,
+  useUserHasSubmittedClaim,
   useAccountBalanceHook,
   nearFn,
 };
