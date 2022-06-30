@@ -9,7 +9,7 @@ import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import { useApproveCallbackFromTradeHook, useSwapCallbackHook, useWrapCallbackHook } from 'src/hooks/multiChainsHooks';
-import { ApprovalState } from 'src/hooks/useApproveCallback'; //useApproveCallbackFromTrade
+import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useENS from 'src/hooks/useENS';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { WrapType } from 'src/hooks/useWrapCallback';
