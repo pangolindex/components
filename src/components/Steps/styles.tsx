@@ -38,7 +38,7 @@ export const StepItem = styled.div<{
     position: absolute;
     content: '';
     border-bottom: 2px solid;
-    border-bottom-color: ${({ completed, theme }) => (completed ? theme.platinum : theme.bg5)};
+    border-bottom-color: ${({ completed, theme }) => (completed ? theme.primary : theme.bg5)};
     width: 100%;
     top: ${({ progressDot }) => (progressDot ? '21px' : '15px')};
     left: ${({ progressDot }) => (progressDot ? '50%' : '38%')};
@@ -83,6 +83,6 @@ export const IconDot = styled.div<{ completed?: boolean; active?: boolean }>`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: ${({ completed, active, theme }) => (completed || active ? theme.platinum : theme.bg5)};
+  background: ${({ completed, active, theme }) => (completed || active ? theme.primary : theme.bg5)};
   margin-top: 17px;
 `;
