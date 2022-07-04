@@ -14,6 +14,7 @@ export const Wrapper = styled.div<{ background?: string }>`
   margin: 0;
   padding: 0;
   width: 100%;
+  height: 100%;
   max-width: 422px;
   border-radius: 10px;
   background-color: ${({ theme, background }) => (background ? background : theme.bg2)};
