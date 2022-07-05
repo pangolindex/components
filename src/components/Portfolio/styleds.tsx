@@ -24,17 +24,6 @@ export const PortfolioHeader = styled(Box)`
   gap: 5px;
 `;
 
-export const PortfolioFooter = styled(PortfolioHeader)`
-  background-color: ${({ theme }) => theme.bg6};
-  color: ${({ theme }) => theme.text13};
-  border-radius: 4px;
-
-  justify-content: center;
-  align-items: center;
-
-  padding: 5px;
-`;
-
 export const HideButton = styled.button`
   background-color: ${({ theme }) => theme.bg6};
   color: ${({ theme }) => theme.text15};
