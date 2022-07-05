@@ -17,7 +17,7 @@
     "dev:yalc:publish": "yalc publish --no-script",
     "build": "rollup -c --environment ENV:production",
     "storybook": "start-storybook -p 6006 -s public -c ./src/.storybook",
-    "build-storybook": "build-storybook -s public -c ./src/.storybook",
+    "build-storybook": "build-storybook -c ./src/.storybook",
     "prepare": "husky install",
     "prepublishOnly": "npm run build"
   },

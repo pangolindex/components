@@ -18,7 +18,8 @@ type AsyncSendable = {
 };
 
 class RequestError extends Error {
-  constructor(message: string, public code: number, public data?: unknown) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  constructor(message: string, code: number, data?: unknown) {
     super(message);
   }
 }
