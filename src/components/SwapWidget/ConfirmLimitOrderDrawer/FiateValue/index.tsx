@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, Percent } from '@pangolindex/sdk';
+import { CurrencyAmount, Percent } from '@pangolindex/sdk';
 import React, { useContext, useMemo } from 'react';
 import { ThemeContext } from 'styled-components';
 import { warningSeverity } from 'src/utils/prices';
@@ -25,7 +25,7 @@ export function FiatValue({
     <Text fontSize={14} color={fiatValue ? 'text2' : 'text4'} ml={10}>
       {fiatValue ? '~' : ''}${fiatValue ? fiatValue?.toSignificant(6, { groupSeparator: ',' }) : '-'}
       {priceImpact ? (
-        <span style={{ color: priceImpactColor }}> ({priceImpact.multiply(JSBI.BigInt(-1)).toSignificant(3)}%)</span>
+        <span style={{ color: priceImpactColor }}> ({priceImpact.multiply('-1').toSignificant(3)}%)</span>
       ) : null}
     </Text>
   );
