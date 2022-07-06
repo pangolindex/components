@@ -17,9 +17,12 @@ const LimitOrderDetailInfo: React.FC<Props> = ({ trade }) => {
   } = useGelatoLimitOrders();
 
   const { gasPrice, realExecutionPriceAsString } = useGasOverhead(parsedAmounts.input, parsedAmounts.output);
-  const priceText = `${'1 ' + parsedAmounts?.input?.currency.symbol + ' = ' + realExecutionPriceAsString ?? '-'} ${
-    parsedAmounts?.output?.currency.symbol
-  }`;
+  const priceText =
+    realExecutionPriceAsString === 'never executes'
+      ? realExecutionPriceAsString
+      : `${'1 ' + parsedAmounts?.input?.currency.symbol + ' = ' + realExecutionPriceAsString ?? '-'} ${
+          parsedAmounts?.output?.currency.symbol
+        }`;
 
   const formattedGasPrice = gasPrice ? `${parseFloat(formatUnits(gasPrice, 'gwei')).toFixed(0)} GWEI` : '-';
 
