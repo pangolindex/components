@@ -47,7 +47,7 @@ export const RowWrapper = styled.div<{ disabled: boolean }>`
   grid-template-columns: 100px minmax(auto, calc(100% - 150px)) 50px;
   align-items: center;
   border-bottom: 1px solid ${({ theme }) => theme.text9};
-  border-radius: 4px;
+  border-radius: 4px 4px 0px 0px;
   height: 45px;
 
   cursor: ${({ disabled }) => !disabled && 'pointer'};

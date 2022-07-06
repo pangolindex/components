@@ -1,7 +1,7 @@
 import { ALL_CHAINS } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { Info, Lock } from 'react-feather';
+import { Lock } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useGetChainsBalances } from 'src/state/pportfolio/hooks';
@@ -9,7 +9,7 @@ import { Box } from '../Box';
 import { Loader } from '../Loader';
 import { Text } from '../Text';
 import ToggleBalanceButton from './ToggleBalanceButton';
-import { ChainCard, Frame, PortfolioFooter, PortfolioHeader, PortfolioRoot } from './styleds';
+import { ChainCard, Frame, PortfolioHeader, PortfolioRoot } from './styleds';
 
 const Portfolio: React.FC = () => {
   const theme = useContext(ThemeContext);
@@ -104,12 +104,6 @@ const Portfolio: React.FC = () => {
           </>
         )}
       </Box>
-      <PortfolioFooter>
-        <Info size={12} />
-        <Text fontSize={12} textAlign="center">
-          Includes coins, pools and other holdings in your current wallet
-        </Text>
-      </PortfolioFooter>
     </PortfolioRoot>
   );
 };
