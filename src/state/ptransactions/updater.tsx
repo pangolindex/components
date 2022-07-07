@@ -45,7 +45,9 @@ type TxCheckerProps = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const txChecker = (_params: TxCheckerProps) => {};
+const txChecker = (_params: TxCheckerProps) => {
+  // This is intentional as this is just dummy function to support for evm chains
+};
 
 const NEAR_TX_HASH_PARAM = 'transactionHashes';
 /**
