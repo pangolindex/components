@@ -82,7 +82,7 @@ const PortfolioRow: React.FC<Props> = ({ coin, pair, showBalances }) => {
           <Lock color={theme.text13} size={16} />
         ) : (
           <Text color="text1" fontSize={16} fontWeight={500}>
-            ${amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            ${amount.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
           </Text>
         )}
       </Box>

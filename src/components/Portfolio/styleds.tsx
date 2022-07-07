@@ -56,7 +56,7 @@ export const HideButton = styled.button`
 `;
 
 export const ChainCard = styled(Box)`
-  min-height: 60px;
+  height: 80px;
   padding: 10px;
   background-color: ${({ theme }) => theme.bg6};
   border-radius: 4px;

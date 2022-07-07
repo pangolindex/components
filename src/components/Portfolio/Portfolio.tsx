@@ -23,7 +23,7 @@ const Portfolio: React.FC = () => {
 
   const renderChain = (_chain: { chainID: number; balance: number }, key: number) => {
     const chain = ALL_CHAINS.filter((value) => value.chain_id === _chain.chainID)[0];
-    const balance = _chain.balance.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    const balance = _chain.balance.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
     return (
       <ChainCard key={key}>
         <img width="48px" height="48px" src={chain?.logo} alt={'Chain logo'} />
@@ -51,7 +51,10 @@ const Portfolio: React.FC = () => {
     if (showBalances) {
       return (
         <Text fontSize={18} color="text1" fontWeight={600}>
-          ${balances ? balances.total.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
+          $
+          {balances
+            ? balances.total.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })
+            : 0}
         </Text>
       );
     }
@@ -90,9 +93,9 @@ const Portfolio: React.FC = () => {
               </Text>
               {renderTotalBalance()}
             </Box>
-            <Box width="100%" height="100%" minHeight="80px">
+            <Box width="100%" height="100%" minHeight="140px">
               {balances.chains.length > 0 ? (
-                <Scrollbars style={{ width: '100%', height: '100%', minHeight: '80px' }}>
+                <Scrollbars style={{ width: '100%', height: '100%', minHeight: '140px' }}>
                   <Frame>{balances.chains.map((chain, key) => renderChain(chain, key))}</Frame>
                 </Scrollbars>
               ) : (
