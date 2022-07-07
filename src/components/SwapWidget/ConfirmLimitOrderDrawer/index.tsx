@@ -257,7 +257,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
             href={getEtherscanLink(chainId, txHash, 'transaction')}
             target="_blank"
           >
-            View on the Snowtrace Explorer
+            View on explorer
           </Link>
         )}
       </Box>
