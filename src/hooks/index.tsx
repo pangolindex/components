@@ -68,8 +68,8 @@ export const useChainId = () => {
   return chainId || ChainId.AVALANCHE;
 };
 
-export function useLibrary(): { library: Web3ProviderEthers; provider: Web3ProviderEthers } {
-  const [result, setResult] = useState({} as { library: Web3ProviderEthers; provider: Web3ProviderEthers });
+export function useLibrary(): { library: any; provider: any } {
+  const [result, setResult] = useState({} as { library: any; provider: any });
 
   const { connector } = useWeb3React();
 

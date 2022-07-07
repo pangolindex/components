@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 import { baseDecode } from 'borsh';
-import { Contract, transactions, utils } from 'near-api-js';
+import { Contract, providers, transactions, utils } from 'near-api-js';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src/connectors';
 
 export interface ViewFunctionOptions {
@@ -31,6 +31,37 @@ class Near {
   ) {
     return near.wallet.account().viewFunction(tokenId, methodName, args);
   }
+
+  getAccountId = () => {
+    return near?.wallet?.account?.()?.accountId;
+  };
+
+  getTransaction = async (hash: string): Promise<providers.FinalExecutionOutcome | undefined> => {
+    try {
+      const accountId = near?.wallet?.account?.()?.accountId;
+      const provider = await near.getProvider();
+      const tx = provider?.txStatus(hash, accountId);
+      return tx;
+    } catch (error) {
+      console.log(error);
+      return undefined;
+    }
+  };
+
+  getTranctionSummary = (tx: providers.FinalExecutionOutcome) => {
+    let summary = '';
+
+    switch (tx.transaction?.actions?.[0]?.FunctionCall?.method_name) {
+      case 'ft_transfer_call':
+        summary = 'Swap successful';
+        break;
+
+      default:
+        break;
+    }
+
+    return summary;
+  };
 
   public async getMetadata(tokenAddress: string) {
     try {

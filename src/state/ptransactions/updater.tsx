@@ -1,9 +1,13 @@
-import { useEffect } from 'react';
+import { ChainId } from '@pangolindex/sdk';
+import { AnyAction } from '@reduxjs/toolkit';
+import { Dispatch, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLibrary, usePangolinWeb3 } from '../../hooks';
+import { nearFn } from 'src/utils/near';
+import { useChainId, useLibrary } from '../../hooks';
 import { AppDispatch, AppState } from '../index';
 import { useAddPopup, useBlockNumber } from '../papplication/hooks';
-import { checkedTransaction, finalizeTransaction } from './actions';
+import { addTransaction, checkedTransaction, finalizeTransaction } from './actions';
+import { TransactionDetails } from './reducer';
 
 export function shouldCheck(
   lastBlockNumber: number,
@@ -32,8 +36,58 @@ export function shouldCheck(
   }
 }
 
+type TxCheckerProps = {
+  transactions: {
+    [txHash: string]: TransactionDetails;
+  };
+  dispatch: Dispatch<AnyAction>;
+  chainId: number;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const txChecker = (params: TxCheckerProps) => {};
+
+const NEAR_TX_HASH_PARAM = 'transactionHashes';
+/**
+ * this method is used to check transaction hashes in url and if found then get summary of that transaction and add it to the reducer
+ * @returns txChecker function
+ */
+const nearTxChecker = async ({ transactions, dispatch, chainId }) => {
+  const search = window.location.search;
+  // get transactionHashes from url
+  const txHashes = new URLSearchParams(search).get(NEAR_TX_HASH_PARAM)?.split(',') || [];
+  const txHash = txHashes?.length > 0 ? txHashes?.[txHashes?.length - 1] : '';
+  if (txHash) {
+    // get tx details using near sdk
+    const tx = await nearFn?.getTransaction(txHash);
+    if (tx) {
+      // get tx summary
+      const summary = nearFn.getTranctionSummary(tx);
+      const exists = !!transactions[txHash];
+      // if hash doesn't exist then only add it to redux
+      if (!exists) {
+        dispatch(addTransaction({ hash: txHash, from: nearFn.getAccountId(), chainId, summary }));
+      }
+    }
+
+    // remove transactionHashes from url without refreshing page
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.delete(NEAR_TX_HASH_PARAM);
+    window.history.replaceState({}, document.title, currentUrl.toString());
+  }
+};
+
+const txCheckerMapping: { [chainId in ChainId]: (params: TxCheckerProps) => void } = {
+  [ChainId.AVALANCHE]: txChecker,
+  [ChainId.FUJI]: txChecker,
+  [ChainId.COSTON]: txChecker,
+  [ChainId.WAGMI]: txChecker,
+  [ChainId.NEAR_MAINNET]: nearTxChecker,
+  [ChainId.NEAR_TESTNET]: nearTxChecker,
+};
+
 export default function Updater(): null {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   const { library, provider } = useLibrary();
 
   const lastBlockNumber = useBlockNumber();
@@ -42,6 +96,15 @@ export default function Updater(): null {
   const state = useSelector<AppState, AppState['ptransactions']>((state) => state.ptransactions);
 
   const transactions = chainId ? state[chainId] ?? {} : {}; // eslint-disable-line react-hooks/exhaustive-deps
+
+  const txChecker = txCheckerMapping[chainId as ChainId];
+
+  // as of now this is specific to Near chain, we are checking user is coming to pangolin after completing tx or not
+  useEffect(() => {
+    if (txChecker) {
+      txChecker({ transactions, chainId, dispatch });
+    }
+  }, [transactions, chainId, dispatch]);
 
   // show popup on confirm
   const addPopup = useAddPopup();
@@ -55,6 +118,7 @@ export default function Updater(): null {
         try {
           const receipt = await (provider as any).getTransactionReceipt(hash);
 
+          const status = receipt.status;
           if (receipt) {
             dispatch(
               finalizeTransaction({
@@ -66,8 +130,7 @@ export default function Updater(): null {
                   // contractAddress: receipt.contractAddress,
                   contractAddress: '',
                   from: receipt.from,
-                  // status: receipt.status,
-                  status: 1,
+                  status,
                   to: receipt.to,
                   // transactionHash: receipt.transactionHash,
                   transactionHash: receipt.hash,
@@ -80,8 +143,7 @@ export default function Updater(): null {
               {
                 txn: {
                   hash,
-                  // success: receipt.status === 1,
-                  success: true,
+                  success: status === 1,
                   summary: transactions[hash]?.summary,
                 },
               },

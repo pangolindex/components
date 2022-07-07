@@ -4,7 +4,7 @@ export const CommonEVMProvider = (provider) => {
   if (provider) {
     provider.getTransactionReceipt = async (hash: string) => {
       const receipt = await (provider as any).request({
-        method: 'eth_getTransactionByHash',
+        method: 'eth_getTransactionReceipt',
         params: [hash],
       });
 
@@ -14,6 +14,9 @@ export const CommonEVMProvider = (provider) => {
 
       receipt.blockNumber = Number(receipt.blockNumber);
       receipt.transactionIndex = Number(receipt.transactionIndex);
+      receipt.hash = receipt.transactionHash;
+      receipt.status = Number(receipt.status);
+
       return receipt;
     };
 
