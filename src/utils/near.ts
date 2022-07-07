@@ -40,8 +40,7 @@ class Near {
     try {
       const accountId = near?.wallet?.account?.()?.accountId;
       const provider = await near.getProvider();
-      const tx = provider?.txStatus(hash, accountId);
-      return tx;
+      return provider?.txStatus(hash, accountId);
     } catch (error) {
       console.log(error);
       return undefined;
@@ -51,13 +50,9 @@ class Near {
   getTranctionSummary = (tx: providers.FinalExecutionOutcome) => {
     let summary = '';
 
-    switch (tx.transaction?.actions?.[0]?.FunctionCall?.method_name) {
-      case 'ft_transfer_call':
-        summary = 'Swap successful';
-        break;
-
-      default:
-        break;
+    const methodName = tx.transaction?.actions?.[0]?.FunctionCall?.method_name;
+    if (methodName === 'ft_transfer_call') {
+      summary = 'Swap successful';
     }
 
     return summary;
