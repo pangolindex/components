@@ -45,7 +45,7 @@ type TxCheckerProps = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const txChecker = (params: TxCheckerProps) => {};
+const txChecker = (_params: TxCheckerProps) => {};
 
 const NEAR_TX_HASH_PARAM = 'transactionHashes';
 /**
@@ -97,12 +97,12 @@ export default function Updater(): null {
 
   const transactions = chainId ? state[chainId] ?? {} : {}; // eslint-disable-line react-hooks/exhaustive-deps
 
-  const txChecker = txCheckerMapping[chainId as ChainId];
+  const txCheckerFn = txCheckerMapping[chainId as ChainId];
 
   // as of now this is specific to Near chain, we are checking user is coming to pangolin after completing tx or not
   useEffect(() => {
-    if (txChecker) {
-      txChecker({ transactions, chainId, dispatch });
+    if (txCheckerFn) {
+      txCheckerFn({ transactions, chainId, dispatch });
     }
   }, [transactions, chainId, dispatch]);
 

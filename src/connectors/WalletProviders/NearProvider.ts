@@ -19,7 +19,7 @@ export const NearProvider = (provider) => {
           console.log(error);
         }
 
-        const receipt = {
+        return {
           blockHash: blockHash,
           blockNumber,
           contractAddress: '',
@@ -30,8 +30,6 @@ export const NearProvider = (provider) => {
           transactionHash: hash,
           transactionIndex: res?.transaction?.nonce,
         };
-
-        return receipt;
       } catch (error) {
         console.log(error);
       }
@@ -43,7 +41,7 @@ export const NearProvider = (provider) => {
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    provider.execute = async (method, params) => {
+    provider.execute = async (_method, _params) => {
       //  implement it
     };
   }

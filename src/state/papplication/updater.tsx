@@ -43,12 +43,12 @@ export const EvmApplicationUpdater = () => {
 
   const blockNumberCallback = useCallback(
     (blockNumber: number) => {
-      setState((state) => {
-        if (chainId === state.chainId) {
-          if (typeof state.blockNumber !== 'number') return { chainId, blockNumber };
-          return { chainId, blockNumber: Math.max(blockNumber, state.blockNumber) };
+      setState((_state) => {
+        if (chainId === _state.chainId) {
+          if (typeof _state.blockNumber !== 'number') return { chainId, blockNumber };
+          return { chainId, blockNumber: Math.max(blockNumber, _state.blockNumber) };
         }
-        return state;
+        return _state;
       });
     },
     [chainId, setState],
@@ -60,7 +60,7 @@ export const EvmApplicationUpdater = () => {
 
     setState({ chainId, blockNumber: null });
 
-    (provider as any)
+    provider
       ?.getBlockNumber()
       .then(blockNumberCallback)
       .catch((error) => console.error(`Failed to get block number for chainId: ${chainId}`, error));
