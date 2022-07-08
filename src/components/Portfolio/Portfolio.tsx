@@ -87,13 +87,14 @@ const Portfolio: React.FC = () => {
               bgColor="bg6"
               flexWrap="wrap"
               width="100%"
+              style={{ boxSizing: 'border-box' }}
             >
               <Text fontSize={18} color="text1" style={{ flexGrow: 1, minWidth: '200px' }}>
                 Total Amount Invested
               </Text>
               {renderTotalBalance()}
             </Box>
-            <Box width="100%" height="100%" minHeight="140px">
+            <Box width="100%" minHeight="140px">
               {balances.chains.length > 0 ? (
                 <Scrollbars style={{ width: '100%', height: '100%', minHeight: '140px' }}>
                   <Frame>{balances.chains.map((chain, key) => renderChain(chain, key))}</Frame>

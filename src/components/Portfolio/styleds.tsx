@@ -4,7 +4,7 @@ import { Box } from '../Box';
 export const PortfolioRoot = styled(Box)`
   width: 100%;
   height: 100%;
-
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
