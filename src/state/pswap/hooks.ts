@@ -3,6 +3,7 @@ import { parseUnits } from '@ethersproject/units';
 import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import {
   CAVAX,
+  CHAINS,
   ChainId,
   Currency,
   CurrencyAmount,
@@ -85,7 +86,11 @@ export function useSwapActionHandlers(chainId: ChainId): {
 }
 
 // try to parse a user entered amount for a given token
-export function tryParseAmount(value?: string, currency?: Currency): CurrencyAmount | undefined {
+export function tryParseAmount(
+  value?: string,
+  currency?: Currency,
+  chainId: ChainId = ChainId.AVALANCHE,
+): CurrencyAmount | undefined {
   if (!value || !currency) {
     return undefined;
   }
@@ -94,7 +99,7 @@ export function tryParseAmount(value?: string, currency?: Currency): CurrencyAmo
     if (typedValueParsed !== '0') {
       return currency instanceof Token
         ? new TokenAmount(currency, JSBI.BigInt(typedValueParsed))
-        : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed));
+        : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed), chainId);
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
@@ -145,7 +150,7 @@ export function useDerivedSwapInfo(): {
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
-  const recipientAddress = isAddress(recipient);
+  const recipientAddress = CHAINS[chainId]?.evm ? isAddress(recipient) : recipient;
   const to: string | null = (recipientAddress ? recipientAddress : account) ?? null;
 
   const relevantTokenBalances = useCurrencyBalances(chainId, account ?? undefined, [
@@ -154,7 +159,7 @@ export function useDerivedSwapInfo(): {
   ]);
 
   const isExactIn: boolean = independentField === Field.INPUT;
-  const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined);
+  const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId);
 
   const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined);
   const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined);
@@ -187,7 +192,7 @@ export function useDerivedSwapInfo(): {
     inputError = inputError ?? 'Select a token';
   }
 
-  const formattedTo = isAddress(to);
+  const formattedTo = CHAINS[chainId]?.evm ? isAddress(to) : to;
   if (!to || !formattedTo) {
     inputError = inputError ?? 'Enter a recipient';
   } else {

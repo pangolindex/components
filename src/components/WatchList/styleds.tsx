@@ -56,14 +56,13 @@ export const RowWrapper = styled(Box)<{ isSelected: boolean }>`
   grid-template-columns: 100px minmax(auto, 1fr) max-content;
   align-items: center;
   border-bottom: 1px solid ${({ theme }) => theme.text9};
-  cursor: pointer;
-  border-radius: 4px;
-  background-color: ${({ theme, isSelected }) => (isSelected ? theme.color3 : theme.color2)};
+  cursor: ${({ isSelected }) => (isSelected ? 'default' : 'pointer')} !important;
+  background-color: ${({ theme, isSelected }) => (isSelected ? theme.color10 : theme.color2)};
 
   height: 64px;
 
   &:hover {
-    background-color: ${({ theme }) => theme.color3};
+    background-color: ${({ theme }) => theme.color10};
   }
 `;
 export const DeleteButton = styled.button`

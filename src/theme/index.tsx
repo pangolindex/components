@@ -167,6 +167,7 @@ export const defaultColors: Colors = {
   color7: ghostWhite,
   color8: platinum,
   color9: quickSilver,
+  color10: white,
 };
 
 export const defaultTheme: DefaultTheme = {

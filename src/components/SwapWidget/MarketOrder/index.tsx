@@ -8,11 +8,11 @@ import { TRUSTED_TOKEN_ADDRESSES } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
-import { ApprovalState, useApproveCallbackFromTrade } from 'src/hooks/useApproveCallback';
+import { useApproveCallbackFromTradeHook, useSwapCallbackHook, useWrapCallbackHook } from 'src/hooks/multiChainsHooks';
+import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useENS from 'src/hooks/useENS';
-import { useSwapCallback } from 'src/hooks/useSwapCallback';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
-import useWrapCallback, { WrapType } from 'src/hooks/useWrapCallback';
+import { WrapType } from 'src/hooks/useWrapCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
 import { Field } from 'src/state/pswap/actions';
@@ -31,7 +31,6 @@ import { Box, Button, Text, TextInput } from '../../';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
 import SelectTokenDrawer from '../SelectTokenDrawer';
 import SwapSettingsDrawer from '../Settings';
-import { SettingsText } from '../Settings/styled';
 import SwapDetailInfo from '../SwapDetailInfo';
 import SwapRoute from '../SwapRoute';
 import TokenWarningModal from '../TokenWarningModal';
@@ -76,6 +75,10 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const theme = useContext(ThemeContext);
+
+  const useWrapCallback = useWrapCallbackHook[chainId];
+  const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
+  const useSwapCallback = useSwapCallbackHook[chainId];
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
@@ -299,6 +302,10 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
     setOpenSettings(false);
   }, [setOpenSettings]);
 
+  const openSwapSettings = useCallback(() => {
+    setOpenSettings(true);
+  }, [setOpenSettings]);
+
   const showRoute = Boolean(trade && trade?.route?.path?.length > 2);
 
   {
@@ -430,7 +437,13 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
 
   return (
     <Root>
-      <TradeOption swapType={swapType} setSwapType={setSwapType} isLimitOrderVisible={isLimitOrderVisible} />
+      <TradeOption
+        swapType={swapType}
+        setSwapType={setSwapType}
+        isLimitOrderVisible={isLimitOrderVisible}
+        showSettings={showSettings}
+        openSwapSettings={openSwapSettings}
+      />
 
       <TokenWarningModal
         isOpen={urlLoadedTokens.length > 0 && !dismissTokenWarning && !urlLoadedTokens.every(isTrustedToken)}
@@ -536,11 +549,6 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
           <Box width="100%" mt={10}>
             {renderButton()}
           </Box>
-          {showSettings && (
-            <Box width="100%" mt={10} display="flex" justifyContent="center">
-              <SettingsText onClick={() => setOpenSettings(true)}>Settings</SettingsText>
-            </Box>
-          )}
         </Box>
       </SwapWrapper>
 

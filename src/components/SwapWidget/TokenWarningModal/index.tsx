@@ -49,7 +49,7 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
           {chainId && (
             <ExternalLink style={{ fontWeight: 400 }} href={getEtherscanLink(chainId, token.address, 'token')}>
               <Text fontWeight={500} color={'primary'} fontSize={16}>
-                {shortenAddress(token.address)} (View on the Snowtrace Explorer)
+                {shortenAddress(token.address, chainId)} (View on explorer)
               </Text>
             </ExternalLink>
           )}

@@ -16,6 +16,10 @@ interface Window {
     on?: (...args: any[]) => void;
     removeListener?: (...args: any[]) => void;
     request: (...args: any[]) => Promise<any>;
+    getBlock?: (block) => Promise<any>;
+    getTransactionReceipt?: (hash) => Promise<any>;
+    getBlockNumber?: () => Promise<any>;
+    execute?: (method, params) => Promise<any>;
   };
   web3?: any;
   pendo?: any;

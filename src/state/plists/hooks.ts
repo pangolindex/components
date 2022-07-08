@@ -1,4 +1,4 @@
-import { ChainId, Token } from '@pangolindex/sdk';
+import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { Tags, TokenInfo, TokenList } from '@pangolindex/token-lists';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -38,6 +38,8 @@ const EMPTY_LIST: TokenAddressMap = {
   [ChainId.AVALANCHE]: {},
   [ChainId.WAGMI]: {},
   [ChainId.COSTON]: {},
+  [ChainId.NEAR_MAINNET]: {},
+  [ChainId.NEAR_TESTNET]: {},
 };
 
 const listCache: WeakMap<TokenList, TokenAddressMap> | null =
@@ -57,6 +59,10 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
             return { ...list.tags[tagId], id: tagId };
           })
           ?.filter((x): x is TagInfo => Boolean(x)) ?? [];
+
+      if (!CHAINS[tokenInfo.chainId]) {
+        return tokenMap;
+      }
       const token = new WrappedTokenInfo(tokenInfo, tags);
       if (tokenMap?.[token.chainId]?.[token.address] !== undefined) throw Error('Duplicate tokens.');
       return {

@@ -1,11 +1,15 @@
-import { CAVAX, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
-import { useMemo } from 'react';
+import { CAVAX, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { useEffect, useMemo, useState } from 'react';
+import { useQueries } from 'react-query';
+import { near } from 'src/connectors';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
-import { usePangolinWeb3 } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import { useMulticallContract } from 'src/hooks/useContract';
+import { nearFn } from 'src/utils/near';
 import { isAddress } from '../../utils';
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../pmulticall/hooks';
+import { useAccountBalanceHook, useTokenBalancesHook } from './multiChainsHooks';
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -43,6 +47,45 @@ export function useETHBalances(
     [chainId, addresses, results],
   );
 }
+
+/**
+ * Returns a Near Wallet balance.
+ */
+export function useNearBalance(
+  chainId: ChainId,
+  accounts?: (string | undefined)[],
+): { [address: string]: any } | undefined {
+  const [nearBalance, setNearBalance] = useState<{ [address: string]: any }>();
+
+  const nearToken = WAVAX[chainId];
+
+  useEffect(() => {
+    async function checkNearBalance() {
+      const balance = await near.getAccountBalance();
+      if (balance && accounts?.[0]) {
+        const nearTokenBalance = new TokenAmount(nearToken, balance.available);
+
+        const container = {} as { [address: string]: any | undefined };
+        container[accounts?.[0]] = nearTokenBalance;
+
+        setNearBalance(container);
+      }
+    }
+
+    checkNearBalance();
+  }, [accounts, chainId]);
+
+  return useMemo(() => nearBalance, [nearBalance]);
+}
+
+const fetchNearTokenBalance = (token?: Token, account?: string) => async () => {
+  if (token) {
+    const balance = await nearFn.getTokenBalance(token?.address, account);
+
+    return new TokenAmount(token, balance);
+  }
+  return undefined;
+};
 
 /**
  * Returns a map of token addresses to their eventually consistent token balances for a single account.
@@ -88,6 +131,32 @@ export function useTokenBalances(
   return useTokenBalancesWithLoadingIndicator(address, tokens)[0];
 }
 
+export function useNearTokenBalances(
+  address?: string,
+  tokens?: (Token | undefined)[],
+): { [tokenAddress: string]: TokenAmount | undefined } {
+  const queryParameter =
+    tokens?.map((token) => {
+      return { queryKey: [token?.address, address], queryFn: fetchNearTokenBalance(token, address) };
+    }) ?? [];
+
+  const results = useQueries(queryParameter);
+
+  return useMemo(
+    () =>
+      results.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, result, i) => {
+        const value = result?.data;
+        const token = tokens?.[i];
+
+        if (token) {
+          memo[token?.address] = value;
+        }
+        return memo;
+      }, {}),
+    [tokens, address, results],
+  );
+}
+
 export function useCurrencyBalances(
   chainId: ChainId,
   account?: string,
@@ -98,19 +167,22 @@ export function useCurrencyBalances(
     [currencies],
   );
 
-  const tokenBalances = useTokenBalances(account, tokens);
+  const useTokenBalances_ = useTokenBalancesHook[chainId];
+  const useETHBalances_ = useAccountBalanceHook[chainId];
+
+  const tokenBalances = useTokenBalances_(account, tokens);
   const containsETH: boolean = useMemo(
     () => currencies?.some((currency) => chainId && currency === CAVAX[chainId]) ?? false,
     [chainId, currencies],
   );
-  const ethBalance = useETHBalances(chainId, containsETH ? [account] : []);
+  const ethBalance = useETHBalances_(chainId, containsETH ? [account] : []);
 
   return useMemo(
     () =>
       currencies?.map((currency) => {
         if (!account || !currency) return undefined;
         if (currency instanceof Token) return tokenBalances[currency.address];
-        if (currency === CAVAX[chainId]) return ethBalance[account];
+        if (currency === CAVAX[chainId]) return ethBalance?.[account];
         return undefined;
       }) ?? [],
     [chainId, account, currencies, ethBalance, tokenBalances],
@@ -128,8 +200,14 @@ export function useCurrencyBalance(
 // mimics useAllBalances
 export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | undefined } {
   const { account } = usePangolinWeb3();
+
+  const chainId = useChainId();
+
+  const useTokenBalances_ = useTokenBalancesHook[chainId];
+
   const allTokens = useAllTokens();
+
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens]);
-  const balances = useTokenBalances(account ?? undefined, allTokensArray);
+  const balances = useTokenBalances_(account ?? undefined, allTokensArray);
   return balances ?? {};
 }

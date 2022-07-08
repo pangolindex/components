@@ -1,7 +1,9 @@
 import { Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { ChainId } from '@pangolindex/sdk';
+import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
+import { PROVIDER_MAPPING, SUPPORTED_WALLETS } from 'src/constants';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -65,3 +67,34 @@ export const useChainId = () => {
   const { chainId } = usePangolinWeb3();
   return chainId || ChainId.AVALANCHE;
 };
+
+export function useLibrary(): { library: any; provider: any } {
+  const [result, setResult] = useState({} as { library: any; provider: any });
+
+  const { connector } = useWeb3React();
+
+  useEffect(() => {
+    async function load() {
+      const walletKey = Object.keys(SUPPORTED_WALLETS).find(
+        (key) => SUPPORTED_WALLETS[key].connector === connector,
+      ) as string;
+
+      const selectedProvider = (await connector?.getProvider()) || window.ethereum;
+      const provider = selectedProvider || window.ethereum;
+      const extendedProvider = provider && walletKey && (PROVIDER_MAPPING as any)[walletKey]?.(provider);
+
+      let library;
+
+      try {
+        library = new Web3ProviderEthers(provider, 'any');
+      } catch (error) {
+        library = provider;
+      }
+
+      setResult({ library, provider: extendedProvider });
+    }
+    load();
+  }, [connector]);
+
+  return result;
+}

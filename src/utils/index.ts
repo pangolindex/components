@@ -4,7 +4,19 @@ import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouter.sol/IPangolinRouter.json';
-import { CAVAX, CHAINS, ChainId, Currency, JSBI, Percent, Token, Trade, currencyEquals } from '@pangolindex/sdk';
+import {
+  ALL_CHAINS,
+  CAVAX,
+  CHAINS,
+  Chain,
+  ChainId,
+  Currency,
+  JSBI,
+  Percent,
+  Token,
+  Trade,
+  currencyEquals,
+} from '@pangolindex/sdk';
 import { ROUTER_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 
@@ -22,6 +34,44 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   43114: CHAINS[ChainId.AVALANCHE].blockExplorerUrls![0],
   11111: CHAINS[ChainId.WAGMI].blockExplorerUrls![0],
   16: CHAINS[ChainId.COSTON].blockExplorerUrls![0],
+  329847900: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls![0],
+  329847901: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls![0],
+};
+
+const transactionPath = {
+  [ChainId.FUJI]: 'tx',
+  [ChainId.AVALANCHE]: 'tx',
+  [ChainId.WAGMI]: 'tx',
+  [ChainId.COSTON]: 'tx',
+  [ChainId.NEAR_MAINNET]: 'transactions',
+  [ChainId.NEAR_TESTNET]: 'transactions',
+};
+
+const addressPath = {
+  [ChainId.FUJI]: 'address',
+  [ChainId.AVALANCHE]: 'address',
+  [ChainId.WAGMI]: 'address',
+  [ChainId.COSTON]: 'address',
+  [ChainId.NEAR_MAINNET]: 'accounts',
+  [ChainId.NEAR_TESTNET]: 'accounts',
+};
+
+const blockPath = {
+  [ChainId.FUJI]: 'block',
+  [ChainId.AVALANCHE]: 'block',
+  [ChainId.WAGMI]: 'block',
+  [ChainId.COSTON]: 'block',
+  [ChainId.NEAR_MAINNET]: 'blocks',
+  [ChainId.NEAR_TESTNET]: 'blocks',
+};
+
+const tokenPath = {
+  [ChainId.FUJI]: 'token',
+  [ChainId.AVALANCHE]: 'token',
+  [ChainId.WAGMI]: 'token',
+  [ChainId.COSTON]: 'token',
+  [ChainId.NEAR_MAINNET]: 'accounts',
+  [ChainId.NEAR_TESTNET]: 'accounts',
 };
 
 export function getEtherscanLink(
@@ -33,28 +83,28 @@ export function getEtherscanLink(
 
   switch (type) {
     case 'transaction': {
-      return `${prefix}/tx/${data}`;
+      return `${prefix}/${transactionPath[chainId]}/${data}`;
     }
     case 'token': {
-      return `${prefix}/token/${data}`;
+      return `${prefix}/${tokenPath[chainId]}/${data}`;
     }
     case 'block': {
-      return `${prefix}/block/${data}`;
+      return `${prefix}/${blockPath[chainId]}/${data}`;
     }
     case 'address':
     default: {
-      return `${prefix}/address/${data}`;
+      return `${prefix}/${addressPath[chainId]}/${data}`;
     }
   }
 }
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
-export function shortenAddress(address: string, chars = 4): string {
-  const parsed = isAddress(address);
+export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALANCHE, chars = 4): string {
+  const parsed = CHAINS[chainId]?.evm ? isAddress(address) : address;
   if (!parsed) {
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
-  return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`;
+  return `${parsed.substring(0, chars)}...${parsed.substring(parsed.length - chars)}`;
 }
 
 // add 10%
@@ -114,4 +164,8 @@ export function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean 
     !currencyEquals(tradeA.outputAmount.currency, tradeB.outputAmount.currency) ||
     !tradeA.outputAmount.equalTo(tradeB.outputAmount)
   );
+}
+
+export function getChainByNumber(chainId: ChainId | number): Chain | undefined {
+  return ALL_CHAINS.find((chain) => chain.chain_id === chainId);
 }

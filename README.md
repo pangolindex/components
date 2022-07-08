@@ -3,11 +3,24 @@ Ui Kit for Pangolin
 
 ## Installation
 
-`yarn add @pangolindex/components @gelatonetwork/limit-orders-react@2.4.0 @pangolindex/sdk`
+`yarn add @pangolindex/components`
 
 or
 
-`npm install @pangolindex/components @gelatonetwork/limit-orders-react@2.4.0 @pangolindex/sdk`
+`npm install @pangolindex/components`
+
+#### Install below dependancies as its peer dependancies
+```
+@pangolindex/sdk
+@gelatonetwork/limit-orders-react@2.4.0
+@web3-react/core
+@web3-react/fortmatic-connector
+@web3-react/portis-connector
+@web3-react/walletconnect-connector
+@web3-react/walletlink-connector
+@pangolindex/web3-react-injected-connector
+@gnosis.pm/safe-apps-web3-react
+```
 
 ## Getting started
 

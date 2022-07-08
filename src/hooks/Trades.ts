@@ -2,13 +2,15 @@ import { Currency, CurrencyAmount, Pair, Token, Trade } from '@pangolindex/sdk';
 import flatMap from 'lodash.flatmap';
 import { useMemo } from 'react';
 import { BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES } from 'src/constants';
-import { PairState, usePairs } from 'src/data/Reserves';
+import { PairState } from 'src/data/Reserves';
+import { usePairsHook } from 'src/data/multiChainsHooks';
+import { useChainId } from 'src/hooks';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 
-import { usePangolinWeb3 } from './index';
-
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
+
+  const usePairs = usePairsHook[chainId];
 
   const bases: Token[] = chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []; // eslint-disable-line react-hooks/exhaustive-deps
 

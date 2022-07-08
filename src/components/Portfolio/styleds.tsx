@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Box } from '../Box';
 
-export const PortifolioRoot = styled(Box)`
+export const PortfolioRoot = styled(Box)`
   width: 100%;
   height: 100%;
 
@@ -22,17 +22,6 @@ export const PortfolioHeader = styled(Box)`
   display: flex;
   flex-direction: row;
   gap: 5px;
-`;
-
-export const PortifolioFooter = styled(PortfolioHeader)`
-  background-color: ${({ theme }) => theme.bg6};
-  color: ${({ theme }) => theme.text13};
-  border-radius: 4px;
-
-  justify-content: center;
-  align-items: center;
-
-  padding: 5px;
 `;
 
 export const HideButton = styled.button`
@@ -67,6 +56,7 @@ export const HideButton = styled.button`
 `;
 
 export const ChainCard = styled(Box)`
+  min-height: 60px;
   padding: 10px;
   background-color: ${({ theme }) => theme.bg6};
   border-radius: 4px;
@@ -79,7 +69,6 @@ export const ChainCard = styled(Box)`
   gap: 10px;
 
   font-weight: 500;
-  width: 100%;
 `;
 
 export const Frame = styled(Box)`

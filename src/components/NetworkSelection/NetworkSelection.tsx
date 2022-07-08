@@ -34,7 +34,7 @@ const NetworkSelection: React.FC<NetworkProps> = (props) => {
       try {
         await ethereum.request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${chain.chain_id.toString(16)}` }],
+          params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
         });
         window.location.reload();
       } catch (error) {
@@ -46,7 +46,7 @@ const NetworkSelection: React.FC<NetworkProps> = (props) => {
             params: [
               {
                 chainName: chain.name,
-                chainId: `0x${chain.chain_id.toString(16)}`,
+                chainId: `0x${chain?.chain_id?.toString(16)}`,
                 //nativeCurrency: chain.nativeCurrency,
                 rpcUrls: [chain.rpc_uri],
                 blockExplorerUrls: chain.blockExplorerUrls,
