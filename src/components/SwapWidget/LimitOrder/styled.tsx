@@ -47,8 +47,8 @@ export const ArrowWrapper = styled.div`
 `;
 
 export const PValue = styled(Box)<{ isActive: boolean }>`
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 7px;
+  margin-right: 7px;
   align-items: center;
   display: flex;
   width: 100%;
