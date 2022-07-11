@@ -1,9 +1,8 @@
 import { TransactionResponse } from '@ethersproject/providers';
 import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { AppState, useDispatch, useSelector } from 'src/state';
 
 import { usePangolinWeb3 } from '../../hooks';
-import { AppDispatch, AppState } from '../index';
 import { addTransaction } from './actions';
 import { TransactionDetails } from './reducer';
 
@@ -17,7 +16,7 @@ export function useTransactionAdder(): (
   },
 ) => void {
   const { chainId, account } = usePangolinWeb3();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   return useCallback(
     (
@@ -45,7 +44,7 @@ export function useTransactionAdder(): (
 export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
   const { chainId } = usePangolinWeb3();
 
-  const state = useSelector<AppState, AppState['ptransactions']>((state) => state.ptransactions);
+  const state = useSelector<AppState['ptransactions']>((state) => state.ptransactions);
 
   return chainId ? state[chainId] ?? {} : {};
 }

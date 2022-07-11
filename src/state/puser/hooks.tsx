@@ -1,8 +1,7 @@
 import { ChainId, Token } from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { AppState, useDispatch, useSelector } from 'src/state';
 import { usePangolinWeb3 } from '../../hooks';
-import { AppDispatch, AppState } from '../index';
 import {
   SerializedToken,
   addSerializedToken,
@@ -33,8 +32,8 @@ function deserializeToken(serializedToken: SerializedToken): Token {
 }
 
 export function useUserSlippageTolerance(): [number, (slippage: number) => void] {
-  const dispatch = useDispatch<AppDispatch>();
-  const userSlippageTolerance = useSelector<AppState, AppState['puser']['userSlippageTolerance']>((state) => {
+  const dispatch = useDispatch();
+  const userSlippageTolerance = useSelector<AppState['puser']['userSlippageTolerance']>((state) => {
     return state.puser.userSlippageTolerance;
   });
 
@@ -49,7 +48,7 @@ export function useUserSlippageTolerance(): [number, (slippage: number) => void]
 }
 
 export function useAddUserToken(): (token: Token) => void {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   return useCallback(
     (token: Token) => {
       dispatch(addSerializedToken({ serializedToken: serializeToken(token) }));
@@ -59,7 +58,7 @@ export function useAddUserToken(): (token: Token) => void {
 }
 
 export function useRemoveUserAddedToken(): (chainId: number, address: string) => void {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   return useCallback(
     (chainId: number, address: string) => {
       dispatch(removeSerializedToken({ chainId, address }));
@@ -70,7 +69,7 @@ export function useRemoveUserAddedToken(): (chainId: number, address: string) =>
 
 export function useUserAddedTokens(): Token[] {
   const { chainId } = usePangolinWeb3();
-  const serializedTokensMap = useSelector<AppState, AppState['puser']['tokens']>(({ puser: { tokens } }) => tokens);
+  const serializedTokensMap = useSelector<AppState['puser']['tokens']>(({ puser: { tokens } }) => tokens);
 
   return useMemo(() => {
     if (!chainId) return [];
@@ -79,11 +78,11 @@ export function useUserAddedTokens(): Token[] {
 }
 
 export function useIsExpertMode(): boolean {
-  return useSelector<AppState, AppState['puser']['userExpertMode']>((state) => state.puser.userExpertMode);
+  return useSelector<AppState['puser']['userExpertMode']>((state) => state.puser.userExpertMode);
 }
 
 export function useExpertModeManager(): [boolean, (value: boolean) => void] {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const expertMode = useIsExpertMode();
 
   const setExpertMode = useCallback(
@@ -97,8 +96,8 @@ export function useExpertModeManager(): [boolean, (value: boolean) => void] {
 }
 
 export function useUserDeadline(): [string, (deadline: string) => void] {
-  const dispatch = useDispatch<AppDispatch>();
-  const userDeadline = useSelector<AppState, AppState['puser']['userDeadline']>((state) => state.puser.userDeadline);
+  const dispatch = useDispatch();
+  const userDeadline = useSelector<AppState['puser']['userDeadline']>((state) => state.puser.userDeadline);
 
   const setUserDeadline = useCallback(
     (userDeadline: string) => {

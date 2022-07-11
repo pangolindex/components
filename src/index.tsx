@@ -2,6 +2,7 @@ import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Provider } from 'react-redux';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { usePair } from 'src/data/Reserves';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
@@ -20,7 +21,7 @@ import { shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { PANGOLIN_PERSISTED_KEYS, pangolinReducers } from './state';
+import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
 import ApplicationUpdater from './state/papplication/updater';
 import ListsUpdater from './state/plists/updater';
 import MulticallUpdater from './state/pmulticall/updater';
@@ -43,29 +44,33 @@ export function PangolinProvider({
   theme?: any;
 }) {
   return (
-    <PangolinWeb3Provider chainId={chainId} library={library} account={account}>
-      <ThemeProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          <ListsUpdater />
-          <ApplicationUpdater />
-          <MulticallUpdater />
-          <TransactionUpdater />
-          {CHAINS[chainId]?.evm ? (
-            <GelatoProvider
-              library={library}
-              chainId={chainId}
-              account={account ?? undefined}
-              useDefaultTheme={false}
-              handler={'pangolin'}
-            >
-              {children}
-            </GelatoProvider>
-          ) : (
-            children
-          )}
-        </QueryClientProvider>
-      </ThemeProvider>
-    </PangolinWeb3Provider>
+    <Provider store={store} context={StoreContext}>
+      <PangolinWeb3Provider chainId={chainId} library={library} account={account}>
+        <ThemeProvider theme={theme}>
+          <QueryClientProvider client={queryClient}>
+            <ListsUpdater />
+            <ApplicationUpdater />
+            <MulticallUpdater />
+            <TransactionUpdater />
+            {CHAINS[chainId]?.evm ? (
+              <Provider store={galetoStore}>
+                <GelatoProvider
+                  library={library}
+                  chainId={chainId}
+                  account={account ?? undefined}
+                  useDefaultTheme={false}
+                  handler={'pangolin'}
+                >
+                  {children}
+                </GelatoProvider>
+              </Provider>
+            ) : (
+              children
+            )}
+          </QueryClientProvider>
+        </ThemeProvider>
+      </PangolinWeb3Provider>
+    </Provider>
   );
 }
 
