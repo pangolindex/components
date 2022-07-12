@@ -1,5 +1,5 @@
 import { ChainId, Token } from '@pangolindex/sdk';
-import React, { useCallback, useContext } from 'react';
+import React, { useContext } from 'react';
 import { HelpCircle, Lock } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { PairDataUser, TokenDataUser } from 'src/state/pportfolio/hooks';
@@ -19,17 +19,6 @@ type Props = {
 
 const PortfolioRow: React.FC<Props> = ({ coin, pair, showBalances }) => {
   const theme = useContext(ThemeContext);
-  const fontSize = useCallback((value: number) => {
-    let size = 20;
-    for (let index = 0; index < 10; index++) {
-      const calcsize = Math.trunc(value / (10_000 * 10 ** index));
-      if (calcsize === 0) {
-        size = 20 - 2 * (index - 1);
-        break;
-      }
-    }
-    return size;
-  }, []);
 
   const renderLogo = (size) => {
     if (coin) {
@@ -67,12 +56,12 @@ const PortfolioRow: React.FC<Props> = ({ coin, pair, showBalances }) => {
       <Box display="flex" alignItems="center">
         {renderLogo(24)}
         {coin && (
-          <Text color="text1" fontSize={fontSize(coin?.price * coin?.amount)} fontWeight={500} marginLeft={'6px'}>
+          <Text color="text1" fontSize={14} fontWeight={500} marginLeft={'6px'}>
             {coin?.token?.symbol}
           </Text>
         )}
         {pair && (
-          <Text color="text1" fontSize={fontSize(pair?.usdValue)} fontWeight={500} marginLeft={'6px'}>
+          <Text color="text1" fontSize={14} fontWeight={500} marginLeft={'6px'}>
             {pair?.pair?.token0?.symbol} - {pair?.pair?.token1?.symbol}
           </Text>
         )}
@@ -81,8 +70,8 @@ const PortfolioRow: React.FC<Props> = ({ coin, pair, showBalances }) => {
         {!showBalances ? (
           <Lock color={theme.text13} size={16} />
         ) : (
-          <Text color="text1" fontSize={16} fontWeight={500}>
-            ${amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+          <Text color="text1" fontSize={14} fontWeight={500}>
+            ${amount.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
           </Text>
         )}
       </Box>
