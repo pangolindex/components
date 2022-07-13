@@ -11,7 +11,7 @@ import talismanIcon from 'src/assets/images/talisman.svg';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
 import { gnosisSafe, injected, near, talisman, walletconnect, walletlink, xDefi } from '../connectors';
-import { CommonEVMProvider } from '../connectors/WalletProviders/CommonEVMProvider';
+import { CommonEVMProvider, NearProvider } from '../connectors/WalletProviders';
 import { PNG } from './tokens';
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
@@ -366,6 +366,7 @@ export const PROVIDER_MAPPING = {
   WALLET_CONNECT: CommonEVMProvider,
   RABBY: CommonEVMProvider,
   TALISMAN: CommonEVMProvider,
+  NEAR: NearProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {

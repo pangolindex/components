@@ -184,7 +184,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
             color={'primary'}
             href={getEtherscanLink(chainId, txHash, 'transaction')}
           >
-            View on the Snowtrace Explorer
+            View on explorer
           </Link>
         )}
       </Box>
