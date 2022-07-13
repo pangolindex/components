@@ -34,9 +34,10 @@
     "borsh": "^0.7.0",
     "cids": "^1.1.9",
     "graphql-request": "^4.2.0",
+    "i18next": "20.6.1",
+    "i18next-browser-languagedetector": "^6.1.4",
     "react-i18next": "10.13.2",
-    "react-switch": "^6.0.0",
-    "i18next": "20.6.1"
+    "react-switch": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",

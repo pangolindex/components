@@ -1,6 +1,6 @@
 import i18next from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
-
 import deTranslation from './locales/de.json';
 import enTranslation from './locales/en.json';
 import esTranslation from './locales/es.json';
@@ -60,17 +60,20 @@ const determineLngFn = (code: string): string => {
   return (i18next.language = defaultLocale);
 };
 
-i18next.use(initReactI18next).init({
-  resources,
-  react: {
-    useSuspense: true,
-  },
-  load: 'languageOnly',
-  lowerCaseLng: true,
-  fallbackLng: determineLngFn,
-  preload: [defaultLocale],
-  keySeparator: '.',
-  interpolation: { escapeValue: false },
-});
+i18next
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    resources,
+    react: {
+      useSuspense: true,
+    },
+    load: 'languageOnly',
+    lowerCaseLng: true,
+    fallbackLng: determineLngFn,
+    preload: [defaultLocale],
+    keySeparator: '.',
+    interpolation: { escapeValue: false },
+  });
 
 export default i18next;
