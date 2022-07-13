@@ -84,10 +84,7 @@ export function useGetNearAllPool() {
   });
 }
 
-export function useNearPairs(
-  currencies: [Currency | undefined, Currency | undefined][],
-  poolTypes = [PoolType.SIMPLE_POOL],
-): [PairState, Pair | null][] {
+export function useNearPairs(currencies: [Currency | undefined, Currency | undefined][]): [PairState, Pair | null][] {
   const chainId = useChainId();
 
   const tokens = useMemo(
@@ -115,7 +112,7 @@ export function useNearPairs(
         const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA];
 
         const filterResults = results.filter((v) => {
-          if (!poolTypes.includes(v?.pool_kind)) return false;
+          if (v?.pool_kind !== PoolType.SIMPLE_POOL) return false;
 
           const tokenIds = v?.token_account_ids || [];
 
@@ -150,14 +147,14 @@ export function useNearPairs(
   }, [allPools?.data, allPools?.isLoading, tokens, chainId]);
 }
 
-export function useGetNearPoolId(tokenA?: Token, tokenB?: Token, poolTypes = [PoolType.SIMPLE_POOL]): number | null {
+export function useGetNearPoolId(tokenA?: Token, tokenB?: Token): number | null {
   const allPools = useGetNearAllPool();
   return useMemo(() => {
     if (!allPools?.isLoading) {
       const results = allPools?.data || [];
 
       return results.findIndex((element) => {
-        if (!poolTypes.includes(element?.pool_kind)) return false;
+        if (element?.pool_kind !== PoolType.SIMPLE_POOL) return false;
 
         const tokenIds = element?.token_account_ids || [];
 
