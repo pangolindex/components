@@ -1,4 +1,4 @@
-import { CurrencyAmount, Fraction, JSBI, Percent, TokenAmount, Trade } from '@pangolindex/sdk';
+import { CurrencyAmount, Fraction, JSBI, Pair, Percent, TokenAmount, Trade } from '@pangolindex/sdk';
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
   ALLOWED_PRICE_IMPACT_LOW,
@@ -8,22 +8,22 @@ import {
 import { Field } from '../state/pswap/actions';
 import { basisPointsToPercent } from './index';
 
-const BASE_FEE = new Percent(JSBI.BigInt(30), JSBI.BigInt(10000));
-const ONE_HUNDRED_PERCENT = new Percent(JSBI.BigInt(10000), JSBI.BigInt(10000));
-const INPUT_FRACTION_AFTER_FEE = ONE_HUNDRED_PERCENT.subtract(BASE_FEE);
+const ONE_HUNDRED_PERCENT = new Percent(JSBI.BigInt(1000), JSBI.BigInt(1000));
 
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: Trade): {
   priceImpactWithoutFee?: Percent;
   realizedLPFee?: CurrencyAmount;
 } {
-  // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
+  // for each hop in our trade, take away the x*y=k price impact from swap fees
+  // the following example assumes swap fees of 0.3% but this is determined by the pair
   // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
   const realizedLPFee = !trade
     ? undefined
     : ONE_HUNDRED_PERCENT.subtract(
         trade.route.pairs.reduce<Fraction>(
-          (currentFee: Fraction): Fraction => currentFee.multiply(INPUT_FRACTION_AFTER_FEE),
+          (currentFee: Fraction, pair: Pair): Fraction =>
+            currentFee.multiply(new Percent(pair.swapFeeCoefficient, JSBI.BigInt(1000))),
           ONE_HUNDRED_PERCENT,
         ),
       );
