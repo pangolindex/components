@@ -5,9 +5,9 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 import includePaths from 'rollup-plugin-includepaths';
-import packageJson from './package.json';
+// import packageJson from './package.json';
 import url from '@rollup/plugin-url';
-import css from "rollup-plugin-import-css";
+import css from 'rollup-plugin-import-css';
 import path from 'path';
 
 let plugins = [
@@ -41,6 +41,8 @@ if (process.env.ENV === 'production') {
 }
 
 export default {
+  // we are ignoring gifwrap here because we have added @gelatonetwork/limit-orders-react to dependancies. and it is throwing error "gifcodec is not constructor"
+  external: ['gifwrap'],
   input: 'src/index.tsx',
   output: [
     {

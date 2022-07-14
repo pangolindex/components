@@ -2,9 +2,8 @@ import { FunctionFragment, Interface } from '@ethersproject/abi';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { AppState, useDispatch, useSelector } from 'src/state';
 import { usePangolinWeb3 } from '../../hooks';
-import { AppDispatch, AppState } from '../index';
 import { useBlockNumber } from '../papplication/hooks';
 import {
   Call,
@@ -51,10 +50,8 @@ export const NEVER_RELOAD: ListenerOptions = {
 // the lowest level call for subscribing to contract data
 function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): CallResult[] {
   const { chainId } = usePangolinWeb3();
-  const callResults = useSelector<AppState, AppState['pmulticall']['callResults']>(
-    (state) => state.pmulticall.callResults,
-  );
-  const dispatch = useDispatch<AppDispatch>();
+  const callResults = useSelector<AppState['pmulticall']['callResults']>((state) => state.pmulticall.callResults);
+  const dispatch = useDispatch();
 
   const serializedCallKeys: string = useMemo(
     () =>
