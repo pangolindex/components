@@ -1,6 +1,7 @@
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
@@ -21,12 +22,14 @@ import { shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
 import ApplicationUpdater from './state/papplication/updater';
 import ListsUpdater from './state/plists/updater';
 import MulticallUpdater from './state/pmulticall/updater';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
+
 const queryClient = new QueryClient();
 
 export function PangolinProvider({
@@ -101,7 +104,8 @@ export {
   useAllTransactions,
   useAllTransactionsClearer,
   useAccountBalanceHook,
+  useTranslation,
 };
 
 // misc
-export { pangolinReducers, PANGOLIN_PERSISTED_KEYS, wrappedCurrency, nearFn };
+export { pangolinReducers, PANGOLIN_PERSISTED_KEYS, wrappedCurrency, nearFn, i18n, availableLanguages, Trans };

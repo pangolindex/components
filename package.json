@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "3.0.7-redux.8",
+  "version": "3.0.8-rc.0",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "engines": {
@@ -36,6 +36,9 @@
     "borsh": "^0.7.0",
     "cids": "^1.1.9",
     "graphql-request": "^4.2.0",
+    "i18next": "20.6.1",
+    "i18next-browser-languagedetector": "^6.1.4",
+    "react-i18next": "10.13.2",
     "react-redux": "7.2.6",
     "react-switch": "^6.0.0",
     "redux-localstorage-simple": "2.4.1"
