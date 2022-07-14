@@ -15,7 +15,7 @@ import {
   useGelatoLimitOrderList,
   useSwapActionHandlers,
 } from 'src/state/pswap/hooks';
-import { useAllTransactions } from 'src/state/ptransactions/hooks';
+import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransactions/hooks';
 import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
@@ -25,7 +25,6 @@ import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinRedu
 import ApplicationUpdater from './state/papplication/updater';
 import ListsUpdater from './state/plists/updater';
 import MulticallUpdater from './state/pmulticall/updater';
-import * as transactionActions from './state/ptransactions/actions';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
 const queryClient = new QueryClient();
@@ -100,11 +99,9 @@ export {
   useLibrary,
   shortenAddress,
   useAllTransactions,
+  useAllTransactionsClearer,
   useAccountBalanceHook,
 };
-
-//Actions
-export { transactionActions };
 
 // misc
 export { pangolinReducers, PANGOLIN_PERSISTED_KEYS, wrappedCurrency, nearFn };

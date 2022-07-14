@@ -2,8 +2,8 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { useCallback, useMemo } from 'react';
 import { AppState, useDispatch, useSelector } from 'src/state';
 
-import { usePangolinWeb3 } from '../../hooks';
-import { addTransaction } from './actions';
+import { useChainId, usePangolinWeb3 } from '../../hooks';
+import { addTransaction, clearAllTransactions } from './actions';
 import { TransactionDetails } from './reducer';
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
@@ -38,6 +38,14 @@ export function useTransactionAdder(): (
     },
     [dispatch, chainId, account],
   );
+}
+
+export function useAllTransactionsClearer() {
+  const chainId = useChainId();
+  const dispatch = useDispatch();
+  return useCallback(() => {
+    dispatch(clearAllTransactions({ chainId }));
+  }, [chainId, dispatch]);
 }
 
 // returns all the transactions for the current chain
