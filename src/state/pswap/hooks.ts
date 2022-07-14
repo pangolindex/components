@@ -16,17 +16,16 @@ import {
 } from '@pangolindex/sdk';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { NATIVE, ROUTER_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
+import { AppState, useDispatch, useSelector } from 'src/state';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { isAddress } from '../../utils';
-import { AppDispatch, AppState } from '../index';
 import { useUserSlippageTolerance } from '../puser/hooks';
 import { useCurrencyBalances } from '../pwallet/hooks';
 import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions';
@@ -37,7 +36,7 @@ export interface LimitOrderInfo extends Order {
 }
 
 export function useSwapState(): AppState['pswap'] {
-  return useSelector<AppState, AppState['pswap']>((state) => state.pswap);
+  return useSelector<AppState['pswap']>((state) => state.pswap);
 }
 
 export function useSwapActionHandlers(chainId: ChainId): {
@@ -46,7 +45,7 @@ export function useSwapActionHandlers(chainId: ChainId): {
   onUserInput: (field: Field, typedValue: string) => void;
   onChangeRecipient: (recipient: string | null) => void;
 } {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
       dispatch(
@@ -300,7 +299,7 @@ export function useDefaultsFromURLSearch():
   | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
   | undefined {
   const { chainId } = usePangolinWeb3();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const parsedQs = useParsedQueryString();
   const [result, setResult] = useState<
     { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined
