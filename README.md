@@ -11,12 +11,9 @@ or
 
 #### Install below dependancies as its peer dependancies
 ```
+react
+react-dom
 @pangolindex/sdk
-@web3-react/core
-@web3-react/walletconnect-connector
-@web3-react/walletlink-connector
-@pangolindex/web3-react-injected-connector
-@gnosis.pm/safe-apps-web3-react
 ```
 
 ## Getting started
