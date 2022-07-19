@@ -9,8 +9,11 @@ import includePaths from 'rollup-plugin-includepaths';
 import url from '@rollup/plugin-url';
 import css from 'rollup-plugin-import-css';
 import path from 'path';
+import externals from 'rollup-plugin-node-externals';
+import { terser } from 'rollup-plugin-terser';
 
 let plugins = [
+  externals(),
   peerDepsExternal(),
   includePaths({
     paths: ['./'],
@@ -37,6 +40,7 @@ if (process.env.ENV === 'production') {
     cleaner({
       targets: ['./lib'],
     }),
+    terser(),
   );
 }
 
