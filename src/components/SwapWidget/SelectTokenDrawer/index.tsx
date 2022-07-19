@@ -35,7 +35,6 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   const [invertSearchOrder] = useState<boolean>(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const mobileRef = useRef<HTMLDivElement>(null);
   const lastOpen = usePrevious(isOpen);
 
   useEffect(() => {
@@ -129,7 +128,6 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   return (
     <Drawer title="Select a token" isOpen={isOpen} onClose={onClose}>
       {/* Render Search Token Input */}
-      <div ref={mobileRef} />
       <Box padding="0px 10px">
         <TextInput
           placeholder="Search"
@@ -140,7 +138,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
           getRef={(ref: HTMLInputElement) => ((inputRef as any).current = ref)}
           onClick={() => {
             if (isMobile) {
-              mobileRef.current?.scrollIntoView({ behavior: 'smooth' });
+              inputRef.current?.scrollIntoView({ behavior: 'smooth' });
             }
           }}
         />
