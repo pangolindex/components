@@ -288,20 +288,6 @@ const WalletModal: React.FC<WalletModalProps> = ({
           } else {
             return null; //dont want to return install twice
           }
-          // enter in this condition if xdefi is installed and was not set a wallet
-          // !!(window.xfi) > if xdefi is installed
-          // !(window.xfi.ethereum && window.xfi.ethereum.isXDEFI) > if xdefi is installed but not set a wallet
-        } else if (!!window.xfi && !(window.xfi.ethereum && window.xfi.ethereum.isXDEFI)) {
-          return (
-            <Option
-              id={`connect-${key}`}
-              key={key}
-              color={'#315CF5'}
-              header={'Please setup a Wallet'}
-              subheader={null}
-              icon={option.iconName}
-            />
-          );
         }
 
         // likewise for generic
