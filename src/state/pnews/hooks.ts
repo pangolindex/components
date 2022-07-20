@@ -38,7 +38,7 @@ export function useGetNews() {
     ['getNews', chain.id],
     async () => {
       const response = await axios.get(`${DIRECTUS_URL_NEWS}/items/news?${query}`, {
-        timeout: 1000,
+        timeout: 60000,
       });
       const data = response.data;
       const news: News[] = data?.data?.map((element: any) => {
