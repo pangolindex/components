@@ -133,6 +133,7 @@ export function useDerivedSwapInfo(): {
   v2Trade: Trade | undefined;
   inputError?: string;
   v1Trade: Trade | undefined;
+  isLoading: boolean;
 } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -160,8 +161,14 @@ export function useDerivedSwapInfo(): {
   const isExactIn: boolean = independentField === Field.INPUT;
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId);
 
-  const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined);
-  const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined);
+  const { trade: bestTradeExactIn, isLoading: isLoadingIn } = useTradeExactIn(
+    isExactIn ? parsedAmount : undefined,
+    outputCurrency ?? undefined,
+  );
+  const { trade: bestTradeExactOut, isLoading: isLoadingOut } = useTradeExactOut(
+    inputCurrency ?? undefined,
+    !isExactIn ? parsedAmount : undefined,
+  );
 
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut;
 
@@ -228,6 +235,8 @@ export function useDerivedSwapInfo(): {
     inputError = 'Insufficient' + amountIn.currency.symbol + ' balance';
   }
 
+  const isLoading = isExactIn ? isLoadingIn : isLoadingOut;
+
   return {
     currencies,
     currencyBalances,
@@ -235,6 +244,7 @@ export function useDerivedSwapInfo(): {
     v2Trade: v2Trade ?? undefined,
     inputError,
     v1Trade,
+    isLoading,
   };
 }
 
