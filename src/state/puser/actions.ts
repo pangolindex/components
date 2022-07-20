@@ -22,3 +22,5 @@ export const updateUserDeadline = createAction<{ userDeadline: string }>('puser/
 
 export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('puser/addSerializedToken');
 export const removeSerializedToken = createAction<{ chainId: number; address: string }>('puser/removeSerializedToken');
+
+export const addSerializedPair = createAction<{ serializedPair: SerializedPair }>('puser/addSerializedPair');

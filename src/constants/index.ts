@@ -21,9 +21,12 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts!.router,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts!.router,
 };
-
+export const BIG_INT_ZERO = JSBI.BigInt(0);
+export const BIG_INT_TWO = JSBI.BigInt(2);
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const NATIVE = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+export const BIG_INT_SECONDS_IN_WEEK = JSBI.BigInt(60 * 60 * 24 * 7);
+export const ONE_TOKEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18));
 
 // a list of tokens by chain
 type ChainTokenList = {
@@ -44,6 +47,15 @@ export const NetworkContextName = 'NETWORK';
 export const INITIAL_ALLOWED_SLIPPAGE = 50;
 // 10 minutes, denominated in seconds
 export const DEFAULT_DEADLINE_FROM_NOW = '600';
+
+export const MINICHEF_ADDRESS: { [chainId in ChainId]: string } = {
+  [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.mini_chef!,
+  [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].contracts!.mini_chef!,
+  [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].contracts!.mini_chef!,
+  [ChainId.COSTON]: CHAINS[ChainId.COSTON].contracts!.mini_chef!,
+  [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].contracts!.mini_chef!,
+  [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].contracts!.mini_chef!,
+};
 
 export const USDT: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 6, 'USDT', 'Tether USD'),
@@ -227,7 +239,7 @@ export const PANGOLIN_TOKENS_REPO_RAW_BASE_URL = `https://raw.githubusercontent.
 export type LogoSize = 24 | 48;
 
 export const ANALYTICS_PAGE = 'https://info.pangolin.exchange';
-
+export const PANGOLIN_API_BASE_URL = `https://api.pangolin.exchange`;
 export const TIMEFRAME = [
   {
     description: 'DAY',
@@ -389,7 +401,25 @@ export const DIRECTUS_URL_NEWS = `https://p7gm7mqi.directus.app/items/news?`;
 export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3/`;
 
 export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
-
+export const COINGECKO_API = 'https://api.coingecko.com/api/v3';
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
 
 /* eslint-enable max-lines */
+
+const WAVAX_AND_PNG_ONLY: ChainTokenList = {
+  [ChainId.FUJI]: [WAVAX[ChainId.FUJI], PNG[ChainId.FUJI]],
+  [ChainId.AVALANCHE]: [WAVAX[ChainId.AVALANCHE], PNG[ChainId.AVALANCHE]],
+  [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI], PNG[ChainId.WAGMI]],
+  [ChainId.COSTON]: [WAVAX[ChainId.COSTON], PNG[ChainId.COSTON]],
+  [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
+  [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
+};
+
+// used to construct the list of all pairs we consider by default in the frontend
+export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
+  ...WAVAX_AND_PNG_ONLY,
+};
+
+export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
+  [ChainId.AVALANCHE]: [],
+};

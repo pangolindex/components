@@ -10,6 +10,14 @@ import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
 import {
+  useGetAllFarmData,
+  useGetMinichefStakingInfosViaSubgraph,
+  useMinichefStakingInfosMapping,
+  useStakingInfo,
+  fetchMinichefData,
+} from 'src/state/pstake/hooks';
+import { MinichefStakingInfo, DoubleSideStakingInfo, PoolType } from 'src/state/pstake/types';
+import {
   LimitOrderInfo,
   useDerivedSwapInfo,
   useGelatoLimitOrderDetail,
@@ -29,6 +37,7 @@ import ListsUpdater from './state/plists/updater';
 import MulticallUpdater from './state/pmulticall/updater';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
+import { useGetUserLP } from './state/pmigrate/hooks';
 
 const queryClient = new QueryClient();
 
@@ -81,7 +90,7 @@ export * from './connectors';
 export * from './components';
 
 export * from '@gelatonetwork/limit-orders-react';
-export type { LimitOrderInfo };
+export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo };
 
 // components
 export { SelectTokenDrawer };
@@ -105,7 +114,22 @@ export {
   useAllTransactionsClearer,
   useAccountBalanceHook,
   useTranslation,
+  useMinichefStakingInfosMapping,
+  useGetAllFarmData,
+  useGetMinichefStakingInfosViaSubgraph,
+  useStakingInfo,
+  useGetUserLP,
 };
 
 // misc
-export { pangolinReducers, PANGOLIN_PERSISTED_KEYS, wrappedCurrency, nearFn, i18n, availableLanguages, Trans };
+export {
+  pangolinReducers,
+  PANGOLIN_PERSISTED_KEYS,
+  wrappedCurrency,
+  nearFn,
+  i18n,
+  availableLanguages,
+  Trans,
+  PoolType,
+  fetchMinichefData,
+};
