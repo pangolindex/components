@@ -53,6 +53,9 @@ ReactDOM.render(
 );
 ```
 
+# Redux
+If you are using redux in your application then you will need to use custom context https://react-redux.js.org/api/hooks#custom-context with your Provider.
+
 # development flow
 
 1. do `yarn` in components
