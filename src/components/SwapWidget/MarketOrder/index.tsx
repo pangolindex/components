@@ -321,7 +321,6 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
   }
 
   const renderButton = () => {
-    console.log('swapInputError', swapInputError);
     if (!account) {
       return (
         <Button isDisabled={!account} variant="primary" onClick={toggleWalletModal}>
