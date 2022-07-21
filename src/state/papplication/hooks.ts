@@ -1,13 +1,12 @@
 import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { AppState, useDispatch, useSelector } from 'src/state';
 import { usePangolinWeb3 } from '../../hooks';
-import { AppDispatch, AppState } from '../index';
 import { ApplicationModal, PopupContent, addPopup, removePopup, setOpenModal } from './actions';
 
 export function useBlockNumber(): number | undefined {
   const { chainId } = usePangolinWeb3();
 
-  return useSelector((state: AppState) => state.papplication.blockNumber[chainId ?? -1]);
+  return useSelector((state: AppState) => state?.papplication?.blockNumber?.[chainId ?? -1]);
 }
 
 export function useModalOpen(modal: ApplicationModal): boolean {
@@ -17,7 +16,7 @@ export function useModalOpen(modal: ApplicationModal): boolean {
 
 export function useToggleModal(modal: ApplicationModal): () => void {
   const open = useModalOpen(modal);
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   return useCallback(() => dispatch(setOpenModal(open ? null : modal)), [dispatch, modal, open]);
 }
 

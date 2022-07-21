@@ -1,10 +1,9 @@
 import { ChainId } from '@pangolindex/sdk';
 import { AnyAction } from '@reduxjs/toolkit';
 import { Dispatch, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { AppState, useDispatch, useSelector } from 'src/state';
 import { nearFn } from 'src/utils/near';
 import { useChainId, useLibrary } from '../../hooks';
-import { AppDispatch, AppState } from '../index';
 import { useAddPopup, useBlockNumber } from '../papplication/hooks';
 import { addTransaction, checkedTransaction, finalizeTransaction } from './actions';
 import { TransactionDetails } from './reducer';
@@ -94,8 +93,8 @@ export default function Updater(): null {
 
   const lastBlockNumber = useBlockNumber();
 
-  const dispatch = useDispatch<AppDispatch>();
-  const state = useSelector<AppState, AppState['ptransactions']>((state) => state.ptransactions);
+  const dispatch = useDispatch();
+  const state = useSelector<AppState['ptransactions']>((state) => state.ptransactions);
 
   const transactions = chainId ? state[chainId] ?? {} : {}; // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -128,7 +127,7 @@ export default function Updater(): null {
                 hash,
                 receipt: {
                   blockHash: receipt.blockHash,
-                  blockNumber: receipt.blockNumber,
+                  blockNumber: receipt?.blockNumber,
                   // contractAddress: receipt.contractAddress,
                   contractAddress: '',
                   from: receipt.from,

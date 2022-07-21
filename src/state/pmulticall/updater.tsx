@@ -1,12 +1,11 @@
 import { Contract } from '@ethersproject/contracts';
 import { useEffect, useMemo, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { AppState, useDispatch, useSelector } from 'src/state';
 import { usePangolinWeb3 } from '../../hooks';
 import { useMulticallContract } from '../../hooks/useContract';
 import useDebounce from '../../hooks/useDebounce';
 import chunkArray from '../../utils/chunkArray';
 import { CancelledError, RetryableError, retry } from '../../utils/retry';
-import { AppDispatch, AppState } from '../index';
 import { useBlockNumber } from '../papplication/hooks';
 import {
   Call,
@@ -107,13 +106,13 @@ export function outdatedListeningKeys(
     if (data.fetchingBlockNumber && data.fetchingBlockNumber >= minDataBlockNumber) return false;
 
     // if data is older than minDataBlockNumber, fetch it
-    return !data.blockNumber || data.blockNumber < minDataBlockNumber;
+    return !data?.blockNumber || data?.blockNumber < minDataBlockNumber;
   });
 }
 
 export default function Updater(): null {
-  const dispatch = useDispatch<AppDispatch>();
-  const state = useSelector<AppState, AppState['pmulticall']>((state) => state.pmulticall);
+  const dispatch = useDispatch();
+  const state = useSelector<AppState['pmulticall']>((state) => state.pmulticall);
   // wait for listeners to settle before triggering updates
   const debouncedListeners = useDebounce(state.callListeners, 100);
   const latestBlockNumber = useBlockNumber();

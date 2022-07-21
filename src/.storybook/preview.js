@@ -32,11 +32,9 @@ export const decorators = [
   (Story) => (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ProviderNetwork getLibrary={getLibrary}>
-        <Provider store={store}>
-          <InternalProvider>
-            <Story />
-          </InternalProvider>
-        </Provider>
+        <InternalProvider>
+          <Story />
+        </InternalProvider>
       </Web3ProviderNetwork>
     </Web3ReactProvider>
   ),

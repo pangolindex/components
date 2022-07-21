@@ -39,7 +39,7 @@ const MyPortfolio: React.FC = () => {
 
   const renderChain = (_chain: { chainID: number; balance: number }, key: number) => {
     const chain = ALL_CHAINS.filter((value) => value.chain_id === _chain.chainID)[0];
-    const balance = _chain.balance.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    const balance = _chain.balance.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
     const isSelected = selectChain === _chain.chainID;
     return (
       <SelectedCard key={key} onClick={() => setSelectChain(_chain.chainID)} selected={isSelected}>
@@ -68,7 +68,10 @@ const MyPortfolio: React.FC = () => {
     if (showBalances) {
       return (
         <Text fontSize={16} color="text1" fontWeight={600}>
-          ${balances ? balances.total.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
+          $
+          {balances
+            ? balances.total.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })
+            : 0}
         </Text>
       );
     }

@@ -1,5 +1,6 @@
 import { CAVAX, CHAINS, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import Drawer from 'src/components/Drawer';
@@ -135,6 +136,11 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
           }}
           value={searchQuery}
           getRef={(ref: HTMLInputElement) => ((inputRef as any).current = ref)}
+          onClick={() => {
+            if (isMobile) {
+              inputRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
         />
       </Box>
       {/* Render All Selected Tokens */}

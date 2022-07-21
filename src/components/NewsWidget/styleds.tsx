@@ -57,7 +57,7 @@ export const NewsSection = styled(Box)<{ img: string }>`
 export const NewsTitle = styled(Box)`
   align-self: start;
   font-weight: bold;
-  font-size: 32px;
+  font-size: 24px;
   line-height: 48px;
   padding: 20px;
   background: linear-gradient(0deg, #ffc800, #ffc800);
@@ -66,8 +66,8 @@ export const NewsTitle = styled(Box)`
 
 export const NewsContent = styled(Box)`
   color: ${({ theme }) => theme.text7};
-  font-weight: 500;
-  font-size: 18px;
+  font-weight: 400;
+  font-size: 16px;
   line-height: 27px;
   height: 90% !important;
   padding: 0px 20px;

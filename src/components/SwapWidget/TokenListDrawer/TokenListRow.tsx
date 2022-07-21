@@ -1,9 +1,8 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { ChevronDown } from 'react-feather';
 import ReactGA from 'react-ga';
-import { useDispatch, useSelector } from 'react-redux';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
-import { AppState } from 'src/state';
+import { AppState, useDispatch, useSelector } from 'src/state';
 import { removeList, selectList } from 'src/state/plists/actions';
 import { useSelectedListUrl } from 'src/state/plists/hooks';
 import listVersionLabel from 'src/utils/listVersionLabel';
@@ -16,7 +15,7 @@ interface Props {
 }
 
 const TokenListRow: React.FC<Props> = ({ listUrl }) => {
-  const lists = useSelector<AppState, AppState['plists']['byUrl']>((state) => state.plists.byUrl);
+  const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
   const { current: list } = lists[listUrl];
 
   const dispatch = useDispatch();

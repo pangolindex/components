@@ -103,7 +103,6 @@ export function useGetChainsBalances() {
 export function useGetWalletChainTokens(chainId: number) {
   const { account } = usePangolinWeb3();
   let chain = getChainByNumber(chainId);
-  // This functions is temporary for Pangolin birthday
   const getPangolinPairs = async () => {
     const query = qs.stringify(
       {

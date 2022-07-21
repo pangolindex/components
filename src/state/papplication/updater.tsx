@@ -1,10 +1,10 @@
 import { ChainId } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useDispatch } from 'react-redux';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
 import useIsWindowVisible from 'src/hooks/useIsWindowVisible';
+import { useDispatch } from 'src/state';
 import { updateBlockNumber } from './actions';
 
 const NearApplicationUpdater = () => {
@@ -74,9 +74,9 @@ export const EvmApplicationUpdater = () => {
   const debouncedState = useDebounce(state, 100);
 
   useEffect(() => {
-    if (!debouncedState.chainId || !debouncedState.blockNumber || !windowVisible) return;
-    dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState.blockNumber }));
-  }, [windowVisible, dispatch, debouncedState.blockNumber, debouncedState.chainId]);
+    if (!debouncedState.chainId || !debouncedState?.blockNumber || !windowVisible) return;
+    dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState?.blockNumber }));
+  }, [windowVisible, dispatch, debouncedState?.blockNumber, debouncedState.chainId]);
 
   return null;
 };

@@ -59,12 +59,13 @@ export const RowWrapper = styled(Box)<{ isSelected: boolean }>`
   cursor: ${({ isSelected }) => (isSelected ? 'default' : 'pointer')} !important;
   background-color: ${({ theme, isSelected }) => (isSelected ? theme.color10 : theme.color2)};
 
-  height: 64px;
+  height: 48px;
 
   &:hover {
     background-color: ${({ theme }) => theme.color10};
   }
 `;
+
 export const DeleteButton = styled.button`
   background-image: linear-gradient(to right, rgba(255, 0, 0, 0), ${({ theme }) => theme.bg6});
   background-color: transparent;
@@ -100,7 +101,7 @@ export const DurationBtns = styled(Box)`
 `;
 
 export const Title = styled(Text)`
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 500;
   color: ${({ theme }) => theme.text1};
 

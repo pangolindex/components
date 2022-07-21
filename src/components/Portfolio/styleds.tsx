@@ -4,7 +4,7 @@ import { Box } from '../Box';
 export const PortfolioRoot = styled(Box)`
   width: 100%;
   height: 100%;
-
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -56,7 +56,7 @@ export const HideButton = styled.button`
 `;
 
 export const ChainCard = styled(Box)`
-  min-height: 60px;
+  height: 80px;
   padding: 10px;
   background-color: ${({ theme }) => theme.bg6};
   border-radius: 4px;
