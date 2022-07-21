@@ -272,7 +272,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
       else if (option.connector === xDefi) {
         // don't show injected if there's no injected provider
 
-        if (!(window.xfi && window.xfi.ethereum && window.xfi.ethereum.isXDEFI)) {
+        if (!window.xfi) {
           if (option.name === 'XDEFI Wallet') {
             return (
               <Option
