@@ -47,7 +47,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
 
       <StatsWrapper>
         <Box display="inline-block">
-          <Text color="text2" fontSize={[14, 12]}>
+          <Text color="text2" fontSize={14}>
             {t('earn.poolRewards')}
           </Text>
 

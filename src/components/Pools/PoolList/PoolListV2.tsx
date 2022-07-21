@@ -101,11 +101,11 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stakingInfos, debouncedSearchQuery]);
 
-  const stakingRewardsExist = Boolean(
-    //@dev if exist minicheft in chain then exist staking rewards because in deploy we added in minicheft pool PNG/WAVAX
-    typeof chainId === 'number' &&
-      ((DOUBLE_SIDE_STAKING_REWARDS_INFO[chainId]?.length ?? 0) > 0 || MINICHEF_ADDRESS[chainId]),
-  );
+  // const stakingRewardsExist = Boolean(
+  //   //@dev if exist minicheft in chain then exist staking rewards because in deploy we added in minicheft pool PNG/WAVAX
+  //   typeof chainId === 'number' &&
+  //     ((DOUBLE_SIDE_STAKING_REWARDS_INFO[chainId]?.length ?? 0) > 0 || MINICHEF_ADDRESS[chainId]),
+  // );
   const selectedPool = !!selectedPoolIndex ? stakingInfoByPid[selectedPoolIndex] : ({} as MinichefStakingInfo);
 
   return (
@@ -118,8 +118,8 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
       onChangeSortBy={setSortBy}
       sortBy={sortBy}
       searchQuery={searchQuery}
-      isLoading={(stakingRewardsExist && stakingInfoData?.length === 0 && !searchQuery) || poolCardsLoading}
-      doesNotPoolExist={(!stakingRewardsExist || stakingInfoData?.length === 0) && !poolCardsLoading}
+      isLoading={(stakingInfoData?.length === 0 && !searchQuery) || poolCardsLoading}
+      doesNotPoolExist={stakingInfoData?.length === 0 && !poolCardsLoading}
       selectedPool={selectedPool}
     >
       {stakingInfoData.map((stakingInfo) => (

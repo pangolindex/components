@@ -15,8 +15,12 @@ import {
   useMinichefStakingInfosMapping,
   useStakingInfo,
   fetchMinichefData,
+  useMinichefStakingInfos,
+  fetchChunkedAprs,
+  useDerivedStakeInfo,
+  useMinichefPools,
 } from 'src/state/pstake/hooks';
-import { MinichefStakingInfo, DoubleSideStakingInfo, PoolType } from 'src/state/pstake/types';
+import { MinichefStakingInfo, DoubleSideStakingInfo, PoolType, StakingInfo } from 'src/state/pstake/types';
 import {
   LimitOrderInfo,
   useDerivedSwapInfo,
@@ -90,7 +94,7 @@ export * from './connectors';
 export * from './components';
 
 export * from '@gelatonetwork/limit-orders-react';
-export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo };
+export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, StakingInfo };
 
 // components
 export { SelectTokenDrawer };
@@ -119,6 +123,10 @@ export {
   useGetMinichefStakingInfosViaSubgraph,
   useStakingInfo,
   useGetUserLP,
+  useMinichefStakingInfos,
+  fetchChunkedAprs,
+  useDerivedStakeInfo,
+  useMinichefPools,
 };
 
 // misc

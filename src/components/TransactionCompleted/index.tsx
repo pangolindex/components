@@ -5,7 +5,7 @@ import { Box, Button, Text } from 'src/components';
 import { CloseIcon } from 'src/theme/components';
 import { Root } from './styled';
 
-interface Props {
+export interface TransactionCompletedProps {
   onClose?: () => void;
   submitText?: string;
   showCloseIcon?: boolean;
@@ -21,7 +21,7 @@ const TransactionCompleted = ({
   isShowButtton,
   onButtonClick,
   buttonText,
-}: Props) => {
+}: TransactionCompletedProps) => {
   const theme = useContext(ThemeContext);
   return (
     <Root>

@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, CurrencyLogo, Text } from 'src/components';
 import { PairState, usePair } from 'src/data/Reserves';
-//import { usePairAdder } from 'src/state/user/hooks'
 import { usePangolinWeb3 } from 'src/hooks';
 import { CurrencySelectWrapper, LightCard } from '../PoolImportModal/PoolImport/styleds';
 import { ConfirmButton } from './styleds';
@@ -35,7 +34,6 @@ const SearchToken = ({ currency0, currency1, onTokenClick, onClick }: Props) => 
   const { t } = useTranslation();
 
   const [pairState, pair] = usePair(currency0, currency1);
-  //const addPair = usePairAdder()
 
   function renderButton() {
     if (!account) {

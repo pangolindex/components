@@ -10,7 +10,7 @@ interface Props {
   title: string;
   totalAmount: string;
   pair: Pair | null;
-  pgl?: TokenAmount | undefined;
+  pgl?: TokenAmount;
   currency0: Currency | undefined;
   currency1: Currency | undefined;
 }

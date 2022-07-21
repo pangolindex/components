@@ -135,11 +135,7 @@ export function useFetchFarmAprs() {
   const pids = useGetMinichefPids();
   const dispatch = useDispatch();
 
-  console.log('pids', pids);
-
   useEffect(() => {
-    console.log('12313232232312', chainId);
-
     if (!chainId || !pids || pids.length === 0) return;
 
     fetchChunkedAprs(pids, chainId).then((res) => {
@@ -147,8 +143,6 @@ export function useFetchFarmAprs() {
         (acc, value: any, i) => ({ ...acc, [pids[i] as string]: { ...value, pid: pids[i] } }),
         {},
       );
-
-      console.log('newResult', newResult);
 
       if (res.length > 0) {
         dispatch(
@@ -492,9 +486,9 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
       return pairToFilterBy.involvesToken(item.tokens[0]) && pairToFilterBy.involvesToken(item.tokens[1]);
     };
 
-    if (DOUBLE_SIDE_STAKING_REWARDS_INFO[chainId]?.[version]) {
-      return DOUBLE_SIDE_STAKING_REWARDS_INFO[chainId]?.[version]?.filter(filterPair);
-    }
+    // if (DOUBLE_SIDE_STAKING_REWARDS_INFO[chainId]?.[version]) {
+    //   return DOUBLE_SIDE_STAKING_REWARDS_INFO[chainId]?.[version]?.filter(filterPair);
+    // }
     const _infoTokens: DoubleSideStaking[] = [];
     if (tokens0 && tokens1 && tokens0?.length === tokens1?.length) {
       tokens0.forEach((token0, index) => {
@@ -516,7 +510,6 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
   const pairs = usePairs(_tokens);
   // @dev: If no farms load, you likely loaded an incorrect config from doubleSideConfig.js
   // Enable this and look for an invalid pair
-  // console.log(pairs)
 
   const pairAddresses = useMemo(() => {
     return pairs.map(([, pair]) => pair?.liquidityToken.address);
