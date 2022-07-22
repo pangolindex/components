@@ -4,15 +4,25 @@ import React from 'react';
 import { createDispatchHook, createSelectorHook, createStoreHook } from 'react-redux';
 import { load, save } from 'redux-localstorage-simple';
 import papplication from './papplication/reducer';
+import pburn from './pburn/reducer';
 import plists from './plists/reducer';
+import pmint from './pmint/reducer';
 import pmulticall from './pmulticall/reducer';
+import pstake from './pstake/reducer';
 import pswap from './pswap/reducer';
 import ptoken from './ptoken/reducer';
 import ptransactions from './ptransactions/reducer';
 import puser from './puser/reducer';
 import pwatchlists from './pwatchlists/reducer';
 
-export const PANGOLIN_PERSISTED_KEYS: string[] = ['puser', 'plists', 'ptransactions', 'pwatchlists', 'ptoken'];
+export const PANGOLIN_PERSISTED_KEYS: string[] = [
+  'puser',
+  'plists',
+  'ptransactions',
+  'pwatchlists',
+  'ptoken',
+  'pstake',
+];
 
 export const pangolinReducers = {
   papplication,
@@ -23,6 +33,9 @@ export const pangolinReducers = {
   puser,
   pwatchlists,
   ptoken,
+  pstake,
+  pmint,
+  pburn,
 };
 
 const store = configureStore({

@@ -194,6 +194,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     </Drawer>
   );
 };
+
 export default memo(SelectTokenDrawer, (prevProps, nextProps) => {
   const isEqual =
     prevProps.isOpen === nextProps.isOpen &&

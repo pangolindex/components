@@ -1,15 +1,19 @@
 import { parseBytes32String } from '@ethersproject/strings';
 import { CAVAX, CHAINS, ChainId, Currency, Token } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
-import { COINGEKO_BASE_URL } from 'src/constants';
+import { useQuery } from 'react-query';
+import { COINGECKO_API, COINGEKO_BASE_URL } from 'src/constants';
 import { useSelectedTokenList } from 'src/state/plists/hooks';
-import { NEVER_RELOAD, useSingleCallResult } from 'src/state/pmulticall/hooks';
+import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
 import { isAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
+import ERC20_INTERFACE, { ERC20_BYTES32_INTERFACE } from '../constants/abis/erc20';
 import { useTokenHook } from './multiChainsHooks';
 import { useBytes32TokenContract, useTokenContract } from './useContract';
 import { useChainId } from './index';
+
+type TokenReturnType = Token | undefined | null;
 
 export function useAllTokens(): { [address: string]: Token } {
   const chainId = useChainId();
@@ -55,7 +59,7 @@ export interface NearTokenMetadata {
 // undefined if invalid or does not exist
 // null if loading
 // otherwise returns the token
-export function useToken(tokenAddress?: string): Token | undefined | null {
+export function useToken(tokenAddress?: string): TokenReturnType {
   const chainId = useChainId();
   const tokens = useAllTokens();
 
@@ -110,7 +114,7 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
   ]);
 }
 
-export function useNearToken(tokenAddress?: string): Token | undefined | null {
+export function useNearToken(tokenAddress?: string): TokenReturnType {
   const [tokenData, setTokenData] = useState<NearTokenMetadata>();
 
   const chainId = useChainId();
@@ -142,6 +146,67 @@ export function useNearToken(tokenAddress?: string): Token | undefined | null {
 
     return undefined;
   }, [address, chainId, token, tokenData]);
+}
+
+export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
+  const chainId = useChainId();
+  const tokens = useAllTokens();
+
+  const tokensName = useMultipleContractSingleData(tokensAddress, ERC20_INTERFACE, 'name', undefined, NEVER_RELOAD);
+  const tokensNameBytes32 = useMultipleContractSingleData(
+    tokensAddress,
+    ERC20_BYTES32_INTERFACE,
+    'name',
+    undefined,
+    NEVER_RELOAD,
+  );
+  const symbols = useMultipleContractSingleData(tokensAddress, ERC20_INTERFACE, 'symbol', undefined, NEVER_RELOAD);
+  const symbolsBytes32 = useMultipleContractSingleData(
+    tokensAddress,
+    ERC20_BYTES32_INTERFACE,
+    'symbol',
+    undefined,
+    NEVER_RELOAD,
+  );
+  const decimals = useMultipleContractSingleData(tokensAddress, ERC20_INTERFACE, 'decimals', undefined, NEVER_RELOAD);
+
+  return useMemo(() => {
+    if (!tokensAddress || tokensAddress?.length === 0) return [];
+    if (!chainId) return [];
+
+    return tokensAddress.reduce<Token[]>((acc, tokenAddress, index) => {
+      const tokenName = tokensName?.[index];
+      const tokenNameBytes32 = tokensNameBytes32?.[index];
+      const symbol = symbols?.[index];
+      const symbolBytes32 = symbolsBytes32?.[index];
+      const decimal = decimals?.[index];
+      const address = isAddress(tokenAddress);
+
+      if (!!address && tokens[address]) {
+        // if we have user tokens already
+        acc.push(tokens[address]);
+      } else if (
+        tokenName?.loading === false &&
+        tokenNameBytes32?.loading === false &&
+        symbol?.loading === false &&
+        symbolBytes32?.loading === false &&
+        decimal?.loading === false &&
+        address
+      ) {
+        const token = new Token(
+          chainId,
+          tokenAddress,
+          decimal?.result?.[0],
+          parseStringOrBytes32(symbol.result?.[0], symbolBytes32.result?.[0], 'UNKNOWN'),
+          parseStringOrBytes32(tokenName.result?.[0], tokenNameBytes32.result?.[0], 'Unknown Token'),
+        );
+
+        acc.push(token);
+      }
+
+      return acc;
+    }, []);
+  }, [chainId, decimals, symbols, symbolsBytes32, tokensName, tokensNameBytes32, tokens, tokensAddress]);
 }
 
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
@@ -215,4 +280,33 @@ export function useCoinGeckoTokenPriceChart(coin: Token, days = '7') {
   }, [coin, days]);
 
   return result;
+}
+
+export interface CoingeckoData {
+  coinId: string;
+  homePage: string;
+  description: string;
+}
+
+/**
+ * Get the coingecko data for a token
+ * @param coin - Token or Currency
+ * @returns CoingeckoData of token if exist in coingecko else null
+ * */
+
+export function useCoinGeckoTokenData(coin: Token) {
+  const chain = CHAINS[coin.chainId].mainnet ? CHAINS[coin.chainId] : CHAINS[ChainId.AVALANCHE];
+
+  return useQuery(['coingeckoToken', coin.address, chain.name], async () => {
+    if (!chain.coingecko_id) {
+      return null;
+    }
+    const response = await fetch(`${COINGECKO_API}/coins/${chain.coingecko_id}/contract/${coin.address.toLowerCase()}`);
+    const data = await response.json();
+    return {
+      coinId: data?.id,
+      homePage: data?.links?.homepage[0],
+      description: data?.description?.en,
+    } as CoingeckoData;
+  });
 }
