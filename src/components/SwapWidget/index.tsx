@@ -3,7 +3,7 @@ import LimitOrder from './LimitOrder';
 import MarketOrder from './MarketOrder';
 import { Root } from './styled';
 
-interface Props {
+export interface Props {
   isLimitOrderVisible?: boolean;
   showSettings?: boolean;
 }
