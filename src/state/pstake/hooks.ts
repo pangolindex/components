@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { CHAINS, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WAVAX, Price } from '@pangolindex/sdk';
+import { CHAINS, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import isEqual from 'lodash.isequal';
 import { useEffect, useMemo, useRef } from 'react';
@@ -514,7 +514,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
 
   const poolIdArray = useMemo(() => {
     if (!pairAddresses || !poolMap) return [];
-    // TODO: clean up this logic. seems like a lot of work to ensure correct types
+
     const NOT_FOUND = -1;
     const results = pairAddresses.map((address) => poolMap[address ?? ''] ?? NOT_FOUND);
     if (results.some((result) => result === NOT_FOUND)) return [];
