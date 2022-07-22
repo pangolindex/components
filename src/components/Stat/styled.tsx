@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const AnalyticsLink = styled.a`
   display: flex;
   align-items: center;
-  padding: 4px;
+  padding: 0px 0px 0px 4px;
   border-radius: 4px;
 
   svg {

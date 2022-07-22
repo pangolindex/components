@@ -1,6 +1,7 @@
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
 import DropdownMenu from '.';
+import { Box } from '../Box';
 
 export default {
   component: DropdownMenu,
@@ -26,16 +27,21 @@ const TemplateSimpleDropdown: ComponentStory<typeof DropdownMenu> = () => {
     },
   ];
 
-  const [activeMenu, setMenu] = useState('open');
+  const [activeMenu, setMenu] = useState('');
 
   return (
-    <DropdownMenu
-      options={LimitOrderTypeOptions}
-      value={activeMenu}
-      onSelect={(value) => {
-        setMenu(value);
-      }}
-    />
+    <Box width="100%">
+      <Box maxWidth="150px">
+        <DropdownMenu
+          title="Option:"
+          options={LimitOrderTypeOptions}
+          value={activeMenu}
+          onSelect={(value) => {
+            setMenu(value);
+          }}
+        />
+      </Box>
+    </Box>
   );
 };
 

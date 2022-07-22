@@ -60,12 +60,17 @@ const Stat = ({
         </Box>
       )}
 
-      <Box display="flex" alignItems="center">
+      <Box
+        display="flex"
+        alignItems="center"
+        mt={titlePosition === 'top' ? '8px' : '0px'}
+        mb={titlePosition === 'bottom' ? '8px' : '0px'}
+      >
         <Text color={statColor || 'text1'} fontSize={statFontSize || 16}>
           {stat}
         </Text>
         {currency && (
-          <Box ml={10} mt="8px">
+          <Box ml={10}>
             <CurrencyLogo currency={currency} size={24} imageSize={48} />
           </Box>
         )}

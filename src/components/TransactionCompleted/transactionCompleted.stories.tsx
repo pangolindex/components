@@ -7,20 +7,18 @@ export default {
   title: 'Components/TransactionCompleted',
 };
 
-const TemplateSimpleTransactionCompleted: ComponentStory<typeof TransactionCompleted> = () => {
-  return (
-    <Box width="100%">
-      <Box maxWidth="400px">
-        <TransactionCompleted
-          onClose={() => {}}
-          submitText="Your liquidity removed from farm, And accrued rewards claimed!"
-          isShowButtton={true}
-          onButtonClick={() => {}}
-          buttonText="Remove"
-        />
-      </Box>
+const TemplateTransactionCompleted: ComponentStory<typeof TransactionCompleted> = (args: any) => (
+  <Box width="100%">
+    <Box maxWidth="400px">
+      <TransactionCompleted {...args} />
     </Box>
-  );
-};
+  </Box>
+);
 
-export const Dafault = TemplateSimpleTransactionCompleted.bind({});
+export const Dafault = TemplateTransactionCompleted.bind({});
+Dafault.args = {
+  submitText: 'Your liquidity removed from farm, And accrued rewards claimed!',
+  isShowButtton: true,
+  showCloseIcon: false,
+  buttonText: 'Remove',
+};
