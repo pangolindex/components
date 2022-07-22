@@ -43,14 +43,6 @@ CurrencyStat.args = {
 };
 
 const TemplateMultipleCurrencyStat: ComponentStory<typeof Stat> = () => {
-  const currency1 = new Token(
-    ChainId.AVALANCHE,
-    CHAINS[ChainId.AVALANCHE].contracts!.png,
-    18,
-    CHAINS[ChainId.AVALANCHE].png_symbol!,
-    'Pangolin',
-  );
-
   return (
     <Box display="flex">
       <Stat
