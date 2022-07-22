@@ -5,12 +5,15 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 import includePaths from 'rollup-plugin-includepaths';
-import packageJson from './package.json';
+// import packageJson from './package.json';
 import url from '@rollup/plugin-url';
-import css from "rollup-plugin-import-css";
+import css from 'rollup-plugin-import-css';
 import path from 'path';
+import externals from 'rollup-plugin-node-externals';
+import { terser } from 'rollup-plugin-terser';
 
 let plugins = [
+  externals(),
   peerDepsExternal(),
   includePaths({
     paths: ['./'],
@@ -37,10 +40,13 @@ if (process.env.ENV === 'production') {
     cleaner({
       targets: ['./lib'],
     }),
+    terser(),
   );
 }
 
 export default {
+  // we are ignoring gifwrap here because we have added @gelatonetwork/limit-orders-react to dependancies. and it is throwing error "gifcodec is not constructor"
+  external: ['gifwrap'],
   input: 'src/index.tsx',
   output: [
     {

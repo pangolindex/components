@@ -1,13 +1,12 @@
 import { TokenList } from '@pangolindex/token-lists';
 import { nanoid } from '@reduxjs/toolkit';
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from 'src/state';
 import getTokenList from 'src/utils/getTokenList';
-import { AppDispatch } from '../state';
 import { fetchTokenList } from '../state/plists/actions';
 
 export function useFetchListCallback(): (listUrl: string) => Promise<TokenList> {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   const ensResolver = useCallback(() => {
     throw new Error('Could not construct mainnet ENS resolver');

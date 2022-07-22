@@ -1,23 +1,22 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { GET_BLOCKS, PRICES_BY_BLOCK } from 'src/apollo/block';
 import { blockClient, client } from 'src/apollo/client';
 import { GET_TOKEN_DAY_DATAS } from 'src/apollo/tokenDayDatas';
+import { AppState, useDispatch, useSelector } from 'src/state';
 import { updateTokenPriceChartData, updateTokenWeeklyPriceChartData } from 'src/state/ptoken/actions';
 import { splitQuery } from 'src/utils/query';
-import { AppDispatch, AppState } from '../index';
 import { ChartState, WeeklyState } from './reducer';
 
 dayjs.extend(utc);
 
 export function useAllTokenWeeklyPriceChartData(): WeeklyState | undefined {
-  return useSelector<AppState, AppState['ptoken']['weekly']>((state) => state?.ptoken?.weekly || {});
+  return useSelector<AppState['ptoken']['weekly']>((state) => state?.ptoken?.weekly || {});
 }
 
 export function useAllTokenPricesChartData(): ChartState | undefined {
-  return useSelector<AppState, AppState['ptoken']['tokenPrices']>((state) => state?.ptoken?.tokenPrices || {});
+  return useSelector<AppState['ptoken']['tokenPrices']>((state) => state?.ptoken?.tokenPrices || {});
 }
 
 export function useTokenWeeklyChartData(tokenAddress: string) {
@@ -25,7 +24,7 @@ export function useTokenWeeklyChartData(tokenAddress: string) {
 
   const chartData = data1?.[tokenAddress];
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     async function checkForChartData() {
@@ -66,7 +65,7 @@ export function useTokenPriceData(tokenAddress: string, timeWindow: string, inte
 
   const chartData = data1?.[tokenAddress];
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const currentTime = dayjs?.utc();

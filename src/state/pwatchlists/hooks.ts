@@ -1,16 +1,15 @@
 import { ChainId, Token } from '@pangolindex/sdk';
-import { useSelector } from 'react-redux';
 import { PNG } from 'src/constants/tokens';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
-import { AppState } from '../index';
+import { AppState, useSelector } from '../index';
 
 export function useSelectedCurrencyLists(): Token[] | undefined {
   const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
   const allTokens = useAllTokens();
   const coins = Object.values(allTokens || {});
 
-  let addresses = useSelector<AppState, AppState['pwatchlists']['currencies']>((state) =>
+  let addresses = useSelector<AppState['pwatchlists']['currencies']>((state) =>
     ([] as string[]).concat(state?.pwatchlists?.currencies || []),
   );
 
@@ -30,7 +29,7 @@ export function useSelectedCurrencyLists(): Token[] | undefined {
 export function useIsSelectedCurrency(address: string): boolean {
   const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
 
-  let addresses = useSelector<AppState, AppState['pwatchlists']['currencies']>((state) =>
+  let addresses = useSelector<AppState['pwatchlists']['currencies']>((state) =>
     ([] as string[]).concat(state?.pwatchlists?.currencies || []),
   );
 
