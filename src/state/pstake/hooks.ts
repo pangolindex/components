@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { CHAINS, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WAVAX, Price } from '@pangolindex/sdk';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import isEqual from 'lodash.isequal';
 import { useEffect, useMemo, useRef } from 'react';
@@ -229,8 +229,8 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
 
   const rewardAddress = miniChefStaking?.rewardsAddress;
   const rewardContract = useRewardViaMultiplierContract(rewardAddress !== ZERO_ADDRESS ? rewardAddress : undefined);
-  const getRewardTokensRes = useSingleCallResult(rewardContract, 'getRewardTokens', undefined);
-  const getRewardMultipliersRes = useSingleCallResult(rewardContract, 'getRewardMultipliers', undefined);
+  const getRewardTokensRes = useSingleCallResult(rewardContract, 'getRewardTokens');
+  const getRewardMultipliersRes = useSingleCallResult(rewardContract, 'getRewardMultipliers');
   const { earnedAmount } = useGetEarnedAmount(miniChefStaking?.pid as string);
 
   const rewardTokensAddress = getRewardTokensRes?.result?.[0];
@@ -294,12 +294,12 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
         ]
       : [undefined, undefined];
 
-  const liquidityInUSD = CHAINS[chainId]?.mainnet
-    ? currency0Price && token0Deposited
-      ? Number(currency0Price.toFixed()) * 2 * Number(token0Deposited?.toSignificant(6))
-      : 0
-    : 0;
-  //
+  let liquidityInUSD = 0;
+
+  if (CHAINS[chainId]?.mainnet && currency0Price && token0Deposited) {
+    liquidityInUSD = Number(currency0Price.toFixed()) * 2 * Number(token0Deposited?.toSignificant(6));
+  }
+
   return useMemo(
     () => ({
       userPgl,
@@ -434,7 +434,7 @@ export const tokenComparator = (
 };
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const useDummyMinichefHook = (version?: number, pairToFilterBy?: Pair | null) => {
+const useDummyMinichefHook = (_version?: number, _pairToFilterBy?: Pair | null) => {
   return [] as StakingInfo[];
 };
 
@@ -479,9 +479,6 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
       return pairToFilterBy.involvesToken(item.tokens[0]) && pairToFilterBy.involvesToken(item.tokens[1]);
     };
 
-    // if (DOUBLE_SIDE_STAKING_REWARDS_INFO[chainId]?.[version]) {
-    //   return DOUBLE_SIDE_STAKING_REWARDS_INFO[chainId]?.[version]?.filter(filterPair);
-    // }
     const _infoTokens: DoubleSideStaking[] = [];
     if (tokens0 && tokens1 && tokens0?.length === tokens1?.length) {
       tokens0.forEach((token0, index) => {
@@ -568,7 +565,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
   const usdPriceTmp = useUSDCPrice(WAVAX[chainId]);
   const usdPrice = CHAINS[chainId]?.mainnet ? usdPriceTmp : undefined;
 
-  const arr = useMemo(() => {
+  return useMemo(() => {
     if (!chainId || !png) return [];
 
     return pairAddresses.reduce<any[]>((memo, _pairAddress, index) => {
@@ -781,7 +778,6 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
     rewardTokensMultipliers,
     poolMap,
   ]);
-  return arr;
 };
 
 export const useMinichefStakingInfosMapping: {
