@@ -28,7 +28,7 @@ const WalletCard = ({ pair }: WalletCardProps) => {
 
   const userPgl = useTokenBalance(account ?? undefined, pair?.liquidityToken);
   const { liquidityInUSD } = useGetPoolDollerWorth(pair);
-
+  const yourLiquidity = liquidityInUSD ? `$${liquidityInUSD?.toFixed(4)}` : '-';
   return (
     <Panel>
       <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -45,7 +45,7 @@ const WalletCard = ({ pair }: WalletCardProps) => {
       <StatWrapper>
         <Stat
           title={t('pool.yourLiquidity')}
-          stat={`${liquidityInUSD ? `$${liquidityInUSD?.toFixed(4)}` : '-'}`}
+          stat={yourLiquidity}
           titlePosition="top"
           titleFontSize={16}
           statFontSize={[24, 18]}

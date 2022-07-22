@@ -26,13 +26,25 @@ const PoolPriceBar = ({ currencies, noLiquidity, poolTokenPercentage, price, par
   const currency0Price = CHAINS[chainId]?.mainnet ? currency0PriceTmp : undefined;
   const multipyAmount = currency0Price ? Number(currency0Price.toFixed()) * 2 * Number(currency0InputValue) : 0;
 
+  let sharePoolStat = multipyAmount ? `$${multipyAmount?.toFixed(4)}` : '-';
+
+  function getShareOfPool() {
+    if (noLiquidity && price) {
+      return '100%';
+    } else if (poolTokenPercentage?.lessThan(ONE_BIPS)) {
+      return '<0.01%';
+    } else {
+      return `${poolTokenPercentage?.toFixed(2) ?? 0}%}`;
+    }
+  }
+
   return (
     <Root>
       <GridContainer>
         <Box>
           <Stat
             title={`${t('migratePage.dollarWorth')}`}
-            stat={`${multipyAmount ? `$${multipyAmount?.toFixed(4)}` : '-'}`}
+            stat={sharePoolStat}
             titlePosition="top"
             titleFontSize={12}
             statFontSize={14}
@@ -43,12 +55,7 @@ const PoolPriceBar = ({ currencies, noLiquidity, poolTokenPercentage, price, par
         <Box>
           <Stat
             title={`${t('addLiquidity.shareOfPool')}`}
-            stat={`${
-              noLiquidity && price
-                ? '100'
-                : (poolTokenPercentage?.lessThan(ONE_BIPS) ? '<0.01' : poolTokenPercentage?.toFixed(2)) ?? '0'
-            }
-            %`}
+            stat={getShareOfPool()}
             titlePosition="top"
             titleFontSize={12}
             statFontSize={14}

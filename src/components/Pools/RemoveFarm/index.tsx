@@ -65,7 +65,6 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
               account,
             ];
 
-      // TODO: Support withdrawing partial amounts for v2+
       try {
         const response: TransactionResponse = await stakingContract[method](...args);
 

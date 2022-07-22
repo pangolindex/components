@@ -34,12 +34,19 @@ const Stat = ({
 }: StatProps) => {
   const chainId = useChainId();
   const token = currency instanceof Currency && currency instanceof Token ? currency : WAVAX[chainId];
+
+  function getAlignment() {
+    if (statAlign === 'center') {
+      return 'center';
+    } else if (statAlign === 'right') {
+      return 'flex-end';
+    } else {
+      return 'flex-start';
+    }
+  }
+
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems={statAlign === 'center' ? 'center' : statAlign === 'right' ? 'flex-end' : 'flex-start'}
-    >
+    <Box display="flex" flexDirection="column" alignItems={getAlignment()}>
       {titlePosition === 'top' && title && (
         <Box display="flex" flexDirection="row" style={{ gap: '5px' }} alignItems="center">
           <Text color={titleColor || 'text1'} fontSize={titleFontSize || 20}>

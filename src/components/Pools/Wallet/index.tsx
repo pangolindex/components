@@ -20,6 +20,40 @@ const Wallet: React.FC<Props> = ({ setMenu, activeMenu, menuItems }) => {
 
   const { t } = useTranslation();
 
+  function getWalletCardView() {
+    if (!account) {
+      return (
+        <Box padding="40px" width="100%" borderRadius="16px">
+          <Text color="text3" textAlign="center" fontWeight={500}>
+            {t('pool.connectWalletToView')}
+          </Text>
+        </Box>
+      );
+    } else if (v2IsLoading) {
+      return <Loader size={100} />;
+    } else if (allV2PairsWithLiquidity?.length > 0) {
+      return (
+        <>
+          <Scrollbars>
+            <PanelWrapper>
+              {allV2PairsWithLiquidity.map((v2Pair) => (
+                <WalletCard key={v2Pair.liquidityToken.address} pair={v2Pair} />
+              ))}
+            </PanelWrapper>
+          </Scrollbars>
+        </>
+      );
+    } else {
+      return (
+        <EmptyProposals>
+          <Text color="text3" textAlign="center" fontWeight={500}>
+            {t('pool.noLiquidity')}
+          </Text>
+        </EmptyProposals>
+      );
+    }
+  }
+
   return (
     <PageWrapper>
       <MobileContainer>
@@ -32,31 +66,7 @@ const Wallet: React.FC<Props> = ({ setMenu, activeMenu, menuItems }) => {
         />
       </MobileContainer>
 
-      {!account ? (
-        <Box padding="40px" width="100%" borderRadius="16px">
-          <Text color="text3" textAlign="center" fontWeight={500}>
-            {t('pool.connectWalletToView')}
-          </Text>
-        </Box>
-      ) : v2IsLoading ? (
-        <Loader size={100} />
-      ) : allV2PairsWithLiquidity?.length > 0 ? (
-        <>
-          <Scrollbars>
-            <PanelWrapper>
-              {allV2PairsWithLiquidity.map((v2Pair) => (
-                <WalletCard key={v2Pair.liquidityToken.address} pair={v2Pair} />
-              ))}
-            </PanelWrapper>
-          </Scrollbars>
-        </>
-      ) : (
-        <EmptyProposals>
-          <Text color="text3" textAlign="center" fontWeight={500}>
-            {t('pool.noLiquidity')}
-          </Text>
-        </EmptyProposals>
-      )}
+      {getWalletCardView()}
     </PageWrapper>
   );
 };

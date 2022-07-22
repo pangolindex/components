@@ -42,7 +42,7 @@ export default function StatDetail({ title, totalAmount, pair, pgl, currency0, c
       <StateContainer>
         <Stat
           title={title}
-          stat={`${totalAmount ? `${totalAmount}` : '-'}`}
+          stat={totalAmount ?? '-'}
           titlePosition="top"
           titleFontSize={12}
           statFontSize={[20, 16]}

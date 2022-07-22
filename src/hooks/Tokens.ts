@@ -13,6 +13,8 @@ import { useTokenHook } from './multiChainsHooks';
 import { useBytes32TokenContract, useTokenContract } from './useContract';
 import { useChainId } from './index';
 
+type TokenReturnType = Token | undefined | null;
+
 export function useAllTokens(): { [address: string]: Token } {
   const chainId = useChainId();
 
@@ -57,7 +59,7 @@ export interface NearTokenMetadata {
 // undefined if invalid or does not exist
 // null if loading
 // otherwise returns the token
-export function useToken(tokenAddress?: string): Token | undefined | null {
+export function useToken(tokenAddress?: string): TokenReturnType {
   const chainId = useChainId();
   const tokens = useAllTokens();
 
@@ -112,7 +114,7 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
   ]);
 }
 
-export function useNearToken(tokenAddress?: string): Token | undefined | null {
+export function useNearToken(tokenAddress?: string): TokenReturnType {
   const [tokenData, setTokenData] = useState<NearTokenMetadata>();
 
   const chainId = useChainId();
@@ -146,7 +148,7 @@ export function useNearToken(tokenAddress?: string): Token | undefined | null {
   }, [address, chainId, token, tokenData]);
 }
 
-export function useTokens(tokensAddress: string[] = []): Array<Token | undefined | null> | undefined | null {
+export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
   const chainId = useChainId();
   const tokens = useAllTokens();
 

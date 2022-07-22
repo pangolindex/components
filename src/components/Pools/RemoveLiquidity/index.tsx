@@ -327,6 +327,22 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
     }
   }
 
+  function getApproveButtonVariant() {
+    if (approval === ApprovalState.APPROVED || signatureData !== null) {
+      return 'confirm';
+    }
+    return 'primary';
+  }
+
+  function getApproveButtonText() {
+    if (approval === ApprovalState.PENDING) {
+      return t('removeLiquidity.approving');
+    } else if (approval === ApprovalState.APPROVED || signatureData !== null) {
+      return t('removeLiquidity.approved');
+    }
+    return t('removeLiquidity.approve');
+  }
+
   return (
     <RemoveWrapper>
       {!attempting && !hash && (
@@ -405,18 +421,14 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
               <ButtonWrapper>
                 <Box mr="5px" width="100%">
                   <Button
-                    variant={approval === ApprovalState.APPROVED || signatureData !== null ? 'confirm' : 'primary'}
+                    variant={getApproveButtonVariant()}
                     onClick={onAttemptToApprove}
                     isDisabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
                     loading={attempting && !hash}
                     loadingText={t('removeLiquidity.approving')}
                     height="46px"
                   >
-                    {approval === ApprovalState.PENDING
-                      ? t('removeLiquidity.approving')
-                      : approval === ApprovalState.APPROVED || signatureData !== null
-                      ? t('removeLiquidity.approved')
-                      : t('removeLiquidity.approve')}
+                    {getApproveButtonText()}
                   </Button>
                 </Box>
 

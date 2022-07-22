@@ -61,12 +61,12 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
     }
   }
 
-  let error: string | undefined;
+  let _error: string | undefined;
   if (!account) {
-    error = t('earn.connectWallet');
+    _error = t('earn.connectWallet');
   }
   if (!stakingInfo?.stakedAmount) {
-    error = error ?? t('earn.enterAmount');
+    _error = _error ?? t('earn.enterAmount');
   }
 
   const { earnedAmount } = useGetEarnedAmount(stakingInfo?.pid as string);
@@ -114,7 +114,7 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
 
           <Box my={'10px'}>
             <Button variant="primary" onClick={onClaimReward}>
-              {error ?? t('earn.claimReward', { symbol: 'PNG' })}
+              {_error ?? t('earn.claimReward', { symbol: 'PNG' })}
             </Button>
           </Box>
         </Root>

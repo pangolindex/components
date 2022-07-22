@@ -332,6 +332,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
       return '-';
     }
   };
+  const dollerWarth = finalUsd ? `$${Number(finalUsd).toFixed(2)}` : '-';
 
   return (
     <StakeWrapper>
@@ -392,7 +393,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
               <CardContentBox isSuperFarm={isSuperFarm}>
                 <Stat
                   title={t('migratePage.dollarWorth')}
-                  stat={`${finalUsd ? `$${Number(finalUsd).toFixed(2)}` : '-'}`}
+                  stat={dollerWarth}
                   titlePosition="top"
                   titleFontSize={14}
                   statFontSize={16}
@@ -424,10 +425,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
             {type === SpaceType.detail && (
               <Box>
                 <ContentBox>
-                  {renderPoolDataRow(
-                    t('migratePage.dollarWorth'),
-                    `${finalUsd ? `$${Number(finalUsd).toFixed(2)}` : '-'}`,
-                  )}
+                  {renderPoolDataRow(t('migratePage.dollarWorth'), `${dollerWarth}`)}
                   {renderPoolDataRow(
                     `${t('dashboardPage.earned_weeklyIncome')}`,
                     `${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} PNG`,

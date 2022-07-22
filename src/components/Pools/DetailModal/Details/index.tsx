@@ -40,6 +40,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
   const tokenB = pair?.token1 || token1;
   const currency0 = tokenA ? unwrappedToken(tokenA, chainId) : undefined;
   const currency1 = tokenB ? unwrappedToken(tokenB, chainId) : undefined;
+  const yourLiquidity = liquidityInUSD ? `$${liquidityInUSD?.toFixed(2)}` : '-';
 
   return (
     <>
@@ -60,7 +61,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
               currency0={currency0}
               currency1={currency1}
               pair={pair}
-              totalAmount={`${liquidityInUSD ? `$${liquidityInUSD?.toFixed(2)}` : '-'}`}
+              totalAmount={yourLiquidity}
               pgl={userPgl}
             />
           </Box>

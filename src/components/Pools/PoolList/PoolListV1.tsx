@@ -3,7 +3,6 @@ import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
 import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
-import { DOUBLE_SIDE_STAKING_REWARDS_INFO } from 'src/state/pstake/doubleSideConfig';
 import { fetchChunkedAprs, sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/hooks';
 import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import PoolCardV1 from '../PoolCard/PoolCardV1';
@@ -127,9 +126,6 @@ const PoolListV1: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stakingInfos?.length, chainId, version]);
 
-  const stakingRewardsExist = Boolean(
-    typeof chainId === 'number' && (DOUBLE_SIDE_STAKING_REWARDS_INFO[chainId]?.length ?? 0) > 0,
-  );
   const selectedPool: DoubleSideStakingInfo = selectedPoolIndex !== -1 ? stakingInfoData[selectedPoolIndex] : undefined;
 
   return (
@@ -142,8 +138,8 @@ const PoolListV1: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
       onChangeSortBy={setSortBy}
       sortBy={sortBy}
       searchQuery={searchQuery}
-      isLoading={(stakingRewardsExist && stakingInfos?.length === 0) || poolCardsLoading}
-      doesNotPoolExist={(!stakingRewardsExist || poolCards?.length === 0) && !poolCardsLoading}
+      isLoading={stakingInfos?.length === 0 || poolCardsLoading}
+      doesNotPoolExist={poolCards?.length === 0 && !poolCardsLoading}
       selectedPool={selectedPool}
     >
       {filteredPoolCards}

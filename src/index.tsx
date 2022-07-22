@@ -13,14 +13,21 @@ import {
   useGetAllFarmData,
   useGetMinichefStakingInfosViaSubgraph,
   useMinichefStakingInfosMapping,
-  useStakingInfo,
   fetchMinichefData,
   useMinichefStakingInfos,
   fetchChunkedAprs,
   useDerivedStakeInfo,
   useMinichefPools,
+  calculateTotalStakedAmountInAvax,
+  calculateTotalStakedAmountInAvaxFromPng,
 } from 'src/state/pstake/hooks';
-import { MinichefStakingInfo, DoubleSideStakingInfo, PoolType, StakingInfo } from 'src/state/pstake/types';
+import {
+  MinichefStakingInfo,
+  DoubleSideStakingInfo,
+  PoolType,
+  StakingInfo,
+  DoubleSideStaking,
+} from 'src/state/pstake/types';
 import {
   LimitOrderInfo,
   useDerivedSwapInfo,
@@ -94,7 +101,7 @@ export * from './connectors';
 export * from './components';
 
 export * from '@gelatonetwork/limit-orders-react';
-export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, StakingInfo };
+export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, StakingInfo, DoubleSideStaking };
 
 // components
 export { SelectTokenDrawer };
@@ -121,10 +128,8 @@ export {
   useMinichefStakingInfosMapping,
   useGetAllFarmData,
   useGetMinichefStakingInfosViaSubgraph,
-  useStakingInfo,
   useGetUserLP,
   useMinichefStakingInfos,
-  fetchChunkedAprs,
   useDerivedStakeInfo,
   useMinichefPools,
 };
@@ -140,4 +145,7 @@ export {
   Trans,
   PoolType,
   fetchMinichefData,
+  fetchChunkedAprs,
+  calculateTotalStakedAmountInAvax,
+  calculateTotalStakedAmountInAvaxFromPng,
 };

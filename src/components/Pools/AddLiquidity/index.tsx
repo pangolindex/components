@@ -128,7 +128,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
     };
 
     let estimate,
-      method: (...args: any) => Promise<TransactionResponse>,
+      method: (...xyz: any) => Promise<TransactionResponse>,
       args: Array<string | string[] | number>,
       value: BigNumber | null;
     if (currencyA === CAVAX[chainId] || currencyB === CAVAX[chainId]) {

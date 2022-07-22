@@ -1,9 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
-import { BIG_INT_ZERO, MINICHEF_ADDRESS } from 'src/constants';
-import { useChainId } from 'src/hooks';
+import { BIG_INT_ZERO } from 'src/constants';
 import useDebounce from 'src/hooks/useDebounce';
 import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
-import { DOUBLE_SIDE_STAKING_REWARDS_INFO } from 'src/state/pstake/doubleSideConfig';
 import {
   sortingOnAvaxStake,
   sortingOnStakedAmount,
@@ -27,8 +25,6 @@ export interface EarnProps {
 type StakingInfoByPid = { [pid: string]: MinichefStakingInfo };
 
 const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activeMenu, menuItems }) => {
-  const chainId = useChainId();
-
   const [poolCardsLoading] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -101,11 +97,6 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stakingInfos, debouncedSearchQuery]);
 
-  // const stakingRewardsExist = Boolean(
-  //   //@dev if exist minicheft in chain then exist staking rewards because in deploy we added in minicheft pool PNG/WAVAX
-  //   typeof chainId === 'number' &&
-  //     ((DOUBLE_SIDE_STAKING_REWARDS_INFO[chainId]?.length ?? 0) > 0 || MINICHEF_ADDRESS[chainId]),
-  // );
   const selectedPool = !!selectedPoolIndex ? stakingInfoByPid[selectedPoolIndex] : ({} as MinichefStakingInfo);
 
   return (
