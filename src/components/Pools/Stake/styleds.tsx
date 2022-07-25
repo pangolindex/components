@@ -8,6 +8,9 @@ export const StakeWrapper = styled(Box)`
   height: 100%;
   display: flex;
   flex-direction: column;
+  * {
+    box-sizing: border-box;
+  }
 `;
 
 export const InputText = styled(TextInput)`

@@ -144,7 +144,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
       primaryType: 'Permit',
       message,
     });
-    (provider as any)
+    provider
       .execute('eth_signTypedData_v4', [account, data])
       .then(splitSignature)
       .then((signature: any) => {

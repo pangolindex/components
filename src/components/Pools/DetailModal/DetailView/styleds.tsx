@@ -8,6 +8,9 @@ export const DesktopWrapper = styled(Box)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
   `};
+  * {
+    box-sizing: border-box;
+  }
 `;
 
 export const MobileWrapper = styled(Box)`

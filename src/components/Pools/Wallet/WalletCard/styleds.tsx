@@ -12,6 +12,9 @@ export const Panel = styled(Box)`
   padding: 20px;
   border-radius: 10px;
   height: 295px;
+  * {
+    box-sizing: border-box;
+  }
 `;
 
 export const Divider = styled(Box)`

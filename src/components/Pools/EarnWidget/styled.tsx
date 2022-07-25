@@ -9,4 +9,7 @@ export const Root = styled(Box)`
   display: flex;
   flex-direction: column;
   height: 500px;
+  * {
+    box-sizing: border-box;
+  }
 `;

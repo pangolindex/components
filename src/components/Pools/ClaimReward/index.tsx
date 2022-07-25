@@ -9,7 +9,7 @@ import { StakingInfo } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
-interface ClaimProps {
+export interface ClaimProps {
   stakingInfo: StakingInfo;
   version: number;
   onClose: () => void;

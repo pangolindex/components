@@ -14,7 +14,7 @@ enum Fields {
   TOKEN1 = 1,
 }
 
-interface ImportPoolModalProps {
+export interface ImportPoolModalProps {
   isOpen: boolean;
   onClose: () => void;
   onManagePoolsClick: () => void;

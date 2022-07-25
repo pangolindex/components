@@ -12,6 +12,9 @@ export const Wrapper = styled(Box)`
   height: 295px;
   display: flex;
   flex-direction: column;
+  * {
+    box-sizing: border-box;
+  }
 `;
 
 export const InnerWrapper = styled(Box)`

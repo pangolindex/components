@@ -34,7 +34,7 @@ const PoolPriceBar = ({ currencies, noLiquidity, poolTokenPercentage, price, par
     } else if (poolTokenPercentage?.lessThan(ONE_BIPS)) {
       return '<0.01%';
     } else {
-      return `${poolTokenPercentage?.toFixed(2) ?? 0}%}`;
+      return `${poolTokenPercentage?.toFixed(2) ?? 0}%`;
     }
   }
 

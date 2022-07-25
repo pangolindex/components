@@ -7,4 +7,7 @@ export const RemoveWrapper = styled(Box)`
   flex: 1;
   display: flex;
   flex-direction: column;
+  * {
+    box-sizing: border-box;
+  }
 `;

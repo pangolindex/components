@@ -11,12 +11,12 @@ import SearchToken, { BodyState, Fields } from './SearchToken';
 import { Wrapper } from './styleds';
 import { SpaceType } from 'src/state/pstake/types';
 
-interface Props {
+export interface AddLiquidityModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const AddLiquidityModal = ({ isOpen, onClose }: Props) => {
+const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
   const theme = useContext(ThemeContext);
   const chainId = useChainId();
 

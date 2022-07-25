@@ -10,4 +10,7 @@ export const Wrapper = styled.div`
   padding: 10px;
   position: relative;
   overflow: hidden;
+  * {
+    box-sizing: border-box;
+  }
 `;
