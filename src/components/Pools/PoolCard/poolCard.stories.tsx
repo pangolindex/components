@@ -8,11 +8,18 @@ export default {
   title: 'Components/Pool/PoolCard',
 };
 
-const TemplatePoolCardV2: ComponentStory<typeof PoolCardV2> = (args: any) => {
+const TemplatePoolCardV2: ComponentStory<typeof PoolCardV2> = () => {
   const stakingInfo = useGetMinichefStakingInfos();
   return (
     <Box maxWidth="380px">
-      <PoolCardV2 key={stakingInfo?.pid} stakingInfo={stakingInfo} onClickViewDetail={() => {}} version={2} />
+      <PoolCardV2
+        key={stakingInfo?.pid}
+        stakingInfo={stakingInfo}
+        onClickViewDetail={() => {
+          console.log('click View Detail');
+        }}
+        version={2}
+      />
     </Box>
   );
 };

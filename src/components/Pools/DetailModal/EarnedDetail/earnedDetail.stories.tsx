@@ -8,7 +8,7 @@ export default {
   title: 'Components/Pool/EarnedDetail',
 };
 
-const TemplateEarnedDetail: ComponentStory<typeof EarnedDetail> = (args: any) => {
+const TemplateEarnedDetail: ComponentStory<typeof EarnedDetail> = () => {
   const stakingInfo = useGetMinichefStakingInfos();
   return (
     <Box maxWidth="372px">

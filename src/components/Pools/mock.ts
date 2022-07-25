@@ -42,7 +42,7 @@ export const useGetMinichefStakingInfos = (): MinichefStakingInfo => {
     periodFinish: undefined,
     totalStakedInWavax: totalStakedInWavax,
     rewardTokens: [tokenA],
-    getHypotheticalWeeklyRewardRate: (stakedAmount, totalStakedAmount, totalRewardRatePerSecond) => {
+    getHypotheticalWeeklyRewardRate: (_stakedAmount, _totalStakedAmount, _totalRewardRatePerSecond) => {
       return new TokenAmount(png, JSBI.BigInt(0));
     },
   } as MinichefStakingInfo;

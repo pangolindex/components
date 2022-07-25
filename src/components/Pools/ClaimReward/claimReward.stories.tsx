@@ -8,11 +8,17 @@ export default {
   title: 'Components/Pool/ClaimReward',
 };
 
-const TemplateClaimReward: ComponentStory<typeof ClaimReward> = (args: any) => {
+const TemplateClaimReward: ComponentStory<typeof ClaimReward> = () => {
   const stakingInfo = useGetMinichefStakingInfos();
   return (
     <Box maxWidth="376px" position="relative">
-      <ClaimReward stakingInfo={stakingInfo} onClose={() => {}} version={2} />
+      <ClaimReward
+        stakingInfo={stakingInfo}
+        onClose={() => {
+          console.log('close');
+        }}
+        version={2}
+      />
     </Box>
   );
 };
