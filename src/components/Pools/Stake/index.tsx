@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import { TransactionResponse } from '@ethersproject/providers';
 import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
-import { splitSignature } from 'ethers/lib/utils';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -41,6 +40,7 @@ import {
   PoolSelectWrapper,
   StakeWrapper,
 } from './styleds';
+import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
 
 interface StakeProps {
   version: number;
@@ -68,6 +68,9 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
 
   // track and parse user input
   const [typedValue, setTypedValue] = useState((userLiquidityUnstaked as TokenAmount)?.toExact() || '');
+
+  const getSignature = useGetTransactionSignature();
+
   const { parsedAmount, error } = useDerivedStakeInfo(
     typedValue,
     stakingInfo?.stakedAmount?.token,
@@ -255,23 +258,37 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
       primaryType: 'Permit',
       message,
     });
-    provider
-      .execute('eth_signTypedData_v4', [account, data])
-      .then(splitSignature)
-      .then((signature: any) => {
-        setSignatureData({
-          v: signature.v,
-          r: signature.r,
-          s: signature.s,
-          deadline: deadline.toNumber(),
-        });
-      })
-      .catch((err: any) => {
-        // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
-        if (err?.code !== 4001) {
-          approveCallback();
-        }
+
+    try {
+      const signature: any = await getSignature(data);
+
+      setSignatureData({
+        v: signature.v,
+        r: signature.r,
+        s: signature.s,
+        deadline: deadline.toNumber(),
       });
+    } catch (err: any) {
+      approveCallback();
+    }
+
+    // provider
+    //   .execute('eth_signTypedData_v4', [account, data])
+    //   .then(splitSignature)
+    //   .then((signature: any) => {
+    //     setSignatureData({
+    //       v: signature.v,
+    //       r: signature.r,
+    //       s: signature.s,
+    //       deadline: deadline.toNumber(),
+    //     });
+    //   })
+    //   .catch((err: any) => {
+    //     // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
+    //     if (err?.code !== 4001) {
+    //       approveCallback();
+    //     }
+    //   });
   }
 
   const renderPoolDataRow = (label: string, value: string) => {
