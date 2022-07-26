@@ -49,6 +49,7 @@ import MulticallUpdater from './state/pmulticall/updater';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
 import { useGetUserLP } from './state/pmigrate/hooks';
+import { useTotalSupplyHook, useTotalSupply } from 'src/data/TotalSupply';
 
 const queryClient = new QueryClient();
 
@@ -132,6 +133,8 @@ export {
   useMinichefStakingInfos,
   useDerivedStakeInfo,
   useMinichefPools,
+  useTotalSupplyHook,
+  useTotalSupply,
 };
 
 // misc
