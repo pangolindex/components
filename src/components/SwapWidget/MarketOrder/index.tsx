@@ -99,6 +99,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
     parsedAmount,
     currencies,
     inputError: swapInputError,
+    isLoading: isLoadingSwap,
   } = useDerivedSwapInfo();
 
   const {
@@ -331,6 +332,13 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
       return (
         <Button variant="primary" isDisabled={Boolean(wrapInputError)} onClick={onWrap}>
           {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'unwrap' : null)}
+        </Button>
+      );
+    }
+    if (isLoadingSwap && !swapInputError) {
+      return (
+        <Button variant="primary" isDisabled>
+          Loading
         </Button>
       );
     }

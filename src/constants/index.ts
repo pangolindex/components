@@ -291,7 +291,7 @@ export interface WalletInfo {
   mobileOnly?: true;
   isEVM?: boolean;
 }
-export const DIRECTUS_URL_NEWS = `https://p7gm7mqi.directus.app/items/news?`;
+export const DIRECTUS_URL_NEWS = `https://pangolin.directus.app`;
 
 export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3/`;
 

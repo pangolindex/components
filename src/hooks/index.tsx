@@ -1,9 +1,10 @@
 import { Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
-import { ChainId } from '@pangolindex/sdk';
+import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { PROVIDER_MAPPING, SUPPORTED_WALLETS } from 'src/constants';
+import { isAddress } from 'src/utils';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -43,10 +44,15 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   const [state, setState] = useState<Web3State>(initialWeb3State);
 
   useEffect(() => {
+    let normalizedAccount;
+    if (chainId) {
+      normalizedAccount = CHAINS?.[chainId as ChainId]?.evm ? isAddress(account) : account;
+    }
+
     setState({
       library,
       chainId: chainId || ChainId.AVALANCHE,
-      account,
+      account: normalizedAccount,
     });
   }, [library, chainId, account]);
 
