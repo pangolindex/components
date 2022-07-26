@@ -4,7 +4,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { RefreshCcw } from 'react-feather';
 import ReactGA from 'react-ga';
 import { ThemeContext } from 'styled-components';
-import { TRUSTED_TOKEN_ADDRESSES } from 'src/constants';
+import { TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
@@ -17,6 +17,7 @@ import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
 import { Field } from 'src/state/pswap/actions';
 import {
+  useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
   useSwapActionHandlers,
@@ -44,9 +45,16 @@ interface Props {
   setSwapType: (value: string) => void;
   isLimitOrderVisible: boolean;
   showSettings: boolean;
+  partnerDaaS?: string;
 }
 
-const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible, showSettings }) => {
+const MarketOrder: React.FC<Props> = ({
+  swapType,
+  setSwapType,
+  isLimitOrderVisible,
+  showSettings,
+  partnerDaaS = ZERO_ADDRESS,
+}) => {
   // const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
@@ -89,6 +97,13 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
 
   // get custom setting values for user
   const [allowedSlippage] = useUserSlippageTolerance();
+
+  const [feeTo, setFeeTo] = useDaasFeeTo();
+
+  useEffect(() => {
+    if (feeTo === partnerDaaS) return;
+    setFeeTo(partnerDaaS);
+  }, [feeTo, partnerDaaS]);
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState();

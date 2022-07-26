@@ -16,7 +16,7 @@ import {
 } from '@pangolindex/sdk';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { NATIVE, ROUTER_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
+import { NATIVE, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
@@ -28,8 +28,18 @@ import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { isAddress } from '../../utils';
 import { useUserSlippageTolerance } from '../puser/hooks';
 import { useCurrencyBalances } from '../pwallet/hooks';
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions';
-import { SwapState } from './reducer';
+import {
+  FeeInfo,
+  Field,
+  replaceSwapState,
+  selectCurrency,
+  setRecipient,
+  switchCurrencies,
+  typeInput,
+  updateFeeInfo,
+  updateFeeTo,
+} from './actions';
+import { SwapParams } from './reducer';
 
 export interface LimitOrderInfo extends Order {
   pending?: boolean;
@@ -111,6 +121,7 @@ export function tryParseAmount(
 const BAD_RECIPIENT_ADDRESSES: string[] = [
   FACTORY_ADDRESS[ChainId.AVALANCHE], // v2 factory
   ROUTER_ADDRESS[ChainId.AVALANCHE], // v2 router 02
+  ROUTER_DAAS_ADDRESS[ChainId.AVALANCHE], // DaaS router
 ];
 
 /**
@@ -278,7 +289,7 @@ function validatedRecipient(recipient: any): string | null {
   return null;
 }
 
-export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
+export function queryParametersToSwapState(parsedQs: ParsedQs): SwapParams {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency);
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency);
   if (inputCurrency === outputCurrency) {
@@ -447,5 +458,37 @@ export function useGelatoLimitOrderList() {
     }),
     [allOrders, allOpenOrders, allCancelledOrders, executed],
   );
+}
+
+export function useDaasFeeTo(): [string, (feeTo: string) => void] {
+  const dispatch = useDispatch();
+  const feeTo = useSelector<AppState['pswap']['feeTo']>((state) => {
+    return state.pswap.feeTo;
+  });
+
+  const setFeeTo = useCallback(
+    (feeTo: string) => {
+      dispatch(updateFeeTo({ feeTo }));
+    },
+    [dispatch],
+  );
+
+  return [feeTo, setFeeTo];
+}
+
+export function useDaasFeeInfo(): [FeeInfo, (feeInfo: FeeInfo) => void] {
+  const dispatch = useDispatch();
+  const feeInfo = useSelector<AppState['pswap']['feeInfo']>((state) => {
+    return state.pswap.feeInfo;
+  });
+
+  const setFeeInfo = useCallback(
+    (feeInfo: FeeInfo) => {
+      dispatch(updateFeeInfo({ feeInfo }));
+    },
+    [dispatch],
+  );
+
+  return [feeInfo, setFeeInfo];
 }
 /* eslint-enable max-lines */

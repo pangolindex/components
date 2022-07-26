@@ -1,9 +1,10 @@
-import { Trade, TradeType } from '@pangolindex/sdk';
+import { Percent, Trade, TradeType } from '@pangolindex/sdk';
 import React from 'react';
-import { INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from 'src/constants';
+import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from 'src/constants';
 import { Field } from 'src/state/pswap/actions';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
+import { useDaasFeeInfo } from '../../../state/pswap/hooks';
 import { Text } from '../../Text';
 import { ContentBox, DataBox, ValueText } from './styled';
 
@@ -11,7 +12,8 @@ type Props = { trade: Trade };
 
 const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
   const [allowedSlippage] = useUserSlippageTolerance();
-  const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade);
+  const [feeInfo] = useDaasFeeInfo();
+  const { priceImpactWithoutFee, realizedLPFee, realizedLPFeeAmount } = computeTradePriceBreakdown(trade);
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT;
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage);
 
@@ -25,7 +27,12 @@ const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
       : `${priceImpactWithoutFee.toFixed(2)}%`
     : '-';
 
-  const lpFee = realizedLPFee ? `${realizedLPFee.toSignificant(4)} ${trade.inputAmount.currency.symbol}` : '-';
+  const lpFeeAmount = realizedLPFeeAmount
+    ? `${realizedLPFeeAmount.toSignificant(4)} ${trade.inputAmount.currency.symbol}`
+    : '-';
+  const totalFee = realizedLPFee
+    ? `${realizedLPFee.add(new Percent(feeInfo.feeTotal.toString(), BIPS_BASE)).multiply('100').toSignificant(4)}%`
+    : '-';
 
   const renderRow = (label: string, value: string, showSeverity?: boolean) => {
     return (
@@ -46,7 +53,7 @@ const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
       {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && renderRow('Slippage tolerance', `${allowedSlippage / 100}%`)}
       {renderRow(isExactIn ? 'Minimum Received' : 'Maximum Sold', amount)}
       {renderRow('Price Impact', priceImpact, true)}
-      {renderRow('Liquidity Provider Fee', lpFee)}
+      {feeInfo?.feeTotal > 0 ? renderRow('Total Fee', totalFee) : renderRow('Liquidity Provider Fee', lpFeeAmount)}
     </ContentBox>
   );
 };
