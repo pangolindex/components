@@ -18,6 +18,7 @@ import { usePair } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePairContract, useStakingContract } from 'src/hooks/useContract';
+import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import {
   useDerivedStakeInfo,
@@ -25,7 +26,7 @@ import {
   useMinichefPendingRewards,
   useMinichefPools,
 } from 'src/state/pstake/hooks';
-import { StakingInfo, SpaceType } from 'src/state/pstake/types';
+import { SpaceType, StakingInfo } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
@@ -40,7 +41,6 @@ import {
   PoolSelectWrapper,
   StakeWrapper,
 } from './styleds';
-import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
 
 interface StakeProps {
   version: number;
@@ -53,7 +53,7 @@ interface StakeProps {
 const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const { library, provider } = useLibrary();
+  const { library } = useLibrary();
   const token0 = stakingInfo.tokens[0];
   const token1 = stakingInfo.tokens[1];
 
@@ -271,24 +271,6 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
     } catch (err: any) {
       approveCallback();
     }
-
-    // provider
-    //   .execute('eth_signTypedData_v4', [account, data])
-    //   .then(splitSignature)
-    //   .then((signature: any) => {
-    //     setSignatureData({
-    //       v: signature.v,
-    //       r: signature.r,
-    //       s: signature.s,
-    //       deadline: deadline.toNumber(),
-    //     });
-    //   })
-    //   .catch((err: any) => {
-    //     // for all errors other than 4001 (EIP-1193 user rejected request), fall back to manual approve
-    //     if (err?.code !== 4001) {
-    //       approveCallback();
-    //     }
-    //   });
   }
 
   const renderPoolDataRow = (label: string, value: string) => {

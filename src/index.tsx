@@ -6,27 +6,28 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { usePair } from 'src/data/Reserves';
+import { useTotalSupply, useTotalSupplyHook } from 'src/data/TotalSupply';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
 import {
-  useGetAllFarmData,
-  useGetMinichefStakingInfosViaSubgraph,
-  useMinichefStakingInfosMapping,
-  fetchMinichefData,
-  useMinichefStakingInfos,
-  fetchChunkedAprs,
-  useDerivedStakeInfo,
-  useMinichefPools,
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
+  fetchChunkedAprs,
+  fetchMinichefData,
+  useDerivedStakeInfo,
+  useGetAllFarmData,
+  useGetMinichefStakingInfosViaSubgraph,
+  useMinichefPools,
+  useMinichefStakingInfos,
+  useMinichefStakingInfosMapping,
 } from 'src/state/pstake/hooks';
 import {
-  MinichefStakingInfo,
+  DoubleSideStaking,
   DoubleSideStakingInfo,
+  MinichefStakingInfo,
   PoolType,
   StakingInfo,
-  DoubleSideStaking,
 } from 'src/state/pstake/types';
 import {
   LimitOrderInfo,
@@ -45,11 +46,10 @@ import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
 import ApplicationUpdater from './state/papplication/updater';
 import ListsUpdater from './state/plists/updater';
+import { useGetUserLP } from './state/pmigrate/hooks';
 import MulticallUpdater from './state/pmulticall/updater';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
-import { useGetUserLP } from './state/pmigrate/hooks';
-import { useTotalSupplyHook, useTotalSupply } from 'src/data/TotalSupply';
 
 const queryClient = new QueryClient();
 

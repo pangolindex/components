@@ -169,7 +169,7 @@ export function useUpdateAllFarmsEarnAmount() {
     const isAllFetched = pendingRewards.every((item) => !item.loading);
     const areValuesSame = isEqual(pendingRewards, prevPendingRewards);
     if (isAllFetched && !areValuesSame) {
-      const pendingRewardsObj = {} as { [key: string]: {} };
+      const pendingRewardsObj = {} as { [key: string]: { pid: string; earnedAmount: string } };
       for (let index = 0; index < pendingRewards.length; index++) {
         const pid = poolIdArray[index];
         const pendingRewardInfo = pendingRewards[index];

@@ -15,8 +15,8 @@ import {
 } from 'src/components';
 import Drawer from 'src/components/Drawer';
 import { Field } from 'src/state/pmint/actions';
-import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
 import { SpaceType } from 'src/state/pstake/types';
+import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
 
 interface Props {
   isOpen: boolean;

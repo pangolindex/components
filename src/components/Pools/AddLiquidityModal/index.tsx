@@ -5,11 +5,11 @@ import { ThemeContext } from 'styled-components';
 import { Box, Modal, Text } from 'src/components';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { useChainId } from 'src/hooks';
+import { SpaceType } from 'src/state/pstake/types';
 import { CloseIcon } from 'src/theme/components';
 import AddLiquidity from '../AddLiquidity';
 import SearchToken, { BodyState, Fields } from './SearchToken';
 import { Wrapper } from './styleds';
-import { SpaceType } from 'src/state/pstake/types';
 
 export interface AddLiquidityModalProps {
   isOpen: boolean;

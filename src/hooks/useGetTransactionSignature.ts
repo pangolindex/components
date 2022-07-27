@@ -1,5 +1,5 @@
-import { useLibrary, usePangolinWeb3 } from './index';
 import { splitSignature } from 'ethers/lib/utils';
+import { useLibrary, usePangolinWeb3 } from './index';
 
 export function useGetTransactionSignature() {
   const { provider } = useLibrary();

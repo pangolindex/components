@@ -10,6 +10,7 @@ import { ROUTER_ADDRESS } from 'src/constants';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePairContract } from 'src/hooks/useContract';
+import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Field } from 'src/state/pburn/actions';
@@ -19,7 +20,6 @@ import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { ButtonWrapper, RemoveWrapper } from './styleds';
-import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
 
 interface RemoveLiquidityProps {
   currencyA?: Currency;
@@ -31,7 +31,7 @@ interface RemoveLiquidityProps {
 const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLiquidityProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const { library, provider } = useLibrary();
+  const { library } = useLibrary();
   const [tokenA, tokenB] = useMemo(
     () => [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)],
     [currencyA, currencyB, chainId],

@@ -1,6 +1,6 @@
-import { Token, TokenAmount, WAVAX, Pair, JSBI } from '@pangolindex/sdk';
-import { PNG } from 'src/constants/tokens';
+import { JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { BIG_INT_ZERO } from 'src/constants';
+import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
 
@@ -42,7 +42,7 @@ export const useGetMinichefStakingInfos = (): MinichefStakingInfo => {
     periodFinish: undefined,
     totalStakedInWavax: totalStakedInWavax,
     rewardTokens: [tokenA],
-    getHypotheticalWeeklyRewardRate: (_stakedAmount, _totalStakedAmount, _totalRewardRatePerSecond) => {
+    getHypotheticalWeeklyRewardRate: () => {
       return new TokenAmount(png, JSBI.BigInt(0));
     },
   } as MinichefStakingInfo;

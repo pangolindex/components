@@ -1,7 +1,7 @@
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
-import DropdownMenu from '.';
 import { Box } from '../Box';
+import DropdownMenu from '.';
 
 export default {
   component: DropdownMenu,

@@ -1,7 +1,8 @@
 import { ComponentStory } from '@storybook/react';
-import EarnedDetail from '.';
+import React from 'react';
 import { Box } from '../../../Box';
 import { useGetMinichefStakingInfos } from '../../mock';
+import EarnedDetail from '.';
 
 export default {
   component: EarnedDetail,

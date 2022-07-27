@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Drawer from 'src/components/Drawer';
-import { StakingInfo, SpaceType } from 'src/state/pstake/types';
+import { SpaceType, StakingInfo } from 'src/state/pstake/types';
 import Stake from '../Stake';
 
 type Props = {

@@ -1,6 +1,7 @@
 import { ComponentStory } from '@storybook/react';
-import TransactionCompleted from '.';
+import React from 'react';
 import { Box } from '../Box';
+import TransactionCompleted from '.';
 
 export default {
   component: TransactionCompleted,

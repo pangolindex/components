@@ -3,9 +3,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
+import { SpaceType } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidity from '../AddLiquidity';
-import { SpaceType } from 'src/state/pstake/types';
 
 type Props = {
   isOpen: boolean;

@@ -11,7 +11,7 @@ import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
 import { gnosisSafe, injected, near, walletconnect, walletlink, xDefi } from '../connectors';
 import { CommonEVMProvider, NearProvider } from '../connectors/WalletProviders';
-import { PNG, DAIe, USDC, USDCe, USDTe, axlUST, UST } from './tokens';
+import { DAIe, PNG, USDC, USDCe, USDTe, UST, axlUST } from './tokens';
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.router,

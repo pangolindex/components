@@ -1,7 +1,8 @@
 import { ComponentStory } from '@storybook/react';
-import PoolCardV2 from './PoolCardV2';
+import React from 'react';
 import { Box } from '../../Box';
 import { useGetMinichefStakingInfos } from '../mock';
+import PoolCardV2 from './PoolCardV2';
 
 export default {
   component: PoolCardV2,

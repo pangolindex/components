@@ -1,8 +1,8 @@
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { Stat } from '.';
 import { Box } from '../Box';
+import { Stat } from '.';
 
 export default {
   component: Stat,

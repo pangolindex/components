@@ -1,6 +1,6 @@
 import { Currency } from '@pangolindex/sdk';
 import React, { useState } from 'react';
-import { StakingInfo, SpaceType } from 'src/state/pstake/types';
+import { SpaceType, StakingInfo } from 'src/state/pstake/types';
 import AddLiquidity from '../AddLiquidity';
 import Stake from '../Stake';
 import EarnOption, { TradeType } from './EarnOption';

@@ -26,7 +26,7 @@ const PoolPriceBar = ({ currencies, noLiquidity, poolTokenPercentage, price, par
   const currency0Price = CHAINS[chainId]?.mainnet ? currency0PriceTmp : undefined;
   const multipyAmount = currency0Price ? Number(currency0Price.toFixed()) * 2 * Number(currency0InputValue) : 0;
 
-  let sharePoolStat = multipyAmount ? `$${multipyAmount?.toFixed(4)}` : '-';
+  const sharePoolStat = multipyAmount ? `$${multipyAmount?.toFixed(4)}` : '-';
 
   function getShareOfPool() {
     if (noLiquidity && price) {

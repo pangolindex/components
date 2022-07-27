@@ -1,7 +1,8 @@
 import { ComponentStory } from '@storybook/react';
-import ClaimReward from '.';
+import React from 'react';
 import { Box } from '../../Box';
 import { useGetMinichefStakingInfos } from '../mock';
+import ClaimReward from '.';
 
 export default {
   component: ClaimReward,

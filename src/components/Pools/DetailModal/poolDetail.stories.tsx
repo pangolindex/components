@@ -1,9 +1,9 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { Button } from '../../Button';
-import DetailModal from '.';
 import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
+import { Button } from '../../Button';
 import { useGetMinichefStakingInfos } from '../mock';
+import DetailModal from '.';
 
 export default {
   component: DetailModal,
