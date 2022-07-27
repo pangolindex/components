@@ -73,6 +73,7 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
 
 export function usePair(tokenA?: Currency, tokenB?: Currency): [PairState, Pair | null] {
   const chainId = useChainId();
+
   const usePairs_ = usePairsHook[chainId];
   return usePairs_([[tokenA, tokenB]])[0];
 }

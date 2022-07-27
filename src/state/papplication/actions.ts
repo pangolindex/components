@@ -20,6 +20,7 @@ export type PopupContent =
 
 export enum ApplicationModal {
   WALLET,
+  POOL_DETAIL,
 }
 
 export const updateBlockNumber = createAction<{ chainId: number; blockNumber: number }>(
