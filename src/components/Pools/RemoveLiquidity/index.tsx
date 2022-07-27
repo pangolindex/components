@@ -7,7 +7,7 @@ import ReactGA from 'react-ga';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
 import { ROUTER_ADDRESS } from 'src/constants';
-import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -101,6 +101,8 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hash, attempting]);
+
+  const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
 
   async function onAttemptToApprove() {
     if (!pairContract || !pair || !library || !deadline || !chainId || !account)
@@ -311,7 +313,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
         const response: TransactionResponse = await router[methodName](...args, {
           gasLimit: safeGasEstimate,
         });
-        await response.wait(1);
+        await response.wait(5);
         addTransaction(response, {
           summary:
             t('removeLiquidity.remove') +
@@ -324,7 +326,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
             ' ' +
             currencyB?.symbol,
         });
-
+        await refetchMinichefSubgraph();
         setHash(response.hash);
         // eslint-disable-next-line import/no-named-as-default-member
         ReactGA.event({

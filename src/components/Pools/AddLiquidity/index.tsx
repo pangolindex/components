@@ -10,7 +10,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, Button, Text, TextInput } from 'src/components';
 import { ROUTER_ADDRESS } from 'src/constants';
 import { PairState } from 'src/data/Reserves';
-import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
@@ -112,6 +112,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
   );
 
   const addTransaction = useTransactionAdder();
+  const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
 
   async function onAdd() {
     if (!chainId || !library || !account) return;
@@ -167,7 +168,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
         ...(value ? { value } : {}),
         gasLimit: calculateGasMargin(estimatedGasLimit),
       });
-      await response.wait(1);
+      await response.wait(5);
 
       addTransaction(response, {
         summary:
@@ -180,7 +181,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
           ' ' +
           currencies[Field.CURRENCY_B]?.symbol,
       });
-
+      await refetchMinichefSubgraph();
       setTxHash(response.hash);
       // eslint-disable-next-line import/no-named-as-default-member
       ReactGA.event({

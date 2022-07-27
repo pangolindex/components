@@ -15,7 +15,7 @@ import {
   TransactionCompleted,
 } from 'src/components';
 import { usePair } from 'src/data/Reserves';
-import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePairContract, useStakingContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -118,6 +118,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
   const currency0 = unwrappedToken(selectedPair?.token0 as Token, chainId);
   const currency1 = unwrappedToken(selectedPair?.token1 as Token, chainId);
   const poolMap = useMinichefPools();
+  const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
 
   const onChangePercentage = (value: number) => {
     if (!userLiquidityUnstaked) {
@@ -146,10 +147,11 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
       if (approval === ApprovalState.APPROVED) {
         try {
           const response: TransactionResponse = await stakingContract[method](...args);
-          await response.wait(1);
+          await response.wait(5);
           addTransaction(response, {
             summary: t('earn.depositLiquidity'),
           });
+          await refetchMinichefSubgraph();
           setHash(response.hash);
         } catch (err) {
           setAttempting(false);
