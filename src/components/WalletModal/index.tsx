@@ -3,11 +3,11 @@ import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
 import { Button } from 'src/components/Button';
-import { gnosisSafe, injected, xDefi } from 'src/connectors';
+import { gnosisSafe, injected, talisman, xDefi } from 'src/connectors';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { ExternalLink } from 'src/theme';
 import { Box, Modal, ToggleButtons } from '../../';
@@ -39,6 +39,9 @@ const WALLET_VIEWS = {
   ACCOUNT: 'account',
   PENDING: 'pending',
 };
+
+const getConnectorKey = (connector: AbstractConnector) =>
+  Object.keys(SUPPORTED_WALLETS).find((key) => SUPPORTED_WALLETS[key].connector === connector) ?? null;
 
 const WalletModal: React.FC<WalletModalProps> = ({
   open,
@@ -82,21 +85,21 @@ const WalletModal: React.FC<WalletModalProps> = ({
     }
   }, [walletType]);
 
-  function addAvalancheNetwork() {
-    injected.getProvider().then((provider) => {
+  const addAvalancheNetwork = useCallback(() => {
+    connector?.getProvider().then((provider) => {
       provider
         ?.request({
           method: 'wallet_addEthereumChain',
           params: [AVALANCHE_CHAIN_PARAMS],
         })
         .then(() => {
-          onWalletConnect();
+          onWalletConnect(getConnectorKey(connector));
         })
         .catch((error: any) => {
           console.log(error);
         });
     });
-  }
+  }, [connector]);
 
   // always reset to account view
   useEffect(() => {
@@ -118,6 +121,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
   }, [walletModalOpen]);
 
   const isMetamask = window.ethereum && window.ethereum.isMetaMask;
+  const isTalisman = window.ethereum && window.ethereum.isTalisman;
   const isRabby = window.ethereum && window.ethereum.isRabby;
   const isCbWalletDappBrowser = window?.ethereum?.isCoinbaseWallet;
   const isWalletlink = !!window?.WalletLinkProvider || !!window?.walletLinkExtension;
@@ -149,7 +153,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
         if (loadedInSafe) {
           activate(activationConnector, undefined, true)
             .then(() => {
-              onWalletConnect();
+              onWalletConnect(getConnectorKey(activationConnector));
             })
             .catch(() => {
               setTriedSafe(true);
@@ -163,7 +167,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
           if (isCbWallet) {
             addAvalancheNetwork();
           } else {
-            onWalletConnect();
+            onWalletConnect(getConnectorKey(activationConnector));
           }
         })
         .catch((error) => {
@@ -180,6 +184,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
     if (connector === injected) {
       if (isRabby) {
         return SUPPORTED_WALLETS.RABBY;
+      } else if (isTalisman) {
+        return SUPPORTED_WALLETS.TALISMAN;
       } else if (isMetamask) {
         return SUPPORTED_WALLETS.METAMASK;
       }
@@ -294,6 +300,21 @@ const WalletModal: React.FC<WalletModalProps> = ({
         else if (option.name === 'Injected' && (isMetamask || isXDEFI)) {
           return null;
         }
+      } else if (option.connector === talisman) {
+        // provide talisman install link if not installed
+        if (!window.talismanEth) {
+          return (
+            <Option
+              id={`connect-${key}`}
+              key={key}
+              color={option.color}
+              header={'Install Talisman'}
+              subheader={null}
+              link={'https://talisman.xyz'}
+              icon={option.iconName}
+            />
+          );
+        }
       }
 
       // Not show Gnosis Safe option without Gnosis Interface
@@ -356,14 +377,15 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   const renderContent = () => {
     const isXDEFI = window.xfi && window.xfi.ethereum && window.xfi.ethereum.isXDEFI;
-    const isMetamaskOrCbWallet = isMetamask || isCbWallet || isXDEFI;
+    const supportsAddNetwork = isMetamask || isCbWallet || isXDEFI || isTalisman;
+
     if (web3Error) {
       return (
         <ContentWrapper>
           {web3Error instanceof UnsupportedChainIdError ? (
             <>
               <h5>Please connect to the appropriate Avalanche network.</h5>
-              {isMetamaskOrCbWallet && (
+              {supportsAddNetwork && (
                 <Button variant="primary" onClick={addAvalancheNetwork}>
                   Switch to Avalanche Chain
                 </Button>
