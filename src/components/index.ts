@@ -33,3 +33,5 @@ export { default as AddLiquidityModal } from './Pools/AddLiquidityModal';
 export { default as PoolImportModal } from './Pools/PoolImportModal';
 export { default as CoinDescription } from './CoinDescription';
 export { default as TransactionCompleted } from './TransactionCompleted';
+export { default as SarStakingWidget } from './SarStakingWidget';
+export { default as SarNFTPortfolio } from './SarNFTPortfolio';
