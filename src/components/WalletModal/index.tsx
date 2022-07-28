@@ -40,6 +40,9 @@ const WALLET_VIEWS = {
   PENDING: 'pending',
 };
 
+const getConnectorKey = (connector: AbstractConnector) =>
+  Object.keys(SUPPORTED_WALLETS).find((key) => SUPPORTED_WALLETS[key].connector === connector) ?? null;
+
 const WalletModal: React.FC<WalletModalProps> = ({
   open,
   closeModal,
@@ -90,7 +93,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
           params: [AVALANCHE_CHAIN_PARAMS],
         })
         .then(() => {
-          onWalletConnect();
+          onWalletConnect(getConnectorKey(connector));
         })
         .catch((error: any) => {
           console.log(error);
@@ -150,7 +153,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
         if (loadedInSafe) {
           activate(activationConnector, undefined, true)
             .then(() => {
-              onWalletConnect();
+              onWalletConnect(getConnectorKey(activationConnector));
             })
             .catch(() => {
               setTriedSafe(true);
@@ -164,7 +167,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
           if (isCbWallet) {
             addAvalancheNetwork();
           } else {
-            onWalletConnect();
+            onWalletConnect(getConnectorKey(activationConnector));
           }
         })
         .catch((error) => {
