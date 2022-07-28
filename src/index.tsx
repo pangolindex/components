@@ -6,9 +6,29 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { usePair } from 'src/data/Reserves';
+import { useTotalSupply, useTotalSupplyHook } from 'src/data/TotalSupply';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
+import {
+  calculateTotalStakedAmountInAvax,
+  calculateTotalStakedAmountInAvaxFromPng,
+  fetchChunkedAprs,
+  fetchMinichefData,
+  useDerivedStakeInfo,
+  useGetAllFarmData,
+  useGetMinichefStakingInfosViaSubgraph,
+  useMinichefPools,
+  useMinichefStakingInfos,
+  useMinichefStakingInfosMapping,
+} from 'src/state/pstake/hooks';
+import {
+  DoubleSideStaking,
+  DoubleSideStakingInfo,
+  MinichefStakingInfo,
+  PoolType,
+  StakingInfo,
+} from 'src/state/pstake/types';
 import {
   LimitOrderInfo,
   useDerivedSwapInfo,
@@ -26,6 +46,7 @@ import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
 import ApplicationUpdater from './state/papplication/updater';
 import ListsUpdater from './state/plists/updater';
+import { useGetUserLP } from './state/pmigrate/hooks';
 import MulticallUpdater from './state/pmulticall/updater';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
@@ -81,7 +102,7 @@ export * from './connectors';
 export * from './components';
 
 export * from '@gelatonetwork/limit-orders-react';
-export type { LimitOrderInfo };
+export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, StakingInfo, DoubleSideStaking };
 
 // components
 export { SelectTokenDrawer };
@@ -105,7 +126,29 @@ export {
   useAllTransactionsClearer,
   useAccountBalanceHook,
   useTranslation,
+  useMinichefStakingInfosMapping,
+  useGetAllFarmData,
+  useGetMinichefStakingInfosViaSubgraph,
+  useGetUserLP,
+  useMinichefStakingInfos,
+  useDerivedStakeInfo,
+  useMinichefPools,
+  useTotalSupplyHook,
+  useTotalSupply,
 };
 
 // misc
-export { pangolinReducers, PANGOLIN_PERSISTED_KEYS, wrappedCurrency, nearFn, i18n, availableLanguages, Trans };
+export {
+  pangolinReducers,
+  PANGOLIN_PERSISTED_KEYS,
+  wrappedCurrency,
+  nearFn,
+  i18n,
+  availableLanguages,
+  Trans,
+  PoolType,
+  fetchMinichefData,
+  fetchChunkedAprs,
+  calculateTotalStakedAmountInAvax,
+  calculateTotalStakedAmountInAvaxFromPng,
+};
