@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { BigNumber } from '@ethersproject/bignumber';
 import { CHAINS, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import isEqual from 'lodash.isequal';
@@ -342,6 +343,19 @@ export function useDerivedStakeInfo(
     parsedAmount,
     error,
   };
+}
+
+export function useGetRewardTokens(rewardTokens?: Array<Token>, rewardTokensAddress?: Array<string>) {
+  const _rewardTokens = useTokens(rewardTokensAddress);
+
+  return useMemo(() => {
+    if (!rewardTokens && _rewardTokens) {
+      // filter only tokens
+      const tokens = _rewardTokens.filter((token) => token && token instanceof Token) as Token[];
+      return tokens;
+    }
+    return rewardTokens;
+  }, [_rewardTokens, rewardTokens]);
 }
 
 export const calculateTotalStakedAmountInAvax = function (
@@ -749,8 +763,8 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
           isPeriodFinished,
           getHypotheticalWeeklyRewardRate,
           getExtraTokensWeeklyRewardRate,
-          rewardTokensAddress: rewardTokensAddress?.result?.[0],
-          rewardTokensMultiplier: rewardTokensMultiplier?.result?.[0],
+          rewardTokensAddress: [PNG[chainId]?.address, ...(rewardTokensAddress?.result?.[0] || [])],
+          rewardTokensMultiplier: [BigNumber.from(1), ...(rewardTokensMultiplier?.result?.[0] || [])],
           rewardsAddress,
         });
       }
@@ -946,6 +960,11 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
         return new Token(chainId, getAddress(tokenObj.id), tokenObj.decimals, tokenObj.symbol, tokenObj.name);
       });
 
+      const rewardTokensAddress = rewardsAddresses.map((rewardToken: MinichefFarmReward) => {
+        const tokenObj = rewardToken.token;
+        return getAddress(tokenObj.id);
+      });
+
       const getHypotheticalWeeklyRewardRate = (
         _stakedAmount: TokenAmount,
         _totalStakedAmount: TokenAmount,
@@ -982,6 +1001,7 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
         rewardsAddress,
         rewardsAddresses,
         rewardTokens,
+        rewardTokensAddress,
       });
 
       return memo;

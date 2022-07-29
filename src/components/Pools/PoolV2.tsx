@@ -21,7 +21,7 @@ const PoolV2: React.FC<Props> = ({ type, setMenu, activeMenu, menuItems, miniChe
   }
 
   if (type === PoolType.superFarms) {
-    miniChefStakingInfo = (miniChefStakingInfo || []).filter((item) => (item?.rewardTokens?.length || 0) > 1);
+    miniChefStakingInfo = (miniChefStakingInfo || []).filter((item) => (item?.rewardTokensAddress?.length || 0) > 1);
   }
 
   return (
