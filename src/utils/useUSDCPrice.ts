@@ -1,7 +1,7 @@
 // TODO: Actually calculate price
 import { ChainId, Currency, JSBI, Price, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { USDCe } from 'src/constants';
+import { USDCe } from 'src/constants/tokens';
 import { PairState, usePairs } from '../data/Reserves';
 import { useChainId } from '../hooks';
 import { wrappedCurrency } from './wrappedCurrency';
