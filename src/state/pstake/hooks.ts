@@ -784,7 +784,7 @@ export const useMinichefStakingInfosMapping: {
   [chainId in ChainId]: (version?: number, pairToFilterBy?: Pair | null) => StakingInfo[];
 } = {
   [ChainId.FUJI]: useMinichefStakingInfos,
-  [ChainId.AVALANCHE]: useDummyMinichefHook,
+  [ChainId.AVALANCHE]: useMinichefStakingInfos,
   [ChainId.WAGMI]: useMinichefStakingInfos,
   [ChainId.COSTON]: useMinichefStakingInfos,
   [ChainId.NEAR_MAINNET]: useDummyMinichefHook,
@@ -811,7 +811,23 @@ export function useGetAllFarmData() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!allFarms?.isLoading) {
+    if (allFarms.isError) {
+      // if there is error then empty the data in redux
+      dispatch(
+        updateMinichefStakingAllData({
+          data: {
+            chainId: chainId,
+            data: {
+              id: '',
+              totalAllocPoint: 0,
+              rewardPerSecond: 0,
+              rewardsExpiration: 0,
+              farms: [],
+            },
+          },
+        }),
+      );
+    } else if (!allFarms?.isLoading && !allFarms?.isError) {
       dispatch(
         updateMinichefStakingAllData({
           data: {
@@ -823,7 +839,7 @@ export function useGetAllFarmData() {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allFarms?.data, allFarms?.isLoading]);
+  }, [allFarms?.data, allFarms?.isLoading, allFarms?.isError]);
 }
 
 export function useAllMinichefStakingInfoData(): MinichefV2 | undefined {
