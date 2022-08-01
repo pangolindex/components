@@ -17,6 +17,7 @@ import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Field } from 'src/state/pmint/actions';
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/state/pmint/hooks';
 import { SpaceType } from 'src/state/pstake/types';
+import { useAddLiquidityfHook } from 'src/state/pstake/multiChainsHooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useIsExpertMode, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks';
@@ -60,6 +61,8 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
     error,
   } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined);
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity);
+
+  const { addLiquidity } = useAddLiquidityfHook[chainId];
 
   const isValid = !error;
 
@@ -115,88 +118,109 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
 
   async function onAdd() {
     if (!chainId || !library || !account) return;
-    const router = getRouterContract(chainId, library, account);
 
-    const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts;
-    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
-      return;
-    }
-
-    const amountsMin = {
-      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
-      [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0],
-    };
-
-    let estimate,
-      method: (...xyz: any) => Promise<TransactionResponse>,
-      args: Array<string | string[] | number>,
-      value: BigNumber | null;
-    if (currencyA === CAVAX[chainId] || currencyB === CAVAX[chainId]) {
-      const tokenBIsETH = currencyB === CAVAX[chainId];
-      estimate = router.estimateGas.addLiquidityAVAX;
-      method = router.addLiquidityAVAX;
-      args = [
-        wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
-        (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
-        amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
-        amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
-        account,
-        deadline.toHexString(),
-      ];
-      value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString());
-    } else {
-      estimate = router.estimateGas.addLiquidity;
-      method = router.addLiquidity;
-      args = [
-        wrappedCurrency(currencyA, chainId)?.address ?? '',
-        wrappedCurrency(currencyB, chainId)?.address ?? '',
-        parsedAmountA.raw.toString(),
-        parsedAmountB.raw.toString(),
-        amountsMin[Field.CURRENCY_A].toString(),
-        amountsMin[Field.CURRENCY_B].toString(),
-        account,
-        deadline.toHexString(),
-      ];
-      value = null;
-    }
-
-    setAttemptingTxn(true);
     try {
-      const estimatedGasLimit = await estimate(...args, value ? { value } : {});
-      const response = await method(...args, {
-        ...(value ? { value } : {}),
-        gasLimit: calculateGasMargin(estimatedGasLimit),
-      });
-      await response.wait(1);
+      const addData = {
+        parsedAmounts,
+        deadline,
+        noLiquidity,
+        allowedSlippage,
+        currencies,
+      };
 
-      addTransaction(response, {
-        summary:
-          'Add ' +
-          parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-          ' ' +
-          currencies[Field.CURRENCY_A]?.symbol +
-          ' and ' +
-          parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
-          ' ' +
-          currencies[Field.CURRENCY_B]?.symbol,
-      });
+      const response = await addLiquidity(addData);
 
-      setTxHash(response.hash);
-      // eslint-disable-next-line import/no-named-as-default-member
-      ReactGA.event({
-        category: 'Liquidity',
-        action: 'Add',
-        label: [currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol].join('/'),
-      });
+      setTxHash((response as any).hash);
     } catch (err) {
       const _err = err as any;
-      // we only care if the error is something _other_ than the user rejected the tx
-      if (_err?.code !== 4001) {
-        console.error(_err);
-      }
+
+      console.error(_err);
     } finally {
       setAttemptingTxn(false);
     }
+
+    // const router = getRouterContract(chainId, library, account);
+
+    // const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts;
+    // if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
+    //   return;
+    // }
+
+    // const amountsMin = {
+    //   [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
+    //   [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0],
+    // };
+
+    // let estimate,
+    //   method: (...xyz: any) => Promise<TransactionResponse>,
+    //   args: Array<string | string[] | number>,
+    //   value: BigNumber | null;
+    // if (currencyA === CAVAX[chainId] || currencyB === CAVAX[chainId]) {
+    //   const tokenBIsETH = currencyB === CAVAX[chainId];
+    //   estimate = router.estimateGas.addLiquidityAVAX;
+    //   method = router.addLiquidityAVAX;
+    //   args = [
+    //     wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
+    //     (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
+    //     amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
+    //     amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
+    //     account,
+    //     deadline.toHexString(),
+    //   ];
+    //   value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString());
+    // } else {
+    //   estimate = router.estimateGas.addLiquidity;
+    //   method = router.addLiquidity;
+    //   args = [
+    //     wrappedCurrency(currencyA, chainId)?.address ?? '',
+    //     wrappedCurrency(currencyB, chainId)?.address ?? '',
+    //     parsedAmountA.raw.toString(),
+    //     parsedAmountB.raw.toString(),
+    //     amountsMin[Field.CURRENCY_A].toString(),
+    //     amountsMin[Field.CURRENCY_B].toString(),
+    //     account,
+    //     deadline.toHexString(),
+    //   ];
+    //   value = null;
+    // }
+
+    // setAttemptingTxn(true);
+    // try {
+    //   const estimatedGasLimit = await estimate(...args, value ? { value } : {});
+    //   const response = await method(...args, {
+    //     ...(value ? { value } : {}),
+    //     gasLimit: calculateGasMargin(estimatedGasLimit),
+    //   });
+    //   await response.wait(1);
+
+    //   addTransaction(response, {
+    //     summary:
+    //       'Add ' +
+    //       parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+    //       ' ' +
+    //       currencies[Field.CURRENCY_A]?.symbol +
+    //       ' and ' +
+    //       parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+    //       ' ' +
+    //       currencies[Field.CURRENCY_B]?.symbol,
+    //   });
+
+    //   setTxHash(response.hash);
+    //   // eslint-disable-next-line import/no-named-as-default-member
+    //   ReactGA.event({
+    //     category: 'Liquidity',
+    //     action: 'Add',
+    //     label: [currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol].join('/'),
+    //   });
+    // } catch (err) {
+    //   const _err = err as any;
+    //   // we only care if the error is something _other_ than the user rejected the tx
+    //   if (_err?.code !== 4001) {
+    //     console.error(_err);
+    //   }
+    // } finally {
+    //   setAttemptingTxn(false);
+    // }
   }
 
   const handleDismissConfirmation = useCallback(() => {

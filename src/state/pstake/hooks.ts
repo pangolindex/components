@@ -1,5 +1,17 @@
 /* eslint-disable max-lines */
-import { CHAINS, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import {
+  CHAINS,
+  ChainId,
+  CurrencyAmount,
+  JSBI,
+  Pair,
+  Token,
+  TokenAmount,
+  WAVAX,
+  CAVAX,
+  Currency,
+} from '@pangolindex/sdk';
+import { BigNumber } from '@ethersproject/bignumber';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import isEqual from 'lodash.isequal';
 import { useEffect, useMemo, useRef } from 'react';
@@ -21,8 +33,9 @@ import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import usePrevious from 'src/hooks/usePrevious';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import {
   updateMinichefStakingAllAprs,
   updateMinichefStakingAllData,
@@ -47,6 +60,12 @@ import {
   MinichefV2,
   StakingInfo,
 } from './types';
+import { Field } from 'src/state/pmint/actions';
+import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'src/utils';
+import { TransactionResponse } from '@ethersproject/providers';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { FunctionCallOptions, Transaction, nearFn } from 'src/utils/near';
+import { useGetNearPoolId } from 'src/data/Reserves';
 
 export const useGetFarmApr = (pid: string) => {
   const chainId = useChainId();
@@ -971,5 +990,143 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
       return memo;
     }, []);
   }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms]);
+};
+
+export interface AddLiquidityProps {
+  parsedAmounts;
+  deadline: BigNumber | undefined;
+  noLiquidity: boolean | undefined;
+  allowedSlippage: number;
+  currencies: {
+    CURRENCY_A?: Currency | undefined;
+    CURRENCY_B?: Currency | undefined;
+  };
+}
+
+export const useNearAddLiquidity = () => {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+  const addTransaction = useTransactionAdder();
+
+  const addLiquidity = async (data: AddLiquidityProps) => {
+    if (!chainId || !library || !account) return;
+
+    const transactions: Transaction[] = [];
+    const transactionsActions: FunctionCallOptions[] = [];
+
+    const { parsedAmounts, deadline, noLiquidity, allowedSlippage, currencies } = data;
+    const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
+    const router = getRouterContract(chainId, library, account);
+
+    const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts;
+    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
+      return;
+    }
+
+    const amountsMin = {
+      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
+      [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0],
+    };
+
+    const poolId = useGetNearPoolId(currencyA as Token, currencyB as Token);
+  };
+
+  return addLiquidity;
+};
+
+export const useAddLiquidity = () => {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+  const addTransaction = useTransactionAdder();
+
+  const addLiquidity = async (data: AddLiquidityProps) => {
+    if (!chainId || !library || !account) return;
+
+    const { parsedAmounts, deadline, noLiquidity, allowedSlippage, currencies } = data;
+
+    console.log('parsedAmounts', parsedAmounts);
+    console.log('currencies', currencies);
+
+    const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
+    const router = getRouterContract(chainId, library, account);
+
+    const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts;
+    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
+      return;
+    }
+
+    const amountsMin = {
+      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
+      [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0],
+    };
+
+    let estimate,
+      method: (...xyz: any) => Promise<TransactionResponse>,
+      args: Array<string | string[] | number>,
+      value: BigNumber | null;
+    if (currencyA === CAVAX[chainId] || currencyB === CAVAX[chainId]) {
+      const tokenBIsETH = currencyB === CAVAX[chainId];
+      estimate = router.estimateGas.addLiquidityAVAX;
+      method = router.addLiquidityAVAX;
+      args = [
+        wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
+        (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
+        amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
+        amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
+        account,
+        deadline.toHexString(),
+      ];
+      value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString());
+    } else {
+      estimate = router.estimateGas.addLiquidity;
+      method = router.addLiquidity;
+      args = [
+        wrappedCurrency(currencyA, chainId)?.address ?? '',
+        wrappedCurrency(currencyB, chainId)?.address ?? '',
+        parsedAmountA.raw.toString(),
+        parsedAmountB.raw.toString(),
+        amountsMin[Field.CURRENCY_A].toString(),
+        amountsMin[Field.CURRENCY_B].toString(),
+        account,
+        deadline.toHexString(),
+      ];
+      value = null;
+    }
+
+    try {
+      const estimatedGasLimit = await estimate(...args, value ? { value } : {});
+      const response = await method(...args, {
+        ...(value ? { value } : {}),
+        gasLimit: calculateGasMargin(estimatedGasLimit),
+      });
+      await response.wait(1);
+
+      addTransaction(response, {
+        summary:
+          'Add ' +
+          parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+          ' ' +
+          currencies[Field.CURRENCY_A]?.symbol +
+          ' and ' +
+          parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+          ' ' +
+          currencies[Field.CURRENCY_B]?.symbol,
+      });
+
+      //setTxHash(response.hash);
+      // eslint-disable-next-line import/no-named-as-default-member
+    } catch (err) {
+      const _err = err as any;
+      // we only care if the error is something _other_ than the user rejected the tx
+      if (_err?.code !== 4001) {
+        console.error(_err);
+      }
+    } finally {
+    }
+  };
+
+  return addLiquidity;
 };
 /* eslint-enable max-lines */
