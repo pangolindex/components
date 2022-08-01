@@ -192,8 +192,6 @@ export function useUpdateAllFarmsEarnAmount() {
           earnedAmount: pendingRewardInfo?.result?.['pending'].toString(),
         };
       }
-
-      console.log('pendingRewardsObj', pendingRewardsObj);
       dispatch(updateMinichefStakingAllFarmsEarnedAmount({ data: { chainId: chainId, data: pendingRewardsObj } }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
