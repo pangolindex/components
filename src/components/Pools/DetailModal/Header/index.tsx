@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
-import { useGetFarmApr } from 'src/state/pstake/hooks';
+import { useGetFarmApr, useGetRewardTokens } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { CloseIcon, Hidden, Visible } from 'src/theme/components';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -27,7 +27,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
   const currency0 = unwrappedToken(token0, chainId);
   const currency1 = unwrappedToken(token1, chainId);
 
-  const rewardTokens = stakingInfo?.rewardTokens;
+  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo.rewardTokensAddress);
 
   const { swapFeeApr, stakingApr } = useGetFarmApr(stakingInfo?.pid as string);
 

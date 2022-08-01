@@ -7,9 +7,10 @@ import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
 import nearIcon from 'src/assets/images/near.svg';
 import rabbyIcon from 'src/assets/images/rabby.svg';
+import talismanIcon from 'src/assets/images/talisman.svg';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
-import { gnosisSafe, injected, near, walletconnect, walletlink, xDefi } from '../connectors';
+import { gnosisSafe, injected, near, talisman, walletconnect, walletlink, xDefi } from '../connectors';
 import { CommonEVMProvider, NearProvider } from '../connectors/WalletProviders';
 import { DAIe, PNG, USDC, USDCe, USDTe, UST, axlUST } from './tokens';
 
@@ -242,7 +243,15 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#7a7cff',
     isEVM: true,
   },
-
+  TALISMAN: {
+    connector: talisman,
+    name: 'Talisman',
+    iconName: talismanIcon,
+    description: 'Enter the Paraverse.',
+    href: null,
+    color: '#FF3D23',
+    isEVM: true,
+  },
   NEAR: {
     connector: near,
     name: 'Near',
@@ -263,6 +272,7 @@ export const PROVIDER_MAPPING = {
   GNOSISSAFE: CommonEVMProvider,
   WALLET_CONNECT: CommonEVMProvider,
   RABBY: CommonEVMProvider,
+  TALISMAN: CommonEVMProvider,
   NEAR: NearProvider,
 };
 
