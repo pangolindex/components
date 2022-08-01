@@ -121,7 +121,20 @@ export const useGetMinichefPids = () => {
   const farms = useSelector<AppState['pstake']['minichefStakingData'][ChainId.AVALANCHE]['farms']>(
     (state) => state?.pstake?.minichefStakingData[chainId]?.farms || [],
   );
-  return useMemo(() => farms?.map((farm) => farm?.pid), [farms]);
+
+  const pIds1 = farms?.map((farm) => farm?.pid);
+
+  const pIds1String = (pIds1 || []).sort().join();
+
+  const poolMap = useMinichefPools();
+
+  const pIds2 = Object.values(poolMap || {}).map(String);
+
+  const pIds2String = (pIds2 || []).sort().join();
+
+  return useMemo(() => {
+    return pIds1.length > 0 ? pIds1 : pIds2;
+  }, [pIds1String, pIds2String]);
 };
 
 export function useFetchFarmAprs() {
@@ -179,6 +192,8 @@ export function useUpdateAllFarmsEarnAmount() {
           earnedAmount: pendingRewardInfo?.result?.['pending'].toString(),
         };
       }
+
+      console.log('pendingRewardsObj', pendingRewardsObj);
       dispatch(updateMinichefStakingAllFarmsEarnedAmount({ data: { chainId: chainId, data: pendingRewardsObj } }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
