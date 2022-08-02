@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { CHAINS, ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import { BigNumber } from 'ethers';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
@@ -129,6 +130,8 @@ export const BLOCKED_PRICE_IMPACT_NON_EXPERT: Percent = new Percent(JSBI.BigInt(
 
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)); // .01 ETH
+
+export const ONE_ETHER = BigNumber.from((1e18).toString());
 
 export const PANGOLIN_TOKENS_REPO_RAW_BASE_URL = `https://raw.githubusercontent.com/pangolindex/tokens`;
 
@@ -327,4 +330,8 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
 
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
   [ChainId.AVALANCHE]: [],
+};
+
+export const SAR_STAKING_ADDRESS: { [chainId in ChainId]?: string } = {
+  [ChainId.WAGMI]: '0xf9E3691617151969f30b0Da57AA0c9f4698ef6ab',
 };

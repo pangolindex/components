@@ -48,6 +48,7 @@ import ApplicationUpdater from './state/papplication/updater';
 import ListsUpdater from './state/plists/updater';
 import { useGetUserLP } from './state/pmigrate/hooks';
 import MulticallUpdater from './state/pmulticall/updater';
+import { useSarPositions, useSarStakeInfo } from './state/psarstake/hooks';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
 
@@ -112,6 +113,8 @@ export { useGelatoLimitOrderDetail, useGelatoLimitOrderList };
 
 // hooks
 export {
+  useSarStakeInfo,
+  useSarPositions,
   useDerivedSwapInfo,
   useUSDCPrice,
   useAllTokens,

@@ -17,4 +17,12 @@ export const Frame = styled(Box)`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   flex-grow: 1;
+  grid-gap: 16px;
+`;
+
+export const StyledSVG = styled(Box)`
+  svg {
+    width: 100%;
+    height: auto;
+  }
 `;

@@ -1,45 +1,66 @@
-import React, { useEffect, useState } from 'react';
-import { MEDIA_WIDTHS } from 'src/theme';
+import { BigNumber } from 'ethers';
+import React, { useState } from 'react';
+import { ONE_ETHER } from 'src/constants';
+import { Position } from 'src/state/psarstake/hooks';
 import { Box } from '../Box';
 import { Button } from '../Button';
 import DropdownMenu from '../DropdownMenu';
 import Pagination from '../Pagination';
 import { Text } from '../Text';
-import { Frame } from './styleds';
-
-const items = [...Array(40).keys()];
+import { Frame, StyledSVG } from './styleds';
 
 interface Props {
   itemsPerPage?: number;
+  positions: Position[];
 }
 
-export default function Portfolio({ itemsPerPage = 12 }: Props) {
-  const [_itemsPerPage, setitemsPerPage] = useState(itemsPerPage);
-  const [currentItems, setCurrentItems] = useState(items.slice(0, _itemsPerPage));
-  const onSelect = (value: string) => {
-    console.log(value);
+export default function Portfolio({ itemsPerPage = 4, positions }: Props) {
+  const [currentItems, setCurrentItems] = useState(positions.slice(0, itemsPerPage));
+  const [selectedPositon, setSelectedPosition] = useState<Position>({ id: BigNumber.from(-1) } as Position);
+
+  const onSelectPosition = (position: Position) => {
+    setSelectedPosition(position?.id.eq(selectedPositon?.id) ? ({ id: BigNumber.from(-1) } as Position) : position);
   };
 
-  // pseudo responsive
-  useEffect(() => {
-    function handleResize() {
-      const { innerWidth: width } = window;
-      if (width <= MEDIA_WIDTHS.upToSmall) setitemsPerPage(2);
-      else if (width <= MEDIA_WIDTHS.upToMedium) setitemsPerPage(4);
-      else if (width <= MEDIA_WIDTHS.upToLarge) setitemsPerPage(8);
-      else setitemsPerPage(12);
+  const onSelect = (value: string) => {
+    if (value === 'apr') {
+      setCurrentItems(positions.sort((a, b) => b.apr.sub(a.apr).toNumber()).slice(0, itemsPerPage));
+    } else if (value === 'amount') {
+      setCurrentItems(
+        positions
+          .sort((a, b) => {
+            return b.amount.sub(a.amount).div(ONE_ETHER).toNumber();
+          })
+          .slice(0, itemsPerPage),
+      );
+    } else {
+      setCurrentItems(positions.slice(0, itemsPerPage));
     }
-
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  };
 
   const renderItems = () => {
-    return currentItems.map((item) => {
+    return currentItems.map((position, index) => {
+      const svg = Buffer.from(position?.uri.image.replace('data:image/svg+xml;base64,', ''), 'base64').toString(); // decode base64
+      const isSelected = position?.id.eq(selectedPositon?.id);
       return (
-        <Box key={item} minHeight="300px">
-          <Text color="text1">{item}</Text>
+        <Box
+          key={index}
+          width="100%"
+          height="max-content"
+          bgColor={isSelected ? 'primary' : undefined}
+          borderRadius="5px"
+          paddingX="5px"
+          paddingBottom="5px"
+          style={{ cursor: 'pointer' }}
+        >
+          <StyledSVG
+            onClick={() => onSelectPosition(position)}
+            dangerouslySetInnerHTML={{ __html: svg }}
+            width="100%"
+          />
+          <Text color={isSelected ? 'black' : 'text1'} textAlign="center" fontWeight={500}>
+            Position id: {position?.id.toString()}
+          </Text>
         </Box>
       );
     });
@@ -53,29 +74,19 @@ export default function Portfolio({ itemsPerPage = 12 }: Props) {
         </Button>
         <Box display="flex" style={{ gap: '12px' }}>
           <DropdownMenu
-            onSelect={onSelect}
-            title="Filter:"
-            value="1"
-            options={[
-              { label: '1', value: 1 },
-              { label: '2', value: 1 },
-              { label: '3', value: 1 },
-            ]}
-          />
-          <DropdownMenu
             title="Sort by:"
             onSelect={onSelect}
-            value="2"
+            value="1"
             options={[
-              { label: '2', value: 1 },
-              { label: '2', value: 1 },
+              { label: 'APR', value: 'apr' },
+              { label: 'Amount', value: 'amount' },
             ]}
           />
         </Box>
       </Box>
       <Box display="flex" flexDirection="column" flexGrow={1}>
         <Frame>{renderItems()}</Frame>
-        <Pagination items={items} itemsPerPage={_itemsPerPage} onChange={(items) => setCurrentItems(items)} />
+        <Pagination items={currentItems} itemsPerPage={itemsPerPage} onChange={(items) => setCurrentItems(items)} />
       </Box>
     </Box>
   );

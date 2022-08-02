@@ -10,3 +10,11 @@ export const Root = styled(Box)`
   grid-template-rows: repeat(auto-fit, minmax(0, 1fr));
   grid-gap: 16px;
 `;
+
+export const Buttons = styled(Box)<{ isStaked?: boolean }>`
+  display: grid;
+  grid-auto-flow: ${({ isStaked }) => (isStaked ? 'column' : 'row')};
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  grid-gap: 10px;
+  margin-top: 5px;
+`;

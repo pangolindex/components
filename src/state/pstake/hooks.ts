@@ -324,7 +324,6 @@ export function useDerivedStakeInfo(
   const { t } = useTranslation();
 
   const parsedInput: CurrencyAmount | undefined = tryParseAmount(typedValue, stakingToken, chainId);
-
   const parsedAmount =
     parsedInput && userLiquidityUnstaked && JSBI.lessThanOrEqual(parsedInput.raw, userLiquidityUnstaked.raw)
       ? parsedInput
@@ -333,6 +332,9 @@ export function useDerivedStakeInfo(
   let error: string | undefined;
   if (!account) {
     error = t('stakeHooks.connectWallet');
+  }
+  if (parsedInput && !parsedAmount) {
+    error = error ?? 'Insufficient ' + stakingToken.symbol + ' balance';
   }
   if (!parsedAmount) {
     error = error ?? t('stakeHooks.enterAmount');

@@ -16,7 +16,7 @@ export default function SarStakingWidget() {
   const renderBody = () => {
     switch (type) {
       case Options.STAKE:
-        return <Stake selected={type} onChange={handleChange} />;
+        return <Stake selectedOption={type} onChange={handleChange} />;
       case Options.UNSTAKE:
         return <Unstake selected={type} onChange={handleChange} />;
       case Options.CLAIM:
@@ -24,7 +24,7 @@ export default function SarStakingWidget() {
       case Options.COUMPOUND:
         return <Compound selected={type} onChange={handleChange} />;
       default:
-        return <Stake selected={type} onChange={handleChange} />;
+        return <Stake selectedOption={type} onChange={handleChange} />;
     }
   };
 
