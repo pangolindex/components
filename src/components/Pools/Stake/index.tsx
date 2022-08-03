@@ -156,7 +156,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
           const _err = err as any;
           // we only care if the error is something _other_ than the user rejected the tx
           if (_err?.code !== 4001) {
-            console.error(error);
+            console.error(_err);
           }
         }
       } else if (signatureData) {
