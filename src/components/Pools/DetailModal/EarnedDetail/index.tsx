@@ -95,7 +95,11 @@ const EarnedDetail = ({ stakingInfo, version }: EarnDetailProps) => {
                   </Box>
 
                   <Box>
-                    <Stat stat={`${reward?.toFixed(6) ?? '0'}`} statFontSize={[20, 18]} currency={reward?.token} />
+                    <Stat
+                      stat={`${reward?.toFixed(Math.min(6, reward.token?.decimals)) ?? '0'}`}
+                      statFontSize={[20, 18]}
+                      currency={reward?.token}
+                    />
                   </Box>
                 </InnerWrapper>
               );

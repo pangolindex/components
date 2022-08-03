@@ -87,7 +87,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
     );
   }
 
-  const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
+  const { rewardTokensAmount, rewardTokensMultiplier } = useMinichefPendingRewards(stakingInfo);
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
@@ -438,7 +438,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
 
                       <Box textAlign="right">
                         {rewardTokensAmount?.map((reward, index) => {
-                          const tokenMultiplier = stakingInfo?.rewardTokensMultiplier?.[index];
+                          const tokenMultiplier = rewardTokensMultiplier?.[index];
                           const extraTokenWeeklyRewardRate = stakingInfo?.getExtraTokensWeeklyRewardRate?.(
                             hypotheticalWeeklyRewardRate,
                             reward?.token,
