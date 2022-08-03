@@ -6,7 +6,7 @@ export const Root = styled(Box)`
   min-width: 320px;
   position: relative;
   overflow: hidden;
-  padding: 10px;
+  padding-bottom: 10px;
   * {
     box-sizing: border-box;
   }

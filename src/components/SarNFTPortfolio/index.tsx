@@ -19,6 +19,13 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
 
   const toggleWalletModal = useWalletModalToggle();
 
+  const focusCreatePosition = () => {
+    document.getElementById('create-sar-position-widget')?.scrollIntoView({
+      behavior: 'smooth',
+    });
+    document.getElementById('sar-stake-input')?.focus();
+  };
+
   const renderBody = () => {
     if (isLoading) {
       return (
@@ -47,7 +54,7 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
               Connect to a wallet
             </Button>
           ) : (
-            <Button variant="primary" width="250px">
+            <Button variant="primary" width="250px" onClick={focusCreatePosition}>
               START
             </Button>
           )}

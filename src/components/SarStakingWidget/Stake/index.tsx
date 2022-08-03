@@ -121,7 +121,7 @@ export default function Stake() {
   );
 
   return (
-    <Box>
+    <Box id="create-sar-position-widget">
       <Root>
         <Box>
           <Box mb={18}>
@@ -138,6 +138,7 @@ export default function Stake() {
             </Text>
           </Box>
           <TextInput
+            id="sar-stake-input"
             value={typedValue}
             placeholder="0.00"
             isNumeric={true}
