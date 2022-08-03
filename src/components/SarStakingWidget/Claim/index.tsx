@@ -3,19 +3,21 @@ import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import { Text } from 'src/components/Text';
 import { TextInput } from 'src/components/TextInput';
+import { Position } from 'src/state/psarstake/hooks';
 import Title from '../Title';
 import { Options } from '../types';
 import { Root } from './styleds';
 
 interface Props {
-  selected: Options;
+  selectedOption: Options;
+  selectedPosition: Position | null;
   onChange: (value: Options) => void;
 }
 
-export default function Claim({ selected, onChange }: Props) {
+export default function Claim({ selectedOption, onChange }: Props) {
   return (
     <Root>
-      <Title selectedOption={selected} onChange={onChange} />
+      <Title selectedOption={selectedOption} onChange={onChange} />
       <Box>
         <Text color="text1" fontSize="18px" fontWeight={500}>
           NFT

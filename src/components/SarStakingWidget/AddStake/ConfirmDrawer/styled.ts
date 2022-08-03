@@ -5,6 +5,7 @@ export const Root = styled(Box)`
   display: grid;
   grid-template-rows: auto max-content;
   height: 100%;
+  padding: 20px;
 `;
 
 export const Header = styled(Box)`

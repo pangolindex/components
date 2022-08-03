@@ -9,13 +9,28 @@ interface Props {
 }
 
 export default function Title({ selectedOption, onChange }: Props) {
+  const renderTitle = () => {
+    switch (selectedOption) {
+      case Options.ADD:
+        return 'ADD MORE';
+      case Options.UNSTAKE:
+        return 'UNSTAKE A POSITION';
+      case Options.COUMPOUND:
+        return 'COUMPOUND REWARDS';
+      case Options.CLAIM:
+        return 'CLAIM REWARDS';
+      default:
+        return '';
+    }
+  };
+
   return (
     <>
-      <Text color="text1" fontSize="28px" fontWeight={700}>
-        Sunshine
+      <Text color="text1" fontSize="21px" fontWeight={700}>
+        {renderTitle()}
       </Text>
       <ToggleButtons
-        options={[Options.COUMPOUND, Options.STAKE, Options.UNSTAKE, Options.CLAIM]}
+        options={[Options.COUMPOUND, Options.ADD, Options.UNSTAKE, Options.CLAIM]}
         value={selectedOption}
         onChange={onChange}
       />

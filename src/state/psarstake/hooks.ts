@@ -5,9 +5,10 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useApproveCallback } from 'src/hooks/useApproveCallback';
 import { useSarStakingContract } from 'src/hooks/useContract';
+import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
@@ -30,7 +31,9 @@ export function useSarStakeInfo() {
         : null;
     const totalStaked = new TokenAmount(png, totalValueVariables ? totalValueVariables?.balance.toString() : '0');
 
-    return { APR, totalStaked };
+    const weeklyPNG = !!rewardRate ? rewardRate.mul(86400).mul(7) : BigNumber.from('0');
+
+    return { APR, totalStaked, weeklyPNG };
   }, [rewardRate, totalValueVariables]);
 }
 
@@ -42,6 +45,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   const [stakeError, setStakeError] = useState<string | null>(null);
 
   const { account } = usePangolinWeb3();
+  const { library } = useLibrary();
   const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
@@ -107,14 +111,19 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
     try {
       let response: TransactionResponse;
       if (!positionId) {
+        const estimatedGas = await sarStakingContract.estimateGas.mint(`0x${parsedAmount.raw.toString(16)}`);
         // create a new position
-        response = await sarStakingContract.mint(`0x${parsedAmount.raw.toString(16)}`);
-        await response.wait(1);
+        response = await sarStakingContract.mint(`0x${parsedAmount.raw.toString(16)}`, {
+          gasLimit: calculateGasMargin(estimatedGas),
+        });
       } else {
+        const estimatedGas = await sarStakingContract.estimateGas.mint(`0x${parsedAmount.raw.toString(16)}`);
         // adding more png to an existing position
-        response = await sarStakingContract.stake(positionId.toHexString(), `0x${parsedAmount.raw.toString(16)}`);
-        await response.wait(1);
+        response = await sarStakingContract.stake(positionId.toHexString(), `0x${parsedAmount.raw.toString(16)}`, {
+          gasLimit: calculateGasMargin(estimatedGas),
+        });
       }
+      await waitForTransaction(library, response, 5);
       addTransaction(response, {
         summary: t('earnPage.stakeStakingTokens', { symbol: 'PNG' }),
       });
@@ -134,6 +143,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   return useMemo(
     () => ({
       attempting,
+      typedValue,
       parsedAmount,
       hash,
       stepIndex,
@@ -153,6 +163,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
     }),
     [
       attempting,
+      typedValue,
       parsedAmount,
       hash,
       stepIndex,
@@ -179,11 +190,14 @@ export interface Position {
   id: BigNumber;
   amount: BigNumber;
   apr: BigNumber;
+  rewardRate: BigNumber;
   uri: URI;
 }
+
 export function useSarPositions() {
   const ZERO = BigNumber.from(0);
   const { account } = usePangolinWeb3();
+  const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
 
@@ -227,12 +241,13 @@ export function useSarPositions() {
 
     const error = balanceState.error || nftsState.error || existErrorURI || existErrorAmount || existErrorRewardRate;
 
+    if (error || !account || !existSarContract(chainId)) {
+      return { positions: [] as Position[], isLoading: false };
+    }
+
     // if is loading or exist error or not exist account return empty array
     if (isLoading || !isValid) {
       return { positions: [] as Position[], isLoading: true };
-    }
-    if (error || !account) {
-      return { positions: [] as Position[], isLoading: false };
     }
 
     // we need to decode the base64 uri to get the real uri
@@ -250,7 +265,11 @@ export function useSarPositions() {
       const amount = positionsAmountState[index].result?.[0];
       const rewardRate = positionsRewardRateState[index].result?.[0];
       const id = nftsIndexes[index][0];
-      const apr = rewardRate?.mul(86400).mul(365).mul(100).div(amount?.balance);
+      const apr = rewardRate
+        ?.mul(86400)
+        .mul(365)
+        .mul(100)
+        .div(amount?.balance ?? 1);
 
       if (!amount || !rewardRate || !uri) {
         return {} as Position;
@@ -260,8 +279,9 @@ export function useSarPositions() {
         id: BigNumber.from(id),
         amount: amount?.balance,
         apr: apr,
+        rewardRate: rewardRate,
         uri: uri,
-      };
+      } as Position;
     });
     // remove the empty positions
     return { positions: positions.filter((position) => !!position), isLoading: false };

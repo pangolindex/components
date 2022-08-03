@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box, Text } from '../../..';
+import { Box, Text } from '../../../';
 
 export const Root = styled(Box)`
   display: grid;
@@ -9,14 +9,29 @@ export const Root = styled(Box)`
 
 export const Header = styled(Box)`
   padding: 0px 10px;
-  display: grid;
-  grid-gap: 10px;
 `;
 
 export const TokenRow = styled(Box)`
   display: grid;
-  grid-template-columns: max-content max-content;
+  grid-template-columns: max-content auto max-content;
   align-items: center;
+`;
+
+export const PriceUpdateBlock = styled(Box)`
+  padding: 10px;
+  background-color: ${({ theme }) => theme.bg6};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+  margin-top: 15px;
+`;
+
+export const OutputText = styled(Text)`
+  width: 100%;
+  font-style: italic;
+  font-size: 12px;
+  text-align: left;
 `;
 
 export const Footer = styled(Box)`

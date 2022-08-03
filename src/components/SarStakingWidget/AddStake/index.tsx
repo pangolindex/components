@@ -9,12 +9,21 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useDerivativeSarStake, useSarStakeInfo } from 'src/state/psarstake/hooks';
+import { Position, useDerivativeSarStake, useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useTokenBalances } from 'src/state/pwallet/hooks';
+import Title from '../Title';
+import { Options } from '../types';
 import ConfirmDrawer from './ConfirmDrawer';
 import { Buttons, Root } from './styleds';
 
-export default function Stake() {
+interface Props {
+  selectedOption: Options;
+  selectedPosition: Position | null;
+  onChange: (value: Options) => void;
+}
+
+// Add more png on existing position
+export default function AddStake({ selectedOption, selectedPosition, onChange }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const chainId = useChainId();
@@ -25,7 +34,7 @@ export default function Stake() {
   const userPngBalance = tokensBalances[png.address];
   const { t } = useTranslation();
 
-  const { APR, weeklyPNG } = useSarStakeInfo();
+  const { APR } = useSarStakeInfo();
 
   const toggleWalletModal = useWalletModalToggle();
 
@@ -43,7 +52,7 @@ export default function Stake() {
     wrappedOnDismiss,
     handleMax,
     onStake,
-  } = useDerivativeSarStake();
+  } = useDerivativeSarStake(selectedPosition?.id);
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
@@ -80,7 +89,8 @@ export default function Stake() {
     } else if (!userPngBalance?.greaterThan('0')) {
       const origin = window.location.origin;
       const path = `/#/swap?inputCurrency=${ZERO_ADDRESS}&outputCurrency=${png.address}`;
-      const url = origin.includes('localhost') || origin.includes('pangolin.exchange') ? path : `${origin}${path}`;
+      const url =
+        origin.includes('localhost') || origin.includes('pangolin.exchange') ? path : `app.pangolin.exchange${path}`;
 
       return (
         <Button padding="15px 18px" variant="primary" as="a" href={url}>
@@ -102,36 +112,25 @@ export default function Stake() {
           )}
           <Button
             variant={'primary'}
-            isDisabled={!!error || approval !== ApprovalState.APPROVED}
+            isDisabled={!selectedPosition || !!error || approval !== ApprovalState.APPROVED}
             onClick={() => setOpenDrawer(true)}
             height="46px"
           >
-            {error ?? t('earnPage.stake')}
+            {!selectedPosition ? 'Select a Position' : error ?? t('positionCard.add')}
           </Button>
         </Buttons>
       );
     }
   };
 
-  const handleInput = useCallback(
-    (value: string) => {
-      onUserInput(value);
-    },
-    [onUserInput],
-  );
-
   return (
     <Box>
       <Root>
+        <Title selectedOption={selectedOption} onChange={onChange} />
         <Box>
-          <Box mb={18}>
-            <Text color="text1" fontSize="21px" fontWeight={700}>
-              Create a new position
-            </Text>
-          </Box>
           <Box justifyContent="space-between" display="flex">
             <Text color="text1" fontSize="18px" fontWeight={500}>
-              Stake
+              Stake more
             </Text>
             <Text color="text4">
               In Wallet {userPngBalance?.toSignificant(2) ?? 0} {png.symbol ?? 'PNG'}
@@ -139,10 +138,10 @@ export default function Stake() {
           </Box>
           <TextInput
             value={typedValue}
-            placeholder="0.00"
             isNumeric={true}
+            placeholder="0.00"
             onChange={(value: any) => {
-              handleInput(value);
+              onUserInput(value);
             }}
             addonAfter={
               <Button variant="plain" backgroundColor="color2" padding="10px" onClick={handleMax}>
@@ -162,16 +161,22 @@ export default function Stake() {
               <Text color="text1">{`${APR ? APR.toString() : '-'}%`}</Text>
             </Box>
           </Box>
+          <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
+            A stake action will create a SAR Nft for you.
+            <br /> With this NFT you can manage your PSB stake.
+            <br />
+            <br /> Your Apr will start from 0 and increase the amount you take from reward pool by time.
+          </Text>
         </Box>
         {renderButtons()}
       </Root>
-      {openDrawer && (
+      {openDrawer && !!selectedPosition && (
         <ConfirmDrawer
           isOpen={openDrawer}
           stakeAmount={parsedAmount}
           token={png}
           dollerWorth={dollerWorth}
-          weeklyPNG={weeklyPNG}
+          position={selectedPosition}
           attemptingTxn={attempting}
           txHash={hash}
           onConfirm={onStake}

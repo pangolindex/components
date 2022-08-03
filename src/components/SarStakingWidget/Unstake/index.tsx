@@ -6,23 +6,25 @@ import { Text } from 'src/components/Text';
 import { TextInput } from 'src/components/TextInput';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
+import { Position } from 'src/state/psarstake/hooks';
 import Title from '../Title';
 import { Options } from '../types';
 import { Root } from './styleds';
 
 interface Props {
-  selected: Options;
+  selectedOption: Options;
+  selectedPosition: Position | null;
   onChange: (value: Options) => void;
 }
 
-export default function Unstake({ selected, onChange }: Props) {
+export default function Unstake({ selectedOption, onChange }: Props) {
   const chainId = useChainId();
 
   const png = PNG[chainId];
 
   return (
     <Root>
-      <Title selectedOption={selected} onChange={onChange} />
+      <Title selectedOption={selectedOption} onChange={onChange} />
       <Box>
         <Text color="text1" fontSize="18px" fontWeight={500}>
           NFT

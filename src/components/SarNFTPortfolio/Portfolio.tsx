@@ -1,9 +1,7 @@
-import { BigNumber } from 'ethers';
+import { formatEther } from '@ethersproject/units';
 import React, { useState } from 'react';
-import { ONE_ETHER } from 'src/constants';
 import { Position } from 'src/state/psarstake/hooks';
 import { Box } from '../Box';
-import { Button } from '../Button';
 import DropdownMenu from '../DropdownMenu';
 import Pagination from '../Pagination';
 import { Text } from '../Text';
@@ -12,15 +10,12 @@ import { Frame, StyledSVG } from './styleds';
 interface Props {
   itemsPerPage?: number;
   positions: Position[];
+  onSelectPosition: (position: Position | null) => void;
 }
 
-export default function Portfolio({ itemsPerPage = 4, positions }: Props) {
+export default function Portfolio({ itemsPerPage = 4, positions, onSelectPosition }: Props) {
   const [currentItems, setCurrentItems] = useState(positions.slice(0, itemsPerPage));
-  const [selectedPositon, setSelectedPosition] = useState<Position>({ id: BigNumber.from(-1) } as Position);
-
-  const onSelectPosition = (position: Position) => {
-    setSelectedPosition(position?.id.eq(selectedPositon?.id) ? ({ id: BigNumber.from(-1) } as Position) : position);
-  };
+  const [selectedPositon, setSelectedPosition] = useState<Position | null>(null);
 
   const onSelect = (value: string) => {
     if (value === 'apr') {
@@ -29,7 +24,7 @@ export default function Portfolio({ itemsPerPage = 4, positions }: Props) {
       setCurrentItems(
         positions
           .sort((a, b) => {
-            return b.amount.sub(a.amount).div(ONE_ETHER).toNumber();
+            return parseFloat(formatEther(b.amount.sub(a.amount)));
           })
           .slice(0, itemsPerPage),
       );
@@ -41,7 +36,7 @@ export default function Portfolio({ itemsPerPage = 4, positions }: Props) {
   const renderItems = () => {
     return currentItems.map((position, index) => {
       const svg = Buffer.from(position?.uri.image.replace('data:image/svg+xml;base64,', ''), 'base64').toString(); // decode base64
-      const isSelected = position?.id.eq(selectedPositon?.id);
+      const isSelected = !!selectedPositon && position?.id.eq(selectedPositon?.id);
       return (
         <Box
           key={index}
@@ -52,12 +47,12 @@ export default function Portfolio({ itemsPerPage = 4, positions }: Props) {
           paddingX="5px"
           paddingBottom="5px"
           style={{ cursor: 'pointer' }}
+          onClick={() => {
+            setSelectedPosition(isSelected ? null : position);
+            onSelectPosition(isSelected ? null : position);
+          }}
         >
-          <StyledSVG
-            onClick={() => onSelectPosition(position)}
-            dangerouslySetInnerHTML={{ __html: svg }}
-            width="100%"
-          />
+          <StyledSVG dangerouslySetInnerHTML={{ __html: svg }} width="100%" />
           <Text color={isSelected ? 'black' : 'text1'} textAlign="center" fontWeight={500}>
             Position id: {position?.id.toString()}
           </Text>
@@ -68,21 +63,16 @@ export default function Portfolio({ itemsPerPage = 4, positions }: Props) {
 
   return (
     <Box display="flex" flexDirection="column" width="100%">
-      <Box display="flex" justifyContent="space-between" mb="20px">
-        <Button variant="primary" width="200px">
-          + STAKE NEW
-        </Button>
-        <Box display="flex" style={{ gap: '12px' }}>
-          <DropdownMenu
-            title="Sort by:"
-            onSelect={onSelect}
-            value="1"
-            options={[
-              { label: 'APR', value: 'apr' },
-              { label: 'Amount', value: 'amount' },
-            ]}
-          />
-        </Box>
+      <Box display="flex" justifyContent="end" mb="20px">
+        <DropdownMenu
+          title="Sort by:"
+          onSelect={onSelect}
+          value="1"
+          options={[
+            { label: 'APR', value: 'apr' },
+            { label: 'Amount', value: 'amount' },
+          ]}
+        />
       </Box>
       <Box display="flex" flexDirection="column" flexGrow={1}>
         <Frame>{renderItems()}</Frame>
