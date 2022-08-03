@@ -20,6 +20,7 @@ import {
 } from '@pangolindex/sdk';
 import { ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
+import { wait } from './retry';
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -184,10 +185,6 @@ export function calculateSlippageAmount(value: CurrencyAmount, slippage: number)
 // check if exist address of sar contract of a certain chain
 export function existSarContract(chainId: ChainId) {
   return SAR_STAKING_ADDRESS[chainId] !== undefined;
-}
-
-export function wait(time: number) {
-  return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 // https://github.com/ethers-io/ethers.js/issues/945#issuecomment-1074683436
