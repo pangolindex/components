@@ -103,6 +103,14 @@ export function useApproveCallback(
   return [approvalState, approve];
 }
 
+export function useNearApproveCallback(): [ApprovalState, () => Promise<void>] {
+  const approve = useCallback(async (): Promise<void> => {
+    Promise.resolve(42);
+  }, []);
+
+  return [ApprovalState.APPROVED, approve];
+}
+
 // wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromTrade(chainId: ChainId, trade?: Trade, allowedSlippage = 0) {
   const amountToApprove = useMemo(

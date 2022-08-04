@@ -9,6 +9,7 @@ import { usePair } from 'src/data/Reserves';
 import { useTotalSupply, useTotalSupplyHook } from 'src/data/TotalSupply';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
 import {
   calculateTotalStakedAmountInAvax,
@@ -20,8 +21,12 @@ import {
   useGetMinichefStakingInfosViaSubgraph,
   useMinichefPools,
   useMinichefStakingInfos,
-  useMinichefStakingInfosMapping,
 } from 'src/state/pstake/hooks';
+import {
+  useGetAllFarmDataHook,
+  useGetMinichefStakingInfosViaSubgraphMapping,
+  useMinichefStakingInfosMapping,
+} from 'src/state/pstake/multiChainsHooks';
 import {
   DoubleSideStaking,
   DoubleSideStakingInfo,
@@ -40,7 +45,6 @@ import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransa
 import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
-import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
@@ -129,12 +133,14 @@ export {
   useMinichefStakingInfosMapping,
   useGetAllFarmData,
   useGetMinichefStakingInfosViaSubgraph,
+  useGetMinichefStakingInfosViaSubgraphMapping,
   useGetUserLP,
   useMinichefStakingInfos,
   useDerivedStakeInfo,
   useMinichefPools,
   useTotalSupplyHook,
   useTotalSupply,
+  useGetAllFarmDataHook,
 };
 
 // misc

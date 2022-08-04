@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { CHAINS, ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import BN from 'bn.js';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
@@ -304,10 +305,17 @@ export interface WalletInfo {
 export const DIRECTUS_URL_NEWS = `https://pangolin.directus.app`;
 
 export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3/`;
+export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com/`;
 
 export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
 export const COINGECKO_API = 'https://api.coingecko.com/api/v3';
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
+export const NEAR_STORAGE_PER_TOKEN = '0.005';
+export const NEAR_STORAGE_TO_REGISTER_WITH_FT = '0.1';
+export const NEAR_MIN_DEPOSIT_PER_TOKEN = new BN('5000000000000000000000');
+export const NEAR_MIN_DEPOSIT_PER_TOKEN_FARM = new BN('45000000000000000000000');
+export const NEAR_ACCOUNT_MIN_STORAGE_AMOUNT = '0.005';
+export const NEAR_LP_STORAGE_AMOUNT = '0.01';
 
 /* eslint-enable max-lines */
 

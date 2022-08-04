@@ -1,16 +1,18 @@
 // TODO: Actually calculate price
-import { ChainId, Currency, JSBI, Price, WAVAX, currencyEquals } from '@pangolindex/sdk';
-import { useMemo } from 'react';
+import { parseUnits } from '@ethersproject/units';
+import { ChainId, Currency, JSBI, Price, TokenAmount, WAVAX, currencyEquals } from '@pangolindex/sdk';
+import { useEffect, useMemo, useState } from 'react';
+import { NEAR_API_BASE_URL } from 'src/constants';
 import { USDCe } from 'src/constants/tokens';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { PairState, usePairs } from '../data/Reserves';
 import { useChainId } from '../hooks';
-import { wrappedCurrency } from './wrappedCurrency';
 
 /**
  * Returns the price in USDC of the input currency
  * @param currency currency to compute the USDC price of
  */
-export default function useUSDCPrice(currency?: Currency): Price | undefined {
+export function useUSDCPrice(currency?: Currency): Price | undefined {
   const chainId = useChainId();
   const wrapped = wrappedCurrency(currency, chainId);
   const USDC = USDCe[chainId];
@@ -79,4 +81,41 @@ export default function useUSDCPrice(currency?: Currency): Price | undefined {
     wrapped,
     USDC,
   ]);
+}
+
+export function useNearUSDCPrice(currency?: Currency): Price | undefined {
+  const [result, setResult] = useState<string>('');
+
+  const chainId = useChainId();
+  const token = wrappedCurrency(currency, chainId);
+
+  useEffect(() => {
+    const fetchPrice = async () => {
+      try {
+        const url = `${NEAR_API_BASE_URL}list-token-price`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (token) {
+          setResult(data?.[token?.address]?.price);
+        }
+      } catch (error) {
+        console.error('near token api error', error);
+      }
+    };
+    fetchPrice();
+  }, [token]);
+
+  const USDC = USDCe[chainId];
+
+  return useMemo(() => {
+    if (!currency || !token || !chainId || !result) {
+      return undefined;
+    }
+
+    const tokenAmount1 = new TokenAmount(token, parseUnits(result || '1', token?.decimals).toString());
+    const tokenAmount2 = new TokenAmount(USDC, parseUnits('1', USDC?.decimals).toString());
+
+    return new Price(USDC, currency, tokenAmount2.raw, tokenAmount1.raw);
+  }, [chainId, currency, token, USDC, result]);
 }

@@ -1,16 +1,17 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
+import { TransactionResponse } from '@ethersproject/providers';
 import {
+  CAVAX,
   CHAINS,
   ChainId,
+  Currency,
   CurrencyAmount,
   JSBI,
   Pair,
   Token,
   TokenAmount,
   WAVAX,
-  CAVAX,
-  Currency,
 } from '@pangolindex/sdk';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import isEqual from 'lodash.isequal';
@@ -19,12 +20,16 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { mininchefV2Clients } from 'src/apollo/client';
 import { GET_MINICHEF } from 'src/apollo/minichef';
+import { NEAR_EXCHANGE_CONTRACT_ADDRESS } from 'src/connectors';
 import {
   BIG_INT_SECONDS_IN_WEEK,
   BIG_INT_TWO,
   BIG_INT_ZERO,
   MINICHEF_ADDRESS,
+  NEAR_LP_STORAGE_AMOUNT,
+  NEAR_STORAGE_TO_REGISTER_WITH_FT,
   ONE_TOKEN,
+  ONE_YOCTO_NEAR,
   PANGOLIN_API_BASE_URL,
   ZERO_ADDRESS,
 } from 'src/constants';
@@ -35,19 +40,22 @@ import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import usePrevious from 'src/hooks/usePrevious';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import { Field } from 'src/state/pmint/actions';
 import {
   updateMinichefStakingAllAprs,
   updateMinichefStakingAllData,
   updateMinichefStakingAllFarmsEarnedAmount,
 } from 'src/state/pstake/actions';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
+import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'src/utils';
+import { FunctionCallOptions, Transaction, nearFn, registerTokenAction, storageDepositAction } from 'src/utils/near';
+import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useTotalSupply } from '../../data/TotalSupply';
 import { useTokens } from '../../hooks/Tokens';
 import { useMiniChefContract, useRewardViaMultiplierContract, useStakingContract } from '../../hooks/useContract';
 import { tryParseAmount } from '../../state/pswap/hooks';
 import { useTokenBalance } from '../../state/pwallet/hooks';
-import useUSDCPrice from '../../utils/useUSDCPrice';
 import { AppState, useDispatch, useSelector } from '../index';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { Apr } from './reducer';
@@ -60,12 +68,6 @@ import {
   MinichefV2,
   StakingInfo,
 } from './types';
-import { Field } from 'src/state/pmint/actions';
-import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'src/utils';
-import { TransactionResponse } from '@ethersproject/providers';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { FunctionCallOptions, Transaction, nearFn } from 'src/utils/near';
-import { useGetNearPoolId } from 'src/data/Reserves';
 
 export const useGetFarmApr = (pid: string) => {
   const chainId = useChainId();
@@ -479,7 +481,7 @@ export const tokenComparator = (
 };
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const useDummyMinichefHook = (_version?: number, _pairToFilterBy?: Pair | null) => {
+export const useDummyMinichefHook = (_version?: number, _pairToFilterBy?: Pair | null) => {
   return [] as StakingInfo[];
 };
 
@@ -825,17 +827,6 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
   ]);
 };
 
-export const useMinichefStakingInfosMapping: {
-  [chainId in ChainId]: (version?: number, pairToFilterBy?: Pair | null) => StakingInfo[];
-} = {
-  [ChainId.FUJI]: useMinichefStakingInfos,
-  [ChainId.AVALANCHE]: useMinichefStakingInfos,
-  [ChainId.WAGMI]: useMinichefStakingInfos,
-  [ChainId.COSTON]: useMinichefStakingInfos,
-  [ChainId.NEAR_MAINNET]: useDummyMinichefHook,
-  [ChainId.NEAR_TESTNET]: useDummyMinichefHook,
-};
-
 export const fetchMinichefData = (account: string, chainId: ChainId) => async () => {
   const mininchefV2Client = mininchefV2Clients[chainId];
   if (!mininchefV2Client) {
@@ -886,6 +877,8 @@ export function useGetAllFarmData() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allFarms?.data, allFarms?.isLoading, allFarms?.isError]);
 }
+
+export function useGetDummyAllFarmData() {}
 
 export function useAllMinichefStakingInfoData(): MinichefV2 | undefined {
   const chainId = useChainId();
@@ -1040,6 +1033,11 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
   }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms]);
 };
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+export const useDummyMinichefStakingInfosViaSubgraph = () => {
+  return [] as MinichefStakingInfo[];
+};
+
 export interface AddLiquidityProps {
   parsedAmounts;
   deadline: BigNumber | undefined;
@@ -1051,39 +1049,7 @@ export interface AddLiquidityProps {
   };
 }
 
-export const useNearAddLiquidity = () => {
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-  const { library } = useLibrary();
-  const addTransaction = useTransactionAdder();
-
-  const addLiquidity = async (data: AddLiquidityProps) => {
-    if (!chainId || !library || !account) return;
-
-    const transactions: Transaction[] = [];
-    const transactionsActions: FunctionCallOptions[] = [];
-
-    const { parsedAmounts, deadline, noLiquidity, allowedSlippage, currencies } = data;
-    const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
-    const router = getRouterContract(chainId, library, account);
-
-    const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts;
-    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
-      return;
-    }
-
-    const amountsMin = {
-      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
-      [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0],
-    };
-
-    const poolId = useGetNearPoolId(currencyA as Token, currencyB as Token);
-  };
-
-  return addLiquidity;
-};
-
-export const useAddLiquidity = () => {
+export function useAddLiquidity() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { library } = useLibrary();
@@ -1093,9 +1059,6 @@ export const useAddLiquidity = () => {
     if (!chainId || !library || !account) return;
 
     const { parsedAmounts, deadline, noLiquidity, allowedSlippage, currencies } = data;
-
-    console.log('parsedAmounts', parsedAmounts);
-    console.log('currencies', currencies);
 
     const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
     const router = getRouterContract(chainId, library, account);
@@ -1176,5 +1139,111 @@ export const useAddLiquidity = () => {
   };
 
   return addLiquidity;
-};
+}
+
+export function useNearAddLiquidity() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+
+  const addLiquidity = async (data: AddLiquidityProps) => {
+    if (!chainId || !library || !account) return;
+
+    let transactions: Transaction[] = [];
+
+    const depositTransactions: Transaction[] = [];
+    const { parsedAmounts, deadline, noLiquidity, allowedSlippage, currencies } = data;
+    const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
+
+    const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts;
+
+    const tokenA = currencyA instanceof Token ? currencyA : undefined;
+    const tokenB = currencyB instanceof Token ? currencyB : undefined;
+
+    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline || !tokenA || !tokenB) {
+      throw new Error(`Missing Currency`);
+    }
+
+    const poolId = await nearFn.getPoolId(chainId, currencyA as Token, currencyB as Token);
+
+    const tokens = [tokenA, tokenB];
+    const amounts = [
+      parseUnits(parsedAmountA.toFixed(), tokenA?.decimals).toString(),
+      parseUnits(parsedAmountB.toFixed(), tokenB?.decimals).toString(),
+    ];
+    const exchangeContractId = NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId];
+    const whitelist = await nearFn.getWhitelistedTokens(chainId);
+
+    for (let i = 0; i < tokens.length; i++) {
+      const currencyId = tokens[i].address;
+
+      depositTransactions.unshift({
+        receiverId: currencyId,
+        functionCalls: [
+          {
+            methodName: 'ft_transfer_call',
+            args: {
+              receiver_id: exchangeContractId,
+              amount: amounts[i],
+              msg: '',
+            },
+            amount: ONE_YOCTO_NEAR,
+          },
+        ],
+      });
+
+      const tokenRegistered = await nearFn.getStorageBalance(currencyId, exchangeContractId);
+
+      if (tokenRegistered === null) {
+        depositTransactions.unshift({
+          receiverId: currencyId,
+          functionCalls: [
+            storageDepositAction({
+              accountId: exchangeContractId,
+              registrationOnly: true,
+              amount: NEAR_STORAGE_TO_REGISTER_WITH_FT,
+            }),
+          ],
+        });
+      }
+
+      if (!whitelist.includes(currencyId)) {
+        depositTransactions.unshift({
+          receiverId: exchangeContractId,
+          functionCalls: [registerTokenAction(currencyId)],
+        });
+      }
+    }
+
+    const neededStorage = await nearFn.checkUserNeedsStorageDeposit(chainId);
+
+    if (neededStorage) {
+      depositTransactions.unshift({
+        receiverId: exchangeContractId,
+        functionCalls: [storageDepositAction({ amount: neededStorage })],
+      });
+    }
+
+    const actions: FunctionCallOptions[] = [
+      {
+        methodName: 'add_liquidity',
+        args: { pool_id: poolId, amounts },
+        amount: NEAR_LP_STORAGE_AMOUNT,
+      },
+    ];
+
+    transactions = [
+      ...depositTransactions,
+      {
+        receiverId: exchangeContractId,
+        functionCalls: [...actions],
+      },
+    ];
+
+    return nearFn.executeMultipleTransactions(transactions);
+  };
+
+  return addLiquidity;
+}
+
 /* eslint-enable max-lines */
