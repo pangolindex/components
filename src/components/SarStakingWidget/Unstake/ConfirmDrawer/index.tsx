@@ -1,6 +1,4 @@
-import { formatEther } from '@ethersproject/units';
 import { CurrencyAmount, Token } from '@pangolindex/sdk';
-import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
@@ -14,9 +12,8 @@ import { ErrorBox, ErrorWrapper, Footer, Header, Link, Root, SubmittedWrapper, T
 
 interface Props {
   isOpen: boolean;
-  stakeAmount?: CurrencyAmount;
+  unstakeAmount?: CurrencyAmount;
   token: Token;
-  dollerWorth?: number;
   position: Position;
   attemptingTxn: boolean;
   txHash: string | null;
@@ -26,52 +23,37 @@ interface Props {
 }
 
 const ConfirmDrawer: React.FC<Props> = (props) => {
-  const { isOpen, stakeAmount, token, dollerWorth, position, attemptingTxn, errorMessage, txHash, onClose, onConfirm } =
-    props;
+  const { isOpen, unstakeAmount, token, position, attemptingTxn, errorMessage, txHash, onClose, onConfirm } = props;
 
   const { chainId } = usePangolinWeb3();
   const theme = useContext(ThemeContext);
 
   // text to show while loading
-  const pendingText = `Staking ${stakeAmount?.toSignificant(6) ?? 0} ${token.symbol}`;
-
-  const oldBalance = position.amount;
-  const newBalance = oldBalance.add((stakeAmount?.raw ?? 0).toString()).add(position.pendingRewards);
-
-  const newAPR = position.rewardRate.mul(86400).mul(365).mul(100).div(newBalance);
-
-  const weeklyPNG = position.rewardRate.mul(86400).mul(7);
+  const pendingText = `Unstaking ${unstakeAmount?.toSignificant(6) ?? 0} ${token.symbol}`;
 
   const ConfirmContent = (
     <Root>
       <Header>
         <TokenRow>
           <Text fontSize={24} fontWeight={500} color="text1" style={{ marginRight: '12px' }}>
-            Adding more {stakeAmount?.toSignificant(6) ?? 0}
+            Unstaking {unstakeAmount?.toSignificant(6) ?? 0}
           </Text>
           <CurrencyLogo currency={token} size={24} imageSize={48} />
         </TokenRow>
         <Box display="inline-grid" style={{ gridGap: '10px', gridTemplateColumns: 'auto auto' }}>
-          <Stat title="Dolar Value" titlePosition="top" stat={`${dollerWorth ?? 0}$`} titleColor="text2" />
-          <Stat title="New APR" titlePosition="top" stat={`${newAPR}%`} titleColor="text2" />
-        </Box>
-        <Box display="flex" flexDirection="row" justifyContent="space-between">
-          <Text color="text1">Weekly PNG Distributed</Text>
-          <Text color="text1">
-            {numeral(formatEther(weeklyPNG)).format('0.00a')} {token.symbol}
-          </Text>
+          <Stat title="Current APR" titlePosition="top" stat={`${position.apr ?? 0}%`} titleColor="text2" />
+          <Stat title="New APR" titlePosition="top" stat={'0%'} titleColor="text2" />
         </Box>
         <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-          A stake action will create a SAR Nft for you.
-          <br /> With this NFT you can manage your PSB stake.
+          It&apos;s worth being aware that unstaking your rewards will get your APR to 0 for this position.
           <br />
-          <br /> Your Apr will start from 0 and increase the amount you take from reward pool by time.
+          Instead of unstaking you can consider selling your NFT as well.
         </Text>
       </Header>
       <Footer>
         <Box my={'10px'}>
           <Button variant="primary" onClick={onConfirm}>
-            Add
+            Unstake
           </Button>
         </Box>
       </Footer>

@@ -1,6 +1,7 @@
+/* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
-import { JSBI, TokenAmount } from '@pangolindex/sdk';
+import { JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ZERO_ADDRESS } from 'src/constants';
@@ -13,9 +14,28 @@ import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { useDerivedStakeInfo } from '../pstake/hooks';
+import { tryParseAmount } from '../pswap/hooks';
 import { useTransactionAdder } from '../ptransactions/hooks';
 import { useTokenBalances } from '../pwallet/hooks';
 
+export interface URI {
+  name: string;
+  description: string;
+  external_url: string;
+  attributes: any[];
+  image: string;
+}
+
+export interface Position {
+  id: BigNumber;
+  amount: BigNumber;
+  apr: BigNumber;
+  rewardRate: BigNumber;
+  pendingRewards: BigNumber;
+  uri: URI;
+}
+
+// Return the info of the sar stake
 export function useSarStakeInfo() {
   const chainId = useChainId();
   const sarStakingContract = useSarStakingContract();
@@ -37,6 +57,7 @@ export function useSarStakeInfo() {
   }, [rewardRate, totalValueVariables]);
 }
 
+// Return some utils functions for stake more or create a new Position
 export function useDerivativeSarStake(positionId?: BigNumber) {
   const [attempting, setAttempting] = useState(false);
   const [hash, setHash] = useState<string | null>(null);
@@ -66,7 +87,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
 
   const wrappedOnDismiss = useCallback(() => {
     setStakeError(null);
-    setTypedValue('0');
+    setTypedValue('');
     setStepIndex(0);
     setHash(null);
     setAttempting(false);
@@ -75,7 +96,6 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   const { parsedAmount, error } = useDerivedStakeInfo(typedValue, png, userPngBalance);
   const [approval, approveCallback] = useApproveCallback(chainId, parsedAmount, sarStakingContract?.address);
 
-  // wrapped onUserInput to clear signatures
   const onUserInput = useCallback((_typedValue: string) => {
     setTypedValue(_typedValue);
   }, []);
@@ -178,22 +198,262 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   );
 }
 
-export interface URI {
-  name: string;
-  description: string;
-  external_url: string;
-  attributes: any[];
-  image: string;
+function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiquidityStaked?: TokenAmount) {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+
+  const { t } = useTranslation();
+
+  const parsedInput = tryParseAmount(typedValue, stakingToken, chainId);
+  const parsedAmount =
+    parsedInput && userLiquidityStaked && JSBI.lessThanOrEqual(parsedInput.raw, userLiquidityStaked.raw)
+      ? parsedInput
+      : undefined;
+
+  let error: string | undefined;
+  if (!account) {
+    error = t('stakeHooks.connectWallet');
+  }
+  if (parsedInput && !parsedAmount) {
+    error = error ?? 'Insufficient ' + stakingToken.symbol + ' staked balance';
+  }
+  if (!parsedAmount) {
+    error = error ?? t('stakeHooks.enterAmount');
+  }
+
+  return {
+    parsedAmount,
+    error,
+  };
+}
+// Return some utils functions for unstake
+export function useDerivativeSarUnstake(position: Position | null) {
+  const [typedValue, setTypedValue] = useState('');
+  const [stepIndex, setStepIndex] = useState(0);
+  const [unstakeError, setUnstakeError] = useState<string | null>(null);
+
+  const [attempting, setAttempting] = useState(false);
+  const [hash, setHash] = useState<string | null>(null);
+
+  const { account } = usePangolinWeb3();
+  const { library } = useLibrary();
+  const chainId = useChainId();
+
+  const { t } = useTranslation();
+  const addTransaction = useTransactionAdder();
+
+  const png = PNG[chainId];
+
+  const sarStakingContract = useSarStakingContract();
+
+  const stakedAmount = new TokenAmount(png, (position?.amount ?? 0).toString());
+
+  const { parsedAmount, error } = useUnstakeParseAmount(typedValue, png, stakedAmount);
+
+  // used for max input button
+  const maxAmountInput = maxAmountSpend(chainId, stakedAmount);
+
+  const wrappedOnDismiss = useCallback(() => {
+    setUnstakeError(null);
+    setTypedValue('');
+    setStepIndex(0);
+    setHash(null);
+    setAttempting(false);
+  }, []);
+
+  const onUserInput = useCallback((_typedValue: string) => {
+    setTypedValue(_typedValue);
+  }, []);
+
+  const handleMax = useCallback(() => {
+    maxAmountInput && onUserInput(maxAmountInput.toExact());
+    setStepIndex(4);
+  }, [maxAmountInput, onUserInput]);
+
+  const onChangePercentage = (value: number) => {
+    if (stakedAmount.lessThan('0')) {
+      setTypedValue('0');
+      return;
+    }
+    if (value === 100) {
+      setTypedValue(stakedAmount.toExact());
+    } else if (value === 0) {
+      setTypedValue('0');
+    } else {
+      const newAmount = stakedAmount.multiply(JSBI.BigInt(value)).divide(JSBI.BigInt(100)) as TokenAmount;
+
+      setTypedValue(newAmount.toSignificant(6));
+    }
+  };
+
+  const onUnstake = async () => {
+    if (!sarStakingContract || !parsedAmount || !position) {
+      return;
+    }
+    setAttempting(true);
+    try {
+      const estimatedGas = await sarStakingContract.estimateGas.withdraw(
+        position.id.toHexString(),
+        `0x${parsedAmount.raw.toString(16)}`,
+      );
+      const response: TransactionResponse = await sarStakingContract.withdraw(
+        position.id.toHexString(),
+        `0x${parsedAmount.raw.toString(16)}`,
+        {
+          gasLimit: calculateGasMargin(estimatedGas),
+        },
+      );
+      await waitForTransaction(library, response, 5);
+      addTransaction(response, {
+        summary: t('earnPage.unstake'),
+      });
+      setHash(response.hash);
+    } catch (error) {
+      const err = error as any;
+      if (err?.code !== 4001) {
+        console.error(err);
+        setUnstakeError(err?.message);
+      }
+    } finally {
+      setAttempting(false);
+    }
+  };
+
+  return useMemo(
+    () => ({
+      attempting,
+      hash,
+      stepIndex,
+      typedValue,
+      parsedAmount,
+      error,
+      unstakeError,
+      onUserInput,
+      wrappedOnDismiss,
+      handleMax,
+      onUnstake,
+      onChangePercentage,
+      setStepIndex,
+    }),
+    [attempting, typedValue, parsedAmount, hash, stepIndex, error, account, onUserInput, handleMax, position],
+  );
 }
 
-export interface Position {
-  id: BigNumber;
-  amount: BigNumber;
-  apr: BigNumber;
-  rewardRate: BigNumber;
-  uri: URI;
+export function useDerivativeSarCompound(position: Position | null) {
+  const [attempting, setAttempting] = useState(false);
+  const [hash, setHash] = useState<string | null>(null);
+  const [compoundError, setCompoundError] = useState<string | null>(null);
+
+  const { account } = usePangolinWeb3();
+  const { library } = useLibrary();
+
+  const sarStakingContract = useSarStakingContract();
+
+  const { t } = useTranslation();
+  const addTransaction = useTransactionAdder();
+
+  const wrappedOnDismiss = useCallback(() => {
+    setCompoundError(null);
+    setHash(null);
+    setAttempting(false);
+  }, []);
+
+  const onCompound = async () => {
+    if (!sarStakingContract || !position) {
+      return;
+    }
+    setAttempting(true);
+    try {
+      const estimatedGas = await sarStakingContract.estimateGas.compound(position.id.toHexString());
+      const response: TransactionResponse = await sarStakingContract.compound(position.id.toHexString(), {
+        gasLimit: calculateGasMargin(estimatedGas),
+      });
+      await waitForTransaction(library, response, 5);
+      addTransaction(response, {
+        summary: t('earnPage.compound'),
+      });
+      setHash(response.hash);
+    } catch (error) {
+      const err = error as any;
+      if (err?.code !== 4001) {
+        console.error(err);
+        setCompoundError(err?.message);
+      }
+    } finally {
+      setAttempting(false);
+    }
+  };
+
+  return useMemo(
+    () => ({
+      attempting,
+      hash,
+      compoundError,
+      wrappedOnDismiss,
+      onCompound,
+    }),
+    [attempting, hash, account, position],
+  );
 }
 
+export function useDerivedSarClaim(position: Position | null) {
+  const [attempting, setAttempting] = useState(false);
+  const [hash, setHash] = useState<string | null>(null);
+  const [claimError, setClaimError] = useState<string | null>(null);
+
+  const { account } = usePangolinWeb3();
+  const { library } = useLibrary();
+
+  const sarStakingContract = useSarStakingContract();
+
+  const { t } = useTranslation();
+  const addTransaction = useTransactionAdder();
+
+  const wrappedOnDismiss = useCallback(() => {
+    setClaimError(null);
+    setHash(null);
+    setAttempting(false);
+  }, []);
+
+  const onClaim = async () => {
+    if (!sarStakingContract || !position) {
+      return;
+    }
+    setAttempting(true);
+    try {
+      const estimatedGas = await sarStakingContract.estimateGas.harvest(position.id.toHexString());
+      const response: TransactionResponse = await sarStakingContract.harvest(position.id.toHexString(), {
+        gasLimit: calculateGasMargin(estimatedGas),
+      });
+      await waitForTransaction(library, response, 5);
+      addTransaction(response, {
+        summary: t('earnPage.claim'),
+      });
+      setHash(response.hash);
+    } catch (error) {
+      const err = error as any;
+      if (err?.code !== 4001) {
+        console.error(err);
+        setClaimError(err?.message);
+      }
+    } finally {
+      setAttempting(false);
+    }
+  };
+
+  return useMemo(
+    () => ({
+      attempting,
+      hash,
+      claimError,
+      wrappedOnDismiss,
+      onClaim,
+    }),
+    [attempting, hash, account, position],
+  );
+}
+
+// Returns a list of positions for the user
 export function useSarPositions() {
   const ZERO = BigNumber.from(0);
   const { account } = usePangolinWeb3();
@@ -220,6 +480,12 @@ export function useSarPositions() {
   // get the reward rate for each position
   const positionsRewardRateState = useSingleContractMultipleData(sarStakingContract, 'positionRewardRate', nftsIndexes);
 
+  const positionsPedingRewardsState = useSingleContractMultipleData(
+    sarStakingContract,
+    'positionPendingRewards',
+    nftsIndexes,
+  );
+
   //get all NFTs URIs from the positions
   const nftsURIsState = useSingleContractMultipleData(sarStakingContract, 'tokenURI', nftsIndexes ?? []);
 
@@ -227,19 +493,42 @@ export function useSarPositions() {
     const isAllFetchedURI = nftsURIsState.every((result) => !result.loading);
     const existErrorURI = nftsURIsState.some((result) => result.error);
     const isValidURIs = nftsURIsState.every((result) => result.valid);
+
     const isAllFetchedAmount = positionsAmountState.every((result) => !result.loading);
     const existErrorAmount = positionsAmountState.some((result) => result.error);
     const isValidAmounts = positionsAmountState.every((result) => result.valid);
+
     const isAllFetchedRewardRate = positionsRewardRateState.every((result) => !result.loading);
     const existErrorRewardRate = positionsRewardRateState.some((result) => result.error);
     const isValidRewardRates = positionsRewardRateState.every((result) => result.valid);
 
-    const isLoading =
-      balanceState.loading || nftsState.loading || !isAllFetchedURI || !isAllFetchedAmount || !isAllFetchedRewardRate;
-    // first moments loading is false and valid is false then is loading the query is true
-    const isValid = balanceState.valid && nftsState.valid && isValidURIs && isValidAmounts && isValidRewardRates;
+    const isAllFetchedPendingReward = positionsPedingRewardsState.every((result) => !result.loading);
+    const existErrorPendingReward = positionsPedingRewardsState.some((result) => result.error);
+    const isValidPendingRewards = positionsPedingRewardsState.every((result) => result.valid);
 
-    const error = balanceState.error || nftsState.error || existErrorURI || existErrorAmount || existErrorRewardRate;
+    const isLoading =
+      balanceState.loading ||
+      nftsState.loading ||
+      !isAllFetchedURI ||
+      !isAllFetchedAmount ||
+      !isAllFetchedRewardRate ||
+      !isAllFetchedPendingReward;
+    // first moments loading is false and valid is false then is loading the query is true
+    const isValid =
+      balanceState.valid &&
+      nftsState.valid &&
+      isValidURIs &&
+      isValidAmounts &&
+      isValidRewardRates &&
+      isValidPendingRewards;
+
+    const error =
+      balanceState.error ||
+      nftsState.error ||
+      existErrorURI ||
+      existErrorAmount ||
+      existErrorRewardRate ||
+      existErrorPendingReward;
 
     if (error || !account || !existSarContract(chainId)) {
       return { positions: [] as Position[], isLoading: false };
@@ -264,6 +553,7 @@ export function useSarPositions() {
     const positions: Position[] = nftsURIs.map((uri, index) => {
       const amount = positionsAmountState[index].result?.[0];
       const rewardRate = positionsRewardRateState[index].result?.[0];
+      const pendingRewards = positionsPedingRewardsState[index].result?.[0];
       const id = nftsIndexes[index][0];
       const apr = rewardRate
         ?.mul(86400)
@@ -271,7 +561,7 @@ export function useSarPositions() {
         .mul(100)
         .div(amount?.balance ?? 1);
 
-      if (!amount || !rewardRate || !uri) {
+      if (!amount || !rewardRate || !pendingRewards || !uri) {
         return {} as Position;
       }
 
@@ -281,6 +571,7 @@ export function useSarPositions() {
         apr: apr,
         rewardRate: rewardRate,
         uri: uri,
+        pendingRewards: pendingRewards,
       } as Position;
     });
     // remove the empty positions

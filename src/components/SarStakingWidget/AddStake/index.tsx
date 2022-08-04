@@ -158,7 +158,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
             </Box>
             <Box>
               <Text color="text2">Median APR</Text>
-              <Text color="text1">{`${APR ? APR.toString() : '-'}%`}</Text>
+              <Text color="text1">{`${(APR ?? '-').toString()}%`}</Text>
             </Box>
           </Box>
           <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">

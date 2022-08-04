@@ -160,7 +160,7 @@ export default function Stake() {
             </Box>
             <Box>
               <Text color="text2">Median APR</Text>
-              <Text color="text1">{`${APR ? APR.toString() : '-'}%`}</Text>
+              <Text color="text1">{`${APR ?? '-'.toString()}%`}</Text>
             </Box>
           </Box>
         </Box>

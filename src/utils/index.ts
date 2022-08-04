@@ -193,7 +193,7 @@ export async function waitForTransaction(
   provider: any,
   tx: TransactionResponse,
   confirmations?: number,
-  timeout = 7000,
+  timeout = 7000, // 7 seconds
 ) {
   const result = await Promise.race([
     tx.wait(confirmations),
