@@ -13,7 +13,7 @@ interface Props {
   onSelectPosition: (position: Position | null) => void;
 }
 
-export default function Portfolio({ itemsPerPage = 4, positions, onSelectPosition }: Props) {
+export default function Portfolio({ itemsPerPage = 12, positions, onSelectPosition }: Props) {
   const [currentItems, setCurrentItems] = useState(positions.slice(0, itemsPerPage));
   const [selectedPositon, setSelectedPosition] = useState<Position | null>(null);
 
@@ -28,6 +28,10 @@ export default function Portfolio({ itemsPerPage = 4, positions, onSelectPositio
           })
           .slice(0, itemsPerPage),
       );
+    } else if (value === 'newest') {
+      setCurrentItems(positions.sort((a, b) => b.id.sub(a.id).toNumber()).slice(0, itemsPerPage));
+    } else if (value === 'oldest') {
+      setCurrentItems(positions.sort((a, b) => a.id.sub(b.id).toNumber()).slice(0, itemsPerPage));
     } else {
       setCurrentItems(positions.slice(0, itemsPerPage));
     }
@@ -71,6 +75,8 @@ export default function Portfolio({ itemsPerPage = 4, positions, onSelectPositio
           options={[
             { label: 'APR', value: 'apr' },
             { label: 'Amount', value: 'amount' },
+            { label: 'newest', value: 'newest' },
+            { label: 'oldest', value: 'oldest' },
           ]}
         />
       </Box>
