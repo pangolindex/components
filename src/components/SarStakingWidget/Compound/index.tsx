@@ -53,7 +53,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
   }, [onCompound]);
 
   useEffect(() => {
-    if (!attempting && openDrawer) {
+    if (!attempting && openDrawer && !hash) {
       setOpenDrawer(false);
       return;
     }
@@ -131,7 +131,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
           <Box display="flex" justifyContent="space-between">
             <Box>
               <Text color="text2">Current APR</Text>
-              <Text color="text1">{(apr ?? 0).toString()}%</Text>
+              <Text color="text1">{(apr ?? '-').toString()}%</Text>
             </Box>
             <Box>
               <Text color="text2">APR After Compound</Text>

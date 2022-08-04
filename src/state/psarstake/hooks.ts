@@ -396,7 +396,7 @@ export function useDerivativeSarCompound(position: Position | null) {
   );
 }
 
-export function useDerivedSarClaim(position: Position | null) {
+export function useDerivativeSarClaim(position: Position | null) {
   const [attempting, setAttempting] = useState(false);
   const [hash, setHash] = useState<string | null>(null);
   const [claimError, setClaimError] = useState<string | null>(null);

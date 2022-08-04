@@ -41,7 +41,12 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
           <CurrencyLogo currency={token} size={24} imageSize={48} />
         </TokenRow>
         <Box display="inline-grid" style={{ gridGap: '10px', gridTemplateColumns: 'auto auto' }}>
-          <Stat title="Current APR" titlePosition="top" stat={`${position.apr ?? 0}%`} titleColor="text2" />
+          <Stat
+            title="Current APR"
+            titlePosition="top"
+            stat={`${(position.apr ?? '-').toString()}%`}
+            titleColor="text2"
+          />
           <Stat title="New APR" titlePosition="top" stat={'0%'} titleColor="text2" />
         </Box>
         <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
