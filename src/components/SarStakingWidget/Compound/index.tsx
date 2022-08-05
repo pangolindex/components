@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { formatEther } from '@ethersproject/units';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -9,9 +10,11 @@ import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import { Loader } from 'src/components/Loader';
 import { Text } from 'src/components/Text';
+import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { Position, useDerivativeSarCompound } from 'src/state/psarstake/hooks';
 import { getEtherscanLink } from 'src/utils';
+import { ToolTipText } from '../Claim/styleds';
 import Title from '../Title';
 import { Options } from '../types';
 import { ErrorBox, ErrorWrapper, Link, Root, SubmittedWrapper } from './styleds';
@@ -61,6 +64,10 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
 
   const pendingText = 'Compounding';
   const PendingContent = <Loader size={100} label={pendingText} />;
+
+  const pendingRewards = selectedPosition?.pendingRewards ?? BigNumber.from('0');
+
+  const png = PNG[chainId];
 
   const ErroContent = (
     <ErrorWrapper>
@@ -121,9 +128,12 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
             <Text color="text1" fontSize="16px" fontWeight={500} textAlign="center">
               Rewards accrued:
             </Text>
-            <Text color="text1" fontSize="36px" fontWeight={500} textAlign="center">
-              {numeral(formatEther((selectedPosition?.pendingRewards ?? 0).toString())).format('0.00a')}
-            </Text>
+            <ToolTipText color="text1" fontSize="36px" fontWeight={500} textAlign="center">
+              {numeral(formatEther(pendingRewards.toString())).format('0.00a')}
+              <span className="tooltip">
+                {formatEther(pendingRewards.toString())} {png.symbol}
+              </span>
+            </ToolTipText>
           </Box>
         )}
 

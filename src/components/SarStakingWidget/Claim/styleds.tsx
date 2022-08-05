@@ -37,3 +37,40 @@ export const Link = styled(Text)`
   text-decoration: none;
   color: ${({ theme }) => theme.blue1};
 `;
+
+export const ToolTipText = styled(Text)`
+  position: relative;
+  :hover .tooltip {
+    visibility: visible;
+  }
+
+  .tooltip {
+    visibility: hidden;
+    width: max-content;
+    background-color: ${({ theme }) => theme.primary1};
+    color: black;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+  }
+
+  .tooltip::after {
+    content: ' ';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: ${({ theme }) => theme.primary1} transparent transparent transparent;
+  }
+`;

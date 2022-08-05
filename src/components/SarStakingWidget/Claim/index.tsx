@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { formatEther } from '@ethersproject/units';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -9,12 +10,13 @@ import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import { Loader } from 'src/components/Loader';
 import { Text } from 'src/components/Text';
+import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { Position, useDerivativeSarClaim } from 'src/state/psarstake/hooks';
 import { getEtherscanLink } from 'src/utils';
 import Title from '../Title';
 import { Options } from '../types';
-import { ErrorBox, ErrorWrapper, Link, Root, SubmittedWrapper } from './styleds';
+import { ErrorBox, ErrorWrapper, Link, Root, SubmittedWrapper, ToolTipText } from './styleds';
 interface Props {
   selectedOption: Options;
   selectedPosition: Position | null;
@@ -31,6 +33,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
   const theme = useContext(ThemeContext);
 
   const apr = selectedPosition?.apr;
+  const png = PNG[chainId];
 
   const handleConfirmDismiss = useCallback(() => {
     setOpenDrawer(false);
@@ -51,6 +54,22 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
 
   const pendingText = 'Claiming...';
   const PendingContent = <Loader size={100} label={pendingText} />;
+
+  const pendingRewards = selectedPosition?.pendingRewards ?? BigNumber.from('0');
+
+  const renderButton = () => {
+    let error: string | undefined;
+    if (!selectedPosition) {
+      error = 'Choose a position';
+    } else if (pendingRewards.isZero()) {
+      error = 'No rewards to claim';
+    }
+    return (
+      <Button variant="primary" onClick={handleConfirm} isDisabled={!!error}>
+        {error ?? 'Claim'}
+      </Button>
+    );
+  };
 
   const ErroContent = (
     <ErrorWrapper>
@@ -111,9 +130,12 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
             <Text color="text1" fontSize="16px" fontWeight={500} textAlign="center">
               Rewards accrued:
             </Text>
-            <Text color="text1" fontSize="36px" fontWeight={500} textAlign="center">
-              {numeral(formatEther((selectedPosition?.pendingRewards ?? 0).toString())).format('0.00a')}
-            </Text>
+            <ToolTipText color="text1" fontSize="36px" fontWeight={500} textAlign="center">
+              {numeral(formatEther(pendingRewards.toString())).format('0.00a')}
+              <span className="tooltip">
+                {formatEther(pendingRewards.toString())} {png.symbol}
+              </span>
+            </ToolTipText>
           </Box>
         )}
 
@@ -133,9 +155,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
             compound your rewards without losing your APR.
           </Text>
         </Box>
-        <Button variant="primary" onClick={handleConfirm} isDisabled={!selectedPosition}>
-          {!selectedPosition ? 'Choose a Position' : 'Claim'}
-        </Button>
+        {renderButton()}
       </Root>
       <Drawer isOpen={openDrawer && !!selectedPosition} onClose={handleConfirmDismiss}>
         {claimError ? ErroContent : hash ? SubmittedContent : PendingContent}
