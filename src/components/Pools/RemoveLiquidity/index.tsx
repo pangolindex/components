@@ -201,6 +201,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
       throw new Error(t('error.missingCurrencyAmounts'));
     }
     const router = getRouterContract(chainId, library, account);
+    if (!router) return;
 
     const amountsMin = {
       [Field.CURRENCY_A]: calculateSlippageAmount(currencyAmountA, allowedSlippage)[0],
