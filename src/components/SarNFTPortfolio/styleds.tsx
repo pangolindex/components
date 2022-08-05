@@ -26,3 +26,15 @@ export const StyledSVG = styled(Box)`
     height: auto;
   }
 `;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(35, 35, 35);
+  opacity: 0.8;
+  display: none;
+  z-index: 99;
+`;

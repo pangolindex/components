@@ -65,6 +65,13 @@ export default function Stake() {
     wrappedOnDismiss();
   }, [onUserInput]);
 
+  const desativeOverlay = () => {
+    const sarOverlayElement = document.getElementById('sar-portfolio-overlay');
+    if (sarOverlayElement) {
+      sarOverlayElement.style.display = 'none';
+    }
+  };
+
   const showApproveFlow =
     !error &&
     (approval === ApprovalState.NOT_APPROVED ||
@@ -84,7 +91,7 @@ export default function Stake() {
       const url = origin.includes('localhost') || origin.includes('pangolin.exchange') ? path : `${origin}${path}`;
 
       return (
-        <Button padding="15px 18px" variant="primary" as="a" href={url}>
+        <Button padding="15px 18px" variant="primary" as="a" href={url} onClick={desativeOverlay}>
           {t('header.buy', { symbol: png.symbol })}
         </Button>
       );
@@ -104,7 +111,10 @@ export default function Stake() {
           <Button
             variant={'primary'}
             isDisabled={!!error || approval !== ApprovalState.APPROVED}
-            onClick={() => setOpenDrawer(true)}
+            onClick={() => {
+              setOpenDrawer(true);
+              desativeOverlay();
+            }}
             height="46px"
           >
             {error ?? t('earnPage.stake')}

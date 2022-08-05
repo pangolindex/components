@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Position, useSarPositions } from 'src/state/psarstake/hooks';
@@ -7,7 +7,7 @@ import { Button } from '../Button';
 import { Loader } from '../Loader';
 import { Text } from '../Text';
 import Portfolio from './Portfolio';
-import { Root } from './styleds';
+import { Overlay, Root } from './styleds';
 
 interface Props {
   onSelectPosition: (position: Position | null) => void;
@@ -19,12 +19,29 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
 
   const toggleWalletModal = useWalletModalToggle();
 
+  const sarOverlayElement = document.getElementById('sar-portfolio-overlay');
+  const displayOverlay = () => {
+    if (sarOverlayElement) {
+      sarOverlayElement.style.display = 'block';
+    }
+  };
+  const hideOverlay = () => {
+    if (sarOverlayElement) {
+      sarOverlayElement.style.display = 'none';
+    }
+  };
+
   const focusCreatePosition = () => {
     document.getElementById('create-sar-position-widget')?.scrollIntoView({
       behavior: 'smooth',
     });
-    document.getElementById('sar-stake-input')?.focus();
+    displayOverlay();
   };
+
+  // remove overlay when user change the account
+  useEffect(() => {
+    hideOverlay();
+  }, [account]);
 
   const renderBody = () => {
     if (isLoading) {
@@ -64,5 +81,10 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
     return <Portfolio positions={positions} onSelectPosition={onSelectPosition} />;
   };
 
-  return <Root>{renderBody()}</Root>;
+  return (
+    <Root>
+      {renderBody()}
+      <Overlay id="sar-portfolio-overlay" />
+    </Root>
+  );
 }

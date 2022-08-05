@@ -37,7 +37,7 @@ export default function SarStakingWidget({ selectedPosition }: Props) {
   return (
     <Root>
       <Wrapper>{renderBody()}</Wrapper>
-      <Wrapper mt="10px">
+      <Wrapper mt="10px" zIndex={100}>
         <Stake />
       </Wrapper>
     </Root>

@@ -24,7 +24,7 @@ export default function Portfolio({ itemsPerPage = 12, positions, onSelectPositi
       setCurrentItems(
         positions
           .sort((a, b) => {
-            return parseFloat(formatEther(b.amount.sub(a.amount)));
+            return parseFloat(formatEther(b.balance.sub(a.balance)));
           })
           .slice(0, itemsPerPage),
       );
