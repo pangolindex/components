@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Text } from 'src/components/Text';
 import { Box } from '../../Box';
 
 export const Root = styled(Box)`

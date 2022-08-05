@@ -30,11 +30,12 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
 
   const theme = useContext(ThemeContext);
 
-  const oldBalance = selectedPosition?.amount;
+  const oldBalance = selectedPosition?.balance;
   const newBalance = oldBalance?.add(selectedPosition?.pendingRewards ?? 0);
 
   const apr = selectedPosition?.apr;
 
+  // Fix to show the correct apr
   const newAPR = selectedPosition?.rewardRate
     .mul(86400)
     .mul(365)
@@ -43,7 +44,6 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
 
   const handleConfirmDismiss = useCallback(() => {
     setOpenDrawer(false);
-    // if there was a tx hash, we want to clear the input
     wrappedOnDismiss();
   }, []);
 
@@ -53,8 +53,8 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
   }, [onCompound]);
 
   useEffect(() => {
-    if (!attempting && openDrawer && !hash) {
-      setOpenDrawer(false);
+    if (!attempting && openDrawer && !hash && !compoundError) {
+      handleConfirmDismiss();
       return;
     }
   }, [attempting]);
@@ -148,7 +148,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
           {!selectedPosition ? 'Choose a Position' : 'Compound'}
         </Button>
       </Root>
-      <Drawer isOpen={openDrawer} onClose={handleConfirmDismiss}>
+      <Drawer isOpen={openDrawer && !!selectedPosition} onClose={handleConfirmDismiss}>
         {compoundError ? ErroContent : hash ? SubmittedContent : PendingContent}
       </Drawer>
     </Box>

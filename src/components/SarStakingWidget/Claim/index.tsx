@@ -34,7 +34,6 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
 
   const handleConfirmDismiss = useCallback(() => {
     setOpenDrawer(false);
-    // if there was a tx hash, we want to clear the input
     wrappedOnDismiss();
   }, []);
 
@@ -44,8 +43,8 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
   }, [onClaim]);
 
   useEffect(() => {
-    if (!attempting && openDrawer && !hash) {
-      setOpenDrawer(false);
+    if (!attempting && openDrawer && !hash && !claimError) {
+      handleConfirmDismiss();
       return;
     }
   }, [attempting]);
@@ -138,7 +137,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
           {!selectedPosition ? 'Choose a Position' : 'Claim'}
         </Button>
       </Root>
-      <Drawer isOpen={openDrawer} onClose={handleConfirmDismiss}>
+      <Drawer isOpen={openDrawer && !!selectedPosition} onClose={handleConfirmDismiss}>
         {claimError ? ErroContent : hash ? SubmittedContent : PendingContent}
       </Drawer>
     </Box>

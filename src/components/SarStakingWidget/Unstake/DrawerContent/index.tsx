@@ -3,7 +3,6 @@ import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/images/circleTick.svg';
-import Drawer from 'src/components/Drawer';
 import { usePangolinWeb3 } from 'src/hooks';
 import { Position } from 'src/state/psarstake/hooks';
 import { getEtherscanLink } from 'src/utils';
@@ -11,7 +10,6 @@ import { Box, Button, CurrencyLogo, Loader, Stat, Text } from '../../..';
 import { ErrorBox, ErrorWrapper, Footer, Header, Link, Root, SubmittedWrapper, TokenRow } from './styled';
 
 interface Props {
-  isOpen: boolean;
   unstakeAmount?: CurrencyAmount;
   token: Token;
   position: Position;
@@ -22,8 +20,8 @@ interface Props {
   onClose: () => void;
 }
 
-const ConfirmDrawer: React.FC<Props> = (props) => {
-  const { isOpen, unstakeAmount, token, position, attemptingTxn, errorMessage, txHash, onClose, onConfirm } = props;
+const DrawerContent: React.FC<Props> = (props) => {
+  const { unstakeAmount, token, position, attemptingTxn, errorMessage, txHash, onClose, onConfirm } = props;
 
   const { chainId } = usePangolinWeb3();
   const theme = useContext(ThemeContext);
@@ -111,10 +109,16 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
     </SubmittedWrapper>
   );
 
-  return (
-    <Drawer title={errorMessage || txHash || attemptingTxn ? '' : 'Summary'} isOpen={isOpen} onClose={onClose}>
-      {errorMessage ? ErroContent : txHash ? SubmittedContent : attemptingTxn ? PendingContent : ConfirmContent}
-    </Drawer>
-  );
+  if (errorMessage) {
+    return ErroContent;
+  }
+  if (txHash) {
+    return SubmittedContent;
+  }
+  if (attemptingTxn) {
+    return PendingContent;
+  }
+  return ConfirmContent;
 };
-export default ConfirmDrawer;
+
+export default DrawerContent;

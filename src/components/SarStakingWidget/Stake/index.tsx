@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Drawer } from 'src/components';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import { Text } from 'src/components/Text';
@@ -11,7 +12,7 @@ import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useDerivativeSarStake, useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useTokenBalances } from 'src/state/pwallet/hooks';
-import ConfirmDrawer from './ConfirmDrawer';
+import DrawerContent from './ConfirmDrawer';
 import { Buttons, Root } from './styleds';
 
 export default function Stake() {
@@ -166,9 +167,13 @@ export default function Stake() {
         </Box>
         {renderButtons()}
       </Root>
-      {openDrawer && (
-        <ConfirmDrawer
-          isOpen={openDrawer}
+
+      <Drawer
+        title={stakeError || hash || attempting ? '' : 'Summary'}
+        isOpen={openDrawer}
+        onClose={handleConfirmDismiss}
+      >
+        <DrawerContent
           stakeAmount={parsedAmount}
           token={png}
           dollerWorth={dollerWorth}
@@ -179,7 +184,7 @@ export default function Stake() {
           errorMessage={stakeError}
           onClose={handleConfirmDismiss}
         />
-      )}
+      </Drawer>
     </Box>
   );
 }

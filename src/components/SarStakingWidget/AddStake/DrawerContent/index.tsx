@@ -5,7 +5,6 @@ import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/images/circleTick.svg';
-import Drawer from 'src/components/Drawer';
 import { usePangolinWeb3 } from 'src/hooks';
 import { Position } from 'src/state/psarstake/hooks';
 import { getEtherscanLink } from 'src/utils';
@@ -13,7 +12,6 @@ import { Box, Button, CurrencyLogo, Loader, Stat, Text } from '../../..';
 import { ErrorBox, ErrorWrapper, Footer, Header, Link, Root, SubmittedWrapper, TokenRow } from './styled';
 
 interface Props {
-  isOpen: boolean;
   stakeAmount?: CurrencyAmount;
   token: Token;
   dollerWorth?: number;
@@ -25,9 +23,8 @@ interface Props {
   onClose: () => void;
 }
 
-const ConfirmDrawer: React.FC<Props> = (props) => {
-  const { isOpen, stakeAmount, token, dollerWorth, position, attemptingTxn, errorMessage, txHash, onClose, onConfirm } =
-    props;
+const DrawerContent: React.FC<Props> = (props) => {
+  const { stakeAmount, token, dollerWorth, position, attemptingTxn, errorMessage, txHash, onClose, onConfirm } = props;
 
   const { chainId } = usePangolinWeb3();
   const theme = useContext(ThemeContext);
@@ -35,7 +32,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
   // text to show while loading
   const pendingText = `Staking ${stakeAmount?.toSignificant(6) ?? 0} ${token.symbol}`;
 
-  const oldBalance = position.amount;
+  const oldBalance = position?.balance;
   const newBalance = oldBalance.add((stakeAmount?.raw ?? 0).toString()).add(position.pendingRewards);
 
   const newAPR = position.rewardRate.mul(86400).mul(365).mul(100).div(newBalance);
@@ -124,10 +121,16 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
     </SubmittedWrapper>
   );
 
-  return (
-    <Drawer title={errorMessage || txHash || attemptingTxn ? '' : 'Summary'} isOpen={isOpen} onClose={onClose}>
-      {errorMessage ? ErroContent : txHash ? SubmittedContent : attemptingTxn ? PendingContent : ConfirmContent}
-    </Drawer>
-  );
+  if (errorMessage) {
+    return ErroContent;
+  }
+  if (txHash) {
+    return SubmittedContent;
+  }
+  if (attemptingTxn) {
+    return PendingContent;
+  }
+  return ConfirmContent;
 };
-export default ConfirmDrawer;
+
+export default DrawerContent;

@@ -18,6 +18,7 @@ import { tryParseAmount } from '../pswap/hooks';
 import { useTransactionAdder } from '../ptransactions/hooks';
 import { useTokenBalances } from '../pwallet/hooks';
 
+const ZERO = BigNumber.from('0');
 export interface URI {
   name: string;
   description: string;
@@ -28,7 +29,8 @@ export interface URI {
 
 export interface Position {
   id: BigNumber;
-  amount: BigNumber;
+  balance: BigNumber;
+  sumOfEntryTimes: BigNumber;
   apr: BigNumber;
   rewardRate: BigNumber;
   pendingRewards: BigNumber;
@@ -51,9 +53,11 @@ export function useSarStakeInfo() {
         : null;
     const totalStaked = new TokenAmount(png, totalValueVariables ? totalValueVariables?.balance.toString() : '0');
 
-    const weeklyPNG = !!rewardRate ? rewardRate.mul(86400).mul(7) : BigNumber.from('0');
+    const weeklyPNG = !!rewardRate ? rewardRate.mul(86400).mul(7) : ZERO;
 
-    return { APR, totalStaked, weeklyPNG };
+    const sumOfEntryTimes: BigNumber = totalValueVariables ? totalValueVariables?.sumOfEntryTimes : ZERO;
+
+    return { APR, totalStaked, sumOfEntryTimes, rewardRate: rewardRate ?? ZERO, weeklyPNG };
   }, [rewardRate, totalValueVariables]);
 }
 
@@ -246,7 +250,7 @@ export function useDerivativeSarUnstake(position: Position | null) {
 
   const sarStakingContract = useSarStakingContract();
 
-  const stakedAmount = new TokenAmount(png, (position?.amount ?? 0).toString());
+  const stakedAmount = new TokenAmount(png, (position?.balance ?? 0).toString());
 
   const { parsedAmount, error } = useUnstakeParseAmount(typedValue, png, stakedAmount);
 
@@ -455,7 +459,6 @@ export function useDerivativeSarClaim(position: Position | null) {
 
 // Returns a list of positions for the user
 export function useSarPositions() {
-  const ZERO = BigNumber.from(0);
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
@@ -551,7 +554,7 @@ export function useSarPositions() {
     });
 
     const positions: Position[] = nftsURIs.map((uri, index) => {
-      const amount = positionsAmountState[index].result?.[0];
+      const valueVariables = positionsAmountState[index].result?.valueVariables;
       const rewardRate = positionsRewardRateState[index].result?.[0];
       const pendingRewards = positionsPedingRewardsState[index].result?.[0];
       const id = nftsIndexes[index][0];
@@ -559,15 +562,16 @@ export function useSarPositions() {
         ?.mul(86400)
         .mul(365)
         .mul(100)
-        .div(amount?.balance ?? 1);
+        .div(valueVariables?.balance ?? 1);
 
-      if (!amount || !rewardRate || !pendingRewards || !uri) {
+      if (!valueVariables || !rewardRate || !pendingRewards || !uri) {
         return {} as Position;
       }
 
       return {
         id: BigNumber.from(id),
-        amount: amount?.balance,
+        balance: valueVariables?.balance,
+        sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
         apr: apr,
         rewardRate: rewardRate,
         uri: uri,

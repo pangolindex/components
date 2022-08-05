@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Drawer } from 'src/components';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import { Text } from 'src/components/Text';
@@ -13,7 +14,7 @@ import { Position, useDerivativeSarStake, useSarStakeInfo } from 'src/state/psar
 import { useTokenBalances } from 'src/state/pwallet/hooks';
 import Title from '../Title';
 import { Options } from '../types';
-import ConfirmDrawer from './ConfirmDrawer';
+import DrawerContent from './DrawerContent';
 import { Buttons, Root } from './styleds';
 
 interface Props {
@@ -170,20 +171,26 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
         </Box>
         {renderButtons()}
       </Root>
-      {openDrawer && !!selectedPosition && (
-        <ConfirmDrawer
-          isOpen={openDrawer}
-          stakeAmount={parsedAmount}
-          token={png}
-          dollerWorth={dollerWorth}
-          position={selectedPosition}
-          attemptingTxn={attempting}
-          txHash={hash}
-          onConfirm={onStake}
-          errorMessage={stakeError}
-          onClose={handleConfirmDismiss}
-        />
-      )}
+
+      <Drawer
+        title={stakeError || hash || attempting ? '' : 'Summary'}
+        isOpen={openDrawer}
+        onClose={handleConfirmDismiss}
+      >
+        {!!selectedPosition && (
+          <DrawerContent
+            stakeAmount={parsedAmount}
+            token={png}
+            dollerWorth={dollerWorth}
+            position={selectedPosition}
+            attemptingTxn={attempting}
+            txHash={hash}
+            onConfirm={onStake}
+            errorMessage={stakeError}
+            onClose={handleConfirmDismiss}
+          />
+        )}
+      </Drawer>
     </Box>
   );
 }

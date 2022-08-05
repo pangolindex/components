@@ -2,6 +2,7 @@ import { formatEther } from '@ethersproject/units';
 import numeral from 'numeral';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Drawer } from 'src/components';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import { Text } from 'src/components/Text';
@@ -12,7 +13,7 @@ import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Position, useDerivativeSarUnstake } from 'src/state/psarstake/hooks';
 import Title from '../Title';
 import { Options } from '../types';
-import ConfirmDrawer from './ConfirmDrawer';
+import DrawerContent from './DrawerContent';
 import { Root } from './styleds';
 
 interface Props {
@@ -29,7 +30,7 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
 
   const png = PNG[chainId];
 
-  const stakedAmount = selectedPosition?.amount ?? 0;
+  const stakedAmount = selectedPosition?.balance ?? 0;
 
   const { t } = useTranslation();
 
@@ -122,19 +123,25 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
         </Box>
         {renderButton()}
       </Root>
-      {openDrawer && !!selectedPosition && (
-        <ConfirmDrawer
-          isOpen={openDrawer}
-          unstakeAmount={parsedAmount}
-          token={png}
-          position={selectedPosition}
-          attemptingTxn={attempting}
-          txHash={hash}
-          onConfirm={onUnstake}
-          errorMessage={unstakeError}
-          onClose={handleConfirmDismiss}
-        />
-      )}
+
+      <Drawer
+        title={unstakeError || hash || attempting ? '' : 'Summary'}
+        isOpen={openDrawer}
+        onClose={handleConfirmDismiss}
+      >
+        {!!selectedPosition && (
+          <DrawerContent
+            unstakeAmount={parsedAmount}
+            token={png}
+            position={selectedPosition}
+            attemptingTxn={attempting}
+            txHash={hash}
+            onConfirm={onUnstake}
+            errorMessage={unstakeError}
+            onClose={handleConfirmDismiss}
+          />
+        )}
+      </Drawer>
     </Box>
   );
 }
