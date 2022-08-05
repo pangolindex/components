@@ -467,8 +467,8 @@ export function useDaasFeeTo(): [string, (feeTo: string) => void] {
   });
 
   const setFeeTo = useCallback(
-    (feeTo: string) => {
-      dispatch(updateFeeTo({ feeTo }));
+    (newFeeTo: string) => {
+      dispatch(updateFeeTo({ feeTo: newFeeTo }));
     },
     [dispatch],
   );
@@ -483,8 +483,8 @@ export function useDaasFeeInfo(): [FeeInfo, (feeInfo: FeeInfo) => void] {
   });
 
   const setFeeInfo = useCallback(
-    (feeInfo: FeeInfo) => {
-      dispatch(updateFeeInfo({ feeInfo }));
+    (newFeeInfo: FeeInfo) => {
+      dispatch(updateFeeInfo({ feeInfo: newFeeInfo }));
     },
     [dispatch],
   );
