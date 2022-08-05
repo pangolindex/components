@@ -140,12 +140,7 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
 
 // account is optional
 export function getRouterContract(chainId: ChainId, library: Web3Provider, account?: string): Contract | null {
-  return getContract(
-    chainId ? ROUTER_ADDRESS[chainId] : ROUTER_ADDRESS[ChainId.AVALANCHE],
-    IPangolinRouter.abi,
-    library,
-    account,
-  );
+  return getContract(ROUTER_ADDRESS[chainId], IPangolinRouter.abi, library, account);
 }
 export function getRouterContractDaaS(chainId: ChainId, library: Web3Provider, account?: string): Contract | null {
   return getContract(ROUTER_DAAS_ADDRESS[chainId], IPangolinRouterSupportingFees.abi, library, account);
