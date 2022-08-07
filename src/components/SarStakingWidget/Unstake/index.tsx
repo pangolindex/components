@@ -73,7 +73,7 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
           onClick={() => setOpenDrawer(true)}
           height="46px"
         >
-          {!selectedPosition ? 'Select a Position' : error ?? t('earnPage.unstake')}
+          {!selectedPosition ? t('sarStakeMore.choosePosition') : error ?? t('sarUnstake.unstake')}
         </Button>
       );
     }
@@ -86,10 +86,13 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
         <Box>
           <Box justifyContent="space-between" display="flex">
             <Text color="text1" fontSize="18px" fontWeight={500}>
-              Unstake
+              {t('sarUnstake.unstake')}
             </Text>
             <Text color="text4">
-              Staked {numeral(formatEther(stakedAmount)).format('0.00a')} {png.symbol ?? 'PNG'}
+              {t('sarUnstake.stakedBalance', {
+                symbol: png.symbol,
+                balance: numeral(formatEther(stakedAmount)).format('0.00a'),
+              })}
             </Text>
           </Box>
           <TextInput
@@ -98,7 +101,7 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
             placeholder="0.00"
             addonAfter={
               <Button variant="plain" backgroundColor="color2" padding="10px" onClick={handleMax}>
-                <Text color="text1">MAX</Text>
+                <Text color="text1">{t('sarStake.max')}</Text>
               </Button>
             }
             onChange={(value: any) => {
@@ -109,23 +112,23 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
         <Box display="grid" bgColor="color3" borderRadius="4px" padding="20px" style={{ gridGap: '20px' }}>
           <Box display="flex" justifyContent="space-between">
             <Box>
-              <Text color="text2">Current APR</Text>
+              <Text color="text2">{t('sarUnstake.currentAPR')}</Text>
               <Text color="text1">{(selectedPosition?.apr ?? '-').toString()}%</Text>
             </Box>
             <Box>
-              <Text color="text2">APR After Unstake</Text>
+              <Text color="text2">{t('sarUnstake.aprAfter')}</Text>
               <Text color="text1">0%</Text>
             </Box>
           </Box>
           <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-            When you unstake, your average APR will fall to 0%.
+            {t('sarUnstake.unstakeWarning')}
           </Text>
         </Box>
         {renderButton()}
       </Root>
 
       <Drawer
-        title={unstakeError || hash || attempting ? '' : 'Summary'}
+        title={unstakeError || hash || attempting ? '' : t('sarStake.summary')}
         isOpen={openDrawer}
         onClose={handleConfirmDismiss}
       >

@@ -12,7 +12,7 @@ import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useDerivativeSarStake, useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useTokenBalances } from 'src/state/pwallet/hooks';
-import DrawerContent from './ConfirmDrawer';
+import DrawerContent from './DrawerContent';
 import { Buttons, Root } from './styleds';
 
 export default function Stake() {
@@ -92,7 +92,7 @@ export default function Stake() {
 
       return (
         <Button padding="15px 18px" variant="primary" as="a" href={url} onClick={desativeOverlay}>
-          {t('header.buy', { symbol: png.symbol })}
+          {t('sarStake.buy', { symbol: png.symbol })}
         </Button>
       );
     } else {
@@ -117,7 +117,7 @@ export default function Stake() {
             }}
             height="46px"
           >
-            {error ?? t('earnPage.stake')}
+            {error ?? t('sarStake.stake')}
           </Button>
         </Buttons>
       );
@@ -137,15 +137,15 @@ export default function Stake() {
         <Box>
           <Box mb={18}>
             <Text color="text1" fontSize="21px" fontWeight={700}>
-              Create a new position
+              {t('sarStake.createNewPosition')}
             </Text>
           </Box>
           <Box justifyContent="space-between" display="flex">
             <Text color="text1" fontSize="18px" fontWeight={500}>
-              Stake
+              {t('sarStake.stake')}
             </Text>
             <Text color="text4">
-              In Wallet {userPngBalance?.toSignificant(2) ?? 0} {png.symbol ?? 'PNG'}
+              {t('sarStake.walletBalance', { symbol: png.symbol, balance: userPngBalance?.toSignificant(2) ?? 0 })}
             </Text>
           </Box>
           <TextInput
@@ -158,7 +158,7 @@ export default function Stake() {
             }}
             addonAfter={
               <Button variant="plain" backgroundColor="color2" padding="10px" onClick={handleMax}>
-                <Text color="text1">MAX</Text>
+                <Text color="text1">{t('sarStake.max')}</Text>
               </Button>
             }
           />
@@ -166,11 +166,11 @@ export default function Stake() {
         <Box display="grid" bgColor="color3" borderRadius="4px" padding="20px" style={{ gridGap: '20px' }}>
           <Box display="flex" justifyContent="space-between">
             <Box>
-              <Text color="text2">Dolar Value</Text>
+              <Text color="text2">{t('sarStake.dollarValue')}</Text>
               <Text color="text1">{dollerWorth ?? '0'}$</Text>
             </Box>
             <Box>
-              <Text color="text2">Median APR</Text>
+              <Text color="text2">{t('sarStake.medianAPR')}</Text>
               <Text color="text1">{`${APR ?? '-'.toString()}%`}</Text>
             </Box>
           </Box>
@@ -179,7 +179,7 @@ export default function Stake() {
       </Root>
 
       <Drawer
-        title={stakeError || hash || attempting ? '' : 'Summary'}
+        title={stakeError || hash || attempting ? '' : t('sarStake.summary')}
         isOpen={openDrawer}
         onClose={handleConfirmDismiss}
       >

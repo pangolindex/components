@@ -95,7 +95,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
 
       return (
         <Button padding="15px 18px" variant="primary" as="a" href={url}>
-          {t('header.buy', { symbol: png.symbol })}
+          {t('sarStake.buy', { symbol: png.symbol })}
         </Button>
       );
     } else {
@@ -117,7 +117,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
             onClick={() => setOpenDrawer(true)}
             height="46px"
           >
-            {!selectedPosition ? 'Select a Position' : error ?? t('positionCard.add')}
+            {!selectedPosition ? t('sarStakeMore.choosePosition') : error ?? t('sarStakeMore.add')}
           </Button>
         </Buttons>
       );
@@ -131,10 +131,10 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
         <Box>
           <Box justifyContent="space-between" display="flex">
             <Text color="text1" fontSize="18px" fontWeight={500}>
-              Stake more
+              {t('sarStakeMore.stakeMore')}
             </Text>
             <Text color="text4">
-              In Wallet {userPngBalance?.toSignificant(2) ?? 0} {png.symbol ?? 'PNG'}
+              {t('sarStake.walletBalance', { symbol: png.symbol, balance: userPngBalance?.toSignificant(2) ?? 0 })}
             </Text>
           </Box>
           <TextInput
@@ -154,26 +154,26 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
         <Box display="grid" bgColor="color3" borderRadius="4px" padding="20px" style={{ gridGap: '20px' }}>
           <Box display="flex" justifyContent="space-between">
             <Box>
-              <Text color="text2">Dolar Value</Text>
+              <Text color="text2">{t('sarStake.dollarValue')}</Text>
               <Text color="text1">{dollerWorth ?? '0'}$</Text>
             </Box>
             <Box>
-              <Text color="text2">Median APR</Text>
+              <Text color="text2">{t('sarStake.medianAPR')}</Text>
               <Text color="text1">{`${(APR ?? '-').toString()}%`}</Text>
             </Box>
           </Box>
           <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-            A stake action will create a SAR Nft for you.
-            <br /> With this NFT you can manage your PSB stake.
+            {t('sarStake.confirmDescription')}
             <br />
-            <br /> Your Apr will start from 0 and increase the amount you take from reward pool by time.
+            <br />
+            {t('sarStakeMore.confirmDescription')}
           </Text>
         </Box>
         {renderButtons()}
       </Root>
 
       <Drawer
-        title={stakeError || hash || attempting ? '' : 'Summary'}
+        title={stakeError || hash || attempting ? '' : t('sarStake.summary')}
         isOpen={openDrawer}
         onClose={handleConfirmDismiss}
       >

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Position, useSarPositions } from 'src/state/psarstake/hooks';
@@ -18,6 +19,8 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
   const { positions, isLoading } = useSarPositions();
 
   const toggleWalletModal = useWalletModalToggle();
+
+  const { t } = useTranslation();
 
   const sarOverlayElement = document.getElementById('sar-portfolio-overlay');
   const displayOverlay = () => {
@@ -61,18 +64,15 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
           style={{ gridGap: '30px' }}
         >
           <Text color="text1" fontSize="18px" fontWeight={500} textAlign="center">
-            You dont have any PANGUARDIAN NFT.
-          </Text>
-          <Text color="text1" fontSize="18px" fontWeight={500} textAlign="center">
-            LETS GET YOU ONE
+            {t('sarPortfolio.noPositions')}
           </Text>
           {!account ? (
             <Button variant="primary" width="250px" onClick={toggleWalletModal}>
-              Connect to a wallet
+              {t('removeLiquidity.connectWallet')}
             </Button>
           ) : (
             <Button variant="primary" width="250px" onClick={focusCreatePosition}>
-              START
+              {t('sarPortfolio.START')}
             </Button>
           )}
         </Box>
@@ -84,7 +84,7 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
   return (
     <Root>
       {renderBody()}
-      <Overlay id="sar-portfolio-overlay" />
+      <Overlay id="sar-portfolio-overlay" onClick={hideOverlay} />
     </Root>
   );
 }

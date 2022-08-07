@@ -3,6 +3,7 @@ import { formatEther } from '@ethersproject/units';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/images/circleTick.svg';
 import { Drawer } from 'src/components';
@@ -32,6 +33,8 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
 
   const theme = useContext(ThemeContext);
 
+  const { t } = useTranslation();
+
   const apr = selectedPosition?.apr;
   const png = PNG[chainId];
 
@@ -52,21 +55,20 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
     }
   }, [attempting]);
 
-  const pendingText = 'Claiming...';
-  const PendingContent = <Loader size={100} label={pendingText} />;
+  const PendingContent = <Loader size={100} label={t('sarClaim.pending')} />;
 
   const pendingRewards = selectedPosition?.pendingRewards ?? BigNumber.from('0');
 
   const renderButton = () => {
     let error: string | undefined;
     if (!selectedPosition) {
-      error = 'Choose a position';
+      error = t('sarStakeMore.choosePosition');
     } else if (pendingRewards.isZero()) {
       error = 'No rewards to claim';
     }
     return (
       <Button variant="primary" onClick={handleConfirm} isDisabled={!!error}>
-        {error ?? 'Claim'}
+        {error ?? t('sarClaim.claim')}
       </Button>
     );
   };
@@ -80,7 +82,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
         </Text>
       </ErrorBox>
       <Button variant="primary" onClick={handleConfirmDismiss}>
-        Dismiss
+        {t('transactionConfirmation.dismiss')}
       </Button>
     </ErrorWrapper>
   );
@@ -92,10 +94,9 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
           <img src={CircleTick} alt="circle-tick" />
         </Box>
         <Text fontSize={16} color="text1">
-          You have successfully claimed your rewards.
-        </Text>
-        <Text fontSize={16} color="text1">
-          Your APR will be recalculated.
+          {t('sarClaim.successSubmit')}
+          <br />
+          {t('sarStake.yourAprRecalculated')}
         </Text>
         {chainId && hash && (
           <Link
@@ -105,12 +106,12 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
             color={'primary'}
             href={getEtherscanLink(chainId, hash, 'transaction')}
           >
-            View on explorer
+            {t('transactionConfirmation.viewExplorer')}
           </Link>
         )}
       </Box>
       <Button variant="primary" onClick={handleConfirmDismiss}>
-        Close
+        {t('transactionConfirmation.close')}
       </Button>
     </SubmittedWrapper>
   );
@@ -122,13 +123,13 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
         {!selectedPosition ? (
           <Box>
             <Text color="text1" fontSize="24px" fontWeight={500} textAlign="center">
-              Choose a Position
+              {t('sarStakeMore.choosePosition')}
             </Text>
           </Box>
         ) : (
           <Box>
             <Text color="text1" fontSize="16px" fontWeight={500} textAlign="center">
-              Rewards accrued:
+              {t('sarCompound.reward')}:
             </Text>
             <ToolTipText color="text1" fontSize="36px" fontWeight={500} textAlign="center">
               {numeral(formatEther(pendingRewards.toString())).format('0.00a')}
@@ -142,11 +143,11 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
         <Box display="grid" bgColor="color3" borderRadius="4px" padding="20px" style={{ gridGap: '20px' }}>
           <Box display="flex" justifyContent="space-between">
             <Box>
-              <Text color="text2">Current APR</Text>
+              <Text color="text2">{t('sarUnstake.currentAPR')}</Text>
               <Text color="text1">{(apr ?? '-').toString()}%</Text>
             </Box>
             <Box>
-              <Text color="text2">APR After Claim</Text>
+              <Text color="text2">{t('sarClaim.aprAfter')}</Text>
               <Text color="text1">0%</Text>
             </Box>
           </Box>

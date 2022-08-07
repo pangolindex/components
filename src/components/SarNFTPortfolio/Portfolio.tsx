@@ -1,5 +1,6 @@
 import { formatEther } from '@ethersproject/units';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Position } from 'src/state/psarstake/hooks';
 import { Box } from '../Box';
 import DropdownMenu from '../DropdownMenu';
@@ -16,8 +17,12 @@ interface Props {
 export default function Portfolio({ itemsPerPage = 12, positions, onSelectPosition }: Props) {
   const [currentItems, setCurrentItems] = useState(positions.slice(0, itemsPerPage));
   const [selectedPositon, setSelectedPosition] = useState<Position | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string>('');
+
+  const { t } = useTranslation();
 
   const onSelect = (value: string) => {
+    setSelectedOption(value);
     if (value === 'apr') {
       setCurrentItems(positions.sort((a, b) => b.apr.sub(a.apr).toNumber()).slice(0, itemsPerPage));
     } else if (value === 'amount') {
@@ -58,7 +63,7 @@ export default function Portfolio({ itemsPerPage = 12, positions, onSelectPositi
         >
           <StyledSVG dangerouslySetInnerHTML={{ __html: svg }} width="100%" />
           <Text color={isSelected ? 'black' : 'text1'} textAlign="center" fontWeight={500}>
-            Position id: {position?.id.toString()}
+            {t('sarPortfolio.positionId')}: {position?.id.toString()}
           </Text>
         </Box>
       );
@@ -69,14 +74,14 @@ export default function Portfolio({ itemsPerPage = 12, positions, onSelectPositi
     <Box display="flex" flexDirection="column" width="100%">
       <Box display="flex" justifyContent="end" mb="20px">
         <DropdownMenu
-          title="Sort by:"
+          title={`${t('sarPortfolio.sortBy')}:`}
           onSelect={onSelect}
-          value="1"
+          value={selectedOption}
           options={[
-            { label: 'APR', value: 'apr' },
-            { label: 'Amount', value: 'amount' },
-            { label: 'newest', value: 'newest' },
-            { label: 'oldest', value: 'oldest' },
+            { label: t('sarPortfolio.apr'), value: 'apr' },
+            { label: t('sarPortfolio.amount'), value: 'amount' },
+            { label: t('sarPortfolio.newest'), value: 'newest' },
+            { label: t('sarPortfolio.oldest'), value: 'oldest' },
           ]}
         />
       </Box>

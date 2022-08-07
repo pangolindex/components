@@ -3,6 +3,7 @@ import { formatEther } from '@ethersproject/units';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/images/circleTick.svg';
 import { Drawer } from 'src/components';
@@ -33,6 +34,8 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
 
   const theme = useContext(ThemeContext);
 
+  const { t } = useTranslation();
+
   const oldBalance = selectedPosition?.balance;
   const newBalance = oldBalance?.add(selectedPosition?.pendingRewards ?? 0);
 
@@ -62,8 +65,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
     }
   }, [attempting]);
 
-  const pendingText = 'Compounding';
-  const PendingContent = <Loader size={100} label={pendingText} />;
+  const PendingContent = <Loader size={100} label={t('sarCompound.pending')} />;
 
   const pendingRewards = selectedPosition?.pendingRewards ?? BigNumber.from('0');
 
@@ -78,7 +80,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
         </Text>
       </ErrorBox>
       <Button variant="primary" onClick={handleConfirmDismiss}>
-        Dismiss
+        {t('transactionConfirmation.dismiss')}
       </Button>
     </ErrorWrapper>
   );
@@ -90,10 +92,9 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
           <img src={CircleTick} alt="circle-tick" />
         </Box>
         <Text fontSize={16} color="text1">
-          You have successfully compounded your position.
-        </Text>
-        <Text fontSize={16} color="text1">
-          Your APR will be recalculated.
+          {t('sarCompound.successSubmit')}
+          <br />
+          {t('sarStake.yourAprRecalculated')}
         </Text>
         {chainId && hash && (
           <Link
@@ -103,12 +104,12 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
             color={'primary'}
             href={getEtherscanLink(chainId, hash, 'transaction')}
           >
-            View on explorer
+            {t('transactionConfirmation.viewExplorer')}
           </Link>
         )}
       </Box>
       <Button variant="primary" onClick={handleConfirmDismiss}>
-        Close
+        {t('transactionConfirmation.close')}
       </Button>
     </SubmittedWrapper>
   );
@@ -120,13 +121,13 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
         {!selectedPosition ? (
           <Box>
             <Text color="text1" fontSize="24px" fontWeight={500} textAlign="center">
-              Choose a Position
+              {t('sarStakeMore.choosePosition')}
             </Text>
           </Box>
         ) : (
           <Box>
             <Text color="text1" fontSize="16px" fontWeight={500} textAlign="center">
-              Rewards accrued:
+              {t('sarCompound.reward')}:
             </Text>
             <ToolTipText color="text1" fontSize="36px" fontWeight={500} textAlign="center">
               {numeral(formatEther(pendingRewards.toString())).format('0.00a')}
@@ -140,22 +141,20 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
         <Box display="grid" bgColor="color3" borderRadius="4px" padding="20px" style={{ gridGap: '20px' }}>
           <Box display="flex" justifyContent="space-between">
             <Box>
-              <Text color="text2">Current APR</Text>
+              <Text color="text2">{t('sarUnstake.currentAPR')}</Text>
               <Text color="text1">{(apr ?? '-').toString()}%</Text>
             </Box>
             <Box>
-              <Text color="text2">APR After Compound</Text>
+              <Text color="text2">{t('sarCompound.aprAfter')}</Text>
               <Text color="text1">{(newAPR ?? '-').toString()}%</Text>
             </Box>
           </Box>
           <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-            It&apos;s worth being aware that compunding your rewards may decrease your average APR. Newly staked tokens
-            will start from 0 while the old tokens will continue with the same APR. This creates an average that will be
-            shown to you.
+            {t('sarCompound.description')}
           </Text>
         </Box>
         <Button variant="primary" onClick={handleConfirm} isDisabled={!selectedPosition}>
-          {!selectedPosition ? 'Choose a Position' : 'Compound'}
+          {!selectedPosition ? t('sarStakeMore.choosePosition') : t('sarCompound.compound')}
         </Button>
       </Root>
       <Drawer isOpen={openDrawer && !!selectedPosition} onClose={handleConfirmDismiss}>

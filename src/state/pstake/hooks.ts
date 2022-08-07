@@ -348,7 +348,7 @@ export function useDerivedStakeInfo(
     error = t('stakeHooks.connectWallet');
   }
   if (parsedInput && !parsedAmount) {
-    error = error ?? 'Insufficient ' + stakingToken.symbol + ' balance';
+    error = error ?? t('stakeHooks.insufficientBalance', { symbol: stakingToken.symbol });
   }
   if (!parsedAmount) {
     error = error ?? t('stakeHooks.enterAmount');

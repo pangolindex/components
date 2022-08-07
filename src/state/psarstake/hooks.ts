@@ -149,7 +149,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
       }
       await waitForTransaction(library, response, 5);
       addTransaction(response, {
-        summary: t('earnPage.stakeStakingTokens', { symbol: 'PNG' }),
+        summary: t('sarStake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
       setHash(response.hash);
     } catch (error) {
@@ -219,7 +219,7 @@ function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiqu
     error = t('stakeHooks.connectWallet');
   }
   if (parsedInput && !parsedAmount) {
-    error = error ?? 'Insufficient ' + stakingToken.symbol + ' staked balance';
+    error = error ?? t('stakeHooks.insufficientBalance', { symbol: stakingToken.symbol });
   }
   if (!parsedAmount) {
     error = error ?? t('stakeHooks.enterAmount');
@@ -309,7 +309,7 @@ export function useDerivativeSarUnstake(position: Position | null) {
       );
       await waitForTransaction(library, response, 5);
       addTransaction(response, {
-        summary: t('earnPage.unstake'),
+        summary: t('sarUnstake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
       setHash(response.hash);
     } catch (error) {
@@ -374,7 +374,7 @@ export function useDerivativeSarCompound(position: Position | null) {
       });
       await waitForTransaction(library, response, 5);
       addTransaction(response, {
-        summary: t('earnPage.compound'),
+        summary: t('sarCompound.transactionSummary'),
       });
       setHash(response.hash);
     } catch (error) {
@@ -431,7 +431,7 @@ export function useDerivativeSarClaim(position: Position | null) {
       });
       await waitForTransaction(library, response, 5);
       addTransaction(response, {
-        summary: t('earnPage.claim'),
+        summary: t('sarClaim.transactionSummary'),
       });
       setHash(response.hash);
     } catch (error) {

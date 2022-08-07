@@ -610,5 +610,72 @@
     "missingLiquidityAmount": "缺少流动性金额",
     "couldNotWrap": "不能换行",
     "attemptingToConfirmApproval": "尝试在未经批准或签名的情况下进行确认。请联系支持人员。"
+  },
+  "sarStake": {
+    "createNewPosition": "创建新职位",
+    "stake": "桩",
+    "staking": "质押",
+    "walletBalance": "在钱包中 {{ balance }} {{ symbol }}",
+    "max": "麦克斯",
+    "dollarValue": "美元价值",
+    "buy": "购买 {{ symbol }}",
+    "medianAPR": "实际年利率中位数",
+    "startingApr": "从 4 月起",
+    "weeklyDistributed": "每周 {{ symbol }} 分布",
+    "confirmDescription": "赌注操作将为您创建SAR Nft。有了这个NFT，你可以管理你的公安局股份。",
+    "successSubmit": "您已经成功押注了您的代币。",
+    "yourAprRecalculated": "您的实际年利率将被重新计算。",
+    "summary": "总结",
+    "pending": "Staking {{ balance }} {{ symbol }}",
+    "transactionSummary": "Staked {{ balance }} {{ symbol }}"
+  },
+  "sarStakeMore": {
+    "stakeMore": "赌注更多",
+    "choosePosition": "选择职位",
+    "confirmDescription": "您的4月将从0开始，并按时间增加您从奖励池中取出的金额",
+    "newAPR": "新年利率",
+    "add": "加",
+    "pending": "添加 {{ balance }} {{ symbol }}"
+  },
+  "sarUnstake": {
+    "unstake": "取消获取",
+    "unstaking": "取消存根 {{ balance }} {{ symbol }}",
+    "stakedBalance": "Staked {{ balance }} {{ symbol }}",
+    "confirmDescription": "值得注意的是，取消您的奖励将使该头寸的APR达到0%。\n与其取消stake，您还可以考虑出售您的NFT。",
+    "successSubmit": "您已经成功取消了令牌。",
+    "pending": "取消存根 {{ balance }} {{ symbol }}",
+    "transactionSummary": "Unstaked {{ balance }} {{ symbol }}",
+    "currentAPR": "当前实际年利率",
+    "unstakeWarning": "当您取消持股时，您的平均实际年利率将降至0%。",
+    "aprAfter": "APR 后 取消"
+  },
+  "sarCompound": {
+    "compound": "复合",
+    "compounding": "复合",
+    "successSubmit": "你已经成功地巩固了你的位置。",
+    "pending": "复合",
+    "transactionSummary": "复合位置",
+    "aprAfter": "复合后 APR",
+    "reward": "累积奖励",
+    "description": "值得注意的是，补偿您的奖励可能会降低您的平均APR。新抵押的代币将从0开始，而旧代币将继续使用相同的APR。这将创建一个将向您显示的平均值。"
+  },
+  "sarClaim": {
+    "claim": "索赔",
+    "claiming": "声称",
+    "description": "由于SAR质押系统的性质，声称您的奖励将使您的APR降至0。相反，您可以在不损失APR的情况下复利您的奖励。",
+    "successSubmit": "您已成功领取奖励",
+    "pending": "声称",
+    "transactionSummary": "已申请的职位奖励",
+    "aprAfeter": "理赔后年利率"
+  },
+  "sarPortfolio": {
+    "noPositions": "你没有任何PANGUARDIAN NFT。\n让您得到一个",
+    "start": "开始",
+    "positionId": "职位编号",
+    "apr": "四月",
+    "amount": "量",
+    "newest": "最新",
+    "oldest": "古老",
+    "sortBy": "排序方式"
   }
 }

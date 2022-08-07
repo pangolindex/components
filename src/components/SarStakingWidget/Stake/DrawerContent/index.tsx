@@ -4,6 +4,7 @@ import { CurrencyAmount, Token } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/images/circleTick.svg';
 import { usePangolinWeb3 } from 'src/hooks';
@@ -29,8 +30,7 @@ const DrawerContent: React.FC<Props> = (props) => {
   const { chainId } = usePangolinWeb3();
   const theme = useContext(ThemeContext);
 
-  // text to show while loading
-  const pendingText = `Staking ${stakeAmount?.toSignificant(6) ?? 0} ${token.symbol}`;
+  const { t } = useTranslation();
 
   const ConfirmContent = (
     <Root paddingX="20px" paddingBottom="20px">
@@ -42,32 +42,40 @@ const DrawerContent: React.FC<Props> = (props) => {
           <CurrencyLogo currency={token} size={24} imageSize={48} />
         </TokenRow>
         <Box display="inline-grid" style={{ gridGap: '10px', gridTemplateColumns: 'auto auto' }}>
-          <Stat title="Dolar Value" titlePosition="top" stat={`${dollerWorth ?? 0}$`} titleColor="text2" />
-          <Stat title="Starting APR" titlePosition="top" stat={'0%'} titleColor="text2" />
+          <Stat
+            title={t('sarStake.dollarValue')}
+            titlePosition="top"
+            stat={`${dollerWorth ?? 0}$`}
+            titleColor="text2"
+          />
+          <Stat title={t('sarStake.startingApr')} titlePosition="top" stat={'0%'} titleColor="text2" />
         </Box>
         <Box display="flex" flexDirection="row" justifyContent="space-between">
-          <Text color="text1">Weekly PNG Distributed</Text>
-          <Text color="text1">
-            {numeral(formatEther(weeklyPNG)).format('0.00a')} {token.symbol}
-          </Text>
+          <Text color="text1">{t('sarStake.weeklyDistributed', { symbol: token.symbol })}</Text>
+          <Text color="text1">{numeral(formatEther(weeklyPNG)).format('0.00a')}</Text>
         </Box>
         <Box bgColor="color3" borderRadius="4px" padding="15px">
           <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-            A stake action will create a SAR Nft for you. With this NFT you can manage your PSB stake.
+            {t('sarStake.confirmDescription')}
           </Text>
         </Box>
       </Header>
       <Footer>
         <Box my={'10px'}>
           <Button variant="primary" onClick={onConfirm}>
-            Stake
+            {t('sarStake.stake')}
           </Button>
         </Box>
       </Footer>
     </Root>
   );
 
-  const PendingContent = <Loader size={100} label={pendingText} />;
+  const PendingContent = (
+    <Loader
+      size={100}
+      label={t('sarStake.pending', { balance: stakeAmount?.toSignificant(2) ?? 0, symbol: token.symbol })}
+    />
+  );
 
   const ErroContent = (
     <ErrorWrapper>
@@ -78,7 +86,7 @@ const DrawerContent: React.FC<Props> = (props) => {
         </Text>
       </ErrorBox>
       <Button variant="primary" onClick={onClose}>
-        Dismiss
+        {t('transactionConfirmation.dismiss')}
       </Button>
     </ErrorWrapper>
   );
@@ -89,11 +97,10 @@ const DrawerContent: React.FC<Props> = (props) => {
         <Box flex="1" display="flex" alignItems="center">
           <img src={CircleTick} alt="circle-tick" />
         </Box>
-        <Text fontSize={16} color="text1">
-          You have successfully staked your token.
-        </Text>
-        <Text fontSize={16} color="text1">
-          Your APR will be recalculated.
+        <Text fontSize={16} color="text1" textAlign={'center'}>
+          {t('sarStake.successSubmit')}
+          <br />
+          {t('sarStake.yourAprRecalculated')}
         </Text>
         {chainId && txHash && (
           <Link
@@ -103,12 +110,12 @@ const DrawerContent: React.FC<Props> = (props) => {
             color={'primary'}
             href={getEtherscanLink(chainId, txHash, 'transaction')}
           >
-            View on explorer
+            {t('transactionConfirmation.viewExplorer')}
           </Link>
         )}
       </Box>
       <Button variant="primary" onClick={onClose}>
-        Close
+        {t('transactionConfirmation.close')}
       </Button>
     </SubmittedWrapper>
   );

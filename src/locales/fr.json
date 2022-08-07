@@ -373,7 +373,7 @@
     "noSeePoolJoined": "Vous ne voyez pas une pool que vous avez rejointe ?",
     "migrateNow": "Migrer maintenant.",
     "importIt": "Importez-le.",
-    "seeDetails":"VOIR LES DÉTAILS",
+    "seeDetails": "VOIR LES DÉTAILS",
     "totalLockedValue": "Valeur totale verrouillée",
     "yourLockedValue": "Votre valeur verrouillée",
     "allFarms": "Toutes les Farms",
@@ -449,7 +449,7 @@
     "comingSoon": "À venir",
     "connectWalletViewPortFolio": "Connectez-vous à un portefeuille pour afficher votre portefeuille .",
     "limitOrders": "Ordres à cours limité",
-    "cancelOrder" : "annuler la commande",
+    "cancelOrder": "annuler la commande",
     "all": "TOUTE",
     "open": "OUVERTE",
     "executed": "RÉALISÉ",
@@ -611,5 +611,72 @@
     "missingLiquidityAmount": "Montant de liquidité manquant",
     "couldNotWrap": "Impossible d'envelopper",
     "attemptingToConfirmApproval": "Tentative de confirmation sans approbation ni signature. Veuillez contacter le support."
+  },
+  "sarStake": {
+    "createNewPosition": "Créer un nouveau poste",
+    "stake": "Pieu",
+    "staking": "Jalonnement",
+    "walletBalance": "Dans wallet {{ balance }} {{ symbol }}",
+    "max": "Max",
+    "dollarValue": "Valeur en dollars",
+    "buy": "Acheter {{ symbol }}",
+    "medianAPR": "TAEG médian",
+    "startingApr": "Démarrage de l’APR",
+    "weeklyDistributed": "Hebdomadaire {{ symbol }} Distribué",
+    "confirmDescription": "Une action de pieu créera un SAR Nft pour vous. Avec ce NFT, vous pouvez gérer votre participation PSB.",
+    "successSubmit": "Vous avez réussi à miser votre jeton.",
+    "yourAprRecalculated": "Votre TAEG sera recalculé.",
+    "summary": "Résumé",
+    "pending": "Jalonnement {{ balance }} {{ symbol }}",
+    "transactionSummary": "Staked {{ balance }} {{ symbol }}"
+  },
+  "sarStakeMore": {
+    "stakeMore": "En jeu plus",
+    "choosePosition": "Choisir un poste",
+    "confirmDescription": "Votre avr commencera à partir de 0 et augmentera le montant que vous prenez du pool de récompenses par le temps",
+    "newAPR": "Nouveau TAEG",
+    "add": "Ajouter",
+    "pending": "Ajout de {{ balance }} {{ symbol }}"
+  },
+  "sarUnstake": {
+    "unstake": "Non prendre",
+    "unstaking": "Annulation de {{ balance }} {{ symbol }}",
+    "stakedBalance": "Staked {{ balance }} {{ symbol }}",
+    "confirmDescription": "Il convient de savoir que le fait de ne pas prendre vos récompenses fera passer votre TAEG à 0% pour ce poste. \nAu lieu de vous détendre, vous pouvez également envisager de vendre votre NFT.",
+    "successSubmit": "Vous avez réussi à annuler vos jetons.",
+    "pending": "Annulation de {{ balance }} {{ symbol }}",
+    "transactionSummary": "Non pris {{ balance }} {{ symbol }}",
+    "currentAPR": "APR actuel",
+    "unstakeWarning": "Lorsque vous vous désengagez, votre TAEG moyen tombera à 0%.",
+    "aprAfter": "APR après l’enlèvement"
+  },
+  "sarCompound": {
+    "compound": "Composé",
+    "compounding": "Compoundage",
+    "successSubmit": "Vous avez réussi à aggraver votre position.",
+    "pending": "Compoundage",
+    "transactionSummary": "Position composée",
+    "aprAfter": "APR Après composé",
+    "reward": "Récompenses accumulées",
+    "description": "Il convient de savoir que la composition de vos récompenses peut réduire votre TAEG moyen. Les jetons nouvellement misés commenceront à partir de 0 tandis que les anciens jetons continueront avec le même APR. Cela crée une moyenne qui vous sera montrée."
+  },
+  "sarClaim": {
+    "claim": "Revendication",
+    "claiming": "Prétendant",
+    "description": "En raison de la nature du système de jalonnement SAR, réclamer vos récompenses réduira votre TAEG à 0. Vous pouvez plutôt composer vos récompenses sans perdre votre APR.",
+    "successSubmit": "Vous avez réclamé vos récompenses avec succès",
+    "pending": "Prétendant",
+    "transactionSummary": "Récompenses de position réclamées",
+    "aprAfeter": "APR après réclamation"
+  },
+  "sarPortfolio": {
+    "noPositions": "Vous n’avez pas de NFT PANGUARDIAN.\nPERMET DE VOUS EN PROCURER UN",
+    "start": "COMMENCER",
+    "positionId": "ID de poste",
+    "apr": "APR",
+    "amount": "Quantité",
+    "newest": "Nouveau",
+    "oldest": "Aîné",
+    "sortBy": "Trier par"
   }
 }
