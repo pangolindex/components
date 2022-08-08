@@ -72,7 +72,7 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
             </Button>
           ) : (
             <Button variant="primary" width="250px" onClick={focusCreatePosition}>
-              {t('sarPortfolio.START')}
+              {t('sarPortfolio.start')}
             </Button>
           )}
         </Box>

@@ -10,3 +10,9 @@ export const Root = styled(Box)`
   grid-template-rows: repeat(auto-fit, minmax(0, 1fr));
   grid-gap: 16px;
 `;
+
+export const Wrapper = styled(Box)`
+  display: grid;
+  grid-template-rows: auto max-content;
+  height: 100%;
+`;

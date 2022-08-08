@@ -1,8 +1,11 @@
+import { formatEther } from '@ethersproject/units';
+import numeral from 'numeral';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Drawer } from 'src/components';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
+import CurrencyLogo from 'src/components/CurrencyLogo';
+import { Stat } from 'src/components/Stat';
 import { Text } from 'src/components/Text';
 import { TextInput } from 'src/components/TextInput';
 import { ZERO_ADDRESS } from 'src/constants';
@@ -12,8 +15,9 @@ import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useDerivativeSarStake, useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useTokenBalances } from 'src/state/pwallet/hooks';
-import DrawerContent from './DrawerContent';
-import { Buttons, Root } from './styleds';
+import ConfirmDrawer from '../ConfirmDrawer';
+import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
+import { Buttons, Root, Wrapper } from './styleds';
 
 export default function Stake() {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -26,7 +30,7 @@ export default function Stake() {
   const userPngBalance = tokensBalances[png.address];
   const { t } = useTranslation();
 
-  const { APR, weeklyPNG } = useSarStakeInfo();
+  const { apr, weeklyPNG } = useSarStakeInfo();
 
   const toggleWalletModal = useWalletModalToggle();
 
@@ -131,6 +135,44 @@ export default function Stake() {
     [onUserInput],
   );
 
+  const ConfirmContent = (
+    <Wrapper paddingX="20px" paddingBottom="20px">
+      <Header>
+        <TokenRow>
+          <Text fontSize={24} fontWeight={500} color="text1" style={{ marginRight: '12px' }}>
+            {parsedAmount?.toSignificant(6) ?? 0}
+          </Text>
+          <CurrencyLogo currency={png} size={24} imageSize={48} />
+        </TokenRow>
+        <Box display="inline-grid" style={{ gridGap: '10px', gridTemplateColumns: 'auto auto' }}>
+          <Stat
+            title={t('sarStake.dollarValue')}
+            titlePosition="top"
+            stat={`${dollerWorth ?? 0}$`}
+            titleColor="text2"
+          />
+          <Stat title={t('sarStake.startingApr')} titlePosition="top" stat={'0%'} titleColor="text2" />
+        </Box>
+        <Box display="flex" flexDirection="row" justifyContent="space-between">
+          <Text color="text1">{t('sarStake.weeklyDistributed', { symbol: png.symbol })}</Text>
+          <Text color="text1">{numeral(formatEther(weeklyPNG)).format('0.00a')}</Text>
+        </Box>
+        <Box bgColor="color3" borderRadius="4px" padding="15px">
+          <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
+            {t('sarStake.confirmDescription')}
+          </Text>
+        </Box>
+      </Header>
+      <Footer>
+        <Box my={'10px'}>
+          <Button variant="primary" onClick={onStake}>
+            {t('sarStake.stake')}
+          </Button>
+        </Box>
+      </Footer>
+    </Wrapper>
+  );
+
   return (
     <Box id="create-sar-position-widget">
       <Root>
@@ -171,30 +213,24 @@ export default function Stake() {
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.medianAPR')}</Text>
-              <Text color="text1">{`${APR ?? '-'.toString()}%`}</Text>
+              <Text color="text1">{`${apr ?? '-'.toString()}%`}</Text>
             </Box>
           </Box>
         </Box>
         {renderButtons()}
       </Root>
 
-      <Drawer
+      <ConfirmDrawer
         title={stakeError || hash || attempting ? '' : t('sarStake.summary')}
         isOpen={openDrawer}
         onClose={handleConfirmDismiss}
-      >
-        <DrawerContent
-          stakeAmount={parsedAmount}
-          token={png}
-          dollerWorth={dollerWorth}
-          weeklyPNG={weeklyPNG}
-          attemptingTxn={attempting}
-          txHash={hash}
-          onConfirm={onStake}
-          errorMessage={stakeError}
-          onClose={handleConfirmDismiss}
-        />
-      </Drawer>
+        attemptingTxn={attempting}
+        txHash={hash}
+        errorMessage={stakeError}
+        pendingMessage={t('sarStake.pending', { balance: parsedAmount?.toSignificant(2) ?? 0, symbol: png.symbol })}
+        successMessage={t('sarStake.successSubmit')}
+        confirmContent={ConfirmContent}
+      />
     </Box>
   );
 }

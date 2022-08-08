@@ -8,22 +8,6 @@ export const Root = styled(Box)`
   padding: 20px;
 `;
 
-export const Header = styled(Box)`
-  padding: 0px 10px;
-  display: grid;
-  grid-gap: 10px;
-`;
-
-export const TokenRow = styled(Box)`
-  display: grid;
-  grid-template-columns: max-content max-content;
-  align-items: center;
-`;
-
-export const Footer = styled(Box)`
-  padding: 0px 10px;
-`;
-
 export const ErrorWrapper = styled(Box)`
   display: grid;
   grid-template-rows: minmax(300px, auto) max-content;

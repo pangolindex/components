@@ -74,7 +74,7 @@ export function usePairContract(pairAddress?: string, withSignerIfPossible?: boo
 
 export function usePngContract(): Contract | null {
   const chainId = useChainId();
-  return useContract(chainId ? PNG[chainId].address : undefined, Png.abi, true);
+  return useContract(PNG[chainId].address, Png.abi, true);
 }
 
 export function useSarStakingContract(): Contract | null {

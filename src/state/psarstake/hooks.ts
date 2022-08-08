@@ -16,7 +16,7 @@ import { useSingleCallResult, useSingleContractMultipleData } from '../pmultical
 import { useDerivedStakeInfo } from '../pstake/hooks';
 import { tryParseAmount } from '../pswap/hooks';
 import { useTransactionAdder } from '../ptransactions/hooks';
-import { useTokenBalances } from '../pwallet/hooks';
+import { useTokenBalance } from '../pwallet/hooks';
 
 const ZERO = BigNumber.from('0');
 export interface URI {
@@ -47,7 +47,7 @@ export function useSarStakeInfo() {
   const totalValueVariables = useSingleCallResult(sarStakingContract, 'totalValueVariables')?.result;
 
   return useMemo(() => {
-    const APR =
+    const apr =
       rewardRate && totalValueVariables && totalValueVariables?.balance
         ? rewardRate.mul(86400).mul(365).mul(100).div(totalValueVariables.balance)
         : null;
@@ -57,7 +57,7 @@ export function useSarStakeInfo() {
 
     const sumOfEntryTimes: BigNumber = totalValueVariables ? totalValueVariables?.sumOfEntryTimes : ZERO;
 
-    return { APR, totalStaked, sumOfEntryTimes, rewardRate: rewardRate ?? ZERO, weeklyPNG };
+    return { apr, totalStaked, sumOfEntryTimes, rewardRate: rewardRate ?? ZERO, weeklyPNG };
   }, [rewardRate, totalValueVariables]);
 }
 
@@ -79,8 +79,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
 
   const png = PNG[chainId];
 
-  const tokensBalances = useTokenBalances(account ?? '', [png]);
-  const userPngBalance = tokensBalances[png.address];
+  const userPngBalance = useTokenBalance(account ?? '', png);
 
   // used for max input button
   const maxAmountInput = maxAmountSpend(chainId, userPngBalance);

@@ -15,7 +15,7 @@ export const Root = styled(Box)`
 export const Wrapper = styled(Box)`
   border-radius: 10px;
   width: 100%;
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: ${({ theme }) => theme.color2};
   position: relative;
   overflow: hidden;
   padding: 30px;

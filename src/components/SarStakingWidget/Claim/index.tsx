@@ -1,23 +1,19 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatEther } from '@ethersproject/units';
 import numeral from 'numeral';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { AlertTriangle } from 'react-feather';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ThemeContext } from 'styled-components';
-import CircleTick from 'src/assets/images/circleTick.svg';
-import { Drawer } from 'src/components';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
-import { Loader } from 'src/components/Loader';
 import { Text } from 'src/components/Text';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { Position, useDerivativeSarClaim } from 'src/state/psarstake/hooks';
-import { getEtherscanLink } from 'src/utils';
+import ConfirmDrawer from '../ConfirmDrawer';
 import Title from '../Title';
 import { Options } from '../types';
-import { ErrorBox, ErrorWrapper, Link, Root, SubmittedWrapper, ToolTipText } from './styleds';
+import { Root, ToolTipText } from './styleds';
+
 interface Props {
   selectedOption: Options;
   selectedPosition: Position | null;
@@ -30,8 +26,6 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
   const chainId = useChainId();
 
   const { attempting, hash, claimError, wrappedOnDismiss, onClaim } = useDerivativeSarClaim(selectedPosition);
-
-  const theme = useContext(ThemeContext);
 
   const { t } = useTranslation();
 
@@ -54,8 +48,6 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
     }
   }, [attempting]);
 
-  const PendingContent = <Loader size={100} label={t('sarClaim.pending')} />;
-
   const pendingRewards = selectedPosition?.pendingRewards ?? BigNumber.from('0');
 
   const renderButton = () => {
@@ -71,49 +63,6 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
       </Button>
     );
   };
-
-  const ErroContent = (
-    <ErrorWrapper>
-      <ErrorBox>
-        <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
-        <Text fontWeight={500} fontSize={16} color={'red1'} style={{ textAlign: 'center', width: '85%' }}>
-          {claimError}
-        </Text>
-      </ErrorBox>
-      <Button variant="primary" onClick={handleConfirmDismiss}>
-        {t('transactionConfirmation.dismiss')}
-      </Button>
-    </ErrorWrapper>
-  );
-
-  const SubmittedContent = (
-    <SubmittedWrapper>
-      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" paddingY={'20px'}>
-        <Box flex="1" display="flex" alignItems="center">
-          <img src={CircleTick} alt="circle-tick" />
-        </Box>
-        <Text fontSize={16} color="text1">
-          {t('sarClaim.successSubmit')}
-          <br />
-          {t('sarStake.yourAprRecalculated')}
-        </Text>
-        {chainId && hash && (
-          <Link
-            as="a"
-            fontWeight={500}
-            fontSize={14}
-            color={'primary'}
-            href={getEtherscanLink(chainId, hash, 'transaction')}
-          >
-            {t('transactionConfirmation.viewExplorer')}
-          </Link>
-        )}
-      </Box>
-      <Button variant="primary" onClick={handleConfirmDismiss}>
-        {t('transactionConfirmation.close')}
-      </Button>
-    </SubmittedWrapper>
-  );
 
   return (
     <Box>
@@ -157,9 +106,17 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
         </Box>
         {renderButton()}
       </Root>
-      <Drawer isOpen={openDrawer && !!selectedPosition} onClose={handleConfirmDismiss}>
-        {claimError ? ErroContent : hash ? SubmittedContent : PendingContent}
-      </Drawer>
+
+      <ConfirmDrawer
+        isOpen={openDrawer && !!selectedPosition}
+        onClose={handleConfirmDismiss}
+        attemptingTxn={attempting}
+        txHash={hash}
+        errorMessage={claimError}
+        pendingMessage={t('sarClaim.pending')}
+        successMessage={t('sarClaim.successSubmit')}
+        confirmContent={null}
+      />
     </Box>
   );
 }

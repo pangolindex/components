@@ -13,7 +13,7 @@ export const Paginate = styled(ReactPaginate)`
     border-radius: 7px;
     padding: 0.1rem 1rem;
     cursor: pointer;
-    color: ${({ theme }) => theme.text1};};
+    color: ${({ theme }) => theme.text1};
   }
 
   li.previous a,

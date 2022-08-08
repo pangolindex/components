@@ -18,3 +18,9 @@ export const Buttons = styled(Box)<{ isStaked?: boolean }>`
   grid-gap: 10px;
   margin-top: 5px;
 `;
+
+export const Wrapper = styled(Box)`
+  display: grid;
+  grid-template-rows: auto max-content;
+  height: 100%;
+`;

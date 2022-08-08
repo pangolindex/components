@@ -2,18 +2,21 @@ import { formatEther } from '@ethersproject/units';
 import numeral from 'numeral';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Drawer } from 'src/components';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
+import CurrencyLogo from 'src/components/CurrencyLogo';
+import { Stat } from 'src/components/Stat';
 import { Text } from 'src/components/Text';
 import { TextInput } from 'src/components/TextInput';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Position, useDerivativeSarUnstake } from 'src/state/psarstake/hooks';
+import ConfirmDrawer from '../ConfirmDrawer';
+import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import Title from '../Title';
+import { Wrapper } from '../styleds';
 import { Options } from '../types';
-import DrawerContent from './DrawerContent';
 import { Root } from './styleds';
 
 interface Props {
@@ -79,6 +82,38 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
     }
   };
 
+  const ConfirmContent = (
+    <Wrapper paddingX="20px" paddingBottom="20px">
+      <Header>
+        <TokenRow>
+          <Text fontSize={24} fontWeight={500} color="text1" style={{ marginRight: '12px' }}>
+            {t('sarUnstake.unstaking', { balance: parsedAmount?.toSignificant(6) ?? 0 })}
+          </Text>
+          <CurrencyLogo currency={png} size={24} imageSize={48} />
+        </TokenRow>
+        <Box display="inline-grid" style={{ gridGap: '10px', gridTemplateColumns: 'auto auto' }}>
+          <Stat
+            title={t('sarUnstake.currentAPR')}
+            titlePosition="top"
+            stat={`${(selectedPosition?.apr ?? '-').toString()}%`}
+            titleColor="text2"
+          />
+          <Stat title={t('sarStakeMore.newAPR')} titlePosition="top" stat={'0%'} titleColor="text2" />
+        </Box>
+        <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
+          {t('sarUnstake.confirmDescription')}
+        </Text>
+      </Header>
+      <Footer>
+        <Box my={'10px'}>
+          <Button variant="primary" onClick={onUnstake}>
+            {t('sarUnstake.unstake')}
+          </Button>
+        </Box>
+      </Footer>
+    </Wrapper>
+  );
+
   return (
     <Box>
       <Root>
@@ -127,24 +162,17 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
         {renderButton()}
       </Root>
 
-      <Drawer
+      <ConfirmDrawer
         title={unstakeError || hash || attempting ? '' : t('sarStake.summary')}
-        isOpen={openDrawer}
+        isOpen={openDrawer && !!selectedPosition}
         onClose={handleConfirmDismiss}
-      >
-        {!!selectedPosition && (
-          <DrawerContent
-            unstakeAmount={parsedAmount}
-            token={png}
-            position={selectedPosition}
-            attemptingTxn={attempting}
-            txHash={hash}
-            onConfirm={onUnstake}
-            errorMessage={unstakeError}
-            onClose={handleConfirmDismiss}
-          />
-        )}
-      </Drawer>
+        attemptingTxn={attempting}
+        txHash={hash}
+        errorMessage={unstakeError}
+        pendingMessage={t('sarUnstake.pending', { balance: parsedAmount?.toSignificant(2) ?? 0, symbol: png.symbol })}
+        successMessage={t('sarUnstake.successSubmit')}
+        confirmContent={ConfirmContent}
+      />
     </Box>
   );
 }
