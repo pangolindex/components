@@ -49,6 +49,7 @@ import ListsUpdater from './state/plists/updater';
 import { useGetUserLP } from './state/pmigrate/hooks';
 import MulticallUpdater from './state/pmulticall/updater';
 import { Position, useSarPositions, useSarStakeInfo } from './state/psarstake/hooks';
+import SwapUpdater from './state/pswap/updater';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
 
@@ -76,6 +77,7 @@ export function PangolinProvider({
             <ApplicationUpdater />
             <MulticallUpdater />
             <TransactionUpdater />
+            <SwapUpdater />
             {CHAINS[chainId]?.evm ? (
               <Provider store={galetoStore}>
                 <GelatoProvider

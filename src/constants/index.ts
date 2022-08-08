@@ -14,6 +14,13 @@ import { gnosisSafe, injected, near, talisman, walletconnect, walletlink, xDefi 
 import { CommonEVMProvider, NearProvider } from '../connectors/WalletProviders';
 import { DAIe, PNG, USDC, USDCe, USDTe, UST, axlUST } from './tokens';
 
+export const BIG_INT_ZERO = JSBI.BigInt(0);
+export const BIG_INT_TWO = JSBI.BigInt(2);
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const NATIVE = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+export const BIG_INT_SECONDS_IN_WEEK = JSBI.BigInt(60 * 60 * 24 * 7);
+export const ONE_TOKEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18));
+
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.router,
   [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].contracts!.router,
@@ -22,12 +29,15 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts!.router,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts!.router,
 };
-export const BIG_INT_ZERO = JSBI.BigInt(0);
-export const BIG_INT_TWO = JSBI.BigInt(2);
-export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-export const NATIVE = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
-export const BIG_INT_SECONDS_IN_WEEK = JSBI.BigInt(60 * 60 * 24 * 7);
-export const ONE_TOKEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18));
+
+export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
+  [ChainId.FUJI]: CHAINS[ChainId.FUJI]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.WAGMI]: CHAINS[ChainId.WAGMI]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.COSTON]: CHAINS[ChainId.COSTON]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
+};
 
 // a list of tokens by chain
 type ChainTokenList = {

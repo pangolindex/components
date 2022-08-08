@@ -1,11 +1,12 @@
-import { Currency, CurrencyAmount, Pair, Token, Trade } from '@pangolindex/sdk';
+import { Currency, CurrencyAmount, Pair, Percent, Token, Trade } from '@pangolindex/sdk';
 import flatMap from 'lodash.flatmap';
 import { useMemo } from 'react';
-import { BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES } from 'src/constants';
+import { BASES_TO_CHECK_TRADES_AGAINST, BIPS_BASE, CUSTOM_BASES } from 'src/constants';
 import { PairState } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useChainId } from 'src/hooks';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { useDaasFeeInfo, useDaasFeeTo } from '../state/pswap/hooks';
 
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): { pairs: Pair[]; isLoading: boolean } {
   const chainId = useChainId();
@@ -87,17 +88,22 @@ export function useTradeExactIn(
   currencyOut?: Currency,
 ): { trade: Trade | null; isLoading: boolean } {
   const { pairs: allowedPairs, isLoading } = useAllCommonPairs(currencyAmountIn?.currency, currencyOut);
+  const [feeTo] = useDaasFeeTo();
+  const [feeInfo] = useDaasFeeInfo();
 
   return useMemo(() => {
-    if (currencyAmountIn && currencyOut && allowedPairs.length > 0 && !isLoading) {
-      const trade = Trade.bestTradeExactIn(allowedPairs, currencyAmountIn, currencyOut, {
-        maxHops: 3,
-        maxNumResults: 1,
-      })[0];
+    if (currencyAmountIn && currencyOut && feeTo && feeInfo && allowedPairs.length > 0 && !isLoading) {
+      const trade = Trade.bestTradeExactIn(
+        allowedPairs,
+        currencyAmountIn,
+        currencyOut,
+        { maxHops: 3, maxNumResults: 1 },
+        { fee: new Percent(feeInfo.feeTotal.toString(), BIPS_BASE), feeTo },
+      )[0];
       return { trade: trade ?? null, isLoading: false };
     }
     return { trade: null, isLoading: true };
-  }, [allowedPairs, isLoading, currencyAmountIn, currencyOut]);
+  }, [allowedPairs, isLoading, currencyAmountIn, currencyOut, feeTo, feeInfo]);
 }
 
 /**
@@ -108,15 +114,20 @@ export function useTradeExactOut(
   currencyAmountOut?: CurrencyAmount,
 ): { trade: Trade | null; isLoading: boolean } {
   const { pairs: allowedPairs, isLoading } = useAllCommonPairs(currencyIn, currencyAmountOut?.currency);
+  const [feeTo] = useDaasFeeTo();
+  const [feeInfo] = useDaasFeeInfo();
 
   return useMemo(() => {
-    if (currencyIn && currencyAmountOut && allowedPairs.length > 0 && !isLoading) {
-      const trade = Trade.bestTradeExactOut(allowedPairs, currencyIn, currencyAmountOut, {
-        maxHops: 3,
-        maxNumResults: 1,
-      })[0];
+    if (currencyIn && currencyAmountOut && feeTo && feeInfo && allowedPairs.length > 0 && !isLoading) {
+      const trade = Trade.bestTradeExactOut(
+        allowedPairs,
+        currencyIn,
+        currencyAmountOut,
+        { maxHops: 3, maxNumResults: 1 },
+        { fee: new Percent(feeInfo.feeTotal.toString(), BIPS_BASE), feeTo },
+      )[0];
       return { trade: trade ?? null, isLoading: false };
     }
     return { trade: null, isLoading: true };
-  }, [allowedPairs, isLoading, currencyIn, currencyAmountOut]);
+  }, [allowedPairs, isLoading, currencyIn, currencyAmountOut, feeTo, feeInfo]);
 }
