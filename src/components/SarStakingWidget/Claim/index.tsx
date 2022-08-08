@@ -51,7 +51,6 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
   useEffect(() => {
     if (!attempting && openDrawer && !hash && !claimError) {
       handleConfirmDismiss();
-      return;
     }
   }, [attempting]);
 

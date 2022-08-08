@@ -152,12 +152,12 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
         summary: t('sarStake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
       setHash(response.hash);
-    } catch (error) {
+    } catch (err) {
       // we only care if the error is something _other_ than the user rejected the tx
-      const err = error as any;
-      if (err?.code !== 4001) {
-        console.error(err);
-        setStakeError(err?.message);
+      const _err = error as any;
+      if (_err?.code !== 4001) {
+        console.error(_err);
+        setStakeError(_err?.message);
       }
     } finally {
       setAttempting(false);
@@ -312,11 +312,11 @@ export function useDerivativeSarUnstake(position: Position | null) {
         summary: t('sarUnstake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
       setHash(response.hash);
-    } catch (error) {
-      const err = error as any;
-      if (err?.code !== 4001) {
-        console.error(err);
-        setUnstakeError(err?.message);
+    } catch (err) {
+      const _err = err as any;
+      if (_err?.code !== 4001) {
+        console.error(_err);
+        setUnstakeError(_err?.message);
       }
     } finally {
       setAttempting(false);

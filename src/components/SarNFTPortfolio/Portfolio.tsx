@@ -24,7 +24,7 @@ export default function Portfolio({ itemsPerPage = 12, positions, onSelectPositi
   const onSelect = (value: string) => {
     setSelectedOption(value);
     if (value === 'apr') {
-      setCurrentItems(positions.sort((a, b) => b.apr.sub(a.apr).toNumber()).slice(0, itemsPerPage));
+      setCurrentItems([...positions].sort((a, b) => b.apr.sub(a.apr).toNumber()).slice(0, itemsPerPage));
     } else if (value === 'amount') {
       setCurrentItems(
         positions
@@ -34,9 +34,9 @@ export default function Portfolio({ itemsPerPage = 12, positions, onSelectPositi
           .slice(0, itemsPerPage),
       );
     } else if (value === 'newest') {
-      setCurrentItems(positions.sort((a, b) => b.id.sub(a.id).toNumber()).slice(0, itemsPerPage));
+      setCurrentItems([...positions].sort((a, b) => b.id.sub(a.id).toNumber()).slice(0, itemsPerPage));
     } else if (value === 'oldest') {
-      setCurrentItems(positions.sort((a, b) => a.id.sub(b.id).toNumber()).slice(0, itemsPerPage));
+      setCurrentItems([...positions].sort((a, b) => a.id.sub(b.id).toNumber()).slice(0, itemsPerPage));
     } else {
       setCurrentItems(positions.slice(0, itemsPerPage));
     }
