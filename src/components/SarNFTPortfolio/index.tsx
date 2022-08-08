@@ -38,6 +38,7 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
     document.getElementById('create-sar-position-widget')?.scrollIntoView({
       behavior: 'smooth',
     });
+    document.getElementById('sar-stake-input')?.focus();
     displayOverlay();
   };
 
