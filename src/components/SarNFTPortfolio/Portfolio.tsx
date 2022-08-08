@@ -27,7 +27,7 @@ export default function Portfolio({ itemsPerPage = 12, positions, onSelectPositi
       setCurrentItems([...positions].sort((a, b) => b.apr.sub(a.apr).toNumber()).slice(0, itemsPerPage));
     } else if (value === 'amount') {
       setCurrentItems(
-        positions
+        [...positions]
           .sort((a, b) => {
             return parseFloat(formatEther(b.balance.sub(a.balance)));
           })
