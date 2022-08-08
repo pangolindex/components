@@ -117,6 +117,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
   async function onAdd() {
     if (!chainId || !library || !account) return;
     const router = getRouterContract(chainId, library, account);
+    if (!router) return;
 
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts;
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
