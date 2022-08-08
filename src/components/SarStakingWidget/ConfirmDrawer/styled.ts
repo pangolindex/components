@@ -33,3 +33,19 @@ export const Link = styled(Text)`
   text-decoration: none;
   color: ${({ theme }) => theme.blue1};
 `;
+
+export const Header = styled(Box)`
+  padding: 0px 10px;
+  display: grid;
+  grid-gap: 10px;
+`;
+
+export const TokenRow = styled(Box)`
+  display: grid;
+  grid-template-columns: max-content max-content;
+  align-items: center;
+`;
+
+export const Footer = styled(Box)`
+  padding: 0px 10px;
+`;
