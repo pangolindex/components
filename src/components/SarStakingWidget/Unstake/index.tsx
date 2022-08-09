@@ -135,7 +135,7 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
             isNumeric={true}
             placeholder="0.00"
             addonAfter={
-              <Button variant="plain" backgroundColor="color2" padding="10px" onClick={handleMax}>
+              <Button variant="plain" backgroundColor="color2" padding="6px" height="auto" onClick={handleMax}>
                 <Text color="text1">{t('sarStake.max')}</Text>
               </Button>
             }

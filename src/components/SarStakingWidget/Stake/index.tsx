@@ -14,7 +14,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useDerivativeSarStake, useSarStakeInfo } from 'src/state/psarstake/hooks';
-import { useTokenBalances } from 'src/state/pwallet/hooks';
+import { useTokenBalance } from 'src/state/pwallet/hooks';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import { Buttons, Root, Wrapper } from './styleds';
@@ -26,8 +26,7 @@ export default function Stake() {
   const { account } = usePangolinWeb3();
 
   const png = PNG[chainId];
-  const tokensBalances = useTokenBalances(account ?? '', [png]);
-  const userPngBalance = tokensBalances[png.address];
+  const userPngBalance = useTokenBalance(account ?? '', png);
   const { t } = useTranslation();
 
   const { apr, weeklyPNG } = useSarStakeInfo();
@@ -199,7 +198,7 @@ export default function Stake() {
               handleInput(value);
             }}
             addonAfter={
-              <Button variant="plain" backgroundColor="color2" padding="10px" onClick={handleMax}>
+              <Button variant="plain" backgroundColor="color2" padding="6px" height="auto" onClick={handleMax}>
                 <Text color="text1">{t('sarStake.max')}</Text>
               </Button>
             }

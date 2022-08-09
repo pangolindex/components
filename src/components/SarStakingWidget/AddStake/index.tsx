@@ -198,7 +198,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
               onUserInput(value);
             }}
             addonAfter={
-              <Button variant="plain" backgroundColor="color2" padding="10px" onClick={handleMax}>
+              <Button variant="plain" backgroundColor="color2" padding="6px" height="auto" onClick={handleMax}>
                 <Text color="text1">MAX</Text>
               </Button>
             }
