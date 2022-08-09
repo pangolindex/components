@@ -657,7 +657,8 @@
     "transactionSummary": "Bileşik pozisyon",
     "aprAfter": "Bileşik Sonrası APR",
     "reward": "Tahakkuk eden ödüller",
-    "description": "Ödüllerinizi tamamlamanın ortalama APR'nizi azaltabileceğinin farkında olmaya değer. Yeni yatırılan jetonlar 0'dan başlarken, eski jetonlar aynı APR ile devam edecektir. Bu, size gösterilecek bir ortalama oluşturur."
+    "description": "Ödüllerinizi tamamlamanın ortalama APR'nizi azaltabileceğinin farkında olmaya değer. Yeni yatırılan jetonlar 0'dan başlarken, eski jetonlar aynı APR ile devam edecektir. Bu, size gösterilecek bir ortalama oluşturur.",
+    "noRewards": "Bestelenecek ödül yok"
   },
   "sarClaim": {
     "claim": "İddia etmek",
@@ -666,7 +667,8 @@
     "successSubmit": "Ödüllerinizi başarıyla aldınız",
     "pending": "Iddia",
     "transactionSummary": "Talep edilen pozisyon ödülleri",
-    "aprAfeter": "Talep Sonrası APR"
+    "aprAfeter": "Talep Sonrası APR",
+    "noRewards": "Talep edilecek ödül yok"
   },
   "sarPortfolio": {
     "noPositions": "Herhangi bir PANGUARDIAN NFT'niz yok.\nSİZE BİR TANE ALABİLİR",

@@ -658,7 +658,8 @@
     "transactionSummary": "Position composée",
     "aprAfter": "APR Après composé",
     "reward": "Récompenses accumulées",
-    "description": "Il convient de savoir que la composition de vos récompenses peut réduire votre TAEG moyen. Les jetons nouvellement misés commenceront à partir de 0 tandis que les anciens jetons continueront avec le même APR. Cela crée une moyenne qui vous sera montrée."
+    "description": "Il convient de savoir que la composition de vos récompenses peut réduire votre TAEG moyen. Les jetons nouvellement misés commenceront à partir de 0 tandis que les anciens jetons continueront avec le même APR. Cela crée une moyenne qui vous sera montrée.",
+    "noRewards": "Aucune récompense à composer"
   },
   "sarClaim": {
     "claim": "Revendication",
@@ -667,7 +668,8 @@
     "successSubmit": "Vous avez réclamé vos récompenses avec succès",
     "pending": "Prétendant",
     "transactionSummary": "Récompenses de position réclamées",
-    "aprAfeter": "APR après réclamation"
+    "aprAfeter": "APR après réclamation",
+    "noRewards": "Aucune récompense à réclamer"
   },
   "sarPortfolio": {
     "noPositions": "Vous n’avez pas de NFT PANGUARDIAN.\nPERMET DE VOUS EN PROCURER UN",

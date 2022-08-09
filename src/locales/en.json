@@ -659,7 +659,8 @@
     "transactionSummary": "Compounded position",
     "aprAfter": "APR After Compound",
     "reward": "Rewards accrued",
-    "description": "It's worth being aware that compunding your rewards may decrease your average APR. Newly staked tokens will start from 0 while the old tokens will continue with the same APR. This creates an average that will be shown to you."
+    "description": "It's worth being aware that compunding your rewards may decrease your average APR. Newly staked tokens will start from 0 while the old tokens will continue with the same APR. This creates an average that will be shown to you.",
+    "noRewards": "No rewards to compound"
   },
   "sarClaim": {
     "claim": "Claim",
@@ -668,7 +669,8 @@
     "successSubmit": "You have successfully claimed your rewards",
     "pending": "Claiming",
     "transactionSummary": "Claimed position rewards",
-    "aprAfeter": "APR After Claim"
+    "aprAfeter": "APR After Claim",
+    "noRewards": "No rewards to claim"
   },
   "sarPortfolio": {
     "noPositions": "You dont have any PANGUARDIAN NFT.\nLETS GET YOU ONE",

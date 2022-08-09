@@ -32,14 +32,13 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
   const oldBalance = selectedPosition?.balance;
   const newBalance = oldBalance?.add(selectedPosition?.pendingRewards ?? 0);
 
+  // if new balance is zero return 1, if not exist position return 1 , if exist position return new balance
+  const _newBalance = newBalance?.isZero() ? 1 : newBalance ?? 1;
+
   const apr = selectedPosition?.apr;
 
   // Fix to show the correct apr
-  const newAPR = selectedPosition?.rewardRate
-    .mul(86400)
-    .mul(365)
-    .mul(100)
-    .div(newBalance ?? 1);
+  const newAPR = selectedPosition?.rewardRate.mul(86400).mul(365).mul(100).div(_newBalance);
 
   const handleConfirmDismiss = useCallback(() => {
     setOpenDrawer(false);
@@ -60,6 +59,20 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
   const pendingRewards = selectedPosition?.pendingRewards ?? BigNumber.from('0');
 
   const png = PNG[chainId];
+
+  const renderButton = () => {
+    let error: string | undefined;
+    if (!selectedPosition) {
+      error = t('sarStakeMore.choosePosition');
+    } else if (oldBalance?.isZero()) {
+      error = t('sarCompound.noRewards');
+    }
+    return (
+      <Button variant="primary" onClick={handleConfirm} isDisabled={!!error}>
+        {error ?? t('sarCompound.compound')}
+      </Button>
+    );
+  };
 
   return (
     <Box>
@@ -101,7 +114,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
           </Text>
         </Box>
         <Button variant="primary" onClick={handleConfirm} isDisabled={!selectedPosition}>
-          {!selectedPosition ? t('sarStakeMore.choosePosition') : t('sarCompound.compound')}
+          {renderButton()}
         </Button>
       </Root>
 

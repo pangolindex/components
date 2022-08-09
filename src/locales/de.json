@@ -658,7 +658,8 @@
     "transactionSummary": "Zusammengesetzte Position",
     "aprAfter": "effektiver Jahreszins nach Verbindung",
     "reward": "Gesammelte Prämien",
-    "description": "Es lohnt sich, sich bewusst zu sein, dass die Kompensation Ihrer Belohnungen Ihren durchschnittlichen effektiven Jahreszins verringern kann. Neu abgesetzte Token beginnen bei 0, während die alten Token mit demselben effektiven Jahreszins fortgesetzt werden. Dadurch wird ein Durchschnitt erstellt, der Ihnen angezeigt wird."
+    "description": "Es lohnt sich, sich bewusst zu sein, dass die Kompensation Ihrer Belohnungen Ihren durchschnittlichen effektiven Jahreszins verringern kann. Neu abgesetzte Token beginnen bei 0, während die alten Token mit demselben effektiven Jahreszins fortgesetzt werden. Dadurch wird ein Durchschnitt erstellt, der Ihnen angezeigt wird.",
+    "noRewards": "Keine Belohnungen zum Komponieren"
   },
   "sarClaim": {
     "claim": "Anspruch",
@@ -667,7 +668,8 @@
     "successSubmit": "Sie haben Ihre Prämien erfolgreich beansprucht",
     "pending": "Fordernd",
     "transactionSummary": "Beanspruchte Positionsprämien",
-    "aprAfeter": "effektiver Jahreszins nach der Reklamation"
+    "aprAfeter": "effektiver Jahreszins nach der Reklamation",
+    "noRewards": "Keine Prämien zu beanspruchen"
   },
   "sarPortfolio": {
     "noPositions": "Sie haben kein PANGUARDIAN NFT.\nLASS UNS DIR EINEN BESORGEN",

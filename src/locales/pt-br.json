@@ -657,7 +657,8 @@
     "transactionSummary": "Posição composta",
     "aprAfter": "APR Após composição",
     "reward": "Recompensas acumuladas",
-    "description": "Vale a pena estar ciente de que compor suas recompensas pode diminuir sua TAEG média. Os tokens recentemente depositados começarão a partir de 0, enquanto os tokens antigos continuarão com o mesmo APR. Isso cria uma média que será mostrada a você."
+    "description": "Vale a pena estar ciente de que compor suas recompensas pode diminuir sua TAEG média. Os tokens recentemente depositados começarão a partir de 0, enquanto os tokens antigos continuarão com o mesmo APR. Isso cria uma média que será mostrada a você.",
+    "noRewards": "Sem recompensas para compor"
   },
   "sarClaim": {
     "claim": "Reivindicar",
@@ -666,7 +667,8 @@
     "successSubmit": "Você reivindicou com sucesso suas recompensas",
     "pending": "Reivindicando",
     "transactionSummary": "Recompensas da posição reivindicadas",
-    "aprAfeter": "APR após reivindicação"
+    "aprAfeter": "APR após reivindicação",
+    "noRewards": "Não há recompensas para reivindicar"
   },
   "sarPortfolio": {
     "noPositions": "Você não tem nenhuma NFT PANGUARDIAN.\nVAMOS TER UMA.",

@@ -658,7 +658,8 @@
     "transactionSummary": "Posición compuesta",
     "aprAfter": "APR después del compuesto",
     "reward": "Recompensas acumuladas",
-    "description": "Vale la pena ser consciente de que componer sus recompensas puede disminuir su APR promedio. Los tokens recién apostados comenzarán desde 0, mientras que los tokens antiguos continuarán con la misma APR. Esto crea un promedio que se le mostrará."
+    "description": "Vale la pena ser consciente de que componer sus recompensas puede disminuir su APR promedio. Los tokens recién apostados comenzarán desde 0, mientras que los tokens antiguos continuarán con la misma APR. Esto crea un promedio que se le mostrará.",
+    "noRewards": "No hay recompensas para componer"
   },
   "sarClaim": {
     "claim": "Reclamación",
@@ -667,7 +668,8 @@
     "successSubmit": "Has reclamado con éxito tus recompensas",
     "pending": "Reclamando",
     "transactionSummary": "Recompensas por posición reclamada",
-    "aprAfeter": "APR después de la reclamación"
+    "aprAfeter": "APR después de la reclamación",
+    "noRewards": "No hay recompensas que reclamar"
   },
   "sarPortfolio": {
     "noPositions": "No tienes ningún PANGUARDIAN NFT.\nVAMOS A CONSEGUIRTE UNO",

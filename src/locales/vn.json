@@ -658,7 +658,8 @@
     "transactionSummary": "Vị trí kết hợp",
     "aprAfter": "APR sau khi hợp chất",
     "reward": "Phần thưởng tích lũy",
-    "description": "Cần lưu ý rằng việc hoàn thành phần thưởng của bạn có thể làm giảm APR trung bình của bạn. Các token mới được đặt cược sẽ bắt đầu từ 0 trong khi các token cũ sẽ tiếp tục với cùng APR. Điều này tạo ra một trung bình sẽ được hiển thị cho bạn."
+    "description": "Cần lưu ý rằng việc hoàn thành phần thưởng của bạn có thể làm giảm APR trung bình của bạn. Các token mới được đặt cược sẽ bắt đầu từ 0 trong khi các token cũ sẽ tiếp tục với cùng APR. Điều này tạo ra một trung bình sẽ được hiển thị cho bạn.",
+    "noRewards": "Không có phần thưởng để kết hợp"
   },
   "sarClaim": {
     "claim": "Đòi",
@@ -667,7 +668,8 @@
     "successSubmit": "Bạn đã nhận thành công phần thưởng của mình",
     "pending": "Tuyên bố",
     "transactionSummary": "Phần thưởng vị trí đã nhận",
-    "aprAfeter": "APR sau khi yêu cầu bồi thường"
+    "aprAfeter": "APR sau khi yêu cầu bồi thường",
+    "noRewards": "Không có phần thưởng để yêu cầu"
   },
   "sarPortfolio": {
     "noPositions": "Bạn không có bất kỳ PANGUARDIAN NFT nào.\nHÃY GIÚP BẠN CÓ ĐƯỢC MỘT",

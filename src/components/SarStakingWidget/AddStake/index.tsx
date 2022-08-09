@@ -61,11 +61,10 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
   const oldBalance = selectedPosition?.balance;
   const newBalance = oldBalance?.add((parsedAmount?.raw ?? 0).toString()).add(selectedPosition?.pendingRewards ?? 0);
 
-  const newAPR = selectedPosition?.rewardRate
-    .mul(86400)
-    .mul(365)
-    .mul(100)
-    .div(newBalance ?? 1);
+  // if new balance is zero return 1, if not exist position return 1 , if exist position return new balance
+  const _newBalance = newBalance?.isZero() ? 1 : newBalance ?? 1;
+
+  const newAPR = selectedPosition?.rewardRate.mul(86400).mul(365).mul(100).div(_newBalance);
 
   const weeklyPNG = selectedPosition?.rewardRate.mul(86400).mul(7);
 

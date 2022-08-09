@@ -55,7 +55,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
     if (!selectedPosition) {
       error = t('sarStakeMore.choosePosition');
     } else if (pendingRewards.isZero()) {
-      error = 'No rewards to claim';
+      error = t('sarClaim.noRewards');
     }
     return (
       <Button variant="primary" onClick={handleConfirm} isDisabled={!!error}>
