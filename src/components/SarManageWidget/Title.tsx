@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text } from '../Text';
-import { ToggleButtons } from '../ToggleButtons';
+import { Text } from 'src/components/Text';
+import { ToggleButtons } from 'src/components/ToggleButtons';
 import { Options } from './types';
 
 interface Props {

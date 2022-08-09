@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box } from '../../Box';
+import { Box } from 'src/components/Box';
 
 export const Root = styled(Box)`
   width: 100%;

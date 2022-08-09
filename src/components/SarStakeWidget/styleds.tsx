@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box } from '../../Box';
+import { Box } from 'src/components/Box';
 
 export const Root = styled(Box)`
   width: 100%;
@@ -11,16 +11,19 @@ export const Root = styled(Box)`
   grid-gap: 16px;
 `;
 
+export const Wrapper = styled(Box)`
+  border-radius: 10px;
+  width: 100%;
+  background-color: ${({ theme }) => theme.color2};
+  position: relative;
+  overflow: hidden;
+  padding: 30px;
+`;
+
 export const Buttons = styled(Box)<{ isStaked?: boolean }>`
   display: grid;
   grid-auto-flow: ${({ isStaked }) => (isStaked ? 'column' : 'row')};
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   grid-gap: 10px;
   margin-top: 5px;
-`;
-
-export const Wrapper = styled(Box)`
-  display: grid;
-  grid-template-rows: auto max-content;
-  height: 100%;
 `;

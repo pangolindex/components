@@ -1,16 +1,5 @@
 import styled from 'styled-components';
-import { Box } from '../Box';
-
-export const Root = styled(Box)`
-  width: 100%;
-  min-width: 320px;
-  position: relative;
-  overflow: hidden;
-  padding-bottom: 10px;
-  * {
-    box-sizing: border-box;
-  }
-`;
+import { Box } from 'src/components/Box';
 
 export const Wrapper = styled(Box)`
   border-radius: 10px;

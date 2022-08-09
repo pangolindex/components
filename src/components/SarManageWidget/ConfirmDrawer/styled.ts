@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { Box, Text } from '../../..';
+import { Box } from 'src/components/Box';
+import { Text } from 'src/components/Text';
 
 export const Root = styled(Box)`
   display: grid;

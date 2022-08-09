@@ -79,7 +79,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
 
   const png = PNG[chainId];
 
-  const userPngBalance = useTokenBalance(account ?? '', png);
+  const userPngBalance = useTokenBalance(account ?? ZERO_ADDRESS, png);
 
   // used for max input button
   const maxAmountInput = maxAmountSpend(chainId, userPngBalance);

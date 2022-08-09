@@ -15,18 +15,18 @@ import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useDerivativeSarStake, useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
-import ConfirmDrawer from '../ConfirmDrawer';
-import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
+import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
+import { Footer, Header, TokenRow } from '../SarManageWidget/ConfirmDrawer/styled';
 import { Buttons, Root, Wrapper } from './styleds';
 
-export default function Stake() {
+export default function SarManageWidget() {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
 
   const png = PNG[chainId];
-  const userPngBalance = useTokenBalance(account ?? '', png);
+  const userPngBalance = useTokenBalance(account ?? ZERO_ADDRESS, png);
   const { t } = useTranslation();
 
   const { apr, weeklyPNG } = useSarStakeInfo();
@@ -173,7 +173,7 @@ export default function Stake() {
   );
 
   return (
-    <Box id="create-sar-position-widget">
+    <Wrapper id="create-sar-position-widget">
       <Root>
         <Box>
           <Box mb={18}>
@@ -230,6 +230,6 @@ export default function Stake() {
         successMessage={t('sarStake.successSubmit')}
         confirmContent={ConfirmContent}
       />
-    </Box>
+    </Wrapper>
   );
 }

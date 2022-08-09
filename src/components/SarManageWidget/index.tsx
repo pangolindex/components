@@ -3,16 +3,15 @@ import { Position } from 'src/state/psarstake/hooks';
 import AddStake from './AddStake';
 import Claim from './Claim';
 import Compound from './Compound';
-import Stake from './Stake';
 import Unstake from './Unstake';
-import { Root, Wrapper } from './styleds';
+import { Wrapper } from './styleds';
 import { Options } from './types';
 
 interface Props {
   selectedPosition: Position | null;
 }
 
-export default function SarStakingWidget({ selectedPosition }: Props) {
+export default function SarMangePortfolio({ selectedPosition }: Props) {
   const [type, setType] = useState(Options.ADD);
 
   const handleChange = (value: Options) => {
@@ -34,12 +33,5 @@ export default function SarStakingWidget({ selectedPosition }: Props) {
     }
   };
 
-  return (
-    <Root>
-      <Wrapper>{renderBody()}</Wrapper>
-      <Wrapper mt="10px" zIndex={100}>
-        <Stake />
-      </Wrapper>
-    </Root>
-  );
+  return <Wrapper>{renderBody()}</Wrapper>;
 }

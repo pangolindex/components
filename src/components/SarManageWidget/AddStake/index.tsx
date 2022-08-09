@@ -35,7 +35,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
   const { account } = usePangolinWeb3();
 
   const png = PNG[chainId];
-  const userPngBalance = useTokenBalance(account ?? '', png);
+  const userPngBalance = useTokenBalance(account ?? ZERO_ADDRESS, png);
   const { t } = useTranslation();
 
   const { apr } = useSarStakeInfo();
