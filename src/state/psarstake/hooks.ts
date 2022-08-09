@@ -553,15 +553,13 @@ export function useSarPositions() {
     });
 
     const positions: Position[] = nftsURIs.map((uri, index) => {
-      const valueVariables = positionsAmountState[index].result?.valueVariables;
+      const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
+        positionsAmountState[index].result?.valueVariables;
       const rewardRate = positionsRewardRateState[index].result?.[0];
       const pendingRewards = positionsPedingRewardsState[index].result?.[0];
       const id = nftsIndexes[index][0];
-      const apr = rewardRate
-        ?.mul(86400)
-        .mul(365)
-        .mul(100)
-        .div(valueVariables?.balance ?? 1);
+      const balance = valueVariables?.balance ? (valueVariables.balance.isZero() ? 1 : valueVariables.balance) : 1;
+      const apr = rewardRate?.mul(86400).mul(365).mul(100).div(balance);
 
       if (!valueVariables || !rewardRate || !pendingRewards || !uri) {
         return {} as Position;
