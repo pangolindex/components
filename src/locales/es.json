@@ -623,7 +623,7 @@
     "medianAPR": "APR mediana",
     "startingApr": "APR inicial",
     "weeklyDistributed": "Semanal {{ symbol }} Distribuido",
-    "confirmDescription": "Una acción de estaca creará un SAR Nft para usted. Con este NFT puede administrar su participación en PSB.",
+    "confirmDescription": "Una acción de estaca creará un SAR Nft para usted. Con este NFT puede administrar su apuesta de {{ símbolo }}.",
     "successSubmit": "Ha apostado con éxito su token.",
     "yourAprRecalculated": "Su APR será recalculada.",
     "summary": "Resumen",
@@ -656,9 +656,9 @@
     "successSubmit": "Ha compuesto con éxito su posición.",
     "pending": "Composición",
     "transactionSummary": "Posición compuesta",
-    "aprAfter": "APR después del compuesto",
+    "aprAfter": "APR después de la capitalización",
     "reward": "Recompensas acumuladas",
-    "description": "Vale la pena ser consciente de que componer sus recompensas puede disminuir su APR promedio. Los tokens recién apostados comenzarán desde 0, mientras que los tokens antiguos continuarán con la misma APR. Esto crea un promedio que se le mostrará.",
+    "description": "Tenga en cuenta que la capitalización de sus recompensas puede disminuir su APR promedio. Los tokens recién apostados comienzan desde 0, mientras que los tokens antiguos continuarán con la misma APR. Esto crea el promedio que se muestra a usted.",
     "noRewards": "No hay recompensas para componer"
   },
   "sarClaim": {
@@ -668,7 +668,7 @@
     "successSubmit": "Has reclamado con éxito tus recompensas",
     "pending": "Reclamando",
     "transactionSummary": "Recompensas por posición reclamada",
-    "aprAfeter": "APR después de la reclamación",
+    "aprAfter": "APR después de la reclamación",
     "noRewards": "No hay recompensas que reclamar"
   },
   "sarPortfolio": {

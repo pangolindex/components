@@ -622,7 +622,7 @@
     "medianAPR": "Ortalama APR",
     "startingApr": "APR'nin Başlatılması",
     "weeklyDistributed": "Haftalık {{ symbol }} Dağıtıldı",
-    "confirmDescription": "Bir kazık eylemi sizin için bir SAR Nft oluşturacaktır. Bu NFT ile PSB hissenizi yönetebilirsiniz.",
+    "confirmDescription": "Bir bahis eylemi sizin için bir SAR Nft yaratacaktır. Bu NFT ile {{ symbol }} payınızı yönetebilirsiniz.",
     "successSubmit": "Jetonunuzu başarıyla yatırdınız.",
     "yourAprRecalculated": "APR'niz yeniden hesaplanır.",
     "summary": "Özet",
@@ -655,9 +655,9 @@
     "successSubmit": "Pozisyonunuzu başarıyla birleştirdiniz.",
     "pending": "Bileşik",
     "transactionSummary": "Bileşik pozisyon",
-    "aprAfter": "Bileşik Sonrası APR",
+    "aprAfter": "Bileşikten Sonra Nisan",
     "reward": "Tahakkuk eden ödüller",
-    "description": "Ödüllerinizi tamamlamanın ortalama APR'nizi azaltabileceğinin farkında olmaya değer. Yeni yatırılan jetonlar 0'dan başlarken, eski jetonlar aynı APR ile devam edecektir. Bu, size gösterilecek bir ortalama oluşturur.",
+    "description": "Lütfen ödüllerinizi birleştirmenin ortalama APR'nizi azaltabileceğini unutmayın. Yeni stake edilen jetonlar 0'dan başlar, eski jetonlar aynı APR ile devam eder. Bu, size gösterilen ortalamayı oluşturur.",
     "noRewards": "Bestelenecek ödül yok"
   },
   "sarClaim": {
@@ -667,7 +667,7 @@
     "successSubmit": "Ödüllerinizi başarıyla aldınız",
     "pending": "Iddia",
     "transactionSummary": "Talep edilen pozisyon ödülleri",
-    "aprAfeter": "Talep Sonrası APR",
+    "aprAfter": "Talep Sonrası APR",
     "noRewards": "Talep edilecek ödül yok"
   },
   "sarPortfolio": {

@@ -158,7 +158,7 @@ export default function SarManageWidget() {
         </Box>
         <Box bgColor="color3" borderRadius="4px" padding="15px">
           <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-            {t('sarStake.confirmDescription')}
+            {t('sarStake.confirmDescription', { symbol: png.symbol })}
           </Text>
         </Box>
       </Header>

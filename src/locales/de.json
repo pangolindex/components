@@ -623,7 +623,7 @@
     "medianAPR": "Medianer effektiver Jahreszins",
     "startingApr": "Starten des effektiven Jahreszeitraums",
     "weeklyDistributed": "Wöchentlich {{ symbol }} Verteilt",
-    "confirmDescription": "Eine Stake-Aktion erstellt eine SAR Nft für Sie. Mit diesem NFT können Sie Ihren PSB-Einsatz verwalten.",
+    "confirmDescription": "Durch eine Pfahlaktion wird ein SAR-Nft für Sie erstellt. Mit diesem NFT können Sie Ihren {{ symbol }} Einsatz verwalten.",
     "successSubmit": "Sie haben Ihr Token erfolgreich abgesteckt.",
     "yourAprRecalculated": "Ihr effektiver Jahreszins wird neu berechnet.",
     "summary": "Zusammenfassung",
@@ -656,9 +656,9 @@
     "successSubmit": "Sie haben Ihre Position erfolgreich gefestigt.",
     "pending": "Aufzinsung",
     "transactionSummary": "Zusammengesetzte Position",
-    "aprAfter": "effektiver Jahreszins nach Verbindung",
+    "aprAfter": "APR nach Aufzinsung",
     "reward": "Gesammelte Prämien",
-    "description": "Es lohnt sich, sich bewusst zu sein, dass die Kompensation Ihrer Belohnungen Ihren durchschnittlichen effektiven Jahreszins verringern kann. Neu abgesetzte Token beginnen bei 0, während die alten Token mit demselben effektiven Jahreszins fortgesetzt werden. Dadurch wird ein Durchschnitt erstellt, der Ihnen angezeigt wird.",
+    "description": "Bitte beachten Sie, dass die Aufzinsung Ihrer Prämien Ihren durchschnittlichen effektiven Jahreszins verringern kann. Neu abgesteckte Token beginnen bei 0, während die alten Token mit dem gleichen effektiven Jahreszins weiterlaufen. Dadurch entsteht der Durchschnitt, der Ihnen angezeigt wird.",
     "noRewards": "Keine Belohnungen zum Komponieren"
   },
   "sarClaim": {
@@ -668,7 +668,7 @@
     "successSubmit": "Sie haben Ihre Prämien erfolgreich beansprucht",
     "pending": "Fordernd",
     "transactionSummary": "Beanspruchte Positionsprämien",
-    "aprAfeter": "effektiver Jahreszins nach der Reklamation",
+    "aprAfter": "effektiver Jahreszins nach der Reklamation",
     "noRewards": "Keine Prämien zu beanspruchen"
   },
   "sarPortfolio": {

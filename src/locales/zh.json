@@ -622,7 +622,7 @@
     "medianAPR": "实际年利率中位数",
     "startingApr": "从 4 月起",
     "weeklyDistributed": "每周 {{ symbol }} 分布",
-    "confirmDescription": "赌注操作将为您创建SAR Nft。有了这个NFT，你可以管理你的公安局股份。",
+    "confirmDescription": "质押行动将为您创建一个 SAR Nft。 使用此 NFT，您可以管理您的 {{ symbol }} 股份。",
     "successSubmit": "您已经成功押注了您的代币。",
     "yourAprRecalculated": "您的实际年利率将被重新计算。",
     "summary": "总结",
@@ -655,9 +655,9 @@
     "successSubmit": "你已经成功地巩固了你的位置。",
     "pending": "复合",
     "transactionSummary": "复合位置",
-    "aprAfter": "复合后 APR",
+    "aprAfter": "复利后的 APR",
     "reward": "累积奖励",
-    "description": "值得注意的是，补偿您的奖励可能会降低您的平均APR。新抵押的代币将从0开始，而旧代币将继续使用相同的APR。这将创建一个将向您显示的平均值。",
+    "description": "请注意，复合奖励可能会降低您的平均 APR。 新质押的代币从 0 开始，而旧代币将以相同的 APR 继续。 这将创建显示给您的平均值",
     "noRewards": "没有复合奖励"
   },
   "sarClaim": {
@@ -667,7 +667,7 @@
     "successSubmit": "您已成功领取奖励",
     "pending": "声称",
     "transactionSummary": "已申请的职位奖励",
-    "aprAfeter": "理赔后年利率",
+    "aprAfter": "理赔后年利率",
     "noRewards": "没有可领取的奖励"
   },
   "sarPortfolio": {

@@ -624,7 +624,7 @@
     "medianAPR": "Median APR",
     "startingApr": "Starting APR",
     "weeklyDistributed": "Weekly {{ symbol }} Distributed",
-    "confirmDescription": "A stake action will create a SAR Nft for you. With this NFT you can manage your PSB stake.",
+    "confirmDescription": "A stake action will create a SAR Nft for you. With this NFT you can manage your {{ symbol }} stake.",
     "successSubmit": "You have successfully staked your token.",
     "yourAprRecalculated": "Your APR will be recalculated.",
     "summary": "Summary",
@@ -657,9 +657,9 @@
     "successSubmit": "You have successfully compounded your position.",
     "pending": "Compounding",
     "transactionSummary": "Compounded position",
-    "aprAfter": "APR After Compound",
+    "aprAfter": "APR After Compounding",
     "reward": "Rewards accrued",
-    "description": "It's worth being aware that compunding your rewards may decrease your average APR. Newly staked tokens will start from 0 while the old tokens will continue with the same APR. This creates an average that will be shown to you.",
+    "description": "Please be aware that compounding your rewards may decrease your average APR. Newly staked tokens start from 0, while the old tokens will continue with the same APR. This creates the average that is displayed to you.",
     "noRewards": "No rewards to compound"
   },
   "sarClaim": {
@@ -669,7 +669,7 @@
     "successSubmit": "You have successfully claimed your rewards",
     "pending": "Claiming",
     "transactionSummary": "Claimed position rewards",
-    "aprAfeter": "APR After Claim",
+    "aprAfter": "APR After Claim",
     "noRewards": "No rewards to claim"
   },
   "sarPortfolio": {

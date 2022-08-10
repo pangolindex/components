@@ -622,7 +622,7 @@
     "medianAPR": "APR médio",
     "startingApr": "APR começando em",
     "weeklyDistributed": "{{ symbol }} semanal distribuído",
-    "confirmDescription": "Uma ação de stake criará um SAR Nft para você. Com esta NFT você pode gerenciar sua participação no PSB.",
+    "confirmDescription": "Uma ação de stake criará um SAR Nft para você. Com esta NFT você pode gerenciar seu stake de {{ symbol }}.",
     "successSubmit": "Você depositou com sucesso seus tokens.",
     "yourAprRecalculated": "Seu APR será recalculado.",
     "summary": "Resumo",
@@ -657,7 +657,7 @@
     "transactionSummary": "Posição composta",
     "aprAfter": "APR Após composição",
     "reward": "Recompensas acumuladas",
-    "description": "Vale a pena estar ciente de que compor suas recompensas pode diminuir sua TAEG média. Os tokens recentemente depositados começarão a partir de 0, enquanto os tokens antigos continuarão com o mesmo APR. Isso cria uma média que será mostrada a você.",
+    "description": "Esteja ciente de que a composição de suas recompensas pode diminuir sua TAEG média. Os tokens recentemente depositados começam apartir de 0%, enquanto os tokens antigos continuarão com o mesmo APR. Isso cria a média que é exibida para você",
     "noRewards": "Sem recompensas para compor"
   },
   "sarClaim": {
@@ -667,7 +667,7 @@
     "successSubmit": "Você reivindicou com sucesso suas recompensas",
     "pending": "Reivindicando",
     "transactionSummary": "Recompensas da posição reivindicadas",
-    "aprAfeter": "APR após reivindicação",
+    "aprAfter": "APR após reivindicação",
     "noRewards": "Não há recompensas para reivindicar"
   },
   "sarPortfolio": {

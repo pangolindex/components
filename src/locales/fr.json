@@ -623,7 +623,7 @@
     "medianAPR": "TAEG médian",
     "startingApr": "Démarrage de l’APR",
     "weeklyDistributed": "Hebdomadaire {{ symbol }} Distribué",
-    "confirmDescription": "Une action de pieu créera un SAR Nft pour vous. Avec ce NFT, vous pouvez gérer votre participation PSB.",
+    "confirmDescription": "Une action de mise créera un Nft SAR pour vous. Avec ce NFT, vous pouvez gérer votre mise {{ symbol }}.",
     "successSubmit": "Vous avez réussi à miser votre jeton.",
     "yourAprRecalculated": "Votre TAEG sera recalculé.",
     "summary": "Résumé",
@@ -656,9 +656,9 @@
     "successSubmit": "Vous avez réussi à aggraver votre position.",
     "pending": "Compoundage",
     "transactionSummary": "Position composée",
-    "aprAfter": "APR Après composé",
+    "aprAfter": "APR après composition",
     "reward": "Récompenses accumulées",
-    "description": "Il convient de savoir que la composition de vos récompenses peut réduire votre TAEG moyen. Les jetons nouvellement misés commenceront à partir de 0 tandis que les anciens jetons continueront avec le même APR. Cela crée une moyenne qui vous sera montrée.",
+    "description": "Veuillez noter que l'accumulation de vos récompenses peut diminuer votre APR moyen. Les jetons nouvellement misés commencent à partir de 0, tandis que les anciens jetons continueront avec le même APR. Cela crée la moyenne qui vous est affichée.",
     "noRewards": "Aucune récompense à composer"
   },
   "sarClaim": {
@@ -668,7 +668,7 @@
     "successSubmit": "Vous avez réclamé vos récompenses avec succès",
     "pending": "Prétendant",
     "transactionSummary": "Récompenses de position réclamées",
-    "aprAfeter": "APR après réclamation",
+    "aprAfter": "APR après réclamation",
     "noRewards": "Aucune récompense à réclamer"
   },
   "sarPortfolio": {

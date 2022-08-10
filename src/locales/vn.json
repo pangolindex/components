@@ -623,7 +623,7 @@
     "medianAPR": "APR trung bình",
     "startingApr": "Bắt đầu APR",
     "weeklyDistributed": "Hàng tuần {{ biểu tượng }} Phân phối",
-    "confirmDescription": "Hành động đặt cọc sẽ tạo NFT SAR cho bạn. Với NFT này, bạn có thể quản lý cổ phần PSB của mình.",
+    "confirmDescription": "Một hành động đặt cược sẽ tạo ra SAR Nft cho bạn. Với NFT này, bạn có thể quản lý số tiền đặt cược {{ symbol }} của mình.",
     "successSubmit": "Bạn đã stake thành công token của mình.",
     "yourAprRecalculated": "APR của bạn sẽ được tính toán lại.",
     "summary": "Tóm tắt",
@@ -656,9 +656,9 @@
     "successSubmit": "Bạn đã thành công trong việc kết hợp vị trí của mình.",
     "pending": "Kép",
     "transactionSummary": "Vị trí kết hợp",
-    "aprAfter": "APR sau khi hợp chất",
+    "aprAfter": "APR sau khi kết hợp",
     "reward": "Phần thưởng tích lũy",
-    "description": "Cần lưu ý rằng việc hoàn thành phần thưởng của bạn có thể làm giảm APR trung bình của bạn. Các token mới được đặt cược sẽ bắt đầu từ 0 trong khi các token cũ sẽ tiếp tục với cùng APR. Điều này tạo ra một trung bình sẽ được hiển thị cho bạn.",
+    "description": "Xin lưu ý rằng việc cộng gộp phần thưởng của bạn có thể làm giảm APR trung bình của bạn. Các mã thông báo đặt cược mới bắt đầu từ 0, trong khi các mã thông báo cũ sẽ tiếp tục với cùng một APR. Điều này tạo ra mức trung bình được hiển thị cho bạn.",
     "noRewards": "Không có phần thưởng để kết hợp"
   },
   "sarClaim": {
@@ -668,7 +668,7 @@
     "successSubmit": "Bạn đã nhận thành công phần thưởng của mình",
     "pending": "Tuyên bố",
     "transactionSummary": "Phần thưởng vị trí đã nhận",
-    "aprAfeter": "APR sau khi yêu cầu bồi thường",
+    "aprAfter": "APR sau khi yêu cầu bồi thường",
     "noRewards": "Không có phần thưởng để yêu cầu"
   },
   "sarPortfolio": {

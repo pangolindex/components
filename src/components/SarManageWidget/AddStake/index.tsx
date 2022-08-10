@@ -160,7 +160,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
           <Text color="text1">{numeral(formatEther(weeklyPNG ?? 0)).format('0.00a')}</Text>
         </Box>
         <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-          {t('sarStake.confirmDescription')}
+          {t('sarStake.confirmDescription', { symbol: png.symbol })}
           <br />
           <br />
           {t('sarStakeMore.confirmDescription')}
@@ -215,7 +215,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
             </Box>
           </Box>
           <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-            {t('sarStake.confirmDescription')}
+            {t('sarStake.confirmDescription', { symbol: png.symbol })}
             <br />
             <br />
             {t('sarStakeMore.confirmDescription')}
