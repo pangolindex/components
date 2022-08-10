@@ -202,7 +202,7 @@ export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> 
 }
 
 const fetchNearTokenData = (tokenAddress: string) => async () => {
-  return await nearFn.getMetadata(tokenAddress);
+  return nearFn.getMetadata(tokenAddress);
 };
 
 export function useNearTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {

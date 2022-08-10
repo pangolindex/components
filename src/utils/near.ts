@@ -349,7 +349,7 @@ class Near {
   }
 
   public async getYourPools(): Promise<PoolData[]> {
-    return await fetch(NEAR_API_BASE_URL + '/liquidity-pools/' + nearFn.getAccountId(), {
+    return fetch(NEAR_API_BASE_URL + '/liquidity-pools/' + nearFn.getAccountId(), {
       method: 'GET',
       headers: { 'Content-type': 'application/json; charset=UTF-8' },
     })

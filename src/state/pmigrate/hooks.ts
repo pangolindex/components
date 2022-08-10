@@ -81,7 +81,7 @@ export function useGetNearUserLP() {
   const { account } = usePangolinWeb3();
 
   const { isLoading: v2IsLoading, data: pools = [] } = useQuery(['getYourPools'], async () => {
-    return await nearFn.getYourPools();
+    return nearFn.getYourPools();
   });
 
   const allTokenAddress = useMemo(() => {

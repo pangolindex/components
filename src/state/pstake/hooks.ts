@@ -866,7 +866,9 @@ export function useGetAllFarmData() {
   }, [allFarms?.data, allFarms?.isLoading, allFarms?.isError]);
 }
 
-export function useGetDummyAllFarmData() {}
+export function useGetDummyAllFarmData() {
+  // This is intentional
+}
 
 export function useAllMinichefStakingInfoData(): MinichefV2 | undefined {
   const chainId = useChainId();
