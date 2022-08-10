@@ -22,29 +22,29 @@ export function useTotalSupply(token?: Token): TokenAmount | undefined {
   return token && totalSupply ? new TokenAmount(token, totalSupply.toString()) : undefined;
 }
 
-export function useNearTotalSupply(token?: Token, pair?: Pair): TokenAmount | undefined {
+export function useNearTotalSupply(tokenOrPair?: Token | Pair): TokenAmount | undefined {
   const chainId = useChainId();
 
   const [totalSupply, setTotalSupply] = useState<TokenAmount>();
 
   useEffect(() => {
     async function checkTokenBalance() {
-      if (pair && pair instanceof Pair) {
-        const pool = await nearFn.getPool(chainId, pair?.token0, pair?.token1);
+      if (tokenOrPair && tokenOrPair instanceof Pair) {
+        const pool = await nearFn.getPool(chainId, tokenOrPair?.token0, tokenOrPair?.token1);
 
-        const nearBalance = new TokenAmount(pair?.liquidityToken, pool?.shares_total_supply);
+        const nearBalance = new TokenAmount(tokenOrPair?.liquidityToken, pool?.shares_total_supply);
 
         setTotalSupply(nearBalance);
-      } else if (token instanceof Token) {
-        const balance = await nearFn.getTotalSupply(token?.address);
-        const nearBalance = new TokenAmount(token, balance);
+      } else if (tokenOrPair instanceof Token) {
+        const balance = await nearFn.getTotalSupply(tokenOrPair?.address);
+        const nearBalance = new TokenAmount(tokenOrPair, balance);
 
         setTotalSupply(nearBalance);
       }
     }
 
     checkTokenBalance();
-  }, [token, chainId]);
+  }, [tokenOrPair, chainId]);
 
   return useMemo(() => totalSupply, [totalSupply]);
 }

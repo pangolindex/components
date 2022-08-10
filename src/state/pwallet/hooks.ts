@@ -1,13 +1,41 @@
-import { CAVAX, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+/* eslint-disable max-lines */
+import { BigNumber } from '@ethersproject/bignumber';
+import { TransactionResponse } from '@ethersproject/providers';
+import {
+  CAVAX,
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  JSBI,
+  Pair,
+  Percent,
+  Token,
+  TokenAmount,
+  WAVAX,
+} from '@pangolindex/sdk';
+import { parseUnits } from 'ethers/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQueries } from 'react-query';
-import { near } from 'src/connectors';
+import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src/connectors';
+import {
+  NEAR_LP_STORAGE_AMOUNT,
+  NEAR_STORAGE_TO_REGISTER_WITH_FT,
+  ONE_YOCTO_NEAR,
+  ROUTER_ADDRESS,
+} from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
-import { useMulticallContract } from 'src/hooks/useContract';
-import { nearFn } from 'src/utils/near';
-import { isAddress } from '../../utils';
+import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
+import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
+import { Field } from 'src/state/pburn/actions';
+import { Field as AddField } from 'src/state/pmint/actions';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
+import { calculateGasMargin, calculateSlippageAmount, getRouterContract, isAddress } from 'src/utils';
+import { FunctionCallOptions, Transaction, nearFn } from 'src/utils/near';
+import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { useAccountBalanceHook, useTokenBalancesHook } from './multiChainsHooks';
 
@@ -87,6 +115,15 @@ const fetchNearTokenBalance = (token?: Token, account?: string) => async () => {
   return undefined;
 };
 
+const fetchNearPoolShare = (chainId: number, pair: Pair) => async () => {
+  if (pair) {
+    const share = await nearFn.getSharesInPool(chainId, pair?.token0, pair?.token1);
+
+    return new TokenAmount(pair?.liquidityToken, share);
+  }
+  return undefined;
+};
+
 /**
  * Returns a map of token addresses to their eventually consistent token balances for a single account.
  */
@@ -131,20 +168,24 @@ export function useTokenBalances(
   return useTokenBalancesWithLoadingIndicator(address, tokens)[0];
 }
 
-// get the balance for a single token/account combo
-export function useTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
-  const tokenBalances = useTokenBalances(account, [token]);
-  if (!token) return undefined;
-  return tokenBalances[token.address];
-}
-
 export function useNearTokenBalances(
   address?: string,
-  tokens?: (Token | undefined)[],
+  tokensOrPairs?: (Token | Pair | undefined)[],
 ): { [tokenAddress: string]: TokenAmount | undefined } {
+  const chainId = useChainId();
+
   const queryParameter =
-    tokens?.map((token) => {
-      return { queryKey: [token?.address, address], queryFn: fetchNearTokenBalance(token, address) };
+    tokensOrPairs?.map((item) => {
+      if (item instanceof Pair) {
+        return {
+          queryKey: [item?.liquidityToken?.address, address],
+          queryFn: fetchNearPoolShare(chainId, item),
+        };
+      }
+      return {
+        queryKey: [item?.address, address],
+        queryFn: fetchNearTokenBalance(item, address),
+      };
     }) ?? [];
 
   const results = useQueries(queryParameter);
@@ -153,15 +194,36 @@ export function useNearTokenBalances(
     () =>
       results.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, result, i) => {
         const value = result?.data;
-        const token = tokens?.[i];
+        const token = tokensOrPairs?.[i];
 
-        if (token) {
+        if (token && token instanceof Token) {
           memo[token?.address] = value;
+        } else if (token && token instanceof Pair) {
+          memo[token?.liquidityToken?.address] = value;
         }
         return memo;
       }, {}),
-    [tokens, address, results],
+    [tokensOrPairs, address, results],
   );
+}
+
+// get the balance for a single token/account combo
+export function useTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
+  const tokenBalances = useTokenBalances(account, [token]);
+  if (!token) return undefined;
+  return tokenBalances[token.address];
+}
+
+// get the balance for a single token/account combo
+export function useNearTokenBalance(account?: string, tokenOrPair?: Token | Pair): TokenAmount | undefined {
+  const tokenBalances = useNearTokenBalances(account, [tokenOrPair]);
+  if (!tokenOrPair) return undefined;
+
+  if (tokenOrPair && tokenOrPair instanceof Token) {
+    return tokenBalances[tokenOrPair?.address];
+  } else if (tokenOrPair && tokenOrPair instanceof Pair) {
+    return tokenBalances[tokenOrPair?.liquidityToken?.address];
+  }
 }
 
 export function useCurrencyBalances(
@@ -218,3 +280,564 @@ export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | u
   const balances = useTokenBalances_(account ?? undefined, allTokensArray);
   return balances ?? {};
 }
+
+export interface AddLiquidityProps {
+  parsedAmounts: {
+    CURRENCY_A?: CurrencyAmount | undefined;
+    CURRENCY_B?: CurrencyAmount | undefined;
+  };
+  deadline: BigNumber | undefined;
+  noLiquidity: boolean | undefined;
+  allowedSlippage: number;
+  currencies: {
+    CURRENCY_A?: Currency | undefined;
+    CURRENCY_B?: Currency | undefined;
+  };
+}
+
+export function useAddLiquidity() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+  const addTransaction = useTransactionAdder();
+
+  const addLiquidity = async (data: AddLiquidityProps) => {
+    if (!chainId || !library || !account) return;
+
+    const { parsedAmounts, deadline, noLiquidity, allowedSlippage, currencies } = data;
+
+    const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
+    const router = getRouterContract(chainId, library, account);
+
+    const { [AddField.CURRENCY_A]: parsedAmountA, [AddField.CURRENCY_B]: parsedAmountB } = parsedAmounts;
+    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
+      return;
+    }
+
+    const amountsMin = {
+      [AddField.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
+      [AddField.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0],
+    };
+
+    let estimate,
+      method: (...xyz: any) => Promise<TransactionResponse>,
+      args: Array<string | string[] | number>,
+      value: BigNumber | null;
+    if (currencyA === CAVAX[chainId] || currencyB === CAVAX[chainId]) {
+      const tokenBIsETH = currencyB === CAVAX[chainId];
+      estimate = router.estimateGas.addLiquidityAVAX;
+      method = router.addLiquidityAVAX;
+      args = [
+        wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
+        (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
+        amountsMin[tokenBIsETH ? AddField.CURRENCY_A : AddField.CURRENCY_B].toString(), // token min
+        amountsMin[tokenBIsETH ? AddField.CURRENCY_B : AddField.CURRENCY_A].toString(), // eth min
+        account,
+        deadline.toHexString(),
+      ];
+      value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString());
+    } else {
+      estimate = router.estimateGas.addLiquidity;
+      method = router.addLiquidity;
+      args = [
+        wrappedCurrency(currencyA, chainId)?.address ?? '',
+        wrappedCurrency(currencyB, chainId)?.address ?? '',
+        parsedAmountA.raw.toString(),
+        parsedAmountB.raw.toString(),
+        amountsMin[AddField.CURRENCY_A].toString(),
+        amountsMin[AddField.CURRENCY_B].toString(),
+        account,
+        deadline.toHexString(),
+      ];
+      value = null;
+    }
+
+    try {
+      const estimatedGasLimit = await estimate(...args, value ? { value } : {});
+      const response = await method(...args, {
+        ...(value ? { value } : {}),
+        gasLimit: calculateGasMargin(estimatedGasLimit),
+      });
+      await response.wait(1);
+
+      addTransaction(response, {
+        summary:
+          'Add ' +
+          parsedAmounts[AddField.CURRENCY_A]?.toSignificant(3) +
+          ' ' +
+          currencies[AddField.CURRENCY_A]?.symbol +
+          ' and ' +
+          parsedAmounts[AddField.CURRENCY_B]?.toSignificant(3) +
+          ' ' +
+          currencies[AddField.CURRENCY_B]?.symbol,
+      });
+      return response;
+    } catch (err) {
+      const _err = err as any;
+      // we only care if the error is something _other_ than the user rejected the tx
+      if (_err?.code !== 4001) {
+        console.error(_err);
+      }
+    } finally {
+    }
+  };
+
+  return addLiquidity;
+}
+
+export function useNearAddLiquidity() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+
+  const addLiquidity = async (data: AddLiquidityProps) => {
+    if (!chainId || !library || !account) return;
+
+    let transactions: Transaction[] = [];
+
+    const depositTransactions: Transaction[] = [];
+    const { parsedAmounts, deadline, currencies } = data;
+    const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
+
+    const { [AddField.CURRENCY_A]: parsedAmountA, [AddField.CURRENCY_B]: parsedAmountB } = parsedAmounts;
+
+    const tokenA = currencyA instanceof Token ? currencyA : undefined;
+    const tokenB = currencyB instanceof Token ? currencyB : undefined;
+
+    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline || !tokenA || !tokenB) {
+      throw new Error(`Missing Currency`);
+    }
+
+    const poolId = await nearFn.getPoolId(chainId, currencyA as Token, currencyB as Token);
+
+    const tokens = [tokenA, tokenB];
+    const amounts = [
+      parseUnits(parsedAmountA.toFixed(), tokenA?.decimals).toString(),
+      parseUnits(parsedAmountB.toFixed(), tokenB?.decimals).toString(),
+    ];
+    const exchangeContractId = NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId];
+    const whitelist = await nearFn.getWhitelistedTokens(chainId);
+
+    for (let i = 0; i < tokens.length; i++) {
+      const currencyId = tokens[i].address;
+
+      depositTransactions.unshift({
+        receiverId: currencyId,
+        functionCalls: [
+          {
+            methodName: 'ft_transfer_call',
+            args: {
+              receiver_id: exchangeContractId,
+              amount: amounts[i],
+              msg: '',
+            },
+            amount: ONE_YOCTO_NEAR,
+          },
+        ],
+      });
+
+      const tokenRegistered = await nearFn.getStorageBalance(currencyId, exchangeContractId);
+
+      if (tokenRegistered === null) {
+        depositTransactions.unshift({
+          receiverId: currencyId,
+          functionCalls: [
+            nearFn.storageDepositAction({
+              accountId: exchangeContractId,
+              registrationOnly: true,
+              amount: NEAR_STORAGE_TO_REGISTER_WITH_FT,
+            }),
+          ],
+        });
+      }
+
+      if (!whitelist.includes(currencyId)) {
+        depositTransactions.unshift({
+          receiverId: exchangeContractId,
+          functionCalls: [nearFn.registerTokenAction(currencyId)],
+        });
+      }
+    }
+
+    const neededStorage = await nearFn.checkUserNeedsStorageDeposit(chainId);
+
+    if (neededStorage) {
+      depositTransactions.unshift({
+        receiverId: exchangeContractId,
+        functionCalls: [nearFn.storageDepositAction({ amount: neededStorage })],
+      });
+    }
+
+    const actions: FunctionCallOptions[] = [
+      {
+        methodName: 'add_liquidity',
+        args: { pool_id: poolId, amounts },
+        amount: NEAR_LP_STORAGE_AMOUNT,
+      },
+    ];
+
+    transactions = [
+      ...depositTransactions,
+      {
+        receiverId: exchangeContractId,
+        functionCalls: [...actions],
+      },
+    ];
+
+    return nearFn.executeMultipleTransactions(transactions);
+  };
+
+  return addLiquidity;
+}
+
+export interface RemoveLiquidityProps {
+  parsedAmounts: {
+    LIQUIDITY_PERCENT: Percent;
+    LIQUIDITY?: TokenAmount | undefined;
+    CURRENCY_A?: CurrencyAmount | undefined;
+    CURRENCY_B?: CurrencyAmount | undefined;
+  };
+  deadline: BigNumber | undefined;
+  allowedSlippage: number;
+  approval: ApprovalState;
+}
+
+interface AttemptToApproveProps {
+  parsedAmounts: {
+    LIQUIDITY_PERCENT: Percent;
+    LIQUIDITY?: TokenAmount | undefined;
+    CURRENCY_A?: CurrencyAmount | undefined;
+    CURRENCY_B?: CurrencyAmount | undefined;
+  };
+  deadline: BigNumber | undefined;
+  approveCallback: () => void;
+}
+
+export function useRemoveLiquidity(pair?: Pair | null | undefined) {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+  const addTransaction = useTransactionAdder();
+  const { t } = useTranslation();
+  const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(
+    null,
+  );
+  const getSignature = useGetTransactionSignature();
+  const pairContract = usePairContract(pair?.liquidityToken?.address);
+
+  const removeLiquidity = async (data: RemoveLiquidityProps) => {
+    if (!chainId || !library || !account || !pair) return;
+
+    const { parsedAmounts, deadline, allowedSlippage, approval } = data;
+
+    if (!chainId || !library || !account || !deadline) throw new Error(t('error.missingDependencies'));
+    const { [AddField.CURRENCY_A]: currencyAmountA, [Field.CURRENCY_B]: currencyAmountB } = parsedAmounts;
+
+    const tokenA = pair?.token0;
+    const tokenB = pair?.token1;
+    const currencyA = tokenA ? unwrappedToken(tokenA, chainId) : undefined;
+    const currencyB = tokenB ? unwrappedToken(tokenB, chainId) : undefined;
+
+    if (!currencyAmountA || !currencyAmountB) {
+      throw new Error(t('error.missingCurrencyAmounts'));
+    }
+    const router = getRouterContract(chainId, library, account);
+
+    const amountsMin = {
+      [Field.CURRENCY_A]: calculateSlippageAmount(currencyAmountA, allowedSlippage)[0],
+      [Field.CURRENCY_B]: calculateSlippageAmount(currencyAmountB, allowedSlippage)[0],
+    };
+
+    if (!currencyA || !currencyB) throw new Error(t('error.missingTokens'));
+    const liquidityAmount = parsedAmounts[Field.LIQUIDITY];
+    if (!liquidityAmount) throw new Error(t('error.missingLiquidityAmount'));
+
+    const currencyBIsAVAX = currencyB === CAVAX[chainId];
+    const oneCurrencyIsAVAX = currencyA === CAVAX[chainId] || currencyBIsAVAX;
+
+    if (!tokenA || !tokenB) throw new Error(t('error.couldNotWrap'));
+
+    let methodNames: string[], args: Array<string | string[] | number | boolean>;
+    // we have approval, use normal remove liquidity
+    if (approval === ApprovalState.APPROVED) {
+      // removeLiquidityAVAX
+      if (oneCurrencyIsAVAX) {
+        methodNames = ['removeLiquidityAVAX', 'removeLiquidityAVAXSupportingFeeOnTransferTokens'];
+        args = [
+          currencyBIsAVAX ? tokenA.address : tokenB.address,
+          liquidityAmount.raw.toString(),
+          amountsMin[currencyBIsAVAX ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
+          amountsMin[currencyBIsAVAX ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
+          account,
+          deadline.toHexString(),
+        ];
+      }
+      // removeLiquidity
+      else {
+        methodNames = ['removeLiquidity'];
+        args = [
+          tokenA.address,
+          tokenB.address,
+          liquidityAmount.raw.toString(),
+          amountsMin[Field.CURRENCY_A].toString(),
+          amountsMin[Field.CURRENCY_B].toString(),
+          account,
+          deadline.toHexString(),
+        ];
+      }
+    }
+    // we have a signature, use permit versions of remove liquidity
+    else if (signatureData !== null) {
+      // removeLiquidityAVAXWithPermit
+      if (oneCurrencyIsAVAX) {
+        methodNames = ['removeLiquidityAVAXWithPermit', 'removeLiquidityAVAXWithPermitSupportingFeeOnTransferTokens'];
+        args = [
+          currencyBIsAVAX ? tokenA.address : tokenB.address,
+          liquidityAmount.raw.toString(),
+          amountsMin[currencyBIsAVAX ? Field.CURRENCY_A : Field.CURRENCY_B].toString(),
+          amountsMin[currencyBIsAVAX ? Field.CURRENCY_B : Field.CURRENCY_A].toString(),
+          account,
+          signatureData.deadline,
+          false,
+          signatureData.v,
+          signatureData.r,
+          signatureData.s,
+        ];
+      }
+      // removeLiquidityAVAXWithPermit
+      else {
+        methodNames = ['removeLiquidityWithPermit'];
+        args = [
+          tokenA.address,
+          tokenB.address,
+          liquidityAmount.raw.toString(),
+          amountsMin[Field.CURRENCY_A].toString(),
+          amountsMin[Field.CURRENCY_B].toString(),
+          account,
+          signatureData.deadline,
+          false,
+          signatureData.v,
+          signatureData.r,
+          signatureData.s,
+        ];
+      }
+    } else {
+      throw new Error(t('error.attemptingToConfirmApproval'));
+    }
+
+    const safeGasEstimates: (BigNumber | undefined)[] = await Promise.all(
+      methodNames.map((methodName) =>
+        router.estimateGas[methodName](...args)
+          .then(calculateGasMargin)
+          .catch((err) => {
+            console.error(`estimateGas failed`, methodName, args, err);
+            return undefined;
+          }),
+      ),
+    );
+
+    const indexOfSuccessfulEstimation = safeGasEstimates.findIndex((safeGasEstimate) =>
+      BigNumber.isBigNumber(safeGasEstimate),
+    );
+
+    // all estimations failed...
+    if (indexOfSuccessfulEstimation === -1) {
+      console.error('This transaction would fail. Please contact support.');
+    } else {
+      const methodName = methodNames[indexOfSuccessfulEstimation];
+      const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation];
+
+      try {
+        const response: TransactionResponse = await router[methodName](...args, {
+          gasLimit: safeGasEstimate,
+        });
+        await response.wait(1);
+        addTransaction(response, {
+          summary:
+            t('removeLiquidity.remove') +
+            ' ' +
+            parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+            ' ' +
+            currencyA?.symbol +
+            ' and ' +
+            parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+            ' ' +
+            currencyB?.symbol,
+        });
+        return response;
+      } catch (err) {
+        const _err = err as any;
+        // we only care if the error is something _other_ than the user rejected the tx
+        if (_err?.code !== 4001) {
+          console.error(_err);
+        }
+      }
+    }
+  };
+
+  const onAttemptToApprove = async (data1: AttemptToApproveProps) => {
+    const { parsedAmounts, deadline, approveCallback } = data1;
+
+    if (!pairContract || !pair || !library || !deadline || !chainId || !account)
+      throw new Error(t('earn.missingDependencies'));
+    const liquidityAmount = parsedAmounts[Field.LIQUIDITY];
+    if (!liquidityAmount) throw new Error(t('earn.missingLiquidityAmount'));
+
+    // try to gather a signature for permission
+    const nonce = await pairContract.nonces(account);
+
+    const EIP712Domain = [
+      { name: 'name', type: 'string' },
+      { name: 'version', type: 'string' },
+      { name: 'chainId', type: 'uint256' },
+      { name: 'verifyingContract', type: 'address' },
+    ];
+    const domain = {
+      name: 'Pangolin Liquidity',
+      version: '1',
+      chainId: chainId,
+      verifyingContract: pair.liquidityToken.address,
+    };
+    const Permit = [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' },
+      { name: 'value', type: 'uint256' },
+      { name: 'nonce', type: 'uint256' },
+      { name: 'deadline', type: 'uint256' },
+    ];
+    const message = {
+      owner: account,
+      spender: ROUTER_ADDRESS[chainId],
+      value: liquidityAmount.raw.toString(),
+      nonce: nonce.toHexString(),
+      deadline: deadline.toNumber(),
+    };
+    const data = JSON.stringify({
+      types: {
+        EIP712Domain,
+        Permit,
+      },
+      domain,
+      primaryType: 'Permit',
+      message,
+    });
+
+    try {
+      const signature: any = await getSignature(data);
+
+      setSignatureData({
+        v: signature.v,
+        r: signature.r,
+        s: signature.s,
+        deadline: deadline.toNumber(),
+      });
+    } catch (err: any) {
+      approveCallback();
+    }
+  };
+  return { removeLiquidity, onAttemptToApprove, signatureData, setSignatureData };
+}
+
+export function useNearRemoveLiquidity(pair: Pair) {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+  const { t } = useTranslation();
+
+  const removeLiquidity = async (data: RemoveLiquidityProps) => {
+    if (!chainId || !library || !account) return;
+
+    let transactions: Transaction[] = [];
+
+    const withDrawTransactions: Transaction[] = [];
+
+    const { parsedAmounts, deadline, allowedSlippage } = data;
+
+    if (!chainId || !library || !account || !deadline) throw new Error(t('error.missingDependencies'));
+    const { [AddField.CURRENCY_A]: currencyAmountA, [Field.CURRENCY_B]: currencyAmountB } = parsedAmounts;
+
+    const tokenA = pair?.token0;
+    const tokenB = pair?.token1;
+    const currencyA = tokenA ? unwrappedToken(tokenA, chainId) : undefined;
+    const currencyB = tokenB ? unwrappedToken(tokenB, chainId) : undefined;
+
+    if (!currencyAmountA || !currencyAmountB) {
+      throw new Error(t('error.missingCurrencyAmounts'));
+    }
+
+    if (!currencyA || !currencyB) throw new Error(t('error.missingTokens'));
+    const liquidityAmount = parsedAmounts[Field.LIQUIDITY];
+    if (!liquidityAmount) throw new Error(t('error.missingLiquidityAmount'));
+
+    if (!tokenA || !tokenB) throw new Error(t('error.couldNotWrap'));
+
+    const poolId = await nearFn.getPoolId(chainId, tokenA, tokenB);
+
+    const tokens = [tokenA, tokenB];
+
+    const amountsMin = [
+      calculateSlippageAmount(currencyAmountA, allowedSlippage)[0]?.toString(),
+      calculateSlippageAmount(currencyAmountB, allowedSlippage)[0]?.toString(),
+    ];
+
+    const exchangeContractId = NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId];
+
+    for (let i = 0; i < tokens.length; i++) {
+      const currencyId = tokens[i].address;
+
+      const tokenRegistered = await nearFn.getStorageBalance(currencyId, exchangeContractId);
+
+      if (tokenRegistered === null) {
+        withDrawTransactions.unshift({
+          receiverId: currencyId,
+          functionCalls: [
+            nearFn.storageDepositAction({
+              accountId: exchangeContractId,
+              registrationOnly: true,
+              amount: NEAR_STORAGE_TO_REGISTER_WITH_FT,
+            }),
+          ],
+        });
+      }
+    }
+
+    const neededStorage = await nearFn.checkUserNeedsStorageDeposit(chainId);
+
+    if (neededStorage) {
+      withDrawTransactions.unshift({
+        receiverId: exchangeContractId,
+        functionCalls: [nearFn.storageDepositAction({ amount: neededStorage })],
+      });
+    }
+
+    const withdrawActions = tokens.map((token) => nearFn.withdrawAction({ tokenId: token?.address, amount: '0' }));
+
+    const actions: FunctionCallOptions[] = [
+      {
+        methodName: 'remove_liquidity',
+        args: { pool_id: poolId, shares: liquidityAmount?.raw.toString(), min_amounts: amountsMin },
+        amount: ONE_YOCTO_NEAR,
+      },
+    ];
+
+    withdrawActions.forEach((item) => {
+      actions.push(item);
+    });
+
+    transactions = [
+      ...withDrawTransactions,
+      {
+        receiverId: exchangeContractId,
+        functionCalls: [...actions],
+      },
+    ];
+
+    return nearFn.executeMultipleTransactions(transactions);
+  };
+
+  const onAttemptToApprove = () => {};
+
+  return { removeLiquidity, onAttemptToApprove };
+}
+
+/* eslint-enable max-lines */

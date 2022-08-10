@@ -1,5 +1,5 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useNearToken, useToken } from './Tokens';
+import { useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
 import {
   useApproveCallback,
   useApproveCallbackFromNearTrade,
@@ -62,4 +62,13 @@ export const useUSDCPricekHook = {
   [ChainId.COSTON]: useUSDCPrice,
   [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
   [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
+};
+
+export const useTokensHook = {
+  [ChainId.FUJI]: useTokens,
+  [ChainId.AVALANCHE]: useTokens,
+  [ChainId.WAGMI]: useTokens,
+  [ChainId.COSTON]: useTokens,
+  [ChainId.NEAR_MAINNET]: useNearTokens,
+  [ChainId.NEAR_TESTNET]: useNearTokens,
 };

@@ -1,10 +1,10 @@
-import { Pair } from '@pangolindex/sdk';
+import { CHAINS, Pair } from '@pangolindex/sdk';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useGetPoolDollerWorth } from 'src/state/pstake/hooks';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../../AddLiquidityDrawer';
 import RemoveLiquidityDrawer from '../../RemoveLiquidityDrawer';
@@ -20,15 +20,21 @@ const WalletCard = ({ pair }: WalletCardProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
+  const useTokenBalance = useTokenBalanceHook[chainId];
+
   const [isRemoveLiquidityDrawerVisible, setShowRemoveLiquidityDrawer] = useState(false);
   const [isAddLiquidityDrawerVisible, setShowAddLiquidityDrawer] = useState(false);
 
   const currency0 = unwrappedToken(pair.token0, chainId);
   const currency1 = unwrappedToken(pair.token1, chainId);
 
-  const userPgl = useTokenBalance(account ?? undefined, pair?.liquidityToken);
+  const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
+
+  const userPgl = useTokenBalance(account ?? undefined, pairOrToken);
+
   const { liquidityInUSD } = useGetPoolDollerWorth(pair);
   const yourLiquidity = liquidityInUSD ? `$${liquidityInUSD?.toFixed(4)}` : '-';
+
   return (
     <Panel>
       <Box display="flex" alignItems="center" justifyContent="space-between">

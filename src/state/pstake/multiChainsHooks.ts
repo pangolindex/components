@@ -1,24 +1,13 @@
 import { ChainId, Pair } from '@pangolindex/sdk';
 import {
-  useAddLiquidity,
   useDummyMinichefHook,
   useDummyMinichefStakingInfosViaSubgraph,
   useGetAllFarmData,
   useGetDummyAllFarmData,
   useGetMinichefStakingInfosViaSubgraph,
   useMinichefStakingInfos,
-  useNearAddLiquidity,
 } from './hooks';
 import { MinichefStakingInfo, StakingInfo } from './types';
-
-export const useAddLiquidityHook = {
-  [ChainId.FUJI]: useAddLiquidity,
-  [ChainId.AVALANCHE]: useAddLiquidity,
-  [ChainId.WAGMI]: useAddLiquidity,
-  [ChainId.COSTON]: useAddLiquidity,
-  [ChainId.NEAR_MAINNET]: useNearAddLiquidity,
-  [ChainId.NEAR_TESTNET]: useNearAddLiquidity,
-};
 
 export const useMinichefStakingInfosMapping: {
   [chainId in ChainId]: (version?: number, pairToFilterBy?: Pair | null) => StakingInfo[];

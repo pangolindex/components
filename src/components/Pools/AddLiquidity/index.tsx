@@ -14,10 +14,10 @@ import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Field } from 'src/state/pmint/actions';
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/state/pmint/hooks';
-import { useAddLiquidityHook } from 'src/state/pstake/multiChainsHooks';
 import { SpaceType } from 'src/state/pstake/types';
 import { useIsExpertMode, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks';
+import { useAddLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import ConfirmPoolDrawer from './ConfirmPoolDrawer';
 import PoolPriceBar from './PoolPriceBar';
@@ -114,6 +114,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
     if (!chainId || !library || !account) return;
 
     try {
+      setAttemptingTxn(true);
       const addData = {
         parsedAmounts,
         deadline,

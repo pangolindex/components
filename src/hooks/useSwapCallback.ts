@@ -9,7 +9,7 @@ import { useGetNearPoolId } from 'src/data/Reserves';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from 'src/utils';
 import isZero from 'src/utils/isZero';
-import { FunctionCallOptions, Transaction, nearFn, storageDepositAction } from 'src/utils/near';
+import { FunctionCallOptions, Transaction, nearFn } from 'src/utils/near';
 import useENS from './useENS';
 import { Version } from './useToggledVersion';
 import useTransactionDeadline from './useTransactionDeadline';
@@ -282,7 +282,7 @@ export function useNearSwapCallback(
           transactions.push({
             receiverId: outputCurrencyId,
             functionCalls: [
-              storageDepositAction({
+              nearFn.storageDepositAction({
                 accountId: account,
                 registrationOnly: true,
                 amount: '0.00125',
