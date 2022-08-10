@@ -134,8 +134,6 @@ export function useGetNearUserLP() {
 
   const v2PairsBalances = useNearTokenBalances(account ?? undefined, allV2Pairs);
 
-  console.log('relevantPairBalances', v2PairsBalances);
-
   //fetch the reserves for all V2 pools in which the user has a balance
   const allV2PairsWithLiquidity = useMemo(
     () => allV2Pairs.filter(({ liquidityToken }) => v2PairsBalances[liquidityToken.address]?.greaterThan('0')),

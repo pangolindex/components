@@ -289,10 +289,10 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
 
   const useTokenBalance = useTokenBalanceHook[chainId];
   const useTotalSupply = useTotalSupplyHook[chainId];
-  const useUSDCPrice = useUSDCPricekHook[chainId];
+  const _useUSDCPrice = useUSDCPricekHook[chainId];
   const token0 = pair?.token0;
   const currency0 = unwrappedToken(token0 as Token, chainId);
-  const currency0PriceTmp = useUSDCPrice(currency0);
+  const currency0PriceTmp = _useUSDCPrice(currency0);
   const currency0Price = CHAINS[chainId]?.mainnet ? currency0PriceTmp : undefined;
 
   const tokens = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;

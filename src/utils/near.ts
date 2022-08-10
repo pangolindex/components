@@ -6,6 +6,7 @@ import { Contract, providers, transactions, utils } from 'near-api-js';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src/connectors';
 import {
   NEAR_ACCOUNT_MIN_STORAGE_AMOUNT,
+  NEAR_API_BASE_URL,
   NEAR_MIN_DEPOSIT_PER_TOKEN,
   NEAR_STORAGE_PER_TOKEN,
   ONE_YOCTO_NEAR,
@@ -27,17 +28,35 @@ export interface Transaction {
   functionCalls: FunctionCallOptions[];
 }
 
-export interface PoolRPCView {
+export interface PoolData {
   id: number;
   token_account_ids: string[];
   token_symbols: string[];
   amounts: string[];
   total_fee: number;
   shares_total_supply: string;
-  tvl: number;
-  token0_ref_price: string;
-  share: string;
-  decimalsHandled?: boolean;
+  pool_kind: string;
+}
+
+export interface NearTokenMetadata {
+  id: string;
+  name: string;
+  symbol: string;
+  decimals: number;
+  icon: string;
+}
+
+interface StorageDepositActionOptions {
+  accountId?: string;
+  registrationOnly?: boolean;
+  amount: string;
+}
+
+interface WithdrawActionOptions {
+  tokenId: string;
+  amount: string;
+  unregister?: boolean;
+  singleTx?: boolean;
 }
 
 class Near {
@@ -77,24 +96,26 @@ class Near {
       summary = 'Swap successful';
     } else if (methodName === 'add_liquidity') {
       summary = 'Add Liquidity successful';
+    } else if (methodName === 'remove_liquidity') {
+      summary = 'Remove Liquidity successful';
     }
 
     return summary;
   };
 
-  public async getMetadata(tokenAddress: string) {
+  public async getMetadata(tokenAddress: string): Promise<NearTokenMetadata> {
     try {
       const metadata = await this.viewFunction(tokenAddress, {
         methodName: 'ft_metadata',
       });
 
       return {
-        tokenAddress,
+        id: tokenAddress,
         ...metadata,
       };
     } catch (err) {
       return {
-        tokenAddress,
+        id: tokenAddress,
         name: tokenAddress,
         symbol: tokenAddress?.split('.')[0].slice(0, 8),
         decimals: 6,
@@ -131,6 +152,7 @@ class Near {
     const deployer = await near.wallet.account();
     const contract = await this.getExchangeContract(deployer, NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId]);
     const numberOfPools = await contract.get_number_of_pools();
+
     return contract.get_pools({
       from_index: 0,
       limit: numberOfPools,
@@ -153,12 +175,23 @@ class Near {
     });
   }
 
-  public async getPool(chainId: number, tokenA?: Token, tokenB?: Token): Promise<PoolRPCView> {
+  public async getPool(chainId: number, tokenA?: Token, tokenB?: Token): Promise<PoolData> {
+    const poolId = await this.getPoolId(chainId, tokenA, tokenB);
+
+    const result = await this.viewFunction(NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId], {
+      methodName: 'get_pool',
+      args: { pool_id: poolId },
+    });
+
+    return { ...result, ...{ id: poolId } };
+  }
+
+  public async getSharesInPool(chainId: number, tokenA?: Token, tokenB?: Token): Promise<string> {
     const poolId = await this.getPoolId(chainId, tokenA, tokenB);
 
     return this.viewFunction(NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId], {
-      methodName: 'get_pool',
-      args: { pool_id: poolId },
+      methodName: 'get_pool_shares',
+      args: { pool_id: poolId, account_id: near?.wallet?.account?.()?.accountId },
     });
   }
 
@@ -283,33 +316,50 @@ class Near {
 
     return near.wallet.requestSignTransactions(currentTransactions);
   }
+
+  public storageDepositAction({
+    accountId = nearFn.getAccountId(),
+    registrationOnly = false,
+    amount,
+  }: StorageDepositActionOptions): FunctionCallOptions {
+    return {
+      methodName: 'storage_deposit',
+      args: {
+        account_id: accountId,
+        registration_only: registrationOnly,
+      },
+      amount,
+    };
+  }
+
+  public registerTokenAction(tokenId: string) {
+    return {
+      methodName: 'register_tokens',
+      args: { token_ids: [tokenId] },
+      amount: ONE_YOCTO_NEAR,
+    };
+  }
+
+  public withdrawAction({ tokenId, amount, unregister = false }: WithdrawActionOptions) {
+    return {
+      methodName: 'withdraw',
+      args: { token_id: tokenId, amount, unregister },
+      amount: ONE_YOCTO_NEAR,
+    };
+  }
+
+  public async getYourPools(): Promise<PoolData[]> {
+    return await fetch(NEAR_API_BASE_URL + '/liquidity-pools/' + nearFn.getAccountId(), {
+      method: 'GET',
+      headers: { 'Content-type': 'application/json; charset=UTF-8' },
+    })
+      .then((res) => res.json())
+      .then((pools) => {
+        return pools;
+      });
+  }
 }
 
 export const nearFn = new Near();
 
-interface StorageDepositActionOptions {
-  accountId?: string;
-  registrationOnly?: boolean;
-  amount: string;
-}
-
-export const storageDepositAction = ({
-  accountId = nearFn.getAccountId(),
-  registrationOnly = false,
-  amount,
-}: StorageDepositActionOptions): FunctionCallOptions => ({
-  methodName: 'storage_deposit',
-  args: {
-    account_id: accountId,
-    registration_only: registrationOnly,
-  },
-  amount,
-});
-
-export const registerTokenAction = (tokenId: string) => ({
-  methodName: 'register_tokens',
-  args: { token_ids: [tokenId] },
-  amount: ONE_YOCTO_NEAR,
-  gas: '30000000000000',
-});
 /* eslint-enable max-lines */

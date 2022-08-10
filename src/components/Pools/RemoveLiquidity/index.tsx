@@ -119,7 +119,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
 
       const response = await removeLiquidity(removeData);
 
-      setHash((response as any)?.hash);
+      setHash(response?.hash);
     } catch (err) {
       const _err = err as any;
 

@@ -45,7 +45,6 @@ export function useDerivedBurnInfo(
   // balances
   const relevantTokenBalances = useTokenBalances(account ?? undefined, pairTokens);
 
-  // const relevantTokenBalances = useTokenBalances(account ?? undefined, [pair?.liquidityToken]);
   const userLiquidity: undefined | TokenAmount = relevantTokenBalances?.[pair?.liquidityToken?.address ?? ''];
 
   const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)];

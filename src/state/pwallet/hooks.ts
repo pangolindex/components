@@ -283,15 +283,15 @@ export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | u
 
 export interface AddLiquidityProps {
   parsedAmounts: {
-    CURRENCY_A?: CurrencyAmount | undefined;
-    CURRENCY_B?: CurrencyAmount | undefined;
+    CURRENCY_A?: CurrencyAmount;
+    CURRENCY_B?: CurrencyAmount;
   };
   deadline: BigNumber | undefined;
   noLiquidity: boolean | undefined;
   allowedSlippage: number;
   currencies: {
-    CURRENCY_A?: Currency | undefined;
-    CURRENCY_B?: Currency | undefined;
+    CURRENCY_A?: Currency;
+    CURRENCY_B?: Currency;
   };
 }
 
@@ -301,7 +301,7 @@ export function useAddLiquidity() {
   const { library } = useLibrary();
   const addTransaction = useTransactionAdder();
 
-  const addLiquidity = async (data: AddLiquidityProps) => {
+  return async (data: AddLiquidityProps) => {
     if (!chainId || !library || !account) return;
 
     const { parsedAmounts, deadline, noLiquidity, allowedSlippage, currencies } = data;
@@ -381,8 +381,6 @@ export function useAddLiquidity() {
     } finally {
     }
   };
-
-  return addLiquidity;
 }
 
 export function useNearAddLiquidity() {
@@ -390,7 +388,7 @@ export function useNearAddLiquidity() {
   const chainId = useChainId();
   const { library } = useLibrary();
 
-  const addLiquidity = async (data: AddLiquidityProps) => {
+  return async (data: AddLiquidityProps) => {
     if (!chainId || !library || !account) return;
 
     let transactions: Transaction[] = [];
@@ -486,16 +484,14 @@ export function useNearAddLiquidity() {
 
     return nearFn.executeMultipleTransactions(transactions);
   };
-
-  return addLiquidity;
 }
 
 export interface RemoveLiquidityProps {
   parsedAmounts: {
     LIQUIDITY_PERCENT: Percent;
-    LIQUIDITY?: TokenAmount | undefined;
-    CURRENCY_A?: CurrencyAmount | undefined;
-    CURRENCY_B?: CurrencyAmount | undefined;
+    LIQUIDITY?: TokenAmount;
+    CURRENCY_A?: CurrencyAmount;
+    CURRENCY_B?: CurrencyAmount;
   };
   deadline: BigNumber | undefined;
   allowedSlippage: number;
@@ -505,9 +501,9 @@ export interface RemoveLiquidityProps {
 interface AttemptToApproveProps {
   parsedAmounts: {
     LIQUIDITY_PERCENT: Percent;
-    LIQUIDITY?: TokenAmount | undefined;
-    CURRENCY_A?: CurrencyAmount | undefined;
-    CURRENCY_B?: CurrencyAmount | undefined;
+    LIQUIDITY?: TokenAmount;
+    CURRENCY_A?: CurrencyAmount;
+    CURRENCY_B?: CurrencyAmount;
   };
   deadline: BigNumber | undefined;
   approveCallback: () => void;
@@ -782,8 +778,8 @@ export function useNearRemoveLiquidity(pair: Pair) {
 
     const exchangeContractId = NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId];
 
-    for (let i = 0; i < tokens.length; i++) {
-      const currencyId = tokens[i].address;
+    for (const token of tokens) {
+      const currencyId = token.address;
 
       const tokenRegistered = await nearFn.getStorageBalance(currencyId, exchangeContractId);
 
@@ -835,7 +831,9 @@ export function useNearRemoveLiquidity(pair: Pair) {
     return nearFn.executeMultipleTransactions(transactions);
   };
 
-  const onAttemptToApprove = () => {};
+  const onAttemptToApprove = () => {
+    // This is intentional
+  };
 
   return { removeLiquidity, onAttemptToApprove };
 }
