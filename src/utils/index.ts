@@ -4,6 +4,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouter.sol/IPangolinRouter.json';
+import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
   ALL_CHAINS,
   CAVAX,
@@ -18,7 +19,7 @@ import {
   Trade,
   currencyEquals,
 } from '@pangolindex/sdk';
-import { ROUTER_ADDRESS } from '../constants';
+import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -129,22 +130,20 @@ export function getProviderOrSigner(library: Web3Provider, account?: string): We
 }
 
 // account is optional
-export function getContract(address: string, ABI: any, library: Web3Provider, account?: string): Contract {
+export function getContract(address: string, ABI: any, library: Web3Provider, account?: string): Contract | null {
   if (!isAddress(address) || address === AddressZero) {
-    throw Error(`Invalid 'address' parameter '${address}'.`);
+    return null;
   }
 
   return new Contract(address, ABI, getProviderOrSigner(library, account) as any);
 }
 
 // account is optional
-export function getRouterContract(chainId: ChainId, library: Web3Provider, account?: string): Contract {
-  return getContract(
-    chainId ? ROUTER_ADDRESS[chainId] : ROUTER_ADDRESS[ChainId.AVALANCHE],
-    IPangolinRouter.abi,
-    library,
-    account,
-  );
+export function getRouterContract(chainId: ChainId, library: Web3Provider, account?: string): Contract | null {
+  return getContract(ROUTER_ADDRESS[chainId], IPangolinRouter.abi, library, account);
+}
+export function getRouterContractDaaS(chainId: ChainId, library: Web3Provider, account?: string): Contract | null {
+  return getContract(ROUTER_DAAS_ADDRESS[chainId], IPangolinRouterSupportingFees.abi, library, account);
 }
 
 export function isTokenOnList(defaultTokens: TokenAddressMap, chainId: ChainId, currency?: Currency): boolean {

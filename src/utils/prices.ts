@@ -13,7 +13,9 @@ const ONE_HUNDRED_PERCENT = new Percent(JSBI.BigInt(1000), JSBI.BigInt(1000));
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: Trade): {
   priceImpactWithoutFee?: Percent;
-  realizedLPFee?: CurrencyAmount;
+  realizedLPFee?: Percent;
+  realizedLPFeeAmount?: CurrencyAmount;
+  daasFeeAmount?: CurrencyAmount;
 } {
   // for each hop in our trade, take away the x*y=k price impact from swap fees
   // the following example assumes swap fees of 0.3% but this is determined by the pair
@@ -44,7 +46,18 @@ export function computeTradePriceBreakdown(trade?: Trade): {
       ? new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
       : CurrencyAmount.ether(realizedLPFee.multiply(trade.inputAmount.raw).quotient));
 
-  return { priceImpactWithoutFee: priceImpactWithoutFeePercent, realizedLPFee: realizedLPFeeAmount };
+  const feeAmount = !trade
+    ? undefined
+    : trade.outputAmount instanceof TokenAmount
+    ? new TokenAmount(trade.outputAmount.token, trade.fee.multiply(trade.outputAmount.raw).quotient)
+    : CurrencyAmount.ether(trade.fee.multiply(trade.outputAmount.raw).quotient);
+
+  return {
+    priceImpactWithoutFee: priceImpactWithoutFeePercent,
+    realizedLPFee,
+    realizedLPFeeAmount,
+    daasFeeAmount: feeAmount,
+  };
 }
 
 // computes the minimum amount out and maximum amount in for a trade given a user specified allowed slippage in bips

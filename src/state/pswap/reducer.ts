@@ -1,7 +1,23 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions';
+import { ZERO_ADDRESS } from '../../constants';
+import {
+  FeeInfo,
+  Field,
+  replaceSwapState,
+  selectCurrency,
+  setRecipient,
+  switchCurrencies,
+  typeInput,
+  updateFeeInfo,
+  updateFeeTo,
+} from './actions';
 
-export interface SwapState {
+export interface SwapState extends SwapParams {
+  readonly feeTo: string;
+  readonly feeInfo: FeeInfo;
+}
+
+export interface SwapParams {
   readonly independentField: Field;
   readonly typedValue: string;
   readonly [Field.INPUT]: {
@@ -24,6 +40,14 @@ const initialState: SwapState = {
     currencyId: '',
   },
   recipient: null,
+  feeTo: ZERO_ADDRESS,
+  feeInfo: {
+    feePartner: 0,
+    feeProtocol: 0,
+    feeTotal: 0,
+    feeCut: 50_00, // 50%
+    initialized: false,
+  },
 };
 
 export default createReducer<SwapState>(initialState, (builder) =>
@@ -32,6 +56,7 @@ export default createReducer<SwapState>(initialState, (builder) =>
       replaceSwapState,
       (state, { payload: { typedValue, recipient, field, inputCurrencyId, outputCurrencyId } }) => {
         return {
+          ...state,
           [Field.INPUT]: {
             currencyId: inputCurrencyId,
           },
@@ -79,5 +104,11 @@ export default createReducer<SwapState>(initialState, (builder) =>
     })
     .addCase(setRecipient, (state, { payload: { recipient } }) => {
       state.recipient = recipient;
+    })
+    .addCase(updateFeeTo, (state, { payload: { feeTo } }) => {
+      state.feeTo = feeTo;
+    })
+    .addCase(updateFeeInfo, (state, { payload: { feeInfo } }) => {
+      state.feeInfo = feeInfo;
     }),
 );

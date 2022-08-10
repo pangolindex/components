@@ -2,7 +2,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Stat, TransactionCompleted } from 'src/components';
-import { usePangolinWeb3 } from 'src/hooks';
+import { usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { useStakingContract } from 'src/hooks/useContract';
 import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -31,6 +31,8 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
   const stakingContract = useStakingContract(stakingInfo.stakingRewardAddress);
 
   const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
+
+  const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
@@ -68,10 +70,11 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
       try {
         const response: TransactionResponse = await stakingContract[method](...args);
 
-        await response.wait(1);
+        await response.wait(5);
         addTransaction(response, {
           summary: t('earn.withdrawDepositedLiquidity'),
         });
+        await refetchMinichefSubgraph();
         setHash(response.hash);
       } catch (err) {
         setAttempting(false);
