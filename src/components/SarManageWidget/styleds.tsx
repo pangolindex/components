@@ -8,4 +8,5 @@ export const Wrapper = styled(Box)`
   position: relative;
   overflow: hidden;
   padding: 30px;
+  box-sizing: border-box;
 `;

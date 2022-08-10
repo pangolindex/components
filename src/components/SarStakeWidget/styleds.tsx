@@ -17,6 +17,7 @@ export const Wrapper = styled(Box)`
   background-color: ${({ theme }) => theme.color2};
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
 `;
 
 export const Buttons = styled(Box)<{ isStaked?: boolean }>`

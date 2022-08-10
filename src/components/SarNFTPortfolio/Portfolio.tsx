@@ -68,7 +68,7 @@ export default function Portfolio({ itemsPerPage = 12, positions, onSelectPositi
           borderRadius="5px"
           paddingX="5px"
           paddingBottom="5px"
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer', boxSizing: 'border-box' }}
           onClick={() => {
             setSelectedPosition(isSelected ? null : position);
             onSelectPosition(isSelected ? null : position);

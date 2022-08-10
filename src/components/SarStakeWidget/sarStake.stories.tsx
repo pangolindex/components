@@ -26,11 +26,11 @@ const CompleteTemplateSarStakingWidget: ComponentStory<any> = () => {
   };
 
   return (
-    <div style={{ display: 'flex', width: '90%', margin: 'auto' }}>
+    <div style={{ display: 'flex', margin: 'auto' }}>
       <div style={{ width: '75%', marginRight: '20px' }}>
         <SarNFTPortfolio onSelectPosition={onSelectPosition} />
       </div>
-      <div style={{ width: '25%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ width: '25%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
         <div style={{ marginBottom: '10px' }}>
           <SarManageWidget selectedPosition={selectedPosition} />
         </div>
