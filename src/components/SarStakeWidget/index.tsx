@@ -173,7 +173,7 @@ export default function SarManageWidget() {
   );
 
   return (
-    <Wrapper id="create-sar-position-widget">
+    <Wrapper id="create-sar-position-widget" padding="30px">
       <Root>
         <Box>
           <Box mb={18}>
