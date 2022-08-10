@@ -15,6 +15,7 @@ import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Position, useDerivativeSarStake, useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { getBuyUrl } from 'src/utils';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import Title from '../Title';
@@ -97,17 +98,12 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
     if (!account) {
       return (
         <Button padding="15px 18px" variant="primary" onClick={toggleWalletModal}>
-          {t('removeLiquidity.connectWallet')}
+          {t('earn.connectWallet')}
         </Button>
       );
     } else if (!userPngBalance?.greaterThan('0')) {
-      const origin = window.location.origin;
-      const path = `/#/swap?inputCurrency=${ZERO_ADDRESS}&outputCurrency=${png.address}`;
-      const url =
-        origin.includes('localhost') || origin.includes('pangolin.exchange') ? path : `app.pangolin.exchange${path}`;
-
       return (
-        <Button padding="15px 18px" variant="primary" as="a" href={url}>
+        <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png)}>
           {t('sarStake.buy', { symbol: png.symbol })}
         </Button>
       );

@@ -19,7 +19,7 @@ import {
   Trade,
   currencyEquals,
 } from '@pangolindex/sdk';
-import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS } from '../constants';
+import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { wait } from './retry';
 
@@ -203,4 +203,10 @@ export async function waitForTransaction(
     })(),
   ]);
   return result;
+}
+
+export function getBuyUrl(token: Token): string {
+  const origin = window.location.origin;
+  const path = `/#/swap?inputCurrency=${ZERO_ADDRESS}&outputCurrency=${token.address}`;
+  return origin.includes('localhost') || origin.includes('pangolin.exchange') ? path : `app.pangolin.exchange${path}`;
 }

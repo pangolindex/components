@@ -1,18 +1,14 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatEther } from '@ethersproject/units';
-import numeral from 'numeral';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import { Text } from 'src/components/Text';
-import { PNG } from 'src/constants/tokens';
-import { useChainId } from 'src/hooks';
 import { Position, useDerivativeSarCompound } from 'src/state/psarstake/hooks';
-import { ToolTipText } from '../Claim/styleds';
 import ConfirmDrawer from '../ConfirmDrawer';
-import Title from '../Title';
 import { Options } from '../types';
+import RewardsInfo from './RewardsInfo';
 import { Root } from './styleds';
 interface Props {
   selectedOption: Options;
@@ -22,8 +18,6 @@ interface Props {
 
 export default function Compound({ selectedOption, selectedPosition, onChange }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
-
-  const chainId = useChainId();
 
   const { attempting, hash, compoundError, wrappedOnDismiss, onCompound } = useDerivativeSarCompound(selectedPosition);
 
@@ -58,8 +52,6 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
 
   const pendingRewards = selectedPosition?.pendingRewards ?? BigNumber.from('0');
 
-  const png = PNG[chainId];
-
   const renderButton = () => {
     let error: string | undefined;
     if (!selectedPosition) {
@@ -77,26 +69,12 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
   return (
     <Box>
       <Root>
-        <Title selectedOption={selectedOption} onChange={onChange} />
-        {!selectedPosition ? (
-          <Box>
-            <Text color="text1" fontSize="24px" fontWeight={500} textAlign="center">
-              {t('sarStakeMore.choosePosition')}
-            </Text>
-          </Box>
-        ) : (
-          <Box>
-            <Text color="text1" fontSize="16px" fontWeight={500} textAlign="center">
-              {t('sarCompound.reward')}:
-            </Text>
-            <ToolTipText color="text1" fontSize="36px" fontWeight={500} textAlign="center">
-              {numeral(formatEther(pendingRewards.toString())).format('0.00a')}
-              <span className="tooltip">
-                {formatEther(pendingRewards.toString())} {png.symbol}
-              </span>
-            </ToolTipText>
-          </Box>
-        )}
+        <RewardsInfo
+          selectedOption={selectedOption}
+          onChange={onChange}
+          pendingRewards={formatEther(pendingRewards.toString())}
+          selectedPosition={selectedPosition}
+        />
 
         <Box display="grid" bgColor="color3" borderRadius="4px" padding="20px" style={{ gridGap: '20px' }}>
           <Box display="flex" justifyContent="space-between">

@@ -15,6 +15,7 @@ import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useDerivativeSarStake, useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { getBuyUrl } from 'src/utils';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../SarManageWidget/ConfirmDrawer/styled';
 import { Buttons, Root, Wrapper } from './styleds';
@@ -89,12 +90,8 @@ export default function SarManageWidget() {
         </Button>
       );
     } else if (!userPngBalance?.greaterThan('0')) {
-      const origin = window.location.origin;
-      const path = `/#/swap?inputCurrency=${ZERO_ADDRESS}&outputCurrency=${png.address}`;
-      const url = origin.includes('localhost') || origin.includes('pangolin.exchange') ? path : `${origin}${path}`;
-
       return (
-        <Button padding="15px 18px" variant="primary" as="a" href={url} onClick={desativeOverlay}>
+        <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png)} onClick={desativeOverlay}>
           {t('sarStake.buy', { symbol: png.symbol })}
         </Button>
       );
