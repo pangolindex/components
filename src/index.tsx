@@ -10,6 +10,11 @@ import { useTotalSupply, useTotalSupplyHook } from 'src/data/TotalSupply';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import ApplicationUpdater from 'src/state//papplication/updater';
+import ListsUpdater from 'src/state//plists/updater';
+import MulticallUpdater from 'src/state//pmulticall/updater';
+import TransactionUpdater from 'src/state//ptransactions/updater';
+import { useGetUserLP } from 'src/state//pwallet/hooks';
 import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
 import {
   calculateTotalStakedAmountInAvax,
@@ -48,11 +53,6 @@ import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
-import ApplicationUpdater from './state/papplication/updater';
-import ListsUpdater from './state/plists/updater';
-import { useGetUserLP } from './state/pmigrate/hooks';
-import MulticallUpdater from './state/pmulticall/updater';
-import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
 
 const queryClient = new QueryClient();

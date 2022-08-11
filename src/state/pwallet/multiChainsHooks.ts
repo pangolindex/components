@@ -2,6 +2,8 @@ import { ChainId } from '@pangolindex/sdk';
 import {
   useAddLiquidity,
   useETHBalances,
+  useGetNearUserLP,
+  useGetUserLP,
   useNearAddLiquidity,
   useNearBalance,
   useNearRemoveLiquidity,
@@ -55,4 +57,13 @@ export const useRemoveLiquidityHook = {
   [ChainId.COSTON]: useRemoveLiquidity,
   [ChainId.NEAR_MAINNET]: useNearRemoveLiquidity,
   [ChainId.NEAR_TESTNET]: useNearRemoveLiquidity,
+};
+
+export const useGetNearUserLPHook = {
+  [ChainId.FUJI]: useGetUserLP,
+  [ChainId.AVALANCHE]: useGetUserLP,
+  [ChainId.WAGMI]: useGetUserLP,
+  [ChainId.COSTON]: useGetUserLP,
+  [ChainId.NEAR_MAINNET]: useGetNearUserLP,
+  [ChainId.NEAR_TESTNET]: useGetNearUserLP,
 };

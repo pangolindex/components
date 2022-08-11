@@ -304,8 +304,8 @@ export interface WalletInfo {
 }
 export const DIRECTUS_URL_NEWS = `https://pangolin.directus.app`;
 
-export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3/`;
-export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com/`;
+export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3`;
+export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
 
 export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
 export const COINGECKO_API = 'https://api.coingecko.com/api/v3';

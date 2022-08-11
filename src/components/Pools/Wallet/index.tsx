@@ -3,7 +3,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { useTranslation } from 'react-i18next';
 import { Box, DropdownMenu, Loader, Text } from 'src/components';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useGetNearUserLPHook } from 'src/state/pmigrate/multiChainsHooks';
+import { useGetNearUserLPHook } from 'src/state/pwallet/multiChainsHooks';
 import WalletCard from './WalletCard';
 import { EmptyProposals, MobileContainer, PageWrapper, PanelWrapper } from './styleds';
 

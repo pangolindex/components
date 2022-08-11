@@ -91,7 +91,7 @@ export function useNearUSDCPrice(currency?: Currency): Price | undefined {
   useEffect(() => {
     const fetchPrice = async () => {
       try {
-        const url = `${NEAR_API_BASE_URL}list-token-price`;
+        const url = `${NEAR_API_BASE_URL}/list-token-price`;
         const response = await fetch(url);
         const data = await response.json();
 
