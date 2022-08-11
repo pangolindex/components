@@ -170,7 +170,7 @@ export default function SarManageWidget() {
   );
 
   return (
-    <Wrapper id="create-sar-position-widget" padding="30px">
+    <Wrapper id="create-sar-position-widget" padding="30px" zIndex={100}>
       <Root>
         <Box>
           <Box mb={18}>
@@ -183,7 +183,7 @@ export default function SarManageWidget() {
               {t('sarStake.stake')}
             </Text>
             <Text color="text4">
-              {t('sarStake.walletBalance', { symbol: png.symbol, balance: userPngBalance?.toSignificant(2) ?? 0 })}
+              {t('sarStake.walletBalance', { symbol: png.symbol, balance: userPngBalance?.toFixed(2) ?? 0 })}
             </Text>
           </Box>
           <TextInput
@@ -223,7 +223,7 @@ export default function SarManageWidget() {
         attemptingTxn={attempting}
         txHash={hash}
         errorMessage={stakeError}
-        pendingMessage={t('sarStake.pending', { balance: parsedAmount?.toSignificant(2) ?? 0, symbol: png.symbol })}
+        pendingMessage={t('sarStake.pending', { balance: parsedAmount?.toFixed(2) ?? 0, symbol: png.symbol })}
         successMessage={t('sarStake.successSubmit')}
         confirmContent={ConfirmContent}
       />

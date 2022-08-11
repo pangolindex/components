@@ -182,7 +182,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
               {t('sarStakeMore.stakeMore')}
             </Text>
             <Text color="text4">
-              {t('sarStake.walletBalance', { symbol: png.symbol, balance: userPngBalance?.toSignificant(2) ?? 0 })}
+              {t('sarStake.walletBalance', { symbol: png.symbol, balance: userPngBalance?.toFixed(2) ?? 0 })}
             </Text>
           </Box>
           <TextInput
@@ -227,7 +227,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
         attemptingTxn={attempting}
         txHash={hash}
         errorMessage={stakeError}
-        pendingMessage={t('sarStakeMore.pending', { balance: parsedAmount?.toSignificant(2) ?? 0, symbol: png.symbol })}
+        pendingMessage={t('sarStakeMore.pending', { balance: parsedAmount?.toFixed(2) ?? 0, symbol: png.symbol })}
         successMessage={t('sarStake.successSubmit')}
         confirmContent={ConfirmContent}
       />

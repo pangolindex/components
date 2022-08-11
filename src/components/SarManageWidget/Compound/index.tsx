@@ -39,14 +39,12 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
     wrappedOnDismiss();
   }, []);
 
-  const handleConfirm = useCallback(() => {
-    setOpenDrawer(true);
-    onCompound();
-  }, [onCompound]);
-
   useEffect(() => {
-    if (!attempting && openDrawer && !hash && !compoundError) {
+    if (openDrawer && !attempting && !hash && !compoundError) {
       handleConfirmDismiss();
+    }
+    if (!openDrawer && attempting) {
+      setOpenDrawer(true);
     }
   }, [attempting]);
 
@@ -60,7 +58,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
       error = t('sarCompound.noRewards');
     }
     return (
-      <Button variant="primary" onClick={handleConfirm} isDisabled={!!error}>
+      <Button variant="primary" onClick={onCompound} isDisabled={!!error}>
         {error ?? t('sarCompound.compound')}
       </Button>
     );
@@ -91,9 +89,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
             {t('sarCompound.description')}
           </Text>
         </Box>
-        <Button variant="primary" onClick={handleConfirm} isDisabled={!selectedPosition}>
-          {renderButton()}
-        </Button>
+        {renderButton()}
       </Root>
 
       <ConfirmDrawer

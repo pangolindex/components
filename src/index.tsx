@@ -38,7 +38,7 @@ import {
 } from 'src/state/pswap/hooks';
 import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransactions/hooks';
 import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { shortenAddress } from 'src/utils';
+import { existSarContract, shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -156,4 +156,5 @@ export {
   fetchChunkedAprs,
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
+  existSarContract,
 };
