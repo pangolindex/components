@@ -2,8 +2,9 @@ import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
-import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
+import { JsonRpcSigner, TransactionReceipt, TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouter.sol/IPangolinRouter.json';
+import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
   ALL_CHAINS,
   CAVAX,
@@ -18,8 +19,9 @@ import {
   Trade,
   currencyEquals,
 } from '@pangolindex/sdk';
-import { ROUTER_ADDRESS } from '../constants';
+import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
+import { wait } from './retry';
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -129,22 +131,20 @@ export function getProviderOrSigner(library: Web3Provider, account?: string): We
 }
 
 // account is optional
-export function getContract(address: string, ABI: any, library: Web3Provider, account?: string): Contract {
+export function getContract(address: string, ABI: any, library: Web3Provider, account?: string): Contract | null {
   if (!isAddress(address) || address === AddressZero) {
-    throw Error(`Invalid 'address' parameter '${address}'.`);
+    return null;
   }
 
   return new Contract(address, ABI, getProviderOrSigner(library, account) as any);
 }
 
 // account is optional
-export function getRouterContract(chainId: ChainId, library: Web3Provider, account?: string): Contract {
-  return getContract(
-    chainId ? ROUTER_ADDRESS[chainId] : ROUTER_ADDRESS[ChainId.AVALANCHE],
-    IPangolinRouter.abi,
-    library,
-    account,
-  );
+export function getRouterContract(chainId: ChainId, library: Web3Provider, account?: string): Contract | null {
+  return getContract(ROUTER_ADDRESS[chainId], IPangolinRouter.abi, library, account);
+}
+export function getRouterContractDaaS(chainId: ChainId, library: Web3Provider, account?: string): Contract | null {
+  return getContract(ROUTER_DAAS_ADDRESS[chainId], IPangolinRouterSupportingFees.abi, library, account);
 }
 
 export function isTokenOnList(defaultTokens: TokenAddressMap, chainId: ChainId, currency?: Currency): boolean {
@@ -179,4 +179,34 @@ export function calculateSlippageAmount(value: CurrencyAmount, slippage: number)
     JSBI.divide(JSBI.multiply(value.raw, JSBI.BigInt(10000 - slippage)), JSBI.BigInt(10000)),
     JSBI.divide(JSBI.multiply(value.raw, JSBI.BigInt(10000 + slippage)), JSBI.BigInt(10000)),
   ];
+}
+
+// check if exist address of sar contract of a certain chain
+export function existSarContract(chainId: ChainId) {
+  return SAR_STAKING_ADDRESS[chainId] !== undefined;
+}
+
+// https://github.com/ethers-io/ethers.js/issues/945#issuecomment-1074683436
+// wait for transaction confirmation or set timeout
+export async function waitForTransaction(
+  provider: any,
+  tx: TransactionResponse,
+  confirmations?: number,
+  timeout = 7000, // 7 seconds
+) {
+  const result = await Promise.race([
+    tx.wait(confirmations),
+    (async () => {
+      await wait(timeout);
+      const mempoolTx: TransactionReceipt | undefined = await provider.getTransactionReceipt(tx.hash);
+      return mempoolTx;
+    })(),
+  ]);
+  return result;
+}
+
+export function getBuyUrl(token: Token): string {
+  const origin = window.location.origin;
+  const path = `/#/swap?inputCurrency=${ZERO_ADDRESS}&outputCurrency=${token.address}`;
+  return origin.includes('localhost') || origin.includes('pangolin.exchange') ? path : `app.pangolin.exchange${path}`;
 }

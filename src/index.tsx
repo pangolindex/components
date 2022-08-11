@@ -10,12 +10,10 @@ import { useTotalSupply, useTotalSupplyHook } from 'src/data/TotalSupply';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
-import ApplicationUpdater from 'src/state//papplication/updater';
-import ListsUpdater from 'src/state//plists/updater';
-import MulticallUpdater from 'src/state//pmulticall/updater';
-import TransactionUpdater from 'src/state//ptransactions/updater';
-import { useGetUserLP } from 'src/state//pwallet/hooks';
 import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
+import ApplicationUpdater from 'src/state/papplication/updater';
+import ListsUpdater from 'src/state/plists/updater';
+import MulticallUpdater from 'src/state/pmulticall/updater';
 import {
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
@@ -47,12 +45,16 @@ import {
   useSwapActionHandlers,
 } from 'src/state/pswap/hooks';
 import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransactions/hooks';
+import TransactionUpdater from 'src/state/ptransactions/updater';
+import { useGetUserLP } from 'src/state/pwallet/hooks';
 import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
+import { Position, useSarPositions, useSarStakeInfo } from './state/psarstake/hooks';
+import SwapUpdater from './state/pswap/updater';
 import { default as ThemeProvider } from './theme';
 
 const queryClient = new QueryClient();
@@ -79,6 +81,7 @@ export function PangolinProvider({
             <ApplicationUpdater />
             <MulticallUpdater />
             <TransactionUpdater />
+            <SwapUpdater />
             {CHAINS[chainId]?.evm ? (
               <Provider store={galetoStore}>
                 <GelatoProvider
@@ -106,7 +109,7 @@ export * from './connectors';
 export * from './components';
 
 export * from '@gelatonetwork/limit-orders-react';
-export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, StakingInfo, DoubleSideStaking };
+export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, StakingInfo, DoubleSideStaking, Position };
 
 // components
 export { SelectTokenDrawer };
@@ -116,6 +119,8 @@ export { useGelatoLimitOrderDetail, useGelatoLimitOrderList };
 
 // hooks
 export {
+  useSarStakeInfo,
+  useSarPositions,
   useDerivedSwapInfo,
   useUSDCPrice,
   useAllTokens,

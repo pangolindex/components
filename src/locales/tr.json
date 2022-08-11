@@ -610,5 +610,74 @@
     "missingLiquidityAmount": "Eksik likidite tutarı",
     "couldNotWrap": "Kaydırılamadı",
     "attemptingToConfirmApproval": "Onay veya imza olmadan onaylamaya çalışılıyor. Lütfen destek ile iletişime geçin."
+  },
+  "sarStake": {
+    "createNewPosition": "Yeni bir pozisyon oluşturma",
+    "stake": "Kazık",
+    "staking": "Staking",
+    "walletBalance": "Cüzdan'da {{ balance }} {{ symbol }}",
+    "max": "Max",
+    "dollarValue": "Dolar Değeri",
+    "buy": "{{ symbol }} satın alın",
+    "medianAPR": "Ortalama APR",
+    "startingApr": "APR'nin Başlatılması",
+    "weeklyDistributed": "Haftalık {{ symbol }} Dağıtıldı",
+    "confirmDescription": "Bir bahis eylemi sizin için bir SAR Nft yaratacaktır. Bu NFT ile {{ symbol }} payınızı yönetebilirsiniz.",
+    "successSubmit": "Jetonunuzu başarıyla yatırdınız.",
+    "yourAprRecalculated": "APR'niz yeniden hesaplanır.",
+    "summary": "Özet",
+    "pending": "Staking {{ balance }} {{ symbol }}",
+    "transactionSummary": "Stake edilmiş {{ balance }} {{ symbol }}"
+  },
+  "sarStakeMore": {
+    "stakeMore": "Bahis Tutarı Daha Fazla",
+    "choosePosition": "Bir Pozisyon Seçin",
+    "confirmDescription": "Nisan ayınız 0'dan başlayacak ve ödül havuzundan aldığınız miktarı zamana göre artıracaktır.",
+    "newAPR": "Yeni APR",
+    "add": "Eklemek",
+    "pending": "{{ balance }} {{ symbol }} ekleme"
+  },
+  "sarUnstake": {
+    "unstake": "Bahis Dışı",
+    "unstaking": "Unstaking {{ balance }} {{ symbol }}",
+    "stakedBalance": "Stake edilmiş {{ balance }} {{ symbol }}",
+    "confirmDescription": "Ödüllerinizi geri almanın APR'nizi bu pozisyon için% 0'a çıkaracağının farkında olmaya değer. \nRiskten kurtulmak yerine NFT'nizi satmayı da düşünebilirsiniz.",
+    "successSubmit": "Jetonlarınızı başarıyla kaldırdınız.",
+    "pending": "Unstaking {{ balance }} {{ symbol }}",
+    "transactionSummary": "Yatırılmamış {{ balance }} {{ symbol }}",
+    "currentAPR": "Mevcut APR",
+    "unstakeWarning": "Bahsi kaldırdığınızda, ortalama APR'niz% 0'a düşecektir.",
+    "aprAfter": "Bahis Sonrası APR"
+  },
+  "sarCompound": {
+    "compound": "Bileşik",
+    "compounding": "Bileşik",
+    "successSubmit": "Pozisyonunuzu başarıyla birleştirdiniz.",
+    "pending": "Bileşik",
+    "transactionSummary": "Bileşik pozisyon",
+    "aprAfter": "Bileşikten Sonra Nisan",
+    "reward": "Tahakkuk eden ödüller",
+    "description": "Lütfen ödüllerinizi birleştirmenin ortalama APR'nizi azaltabileceğini unutmayın. Yeni stake edilen jetonlar 0'dan başlar, eski jetonlar aynı APR ile devam eder. Bu, size gösterilen ortalamayı oluşturur.",
+    "noRewards": "Bestelenecek ödül yok"
+  },
+  "sarClaim": {
+    "claim": "İddia etmek",
+    "claiming": "Iddia",
+    "description": "SAR staking sisteminin doğası gereği ödüllerinizi talep etmek APR'nizi 0'a düşürecektir. Bunun yerine APR'nizi kaybetmeden ödüllerinizi birleştirebilirsiniz.",
+    "successSubmit": "Ödüllerinizi başarıyla aldınız",
+    "pending": "Iddia",
+    "transactionSummary": "Talep edilen pozisyon ödülleri",
+    "aprAfter": "Talep Sonrası APR",
+    "noRewards": "Talep edilecek ödül yok"
+  },
+  "sarPortfolio": {
+    "noPositions": "Herhangi bir PANGUARDIAN NFT'niz yok.\nSİZE BİR TANE ALABİLİR",
+    "start": "BAŞLAMAK",
+    "positionId": "Konum Kimliği",
+    "apr": "Nisan",
+    "amount": "Miktar",
+    "newest": "Yeni",
+    "oldest": "Eski",
+    "sortBy": "Sıralama Ölçütü"
   }
 }

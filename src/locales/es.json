@@ -373,7 +373,7 @@
     "noSeePoolJoined": "No ves un pool a la que te has unido?",
     "migrateNow": "Mirgrar ahora.",
     "importIt": "Importar.",
-    "seeDetails":"VER DETALLES",
+    "seeDetails": "VER DETALLES",
     "totalLockedValue": "Valor bloqueado total",
     "yourLockedValue": "Su valor bloqueado",
     "allPools": "Todas las Farms",
@@ -449,7 +449,7 @@
     "comingSoon": "Próximamente",
     "connectWalletViewPortFolio": "Conéctese a una cartera para ver su portafolio .",
     "limitOrders": "Límite de órdenes",
-    "cancelOrder" : "Cancelar orden",
+    "cancelOrder": "Cancelar orden",
     "all": "TODA",
     "open": "ABIERTA",
     "executed": "EJECUTADA",
@@ -611,5 +611,74 @@
     "missingLiquidityAmount": "Cantidad de liquidez faltante",
     "couldNotWrap": "No se pudo envolver",
     "attemptingToConfirmApproval": "Intentando confirmar sin aprobación o firma. Comuníquese con soporte."
+  },
+  "sarStake": {
+    "createNewPosition": "Crear un nuevo puesto",
+    "stake": "Apostar",
+    "staking": "Staking",
+    "walletBalance": "En Wallet {{ balance }} {{ symbol }}",
+    "max": "Máximo",
+    "dollarValue": "Valor en dólares",
+    "buy": "Comprar {{ symbol }}",
+    "medianAPR": "APR mediana",
+    "startingApr": "APR inicial",
+    "weeklyDistributed": "Semanal {{ symbol }} Distribuido",
+    "confirmDescription": "Una acción de estaca creará un SAR Nft para usted. Con este NFT puede administrar su apuesta de {{ símbolo }}.",
+    "successSubmit": "Ha apostado con éxito su token.",
+    "yourAprRecalculated": "Su APR será recalculada.",
+    "summary": "Resumen",
+    "pending": "Staking {{ balance }} {{ symbol }}",
+    "transactionSummary": "Staked {{ balance }} {{ symbol }}"
+  },
+  "sarStakeMore": {
+    "stakeMore": "Apuesta Más",
+    "choosePosition": "Elija una posición",
+    "confirmDescription": "Su apr comenzará desde 0 y aumentará la cantidad que tome del grupo de recompensas por tiempo",
+    "newAPR": "Nueva TAE",
+    "add": "Agregar",
+    "pending": "Agregar {{ balance }} {{ symbol }}"
+  },
+  "sarUnstake": {
+    "unstake": "No tomar",
+    "unstaking": "Destamando {{ balance }} {{ symbol }}",
+    "stakedBalance": "Staked {{ balance }} {{ symbol }}",
+    "confirmDescription": "Vale la pena ser consciente de que desvincular sus recompensas hará que su APR sea del 0% para esta posición. \nEn lugar de destamar, también puede considerar vender su NFT.",
+    "successSubmit": "Ha desatado con éxito sus tokens.",
+    "pending": "Destamando {{ balance }} {{ symbol }}",
+    "transactionSummary": "No tomado {{ balance }} {{ symbol }}",
+    "currentAPR": "APR actual",
+    "unstakeWarning": "Cuando no tome, su APR promedio caerá a 0%.",
+    "aprAfter": "APR después de unstake"
+  },
+  "sarCompound": {
+    "compound": "Compuesto",
+    "compounding": "Composición",
+    "successSubmit": "Ha compuesto con éxito su posición.",
+    "pending": "Composición",
+    "transactionSummary": "Posición compuesta",
+    "aprAfter": "APR después de la capitalización",
+    "reward": "Recompensas acumuladas",
+    "description": "Tenga en cuenta que la capitalización de sus recompensas puede disminuir su APR promedio. Los tokens recién apostados comienzan desde 0, mientras que los tokens antiguos continuarán con la misma APR. Esto crea el promedio que se muestra a usted.",
+    "noRewards": "No hay recompensas para componer"
+  },
+  "sarClaim": {
+    "claim": "Reclamación",
+    "claiming": "Reclamando",
+    "description": "Debido a la naturaleza del sistema de apuesta SAR, reclamar sus recompensas reducirá su APR a 0. En su lugar, puede aumentar sus recompensas sin perder su APR.",
+    "successSubmit": "Has reclamado con éxito tus recompensas",
+    "pending": "Reclamando",
+    "transactionSummary": "Recompensas por posición reclamada",
+    "aprAfter": "APR después de la reclamación",
+    "noRewards": "No hay recompensas que reclamar"
+  },
+  "sarPortfolio": {
+    "noPositions": "No tienes ningún PANGUARDIAN NFT.\nVAMOS A CONSEGUIRTE UNO",
+    "start": "EMPEZAR",
+    "positionId": "ID de posición",
+    "apr": "Apr",
+    "amount": "Importe",
+    "newest": "Nuevo",
+    "oldest": "Mayor",
+    "sortBy": "Ordenar por"
   }
 }

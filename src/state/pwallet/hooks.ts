@@ -26,7 +26,7 @@ import {
 } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { useNearPairs, usePairs } from 'src/data/Reserves';
-import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { useAllTokens, useNearTokens } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
@@ -302,6 +302,7 @@ export function useAddLiquidity() {
   const chainId = useChainId();
   const { library } = useLibrary();
   const addTransaction = useTransactionAdder();
+  const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
 
   return async (data: AddLiquidityProps) => {
     if (!chainId || !library || !account) return;
@@ -312,7 +313,7 @@ export function useAddLiquidity() {
     const router = getRouterContract(chainId, library, account);
 
     const { [AddField.CURRENCY_A]: parsedAmountA, [AddField.CURRENCY_B]: parsedAmountB } = parsedAmounts;
-    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
+    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline || !router) {
       return;
     }
 
@@ -360,7 +361,7 @@ export function useAddLiquidity() {
         ...(value ? { value } : {}),
         gasLimit: calculateGasMargin(estimatedGasLimit),
       });
-      await response.wait(1);
+      await response.wait(5);
 
       addTransaction(response, {
         summary:
@@ -373,6 +374,7 @@ export function useAddLiquidity() {
           ' ' +
           currencies[AddField.CURRENCY_B]?.symbol,
       });
+      await refetchMinichefSubgraph();
       return response;
     } catch (err) {
       const _err = err as any;
@@ -523,13 +525,16 @@ export function useRemoveLiquidity(pair?: Pair | null | undefined) {
   );
   const getSignature = useGetTransactionSignature();
   const pairContract = usePairContract(pair?.liquidityToken?.address);
+  const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
 
   const removeLiquidity = async (data: RemoveLiquidityProps) => {
     if (!chainId || !library || !account || !pair) return;
 
     const { parsedAmounts, deadline, allowedSlippage, approval } = data;
 
-    if (!chainId || !library || !account || !deadline) throw new Error(t('error.missingDependencies'));
+    const router = getRouterContract(chainId, library, account);
+
+    if (!chainId || !library || !account || !deadline || !router) throw new Error(t('error.missingDependencies'));
     const { [AddField.CURRENCY_A]: currencyAmountA, [Field.CURRENCY_B]: currencyAmountB } = parsedAmounts;
 
     const tokenA = pair?.token0;
@@ -540,7 +545,6 @@ export function useRemoveLiquidity(pair?: Pair | null | undefined) {
     if (!currencyAmountA || !currencyAmountB) {
       throw new Error(t('error.missingCurrencyAmounts'));
     }
-    const router = getRouterContract(chainId, library, account);
 
     const amountsMin = {
       [Field.CURRENCY_A]: calculateSlippageAmount(currencyAmountA, allowedSlippage)[0],
@@ -650,7 +654,7 @@ export function useRemoveLiquidity(pair?: Pair | null | undefined) {
         const response: TransactionResponse = await router[methodName](...args, {
           gasLimit: safeGasEstimate,
         });
-        await response.wait(1);
+        await response.wait(5);
         addTransaction(response, {
           summary:
             t('removeLiquidity.remove') +
@@ -663,6 +667,7 @@ export function useRemoveLiquidity(pair?: Pair | null | undefined) {
             ' ' +
             currencyB?.symbol,
         });
+        await refetchMinichefSubgraph();
         return response;
       } catch (err) {
         const _err = err as any;

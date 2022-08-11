@@ -3,6 +3,7 @@ import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
+import { useQueryClient } from 'react-query';
 import { PROVIDER_MAPPING, SUPPORTED_WALLETS } from 'src/constants';
 import { isAddress } from 'src/utils';
 
@@ -104,3 +105,10 @@ export function useLibrary(): { library: any; provider: any } {
 
   return result;
 }
+
+export const useRefetchMinichefSubgraph = () => {
+  const { account } = usePangolinWeb3();
+  const queryClient = useQueryClient();
+
+  return async () => await queryClient.refetchQueries(['get-minichef-farms-v2', account]);
+};

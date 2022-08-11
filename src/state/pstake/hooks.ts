@@ -343,7 +343,6 @@ export function useDerivedStakeInfo(
   const { t } = useTranslation();
 
   const parsedInput: CurrencyAmount | undefined = tryParseAmount(typedValue, stakingToken, chainId);
-
   const parsedAmount =
     parsedInput && userLiquidityUnstaked && JSBI.lessThanOrEqual(parsedInput.raw, userLiquidityUnstaked.raw)
       ? parsedInput
@@ -352,6 +351,9 @@ export function useDerivedStakeInfo(
   let error: string | undefined;
   if (!account) {
     error = t('stakeHooks.connectWallet');
+  }
+  if (parsedInput && !parsedAmount) {
+    error = error ?? t('stakeHooks.insufficientBalance', { symbol: stakingToken.symbol });
   }
   if (!parsedAmount) {
     error = error ?? t('stakeHooks.enterAmount');
@@ -826,7 +828,7 @@ export function useGetAllFarmData() {
   const chainId = useChainId();
 
   const allFarms = useQuery(['get-minichef-farms-v2', account], fetchMinichefData(account || '', chainId), {
-    staleTime: 1000 * 60 * 5,
+    refetchInterval: 1000 * 60 * 5, // 5 minutes
   });
 
   const dispatch = useDispatch();

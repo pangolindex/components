@@ -4,12 +4,13 @@ import { parseUnits } from '@ethersproject/units';
 import { JSBI, Percent, Router, SwapParameters, Token, Trade, TradeType } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS } from 'src/connectors';
-import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE, ONE_YOCTO_NEAR } from 'src/constants';
+import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE, ONE_YOCTO_NEAR, ZERO_ADDRESS } from 'src/constants';
 import { useGetNearPoolId } from 'src/data/Reserves';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { calculateGasMargin, getRouterContract, isAddress, shortenAddress } from 'src/utils';
+import { calculateGasMargin, getRouterContract, getRouterContractDaaS, isAddress, shortenAddress } from 'src/utils';
 import isZero from 'src/utils/isZero';
 import { FunctionCallOptions, Transaction, nearFn } from 'src/utils/near';
+import { useDaasFeeTo } from '../state/pswap/hooks';
 import useENS from './useENS';
 import { Version } from './useToggledVersion';
 import useTransactionDeadline from './useTransactionDeadline';
@@ -51,6 +52,7 @@ function useSwapCallArguments(
 ): SwapCall[] {
   const { account, chainId } = usePangolinWeb3();
   const { library } = useLibrary();
+  const [partnerDaaS] = useDaasFeeTo();
 
   const { address: recipientAddress } = useENS(recipientAddressOrName);
   const recipient = recipientAddressOrName === null ? account : recipientAddress;
@@ -61,12 +63,15 @@ function useSwapCallArguments(
     deadline = currentTime.add(10);
   }
 
-  return useMemo(() => {
-    const tradeVersion = Version.v2;
-    if (!trade || !recipient || !library || !account || !tradeVersion || !chainId || !deadline) return [];
+  const contract: Contract | null = useMemo(() => {
+    if (!chainId || !library || !account || !partnerDaaS) return null;
+    return partnerDaaS === ZERO_ADDRESS
+      ? getRouterContract(chainId, library, account)
+      : getRouterContractDaaS(chainId, library, account);
+  }, [chainId, library, account, partnerDaaS]);
 
-    const contract: Contract | null = getRouterContract(chainId, library, account);
-    if (!contract) {
+  return useMemo(() => {
+    if (!trade || !contract || !recipient || !deadline) {
       return [];
     }
 
@@ -93,7 +98,7 @@ function useSwapCallArguments(
     }
 
     return swapMethods.map((parameters) => ({ parameters, contract }));
-  }, [account, allowedSlippage, chainId, deadline, library, recipient, trade]);
+  }, [trade, contract, allowedSlippage, recipient, deadline]);
 }
 
 // returns a function that will execute a swap, if the parameters are all valid
