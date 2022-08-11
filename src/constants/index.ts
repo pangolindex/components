@@ -338,3 +338,7 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
   [ChainId.AVALANCHE]: [],
 };
+
+export const SAR_STAKING_ADDRESS: { [chainId in ChainId]?: string } = {
+  [ChainId.WAGMI]: '0xf9E3691617151969f30b0Da57AA0c9f4698ef6ab',
+};

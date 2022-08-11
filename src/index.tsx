@@ -48,6 +48,7 @@ import ApplicationUpdater from './state/papplication/updater';
 import ListsUpdater from './state/plists/updater';
 import { useGetUserLP } from './state/pmigrate/hooks';
 import MulticallUpdater from './state/pmulticall/updater';
+import { Position, useSarPositions, useSarStakeInfo } from './state/psarstake/hooks';
 import SwapUpdater from './state/pswap/updater';
 import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
@@ -104,7 +105,7 @@ export * from './connectors';
 export * from './components';
 
 export * from '@gelatonetwork/limit-orders-react';
-export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, StakingInfo, DoubleSideStaking };
+export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, StakingInfo, DoubleSideStaking, Position };
 
 // components
 export { SelectTokenDrawer };
@@ -114,6 +115,8 @@ export { useGelatoLimitOrderDetail, useGelatoLimitOrderList };
 
 // hooks
 export {
+  useSarStakeInfo,
+  useSarPositions,
   useDerivedSwapInfo,
   useUSDCPrice,
   useAllTokens,
