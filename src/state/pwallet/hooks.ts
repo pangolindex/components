@@ -836,7 +836,7 @@ export function useNearRemoveLiquidity(pair: Pair) {
     // This is intentional
   };
 
-  return { removeLiquidity, onAttemptToApprove };
+  return { removeLiquidity, onAttemptToApprove, signatureData: undefined, setSignatureData: () => {} };
 }
 
 /* eslint-enable max-lines */

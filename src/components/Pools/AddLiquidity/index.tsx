@@ -125,7 +125,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
 
       const response = await addLiquidity(addData);
 
-      setTxHash(response?.hash);
+      setTxHash(response?.hash as string);
     } catch (err) {
       const _err = err as any;
 

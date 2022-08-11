@@ -71,7 +71,7 @@ export default Web3Context;
 
 export const useChainId = () => {
   const { chainId } = usePangolinWeb3();
-  return chainId || ChainId.AVALANCHE;
+  return (chainId || ChainId.AVALANCHE) as ChainId;
 };
 
 export function useLibrary(): { library: any; provider: any } {

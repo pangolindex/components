@@ -1,4 +1,4 @@
-import { CHAINS, Pair } from '@pangolindex/sdk';
+import { CHAINS, Pair, Token } from '@pangolindex/sdk';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
@@ -30,7 +30,7 @@ const WalletCard = ({ pair }: WalletCardProps) => {
 
   const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
 
-  const userPgl = useTokenBalance(account ?? undefined, pairOrToken);
+  const userPgl = useTokenBalance(account ?? undefined, pairOrToken as Token);
 
   const { liquidityInUSD } = useGetPoolDollerWorth(pair);
   const yourLiquidity = liquidityInUSD ? `$${liquidityInUSD?.toFixed(4)}` : '-';

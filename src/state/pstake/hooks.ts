@@ -295,14 +295,11 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
   const currency0PriceTmp = _useUSDCPrice(currency0);
   const currency0Price = CHAINS[chainId]?.mainnet ? currency0PriceTmp : undefined;
 
-  const tokens = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
-
-  const userPglTmp = useTokenBalance(account ?? undefined, tokens);
+  const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
+  const userPglTmp = useTokenBalance(account ?? undefined, pairOrToken as Token);
+  const totalPoolTokens = useTotalSupply(pairOrToken as Token);
 
   const userPgl = CHAINS[chainId]?.mainnet ? userPglTmp : undefined;
-
-  const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
-  const totalPoolTokens = useTotalSupply(pairOrToken);
 
   const [token0Deposited] =
     !!pair &&

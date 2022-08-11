@@ -1,4 +1,4 @@
-import { CHAINS, Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, Currency, CurrencyAmount, JSBI, Pair, Percent, Token, TokenAmount } from '@pangolindex/sdk';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
@@ -40,10 +40,10 @@ export function useDerivedBurnInfo(
 
   // pair + totalsupply
   const [, pair] = usePair(currencyA, currencyB);
+  const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
 
-  const pairTokens = CHAINS[chainId]?.evm ? [pair?.liquidityToken] : [pair];
   // balances
-  const relevantTokenBalances = useTokenBalances(account ?? undefined, pairTokens);
+  const relevantTokenBalances = useTokenBalances(account ?? undefined, [pairOrToken] as Token[]);
 
   const userLiquidity: undefined | TokenAmount = relevantTokenBalances?.[pair?.liquidityToken?.address ?? ''];
 
@@ -54,9 +54,8 @@ export function useDerivedBurnInfo(
     [Field.LIQUIDITY]: pair?.liquidityToken,
   };
 
-  const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
   // liquidity values
-  const totalSupply = useTotalSupply(pairOrToken);
+  const totalSupply = useTotalSupply(pairOrToken as Token);
 
   const liquidityValueA =
     pair &&

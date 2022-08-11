@@ -8,6 +8,7 @@ import {
   Pair,
   Percent,
   Price,
+  Token,
   TokenAmount,
 } from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
@@ -69,7 +70,7 @@ export function useDerivedMintInfo(
   const [pairState, pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]);
 
   const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
-  const totalSupply = useTotalSupply(pairOrToken);
+  const totalSupply = useTotalSupply(pairOrToken as Token);
 
   const noLiquidity: boolean =
     pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO));

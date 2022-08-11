@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Currency } from '@pangolindex/sdk';
+import { Currency, Pair } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
@@ -28,7 +28,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   const { library } = useLibrary();
 
   const useApproveCallback = useApproveCallbackHook[chainId];
-
+  const useRemoveLiquidity = useRemoveLiquidityHook[chainId];
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
 
@@ -38,9 +38,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
     currencyB ?? undefined,
   );
 
-  const { removeLiquidity, onAttemptToApprove, signatureData, setSignatureData } =
-    useRemoveLiquidityHook[chainId](pair);
-
+  const { removeLiquidity, onAttemptToApprove, signatureData, setSignatureData } = useRemoveLiquidity(pair as Pair);
   const { onUserInput: _onUserInput } = useBurnActionHandlers();
   const isValid = !error;
 
