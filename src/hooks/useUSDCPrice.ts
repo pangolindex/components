@@ -1,4 +1,3 @@
-// TODO: Actually calculate price
 import { parseUnits } from '@ethersproject/units';
 import { ChainId, Currency, JSBI, Price, TokenAmount, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
