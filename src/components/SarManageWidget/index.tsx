@@ -26,7 +26,7 @@ export default function SarMangePortfolio({ selectedPosition }: Props) {
         return <Unstake selectedPosition={selectedPosition} selectedOption={type} onChange={handleChange} />;
       case Options.CLAIM:
         return <Claim selectedPosition={selectedPosition} selectedOption={type} onChange={handleChange} />;
-      case Options.COUMPOUND:
+      case Options.COMPOUND:
         return <Compound selectedPosition={selectedPosition} selectedOption={type} onChange={handleChange} />;
       default:
         return <AddStake selectedPosition={selectedPosition} selectedOption={type} onChange={handleChange} />;
