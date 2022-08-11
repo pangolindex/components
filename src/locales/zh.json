@@ -611,6 +611,13 @@
     "couldNotWrap": "不能换行",
     "attemptingToConfirmApproval": "尝试在未经批准或签名的情况下进行确认。请联系支持人员。"
   },
+  "sarTitle":{
+    "addMore": "添加更多",
+    "unstake": "取消仓位",
+    "compound": "复合奖励",
+    "claim": "索取奖励",
+    "interactingID": "与 ID 交互： {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "创建新职位",
     "stake": "桩",

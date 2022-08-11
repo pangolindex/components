@@ -611,6 +611,13 @@
     "couldNotWrap": "Kaydırılamadı",
     "attemptingToConfirmApproval": "Onay veya imza olmadan onaylamaya çalışılıyor. Lütfen destek ile iletişime geçin."
   },
+  "sarTitle":{
+    "addMore": "DAHA EKLE",
+    "unstake": "BİR POZİSYONU KALDIR",
+    "compound": "BİLEŞİK ÖDÜLLER",
+    "claim": "ÖDÜL TALEBİ",
+    "interactingID": "Kimlik ile etkileşim: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Yeni bir pozisyon oluşturma",
     "stake": "Kazık",

@@ -612,6 +612,13 @@
     "couldNotWrap": "Impossible d'envelopper",
     "attemptingToConfirmApproval": "Tentative de confirmation sans approbation ni signature. Veuillez contacter le support."
   },
+  "sarTitle":{
+    "addMore": "AJOUTER PLUS",
+    "unstake": "ANNULER UNE POSITION",
+    "compound": "RÉCOMPENSES COMPOSÉES",
+    "claim": "RÉCLAMER DES RÉCOMPENSES",
+    "interactingID": "Interagir avec l'ID: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Créer un nouveau poste",
     "stake": "Pieu",

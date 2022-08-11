@@ -117,7 +117,7 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
   return (
     <Box>
       <Root>
-        <Title selectedOption={selectedOption} onChange={onChange} />
+        <Title selectPosition={selectedPosition} selectedOption={selectedOption} onChange={onChange} />
         <Box>
           <Box justifyContent="space-between" display="flex">
             <Text color="text1" fontSize="18px" fontWeight={500}>

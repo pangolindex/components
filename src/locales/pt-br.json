@@ -611,6 +611,13 @@
     "couldNotWrap": "Não foi possível fazer Wrap",
     "attemptingToConfirmApproval": "Tentando confirmar sem aprovação ou assinatura. Por favor, contate o suporte."
   },
+  "sarTitle":{
+    "addMore": "ADICIONAR MAIS",
+    "unstake": "RETIRAR UMA POSIÇÃO",
+    "compound": "COMPOR RECOMPENSAS",
+    "claim": "REIVINDICAR RECOMPENSAS",
+    "interactingID": "Interagindo com o ID: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Crie uma nova posição",
     "stake": "Stake",

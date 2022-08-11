@@ -613,6 +613,13 @@
     "couldNotWrap": "Could not wrap",
     "attemptingToConfirmApproval": "Attempting to confirm without approval or a signature. Please contact support."
   },
+  "sarTitle":{
+    "addMore": "ADD MORE",
+    "unstake": "UNSTAKE A POSITION",
+    "compound": "COMPOUND REWARDS",
+    "claim": "CLAIM REWARDS",
+    "interactingID": "Interacting with ID: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Create a new position",
     "stake": "Stake",

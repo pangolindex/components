@@ -612,6 +612,13 @@
     "couldNotWrap": "Không thể quấn",
     "trytingToConfirmApproval": "Đang cố gắng xác nhận mà không cần phê duyệt hoặc chữ ký. Vui lòng liên hệ với bộ phận hỗ trợ."
   },
+  "sarTitle":{
+    "addMore": "BỔ SUNG THÊM",
+    "unstake": "BỎ LỠ VỊ TRÍ",
+    "compound": "PHẦN THƯỞNG HỢP LỆ",
+    "claim": "PHẦN THƯỞNG KHIẾU NẠI",
+    "interactingID": "Tương tác với ID: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Tạo một vị trí mới",
     "stake": "Cọc",

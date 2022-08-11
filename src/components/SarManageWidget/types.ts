@@ -1,6 +1,6 @@
 export enum Options {
   UNSTAKE = 'Unstake',
   CLAIM = 'Claim',
-  COUMPOUND = 'Compound',
+  COMPOUND = 'Compound',
   ADD = 'Add',
 }

@@ -612,6 +612,13 @@
     "couldNotWrap": "No se pudo envolver",
     "attemptingToConfirmApproval": "Intentando confirmar sin aprobación o firma. Comuníquese con soporte."
   },
+  "sarTitle":{
+    "addMore": "AÑADIR MÁS",
+    "unstake": "QUITAR UNA POSICIÓN",
+    "compound": "RECOMPENSAS COMPUESTAS",
+    "claim": "RECLAMAR PREMIOS",
+    "interactingID": "Interactuando con ID: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Crear un nuevo puesto",
     "stake": "Apostar",

@@ -612,6 +612,13 @@
     "couldNotWrap": "Konnte nicht umbrechen",
     "attemptingToConfirmApproval": "Bestätigungsversuch ohne Genehmigung oder Unterschrift. Bitte kontaktieren Sie den Support."
   },
+  "sarTitle":{
+    "addMore": "MEHR HINZUFÜGEN",
+    "unstake": "EINE POSITION ABSETZEN",
+    "compound": "VERBUNDENE BELOHNUNGEN",
+    "claim": "BELOHNUNG ENTGEGENNEHMEN",
+    "interactingID": "Interaktion mit ID: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Erstellen Sie eine neue Position",
     "stake": "Anteil",
