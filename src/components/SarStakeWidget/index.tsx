@@ -208,7 +208,7 @@ export default function SarManageWidget() {
               <Text color="text1">{dollerWorth ?? '0'}$</Text>
             </Box>
             <Box>
-              <Text color="text2">{t('sarStake.medianAPR')}</Text>
+              <Text color="text2">{t('sarStake.averageAPR')}</Text>
               <Text color="text1">{`${apr ?? '-'.toString()}%`}</Text>
             </Box>
           </Box>

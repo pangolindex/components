@@ -620,7 +620,7 @@
     "max": "Max",
     "dollarValue": "Dollar-Wert",
     "buy": "{{ symbol }} kaufen",
-    "medianAPR": "Medianer effektiver Jahreszins",
+    "averageAPR": "Durchschnittlich Apr",
     "startingApr": "Starten des effektiven Jahreszeitraums",
     "weeklyDistributed": "Wöchentlich {{ symbol }} Verteilt",
     "confirmDescription": "Durch eine Pfahlaktion wird ein SAR-Nft für Sie erstellt. Mit diesem NFT können Sie Ihren {{ symbol }} Einsatz verwalten.",

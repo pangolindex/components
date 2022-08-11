@@ -619,7 +619,7 @@
     "max": "Max",
     "dollarValue": "Dolar Değeri",
     "buy": "{{ symbol }} satın alın",
-    "medianAPR": "Ortalama APR",
+    "averageAPR": "Ortalama APR",
     "startingApr": "APR'nin Başlatılması",
     "weeklyDistributed": "Haftalık {{ symbol }} Dağıtıldı",
     "confirmDescription": "Bir bahis eylemi sizin için bir SAR Nft yaratacaktır. Bu NFT ile {{ symbol }} payınızı yönetebilirsiniz.",

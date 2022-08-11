@@ -621,7 +621,7 @@
     "max": "MAX",
     "dollarValue": "Dollar Value",
     "buy": "Buy {{ symbol }}",
-    "medianAPR": "Median APR",
+    "averageAPR": "Average APR",
     "startingApr": "Starting APR",
     "weeklyDistributed": "Weekly {{ symbol }} Distributed",
     "confirmDescription": "A stake action will create a SAR Nft for you. With this NFT you can manage your {{ symbol }} stake.",

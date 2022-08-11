@@ -619,7 +619,7 @@
     "max": "麦克斯",
     "dollarValue": "美元价值",
     "buy": "购买 {{ symbol }}",
-    "medianAPR": "实际年利率中位数",
+    "averageAPR": "平均年利率",
     "startingApr": "从 4 月起",
     "weeklyDistributed": "每周 {{ symbol }} 分布",
     "confirmDescription": "质押行动将为您创建一个 SAR Nft。 使用此 NFT，您可以管理您的 {{ symbol }} 股份。",

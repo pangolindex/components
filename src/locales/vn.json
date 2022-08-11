@@ -620,7 +620,7 @@
     "max": "Max",
     "dollarValue": "Giá trị đô la",
     "buy": "Mua {{ symbol }}",
-    "medianAPR": "APR trung bình",
+    "averageAPR": "APR trung bình",
     "startingApr": "Bắt đầu APR",
     "weeklyDistributed": "Hàng tuần {{ biểu tượng }} Phân phối",
     "confirmDescription": "Một hành động đặt cược sẽ tạo ra SAR Nft cho bạn. Với NFT này, bạn có thể quản lý số tiền đặt cược {{ symbol }} của mình.",

@@ -620,7 +620,7 @@
     "max": "Max",
     "dollarValue": "Valeur en dollars",
     "buy": "Acheter {{ symbol }}",
-    "medianAPR": "TAEG médian",
+    "averageAPR": "TAEG moyen",
     "startingApr": "Démarrage de l’APR",
     "weeklyDistributed": "Hebdomadaire {{ symbol }} Distribué",
     "confirmDescription": "Une action de mise créera un Nft SAR pour vous. Avec ce NFT, vous pouvez gérer votre mise {{ symbol }}.",

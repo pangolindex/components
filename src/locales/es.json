@@ -620,7 +620,7 @@
     "max": "Máximo",
     "dollarValue": "Valor en dólares",
     "buy": "Comprar {{ symbol }}",
-    "medianAPR": "APR mediana",
+    "averageAPR": "APR medio",
     "startingApr": "APR inicial",
     "weeklyDistributed": "Semanal {{ symbol }} Distribuido",
     "confirmDescription": "Una acción de estaca creará un SAR Nft para usted. Con este NFT puede administrar su apuesta de {{ símbolo }}.",
