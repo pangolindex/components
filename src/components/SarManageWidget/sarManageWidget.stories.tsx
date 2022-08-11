@@ -7,10 +7,10 @@ export default {
   title: 'Components/SarManageWidget',
 };
 
-const TemplateSarStakingWidget: ComponentStory<typeof SarManageWidget> = () => (
+const TemplateSarManageWidget: ComponentStory<typeof SarManageWidget> = () => (
   <div style={{ width: '500px' }}>
     <SarManageWidget selectedPosition={null} />
   </div>
 );
 
-export const Default = TemplateSarStakingWidget.bind({});
+export const Default = TemplateSarManageWidget.bind({});

@@ -7,14 +7,14 @@ export default {
   title: 'Components/Pagination',
 };
 
-const TemplateSarStakingWidget: ComponentStory<typeof Pagination> = (args: any) => (
+const PaginationWidget: ComponentStory<typeof Pagination> = (args: any) => (
   <div style={{ margin: 'auto' }}>
     <Pagination {...args} />
   </div>
 );
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-export const Default = TemplateSarStakingWidget.bind({});
+export const Default = PaginationWidget.bind({});
 Default.args = {
   pageCount: 10,
   onPageChange: (event: any) => {},
