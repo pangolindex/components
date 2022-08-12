@@ -920,18 +920,18 @@ export function useGetNearUserLP() {
   });
 
   const allTokenAddress = useMemo(() => {
-    let toekAddresses = [] as Array<string>;
+    let tokenAddresses = [] as Array<string>;
 
     for (let i = 0; i < pools?.length; i++) {
-      toekAddresses = [...toekAddresses, ...pools?.[i]?.token_account_ids];
+      tokenAddresses = [...tokenAddresses, ...pools?.[i]?.token_account_ids];
     }
 
-    return [...new Set(toekAddresses)];
+    return [...new Set(tokenAddresses)];
   }, [pools]);
 
   const allTokens = useNearTokens(allTokenAddress);
 
-  const allTokenMeta = useMemo(() => {
+  const tokensMapping = useMemo(() => {
     if (allTokens && allTokens.length > 0 && allTokenAddress.length === allTokens.length) {
       const tokensObj = {};
 
@@ -945,10 +945,10 @@ export function useGetNearUserLP() {
   }, [allTokens, allTokenAddress]);
 
   const liquidityTokens = useMemo(() => {
-    if (allTokens && allTokens.length > 0 && Object.keys(allTokenMeta).length === allTokens.length) {
+    if (allTokens && allTokens.length > 0 && Object.keys(tokensMapping).length === allTokens.length) {
       const allLPTokens: [Token, Token][] = (pools || []).map((pool) => {
         const tokens = pool?.token_account_ids.map((address) => {
-          const token = allTokenMeta[address];
+          const token = tokensMapping[address];
           return token as Token;
         });
         return [tokens?.[0], tokens?.[1]];
@@ -958,7 +958,7 @@ export function useGetNearUserLP() {
     }
 
     return [];
-  }, [allTokens, pools, allTokenMeta]);
+  }, [allTokens, pools, tokensMapping]);
 
   const v2AllPairs = useNearPairs(liquidityTokens);
 
