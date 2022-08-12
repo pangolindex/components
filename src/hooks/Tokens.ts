@@ -201,17 +201,13 @@ export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> 
   }, [chainId, decimals, symbols, symbolsBytes32, tokensName, tokensNameBytes32, tokens, tokensAddress]);
 }
 
-const fetchNearTokenData = (tokenAddress: string) => async () => {
-  return nearFn.getMetadata(tokenAddress);
-};
-
 export function useNearTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
   const chainId = useChainId();
   const tokens = useAllTokens();
 
   const queryParameter =
     tokensAddress?.map((address) => {
-      return { queryKey: [address], queryFn: fetchNearTokenData(address) };
+      return { queryKey: [address], queryFn: () => nearFn.getMetadata(address) };
     }) ?? [];
 
   const results = useQueries(queryParameter);
