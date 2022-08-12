@@ -469,7 +469,7 @@ export function useDerivativeSarClaim(position: Position | null) {
   );
 }
 
-// Returns a list of positions for the user
+// Returns a list of user positions
 export function useSarPositions() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -564,15 +564,20 @@ export function useSarPositions() {
       }
       return {} as URI;
     });
-
+    console.log('-----------------------------------------');
     const positions: Position[] = nftsURIs.map((uri, index) => {
       const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
         positionsAmountState[index].result?.valueVariables;
       const rewardRate = positionsRewardRateState[index].result?.[0];
       const pendingRewards = positionsPedingRewardsState[index].result?.[0];
       const id = nftsIndexes[index][0];
-      const balance = valueVariables?.balance ? (valueVariables.balance.isZero() ? 1 : valueVariables.balance) : 1;
-      const apr = rewardRate?.mul(86400).mul(365).mul(100).div(balance);
+      const balance = valueVariables?.balance ?? BigNumber.from(0);
+      console.log(balance.toString());
+      const apr = rewardRate
+        ?.mul(86400)
+        .mul(365)
+        .mul(100)
+        .div(balance.isZero() ? 1 : balance);
 
       if (!valueVariables || !rewardRate || !pendingRewards || !uri) {
         return {} as Position;
