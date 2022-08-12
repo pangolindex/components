@@ -611,6 +611,13 @@
     "couldNotWrap": "Kaydırılamadı",
     "attemptingToConfirmApproval": "Onay veya imza olmadan onaylamaya çalışılıyor. Lütfen destek ile iletişime geçin."
   },
+  "sarTitle":{
+    "addMore": "DAHA EKLE",
+    "unstake": "BİR POZİSYONU KALDIR",
+    "compound": "BİLEŞİK ÖDÜLLER",
+    "claim": "ÖDÜL TALEBİ",
+    "interactingID": "Kimlik ile etkileşim: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Yeni bir pozisyon oluşturma",
     "stake": "Kazık",
@@ -619,7 +626,7 @@
     "max": "Max",
     "dollarValue": "Dolar Değeri",
     "buy": "{{ symbol }} satın alın",
-    "medianAPR": "Ortalama APR",
+    "averageAPR": "Ortalama APR",
     "startingApr": "APR'nin Başlatılması",
     "weeklyDistributed": "Haftalık {{ symbol }} Dağıtıldı",
     "confirmDescription": "Bir bahis eylemi sizin için bir SAR Nft yaratacaktır. Bu NFT ile {{ symbol }} payınızı yönetebilirsiniz.",

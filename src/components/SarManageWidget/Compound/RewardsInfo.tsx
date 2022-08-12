@@ -24,7 +24,7 @@ export default function RewardsInfo({ selectedOption, selectedPosition, pendingR
 
   return (
     <>
-      <Title selectedOption={selectedOption} onChange={onChange} />
+      <Title selectPosition={selectedPosition} selectedOption={selectedOption} onChange={onChange} />
       {!selectedPosition ? (
         <Box>
           <Text color="text1" fontSize="24px" fontWeight={500} textAlign="center">

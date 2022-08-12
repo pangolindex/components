@@ -611,6 +611,13 @@
     "couldNotWrap": "Não foi possível fazer Wrap",
     "attemptingToConfirmApproval": "Tentando confirmar sem aprovação ou assinatura. Por favor, contate o suporte."
   },
+  "sarTitle":{
+    "addMore": "ADICIONAR MAIS",
+    "unstake": "RETIRAR UMA POSIÇÃO",
+    "compound": "COMPOR RECOMPENSAS",
+    "claim": "REIVINDICAR RECOMPENSAS",
+    "interactingID": "Interagindo com o ID: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Crie uma nova posição",
     "stake": "Stake",
@@ -619,7 +626,7 @@
     "max": "MAX",
     "dollarValue": "Valor em Dólar",
     "buy": "Comprar {{ symbol }}",
-    "medianAPR": "APR médio",
+    "averageAPR": "APR médio",
     "startingApr": "APR começando em",
     "weeklyDistributed": "{{ symbol }} semanal distribuído",
     "confirmDescription": "Uma ação de stake criará um SAR Nft para você. Com esta NFT você pode gerenciar seu stake de {{ symbol }}.",

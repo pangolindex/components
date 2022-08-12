@@ -45,7 +45,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
     <ErrorWrapper>
       <ErrorBox>
         <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
-        <Text fontWeight={500} fontSize={16} color={'red1'} style={{ textAlign: 'center', width: '85%' }}>
+        <Text fontWeight={500} fontSize={16} color={'red1'} textAlign="center" style={{ width: '85%' }}>
           {errorMessage}
         </Text>
       </ErrorBox>
@@ -61,7 +61,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
         <Box flex="1" display="flex" alignItems="center">
           <img src={CircleTick} alt="circle-tick" />
         </Box>
-        <Text fontSize={16} color="text1">
+        <Text fontSize={16} color="text1" textAlign="center">
           {successMessage}
           <br />
           {t('sarStake.yourAprRecalculated')}

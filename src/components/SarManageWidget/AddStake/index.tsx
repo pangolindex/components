@@ -175,14 +175,14 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
   return (
     <Box>
       <Root>
-        <Title selectedOption={selectedOption} onChange={onChange} />
+        <Title selectPosition={selectedPosition} selectedOption={selectedOption} onChange={onChange} />
         <Box>
           <Box justifyContent="space-between" display="flex">
             <Text color="text1" fontSize="18px" fontWeight={500}>
               {t('sarStakeMore.stakeMore')}
             </Text>
             <Text color="text4">
-              {t('sarStake.walletBalance', { symbol: png.symbol, balance: userPngBalance?.toSignificant(2) ?? 0 })}
+              {t('sarStake.walletBalance', { symbol: png.symbol, balance: userPngBalance?.toFixed(2) ?? 0 })}
             </Text>
           </Box>
           <TextInput
@@ -206,7 +206,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
               <Text color="text1">{dollerWorth ?? '0'}$</Text>
             </Box>
             <Box>
-              <Text color="text2">{t('sarStake.medianAPR')}</Text>
+              <Text color="text2">{t('sarStake.averageAPR')}</Text>
               <Text color="text1">{`${(apr ?? '-').toString()}%`}</Text>
             </Box>
           </Box>
@@ -227,7 +227,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
         attemptingTxn={attempting}
         txHash={hash}
         errorMessage={stakeError}
-        pendingMessage={t('sarStakeMore.pending', { balance: parsedAmount?.toSignificant(2) ?? 0, symbol: png.symbol })}
+        pendingMessage={t('sarStakeMore.pending', { balance: parsedAmount?.toFixed(2) ?? 0, symbol: png.symbol })}
         successMessage={t('sarStake.successSubmit')}
         confirmContent={ConfirmContent}
       />
