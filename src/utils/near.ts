@@ -79,7 +79,7 @@ class Near {
 
   getTransaction = async (hash: string): Promise<providers.FinalExecutionOutcome | undefined> => {
     try {
-      const accountId = near?.wallet?.account?.()?.accountId;
+      const accountId = this.getAccountId();
       const provider = await near.getProvider();
       return provider?.txStatus(hash, accountId);
     } catch (error) {
@@ -191,13 +191,13 @@ class Near {
 
     return this.viewFunction(NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId], {
       methodName: 'get_pool_shares',
-      args: { pool_id: poolId, account_id: near?.wallet?.account?.()?.accountId },
+      args: { pool_id: poolId, account_id: this.getAccountId() },
     });
   }
 
   public getStorageBalance(
     contractId: string,
-    account = near?.wallet?.account?.()?.accountId,
+    account = this.getAccountId(),
   ): Promise<{
     total: string;
     available: string;
@@ -208,10 +208,7 @@ class Near {
     });
   }
 
-  public async needDepositStorage(
-    contractId: string,
-    account = near?.wallet?.account?.()?.accountId,
-  ): Promise<boolean> {
+  public async needDepositStorage(contractId: string, account = this.getAccountId()): Promise<boolean> {
     const storage = await this.viewFunction(contractId, {
       methodName: 'get_user_storage_state',
       args: { account_id: account },
@@ -244,7 +241,7 @@ class Near {
   public async getWhitelistedTokens(chainId: number): Promise<string[]> {
     let userWhitelist = [];
     const contractId = NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId];
-    const accountId = near?.wallet?.account?.()?.accountId;
+    const accountId = this.getAccountId();
 
     const globalWhitelist = await this.viewFunction(contractId, {
       methodName: 'get_whitelisted_tokens',

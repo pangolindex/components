@@ -21,14 +21,13 @@ import {
   fetchMinichefData,
   useDerivedStakeInfo,
   useGetAllFarmData,
-  useGetMinichefStakingInfosViaSubgraph,
   useMinichefPools,
   useMinichefStakingInfos,
 } from 'src/state/pstake/hooks';
 import {
   useGetAllFarmDataHook,
-  useGetMinichefStakingInfosViaSubgraphMapping,
-  useMinichefStakingInfosMapping,
+  useGetMinichefStakingInfosViaSubgraphHook,
+  useMinichefStakingInfosHook,
 } from 'src/state/pstake/multiChainsHooks';
 import {
   DoubleSideStaking,
@@ -135,10 +134,9 @@ export {
   useAllTransactionsClearer,
   useAccountBalanceHook,
   useTranslation,
-  useMinichefStakingInfosMapping,
+  useMinichefStakingInfosHook,
   useGetAllFarmData,
-  useGetMinichefStakingInfosViaSubgraph,
-  useGetMinichefStakingInfosViaSubgraphMapping,
+  useGetMinichefStakingInfosViaSubgraphHook,
   useGetUserLP,
   useMinichefStakingInfos,
   useDerivedStakeInfo,

@@ -220,10 +220,10 @@ export function useNearTokens(tokensAddress: string[] = []): Array<TokenReturnTy
     if (!tokensAddress || tokensAddress?.length === 0) return [];
     if (!chainId) return [];
 
-    return results.reduce<Token[]>((acc, result, i) => {
+    return results.reduce<Token[]>((acc, result) => {
       const tokenData = result?.data;
 
-      if (tokenData && results[i]?.isLoading === false) {
+      if (tokenData && result?.isLoading === false) {
         if (!!tokenData?.id && tokens[tokenData?.id]) {
           // if we have user tokens already
           acc.push(tokens[tokenData?.id]);

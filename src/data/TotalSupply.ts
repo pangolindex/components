@@ -28,22 +28,22 @@ export function useNearTotalSupply(tokenOrPair?: Token | Pair): TokenAmount | un
   const [totalSupply, setTotalSupply] = useState<TokenAmount>();
 
   useEffect(() => {
-    async function checkTokenBalance() {
+    async function getTotalSupply() {
       if (tokenOrPair && tokenOrPair instanceof Pair) {
         const pool = await nearFn.getPool(chainId, tokenOrPair?.token0, tokenOrPair?.token1);
 
-        const nearBalance = new TokenAmount(tokenOrPair?.liquidityToken, pool?.shares_total_supply);
+        const totalSupplyAmt = new TokenAmount(tokenOrPair?.liquidityToken, pool?.shares_total_supply);
 
-        setTotalSupply(nearBalance);
+        setTotalSupply(totalSupplyAmt);
       } else if (tokenOrPair instanceof Token) {
-        const balance = await nearFn.getTotalSupply(tokenOrPair?.address);
-        const nearBalance = new TokenAmount(tokenOrPair, balance);
+        const totalSupply = await nearFn.getTotalSupply(tokenOrPair?.address);
+        const totalSupplyAmt = new TokenAmount(tokenOrPair, totalSupply);
 
-        setTotalSupply(nearBalance);
+        setTotalSupply(totalSupplyAmt);
       }
     }
 
-    checkTokenBalance();
+    getTotalSupply();
   }, [tokenOrPair, chainId]);
 
   return useMemo(() => totalSupply, [totalSupply]);

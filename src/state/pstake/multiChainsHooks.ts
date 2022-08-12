@@ -9,7 +9,7 @@ import {
 } from './hooks';
 import { MinichefStakingInfo, StakingInfo } from './types';
 
-export const useMinichefStakingInfosMapping: {
+export const useMinichefStakingInfosHook: {
   [chainId in ChainId]: (version?: number, pairToFilterBy?: Pair | null) => StakingInfo[];
 } = {
   [ChainId.FUJI]: useMinichefStakingInfos,
@@ -20,7 +20,7 @@ export const useMinichefStakingInfosMapping: {
   [ChainId.NEAR_TESTNET]: useDummyMinichefHook,
 };
 
-export const useGetMinichefStakingInfosViaSubgraphMapping: {
+export const useGetMinichefStakingInfosViaSubgraphHook: {
   [chainId in ChainId]: () => MinichefStakingInfo[];
 } = {
   [ChainId.FUJI]: useGetMinichefStakingInfosViaSubgraph,
