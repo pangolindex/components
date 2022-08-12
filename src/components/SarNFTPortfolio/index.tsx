@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Position, useSarPositions } from 'src/state/psarstake/hooks';
+import { scrollElementIntoView } from 'src/utils';
 import { Box } from '../Box';
 import { Button } from '../Button';
 import { Loader } from '../Loader';
@@ -37,9 +38,8 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
   };
 
   const focusCreatePosition = () => {
-    document.getElementById('create-sar-position-widget')?.scrollIntoView({
-      behavior: 'smooth',
-    });
+    const element = document.getElementById('create-sar-position-widget');
+    scrollElementIntoView(element, 'smooth');
     document.getElementById('sar-stake-input')?.focus();
     displayOverlay();
   };
