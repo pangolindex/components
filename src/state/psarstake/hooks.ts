@@ -194,6 +194,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
       error,
       approval,
       account,
+      sarStakingContract,
       approveCallback,
       onUserInput,
       handleMax,
@@ -338,7 +339,19 @@ export function useDerivativeSarUnstake(position: Position | null) {
       onChangePercentage,
       setStepIndex,
     }),
-    [attempting, typedValue, parsedAmount, hash, stepIndex, error, account, onUserInput, handleMax, position],
+    [
+      attempting,
+      typedValue,
+      parsedAmount,
+      hash,
+      stepIndex,
+      error,
+      account,
+      sarStakingContract,
+      onUserInput,
+      handleMax,
+      position,
+    ],
   );
 }
 
@@ -395,7 +408,7 @@ export function useDerivativeSarCompound(position: Position | null) {
       wrappedOnDismiss,
       onCompound,
     }),
-    [attempting, hash, account, position],
+    [sarStakingContract, attempting, hash, account, position],
   );
 }
 
@@ -452,7 +465,7 @@ export function useDerivativeSarClaim(position: Position | null) {
       wrappedOnDismiss,
       onClaim,
     }),
-    [attempting, hash, account, position],
+    [sarStakingContract, attempting, hash, account, position],
   );
 }
 
