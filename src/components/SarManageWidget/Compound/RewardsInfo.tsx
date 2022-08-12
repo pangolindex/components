@@ -22,6 +22,8 @@ export default function RewardsInfo({ selectedOption, selectedPosition, pendingR
   const chainId = useChainId();
   const png = PNG[chainId];
 
+  const formattedPedingRewards = numeral(pendingRewards).format('0.00a');
+
   return (
     <>
       <Title selectPosition={selectedPosition} selectedOption={selectedOption} onChange={onChange} />
@@ -37,7 +39,7 @@ export default function RewardsInfo({ selectedOption, selectedPosition, pendingR
             {t('sarCompound.reward')}:
           </Text>
           <ToolTipText color="text1" fontSize="36px" fontWeight={500} textAlign="center">
-            {numeral(pendingRewards).format('0.00a')}
+            {formattedPedingRewards === 'NaN' ? '0.00' : formattedPedingRewards}
             <span className="tooltip">
               {pendingRewards} {png.symbol}
             </span>
