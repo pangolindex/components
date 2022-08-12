@@ -46,8 +46,8 @@ import {
 } from 'src/state/pswap/hooks';
 import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransactions/hooks';
 import TransactionUpdater from 'src/state/ptransactions/updater';
-import { useGetUserLP } from 'src/state/pwallet/hooks';
-import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks';
+import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -146,6 +146,8 @@ export {
   useTotalSupplyHook,
   useTotalSupply,
   useGetAllFarmDataHook,
+  useTokenBalanceHook,
+  useTokenBalance,
 };
 
 // misc
