@@ -404,14 +404,14 @@ export function useNearAddLiquidity() {
 
     const { [AddField.CURRENCY_A]: parsedAmountA, [AddField.CURRENCY_B]: parsedAmountB } = parsedAmounts;
 
-    const tokenA = currencyA instanceof Token ? currencyA : undefined;
-    const tokenB = currencyB instanceof Token ? currencyB : undefined;
+    const tokenA = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
+    const tokenB = currencyB ? wrappedCurrency(currencyB, chainId) : undefined;
 
-    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline || !tokenA || !tokenB) {
-      throw new Error(`Missing Currency`);
+    if (!parsedAmountA || !parsedAmountB || !deadline || !tokenA || !tokenB) {
+      throw new Error(`Missing dependency`);
     }
 
-    const poolId = await nearFn.getPoolId(chainId, currencyA as Token, currencyB as Token);
+    const poolId = await nearFn.getPoolId(chainId, tokenA, tokenB);
 
     const tokens = [tokenA, tokenB];
     const amounts = [
@@ -762,18 +762,15 @@ export function useNearRemoveLiquidity(pair: Pair) {
 
     const tokenA = pair?.token0;
     const tokenB = pair?.token1;
-    const currencyA = tokenA ? unwrappedToken(tokenA, chainId) : undefined;
-    const currencyB = tokenB ? unwrappedToken(tokenB, chainId) : undefined;
 
     if (!currencyAmountA || !currencyAmountB) {
       throw new Error(t('error.missingCurrencyAmounts'));
     }
 
-    if (!currencyA || !currencyB) throw new Error(t('error.missingTokens'));
     const liquidityAmount = parsedAmounts[Field.LIQUIDITY];
     if (!liquidityAmount) throw new Error(t('error.missingLiquidityAmount'));
 
-    if (!tokenA || !tokenB) throw new Error(t('error.couldNotWrap'));
+    if (!tokenA || !tokenB) throw new Error(t('error.missingTokens'));
 
     const poolId = await nearFn.getPoolId(chainId, tokenA, tokenB);
 
