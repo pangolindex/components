@@ -13,7 +13,7 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useDerivativeSarStake, useSarStakeInfo } from 'src/state/psarstake/hooks';
+import { useDerivativeSarStake, useSarPositions, useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
@@ -34,6 +34,11 @@ export default function SarManageWidget() {
 
   const toggleWalletModal = useWalletModalToggle();
 
+  const { positions, isLoading } = useSarPositions();
+
+  // get fist position with balance 0
+  const position = positions.find((value) => value.balance.isZero());
+
   const {
     attempting,
     typedValue,
@@ -48,7 +53,7 @@ export default function SarManageWidget() {
     wrappedOnDismiss,
     handleMax,
     onStake,
-  } = useDerivativeSarStake();
+  } = useDerivativeSarStake(position?.id);
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
@@ -101,7 +106,7 @@ export default function SarManageWidget() {
           {showApproveFlow && (
             <Button
               variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
-              isDisabled={approval !== ApprovalState.NOT_APPROVED}
+              isDisabled={approval !== ApprovalState.NOT_APPROVED || isLoading}
               onClick={onAttemptToApprove}
               height="46px"
             >
@@ -110,7 +115,7 @@ export default function SarManageWidget() {
           )}
           <Button
             variant={'primary'}
-            isDisabled={!!error || approval !== ApprovalState.APPROVED}
+            isDisabled={!!error || approval !== ApprovalState.APPROVED || isLoading}
             onClick={() => {
               setOpenDrawer(true);
               desativeOverlay();
@@ -170,8 +175,8 @@ export default function SarManageWidget() {
   );
 
   return (
-    <Wrapper id="create-sar-position-widget" padding="30px" zIndex={100}>
-      <Root>
+    <Wrapper id="create-sar-position-widget" zIndex={100}>
+      <Root padding="30px">
         <Box>
           <Box mb={18}>
             <Text color="text1" fontSize="21px" fontWeight={700}>
