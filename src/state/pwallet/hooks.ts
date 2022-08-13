@@ -16,7 +16,7 @@ import {
 import { parseUnits } from 'ethers/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQueries, useQuery } from 'react-query';
+import { useQueries } from 'react-query';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src/connectors';
 import {
   NEAR_LP_STORAGE_AMOUNT,
@@ -25,7 +25,7 @@ import {
   ROUTER_ADDRESS,
 } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
-import { useNearPairs, usePairs } from 'src/data/Reserves';
+import { useGetNearAllPool, useNearPairs, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { useAllTokens, useNearTokens } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
@@ -176,19 +176,22 @@ export function useNearTokenBalances(
 ): { [tokenAddress: string]: TokenAmount | undefined } {
   const chainId = useChainId();
 
-  const queryParameter =
-    tokensOrPairs?.map((item) => {
-      if (item instanceof Pair) {
+  const queryParameter = useMemo(() => {
+    return (
+      tokensOrPairs?.map((item) => {
+        if (item instanceof Pair) {
+          return {
+            queryKey: [item?.liquidityToken?.address, address],
+            queryFn: fetchNearPoolShare(chainId, item),
+          };
+        }
         return {
-          queryKey: [item?.liquidityToken?.address, address],
-          queryFn: fetchNearPoolShare(chainId, item),
+          queryKey: [item?.address, address],
+          queryFn: fetchNearTokenBalance(item, address),
         };
-      }
-      return {
-        queryKey: [item?.address, address],
-        queryFn: fetchNearTokenBalance(item, address),
-      };
-    }) ?? [];
+      }) ?? []
+    );
+  }, [tokensOrPairs]);
 
   const results = useQueries(queryParameter);
 
@@ -913,11 +916,8 @@ export function useGetUserLP() {
 
 export function useGetNearUserLP() {
   const { account } = usePangolinWeb3();
-  const chainId = useChainId();
 
-  const { isLoading: v2IsLoading, data: pools = [] } = useQuery(['getYourPools'], async () => {
-    return nearFn.getAllPools(chainId);
-  });
+  const { isLoading: v2IsLoading, data: pools = [] } = useGetNearAllPool();
 
   const allTokenAddress = useMemo(() => {
     let tokenAddresses = [] as Array<string>;
