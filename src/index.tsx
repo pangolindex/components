@@ -56,7 +56,14 @@ import { Position, useSarPositions, useSarStakeInfo } from './state/psarstake/ho
 import SwapUpdater from './state/pswap/updater';
 import { default as ThemeProvider } from './theme';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 1000 * 60,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export function PangolinProvider({
   chainId = ChainId.AVALANCHE,

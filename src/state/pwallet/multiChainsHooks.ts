@@ -59,7 +59,7 @@ export const useRemoveLiquidityHook = {
   [ChainId.NEAR_TESTNET]: useNearRemoveLiquidity,
 };
 
-export const useGetNearUserLPHook = {
+export const useGetUserLPHook = {
   [ChainId.FUJI]: useGetUserLP,
   [ChainId.AVALANCHE]: useGetUserLP,
   [ChainId.WAGMI]: useGetUserLP,

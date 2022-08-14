@@ -181,12 +181,12 @@ export function useNearTokenBalances(
       tokensOrPairs?.map((item) => {
         if (item instanceof Pair) {
           return {
-            queryKey: [item?.liquidityToken?.address, address],
+            queryKey: ['pair-balance', item?.liquidityToken?.address, address],
             queryFn: fetchNearPoolShare(chainId, item),
           };
         }
         return {
-          queryKey: [item?.address, address],
+          queryKey: ['token-balance', item?.address, address],
           queryFn: fetchNearTokenBalance(item, address),
         };
       }) ?? []
@@ -221,7 +221,8 @@ export function useTokenBalance(account?: string, token?: Token): TokenAmount | 
 
 // get the balance for a single token/account combo
 export function useNearTokenBalance(account?: string, tokenOrPair?: Token | Pair): TokenAmount | undefined {
-  const tokenBalances = useNearTokenBalances(account, [tokenOrPair]);
+  const tokensOrPairs = useMemo(() => [tokenOrPair], [tokenOrPair]);
+  const tokenBalances = useNearTokenBalances(account, tokensOrPairs);
   if (!tokenOrPair) return undefined;
 
   if (tokenOrPair && tokenOrPair instanceof Token) {
@@ -249,7 +250,10 @@ export function useCurrencyBalances(
     () => currencies?.some((currency) => chainId && currency === CAVAX[chainId]) ?? false,
     [chainId, currencies],
   );
-  const ethBalance = useETHBalances_(chainId, containsETH ? [account] : []);
+
+  const accountArr = useMemo(() => [account], [account]);
+  const memoArr = useMemo(() => [], []);
+  const ethBalance = useETHBalances_(chainId, containsETH ? accountArr : memoArr);
 
   return useMemo(
     () =>
@@ -268,7 +272,8 @@ export function useCurrencyBalance(
   account?: string,
   currency?: Currency,
 ): CurrencyAmount | undefined {
-  return useCurrencyBalances(chainId, account, [currency])[0];
+  const currencyArr = useMemo(() => [currency], [currency]);
+  return useCurrencyBalances(chainId, account, currencyArr)[0];
 }
 
 // mimics useAllBalances
@@ -941,11 +946,11 @@ export function useGetNearUserLP() {
 
       return tokensObj;
     }
-    return {};
+    return undefined;
   }, [allTokens, allTokenAddress]);
 
   const liquidityTokens = useMemo(() => {
-    if (allTokens && allTokens.length > 0 && Object.keys(tokensMapping).length === allTokens.length) {
+    if (allTokens && allTokens.length > 0 && tokensMapping && Object.keys(tokensMapping).length === allTokens.length) {
       const allLPTokens: [Token, Token][] = (pools || []).map((pool) => {
         const tokens = pool?.token_account_ids.map((address) => {
           const token = tokensMapping[address];
@@ -957,10 +962,12 @@ export function useGetNearUserLP() {
       return allLPTokens;
     }
 
-    return [];
+    return undefined;
   }, [allTokens, pools, tokensMapping]);
 
-  const v2AllPairs = useNearPairs(liquidityTokens);
+  const memoArray = useMemo(() => [], []);
+
+  const v2AllPairs = useNearPairs(liquidityTokens || memoArray);
 
   const allV2Pairs = useMemo(
     () => v2AllPairs.map(([, pair]) => pair).filter((_v2AllPairs): _v2AllPairs is Pair => Boolean(_v2AllPairs)),
@@ -975,7 +982,7 @@ export function useGetNearUserLP() {
     [allV2Pairs, v2PairsBalances],
   );
 
-  const pairs = liquidityTokens.length > 0 ? allV2PairsWithLiquidity : [];
+  const pairs = (liquidityTokens || memoArray).length > 0 ? allV2PairsWithLiquidity : [];
 
   return useMemo(() => ({ v2IsLoading, allV2PairsWithLiquidity: pairs }), [v2IsLoading, pairs]);
 }

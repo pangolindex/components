@@ -3,7 +3,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { useTranslation } from 'react-i18next';
 import { Box, DropdownMenu, Loader, Text } from 'src/components';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useGetNearUserLPHook } from 'src/state/pwallet/multiChainsHooks';
+import { useGetUserLPHook } from 'src/state/pwallet/multiChainsHooks';
 import WalletCard from './WalletCard';
 import { EmptyProposals, MobileContainer, PageWrapper, PanelWrapper } from './styleds';
 
@@ -16,7 +16,7 @@ interface Props {
 const Wallet: React.FC<Props> = ({ setMenu, activeMenu, menuItems }) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const useGetUserLP = useGetNearUserLPHook[chainId];
+  const useGetUserLP = useGetUserLPHook[chainId];
 
   const { v2IsLoading, allV2PairsWithLiquidity } = useGetUserLP();
   // fetch the user's balances of all tracked V2 LP tokens

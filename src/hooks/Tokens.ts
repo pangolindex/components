@@ -212,7 +212,7 @@ export function useNearTokens(tokensAddress: string[] = []): Array<TokenReturnTy
   const queryParameter = useMemo(() => {
     return (
       tokensAddress?.map((address) => {
-        return { queryKey: [address], queryFn: fetchNearTokenMetadata(address) };
+        return { queryKey: ['token', address], queryFn: fetchNearTokenMetadata(address) };
       }) ?? []
     );
   }, [tokensAddress]);
