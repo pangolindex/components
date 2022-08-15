@@ -13,7 +13,7 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Position, useDerivativeSarStake, useSarPositions, useSarStakeInfo } from 'src/state/psarstake/hooks';
+import { useDerivativeSarStake, useSarPositions, useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
@@ -34,10 +34,10 @@ export default function SarManageWidget() {
 
   const toggleWalletModal = useWalletModalToggle();
 
-  const { data: positions = [] as Position[], isLoading } = useSarPositions();
+  const { data: positions, isLoading } = useSarPositions();
 
   // get fist position with balance 0
-  const position = positions.find((value) => value.balance.isZero());
+  const position = positions?.find((value) => value.balance.isZero());
 
   const {
     attempting,
@@ -106,7 +106,7 @@ export default function SarManageWidget() {
           {showApproveFlow && (
             <Button
               variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
-              isDisabled={approval !== ApprovalState.NOT_APPROVED || isLoading}
+              isDisabled={approval !== ApprovalState.NOT_APPROVED || isLoading || !positions}
               onClick={onAttemptToApprove}
               height="46px"
             >
@@ -115,7 +115,7 @@ export default function SarManageWidget() {
           )}
           <Button
             variant={'primary'}
-            isDisabled={!!error || approval !== ApprovalState.APPROVED || isLoading}
+            isDisabled={!!error || approval !== ApprovalState.APPROVED || isLoading || !positions}
             onClick={() => {
               setOpenDrawer(true);
               desativeOverlay();
