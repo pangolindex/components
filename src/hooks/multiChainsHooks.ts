@@ -1,7 +1,13 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useNearToken, useToken } from './Tokens';
-import { useApproveCallbackFromNearTrade, useApproveCallbackFromTrade } from './useApproveCallback';
+import { useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
+import {
+  useApproveCallback,
+  useApproveCallbackFromNearTrade,
+  useApproveCallbackFromTrade,
+  useNearApproveCallback,
+} from './useApproveCallback';
 import { useNearSwapCallback, useSwapCallback } from './useSwapCallback';
+import { useNearUSDCPrice, useUSDCPrice } from './useUSDCPrice';
 import { useWrapCallback, useWrapNearCallback } from './useWrapCallback';
 
 export const useWrapCallbackHook = {
@@ -38,4 +44,31 @@ export const useSwapCallbackHook = {
   [ChainId.COSTON]: useSwapCallback,
   [ChainId.NEAR_MAINNET]: useNearSwapCallback,
   [ChainId.NEAR_TESTNET]: useNearSwapCallback,
+};
+
+export const useApproveCallbackHook = {
+  [ChainId.FUJI]: useApproveCallback,
+  [ChainId.AVALANCHE]: useApproveCallback,
+  [ChainId.WAGMI]: useApproveCallback,
+  [ChainId.COSTON]: useApproveCallback,
+  [ChainId.NEAR_MAINNET]: useNearApproveCallback,
+  [ChainId.NEAR_TESTNET]: useNearApproveCallback,
+};
+
+export const useUSDCPricekHook = {
+  [ChainId.FUJI]: useUSDCPrice,
+  [ChainId.AVALANCHE]: useUSDCPrice,
+  [ChainId.WAGMI]: useUSDCPrice,
+  [ChainId.COSTON]: useUSDCPrice,
+  [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
+  [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
+};
+
+export const useTokensHook = {
+  [ChainId.FUJI]: useTokens,
+  [ChainId.AVALANCHE]: useTokens,
+  [ChainId.WAGMI]: useTokens,
+  [ChainId.COSTON]: useTokens,
+  [ChainId.NEAR_MAINNET]: useNearTokens,
+  [ChainId.NEAR_TESTNET]: useNearTokens,
 };

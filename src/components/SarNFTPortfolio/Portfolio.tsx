@@ -1,8 +1,10 @@
 import { formatEther } from '@ethersproject/units';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useWindowSize } from 'react-use';
+import { useMedia, useWindowSize } from 'react-use';
 import { Position } from 'src/state/psarstake/hooks';
+import { MEDIA_WIDTHS } from 'src/theme';
+import { scrollElementIntoView } from 'src/utils';
 import { Box } from '../Box';
 import DropdownMenu from '../DropdownMenu';
 import Pagination from '../Pagination';
@@ -26,6 +28,8 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
   const imageRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation();
+
+  const isMobile = useMedia(`(max-width: ${MEDIA_WIDTHS.upToMedium}px)`);
 
   const onSelect = (value: string) => {
     setSelectedOption(value);
@@ -94,6 +98,10 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
           paddingBottom="5px"
           style={{ cursor: 'pointer', boxSizing: 'border-box' }}
           onClick={() => {
+            if (isMobile) {
+              const element = document.getElementById('sar-manage-widget');
+              scrollElementIntoView(element, 'smooth');
+            }
             setSelectedPosition(isSelected ? null : position);
             onSelectPosition(isSelected ? null : position);
           }}

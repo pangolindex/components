@@ -9,9 +9,9 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useApproveCallback } from 'src/hooks/useApproveCallback';
 import { useSarStakingContract } from 'src/hooks/useContract';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
-import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { useDerivedStakeInfo } from '../pstake/hooks';
 import { tryParseAmount } from '../pswap/hooks';
@@ -194,6 +194,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
       error,
       approval,
       account,
+      sarStakingContract,
       approveCallback,
       onUserInput,
       handleMax,
@@ -338,7 +339,19 @@ export function useDerivativeSarUnstake(position: Position | null) {
       onChangePercentage,
       setStepIndex,
     }),
-    [attempting, typedValue, parsedAmount, hash, stepIndex, error, account, onUserInput, handleMax, position],
+    [
+      attempting,
+      typedValue,
+      parsedAmount,
+      hash,
+      stepIndex,
+      error,
+      account,
+      sarStakingContract,
+      onUserInput,
+      handleMax,
+      position,
+    ],
   );
 }
 
@@ -395,7 +408,7 @@ export function useDerivativeSarCompound(position: Position | null) {
       wrappedOnDismiss,
       onCompound,
     }),
-    [attempting, hash, account, position],
+    [sarStakingContract, attempting, hash, account, position],
   );
 }
 
@@ -452,11 +465,11 @@ export function useDerivativeSarClaim(position: Position | null) {
       wrappedOnDismiss,
       onClaim,
     }),
-    [attempting, hash, account, position],
+    [sarStakingContract, attempting, hash, account, position],
   );
 }
 
-// Returns a list of positions for the user
+// Returns a list of user positions
 export function useSarPositions() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -551,15 +564,18 @@ export function useSarPositions() {
       }
       return {} as URI;
     });
-
     const positions: Position[] = nftsURIs.map((uri, index) => {
       const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
         positionsAmountState[index].result?.valueVariables;
       const rewardRate = positionsRewardRateState[index].result?.[0];
       const pendingRewards = positionsPedingRewardsState[index].result?.[0];
       const id = nftsIndexes[index][0];
-      const balance = valueVariables?.balance ? (valueVariables.balance.isZero() ? 1 : valueVariables.balance) : 1;
-      const apr = rewardRate?.mul(86400).mul(365).mul(100).div(balance);
+      const balance = valueVariables?.balance ?? BigNumber.from(0);
+      const apr = rewardRate
+        ?.mul(86400)
+        .mul(365)
+        .mul(100)
+        .div(balance.isZero() ? 1 : balance);
 
       if (!valueVariables || !rewardRate || !pendingRewards || !uri) {
         return {} as Position;

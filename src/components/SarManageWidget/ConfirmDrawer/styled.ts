@@ -11,9 +11,8 @@ export const Root = styled(Box)`
 
 export const ErrorWrapper = styled(Box)`
   display: grid;
-  grid-template-rows: minmax(300px, auto) max-content;
+  grid-template-rows: auto max-content;
   height: 100%;
-  padding: 30px;
 `;
 
 export const ErrorBox = styled(Box)`
@@ -25,9 +24,8 @@ export const ErrorBox = styled(Box)`
 
 export const SubmittedWrapper = styled(Box)`
   display: grid;
-  grid-template-rows: minmax(300px, auto) max-content;
+  grid-template-rows: auto max-content;
   height: 100%;
-  padding: 30px;
 `;
 
 export const Link = styled(Text)`

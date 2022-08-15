@@ -87,8 +87,8 @@ export const USDC: { [chainId in ChainId]: Token } = {
   ),
   [ChainId.WAGMI]: new Token(ChainId.WAGMI, ZERO_ADDRESS, 6, 'USDC', 'USD Coin'),
   [ChainId.COSTON]: new Token(ChainId.COSTON, ZERO_ADDRESS, 18, '', ''),
-  [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, ZERO_ADDRESS, 18, '', ''),
-  [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, 'usdc.fakes.testnet', 18, 'USDC', 'USDC'),
+  [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, 'usdc.fakes.testnet', 18, 'USDC', 'USDC'),
 };
 
 export const USDTe: { [chainId in ChainId]: Token } = {

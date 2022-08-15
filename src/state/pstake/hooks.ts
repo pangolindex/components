@@ -22,20 +22,21 @@ import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
+import { useTotalSupplyHook } from 'src/data/TotalSupply';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useUSDCPricekHook } from 'src/hooks/multiChainsHooks';
 import usePrevious from 'src/hooks/usePrevious';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import {
   updateMinichefStakingAllAprs,
   updateMinichefStakingAllData,
   updateMinichefStakingAllFarmsEarnedAmount,
 } from 'src/state/pstake/actions';
+import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
-import { useTotalSupply } from '../../data/TotalSupply';
 import { useTokens } from '../../hooks/Tokens';
 import { useMiniChefContract, useRewardViaMultiplierContract, useStakingContract } from '../../hooks/useContract';
 import { tryParseAmount } from '../../state/pswap/hooks';
-import { useTokenBalance } from '../../state/pwallet/hooks';
-import useUSDCPrice from '../../utils/useUSDCPrice';
 import { AppState, useDispatch, useSelector } from '../index';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { Apr } from './reducer';
@@ -286,15 +287,17 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
+  const useTokenBalance = useTokenBalanceHook[chainId];
+  const useTotalSupply = useTotalSupplyHook[chainId];
+  const _useUSDCPrice = useUSDCPricekHook[chainId];
   const token0 = pair?.token0;
   const currency0 = unwrappedToken(token0 as Token, chainId);
-  const currency0PriceTmp = useUSDCPrice(currency0);
+  const currency0PriceTmp = _useUSDCPrice(currency0);
   const currency0Price = CHAINS[chainId]?.mainnet ? currency0PriceTmp : undefined;
 
-  const userPglTmp = useTokenBalance(account ?? undefined, pair?.liquidityToken);
-  const userPgl = CHAINS[chainId]?.mainnet ? userPglTmp : undefined;
-
-  const totalPoolTokens = useTotalSupply(pair?.liquidityToken);
+  const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
+  const userPgl = useTokenBalance(account ?? undefined, pairOrToken as Token);
+  const totalPoolTokens = useTotalSupply(pairOrToken as Token);
 
   const [token0Deposited] =
     !!pair &&
@@ -463,7 +466,7 @@ export const tokenComparator = (
 };
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const useDummyMinichefHook = (_version?: number, _pairToFilterBy?: Pair | null) => {
+export const useDummyMinichefHook = (_version?: number, _pairToFilterBy?: Pair | null) => {
   return [] as StakingInfo[];
 };
 
@@ -809,17 +812,6 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
   ]);
 };
 
-export const useMinichefStakingInfosMapping: {
-  [chainId in ChainId]: (version?: number, pairToFilterBy?: Pair | null) => StakingInfo[];
-} = {
-  [ChainId.FUJI]: useMinichefStakingInfos,
-  [ChainId.AVALANCHE]: useMinichefStakingInfos,
-  [ChainId.WAGMI]: useMinichefStakingInfos,
-  [ChainId.COSTON]: useMinichefStakingInfos,
-  [ChainId.NEAR_MAINNET]: useDummyMinichefHook,
-  [ChainId.NEAR_TESTNET]: useDummyMinichefHook,
-};
-
 export const fetchMinichefData = (account: string, chainId: ChainId) => async () => {
   const mininchefV2Client = mininchefV2Clients[chainId];
   if (!mininchefV2Client) {
@@ -869,6 +861,10 @@ export function useGetAllFarmData() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allFarms?.data, allFarms?.isLoading, allFarms?.isError]);
+}
+
+export function useGetDummyAllFarmData() {
+  // This is intentional
 }
 
 export function useAllMinichefStakingInfoData(): MinichefV2 | undefined {
@@ -1023,4 +1019,10 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
     }, []);
   }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms]);
 };
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
+export const useDummyMinichefStakingInfosViaSubgraph = () => {
+  return [] as MinichefStakingInfo[];
+};
+
 /* eslint-enable max-lines */

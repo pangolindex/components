@@ -267,7 +267,7 @@ export function useNearSwapCallback(
       callback: async function onSwap(): Promise<any> {
         const transactions: Transaction[] = [];
         const tokenInActions: FunctionCallOptions[] = [];
-        const tokenOutActions: FunctionCallOptions[] = [];
+
         const inputToken = trade.inputAmount?.currency;
         const outPutToken = trade.outputAmount?.currency;
 
@@ -279,24 +279,20 @@ export function useNearSwapCallback(
           throw new Error(`Missing Currency`);
         }
 
-        const tokenRegistered = await nearFn.getStorageBalance(outputCurrencyId, account).catch(() => {
+        const tokenRegistered = await nearFn.getStorageBalance(outputCurrencyId).catch(() => {
           throw new Error(`${outPutToken?.symbol} doesn't exist.`);
         });
 
         if (tokenRegistered === null) {
-          tokenOutActions.push({
-            methodName: 'storage_deposit',
-            args: {
-              registration_only: true,
-              account_id: account,
-            },
-            gas: '30000000000000',
-            amount: '0.00125',
-          });
-
           transactions.push({
             receiverId: outputCurrencyId,
-            functionCalls: tokenOutActions,
+            functionCalls: [
+              nearFn.storageDepositAction({
+                accountId: account,
+                registrationOnly: true,
+                amount: '0.00125',
+              }),
+            ],
           });
         }
 
@@ -318,7 +314,6 @@ export function useNearSwapCallback(
               actions: [swapActions],
             }),
           },
-          gas: '180000000000000',
           amount: ONE_YOCTO_NEAR,
         });
 

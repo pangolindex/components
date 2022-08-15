@@ -74,8 +74,10 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
 export function usePair(tokenA?: Currency, tokenB?: Currency): [PairState, Pair | null] {
   const chainId = useChainId();
 
+  const tokens: [Currency | undefined, Currency | undefined][] = useMemo(() => [[tokenA, tokenB]], [tokenA, tokenB]);
+
   const usePairs_ = usePairsHook[chainId];
-  return usePairs_([[tokenA, tokenB]])[0];
+  return usePairs_(tokens)[0];
 }
 
 export function useGetNearAllPool() {

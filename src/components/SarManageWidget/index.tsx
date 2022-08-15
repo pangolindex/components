@@ -33,5 +33,5 @@ export default function SarMangePortfolio({ selectedPosition }: Props) {
     }
   };
 
-  return <Wrapper>{renderBody()}</Wrapper>;
+  return <Wrapper id="sar-manage-widget">{renderBody()}</Wrapper>;
 }
