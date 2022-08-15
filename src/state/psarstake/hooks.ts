@@ -6,7 +6,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
@@ -77,6 +77,10 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
+  const multiCallContract = useMulticallContract();
+
+  const queryClient = useQueryClient();
+
   const addTransaction = useTransactionAdder();
   const { t } = useTranslation();
 
@@ -154,6 +158,13 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
         summary: t('sarStake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
       setHash(response.hash);
+      await queryClient.refetchQueries([
+        'getSarPortfolio',
+        account,
+        sarStakingContract?.address,
+        multiCallContract?.address,
+        chainId,
+      ]);
     } catch (err) {
       // we only care if the error is something _other_ than the user rejected the tx
       const _err = error as any;
@@ -252,6 +263,9 @@ export function useDerivativeSarUnstake(position: Position | null) {
   const png = PNG[chainId];
 
   const sarStakingContract = useSarStakingContract();
+  const multiCallContract = useMulticallContract();
+
+  const queryClient = useQueryClient();
 
   const stakedAmount = new TokenAmount(png, (position?.balance ?? 0).toString());
 
@@ -315,6 +329,13 @@ export function useDerivativeSarUnstake(position: Position | null) {
         summary: t('sarUnstake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
       setHash(response.hash);
+      await queryClient.refetchQueries([
+        'getSarPortfolio',
+        account,
+        sarStakingContract?.address,
+        multiCallContract?.address,
+        chainId,
+      ]);
     } catch (err) {
       const _err = err as any;
       if (_err?.code !== 4001) {
@@ -365,8 +386,12 @@ export function useDerivativeSarCompound(position: Position | null) {
 
   const { account } = usePangolinWeb3();
   const { library } = useLibrary();
+  const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
+  const multiCallContract = useMulticallContract();
+
+  const queryClient = useQueryClient();
 
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
@@ -392,6 +417,13 @@ export function useDerivativeSarCompound(position: Position | null) {
         summary: t('sarCompound.transactionSummary'),
       });
       setHash(response.hash);
+      await queryClient.refetchQueries([
+        'getSarPortfolio',
+        account,
+        sarStakingContract?.address,
+        multiCallContract?.address,
+        chainId,
+      ]);
     } catch (error) {
       const err = error as any;
       if (err?.code !== 4001) {
@@ -422,8 +454,12 @@ export function useDerivativeSarClaim(position: Position | null) {
 
   const { account } = usePangolinWeb3();
   const { library } = useLibrary();
+  const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
+  const multiCallContract = useMulticallContract();
+
+  const queryClient = useQueryClient();
 
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
@@ -449,6 +485,13 @@ export function useDerivativeSarClaim(position: Position | null) {
         summary: t('sarClaim.transactionSummary'),
       });
       setHash(response.hash);
+      await queryClient.refetchQueries([
+        'getSarPortfolio',
+        account,
+        sarStakingContract?.address,
+        multiCallContract?.address,
+        chainId,
+      ]);
     } catch (error) {
       const err = error as any;
       if (err?.code !== 4001) {
