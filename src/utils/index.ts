@@ -225,3 +225,10 @@ export function scrollElementIntoView(element: HTMLElement | null, behavior?: 's
     });
   }
 }
+
+export function isEvmChain(chainId: ChainId = 43114): boolean {
+  if (CHAINS[chainId]?.evm) {
+    return true;
+  }
+  return false;
+}

@@ -2,8 +2,8 @@ import { Token } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import { Box, Button, CurrencyLogo, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { useIsSelectedCurrency } from 'src/state/pwatchlists/hooks';
-import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { RowWrapper } from './styled';
 
