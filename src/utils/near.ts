@@ -12,6 +12,7 @@ import {
   ONE_YOCTO_NEAR,
 } from 'src/constants';
 import { PoolType } from 'src/data/Reserves';
+import { cache } from 'src/utils/cache';
 
 export interface ViewFunctionOptions {
   methodName: string;
@@ -105,14 +106,21 @@ class Near {
 
   public async getMetadata(tokenAddress: string): Promise<NearTokenMetadata> {
     try {
+      if (cache.has('token_metadata')) {
+        return cache.get('token_metadata');
+      }
+
       const metadata = await this.viewFunction(tokenAddress, {
         methodName: 'ft_metadata',
       });
 
-      return {
+      const tokenMetadata = {
         id: tokenAddress,
         ...metadata,
       };
+
+      cache.set('token_metadata', tokenMetadata);
+      return tokenMetadata;
     } catch (err) {
       return {
         id: tokenAddress,
@@ -125,19 +133,31 @@ class Near {
   }
 
   public async getTokenBalance(tokenAddress: string, account?: string) {
-    return this.viewFunction(tokenAddress, {
+    if (cache.has('token_balance')) {
+      return cache.get('token_balance');
+    }
+
+    const tokenBalance = this.viewFunction(tokenAddress, {
       methodName: 'ft_balance_of',
       args: {
         account_id: account,
       },
     });
+    cache.set('token_balance', tokenBalance, 1000 * 60);
+    return tokenBalance;
   }
 
   public async getTotalSupply(tokenAddress: string) {
-    return this.viewFunction(tokenAddress, {
+    if (cache.has('total_supply')) {
+      return cache.get('total_supply');
+    }
+
+    const totalSupply = this.viewFunction(tokenAddress, {
       methodName: 'ft_total_supply',
       args: {},
     });
+    cache.set('total_supply', totalSupply, 1000 * 60);
+    return totalSupply;
   }
 
   public async getExchangeContract(deployer, exchange) {
@@ -149,14 +169,22 @@ class Near {
   }
 
   public async getAllPools(chainId: number) {
+    if (cache.has('pools')) {
+      return cache.get('pools');
+    }
+
     const deployer = await near.wallet.account();
     const contract = await this.getExchangeContract(deployer, NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId]);
     const numberOfPools = await contract.get_number_of_pools();
 
-    return contract.get_pools({
+    const pools = contract.get_pools({
       from_index: 0,
       limit: numberOfPools,
     });
+
+    cache.set('pools', pools);
+
+    return pools;
   }
 
   public async getPoolId(chainId: number, tokenA?: Token, tokenB?: Token) {
@@ -176,6 +204,10 @@ class Near {
   }
 
   public async getPool(chainId: number, tokenA?: Token, tokenB?: Token): Promise<PoolData> {
+    if (cache.has('pool')) {
+      return cache.get('pool');
+    }
+
     const poolId = await this.getPoolId(chainId, tokenA, tokenB);
 
     const result = await this.viewFunction(NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId], {
@@ -183,16 +215,28 @@ class Near {
       args: { pool_id: poolId },
     });
 
-    return { ...result, ...{ id: poolId } };
+    const pool = { ...result, ...{ id: poolId } };
+
+    cache.set('pool', pool, 1000 * 60);
+
+    return pool;
   }
 
   public async getSharesInPool(chainId: number, tokenA?: Token, tokenB?: Token): Promise<string> {
+    if (cache.has('pool_shares')) {
+      return cache.get('pool_shares');
+    }
+
     const poolId = await this.getPoolId(chainId, tokenA, tokenB);
 
-    return this.viewFunction(NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId], {
+    const poolShares = this.viewFunction(NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId], {
       methodName: 'get_pool_shares',
       args: { pool_id: poolId, account_id: this.getAccountId() },
     });
+
+    cache.set('pool_shares', poolShares, 1000 * 60);
+
+    return poolShares;
   }
 
   public getStorageBalance(
