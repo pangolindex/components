@@ -564,7 +564,6 @@ export function useSarPositions() {
       }
       return {} as URI;
     });
-    console.log('-----------------------------------------');
     const positions: Position[] = nftsURIs.map((uri, index) => {
       const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
         positionsAmountState[index].result?.valueVariables;
@@ -572,7 +571,6 @@ export function useSarPositions() {
       const pendingRewards = positionsPedingRewardsState[index].result?.[0];
       const id = nftsIndexes[index][0];
       const balance = valueVariables?.balance ?? BigNumber.from(0);
-      console.log(balance.toString());
       const apr = rewardRate
         ?.mul(86400)
         .mul(365)
