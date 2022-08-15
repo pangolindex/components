@@ -491,111 +491,108 @@ export function useSarPositions() {
   const sarStakingContract = useSarStakingContract();
   const multiCallContract = useMulticallContract();
 
-  return useQuery(
-    ['getSarPortfolio', account, sarStakingContract?.address, multiCallContract?.address, chainId],
-    async () => {
-      if (!sarStakingContract || !account || !multiCallContract || !existSarContract(chainId)) {
-        return [] as Position[];
+  return useQuery(['getSarPortfolio', account, chainId], async () => {
+    if (!sarStakingContract || !account || !multiCallContract || !existSarContract(chainId)) {
+      return [] as Position[];
+    }
+    // get total balance of all positions
+    const balance: BigNumber = await sarStakingContract.balanceOf(account);
+
+    // if balance is 0, return empty list
+    if (balance.isZero()) {
+      return [] as Position[];
+    }
+
+    // get all positions ids
+    const nfts: BigNumber[] = await sarStakingContract.tokensOfOwnerByIndex(
+      account,
+      ZERO.toHexString(),
+      balance.sub(1).toHexString(),
+    );
+
+    const nftsIndexes = nfts?.map((index) => {
+      return [index.toHexString()];
+    });
+
+    // get the staked amount for each position via multicall
+    const positionsFragment = sarStakingContract.interface.getFunction('positions');
+    const positionsAmountCalls = nftsIndexes?.map((index) => {
+      return [sarStakingContract.address, sarStakingContract.interface.encodeFunctionData(positionsFragment, index)];
+    });
+
+    // get the reward rate for each position via multicall
+    const rewardRateFragment = sarStakingContract.interface.getFunction('positionRewardRate');
+    const rewardRateCalls = nftsIndexes?.map((index) => {
+      return [sarStakingContract.address, sarStakingContract.interface.encodeFunctionData(rewardRateFragment, index)];
+    });
+
+    // get peding rewards for each position via multicall
+    const pendingRewardsFragment = sarStakingContract.interface.getFunction('positionPendingRewards');
+    const pendingRewardsCalls = nftsIndexes?.map((index) => {
+      return [
+        sarStakingContract.address,
+        sarStakingContract.interface.encodeFunctionData(pendingRewardsFragment, index),
+      ];
+    });
+
+    // get all NFTs URIs from the positions via multicall
+    const nftUrisFragment = sarStakingContract.interface.getFunction('tokenURI');
+    const nftUrisCalls = nftsIndexes?.map((index) => {
+      return [sarStakingContract.address, sarStakingContract.interface.encodeFunctionData(nftUrisFragment, index)];
+    });
+
+    const results = await Promise.all([
+      multiCallContract.aggregate(positionsAmountCalls),
+      multiCallContract.aggregate(rewardRateCalls),
+      multiCallContract.aggregate(pendingRewardsCalls),
+      multiCallContract.aggregate(nftUrisCalls),
+    ]);
+
+    // decode the results
+    const positionsAmount = decodeMulticallResult(sarStakingContract, positionsFragment, results[0][1]);
+    const positionsRewardRate = decodeMulticallResult(sarStakingContract, rewardRateFragment, results[1][1]);
+    const positionsPendingRewards = decodeMulticallResult(sarStakingContract, pendingRewardsFragment, results[2][1]);
+    const nftsUris = decodeMulticallResult(sarStakingContract, nftUrisFragment, results[3][1]);
+
+    // we need to decode the base64 uri to get the real uri
+    const nftsURIs = nftsUris.map((value) => {
+      if (value) {
+        const base64: string = value[0];
+        //need to remove the data:application/json;base64, to decode the base64
+        const nftUri = Buffer.from(base64.replace('data:application/json;base64,', ''), 'base64').toString();
+        return JSON.parse(nftUri) as URI;
       }
-      // get total balance of all positions
-      const balance: BigNumber = await sarStakingContract.balanceOf(account);
+      return {} as URI;
+    });
 
-      // if balance is 0, return empty list
-      if (balance.isZero()) {
-        return [] as Position[];
+    const positions: Position[] = nftsURIs.map((uri, index) => {
+      const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
+        positionsAmount[index]?.valueVariables;
+      const rewardRate = positionsRewardRate[index][0];
+      const pendingRewards = positionsPendingRewards[index][0];
+      const id = nftsIndexes[index][0];
+      const balance = valueVariables?.balance ?? BigNumber.from(0);
+      const apr = rewardRate
+        ?.mul(86400)
+        .mul(365)
+        .mul(100)
+        .div(balance.isZero() ? 1 : balance);
+
+      if (!valueVariables || !rewardRate || !pendingRewards || !uri) {
+        return {} as Position;
       }
 
-      // get all positions ids
-      const nfts: BigNumber[] = await sarStakingContract.tokensOfOwnerByIndex(
-        account,
-        ZERO.toHexString(),
-        balance.sub(1).toHexString(),
-      );
-
-      const nftsIndexes = nfts?.map((index) => {
-        return [index.toHexString()];
-      });
-
-      // get the staked amount for each position via multicall
-      const positionsFragment = sarStakingContract.interface.getFunction('positions');
-      const positionsAmountCalls = nftsIndexes?.map((index) => {
-        return [sarStakingContract.address, sarStakingContract.interface.encodeFunctionData(positionsFragment, index)];
-      });
-
-      // get the reward rate for each position via multicall
-      const rewardRateFragment = sarStakingContract.interface.getFunction('positionRewardRate');
-      const rewardRateCalls = nftsIndexes?.map((index) => {
-        return [sarStakingContract.address, sarStakingContract.interface.encodeFunctionData(rewardRateFragment, index)];
-      });
-
-      // get peding rewards for each position via multicall
-      const pendingRewardsFragment = sarStakingContract.interface.getFunction('positionPendingRewards');
-      const pendingRewardsCalls = nftsIndexes?.map((index) => {
-        return [
-          sarStakingContract.address,
-          sarStakingContract.interface.encodeFunctionData(pendingRewardsFragment, index),
-        ];
-      });
-
-      // get all NFTs URIs from the positions via multicall
-      const nftUrisFragment = sarStakingContract.interface.getFunction('tokenURI');
-      const nftUrisCalls = nftsIndexes?.map((index) => {
-        return [sarStakingContract.address, sarStakingContract.interface.encodeFunctionData(nftUrisFragment, index)];
-      });
-
-      const results = await Promise.all([
-        multiCallContract.aggregate(positionsAmountCalls),
-        multiCallContract.aggregate(rewardRateCalls),
-        multiCallContract.aggregate(pendingRewardsCalls),
-        multiCallContract.aggregate(nftUrisCalls),
-      ]);
-
-      // decode the results
-      const positionsAmount = decodeMulticallResult(sarStakingContract, positionsFragment, results[0][1]);
-      const positionsRewardRate = decodeMulticallResult(sarStakingContract, rewardRateFragment, results[1][1]);
-      const positionsPendingRewards = decodeMulticallResult(sarStakingContract, pendingRewardsFragment, results[2][1]);
-      const nftsUris = decodeMulticallResult(sarStakingContract, nftUrisFragment, results[3][1]);
-
-      // we need to decode the base64 uri to get the real uri
-      const nftsURIs = nftsUris.map((value) => {
-        if (value) {
-          const base64: string = value[0];
-          //need to remove the data:application/json;base64, to decode the base64
-          const nftUri = Buffer.from(base64.replace('data:application/json;base64,', ''), 'base64').toString();
-          return JSON.parse(nftUri) as URI;
-        }
-        return {} as URI;
-      });
-
-      const positions: Position[] = nftsURIs.map((uri, index) => {
-        const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
-          positionsAmount[index]?.valueVariables;
-        const rewardRate = positionsRewardRate[index][0];
-        const pendingRewards = positionsPendingRewards[index][0];
-        const id = nftsIndexes[index][0];
-        const balance = valueVariables?.balance ?? BigNumber.from(0);
-        const apr = rewardRate
-          ?.mul(86400)
-          .mul(365)
-          .mul(100)
-          .div(balance.isZero() ? 1 : balance);
-
-        if (!valueVariables || !rewardRate || !pendingRewards || !uri) {
-          return {} as Position;
-        }
-
-        return {
-          id: BigNumber.from(id),
-          balance: valueVariables?.balance,
-          sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
-          apr: apr,
-          rewardRate: rewardRate,
-          uri: uri,
-          pendingRewards: pendingRewards,
-        } as Position;
-      });
-      // remove the empty positions
-      return positions.filter((position) => !!position);
-    },
-  );
+      return {
+        id: BigNumber.from(id),
+        balance: valueVariables?.balance,
+        sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
+        apr: apr,
+        rewardRate: rewardRate,
+        uri: uri,
+        pendingRewards: pendingRewards,
+      } as Position;
+    });
+    // remove the empty positions
+    return positions.filter((position) => !!position);
+  });
 }
