@@ -18,6 +18,8 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
   const { account } = usePangolinWeb3();
   const { positions, isLoading } = useSarPositions();
 
+  const filteredPositions = positions.filter((position) => !position.balance.isZero()); // remove zero balances
+
   const toggleWalletModal = useWalletModalToggle();
 
   const { t } = useTranslation();
@@ -54,7 +56,7 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
           <Loader size={100} />
         </Box>
       );
-    } else if (positions.length === 0) {
+    } else if (filteredPositions.length === 0) {
       return (
         <Box
           display="grid"
@@ -79,7 +81,7 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
         </Box>
       );
     }
-    return <Portfolio positions={positions} onSelectPosition={onSelectPosition} />;
+    return <Portfolio positions={filteredPositions} onSelectPosition={onSelectPosition} />;
   };
 
   return (

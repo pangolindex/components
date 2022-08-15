@@ -612,6 +612,13 @@
     "couldNotWrap": "Impossible d'envelopper",
     "attemptingToConfirmApproval": "Tentative de confirmation sans approbation ni signature. Veuillez contacter le support."
   },
+  "sarTitle":{
+    "addMore": "AJOUTER PLUS",
+    "unstake": "ANNULER UNE POSITION",
+    "compound": "RÉCOMPENSES COMPOSÉES",
+    "claim": "RÉCLAMER DES RÉCOMPENSES",
+    "interactingID": "Interagir avec l'ID: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Créer un nouveau poste",
     "stake": "Pieu",
@@ -620,7 +627,7 @@
     "max": "Max",
     "dollarValue": "Valeur en dollars",
     "buy": "Acheter {{ symbol }}",
-    "medianAPR": "TAEG médian",
+    "averageAPR": "TAEG moyen",
     "startingApr": "Démarrage de l’APR",
     "weeklyDistributed": "Hebdomadaire {{ symbol }} Distribué",
     "confirmDescription": "Une action de mise créera un Nft SAR pour vous. Avec ce NFT, vous pouvez gérer votre mise {{ symbol }}.",

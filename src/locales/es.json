@@ -612,6 +612,13 @@
     "couldNotWrap": "No se pudo envolver",
     "attemptingToConfirmApproval": "Intentando confirmar sin aprobación o firma. Comuníquese con soporte."
   },
+  "sarTitle":{
+    "addMore": "AÑADIR MÁS",
+    "unstake": "QUITAR UNA POSICIÓN",
+    "compound": "RECOMPENSAS COMPUESTAS",
+    "claim": "RECLAMAR PREMIOS",
+    "interactingID": "Interactuando con ID: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Crear un nuevo puesto",
     "stake": "Apostar",
@@ -620,7 +627,7 @@
     "max": "Máximo",
     "dollarValue": "Valor en dólares",
     "buy": "Comprar {{ symbol }}",
-    "medianAPR": "APR mediana",
+    "averageAPR": "APR medio",
     "startingApr": "APR inicial",
     "weeklyDistributed": "Semanal {{ symbol }} Distribuido",
     "confirmDescription": "Una acción de estaca creará un SAR Nft para usted. Con este NFT puede administrar su apuesta de {{ símbolo }}.",

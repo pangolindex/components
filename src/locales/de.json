@@ -612,6 +612,13 @@
     "couldNotWrap": "Konnte nicht umbrechen",
     "attemptingToConfirmApproval": "Bestätigungsversuch ohne Genehmigung oder Unterschrift. Bitte kontaktieren Sie den Support."
   },
+  "sarTitle":{
+    "addMore": "MEHR HINZUFÜGEN",
+    "unstake": "EINE POSITION ABSETZEN",
+    "compound": "VERBUNDENE BELOHNUNGEN",
+    "claim": "BELOHNUNG ENTGEGENNEHMEN",
+    "interactingID": "Interaktion mit ID: {{ id }}"
+  },
   "sarStake": {
     "createNewPosition": "Erstellen Sie eine neue Position",
     "stake": "Anteil",
@@ -620,7 +627,7 @@
     "max": "Max",
     "dollarValue": "Dollar-Wert",
     "buy": "{{ symbol }} kaufen",
-    "medianAPR": "Medianer effektiver Jahreszins",
+    "averageAPR": "Durchschnittlich Apr",
     "startingApr": "Starten des effektiven Jahreszeitraums",
     "weeklyDistributed": "Wöchentlich {{ symbol }} Verteilt",
     "confirmDescription": "Durch eine Pfahlaktion wird ein SAR-Nft für Sie erstellt. Mit diesem NFT können Sie Ihren {{ symbol }} Einsatz verwalten.",

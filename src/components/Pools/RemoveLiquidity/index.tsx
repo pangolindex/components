@@ -13,6 +13,7 @@ import { Field } from 'src/state/pburn/actions';
 import { useBurnActionHandlers, useDerivedBurnInfo } from 'src/state/pburn/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { useRemoveLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
+import { isEvmChain } from 'src/utils';
 import { ButtonWrapper, RemoveWrapper } from './styleds';
 
 interface RemoveLiquidityProps {
@@ -219,20 +220,22 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
               </Button>
             ) : (
               <ButtonWrapper>
-                <Box mr="5px" width="100%">
-                  <Button
-                    variant={getApproveButtonVariant()}
-                    onClick={() => {
-                      onAttemptToApprove({ parsedAmounts, deadline, approveCallback });
-                    }}
-                    isDisabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
-                    loading={attempting && !hash}
-                    loadingText={t('removeLiquidity.approving')}
-                    height="46px"
-                  >
-                    {getApproveButtonText()}
-                  </Button>
-                </Box>
+                {isEvmChain(chainId) && (
+                  <Box mr="5px" width="100%">
+                    <Button
+                      variant={getApproveButtonVariant()}
+                      onClick={() => {
+                        onAttemptToApprove({ parsedAmounts, deadline, approveCallback });
+                      }}
+                      isDisabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
+                      loading={attempting && !hash}
+                      loadingText={t('removeLiquidity.approving')}
+                      height="46px"
+                    >
+                      {getApproveButtonText()}
+                    </Button>
+                  </Box>
+                )}
 
                 <Box width="100%">
                   <Button

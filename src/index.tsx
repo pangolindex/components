@@ -47,7 +47,7 @@ import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransa
 import TransactionUpdater from 'src/state/ptransactions/updater';
 import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks';
 import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { shortenAddress } from 'src/utils';
+import { existSarContract, shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import i18n, { availableLanguages } from './i18n';
@@ -169,4 +169,5 @@ export {
   fetchChunkedAprs,
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
+  existSarContract,
 };

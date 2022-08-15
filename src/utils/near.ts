@@ -106,8 +106,8 @@ class Near {
 
   public async getMetadata(tokenAddress: string): Promise<NearTokenMetadata> {
     try {
-      if (cache.has('token_metadata')) {
-        return cache.get('token_metadata');
+      if (cache.has(`near:token_metadata:${tokenAddress}`)) {
+        return cache.get(`near:token_metadata:${tokenAddress}`);
       }
 
       const metadata = await this.viewFunction(tokenAddress, {
@@ -119,7 +119,7 @@ class Near {
         ...metadata,
       };
 
-      cache.set('token_metadata', tokenMetadata);
+      cache.set(`near:token_metadata:${tokenAddress}`, tokenMetadata);
       return tokenMetadata;
     } catch (err) {
       return {
@@ -133,8 +133,8 @@ class Near {
   }
 
   public async getTokenBalance(tokenAddress: string, account?: string) {
-    if (cache.has('token_balance')) {
-      return cache.get('token_balance');
+    if (cache.has(`near:token_balance:${tokenAddress}`)) {
+      return cache.get(`near:token_balance:${tokenAddress}`);
     }
 
     const tokenBalance = this.viewFunction(tokenAddress, {
@@ -143,20 +143,20 @@ class Near {
         account_id: account,
       },
     });
-    cache.set('token_balance', tokenBalance, 1000 * 60);
+    cache.set(`near:token_balance:${tokenAddress}`, tokenBalance, 1000 * 60);
     return tokenBalance;
   }
 
   public async getTotalSupply(tokenAddress: string) {
-    if (cache.has('total_supply')) {
-      return cache.get('total_supply');
+    if (cache.has(`near:total_supply:${tokenAddress}`)) {
+      return cache.get(`near:total_supply:${tokenAddress}`);
     }
 
     const totalSupply = this.viewFunction(tokenAddress, {
       methodName: 'ft_total_supply',
       args: {},
     });
-    cache.set('total_supply', totalSupply, 1000 * 60);
+    cache.set(`near:total_supply:${tokenAddress}`, totalSupply, 1000 * 60);
     return totalSupply;
   }
 
@@ -169,8 +169,8 @@ class Near {
   }
 
   public async getAllPools(chainId: number) {
-    if (cache.has('pools')) {
-      return cache.get('pools');
+    if (cache.has('near:pools')) {
+      return cache.get('near:pools');
     }
 
     const deployer = await near.wallet.account();
@@ -182,7 +182,7 @@ class Near {
       limit: numberOfPools,
     });
 
-    cache.set('pools', pools);
+    cache.set('near:pools', pools);
 
     return pools;
   }
@@ -204,8 +204,8 @@ class Near {
   }
 
   public async getPool(chainId: number, tokenA?: Token, tokenB?: Token): Promise<PoolData> {
-    if (cache.has('pool')) {
-      return cache.get('pool');
+    if (cache.has(`near:pool:${tokenA?.address}-${tokenB?.address}`)) {
+      return cache.get(`near:pool:${tokenA?.address}-${tokenB?.address}`);
     }
 
     const poolId = await this.getPoolId(chainId, tokenA, tokenB);
@@ -217,14 +217,14 @@ class Near {
 
     const pool = { ...result, ...{ id: poolId } };
 
-    cache.set('pool', pool, 1000 * 60);
+    cache.set(`near:pool:${tokenA?.address}-${tokenB?.address}`, pool, 1000 * 60);
 
     return pool;
   }
 
   public async getSharesInPool(chainId: number, tokenA?: Token, tokenB?: Token): Promise<string> {
-    if (cache.has('pool_shares')) {
-      return cache.get('pool_shares');
+    if (cache.has(`near:pool_shares:${tokenA?.address}-${tokenB?.address}`)) {
+      return cache.get(`near:pool_shares:${tokenA?.address}-${tokenB?.address}`);
     }
 
     const poolId = await this.getPoolId(chainId, tokenA, tokenB);
@@ -234,7 +234,7 @@ class Near {
       args: { pool_id: poolId, account_id: this.getAccountId() },
     });
 
-    cache.set('pool_shares', poolShares, 1000 * 60);
+    cache.set(`near:pool_shares:${tokenA?.address}-${tokenB?.address}`, poolShares, 1000 * 60);
 
     return poolShares;
   }
@@ -337,7 +337,7 @@ class Near {
     }
   };
 
-  public async executeMultipleTransactions(allTransactions: Transaction[]) {
+  public async executeMultipleTransactions(allTransactions: Transaction[], callbackUrl?: string) {
     const currentTransactions = await Promise.all(
       allTransactions.map((t, i) => {
         return this.createNearTransaction({
@@ -355,7 +355,7 @@ class Near {
       }),
     );
 
-    return near.wallet.requestSignTransactions(currentTransactions);
+    return near.wallet.requestSignTransactions(currentTransactions, callbackUrl);
   }
 
   public storageDepositAction({

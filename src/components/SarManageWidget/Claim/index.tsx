@@ -32,13 +32,15 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
   }, []);
 
   const handleConfirm = useCallback(() => {
-    setOpenDrawer(true);
     onClaim();
   }, [onClaim]);
 
   useEffect(() => {
-    if (!attempting && openDrawer && !hash && !claimError) {
+    if (openDrawer && !attempting && !hash && !claimError) {
       handleConfirmDismiss();
+    }
+    if (!openDrawer && attempting) {
+      setOpenDrawer(true);
     }
   }, [attempting]);
 
