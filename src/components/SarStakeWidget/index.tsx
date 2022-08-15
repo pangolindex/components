@@ -149,7 +149,7 @@ export default function SarManageWidget() {
           <Stat
             title={t('sarStake.dollarValue')}
             titlePosition="top"
-            stat={`${dollerWorth ?? 0}$`}
+            stat={`$${dollerWorth ?? 0}`}
             titleColor="text2"
           />
           <Stat title={t('sarStake.startingApr')} titlePosition="top" stat={'0%'} titleColor="text2" />
@@ -210,7 +210,7 @@ export default function SarManageWidget() {
           <Box display="flex" justifyContent="space-between">
             <Box>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">{dollerWorth ?? '0'}$</Text>
+              <Text color="text1">${dollerWorth ?? '0'}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>
