@@ -17,7 +17,7 @@ const NearApplicationUpdater = () => {
     () => {
       return provider?.getBlockNumber();
     },
-    { enabled: !!provider, refetchInterval: 10 * 1000 },
+    { enabled: !!provider, refetchInterval: 60 * 1000 * 2 },
   );
 
   useEffect(() => {

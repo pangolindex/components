@@ -210,3 +210,10 @@ export function getBuyUrl(token: Token): string {
   const path = `/#/swap?inputCurrency=${ZERO_ADDRESS}&outputCurrency=${token.address}`;
   return origin.includes('localhost') || origin.includes('pangolin.exchange') ? path : `app.pangolin.exchange${path}`;
 }
+
+export function isEvmChain(chainId: ChainId = 43114): boolean {
+  if (CHAINS[chainId]?.evm) {
+    return true;
+  }
+  return false;
+}

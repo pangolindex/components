@@ -14,7 +14,7 @@ const NETWORK_URL = 'https://api.avax.network/ext/bc/C/rpc';
 // Near Exchnage Contract
 export const NEAR_EXCHANGE_CONTRACT_ADDRESS = {
   [ChainId.NEAR_MAINNET]: 'png-exchange-v1.mainnet',
-  [ChainId.NEAR_TESTNET]: 'png-exchange-v1.testnet',
+  [ChainId.NEAR_TESTNET]: 'png-exchange-v1.testnet', //// ref-finance-101.testnet //TODO
 };
 
 export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '43114');

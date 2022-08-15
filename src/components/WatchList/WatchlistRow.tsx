@@ -7,10 +7,10 @@ import { Box, CurrencyLogo, Text } from 'src/components';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { useCoinGeckoTokenPrice, useCoinGeckoTokenPriceChart } from 'src/hooks/Tokens';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { useDispatch } from 'src/state';
 import { useTokenWeeklyChartData } from 'src/state/ptoken/hooks';
 import { removeCurrency } from 'src/state/pwatchlists/actions';
-import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { DeleteButton, RowWrapper } from './styleds';
 

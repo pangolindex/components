@@ -9,7 +9,11 @@ import { usePair } from 'src/data/Reserves';
 import { useTotalSupply, useTotalSupplyHook } from 'src/data/TotalSupply';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
+import ApplicationUpdater from 'src/state/papplication/updater';
+import ListsUpdater from 'src/state/plists/updater';
+import MulticallUpdater from 'src/state/pmulticall/updater';
 import {
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
@@ -17,11 +21,14 @@ import {
   fetchMinichefData,
   useDerivedStakeInfo,
   useGetAllFarmData,
-  useGetMinichefStakingInfosViaSubgraph,
   useMinichefPools,
   useMinichefStakingInfos,
-  useMinichefStakingInfosMapping,
 } from 'src/state/pstake/hooks';
+import {
+  useGetAllFarmDataHook,
+  useGetMinichefStakingInfosViaSubgraphHook,
+  useMinichefStakingInfosHook,
+} from 'src/state/pstake/multiChainsHooks';
 import {
   DoubleSideStaking,
   DoubleSideStakingInfo,
@@ -37,23 +44,26 @@ import {
   useSwapActionHandlers,
 } from 'src/state/pswap/hooks';
 import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransactions/hooks';
-import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import TransactionUpdater from 'src/state/ptransactions/updater';
+import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks';
+import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { existSarContract, shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
-import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
-import ApplicationUpdater from './state/papplication/updater';
-import ListsUpdater from './state/plists/updater';
-import { useGetUserLP } from './state/pmigrate/hooks';
-import MulticallUpdater from './state/pmulticall/updater';
 import { Position, useSarPositions, useSarStakeInfo } from './state/psarstake/hooks';
 import SwapUpdater from './state/pswap/updater';
-import TransactionUpdater from './state/ptransactions/updater';
 import { default as ThemeProvider } from './theme';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 1000 * 60,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export function PangolinProvider({
   chainId = ChainId.AVALANCHE,
@@ -131,15 +141,18 @@ export {
   useAllTransactionsClearer,
   useAccountBalanceHook,
   useTranslation,
-  useMinichefStakingInfosMapping,
+  useMinichefStakingInfosHook,
   useGetAllFarmData,
-  useGetMinichefStakingInfosViaSubgraph,
+  useGetMinichefStakingInfosViaSubgraphHook,
   useGetUserLP,
   useMinichefStakingInfos,
   useDerivedStakeInfo,
   useMinichefPools,
   useTotalSupplyHook,
   useTotalSupply,
+  useGetAllFarmDataHook,
+  useTokenBalanceHook,
+  useTokenBalance,
 };
 
 // misc

@@ -1,28 +1,24 @@
 /* eslint-disable max-lines */
-import { BigNumber } from '@ethersproject/bignumber';
-import { TransactionResponse } from '@ethersproject/providers';
-import { CAVAX, Currency, TokenAmount } from '@pangolindex/sdk';
+import { Currency, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import { Plus } from 'react-feather';
-import ReactGA from 'react-ga';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Text, TextInput } from 'src/components';
 import { ROUTER_ADDRESS } from 'src/constants';
 import { PairState } from 'src/data/Reserves';
-import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
+import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
+import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
+import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Field } from 'src/state/pmint/actions';
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/state/pmint/hooks';
 import { SpaceType } from 'src/state/pstake/types';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useIsExpertMode, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks';
-import { calculateGasMargin, calculateSlippageAmount, getRouterContract } from 'src/utils';
+import { useAddLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import ConfirmPoolDrawer from './ConfirmPoolDrawer';
 import PoolPriceBar from './PoolPriceBar';
 import { AddWrapper, ArrowWrapper, ButtonWrapper, Buttons, InputWrapper, LightCard, StyledBalanceMax } from './styleds';
@@ -60,6 +56,9 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
     error,
   } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined);
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity);
+
+  const addLiquidity = useAddLiquidityHook[chainId]();
+  const useApproveCallback = useApproveCallbackHook[chainId];
 
   const isValid = !error;
 
@@ -111,91 +110,26 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
     ROUTER_ADDRESS[chainId],
   );
 
-  const addTransaction = useTransactionAdder();
-  const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
-
   async function onAdd() {
     if (!chainId || !library || !account) return;
-    const router = getRouterContract(chainId, library, account);
-    if (!router) return;
 
-    const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts;
-    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
-      return;
-    }
-
-    const amountsMin = {
-      [Field.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
-      [Field.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0],
-    };
-
-    let estimate,
-      method: (...xyz: any) => Promise<TransactionResponse>,
-      args: Array<string | string[] | number>,
-      value: BigNumber | null;
-    if (currencyA === CAVAX[chainId] || currencyB === CAVAX[chainId]) {
-      const tokenBIsETH = currencyB === CAVAX[chainId];
-      estimate = router.estimateGas.addLiquidityAVAX;
-      method = router.addLiquidityAVAX;
-      args = [
-        wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
-        (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
-        amountsMin[tokenBIsETH ? Field.CURRENCY_A : Field.CURRENCY_B].toString(), // token min
-        amountsMin[tokenBIsETH ? Field.CURRENCY_B : Field.CURRENCY_A].toString(), // eth min
-        account,
-        deadline.toHexString(),
-      ];
-      value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString());
-    } else {
-      estimate = router.estimateGas.addLiquidity;
-      method = router.addLiquidity;
-      args = [
-        wrappedCurrency(currencyA, chainId)?.address ?? '',
-        wrappedCurrency(currencyB, chainId)?.address ?? '',
-        parsedAmountA.raw.toString(),
-        parsedAmountB.raw.toString(),
-        amountsMin[Field.CURRENCY_A].toString(),
-        amountsMin[Field.CURRENCY_B].toString(),
-        account,
-        deadline.toHexString(),
-      ];
-      value = null;
-    }
-
-    setAttemptingTxn(true);
     try {
-      const estimatedGasLimit = await estimate(...args, value ? { value } : {});
-      const response = await method(...args, {
-        ...(value ? { value } : {}),
-        gasLimit: calculateGasMargin(estimatedGasLimit),
-      });
-      await response.wait(5);
+      setAttemptingTxn(true);
+      const addData = {
+        parsedAmounts,
+        deadline,
+        noLiquidity,
+        allowedSlippage,
+        currencies,
+      };
 
-      addTransaction(response, {
-        summary:
-          'Add ' +
-          parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-          ' ' +
-          currencies[Field.CURRENCY_A]?.symbol +
-          ' and ' +
-          parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
-          ' ' +
-          currencies[Field.CURRENCY_B]?.symbol,
-      });
-      await refetchMinichefSubgraph();
-      setTxHash(response.hash);
-      // eslint-disable-next-line import/no-named-as-default-member
-      ReactGA.event({
-        category: 'Liquidity',
-        action: 'Add',
-        label: [currencies[Field.CURRENCY_A]?.symbol, currencies[Field.CURRENCY_B]?.symbol].join('/'),
-      });
+      const response = await addLiquidity(addData);
+
+      setTxHash(response?.hash as string);
     } catch (err) {
       const _err = err as any;
-      // we only care if the error is something _other_ than the user rejected the tx
-      if (_err?.code !== 4001) {
-        console.error(_err);
-      }
+
+      console.error(_err);
     } finally {
       setAttemptingTxn(false);
     }

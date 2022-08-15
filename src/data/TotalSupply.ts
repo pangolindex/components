@@ -1,6 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { ChainId, Token, TokenAmount } from '@pangolindex/sdk';
+import { ChainId, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
+import { useChainId } from 'src/hooks';
 import { nearFn } from 'src/utils/near';
 import { PNG } from '../constants/tokens';
 import { useTokenContract } from '../hooks/useContract';
@@ -21,21 +22,29 @@ export function useTotalSupply(token?: Token): TokenAmount | undefined {
   return token && totalSupply ? new TokenAmount(token, totalSupply.toString()) : undefined;
 }
 
-export function useNearTotalSupply(token?: Token): TokenAmount | undefined {
+export function useNearTotalSupply(tokenOrPair?: Token | Pair): TokenAmount | undefined {
+  const chainId = useChainId();
+
   const [totalSupply, setTotalSupply] = useState<TokenAmount>();
 
   useEffect(() => {
-    async function checkTokenBalance() {
-      if (token) {
-        const balance = await nearFn.getTotalSupply(token?.address);
-        const nearBalance = new TokenAmount(token, balance);
+    async function getTotalSupply() {
+      if (tokenOrPair && tokenOrPair instanceof Pair) {
+        const pool = await nearFn.getPool(chainId, tokenOrPair?.token0, tokenOrPair?.token1);
 
-        setTotalSupply(nearBalance);
+        const totalSupplyAmt = new TokenAmount(tokenOrPair?.liquidityToken, pool?.shares_total_supply);
+
+        setTotalSupply(totalSupplyAmt);
+      } else if (tokenOrPair instanceof Token) {
+        const totalSupply = await nearFn.getTotalSupply(tokenOrPair?.address);
+        const totalSupplyAmt = new TokenAmount(tokenOrPair, totalSupply);
+
+        setTotalSupply(totalSupplyAmt);
       }
     }
 
-    checkTokenBalance();
-  }, [token]);
+    getTotalSupply();
+  }, [tokenOrPair, chainId]);
 
   return useMemo(() => totalSupply, [totalSupply]);
 }

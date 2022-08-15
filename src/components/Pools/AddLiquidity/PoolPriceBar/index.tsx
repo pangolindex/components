@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Box, Stat } from 'src/components';
 import { ONE_BIPS } from 'src/constants';
 import { useChainId } from 'src/hooks';
+import { useUSDCPricekHook } from 'src/hooks/multiChainsHooks';
 import { Field } from 'src/state/pmint/actions';
-import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { GridContainer, Root } from './styled';
 
 interface BarProps {
@@ -22,8 +22,12 @@ const PoolPriceBar = ({ currencies, noLiquidity, poolTokenPercentage, price, par
   const chainId = useChainId();
 
   const currency0 = currencies[Field.CURRENCY_A];
+  const useUSDCPrice = useUSDCPricekHook[chainId];
+
   const currency0PriceTmp = useUSDCPrice(currency0);
+
   const currency0Price = CHAINS[chainId]?.mainnet ? currency0PriceTmp : undefined;
+
   const multipyAmount = currency0Price ? Number(currency0Price.toFixed()) * 2 * Number(currency0InputValue) : 0;
 
   const sharePoolStat = multipyAmount ? `$${multipyAmount?.toFixed(4)}` : '-';
