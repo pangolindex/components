@@ -371,7 +371,7 @@ const MarketOrder: React.FC<Props> = ({
           <Box mr="10px" width="100%">
             <Button
               variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
-              onClick={approveCallback}
+              onClick={() => approveCallback()}
               isDisabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
               loading={approval === ApprovalState.PENDING}
               loadingText="Approving"

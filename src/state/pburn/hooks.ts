@@ -1,13 +1,13 @@
-import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, Currency, CurrencyAmount, JSBI, Pair, Percent, Token, TokenAmount } from '@pangolindex/sdk';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
+import { useTokenBalancesHook } from 'src/state/pwallet/multiChainsHooks';
 import { usePair } from '../../data/Reserves';
-import { useTotalSupply } from '../../data/TotalSupply';
+import { useTotalSupplyHook } from '../../data/TotalSupply';
 import { tryParseAmount } from '../../state/pswap/hooks';
 import { wrappedCurrency } from '../../utils/wrappedCurrency';
-import { useTokenBalances } from '../pwallet/hooks';
 import { Field, typeInput } from './actions';
 
 export function useBurnState(): AppState['pburn'] {
@@ -31,15 +31,20 @@ export function useDerivedBurnInfo(
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
+  const useTokenBalances = useTokenBalancesHook[chainId];
+  const useTotalSupply = useTotalSupplyHook[chainId];
+
   const { t } = useTranslation();
 
   const { independentField, typedValue } = useBurnState();
 
   // pair + totalsupply
   const [, pair] = usePair(currencyA, currencyB);
+  const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
 
   // balances
-  const relevantTokenBalances = useTokenBalances(account ?? undefined, [pair?.liquidityToken]);
+  const relevantTokenBalances = useTokenBalances(account ?? undefined, [pairOrToken] as Token[]);
+
   const userLiquidity: undefined | TokenAmount = relevantTokenBalances?.[pair?.liquidityToken?.address ?? ''];
 
   const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)];
@@ -50,7 +55,8 @@ export function useDerivedBurnInfo(
   };
 
   // liquidity values
-  const totalSupply = useTotalSupply(pair?.liquidityToken);
+  const totalSupply = useTotalSupply(pairOrToken as Token);
+
   const liquidityValueA =
     pair &&
     totalSupply &&
