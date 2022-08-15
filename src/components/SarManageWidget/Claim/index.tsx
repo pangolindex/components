@@ -66,7 +66,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
         <RewardsInfo
           selectedOption={selectedOption}
           onChange={onChange}
-          pendingRewards={formatEther(pendingRewards.toString())}
+          pendingRewards={formatEther(pendingRewards)}
           selectedPosition={selectedPosition}
         />
         <Box display="grid" bgColor="color3" borderRadius="4px" padding="20px" style={{ gridGap: '20px' }}>

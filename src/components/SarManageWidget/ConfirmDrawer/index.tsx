@@ -42,7 +42,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
   const PendingContent = <Loader size={100} label={pendingMessage} />;
 
   const ErroContent = (
-    <ErrorWrapper>
+    <ErrorWrapper paddingX="30px" paddingBottom="30px">
       <ErrorBox>
         <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
         <Text fontWeight={500} fontSize={16} color={'red1'} textAlign="center" style={{ width: '85%' }}>
@@ -56,7 +56,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
   );
 
   const SubmittedContent = (
-    <SubmittedWrapper>
+    <SubmittedWrapper paddingX="30px" paddingBottom="30px">
       <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" paddingY={'20px'}>
         <Box flex="1" display="flex" alignItems="center">
           <img src={CircleTick} alt="circle-tick" />

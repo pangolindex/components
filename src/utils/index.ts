@@ -211,6 +211,21 @@ export function getBuyUrl(token: Token): string {
   return origin.includes('localhost') || origin.includes('pangolin.exchange') ? path : `app.pangolin.exchange${path}`;
 }
 
+// some browsers do not support scrollIntoView
+// https://stackoverflow.com/a/50411076/18268694
+export function scrollElementIntoView(element: HTMLElement | null, behavior?: 'smooth' | 'auto') {
+  if (element) {
+    const scrollTop = window.scrollY || element.scrollTop;
+
+    const finalOffset = element.getBoundingClientRect().top + scrollTop;
+
+    window.parent.scrollTo({
+      top: finalOffset,
+      behavior: behavior || 'auto',
+    });
+  }
+}
+
 export function isEvmChain(chainId: ChainId = 43114): boolean {
   if (CHAINS[chainId]?.evm) {
     return true;
