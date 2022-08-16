@@ -14,6 +14,7 @@ import {
   WAVAX,
 } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
+import qs from 'qs';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueries } from 'react-query';
@@ -31,6 +32,7 @@ import { useAllTokens, useNearTokens } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
+import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { Field } from 'src/state/pburn/actions';
 import { Field as AddField } from 'src/state/pmint/actions';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
@@ -987,4 +989,95 @@ export function useGetNearUserLP() {
   return useMemo(() => ({ v2IsLoading, allV2PairsWithLiquidity: pairs }), [v2IsLoading, pairs]);
 }
 
+export interface CreatePoolProps {
+  tokenA?: Token;
+  tokenB?: Token;
+}
+
+export function useNearCreatePool() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+
+  return async (data: CreatePoolProps) => {
+    if (!chainId || !library || !account) return;
+
+    let transactions: Transaction[] = [];
+
+    const { tokenA, tokenB } = data;
+
+    if (!tokenA || !tokenB) {
+      throw new Error(`Missing dependency`);
+    }
+
+    // const poolId = await nearFn.getPoolId(chainId, tokenA, tokenB);
+    // if (poolId) {
+    //   throw new Error(`Pool is already exits`);
+    // }
+
+    const tokens = [tokenA, tokenB];
+
+    const exchangeContractId = NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId];
+
+    const tokenIds = tokens.map((token) => token?.address);
+
+    const storageBalances = await Promise.all(tokenIds.map((id) => nearFn.getStorageBalance(id, exchangeContractId)));
+
+    transactions = storageBalances
+      .reduce((acc: string[], sb, i) => {
+        if (!sb || sb.total === '0') acc.push(tokenIds[i]);
+        return acc;
+      }, [])
+      .map((id) => ({
+        receiverId: id,
+
+        functionCalls: [
+          nearFn.storageDepositAction({
+            accountId: exchangeContractId,
+            registrationOnly: true,
+            amount: NEAR_STORAGE_TO_REGISTER_WITH_FT,
+          }),
+        ],
+      }));
+
+    transactions.push({
+      receiverId: exchangeContractId,
+      functionCalls: [
+        {
+          methodName: 'add_simple_pool',
+          args: { tokens: tokenIds, fee: 0.5 },
+          amount: '0.05',
+        },
+      ],
+    });
+
+    const query = qs.stringify({
+      currency0: tokenA?.address,
+      currency1: tokenB?.address,
+    });
+
+    return nearFn.executeMultipleTransactions(
+      transactions,
+      `${window.location.origin}/${window.location.hash}?${query}`,
+    );
+  };
+}
+
+export function useParamsFromURL():
+  | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
+  | undefined {
+  const parsedQs = useParsedQueryString();
+
+  let inputCurrency = parsedQs?.currency0 ? (parsedQs?.currency0 as string) : undefined;
+  let outputCurrency = parsedQs?.currency1 ? (parsedQs?.currency1 as string) : undefined;
+  if (inputCurrency === outputCurrency) {
+    if (typeof parsedQs.outputCurrency === 'string') {
+      inputCurrency = '';
+    } else {
+      outputCurrency = '';
+    }
+  }
+
+  return { inputCurrencyId: inputCurrency, outputCurrencyId: outputCurrency };
+}
 /* eslint-enable max-lines */

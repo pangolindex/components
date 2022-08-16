@@ -1,12 +1,17 @@
 import { CAVAX, Currency } from '@pangolindex/sdk';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Modal, Text } from 'src/components';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { useChainId } from 'src/hooks';
+import { useCurrency } from 'src/hooks/Tokens';
 import { SpaceType } from 'src/state/pstake/types';
+import { useNearCreatePool, useParamsFromURL } from 'src/state/pwallet/hooks';
 import { CloseIcon } from 'src/theme/components';
+import { isEvmChain } from 'src/utils';
+import { nearFn } from 'src/utils/near';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import AddLiquidity from '../AddLiquidity';
 import SearchToken, { BodyState, Fields } from './SearchToken';
 import { Wrapper } from './styleds';
@@ -30,6 +35,25 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
 
   const [bodyState, setBodyState] = useState<BodyState>(BodyState.SELECT_TOKENS);
 
+  const createPool = useNearCreatePool();
+
+  const loadedUrlParams = useParamsFromURL();
+
+  // token warning stuff
+  const [loadedInputCurrency, loadedOutputCurrency] = [
+    useCurrency(loadedUrlParams?.inputCurrencyId),
+    useCurrency(loadedUrlParams?.outputCurrencyId),
+  ];
+
+  useEffect(() => {
+    if (loadedInputCurrency) {
+      setCurrency0(loadedInputCurrency);
+    }
+    if (loadedOutputCurrency) {
+      setCurrency1(loadedOutputCurrency);
+    }
+  }, [loadedInputCurrency, loadedOutputCurrency]);
+
   const onTokenClick = useCallback(
     (field: Fields) => {
       setActiveField(field);
@@ -37,6 +61,36 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
     },
     [setActiveField, setShowSearch],
   );
+
+  async function onButtonClick(value?: BodyState) {
+    if (!chainId) return;
+
+    try {
+      if (isEvmChain(chainId) && value) {
+        setBodyState(value);
+      } else if (!isEvmChain(chainId)) {
+        const tokenA = currency0 ? wrappedCurrency(currency0, chainId) : undefined;
+        const tokenB = currency1 ? wrappedCurrency(currency1, chainId) : undefined;
+
+        const poolId = await nearFn.getPoolId(chainId, tokenA, tokenB);
+        console.log('poolId', poolId);
+        if (poolId > 0 && value) {
+          setBodyState(value);
+        } else {
+          const createPoolData = {
+            tokenA,
+            tokenB,
+          };
+
+          await createPool(createPoolData);
+        }
+      }
+    } catch (err) {
+      const _err = err as any;
+
+      console.error(_err);
+    }
+  }
 
   const switchCurrencies = useCallback(() => {
     const temp = currency0;
@@ -78,7 +132,12 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
     if (bodyState === BodyState.SELECT_TOKENS) {
       return (
         <>
-          <SearchToken currency0={currency0} currency1={currency1} onTokenClick={onTokenClick} onClick={setBodyState} />
+          <SearchToken
+            currency0={currency0}
+            currency1={currency1}
+            onTokenClick={onTokenClick}
+            onClick={onButtonClick}
+          />
           <SelectTokenDrawer
             isOpen={showSearch}
             selectedCurrency={currency0}

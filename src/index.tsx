@@ -9,6 +9,7 @@ import { usePair } from 'src/data/Reserves';
 import { useTotalSupply, useTotalSupplyHook } from 'src/data/TotalSupply';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
+import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
 import ApplicationUpdater from 'src/state/papplication/updater';
@@ -153,6 +154,7 @@ export {
   useGetAllFarmDataHook,
   useTokenBalanceHook,
   useTokenBalance,
+  useParsedQueryString,
 };
 
 // misc
