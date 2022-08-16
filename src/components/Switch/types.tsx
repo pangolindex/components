@@ -10,4 +10,5 @@ export type SwitchProps = {
   checkedIcon?: React.ReactElement | boolean;
   height?: number;
   width?: number;
+  switchOnHandleColor?: string;
 };

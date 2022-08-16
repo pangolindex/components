@@ -21,4 +21,6 @@ export type TextInputProps = Omit<React.HTMLProps<HTMLInputElement>, 'accept' | 
   isNumeric?: boolean;
   onChange?: (value: string) => void;
   getRef?: (ref: any) => void;
+  textSecondaryColor?: string;
+  inputFieldBgColor?: string;
 };

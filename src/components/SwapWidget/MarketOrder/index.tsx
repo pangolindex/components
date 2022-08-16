@@ -46,6 +46,21 @@ interface Props {
   isLimitOrderVisible: boolean;
   showSettings: boolean;
   partnerDaaS?: string;
+  widgetBackground?: string;
+  textPrimaryColor?: string;
+  textSecondaryColor?: string;
+  btnPrimaryBgColor?: string;
+  btnPrimaryTextColor?: string;
+  btnConfirmedBgColor?: string;
+  btnConfirmedTextColor?: string;
+  settingsBtnBgColor?: string;
+  selectPrimaryBgColor?: string;
+  selectSecondaryBgColor?: string;
+  toggleBgColor?: string;
+  toggleSelectedColor?: string;
+  toggleTextColor?: string;
+  inputFieldBgColor?: string;
+  switchOnHandleColor?: string;
 }
 
 const MarketOrder: React.FC<Props> = ({
@@ -54,6 +69,21 @@ const MarketOrder: React.FC<Props> = ({
   isLimitOrderVisible,
   showSettings,
   partnerDaaS = ZERO_ADDRESS,
+  widgetBackground,
+  textPrimaryColor,
+  textSecondaryColor,
+  btnPrimaryBgColor,
+  btnPrimaryTextColor,
+  btnConfirmedBgColor,
+  btnConfirmedTextColor,
+  settingsBtnBgColor,
+  selectPrimaryBgColor,
+  selectSecondaryBgColor,
+  toggleBgColor,
+  toggleSelectedColor,
+  toggleTextColor,
+  inputFieldBgColor,
+  switchOnHandleColor,
 }) => {
   // const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
@@ -330,7 +360,19 @@ const MarketOrder: React.FC<Props> = ({
   if (openSettings && showSettings) {
     return (
       <Box minHeight={450}>
-        <SwapSettingsDrawer isOpen={openSettings} close={closeSwapSettings} />
+        <SwapSettingsDrawer
+          isOpen={openSettings}
+          close={closeSwapSettings}
+          widgetBackground={widgetBackground}
+          textPrimaryColor={textPrimaryColor}
+          textSecondaryColor={textSecondaryColor}
+          inputFieldBgColor={inputFieldBgColor}
+          btnPrimaryBgColor={btnPrimaryBgColor}
+          btnPrimaryTextColor={btnPrimaryTextColor}
+          toggleBgColor={toggleBgColor}
+          toggleSelectedColor={toggleSelectedColor}
+          toggleTextColor={toggleTextColor}
+        />
       </Box>
     );
   }
@@ -338,28 +380,50 @@ const MarketOrder: React.FC<Props> = ({
   const renderButton = () => {
     if (!account) {
       return (
-        <Button isDisabled={!account} variant="primary" onClick={toggleWalletModal}>
+        <Button
+          isDisabled={!account}
+          variant="primary"
+          onClick={toggleWalletModal}
+          btnPrimaryBgColor={btnPrimaryBgColor}
+          btnPrimaryTextColor={btnPrimaryTextColor}
+        >
           Connect Wallet
         </Button>
       );
     }
     if (showWrap) {
       return (
-        <Button variant="primary" isDisabled={Boolean(wrapInputError)} onClick={onWrap}>
+        <Button
+          variant="primary"
+          isDisabled={Boolean(wrapInputError)}
+          onClick={onWrap}
+          btnPrimaryBgColor={btnPrimaryBgColor}
+          btnPrimaryTextColor={btnPrimaryTextColor}
+        >
           {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'unwrap' : null)}
         </Button>
       );
     }
     if (isLoadingSwap && !swapInputError) {
       return (
-        <Button variant="primary" isDisabled>
+        <Button
+          variant="primary"
+          isDisabled
+          btnPrimaryBgColor={btnPrimaryBgColor}
+          btnPrimaryTextColor={btnPrimaryTextColor}
+        >
           Loading
         </Button>
       );
     }
     if (noRoute && userHasSpecifiedInputOutput) {
       return (
-        <Button variant="primary" isDisabled>
+        <Button
+          variant="primary"
+          isDisabled
+          btnPrimaryBgColor={btnPrimaryBgColor}
+          btnPrimaryTextColor={btnPrimaryTextColor}
+        >
           Insufficient liquidity for this trade.
         </Button>
       );
@@ -375,6 +439,10 @@ const MarketOrder: React.FC<Props> = ({
               isDisabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
               loading={approval === ApprovalState.PENDING}
               loadingText="Approving"
+              btnPrimaryBgColor={btnPrimaryBgColor}
+              btnPrimaryTextColor={btnPrimaryTextColor}
+              btnConfirmedBgColor={btnConfirmedBgColor}
+              btnConfirmedTextColor={btnConfirmedTextColor}
             >
               {approvalSubmitted && approval === ApprovalState.APPROVED
                 ? 'Approved'
@@ -396,6 +464,8 @@ const MarketOrder: React.FC<Props> = ({
             id="swap-button"
             isDisabled={!isValid || approval !== ApprovalState.APPROVED || (priceImpactSeverity > 3 && !isExpertMode)}
             // error={isValid && priceImpactSeverity > 2}
+            btnPrimaryBgColor={btnPrimaryBgColor}
+            btnPrimaryTextColor={btnPrimaryTextColor}
           >
             {priceImpactSeverity > 3 && !isExpertMode
               ? 'Price Impact High'
@@ -421,6 +491,8 @@ const MarketOrder: React.FC<Props> = ({
         isDisabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError || !!swapInputError}
         backgroundColor={isValid && priceImpactSeverity > 2 ? 'primary' : undefined}
         color={isValid && priceImpactSeverity <= 2 ? 'black' : undefined}
+        btnPrimaryBgColor={btnPrimaryBgColor}
+        btnPrimaryTextColor={btnPrimaryTextColor}
       >
         {swapInputError
           ? swapInputError
@@ -450,6 +522,7 @@ const MarketOrder: React.FC<Props> = ({
                 onUserInput(Field.INPUT, newFinalAmount.toExact());
               }
             }}
+            style={textSecondaryColor ? { color: textSecondaryColor } : {}}
           >
             {value}%
           </PValue>
@@ -466,6 +539,12 @@ const MarketOrder: React.FC<Props> = ({
         isLimitOrderVisible={isLimitOrderVisible}
         showSettings={showSettings}
         openSwapSettings={openSwapSettings}
+        widgetBackground={widgetBackground}
+        textPrimaryColor={textPrimaryColor}
+        settingsBtnBgColor={settingsBtnBgColor}
+        toggleBgColor={toggleBgColor}
+        toggleSelectedColor={toggleSelectedColor}
+        toggleTextColor={toggleTextColor}
       />
 
       <TokenWarningModal
@@ -474,10 +553,9 @@ const MarketOrder: React.FC<Props> = ({
         onConfirm={handleConfirmTokenWarning}
       />
 
-      <SwapWrapper>
+      <SwapWrapper style={widgetBackground ? { backgroundColor: widgetBackground } : {}}>
         <Box p={10}>
           {isAEBToken && <DeprecatedWarning />}
-
           <CurrencyInputTextBox
             label={independentField === Field.OUTPUT && !showWrap && trade ? 'From (estimated)' : 'From'}
             value={formattedAmounts[Field.INPUT]}
@@ -495,6 +573,16 @@ const MarketOrder: React.FC<Props> = ({
             placeholder="0.00"
             id="swap-currency-input"
             addonLabel={renderPercentage()}
+            textPrimaryColor={textPrimaryColor}
+            textSecondaryColor={textSecondaryColor}
+            selectPrimaryBgColor={selectPrimaryBgColor}
+            selectSecondaryBgColor={selectSecondaryBgColor}
+            inputFieldBgColor={inputFieldBgColor}
+            style={
+              inputFieldBgColor && textSecondaryColor
+                ? { backgroundColor: inputFieldBgColor, color: textSecondaryColor }
+                : {}
+            }
           />
 
           <Box width="100%" textAlign="center" alignItems="center" display="flex" justifyContent={'center'} mt={10}>
@@ -504,7 +592,7 @@ const MarketOrder: React.FC<Props> = ({
                 onSwitchTokens();
               }}
             >
-              <RefreshCcw size="16" color={theme.text4} />
+              <RefreshCcw size="16" color={textSecondaryColor ? textSecondaryColor : theme.text4} />
             </ArrowWrapper>
           </Box>
 
@@ -526,10 +614,20 @@ const MarketOrder: React.FC<Props> = ({
             id="swap-currency-output"
             addonLabel={
               tradePrice && (
-                <Text color="text4" fontSize={16}>
+                <Text color="text4" fontSize={16} style={textSecondaryColor ? { color: textSecondaryColor } : {}}>
                   Price: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )
+            }
+            textPrimaryColor={textPrimaryColor}
+            textSecondaryColor={textSecondaryColor}
+            selectPrimaryBgColor={selectPrimaryBgColor}
+            selectSecondaryBgColor={selectSecondaryBgColor}
+            inputFieldBgColor={inputFieldBgColor}
+            style={
+              inputFieldBgColor && textSecondaryColor
+                ? { backgroundColor: inputFieldBgColor, color: textSecondaryColor }
+                : {}
             }
           />
 
@@ -538,7 +636,7 @@ const MarketOrder: React.FC<Props> = ({
               <LinkStyledButton
                 id="add-recipient-button"
                 onClick={() => onChangeRecipient('')}
-                style={{ alignSelf: 'end' }}
+                style={textPrimaryColor ? { alignSelf: 'end', color: textPrimaryColor } : { alignSelf: 'end' }}
               >
                 + Add Recipient
               </LinkStyledButton>
@@ -550,7 +648,7 @@ const MarketOrder: React.FC<Props> = ({
               <LinkStyledButton
                 id="add-recipient-button"
                 onClick={() => onChangeRecipient(null)}
-                style={{ alignSelf: 'end' }}
+                style={textPrimaryColor ? { alignSelf: 'end', color: textPrimaryColor } : { alignSelf: 'end' }}
               >
                 - Remove Recipient
               </LinkStyledButton>
@@ -562,12 +660,32 @@ const MarketOrder: React.FC<Props> = ({
                   const withoutSpaces = value.replace(/\s+/g, '');
                   onChangeRecipient(withoutSpaces);
                 }}
-                addonLabel={recipient && !isAddress(recipient) && <Text color="text1">Invalid Address</Text>}
+                addonLabel={
+                  recipient &&
+                  !isAddress(recipient) && (
+                    <Text color="text1" style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
+                      Invalid Address
+                    </Text>
+                  )
+                }
+                textSecondaryColor={textSecondaryColor}
+                inputFieldBgColor={inputFieldBgColor}
+                style={
+                  inputFieldBgColor && textSecondaryColor
+                    ? { backgroundColor: inputFieldBgColor, color: textSecondaryColor }
+                    : {}
+                }
               />
             </Box>
           ) : null}
 
-          {trade && <SwapDetailInfo trade={trade} />}
+          {trade && (
+            <SwapDetailInfo
+              trade={trade}
+              textSecondaryColor={textSecondaryColor}
+              inputFieldBgColor={inputFieldBgColor}
+            />
+          )}
 
           <Box width="100%" mt={10}>
             {renderButton()}
@@ -575,7 +693,7 @@ const MarketOrder: React.FC<Props> = ({
         </Box>
       </SwapWrapper>
 
-      {trade && showRoute && <SwapRoute trade={trade} />}
+      {trade && showRoute && <SwapRoute trade={trade} textPrimaryColor={textPrimaryColor} />}
       {/* Retries Drawer */}
       {/* <RetryDrawer isOpen={isRetryDrawerOpen} onClose={() => setIsRetryDrawerOpen(false)} /> */}
       {/* Token Drawer */}
@@ -587,6 +705,13 @@ const MarketOrder: React.FC<Props> = ({
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={tokenDrawerType === Field.INPUT ? inputCurrency : outputCurrency}
           otherSelectedCurrency={tokenDrawerType === Field.INPUT ? outputCurrency : inputCurrency}
+          widgetBackground={widgetBackground}
+          textPrimaryColor={textPrimaryColor}
+          textSecondaryColor={textSecondaryColor}
+          inputFieldBgColor={inputFieldBgColor}
+          btnPrimaryBgColor={btnPrimaryBgColor}
+          btnPrimaryTextColor={btnPrimaryTextColor}
+          switchOnHandleColor={switchOnHandleColor}
         />
       )}
 
@@ -604,6 +729,12 @@ const MarketOrder: React.FC<Props> = ({
           onConfirm={handleSwap}
           swapErrorMessage={swapErrorMessage}
           onClose={handleConfirmDismiss}
+          widgetBackground={widgetBackground}
+          textPrimaryColor={textPrimaryColor}
+          textSecondaryColor={textSecondaryColor}
+          inputFieldBgColor={inputFieldBgColor}
+          btnPrimaryBgColor={btnPrimaryBgColor}
+          btnPrimaryTextColor={btnPrimaryTextColor}
         />
       )}
     </Root>

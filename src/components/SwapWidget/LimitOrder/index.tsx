@@ -32,9 +32,41 @@ interface Props {
   swapType: string;
   setSwapType: (value: string) => void;
   isLimitOrderVisible: boolean;
+  widgetBackground?: string;
+  textPrimaryColor?: string;
+  textSecondaryColor?: string;
+  btnPrimaryBgColor?: string;
+  btnPrimaryTextColor?: string;
+  btnConfirmedBgColor?: string;
+  btnConfirmedTextColor?: string;
+  settingsBtnBgColor?: string;
+  selectPrimaryBgColor?: string;
+  selectSecondaryBgColor?: string;
+  toggleBgColor?: string;
+  toggleSelectedColor?: string;
+  toggleTextColor?: string;
+  inputFieldBgColor?: string;
 }
 
-const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
+const LimitOrder: React.FC<Props> = ({
+  swapType,
+  setSwapType,
+  isLimitOrderVisible,
+  widgetBackground,
+  textPrimaryColor,
+  textSecondaryColor,
+  btnPrimaryBgColor,
+  btnPrimaryTextColor,
+  btnConfirmedBgColor,
+  btnConfirmedTextColor,
+  settingsBtnBgColor,
+  selectPrimaryBgColor,
+  selectSecondaryBgColor,
+  toggleBgColor,
+  toggleSelectedColor,
+  toggleTextColor,
+  inputFieldBgColor,
+}) => {
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const [tokenDrawerType, setTokenDrawerType] = useState(LimitNewField.INPUT);
@@ -351,7 +383,13 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   const renderButton = () => {
     if (!account) {
       return (
-        <Button isDisabled={!account} variant="primary" onClick={toggleWalletModal}>
+        <Button
+          isDisabled={!account}
+          variant="primary"
+          onClick={toggleWalletModal}
+          btnPrimaryBgColor={btnPrimaryBgColor}
+          btnPrimaryTextColor={btnPrimaryTextColor}
+        >
           Connect Wallet
         </Button>
       );
@@ -367,6 +405,10 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
               isDisabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
               loading={approval === ApprovalState.PENDING}
               loadingText="Approving"
+              btnPrimaryBgColor={btnPrimaryBgColor}
+              btnPrimaryTextColor={btnPrimaryTextColor}
+              btnConfirmedBgColor={btnConfirmedBgColor}
+              btnConfirmedTextColor={btnConfirmedTextColor}
             >
               {approvalSubmitted && approval === ApprovalState.APPROVED
                 ? 'Approved'
@@ -419,6 +461,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
                 onUserInput(LimitNewField.INPUT as any, newFinalAmount.toExact());
               }
             }}
+            style={textSecondaryColor ? { color: textSecondaryColor } : {}}
           >
             {value}%
           </PValue>
@@ -438,9 +481,19 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
 
   return (
     <Root>
-      <TradeOption swapType={swapType} setSwapType={setSwapType} isLimitOrderVisible={isLimitOrderVisible} />
+      <TradeOption
+        swapType={swapType}
+        setSwapType={setSwapType}
+        isLimitOrderVisible={isLimitOrderVisible}
+        widgetBackground={widgetBackground}
+        textPrimaryColor={textPrimaryColor}
+        settingsBtnBgColor={settingsBtnBgColor}
+        toggleBgColor={toggleBgColor}
+        toggleSelectedColor={toggleSelectedColor}
+        toggleTextColor={toggleTextColor}
+      />
 
-      <SwapWrapper>
+      <SwapWrapper style={widgetBackground ? { backgroundColor: widgetBackground } : {}}>
         <Box width="100%" display="flex" justifyContent="center">
           <Box textAlign="center" width="120px">
             <ToggleButtons
@@ -449,6 +502,9 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
               onChange={(value) => {
                 handleActiveTab(value);
               }}
+              toggleBgColor={toggleBgColor}
+              toggleSelectedColor={toggleSelectedColor}
+              toggleTextColor={toggleTextColor}
             />
           </Box>
         </Box>
@@ -473,14 +529,24 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
             placeholder="0.00"
             id="swap-currency-input"
             addonLabel={renderPercentage()}
+            textPrimaryColor={textPrimaryColor}
+            textSecondaryColor={textSecondaryColor}
+            selectPrimaryBgColor={selectPrimaryBgColor}
+            selectSecondaryBgColor={selectSecondaryBgColor}
+            inputFieldBgColor={inputFieldBgColor}
+            style={
+              inputFieldBgColor && textSecondaryColor
+                ? { backgroundColor: inputFieldBgColor, color: textSecondaryColor }
+                : {}
+            }
           />
 
           <Box width="100%" textAlign="center" alignItems="center" display="flex" justifyContent={'center'} mt={10}>
             <ArrowWrapper>
               {rateType === Rate.MUL ? (
-                <X size="16" color={determineColor()} />
+                <X size="16" color={textSecondaryColor ? textSecondaryColor : determineColor()} />
               ) : (
-                <Divide size="16" color={determineColor()} />
+                <Divide size="16" color={textSecondaryColor ? textSecondaryColor : determineColor()} />
               )}
             </ArrowWrapper>
           </Box>
@@ -493,6 +559,13 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
               isNumeric={true}
               placeholder="0.00"
               label="Price"
+              textSecondaryColor={textSecondaryColor}
+              inputFieldBgColor={inputFieldBgColor}
+              style={
+                inputFieldBgColor && textSecondaryColor
+                  ? { backgroundColor: inputFieldBgColor, color: textSecondaryColor }
+                  : {}
+              }
             />
           </Box>
           <Box width="100%" textAlign="center" alignItems="center" display="flex" justifyContent={'center'} mt={10}>
@@ -502,7 +575,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
                 onSwitchTokens();
               }}
             >
-              <RefreshCcw size="16" color={theme.text4} />
+              <RefreshCcw size="16" color={textSecondaryColor ? textSecondaryColor : theme.text4} />
             </ArrowWrapper>
           </Box>
           <CurrencyInputTextBox
@@ -523,14 +596,30 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
             id="swap-currency-output"
             addonLabel={
               tradePrice && (
-                <Text color="text4" fontSize={16}>
+                <Text color="text4" fontSize={16} style={textSecondaryColor ? { color: textSecondaryColor } : {}}>
                   Price: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )
             }
+            textPrimaryColor={textPrimaryColor}
+            textSecondaryColor={textSecondaryColor}
+            selectPrimaryBgColor={selectPrimaryBgColor}
+            selectSecondaryBgColor={selectSecondaryBgColor}
+            inputFieldBgColor={inputFieldBgColor}
+            style={
+              inputFieldBgColor && textSecondaryColor
+                ? { backgroundColor: inputFieldBgColor, color: textSecondaryColor }
+                : {}
+            }
           />
 
-          {trade && <LimitOrderDetailInfo trade={trade} />}
+          {trade && (
+            <LimitOrderDetailInfo
+              trade={trade}
+              textSecondaryColor={textSecondaryColor}
+              inputFieldBgColor={inputFieldBgColor}
+            />
+          )}
 
           <Box width="100%" mt={10}>
             {renderButton()}
@@ -545,6 +634,10 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
         onCurrencySelect={onCurrencySelect}
         selectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? inputCurrency : outputCurrency}
         otherSelectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? outputCurrency : inputCurrency}
+        widgetBackground={widgetBackground}
+        textPrimaryColor={textPrimaryColor}
+        textSecondaryColor={textSecondaryColor}
+        inputFieldBgColor={inputFieldBgColor}
       />
 
       {/* Confirm Swap Drawer */}
@@ -561,6 +654,12 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
           onConfirm={handleSwap}
           swapErrorMessage={swapErrorMessage}
           onClose={handleConfirmDismiss}
+          widgetBackground={widgetBackground}
+          textPrimaryColor={textPrimaryColor}
+          textSecondaryColor={textSecondaryColor}
+          inputFieldBgColor={inputFieldBgColor}
+          btnPrimaryBgColor={btnPrimaryBgColor}
+          btnPrimaryTextColor={btnPrimaryTextColor}
         />
       )}
     </Root>

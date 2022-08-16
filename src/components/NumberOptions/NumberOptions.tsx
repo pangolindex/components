@@ -6,7 +6,16 @@ import { PValue } from './styled';
 import { NumberOptionsProps } from './types';
 
 const NumberOptions: React.FC<NumberOptionsProps> = (props) => {
-  const { options = [25, 50, 75, 100], isPercentage = false, onChange, currentValue, isDisabled, variant } = props;
+  const {
+    options = [25, 50, 75, 100],
+    isPercentage = false,
+    onChange,
+    currentValue,
+    isDisabled,
+    variant,
+    btnPrimaryBgColor,
+    btnPrimaryTextColor,
+  } = props;
   return (
     <Box>
       {variant === 'step' && (
@@ -34,6 +43,11 @@ const NumberOptions: React.FC<NumberOptionsProps> = (props) => {
               onClick={() => {
                 onChange && onChange(value);
               }}
+              style={
+                currentValue === value && btnPrimaryBgColor && btnPrimaryTextColor
+                  ? { backgroundColor: btnPrimaryBgColor, color: btnPrimaryTextColor }
+                  : {}
+              }
             >
               {isPercentage ? `${value}%` : value}
             </PValue>

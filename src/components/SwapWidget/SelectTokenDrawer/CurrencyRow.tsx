@@ -12,10 +12,11 @@ interface Props {
   onSelect: (currency: Currency) => void;
   isSelected: boolean;
   otherSelected: boolean;
+  textPrimaryColor?: string;
 }
 
 const CurrencyRow: React.FC<Props> = (props) => {
-  const { currency, style, onSelect, isSelected, otherSelected } = props;
+  const { currency, style, onSelect, isSelected, otherSelected, textPrimaryColor } = props;
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
@@ -28,10 +29,15 @@ const CurrencyRow: React.FC<Props> = (props) => {
   return (
     <CurrencyRowRoot style={style} onClick={handleSelect} disabled={isSelected} selected={otherSelected}>
       <CurrencyLogo currency={currency} size={24} imageSize={48} />
-      <Text color="text1" fontSize={14} title={currency?.name}>
+      <Text
+        color="text1"
+        fontSize={14}
+        title={currency?.name}
+        style={textPrimaryColor ? { color: textPrimaryColor } : {}}
+      >
         {currency?.symbol}
       </Text>
-      <Balance color="text1" fontSize={14}>
+      <Balance color="text1" fontSize={14} style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
         {balance ? balance.toSignificant(4) : account ? <LoaderIcon /> : null}
       </Balance>
     </CurrencyRowRoot>

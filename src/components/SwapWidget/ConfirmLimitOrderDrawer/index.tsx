@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, Token, Trade, TradeType } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
@@ -35,11 +36,32 @@ interface Props {
   onConfirm: () => void;
   swapErrorMessage: string | undefined;
   onClose: () => void;
+  widgetBackground?: string;
+  textPrimaryColor?: string;
+  textSecondaryColor?: string;
+  inputFieldBgColor?: string;
+  btnPrimaryBgColor?: string;
+  btnPrimaryTextColor?: string;
 }
 
 const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
-  const { isOpen, onClose, trade, onAcceptChanges, recipient, onConfirm, attemptingTxn, swapErrorMessage, txHash } =
-    props;
+  const {
+    isOpen,
+    onClose,
+    trade,
+    onAcceptChanges,
+    recipient,
+    onConfirm,
+    attemptingTxn,
+    swapErrorMessage,
+    txHash,
+    widgetBackground,
+    textPrimaryColor,
+    textSecondaryColor,
+    inputFieldBgColor,
+    btnPrimaryBgColor,
+    btnPrimaryTextColor,
+  } = props;
   const [showInverted, setShowInverted] = useState<boolean>(false);
   const chainId = useChainId();
   const theme = useContext(ThemeContext);
@@ -146,15 +168,28 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
             fontSize={24}
             fontWeight={500}
             color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? 'primary' : 'text1'}
-            style={{ marginLeft: '12px' }}
+            style={textPrimaryColor ? { color: textPrimaryColor, marginLeft: '12px' } : { marginLeft: '12px' }}
           >
             {inputAmount.toSignificant(6)}
           </Text>
-          <Text fontSize={24} fontWeight={500} color="text1" style={{ marginLeft: '10px' }}>
+          <Text
+            fontSize={24}
+            fontWeight={500}
+            color="text1"
+            style={textPrimaryColor ? { color: textPrimaryColor, marginLeft: '10px' } : { marginLeft: '10px' }}
+          >
             {inputCurrency?.symbol}
           </Text>
         </TokenRow>
-        <ArrowDown size="16" color={theme.text2} style={{ marginLeft: '4px', minWidth: '16px' }} />
+        <ArrowDown
+          size="16"
+          color={theme.text2}
+          style={
+            textPrimaryColor
+              ? { stroke: textPrimaryColor, marginLeft: '4px', minWidth: '16px' }
+              : { marginLeft: '4px', minWidth: '16px' }
+          }
+        />
         <TokenRow>
           <CurrencyLogo currency={outputCurrency} size={24} imageSize={48} />
 
@@ -162,7 +197,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
             <Text
               fontSize={24}
               fontWeight={500}
-              style={{ marginLeft: '12px' }}
+              style={textPrimaryColor ? { color: textPrimaryColor, marginLeft: '12px' } : { marginLeft: '12px' }}
               color={showAcceptChanges && trade.tradeType === TradeType.EXACT_INPUT ? 'primary' : 'text1'}
             >
               {outputAmount.toSignificant(6)}
@@ -171,18 +206,31 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
             <FiatValue
               fiatValue={fiatValueOutput as any}
               priceImpact={computeFiatValuePriceImpact(fiatValueInput as any, fiatValueOutput as any) as any}
+              textPrimaryColor={textPrimaryColor}
             />
           </Box>
-          <Text fontSize={24} fontWeight={500} color="text1" style={{ marginLeft: '10px' }}>
+          <Text
+            fontSize={24}
+            fontWeight={500}
+            color="text1"
+            style={textPrimaryColor ? { color: textPrimaryColor, marginLeft: '10px' } : { marginLeft: '10px' }}
+          >
             {outputCurrency?.symbol}
           </Text>
         </TokenRow>
         {showAcceptChanges && (
           <PriceUpdateBlock>
-            <Text color={'text1'} fontSize={14}>
+            <Text color={'text1'} fontSize={14} style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
               Price Updated
             </Text>
-            <Button onClick={onAcceptChanges} variant="primary" width={150} padding="5px 10px">
+            <Button
+              onClick={onAcceptChanges}
+              variant="primary"
+              width={150}
+              padding="5px 10px"
+              btnPrimaryBgColor={btnPrimaryBgColor}
+              btnPrimaryTextColor={btnPrimaryTextColor}
+            >
               Accept
             </Button>
           </PriceUpdateBlock>
@@ -196,15 +244,15 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
           onClick={flipPrice}
           style={{ cursor: 'pointer' }}
         >
-          <Text color={'text1'} fontSize={16}>
+          <Text color={'text1'} fontSize={16} style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
             Limit Price
           </Text>
-          <Text color={'text1'} fontSize={16}>
+          <Text color={'text1'} fontSize={16} style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
             {text}
           </Text>
         </Box>
         <Box mt={'15px'}>
-          <Text color={'text1'} fontSize={16}>
+          <Text color={'text1'} fontSize={16} style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
             Output will be sent to{' '}
             <b title={recipient || ''}>
               {isAddress(recipient || '') ? shortenAddress(recipient || '', chainId) : recipient || ''}
@@ -213,7 +261,11 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
         </Box>
       </Header>
       <Footer>
-        <LimitOrderDetailInfo trade={trade} />
+        <LimitOrderDetailInfo
+          trade={trade}
+          textSecondaryColor={textSecondaryColor}
+          inputFieldBgColor={inputFieldBgColor}
+        />
         <Box my={'10px'}>
           <Button variant="primary" onClick={onConfirm} isDisabled={showAcceptChanges}>
             Confirm Order
@@ -223,7 +275,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
     </Root>
   );
 
-  const PendingContent = <Loader size={100} label={pendingText} />;
+  const PendingContent = <Loader size={100} label={pendingText} textPrimaryColor={textPrimaryColor} />;
 
   const ErroContent = (
     <ErrorWrapper>
@@ -233,7 +285,12 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
           {swapErrorMessage}
         </Text>
       </ErrorBox>
-      <Button variant="primary" onClick={onClose}>
+      <Button
+        variant="primary"
+        onClick={onClose}
+        btnPrimaryBgColor={btnPrimaryBgColor}
+        btnPrimaryTextColor={btnPrimaryTextColor}
+      >
         Dismiss
       </Button>
     </ErrorWrapper>
@@ -243,9 +300,14 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
     <SubmittedWrapper>
       <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" paddingY={'20px'}>
         <Box flex="1" display="flex" alignItems="center">
-          <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary} />
+          <ArrowUpCircle
+            strokeWidth={0.5}
+            size={90}
+            color={theme.primary}
+            style={textPrimaryColor ? { stroke: btnPrimaryBgColor } : {}}
+          />
         </Box>
-        <Text fontWeight={500} fontSize={20} color="text1">
+        <Text fontWeight={500} fontSize={20} color="text1" style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
           Transaction Submitted
         </Text>
         {chainId && txHash && (
@@ -261,7 +323,12 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
           </Link>
         )}
       </Box>
-      <Button variant="primary" onClick={onClose}>
+      <Button
+        variant="primary"
+        onClick={onClose}
+        btnPrimaryBgColor={btnPrimaryBgColor}
+        btnPrimaryTextColor={btnPrimaryTextColor}
+      >
         Close
       </Button>
     </SubmittedWrapper>
@@ -284,6 +351,9 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
       title={swapErrorMessage || txHash || attemptingTxn ? '' : 'Confirm Order'}
       isOpen={isOpen}
       onClose={onClose}
+      widgetBackground={widgetBackground}
+      textPrimaryColor={textPrimaryColor}
+      textSecondaryColor={textSecondaryColor}
     >
       {getSwapError()}
     </Drawer>

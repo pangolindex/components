@@ -35,4 +35,13 @@ export type ButtonProps = {
   backgroundColor?: string;
   color?: string;
   borderColor?: string;
+  /** custom colors **/
+  btnPrimaryBgColor?: string;
+  btnPrimaryTextColor?: string;
+  btnSecondaryBgColor?: string;
+  btnSecondaryTextColor?: string;
+  btnConfirmedBgColor?: string;
+  btnConfirmedTextColor?: string;
+  btnDisabledBgColor?: string;
+  btnDisabledTextColor?: string;
 };

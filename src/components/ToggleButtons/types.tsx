@@ -7,4 +7,7 @@ export type ToggleButtonsProps = {
   value?: any;
   size?: number;
   options: Array<string>;
+  toggleBgColor?: string;
+  toggleSelectedColor?: string;
+  toggleTextColor?: string;
 };

@@ -14,9 +14,26 @@ import { AddInputWrapper, List } from './styled';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  widgetBackground?: string;
+  textPrimaryColor?: string;
+  textSecondaryColor?: string;
+  inputFieldBgColor?: string;
+  btnPrimaryBgColor?: string;
+  btnPrimaryTextColor?: string;
+  switchOnHandleColor?: string;
 }
 
-const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
+const TokenListDrawer: React.FC<Props> = ({
+  isOpen,
+  onClose,
+  widgetBackground,
+  textPrimaryColor,
+  textSecondaryColor,
+  inputFieldBgColor,
+  btnPrimaryBgColor,
+  btnPrimaryTextColor,
+  switchOnHandleColor,
+}) => {
   const [listUrlInput, setListUrlInput] = useState<string>('');
   const dispatch = useDispatch();
   const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
@@ -86,7 +103,14 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
   }, [lists]);
 
   return (
-    <Drawer title="Manage Lists" isOpen={isOpen} onClose={onClose}>
+    <Drawer
+      title="Manage Lists"
+      isOpen={isOpen}
+      onClose={onClose}
+      widgetBackground={widgetBackground}
+      textPrimaryColor={textPrimaryColor}
+      textSecondaryColor={textSecondaryColor}
+    >
       {/* Render Search Token Input */}
       <Box padding="0px 10px">
         <AddInputWrapper>
@@ -98,8 +122,23 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
             }}
             onKeyDown={handleEnterKey}
             value={listUrlInput}
+            textSecondaryColor={textSecondaryColor}
+            inputFieldBgColor={inputFieldBgColor}
+            style={
+              inputFieldBgColor && textSecondaryColor
+                ? { backgroundColor: inputFieldBgColor, color: textSecondaryColor }
+                : {}
+            }
           />
-          <Button variant="primary" padding={'0px'} isDisabled={!validUrl} onClick={handleAddList} height="50px">
+          <Button
+            variant="primary"
+            padding={'0px'}
+            isDisabled={!validUrl}
+            onClick={handleAddList}
+            height="50px"
+            btnPrimaryBgColor={btnPrimaryBgColor}
+            btnPrimaryTextColor={btnPrimaryTextColor}
+          >
             Add
           </Button>
         </AddInputWrapper>
@@ -113,7 +152,13 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
       <Scrollbars>
         <List>
           {sortedLists.map((url) => (
-            <TokenListRow listUrl={url} key={url} />
+            <TokenListRow
+              listUrl={url}
+              key={url}
+              textPrimaryColor={textPrimaryColor}
+              btnPrimaryBgColor={btnPrimaryBgColor}
+              switchOnHandleColor={switchOnHandleColor}
+            />
           ))}
         </List>
       </Scrollbars>

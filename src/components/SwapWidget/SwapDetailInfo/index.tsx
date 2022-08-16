@@ -8,9 +8,9 @@ import { useDaasFeeInfo } from '../../../state/pswap/hooks';
 import { Text } from '../../Text';
 import { ContentBox, DataBox, ValueText } from './styled';
 
-type Props = { trade: Trade };
+type Props = { trade: Trade; textSecondaryColor?: string; inputFieldBgColor?: string };
 
-const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
+const SwapDetailInfo: React.FC<Props> = ({ trade, textSecondaryColor, inputFieldBgColor }) => {
   const [allowedSlippage] = useUserSlippageTolerance();
   const [feeInfo] = useDaasFeeInfo();
   const { priceImpactWithoutFee, realizedLPFee, realizedLPFeeAmount } = computeTradePriceBreakdown(trade);
@@ -37,11 +37,15 @@ const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
   const renderRow = (label: string, value: string, showSeverity?: boolean) => {
     return (
       <DataBox key={label}>
-        <Text color="text4" fontSize={14}>
+        <Text color="text4" fontSize={14} style={textSecondaryColor ? { color: textSecondaryColor } : {}}>
           {label}
         </Text>
 
-        <ValueText fontSize={14} severity={showSeverity ? warningSeverity(priceImpactWithoutFee) : -1}>
+        <ValueText
+          fontSize={14}
+          severity={showSeverity ? warningSeverity(priceImpactWithoutFee) : -1}
+          style={textSecondaryColor && !showSeverity ? { color: textSecondaryColor } : {}}
+        >
           {value}
         </ValueText>
       </DataBox>
@@ -49,7 +53,7 @@ const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
   };
 
   return (
-    <ContentBox>
+    <ContentBox style={inputFieldBgColor ? { backgroundColor: inputFieldBgColor } : {}}>
       {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && renderRow('Slippage tolerance', `${allowedSlippage / 100}%`)}
       {renderRow(isExactIn ? 'Minimum Received' : 'Maximum Sold', amount)}
       {renderRow('Price Impact', priceImpact, true)}

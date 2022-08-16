@@ -5,4 +5,6 @@ export interface NumberOptionsProps {
   currentValue: number;
   isDisabled?: boolean;
   variant: 'step' | 'box';
+  btnPrimaryBgColor?: string;
+  btnPrimaryTextColor?: string;
 }

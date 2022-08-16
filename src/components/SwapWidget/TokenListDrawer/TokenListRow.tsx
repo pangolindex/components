@@ -12,9 +12,12 @@ import { DownArrow, ListLogo, PopoverContainer, RowRoot, Separator, ViewLink } f
 
 interface Props {
   listUrl: string;
+  textPrimaryColor?: string;
+  btnPrimaryBgColor?: string;
+  switchOnHandleColor?: string;
 }
 
-const TokenListRow: React.FC<Props> = ({ listUrl }) => {
+const TokenListRow: React.FC<Props> = ({ listUrl, textPrimaryColor, switchOnHandleColor }) => {
   const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
   const { current: list } = lists[listUrl];
 
@@ -70,7 +73,15 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
     <RowRoot>
       {list?.logoURI ? <ListLogo size={24} src={list?.logoURI} /> : <ListLogo as="div" size={24} />}
       <Box>
-        <Text fontSize={16} color="text1" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <Text
+          fontSize={16}
+          color="text1"
+          style={
+            textPrimaryColor
+              ? { color: textPrimaryColor, overflow: 'hidden', textOverflow: 'ellipsis' }
+              : { overflow: 'hidden', textOverflow: 'ellipsis' }
+          }
+        >
           {list?.name}
         </Text>
         <Text fontSize={12} color="text3" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }} title={listUrl}>
@@ -79,7 +90,7 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
       </Box>
       <Box ref={node as any}>
         <DownArrow onClick={() => setOpen(!open)}>
-          <ChevronDown />
+          <ChevronDown style={textPrimaryColor ? { color: textPrimaryColor } : {}} />
         </DownArrow>
         {open && (
           <PopoverContainer>
@@ -100,7 +111,7 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
           </PopoverContainer>
         )}
       </Box>
-      <Switch checked={isSelected} onChange={() => selectThisList()} />
+      <Switch checked={isSelected} onChange={() => selectThisList()} switchOnHandleColor={switchOnHandleColor} />
     </RowRoot>
   );
 };

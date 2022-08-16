@@ -20,6 +20,7 @@ const Switch: React.FC<SwitchProps> = (props) => {
     onHandleColor,
     uncheckedIcon,
     width,
+    switchOnHandleColor,
   } = props;
   const theme = useTheme();
 
@@ -27,7 +28,7 @@ const Switch: React.FC<SwitchProps> = (props) => {
     <BaseSwitch
       checked={checked}
       onChange={(isChecked) => onChange?.(isChecked)}
-      onHandleColor={onHandleColor || theme.switch?.onColor}
+      onHandleColor={switchOnHandleColor ? switchOnHandleColor : onHandleColor || theme.switch?.onColor}
       offHandleColor={offHandleColor || theme.switch?.offColor}
       onColor={onColor || theme.switch?.backgroundColor}
       offColor={offColor || theme.switch?.backgroundColor}

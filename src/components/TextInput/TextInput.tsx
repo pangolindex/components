@@ -16,6 +16,8 @@ const TextInput: React.FC<TextInputProps> = (props) => {
     isNumeric,
     getRef = () => {},
     autoComplete = 'off',
+    textSecondaryColor,
+    inputFieldBgColor,
     ...rest
   } = props;
 
@@ -24,10 +26,14 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   return (
     <Box>
       <Box display="flex" justifyContent={label ? 'space-between' : 'flex-end'}>
-        {label && <Text color="text4">{label}</Text>}
+        {label && (
+          <Text color="text4" style={textSecondaryColor ? { color: textSecondaryColor } : {}}>
+            {label}
+          </Text>
+        )}
         {addonLabel && addonLabel}
       </Box>
-      <InputWrapper>
+      <InputWrapper style={inputFieldBgColor ? { backgroundColor: inputFieldBgColor } : {}}>
         {addonBefore && <AddonBefore>{addonBefore}</AddonBefore>}
         <StyledInput
           {...(rest as any)}

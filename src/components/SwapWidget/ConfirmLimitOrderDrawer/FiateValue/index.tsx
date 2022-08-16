@@ -7,9 +7,11 @@ import { Text } from '../../../Text';
 export function FiatValue({
   fiatValue,
   priceImpact,
+  textPrimaryColor,
 }: {
   fiatValue: CurrencyAmount | null | undefined;
   priceImpact?: Percent;
+  textPrimaryColor?: string;
 }) {
   const theme = useContext(ThemeContext);
   const priceImpactColor = useMemo(() => {
@@ -22,7 +24,12 @@ export function FiatValue({
   }, [priceImpact, theme.green1, theme.red1, theme.text4, theme.yellow1]);
 
   return (
-    <Text fontSize={14} color={fiatValue ? 'text2' : 'text4'} ml={10}>
+    <Text
+      fontSize={14}
+      color={fiatValue ? 'text2' : 'text4'}
+      ml={10}
+      style={textPrimaryColor ? { color: textPrimaryColor } : {}}
+    >
       {fiatValue ? '~' : ''}${fiatValue ? fiatValue?.toSignificant(6, { groupSeparator: ',' }) : '-'}
       {priceImpact ? (
         <span style={{ color: priceImpactColor }}> ({priceImpact.multiply('-1').toSignificant(3)}%)</span>

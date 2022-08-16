@@ -22,6 +22,13 @@ interface Props {
   onCurrencySelect: (currency: Currency) => void;
   selectedCurrency?: Currency;
   otherSelectedCurrency?: Currency;
+  widgetBackground?: string;
+  textPrimaryColor?: string;
+  textSecondaryColor?: string;
+  inputFieldBgColor?: string;
+  btnPrimaryBgColor?: string;
+  btnPrimaryTextColor?: string;
+  switchOnHandleColor?: string;
 }
 
 const currencyKey = (currency: Currency, chainId: ChainId): string => {
@@ -29,7 +36,20 @@ const currencyKey = (currency: Currency, chainId: ChainId): string => {
 };
 
 const SelectTokenDrawer: React.FC<Props> = (props) => {
-  const { isOpen, onClose, onCurrencySelect, otherSelectedCurrency, selectedCurrency } = props;
+  const {
+    isOpen,
+    onClose,
+    onCurrencySelect,
+    otherSelectedCurrency,
+    selectedCurrency,
+    widgetBackground,
+    textPrimaryColor,
+    textSecondaryColor,
+    inputFieldBgColor,
+    btnPrimaryBgColor,
+    btnPrimaryTextColor,
+    switchOnHandleColor,
+  } = props;
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isTokenListOpen, setIsTokenListOpen] = useState<boolean>(false);
   const [invertSearchOrder] = useState<boolean>(false);
@@ -118,6 +138,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
           isSelected={isSelected}
           onSelect={onSelect}
           otherSelected={otherSelected}
+          textPrimaryColor={textPrimaryColor}
         />
       ) : null;
     },
@@ -126,9 +147,16 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   );
 
   return (
-    <Drawer title="Select a token" isOpen={isOpen} onClose={onClose}>
+    <Drawer
+      title="Select a token"
+      isOpen={isOpen}
+      onClose={onClose}
+      widgetBackground={widgetBackground}
+      textPrimaryColor={textPrimaryColor}
+      textSecondaryColor={textSecondaryColor}
+    >
       {/* Render Search Token Input */}
-      <Box padding="0px 10px">
+      <Box padding="0px 10px" style={widgetBackground ? { backgroundColor: widgetBackground } : {}}>
         <TextInput
           placeholder="Search"
           onChange={(value: any) => {
@@ -141,10 +169,17 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
               inputRef.current?.scrollIntoView({ behavior: 'smooth' });
             }
           }}
+          textSecondaryColor={textSecondaryColor}
+          inputFieldBgColor={inputFieldBgColor}
+          style={
+            inputFieldBgColor && textSecondaryColor
+              ? { backgroundColor: inputFieldBgColor, color: textSecondaryColor }
+              : {}
+          }
         />
       </Box>
       {/* Render All Selected Tokens */}
-      <CurrencyList>
+      <CurrencyList style={widgetBackground ? { backgroundColor: widgetBackground } : {}}>
         <AutoSizer disableWidth>
           {({ height }) => (
             <FixedSizeList
@@ -164,10 +199,10 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
       <ManageList onClick={() => setIsTokenListOpen(true)}>
         {selectedListInfo.multipleSelected ? (
           <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-            <Text fontSize={14} color="text1">
+            <Text fontSize={14} color="text1" style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
               {selectedListInfo.selectedCount} lists selected
             </Text>
-            <Text fontSize={12} color="text1">
+            <Text fontSize={12} color="text1" style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
               Change
             </Text>
           </Box>
@@ -179,18 +214,28 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
                 src={selectedListInfo?.current?.logoURI}
                 alt={`${selectedListInfo?.current?.name} list logo`}
               />
-              <Text fontSize={14} color="text1">
+              <Text fontSize={14} color="text1" style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
                 {selectedListInfo?.current?.name}
               </Text>
             </Box>
-            <Text fontSize={12} color="text1">
+            <Text fontSize={12} color="text1" style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
               Change
             </Text>
           </Box>
         )}
       </ManageList>
       {/* Render Token List Selection Drawer */}
-      <TokenListDrawer isOpen={isTokenListOpen} onClose={() => setIsTokenListOpen(false)} />
+      <TokenListDrawer
+        isOpen={isTokenListOpen}
+        onClose={() => setIsTokenListOpen(false)}
+        widgetBackground={widgetBackground}
+        textPrimaryColor={textPrimaryColor}
+        textSecondaryColor={textSecondaryColor}
+        inputFieldBgColor={inputFieldBgColor}
+        btnPrimaryBgColor={btnPrimaryBgColor}
+        btnPrimaryTextColor={btnPrimaryTextColor}
+        switchOnHandleColor={switchOnHandleColor}
+      />
     </Drawer>
   );
 };

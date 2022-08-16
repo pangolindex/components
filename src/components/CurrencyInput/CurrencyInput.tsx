@@ -8,7 +8,17 @@ import { Aligner, CurrencySelect, StyledTokenName } from './styles';
 import { CurrencyInputProps } from './types';
 
 const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
-  const { pair, currency, onTokenClick, ...rest } = props;
+  const {
+    pair,
+    currency,
+    onTokenClick,
+    textPrimaryColor,
+    textSecondaryColor,
+    selectPrimaryBgColor,
+    selectSecondaryBgColor,
+    inputFieldBgColor,
+    ...rest
+  } = props;
 
   const renderCurrency = () => {
     if (pair) {
@@ -23,13 +33,17 @@ const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
   const renderStyletoken = () => {
     if (pair) {
       return (
-        <StyledTokenName className="pair-name-container">
+        <StyledTokenName className="pair-name-container" style={textPrimaryColor ? { color: textPrimaryColor } : {}}>
           {pair?.token0.symbol}:{pair?.token1.symbol}
         </StyledTokenName>
       );
     } else
       return (
-        <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
+        <StyledTokenName
+          className="token-symbol-container"
+          active={Boolean(currency && currency.symbol)}
+          style={textPrimaryColor ? { color: textPrimaryColor } : {}}
+        >
           {(currency && currency.symbol && currency.symbol.length > 20
             ? currency.symbol.slice(0, 4) +
               '...' +
@@ -46,18 +60,33 @@ const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
         onClick={() => {
           onTokenClick && onTokenClick();
         }}
+        style={
+          selectSecondaryBgColor && selectPrimaryBgColor
+            ? Boolean(currency && currency.symbol)
+              ? { backgroundColor: selectSecondaryBgColor }
+              : { backgroundColor: selectPrimaryBgColor }
+            : {}
+        }
       >
         <Aligner>
           {renderCurrency()}
           {renderStyletoken()}
-          <ChevronDown color={!Boolean(currency && currency.symbol) ? 'black' : undefined} />
+          <ChevronDown
+            color={!Boolean(currency && currency.symbol) ? 'black' : undefined}
+            style={textPrimaryColor ? { color: textPrimaryColor } : {}}
+          />
         </Aligner>
       </CurrencySelect>
     );
   };
   return (
     <Box>
-      <TextInput {...(rest as any)} addonAfter={addonAfter()} />
+      <TextInput
+        {...(rest as any)}
+        addonAfter={addonAfter()}
+        textSecondaryColor={textSecondaryColor}
+        inputFieldBgColor={inputFieldBgColor}
+      />
     </Box>
   );
 };

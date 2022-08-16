@@ -4,7 +4,6 @@ import { Box } from '../../';
 export const SwapWrapper = styled(Box)`
   width: 100%;
   /* min-width: 400px; */
-  background-color: ${({ theme }) => theme.color2};
   position: relative;
   overflow: hidden;
   border-top-left-radius: 10px;

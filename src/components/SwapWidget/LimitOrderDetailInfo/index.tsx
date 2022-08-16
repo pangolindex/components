@@ -7,9 +7,9 @@ import { usePangolinWeb3 } from 'src/hooks';
 import { Text } from '../../Text';
 import { ContentBox, DataBox, ValueText } from './styled';
 
-type Props = { trade: any };
+type Props = { trade: any; textSecondaryColor?: string; inputFieldBgColor?: string };
 
-const LimitOrderDetailInfo: React.FC<Props> = ({ trade }) => {
+const LimitOrderDetailInfo: React.FC<Props> = ({ trade, textSecondaryColor, inputFieldBgColor }) => {
   const { chainId } = usePangolinWeb3();
 
   const {
@@ -58,17 +58,19 @@ const LimitOrderDetailInfo: React.FC<Props> = ({ trade }) => {
   const renderRow = (label: string, value: string) => {
     return (
       <DataBox key={label}>
-        <Text color="text4" fontSize={14}>
+        <Text color="text4" fontSize={14} style={textSecondaryColor ? { color: textSecondaryColor } : {}}>
           {label}
         </Text>
 
-        <ValueText fontSize={14}>{value}</ValueText>
+        <ValueText fontSize={14} style={textSecondaryColor ? { color: textSecondaryColor } : {}}>
+          {value}
+        </ValueText>
       </DataBox>
     );
   };
 
   return (
-    <ContentBox>
+    <ContentBox style={inputFieldBgColor ? { backgroundColor: inputFieldBgColor } : {}}>
       {renderRow('Gas Price', `${formattedGasPrice}`)}
       {renderRow('Real Execution Price', `${realExecutionPriceAsString ? `${priceText}` : '-'}`)}
       {renderRow('Gelato Fee', `${gelatoFeePercentage ? `${gelatoFeePercentage}` : '-'}%`)}
