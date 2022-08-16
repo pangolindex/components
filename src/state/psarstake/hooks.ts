@@ -598,10 +598,18 @@ export function useSarPositions() {
       ]);
 
       // decode the results
-      const positionsAmount = decodeMulticallResult(sarStakingContract, positionsFragment, results[0][1]);
-      const positionsRewardRate = decodeMulticallResult(sarStakingContract, rewardRateFragment, results[1][1]);
-      const positionsPendingRewards = decodeMulticallResult(sarStakingContract, pendingRewardsFragment, results[2][1]);
-      const nftsUris = decodeMulticallResult(sarStakingContract, nftUrisFragment, results[3][1]);
+      const positionsAmount = decodeMulticallResult(sarStakingContract, positionsFragment, results?.[0]?.[1]);
+      const positionsRewardRate = decodeMulticallResult(sarStakingContract, rewardRateFragment, results?.[1]?.[1]);
+      const positionsPendingRewards = decodeMulticallResult(
+        sarStakingContract,
+        pendingRewardsFragment,
+        results?.[2]?.[1],
+      );
+      const nftsUris = decodeMulticallResult(sarStakingContract, nftUrisFragment, results?.[3]?.[1]);
+
+      if (!positionsAmount || !positionsRewardRate || !positionsPendingRewards || !nftsUris) {
+        return [] as Position[];
+      }
 
       // we need to decode the base64 uri to get the real uri
       const nftsURIs = nftsUris.map((value) => {
