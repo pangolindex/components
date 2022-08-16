@@ -1,5 +1,7 @@
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
+import { parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';
+import { Transaction, nearFn } from 'src/utils/near';
 import { tryParseAmount } from '../state/pswap/hooks';
 import { useTransactionAdder } from '../state/ptransactions/hooks';
 import { useCurrencyBalance } from '../state/pwallet/hooks';
@@ -108,7 +110,16 @@ export function useWrapNearCallback(
     const unWrapFunction = async () => {
       if (sufficientBalance && inputAmount) {
         try {
-          addTransaction({} as any, { summary: `Unwrap ${inputAmount.toSignificant(6)} WNear to Near` });
+          //addTransaction({} as any, { summary: `Unwrap ${inputAmount.toSignificant(6)} WNear to Near` });
+          const transactions: Transaction[] = [
+            {
+              receiverId: WAVAX[chainId].address,
+              functionCalls: [
+                nearFn.nearDepositAction(parseUnits(inputAmount.toFixed(), WAVAX[chainId]?.decimals).toString()),
+              ],
+            },
+          ];
+          nearFn.executeMultipleTransactions(transactions);
         } catch (error) {
           console.error('Could not withdraw', error);
         }
@@ -118,7 +129,14 @@ export function useWrapNearCallback(
     const wrapFunction = async () => {
       if (sufficientBalance && inputAmount) {
         try {
-          addTransaction({} as any, { summary: `Wrap ${inputAmount.toSignificant(6)} NEAR to wNear` });
+          //addTransaction({} as any, { summary: `Wrap ${inputAmount.toSignificant(6)} NEAR to wNear` });
+          const transaction: Transaction[] = [
+            {
+              receiverId: WAVAX[chainId].address,
+              functionCalls: [nearFn.nearWithdrawAction(inputAmount.toSignificant(6))],
+            },
+          ];
+          nearFn.executeMultipleTransactions(transaction);
         } catch (error) {
           console.error('Could not withdraw', error);
         }

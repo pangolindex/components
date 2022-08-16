@@ -23,6 +23,7 @@ import {
   NEAR_LP_STORAGE_AMOUNT,
   NEAR_STORAGE_TO_REGISTER_WITH_FT,
   ONE_YOCTO_NEAR,
+  ONLY_ZEROS,
   ROUTER_ADDRESS,
 } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
@@ -406,8 +407,6 @@ export function useNearAddLiquidity() {
   return async (data: AddLiquidityProps) => {
     if (!chainId || !library || !account) return;
 
-    let transactions: Transaction[] = [];
-
     const depositTransactions: Transaction[] = [];
     const { parsedAmounts, deadline, currencies } = data;
     const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
@@ -424,11 +423,15 @@ export function useNearAddLiquidity() {
     const poolId = await nearFn.getPoolId(chainId, tokenA, tokenB);
 
     const tokens = [tokenA, tokenB];
+
+    const mainAmounts = [parsedAmountA.toFixed(), parsedAmountB.toFixed()];
+
     const amounts = [
       parseUnits(parsedAmountA.toFixed(), tokenA?.decimals).toString(),
       parseUnits(parsedAmountB.toFixed(), tokenB?.decimals).toString(),
     ];
     const exchangeContractId = NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId];
+    const wNearContractId = WAVAX[chainId].address;
     const whitelist = await nearFn.getWhitelistedTokens(chainId);
 
     for (let i = 0; i < tokens.length; i++) {
@@ -489,13 +492,40 @@ export function useNearAddLiquidity() {
       },
     ];
 
-    transactions = [
+    const transactions: Transaction[] = [
       ...depositTransactions,
       {
         receiverId: exchangeContractId,
         functionCalls: [...actions],
       },
     ];
+
+    if (transactions.length > 0) {
+      const wNearTokenIndex = tokens.findIndex((token) => token?.address === wNearContractId);
+
+      if (wNearTokenIndex > -1 && !ONLY_ZEROS.test(mainAmounts[wNearTokenIndex])) {
+        transactions.unshift({
+          receiverId: wNearContractId,
+          functionCalls: [nearFn.nearDepositAction(mainAmounts[wNearTokenIndex])],
+        });
+      }
+
+      if (wNearTokenIndex > -1) {
+        const registered = await nearFn.getStorageBalance(wNearContractId);
+
+        if (registered === null) {
+          transactions.unshift({
+            receiverId: wNearContractId,
+            functionCalls: [
+              nearFn.storageDepositAction({
+                registrationOnly: true,
+                amount: NEAR_STORAGE_TO_REGISTER_WITH_FT,
+              }),
+            ],
+          });
+        }
+      }
+    }
 
     return nearFn.executeMultipleTransactions(transactions);
   };
