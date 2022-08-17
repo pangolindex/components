@@ -1,10 +1,11 @@
-import { Currency, JSBI, Pair, Percent } from '@pangolindex/sdk';
+import { Currency, JSBI, Pair, Percent, Token } from '@pangolindex/sdk';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, DoubleCurrencyLogo, Stat, Text } from 'src/components';
-import { useTotalSupply } from 'src/data/TotalSupply';
+import { useTotalSupplyHook } from 'src/data/TotalSupply';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { isEvmChain } from 'src/utils';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { InnerWrapper, Wrapper } from './styleds';
 
@@ -22,8 +23,13 @@ const PositionCard = ({ pair, onManagePoolsClick }: PositionCardProps) => {
 
   const { t } = useTranslation();
 
-  const userPoolBalance = useTokenBalance(account ?? undefined, pair.liquidityToken);
-  const totalPoolTokens = useTotalSupply(pair.liquidityToken);
+  const useTokenBalance = useTokenBalanceHook[chainId];
+  const useTotalSupply = useTotalSupplyHook[chainId];
+
+  const pairOrToken = isEvmChain(chainId) ? pair?.liquidityToken : pair;
+
+  const userPoolBalance = useTokenBalance(account ?? undefined, pairOrToken as Token);
+  const totalPoolTokens = useTotalSupply(pairOrToken as Token);
 
   const poolTokenPercentage =
     !!userPoolBalance && !!totalPoolTokens && JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)

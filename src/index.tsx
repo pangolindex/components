@@ -1,5 +1,5 @@
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
-import { CHAINS, ChainId } from '@pangolindex/sdk';
+import { ChainId } from '@pangolindex/sdk';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -48,7 +48,7 @@ import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransa
 import TransactionUpdater from 'src/state/ptransactions/updater';
 import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks';
 import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { existSarContract, shortenAddress } from 'src/utils';
+import { existSarContract, isEvmChain, shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import i18n, { availableLanguages } from './i18n';
@@ -89,7 +89,7 @@ export function PangolinProvider({
             <MulticallUpdater />
             <TransactionUpdater />
             <SwapUpdater />
-            {CHAINS[chainId]?.evm ? (
+            {isEvmChain(chainId) ? (
               <Provider store={galetoStore}>
                 <GelatoProvider
                   library={library}

@@ -3,7 +3,6 @@ import { parseUnits } from '@ethersproject/units';
 import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import {
   CAVAX,
-  CHAINS,
   ChainId,
   Currency,
   CurrencyAmount,
@@ -23,9 +22,9 @@ import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { AppState, useDispatch, useSelector } from 'src/state';
+import { isAddress, isEvmChain } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { isAddress } from '../../utils';
 import { useUserSlippageTolerance } from '../puser/hooks';
 import { useCurrencyBalances } from '../pwallet/hooks';
 import {
@@ -161,7 +160,7 @@ export function useDerivedSwapInfo(): {
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
-  const recipientAddress = CHAINS[chainId]?.evm ? isAddress(recipient) : recipient;
+  const recipientAddress = isEvmChain(chainId) ? isAddress(recipient) : recipient;
   const to: string | null = (recipientAddress ? recipientAddress : account) ?? null;
 
   const relevantTokenBalances = useCurrencyBalances(chainId, account ?? undefined, [
@@ -209,7 +208,7 @@ export function useDerivedSwapInfo(): {
     inputError = inputError ?? 'Select a token';
   }
 
-  const formattedTo = CHAINS[chainId]?.evm ? isAddress(to) : to;
+  const formattedTo = isEvmChain(chainId) ? isAddress(to) : to;
   if (!to || !formattedTo) {
     inputError = inputError ?? 'Enter a recipient';
   } else {

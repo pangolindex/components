@@ -1,9 +1,10 @@
-import { CHAINS, Currency, CurrencyAmount, JSBI, Pair, Percent, Token, TokenAmount } from '@pangolindex/sdk';
+import { Currency, CurrencyAmount, JSBI, Pair, Percent, Token, TokenAmount } from '@pangolindex/sdk';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { useTokenBalancesHook } from 'src/state/pwallet/multiChainsHooks';
+import { isEvmChain } from 'src/utils';
 import { usePair } from '../../data/Reserves';
 import { useTotalSupplyHook } from '../../data/TotalSupply';
 import { tryParseAmount } from '../../state/pswap/hooks';
@@ -40,7 +41,7 @@ export function useDerivedBurnInfo(
 
   // pair + totalsupply
   const [, pair] = usePair(currencyA, currencyB);
-  const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
+  const pairOrToken = isEvmChain(chainId) ? pair?.liquidityToken : pair;
 
   // balances
   const relevantTokenBalances = useTokenBalances(account ?? undefined, [pairOrToken] as Token[]);
