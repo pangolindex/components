@@ -14,6 +14,7 @@ import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplica
 import ApplicationUpdater from 'src/state/papplication/updater';
 import ListsUpdater from 'src/state/plists/updater';
 import MulticallUpdater from 'src/state/pmulticall/updater';
+import { usePangoChefInfos } from 'src/state/ppangoChef/hooks';
 import {
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
@@ -153,6 +154,7 @@ export {
   useGetAllFarmDataHook,
   useTokenBalanceHook,
   useTokenBalance,
+  usePangoChefInfos,
 };
 
 // misc

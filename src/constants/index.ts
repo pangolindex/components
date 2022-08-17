@@ -69,6 +69,15 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].contracts!.mini_chef!,
 };
 
+export const PANGOCHEF_ADDRESS: { [chainId in ChainId]?: string } = {
+  [ChainId.FUJI]: undefined,
+  [ChainId.AVALANCHE]: undefined,
+  [ChainId.WAGMI]: '0x8ae9EDF29c6dc5A5BC45587449E1002A1111EE2e',
+  [ChainId.COSTON]: undefined,
+  [ChainId.NEAR_MAINNET]: undefined,
+  [ChainId.NEAR_TESTNET]: undefined,
+};
+
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
 export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] } = {
   [ChainId.FUJI]: [],

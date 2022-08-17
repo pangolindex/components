@@ -5,9 +5,10 @@ import Png from '@pangolindex/governance/artifacts/contracts/PNG.sol/Png.json';
 import StakingRewards from '@pangolindex/governance/artifacts/contracts/StakingRewards.sol/StakingRewards.json';
 import { WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { MINICHEF_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from 'src/constants';
+import { MINICHEF_ADDRESS, PANGOCHEF_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from 'src/constants';
 import { ERC20_BYTES32_ABI } from 'src/constants/abis/erc20';
 import ERC20_ABI from 'src/constants/abis/erc20.json';
+import PANGOCHEF_ABI from 'src/constants/abis/pangochef.json';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import SarStaking from 'src/constants/abis/sar.json';
 import WETH_ABI from 'src/constants/abis/weth.json';
@@ -80,4 +81,9 @@ export function usePngContract(): Contract | null {
 export function useSarStakingContract(): Contract | null {
   const chainId = useChainId();
   return useContract(SAR_STAKING_ADDRESS[chainId], SarStaking, true);
+}
+
+export function usePangoChefContract(): Contract | null {
+  const chainId = useChainId();
+  return useContract(PANGOCHEF_ADDRESS[chainId], PANGOCHEF_ABI, true);
 }
