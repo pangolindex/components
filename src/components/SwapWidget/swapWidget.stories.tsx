@@ -22,4 +22,6 @@ export const Default = TemplateSwapWidget.bind({});
 Default.args = {
   isLimitOrderVisible: false,
   showSettings: true,
+  defaultInputToken: 'aave.e',
+  defaultOutputToken: 'aablock',
 };
