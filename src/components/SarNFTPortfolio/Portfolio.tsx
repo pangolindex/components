@@ -31,32 +31,36 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
 
   const isMobile = useMedia(`(max-width: ${MEDIA_WIDTHS.upToMedium}px)`);
 
-  const onSelect = (value: string) => {
-    setSelectedOption(value);
-    if (value === 'apr') {
-      setCurrentItems([...positions].sort((a, b) => b.apr.sub(a.apr).toNumber()).slice(0, itemsPerPage));
-    } else if (value === 'amount') {
+  function sortItems(itemOffset: number, endOffset: number, sortOption: string) {
+    if (sortOption === 'apr') {
+      setCurrentItems([...positions].sort((a, b) => b.apr.sub(a.apr).toNumber()).slice(itemOffset, endOffset));
+    } else if (sortOption === 'amount') {
       setCurrentItems(
         [...positions]
           .sort((a, b) => {
             return parseFloat(formatEther(b.balance.sub(a.balance)));
           })
-          .slice(0, itemsPerPage),
+          .slice(itemOffset, endOffset),
       );
-    } else if (value === 'newest') {
-      setCurrentItems([...positions].sort((a, b) => b.id.sub(a.id).toNumber()).slice(0, itemsPerPage));
-    } else if (value === 'oldest') {
-      setCurrentItems([...positions].sort((a, b) => a.id.sub(b.id).toNumber()).slice(0, itemsPerPage));
+    } else if (sortOption === 'newest') {
+      setCurrentItems([...positions].sort((a, b) => b.id.sub(a.id).toNumber()).slice(itemOffset, endOffset));
+    } else if (sortOption === 'oldest') {
+      setCurrentItems([...positions].sort((a, b) => a.id.sub(b.id).toNumber()).slice(itemOffset, endOffset));
     } else {
-      setCurrentItems(positions.slice(0, itemsPerPage));
+      setCurrentItems(positions.slice(itemOffset, endOffset));
     }
+  }
+
+  const onSelect = (value: string) => {
+    setSelectedOption(value);
+    sortItems(0, itemsPerPage, value);
   };
 
   const { width, height } = useWindowSize();
 
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;
-    setCurrentItems(positions.slice(itemOffset, endOffset));
+    sortItems(itemOffset, endOffset, selectedOption);
     setPageCount(Math.ceil(positions.length / itemsPerPage));
   }, [itemOffset, itemsPerPage]);
 

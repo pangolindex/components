@@ -17,9 +17,9 @@ interface Props {
 
 export default function SarNFTPortfolio({ onSelectPosition }: Props) {
   const { account } = usePangolinWeb3();
-  const { positions, isLoading } = useSarPositions();
+  const { data: positions, isLoading } = useSarPositions();
 
-  const filteredPositions = positions.filter((position) => !position.balance.isZero()); // remove zero balances
+  const filteredPositions = positions?.filter((position) => !position.balance.isZero()); // remove zero balances
 
   const toggleWalletModal = useWalletModalToggle();
 
@@ -50,7 +50,7 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
   }, [account]);
 
   const renderBody = () => {
-    if (isLoading) {
+    if (isLoading || !filteredPositions) {
       return (
         <Box justifyContent="center" alignItems="center" width="100%" height="100%">
           <Loader size={100} />
