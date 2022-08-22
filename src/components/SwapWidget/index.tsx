@@ -20,16 +20,6 @@ const SwapWidget: React.FC<Props> = ({
   defaultOutputToken,
 }) => {
   const [swapType, setSwapType] = useState('MARKET' as string);
-  const [defaultInputCurrency, setDefaultInputCurrency] = useState(defaultInputToken as string);
-  const [defaultOutputCurrency, setDefaultOutputCurrency] = useState(defaultOutputToken as string);
-
-  const updateDefaultInputCurrency = (value: string) => {
-    setDefaultInputCurrency(value);
-  };
-
-  const updateDefaultOutputCurrency = (value: string) => {
-    setDefaultOutputCurrency(value);
-  };
 
   return (
     <Root>
@@ -40,10 +30,8 @@ const SwapWidget: React.FC<Props> = ({
             setSwapType(type);
           }}
           isLimitOrderVisible={isLimitOrderVisible}
-          defaultInputCurrency={defaultInputCurrency}
-          defaultOutputCurrency={defaultOutputCurrency}
-          updateDefaultOutputCurrency={updateDefaultOutputCurrency}
-          updateDefaultInputCurrency={updateDefaultInputCurrency}
+          defaultInputAddress={defaultInputToken}
+          defaultOutputAddress={defaultOutputToken}
         />
       ) : (
         <MarketOrder
@@ -54,10 +42,8 @@ const SwapWidget: React.FC<Props> = ({
           isLimitOrderVisible={isLimitOrderVisible}
           showSettings={showSettings}
           partnerDaaS={partnerDaaS}
-          defaultInputCurrency={defaultInputCurrency}
-          defaultOutputCurrency={defaultOutputCurrency}
-          updateDefaultOutputCurrency={updateDefaultOutputCurrency}
-          updateDefaultInputCurrency={updateDefaultInputCurrency}
+          defaultInputAddress={defaultInputToken}
+          defaultOutputAddress={defaultOutputToken}
         />
       )}
     </Root>

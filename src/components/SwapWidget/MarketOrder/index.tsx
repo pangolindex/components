@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { CAVAX, CHAINS, Currency, CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import { CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import ReactGA from 'react-ga';
@@ -7,8 +7,13 @@ import { ThemeContext } from 'styled-components';
 import { TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useAllTokens, useCurrency } from 'src/hooks/Tokens';
-import { useApproveCallbackFromTradeHook, useSwapCallbackHook, useWrapCallbackHook } from 'src/hooks/multiChainsHooks';
+import { useCurrency } from 'src/hooks/Tokens';
+import {
+  useApproveCallbackFromTradeHook,
+  useSwapCallbackHook,
+  useTokenHook,
+  useWrapCallbackHook,
+} from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useENS from 'src/hooks/useENS';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
@@ -27,7 +32,7 @@ import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/
 import { isAddress, isTokenOnList } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Box, Button, Text, TextInput } from '../../';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
 import SelectTokenDrawer from '../SelectTokenDrawer';
@@ -46,10 +51,8 @@ interface Props {
   isLimitOrderVisible: boolean;
   showSettings: boolean;
   partnerDaaS?: string;
-  defaultInputCurrency?: string;
-  defaultOutputCurrency?: string;
-  updateDefaultInputCurrency: (value: string) => void;
-  updateDefaultOutputCurrency: (value: string) => void;
+  defaultInputAddress?: string;
+  defaultOutputAddress?: string;
 }
 
 const MarketOrder: React.FC<Props> = ({
@@ -58,10 +61,8 @@ const MarketOrder: React.FC<Props> = ({
   isLimitOrderVisible,
   showSettings,
   partnerDaaS = ZERO_ADDRESS,
-  defaultInputCurrency,
-  defaultOutputCurrency,
-  updateDefaultInputCurrency,
-  updateDefaultOutputCurrency,
+  defaultInputAddress,
+  defaultOutputAddress,
 }) => {
   // const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
@@ -90,9 +91,8 @@ const MarketOrder: React.FC<Props> = ({
 
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const allTokens = useAllTokens();
+  const useToken_ = useTokenHook[chainId];
   const theme = useContext(ThemeContext);
-
   const useWrapCallback = useWrapCallbackHook[chainId];
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
   const useSwapCallback = useSwapCallbackHook[chainId];
@@ -173,30 +173,17 @@ const MarketOrder: React.FC<Props> = ({
   );
 
   // setting default tokens
-  const filterCurrencies = (symbolName: string): Currency[] => {
-    const tokens = Object.values(allTokens);
-    tokens.unshift(CAVAX[chainId] as Token);
-    const _tokens = tokens.filter((token) => token !== CAVAX[chainId]);
-    const currencies = CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : _tokens;
-    return currencies.filter((token) => token?.symbol?.toLowerCase() === symbolName.toLowerCase());
-  };
+  const defaultInputCurrency = unwrappedToken(useToken_(defaultInputAddress) as Token, chainId);
+  const defaultOutputCurrency = unwrappedToken(useToken_(defaultOutputAddress) as Token, chainId);
 
   useEffect(() => {
     if (defaultInputCurrency) {
-      const filteredInputCurrency = filterCurrencies(defaultInputCurrency);
-      filteredInputCurrency.length > 0 && onCurrencySelection(Field.INPUT, filteredInputCurrency[0]);
+      onCurrencySelection(Field.INPUT, defaultInputCurrency);
     }
-    if (defaultOutputCurrency && defaultInputCurrency?.toLowerCase() !== inputCurrency?.symbol?.toLowerCase()) {
-      const filteredOutputCurrency = filterCurrencies(defaultOutputCurrency);
-      filteredOutputCurrency.length > 0 && onCurrencySelection(Field.OUTPUT, filteredOutputCurrency[0]);
+    if (defaultOutputCurrency) {
+      onCurrencySelection(Field.OUTPUT, defaultOutputCurrency);
     }
-  }, [chainId]);
-
-  // updating default values on token change so change is carried across market/limit
-  useEffect(() => {
-    if (currencies?.INPUT?.symbol) updateDefaultInputCurrency(currencies?.INPUT?.symbol);
-    if (currencies?.OUTPUT?.symbol) updateDefaultOutputCurrency(currencies?.OUTPUT?.symbol);
-  }, [currencies.INPUT, currencies.OUTPUT]);
+  }, [chainId, defaultInputAddress, defaultOutputAddress]);
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{

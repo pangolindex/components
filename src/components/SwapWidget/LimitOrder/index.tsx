@@ -1,13 +1,13 @@
 /* eslint-disable max-lines */
 import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
-import { CAVAX, CHAINS, Currency, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import { CAVAX, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { NATIVE } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useAllTokens } from 'src/hooks/Tokens';
+import { useTokenHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
@@ -15,7 +15,7 @@ import { LimitField, LimitNewField } from 'src/state/pswap/actions';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { galetoMaxAmountSpend } from 'src/utils/maxAmountSpend';
-import { wrappedGelatoCurrency } from 'src/utils/wrappedCurrency';
+import { unwrappedToken, wrappedGelatoCurrency } from 'src/utils/wrappedCurrency';
 import { Box, Button, Text, ToggleButtons } from '../../';
 import ConfirmLimitOrderDrawer from '../ConfirmLimitOrderDrawer';
 import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
@@ -33,20 +33,16 @@ interface Props {
   swapType: string;
   setSwapType: (value: string) => void;
   isLimitOrderVisible: boolean;
-  defaultInputCurrency?: string;
-  defaultOutputCurrency?: string;
-  updateDefaultInputCurrency: (value: string) => void;
-  updateDefaultOutputCurrency: (value: string) => void;
+  defaultInputAddress?: string;
+  defaultOutputAddress?: string;
 }
 
 const LimitOrder: React.FC<Props> = ({
   swapType,
   setSwapType,
   isLimitOrderVisible,
-  defaultInputCurrency,
-  defaultOutputCurrency,
-  updateDefaultInputCurrency,
-  updateDefaultOutputCurrency,
+  defaultInputAddress,
+  defaultOutputAddress,
 }) => {
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(0);
@@ -54,7 +50,7 @@ const LimitOrder: React.FC<Props> = ({
   const [activeTab, setActiveTab] = useState<'SELL' | 'BUY'>('SELL');
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const allTokens = useAllTokens();
+  const useToken_ = useTokenHook[chainId];
   const theme = useContext(ThemeContext);
 
   const percentageValue = [25, 50, 75, 100];
@@ -178,52 +174,17 @@ const LimitOrder: React.FC<Props> = ({
   );
 
   // setting default tokens
-  const filterCurrencies = (symbolName: string): Currency[] => {
-    const tokens = Object.values(allTokens);
-    tokens.unshift(CAVAX[chainId] as Token);
-    const _tokens = tokens.filter((token) => token !== CAVAX[chainId]);
-    const currencies = CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : _tokens;
-    return currencies.filter((token) => token?.symbol?.toLowerCase() === symbolName.toLowerCase());
-  };
-
-  const setDefaultCurrency = (tokenDrawerType: LimitNewField, currency: Currency) => {
-    if (tokenDrawerType === (LimitNewField.INPUT as any)) {
-      setApprovalSubmitted(false); // reset 2 step UI for approvals
-    }
-
-    // here need to add isToken because in Galato hook require this variable to select currency
-    const newCurrency: any = { ...currency };
-    if (currency?.symbol === CAVAX[chainId].symbol) {
-      newCurrency.isNative = true;
-    } else {
-      newCurrency.isToken = true;
-    }
-
-    onCurrencySelection(tokenDrawerType as any, newCurrency);
-    // this is to update tokens on chart on token selection
-    onSwapCurrencySelection(tokenDrawerType as any, currency);
-  };
+  const defaultInputCurrency = unwrappedToken(useToken_(defaultInputAddress) as Token, chainId);
+  const defaultOutputCurrency = unwrappedToken(useToken_(defaultOutputAddress) as Token, chainId);
 
   useEffect(() => {
     if (defaultInputCurrency) {
-      const filteredInputCurrency = filterCurrencies(defaultInputCurrency);
-      if (filteredInputCurrency.length > 0) {
-        setDefaultCurrency(LimitNewField.INPUT, filteredInputCurrency[0]);
-      }
+      onCurrencySelect(defaultInputCurrency, LimitNewField.INPUT);
     }
     if (defaultOutputCurrency) {
-      const filteredOutputCurrency = filterCurrencies(defaultOutputCurrency);
-      if (filteredOutputCurrency.length > 0) {
-        setDefaultCurrency(LimitNewField.OUTPUT, filteredOutputCurrency[0]);
-      }
+      onCurrencySelect(defaultOutputCurrency, LimitNewField.OUTPUT);
     }
-  }, [chainId]);
-
-  // updating default values on token change so change is carried across market/limit
-  useEffect(() => {
-    if (currencies?.input?.symbol) updateDefaultInputCurrency(currencies?.input?.symbol);
-    if (currencies?.output?.symbol) updateDefaultOutputCurrency(currencies?.output?.symbol);
-  }, [currencies.input, currencies.output]);
+  }, [chainId, defaultInputAddress, defaultOutputAddress]);
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -374,7 +335,7 @@ const LimitOrder: React.FC<Props> = ({
   }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash]);
 
   const onCurrencySelect = useCallback(
-    (currency) => {
+    (currency: any, tokenDrawerType?: LimitNewField) => {
       if (tokenDrawerType === (LimitNewField.INPUT as any)) {
         setApprovalSubmitted(false); // reset 2 step UI for approvals
       }
