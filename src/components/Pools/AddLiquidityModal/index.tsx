@@ -83,15 +83,14 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
       return (
         <>
           <SearchToken currency0={currency0} currency1={currency1} onTokenClick={onTokenClick} onClick={setBodyState} />
-          {showSearch && (
-            <SelectTokenDrawer
-              isOpen={showSearch}
-              selectedCurrency={currency0}
-              otherSelectedCurrency={currency1}
-              onCurrencySelect={handleCurrencySelect}
-              onClose={handleClose}
-            />
-          )}
+
+          <SelectTokenDrawer
+            isOpen={showSearch}
+            selectedCurrency={currency0}
+            otherSelectedCurrency={currency1}
+            onCurrencySelect={handleCurrencySelect}
+            onClose={handleClose}
+          />
         </>
       );
     } else if (currency0 && currency1) {
