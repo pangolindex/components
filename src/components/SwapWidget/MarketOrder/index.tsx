@@ -174,9 +174,9 @@ const MarketOrder: React.FC<Props> = ({
 
   // setting default tokens
   const defaultInputToken = useToken(defaultInputAddress);
-  const defaultInputCurrency = unwrappedToken(defaultInputToken as Token, chainId);
+  const defaultInputCurrency = defaultInputToken ? unwrappedToken(defaultInputToken as Token, chainId) : undefined;
   const defaultOututToken = useToken(defaultOutputAddress);
-  const defaultOutputCurrency = unwrappedToken(defaultOututToken as Token, chainId);
+  const defaultOutputCurrency = defaultOututToken ? unwrappedToken(defaultOututToken as Token, chainId) : undefined;
 
   useEffect(() => {
     if (defaultInputCurrency) {

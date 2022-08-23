@@ -175,9 +175,9 @@ const LimitOrder: React.FC<Props> = ({
 
   // setting default tokens
   const defaultInputToken = useToken(defaultInputAddress);
-  const defaultInputCurrency = unwrappedToken(defaultInputToken as Token, chainId);
+  const defaultInputCurrency = defaultInputToken ? unwrappedToken(defaultInputToken as Token, chainId) : undefined;
   const defaultOutputToken = useToken(defaultOutputAddress);
-  const defaultOutputCurrency = unwrappedToken(defaultOutputToken as Token, chainId);
+  const defaultOutputCurrency = defaultOutputToken ? unwrappedToken(defaultOutputToken as Token, chainId) : undefined;
 
   useEffect(() => {
     if (defaultInputCurrency) {
