@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { CHAINS, ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, ChainId, JSBI, Percent, Token, WAGMI_FUJI_SUBNET, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import BN from 'bn.js';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
@@ -355,6 +355,6 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
 };
 
 export const SAR_STAKING_ADDRESS: { [chainId in ChainId]?: string } = {
-  [ChainId.WAGMI]: '0xf9E3691617151969f30b0Da57AA0c9f4698ef6ab',
+  [ChainId.WAGMI]: WAGMI_FUJI_SUBNET.contracts?.staking?.find((c) => c.isSar && c.active)?.address,
 };
 /* eslint-enable max-lines */

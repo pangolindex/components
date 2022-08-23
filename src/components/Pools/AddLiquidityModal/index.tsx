@@ -64,6 +64,10 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
     [activeField, switchCurrencies, currency0, currency1],
   );
 
+  const handleClose = useCallback(() => {
+    setShowSearch(false);
+  }, [setShowSearch]);
+
   function renderTitle() {
     if (bodyState === BodyState.SELECT_TOKENS) {
       return t('poolFinder.selectToken');
@@ -79,12 +83,13 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
       return (
         <>
           <SearchToken currency0={currency0} currency1={currency1} onTokenClick={onTokenClick} onClick={setBodyState} />
+
           <SelectTokenDrawer
             isOpen={showSearch}
             selectedCurrency={currency0}
             otherSelectedCurrency={currency1}
             onCurrencySelect={handleCurrencySelect}
-            onClose={() => setShowSearch(false)}
+            onClose={handleClose}
           />
         </>
       );
