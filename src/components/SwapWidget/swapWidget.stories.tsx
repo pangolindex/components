@@ -25,3 +25,11 @@ Default.args = {
   defaultInputToken: '',
   defaultOutputToken: '',
 };
+
+export const WithDefaultTokenValues = TemplateSwapWidget.bind({});
+WithDefaultTokenValues.args = {
+  isLimitOrderVisible: false,
+  showSettings: true,
+  defaultInputToken: '0x5947bb275c521040051d82396192181b413227a3',
+  defaultOutputToken: '0x60781c2586d68229fde47564546784ab3faca982',
+};

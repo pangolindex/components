@@ -91,7 +91,7 @@ const MarketOrder: React.FC<Props> = ({
 
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const useToken_ = useTokenHook[chainId];
+  const useToken = useTokenHook[chainId];
   const theme = useContext(ThemeContext);
   const useWrapCallback = useWrapCallbackHook[chainId];
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
@@ -173,8 +173,10 @@ const MarketOrder: React.FC<Props> = ({
   );
 
   // setting default tokens
-  const defaultInputCurrency = unwrappedToken(useToken_(defaultInputAddress) as Token, chainId);
-  const defaultOutputCurrency = unwrappedToken(useToken_(defaultOutputAddress) as Token, chainId);
+  const defaultInputToken = useToken(defaultInputAddress);
+  const defaultInputCurrency = unwrappedToken(defaultInputToken as Token, chainId);
+  const defaultOututToken = useToken(defaultOutputAddress);
+  const defaultOutputCurrency = unwrappedToken(defaultOututToken as Token, chainId);
 
   useEffect(() => {
     if (defaultInputCurrency) {
@@ -183,7 +185,7 @@ const MarketOrder: React.FC<Props> = ({
     if (defaultOutputCurrency) {
       onCurrencySelection(Field.OUTPUT, defaultOutputCurrency);
     }
-  }, [chainId, defaultInputAddress, defaultOutputAddress]);
+  }, [chainId, defaultInputAddress, defaultOutputAddress, defaultInputCurrency, defaultOutputCurrency]);
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{

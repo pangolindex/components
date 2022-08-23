@@ -50,7 +50,7 @@ const LimitOrder: React.FC<Props> = ({
   const [activeTab, setActiveTab] = useState<'SELL' | 'BUY'>('SELL');
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const useToken_ = useTokenHook[chainId];
+  const useToken = useTokenHook[chainId];
   const theme = useContext(ThemeContext);
 
   const percentageValue = [25, 50, 75, 100];
@@ -174,8 +174,10 @@ const LimitOrder: React.FC<Props> = ({
   );
 
   // setting default tokens
-  const defaultInputCurrency = unwrappedToken(useToken_(defaultInputAddress) as Token, chainId);
-  const defaultOutputCurrency = unwrappedToken(useToken_(defaultOutputAddress) as Token, chainId);
+  const defaultInputToken = useToken(defaultInputAddress);
+  const defaultInputCurrency = unwrappedToken(defaultInputToken as Token, chainId);
+  const defaultOutputToken = useToken(defaultOutputAddress);
+  const defaultOutputCurrency = unwrappedToken(defaultOutputToken as Token, chainId);
 
   useEffect(() => {
     if (defaultInputCurrency) {
@@ -184,7 +186,7 @@ const LimitOrder: React.FC<Props> = ({
     if (defaultOutputCurrency) {
       onCurrencySelect(defaultOutputCurrency, LimitNewField.OUTPUT);
     }
-  }, [chainId, defaultInputAddress, defaultOutputAddress]);
+  }, [chainId, defaultInputAddress, defaultOutputAddress, defaultInputCurrency, defaultOutputCurrency]);
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -335,8 +337,9 @@ const LimitOrder: React.FC<Props> = ({
   }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash]);
 
   const onCurrencySelect = useCallback(
-    (currency: any, tokenDrawerType?: LimitNewField) => {
-      if (tokenDrawerType === (LimitNewField.INPUT as any)) {
+    (currency: any, tokenDrawerTypeArg?: LimitNewField) => {
+      const type = tokenDrawerTypeArg ?? tokenDrawerType;
+      if (type === (LimitNewField.INPUT as any)) {
         setApprovalSubmitted(false); // reset 2 step UI for approvals
       }
 
@@ -348,9 +351,9 @@ const LimitOrder: React.FC<Props> = ({
         newCurrency.isToken = true;
       }
 
-      onCurrencySelection(tokenDrawerType as any, newCurrency);
+      onCurrencySelection(type as any, newCurrency);
       // this is to update tokens on chart on token selection
-      onSwapCurrencySelection(tokenDrawerType as any, currency);
+      onSwapCurrencySelection(type as any, currency);
     },
     [tokenDrawerType, onCurrencySelection, onSwapCurrencySelection],
   );
