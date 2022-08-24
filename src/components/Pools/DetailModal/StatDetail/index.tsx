@@ -1,10 +1,18 @@
 import { CHAINS, Currency, JSBI, Pair, TokenAmount } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React from 'react';
+import AnalyticsIcon from 'src/assets/images/analytics.svg';
 import { Box, Stat, Text } from 'src/components';
+import { AnalyticsLink } from 'src/components/Stat/styled';
+import { ANALYTICS_PAGE } from 'src/constants';
 import { useTotalSupply } from 'src/data/TotalSupply';
 import { useChainId } from 'src/hooks';
 import { StateContainer } from './styleds';
+
+export enum LinkType {
+  pair,
+  walletAnalytics,
+}
 
 interface Props {
   title: string;
@@ -13,9 +21,10 @@ interface Props {
   pgl?: TokenAmount;
   currency0: Currency | undefined;
   currency1: Currency | undefined;
+  link?: LinkType;
 }
 
-export default function StatDetail({ title, totalAmount, pair, pgl, currency0, currency1 }: Props) {
+export default function StatDetail({ title, totalAmount, pair, pgl, currency0, currency1, link }: Props) {
   const chainId = useChainId();
 
   const totalPoolTokens = useTotalSupply(pair?.liquidityToken);
@@ -33,10 +42,22 @@ export default function StatDetail({ title, totalAmount, pair, pgl, currency0, c
         ]
       : [undefined, undefined];
 
+  console.log(pair);
+
   return (
     <Box>
-      <Text color="text1" fontSize={24} fontWeight={400}>
+      <Text color="text1" fontSize={24} fontWeight={400} style={{ display: 'flex', gap: '1rem' }}>
         {title}
+        <AnalyticsLink
+          href={
+            link === LinkType.pair
+              ? `${ANALYTICS_PAGE}/#/pair/${pair?.liquidityToken.address}`
+              : `${ANALYTICS_PAGE}/#/accounts`
+          }
+          target="_blank"
+        >
+          <img src={AnalyticsIcon} alt="analytics-icon" />
+        </AnalyticsLink>
       </Text>
 
       <StateContainer>

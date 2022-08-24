@@ -7,7 +7,7 @@ import { useChainId } from 'src/hooks';
 import { useGetPoolDollerWorth } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
-import StatDetail from '../StatDetail';
+import StatDetail, { LinkType } from '../StatDetail';
 import { DetailsContainer } from './styled';
 
 type Props = {
@@ -46,12 +46,13 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
     <>
       <DetailsContainer>
         <StatDetail
-          title={`Total Stake`}
+          title={`Total Stakes`}
           currency0={currency0}
           currency1={currency1}
           pair={pair}
           totalAmount={`${totalStakedInUsd}`}
           pgl={stakingInfo?.totalStakedAmount}
+          link={LinkType.pair}
         />
 
         {Number(liquidityInUSD?.toFixed(4)) > 0 && (
@@ -76,6 +77,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
               pair={pair}
               totalAmount={`${numeral((yourStakeInUsd as Fraction)?.toFixed(2)).format('$0.00a')}`}
               pgl={stakingInfo?.stakedAmount}
+              link={LinkType.walletAnalytics}
             />
           </Box>
         )}
