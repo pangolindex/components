@@ -20,7 +20,7 @@ react-dom
 | @pangolindex/components   | @pangolindex/sdk |
 | ------------------------  | ---------------- |
 | 4.0.4                     | 2.1.11           |
-| next                      | 3.0.1            |
+| 4.1.0-rc.0                | 3.0.1            |
 
 ## Getting started
 
