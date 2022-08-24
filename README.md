@@ -13,8 +13,14 @@ or
 ```
 react
 react-dom
-@pangolindex/sdk
+@pangolindex/sdk ( for version see below mapping )
 ```
+
+#### components <-> sdk version mapping
+| @pangolindex/components   | @pangolindex/sdk |
+| ------------------------  | ---------------- |
+| 4.0.4                     | 2.1.11           |
+| next                      | 3.0.1            |
 
 ## Getting started
 
