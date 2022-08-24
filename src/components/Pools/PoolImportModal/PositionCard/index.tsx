@@ -36,10 +36,7 @@ const PositionCard = ({ pair, onManagePoolsClick }: PositionCardProps) => {
     !!userPoolBalance &&
     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
     JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
-      ? [
-          pair.getLiquidityValue(pair.token0, totalPoolTokens, userPoolBalance, false),
-          pair.getLiquidityValue(pair.token1, totalPoolTokens, userPoolBalance, false),
-        ]
+      ? pair.getLiquidityValues(totalPoolTokens, userPoolBalance, { feeOn: false })
       : [undefined, undefined];
   return (
     <Wrapper>
