@@ -611,5 +611,81 @@
     "missingLiquidityAmount": "Thiếu số tiền thanh khoản",
     "couldNotWrap": "Không thể quấn",
     "trytingToConfirmApproval": "Đang cố gắng xác nhận mà không cần phê duyệt hoặc chữ ký. Vui lòng liên hệ với bộ phận hỗ trợ."
+  },
+  "sarTitle":{
+    "addMore": "BỔ SUNG THÊM",
+    "unstake": "BỎ LỠ VỊ TRÍ",
+    "compound": "PHẦN THƯỞNG HỢP LỆ",
+    "claim": "PHẦN THƯỞNG KHIẾU NẠI",
+    "interactingID": "Tương tác với ID: {{ id }}"
+  },
+  "sarStake": {
+    "createNewPosition": "Tạo một vị trí mới",
+    "stake": "Cọc",
+    "staking": "Staking",
+    "walletBalance": "Trong Ví {{ balance }} {{ symbol }}",
+    "max": "Max",
+    "dollarValue": "Giá trị đô la",
+    "buy": "Mua {{ symbol }}",
+    "averageAPR": "APR trung bình",
+    "startingApr": "Bắt đầu APR",
+    "weeklyDistributed": "Hàng tuần {{ biểu tượng }} Phân phối",
+    "confirmDescription": "Một hành động đặt cược sẽ tạo ra SAR Nft cho bạn. Với NFT này, bạn có thể quản lý số tiền đặt cược {{ symbol }} của mình.",
+    "successSubmit": "Bạn đã stake thành công token của mình.",
+    "yourAprRecalculated": "APR của bạn sẽ được tính toán lại.",
+    "summary": "Tóm tắt",
+    "pending": "Staking {{ balance }} {{ symbol }}",
+    "transactionSummary": "Staked {{ balance }} {{ symbol }}"
+  },
+  "sarStakeMore": {
+    "stakeMore": "Đặt cọc nhiều hơn",
+    "choosePosition": "Chọn một vị trí",
+    "confirmDescription": "Tháng Tư của bạn sẽ bắt đầu từ 0 và tăng số tiền bạn nhận được từ nhóm phần thưởng theo thời gian",
+    "newAPR": "APR mới",
+    "add": "Thêm",
+    "pending": "Thêm {{ balance }} {{ symbol }}"
+  },
+  "sarUnstake": {
+    "unstake": "Hủy tham gia",
+    "unstaking": "Unstaking {{ balance }} {{ symbol }}",
+    "stakedBalance": "Staked {{ balance }} {{ symbol }}",
+    "confirmDescription": "Cần lưu ý rằng việc bỏ đặt cược phần thưởng của bạn sẽ giúp APR của bạn về 0% cho vị trí này. \nThay vì bỏ đặt cược, bạn cũng có thể cân nhắc bán NFT của mình.",
+    "successSubmit": "Bạn đã hủy sử dụng thành công token của mình.",
+    "pending": "Unstaking {{ balance }} {{ symbol }}",
+    "transactionSummary": "Unstaked {{ balance }} {{ symbol }}",
+    "currentAPR": "APR hiện tại",
+    "unstakeWarning": "Khi bạn hủy tham gia, APR trung bình của bạn sẽ giảm xuống 0%.",
+    "aprAfter": "APR sau khi unstake"
+  },
+  "sarCompound": {
+    "compound": "Hợp chất",
+    "compounding": "Kép",
+    "successSubmit": "Bạn đã thành công trong việc kết hợp vị trí của mình.",
+    "pending": "Kép",
+    "transactionSummary": "Vị trí kết hợp",
+    "aprAfter": "APR sau khi kết hợp",
+    "reward": "Phần thưởng tích lũy",
+    "description": "Xin lưu ý rằng việc cộng gộp phần thưởng của bạn có thể làm giảm APR trung bình của bạn. Các mã thông báo đặt cược mới bắt đầu từ 0, trong khi các mã thông báo cũ sẽ tiếp tục với cùng một APR. Điều này tạo ra mức trung bình được hiển thị cho bạn.",
+    "noRewards": "Không có phần thưởng để kết hợp"
+  },
+  "sarClaim": {
+    "claim": "Đòi",
+    "claiming": "Tuyên bố",
+    "description": "Do tính chất của hệ thống đặt cọc SAR yêu cầu phần thưởng của bạn sẽ giảm APR của bạn xuống 0. Thay vào đó, bạn có thể cộng gộp phần thưởng của mình mà không mất APR của mình.",
+    "successSubmit": "Bạn đã nhận thành công phần thưởng của mình",
+    "pending": "Tuyên bố",
+    "transactionSummary": "Phần thưởng vị trí đã nhận",
+    "aprAfter": "APR sau khi yêu cầu bồi thường",
+    "noRewards": "Không có phần thưởng để yêu cầu"
+  },
+  "sarPortfolio": {
+    "noPositions": "Bạn không có bất kỳ PANGUARDIAN NFT nào.\nHÃY GIÚP BẠN CÓ ĐƯỢC MỘT",
+    "start": "BẮT ĐẦU",
+    "positionId": "ID vị trí",
+    "apr": "Apr",
+    "amount": "Lượng",
+    "newest": "Mới nhất",
+    "oldest": "Cũ nhất",
+    "sortBy": "Sắp xếp theo"
   }
 }

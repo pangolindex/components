@@ -8,14 +8,19 @@ export interface Props {
   isLimitOrderVisible?: boolean;
   showSettings?: boolean;
   partnerDaaS?: string;
+  defaultInputToken?: string;
+  defaultOutputToken?: string;
 }
 
 const SwapWidget: React.FC<Props> = ({
   isLimitOrderVisible = false,
   showSettings = true,
   partnerDaaS = ZERO_ADDRESS,
+  defaultInputToken,
+  defaultOutputToken,
 }) => {
   const [swapType, setSwapType] = useState('MARKET' as string);
+
   return (
     <Root>
       {swapType === 'LIMIT' ? (
@@ -25,6 +30,8 @@ const SwapWidget: React.FC<Props> = ({
             setSwapType(type);
           }}
           isLimitOrderVisible={isLimitOrderVisible}
+          defaultInputAddress={defaultInputToken}
+          defaultOutputAddress={defaultOutputToken}
         />
       ) : (
         <MarketOrder
@@ -35,6 +42,8 @@ const SwapWidget: React.FC<Props> = ({
           isLimitOrderVisible={isLimitOrderVisible}
           showSettings={showSettings}
           partnerDaaS={partnerDaaS}
+          defaultInputAddress={defaultInputToken}
+          defaultOutputAddress={defaultOutputToken}
         />
       )}
     </Root>

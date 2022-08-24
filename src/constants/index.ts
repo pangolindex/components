@@ -1,6 +1,17 @@
 /* eslint-disable max-lines */
-import { CHAINS, ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
+import {
+  CHAINS,
+  COSTON_TESTNET,
+  ChainId,
+  JSBI,
+  Percent,
+  StakingType,
+  Token,
+  WAGMI_FUJI_SUBNET,
+  WAVAX,
+} from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import BN from 'bn.js';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
@@ -60,12 +71,12 @@ export const INITIAL_ALLOWED_SLIPPAGE = 50;
 export const DEFAULT_DEADLINE_FROM_NOW = '600';
 
 export const MINICHEF_ADDRESS: { [chainId in ChainId]: string } = {
-  [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.mini_chef!,
-  [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].contracts!.mini_chef!,
-  [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].contracts!.mini_chef!,
-  [ChainId.COSTON]: CHAINS[ChainId.COSTON].contracts!.mini_chef!,
-  [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].contracts!.mini_chef!,
-  [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].contracts!.mini_chef!,
+  [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.mini_chef!.address!,
+  [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].contracts!.mini_chef!.address!,
+  [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].contracts!.mini_chef!.address!,
+  [ChainId.COSTON]: CHAINS[ChainId.COSTON].contracts!.mini_chef!.address!,
+  [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].contracts!.mini_chef!.address!,
+  [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].contracts!.mini_chef!.address!,
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
@@ -313,13 +324,18 @@ export interface WalletInfo {
 }
 export const DIRECTUS_URL_NEWS = `https://pangolin.directus.app`;
 
-export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3/`;
+export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3`;
+export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
 
 export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
 export const COINGECKO_API = 'https://api.coingecko.com/api/v3';
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
-
-/* eslint-enable max-lines */
+export const NEAR_STORAGE_PER_TOKEN = '0.005';
+export const NEAR_STORAGE_TO_REGISTER_WITH_FT = '0.1';
+export const NEAR_MIN_DEPOSIT_PER_TOKEN = new BN('5000000000000000000000');
+export const NEAR_MIN_DEPOSIT_PER_TOKEN_FARM = new BN('45000000000000000000000');
+export const NEAR_ACCOUNT_MIN_STORAGE_AMOUNT = '0.005';
+export const NEAR_LP_STORAGE_AMOUNT = '0.01';
 
 const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.FUJI]: [WAVAX[ChainId.FUJI], PNG[ChainId.FUJI]],
@@ -338,3 +354,11 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
 export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } = {
   [ChainId.AVALANCHE]: [],
 };
+
+export const SAR_STAKING_ADDRESS: { [chainId in ChainId]?: string } = {
+  [ChainId.WAGMI]: WAGMI_FUJI_SUBNET.contracts?.staking?.find((c) => c.type === StakingType.SAR_POSITIONS && c.active)
+    ?.address,
+  [ChainId.COSTON]: COSTON_TESTNET.contracts?.staking?.find((c) => c.type === StakingType.SAR_POSITIONS && c.active)
+    ?.address,
+};
+/* eslint-enable max-lines */

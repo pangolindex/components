@@ -610,5 +610,81 @@
     "missingLiquidityAmount": "Quantidade de liquidez ausente",
     "couldNotWrap": "Não foi possível fazer Wrap",
     "attemptingToConfirmApproval": "Tentando confirmar sem aprovação ou assinatura. Por favor, contate o suporte."
+  },
+  "sarTitle":{
+    "addMore": "ADICIONAR MAIS",
+    "unstake": "RETIRAR UMA POSIÇÃO",
+    "compound": "COMPOR RECOMPENSAS",
+    "claim": "REIVINDICAR RECOMPENSAS",
+    "interactingID": "Interagindo com o ID: {{ id }}"
+  },
+  "sarStake": {
+    "createNewPosition": "Crie uma nova posição",
+    "stake": "Stake",
+    "staking": "Staking",
+    "walletBalance": "Na wallet {{ balance }} {{ symbol }}",
+    "max": "MAX",
+    "dollarValue": "Valor em Dólar",
+    "buy": "Comprar {{ symbol }}",
+    "averageAPR": "APR médio",
+    "startingApr": "APR começando em",
+    "weeklyDistributed": "{{ symbol }} semanal distribuído",
+    "confirmDescription": "Uma ação de stake criará um SAR Nft para você. Com esta NFT você pode gerenciar seu stake de {{ symbol }}.",
+    "successSubmit": "Você depositou com sucesso seus tokens.",
+    "yourAprRecalculated": "Seu APR será recalculado.",
+    "summary": "Resumo",
+    "pending": "Depositando {{ balance }} {{ symbol }}",
+    "transactionSummary": "Em stake {{ balance }} {{ symbol }}"
+  },
+  "sarStakeMore": {
+    "stakeMore": "Depositar Mais",
+    "choosePosition": "Escolha uma posição",
+    "confirmDescription": "Seu Apr começará a partir de 0 e aumentará a quantidade que você tirar do pool de recompensas pelo tempo",
+    "newAPR": "Novo APR",
+    "add": "Adicionar",
+    "pending": "Adicionando {{ balance }} {{ symbol }}"
+  },
+  "sarUnstake": {
+    "unstake": "Retirar",
+    "unstaking": "Retirando {{ balance }} {{ symbol }}",
+    "stakedBalance": "Depositado {{ balance }} {{ symbol }}",
+    "confirmDescription": "Vale a pena estar ciente de que retirar suas recompensas fará com que sua APR seja de 0% para esta posição. \nEm vez de retirar, você também pode considerar vender sua NFT.",
+    "successSubmit": "Você retirou seus tokens com sucesso.",
+    "pending": "Retirando {{ balance }} {{ symbol }}",
+    "transactionSummary": "Retirado {{ balance }} {{ symbol }}",
+    "currentAPR": "APR atual",
+    "unstakeWarning": "Quando você retira seus tokens, sua média de APR cairá para 0%.",
+    "aprAfter": "APR após a retirada"
+  },
+  "sarCompound": {
+    "compound": "Compor",
+    "compounding": "Compondo",
+    "successSubmit": "Você compôs com sucesso sua posição.",
+    "pending": "Compondo",
+    "transactionSummary": "Posição composta",
+    "aprAfter": "APR Após composição",
+    "reward": "Recompensas acumuladas",
+    "description": "Esteja ciente de que a composição de suas recompensas pode diminuir sua TAEG média. Os tokens recentemente depositados começam apartir de 0%, enquanto os tokens antigos continuarão com o mesmo APR. Isso cria a média que é exibida para você",
+    "noRewards": "Sem recompensas para compor"
+  },
+  "sarClaim": {
+    "claim": "Reivindicar",
+    "claiming": "Reivindicando",
+    "description": "Devido à natureza do sistema de stake SAR, reivindicar suas recompensas reduzirá sua APR para 0%. Em vez disso, você pode compor suas recompensas sem perder seu APR.",
+    "successSubmit": "Você reivindicou com sucesso suas recompensas",
+    "pending": "Reivindicando",
+    "transactionSummary": "Recompensas da posição reivindicadas",
+    "aprAfter": "APR após reivindicação",
+    "noRewards": "Não há recompensas para reivindicar"
+  },
+  "sarPortfolio": {
+    "noPositions": "Você não tem nenhuma NFT PANGUARDIAN.\nVAMOS TER UMA.",
+    "start": "COMEÇAR",
+    "positionId": "ID da posição",
+    "apr": "APR",
+    "amount": "Quantidade",
+    "newest": "Mais recente",
+    "oldest": "Menos recente",
+    "sortBy": "Ordernar por"
   }
 }

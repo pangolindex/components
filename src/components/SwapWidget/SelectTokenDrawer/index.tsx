@@ -66,7 +66,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : [];
     const tokens = Object.values(allTokens);
-    tokens.unshift(CAVAX[chainId]);
+    tokens.unshift(CAVAX[chainId] as Token);
     return filterTokens(tokens, searchQuery);
   }, [isAddressSearch, searchToken, allTokens, searchQuery]);
 

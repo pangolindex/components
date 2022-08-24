@@ -150,7 +150,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
         </Box>
         {/*EXPERT MODE INPUT */}
         <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" style={{ gap: '15px' }}>
-          <Text color="text1">Toogle Expert Mode</Text>
+          <Text color="text1">Toggle Expert Mode</Text>
           <Box width="120px">
             <ToggleButtons
               options={['ON', 'OFF']}

@@ -8,6 +8,7 @@ export const Root = styled.div`
   align-items: center;
   padding: 2px;
   width: 100%;
+  box-sizing: border-box;
 `;
 
 export const TextButton = styled.div<{

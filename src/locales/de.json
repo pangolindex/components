@@ -373,7 +373,7 @@
     "noSeePoolJoined": "Siehst du den Pool, dem Du beigetreten bist nicht?",
     "migrateNow": "Jetzt migrieren.",
     "importIt": "Importiere ihn.",
-    "seeDetails":"SIEHE EINZELHEITEN",
+    "seeDetails": "SIEHE EINZELHEITEN",
     "totalLockedValue": "Gesperrter Gesamtwert",
     "yourLockedValue": "Ihr gesperrter Wert",
     "allFarms": "Alle Bauernhöfe",
@@ -449,7 +449,7 @@
     "comingSoon": "Kommt bald",
     "connectWalletViewPortFolio": "Stellen Sie eine Verbindung zu einem Wallet her, um Ihr Portfolio anzuzeigen.",
     "limitOrders": "Limitaufträge",
-    "cancelOrder" : "Bestellung stornieren",
+    "cancelOrder": "Bestellung stornieren",
     "all": "ALLE",
     "open": "OFFEN",
     "executed": "HINGERICHTET",
@@ -611,5 +611,81 @@
     "missingLiquidityAmount": "Fehlender Liquiditätsbetrag",
     "couldNotWrap": "Konnte nicht umbrechen",
     "attemptingToConfirmApproval": "Bestätigungsversuch ohne Genehmigung oder Unterschrift. Bitte kontaktieren Sie den Support."
+  },
+  "sarTitle":{
+    "addMore": "MEHR HINZUFÜGEN",
+    "unstake": "EINE POSITION ABSETZEN",
+    "compound": "VERBUNDENE BELOHNUNGEN",
+    "claim": "BELOHNUNG ENTGEGENNEHMEN",
+    "interactingID": "Interaktion mit ID: {{ id }}"
+  },
+  "sarStake": {
+    "createNewPosition": "Erstellen Sie eine neue Position",
+    "stake": "Anteil",
+    "staking": "Wettend",
+    "walletBalance": "Im Portemonnaie {{ Guthaben }} {{ symbol }}",
+    "max": "Max",
+    "dollarValue": "Dollar-Wert",
+    "buy": "{{ symbol }} kaufen",
+    "averageAPR": "Durchschnittlich Apr",
+    "startingApr": "Starten des effektiven Jahreszeitraums",
+    "weeklyDistributed": "Wöchentlich {{ symbol }} Verteilt",
+    "confirmDescription": "Durch eine Pfahlaktion wird ein SAR-Nft für Sie erstellt. Mit diesem NFT können Sie Ihren {{ symbol }} Einsatz verwalten.",
+    "successSubmit": "Sie haben Ihr Token erfolgreich abgesteckt.",
+    "yourAprRecalculated": "Ihr effektiver Jahreszins wird neu berechnet.",
+    "summary": "Zusammenfassung",
+    "pending": "Abstecken {{ balance }} {{ symbol }}",
+    "transactionSummary": "Abgesteckt {{ balance }} {{ symbol }}"
+  },
+  "sarStakeMore": {
+    "stakeMore": "Mehr setzen",
+    "choosePosition": "Wählen Sie eine Position",
+    "confirmDescription": "Ihr Apr beginnt bei 0 und erhöht den Betrag, den Sie aus dem Belohnungspool nehmen, um die Zeit",
+    "newAPR": "Neuer effektiver Jahreszins",
+    "add": "Hinzufügen",
+    "pending": "Hinzufügen von {{ balance }} {{ symbol }}"
+  },
+  "sarUnstake": {
+    "unstake": "Abstand",
+    "unstaking": "Abstecken {{ balance }} {{ symbol }}",
+    "stakedBalance": "Abgesteckt {{ balance }} {{ symbol }}",
+    "confirmDescription": "Es lohnt sich zu wissen, dass das Abstecken Ihrer Belohnungen Ihren effektiven Jahreszins für diese Position auf 0% erhöht. \nAnstatt sich zu lösen, können Sie auch in Betracht ziehen, Ihren NFT zu verkaufen.",
+    "successSubmit": "Sie haben Ihre Token erfolgreich abgesetzt.",
+    "pending": "Abstecken {{ balance }} {{ symbol }}",
+    "transactionSummary": "Nicht abgesteckt {{ balance }} {{ symbol }}",
+    "currentAPR": "Aktueller effektiver Jahreszins",
+    "unstakeWarning": "Wenn Sie den Einsatz aufheben, sinkt Ihr durchschnittlicher effektiver Jahreszins auf 0%.",
+    "aprAfter": "effektiver Jahreszins nach dem Einsatz"
+  },
+  "sarCompound": {
+    "compound": "Verbindung",
+    "compounding": "Aufzinsung",
+    "successSubmit": "Sie haben Ihre Position erfolgreich gefestigt.",
+    "pending": "Aufzinsung",
+    "transactionSummary": "Zusammengesetzte Position",
+    "aprAfter": "APR nach Aufzinsung",
+    "reward": "Gesammelte Prämien",
+    "description": "Bitte beachten Sie, dass die Aufzinsung Ihrer Prämien Ihren durchschnittlichen effektiven Jahreszins verringern kann. Neu abgesteckte Token beginnen bei 0, während die alten Token mit dem gleichen effektiven Jahreszins weiterlaufen. Dadurch entsteht der Durchschnitt, der Ihnen angezeigt wird.",
+    "noRewards": "Keine Belohnungen zum Komponieren"
+  },
+  "sarClaim": {
+    "claim": "Anspruch",
+    "claiming": "Fordernd",
+    "description": "Aufgrund der Natur des SAR-Einsatzsystems, das behauptet, dass Ihre Belohnungen Ihren effektiven Jahreszins auf 0 senken. Sie können stattdessen Ihre Belohnungen zusammensetzen, ohne Ihren effektiven Jahreszins zu verlieren.",
+    "successSubmit": "Sie haben Ihre Prämien erfolgreich beansprucht",
+    "pending": "Fordernd",
+    "transactionSummary": "Beanspruchte Positionsprämien",
+    "aprAfter": "effektiver Jahreszins nach der Reklamation",
+    "noRewards": "Keine Prämien zu beanspruchen"
+  },
+  "sarPortfolio": {
+    "noPositions": "Sie haben kein PANGUARDIAN NFT.\nLASS UNS DIR EINEN BESORGEN",
+    "start": "ANFANGEN",
+    "positionId": "Positions-ID",
+    "apr": "APR",
+    "amount": "Menge",
+    "newest": "Neuest",
+    "oldest": "Älteste",
+    "sortBy": "Sortieren nach"
   }
 }

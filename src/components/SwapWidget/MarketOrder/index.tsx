@@ -8,7 +8,12 @@ import { TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
-import { useApproveCallbackFromTradeHook, useSwapCallbackHook, useWrapCallbackHook } from 'src/hooks/multiChainsHooks';
+import {
+  useApproveCallbackFromTradeHook,
+  useSwapCallbackHook,
+  useTokenHook,
+  useWrapCallbackHook,
+} from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useENS from 'src/hooks/useENS';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
@@ -27,7 +32,7 @@ import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/
 import { isAddress, isTokenOnList } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Box, Button, Text, TextInput } from '../../';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
 import SelectTokenDrawer from '../SelectTokenDrawer';
@@ -46,6 +51,8 @@ interface Props {
   isLimitOrderVisible: boolean;
   showSettings: boolean;
   partnerDaaS?: string;
+  defaultInputAddress?: string;
+  defaultOutputAddress?: string;
 }
 
 const MarketOrder: React.FC<Props> = ({
@@ -54,6 +61,8 @@ const MarketOrder: React.FC<Props> = ({
   isLimitOrderVisible,
   showSettings,
   partnerDaaS = ZERO_ADDRESS,
+  defaultInputAddress,
+  defaultOutputAddress,
 }) => {
   // const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
@@ -82,8 +91,8 @@ const MarketOrder: React.FC<Props> = ({
 
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
+  const useToken = useTokenHook[chainId];
   const theme = useContext(ThemeContext);
-
   const useWrapCallback = useWrapCallbackHook[chainId];
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
   const useSwapCallback = useSwapCallbackHook[chainId];
@@ -162,6 +171,21 @@ const MarketOrder: React.FC<Props> = ({
     },
     [onUserInput],
   );
+
+  // setting default tokens
+  const defaultInputToken = useToken(defaultInputAddress);
+  const defaultInputCurrency = defaultInputToken ? unwrappedToken(defaultInputToken as Token, chainId) : undefined;
+  const defaultOututToken = useToken(defaultOutputAddress);
+  const defaultOutputCurrency = defaultOututToken ? unwrappedToken(defaultOututToken as Token, chainId) : undefined;
+
+  useEffect(() => {
+    if (defaultInputCurrency) {
+      onCurrencySelection(Field.INPUT, defaultInputCurrency);
+    }
+    if (defaultOutputCurrency) {
+      onCurrencySelection(Field.OUTPUT, defaultOutputCurrency);
+    }
+  }, [chainId, defaultInputAddress, defaultOutputAddress, defaultInputCurrency, defaultOutputCurrency]);
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -371,7 +395,7 @@ const MarketOrder: React.FC<Props> = ({
           <Box mr="10px" width="100%">
             <Button
               variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
-              onClick={approveCallback}
+              onClick={() => approveCallback()}
               isDisabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
               loading={approval === ApprovalState.PENDING}
               loadingText="Approving"

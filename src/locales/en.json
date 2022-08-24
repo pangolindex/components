@@ -373,7 +373,7 @@
     "noSeePoolJoined": "Don't see a pool you joined?",
     "migrateNow": "Migrate now.",
     "importIt": "Import it.",
-    "seeDetails":"SEE DETAILS",
+    "seeDetails": "SEE DETAILS",
     "totalLockedValue": "Total Locked Value",
     "yourLockedValue": "Your Locked Value",
     "allFarms": "All Farms",
@@ -449,7 +449,7 @@
     "comingSoon": "Coming Soon",
     "connectWalletViewPortFolio": "Connect to a wallet to check your portfolio.",
     "limitOrders": "Limit Orders",
-    "cancelOrder" : "Cancel Order",
+    "cancelOrder": "Cancel Order",
     "all": "ALL",
     "open": "OPEN",
     "executed": "EXECUTED",
@@ -534,7 +534,8 @@
   },
   "stakeHooks": {
     "connectWallet": "Connect Wallet",
-    "enterAmount": "Enter an amount"
+    "enterAmount": "Enter an amount",
+    "insufficientBalance": "Insufficient {{ symbol }} balance"
   },
   "burnHooks": {
     "connectWallet": "Connect Wallet",
@@ -611,5 +612,81 @@
     "missingLiquidityAmount": "Missing liquidity amount",
     "couldNotWrap": "Could not wrap",
     "attemptingToConfirmApproval": "Attempting to confirm without approval or a signature. Please contact support."
+  },
+  "sarTitle":{
+    "addMore": "ADD MORE",
+    "unstake": "UNSTAKE A POSITION",
+    "compound": "COMPOUND REWARDS",
+    "claim": "CLAIM REWARDS",
+    "interactingID": "Interacting with ID: {{ id }}"
+  },
+  "sarStake": {
+    "createNewPosition": "Create a new position",
+    "stake": "Stake",
+    "staking": "Staking",
+    "walletBalance": "In Wallet {{ balance }} {{ symbol }}",
+    "max": "MAX",
+    "dollarValue": "Dollar Value",
+    "buy": "Buy {{ symbol }}",
+    "averageAPR": "Average APR",
+    "startingApr": "Starting APR",
+    "weeklyDistributed": "Weekly {{ symbol }} Distributed",
+    "confirmDescription": "A stake action will create a SAR Nft for you. With this NFT you can manage your {{ symbol }} stake.",
+    "successSubmit": "You have successfully staked your token.",
+    "yourAprRecalculated": "Your APR will be recalculated.",
+    "summary": "Summary",
+    "pending": "Staking {{ balance }} {{ symbol }}",
+    "transactionSummary": "Staked {{ balance }} {{ symbol }}"
+  },
+  "sarStakeMore": {
+    "stakeMore": "Stake More",
+    "choosePosition": "Choose a Position",
+    "confirmDescription": "Your Apr will start from 0 and increase the amount you take from reward pool by time",
+    "newAPR": "New APR",
+    "add": "Add",
+    "pending": "Adding {{ balance }} {{ symbol }}"
+  },
+  "sarUnstake": {
+    "unstake": "Unstake",
+    "unstaking": "Unstaking {{ balance }} {{ symbol }}",
+    "stakedBalance": "Staked {{ balance }} {{ symbol }}",
+    "confirmDescription": "It's worth being aware that unstaking your rewards will get your APR to 0% for this position. \nInstead of unstaking you can consider selling your NFT as well.",
+    "successSubmit": "You have successfully unstaked your tokens.",
+    "pending": "Unstaking {{ balance }} {{ symbol }}",
+    "transactionSummary": "Unstaked {{ balance }} {{ symbol }}",
+    "currentAPR": "Current APR",
+    "unstakeWarning": "When you unstake, your average APR will fall to 0%.",
+    "aprAfter": "APR After Unstake"
+  },
+  "sarCompound": {
+    "compound": "Compound",
+    "compounding": "Compounding",
+    "successSubmit": "You have successfully compounded your position.",
+    "pending": "Compounding",
+    "transactionSummary": "Compounded position",
+    "aprAfter": "APR After Compounding",
+    "reward": "Rewards accrued",
+    "description": "Please be aware that compounding your rewards may decrease your average APR. Newly staked tokens start from 0, while the old tokens will continue with the same APR. This creates the average that is displayed to you.",
+    "noRewards": "No rewards to compound"
+  },
+  "sarClaim": {
+    "claim": "Claim",
+    "claiming": "Claiming",
+    "description": "Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead compound your rewards without losing your APR.",
+    "successSubmit": "You have successfully claimed your rewards",
+    "pending": "Claiming",
+    "transactionSummary": "Claimed position rewards",
+    "aprAfter": "APR After Claim",
+    "noRewards": "No rewards to claim"
+  },
+  "sarPortfolio": {
+    "noPositions": "You dont have any PANGUARDIAN NFT.\nLETS GET YOU ONE",
+    "start": "START",
+    "positionId": "Position ID",
+    "apr": "APR",
+    "amount": "Amount",
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "sortBy": "Sort By"
   }
 }
