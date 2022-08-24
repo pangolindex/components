@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
-  height: 2.2rem;
+  height: 100%;
   font-size: 20px;
   font-weight: 500;
   background-color: ${({ selected, theme }) => (selected ? theme.color2 : theme.primary)};
