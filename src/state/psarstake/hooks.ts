@@ -51,7 +51,7 @@ export function useSarStakeInfo() {
 
   return useMemo(() => {
     const apr =
-      rewardRate && totalValueVariables && totalValueVariables?.balance
+      rewardRate && totalValueVariables && totalValueVariables?.balance && !totalValueVariables.balance.isZero()
         ? rewardRate.mul(86400).mul(365).mul(100).div(totalValueVariables.balance)
         : null;
     const totalStaked = new TokenAmount(png, totalValueVariables ? totalValueVariables?.balance.toString() : '0');
