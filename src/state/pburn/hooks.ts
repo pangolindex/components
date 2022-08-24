@@ -57,24 +57,19 @@ export function useDerivedBurnInfo(
   // liquidity values
   const totalSupply = useTotalSupply(pairOrToken as Token);
 
-  const liquidityValueA =
+  const [liquidityValue0, liquidityValue1] =
     pair &&
     totalSupply &&
     userLiquidity &&
     tokenA &&
-    // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-    JSBI.greaterThanOrEqual(totalSupply.raw, userLiquidity.raw)
-      ? new TokenAmount(tokenA, pair.getLiquidityValue(tokenA, totalSupply, userLiquidity, false).raw)
-      : undefined;
-  const liquidityValueB =
-    pair &&
-    totalSupply &&
-    userLiquidity &&
     tokenB &&
-    // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
     JSBI.greaterThanOrEqual(totalSupply.raw, userLiquidity.raw)
-      ? new TokenAmount(tokenB, pair.getLiquidityValue(tokenB, totalSupply, userLiquidity, false).raw)
-      : undefined;
+      ? pair.getLiquidityValues(totalSupply, userLiquidity, { feeOn: false })
+      : [undefined, undefined];
+
+  const liquidityValueA = tokenA && pair?.token0.equals(tokenA) ? liquidityValue0 : liquidityValue1;
+  const liquidityValueB = tokenB && pair?.token0.equals(tokenB) ? liquidityValue0 : liquidityValue1;
+
   const liquidityValues: { [Field.CURRENCY_A]?: TokenAmount; [Field.CURRENCY_B]?: TokenAmount } = {
     [Field.CURRENCY_A]: liquidityValueA,
     [Field.CURRENCY_B]: liquidityValueB,

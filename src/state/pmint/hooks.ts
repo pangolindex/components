@@ -106,8 +106,8 @@ export function useDerivedMintInfo(
         const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA;
         const dependentTokenAmount =
           dependentField === Field.CURRENCY_B
-            ? pair.priceOf(tokenA).quote(wrappedIndependentAmount, chainId)
-            : pair.priceOf(tokenB).quote(wrappedIndependentAmount, chainId);
+            ? pair.priceOf(tokenA, tokenB).quote(wrappedIndependentAmount, chainId)
+            : pair.priceOf(tokenB, tokenA).quote(wrappedIndependentAmount, chainId);
         return dependentCurrency === CAVAX[chainId]
           ? CurrencyAmount.ether(dependentTokenAmount.raw, chainId)
           : dependentTokenAmount;
@@ -147,9 +147,12 @@ export function useDerivedMintInfo(
       return undefined;
     } else {
       const wrappedCurrencyA = wrappedCurrency(currencyA, chainId);
-      return pair && wrappedCurrencyA ? pair.priceOf(wrappedCurrencyA) : undefined;
+      const wrappedCurrencyB = wrappedCurrency(currencyB, chainId);
+      return pair && wrappedCurrencyA && wrappedCurrencyB
+        ? pair.priceOf(wrappedCurrencyA, wrappedCurrencyB)
+        : undefined;
     }
-  }, [chainId, currencyA, noLiquidity, pair, parsedAmounts]);
+  }, [chainId, currencyA, currencyB, noLiquidity, pair, parsedAmounts]);
 
   // liquidity minted
   const liquidityMinted = useMemo(() => {
@@ -161,7 +164,7 @@ export function useDerivedMintInfo(
     insufficientInput = false; // eslint-disable-line react-hooks/exhaustive-deps
     if (pair && totalSupply && tokenAmountA && tokenAmountB) {
       try {
-        return pair.getLiquidityMinted(totalSupply, tokenAmountA, tokenAmountB);
+        return pair.getLiquidityMinted(totalSupply, [tokenAmountA, tokenAmountB]);
       } catch (err) {
         if (err instanceof InsufficientInputAmountError) {
           insufficientInput = true;

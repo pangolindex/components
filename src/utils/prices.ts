@@ -1,4 +1,4 @@
-import { CurrencyAmount, Fraction, JSBI, Pair, Percent, TokenAmount, Trade } from '@pangolindex/sdk';
+import { CurrencyAmount, Fraction, JSBI, Percent, Pool, TokenAmount, Trade } from '@pangolindex/sdk';
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
   ALLOWED_PRICE_IMPACT_LOW,
@@ -23,9 +23,9 @@ export function computeTradePriceBreakdown(trade?: Trade): {
   const realizedLPFee = !trade
     ? undefined
     : ONE_HUNDRED_PERCENT.subtract(
-        trade.route.pairs.reduce<Fraction>(
-          (currentFee: Fraction, pair: Pair): Fraction =>
-            currentFee.multiply(new Percent(pair.swapFeeCoefficient, JSBI.BigInt(1000))),
+        trade.route.pools.reduce<Fraction>(
+          (currentFee: Fraction, pool: Pool): Fraction =>
+            currentFee.multiply(new Percent(pool.swapFeeCoefficient, pool.swapFeeDivisor)),
           ONE_HUNDRED_PERCENT,
         ),
       );
