@@ -2,12 +2,12 @@ import { CAVAX, CHAINS, Fraction, Token } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React from 'react';
 import { Box, CoinDescription } from 'src/components';
+import StatDetail, { LinkType } from 'src/components/Pools/DetailModal/StatDetail';
 import { usePair } from 'src/data/Reserves';
 import { useChainId } from 'src/hooks';
 import { useGetPoolDollerWorth } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
-import StatDetail, { LinkType } from '../StatDetail';
 import { DetailsContainer } from './styled';
 
 type Props = {
@@ -46,7 +46,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
     <>
       <DetailsContainer>
         <StatDetail
-          title={`Total Stakes`}
+          title={`Total Stake`}
           currency0={currency0}
           currency1={currency1}
           pair={pair}
