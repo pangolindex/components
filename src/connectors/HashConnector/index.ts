@@ -12,9 +12,9 @@ export interface HashConfigType {
 
 //Intial App config
 const APP_METADATA: HashConnectTypes.AppMetadata = {
-  name: 'dApp Example',
-  description: 'An example hedera dApp',
-  icon: 'https://absolute.url/to/icon.png',
+  name: 'Pangolin Exchange',
+  description: '',
+  icon: 'https://raw.githubusercontent.com/pangolindex/tokens/main/assets/43114/0x60781C2586D68229fde47564546784ab3fACA982/logo_48.png',
 };
 
 export class HashConnector extends AbstractConnector {
@@ -29,7 +29,7 @@ export class HashConnector extends AbstractConnector {
   private topic: string;
   private pairingString: string;
   private pairingData: HashConnectTypes.SavedPairingData | null = null;
-  public availableExtension: HashConnectTypes.WalletMetadata;
+  public availableExtension: HashConnectTypes.WalletMetadata | undefined;
 
   public constructor(
     kwargs: AbstractConnectorArguments & {
@@ -47,46 +47,23 @@ export class HashConnector extends AbstractConnector {
     this.normalizeAccount = kwargs?.normalizeAccount;
     this.network = kwargs?.config?.networkId;
     this.appMetadata = APP_METADATA;
-    this.availableExtension = { name: '', description: '', icon: '', publicKey: '', encryptionKey: '', url: '' };
+    this.availableExtension = undefined;
     this.topic = '';
     this.pairingString = '';
-    this.handleNetworkChanged = this.handleNetworkChanged.bind(this);
-    this.handleChainChanged = this.handleChainChanged.bind(this);
-    this.handleAccountsChanged = this.handleAccountsChanged.bind(this);
-    this.handleClose = this.handleClose.bind(this);
+
     this.handlePairingEvent = this.handlePairingEvent.bind(this);
     this.handleFoundExtensionEvent = this.handleFoundExtensionEvent.bind(this);
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
-  }
 
-  private handleChainChanged(chainId: string | number): void {
-    console.log("Handling 'chainChanged' event with payload", chainId);
-    this.emitUpdate({ chainId, provider: this.provider });
-  }
-
-  private handleAccountsChanged(accounts: string[]): void {
-    console.log("Handling 'accountsChanged' event with payload", accounts);
-    if (accounts.length === 0) {
-      this.emitDeactivate();
-    } else {
-      this.emitUpdate({ account: accounts[0] });
-    }
-  }
-
-  private handleClose(code: number, reason: string): void {
-    console.log("Handling 'close' event with payload", code, reason);
-    this.emitDeactivate();
-  }
-
-  private handleNetworkChanged(networkId: string | number): void {
-    console.log("Handling 'networkChanged' event with payload", networkId);
-    this.emitUpdate({ chainId: networkId, provider: this.provider });
+    this.setUpEvents();
+    this.instance.init(APP_METADATA, this.network as any);
   }
 
   private handleFoundExtensionEvent(data) {
     console.log('Found extension', data);
     this.availableExtension = data;
   }
+
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
     console.log('hashconnect state change event', state);
     this.state = state;
@@ -99,6 +76,11 @@ export class HashConnector extends AbstractConnector {
     console.log('Paired with wallet', data);
 
     this.pairingData = data.pairingData!;
+
+    if (this.pairingData && this.pairingData?.accountIds[0]) {
+      const accountId = this.pairingData?.accountIds[0];
+      this.emitUpdate({ account: accountId });
+    }
   }
 
   public async getChainId(): Promise<number | string | any> {
@@ -116,7 +98,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async activate(): Promise<any> {
-    const initData = await this.instance.init(APP_METADATA, 'testnet');
+    const initData = await this.instance.init(APP_METADATA, this.network as any);
     this.instance.connectToLocalWallet();
     // generate a pairing string, which you can display and generate a QR code from
     this.pairingString = this.instance.generatePairingString(initData.topic, this.network, false);
@@ -127,8 +109,6 @@ export class HashConnector extends AbstractConnector {
 
     this.provider = await this.getProvider();
     const accountId = this.pairingData?.accountIds[0];
-
-    this.setUpEvents();
 
     return { chainId: this.chainId, provider: this.provider, account: accountId };
   }
@@ -169,14 +149,14 @@ export class HashConnector extends AbstractConnector {
 
   public async deactivate() {
     if (this.pairingData) {
-      this.instance.disconnect(this.pairingData!.topic);
+      this.instance.disconnect(this.pairingData?.topic);
       this.pairingData = null;
     }
   }
 
   public async close() {
     if (this.pairingData) {
-      this.instance.disconnect(this.pairingData!.topic);
+      this.instance.disconnect(this.pairingData?.topic);
       this.pairingData = null;
     }
   }
@@ -184,10 +164,8 @@ export class HashConnector extends AbstractConnector {
   public async getAccountBalance() {
     if (this.pairingData) {
       const balance = await this.provider.getAccountBalance(this.pairingData?.accountIds[0]);
-
       return balance;
     }
-
     return undefined;
   }
 

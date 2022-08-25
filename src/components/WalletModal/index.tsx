@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
 import { Button } from 'src/components/Button';
-import { gnosisSafe, injected, talisman, xDefi } from 'src/connectors';
+import { gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { ExternalLink } from 'src/theme';
 import { Box, Modal, ToggleButtons } from '../../';
@@ -311,6 +311,22 @@ const WalletModal: React.FC<WalletModalProps> = ({
               header={'Install Talisman'}
               subheader={null}
               link={'https://talisman.xyz'}
+              icon={option.iconName}
+            />
+          );
+        }
+      } else if (option.connector === hashConnect) {
+        // provide hashpack install link if not installed
+        console.log('===hashConnect', hashConnect);
+        if (!hashConnect.availableExtension) {
+          return (
+            <Option
+              id={`connect-${key}`}
+              key={key}
+              color={option.color}
+              header={'Install Haspack'}
+              subheader={null}
+              link={'https://www.hashpack.app/download'}
               icon={option.iconName}
             />
           );
