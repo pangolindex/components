@@ -15,13 +15,14 @@ import BN from 'bn.js';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
+import hashIcon from 'src/assets/images/hashConnect.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
 import nearIcon from 'src/assets/images/near.svg';
 import rabbyIcon from 'src/assets/images/rabby.svg';
 import talismanIcon from 'src/assets/images/talisman.svg';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
-import { gnosisSafe, injected, near, talisman, walletconnect, walletlink, xDefi } from '../connectors';
+import { gnosisSafe, hashConnect, injected, near, talisman, walletconnect, walletlink, xDefi } from '../connectors';
 import { CommonEVMProvider, NearProvider } from '../connectors/WalletProviders';
 import { DAIe, PNG, USDC, USDCe, USDTe, UST, axlUST } from './tokens';
 
@@ -283,6 +284,16 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     primary: true,
     isEVM: false,
   },
+  HASH_CONNECT: {
+    connector: hashConnect,
+    name: 'HashPack Wallet',
+    iconName: hashIcon,
+    description: 'HashPack Wallet Connect',
+    href: null,
+    color: '#7a7cff',
+    primary: true,
+    isEVM: true,
+  },
 };
 
 export const PROVIDER_MAPPING = {
@@ -295,6 +306,7 @@ export const PROVIDER_MAPPING = {
   RABBY: CommonEVMProvider,
   TALISMAN: CommonEVMProvider,
   NEAR: NearProvider,
+  HASH_CONNECT: CommonEVMProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {
