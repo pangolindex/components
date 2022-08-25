@@ -60,8 +60,46 @@ export interface Colors {
   yellow1: Color;
   yellow2: Color;
   blue1: Color;
-
   avaxRed: Color;
+
+  // theme color objects for components
+  swapWidget?: {
+    text?: Color;
+    backgroundColor?: Color;
+    detailsText?: Color;
+    detailsBackground?: Color;
+  };
+
+  drawer?: {
+    text?: Color;
+    backgroundColor?: Color;
+    detailsText?: Color;
+    detailsBackground?: Color;
+  };
+
+  textInput?: {
+    text?: Color;
+    labelText?: Color;
+    placeholderText?: Color;
+    backgroundColor?: Color;
+  };
+
+  currencySelect?: {
+    defaultText?: Color;
+    selectedText?: Color;
+    defaultBackgroundColor?: Color;
+    selectedBackgroundColor?: Color;
+  };
+
+  loader?: {
+    text?: Color;
+  };
+
+  numberOptions?: {
+    text: Color;
+    activeBackgroundColor?: Color;
+    inactiveBackgroundColor?: Color;
+  };
 
   switch?: {
     onColor?: Color;

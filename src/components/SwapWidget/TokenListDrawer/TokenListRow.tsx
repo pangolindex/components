@@ -70,10 +70,15 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
     <RowRoot>
       {list?.logoURI ? <ListLogo size={24} src={list?.logoURI} /> : <ListLogo as="div" size={24} />}
       <Box>
-        <Text fontSize={16} color="text1" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <Text fontSize={16} color="drawer" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {list?.name}
         </Text>
-        <Text fontSize={12} color="text3" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }} title={listUrl}>
+        <Text
+          fontSize={12}
+          color="drawer"
+          style={{ overflow: 'hidden', textOverflow: 'ellipsis', opacity: 0.8 }}
+          title={listUrl}
+        >
           <TokenListOrigin listUrl={listUrl} />
         </Text>
       </Box>

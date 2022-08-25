@@ -9,8 +9,9 @@ export const PValue = styled(Box)<{ isActive: boolean }>`
   width: 100%;
   font-size: 12px;
   padding: 5px;
-  color: ${({ theme }) => theme.text1};
-  background-color: ${({ theme, isActive }) => (isActive ? theme.primary : theme.color5)};
+  color: ${({ theme }) => theme.numberOptions?.text};
+  background-color: ${({ theme, isActive }) =>
+    isActive ? theme.numberOptions?.activeBackgroundColor : theme.numberOptions?.inactiveBackgroundColor};
   border: ${({ theme, isActive }) => (isActive ? 0 : `1px solid ${theme.text1}`)};
   border-radius: 5px;
   cursor: pointer;

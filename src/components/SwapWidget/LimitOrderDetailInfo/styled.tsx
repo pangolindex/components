@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Box, Text } from '../../';
 
 export const ContentBox = styled(Box)`
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.swapWidget?.detailsBackground};
   padding: 15px;
   border-radius: 8px;
   margin-top: 10px;
@@ -23,5 +23,5 @@ export const ValueText = styled(Text)<{ severity?: -1 | 0 | 1 | 2 | 3 | 4 }>`
       ? theme.text1
       : severity === 0
       ? theme.green1
-      : theme.text4};
+      : theme.swapWidget?.detailsText};
 `;

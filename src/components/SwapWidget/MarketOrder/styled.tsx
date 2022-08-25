@@ -13,7 +13,7 @@ export const SwapWrapper = styled(Box)`
   border-bottom-right-radius: 10px;
   width: 100%;
   /* min-width: 360px; */
-  background-color: ${({ theme }) => theme.bg2};
+  background-color: ${({ theme }) => theme.swapWidget?.backgroundColor};
   position: relative;
   overflow: hidden;
 `;
@@ -47,7 +47,8 @@ export const PValue = styled(Box)<{ isActive: boolean }>`
   display: flex;
   width: 100%;
   font-size: 16px;
-  color: ${({ theme, isActive }) => (isActive ? theme.text1 : theme.text4)};
+  color: ${({ theme }) => theme.textInput?.labelText};
+  opacity: ${({ isActive }) => (isActive ? 1 : 0.5)} 
   border-bottom: ${({ theme, isActive }) => (isActive ? `1px solid ${theme.text1}` : 0)};
   cursor: pointer;
   &:hover {
@@ -61,7 +62,8 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean }>`
   background: none;
 
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-  color: ${({ theme, disabled }) => (disabled ? theme.text2 : theme.text1)};
+  color: ${({ theme }) => theme.swapWidget?.text};
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   font-weight: 500;
 
   :hover {

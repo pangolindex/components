@@ -419,7 +419,6 @@ const LimitOrder: React.FC<Props> = ({
         onClick={() => handlePlaceOrder()}
         id="swap-button"
         isDisabled={!isValid || !!swapInputError}
-        backgroundColor={isValid ? 'primary' : undefined}
       >
         {swapInputError ? swapInputError : 'Place Order'}
       </Button>

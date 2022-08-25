@@ -19,7 +19,7 @@ export const TokenRow = styled(Box)`
 
 export const PriceUpdateBlock = styled(Box)`
   padding: 10px;
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.swapWidget?.detailsBackground};
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -1,5 +1,7 @@
 import { Percent, Trade, TradeType } from '@pangolindex/sdk';
 import React from 'react';
+import { useTheme } from 'styled-components';
+import { TextType } from 'src/components/Text/Text';
 import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from 'src/constants';
 import { Field } from 'src/state/pswap/actions';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
@@ -11,6 +13,7 @@ import { ContentBox, DataBox, ValueText } from './styled';
 type Props = { trade: Trade };
 
 const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
+  const theme = useTheme();
   const [allowedSlippage] = useUserSlippageTolerance();
   const [feeInfo] = useDaasFeeInfo();
   const { priceImpactWithoutFee, realizedLPFee, realizedLPFeeAmount } = computeTradePriceBreakdown(trade);
@@ -37,7 +40,12 @@ const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
   const renderRow = (label: string, value: string, showSeverity?: boolean) => {
     return (
       <DataBox key={label}>
-        <Text color="text4" fontSize={14}>
+        <Text
+          color="swapWidget"
+          type={TextType.detailsText}
+          fontSize={14}
+          style={{ color: theme.swapWidget?.detailsText }}
+        >
           {label}
         </Text>
 

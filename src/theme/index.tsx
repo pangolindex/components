@@ -105,8 +105,46 @@ export const defaultColors: Colors = {
   yellow1: '#FFE270',
   yellow2: '#F3841E',
   blue1: '#2172E5',
-
   avaxRed: '#E84142',
+
+  // theme color objects for components
+  swapWidget: {
+    text: black,
+    backgroundColor: ghostWhite,
+    detailsText: '#C3C5CB',
+    detailsBackground: white,
+  },
+
+  drawer: {
+    text: black,
+    backgroundColor: ghostWhite,
+    detailsText: '#C3C5CB',
+    detailsBackground: white,
+  },
+
+  textInput: {
+    text: '#C3C5CB',
+    labelText: '#C3C5CB',
+    placeholderText: '#888D9B',
+    backgroundColor: white,
+  },
+
+  currencySelect: {
+    defaultText: black,
+    selectedText: black,
+    defaultBackgroundColor: philippineYellow,
+    selectedBackgroundColor: ghostWhite,
+  },
+
+  loader: {
+    text: black,
+  },
+
+  numberOptions: {
+    text: black,
+    activeBackgroundColor: philippineYellow,
+    inactiveBackgroundColor: white,
+  },
 
   switch: {
     onColor: philippineYellow,

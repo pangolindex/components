@@ -3,6 +3,7 @@ import React, { useContext, useMemo } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import Drawer from 'src/components/Drawer';
+import { TextType } from 'src/components/Text/Text';
 import { usePangolinWeb3 } from 'src/hooks';
 import { Field } from 'src/state/pswap/actions';
 import { getEtherscanLink, tradeMeaningfullyDiffers } from 'src/utils';
@@ -79,16 +80,16 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
           <Text
             fontSize={24}
             fontWeight={500}
-            color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? 'primary' : 'text1'}
+            color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? 'primary' : 'drawer'}
             style={{ marginLeft: '12px' }}
           >
             {trade.inputAmount.toSignificant(6)}
           </Text>
-          <Text fontSize={24} fontWeight={500} color="text1" style={{ marginLeft: '10px' }}>
+          <Text fontSize={24} fontWeight={500} color="drawer" style={{ marginLeft: '10px' }}>
             {trade.inputAmount.currency.symbol}
           </Text>
         </TokenRow>
-        <ArrowDown size="16" color={theme.text2} style={{ marginLeft: '4px', minWidth: '16px' }} />
+        <ArrowDown size="16" color={theme.drawer?.text} style={{ marginLeft: '4px', minWidth: '16px' }} />
         <TokenRow>
           <CurrencyLogo currency={trade.outputAmount.currency} size={24} imageSize={48} />
           <Text
@@ -100,18 +101,18 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
                 ? 'red1'
                 : showAcceptChanges && trade.tradeType === TradeType.EXACT_INPUT
                 ? 'primary'
-                : 'text1'
+                : 'drawer'
             }
           >
             {trade.outputAmount.toSignificant(6)}
           </Text>
-          <Text fontSize={24} fontWeight={500} color="text1" style={{ marginLeft: '10px' }}>
+          <Text color="drawer" fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
             {trade.outputAmount.currency.symbol}
           </Text>
         </TokenRow>
         {showAcceptChanges && (
           <PriceUpdateBlock>
-            <Text color={'text1'} fontSize={14}>
+            <Text color="drawer" type={TextType.detailsText} fontSize={14}>
               Price Updated
             </Text>
             <Button onClick={onAcceptChanges} variant="primary" width={150} padding="5px 10px">
@@ -121,7 +122,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
         )}
         <Box mt={'15px'}>
           {trade.tradeType === TradeType.EXACT_INPUT ? (
-            <OutputText color="text2">
+            <OutputText color="drawer" style={{ opacity: 0.8 }}>
               Output is estimated. You will receive at least
               <b>
                 {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade.outputAmount.currency.symbol}
@@ -129,7 +130,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
               or the transaction will revert.
             </OutputText>
           ) : (
-            <OutputText color="text2">
+            <OutputText color="drawer" style={{ opacity: 0.8 }}>
               Input is estimated. You will sell at most
               <b>
                 {slippageAdjustedAmounts[Field.INPUT]?.toSignificant(6)} {trade.inputAmount.currency.symbol}
@@ -138,7 +139,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
             </OutputText>
           )}
         </Box>
-        {recipient && <OutputText color="text1">Sending to: {recipient}</OutputText>}
+        {recipient && <OutputText color="drawer">Sending to: {recipient}</OutputText>}
       </Header>
       <Footer>
         <SwapDetailInfo trade={trade} />
@@ -173,7 +174,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
         <Box flex="1" display="flex" alignItems="center">
           <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary} />
         </Box>
-        <Text fontWeight={500} fontSize={20} color="text1">
+        <Text color="drawer" fontWeight={500} fontSize={20}>
           Transaction Submitted
         </Text>
         {chainId && txHash && (

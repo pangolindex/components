@@ -77,7 +77,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
       <Frame>
         {/*SLIPPAGE INPUT */}
         <Box height="90px">
-          <Text color="text1">Slippage</Text>
+          <Text color="drawer">Slippage</Text>
           <InputOptions>
             <TextInput
               value={slippageTolerance}
@@ -102,7 +102,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
             />
           </InputOptions>
           {Number(slippageTolerance) <= 0.1 && (
-            <Text color="text1" fontSize={12} marginBottom={10}>
+            <Text color="drawer" fontSize={12} marginBottom={10}>
               Your transaction may fail
             </Text>
           )}
@@ -120,7 +120,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
         </Box>
         {/*DEADLINE INPUT */}
         <Box height="90px">
-          <Text color="text1">Time Limit</Text>
+          <Text color="drawer">Time Limit</Text>
           <InputOptions>
             <TextInput
               value={deadline}
@@ -150,7 +150,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
         </Box>
         {/*EXPERT MODE INPUT */}
         <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" style={{ gap: '15px' }}>
-          <Text color="text1">Toggle Expert Mode</Text>
+          <Text color="drawer">Toggle Expert Mode</Text>
           <Box width="120px">
             <ToggleButtons
               options={['ON', 'OFF']}

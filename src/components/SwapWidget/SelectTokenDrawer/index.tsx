@@ -164,10 +164,10 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
       <ManageList onClick={() => setIsTokenListOpen(true)}>
         {selectedListInfo.multipleSelected ? (
           <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-            <Text fontSize={14} color="text1">
+            <Text fontSize={14} color="drawer">
               {selectedListInfo.selectedCount} lists selected
             </Text>
-            <Text fontSize={12} color="text1">
+            <Text fontSize={12} color="drawer">
               Change
             </Text>
           </Box>
@@ -179,11 +179,11 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
                 src={selectedListInfo?.current?.logoURI}
                 alt={`${selectedListInfo?.current?.name} list logo`}
               />
-              <Text fontSize={14} color="text1">
+              <Text fontSize={14} color="drawer">
                 {selectedListInfo?.current?.name}
               </Text>
             </Box>
-            <Text fontSize={12} color="text1">
+            <Text fontSize={12} color="drawer">
               Change
             </Text>
           </Box>

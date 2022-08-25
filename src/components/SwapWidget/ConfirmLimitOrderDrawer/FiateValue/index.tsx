@@ -22,7 +22,7 @@ export function FiatValue({
   }, [priceImpact, theme.green1, theme.red1, theme.text4, theme.yellow1]);
 
   return (
-    <Text fontSize={14} color={fiatValue ? 'text2' : 'text4'} ml={10}>
+    <Text color="drawer" fontSize={14} ml={10} style={{ opacity: fiatValue ? 1 : 0.8 }}>
       {fiatValue ? '~' : ''}${fiatValue ? fiatValue?.toSignificant(6, { groupSeparator: ',' }) : '-'}
       {priceImpact ? (
         <span style={{ color: priceImpactColor }}> ({priceImpact.multiply('-1').toSignificant(3)}%)</span>
