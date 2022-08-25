@@ -73,8 +73,6 @@ export interface Colors {
   drawer?: {
     text?: Color;
     backgroundColor?: Color;
-    detailsText?: Color;
-    detailsBackground?: Color;
   };
 
   textInput?: {

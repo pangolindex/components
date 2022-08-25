@@ -118,8 +118,6 @@ export const defaultColors: Colors = {
   drawer: {
     text: black,
     backgroundColor: ghostWhite,
-    detailsText: '#C3C5CB',
-    detailsBackground: white,
   },
 
   textInput: {

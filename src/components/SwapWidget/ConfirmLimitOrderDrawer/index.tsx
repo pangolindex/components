@@ -180,7 +180,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
         </TokenRow>
         {showAcceptChanges && (
           <PriceUpdateBlock>
-            <Text color="drawer" type={TextType.detailsText} fontSize={14}>
+            <Text color="swapWidget" type={TextType.detailsText} fontSize={14}>
               Price Updated
             </Text>
             <Button onClick={onAcceptChanges} variant="primary" width={150} padding="5px 10px">
