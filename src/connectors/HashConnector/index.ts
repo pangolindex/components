@@ -30,6 +30,7 @@ export class HashConnector extends AbstractConnector {
   private pairingString: string;
   private pairingData: HashConnectTypes.SavedPairingData | null = null;
   public availableExtension: HashConnectTypes.WalletMetadata | undefined;
+  private initData: HashConnectTypes.InitilizationData | null = null;
 
   public constructor(
     kwargs: AbstractConnectorArguments & {
@@ -56,7 +57,14 @@ export class HashConnector extends AbstractConnector {
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
 
     this.setUpEvents();
-    this.instance.init(APP_METADATA, this.network as any);
+    this.instance
+      .init(APP_METADATA, this.network as any)
+      .then((data) => {
+        this.initData = data;
+      })
+      .catch((error) => {
+        console.log('hash connect err', error);
+      });
   }
 
   private handleFoundExtensionEvent(data) {
@@ -98,19 +106,21 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async activate(): Promise<any> {
-    const initData = await this.instance.init(APP_METADATA, this.network as any);
-    this.instance.connectToLocalWallet();
-    // generate a pairing string, which you can display and generate a QR code from
-    this.pairingString = this.instance.generatePairingString(initData.topic, this.network, false);
+    if (this.initData) {
+      // const initData = await this.instance.init(APP_METADATA, this.network as any);
+      this.instance.connectToLocalWallet();
+      // generate a pairing string, which you can display and generate a QR code from
+      this.pairingString = this.instance.generatePairingString(this.initData.topic, this.network, false);
 
-    this.topic = initData.topic;
-    //Saved pairings will return here, generally you will only have one unless you are doing something advanced
-    this.pairingData = initData.savedPairings[0];
+      this.topic = this.initData.topic;
+      //Saved pairings will return here, generally you will only have one unless you are doing something advanced
+      this.pairingData = this.initData.savedPairings[0];
 
-    this.provider = await this.getProvider();
-    const accountId = this.pairingData?.accountIds[0];
+      this.provider = await this.getProvider();
+      const accountId = this.pairingData?.accountIds[0];
 
-    return { chainId: this.chainId, provider: this.provider, account: accountId };
+      return { chainId: this.chainId, provider: this.provider, account: accountId };
+    }
   }
 
   logEvent(data) {
