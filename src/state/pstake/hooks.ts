@@ -24,7 +24,7 @@ import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useTotalSupplyHook } from 'src/data/TotalSupply';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useUSDCPricekHook } from 'src/hooks/multiChainsHooks';
+import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import usePrevious from 'src/hooks/usePrevious';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import {
@@ -289,7 +289,7 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
 
   const useTokenBalance = useTokenBalanceHook[chainId];
   const useTotalSupply = useTotalSupplyHook[chainId];
-  const _useUSDCPrice = useUSDCPricekHook[chainId];
+  const _useUSDCPrice = useUSDCPriceHook[chainId];
   const token0 = pair?.token0;
   const currency0 = unwrappedToken(token0 as Token, chainId);
   const currency0PriceTmp = _useUSDCPrice(currency0);

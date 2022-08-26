@@ -82,6 +82,7 @@ const txCheckerMapping: { [chainId in ChainId]: (params: TxCheckerProps) => void
   [ChainId.AVALANCHE]: txChecker,
   [ChainId.FUJI]: txChecker,
   [ChainId.COSTON]: txChecker,
+  [ChainId.SONGBIRD]: txChecker,
   [ChainId.WAGMI]: txChecker,
   [ChainId.NEAR_MAINNET]: nearTxChecker,
   [ChainId.NEAR_TESTNET]: nearTxChecker,

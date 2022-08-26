@@ -13,7 +13,7 @@ import { useTokenHook } from './multiChainsHooks';
 import { useBytes32TokenContract, useTokenContract } from './useContract';
 import { useChainId } from './index';
 
-type TokenReturnType = Token | undefined | null;
+export type TokenReturnType = Token | undefined | null;
 
 export function useAllTokens(): { [address: string]: Token } {
   const chainId = useChainId();
