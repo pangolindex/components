@@ -146,7 +146,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
           <Stat
             title={t('sarStake.dollarValue')}
             titlePosition="top"
-            stat={`${dollerWorth ?? 0}$`}
+            stat={`$${dollerWorth ?? 0}`}
             titleColor="text2"
           />
           <Stat title={t('sarStakeMore.newAPR')} titlePosition="top" stat={`${newAPR}%`} titleColor="text2" />
@@ -203,7 +203,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
           <Box display="flex" justifyContent="space-between">
             <Box>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">{dollerWorth ?? '0'}$</Text>
+              <Text color="text1">${dollerWorth ?? '0'}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>

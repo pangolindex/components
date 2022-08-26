@@ -34,10 +34,10 @@ export default function SarManageWidget() {
 
   const toggleWalletModal = useWalletModalToggle();
 
-  const { positions, isLoading } = useSarPositions();
+  const { data: positions, isLoading } = useSarPositions();
 
   // get fist position with balance 0
-  const position = positions.find((value) => value.balance.isZero());
+  const position = positions?.find((value) => value.balance.isZero());
 
   const {
     attempting,
@@ -106,7 +106,7 @@ export default function SarManageWidget() {
           {showApproveFlow && (
             <Button
               variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
-              isDisabled={approval !== ApprovalState.NOT_APPROVED || isLoading}
+              isDisabled={approval !== ApprovalState.NOT_APPROVED || isLoading || !positions}
               onClick={onAttemptToApprove}
               height="46px"
             >
@@ -115,7 +115,7 @@ export default function SarManageWidget() {
           )}
           <Button
             variant={'primary'}
-            isDisabled={!!error || approval !== ApprovalState.APPROVED || isLoading}
+            isDisabled={!!error || approval !== ApprovalState.APPROVED || isLoading || !positions}
             onClick={() => {
               setOpenDrawer(true);
               desativeOverlay();
@@ -149,7 +149,7 @@ export default function SarManageWidget() {
           <Stat
             title={t('sarStake.dollarValue')}
             titlePosition="top"
-            stat={`${dollerWorth ?? 0}$`}
+            stat={`$${dollerWorth ?? 0}`}
             titleColor="text2"
           />
           <Stat title={t('sarStake.startingApr')} titlePosition="top" stat={'0%'} titleColor="text2" />
@@ -210,7 +210,7 @@ export default function SarManageWidget() {
           <Box display="flex" justifyContent="space-between">
             <Box>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">{dollerWorth ?? '0'}$</Text>
+              <Text color="text1">${dollerWorth ?? '0'}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>

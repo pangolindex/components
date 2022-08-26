@@ -7,6 +7,7 @@ import { Divide, RefreshCcw, X } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { NATIVE } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useTokenHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
@@ -14,7 +15,7 @@ import { LimitField, LimitNewField } from 'src/state/pswap/actions';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { galetoMaxAmountSpend } from 'src/utils/maxAmountSpend';
-import { wrappedGelatoCurrency } from 'src/utils/wrappedCurrency';
+import { unwrappedToken, wrappedGelatoCurrency } from 'src/utils/wrappedCurrency';
 import { Box, Button, Text, ToggleButtons } from '../../';
 import ConfirmLimitOrderDrawer from '../ConfirmLimitOrderDrawer';
 import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
@@ -32,15 +33,24 @@ interface Props {
   swapType: string;
   setSwapType: (value: string) => void;
   isLimitOrderVisible: boolean;
+  defaultInputAddress?: string;
+  defaultOutputAddress?: string;
 }
 
-const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
+const LimitOrder: React.FC<Props> = ({
+  swapType,
+  setSwapType,
+  isLimitOrderVisible,
+  defaultInputAddress,
+  defaultOutputAddress,
+}) => {
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const [tokenDrawerType, setTokenDrawerType] = useState(LimitNewField.INPUT);
   const [activeTab, setActiveTab] = useState<'SELL' | 'BUY'>('SELL');
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
+  const useToken = useTokenHook[chainId];
   const theme = useContext(ThemeContext);
 
   const percentageValue = [25, 50, 75, 100];
@@ -162,6 +172,21 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
     },
     [onUserInput],
   );
+
+  // setting default tokens
+  const defaultInputToken = useToken(defaultInputAddress);
+  const defaultInputCurrency = defaultInputToken ? unwrappedToken(defaultInputToken as Token, chainId) : undefined;
+  const defaultOutputToken = useToken(defaultOutputAddress);
+  const defaultOutputCurrency = defaultOutputToken ? unwrappedToken(defaultOutputToken as Token, chainId) : undefined;
+
+  useEffect(() => {
+    if (defaultInputCurrency) {
+      onCurrencySelect(defaultInputCurrency, LimitNewField.INPUT);
+    }
+    if (defaultOutputCurrency) {
+      onCurrencySelect(defaultOutputCurrency, LimitNewField.OUTPUT);
+    }
+  }, [chainId, defaultInputAddress, defaultOutputAddress, defaultInputCurrency, defaultOutputCurrency]);
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -312,8 +337,9 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash]);
 
   const onCurrencySelect = useCallback(
-    (currency) => {
-      if (tokenDrawerType === (LimitNewField.INPUT as any)) {
+    (currency: any, tokenDrawerTypeArg?: LimitNewField) => {
+      const type = tokenDrawerTypeArg ?? tokenDrawerType;
+      if (type === (LimitNewField.INPUT as any)) {
         setApprovalSubmitted(false); // reset 2 step UI for approvals
       }
 
@@ -325,9 +351,9 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
         newCurrency.isToken = true;
       }
 
-      onCurrencySelection(tokenDrawerType as any, newCurrency);
+      onCurrencySelection(type as any, newCurrency);
       // this is to update tokens on chart on token selection
-      onSwapCurrencySelection(tokenDrawerType as any, currency);
+      onSwapCurrencySelection(type as any, currency);
     },
     [tokenDrawerType, onCurrencySelection, onSwapCurrencySelection],
   );
