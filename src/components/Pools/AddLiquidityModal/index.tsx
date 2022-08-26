@@ -6,8 +6,9 @@ import { Box, Modal, Text } from 'src/components';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { useChainId } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
+import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { SpaceType } from 'src/state/pstake/types';
-import { useNearCreatePool, useParamsFromURL } from 'src/state/pwallet/hooks';
+import { useNearCreatePool } from 'src/state/pwallet/hooks';
 import { CloseIcon } from 'src/theme/components';
 import { isEvmChain } from 'src/utils';
 import { nearFn } from 'src/utils/near';
@@ -37,12 +38,12 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
 
   const createPool = useNearCreatePool();
 
-  const loadedUrlParams = useParamsFromURL();
+  const parsedQs = useParsedQueryString();
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
-    useCurrency(loadedUrlParams?.inputCurrencyId),
-    useCurrency(loadedUrlParams?.outputCurrencyId),
+    useCurrency(parsedQs?.currency0 as string),
+    useCurrency(parsedQs?.currency1 as string),
   ];
 
   useEffect(() => {
@@ -73,7 +74,6 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
         const tokenB = currency1 ? wrappedCurrency(currency1, chainId) : undefined;
 
         const poolId = await nearFn.getPoolId(chainId, tokenA, tokenB);
-        console.log('poolId', poolId);
         if (poolId > 0 && value) {
           setBodyState(value);
         } else {

@@ -33,7 +33,6 @@ import { useAllTokens, useNearTokens } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
-import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { Field } from 'src/state/pburn/actions';
 import { Field as AddField } from 'src/state/pmint/actions';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
@@ -1093,21 +1092,4 @@ export function useNearCreatePool() {
   };
 }
 
-export function useParamsFromURL():
-  | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
-  | undefined {
-  const parsedQs = useParsedQueryString();
-
-  let inputCurrency = parsedQs?.currency0 ? (parsedQs?.currency0 as string) : undefined;
-  let outputCurrency = parsedQs?.currency1 ? (parsedQs?.currency1 as string) : undefined;
-  if (inputCurrency === outputCurrency) {
-    if (typeof parsedQs.outputCurrency === 'string') {
-      inputCurrency = '';
-    } else {
-      outputCurrency = '';
-    }
-  }
-
-  return { inputCurrencyId: inputCurrency, outputCurrencyId: outputCurrency };
-}
 /* eslint-enable max-lines */
