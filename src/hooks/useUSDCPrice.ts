@@ -125,3 +125,7 @@ export function useNearUSDCPrice(currency?: Currency): Price | undefined {
     return new Price(USDC, currency, tokenAmount2.raw, tokenAmount1.raw);
   }, [chainId, currency, token, USDC, result]);
 }
+
+export function useDummySongbirdUSDCPrice(_currency?: Currency): Price | undefined {
+  return undefined;
+}
