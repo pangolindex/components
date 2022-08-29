@@ -14,6 +14,7 @@ import {
   WAVAX,
 } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
+import qs from 'qs';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueries } from 'react-query';
@@ -22,6 +23,7 @@ import {
   NEAR_LP_STORAGE_AMOUNT,
   NEAR_STORAGE_TO_REGISTER_WITH_FT,
   ONE_YOCTO_NEAR,
+  ONLY_ZEROS,
   ROUTER_ADDRESS,
 } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
@@ -410,8 +412,6 @@ export function useNearAddLiquidity() {
   return async (data: AddLiquidityProps) => {
     if (!chainId || !library || !account) return;
 
-    let transactions: Transaction[] = [];
-
     const depositTransactions: Transaction[] = [];
     const { parsedAmounts, deadline, currencies } = data;
     const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
@@ -428,11 +428,15 @@ export function useNearAddLiquidity() {
     const poolId = await nearFn.getPoolId(chainId, tokenA, tokenB);
 
     const tokens = [tokenA, tokenB];
+
+    const mainAmounts = [parsedAmountA.toFixed(), parsedAmountB.toFixed()];
+
     const amounts = [
       parseUnits(parsedAmountA.toFixed(), tokenA?.decimals).toString(),
       parseUnits(parsedAmountB.toFixed(), tokenB?.decimals).toString(),
     ];
     const exchangeContractId = NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId];
+    const wNearContractId = WAVAX[chainId].address;
     const whitelist = await nearFn.getWhitelistedTokens(chainId);
 
     for (let i = 0; i < tokens.length; i++) {
@@ -493,13 +497,40 @@ export function useNearAddLiquidity() {
       },
     ];
 
-    transactions = [
+    const transactions: Transaction[] = [
       ...depositTransactions,
       {
         receiverId: exchangeContractId,
         functionCalls: [...actions],
       },
     ];
+
+    if (transactions.length > 0) {
+      const wNearTokenIndex = tokens.findIndex((token) => token?.address === wNearContractId);
+
+      if (wNearTokenIndex > -1 && !ONLY_ZEROS.test(mainAmounts[wNearTokenIndex])) {
+        transactions.unshift({
+          receiverId: wNearContractId,
+          functionCalls: [nearFn.nearDepositAction(mainAmounts[wNearTokenIndex])],
+        });
+      }
+
+      if (wNearTokenIndex > -1) {
+        const registered = await nearFn.getStorageBalance(wNearContractId);
+
+        if (registered === null) {
+          transactions.unshift({
+            receiverId: wNearContractId,
+            functionCalls: [
+              nearFn.storageDepositAction({
+                registrationOnly: true,
+                amount: NEAR_STORAGE_TO_REGISTER_WITH_FT,
+              }),
+            ],
+          });
+        }
+      }
+    }
 
     return nearFn.executeMultipleTransactions(transactions);
   };
@@ -991,6 +1022,80 @@ export function useGetNearUserLP() {
   const pairs = (liquidityTokens || memoArray).length > 0 ? allV2PairsWithLiquidity : [];
 
   return useMemo(() => ({ v2IsLoading, allV2PairsWithLiquidity: pairs }), [v2IsLoading, pairs]);
+}
+
+export interface CreatePoolProps {
+  tokenA?: Token;
+  tokenB?: Token;
+}
+
+export function useNearCreatePool() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+
+  return async (data: CreatePoolProps) => {
+    if (!chainId || !library || !account) return;
+
+    let transactions: Transaction[] = [];
+
+    const { tokenA, tokenB } = data;
+
+    if (!tokenA || !tokenB) {
+      throw new Error(`Missing dependency`);
+    }
+
+    // const poolId = await nearFn.getPoolId(chainId, tokenA, tokenB);
+    // if (poolId) {
+    //   throw new Error(`Pool is already exits`);
+    // }
+
+    const tokens = [tokenA, tokenB];
+
+    const exchangeContractId = NEAR_EXCHANGE_CONTRACT_ADDRESS[chainId];
+
+    const tokenIds = tokens.map((token) => token?.address);
+
+    const storageBalances = await Promise.all(tokenIds.map((id) => nearFn.getStorageBalance(id, exchangeContractId)));
+
+    transactions = storageBalances
+      .reduce((acc: string[], sb, i) => {
+        if (!sb || sb.total === '0') acc.push(tokenIds[i]);
+        return acc;
+      }, [])
+      .map((id) => ({
+        receiverId: id,
+
+        functionCalls: [
+          nearFn.storageDepositAction({
+            accountId: exchangeContractId,
+            registrationOnly: true,
+            amount: NEAR_STORAGE_TO_REGISTER_WITH_FT,
+          }),
+        ],
+      }));
+
+    transactions.push({
+      receiverId: exchangeContractId,
+      functionCalls: [
+        {
+          methodName: 'add_simple_pool',
+          args: { tokens: tokenIds, fee: 0.5 },
+          amount: '0.05',
+        },
+      ],
+    });
+
+    const query = qs.stringify({
+      currency0: tokenA?.address,
+      currency1: tokenB?.address,
+    });
+
+    return nearFn.executeMultipleTransactions(
+      transactions,
+      `${window.location.origin}/${window.location.hash}?${query}`,
+    );
+  };
 }
 
 /* eslint-enable max-lines */
