@@ -246,7 +246,9 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const rewardContract = useRewardViaMultiplierContract(rewardAddress !== ZERO_ADDRESS ? rewardAddress : undefined);
   const getRewardTokensRes = useSingleCallResult(rewardContract, 'getRewardTokens');
   const getRewardMultipliersRes = useSingleCallResult(rewardContract, 'getRewardMultipliers');
-  const { earnedAmount } = useGetEarnedAmount(miniChefStaking?.pid as string);
+  const { earnedAmount: _earnedAmount } = useGetEarnedAmount(miniChefStaking?.pid as string);
+
+  const earnedAmount = miniChefStaking?.earnedAmount || _earnedAmount;
 
   const rewardTokensAddress = getRewardTokensRes?.result?.[0];
   const rewardTokensMultiplier = getRewardMultipliersRes?.result?.[0];

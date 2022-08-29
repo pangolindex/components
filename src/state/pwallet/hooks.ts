@@ -375,7 +375,7 @@ export function useAddLiquidity() {
         ...(value ? { value } : {}),
         gasLimit: calculateGasMargin(estimatedGasLimit),
       });
-      await waitForTransaction(library, response, 5);
+      await waitForTransaction(response, 5);
 
       addTransaction(response, {
         summary:
@@ -668,7 +668,7 @@ export function useRemoveLiquidity(pair?: Pair | null | undefined) {
         const response: TransactionResponse = await router[methodName](...args, {
           gasLimit: safeGasEstimate,
         });
-        await waitForTransaction(library, response, 5);
+        await waitForTransaction(response, 5);
         addTransaction(response, {
           summary:
             t('removeLiquidity.remove') +

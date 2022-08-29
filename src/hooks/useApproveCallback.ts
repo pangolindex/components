@@ -7,7 +7,7 @@ import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, ZERO_ADDRESS } from 'src/constants
 import { useTokenAllowance } from 'src/data/Allowances';
 import { Field } from 'src/state/pswap/actions';
 import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { calculateGasMargin } from 'src/utils';
+import { calculateGasMargin, waitForTransaction } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from '../utils/prices';
 import { useTokenContract } from './useContract';
 import { useChainId, usePangolinWeb3 } from './index';
@@ -89,7 +89,7 @@ export function useApproveCallback(
           gasLimit: calculateGasMargin(estimatedGas),
         },
       );
-      await response.wait(1);
+      await waitForTransaction(response, 1);
       addTransaction(response, {
         summary: 'Approve ' + amountToApprove.currency.symbol,
         approval: { tokenAddress: token.address, spender: spender },

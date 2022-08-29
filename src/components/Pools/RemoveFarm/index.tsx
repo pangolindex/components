@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Stat, TransactionCompleted } from 'src/components';
 import { usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useStakingContract } from 'src/hooks/useContract';
+import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
+import { waitForTransaction } from 'src/utils';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
@@ -29,6 +30,9 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
 
   const poolMap = useMinichefPools();
   const stakingContract = useStakingContract(stakingInfo.stakingRewardAddress);
+  const pangoChefContract = usePangoChefContract();
+
+  const contract = version <= 2 ? stakingContract : pangoChefContract;
 
   const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
 
@@ -55,22 +59,25 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
   }
 
   async function onWithdraw() {
-    if (stakingContract && poolMap && stakingInfo?.stakedAmount) {
+    if (!contract || (version === 2 && !poolMap)) return;
+    if (stakingInfo?.stakedAmount) {
       setAttempting(true);
-      const method = version < 2 ? 'exit' : 'withdrawAndHarvest';
+      const method = version === 1 ? 'exit' : version === 2 ? 'withdrawAndHarvest' : 'withdraw';
       const args =
-        version < 2
+        version === 1
           ? []
-          : [
+          : version === 2
+          ? [
               poolMap[stakingInfo.stakedAmount.token.address],
               `0x${stakingInfo.stakedAmount?.raw.toString(16)}`,
               account,
-            ];
+            ]
+          : [stakingInfo.pid, `0x${stakingInfo.stakedAmount?.raw.toString(16)}`];
 
       try {
-        const response: TransactionResponse = await stakingContract[method](...args);
+        const response: TransactionResponse = await contract[method](...args);
 
-        await response.wait(5);
+        await waitForTransaction(response, 5);
         addTransaction(response, {
           summary: t('earn.withdrawDepositedLiquidity'),
         });

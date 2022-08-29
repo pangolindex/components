@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery, useQueryClient } from 'react-query';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
-import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useApproveCallback } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, useSarStakingContract } from 'src/hooks/useContract';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
@@ -73,7 +73,6 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   const [stakeError, setStakeError] = useState<string | null>(null);
 
   const { account } = usePangolinWeb3();
-  const { library } = useLibrary();
   const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
@@ -153,7 +152,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
           gasLimit: calculateGasMargin(estimatedGas),
         });
       }
-      await waitForTransaction(library, response, 5);
+      await waitForTransaction(response, 5);
       addTransaction(response, {
         summary: t('sarStake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
@@ -254,7 +253,6 @@ export function useDerivativeSarUnstake(position: Position | null) {
   const [hash, setHash] = useState<string | null>(null);
 
   const { account } = usePangolinWeb3();
-  const { library } = useLibrary();
   const chainId = useChainId();
 
   const { t } = useTranslation();
@@ -324,7 +322,7 @@ export function useDerivativeSarUnstake(position: Position | null) {
           gasLimit: calculateGasMargin(estimatedGas),
         },
       );
-      await waitForTransaction(library, response, 5);
+      await waitForTransaction(response, 5);
       addTransaction(response, {
         summary: t('sarUnstake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
@@ -385,7 +383,6 @@ export function useDerivativeSarCompound(position: Position | null) {
   const [compoundError, setCompoundError] = useState<string | null>(null);
 
   const { account } = usePangolinWeb3();
-  const { library } = useLibrary();
   const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
@@ -412,7 +409,7 @@ export function useDerivativeSarCompound(position: Position | null) {
       const response: TransactionResponse = await sarStakingContract.compound(position.id.toHexString(), {
         gasLimit: calculateGasMargin(estimatedGas),
       });
-      await waitForTransaction(library, response, 5);
+      await waitForTransaction(response, 5);
       addTransaction(response, {
         summary: t('sarCompound.transactionSummary'),
       });
@@ -453,7 +450,6 @@ export function useDerivativeSarClaim(position: Position | null) {
   const [claimError, setClaimError] = useState<string | null>(null);
 
   const { account } = usePangolinWeb3();
-  const { library } = useLibrary();
   const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
@@ -480,7 +476,7 @@ export function useDerivativeSarClaim(position: Position | null) {
       const response: TransactionResponse = await sarStakingContract.harvest(position.id.toHexString(), {
         gasLimit: calculateGasMargin(estimatedGas),
       });
-      await waitForTransaction(library, response, 5);
+      await waitForTransaction(response, 5);
       addTransaction(response, {
         summary: t('sarClaim.transactionSummary'),
       });

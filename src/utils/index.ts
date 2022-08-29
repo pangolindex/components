@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
-import { JsonRpcSigner, TransactionReceipt, TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { JsonRpcSigner, TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouter.sol/IPangolinRouter.json';
 import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
@@ -189,20 +189,16 @@ export function existSarContract(chainId: ChainId) {
 // https://github.com/ethers-io/ethers.js/issues/945#issuecomment-1074683436
 // wait for transaction confirmation or set timeout
 export async function waitForTransaction(
-  provider: any,
   tx: TransactionResponse,
   confirmations?: number,
-  timeout = 7000, // 7 seconds
+  timeout = 10000, // 10 seconds
 ) {
-  const result = await Promise.race([
+  await Promise.race([
     tx.wait(confirmations),
     (async () => {
       await wait(timeout);
-      const mempoolTx: TransactionReceipt | undefined = await provider.getTransactionReceipt(tx.hash);
-      return mempoolTx;
     })(),
   ]);
-  return result;
 }
 
 export function getBuyUrl(token: Token): string {

@@ -2,9 +2,11 @@ import React from 'react';
 import { useWindowSize } from 'react-use';
 import { Box } from 'src/components';
 import { useChainId } from 'src/hooks';
+import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { StakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import EarnWidget from '../../EarnWidget';
+import EarnedDetailV3 from '../../V3/EarnDetail';
 import Details from '../Details';
 import EarnedDetail from '../EarnedDetail';
 import Header from '../Header';
@@ -27,6 +29,13 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
   const currency1 = unwrappedToken(token1, chainId);
 
   const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
+
+  const renderEarnedDetail = () => {
+    if (version === 3) {
+      return <EarnedDetailV3 stakingInfo={stakingInfo as PangoChefInfo} version={version} />;
+    }
+    return <EarnedDetail stakingInfo={stakingInfo} version={version} />;
+  };
 
   return (
     <>
@@ -57,7 +66,7 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
           </LeftSection>
           <RightSection>
             <EarnWidget currencyA={currency0} currencyB={currency1} version={version} stakingInfo={stakingInfo} />
-            {isStaking && <EarnedDetail stakingInfo={stakingInfo} version={version} />}
+            {isStaking && renderEarnedDetail()}
           </RightSection>
         </DetailsWrapper>
       </DesktopWrapper>
