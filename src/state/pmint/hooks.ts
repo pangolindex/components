@@ -1,6 +1,5 @@
 import {
   CAVAX,
-  CHAINS,
   Currency,
   CurrencyAmount,
   InsufficientInputAmountError,
@@ -15,6 +14,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
+import { isEvmChain } from 'src/utils';
 import { PairState, usePair } from '../../data/Reserves';
 import { useTotalSupplyHook } from '../../data/TotalSupply';
 import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency';
@@ -69,7 +69,7 @@ export function useDerivedMintInfo(
   // pair
   const [pairState, pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]);
 
-  const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
+  const pairOrToken = isEvmChain(chainId) ? pair?.liquidityToken : pair;
   const totalSupply = useTotalSupply(pairOrToken as Token);
 
   const noLiquidity: boolean =
