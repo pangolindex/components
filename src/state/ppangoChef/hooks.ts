@@ -251,26 +251,26 @@ export function usePangoChefInfos() {
       if (totalSupply.equalTo(BIG_INT_ZERO)) {
         // Default to 0 values above avoiding division by zero errors
       } else if (pair.involvesToken(DAIe[chainId])) {
-        const pairValueInDAI = JSBI.multiply(pair.reserveOf(DAIe[chainId]).raw, BIG_INT_TWO);
+        const pairValueInDAI = JSBI.multiply(pair.reserveOfToken(DAIe[chainId]).raw, BIG_INT_TWO);
         const stakedValueInDAI = JSBI.divide(JSBI.multiply(pairValueInDAI, totalStakedAmount.raw), totalSupply.raw);
         totalStakedInUsd = new TokenAmount(DAIe[chainId], stakedValueInDAI);
       } else if (pair.involvesToken(USDCe[chainId])) {
-        const pairValueInUSDC = JSBI.multiply(pair.reserveOf(USDCe[chainId]).raw, BIG_INT_TWO);
+        const pairValueInUSDC = JSBI.multiply(pair.reserveOfToken(USDCe[chainId]).raw, BIG_INT_TWO);
         const stakedValueInUSDC = JSBI.divide(JSBI.multiply(pairValueInUSDC, totalStakedAmount.raw), totalSupply.raw);
         totalStakedInUsd = new TokenAmount(USDCe[chainId], stakedValueInUSDC);
       } else if (pair.involvesToken(USDC[chainId])) {
-        const pairValueInUSDC = JSBI.multiply(pair.reserveOf(USDC[chainId]).raw, BIG_INT_TWO);
+        const pairValueInUSDC = JSBI.multiply(pair.reserveOfToken(USDC[chainId]).raw, BIG_INT_TWO);
         const stakedValueInUSDC = JSBI.divide(JSBI.multiply(pairValueInUSDC, totalStakedAmount.raw), totalSupply.raw);
         totalStakedInUsd = new TokenAmount(USDC[chainId], stakedValueInUSDC);
       } else if (pair.involvesToken(USDTe[chainId])) {
-        const pairValueInUSDT = JSBI.multiply(pair.reserveOf(USDTe[chainId]).raw, BIG_INT_TWO);
+        const pairValueInUSDT = JSBI.multiply(pair.reserveOfToken(USDTe[chainId]).raw, BIG_INT_TWO);
         const stakedValueInUSDT = JSBI.divide(JSBI.multiply(pairValueInUSDT, totalStakedAmount.raw), totalSupply.raw);
         totalStakedInUsd = new TokenAmount(USDTe[chainId], stakedValueInUSDT);
       } else if (isAvaxPool) {
         const _totalStakedInWavax = calculateTotalStakedAmountInAvax(
           totalStakedAmount.raw,
           totalSupply.raw,
-          pair.reserveOf(wavax).raw,
+          pair.reserveOfToken(wavax).raw,
           chainId,
         );
         totalStakedInUsd = _totalStakedInWavax && (usdPrice?.quote(_totalStakedInWavax, chainId) as TokenAmount);
@@ -279,9 +279,9 @@ export function usePangoChefInfos() {
         const _totalStakedInWavax = calculateTotalStakedAmountInAvaxFromPng(
           totalStakedAmount.raw,
           totalSupply.raw,
-          avaxPngPair.reserveOf(png).raw,
-          avaxPngPair.reserveOf(wavax).raw,
-          pair.reserveOf(png).raw,
+          avaxPngPair.reserveOfToken(png).raw,
+          avaxPngPair.reserveOfToken(wavax).raw,
+          pair.reserveOfToken(png).raw,
           chainId,
         );
         totalStakedInUsd = _totalStakedInWavax && (usdPrice?.quote(_totalStakedInWavax, chainId) as TokenAmount);
