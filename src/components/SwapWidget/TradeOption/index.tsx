@@ -1,12 +1,13 @@
 import React from 'react';
 import { Settings } from 'react-feather';
+import { SwapTypes } from 'src/constants';
 import { Box, Text, ToggleButtons } from '../../';
 import { SettingsButton } from '../Settings/styled';
 import { SwapWrapper } from './styled';
 
 interface Props {
   swapType: string;
-  setSwapType: (value: string) => void;
+  setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
   showSettings?: boolean;
   openSwapSettings?: () => void;
@@ -36,7 +37,7 @@ const TradeOption: React.FC<Props> = ({
           {isLimitOrderVisible && (
             <Box width="130px">
               <ToggleButtons
-                options={['MARKET', 'LIMIT']}
+                options={Object.values(SwapTypes)}
                 value={swapType}
                 onChange={(value) => {
                   setSwapType(value);

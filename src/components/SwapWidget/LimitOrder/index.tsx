@@ -5,7 +5,7 @@ import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import { NATIVE } from 'src/constants';
+import { NATIVE, SwapTypes } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTokenHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
@@ -31,7 +31,7 @@ enum Rate {
 
 interface Props {
   swapType: string;
-  setSwapType: (value: string) => void;
+  setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
   defaultInputAddress?: string;
   defaultOutputAddress?: string;

@@ -4,7 +4,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { RefreshCcw } from 'react-feather';
 import ReactGA from 'react-ga';
 import { ThemeContext } from 'styled-components';
-import { TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
+import { SwapTypes, TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
@@ -47,7 +47,7 @@ import { ArrowWrapper, CurrencyInputTextBox, LinkStyledButton, PValue, Root, Swa
 
 interface Props {
   swapType: string;
-  setSwapType: (value: string) => void;
+  setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
   showSettings: boolean;
   partnerDaaS?: string;
