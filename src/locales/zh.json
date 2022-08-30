@@ -290,6 +290,7 @@
     "shareOfPool": "建池份额",
     "createPoolSupply": "创建矿池和供应",
     "confirmSupply": "确认供应",
+    "giveOrder": "GIVE ORDER",
     "outputEstimated": "估计输出。如果价格变化超过 {{ allowedSlippage }}% 您的交易将取消。",
     "creatingPool": "您正在创建一个矿池",
     "willReceive": "您将收到",
