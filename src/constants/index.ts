@@ -70,11 +70,11 @@ export const INITIAL_ALLOWED_SLIPPAGE = 50;
 // 10 minutes, denominated in seconds
 export const DEFAULT_DEADLINE_FROM_NOW = '600';
 
-export const MINICHEF_ADDRESS: { [chainId in ChainId]: string } = {
+export const MINICHEF_ADDRESS: { [chainId in ChainId]?: string } = {
   [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.mini_chef!.address!,
   [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].contracts!.mini_chef!.address!,
   [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].contracts!.mini_chef!.address!,
-  [ChainId.COSTON]: CHAINS[ChainId.COSTON].contracts!.mini_chef!.address!,
+  [ChainId.COSTON]: undefined,
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].contracts!.mini_chef!.address!,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].contracts!.mini_chef!.address!,
 };
@@ -82,8 +82,8 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string } = {
 export const PANGOCHEF_ADDRESS: { [chainId in ChainId]?: string } = {
   [ChainId.FUJI]: undefined,
   [ChainId.AVALANCHE]: undefined,
-  [ChainId.WAGMI]: '0x8ae9EDF29c6dc5A5BC45587449E1002A1111EE2e',
-  [ChainId.COSTON]: undefined,
+  [ChainId.WAGMI]: undefined,
+  [ChainId.COSTON]: CHAINS[ChainId.COSTON].contracts!.mini_chef!.address,
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
 };
