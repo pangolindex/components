@@ -1,5 +1,6 @@
+/* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
-import { CHAINS, JSBI, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_TWO, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
@@ -10,6 +11,7 @@ import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTokens } from 'src/hooks/Tokens';
 import { usePangoChefContract } from 'src/hooks/useContract';
+import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { calculateTotalStakedAmountInAvax, calculateTotalStakedAmountInAvaxFromPng } from '../pstake/hooks';
@@ -187,6 +189,22 @@ export function usePangoChefInfos() {
   const usdPriceTmp = useUSDCPrice(wavax);
   const usdPrice = CHAINS[chainId]?.mainnet ? usdPriceTmp : undefined;
 
+  const pairsToGetPrice = useMemo(() => {
+    const _pairs: { pair: Pair; totalSupply: TokenAmount }[] = [];
+    pairs.map(([, pair], index) => {
+      const pairTotalSupplyState = pairTotalSuppliesState[index];
+      if (pair && pairTotalSupplyState.result) {
+        _pairs.push({
+          pair: pair,
+          totalSupply: new TokenAmount(pair.liquidityToken, JSBI.BigInt(pairTotalSupplyState?.result?.[0])),
+        });
+      }
+    });
+    return _pairs;
+  }, [pairs, pairTotalSuppliesState]);
+
+  const pairPrices = usePairsCurrencyPrice(pairsToGetPrice);
+
   return useMemo(() => {
     if (!chainId || !png || pairs.length == 0) return [] as PangoChefInfo[];
 
@@ -306,6 +324,19 @@ export function usePangoChefInfos() {
             : JSBI.BigInt(0),
         );
       };
+      // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
+      // userAPR = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
+      const pairPrice = pairPrices[pair.liquidityToken.address];
+      const pngPrice = avaxPngPair.priceOf(png, wavax);
+      const apr =
+        pool.valueVariables.balance.isZero() || pairPrice.equalTo('0')
+          ? 0
+          : Number(
+              pngPrice.raw
+                .multiply(rewardRate.mul(365 * 86400 * 100).toString())
+                .divide(pairPrice.raw.multiply(pool.valueVariables.balance.toString()))
+                .toSignificant(2),
+            );
 
       farms.push({
         pid: pid,
@@ -328,6 +359,8 @@ export function usePangoChefInfos() {
         valueVariables: pool.valueVariables,
         userValueVariables: userInfo?.valueVariables,
         userRewardRate: userRewardRateState.result?.[0] ?? BigNumber.from(0),
+        stakingApr: apr,
+        pairPrice: pairPrice,
       } as PangoChefInfo);
     }
     return farms;
@@ -344,21 +377,3 @@ export function usePangoChefInfos() {
     pairs,
   ]);
 }
-
-// poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
-// userAPR = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
-/* 
-  pid,
-  pair,
-  apr
-  rewarders: png, etc,
-  stakedAmount0,
-  stakedAmount1,
-  
-  user infos
-  stakedAmount0,
-  stakedAmount1,
-  totalStakedAmountDollar,
-  apr,
-  pedingRewards,
-*/

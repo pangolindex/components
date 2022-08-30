@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { Price } from '@pangolindex/sdk';
 import { MinichefStakingInfo } from '../pstake/types';
 
 export enum PoolType {
@@ -36,4 +37,5 @@ export interface PangoChefInfo extends MinichefStakingInfo {
   valueVariables: ValueVariables;
   userValueVariables: ValueVariables;
   userRewardRate: BigNumber;
+  pairPrice: Price;
 }
