@@ -290,6 +290,7 @@
     "shareOfPool": "Share of Pool",
     "createPoolSupply": "Create Pool & Supply",
     "confirmSupply": "Confirm Supply",
+    "giveOrder": "GIVE ORDER",
     "outputEstimated": "Output is estimated. If the price changes by more than {{ allowedSlippage }}% your transaction will revert.",
     "creatingPool": "You are creating a pool",
     "willReceive": "You will receive",

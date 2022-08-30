@@ -8,15 +8,14 @@ export const Root = styled(Box)`
 `;
 
 export const Header = styled(Box)`
-  padding: 0px 10px;
+  padding: 0px 20px;
 `;
 
 export const OutputText = styled(Text)`
   width: 100%;
-  font-style: italic;
-  font-size: 12px;
+  line-height: 18px;
   text-align: left;
-  color: ${({ theme }) => theme.text2};
+  color: ${({ theme }) => theme.text1};
 `;
 
 export const Footer = styled(Box)`
@@ -44,5 +43,4 @@ export const StatWrapper = styled(Box)`
     grid-template-columns: minmax(auto, 50%) minmax(auto, 50%);
   `};
   grid-gap: 12px;
-  margin-top: 10px;
 `;
