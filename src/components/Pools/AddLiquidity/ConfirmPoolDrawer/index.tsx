@@ -16,6 +16,7 @@ import {
 import Drawer from 'src/components/Drawer';
 import { Field } from 'src/state/pmint/actions';
 import { SpaceType } from 'src/state/pstake/types';
+import { Hidden } from 'src/theme/components';
 import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
 
 interface Props {
@@ -173,7 +174,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
     <Box display="flex" flexDirection="column" p={10} height="100%">
       <Box flex={1}>
         <StatWrapper>
-          <Box display="inline-block">
+          <Hidden upToSmall={true} display="inline-block">
             <Text color={'text1'} fontSize={[16, 14]}>
               {t('addLiquidity.deposited')}
             </Text>
@@ -197,7 +198,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
                 <CurrencyLogo currency={currencies[Field.CURRENCY_B]} size={24} />
               </Box>
             </Box>
-          </Box>
+          </Hidden>
 
           <Stat
             title={`PGL`}

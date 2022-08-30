@@ -372,3 +372,8 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]?: string } = {
     ?.address,
 };
 /* eslint-enable max-lines */
+
+export enum SwapTypes {
+  MARKET = 'MARKET',
+  LIMIT = 'LIMIT',
+}
