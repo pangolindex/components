@@ -390,7 +390,7 @@
     "managePool": "Manage this pool.",
     "noLiquidityYet": "You don't have liquidity in this pool yet.",
     "noPoolFound": "No pool found.",
-    "addLiquidity": "Add liquidity.",
+    "addLiquidity": "Add liquidity",
     "createPool": "Create pool.",
     "invalidPair": "Invalid pair.",
     "loading": "Loading"
