@@ -7,7 +7,7 @@ import {
   useNearApproveCallback,
 } from './useApproveCallback';
 import { useNearSwapCallback, useSwapCallback } from './useSwapCallback';
-import { useNearUSDCPrice, useUSDCPrice, useDummySongbirdUSDCPrice } from './useUSDCPrice';
+import { useDummySongbirdUSDCPrice, useNearUSDCPrice, useUSDCPrice } from './useUSDCPrice';
 import { useWrapCallback, useWrapNearCallback } from './useWrapCallback';
 
 export type useWrapCallbackHookType = {
