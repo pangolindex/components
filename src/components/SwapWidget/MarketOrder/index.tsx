@@ -498,7 +498,7 @@ const MarketOrder: React.FC<Props> = ({
         onConfirm={handleConfirmTokenWarning}
       />
 
-      <SwapWrapper>
+      <SwapWrapper showRoute={showRoute}>
         <Box p={10}>
           {isAEBToken && <DeprecatedWarning />}
 

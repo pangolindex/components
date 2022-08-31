@@ -1,3 +1,4 @@
+import merge from 'lodash.merge';
 import React, { HTMLProps, useCallback, useContext } from 'react';
 import ReactGA from 'react-ga';
 import styled, {
@@ -248,11 +249,11 @@ export const defaultTheme: DefaultTheme = {
 
 type ThemeProviderProps = {
   children: React.ReactNode;
-  theme: DefaultTheme;
+  theme: Partial<DefaultTheme>;
 };
 
 export default function ThemeProvider({ children, theme }: ThemeProviderProps) {
-  return <StyledComponentsThemeProvider theme={theme || defaultTheme}>{children}</StyledComponentsThemeProvider>;
+  return <StyledComponentsThemeProvider theme={merge(defaultTheme, theme)}>{children}</StyledComponentsThemeProvider>;
 }
 
 export const useTheme = () => {

@@ -8,9 +8,9 @@ export const Root = styled(Box)`
   overflow: hidden;
 `;
 
-export const SwapWrapper = styled(Box)`
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+export const SwapWrapper = styled(Box)<{ showRoute?: boolean }>`
+  border-bottom-left-radius: ${({ showRoute }) => (showRoute ? `0px` : `10px`)};
+  border-bottom-right-radius: ${({ showRoute }) => (showRoute ? `0px` : `10px`)};
   width: 100%;
   /* min-width: 360px; */
   background-color: ${({ theme }) => theme.swapWidget?.backgroundColor};

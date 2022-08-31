@@ -39,8 +39,8 @@ export const DownArrow = styled.div`
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.swapWidget?.secondary};
-  color: ${({ theme }) => theme.swapWidget?.primary};
+  background-color: ${({ theme }) => theme.swapWidget?.interactiveBgColor};
+  color: ${({ theme }) => theme.swapWidget?.interactiveColor};
   display: flex;
   align-items: center;
   justify-content: center;

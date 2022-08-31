@@ -51,8 +51,8 @@ export const ModalFrame = styled(Box)`
 `;
 
 export const SettingsButton = styled(Box)`
-  background-color: ${({ theme }) => theme.swapWidget?.secondary};
-  color: ${({ theme }) => theme.swapWidget?.primary};
+  background-color: ${({ theme }) => theme.swapWidget?.interactiveBgColor};
+  color: ${({ theme }) => theme.swapWidget?.interactiveColor};
   border-radius: 4px;
   padding: 6px;
   display: flex;
