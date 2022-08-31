@@ -200,9 +200,8 @@
     "maximumSold": "Maximum Sold",
     "transactionRevertHelper": "Your transaction will revert if there is a large, unfavorable price movement before it is confirmed.",
     "priceUpdated": "Price Updated",
-    "outputEstimated": "Output is estimated. You will receive at least ",
-    "transactionRevert": " or the transaction will revert.",
-    "inputEstimated": "Input is estimated. You will sell at most ",
+    "outputEstimated": "Output is estimated. You will receive at least <strong>{{amount}} {{currencySymbol}}</strong> or the transaction will revert.",
+    "inputEstimated": "Input is estimated. You will sell at most <strong>{{amount}} {{currencySymbol}}</strong> or the transaction will revert.",
     "outputSentTo": "Output will be sent to ",
     "priceImpactMinPrompt": "This swap has a price impact of at least {{ priceImpact }}%. Please type the word \"confirm\" to continue with this swap.",
     "priceImpactHighPrompt": "This swap has a price impact of at least {{ priceImpact }}%. Please confirm that you would like to continue with this swap."
