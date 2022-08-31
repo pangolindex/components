@@ -24,7 +24,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   return (
     <Box>
       <Box display="flex" justifyContent={label ? 'space-between' : 'flex-end'}>
-        {label && <Text color="textInput">{label}</Text>}
+        {label && <Text color="textInput.labelText">{label}</Text>}
         {addonLabel && addonLabel}
       </Box>
       <InputWrapper>

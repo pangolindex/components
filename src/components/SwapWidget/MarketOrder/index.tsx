@@ -528,7 +528,7 @@ const MarketOrder: React.FC<Props> = ({
                 onSwitchTokens();
               }}
             >
-              <RefreshCcw size="16" color={theme.text4} />
+              <RefreshCcw size="16" color={theme.swapWidget?.interactiveColor} />
             </ArrowWrapper>
           </Box>
 

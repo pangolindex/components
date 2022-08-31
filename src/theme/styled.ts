@@ -64,10 +64,12 @@ export interface Colors {
 
   // theme color objects for components
   swapWidget?: {
-    text?: Color;
+    primary?: Color;
+    secondary?: Color;
     backgroundColor?: Color;
-    detailsText?: Color;
     detailsBackground?: Color;
+    interactiveColor?: Color;
+    interactiveBgColor?: Color;
   };
 
   drawer?: {
@@ -95,8 +97,10 @@ export interface Colors {
 
   numberOptions?: {
     text: Color;
+    activeTextColor: Color;
     activeBackgroundColor?: Color;
     inactiveBackgroundColor?: Color;
+    borderColor?: Color;
   };
 
   switch?: {
@@ -150,6 +154,7 @@ export interface Colors {
   venetianRed: Color;
   oceanBlue: Color;
   quickSilver: Color;
+  error: Color;
 
   color2: Color;
   color3: Color;
@@ -160,6 +165,7 @@ export interface Colors {
   color8: Color;
   color9: Color;
   color10: Color;
+  color12: Color;
 }
 
 export interface Grids {

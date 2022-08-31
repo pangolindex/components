@@ -31,7 +31,7 @@ export const InputText = styled(TextInput)`
 `;
 
 export const ArrowWrapper = styled.div`
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.swapWidget?.interactiveBgColor};
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -55,7 +55,7 @@ export const PValue = styled(Box)<{ isActive: boolean }>`
   font-size: 16px;
   color: ${({ theme }) => theme.textInput?.labelText};
   opacity: ${({ isActive }) => (isActive ? 1 : 0.5)} 
-  border-bottom: ${({ theme, isActive }) => (isActive ? `1px solid ${theme.text1}` : 0)};
+  border-bottom: ${({ theme, isActive }) => (isActive ? `1px solid ${theme.textInput?.labelText}` : 0)};
   cursor: pointer;
   &:hover {
     color: ${({ theme }) => theme.text1};

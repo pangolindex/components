@@ -2,7 +2,6 @@ import { formatUnits } from '@ethersproject/units';
 import { useGasOverhead, useGelatoLimitOrders, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import { TokenAmount } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
-import { TextType } from 'src/components/Text/Text';
 import { INITIAL_ALLOWED_SLIPPAGE } from 'src/constants';
 import { usePangolinWeb3 } from 'src/hooks';
 import { Text } from '../../Text';
@@ -59,7 +58,7 @@ const LimitOrderDetailInfo: React.FC<Props> = ({ trade }) => {
   const renderRow = (label: string, value: string) => {
     return (
       <DataBox key={label}>
-        <Text color="swapWidget" type={TextType.detailsText} fontSize={14}>
+        <Text color="swapWidget.secondary" fontSize={14}>
           {label}
         </Text>
 

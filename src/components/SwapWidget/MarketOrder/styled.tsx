@@ -25,7 +25,7 @@ export const CurrencyInputTextBox = styled(CurrencyInput)`
 `;
 
 export const ArrowWrapper = styled.div`
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.swapWidget?.interactiveBgColor};
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -49,10 +49,10 @@ export const PValue = styled(Box)<{ isActive: boolean }>`
   font-size: 16px;
   color: ${({ theme }) => theme.textInput?.labelText};
   opacity: ${({ isActive }) => (isActive ? 1 : 0.5)} 
-  border-bottom: ${({ theme, isActive }) => (isActive ? `1px solid ${theme.text1}` : 0)};
+  border-bottom: ${({ theme, isActive }) => (isActive ? `1px solid ${theme.textInput?.labelText}` : 0)};
   cursor: pointer;
   &:hover {
-    color: ${({ theme }) => theme.text1};
+    color: ${({ theme }) => theme.textInput?.labelText};
   }
 `;
 
@@ -62,8 +62,7 @@ export const LinkStyledButton = styled.button<{ disabled?: boolean }>`
   background: none;
 
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
-  color: ${({ theme }) => theme.swapWidget?.text};
-  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  color: ${({ theme, disabled }) => (disabled ? theme.swapWidget?.secondary : theme.swapWidget?.primary)};
   font-weight: 500;
 
   :hover {

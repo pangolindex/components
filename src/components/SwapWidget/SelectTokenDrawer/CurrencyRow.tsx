@@ -28,10 +28,10 @@ const CurrencyRow: React.FC<Props> = (props) => {
   return (
     <CurrencyRowRoot style={style} onClick={handleSelect} disabled={isSelected} selected={otherSelected}>
       <CurrencyLogo currency={currency} size={24} imageSize={48} />
-      <Text color="drawer" fontSize={14} title={currency?.name}>
+      <Text color="swapWidget.primary" fontSize={14} title={currency?.name}>
         {currency?.symbol}
       </Text>
-      <Balance color="drawer" fontSize={14}>
+      <Balance color="swapWidget.primary" fontSize={14}>
         {balance ? balance.toSignificant(4) : account ? <LoaderIcon /> : null}
       </Balance>
     </CurrencyRowRoot>

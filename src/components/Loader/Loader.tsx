@@ -29,7 +29,7 @@ const Loader: React.FC<Props> = (props) => {
           </Box>
         </Box>
         {label && (
-          <Text color="loader" fontWeight={500} fontSize={20} textAlign="center" mt={10}>
+          <Text color="loader.text" fontWeight={500} fontSize={20} textAlign="center" mt={10}>
             {label}
           </Text>
         )}

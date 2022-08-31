@@ -26,15 +26,15 @@ const WarningModal = ({ isOpen, close, setExpertMode }: Props) => {
         <Close variant="plain" onClick={close}>
           <X size={28} />
         </Close>
-        <Text fontSize={28} fontWeight={800} color="text1">
+        <Text fontSize={28} fontWeight={800} color="swapWidget.primary">
           Are you sure?
         </Text>
         <Box marginTop={20}>
-          <Text color="text1">
+          <Text color="swapWidget.primary">
             Expert mode turns off the confirm transaction prompt and allows high slippage trades that often result in
             bad rates and lost funds.
           </Text>
-          <Text color="text1" fontWeight={800} fontSize={20} marginTop={20} marginBottom={40}>
+          <Text color="swapWidget.primary" fontWeight={800} fontSize={20} marginTop={20} marginBottom={40}>
             ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING.
           </Text>
           <WarningButton variant="primary" onClick={confirmAction}>

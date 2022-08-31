@@ -17,7 +17,7 @@ export default function Drawer({ isOpen, onClose, children, title, backgroundCol
     <DrawerRoot isOpen={isOpen} backgroundColor={backgroundColor}>
       {title && (
         <Box display="flex" justifyContent="space-between" alignItems="center" padding="10px">
-          <Text color="drawer" fontSize={24}>
+          <Text color="drawer.text" fontSize={24}>
             {title}
           </Text>
         </Box>

@@ -23,5 +23,5 @@ export const ValueText = styled(Text)<{ severity?: -1 | 0 | 1 | 2 | 3 | 4 }>`
       ? theme.text1
       : severity === 0
       ? theme.green1
-      : theme.swapWidget?.detailsText};
+      : theme.swapWidget?.secondary};
 `;

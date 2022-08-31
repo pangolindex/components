@@ -25,7 +25,7 @@ const TradeOption: React.FC<Props> = ({
 
       <Box p={10}>
         <Box display="flex" alignItems="center" style={{ gap: '6px' }}>
-          <Text color="swapWidget" fontSize={24} fontWeight={500} style={{ flexGrow: 1 }}>
+          <Text color="swapWidget.primary" fontSize={24} fontWeight={500} style={{ flexGrow: 1 }}>
             Trade
           </Text>
           {showSettings && swapType === 'MARKET' && (

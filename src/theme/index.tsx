@@ -8,6 +8,8 @@ import styled, {
 } from 'styled-components';
 import { Colors } from './styled';
 
+export type ThemeColorsType = NestedObjectDotNotation<Colors>;
+
 export const MEDIA_WIDTHS = {
   upToExtraSmall: 500,
   upToSmall: 720,
@@ -109,10 +111,12 @@ export const defaultColors: Colors = {
 
   // theme color objects for components
   swapWidget: {
-    text: black,
+    primary: black,
+    secondary: quickSilver,
     backgroundColor: ghostWhite,
-    detailsText: '#C3C5CB',
     detailsBackground: white,
+    interactiveColor: quickSilver,
+    interactiveBgColor: ghostWhite,
   },
 
   drawer: {
@@ -121,9 +125,9 @@ export const defaultColors: Colors = {
   },
 
   textInput: {
-    text: '#C3C5CB',
-    labelText: '#C3C5CB',
-    placeholderText: '#888D9B',
+    text: quickSilver,
+    labelText: quickSilver,
+    placeholderText: quickSilver,
     backgroundColor: white,
   },
 
@@ -140,8 +144,10 @@ export const defaultColors: Colors = {
 
   numberOptions: {
     text: black,
+    activeTextColor: black,
     activeBackgroundColor: philippineYellow,
     inactiveBackgroundColor: white,
+    borderColor: white,
   },
 
   switch: {
@@ -195,6 +201,7 @@ export const defaultColors: Colors = {
   venetianRed,
   oceanBlue,
   quickSilver,
+  error: venetianRed,
 
   color2: ghostWhite,
   color3: platinum,
@@ -205,6 +212,7 @@ export const defaultColors: Colors = {
   color8: platinum,
   color9: quickSilver,
   color10: white,
+  color12: platinum,
 };
 
 export const defaultTheme: DefaultTheme = {

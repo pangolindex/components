@@ -419,6 +419,7 @@ const LimitOrder: React.FC<Props> = ({
         onClick={() => handlePlaceOrder()}
         id="swap-button"
         isDisabled={!isValid || !!swapInputError}
+        backgroundColor={isValid ? 'primary' : undefined}
       >
         {swapInputError ? swapInputError : 'Place Order'}
       </Button>
@@ -455,7 +456,7 @@ const LimitOrder: React.FC<Props> = ({
   const determineColor = () => {
     if (currencies.input && currencies.output) {
       return theme.text1;
-    } else return theme.text4;
+    } else return theme.swapWidget?.interactiveColor;
   };
 
   const inputCurrency = getInputCurrency();
@@ -527,7 +528,7 @@ const LimitOrder: React.FC<Props> = ({
                 onSwitchTokens();
               }}
             >
-              <RefreshCcw size="16" color={theme.text4} />
+              <RefreshCcw size="16" color={theme.swapWidget?.interactiveColor} />
             </ArrowWrapper>
           </Box>
           <CurrencyInputTextBox
@@ -548,7 +549,7 @@ const LimitOrder: React.FC<Props> = ({
             id="swap-currency-output"
             addonLabel={
               tradePrice && (
-                <Text color="text4" fontSize={16}>
+                <Text color="swapWidget.secondary" fontSize={16}>
                   Price: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )

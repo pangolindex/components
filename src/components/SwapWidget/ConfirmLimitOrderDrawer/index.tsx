@@ -4,7 +4,6 @@ import React, { useCallback, useContext, useState } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import Drawer from 'src/components/Drawer';
-import { TextType } from 'src/components/Text/Text';
 import { useChainId } from 'src/hooks';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { getEtherscanLink, isAddress, shortenAddress } from 'src/utils';
@@ -146,16 +145,20 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
           <Text
             fontSize={24}
             fontWeight={500}
-            color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? 'primary' : 'drawer'}
+            color={showAcceptChanges && trade.tradeType === TradeType.EXACT_OUTPUT ? 'primary' : 'swapWidget.primary'}
             style={{ marginLeft: '12px' }}
           >
             {inputAmount.toSignificant(6)}
           </Text>
-          <Text color="drawer" fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
+          <Text color="swapWidget.primary" fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
             {inputCurrency?.symbol}
           </Text>
         </TokenRow>
-        <ArrowDown size="16" color="drawer" style={{ marginLeft: '4px', minWidth: '16px' }} />
+        <ArrowDown
+          size="16"
+          color={theme.swapWidget?.interactiveColor}
+          style={{ marginLeft: '4px', minWidth: '16px' }}
+        />
         <TokenRow>
           <CurrencyLogo currency={outputCurrency} size={24} imageSize={48} />
 
@@ -164,7 +167,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
               fontSize={24}
               fontWeight={500}
               style={{ marginLeft: '12px' }}
-              color={showAcceptChanges && trade.tradeType === TradeType.EXACT_INPUT ? 'primary' : 'drawer'}
+              color={showAcceptChanges && trade.tradeType === TradeType.EXACT_INPUT ? 'primary' : 'swapWidget.primary'}
             >
               {outputAmount.toSignificant(6)}
             </Text>
@@ -174,13 +177,13 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
               priceImpact={computeFiatValuePriceImpact(fiatValueInput as any, fiatValueOutput as any) as any}
             />
           </Box>
-          <Text color="drawer" fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
+          <Text color="swapWidget.primary" fontSize={24} fontWeight={500} style={{ marginLeft: '10px' }}>
             {outputCurrency?.symbol}
           </Text>
         </TokenRow>
         {showAcceptChanges && (
           <PriceUpdateBlock>
-            <Text color="swapWidget" type={TextType.detailsText} fontSize={14}>
+            <Text color="swapWidget.primary" fontSize={14}>
               Price Updated
             </Text>
             <Button onClick={onAcceptChanges} variant="primary" width={150} padding="5px 10px">
@@ -197,15 +200,15 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
           onClick={flipPrice}
           style={{ cursor: 'pointer' }}
         >
-          <Text color="drawer" fontSize={16}>
+          <Text color="swapWidget.primary" fontSize={16}>
             Limit Price
           </Text>
-          <Text color="drawer" fontSize={16}>
+          <Text color="swapWidget.primary" fontSize={16}>
             {text}
           </Text>
         </Box>
         <Box mt={'15px'}>
-          <Text color="drawer" fontSize={16}>
+          <Text color="swapWidget.primary" fontSize={16}>
             Output will be sent to{' '}
             <b title={recipient || ''}>
               {isAddress(recipient || '') ? shortenAddress(recipient || '', chainId) : recipient || ''}
@@ -230,7 +233,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
     <ErrorWrapper>
       <ErrorBox>
         <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
-        <Text fontWeight={500} fontSize={16} color={'red1'} style={{ textAlign: 'center', width: '85%' }}>
+        <Text fontWeight={500} fontSize={16} color={'error'} style={{ textAlign: 'center', width: '85%' }}>
           {swapErrorMessage}
         </Text>
       </ErrorBox>
@@ -246,7 +249,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
         <Box flex="1" display="flex" alignItems="center">
           <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary} />
         </Box>
-        <Text color="drawer" fontWeight={500} fontSize={20}>
+        <Text color="swapWidget.primary" fontWeight={500} fontSize={20}>
           Transaction Submitted
         </Text>
         {chainId && txHash && (
