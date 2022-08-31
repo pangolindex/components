@@ -12,7 +12,7 @@ const Text = styled.div<TextProps & TypographyProps & SpaceProps & PositionProps
   ${space}
   ${typography}
   ${position}
-  color: ${({ color, theme }) => color && (get(theme, color) as string)};
+  color: ${({ color, theme }) => color && (get(theme, color, color) as string)};
   cursor: ${(props) => props.cursor && props.cursor};
 `;
 export default Text;

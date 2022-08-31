@@ -453,12 +453,6 @@ const LimitOrder: React.FC<Props> = ({
     );
   };
 
-  const determineColor = () => {
-    if (currencies.input && currencies.output) {
-      return theme.swapWidget?.interactiveColor;
-    } else return theme.swapWidget?.interactiveColor;
-  };
-
   const inputCurrency = getInputCurrency();
   const outputCurrency = getOutputCurrency();
 
@@ -504,9 +498,9 @@ const LimitOrder: React.FC<Props> = ({
           <Box width="100%" textAlign="center" alignItems="center" display="flex" justifyContent={'center'} mt={10}>
             <ArrowWrapper>
               {rateType === Rate.MUL ? (
-                <X size="16" color={determineColor()} />
+                <X size="16" color={theme.swapWidget?.interactiveColor} />
               ) : (
-                <Divide size="16" color={determineColor()} />
+                <Divide size="16" color={theme.swapWidget?.interactiveColor} />
               )}
             </ArrowWrapper>
           </Box>
