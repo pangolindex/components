@@ -126,6 +126,7 @@ export function useNearUSDCPrice(currency?: Currency): Price | undefined {
   }, [chainId, currency, token, USDC, result]);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function useDummySongbirdUSDCPrice(_currency?: Currency): Price | undefined {
   return undefined;
 }

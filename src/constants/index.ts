@@ -3,6 +3,7 @@ import {
   CHAINS,
   COSTON_TESTNET,
   ChainId,
+  ChefType,
   JSBI,
   Percent,
   StakingType,
@@ -72,14 +73,22 @@ export const INITIAL_ALLOWED_SLIPPAGE = 50;
 // 10 minutes, denominated in seconds
 export const DEFAULT_DEADLINE_FROM_NOW = '600';
 
-export const MINICHEF_ADDRESS: { [chainId in ChainId]: string } = {
-  [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.mini_chef!.address!,
-  [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].contracts!.mini_chef!.address!,
-  [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].contracts!.mini_chef!.address!,
-  [ChainId.COSTON]: CHAINS[ChainId.COSTON].contracts!.mini_chef!.address!,
-  [ChainId.SONGBIRD]: CHAINS[ChainId.SONGBIRD].contracts!.mini_chef!.address!,
-  [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].contracts!.mini_chef!.address!,
-  [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].contracts!.mini_chef!.address!,
+const getMiniChefAddress = (chainId: ChainId) => {
+  const minichefObj = CHAINS[chainId].contracts?.mini_chef;
+  if (minichefObj?.type === ChefType.MINI_CHEF_V2) {
+    return minichefObj.address;
+  }
+  return undefined;
+};
+
+export const MINICHEF_ADDRESS: { [chainId in ChainId]?: string } = {
+  [ChainId.FUJI]: getMiniChefAddress(ChainId.FUJI),
+  [ChainId.AVALANCHE]: getMiniChefAddress(ChainId.AVALANCHE),
+  [ChainId.WAGMI]: getMiniChefAddress(ChainId.WAGMI),
+  [ChainId.COSTON]: getMiniChefAddress(ChainId.COSTON),
+  [ChainId.SONGBIRD]: getMiniChefAddress(ChainId.SONGBIRD),
+  [ChainId.NEAR_MAINNET]: getMiniChefAddress(ChainId.NEAR_MAINNET),
+  [ChainId.NEAR_TESTNET]: getMiniChefAddress(ChainId.NEAR_TESTNET),
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning

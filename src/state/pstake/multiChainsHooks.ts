@@ -16,8 +16,8 @@ export const useMinichefStakingInfosHook: useMinichefStakingInfosHookType = {
   [ChainId.FUJI]: useMinichefStakingInfos,
   [ChainId.AVALANCHE]: useMinichefStakingInfos,
   [ChainId.WAGMI]: useMinichefStakingInfos,
-  [ChainId.COSTON]: useMinichefStakingInfos,
-  [ChainId.SONGBIRD]: useMinichefStakingInfos,
+  [ChainId.COSTON]: useDummyMinichefHook,
+  [ChainId.SONGBIRD]: useDummyMinichefHook,
   [ChainId.NEAR_MAINNET]: useDummyMinichefHook,
   [ChainId.NEAR_TESTNET]: useDummyMinichefHook,
 };
