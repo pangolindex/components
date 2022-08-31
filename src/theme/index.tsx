@@ -45,6 +45,8 @@ const darkSilver = '#717171';
 const venetianRed = '#CC1512';
 const oceanBlue = '#18C145';
 const quickSilver = '#A3A3A3';
+const warning = '#F3841E';
+const success = '#18C145';
 
 export const defaultColors: Colors = {
   // base
@@ -201,7 +203,10 @@ export const defaultColors: Colors = {
   venetianRed,
   oceanBlue,
   quickSilver,
+
   error: venetianRed,
+  warning: warning,
+  success,
 
   color2: ghostWhite,
   color3: platinum,

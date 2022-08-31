@@ -550,7 +550,7 @@ const MarketOrder: React.FC<Props> = ({
             id="swap-currency-output"
             addonLabel={
               tradePrice && (
-                <Text color="text4" fontSize={16}>
+                <Text color="swapWidget.secondary" fontSize={16}>
                   Price: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )
@@ -586,7 +586,7 @@ const MarketOrder: React.FC<Props> = ({
                   const withoutSpaces = value.replace(/\s+/g, '');
                   onChangeRecipient(withoutSpaces);
                 }}
-                addonLabel={recipient && !isAddress(recipient) && <Text color="text1">Invalid Address</Text>}
+                addonLabel={recipient && !isAddress(recipient) && <Text color="warning">Invalid Address</Text>}
               />
             </Box>
           ) : null}

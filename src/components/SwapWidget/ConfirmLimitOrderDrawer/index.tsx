@@ -232,7 +232,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
   const ErroContent = (
     <ErrorWrapper>
       <ErrorBox>
-        <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
+        <AlertTriangle color={theme.error} style={{ strokeWidth: 1.5 }} size={64} />
         <Text fontWeight={500} fontSize={16} color={'error'} style={{ textAlign: 'center', width: '85%' }}>
           {swapErrorMessage}
         </Text>

@@ -1,3 +1,4 @@
+import get from 'lodash.get';
 import { X } from 'react-feather';
 import styled from 'styled-components';
 
@@ -7,7 +8,7 @@ export const DrawerRoot = styled.div<{ isOpen: boolean; backgroundColor?: string
   z-index: 99;
   transition: all 350ms ease;
   background-color: ${({ theme, backgroundColor }: any) =>
-    backgroundColor ? theme[backgroundColor] : theme.drawer?.backgroundColor};
+    backgroundColor ? get(theme, backgroundColor) : theme.drawer?.backgroundColor};
   transform: ${({ isOpen }) => (!isOpen ? 'translate(100%, 0px)' : 'translate(0px, 0px)')};
   width: 100%;
   display: flex;

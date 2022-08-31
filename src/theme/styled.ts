@@ -154,7 +154,10 @@ export interface Colors {
   venetianRed: Color;
   oceanBlue: Color;
   quickSilver: Color;
+
   error: Color;
+  warning: Color;
+  success: Color;
 
   color2: Color;
   color3: Color;

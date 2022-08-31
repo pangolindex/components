@@ -14,12 +14,12 @@ export function FiatValue({
   const theme = useContext(ThemeContext);
   const priceImpactColor = useMemo(() => {
     if (!priceImpact) return undefined;
-    if (priceImpact.lessThan('0')) return theme.oceanBlue;
+    if (priceImpact.lessThan('0')) return theme.success;
     const severity = warningSeverity(priceImpact);
-    if (severity < 1) return theme.color9;
-    if (severity < 3) return theme.primary;
-    return theme.venetianRed;
-  }, [priceImpact, theme.oceanBlue, theme.venetianRed, theme.color9, theme.primary]);
+    if (severity < 1) return theme.swapWidget?.secondary;
+    if (severity < 3) return theme.warning;
+    return theme.error;
+  }, [priceImpact, theme.success, theme.error, theme.swapWidget?.secondary, theme.warning]);
 
   return (
     <Text fontSize={14} color={fiatValue ? 'swapWidget.primary' : 'swapWidget.secondary'} ml={10}>

@@ -19,13 +19,11 @@ export const SwapWrapper = styled(Box)`
 `;
 
 export const CurrencyInputTextBox = styled(CurrencyInput)`
-  background-color: ${({ theme }) => theme.bg6};
   align-items: center;
   border-radius: 4px;
 `;
 
 export const InputText = styled(TextInput)`
-  background-color: ${({ theme }) => theme.bg6};
   align-items: center;
   border-radius: 4px;
 `;
@@ -53,11 +51,10 @@ export const PValue = styled(Box)<{ isActive: boolean }>`
   display: flex;
   width: 100%;
   font-size: 16px;
-  color: ${({ theme }) => theme.textInput?.labelText};
-  opacity: ${({ isActive }) => (isActive ? 1 : 0.5)} 
-  border-bottom: ${({ theme, isActive }) => (isActive ? `1px solid ${theme.textInput?.labelText}` : 0)};
+  color: ${({ theme, isActive }) => (isActive ? theme.swapWidget?.primary : theme.swapWidget?.secondary)};
+  border-bottom: ${({ theme, isActive }) => (isActive ? `1px solid ${theme.swapWidget?.primary}` : 0)};
   cursor: pointer;
   &:hover {
-    color: ${({ theme }) => theme.text1};
+    color: ${({ theme }) => theme.swapWidget?.primary};
   }
 `;

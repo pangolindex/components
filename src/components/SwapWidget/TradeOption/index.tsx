@@ -21,8 +21,6 @@ const TradeOption: React.FC<Props> = ({
 }) => {
   return (
     <SwapWrapper>
-      {/* <SwapAlertBox>This is a BETA release and should be used at your own risk!</SwapAlertBox> */}
-
       <Box p={10}>
         <Box display="flex" alignItems="center" style={{ gap: '6px' }}>
           <Text color="swapWidget.primary" fontSize={24} fontWeight={500} style={{ flexGrow: 1 }}>

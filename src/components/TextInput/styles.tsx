@@ -34,11 +34,13 @@ export const AddonAfter = styled(Box)`
   position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 export const AddonBefore = styled(Box)`
   position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 export const ErrorText = styled(Text)`
   margin-top: 5px;

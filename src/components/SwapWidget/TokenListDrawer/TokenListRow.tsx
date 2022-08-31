@@ -93,13 +93,18 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
             <ViewLink
               fontSize={13}
               as="a"
-              color="text1"
+              color="swapWidget.primary"
               href={`https://tokenlists.org/token-list?url=${listUrl}`}
               target="_blank"
             >
               View list
             </ViewLink>
-            <ViewLink fontSize={13} color="text1" onClick={handleRemoveList} disabled={Object.keys(lists).length === 1}>
+            <ViewLink
+              fontSize={13}
+              color="swapWidget.primary"
+              onClick={handleRemoveList}
+              disabled={Object.keys(lists).length === 1}
+            >
               Remove list
             </ViewLink>
           </PopoverContainer>

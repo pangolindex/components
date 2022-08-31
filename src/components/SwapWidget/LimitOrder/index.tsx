@@ -455,7 +455,7 @@ const LimitOrder: React.FC<Props> = ({
 
   const determineColor = () => {
     if (currencies.input && currencies.output) {
-      return theme.text1;
+      return theme.swapWidget?.interactiveColor;
     } else return theme.swapWidget?.interactiveColor;
   };
 

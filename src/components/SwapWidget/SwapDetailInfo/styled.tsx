@@ -16,12 +16,12 @@ export const DataBox = styled(Box)`
 export const ValueText = styled(Text)<{ severity?: -1 | 0 | 1 | 2 | 3 | 4 }>`
   color: ${({ theme, severity }) =>
     severity === 3 || severity === 4
-      ? theme.red1
+      ? theme.error
       : severity === 2
-      ? theme.yellow2
+      ? theme.warning
       : severity === 1
-      ? theme.text1
+      ? theme.swapWidget?.secondary
       : severity === 0
-      ? theme.green1
+      ? theme.success
       : theme.swapWidget?.secondary};
 `;

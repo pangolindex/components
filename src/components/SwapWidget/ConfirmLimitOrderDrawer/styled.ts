@@ -61,5 +61,4 @@ export const SubmittedWrapper = styled(Box)`
 
 export const Link = styled(Text)`
   text-decoration: none;
-  color: ${({ theme }) => theme.blue1};
 `;

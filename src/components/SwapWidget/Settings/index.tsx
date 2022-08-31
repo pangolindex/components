@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { ThemeContext } from 'styled-components';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import Drawer from 'src/components/Drawer';
@@ -19,8 +18,6 @@ interface Props {
 }
 
 const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
-  const theme = useContext(ThemeContext);
-
   const [userExpertMode, setUserExpertMode] = useExpertModeManager();
   const [userslippage, setUserSlippageTolerance] = useUserSlippageTolerance();
   const [userDeadline, setUserDeadline] = useUserDeadline();
@@ -82,7 +79,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
             <TextInput
               value={slippageTolerance}
               addonAfter={
-                <Box bgColor="bg2" paddingX="10px" paddingY="4px" borderRadius={4}>
+                <Box bgColor="swapWidget.detailsBackground" paddingX="10px" paddingY="4px" borderRadius={4}>
                   <Text color="swapWidget.secondary">Percent</Text>
                 </Box>
               }
@@ -125,8 +122,8 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
             <TextInput
               value={deadline}
               addonAfter={
-                <Box bgColor="bg2" paddingX="8px" paddingY="4px" borderRadius={4}>
-                  <Text color="text4">Seconds</Text>
+                <Box bgColor="swapWidget.detailsBackground" paddingX="8px" paddingY="4px" borderRadius={4}>
+                  <Text color="swapWidget.secondary">Seconds</Text>
                 </Box>
               }
               isNumeric={true}
@@ -169,7 +166,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
           <Button variant="primary" onClick={save} isDisabled={!isValidValues}>
             Save &amp; Close
           </Button>
-          <Button variant="plain" backgroundColor={theme.bg6} onClick={close} color="swapWidget.secondary">
+          <Button variant="plain" onClick={close} color="swapWidget.secondary">
             Close
           </Button>
         </Box>
