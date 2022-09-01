@@ -119,7 +119,7 @@ export const defaultColors: Colors = {
     backgroundColor: ghostWhite,
     detailsBackground: white,
     interactiveColor: quickSilver,
-    interactiveBgColor: ghostWhite,
+    interactiveBgColor: platinum,
   },
 
   drawer: {
