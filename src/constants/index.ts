@@ -3,6 +3,7 @@ import {
   CHAINS,
   COSTON_TESTNET,
   ChainId,
+  Fraction,
   JSBI,
   Percent,
   StakingType,
@@ -377,3 +378,6 @@ export enum SwapTypes {
   MARKET = 'MARKET',
   LIMIT = 'LIMIT',
 }
+
+export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '100'); // 1% of slippage tolerange
+export const ONE_FRACTION = new Fraction('1');

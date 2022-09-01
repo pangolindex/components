@@ -94,8 +94,8 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
       </Box>
       <Box padding="20px" bgColor="color3" borderRadius="8px">
         <Text color="text1" textAlign="center">
-          There is already locked liquidity in this farm. Your new liquidity will be locked until you claim your rewards
-          from this pools; AVAX-QI, AVAX-AVME and AVAX-USDC
+          You are now adding liquidity into {token0?.symbol}-{token1?.symbol} Farm. Longer you stake in the pool better
+          share of the rewards you’ll get.
         </Text>
       </Box>
       <Box alignSelf="flex-end">

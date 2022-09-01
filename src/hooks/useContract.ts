@@ -85,5 +85,5 @@ export function useSarStakingContract(): Contract | null {
 
 export function usePangoChefContract(): Contract | null {
   const chainId = useChainId();
-  return useContract(PANGOCHEF_ADDRESS[chainId], PANGOCHEF_ABI, true);
+  return useContract(PANGOCHEF_ADDRESS[chainId], PANGOCHEF_ABI.abi, true);
 }

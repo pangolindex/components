@@ -8,6 +8,7 @@ import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import RemoveDrawer from '../../RemoveDrawer';
 import ClaimRewardV3 from '../ClaimReward';
+import CompoundV3 from '../Compound';
 import { Buttons, Container, InnerWrapper, Wrapper } from './styleds';
 
 export interface EarnDetailProps {
@@ -51,6 +52,8 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
   };
 
   const theme = useContext(ThemeContext);
+
+  const isDisabledButtons = !earnedAmount?.greaterThan(BIG_INT_ZERO);
 
   return (
     <Wrapper>
@@ -122,12 +125,18 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
       </Container>
 
       <Buttons>
-        <Button padding="10px" variant="outline" onClick={() => setShowClaimDrawer(true)} color={theme.text10}>
+        <Button
+          padding="10px"
+          variant="outline"
+          isDisabled={isDisabledButtons}
+          onClick={() => setShowClaimDrawer(true)}
+          color={!isDisabledButtons ? theme.text10 : undefined}
+        >
           {t('earnPage.claim')}
         </Button>
         <Button
           padding="10px"
-          isDisabled={!earnedAmount?.greaterThan(BIG_INT_ZERO)}
+          // isDisabled={isDisabledButtons}
           variant="primary"
           onClick={() => setShowCompoundDrawer(true)}
         >
@@ -142,6 +151,9 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
             redirectToCompound={redirectToCompound}
             stakingInfo={stakingInfo}
           />
+        )}
+        {isCompoundDrawerVisible && (
+          <CompoundV3 onClose={() => setShowCompoundDrawer(false)} stakingInfo={stakingInfo} />
         )}
       </Drawer>
       <RemoveDrawer
