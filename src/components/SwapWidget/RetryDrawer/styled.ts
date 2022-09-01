@@ -10,7 +10,7 @@ export const DataBox = styled(Box)`
 
 export const Divider = styled(Box)`
   height: 1px;
-  background-color: ${({ theme }) => theme.bg7};
+  background-color: ${({ theme }) => theme.swapWidget?.secondary};
   margin: 10px 0px 10px 0px;
   width: 100%;
 `;

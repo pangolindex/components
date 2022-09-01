@@ -21,12 +21,12 @@ const SwapRoute: React.FC<Props> = ({ trade }) => {
             <Box display="flex" alignItems="center" my={'5px'}>
               <CurrencyLogo currency={token} size={24} />
               <Box ml={'10px'}>
-                <Text fontSize={14} color={'text1'}>
+                <Text fontSize={14} color={'swapWidget.primary'}>
                   {token.symbol}
                 </Text>
               </Box>
             </Box>
-            {isLastItem ? null : <ChevronRight color={theme.text2} />}
+            {isLastItem ? null : <ChevronRight color={theme.swapWidget?.interactiveColor} />}
           </Box>
         );
       })}
