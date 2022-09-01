@@ -6,7 +6,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, Button, Loader, Text, TransactionCompleted } from 'src/components';
 import { usePangolinWeb3 } from 'src/hooks';
 import { usePangoChefContract } from 'src/hooks/useContract';
-import { PangoChefInfo } from 'src/state/ppangoChef/types';
+import { PangoChefInfo, PoolType } from 'src/state/ppangoChef/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { waitForTransaction } from 'src/utils';
 import { Buttons, ClaimWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';
@@ -42,7 +42,8 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
     if (pangoChefContract && stakingInfo?.stakedAmount) {
       setAttempting(true);
       try {
-        const response: TransactionResponse = await pangoChefContract.claim(stakingInfo.pid);
+        const method = stakingInfo.poolType === PoolType.RELAYER_POOL ? 'claim' : 'harvest';
+        const response: TransactionResponse = await pangoChefContract[method](stakingInfo.pid);
         await waitForTransaction(response, 1);
         addTransaction(response, {
           summary: t('earn.claimAccumulated', { symbol: 'PNG' }),

@@ -361,6 +361,7 @@ export function usePangoChefInfos() {
         userRewardRate: userRewardRateState.result?.[0] ?? BigNumber.from(0),
         stakingApr: apr,
         pairPrice: pairPrice,
+        poolType: pool.poolType,
       } as PangoChefInfo);
     }
     return farms;
