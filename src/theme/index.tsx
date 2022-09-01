@@ -253,7 +253,8 @@ type ThemeProviderProps = {
 };
 
 export default function ThemeProvider({ children, theme }: ThemeProviderProps) {
-  return <StyledComponentsThemeProvider theme={merge(defaultTheme, theme)}>{children}</StyledComponentsThemeProvider>;
+  const finalTheme = merge({}, defaultTheme, theme || {});
+  return <StyledComponentsThemeProvider theme={finalTheme}>{children}</StyledComponentsThemeProvider>;
 }
 
 export const useTheme = () => {

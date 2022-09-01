@@ -4,7 +4,7 @@ import LimitOrder from './LimitOrder';
 import MarketOrder from './MarketOrder';
 import { Root } from './styled';
 
-export interface Props {
+export interface SwapWidgetProps {
   isLimitOrderVisible?: boolean;
   showSettings?: boolean;
   partnerDaaS?: string;
@@ -12,7 +12,7 @@ export interface Props {
   defaultOutputToken?: string;
 }
 
-const SwapWidget: React.FC<Props> = ({
+const SwapWidget: React.FC<SwapWidgetProps> = ({
   isLimitOrderVisible = false,
   showSettings = true,
   partnerDaaS = ZERO_ADDRESS,
