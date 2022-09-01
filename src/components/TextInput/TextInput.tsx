@@ -33,6 +33,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
           {...(rest as any)}
           autoComplete={autoComplete}
           ref={(ref) => getRef(ref)}
+          type={isNumeric ? 'number' : 'text'}
           onChange={(e) => {
             const value = e.target.value;
 
