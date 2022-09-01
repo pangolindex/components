@@ -36,9 +36,13 @@ export const ErrorBox = styled(Box)`
   justify-content: center;
   flex-direction: column;
 `;
+
 export const StatWrapper = styled(Box)`
   display: grid;
   grid-template-columns: minmax(auto, 33%) minmax(auto, 33%) minmax(auto, 33%);
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: minmax(auto, 50%) minmax(auto, 50%);
+  `};
   grid-gap: 12px;
   margin-top: 10px;
 `;
