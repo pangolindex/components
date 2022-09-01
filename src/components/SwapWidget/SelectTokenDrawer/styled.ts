@@ -21,7 +21,8 @@ export const CurrencyRowRoot = styled.div<{ disabled: boolean; selected: boolean
   padding: 10px;
 
   &:hover {
-    background-color: ${({ theme, disabled }) => !disabled && opacify(0.9, theme.swapWidget?.secondary as string)};
+    background-color: ${({ theme, disabled }) =>
+      !disabled && opacify(0.9, theme.swapWidget?.detailsBackground as string)};
   }
 
   opacity: ${({ disabled, selected }) => (disabled || selected ? 0.5 : 1)};
