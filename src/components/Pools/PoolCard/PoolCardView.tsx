@@ -75,6 +75,12 @@ const PoolCardView = ({
     setShowAddLiquidityDrawer(false);
   };
 
+  const aprMapping = {
+    1: undefined,
+    2: combinedApr,
+    3: stakingInfo.stakingApr,
+  };
+
   const renderButton = () => {
     if (isStaking && Boolean(earnedAmount.greaterThan('0')))
       return (
@@ -156,7 +162,7 @@ const PoolCardView = ({
 
           <Stat
             title={`APR`}
-            stat={combinedApr ? `${combinedApr}%` : '-'}
+            stat={aprMapping[version] ? `${numeral(aprMapping[version]).format('0a')}%` : '-'}
             titlePosition="top"
             titleFontSize={[16, 14]}
             statFontSize={[24, 18]}
@@ -203,7 +209,7 @@ const PoolCardView = ({
           version={version}
           backgroundColor="color5"
           stakingInfo={stakingInfo}
-          combinedApr={version > 1 ? combinedApr : undefined}
+          combinedApr={aprMapping[version]}
         />
       )}
 

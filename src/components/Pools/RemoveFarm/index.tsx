@@ -104,7 +104,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
 
   const { earnedAmount } = useGetEarnedAmount(stakingInfo?.pid as string);
 
-  const newEarnedAmount = version < 2 ? stakingInfo?.earnedAmount : earnedAmount;
+  const newEarnedAmount = version !== 2 ? stakingInfo?.earnedAmount : earnedAmount;
 
   const token0 = stakingInfo.tokens[0];
   const token1 = stakingInfo.tokens[1];

@@ -1,8 +1,14 @@
+import { BigNumber } from '@ethersproject/bignumber';
+import { Price, WAVAX } from '@pangolindex/sdk';
+import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
+import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
+import { useTokenCurrenyPrice } from 'src/hooks/useCurrencyPrice';
+import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetFarmApr, useGetRewardTokens } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { CloseIcon, Hidden, Visible } from 'src/theme/components';
@@ -12,10 +18,11 @@ import { HeaderRoot, HeaderWrapper, StatsWrapper } from './styled';
 
 type Props = {
   stakingInfo: StakingInfo;
+  version: number;
   onClose: () => void;
 };
 
-const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
+const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
   const theme = useContext(ThemeContext);
   const chainId = useChainId();
 
@@ -29,7 +36,29 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
 
   const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo.rewardTokensAddress);
 
-  const { swapFeeApr, stakingApr } = useGetFarmApr(stakingInfo?.pid as string);
+  const { swapFeeApr: _swapFeeApr, stakingApr: _stakingApr } = useGetFarmApr(stakingInfo?.pid as string);
+
+  const stakingApr = version !== 2 ? stakingInfo?.stakingApr || 0 : _stakingApr;
+
+  const swapFeeApr = version !== 2 ? stakingInfo?.swapFeeApr || 0 : _swapFeeApr;
+
+  const totalApr = stakingApr + swapFeeApr;
+
+  const pngPRice = useTokenCurrenyPrice(PNG[chainId]) ?? new Price(PNG[chainId], WAVAX[chainId], '1', '0');
+
+  //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
+  const userRewardRate = version === 3 ? (stakingInfo as PangoChefInfo).userRewardRate : BigNumber.from(0);
+  const userBalance = version === 3 ? (stakingInfo as PangoChefInfo).userValueVariables.balance : BigNumber.from(0);
+  const pairPrice =
+    version === 3 ? (stakingInfo as PangoChefInfo).pairPrice : new Price(PNG[chainId], WAVAX[chainId], '1', '0');
+  const userApr =
+    version === 3
+      ? pngPRice.raw
+          .multiply((86400 * 365 * 100).toString())
+          .multiply(userRewardRate.toString())
+          .divide(pairPrice.raw.multiply(userBalance.toString()))
+          .toFixed(0)
+      : 0;
 
   return (
     <HeaderRoot>
@@ -55,10 +84,19 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
             <RewardTokens rewardTokens={rewardTokens} size={24} />
           </Box>
         </Box>
-
+        {version === 3 && (
+          <Stat
+            title={`Your APR:`}
+            stat={!stakingInfo.isPeriodFinished ? `${numeral(userApr).format('0a')}%` : '-'}
+            titlePosition="top"
+            titleFontSize={14}
+            statFontSize={[24, 18]}
+            titleColor="text2"
+          />
+        )}
         <Stat
           title={`Swap fee APR:`}
-          stat={swapFeeApr && !stakingInfo.isPeriodFinished ? `${swapFeeApr}%` : '-'}
+          stat={swapFeeApr && !stakingInfo.isPeriodFinished ? `${numeral(swapFeeApr).format('0a')}%` : '-'}
           titlePosition="top"
           titleFontSize={14}
           statFontSize={[24, 18]}
@@ -66,7 +104,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
         />
         <Stat
           title={`Reward APR:`}
-          stat={stakingApr && !stakingInfo.isPeriodFinished ? `${stakingApr}%` : '-'}
+          stat={!stakingInfo.isPeriodFinished ? `${numeral(stakingApr).format('0a')}%` : '-'}
           titlePosition="top"
           titleFontSize={14}
           statFontSize={[24, 18]}
@@ -74,7 +112,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
         />
         <Stat
           title={`Total APR:`}
-          stat={swapFeeApr && !stakingInfo.isPeriodFinished ? `${swapFeeApr + (stakingApr || 0)}%` : '-'}
+          stat={!stakingInfo.isPeriodFinished ? `${numeral(totalApr).format('0a')}%` : '-'}
           titlePosition="top"
           titleFontSize={14}
           statFontSize={[24, 18]}

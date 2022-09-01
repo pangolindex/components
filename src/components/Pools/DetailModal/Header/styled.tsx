@@ -18,7 +18,7 @@ export const HeaderRoot = styled(Box)`
 
 export const StatsWrapper = styled(Box)`
   display: grid;
-  grid-template-columns: repeat(5, auto);
+  grid-template-columns: repeat(6, auto);
   grid-gap: 20px;
   align-items: center;
   ${({ theme }) => theme.mediaWidth.upToSmall`
