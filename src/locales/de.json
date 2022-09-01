@@ -567,6 +567,7 @@
     "availableToDeposit": "Einzahlung möglich: ",
     "poolInfoDescription": "Jetzt haben Sie Ihren Pool ausgewählt und können Sie von dort abheben.",
     "dollarWorth": "Dollarwert: ",
+    "usd": "USD",
     "yourRate": "Ihr Tarif: ",
     "unclaimedPng": "Nicht beanspruchtes {{ pngSymbol }}: ",
     "shareOfPool": "Poolanteil: ",

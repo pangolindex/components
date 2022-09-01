@@ -566,6 +566,7 @@
     "availableToDeposit": "Yatırmaya müsait olan miktar: ",
     "poolInfoDescription": "Taşımak istediğiniz miktarı girin",
     "dollarWorth": "Dolar Karşılığı: ",
+    "usd": "USD",
     "yourRate": "Getiriniz: ",
     "unclaimedPng": "Talep Edilmemiş {{ pngSymbol }}: ",
     "shareOfPool": "Havuz Payı: ",

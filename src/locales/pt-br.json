@@ -566,6 +566,7 @@
     "availableToDeposit": "Disponível para depositar: ",
     "poolInfoDescription": "Agora que você escolheu sua piscina, vamos desamarrá-lo dela.",
     "dollarWorth": "Valor em dólar: ",
+    "usd": "USD",
     "yourRate": "Sua taxa: ",
     "unclaimedPng": "{{ pngSymbol }} não reivindicado: ",
     "shareOfPool": "Participação na Pool: ",

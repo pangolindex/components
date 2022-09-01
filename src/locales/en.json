@@ -568,6 +568,7 @@
     "availableToDeposit": "Available to deposit: ",
     "poolInfoDescription": "Select the amount you wish to migrate",
     "dollarWorth": "Dollar Worth: ",
+    "usd": "USD",
     "yourRate": "Your rate: ",
     "unclaimedPng": "Unclaimed {{ pngSymbol }}: ",
     "shareOfPool": "Share of Pool: ",

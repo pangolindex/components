@@ -567,6 +567,7 @@
     "availableToDeposit": "Có sẵn để đặt cọc: ",
     "poolInfoDescription": "Bây giờ bạn đã chọn hồ bơi của mình, sau đó cho phép bạn rời khỏi đó.",
     "dollarWorth": "Giá trị đô la: ",
+    "usd": "USD",
     "yourRate": "Tỷ lệ của bạn: ",
     "unclaimedPng": "{{ pngSymbol }} vô thừa nhận: ",
     "shareOfPool": "Chia sẻ của Pool: ",

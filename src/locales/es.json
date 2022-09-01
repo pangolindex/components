@@ -567,6 +567,7 @@
     "availableToDeposit": "Disponible para depositar: ",
     "poolInfoDescription": "Ahora que ha elegido su grupo, dejemos de apostar desde allí.",
     "dollarWorth": "Valor del dólar: ",
+    "usd": "USD",
     "yourRate": "Tu tarifa: ",
     "unclaimedPng": "{{ pngSymbol }} no reclamada: ",
     "shareOfPool": "Participación de la piscina: ",

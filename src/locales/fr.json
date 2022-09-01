@@ -567,6 +567,7 @@
     "availableToDeposit": "Disponible en dépôt: ",
     "poolInfoDescription": "Maintenant que vous avez choisi votre piscine, laissez-vous en dépareiller.",
     "dollarWorth": "Valeur en dollars : ",
+    "usd": "USD",
     "yourRate": "Votre tarif : ",
     "unclaimedPng": "{{ pngSymbol }} non réclamé : ",
     "shareOfPool": "Part du pool : ",
