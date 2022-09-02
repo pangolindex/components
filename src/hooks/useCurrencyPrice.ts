@@ -10,7 +10,7 @@ import { useChainId } from '.';
  * @param tokens array of tokens to get the price in wrapped gas coin
  * @returns object where the key is the address of the token and the value is the Price
  */
-export function useTokensCurrenyPrice(tokens: Token[]): { [x: string]: Price } {
+export function useTokensCurrencyPrice(tokens: Token[]): { [x: string]: Price } {
   const chainId = useChainId();
   const currency = WAVAX[chainId];
 
@@ -23,7 +23,7 @@ export function useTokensCurrenyPrice(tokens: Token[]): { [x: string]: Price } {
 
   const prices: { [x: string]: Price } = {};
 
-  // if exist curreny, add to object with price 1
+  // if exist currency, add to object with price 1
   const existCurrency = Boolean(tokens.find((token) => token.equals(currency)));
   if (existCurrency) {
     prices[currency.address] = new Price(currency, currency, '1', '1');
@@ -50,7 +50,7 @@ export function useTokensCurrenyPrice(tokens: Token[]): { [x: string]: Price } {
  * @param token token to get the price
  * @returns the price of token in relation to gas coin
  */
-export function useTokenCurrenyPrice(token: Token): Price {
+export function useTokenCurrencyPrice(token: Token): Price {
   const chainId = useChainId();
   const currency = WAVAX[chainId];
 
@@ -97,7 +97,7 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
     }
   }
 
-  const tokensPrices = useTokensCurrenyPrice(uniqueTokens);
+  const tokensPrices = useTokensCurrencyPrice(uniqueTokens);
 
   return useMemo(() => {
     const pairsPrices: { [key: string]: Price } = {};
@@ -133,7 +133,7 @@ export function usePairCurrencyPrice(pair: { pair: Pair; totalSupply: TokenAmoun
   const _pair = pair.pair;
   const token0 = _pair.token0;
   const token1 = _pair.token1;
-  const tokensPrices = useTokensCurrenyPrice([token0, token1]);
+  const tokensPrices = useTokensCurrencyPrice([token0, token1]);
 
   const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
   const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');

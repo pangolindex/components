@@ -7,7 +7,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useTokenCurrenyPrice } from 'src/hooks/useCurrencyPrice';
+import { useTokenCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetFarmApr, useGetRewardTokens } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -44,7 +44,7 @@ const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
 
   const totalApr = stakingApr + swapFeeApr;
 
-  const pngPRice = useTokenCurrenyPrice(PNG[chainId]) ?? new Price(PNG[chainId], WAVAX[chainId], '1', '0');
+  const pngPRice = useTokenCurrencyPrice(PNG[chainId]) ?? new Price(PNG[chainId], WAVAX[chainId], '1', '0');
 
   //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
   const userRewardRate = version === 3 ? (stakingInfo as PangoChefInfo).userRewardRate : BigNumber.from(0);
