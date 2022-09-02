@@ -4,7 +4,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { RefreshCcw } from 'react-feather';
 import ReactGA from 'react-ga';
 import { ThemeContext } from 'styled-components';
-import { TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
+import { SwapTypes, TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
@@ -47,7 +47,7 @@ import { ArrowWrapper, CurrencyInputTextBox, LinkStyledButton, PValue, Root, Swa
 
 interface Props {
   swapType: string;
-  setSwapType: (value: string) => void;
+  setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
   showSettings: boolean;
   partnerDaaS?: string;
@@ -498,7 +498,7 @@ const MarketOrder: React.FC<Props> = ({
         onConfirm={handleConfirmTokenWarning}
       />
 
-      <SwapWrapper>
+      <SwapWrapper showRoute={showRoute}>
         <Box p={10}>
           {isAEBToken && <DeprecatedWarning />}
 
@@ -528,7 +528,7 @@ const MarketOrder: React.FC<Props> = ({
                 onSwitchTokens();
               }}
             >
-              <RefreshCcw size="16" color={theme.text4} />
+              <RefreshCcw size="16" color={theme.swapWidget?.interactiveColor} />
             </ArrowWrapper>
           </Box>
 
@@ -550,7 +550,7 @@ const MarketOrder: React.FC<Props> = ({
             id="swap-currency-output"
             addonLabel={
               tradePrice && (
-                <Text color="text4" fontSize={16}>
+                <Text color="swapWidget.secondary" fontSize={16}>
                   Price: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )
@@ -586,7 +586,7 @@ const MarketOrder: React.FC<Props> = ({
                   const withoutSpaces = value.replace(/\s+/g, '');
                   onChangeRecipient(withoutSpaces);
                 }}
-                addonLabel={recipient && !isAddress(recipient) && <Text color="text1">Invalid Address</Text>}
+                addonLabel={recipient && !isAddress(recipient) && <Text color="warning">Invalid Address</Text>}
               />
             </Box>
           ) : null}

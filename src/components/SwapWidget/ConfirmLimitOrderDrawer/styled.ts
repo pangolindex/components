@@ -19,7 +19,7 @@ export const TokenRow = styled(Box)`
 
 export const PriceUpdateBlock = styled(Box)`
   padding: 10px;
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.swapWidget?.detailsBackground};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -61,5 +61,4 @@ export const SubmittedWrapper = styled(Box)`
 
 export const Link = styled(Text)`
   text-decoration: none;
-  color: ${({ theme }) => theme.blue1};
 `;

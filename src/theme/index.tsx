@@ -1,3 +1,4 @@
+import merge from 'lodash.merge';
 import React, { HTMLProps, useCallback, useContext } from 'react';
 import ReactGA from 'react-ga';
 import styled, {
@@ -7,6 +8,8 @@ import styled, {
   css,
 } from 'styled-components';
 import { Colors } from './styled';
+
+export type ThemeColorsType = NestedObjectDotNotation<Colors>;
 
 export const MEDIA_WIDTHS = {
   upToExtraSmall: 500,
@@ -43,6 +46,8 @@ const darkSilver = '#717171';
 const venetianRed = '#CC1512';
 const oceanBlue = '#18C145';
 const quickSilver = '#A3A3A3';
+const warning = '#F3841E';
+const success = '#18C145';
 
 export const defaultColors: Colors = {
   // base
@@ -105,8 +110,48 @@ export const defaultColors: Colors = {
   yellow1: '#FFE270',
   yellow2: '#F3841E',
   blue1: '#2172E5',
-
   avaxRed: '#E84142',
+
+  // theme color objects for components
+  swapWidget: {
+    primary: black,
+    secondary: quickSilver,
+    backgroundColor: ghostWhite,
+    detailsBackground: white,
+    interactiveColor: quickSilver,
+    interactiveBgColor: platinum,
+  },
+
+  drawer: {
+    text: black,
+    backgroundColor: ghostWhite,
+  },
+
+  textInput: {
+    text: quickSilver,
+    labelText: quickSilver,
+    placeholderText: quickSilver,
+    backgroundColor: white,
+  },
+
+  currencySelect: {
+    defaultText: black,
+    selectedText: black,
+    defaultBackgroundColor: philippineYellow,
+    selectedBackgroundColor: ghostWhite,
+  },
+
+  loader: {
+    text: black,
+  },
+
+  numberOptions: {
+    text: black,
+    activeTextColor: black,
+    activeBackgroundColor: philippineYellow,
+    inactiveBackgroundColor: white,
+    borderColor: white,
+  },
 
   switch: {
     onColor: philippineYellow,
@@ -160,6 +205,10 @@ export const defaultColors: Colors = {
   oceanBlue,
   quickSilver,
 
+  error: venetianRed,
+  warning: warning,
+  success,
+
   color2: ghostWhite,
   color3: platinum,
   color4: chineseBlack,
@@ -169,6 +218,7 @@ export const defaultColors: Colors = {
   color8: platinum,
   color9: quickSilver,
   color10: white,
+  color12: platinum,
 };
 
 export const defaultTheme: DefaultTheme = {
@@ -199,11 +249,12 @@ export const defaultTheme: DefaultTheme = {
 
 type ThemeProviderProps = {
   children: React.ReactNode;
-  theme: DefaultTheme;
+  theme: Partial<DefaultTheme>;
 };
 
 export default function ThemeProvider({ children, theme }: ThemeProviderProps) {
-  return <StyledComponentsThemeProvider theme={theme || defaultTheme}>{children}</StyledComponentsThemeProvider>;
+  const finalTheme = merge({}, defaultTheme, theme || {});
+  return <StyledComponentsThemeProvider theme={finalTheme}>{children}</StyledComponentsThemeProvider>;
 }
 
 export const useTheme = () => {

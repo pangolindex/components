@@ -373,6 +373,22 @@ class Near {
     };
   }
 
+  public nearDepositAction(amount: string): FunctionCallOptions {
+    return {
+      methodName: 'near_deposit',
+      args: {},
+      amount,
+    };
+  }
+
+  public nearWithdrawAction(amount: string): FunctionCallOptions {
+    return {
+      methodName: 'near_withdraw',
+      args: { amount: amount },
+      amount: ONE_YOCTO_NEAR,
+    };
+  }
+
   public registerTokenAction(tokenId: string) {
     return {
       methodName: 'register_tokens',

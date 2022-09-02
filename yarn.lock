@@ -3631,10 +3631,10 @@
     csv-batch "^2.0.2"
     openzeppelin-solidity "^3.4.0"
 
-"@pangolindex/sdk@2.1.11":
-  version "2.1.11"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-2.1.11.tgz#f61894fdbf8c82c773f7c6856235f57e1a27bf6b"
-  integrity sha512-6gBuqMhyWh2YYor61XC/qpdh+8ml+X/MZKH4AGHPQN7UEUjMOce4TR+d5kohmjoJD+GCiYv3fDRnhuKL+eXn/w==
+"@pangolindex/sdk@3.1.0-rc.0":
+  version "3.1.0-rc.0"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-3.1.0-rc.0.tgz#afde4d0b836be22da53f937fc9127326d036c2d7"
+  integrity sha512-NgHHYSIKOqS6tJ73pAAzfssqsn8ecb1+BkQRKSLEE7GPYbD3tIOofAbaWJfOdvq9w1VZtsHHjlziBwxOY8mv+g==
   dependencies:
     "@pangolindex/exchange-contracts" "2.1.2"
     big.js "^5.2.2"
@@ -13223,6 +13223,11 @@ lodash.flatmap@4.5.0, lodash.flatmap@^4.5.0:
   resolved "https://registry.npmjs.org/lodash.flatmap/-/lodash.flatmap-4.5.0.tgz"
   integrity sha1-74y/QI9uSCaGYzRTBcaswLd4cC4=
 
+lodash.get@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+  integrity sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==
+
 lodash.isequal@4.5.0:
   version "4.5.0"
   resolved "https://registry.npmjs.org/lodash.isequal/-/lodash.isequal-4.5.0.tgz"
@@ -13235,7 +13240,7 @@ lodash.memoize@4.x:
 
 lodash.merge@^4.6.2:
   version "4.6.2"
-  resolved "https://registry.npmjs.org/lodash.merge/-/lodash.merge-4.6.2.tgz"
+  resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
 lodash.sortby@^4.7.0:

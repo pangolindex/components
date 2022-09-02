@@ -3,7 +3,6 @@ import { parseUnits } from '@ethersproject/units';
 import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import {
   CAVAX,
-  CHAINS,
   ChainId,
   Currency,
   CurrencyAmount,
@@ -23,9 +22,9 @@ import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { AppState, useDispatch, useSelector } from 'src/state';
+import { isAddress, isEvmChain } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { isAddress } from '../../utils';
 import { useUserSlippageTolerance } from '../puser/hooks';
 import { useCurrencyBalances } from '../pwallet/hooks';
 import {
@@ -132,7 +131,7 @@ const BAD_RECIPIENT_ADDRESSES: string[] = [
 function involvesAddress(trade: Trade, checksummedAddress: string): boolean {
   return (
     trade.route.path.some((token) => token.address === checksummedAddress) ||
-    trade.route.pairs.some((pair) => pair.liquidityToken.address === checksummedAddress)
+    trade.route.pools.some((pool) => pool.liquidityToken.address === checksummedAddress)
   );
 }
 
@@ -161,7 +160,7 @@ export function useDerivedSwapInfo(): {
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
-  const recipientAddress = CHAINS[chainId]?.evm ? isAddress(recipient) : recipient;
+  const recipientAddress = isEvmChain(chainId) ? isAddress(recipient) : recipient;
   const to: string | null = (recipientAddress ? recipientAddress : account) ?? null;
 
   const relevantTokenBalances = useCurrencyBalances(chainId, account ?? undefined, [
@@ -209,7 +208,7 @@ export function useDerivedSwapInfo(): {
     inputError = inputError ?? 'Select a token';
   }
 
-  const formattedTo = CHAINS[chainId]?.evm ? isAddress(to) : to;
+  const formattedTo = isEvmChain(chainId) ? isAddress(to) : to;
   if (!to || !formattedTo) {
     inputError = inputError ?? 'Enter a recipient';
   } else {
@@ -243,7 +242,7 @@ export function useDerivedSwapInfo(): {
   ];
 
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-    inputError = 'Insufficient' + amountIn.currency.symbol + ' balance';
+    inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance';
   }
 
   const isLoading = isExactIn ? isLoadingIn : isLoadingOut;
@@ -259,7 +258,7 @@ export function useDerivedSwapInfo(): {
   };
 }
 
-function parseCurrencyFromURLParameter(urlParam: any): string {
+export function parseCurrencyFromURLParameter(urlParam: any): string {
   if (typeof urlParam === 'string') {
     const valid = isAddress(urlParam);
     if (valid) return valid;
