@@ -57,7 +57,7 @@ export function usePangoChefInfos() {
           balance: valueVariables?.balance,
           sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
         } as ValueVariables,
-        rewardSummations: rewardSummations as RewardSummations,
+        rewardSummations: rewardSummations,
       } as Pool;
     });
   }, [poolsState]);
@@ -169,7 +169,7 @@ export function usePangoChefInfos() {
           balance: valueVariables?.balance,
           sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
         } as ValueVariables,
-        rewardSummations: rewardSummations as RewardSummations,
+        rewardSummations: rewardSummations,
         previousValues: previousValues,
       } as UserInfo;
     });
