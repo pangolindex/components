@@ -649,9 +649,9 @@ export function useSarPositions() {
       return positions.filter((position) => !!position);
     },
     {
-      cacheTime: 60 * 10 * 1000, // 10 minutes
+      cacheTime: 60 * 5 * 1000, // 5 minutes
       refetchOnWindowFocus: false,
-      refetchInterval: 60 * 10 * 1000, // 10 minutes
+      refetchInterval: 60 * 5 * 1000, // 5 minutes
     },
   );
 }
