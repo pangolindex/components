@@ -614,10 +614,10 @@
     "attemptingToConfirmApproval": "Attempting to confirm without approval or a signature. Please contact support."
   },
   "sarTitle":{
-    "addMore": "ADD MORE",
-    "unstake": "UNSTAKE A POSITION",
-    "compound": "COMPOUND REWARDS",
-    "claim": "CLAIM REWARDS",
+    "addMore": "Add",
+    "unstake": "Unstake",
+    "compound": "Compound",
+    "claim": "Claim",
     "interactingID": "Interacting with ID: {{ id }}"
   },
   "sarStake": {
