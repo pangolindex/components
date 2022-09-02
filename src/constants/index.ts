@@ -1,16 +1,5 @@
 /* eslint-disable max-lines */
-import {
-  CHAINS,
-  COSTON_TESTNET,
-  ChainId,
-  ChefType,
-  JSBI,
-  Percent,
-  StakingType,
-  Token,
-  WAGMI_FUJI_SUBNET,
-  WAVAX,
-} from '@pangolindex/sdk';
+import { CHAINS, ChainId, ChefType, JSBI, Percent, StakingType, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import BN from 'bn.js';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
@@ -81,7 +70,7 @@ const getMiniChefAddress = (chainId: ChainId) => {
   return undefined;
 };
 
-export const MINICHEF_ADDRESS: { [chainId in ChainId]?: string } = {
+export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.FUJI]: getMiniChefAddress(ChainId.FUJI),
   [ChainId.AVALANCHE]: getMiniChefAddress(ChainId.AVALANCHE),
   [ChainId.WAGMI]: getMiniChefAddress(ChainId.WAGMI),
@@ -375,11 +364,18 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
   [ChainId.AVALANCHE]: [],
 };
 
-export const SAR_STAKING_ADDRESS: { [chainId in ChainId]?: string } = {
-  [ChainId.WAGMI]: WAGMI_FUJI_SUBNET.contracts?.staking?.find((c) => c.type === StakingType.SAR_POSITIONS && c.active)
-    ?.address,
-  [ChainId.COSTON]: COSTON_TESTNET.contracts?.staking?.find((c) => c.type === StakingType.SAR_POSITIONS && c.active)
-    ?.address,
+const getSarAddress = (chainId: ChainId) => {
+  return CHAINS[chainId]?.contracts?.staking?.find((c) => c.type === StakingType.SAR_POSITIONS && c.active)?.address;
+};
+
+export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } = {
+  [ChainId.FUJI]: getSarAddress(ChainId.FUJI),
+  [ChainId.AVALANCHE]: getSarAddress(ChainId.AVALANCHE),
+  [ChainId.WAGMI]: getSarAddress(ChainId.WAGMI),
+  [ChainId.COSTON]: getSarAddress(ChainId.COSTON),
+  [ChainId.SONGBIRD]: getSarAddress(ChainId.SONGBIRD),
+  [ChainId.NEAR_MAINNET]: getSarAddress(ChainId.NEAR_MAINNET),
+  [ChainId.NEAR_TESTNET]: getSarAddress(ChainId.NEAR_TESTNET),
 };
 /* eslint-enable max-lines */
 
