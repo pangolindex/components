@@ -60,8 +60,48 @@ export interface Colors {
   yellow1: Color;
   yellow2: Color;
   blue1: Color;
-
   avaxRed: Color;
+
+  // theme color objects for components
+  swapWidget?: {
+    primary?: Color;
+    secondary?: Color;
+    backgroundColor?: Color;
+    detailsBackground?: Color;
+    interactiveColor?: Color;
+    interactiveBgColor?: Color;
+  };
+
+  drawer?: {
+    text?: Color;
+    backgroundColor?: Color;
+  };
+
+  textInput?: {
+    text?: Color;
+    labelText?: Color;
+    placeholderText?: Color;
+    backgroundColor?: Color;
+  };
+
+  currencySelect?: {
+    defaultText?: Color;
+    selectedText?: Color;
+    defaultBackgroundColor?: Color;
+    selectedBackgroundColor?: Color;
+  };
+
+  loader?: {
+    text?: Color;
+  };
+
+  numberOptions?: {
+    text: Color;
+    activeTextColor: Color;
+    activeBackgroundColor?: Color;
+    inactiveBackgroundColor?: Color;
+    borderColor?: Color;
+  };
 
   switch?: {
     onColor?: Color;
@@ -115,6 +155,10 @@ export interface Colors {
   oceanBlue: Color;
   quickSilver: Color;
 
+  error: Color;
+  warning: Color;
+  success: Color;
+
   color2: Color;
   color3: Color;
   color4: Color;
@@ -124,6 +168,7 @@ export interface Colors {
   color8: Color;
   color9: Color;
   color10: Color;
+  color12: Color;
 }
 
 export interface Grids {
