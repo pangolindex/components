@@ -30,7 +30,7 @@ export function useTokensCurrencyPrice(tokens: Token[]): { [x: string]: Price } 
   }
 
   return useMemo(() => {
-    pairs.map(([pairState, pair], index) => {
+    pairs.forEach(([pairState, pair], index) => {
       const token = filteredTokens[index];
       // if not exist pair, return 0 for price of this token
       if (pairState !== PairState.EXISTS || !pair) {
@@ -101,7 +101,7 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
 
   return useMemo(() => {
     const pairsPrices: { [key: string]: Price } = {};
-    pairs.map(({ pair, totalSupply }) => {
+    pairs.forEach(({ pair, totalSupply }) => {
       const token0 = pair.token0;
       const token1 = pair.token1;
       const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');

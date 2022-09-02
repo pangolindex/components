@@ -191,7 +191,7 @@ export function usePangoChefInfos() {
 
   const pairsToGetPrice = useMemo(() => {
     const _pairs: { pair: Pair; totalSupply: TokenAmount }[] = [];
-    pairs.map(([, pair], index) => {
+    pairs.forEach(([, pair], index) => {
       const pairTotalSupplyState = pairTotalSuppliesState[index];
       if (pair && pairTotalSupplyState.result) {
         _pairs.push({

@@ -27,7 +27,15 @@ const Pools: React.FC<Props> = ({
   menuItems,
 }) => {
   if (version == 1) {
-    <PoolV1 type={type} stakingInfos={stakingInfoV1} activeMenu={activeMenu} setMenu={setMenu} menuItems={menuItems} />;
+    return (
+      <PoolV1
+        type={type}
+        stakingInfos={stakingInfoV1}
+        activeMenu={activeMenu}
+        setMenu={setMenu}
+        menuItems={menuItems}
+      />
+    );
   } else if (version === 2) {
     return (
       <PoolV2
