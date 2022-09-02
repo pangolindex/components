@@ -1,11 +1,11 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useNearPairs, usePairs } from './Reserves';
 
-export type usePairsHookType = {
+export type UsePairsHookType = {
   [chainId in ChainId]: typeof usePairs | typeof useNearPairs;
 };
 
-export const usePairsHook: usePairsHookType = {
+export const usePairsHook: UsePairsHookType = {
   [ChainId.FUJI]: usePairs,
   [ChainId.AVALANCHE]: usePairs,
   [ChainId.WAGMI]: usePairs,

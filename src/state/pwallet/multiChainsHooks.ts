@@ -14,11 +14,11 @@ import {
   useTokenBalances,
 } from './hooks';
 
-export type useTokenBalancesHookType = {
+export type UseTokenBalancesHookType = {
   [chainId in ChainId]: typeof useTokenBalances | typeof useNearTokenBalances;
 };
 
-export const useTokenBalancesHook: useTokenBalancesHookType = {
+export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.FUJI]: useTokenBalances,
   [ChainId.AVALANCHE]: useTokenBalances,
   [ChainId.WAGMI]: useTokenBalances,
@@ -28,11 +28,11 @@ export const useTokenBalancesHook: useTokenBalancesHookType = {
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
 };
 
-export type useTokenBalanceHookType = {
+export type UseTokenBalanceHookType = {
   [chainId in ChainId]: typeof useTokenBalance | typeof useNearTokenBalance;
 };
 
-export const useTokenBalanceHook: useTokenBalanceHookType = {
+export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.FUJI]: useTokenBalance,
   [ChainId.AVALANCHE]: useTokenBalance,
   [ChainId.WAGMI]: useTokenBalance,
@@ -42,11 +42,11 @@ export const useTokenBalanceHook: useTokenBalanceHookType = {
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
 };
 
-export type useAccountBalanceHookType = {
+export type UseAccountBalanceHookType = {
   [chainId in ChainId]: typeof useETHBalances | typeof useNearBalance;
 };
 
-export const useAccountBalanceHook: useAccountBalanceHookType = {
+export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.FUJI]: useETHBalances,
   [ChainId.AVALANCHE]: useETHBalances,
   [ChainId.WAGMI]: useETHBalances,
@@ -56,11 +56,11 @@ export const useAccountBalanceHook: useAccountBalanceHookType = {
   [ChainId.NEAR_TESTNET]: useNearBalance,
 };
 
-export type useAddLiquidityHookType = {
+export type UseAddLiquidityHookType = {
   [chainId in ChainId]: typeof useAddLiquidity | typeof useNearAddLiquidity;
 };
 
-export const useAddLiquidityHook: useAddLiquidityHookType = {
+export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.FUJI]: useAddLiquidity,
   [ChainId.AVALANCHE]: useAddLiquidity,
   [ChainId.WAGMI]: useAddLiquidity,
@@ -70,11 +70,11 @@ export const useAddLiquidityHook: useAddLiquidityHookType = {
   [ChainId.NEAR_TESTNET]: useNearAddLiquidity,
 };
 
-export type useRemoveLiquidityHookType = {
+export type UseRemoveLiquidityHookType = {
   [chainId in ChainId]: typeof useRemoveLiquidity | typeof useNearRemoveLiquidity;
 };
 
-export const useRemoveLiquidityHook = {
+export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
   [ChainId.FUJI]: useRemoveLiquidity,
   [ChainId.AVALANCHE]: useRemoveLiquidity,
   [ChainId.WAGMI]: useRemoveLiquidity,
@@ -84,11 +84,11 @@ export const useRemoveLiquidityHook = {
   [ChainId.NEAR_TESTNET]: useNearRemoveLiquidity,
 };
 
-export type useGetUserLPHookType = {
+export type UseGetUserLPHookType = {
   [chainId in ChainId]: typeof useGetUserLP | typeof useGetNearUserLP;
 };
 
-export const useGetUserLPHook = {
+export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.FUJI]: useGetUserLP,
   [ChainId.AVALANCHE]: useGetUserLP,
   [ChainId.WAGMI]: useGetUserLP,

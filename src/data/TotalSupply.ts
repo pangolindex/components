@@ -49,11 +49,11 @@ export function useNearTotalSupply(tokenOrPair?: Token | Pair): TokenAmount | un
   return useMemo(() => totalSupply, [totalSupply]);
 }
 
-export type useTotalSupplyHookType = {
+export type UseTotalSupplyHookType = {
   [chainId in ChainId]: typeof useTotalSupply | typeof useNearTotalSupply;
 };
 
-export const useTotalSupplyHook: useTotalSupplyHookType = {
+export const useTotalSupplyHook: UseTotalSupplyHookType = {
   [ChainId.FUJI]: useTotalSupply,
   [ChainId.AVALANCHE]: useTotalSupply,
   [ChainId.WAGMI]: useTotalSupply,

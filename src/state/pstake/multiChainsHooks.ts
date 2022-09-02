@@ -8,11 +8,11 @@ import {
   useMinichefStakingInfos,
 } from './hooks';
 
-export type useMinichefStakingInfosHookType = {
+export type UseMinichefStakingInfosHookType = {
   [chainId in ChainId]: typeof useMinichefStakingInfos | typeof useDummyMinichefHook;
 };
 
-export const useMinichefStakingInfosHook: useMinichefStakingInfosHookType = {
+export const useMinichefStakingInfosHook: UseMinichefStakingInfosHookType = {
   [ChainId.FUJI]: useMinichefStakingInfos,
   [ChainId.AVALANCHE]: useMinichefStakingInfos,
   [ChainId.WAGMI]: useMinichefStakingInfos,
@@ -22,11 +22,11 @@ export const useMinichefStakingInfosHook: useMinichefStakingInfosHookType = {
   [ChainId.NEAR_TESTNET]: useDummyMinichefHook,
 };
 
-export type useGetMinichefStakingInfosViaSubgraphHookType = {
+export type UseGetMinichefStakingInfosViaSubgraphHookType = {
   [chainId in ChainId]: typeof useGetMinichefStakingInfosViaSubgraph | typeof useDummyMinichefStakingInfosViaSubgraph;
 };
 
-export const useGetMinichefStakingInfosViaSubgraphHook: useGetMinichefStakingInfosViaSubgraphHookType = {
+export const useGetMinichefStakingInfosViaSubgraphHook: UseGetMinichefStakingInfosViaSubgraphHookType = {
   [ChainId.FUJI]: useGetMinichefStakingInfosViaSubgraph,
   [ChainId.AVALANCHE]: useGetMinichefStakingInfosViaSubgraph,
   [ChainId.WAGMI]: useGetMinichefStakingInfosViaSubgraph,
@@ -36,11 +36,11 @@ export const useGetMinichefStakingInfosViaSubgraphHook: useGetMinichefStakingInf
   [ChainId.NEAR_TESTNET]: useDummyMinichefStakingInfosViaSubgraph,
 };
 
-export type useGetAllFarmDataHookType = {
+export type UseGetAllFarmDataHookType = {
   [chainId in ChainId]: typeof useGetAllFarmData | typeof useGetDummyAllFarmData;
 };
 
-export const useGetAllFarmDataHook: useGetAllFarmDataHookType = {
+export const useGetAllFarmDataHook: UseGetAllFarmDataHookType = {
   [ChainId.FUJI]: useGetAllFarmData,
   [ChainId.AVALANCHE]: useGetAllFarmData,
   [ChainId.WAGMI]: useGetAllFarmData,
