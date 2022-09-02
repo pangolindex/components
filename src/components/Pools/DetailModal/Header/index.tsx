@@ -87,7 +87,7 @@ const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
         {version === 3 && (
           <Stat
             title={`Your APR:`}
-            stat={!stakingInfo.isPeriodFinished ? `${numeral(userApr).format('0a')}%` : '-'}
+            stat={!userRewardRate.isZero() ? `${numeral(userApr).format('0.00a')}%` : '-'}
             titlePosition="top"
             titleFontSize={14}
             statFontSize={[24, 18]}
