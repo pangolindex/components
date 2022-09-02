@@ -4,15 +4,15 @@ import AnalyticsIcon from 'src/assets/images/analytics.svg';
 import { Box, CurrencyLogo, Text } from 'src/components';
 import { ANALYTICS_PAGE } from 'src/constants';
 import { useChainId } from 'src/hooks';
-import { Colors } from 'src/theme/styled';
+import { ThemeColorsType } from 'src/theme';
 import { AnalyticsLink } from './styled';
 
 export interface StatProps {
   title?: React.ReactNode;
   titlePosition?: 'top' | 'bottom';
   stat?: any;
-  titleColor?: keyof Colors;
-  statColor?: keyof Colors;
+  titleColor?: ThemeColorsType;
+  statColor?: ThemeColorsType;
   titleFontSize?: number | number[];
   statFontSize?: number | number[];
   currency?: Currency;

@@ -70,10 +70,15 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
     <RowRoot>
       {list?.logoURI ? <ListLogo size={24} src={list?.logoURI} /> : <ListLogo as="div" size={24} />}
       <Box>
-        <Text fontSize={16} color="text1" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <Text fontSize={16} color="swapWidget.primary" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {list?.name}
         </Text>
-        <Text fontSize={12} color="text3" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }} title={listUrl}>
+        <Text
+          fontSize={12}
+          color="swapWidget.secondary"
+          style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+          title={listUrl}
+        >
           <TokenListOrigin listUrl={listUrl} />
         </Text>
       </Box>
@@ -88,13 +93,18 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
             <ViewLink
               fontSize={13}
               as="a"
-              color="text1"
+              color="swapWidget.primary"
               href={`https://tokenlists.org/token-list?url=${listUrl}`}
               target="_blank"
             >
               View list
             </ViewLink>
-            <ViewLink fontSize={13} color="text1" onClick={handleRemoveList} disabled={Object.keys(lists).length === 1}>
+            <ViewLink
+              fontSize={13}
+              color="swapWidget.primary"
+              onClick={handleRemoveList}
+              disabled={Object.keys(lists).length === 1}
+            >
               Remove list
             </ViewLink>
           </PopoverContainer>

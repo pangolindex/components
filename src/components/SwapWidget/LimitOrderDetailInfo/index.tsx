@@ -58,7 +58,7 @@ const LimitOrderDetailInfo: React.FC<Props> = ({ trade }) => {
   const renderRow = (label: string, value: string) => {
     return (
       <DataBox key={label}>
-        <Text color="text4" fontSize={14}>
+        <Text color="swapWidget.secondary" fontSize={14}>
           {label}
         </Text>
 
