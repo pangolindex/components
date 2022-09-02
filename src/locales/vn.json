@@ -687,5 +687,14 @@
     "newest": "Mới nhất",
     "oldest": "Cũ nhất",
     "sortBy": "Sắp xếp theo"
+  },
+  "pangoChef": {
+    "claimWarning1": "Khi bạn yêu cầu mà không rút tiền, thanh khoản của bạn vẫn còn trong nhóm khai thác.",
+    "claimWarning2": "Yêu cầu phần thưởng của bạn sẽ giảm APR của bạn xuống 0. Thay vào đó, bạn có thể chọn kết hợp.",
+    "compoundWarning": "Tích lũy phần thưởng của bạn cho trang trại {{token0}} - {{token1}} sẽ nhận được phần thưởng của bạn vào trang trại {{currency}} - {{png}}. Bạn cần thêm giá trị tương đương của mã thông báo {{currency}} vào phần thưởng {{png}} đã tích lũy của mình.",
+    "compoundAmountWarning": "Bạn cần thêm {{amount}} {{symbol}} để kết hợp.",
+    "compoundAmountWarning2": "Hãy cẩn thận rằng bạn sẽ khóa nhóm {{symbol}} {{png}} của mình cho đến khi bạn nhận được phần thưởng của nhóm này.",
+    "highVolalityWarning": "Tính biến động cao, hãy thử soạn sau.",
+    "compoundSuccess": "Bạn đã soạn thành công trang trại của mình."
   }
 }

@@ -687,5 +687,14 @@
     "newest": "Nuevo",
     "oldest": "Mayor",
     "sortBy": "Ordenar por"
+  },
+  "pangoChef": {
+    "claimWarning1": "Cuando reclamas sin retirar tu liquidez permanece en el pool de minería.",
+    "claimWarning2": "Reclamar sus recompensas reducirá su APR a 0. En su lugar, puede optar por capitalizar.",
+    "compoundWarning": "Combinar sus recompensas para {{ token0 }}-{{ token1 }} hará que sus recompensas se apuesten en {{ currency }}-{{ png }} granja. Debe agregar el mismo valor de {{ currency }} token a sus {{ png }} recompensas acumuladas.",
+    "compoundAmountWarning": "Necesitas agregar {{ amount }} {{ symbol }} al compuesto.",
+    "compoundAmountWarning2": "Tenga cuidado de bloquear su fondo de {{ symbol }} {{ png }} hasta que reclame las recompensas de este fondo.",
+    "highVolalityWarning": "Alta volatilidad, intente redactar más tarde",
+    "compoundSuccess": "Ha compuesto correctamente su granja"
   }
 }

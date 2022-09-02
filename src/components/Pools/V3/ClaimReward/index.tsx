@@ -4,7 +4,8 @@ import { AlertTriangle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Loader, Text, TransactionCompleted } from 'src/components';
-import { usePangolinWeb3 } from 'src/hooks';
+import { PNG } from 'src/constants/tokens';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { PangoChefInfo, PoolType } from 'src/state/ppangoChef/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
@@ -18,10 +19,13 @@ export interface ClaimProps {
 }
 const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps) => {
   const { account } = usePangolinWeb3();
+  const chainId = useChainId();
 
   const { t } = useTranslation();
 
   const theme = useContext(ThemeContext);
+
+  const png = PNG[chainId];
 
   // monitor call to help UI loading state
   const addTransaction = useTransactionAdder();
@@ -85,13 +89,13 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
             margin="auto"
           >
             <Text color="text1" textAlign="center">
-              Claiming your rewards will drop your APR to 0. Instead you may choose to compound.
+              {t('pangoChef.claimWarning2')}
             </Text>
           </Box>
 
           <Buttons>
             <Button variant="outline" onClick={onClaimReward} color={theme.text10}>
-              {_error ?? t('earn.claimReward', { symbol: 'PNG' })}
+              {_error ?? t('earn.claimReward', { symbol: png.symbol })}
             </Button>
             <Button variant="primary" onClick={redirectToCompound}>
               {t('sarCompound.compound')}
@@ -114,7 +118,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
         </ErrorWrapper>
       )}
 
-      {attempting && !hash && <Loader size={100} label=" Claiming..." />}
+      {attempting && !hash && <Loader size={100} label={`${t('sarClaim.pending')}...`} />}
 
       {hash && <TransactionCompleted onClose={wrappedOnDismiss} submitText="Your rewards claimed" />}
     </ClaimWrapper>

@@ -8,13 +8,14 @@ import { ThemeContext } from 'styled-components';
 import { Box, Button, Loader, Text, TextInput, TransactionCompleted } from 'src/components';
 import { ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE, ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
+import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePangoChefContract } from 'src/hooks/useContract';
-import { useTokensCurrenyPrice } from 'src/hooks/useCurrencyPrice';
+import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useETHBalances, useTokenBalances } from 'src/state/pwallet/hooks';
-import { waitForTransaction } from 'src/utils';
+import { calculateGasMargin, waitForTransaction } from 'src/utils';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';
 
@@ -48,23 +49,25 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   }
 
   const png = PNG[chainId];
-  const wrappedCurreny = WAVAX[chainId];
-  const curreny = CAVAX[chainId];
+  const wrappedCurrency = WAVAX[chainId];
+  const currency = CAVAX[chainId];
   const [token0, token1] = stakingInfo.tokens;
+
+  const [, pair] = usePair(token0, token1);
 
   const currency0 = unwrappedToken(token0, chainId);
   const currency1 = unwrappedToken(token1, chainId);
 
-  const currenyBalance = useETHBalances(chainId, [account ?? ZERO_ADDRESS]);
+  const currencyBalance = useETHBalances(chainId, [account ?? ZERO_ADDRESS]);
 
   const tokensBalances = useTokenBalances(account ?? ZERO_ADDRESS, [token0, token1]);
 
-  const tokensPrices = useTokensCurrenyPrice([token0, token1]);
+  const tokensPrices = useTokensCurrencyPrice([token0, token1]);
 
   const isPNGPool = token0.equals(png) || token1.equals(png);
-  const isWrappedCurrenyPool = token0.equals(wrappedCurreny) || token1.equals(wrappedCurreny);
+  const isWrappedCurrencyPool = token0.equals(wrappedCurrency) || token1.equals(wrappedCurrency);
 
-  let message = `You need to add`;
+  let message = '';
 
   let _error: string | undefined;
   if (!account) {
@@ -75,54 +78,89 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   }
 
   const earnedAmount = stakingInfo.earnedAmount;
-  const pngPrice = tokensPrices[png.address] ?? new Price(png, wrappedCurreny, '1', '0');
-  let amountToAdd: CurrencyAmount | TokenAmount = new TokenAmount(wrappedCurreny, '0');
+  const pngPrice = tokensPrices[png.address] ?? new Price(png, wrappedCurrency, '1', '0');
+  let amountToAdd: CurrencyAmount | TokenAmount = new TokenAmount(wrappedCurrency, '0');
   // if is png pool and not is wrapped token as second token
-  if (isPNGPool && !isWrappedCurrenyPool) {
-    // need to calculate the token price in png, for this we using the token price on curreny and png price on curreny
+  if (isPNGPool && !isWrappedCurrencyPool) {
+    // need to calculate the token price in png, for this we using the token price on currency and png price on currency
     const token = token0.equals(png) ? token1 : token0;
     const tokenBalance = tokensBalances[token.address];
-    const tokenPrice = tokensPrices[token.address] ?? new Price(token, wrappedCurreny, '1', '0');
+    const tokenPrice = tokensPrices[token.address] ?? new Price(token, wrappedCurrency, '1', '0');
     const tokenPngPrice = pngPrice.equalTo('0') ? new Fraction('0') : tokenPrice.divide(pngPrice);
     amountToAdd = new TokenAmount(token, tokenPngPrice.multiply(earnedAmount.raw).toFixed(0));
 
     if (amountToAdd.greaterThan(tokenBalance ?? '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: token.symbol });
     }
-    message += ` ${numeral(amountToAdd.toFixed(2)).format('0.00a')} ${
-      token.symbol
-    } to compound. Be careful that you will be locking your ${token.symbol} ${
-      png.symbol
-    } pool till you claim the rewards of this pool.`;
+    message += `${t('pangoChef.compoundAmountWarning', {
+      amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
+      symbol: token.symbol,
+    })} ${t('pangoChef.compoundAmountWarning2', {
+      symbol: token.symbol,
+      png: png.symbol,
+    })}`;
   } else {
     amountToAdd = CurrencyAmount.ether(pngPrice.raw.multiply(earnedAmount.raw).toFixed(0), chainId);
-    if (amountToAdd.greaterThan(currenyBalance[account ?? ZERO_ADDRESS] ?? '0')) {
-      _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: curreny.symbol });
+    if (amountToAdd.greaterThan(currencyBalance[account ?? ZERO_ADDRESS] ?? '0')) {
+      _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: currency.symbol });
     }
-    message += ` ${numeral(amountToAdd.toFixed(2)).format('0.00a')} ${curreny.symbol} to compound.`;
+    message += t('pangoChef.compoundAmountWarning', {
+      amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
+      symbol: currency.symbol,
+    });
+  }
+
+  const userRewardRate = stakingInfo.userRewardRate;
+  /*
+  Let's say you get 1 png per sec, and 1 png equals 1 avax.
+  In 10 secs you have 10 png rewards. you make a tx to send 10 avax.
+  5 more seconds pass until you do the transaction, so you have 15 png rewards, and it needs to be paired with 15 avax. so tx will revert. bad for ux.
+  The less pending rewards you have the more pronounced the issue. so you have to wait an hour or so, such that the rewards you receive do not so rapidly increase in proportion to your pending rewards. that's why we have to grey it out.
+
+  1% slippage we have to hard code, otherwise any tx changing the reserve amounts in the pool would make it revert.
+  also even after an hour or so, the rewards keep consantly increase, so 0% slippage would never work. 
+  */
+  if (
+    !userRewardRate.isZero() &&
+    !JSBI.greaterThan(JSBI.divide(earnedAmount.raw, JSBI.BigInt(userRewardRate.toString())), JSBI.BigInt(30 * 100))
+  ) {
+    _error = _error ?? t('pangoChef.highVolalityWarning');
   }
 
   async function onCompound() {
-    if (pangoChefContract && stakingInfo?.stakedAmount) {
+    if (pangoChefContract && stakingInfo?.stakedAmount && pair && !_error) {
       setAttempting(true);
       try {
         const method = isPNGPool ? 'compound' : 'compoundToPoolZero';
+        const minPairAmount = JSBI.BigInt(
+          ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
+        );
+        const maxPairAmount = JSBI.BigInt(
+          ONE_FRACTION.add(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
+        );
+        // the minPairAmount and maxPairAmount is amount of other token/currency to sent to compound with slippage tolerance
         const slippage = {
-          minPairAmount: JSBI.BigInt(
-            amountToAdd.multiply(ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE)).toFixed(0),
-          ).toString(16),
-          maxPairAmount: amountToAdd.raw.toString(16),
+          minPairAmount: `0x${minPairAmount.toString(16)}`,
+          maxPairAmount: `0x${maxPairAmount.toString(16)}`,
         };
         const ethersParameters =
-          amountToAdd instanceof TokenAmount ? undefined : { value: amountToAdd.raw.toString(16) };
-        const response: TransactionResponse = await pangoChefContract[method](
+          amountToAdd instanceof TokenAmount ? undefined : { value: `0x${maxPairAmount.toString(16)}` };
+        const estimatedGas = await pangoChefContract.estimateGas[method](
           Number(stakingInfo.pid).toString(16),
           slippage,
           ethersParameters,
         );
+        const response: TransactionResponse = await pangoChefContract[method](
+          Number(stakingInfo.pid).toString(16),
+          slippage,
+          {
+            gasLimit: calculateGasMargin(estimatedGas),
+            ...ethersParameters,
+          },
+        );
         await waitForTransaction(response, 1);
         addTransaction(response, {
-          summary: t('earn.claimAccumulated', { symbol: 'PNG' }),
+          summary: t('pangoChef.compoundSuccess'),
         });
         setHash(response.hash);
       } catch (error) {
@@ -155,10 +193,10 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       );
     }
     if (attempting) {
-      return <Loader size={100} label=" Claiming..." />;
+      return <Loader size={100} label={`${t('sarCompound.pending')}...`} />;
     }
     if (hash) {
-      return <TransactionCompleted onClose={wrappedOnDismiss} submitText="Your rewards claimed" />;
+      return <TransactionCompleted onClose={wrappedOnDismiss} submitText={t('pangoChef.compoundSuccess')} />;
     }
   };
 
@@ -167,7 +205,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       <TextInput
         addonAfter={
           <Box padding="5px" bgColor="color2" borderRadius="8px">
-            <Text color="text1">{curreny.symbol}</Text>
+            <Text color="text1">{currency.symbol}</Text>
           </Box>
         }
         disabled={true}
@@ -212,9 +250,12 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             margin="auto"
           >
             <Text color="text1" textAlign="center">
-              Compounding your rewards for {currency0.symbol}-{currency1.symbol} farm will get your rewards staked into{' '}
-              {curreny.symbol}-{png.symbol} farm. You need to add equal value of {curreny.symbol} token to your accrued{' '}
-              {png.symbol} rewards.
+              {t('pangoChef.compoundWarning', {
+                token0: currency0.symbol,
+                token1: currency1.symbol,
+                currency: currency.symbol,
+                png: png.symbol,
+              })}
             </Text>
           </Box>
 
@@ -222,10 +263,11 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             {t('sarCompound.compound')}
           </Button>
         </Root>
-      ) : (
+      ) : !claimError && !attempting && !hash ? (
         confirmContent
+      ) : (
+        renderDrawer()
       )}
-      {renderDrawer()}
     </CompoundWrapper>
   );
 };

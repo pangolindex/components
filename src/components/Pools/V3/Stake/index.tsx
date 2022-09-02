@@ -114,12 +114,12 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   async function onStake() {
     if (pangochefContract && parsedAmount && deadline) {
       setAttempting(true);
-      const method = 'stake';
-      const args = [stakingInfo.pid, parsedAmount.raw.toString()];
-
       if (approval === ApprovalState.APPROVED) {
         try {
-          const response: TransactionResponse = await pangochefContract[method](...args);
+          const response: TransactionResponse = await pangochefContract.stake(
+            stakingInfo.pid,
+            parsedAmount.raw.toString(),
+          );
           await waitForTransaction(response, 5);
           addTransaction(response, {
             summary: t('earn.depositLiquidity'),

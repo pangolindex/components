@@ -119,7 +119,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           display="flex"
         >
           <Text fontSize="12px" color="text1" textAlign="center">
-            When you claim without withdrawing your liquidity remains in the mining pool.
+            {t('pangoChef.claimWarning1')}
           </Text>
         </Box>
       </Container>
@@ -136,7 +136,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         </Button>
         <Button
           padding="10px"
-          // isDisabled={isDisabledButtons}
+          isDisabled={isDisabledButtons}
           variant="primary"
           onClick={() => setShowCompoundDrawer(true)}
         >

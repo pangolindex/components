@@ -687,5 +687,14 @@
     "newest": "Neuest",
     "oldest": "Älteste",
     "sortBy": "Sortieren nach"
+  },
+  "pangoChef": {
+    "claimWarning1": "Wenn Sie einen Anspruch geltend machen, ohne abzuheben, bleibt Ihre Liquidität im Mining-Pool.",
+    "claimWarning2": "Wenn Sie Ihre Prämien beanspruchen, sinkt Ihr effektiver Jahreszins auf 0. Stattdessen können Sie sich für eine Aufzinsung entscheiden.",
+    "compoundWarning": "Wenn Sie Ihre Belohnungen für die {{ token0 }}-{{ token1 }}-Farm zusammensetzen, werden Ihre Belohnungen in die {{ currency }}-{{ png }} farm eingesetzt. Sie müssen den gleichen Wert von {{ currency }}Token für Ihre angesammelten {{ png }} Prämien.",
+    "compoundAmountWarning": "Sie müssen {{ amount }} {{ symbol }} zur Verbindung hinzufügen.",
+    "compoundAmountWarning2": "Zum Zusammensetzen. Seien Sie vorsichtig, dass Sie Ihren {{ symbol }} {{ png }} pool sperren, bis Sie die Belohnungen dieses Pools beanspruchen.",
+    "highVolalityWarning": "Hohe Volatilität, versuchen Sie später zu komponieren",
+    "compoundSuccess": "Sie haben Ihre Farm erfolgreich zusammengestellt."
   }
 }
