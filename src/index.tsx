@@ -9,6 +9,7 @@ import { usePair } from 'src/data/Reserves';
 import { useTotalSupply, useTotalSupplyHook } from 'src/data/TotalSupply';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
+import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
@@ -48,7 +49,7 @@ import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransa
 import TransactionUpdater from 'src/state/ptransactions/updater';
 import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks';
 import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { existSarContract, isEvmChain, shortenAddress } from 'src/utils';
+import { existSarContract, getEtherscanLink, isEvmChain, shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import i18n, { availableLanguages } from './i18n';
@@ -137,7 +138,6 @@ export {
   usePair,
   useSwapActionHandlers,
   useLibrary,
-  shortenAddress,
   useAllTransactions,
   useAllTransactionsClearer,
   useAccountBalanceHook,
@@ -154,6 +154,7 @@ export {
   useGetAllFarmDataHook,
   useTokenBalanceHook,
   useTokenBalance,
+  useUSDCPriceHook,
   useParsedQueryString,
 };
 
@@ -172,4 +173,6 @@ export {
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
   existSarContract,
+  getEtherscanLink,
+  shortenAddress,
 };

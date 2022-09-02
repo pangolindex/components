@@ -35,20 +35,20 @@ export function getNetworkLibrary(): Web3Provider {
 }
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [43113, 43114, 11111, 16],
+  supportedChainIds: [43113, 43114, 11111, 16, 19],
 });
 
 export const talisman = new TalismanConnector({
-  supportedChainIds: [43113, 43114, 11111, 16],
+  supportedChainIds: [43113, 43114, 11111, 16, 19],
 });
 
 export const gnosisSafe = new SafeAppConnector({
-  supportedChainIds: [43113, 43114, 11111, 16],
+  supportedChainIds: [43113, 43114, 11111, 16, 19],
 });
 
 export const walletlink = new WalletLinkConnector({
   url: NETWORK_URL,
-  supportedChainIds: [43113, 43114, 11111, 16],
+  supportedChainIds: [43113, 43114, 11111, 16, 19],
   appName: 'Pangolin',
   appLogoUrl: 'https://raw.githubusercontent.com/pangolindex/interface/master/public/images/384x384_App_Icon.png',
 });
@@ -62,7 +62,7 @@ export const walletconnect = new WalletConnectConnector({
 });
 
 export const xDefi = new DefiConnector({
-  supportedChainIds: [1, 43114, 11111, 16],
+  supportedChainIds: [1, 43114, 11111, 16, 19],
 });
 
 function getNearMainnetConfig() {
