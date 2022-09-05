@@ -1,3 +1,4 @@
+import { AccountInfoQuery, Client } from '@hashgraph/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { HashConnect, HashConnectTypes } from 'hashconnect';
@@ -63,6 +64,7 @@ export class HashConnector extends AbstractConnector {
         this.initData = data;
       })
       .catch((error) => {
+        1;
         console.log('hash connect err', error);
       });
   }
@@ -117,7 +119,7 @@ export class HashConnector extends AbstractConnector {
       this.pairingData = this.initData.savedPairings[0];
 
       this.provider = await this.getProvider();
-      const accountId = this.pairingData?.accountIds[0];
+      const accountId = await this.getAccount();
 
       return { chainId: this.chainId, provider: this.provider, account: accountId };
     }
@@ -151,8 +153,28 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async getAccount(): Promise<null | string> {
+    console.log('getAccount', this.pairingData);
     if (this.pairingData) {
-      return this.pairingData?.accountIds[0];
+      try {
+        const newAccountId = this.pairingData?.accountIds[0];
+        const operatorAccount = '0.0.47977330';
+        const operatorPrivateKey =
+          '302e020100300506032b6570042204208b97c5c963a2ffa06ca9c3a5837eaebc9d21fd92c42a8b79baa2c13af306fa53';
+
+        const client = Client.forTestnet();
+
+        client.setOperator(operatorAccount, operatorPrivateKey);
+        console.log('client', client);
+
+        const query = new AccountInfoQuery().setAccountId(newAccountId);
+        console.log('query', query);
+
+        const accountInfo = await query.execute(client);
+        console.log('accountInfo', accountInfo);
+        return accountInfo?.contractAccountId;
+      } catch (err) {
+        console.log('error', err);
+      }
     }
     return null;
   }
@@ -174,7 +196,7 @@ export class HashConnector extends AbstractConnector {
   public async getAccountBalance() {
     if (this.pairingData) {
       const balance = await this.provider.getAccountBalance(this.pairingData?.accountIds[0]);
-      return balance;
+      return balance.toString();
     }
     return undefined;
   }
