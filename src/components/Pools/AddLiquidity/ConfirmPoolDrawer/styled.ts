@@ -15,7 +15,7 @@ export const OutputText = styled(Text)`
   width: 100%;
   line-height: 18px;
   text-align: left;
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => theme.color5};
 `;
 
 export const Footer = styled(Box)`
