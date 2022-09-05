@@ -37,6 +37,7 @@ const EMPTY_LIST: TokenAddressMap = {
   [ChainId.AVALANCHE]: {},
   [ChainId.WAGMI]: {},
   [ChainId.COSTON]: {},
+  [ChainId.SONGBIRD]: {},
   [ChainId.NEAR_MAINNET]: {},
   [ChainId.NEAR_TESTNET]: {},
 };
