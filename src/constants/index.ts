@@ -3,6 +3,7 @@ import { CHAINS, ChainId, ChefType, JSBI, Percent, StakingType, Token, WAVAX } f
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import BN from 'bn.js';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
+import bitKeep from 'src/assets/images/bitkeep.svg';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
@@ -280,6 +281,15 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#FF3D23',
     isEVM: true,
   },
+  BITKEEP: {
+    connector: injected,
+    name: 'BitKeep',
+    iconName: bitKeep,
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#7524f9',
+    isEVM: true,
+  },
   NEAR: {
     connector: near,
     name: 'Near',
@@ -301,6 +311,7 @@ export const PROVIDER_MAPPING = {
   WALLET_CONNECT: CommonEVMProvider,
   RABBY: CommonEVMProvider,
   TALISMAN: CommonEVMProvider,
+  BITKEEP: CommonEVMProvider,
   NEAR: NearProvider,
 };
 

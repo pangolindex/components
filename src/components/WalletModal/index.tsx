@@ -126,6 +126,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
   const isCbWalletDappBrowser = window?.ethereum?.isCoinbaseWallet;
   const isWalletlink = !!window?.WalletLinkProvider || !!window?.walletLinkExtension;
   const isCbWallet = isCbWalletDappBrowser || isWalletlink;
+  const isBitKeep = window.ethereum && window.ethereum.isBitKeep;
 
   const tryActivation = async (
     activationConnector: AbstractConnector | SafeAppConnector | undefined,
@@ -186,6 +187,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
         return SUPPORTED_WALLETS.RABBY;
       } else if (isTalisman) {
         return SUPPORTED_WALLETS.TALISMAN;
+      } else if (isBitKeep) {
+        return SUPPORTED_WALLETS.BITKEEP;
       } else if (isMetamask) {
         return SUPPORTED_WALLETS.METAMASK;
       }
@@ -239,6 +242,22 @@ const WalletModal: React.FC<WalletModalProps> = ({
                 header={'Install Rabby Wallet'}
                 subheader={null}
                 link={'https://rabby.io/'}
+                icon={option.iconName}
+              />
+            );
+          }
+        }
+
+        if (option.name === 'BitKeep') {
+          if (!isBitKeep) {
+            return (
+              <Option
+                id={`connect-${key}`}
+                key={key}
+                color={'#7a7cff'}
+                header={'Install BitKeep'}
+                subheader={null}
+                link={'https://bitkeep.com/'}
                 icon={option.iconName}
               />
             );
