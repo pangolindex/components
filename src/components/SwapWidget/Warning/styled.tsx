@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 export const WarningWrapper = styled.div`
   border-radius: 20px;
-  border: 1px solid #f82d3a;
+  border: ${({ theme }) => `1px solid ${theme.error}`};
   background: rgba(248, 45, 58, 0.05);
   padding: 1rem;
-  color: #f82d3a;
+  color: ${({ theme }) => theme.error};
   position: relative;
   @media screen and (max-width: 800px) {
     width: 80% !important;
@@ -17,11 +17,11 @@ export const WarningWrapper = styled.div`
 export const StyledWarningIcon = styled(AlertTriangle)`
   min-height: 20px;
   min-width: 20px;
-  stroke: red;
+  stroke: ${({ theme }) => theme.error};
 `;
 
 export const ConvertLink = styled.a`
-  color: #ed147a;
+  color: ${({ theme }) => theme.error};
   text-decoration: none;
 `;
 

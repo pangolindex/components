@@ -17,14 +17,14 @@ export default function Drawer({ isOpen, onClose, children, title, backgroundCol
     <DrawerRoot isOpen={isOpen} backgroundColor={backgroundColor}>
       {title && (
         <Box display="flex" justifyContent="space-between" alignItems="center" padding="10px">
-          <Text color="text1" fontSize={24}>
+          <Text color="drawer.text" fontSize={24}>
             {title}
           </Text>
         </Box>
       )}
 
       <Box position="absolute" right={10} top={10}>
-        <CloseIcon onClick={onClose} color={theme.text4} />
+        <CloseIcon onClick={onClose} color={theme.drawer?.text} />
       </Box>
 
       <DrawerContent>{children}</DrawerContent>

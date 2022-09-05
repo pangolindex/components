@@ -5,7 +5,7 @@ import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import { NATIVE } from 'src/constants';
+import { NATIVE, SwapTypes } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTokenHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
@@ -31,7 +31,7 @@ enum Rate {
 
 interface Props {
   swapType: string;
-  setSwapType: (value: string) => void;
+  setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
   defaultInputAddress?: string;
   defaultOutputAddress?: string;
@@ -453,12 +453,6 @@ const LimitOrder: React.FC<Props> = ({
     );
   };
 
-  const determineColor = () => {
-    if (currencies.input && currencies.output) {
-      return theme.text1;
-    } else return theme.text4;
-  };
-
   const inputCurrency = getInputCurrency();
   const outputCurrency = getOutputCurrency();
 
@@ -504,9 +498,9 @@ const LimitOrder: React.FC<Props> = ({
           <Box width="100%" textAlign="center" alignItems="center" display="flex" justifyContent={'center'} mt={10}>
             <ArrowWrapper>
               {rateType === Rate.MUL ? (
-                <X size="16" color={determineColor()} />
+                <X size="16" color={theme.swapWidget?.interactiveColor} />
               ) : (
-                <Divide size="16" color={determineColor()} />
+                <Divide size="16" color={theme.swapWidget?.interactiveColor} />
               )}
             </ArrowWrapper>
           </Box>
@@ -528,7 +522,7 @@ const LimitOrder: React.FC<Props> = ({
                 onSwitchTokens();
               }}
             >
-              <RefreshCcw size="16" color={theme.text4} />
+              <RefreshCcw size="16" color={theme.swapWidget?.interactiveColor} />
             </ArrowWrapper>
           </Box>
           <CurrencyInputTextBox
@@ -549,7 +543,7 @@ const LimitOrder: React.FC<Props> = ({
             id="swap-currency-output"
             addonLabel={
               tradePrice && (
-                <Text color="text4" fontSize={16}>
+                <Text color="swapWidget.secondary" fontSize={16}>
                   Price: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )

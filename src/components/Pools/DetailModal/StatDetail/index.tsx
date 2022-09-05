@@ -36,10 +36,7 @@ export default function StatDetail({ title, totalAmount, pair, pgl, currency0, c
     !!pgl &&
     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
     JSBI.greaterThanOrEqual(totalPoolTokens.raw, pgl.raw)
-      ? [
-          pair.getLiquidityValue(pair.token0, totalPoolTokens, pgl, false),
-          pair.getLiquidityValue(pair.token1, totalPoolTokens, pgl, false),
-        ]
+      ? pair.getLiquidityValues(totalPoolTokens, pgl, { feeOn: false })
       : [undefined, undefined];
 
   console.log(pair);

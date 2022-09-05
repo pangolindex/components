@@ -21,7 +21,9 @@ export const RowRoot = styled(Box)`
   grid-gap: 10px;
   padding: 15px 0px;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: ${({ theme }) => theme.swapWidget?.secondary};
 
   &:last-child {
     border-bottom: 0px solid;
@@ -37,8 +39,8 @@ export const DownArrow = styled.div`
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.text5};
-  color: ${({ theme }) => theme.text1};
+  background-color: ${({ theme }) => theme.swapWidget?.interactiveBgColor};
+  color: ${({ theme }) => theme.swapWidget?.interactiveColor};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,11 +49,11 @@ export const DownArrow = styled.div`
 
 export const PopoverContainer = styled.div`
   z-index: 100;
-  background: ${({ theme }) => theme.bg2};
-  border: 1px solid ${({ theme }) => theme.bg3};
+  background: ${({ theme }) => theme.swapWidget?.backgroundColor};
+  border: 1px solid ${({ theme }) => theme.swapWidget?.secondary};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
-  color: ${({ theme }) => theme.text2};
+  color: ${({ theme }) => theme.swapWidget?.primary};
   border-radius: 0.5rem;
   padding: 5px;
   display: grid;
@@ -64,7 +66,7 @@ export const PopoverContainer = styled.div`
 export const Separator = styled.div`
   width: 100%;
   height: 1px;
-  background-color: ${({ theme }) => theme.bg3};
+  background-color: ${({ theme }) => theme.swapWidget?.secondary};
 `;
 
 export const ViewLink = styled(Text)<{ disabled?: boolean }>`

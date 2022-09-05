@@ -1,15 +1,5 @@
 /* eslint-disable max-lines */
-import {
-  CHAINS,
-  COSTON_TESTNET,
-  ChainId,
-  JSBI,
-  Percent,
-  StakingType,
-  Token,
-  WAGMI_FUJI_SUBNET,
-  WAVAX,
-} from '@pangolindex/sdk';
+import { CHAINS, ChainId, ChefType, JSBI, Percent, StakingType, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import BN from 'bn.js';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
@@ -37,6 +27,7 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].contracts!.router,
   [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].contracts!.router,
   [ChainId.COSTON]: CHAINS[ChainId.COSTON].contracts!.router,
+  [ChainId.SONGBIRD]: CHAINS[ChainId.SONGBIRD].contracts!.router,
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts!.router,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts!.router,
 };
@@ -46,6 +37,7 @@ export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.WAGMI]: CHAINS[ChainId.WAGMI]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.COSTON]: CHAINS[ChainId.COSTON]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.SONGBIRD]: CHAINS[ChainId.SONGBIRD]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
 };
@@ -70,13 +62,22 @@ export const INITIAL_ALLOWED_SLIPPAGE = 50;
 // 10 minutes, denominated in seconds
 export const DEFAULT_DEADLINE_FROM_NOW = '600';
 
-export const MINICHEF_ADDRESS: { [chainId in ChainId]: string } = {
-  [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.mini_chef!.address!,
-  [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].contracts!.mini_chef!.address!,
-  [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].contracts!.mini_chef!.address!,
-  [ChainId.COSTON]: CHAINS[ChainId.COSTON].contracts!.mini_chef!.address!,
-  [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].contracts!.mini_chef!.address!,
-  [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].contracts!.mini_chef!.address!,
+const getMiniChefAddress = (chainId: ChainId) => {
+  const minichefObj = CHAINS[chainId].contracts?.mini_chef;
+  if (minichefObj?.type === ChefType.MINI_CHEF_V2) {
+    return minichefObj.address;
+  }
+  return undefined;
+};
+
+export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
+  [ChainId.FUJI]: getMiniChefAddress(ChainId.FUJI),
+  [ChainId.AVALANCHE]: getMiniChefAddress(ChainId.AVALANCHE),
+  [ChainId.WAGMI]: getMiniChefAddress(ChainId.WAGMI),
+  [ChainId.COSTON]: getMiniChefAddress(ChainId.COSTON),
+  [ChainId.SONGBIRD]: getMiniChefAddress(ChainId.SONGBIRD),
+  [ChainId.NEAR_MAINNET]: getMiniChefAddress(ChainId.NEAR_MAINNET),
+  [ChainId.NEAR_TESTNET]: getMiniChefAddress(ChainId.NEAR_TESTNET),
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
@@ -85,6 +86,7 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
   [ChainId.AVALANCHE]: [WAVAX[ChainId.AVALANCHE].address, PNG[ChainId.AVALANCHE].address],
   [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI].address, PNG[ChainId.WAGMI].address],
   [ChainId.COSTON]: [WAVAX[ChainId.COSTON].address, PNG[ChainId.COSTON].address],
+  [ChainId.SONGBIRD]: [WAVAX[ChainId.SONGBIRD].address, PNG[ChainId.SONGBIRD].address],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET].address, PNG[ChainId.NEAR_MAINNET].address],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET].address, PNG[ChainId.NEAR_TESTNET].address],
 };
@@ -103,6 +105,10 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: '',
   },
   [ChainId.COSTON]: {
+    inputCurrency: '',
+    outputCurrency: '',
+  },
+  [ChainId.SONGBIRD]: {
     inputCurrency: '',
     outputCurrency: '',
   },
@@ -131,6 +137,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ],
   [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI], PNG[ChainId.WAGMI]],
   [ChainId.COSTON]: [WAVAX[ChainId.COSTON], PNG[ChainId.COSTON]],
+  [ChainId.SONGBIRD]: [WAVAX[ChainId.SONGBIRD], PNG[ChainId.SONGBIRD]],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
 };
@@ -336,12 +343,14 @@ export const NEAR_MIN_DEPOSIT_PER_TOKEN = new BN('5000000000000000000000');
 export const NEAR_MIN_DEPOSIT_PER_TOKEN_FARM = new BN('45000000000000000000000');
 export const NEAR_ACCOUNT_MIN_STORAGE_AMOUNT = '0.005';
 export const NEAR_LP_STORAGE_AMOUNT = '0.01';
+export const ONLY_ZEROS = /^0*\.?0*$/;
 
 const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.FUJI]: [WAVAX[ChainId.FUJI], PNG[ChainId.FUJI]],
   [ChainId.AVALANCHE]: [WAVAX[ChainId.AVALANCHE], PNG[ChainId.AVALANCHE]],
   [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI], PNG[ChainId.WAGMI]],
   [ChainId.COSTON]: [WAVAX[ChainId.COSTON], PNG[ChainId.COSTON]],
+  [ChainId.SONGBIRD]: [WAVAX[ChainId.SONGBIRD], PNG[ChainId.SONGBIRD]],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
 };
@@ -355,10 +364,22 @@ export const PINNED_PAIRS: { readonly [chainId in ChainId]?: [Token, Token][] } 
   [ChainId.AVALANCHE]: [],
 };
 
-export const SAR_STAKING_ADDRESS: { [chainId in ChainId]?: string } = {
-  [ChainId.WAGMI]: WAGMI_FUJI_SUBNET.contracts?.staking?.find((c) => c.type === StakingType.SAR_POSITIONS && c.active)
-    ?.address,
-  [ChainId.COSTON]: COSTON_TESTNET.contracts?.staking?.find((c) => c.type === StakingType.SAR_POSITIONS && c.active)
-    ?.address,
+const getSarAddress = (chainId: ChainId) => {
+  return CHAINS[chainId]?.contracts?.staking?.find((c) => c.type === StakingType.SAR_POSITIONS && c.active)?.address;
+};
+
+export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } = {
+  [ChainId.FUJI]: getSarAddress(ChainId.FUJI),
+  [ChainId.AVALANCHE]: getSarAddress(ChainId.AVALANCHE),
+  [ChainId.WAGMI]: getSarAddress(ChainId.WAGMI),
+  [ChainId.COSTON]: getSarAddress(ChainId.COSTON),
+  [ChainId.SONGBIRD]: getSarAddress(ChainId.SONGBIRD),
+  [ChainId.NEAR_MAINNET]: getSarAddress(ChainId.NEAR_MAINNET),
+  [ChainId.NEAR_TESTNET]: getSarAddress(ChainId.NEAR_TESTNET),
 };
 /* eslint-enable max-lines */
+
+export enum SwapTypes {
+  MARKET = 'MARKET',
+  LIMIT = 'LIMIT',
+}

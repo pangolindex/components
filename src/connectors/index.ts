@@ -14,7 +14,7 @@ const NETWORK_URL = 'https://api.avax.network/ext/bc/C/rpc';
 // Near Exchnage Contract
 export const NEAR_EXCHANGE_CONTRACT_ADDRESS = {
   [ChainId.NEAR_MAINNET]: 'png-exchange-v1.mainnet',
-  [ChainId.NEAR_TESTNET]: 'png-exchange-v1.testnet', //// ref-finance-101.testnet //TODO
+  [ChainId.NEAR_TESTNET]: 'png-exchange-v1.testnet',
 };
 
 export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '43114');
@@ -35,20 +35,20 @@ export function getNetworkLibrary(): Web3Provider {
 }
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [43113, 43114, 11111, 16],
+  supportedChainIds: [43113, 43114, 11111, 16, 19],
 });
 
 export const talisman = new TalismanConnector({
-  supportedChainIds: [43113, 43114, 11111, 16],
+  supportedChainIds: [43113, 43114, 11111, 16, 19],
 });
 
 export const gnosisSafe = new SafeAppConnector({
-  supportedChainIds: [43113, 43114, 11111, 16],
+  supportedChainIds: [43113, 43114, 11111, 16, 19],
 });
 
 export const walletlink = new WalletLinkConnector({
   url: NETWORK_URL,
-  supportedChainIds: [43113, 43114, 11111, 16],
+  supportedChainIds: [43113, 43114, 11111, 16, 19],
   appName: 'Pangolin',
   appLogoUrl: 'https://raw.githubusercontent.com/pangolindex/interface/master/public/images/384x384_App_Icon.png',
 });
@@ -62,7 +62,7 @@ export const walletconnect = new WalletConnectConnector({
 });
 
 export const xDefi = new DefiConnector({
-  supportedChainIds: [1, 43114, 11111, 16],
+  supportedChainIds: [1, 43114, 11111, 16, 19],
 });
 
 function getNearMainnetConfig() {

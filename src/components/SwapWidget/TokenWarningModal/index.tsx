@@ -41,7 +41,7 @@ function TokenWarningCard({ token }: TokenWarningCardProps) {
           <div> </div>
         </AutoColumn>
         <AutoColumn gap="10px" justify="flex-start">
-          <Text fontWeight={500} fontSize={20} color={'text2'}>
+          <Text fontWeight={500} fontSize={20} color={'swapWidget.secondary'}>
             {token && token.name && token.symbol && token.name !== token.symbol
               ? `${token.name} (${token.symbol})`
               : token.name || token.symbol}{' '}
@@ -79,19 +79,19 @@ export default function TokenWarningModal({
         <AutoColumn gap="lg">
           <Box display="flex" alignItems="center" width="100%" flexWrap="wrap" margin="-6px">
             <StyledWarningIcon />
-            <Text fontWeight={500} fontSize={20} color={'red2'}>
+            <Text fontWeight={500} fontSize={20} color={'error'}>
               Token imported
             </Text>
           </Box>
-          <Text color={'red2'} fontSize={16}>
+          <Text color={'error'} fontSize={16}>
             Anyone can create an ERC-20 token on Avalanche with <em>any</em> name, including creating fake versions of
             existing tokens and tokens that claim to represent projects that do not have a token.
           </Text>
-          <Text color={'red2'} fontSize={16}>
+          <Text color={'error'} fontSize={16}>
             This interface can load arbitrary tokens by token addresses. Please take extra caution and do your research
             when interacting with arbitrary ERC-20 tokens.
           </Text>
-          <Text color={'red2'} fontSize={16}>
+          <Text color={'error'} fontSize={16}>
             If you purchase an arbitrary token, <strong>you may be unable to sell it back.</strong>
           </Text>
           {tokens.map((token) => {

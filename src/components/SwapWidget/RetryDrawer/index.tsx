@@ -12,7 +12,7 @@ const RetryDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
   return (
     <Drawer title="Re-tries" isOpen={isOpen} onClose={onClose}>
       <Box>
-        <Text color="text1" fontSize={16} fontWeight={500} marginLeft={10}>
+        <Text color="swapWidget.secondary" fontSize={16} fontWeight={500} marginLeft={10}>
           1
         </Text>
         <Divider />

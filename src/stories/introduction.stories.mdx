@@ -1,5 +1,8 @@
-# components
-Ui Kit for Pangolin
+import { Canvas, Meta, Story } from '@storybook/addon-docs';
+
+import ThemeProvider from 'src/theme';
+
+<Meta title="Guide/Introduction" component={ThemeProvider} />
 
 ## Installation
 
@@ -10,6 +13,7 @@ or
 `npm install @pangolindex/components`
 
 #### Install below dependancies as its peer dependancies
+
 ```
 react
 react-dom
@@ -17,33 +21,30 @@ react-dom
 ```
 
 #### components <-> sdk version mapping
-| @pangolindex/components   | @pangolindex/sdk |
-| ------------------------  | ---------------- |
-| 4.0.4                     | 2.1.11           |
-| >=4.1.0                   | 3.0.1            |
+
+| @pangolindex/components | @pangolindex/sdk |
+| ----------------------- | ---------------- |
+| 4.0.4                   | 2.1.11           |
+| >=4.1.0                 | 3.0.1            |
 
 ## Getting started
 
 In your main file wrap your app with `PangolinProvider`:
 
 ```tsx
-import React from "react";
-import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
-import { useWeb3React, Web3ReactProvider } from "@web3-react/core";
-import { PangolinProvider } from "@pangolindex/components";
-import getLibrary from "./utils/getLibrary";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
+import { PangolinProvider } from '@pangolindex/components';
+import getLibrary from './utils/getLibrary';
 
 const AppProvider = () => {
   const { library, account, chainId } = useWeb3React();
 
   return (
-    <PangolinProvider
-      library={library}
-      chainId={chainId}
-      account={account as string}
-    >
+    <PangolinProvider library={library} chainId={chainId} account={account as string} theme={theme}>
       <App />
     </PangolinProvider>
   );
@@ -55,11 +56,16 @@ ReactDOM.render(
       <AppProvider />
     </Web3ReactProvider>
   </React.StrictMode>,
-  document.getElementById("root")
+  document.getElementById('root'),
 );
 ```
 
+# Customizing Theme
+
+In `PangolinProvider` you can pass custom theme. Follow `Guide -> Theme` to customize theme.
+
 # Redux
+
 If you are using redux in your application then you will need to use custom context https://react-redux.js.org/api/hooks#custom-context with your Provider.
 
 # development flow

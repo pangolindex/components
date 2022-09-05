@@ -17,6 +17,7 @@ export interface Props {
 }
 const Loader: React.FC<Props> = (props) => {
   const { size, label } = props;
+
   return (
     <PendingWrapper>
       <Box mb={'15px'} display="flex" alignItems="center" flexDirection="column">
@@ -28,7 +29,7 @@ const Loader: React.FC<Props> = (props) => {
           </Box>
         </Box>
         {label && (
-          <Text fontWeight={500} fontSize={20} color="text1" textAlign="center" mt={10}>
+          <Text color="loader.text" fontWeight={500} fontSize={20} textAlign="center" mt={10}>
             {label}
           </Text>
         )}
