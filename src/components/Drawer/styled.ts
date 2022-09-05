@@ -34,7 +34,7 @@ export const DrawerContent = styled.div`
 
 export const CloseCircle = styled.div<{ onClick: () => void }>`
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: ${({ theme }) => theme.closeCircleBG};
   padding: 2.5px 8px;
   -moz-border-radius: 50px;
   -webkit-border-radius: 50px;

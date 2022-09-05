@@ -81,6 +81,7 @@ export const defaultColors: Colors = {
   modalBG: 'rgba(0,0,0,0.3)',
   modalBG2: 'rgba(0,0,0,0.8)',
   advancedBG: 'rgba(255,255,255,0.6)',
+  closeCircleBG: 'rgba(255,255,255,0.2)',
 
   //primary colors
   primary1: '#FF6B00',
@@ -169,6 +170,7 @@ export const defaultColors: Colors = {
   color8: platinum,
   color9: quickSilver,
   color10: white,
+  color11: white,
 };
 
 export const defaultTheme: DefaultTheme = {

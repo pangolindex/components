@@ -26,7 +26,7 @@ export default function Drawer({ isOpen, onClose, children, title, backgroundCol
 
       <Box position="absolute" right={20} top={20}>
         <CloseCircle onClick={onClose}>
-          <X color={theme.primary} size={10} />
+          <X color={theme.mustardYellow} size={10} />
         </CloseCircle>
       </Box>
 
