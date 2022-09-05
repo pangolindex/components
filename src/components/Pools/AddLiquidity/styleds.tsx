@@ -4,7 +4,9 @@ import { SpaceType } from 'src/state/pstake/types';
 
 export const AddWrapper = styled(Box)`
   width: 100%;
-  padding: 10px;
+  padding-right: 20px;
+  padding-left: 20px;
+  padding-bottom: 20px;
   height: 100%;
   display: flex;
   flex-direction: column;
