@@ -4,7 +4,7 @@ import LimitOrder from './LimitOrder';
 import MarketOrder from './MarketOrder';
 import { Root } from './styled';
 
-export interface Props {
+export interface SwapWidgetProps {
   onSwapTypeChange?: React.Dispatch<React.SetStateAction<SwapTypes>>;
   isLimitOrderVisible?: boolean;
   showSettings?: boolean;
@@ -13,7 +13,7 @@ export interface Props {
   defaultOutputToken?: string;
 }
 
-const SwapWidget: React.FC<Props> = ({
+const SwapWidget: React.FC<SwapWidgetProps> = ({
   isLimitOrderVisible = false,
   onSwapTypeChange,
   showSettings = true,

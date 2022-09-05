@@ -11,28 +11,36 @@ export const InputWrapper = styled(Box)`
   display: flex;
   position: relative;
   box-sizing: border-box;
-  background-color: ${({ theme }) => theme.bg6};
-  color: ${({ theme }) => theme.text4};
+  background-color: ${({ theme }) => theme.textInput?.backgroundColor};
+  color: ${({ theme }) => theme.textInput?.text};
+  input {
+    background-color: inherit;
+  }
 `;
 export const StyledInput = styled.input<TextInputProps>`
   flex: 1;
   border: 1px solid transparent;
   font-size: ${(props) => (props?.fontSize ? `${props?.fontSize}px` : '18px')};
-  background-color: ${({ theme }) => theme.bg6};
-  color: ${({ theme }) => theme.text4};
+  color: ${({ theme }) => theme.textInput?.text};
+  background-color: ${({ theme }) => theme.textInput?.backgroundColor};
   outline: none;
   width: 100%;
   padding: 0;
+  ::placeholder {
+    color: ${({ theme }) => theme.textInput?.placeholderText};
+  }
 `;
 export const AddonAfter = styled(Box)`
   position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 export const AddonBefore = styled(Box)`
   position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
 `;
 export const ErrorText = styled(Text)`
   margin-top: 5px;
