@@ -9,15 +9,16 @@ interface DrawerProps {
   onClose: () => void;
   children?: React.ReactNode;
   title?: string;
+  pb?: number;
   backgroundColor?: string;
 }
 
-export default function Drawer({ isOpen, onClose, children, title, backgroundColor }: DrawerProps) {
+export default function Drawer({ isOpen, onClose, children, title, pb, backgroundColor }: DrawerProps) {
   const theme = useContext(ThemeContext);
   return (
     <DrawerRoot isOpen={isOpen} backgroundColor={backgroundColor}>
       {title && (
-        <Box display="flex" justifyContent="space-between" alignItems="center" padding="20px">
+        <Box display="flex" justifyContent="space-between" alignItems="center" pb={pb || 20} pt={20} px={20}>
           <Text color="drawer.text" fontSize={21} fontWeight={800}>
             {title}
           </Text>
