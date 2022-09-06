@@ -203,7 +203,7 @@ const PoolCardView = ({
           version={version}
           backgroundColor="color5"
           stakingInfo={stakingInfo}
-          combinedApr={combinedApr}
+          combinedApr={version > 1 ? combinedApr : undefined}
         />
       )}
 
