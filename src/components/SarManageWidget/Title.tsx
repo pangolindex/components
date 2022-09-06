@@ -33,7 +33,7 @@ export default function Title({ selectPosition, selectedOption, onChange }: Prop
   return (
     <Box display="flex" flexDirection="column">
       <Box display="flex" justifyContent={selectPosition ? 'space-between' : 'start'} alignItems="center">
-        <Text color="text1" fontSize="21px" fontWeight={700}>
+        <Text color="text1" fontSize="15.75px" fontWeight={700}>
           {renderTitle()}
         </Text>
         {selectPosition && (
