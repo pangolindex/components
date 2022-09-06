@@ -70,7 +70,7 @@ const Stat = ({
           {stat}
         </Text>
         {currency && (
-          <Box ml={10}>
+          <Box ml={10} height={24}>
             <CurrencyLogo currency={currency} size={24} imageSize={48} />
           </Box>
         )}
