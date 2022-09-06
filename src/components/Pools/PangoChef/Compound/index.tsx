@@ -1,7 +1,7 @@
 import { TransactionResponse } from '@ethersproject/providers';
 import { CAVAX, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import numeral from 'numeral';
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
@@ -10,6 +10,7 @@ import { ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE, ZERO_ADDRESS } from 'src/con
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
@@ -109,6 +110,28 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       symbol: currency.symbol,
     });
   }
+
+  // check if user has gone through approval process, used to show two step buttons, reset on token change
+  const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
+
+  const [approval, approveCallback] = useApproveCallback(chainId, amountToAdd, pangoChefContract?.address);
+
+  useEffect(() => {
+    if (approval === ApprovalState.PENDING) {
+      setApprovalSubmitted(true);
+    }
+  }, [approval, approvalSubmitted]);
+
+  const showApproveFlow =
+    !_error &&
+    (approval === ApprovalState.NOT_APPROVED ||
+      approval === ApprovalState.PENDING ||
+      (approvalSubmitted && approval === ApprovalState.APPROVED)) &&
+    amountToAdd instanceof TokenAmount;
+
+  const handleApprove = useCallback(async () => {
+    await approveCallback();
+  }, [approveCallback]);
 
   const userRewardRate = stakingInfo.userRewardRate;
   /*
@@ -228,6 +251,16 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
         </Text>
       </Box>
       <Buttons>
+        {showApproveFlow && (
+          <Button
+            variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
+            isDisabled={approval !== ApprovalState.NOT_APPROVED}
+            onClick={handleApprove}
+            height="46px"
+          >
+            {t('earn.approve')}
+          </Button>
+        )}
         <Button variant="primary" isDisabled={!!_error} onClick={onCompound}>
           {_error ?? `${t('sarStakeMore.add')}&${t('sarCompound.compound')}`}
         </Button>
@@ -244,7 +277,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
-            padding="20px"
+            padding="10px"
             bgColor="color3"
             borderRadius="8px"
             margin="auto"

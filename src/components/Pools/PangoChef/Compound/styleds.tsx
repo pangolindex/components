@@ -7,15 +7,14 @@ export const CompoundWrapper = styled(Box)`
 `;
 export const Root = styled(Box)`
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-gap: 8px;
+  grid-template-rows: 4fr 1fr
   padding: 10px;
 `;
 
-export const RewardWrapper = styled(Box)<{ isSuperFarm?: boolean }>`
+export const RewardWrapper = styled(Box)`
   display: grid;
-  grid-template-columns: ${({ isSuperFarm }) =>
-    isSuperFarm ? 'minmax(auto, 50%) minmax(auto, 50%)' : 'minmax(auto, 100%)'};
   grid-gap: 8px;
   justify-content: center;
 `;
