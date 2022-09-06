@@ -1,24 +1,22 @@
-import { TokenAmount } from '@pangolindex/sdk';
 import React from 'react';
-import { PNG } from 'src/constants/tokens';
-import { useChainId } from 'src/hooks';
-import { MinichefStakingInfo } from 'src/state/pstake/types';
-import PoolCardView from './PoolCardView';
+import { PangoChefInfo } from 'src/state/ppangoChef/types';
+import { useGetRewardTokens } from 'src/state/pstake/hooks';
+import PoolCardViewV3 from './PoolCardViewV3';
 
 export interface PoolCardProps {
-  stakingInfo: MinichefStakingInfo;
+  stakingInfo: PangoChefInfo;
   onClickViewDetail: () => void;
   version: number;
 }
 
 const PoolCardV3 = ({ stakingInfo, onClickViewDetail, version }: PoolCardProps) => {
-  const chainId = useChainId();
+  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo.rewardTokensAddress);
 
   return (
-    <PoolCardView
-      combinedApr={0}
-      earnedAmount={new TokenAmount(PNG[chainId], '0')}
-      rewardTokens={undefined}
+    <PoolCardViewV3
+      combinedApr={stakingInfo.stakingApr}
+      earnedAmount={stakingInfo.earnedAmount}
+      rewardTokens={rewardTokens}
       stakingInfo={stakingInfo}
       onClickViewDetail={onClickViewDetail}
       version={version}

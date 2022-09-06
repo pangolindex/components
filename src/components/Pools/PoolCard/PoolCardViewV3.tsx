@@ -1,16 +1,16 @@
-import { CHAINS, Fraction, Token, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, ChefType, Fraction, Token, TokenAmount } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
+import { Box, DoubleCurrencyLogo, Drawer, Stat, Text } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
-import ClaimDrawer from '../ClaimDrawer';
 import FarmDrawer from '../FarmDrawer';
+import CompoundV3 from '../PangoChef/Compound';
 import RewardTokens from '../RewardTokens';
 import {
   ActionButon,
@@ -24,7 +24,7 @@ import {
 } from './styleds';
 
 export interface PoolCardViewProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: PangoChefInfo;
   onClickViewDetail: () => void;
   version: number;
   combinedApr?: number;
@@ -32,7 +32,7 @@ export interface PoolCardViewProps {
   rewardTokens?: Array<Token | null | undefined> | null;
 }
 
-const PoolCardView = ({
+const PoolCardViewV3 = ({
   stakingInfo,
   onClickViewDetail,
   version,
@@ -41,13 +41,14 @@ const PoolCardView = ({
   rewardTokens,
 }: PoolCardViewProps) => {
   const { t } = useTranslation();
-  const [isClaimDrawerVisible, setShowClaimDrawer] = useState(false);
+  const [isCompoundDrawerVisible, setShowCompoundDrawer] = useState(false);
 
   const [isFarmDrawerVisible, setShowFarmDrawer] = useState(false);
   const [isAddLiquidityDrawerVisible, setShowAddLiquidityDrawer] = useState(false);
 
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
+  const chain = CHAINS[chainId];
 
   const token0 = stakingInfo.tokens[0];
   const token1 = stakingInfo.tokens[1];
@@ -75,17 +76,33 @@ const PoolCardView = ({
     setShowAddLiquidityDrawer(false);
   };
 
+  const getApr = () => {
+    const miniChefType = chain.contracts?.mini_chef?.type;
+    switch (miniChefType) {
+      case ChefType.MINI_CHEF:
+        return undefined;
+      case ChefType.MINI_CHEF_V2:
+        return combinedApr;
+      case ChefType.PANGO_CHEF:
+        return stakingInfo.stakingApr;
+      default:
+        return undefined;
+    }
+  };
+
+  const apr = getApr();
+
   const renderButton = () => {
     if (isStaking && Boolean(earnedAmount.greaterThan('0')))
       return (
         <ActionButon
           variant="plain"
-          onClick={() => setShowClaimDrawer(true)}
-          backgroundColor="bg2"
+          onClick={() => setShowCompoundDrawer(true)}
+          backgroundColor="color2"
           color="text1"
           height="45px"
         >
-          {t('earnPage.claim')}
+          {t('sarCompound.compound')}
         </ActionButon>
       );
     else if (isLiquidity) {
@@ -93,7 +110,7 @@ const PoolCardView = ({
         <ActionButon
           variant="plain"
           onClick={() => setShowFarmDrawer(true)}
-          backgroundColor="bg2"
+          backgroundColor="color2"
           color="text1"
           height="45px"
         >
@@ -105,7 +122,7 @@ const PoolCardView = ({
         <ActionButon
           variant="plain"
           onClick={() => setShowAddLiquidityDrawer(true)}
-          backgroundColor="bg2"
+          backgroundColor="color2"
           color="text1"
           height="45px"
         >
@@ -156,7 +173,7 @@ const PoolCardView = ({
 
           <Stat
             title={`APR`}
-            stat={combinedApr ? `${numeral(combinedApr).format('0a')}%` : '-'}
+            stat={apr ? `${numeral(apr).format('0a')}%` : '-'}
             titlePosition="top"
             titleFontSize={[16, 14]}
             statFontSize={[24, 18]}
@@ -182,16 +199,15 @@ const PoolCardView = ({
         </Box>
         <Box>{renderButton()}</Box>
       </InnerWrapper>
-      {isClaimDrawerVisible && (
-        <ClaimDrawer
-          isOpen={isClaimDrawerVisible}
-          onClose={() => {
-            setShowClaimDrawer(false);
-          }}
-          stakingInfo={stakingInfo}
-          version={version}
+      {isCompoundDrawerVisible && (
+        <Drawer
+          title={t('sarCompound.compound')}
+          isOpen={isCompoundDrawerVisible}
+          onClose={() => setShowCompoundDrawer(false)}
           backgroundColor="color5"
-        />
+        >
+          <CompoundV3 onClose={() => setShowCompoundDrawer(false)} stakingInfo={stakingInfo} />
+        </Drawer>
       )}
 
       {isFarmDrawerVisible && (
@@ -203,7 +219,7 @@ const PoolCardView = ({
           version={version}
           backgroundColor="color5"
           stakingInfo={stakingInfo}
-          combinedApr={combinedApr}
+          combinedApr={apr}
         />
       )}
 
@@ -222,4 +238,4 @@ const PoolCardView = ({
   );
 };
 
-export default PoolCardView;
+export default PoolCardViewV3;
