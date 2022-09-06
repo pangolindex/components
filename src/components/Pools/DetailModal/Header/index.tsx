@@ -52,7 +52,7 @@ const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
   const pairPrice =
     version === 3 ? (stakingInfo as PangoChefInfo).pairPrice : new Price(PNG[chainId], WAVAX[chainId], '1', '0');
   const userApr =
-    version === 3
+    version === 3 && !userBalance.isZero() && pairPrice.greaterThan('0')
       ? pngPRice.raw
           .multiply((86400 * 365 * 100).toString())
           .multiply(userRewardRate.toString())
