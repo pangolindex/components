@@ -289,6 +289,7 @@
     "shareOfPool": "Cổ phần bể",
     "createPoolSupply": "Tạo bể & nguồn cung cấp",
     "confirmSupply": "Xác nhận cung cấp",
+    "giveOrder": "GIVE ORDER",
     "outputEstimated": "Đầu ra được ước tính. Nếu giá thay đổi nhiều hơn {{ allowedSlippage }}% giao dịch của bạn sẽ hoàn nguyên.",
     "creatingPool": "Bạn đang tạo ra một bể",
     "willReceive": "Bạn sẽ nhận",

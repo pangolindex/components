@@ -289,6 +289,7 @@
     "shareOfPool": "Parte de la Pool",
     "createPoolSupply": "Crear pool y suministrar",
     "confirmSupply": "Confirmar suministro",
+    "giveOrder": "GIVE ORDER",
     "outputEstimated": "El resultado es estimado. Si el precio cambia más de {{ allowedSlippage }}% su transacción será revertida.",
     "creatingPool": "Está creando una pool",
     "willReceive": "Recibirá",

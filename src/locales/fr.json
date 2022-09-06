@@ -289,6 +289,7 @@
     "shareOfPool": "Part de la Pool",
     "createPoolSupply": "Créer la Pool & la Réserve",
     "confirmSupply": "Confirmer l'approvisionnement",
+    "giveOrder": "GIVE ORDER",
     "outputEstimated": "La quantité produite est estimée. Si le prix varie de plus de {{ allowedSlippage }}% votre transaction sera annulée.",
     "creatingPool": "Vous êtes en train de créer une pool",
     "willReceive": "Vous recevrez",
