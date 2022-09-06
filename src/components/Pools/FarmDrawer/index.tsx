@@ -17,7 +17,7 @@ const FarmDrawer: React.FC<Props> = ({ isOpen, onClose, backgroundColor, version
   const { t } = useTranslation();
 
   return (
-    <Drawer title={t('earn.deposit')} isOpen={isOpen} onClose={onClose} backgroundColor={backgroundColor}>
+    <Drawer title={t('earn.deposit')} pb={10} isOpen={isOpen} onClose={onClose} backgroundColor={backgroundColor}>
       {isOpen && (
         <Stake
           version={version}

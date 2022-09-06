@@ -251,9 +251,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
             addonLabel={
               account && (
                 <Text color="text2" fontWeight={500} fontSize={12}>
-                  {!!currencyA && selectedCurrencyBalanceA
-                    ? t('currencyInputPanel.balance') + selectedCurrencyBalanceA?.toSignificant(6)
-                    : ' -'}
+                  {!!currencyA && selectedCurrencyBalanceA ? selectedCurrencyBalanceA?.toSignificant(4) : ' -'}
                 </Text>
               )
             }
@@ -295,9 +293,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
             addonLabel={
               account && (
                 <Text color="text2" fontWeight={500} fontSize={12}>
-                  {!!currencyB && selectedCurrencyBalanceB
-                    ? t('currencyInputPanel.balance') + selectedCurrencyBalanceB?.toSignificant(6)
-                    : ' -'}
+                  {!!currencyB && selectedCurrencyBalanceB ? selectedCurrencyBalanceB?.toSignificant(4) : ' -'}
                 </Text>
               )
             }

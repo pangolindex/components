@@ -1,6 +1,7 @@
 import { Trade, TradeType } from '@pangolindex/sdk';
 import React, { useContext, useMemo } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
+import { Trans } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import Drawer from 'src/components/Drawer';
 import { usePangolinWeb3 } from 'src/hooks';
@@ -53,7 +54,6 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
 
   const { chainId } = usePangolinWeb3();
   const theme = useContext(ThemeContext);
-
   const slippageAdjustedAmounts = useMemo(
     () => computeSlippageAdjustedAmounts(trade, allowedSlippage),
     [trade, allowedSlippage],
@@ -126,19 +126,23 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
         <Box mt={'15px'}>
           {trade.tradeType === TradeType.EXACT_INPUT ? (
             <OutputText color="swapWidget.secondary">
-              Output is estimated. You will receive at least
-              <b>
-                {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade.outputAmount.currency.symbol}
-              </b>
-              or the transaction will revert.
+              <Trans
+                i18nKey="swap.outputEstimated"
+                values={{
+                  amount: slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6),
+                  currencySymbol: trade.outputAmount.currency.symbol,
+                }}
+              />
             </OutputText>
           ) : (
             <OutputText color="swapWidget.secondary">
-              Input is estimated. You will sell at most
-              <b>
-                {slippageAdjustedAmounts[Field.INPUT]?.toSignificant(6)} {trade.inputAmount.currency.symbol}
-              </b>
-              or the transaction will revert.
+              <Trans
+                i18nKey="swap.inputEstimated"
+                values={{
+                  amount: slippageAdjustedAmounts[Field.INPUT]?.toSignificant(6),
+                  currencySymbol: trade.inputAmount.currency.symbol,
+                }}
+              />
             </OutputText>
           )}
         </Box>
