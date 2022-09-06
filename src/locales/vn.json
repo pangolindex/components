@@ -640,7 +640,7 @@
   "sarStakeMore": {
     "stakeMore": "Đặt cọc nhiều hơn",
     "choosePosition": "Chọn một vị trí",
-    "confirmDescription": "Tháng Tư của bạn sẽ bắt đầu từ 0 và tăng số tiền bạn nhận được từ nhóm phần thưởng theo thời gian",
+    "confirmDescription": "Điều này sẽ thêm {{ symbol }} vào vị trí SAR NFT của bạn. Số dư ban đầu của bạn vẫn tiếp tục từ cùng một APR. APR của các mã thông báo mới thêm của bạn bắt đầu từ 0% và thay đổi dựa trên độ dài cổ phần. NFT của bạn sẽ hiển thị mức trung bình.",
     "newAPR": "APR mới",
     "add": "Thêm",
     "pending": "Thêm {{ balance }} {{ symbol }}"

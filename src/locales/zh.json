@@ -639,7 +639,7 @@
   "sarStakeMore": {
     "stakeMore": "赌注更多",
     "choosePosition": "选择职位",
-    "confirmDescription": "您的4月将从0开始，并按时间增加您从奖励池中取出的金额",
+    "confirmDescription": "这会将 {{ symbol }} 添加到您的 SAR NFT 头寸。 您的原始余额从同一个 APR 继续。 您新添加的代币的 APR 从 0% 开始，并根据权益的长度而变化。 您的 NFT 将显示平均值。",
     "newAPR": "新年利率",
     "add": "加",
     "pending": "添加 {{ balance }} {{ symbol }}"

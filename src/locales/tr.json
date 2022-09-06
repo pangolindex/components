@@ -639,7 +639,7 @@
   "sarStakeMore": {
     "stakeMore": "Bahis Tutarı Daha Fazla",
     "choosePosition": "Bir Pozisyon Seçin",
-    "confirmDescription": "Nisan ayınız 0'dan başlayacak ve ödül havuzundan aldığınız miktarı zamana göre artıracaktır.",
+    "confirmDescription": "Bu, SAR NFT pozisyonunuza {{ symbol }} ekler. Orijinal bakiyeniz aynı Nisan'dan itibaren devam eder. Yeni eklenen jetonlarınızın APR'si %0'dan başlar ve bahis miktarına göre değişir. NFT'niz ortalamayı gösterecektir.",
     "newAPR": "Yeni APR",
     "add": "Eklemek",
     "pending": "{{ balance }} {{ symbol }} ekleme"

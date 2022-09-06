@@ -14,7 +14,7 @@ export const StakeWrapper = styled(Box)`
 `;
 
 export const InputText = styled(TextInput)`
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.color10};
   padding: 15px;
   align-items: center;
   border-radius: 4px;
@@ -23,7 +23,7 @@ export const InputText = styled(TextInput)`
 export const ContentBox = styled(Box)`
   width: 100%;
   border-radius: 10px;
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.color10};
   margin-top: 10px;
   padding: 10px;
 `;
@@ -50,7 +50,7 @@ export const PoolSelectWrapper = styled(Box)`
   box-sizing: border-box;
   justify-content: space-between;
   align-items: center;
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.color10};
   color: ${({ theme }) => theme.text4};
   cursor: pointer;
 `;
@@ -73,7 +73,7 @@ export const Buttons = styled(Box)`
 export const CardContentBox = styled(Box)<{ isSuperFarm: boolean }>`
   width: 100%;
   border-radius: 10px;
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.color10};
   margin-top: 10px;
   padding: 10px;
   display: grid;

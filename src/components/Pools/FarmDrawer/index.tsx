@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import Drawer from 'src/components/Drawer';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { SpaceType, StakingInfo } from 'src/state/pstake/types';
+import StakeV3 from '../PangoChef/Stake';
 import Stake from '../Stake';
-import StakeV3 from '../V3/Stake';
 
 type Props = {
   isOpen: boolean;

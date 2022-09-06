@@ -640,7 +640,7 @@
   "sarStakeMore": {
     "stakeMore": "Mehr setzen",
     "choosePosition": "Wählen Sie eine Position",
-    "confirmDescription": "Ihr Apr beginnt bei 0 und erhöht den Betrag, den Sie aus dem Belohnungspool nehmen, um die Zeit",
+    "confirmDescription": "Dies fügt Ihrer SAR NFT Position {{ symbol }} hinzu. Ihr ursprüngliches Guthaben wird ab demselben effektiven Jahreszins fortgesetzt. Der effektive Jahreszins Ihrer neu hinzugefügten Token beginnt bei 0 % und ändert sich je nach Länge des Einsatzes. Ihr NFT zeigt den Durchschnitt an.",
     "newAPR": "Neuer effektiver Jahreszins",
     "add": "Hinzufügen",
     "pending": "Hinzufügen von {{ balance }} {{ symbol }}"

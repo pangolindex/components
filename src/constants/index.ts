@@ -80,11 +80,20 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.NEAR_TESTNET]: getMiniChefAddress(ChainId.NEAR_TESTNET),
 };
 
-export const PANGOCHEF_ADDRESS: { [chainId in ChainId]?: string } = {
-  [ChainId.FUJI]: undefined,
-  [ChainId.AVALANCHE]: undefined,
-  [ChainId.WAGMI]: undefined,
-  [ChainId.COSTON]: CHAINS[ChainId.COSTON].contracts!.mini_chef!.address,
+const getPangoChefAddress = (chainId: ChainId) => {
+  const minichefObj = CHAINS[chainId].contracts?.mini_chef;
+  if (minichefObj?.type === ChefType.PANGO_CHEF) {
+    return minichefObj.address;
+  }
+  return undefined;
+};
+
+export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
+  [ChainId.FUJI]: getPangoChefAddress[ChainId.FUJI],
+  [ChainId.AVALANCHE]: getPangoChefAddress(ChainId.AVALANCHE),
+  [ChainId.WAGMI]: getPangoChefAddress(ChainId.WAGMI),
+  [ChainId.COSTON]: getPangoChefAddress(ChainId.COSTON),
+  [ChainId.SONGBIRD]: getPangoChefAddress(ChainId.SONGBIRD),
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
 };

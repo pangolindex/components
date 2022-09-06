@@ -32,7 +32,7 @@ export function usePangoChefInfos() {
   const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', poolsIds);
   // format the data to Pool type
   const pools = useMemo(() => {
-    return poolsState.map((callState) => {
+    return poolsState?.map((callState) => {
       const result = callState?.result;
       if (!result) {
         return {} as Pool;

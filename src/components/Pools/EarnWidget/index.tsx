@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { SpaceType, StakingInfo } from 'src/state/pstake/types';
 import AddLiquidity from '../AddLiquidity';
+import StakeV3 from '../PangoChef/Stake';
 import Stake from '../Stake';
-import StakeV3 from '../V3/Stake';
 import EarnOption, { TradeType } from './EarnOption';
 import { Root } from './styled';
 

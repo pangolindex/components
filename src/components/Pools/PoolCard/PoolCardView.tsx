@@ -1,4 +1,4 @@
-import { CHAINS, Fraction, Token, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, ChefType, Fraction, Token, TokenAmount } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -48,6 +48,7 @@ const PoolCardView = ({
 
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
+  const chain = CHAINS[chainId];
 
   const token0 = stakingInfo.tokens[0];
   const token1 = stakingInfo.tokens[1];
@@ -75,11 +76,21 @@ const PoolCardView = ({
     setShowAddLiquidityDrawer(false);
   };
 
-  const aprMapping = {
-    1: undefined,
-    2: combinedApr,
-    3: stakingInfo.stakingApr,
+  const getApr = () => {
+    const miniChefType = chain.contracts?.mini_chef?.type;
+    switch (miniChefType) {
+      case ChefType.MINI_CHEF:
+        return undefined;
+      case ChefType.MINI_CHEF_V2:
+        return combinedApr;
+      case ChefType.PANGO_CHEF:
+        return stakingInfo.stakingApr;
+      default:
+        return undefined;
+    }
   };
+
+  const apr = getApr();
 
   const renderButton = () => {
     if (isStaking && Boolean(earnedAmount.greaterThan('0')))
@@ -162,7 +173,7 @@ const PoolCardView = ({
 
           <Stat
             title={`APR`}
-            stat={aprMapping[version] ? `${numeral(aprMapping[version]).format('0a')}%` : '-'}
+            stat={apr ? `${numeral(apr).format('0a')}%` : '-'}
             titlePosition="top"
             titleFontSize={[16, 14]}
             statFontSize={[24, 18]}
@@ -209,7 +220,7 @@ const PoolCardView = ({
           version={version}
           backgroundColor="color5"
           stakingInfo={stakingInfo}
-          combinedApr={aprMapping[version]}
+          combinedApr={apr}
         />
       )}
 

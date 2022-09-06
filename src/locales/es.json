@@ -640,7 +640,7 @@
   "sarStakeMore": {
     "stakeMore": "Apuesta Más",
     "choosePosition": "Elija una posición",
-    "confirmDescription": "Su apr comenzará desde 0 y aumentará la cantidad que tome del grupo de recompensas por tiempo",
+    "confirmDescription": "Esto agrega {{ symbol }} a su posición SAR NFT. Su saldo original continúa desde la misma APR. La APR de sus tokens recién agregados comienza desde 0% y cambia según la duración de la apuesta. Su NFT mostrará el promedio.",
     "newAPR": "Nueva TAE",
     "add": "Agregar",
     "pending": "Agregar {{ balance }} {{ symbol }}"

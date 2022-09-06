@@ -640,7 +640,7 @@
   "sarStakeMore": {
     "stakeMore": "En jeu plus",
     "choosePosition": "Choisir un poste",
-    "confirmDescription": "Votre avr commencera à partir de 0 et augmentera le montant que vous prenez du pool de récompenses par le temps",
+    "confirmDescription": "Cela ajoute {{ symbol }} à votre position SAR NFT. Votre solde initial continue à partir du même APR. L'APR de vos jetons nouvellement ajoutés commence à 0 % et change en fonction de la durée de la mise. Votre NFT affichera la moyenne.",
     "newAPR": "Nouveau TAEG",
     "add": "Ajouter",
     "pending": "Ajout de {{ balance }} {{ symbol }}"

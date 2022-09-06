@@ -1,3 +1,4 @@
+import { CHAINS, ChefType } from '@pangolindex/sdk';
 import React from 'react';
 import { useWindowSize } from 'react-use';
 import { Box } from 'src/components';
@@ -6,7 +7,7 @@ import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { StakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import EarnWidget from '../../EarnWidget';
-import EarnedDetailV3 from '../../V3/EarnDetail';
+import EarnedDetailV3 from '../../PangoChef/EarnDetail';
 import Details from '../Details';
 import EarnedDetail from '../EarnedDetail';
 import Header from '../Header';
@@ -21,6 +22,7 @@ export interface PoolDetailProps {
 const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
   const { height } = useWindowSize();
   const chainId = useChainId();
+  const chain = CHAINS[chainId];
 
   const token0 = stakingInfo?.tokens[0];
   const token1 = stakingInfo?.tokens[1];
@@ -31,7 +33,8 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
   const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
 
   const renderEarnedDetail = () => {
-    if (version === 3) {
+    const miniChefType = chain.contracts?.mini_chef?.type;
+    if (miniChefType === ChefType.PANGO_CHEF) {
       return <EarnedDetailV3 stakingInfo={stakingInfo as PangoChefInfo} version={version} />;
     }
     return <EarnedDetail stakingInfo={stakingInfo} version={version} />;
