@@ -112,7 +112,7 @@ export const hashConnect = new HashConnector({
   normalizeAccount: false,
   config: {
     networkId: 'testnet',
-    chainId: 456465,
+    chainId: ChainId.HEDERA_TESTNET,
     contractId: 'contract -id',
   },
 });

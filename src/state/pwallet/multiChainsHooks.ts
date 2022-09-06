@@ -24,6 +24,7 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.WAGMI]: useTokenBalances,
   [ChainId.COSTON]: useTokenBalances,
   [ChainId.SONGBIRD]: useTokenBalances,
+  [ChainId.HEDERA_TESTNET]: useTokenBalances,
   [ChainId.NEAR_MAINNET]: useNearTokenBalances,
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
 };
@@ -38,6 +39,7 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.WAGMI]: useTokenBalance,
   [ChainId.COSTON]: useTokenBalance,
   [ChainId.SONGBIRD]: useTokenBalance,
+  [ChainId.HEDERA_TESTNET]: useTokenBalance,
   [ChainId.NEAR_MAINNET]: useNearTokenBalance,
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
 };
@@ -52,6 +54,7 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.WAGMI]: useETHBalances,
   [ChainId.COSTON]: useETHBalances,
   [ChainId.SONGBIRD]: useETHBalances,
+  [ChainId.HEDERA_TESTNET]: useETHBalances,
   [ChainId.NEAR_MAINNET]: useNearBalance,
   [ChainId.NEAR_TESTNET]: useNearBalance,
 };
@@ -66,6 +69,7 @@ export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.WAGMI]: useAddLiquidity,
   [ChainId.COSTON]: useAddLiquidity,
   [ChainId.SONGBIRD]: useAddLiquidity,
+  [ChainId.HEDERA_TESTNET]: useAddLiquidity,
   [ChainId.NEAR_MAINNET]: useNearAddLiquidity,
   [ChainId.NEAR_TESTNET]: useNearAddLiquidity,
 };
@@ -80,6 +84,7 @@ export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
   [ChainId.WAGMI]: useRemoveLiquidity,
   [ChainId.COSTON]: useRemoveLiquidity,
   [ChainId.SONGBIRD]: useRemoveLiquidity,
+  [ChainId.HEDERA_TESTNET]: useRemoveLiquidity,
   [ChainId.NEAR_MAINNET]: useNearRemoveLiquidity,
   [ChainId.NEAR_TESTNET]: useNearRemoveLiquidity,
 };
@@ -94,6 +99,7 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.WAGMI]: useGetUserLP,
   [ChainId.COSTON]: useGetUserLP,
   [ChainId.SONGBIRD]: useGetUserLP,
+  [ChainId.HEDERA_TESTNET]: useGetUserLP,
   [ChainId.NEAR_MAINNET]: useGetNearUserLP,
   [ChainId.NEAR_TESTNET]: useGetNearUserLP,
 };

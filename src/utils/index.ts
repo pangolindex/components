@@ -38,6 +38,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   11111: CHAINS[ChainId.WAGMI].blockExplorerUrls?.[0] || '',
   16: CHAINS[ChainId.COSTON].blockExplorerUrls?.[0] || '',
   19: CHAINS[ChainId.SONGBIRD].blockExplorerUrls?.[0] || '',
+  329847910: CHAINS[ChainId.HEDERA_TESTNET].blockExplorerUrls?.[0] || '',
   329847900: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls?.[0] || '',
   329847901: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls?.[0] || '',
 };
@@ -48,6 +49,7 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'tx',
   [ChainId.COSTON]: 'tx',
   [ChainId.SONGBIRD]: 'tx',
+  [ChainId.HEDERA_TESTNET]: 'tx',
   [ChainId.NEAR_MAINNET]: 'transactions',
   [ChainId.NEAR_TESTNET]: 'transactions',
 };
@@ -58,6 +60,7 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'address',
   [ChainId.COSTON]: 'address',
   [ChainId.SONGBIRD]: 'address',
+  [ChainId.HEDERA_TESTNET]: 'address',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
 };
@@ -68,6 +71,7 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'block',
   [ChainId.COSTON]: 'block',
   [ChainId.SONGBIRD]: 'block',
+  [ChainId.HEDERA_TESTNET]: 'block',
   [ChainId.NEAR_MAINNET]: 'blocks',
   [ChainId.NEAR_TESTNET]: 'blocks',
 };
@@ -78,6 +82,7 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'token',
   [ChainId.COSTON]: 'token',
   [ChainId.SONGBIRD]: 'token',
+  [ChainId.HEDERA_TESTNET]: 'token',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
 };

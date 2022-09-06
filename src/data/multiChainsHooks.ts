@@ -11,6 +11,7 @@ export const usePairsHook: UsePairsHookType = {
   [ChainId.WAGMI]: usePairs,
   [ChainId.COSTON]: usePairs,
   [ChainId.SONGBIRD]: usePairs,
+  [ChainId.HEDERA_TESTNET]: usePairs,
   [ChainId.NEAR_MAINNET]: useNearPairs,
   [ChainId.NEAR_TESTNET]: useNearPairs,
 };
