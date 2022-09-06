@@ -639,7 +639,7 @@
   "sarStakeMore": {
     "stakeMore": "Depositar Mais",
     "choosePosition": "Escolha uma posição",
-    "confirmDescription": "Isso adiciona {{ símbolo }} à sua posição SAR NFT. Seu saldo original continua a partir da mesmo APR. O APR de seus tokens recém-adicionados começa em 0% e muda com base na duração do stake. Sua NFT mostrará a média.",
+    "confirmDescription": "Isso adiciona {{ symbol }} à sua posição SAR NFT. Seu saldo original continua a partir da mesmo APR. O APR de seus tokens recém-adicionados começa em 0% e muda com base na duração do stake. Sua NFT mostrará a média.",
     "newAPR": "Novo APR",
     "add": "Adicionar",
     "pending": "Adicionando {{ balance }} {{ symbol }}"
