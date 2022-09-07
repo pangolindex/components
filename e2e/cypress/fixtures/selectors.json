@@ -1,0 +1,23 @@
+{
+    "dashboard": {
+        "returnToLegacyBtn": "a.sc-gsnTZi.iyNTDz",
+        "languageBtn": "button.sc-lhVmIH.fVBGEZ",
+        "languageDropdown": "div.sc-bYSBpT.iBjjYK span a",
+        "noOfLanguages": 8,
+        "lightMood": "div.sc-bdVaJa.sc-gxMtzJ.sc-dfVpRl.sc-RefOD.iQPYrN img",
+        "darkMood": "div.sc-bdVaJa.sc-gxMtzJ.sc-dfVpRl.sc-RefOD.cHjRRv img",
+        "watchListBtn": "button.sc-gsnTZi.bsblgv",
+        "watchlistDropDown": "div.sc-eCYdqJ.sc-lkwKjF.fEptdj.eviIdZ",
+        "tokenSearch": "input[placeholder='Search']",
+        "tokenSelect": ".sc-gsnTZi.jQHTpl",
+        "tokenAssert": "div.sc-eCYdqJ.sc-dWINGa.fEptdj.ePGvJV",
+        "tokenMouseOver": "div[class='sc-eCYdqJ sc-dWINGa fEptdj dfBwcX']",
+        "crossBtn": "button.sc-jGprRt.kMGxyI",
+        "switchToken": ".sc-eCYdqJ.sc-bhVIhj.fEptdj.eXHcPZ div div div.sc-dWINGa",
+        "tokenSection": "div[class='sc-eCYdqJ sc-bhVIhj fEptdj eXHcPZ']",
+        "watchListTokenAssert": ".sc-jSMfEi.jPrZZL",
+        "watchlistTimeBtn": "div[class='sc-eCYdqJ sc-ESujJ fEptdj diPxHK'] button",
+        "watchlistLinkBtn": "a.jbbOxr",
+        "watchlistTradeBtn": "a.jmaCMK"
+    }
+}

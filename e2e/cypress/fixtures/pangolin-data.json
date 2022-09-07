@@ -1,0 +1,16 @@
+{
+  "returnToLegacy": "Return to legacy site",
+  "array" : [
+    "Return to legacy site",
+    "Zurück zur alten Website",
+    "Eski arayüze dön",
+    "返回旧网站",
+    "Regresar al sitio heredado",
+    "Retour à l'ancien site",
+    "Retornar ao site legado",
+    "Quay lại trang web cũ"
+  ],
+  "tokenName": "AGF",
+  "AvaxToken": "AVAX",
+  "switchArray": ["PNG", "AGF", "AVAX"]
+}
