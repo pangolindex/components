@@ -89,7 +89,7 @@ const getPangoChefAddress = (chainId: ChainId) => {
 };
 
 export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
-  [ChainId.FUJI]: getPangoChefAddress[ChainId.FUJI],
+  [ChainId.FUJI]: getPangoChefAddress(ChainId.FUJI),
   [ChainId.AVALANCHE]: getPangoChefAddress(ChainId.AVALANCHE),
   [ChainId.WAGMI]: getPangoChefAddress(ChainId.WAGMI),
   [ChainId.COSTON]: getPangoChefAddress(ChainId.COSTON),
