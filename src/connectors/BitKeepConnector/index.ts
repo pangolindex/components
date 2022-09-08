@@ -56,8 +56,8 @@ export class BitKeepConnector extends AbstractConnector {
     // try to activate + get account via eth_requestAccounts
     let account: string | undefined;
     try {
-      const accounts: string[] | undefined = await window.bitkeep?.ethereum.request({ method: 'eth_requestAccounts' });
-      if (accounts && accounts.length) account = accounts[0];
+      const _account = await this.getAccount();
+      if (_account) account = _account;
     } catch (error) {
       if ((error as any).code === 4001) {
         throw new UserRejectedRequestError();
@@ -70,11 +70,7 @@ export class BitKeepConnector extends AbstractConnector {
   }
 
   public async getProvider() {
-    const provider = window.bitkeep && window.bitkeep.ethereum;
-    if (!provider) {
-      return window.open('https://bitkeep.com/download?type=0&theme=light');
-    }
-    return provider;
+    return window.bitkeep && window.bitkeep.ethereum;
   }
 
   public async getChainId(): Promise<number | string> {
@@ -115,8 +111,8 @@ export class BitKeepConnector extends AbstractConnector {
     }
 
     try {
-      const accounts: string[] | undefined = await window.bitkeep.ethereum.request('eth_accounts');
-      return !!accounts && accounts.length > 0;
+      const account = await this.getAccount();
+      return !!account;
     } catch {
       return false;
     }
