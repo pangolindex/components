@@ -640,7 +640,7 @@
   "sarStakeMore": {
     "stakeMore": "赌注更多",
     "choosePosition": "选择职位",
-    "confirmDescription": "您的4月将从0开始，并按时间增加您从奖励池中取出的金额",
+    "confirmDescription": "这会将 {{ symbol }} 添加到您的 SAR NFT 头寸。 您的原始余额从同一个 APR 继续。 您新添加的代币的 APR 从 0% 开始，并根据权益的长度而变化。 您的 NFT 将显示平均值。",
     "newAPR": "新年利率",
     "add": "加",
     "pending": "添加 {{ balance }} {{ symbol }}"
@@ -687,5 +687,14 @@
     "newest": "最新",
     "oldest": "古老",
     "sortBy": "排序方式"
+  },
+  "pangoChef": {
+    "claimWarning1": "当您在未提取流动性的情况下申领时，您的流动性仍保留在矿池中。",
+    "claimWarning2": "领取您的奖励将使您的 APR 降至 0。相反，您可以选择复合。",
+    "compoundWarning": "将您对 {{ token0 }}-{{ token1 }} 农场的奖励组合起来，您的奖励将投入 {{ currency }}-{{ png }} 农场。 您需要在累积的 {{ png }} 奖励中添加等值的 {{ currency }} 代币。",
+    "compoundAmountWarning": "您需要添加 {{ amount }} {{ symbol }} 来复合。",
+    "compoundAmountWarning2": "请注意，您将锁定您的 {{ symbol }} {{ png }} 池，直到您获得该池的奖励。",
+    "highVolalityWarning": "高波动性，稍后尝试组合。",
+    "compoundSuccess": "你已经成功地组成了你的农场。"
   }
 }

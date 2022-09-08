@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { CHAINS, ChainId, ChefType, JSBI, Percent, StakingType, Token, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, ChainId, ChefType, Fraction, JSBI, Percent, StakingType, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import BN from 'bn.js';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
@@ -78,6 +78,24 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.SONGBIRD]: getMiniChefAddress(ChainId.SONGBIRD),
   [ChainId.NEAR_MAINNET]: getMiniChefAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getMiniChefAddress(ChainId.NEAR_TESTNET),
+};
+
+const getPangoChefAddress = (chainId: ChainId) => {
+  const minichefObj = CHAINS[chainId].contracts?.mini_chef;
+  if (minichefObj?.type === ChefType.PANGO_CHEF) {
+    return minichefObj.address;
+  }
+  return undefined;
+};
+
+export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
+  [ChainId.FUJI]: getPangoChefAddress(ChainId.FUJI),
+  [ChainId.AVALANCHE]: getPangoChefAddress(ChainId.AVALANCHE),
+  [ChainId.WAGMI]: getPangoChefAddress(ChainId.WAGMI),
+  [ChainId.COSTON]: getPangoChefAddress(ChainId.COSTON),
+  [ChainId.SONGBIRD]: getPangoChefAddress(ChainId.SONGBIRD),
+  [ChainId.NEAR_MAINNET]: undefined,
+  [ChainId.NEAR_TESTNET]: undefined,
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
@@ -383,3 +401,6 @@ export enum SwapTypes {
   MARKET = 'MARKET',
   LIMIT = 'LIMIT',
 }
+
+export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '100'); // 1% of slippage tolerange
+export const ONE_FRACTION = new Fraction('1');

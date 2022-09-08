@@ -36,7 +36,13 @@ import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature
 import { Field } from 'src/state/pburn/actions';
 import { Field as AddField } from 'src/state/pmint/actions';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { calculateGasMargin, calculateSlippageAmount, getRouterContract, isAddress } from 'src/utils';
+import {
+  calculateGasMargin,
+  calculateSlippageAmount,
+  getRouterContract,
+  isAddress,
+  waitForTransaction,
+} from 'src/utils';
 import { FunctionCallOptions, Transaction, nearFn } from 'src/utils/near';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../pmulticall/hooks';
@@ -371,7 +377,7 @@ export function useAddLiquidity() {
         ...(value ? { value } : {}),
         gasLimit: calculateGasMargin(estimatedGasLimit),
       });
-      await response.wait(5);
+      await waitForTransaction(response, 5);
 
       addTransaction(response, {
         summary:
@@ -693,7 +699,7 @@ export function useRemoveLiquidity(pair?: Pair | null | undefined) {
         const response: TransactionResponse = await router[methodName](...args, {
           gasLimit: safeGasEstimate,
         });
-        await response.wait(5);
+        await waitForTransaction(response, 5);
         addTransaction(response, {
           summary:
             t('removeLiquidity.remove') +

@@ -3,35 +3,20 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Box,
-  Button,
-  DoubleCurrencyLogo,
-  Loader,
-  NumberOptions,
-  Stat,
-  Text,
-  TextInput,
-  TransactionCompleted,
-} from 'src/components';
+import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput } from 'src/components';
 import { usePair } from 'src/data/Reserves';
-import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
-import { usePairContract, useStakingContract } from 'src/hooks/useContract';
-import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
+import { usePairContract, usePangoChefContract } from 'src/hooks/useContract';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
-import {
-  useDerivedStakeInfo,
-  useGetPoolDollerWorth,
-  useMinichefPendingRewards,
-  useMinichefPools,
-} from 'src/state/pstake/hooks';
-import { SpaceType, StakingInfo } from 'src/state/pstake/types';
+import { PangoChefInfo } from 'src/state/ppangoChef/types';
+import { useDerivedStakeInfo, useGetPoolDollerWorth, useMinichefPendingRewards } from 'src/state/pstake/hooks';
+import { SpaceType } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { waitForTransaction } from 'src/utils';
 import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
-import SelectPoolDrawer from './SelectPoolDrawer';
+import ConfirmDrawer from './ConfirmDrawer';
 import {
   Buttons,
   CardContentBox,
@@ -44,33 +29,25 @@ import {
 } from './styleds';
 
 interface StakeProps {
-  version: number;
   onComplete?: () => void;
   type: SpaceType.card | SpaceType.detail;
-  stakingInfo: StakingInfo;
+  stakingInfo: PangoChefInfo;
   combinedApr?: number;
 }
 
-const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
+const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const { library } = useLibrary();
   const token0 = stakingInfo.tokens[0];
   const token1 = stakingInfo.tokens[1];
 
   const [, stakingTokenPair] = usePair(token0, token1);
 
-  const [selectedPair, setSelectedPair] = useState<Pair | null>(stakingTokenPair);
-
-  const userLiquidityUnstaked = useTokenBalance(account ?? undefined, selectedPair?.liquidityToken);
-  const { liquidityInUSD } = useGetPoolDollerWorth(selectedPair);
-
-  const [isPoolDrawerOpen, setIsPoolDrawerOpen] = useState(false);
+  const userLiquidityUnstaked = useTokenBalance(account ?? undefined, stakingTokenPair?.liquidityToken);
+  const { liquidityInUSD } = useGetPoolDollerWorth(stakingTokenPair);
 
   // track and parse user input
   const [typedValue, setTypedValue] = useState((userLiquidityUnstaked as TokenAmount)?.toExact() || '');
-
-  const getSignature = useGetTransactionSignature();
 
   const { parsedAmount, error } = useDerivedStakeInfo(
     typedValue,
@@ -96,6 +73,9 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
   const addTransaction = useTransactionAdder();
   const [attempting, setAttempting] = useState<boolean>(false);
   const [hash, setHash] = useState<string | undefined>();
+  const [stakeError, setStakeError] = useState<string | undefined>();
+
+  const [openDrawer, setOpenDrawer] = useState(false);
 
   // pair contract for this token to be staked
   const dummyPair = new Pair(
@@ -110,16 +90,11 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
   const { t } = useTranslation();
 
   const [stepIndex, setStepIndex] = useState(4);
-  const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(
-    null,
-  );
   const [approval, approveCallback] = useApproveCallback(chainId, parsedAmount, stakingInfo?.stakingRewardAddress);
 
-  const stakingContract = useStakingContract(stakingInfo?.stakingRewardAddress);
-  const currency0 = unwrappedToken(selectedPair?.token0 as Token, chainId);
-  const currency1 = unwrappedToken(selectedPair?.token1 as Token, chainId);
-  const poolMap = useMinichefPools();
-  const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
+  const pangochefContract = usePangoChefContract();
+  const currency0 = unwrappedToken(stakingTokenPair?.token0 as Token, chainId);
+  const currency1 = unwrappedToken(stakingTokenPair?.token1 as Token, chainId);
 
   const onChangePercentage = (value: number) => {
     if (!userLiquidityUnstaked) {
@@ -137,65 +112,28 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
   };
 
   async function onStake() {
-    if (stakingContract && poolMap && parsedAmount && deadline) {
+    if (pangochefContract && parsedAmount && deadline) {
       setAttempting(true);
-      const method = version < 2 ? 'stake' : 'deposit';
-      const args =
-        version < 2
-          ? [`0x${parsedAmount.raw.toString(16)}`]
-          : [poolMap[stakingInfo?.stakedAmount.token.address], `0x${parsedAmount.raw.toString(16)}`, account];
-
       if (approval === ApprovalState.APPROVED) {
         try {
-          const response: TransactionResponse = await stakingContract[method](...args);
+          const response: TransactionResponse = await pangochefContract.stake(
+            stakingInfo.pid,
+            parsedAmount.raw.toString(),
+          );
           await waitForTransaction(response, 5);
           addTransaction(response, {
             summary: t('earn.depositLiquidity'),
           });
-          await refetchMinichefSubgraph();
           setHash(response.hash);
         } catch (err) {
-          setAttempting(false);
           const _err = err as any;
           // we only care if the error is something _other_ than the user rejected the tx
           if (_err?.code !== 4001) {
+            setStakeError(_err?.message);
             console.error(_err);
           }
-        }
-      } else if (signatureData) {
-        const permitMethod = version < 2 ? 'stakeWithPermit' : 'depositWithPermit';
-        const permitArgs =
-          version < 2
-            ? [
-                `0x${parsedAmount.raw.toString(16)}`,
-                signatureData.deadline,
-                signatureData.v,
-                signatureData.r,
-                signatureData.s,
-              ]
-            : [
-                poolMap[stakingInfo.stakedAmount.token.address],
-                `0x${parsedAmount.raw.toString(16)}`,
-                account,
-                signatureData.deadline,
-                signatureData.v,
-                signatureData.r,
-                signatureData.s,
-              ];
-        try {
-          const response: TransactionResponse = await stakingContract[permitMethod](...permitArgs);
-          await waitForTransaction(response, 1);
-          addTransaction(response, {
-            summary: t('earn.depositLiquidity'),
-          });
-          setHash(response.hash);
-        } catch (err) {
+        } finally {
           setAttempting(false);
-          const _err = err as any;
-          // we only care if the error is something _other_ than the user rejected the tx
-          if (_err?.code !== 4001) {
-            console.error(_err);
-          }
         }
       } else {
         setAttempting(false);
@@ -206,74 +144,16 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
 
   // wrapped onUserInput to clear signatures
   const onUserInput = useCallback((_typedValue: string) => {
-    setSignatureData(null);
     setTypedValue(_typedValue);
   }, []);
 
-  // used for max input button
-  // const maxAmountInput = maxAmountSpend(userLiquidityUnstaked)
-  // const atMaxAmount = Boolean(maxAmountInput && parsedAmount?.equalTo(maxAmountInput))
-  // const handleMax = useCallback(() => {
-  //   maxAmountInput && onUserInput(maxAmountInput.toExact())
-  // }, [maxAmountInput, onUserInput])
-
   async function onAttemptToApprove() {
-    if (!pairContract || !library || !deadline) throw new Error(t('earn.missingDependencies'));
+    if (!pairContract) throw new Error(t('earn.missingDependencies'));
 
     const liquidityAmount = parsedAmount;
     if (!liquidityAmount) throw new Error(t('earn.missingLiquidityAmount'));
 
-    // try to gather a signature for permission
-    const nonce = await pairContract.nonces(account);
-
-    const EIP712Domain = [
-      { name: 'name', type: 'string' },
-      { name: 'version', type: 'string' },
-      { name: 'chainId', type: 'uint256' },
-      { name: 'verifyingContract', type: 'address' },
-    ];
-    const domain = {
-      name: 'Pangolin Liquidity',
-      version: '1',
-      chainId: chainId,
-      verifyingContract: pairContract.address,
-    };
-    const Permit = [
-      { name: 'owner', type: 'address' },
-      { name: 'spender', type: 'address' },
-      { name: 'value', type: 'uint256' },
-      { name: 'nonce', type: 'uint256' },
-      { name: 'deadline', type: 'uint256' },
-    ];
-    const message = {
-      owner: account,
-      spender: stakingInfo.stakingRewardAddress,
-      value: liquidityAmount.raw.toString(),
-      nonce: nonce.toHexString(),
-      deadline: deadline.toNumber(),
-    };
-    const data = JSON.stringify({
-      types: {
-        EIP712Domain,
-        Permit,
-      },
-      domain,
-      primaryType: 'Permit',
-      message,
-    });
-
-    try {
-      const signature: any = await getSignature(data);
-
-      setSignatureData({
-        v: signature.v,
-        r: signature.r,
-        s: signature.s,
-        deadline: deadline.toNumber(),
-      });
-    } catch (err: any) {
-      approveCallback();
-    }
+    approveCallback();
   }
 
   const renderPoolDataRow = (label: string, value: string) => {
@@ -296,14 +176,10 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
       setTypedValue('');
     }
     setHash('');
-    setSignatureData(null);
     setAttempting(false);
+    setOpenDrawer(false);
     onComplete && onComplete();
   }, [setTypedValue, hash, onComplete]);
-
-  const handleSelectPoolDrawerClose = useCallback(() => {
-    setIsPoolDrawerOpen(false);
-  }, [setIsPoolDrawerOpen]);
 
   useEffect(() => {
     if (userLiquidityUnstaked) {
@@ -312,12 +188,18 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLiquidityUnstaked?.toExact()]);
 
-  const onPoolSelect = useCallback(
-    (pairSelected) => {
-      setSelectedPair(pairSelected);
-    },
-    [setSelectedPair],
-  );
+  useEffect(() => {
+    if (openDrawer && !attempting && !hash && !stakeError) {
+      handleDismissConfirmation();
+    }
+    if (!openDrawer && attempting) {
+      setOpenDrawer(true);
+    }
+  }, [attempting, hash, stakeError]);
+
+  const onConfirm = () => {
+    setOpenDrawer(true);
+  };
 
   // userLiquidityUnstaked?.toExact() -> liquidityInUSD
   // typedValue -> ?
@@ -467,9 +349,9 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
 
           <Buttons>
             <Button
-              variant={approval === ApprovalState.APPROVED || signatureData !== null ? 'confirm' : 'primary'}
+              variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
               onClick={onAttemptToApprove}
-              isDisabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
+              isDisabled={approval !== ApprovalState.NOT_APPROVED}
               loading={attempting && !hash}
               loadingText={t('migratePage.loading')}
             >
@@ -478,8 +360,8 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
 
             <Button
               variant="primary"
-              isDisabled={!!error || (signatureData === null && approval !== ApprovalState.APPROVED)}
-              onClick={onStake}
+              isDisabled={!!error || approval !== ApprovalState.APPROVED}
+              onClick={type === SpaceType.detail ? onConfirm : onStake}
               loading={attempting && !hash}
               loadingText={t('migratePage.loading')}
             >
@@ -489,24 +371,19 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
         </>
       )}
 
-      {attempting && !hash && <Loader size={100} label={`${t('earn.depositingLiquidity')}`} />}
-      {attempting && hash && (
-        <TransactionCompleted
-          submitText={`${t('earn.deposited')}`}
-          isShowButtton={type === 'card' ? false : true}
-          onButtonClick={handleDismissConfirmation}
-          buttonText="Close"
-        />
-      )}
-
-      {isPoolDrawerOpen && (
-        <SelectPoolDrawer
-          isOpen={isPoolDrawerOpen}
-          onClose={handleSelectPoolDrawerClose}
-          onPoolSelect={onPoolSelect}
-          selectedPair={selectedPair}
-        />
-      )}
+      <ConfirmDrawer
+        isOpen={openDrawer}
+        onClose={handleDismissConfirmation}
+        attemptingTxn={attempting}
+        errorMessage={stakeError}
+        txHash={hash}
+        type={type}
+        onStake={onStake}
+        tokens={[currency0, currency1]}
+        amount={parsedAmount}
+        dollarValue={dollerWarth}
+        apr={'0%'}
+      />
     </StakeWrapper>
   );
 };

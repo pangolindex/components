@@ -640,7 +640,7 @@
   "sarStakeMore": {
     "stakeMore": "Depositar Mais",
     "choosePosition": "Escolha uma posição",
-    "confirmDescription": "Seu Apr começará a partir de 0 e aumentará a quantidade que você tirar do pool de recompensas pelo tempo",
+    "confirmDescription": "Isso adiciona {{ symbol }} à sua posição SAR NFT. Seu saldo original continua a partir da mesmo APR. O APR de seus tokens recém-adicionados começa em 0% e muda com base na duração do stake. Sua NFT mostrará a média.",
     "newAPR": "Novo APR",
     "add": "Adicionar",
     "pending": "Adicionando {{ balance }} {{ symbol }}"
@@ -687,5 +687,14 @@
     "newest": "Mais recente",
     "oldest": "Menos recente",
     "sortBy": "Ordernar por"
+  },
+  "pangoChef": {
+    "claimWarning1": "Quando você reivindica sem retirar sua liquidez permanece no pool de mineração.",
+    "claimWarning2": "Reivindicar suas recompensas reduzirá sua APR para 0. Em vez disso, você pode optar por compor.",
+    "compoundWarning": "A composição de suas recompensas para a farm {{ token0 }}-{{ token1 }} fará com que suas recompensas sejam apostadas na farm {{ currency }}-{{ png }}. Você precisa adicionar o valor igual de {{ currency }} token para suas recompensas acumuladas de {{ png }}.",
+    "compoundAmountWarning": "Você precisa adicionar {{ amount }} {{ symbol }} para compor.",
+    "compoundAmountWarning2": "Tenha cuidado para bloquear sua pool de {{ symbol }} {{ png }} até reivindicar as recompensas desta pool.",
+    "highVolalityWarning": "Alta volatilidade, tente compor mais tarde",
+    "compoundSuccess": "Você compôs sua farm com sucesso."
   }
 }

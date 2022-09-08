@@ -1,11 +1,10 @@
-import { CHAINS, Currency, JSBI, Pair, TokenAmount } from '@pangolindex/sdk';
+import { Currency, JSBI, Pair, TokenAmount } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React from 'react';
 import AnalyticsIcon from 'src/assets/images/analytics.svg';
 import { Box, Stat, Text } from 'src/components';
 import { AnalyticsLink } from 'src/components/Stat/styled';
 import { useTotalSupply } from 'src/data/TotalSupply';
-import { useChainId } from 'src/hooks';
 import { StateContainer } from './styleds';
 
 interface Props {
@@ -19,10 +18,7 @@ interface Props {
 }
 
 export default function StatDetail({ title, totalAmount, pair, pgl, currency0, currency1, link }: Props) {
-  const chainId = useChainId();
-
   const totalPoolTokens = useTotalSupply(pair?.liquidityToken);
-  pgl = CHAINS[chainId]?.mainnet ? pgl : undefined;
 
   const [token0Deposited, token1Deposited] =
     !!pair &&

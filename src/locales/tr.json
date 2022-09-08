@@ -640,7 +640,7 @@
   "sarStakeMore": {
     "stakeMore": "Bahis Tutarı Daha Fazla",
     "choosePosition": "Bir Pozisyon Seçin",
-    "confirmDescription": "Nisan ayınız 0'dan başlayacak ve ödül havuzundan aldığınız miktarı zamana göre artıracaktır.",
+    "confirmDescription": "Bu, SAR NFT pozisyonunuza {{ symbol }} ekler. Orijinal bakiyeniz aynı Nisan'dan itibaren devam eder. Yeni eklenen jetonlarınızın APR'si %0'dan başlar ve bahis miktarına göre değişir. NFT'niz ortalamayı gösterecektir.",
     "newAPR": "Yeni APR",
     "add": "Eklemek",
     "pending": "{{ balance }} {{ symbol }} ekleme"
@@ -687,5 +687,14 @@
     "newest": "Yeni",
     "oldest": "Eski",
     "sortBy": "Sıralama Ölçütü"
+  },
+  "pangoChef": {
+    "claimWarning1": "Likiditenizi çekmeden talep ettiğinizde madencilik havuzunda kalır.",
+    "claimWarning2": "Ödüllerinizi talep etmek, APR'nizi 0'a düşürür. Bunun yerine birleştirmeyi seçebilirsiniz.",
+    "compoundWarning": "{{ token0 }}-{{ token1 }} çiftliği için ödüllerinizi birleştirmek, ödüllerinizi {{ para birimi }}-{{ png }} çiftliğine yatırır. {{ currency }} 'a eşit değer eklemeniz gerekir. jeton, tahakkuk eden {{ png }} ödüllerinize.",
+    "compoundAmountWarning": "Bileşik için {{ amount }} {{ symbol }} eklemeniz gerekiyor.",
+    "compoundAmountWarning2": "Bu havuzun ödüllerini alana kadar {{ symbol }} {{ png }} havuzunuzu kilitleyeceğinize dikkat edin.",
+    "highVolalityWarning": "Yüksek değişkenlik, daha sonra oluşturmayı deneyin",
+    "compoundSuccess": "Çiftliğinizi başarıyla oluşturdunuz."
   }
 }

@@ -614,11 +614,11 @@
     "couldNotWrap": "Could not wrap",
     "attemptingToConfirmApproval": "Attempting to confirm without approval or a signature. Please contact support."
   },
-  "sarTitle":{
-    "addMore": "Add",
-    "unstake": "Unstake",
-    "compound": "Compound",
-    "claim": "Claim",
+  "sarTitle": {
+    "addMore": "STAKE",
+    "unstake": "UNSTAKE",
+    "compound": "COMPOUND REWARDS",
+    "claim": "CLAIM REWARDS",
     "interactingID": "Interacting with ID: {{ id }}"
   },
   "sarStake": {
@@ -632,8 +632,8 @@
     "averageAPR": "Average APR",
     "startingApr": "Starting APR",
     "weeklyDistributed": "Weekly {{ symbol }} Distributed",
-    "confirmDescription": "A stake action will create a SAR Nft for you. With this NFT you can manage your {{ symbol }} stake.",
-    "successSubmit": "You have successfully staked your token.",
+    "confirmDescription": "Staking creates a SAR NFT position. This NFT manages your {{ symbol }} tokens and APR. Your APR will change based on the length of stake.",
+    "successSubmit": "You've successfully staked.",
     "yourAprRecalculated": "Your APR will be recalculated.",
     "summary": "Summary",
     "pending": "Staking {{ balance }} {{ symbol }}",
@@ -642,21 +642,21 @@
   "sarStakeMore": {
     "stakeMore": "Stake More",
     "choosePosition": "Choose a Position",
-    "confirmDescription": "Your Apr will start from 0 and increase the amount you take from reward pool by time",
+    "confirmDescription": "This adds {{ symbol }} to your SAR NFT position. Your original balance continues from the same APR. The APR of your newly added tokens starts from 0% and changes based on the length of stake. Your NFT will show the average.",
     "newAPR": "New APR",
-    "add": "Add",
-    "pending": "Adding {{ balance }} {{ symbol }}"
+    "add": "Stake",
+    "pending": "Staking {{ balance }} {{ symbol }}"
   },
   "sarUnstake": {
     "unstake": "Unstake",
     "unstaking": "Unstaking {{ balance }} {{ symbol }}",
     "stakedBalance": "Staked {{ balance }} {{ symbol }}",
-    "confirmDescription": "It's worth being aware that unstaking your rewards will get your APR to 0% for this position. \nInstead of unstaking you can consider selling your NFT as well.",
-    "successSubmit": "You have successfully unstaked your tokens.",
+    "confirmDescription": "You’re about to unstake your NFT position which restarts the APR of the remaining balance from 0%. Is that what you want to do?",
+    "successSubmit": "You've successfully unstaked your tokens.",
     "pending": "Unstaking {{ balance }} {{ symbol }}",
     "transactionSummary": "Unstaked {{ balance }} {{ symbol }}",
     "currentAPR": "Current APR",
-    "unstakeWarning": "When you unstake, your average APR will fall to 0%.",
+    "unstakeWarning": "Unstaking restarts the APR of this position from 0%. Instead of unstaking, you can also sell your NFT position on a secondary market.",
     "aprAfter": "APR After Unstake"
   },
   "sarCompound": {
@@ -673,7 +673,7 @@
   "sarClaim": {
     "claim": "Claim",
     "claiming": "Claiming",
-    "description": "Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead compound your rewards without losing your APR.",
+    "description": "Claiming your rewards will restart the APR of your position from 0%. Instead of claiming, you can also compound your rewards.",
     "successSubmit": "You have successfully claimed your rewards",
     "pending": "Claiming",
     "transactionSummary": "Claimed position rewards",
@@ -681,7 +681,7 @@
     "noRewards": "No rewards to claim"
   },
   "sarPortfolio": {
-    "noPositions": "You dont have any PANGUARDIAN NFT.\nLETS GET YOU ONE",
+    "noPositions": "You don't have a staking position NFT.\nLET'S GET YOU ONE!",
     "start": "START",
     "positionId": "Position ID",
     "apr": "APR",
@@ -689,5 +689,14 @@
     "newest": "Newest",
     "oldest": "Oldest",
     "sortBy": "Sort By"
+  },
+  "pangoChef": {
+    "claimWarning1": "When you claim without withdrawing, your liquidity remains in the farm.",
+    "claimWarning2": "Claiming rewards restarts your APR from 0%. Instead you may choose to compound.",
+    "compoundWarning": "Compounding your rewards for {{ token0 }}-{{ token1 }} farm will get your rewards staked into {{ currency }}-{{ png }} farm. You need to add equal value of {{ currency }}token to your accrued {{ png }} rewards.",
+    "compoundAmountWarning": "You need to add {{ amount }} {{ symbol }} to compound.",
+    "compoundAmountWarning2": "Be careful that you will be locking your {{ symbol }} {{ png }} pool till you claim the rewards of this pool.",
+    "highVolalityWarning": "High volatility, try to compose later",
+    "compoundSuccess": "You have successfully composed your farm."
   }
 }

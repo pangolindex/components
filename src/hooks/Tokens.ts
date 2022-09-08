@@ -328,7 +328,7 @@ export interface CoingeckoData {
  * */
 
 export function useCoinGeckoTokenData(coin: Token) {
-  const chain = CHAINS[coin.chainId].mainnet ? CHAINS[coin.chainId] : CHAINS[ChainId.AVALANCHE];
+  const chain = CHAINS[coin.chainId];
 
   return useQuery(['coingeckoToken', coin.address, chain.name], async () => {
     if (!chain.coingecko_id) {

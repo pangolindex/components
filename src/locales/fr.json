@@ -641,7 +641,7 @@
   "sarStakeMore": {
     "stakeMore": "En jeu plus",
     "choosePosition": "Choisir un poste",
-    "confirmDescription": "Votre avr commencera à partir de 0 et augmentera le montant que vous prenez du pool de récompenses par le temps",
+    "confirmDescription": "Cela ajoute {{ symbol }} à votre position SAR NFT. Votre solde initial continue à partir du même APR. L'APR de vos jetons nouvellement ajoutés commence à 0 % et change en fonction de la durée de la mise. Votre NFT affichera la moyenne.",
     "newAPR": "Nouveau TAEG",
     "add": "Ajouter",
     "pending": "Ajout de {{ balance }} {{ symbol }}"
@@ -688,5 +688,14 @@
     "newest": "Nouveau",
     "oldest": "Aîné",
     "sortBy": "Trier par"
+  },
+  "pangoChef": {
+    "claimWarning1": "Lorsque vous réclamez sans retirer votre liquidité reste dans le pool de minage.",
+    "claimWarning2": "Réclamer vos récompenses fera tomber votre APR à 0. À la place, vous pouvez choisir de composer.",
+    "compoundWarning": "En combinant vos récompenses pour la ferme {{ token0 }}-{{ token1 }}, vos récompenses seront mises en jeu dans la ferme {{ currency }}-{{ png }}. Vous devez ajouter une valeur égale de {{ currency }}token à vos récompenses {{ png }} accumulées.",
+    "compoundAmountWarning": "Vous devez ajouter {{ amount }} {{ symbol }} au composé.",
+    "compoundAmountWarning2": "Faites attention que vous verrouillerez votre pool de {{ symbol }} {{ png }} jusqu'à ce que vous réclamiez les récompenses de ce pool.",
+    "highVolalityWarning": "Volatilité élevée, essayez de composer plus tard",
+    "compoundSuccess": "Vous avez réussi à composer votre ferme."
   }
 }
