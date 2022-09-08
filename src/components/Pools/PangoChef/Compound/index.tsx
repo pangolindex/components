@@ -15,7 +15,8 @@ import { usePangoChefContract } from 'src/hooks/useContract';
 import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { useETHBalances, useTokenBalances } from 'src/state/pwallet/hooks';
+import { useTokenBalances } from 'src/state/pwallet/hooks';
+import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { calculateGasMargin, waitForTransaction } from 'src/utils';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';
@@ -59,6 +60,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const currency0 = unwrappedToken(token0, chainId);
   const currency1 = unwrappedToken(token1, chainId);
 
+  const useETHBalances = useAccountBalanceHook[chainId];
   const currencyBalance = useETHBalances(chainId, [account ?? ZERO_ADDRESS]);
 
   const tokensBalances = useTokenBalances(account ?? ZERO_ADDRESS, [token0, token1]);
@@ -102,7 +104,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     })}`;
   } else {
     amountToAdd = CurrencyAmount.ether(pngPrice.raw.multiply(earnedAmount.raw).toFixed(0), chainId);
-    if (amountToAdd.greaterThan(currencyBalance[account ?? ZERO_ADDRESS] ?? '0')) {
+    if (amountToAdd.greaterThan(currencyBalance ? currencyBalance[account ?? ZERO_ADDRESS] ?? '0' : '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: currency.symbol });
     }
     message += t('pangoChef.compoundAmountWarning', {
