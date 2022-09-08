@@ -18,6 +18,12 @@
         "watchListTokenAssert": ".sc-jSMfEi.jPrZZL",
         "watchlistTimeBtn": "div[class='sc-eCYdqJ sc-ESujJ fEptdj diPxHK'] button",
         "watchlistLinkBtn": "a.jbbOxr",
-        "watchlistTradeBtn": "a.jmaCMK"
+        "watchlistTradeBtn": "a.jmaCMK",
+        "newsBtn": "div.cOhaaa .fEptdj .iNbpQO .sc-gzzPqb",
+        "newsBody": "div.slick-current div[class='sc-eCYdqJ sc-hjriPb fEptdj jYTHXE'] p",
+        "newsNextBtn": "div.qPvDD:nth-child(2)",
+        "newsPreBtn": "div.qPvDD:nth-child(1)",
+        "watchlistGraphLine": "div.recharts-wrapper:nth-child(1)",
+        "graphUSD": "div.recharts-tooltip-wrapper ul li span:nth-child(1)"
     }
 }
