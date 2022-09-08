@@ -47,7 +47,7 @@ const PoolPriceBar = ({ currencies, noLiquidity, poolTokenPercentage, price, par
       <GridContainer>
         <Box>
           <Stat
-            title={`${t('migratePage.dollarWorth')}`}
+            title={`${t('migratePage.usd')}`}
             stat={sharePoolStat}
             titlePosition="top"
             titleFontSize={12}
