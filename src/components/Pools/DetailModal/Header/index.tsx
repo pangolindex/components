@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { Price, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, ChefType, Price, WAVAX } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -46,13 +46,19 @@ const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
 
   const pngPRice = useTokenCurrencyPrice(PNG[chainId]) ?? new Price(PNG[chainId], WAVAX[chainId], '1', '0');
 
+  const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
+
   //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
-  const userRewardRate = version === 3 ? (stakingInfo as PangoChefInfo).userRewardRate : BigNumber.from(0);
-  const userBalance = version === 3 ? (stakingInfo as PangoChefInfo).userValueVariables.balance : BigNumber.from(0);
+  const userRewardRate =
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).userRewardRate : BigNumber.from(0);
+  const userBalance =
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).userValueVariables.balance : BigNumber.from(0);
   const pairPrice =
-    version === 3 ? (stakingInfo as PangoChefInfo).pairPrice : new Price(PNG[chainId], WAVAX[chainId], '1', '0');
+    cheftType === ChefType.PANGO_CHEF
+      ? (stakingInfo as PangoChefInfo).pairPrice
+      : new Price(PNG[chainId], WAVAX[chainId], '1', '0');
   const userApr =
-    version === 3 && !userBalance.isZero() && pairPrice.greaterThan('0')
+    cheftType === ChefType.PANGO_CHEF && !userBalance.isZero() && pairPrice.greaterThan('0')
       ? pngPRice.raw
           .multiply((86400 * 365 * 100).toString())
           .multiply(userRewardRate.toString())
@@ -74,7 +80,7 @@ const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
         </Visible>
       </HeaderWrapper>
 
-      <StatsWrapper>
+      <StatsWrapper cheftType={cheftType}>
         <Box display="inline-block">
           <Text color="text2" fontSize={14}>
             {t('earn.poolRewards')}
@@ -84,7 +90,7 @@ const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
             <RewardTokens rewardTokens={rewardTokens} size={24} />
           </Box>
         </Box>
-        {version === 3 && (
+        {cheftType === ChefType.PANGO_CHEF && (
           <Stat
             title={`Your APR:`}
             stat={!userRewardRate.isZero() ? `${numeral(userApr).format('0.00a')}%` : '-'}
