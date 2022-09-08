@@ -1,6 +1,8 @@
+import { CHAINS, ChefType } from '@pangolindex/sdk';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Drawer from 'src/components/Drawer';
+import { useChainId } from 'src/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { SpaceType, StakingInfo } from 'src/state/pstake/types';
 import StakeV3 from '../PangoChef/Stake';
@@ -18,8 +20,11 @@ type Props = {
 const FarmDrawer: React.FC<Props> = ({ isOpen, onClose, backgroundColor, version, stakingInfo, combinedApr }) => {
   const { t } = useTranslation();
 
+  const chainId = useChainId();
+  const chefType = CHAINS[chainId].contracts?.mini_chef?.type;
+
   const renderBody = () => {
-    if (version === 3) {
+    if (chefType === ChefType.PANGO_CHEF) {
       return (
         <StakeV3
           onComplete={onClose}
