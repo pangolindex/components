@@ -13,7 +13,7 @@ import talismanIcon from 'src/assets/images/talisman.svg';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
 import { gnosisSafe, hashConnect, injected, near, talisman, walletconnect, walletlink, xDefi } from '../connectors';
-import { CommonEVMProvider, NearProvider } from '../connectors/WalletProviders';
+import { CommonEVMProvider, NearProvider, HederaProvider } from '../connectors/WalletProviders';
 import { DAIe, PNG, USDC, USDCe, USDTe, UST, axlUST } from './tokens';
 
 export const BIG_INT_ZERO = JSBI.BigInt(0);
@@ -322,7 +322,7 @@ export const PROVIDER_MAPPING = {
   RABBY: CommonEVMProvider,
   TALISMAN: CommonEVMProvider,
   NEAR: NearProvider,
-  HASH_CONNECT: CommonEVMProvider,
+  HASH_CONNECT: HederaProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {
