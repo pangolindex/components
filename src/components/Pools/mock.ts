@@ -1,7 +1,9 @@
-import { JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { BigNumber } from 'ethers';
 import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
+import { PangoChefInfo, PoolType } from 'src/state/ppangoChef/types';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
 
 // get data for all farms
@@ -46,4 +48,26 @@ export const useGetMinichefStakingInfos = (): MinichefStakingInfo => {
       return new TokenAmount(png, JSBI.BigInt(0));
     },
   } as MinichefStakingInfo;
+};
+
+export const useGetPangoCheftInfos = (): PangoChefInfo => {
+  const miniChefInfo = useGetMinichefStakingInfos();
+
+  const wavax = miniChefInfo.tokens[1];
+  const pair = new Token(433114, ' 0xd7538cABBf8605BdE1f4901B47B8D42c61DE0367', 18, 'PGL', 'Pangolin Liquidity');
+
+  return {
+    ...miniChefInfo,
+    valueVariables: {
+      balance: BigNumber.from('10000000000000000000'),
+      sumOfEntryTimes: BigNumber.from('10000000000000000000'),
+    },
+    userValueVariables: {
+      balance: BigNumber.from('1000000000000000000'),
+      sumOfEntryTimes: BigNumber.from('1000000000000000000'),
+    },
+    userRewardRate: BigNumber.from('1000000000000000'),
+    pairPrice: new Price(pair, wavax, '1', '20'),
+    poolType: PoolType.ERC20_POOL,
+  } as PangoChefInfo;
 };
