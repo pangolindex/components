@@ -294,6 +294,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
     // if there was a tx hash, we want to clear the input
     if (hash) {
       setTypedValue('');
+      setStepIndex(0);
     }
     setHash('');
     setSignatureData(null);

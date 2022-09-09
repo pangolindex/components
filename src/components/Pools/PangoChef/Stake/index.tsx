@@ -175,8 +175,10 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
     // if there was a tx hash, we want to clear the input
     if (hash) {
       setTypedValue('');
+      setStepIndex(0);
     }
     setHash('');
+    setStakeError(undefined);
     setAttempting(false);
     setOpenDrawer(false);
     onComplete && onComplete();
