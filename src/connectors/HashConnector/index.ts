@@ -1,9 +1,9 @@
-import { AccountInfoQuery, Client } from '@hashgraph/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { HashConnect, HashConnectTypes } from 'hashconnect';
 import { HashConnectProvider } from 'hashconnect/dist/provider';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
+import { hethers } from '@hashgraph/hethers';
 
 export interface HashConfigType {
   networkId: string;
@@ -157,21 +157,24 @@ export class HashConnector extends AbstractConnector {
     if (this.pairingData) {
       try {
         const newAccountId = this.pairingData?.accountIds[0];
-        const operatorAccount = '0.0.47977330';
-        const operatorPrivateKey =
-          '302e020100300506032b6570042204208b97c5c963a2ffa06ca9c3a5837eaebc9d21fd92c42a8b79baa2c13af306fa53';
 
-        const client = Client.forTestnet();
+        const accountId = hethers.utils.getAddressFromAccount(newAccountId);
 
-        client.setOperator(operatorAccount, operatorPrivateKey);
-        console.log('client', client);
+        // const operatorAccount = '0.0.47977330';
+        // const operatorPrivateKey =
+        //   '302e020100300506032b6570042204208b97c5c963a2ffa06ca9c3a5837eaebc9d21fd92c42a8b79baa2c13af306fa53';
 
-        const query = new AccountInfoQuery().setAccountId(newAccountId);
-        console.log('query', query);
+        // const client = Client.forTestnet();
 
-        const accountInfo = await query.execute(client);
-        console.log('accountInfo', accountInfo);
-        return accountInfo?.contractAccountId;
+        // client.setOperator(operatorAccount, operatorPrivateKey);
+        // console.log('client', client);
+
+        // const query = new AccountInfoQuery().setAccountId(newAccountId);
+        // console.log('query', query);
+
+        // const accountInfo = await query.execute(client);
+        // console.log('accountInfo', accountInfo);
+        return accountId;
       } catch (err) {
         console.log('error', err);
       }
@@ -187,6 +190,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async close() {
+    console.log('close===connectore hedeara');
     if (this.pairingData) {
       this.instance.disconnect(this.pairingData?.topic);
       this.pairingData = null;
