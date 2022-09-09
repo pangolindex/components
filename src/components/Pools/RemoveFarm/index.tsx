@@ -1,15 +1,19 @@
 import { TransactionResponse } from '@ethersproject/providers';
+import { CHAINS, ChefType } from '@pangolindex/sdk';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Loader, Stat, TransactionCompleted } from 'src/components';
-import { usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
+import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
+import { PNG } from 'src/constants/tokens';
+import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
+import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { waitForTransaction } from 'src/utils';
+import CompoundV3 from '../PangoChef/Compound';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
-import { FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
+import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
 interface RemoveFarmProps {
   stakingInfo: StakingInfo;
@@ -21,6 +25,8 @@ interface RemoveFarmProps {
 const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: RemoveFarmProps) => {
   const { account } = usePangolinWeb3();
   const [isRemoveLiquidityDrawerVisible, setShowRemoveLiquidityDrawer] = useState(false);
+  const [isCompoundDrawerVisible, setShowCompoundDrawer] = useState(false);
+  const [confirmRemove, setConfirmRemove] = useState(false);
   const { t } = useTranslation();
 
   // monitor call to help UI loading state
@@ -32,6 +38,9 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
   const stakingContract = useStakingContract(stakingInfo.stakingRewardAddress);
   const pangoChefContract = usePangoChefContract();
 
+  const chainId = useChainId();
+  const png = PNG[chainId];
+
   const contract = version <= 2 ? stakingContract : pangoChefContract;
 
   const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
@@ -42,7 +51,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
 
   useEffect(() => {
     if (onLoadingOrComplete) {
-      if (hash || attempting) {
+      if (hash || attempting || confirmRemove) {
         onLoadingOrComplete(true);
       } else {
         onLoadingOrComplete(false);
@@ -50,7 +59,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hash, attempting]);
+  }, [hash, attempting, confirmRemove]);
 
   function wrappedOnDismiss() {
     setHash(undefined);
@@ -109,61 +118,91 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
   const token0 = stakingInfo.tokens[0];
   const token1 = stakingInfo.tokens[1];
 
+  const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
+
   return (
     <FarmRemoveWrapper>
-      {!attempting && !hash && (
+      {!attempting && !hash && !isCompoundDrawerVisible && (
         <Root>
-          <Box flex="1">
-            <RewardWrapper>
-              {stakingInfo?.stakedAmount && (
-                <StatWrapper>
-                  <Stat
-                    title={t('earn.depositedToken', { symbol: 'PGL' })}
-                    stat={stakingInfo?.stakedAmount?.toSignificant(4)}
-                    titlePosition="top"
-                    titleFontSize={12}
-                    statFontSize={[20, 18]}
-                    titleColor="text1"
-                    statAlign="center"
-                  />
-                </StatWrapper>
-              )}
-              {newEarnedAmount && (
-                <StatWrapper>
-                  <Stat
-                    title={t('earn.unclaimedReward', { symbol: 'PNG' })}
-                    stat={newEarnedAmount?.toSignificant(4)}
-                    titlePosition="top"
-                    titleFontSize={12}
-                    statFontSize={[20, 18]}
-                    titleColor="text1"
-                    statAlign="center"
-                  />
-                </StatWrapper>
-              )}
+          {!confirmRemove ? (
+            <>
+              <Box flex="1">
+                <RewardWrapper>
+                  {stakingInfo?.stakedAmount && (
+                    <StatWrapper>
+                      <Stat
+                        title={t('earn.depositedToken', { symbol: 'PGL' })}
+                        stat={stakingInfo?.stakedAmount?.toSignificant(4)}
+                        titlePosition="top"
+                        titleFontSize={12}
+                        statFontSize={[20, 18]}
+                        titleColor="text1"
+                        statAlign="center"
+                      />
+                    </StatWrapper>
+                  )}
+                  {newEarnedAmount && (
+                    <StatWrapper>
+                      <Stat
+                        title={t('earn.unclaimedReward', { symbol: png.symbol })}
+                        stat={newEarnedAmount?.toSignificant(4)}
+                        titlePosition="top"
+                        titleFontSize={12}
+                        statFontSize={[20, 18]}
+                        titleColor="text1"
+                        statAlign="center"
+                      />
+                    </StatWrapper>
+                  )}
 
-              {isSuperFarm &&
-                rewardTokensAmount?.map((rewardAmount, i) => (
-                  <StatWrapper key={i}>
-                    <Stat
-                      title={t('earn.unclaimedReward', { symbol: rewardAmount?.token?.symbol })}
-                      stat={rewardAmount?.toSignificant(4)}
-                      titlePosition="top"
-                      titleFontSize={12}
-                      statFontSize={[20, 18]}
-                      titleColor="text1"
-                      statAlign="center"
-                    />
-                  </StatWrapper>
-                ))}
-            </RewardWrapper>
-          </Box>
+                  {isSuperFarm &&
+                    rewardTokensAmount?.map((rewardAmount, i) => (
+                      <StatWrapper key={i}>
+                        <Stat
+                          title={t('earn.unclaimedReward', { symbol: rewardAmount?.token?.symbol })}
+                          stat={rewardAmount?.toSignificant(4)}
+                          titlePosition="top"
+                          titleFontSize={12}
+                          statFontSize={[20, 18]}
+                          titleColor="text1"
+                          statAlign="center"
+                        />
+                      </StatWrapper>
+                    ))}
+                </RewardWrapper>
+              </Box>
 
-          <Box>
-            <Button variant="primary" onClick={onWithdraw}>
-              {error ?? t('earn.withdrawAndClaim')}
-            </Button>
-          </Box>
+              <Box>
+                <Button
+                  variant="primary"
+                  onClick={
+                    cheftType === ChefType.PANGO_CHEF && !confirmRemove ? () => setConfirmRemove(true) : onWithdraw
+                  }
+                >
+                  {error ?? t('earn.withdrawAndClaim')}
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <Box display="grid" height="100%">
+              <Box bgColor="color3" borderRadius="8px" padding="15px">
+                <Text color="text1" textAlign="center">
+                  You are removing liquidity from this pool. This action will give you back your tokens. Alternatively
+                  you can choose to stake your tokens to farm to earn rewards.
+                </Text>
+              </Box>
+              <Buttons>
+                <Button variant="outline" onClick={() => setShowCompoundDrawer(true)}>
+                  <Text color="text1">
+                    <Text color="text1">{t('sarCompound.compound')}</Text>
+                  </Text>
+                </Button>
+                <Button variant="primary" onClick={onWithdraw}>
+                  {error ?? t('earn.withdrawAndClaim')}
+                </Button>
+              </Buttons>
+            </Box>
+          )}
         </Root>
       )}
 
@@ -187,6 +226,16 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
             wrappedOnDismiss();
           }}
           clickedLpTokens={[token0, token1]}
+        />
+      )}
+
+      {isCompoundDrawerVisible && (
+        <CompoundV3
+          stakingInfo={stakingInfo as PangoChefInfo}
+          onClose={() => {
+            setShowCompoundDrawer(false);
+            wrappedOnDismiss();
+          }}
         />
       )}
     </FarmRemoveWrapper>
