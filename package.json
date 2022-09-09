@@ -91,7 +91,7 @@
     "react-use": "15.3.8",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.5",
-    "recharts": "2.1.14",
+    "recharts": "2.1.13",
     "redux-localstorage-simple": "2.4.1",
     "remark-gfm": "^3.0.1",
     "slick-carousel": "^1.8.1",
