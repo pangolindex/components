@@ -156,7 +156,7 @@ const PoolCardView = ({
 
           <Stat
             title={`APR`}
-            stat={combinedApr ? `${combinedApr}%` : '-'}
+            stat={combinedApr ? `${numeral(combinedApr).format('0a')}%` : '-'}
             titlePosition="top"
             titleFontSize={[16, 14]}
             statFontSize={[24, 18]}

@@ -1,8 +1,9 @@
 /* eslint-disable max-lines */
-import { CHAINS, ChainId, ChefType, JSBI, Percent, StakingType, Token, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, ChainId, ChefType, Fraction, JSBI, Percent, StakingType, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import BN from 'bn.js';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
+import bitKeepIcon from 'src/assets/images/bitkeep.svg';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
 import hashIcon from 'src/assets/images/hashConnect.png';
@@ -12,7 +13,7 @@ import rabbyIcon from 'src/assets/images/rabby.svg';
 import talismanIcon from 'src/assets/images/talisman.svg';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
-import { gnosisSafe, hashConnect, injected, near, talisman, walletconnect, walletlink, xDefi } from '../connectors';
+import { bitKeep, gnosisSafe, hashConnect, injected, near, talisman, walletconnect, walletlink, xDefi } from '../connectors';
 import { CommonEVMProvider, NearProvider, HederaProvider } from '../connectors/WalletProviders';
 import { DAIe, PNG, USDC, USDCe, USDTe, UST, axlUST } from './tokens';
 
@@ -82,6 +83,24 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.HEDERA_TESTNET]: getMiniChefAddress(ChainId.HEDERA_TESTNET),
   [ChainId.NEAR_MAINNET]: getMiniChefAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getMiniChefAddress(ChainId.NEAR_TESTNET),
+};
+
+const getPangoChefAddress = (chainId: ChainId) => {
+  const minichefObj = CHAINS[chainId].contracts?.mini_chef;
+  if (minichefObj?.type === ChefType.PANGO_CHEF) {
+    return minichefObj.address;
+  }
+  return undefined;
+};
+
+export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
+  [ChainId.FUJI]: getPangoChefAddress(ChainId.FUJI),
+  [ChainId.AVALANCHE]: getPangoChefAddress(ChainId.AVALANCHE),
+  [ChainId.WAGMI]: getPangoChefAddress(ChainId.WAGMI),
+  [ChainId.COSTON]: getPangoChefAddress(ChainId.COSTON),
+  [ChainId.SONGBIRD]: getPangoChefAddress(ChainId.SONGBIRD),
+  [ChainId.NEAR_MAINNET]: undefined,
+  [ChainId.NEAR_TESTNET]: undefined,
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
@@ -290,6 +309,15 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#FF3D23',
     isEVM: true,
   },
+  BITKEEP: {
+    connector: bitKeep,
+    name: 'BitKeep',
+    iconName: bitKeepIcon,
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#7524f9',
+    isEVM: true,
+  },
   NEAR: {
     connector: near,
     name: 'Near',
@@ -321,6 +349,7 @@ export const PROVIDER_MAPPING = {
   WALLET_CONNECT: CommonEVMProvider,
   RABBY: CommonEVMProvider,
   TALISMAN: CommonEVMProvider,
+  BITKEEP: CommonEVMProvider,
   NEAR: NearProvider,
   HASH_CONNECT: HederaProvider,
 };
@@ -406,3 +435,6 @@ export enum SwapTypes {
   MARKET = 'MARKET',
   LIMIT = 'LIMIT',
 }
+
+export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '100'); // 1% of slippage tolerange
+export const ONE_FRACTION = new Fraction('1');

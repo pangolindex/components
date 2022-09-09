@@ -200,9 +200,8 @@
     "maximumSold": "Du verkaufst höchstens",
     "transactionRevertHelper": "Deine Transaktion wird storniert, wenn es eine große, ungünstige Preisbewegung gibt, bevor sie bestätigt wird.",
     "priceUpdated": "Preis aktualisiert",
-    "outputEstimated": "Die Kaufmenge ist geschätzt. Du erhältst mindestens ",
-    "transactionRevert": " oder die Transaktion wird storniert.",
-    "inputEstimated": "Die Verkaufsmenge ist geschätzt. Du verkaufst höchstens ",
+    "outputEstimated": "Die Kaufmenge ist geschätzt. Du erhältst mindestens <strong>{{amount}} {{currencySymbol}}</strong> oder die Transaktion wird storniert.",
+    "inputEstimated": "Die Verkaufsmenge ist geschätzt. Du verkaufst höchstens <strong>{{amount}} {{currencySymbol}}</strong> oder die Transaktion wird storniert.",
     "outputSentTo": "Die Verkaufsmenge wird gesendet an ",
     "priceImpactMinPrompt": "Dieser Tausch hat eine Preisauswirkung von mindestens {{ priceImpact }}%. Bitte gib das Wort \"bestätige\" ein, um mit dem Tausch fortzufahren.",
     "priceImpactHighPrompt": "Dieser Tausch hat eine Preisauswirkung von mindestens {{ priceImpact }}%. Bitte gib das Wort \"bestätige\" ein, um mit dem Tausch fortzufahren."
@@ -290,6 +289,7 @@
     "shareOfPool": "Anteil am Pool",
     "createPoolSupply": "Pool erstellen & hinzufügen",
     "confirmSupply": "Einzahlung bestätigen",
+    "giveOrder": "GIVE ORDER",
     "outputEstimated": "Die Kaufmenge ist geschätzt. Sollte sich der Preis um mehr als {{ allowedSlippage }}% verändern, wird die Transaktion storniert.",
     "creatingPool": "Du erstellst einen Pool",
     "willReceive": "Du erhältst",
@@ -568,6 +568,7 @@
     "availableToDeposit": "Einzahlung möglich: ",
     "poolInfoDescription": "Jetzt haben Sie Ihren Pool ausgewählt und können Sie von dort abheben.",
     "dollarWorth": "Dollarwert: ",
+    "usd": "USD",
     "yourRate": "Ihr Tarif: ",
     "unclaimedPng": "Nicht beanspruchtes {{ pngSymbol }}: ",
     "shareOfPool": "Poolanteil: ",
@@ -640,7 +641,7 @@
   "sarStakeMore": {
     "stakeMore": "Mehr setzen",
     "choosePosition": "Wählen Sie eine Position",
-    "confirmDescription": "Ihr Apr beginnt bei 0 und erhöht den Betrag, den Sie aus dem Belohnungspool nehmen, um die Zeit",
+    "confirmDescription": "Dies fügt Ihrer SAR NFT Position {{ symbol }} hinzu. Ihr ursprüngliches Guthaben wird ab demselben effektiven Jahreszins fortgesetzt. Der effektive Jahreszins Ihrer neu hinzugefügten Token beginnt bei 0 % und ändert sich je nach Länge des Einsatzes. Ihr NFT zeigt den Durchschnitt an.",
     "newAPR": "Neuer effektiver Jahreszins",
     "add": "Hinzufügen",
     "pending": "Hinzufügen von {{ balance }} {{ symbol }}"
@@ -687,5 +688,14 @@
     "newest": "Neuest",
     "oldest": "Älteste",
     "sortBy": "Sortieren nach"
+  },
+  "pangoChef": {
+    "claimWarning1": "Wenn Sie einen Anspruch geltend machen, ohne abzuheben, bleibt Ihre Liquidität im Mining-Pool.",
+    "claimWarning2": "Wenn Sie Ihre Prämien beanspruchen, sinkt Ihr effektiver Jahreszins auf 0. Stattdessen können Sie sich für eine Aufzinsung entscheiden.",
+    "compoundWarning": "Wenn Sie Ihre Belohnungen für die {{ token0 }}-{{ token1 }}-Farm zusammensetzen, werden Ihre Belohnungen in die {{ currency }}-{{ png }} farm eingesetzt. Sie müssen den gleichen Wert von {{ currency }}Token für Ihre angesammelten {{ png }} Prämien.",
+    "compoundAmountWarning": "Sie müssen {{ amount }} {{ symbol }} zur Verbindung hinzufügen.",
+    "compoundAmountWarning2": "Zum Zusammensetzen. Seien Sie vorsichtig, dass Sie Ihren {{ symbol }} {{ png }} pool sperren, bis Sie die Belohnungen dieses Pools beanspruchen.",
+    "highVolalityWarning": "Hohe Volatilität, versuchen Sie später zu komponieren",
+    "compoundSuccess": "Sie haben Ihre Farm erfolgreich zusammengestellt."
   }
 }

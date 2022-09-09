@@ -159,7 +159,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
           {t('sarStake.confirmDescription', { symbol: png.symbol })}
           <br />
           <br />
-          {t('sarStakeMore.confirmDescription')}
+          {t('sarStakeMore.confirmDescription', { symbol: png.symbol })}
         </Text>
       </Header>
       <Footer>
@@ -214,7 +214,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
             {t('sarStake.confirmDescription', { symbol: png.symbol })}
             <br />
             <br />
-            {t('sarStakeMore.confirmDescription')}
+            {t('sarStakeMore.confirmDescription', { symbol: png.symbol })}
           </Text>
         </Box>
         {renderButtons()}

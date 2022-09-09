@@ -37,6 +37,7 @@ export interface Colors {
   modalBG: Color;
   modalBG2: Color;
   advancedBG: Color;
+  closeCircleBG: Color;
 
   //blues
   primary1: Color;
@@ -168,6 +169,7 @@ export interface Colors {
   color8: Color;
   color9: Color;
   color10: Color;
+  color11: Color;
   color12: Color;
 }
 

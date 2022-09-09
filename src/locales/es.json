@@ -200,9 +200,8 @@
     "maximumSold": "Máximo vendido",
     "transactionRevertHelper": "Tu transacción se revertirá si hay un gran movimiento de precio desfavorable antes de ser confirmada..",
     "priceUpdated": "Precio actualiazdo",
-    "outputEstimated": "El resultado es estimado. Recibirá por lo menos ",
-    "transactionRevert": " o la transacción se revertirá.",
-    "inputEstimated": "El resultado es estimado. Venderá como mucho ",
+    "outputEstimated": "El resultado es estimado. Recibirá por lo menos <strong>{{amount}} {{currencySymbol}}</strong> o la transacción se revertirá.",
+    "inputEstimated": "El resultado es estimado. Venderá como mucho <strong>{{amount}} {{currencySymbol}}</strong> o la transacción se revertirá.",
     "outputSentTo": "La salida se mandará a ",
     "priceImpactMinPrompt": "Este intercambio tiene un impacto en el precio de por lo menos {{ priceImpact }}%. Por favor, escriba la palabra \"confirmar\" para continuar con este intercambio.",
     "priceImpactHighPrompt": "Este intercambio tiene un impacto en el precio de por lo menos {{ priceImpact }}%. Por favor, confirme que quiere continuar con este intercambio."
@@ -290,6 +289,7 @@
     "shareOfPool": "Parte de la Pool",
     "createPoolSupply": "Crear pool y suministrar",
     "confirmSupply": "Confirmar suministro",
+    "giveOrder": "GIVE ORDER",
     "outputEstimated": "El resultado es estimado. Si el precio cambia más de {{ allowedSlippage }}% su transacción será revertida.",
     "creatingPool": "Está creando una pool",
     "willReceive": "Recibirá",
@@ -568,6 +568,7 @@
     "availableToDeposit": "Disponible para depositar: ",
     "poolInfoDescription": "Ahora que ha elegido su grupo, dejemos de apostar desde allí.",
     "dollarWorth": "Valor del dólar: ",
+    "usd": "USD",
     "yourRate": "Tu tarifa: ",
     "unclaimedPng": "{{ pngSymbol }} no reclamada: ",
     "shareOfPool": "Participación de la piscina: ",
@@ -640,7 +641,7 @@
   "sarStakeMore": {
     "stakeMore": "Apuesta Más",
     "choosePosition": "Elija una posición",
-    "confirmDescription": "Su apr comenzará desde 0 y aumentará la cantidad que tome del grupo de recompensas por tiempo",
+    "confirmDescription": "Esto agrega {{ symbol }} a su posición SAR NFT. Su saldo original continúa desde la misma APR. La APR de sus tokens recién agregados comienza desde 0% y cambia según la duración de la apuesta. Su NFT mostrará el promedio.",
     "newAPR": "Nueva TAE",
     "add": "Agregar",
     "pending": "Agregar {{ balance }} {{ symbol }}"
@@ -687,5 +688,14 @@
     "newest": "Nuevo",
     "oldest": "Mayor",
     "sortBy": "Ordenar por"
+  },
+  "pangoChef": {
+    "claimWarning1": "Cuando reclamas sin retirar tu liquidez permanece en el pool de minería.",
+    "claimWarning2": "Reclamar sus recompensas reducirá su APR a 0. En su lugar, puede optar por capitalizar.",
+    "compoundWarning": "Combinar sus recompensas para {{ token0 }}-{{ token1 }} hará que sus recompensas se apuesten en {{ currency }}-{{ png }} granja. Debe agregar el mismo valor de {{ currency }} token a sus {{ png }} recompensas acumuladas.",
+    "compoundAmountWarning": "Necesitas agregar {{ amount }} {{ symbol }} al compuesto.",
+    "compoundAmountWarning2": "Tenga cuidado de bloquear su fondo de {{ symbol }} {{ png }} hasta que reclame las recompensas de este fondo.",
+    "highVolalityWarning": "Alta volatilidad, intente redactar más tarde",
+    "compoundSuccess": "Ha compuesto correctamente su granja"
   }
 }

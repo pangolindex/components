@@ -29,6 +29,7 @@ import {
 import { SpaceType, StakingInfo } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { waitForTransaction } from 'src/utils';
 import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
 import SelectPoolDrawer from './SelectPoolDrawer';
 import {
@@ -147,7 +148,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
       if (approval === ApprovalState.APPROVED) {
         try {
           const response: TransactionResponse = await stakingContract[method](...args);
-          await response.wait(5);
+          await waitForTransaction(response, 5);
           addTransaction(response, {
             summary: t('earn.depositLiquidity'),
           });
@@ -183,7 +184,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
               ];
         try {
           const response: TransactionResponse = await stakingContract[permitMethod](...permitArgs);
-          await response.wait(1);
+          await waitForTransaction(response, 1);
           addTransaction(response, {
             summary: t('earn.depositLiquidity'),
           });

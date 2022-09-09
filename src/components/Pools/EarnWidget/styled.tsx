@@ -12,4 +12,5 @@ export const Root = styled(Box)`
   * {
     box-sizing: border-box;
   }
+  overflow: hidden;
 `;

@@ -200,9 +200,8 @@
     "maximumSold": "最大销售量",
     "transactionRevertHelper": "如果在确认前出现较大的不利价格变动，您的交易将取消。",
     "priceUpdated": "价格更新",
-    "outputEstimated": "估计输出。你至少会收到 ",
-    "transactionRevert": " 否则交易将取消。",
-    "inputEstimated": "输入是估计的。你最多会卖掉 ",
+    "outputEstimated": "估计输出。你至少会收到 <strong>{{amount}} {{currencySymbol}}</strong>  否则交易将取消。",
+    "inputEstimated": "输入是估计的。你最多会卖掉 <strong>{{amount}} {{currencySymbol}}</strong>  否则交易将取消。",
     "outputSentTo": "输出将发送到 ",
     "priceImpactMinPrompt": "此兌換对价格的影响至少为 {{ priceImpact }}%. 请输入\"确\" 继续这个兌換。",
     "priceImpactHighPrompt": "此兌換对价格的影响至少为 {{ priceImpact }}%. 请确认您想继续进行此兌换。"
@@ -290,6 +289,7 @@
     "shareOfPool": "建池份额",
     "createPoolSupply": "创建矿池和供应",
     "confirmSupply": "确认供应",
+    "giveOrder": "GIVE ORDER",
     "outputEstimated": "估计输出。如果价格变化超过 {{ allowedSlippage }}% 您的交易将取消。",
     "creatingPool": "您正在创建一个矿池",
     "willReceive": "您将收到",
@@ -567,6 +567,7 @@
     "availableToDeposit": "可存入 ",
     "poolInfoDescription": "现在您已经选择了您的池，然后让您从那里取消赌注",
     "dollarWorth": "美元价值 ",
+    "usd": "USD",
     "yourRate": "您的费率 ",
     "unclaimedPng": "无人认领的{{ pngSymbol }}: ",
     "shareOfPool": "池份额 ",
@@ -639,7 +640,7 @@
   "sarStakeMore": {
     "stakeMore": "赌注更多",
     "choosePosition": "选择职位",
-    "confirmDescription": "您的4月将从0开始，并按时间增加您从奖励池中取出的金额",
+    "confirmDescription": "这会将 {{ symbol }} 添加到您的 SAR NFT 头寸。 您的原始余额从同一个 APR 继续。 您新添加的代币的 APR 从 0% 开始，并根据权益的长度而变化。 您的 NFT 将显示平均值。",
     "newAPR": "新年利率",
     "add": "加",
     "pending": "添加 {{ balance }} {{ symbol }}"
@@ -686,5 +687,14 @@
     "newest": "最新",
     "oldest": "古老",
     "sortBy": "排序方式"
+  },
+  "pangoChef": {
+    "claimWarning1": "当您在未提取流动性的情况下申领时，您的流动性仍保留在矿池中。",
+    "claimWarning2": "领取您的奖励将使您的 APR 降至 0。相反，您可以选择复合。",
+    "compoundWarning": "将您对 {{ token0 }}-{{ token1 }} 农场的奖励组合起来，您的奖励将投入 {{ currency }}-{{ png }} 农场。 您需要在累积的 {{ png }} 奖励中添加等值的 {{ currency }} 代币。",
+    "compoundAmountWarning": "您需要添加 {{ amount }} {{ symbol }} 来复合。",
+    "compoundAmountWarning2": "请注意，您将锁定您的 {{ symbol }} {{ png }} 池，直到您获得该池的奖励。",
+    "highVolalityWarning": "高波动性，稍后尝试组合。",
+    "compoundSuccess": "你已经成功地组成了你的农场。"
   }
 }

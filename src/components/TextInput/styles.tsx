@@ -26,6 +26,12 @@ export const StyledInput = styled.input<TextInputProps>`
   outline: none;
   width: 100%;
   padding: 0;
+  -moz-appearance: textfield;
+  ::-webkit-inner-spin-button,
+  ::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
   ::placeholder {
     color: ${({ theme }) => theme.textInput?.placeholderText};
   }
