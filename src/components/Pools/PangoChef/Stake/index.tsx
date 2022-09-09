@@ -4,6 +4,7 @@ import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput } from 'src/components';
+import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
@@ -218,6 +219,8 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   };
   const dollerWarth = finalUsd ? `$${Number(finalUsd).toFixed(2)}` : '-';
 
+  const png = PNG[chainId];
+
   return (
     <StakeWrapper>
       {!attempting && !hash && (
@@ -287,7 +290,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
                 {!isSuperFarm && (
                   <Stat
                     title={t('dashboardPage.earned_weeklyIncome')}
-                    stat={`${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} PNG`}
+                    stat={`${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} ${png.symbol}`}
                     titlePosition="top"
                     titleFontSize={14}
                     statFontSize={16}
