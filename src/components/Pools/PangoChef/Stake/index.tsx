@@ -221,6 +221,11 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
 
   const png = PNG[chainId];
 
+  const balanceLabel =
+    !!stakingInfo?.stakedAmount?.token && userLiquidityUnstaked
+      ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toSignificant(6)
+      : '-';
+
   return (
     <StakeWrapper>
       {!attempting && !hash && (
@@ -254,14 +259,14 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
                 isNumeric={true}
                 placeholder="0.00"
                 addonLabel={
-                  account && (
+                  account &&
+                  type === SpaceType.detail && (
                     <Text color="text2" fontWeight={500} fontSize={14}>
-                      {!!stakingInfo?.stakedAmount?.token && userLiquidityUnstaked
-                        ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toSignificant(6)
-                        : ' -'}
+                      {balanceLabel}
                     </Text>
                   )
                 }
+                label={type === SpaceType.card ? balanceLabel : undefined}
               />
 
               <Box mt={type === 'card' ? '25px' : '0px'}>
