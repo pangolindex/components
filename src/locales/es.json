@@ -695,7 +695,7 @@
     "compoundWarning": "Combinar sus recompensas para {{ token0 }}-{{ token1 }} hará que sus recompensas se apuesten en {{ currency }}-{{ png }} granja. Debe agregar el mismo valor de {{ currency }} token a sus {{ png }} recompensas acumuladas.",
     "compoundAmountWarning": "Necesitas agregar {{ amount }} {{ symbol }} al compuesto.",
     "compoundAmountWarning2": "Tenga cuidado de bloquear su fondo de {{ symbol }} {{ png }} hasta que reclame las recompensas de este fondo.",
-    "highVolalityWarning": "Alta volatilidad, intente redactar más tarde",
+    "highVolalityWarning": "Demasiado pronto, intente en unas pocas horas",
     "compoundSuccess": "Ha compuesto correctamente su granja"
   }
 }

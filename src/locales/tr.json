@@ -694,7 +694,7 @@
     "compoundWarning": "{{ token0 }}-{{ token1 }} çiftliği için ödüllerinizi birleştirmek, ödüllerinizi {{ para birimi }}-{{ png }} çiftliğine yatırır. {{ currency }} 'a eşit değer eklemeniz gerekir. jeton, tahakkuk eden {{ png }} ödüllerinize.",
     "compoundAmountWarning": "Bileşik için {{ amount }} {{ symbol }} eklemeniz gerekiyor.",
     "compoundAmountWarning2": "Bu havuzun ödüllerini alana kadar {{ symbol }} {{ png }} havuzunuzu kilitleyeceğinize dikkat edin.",
-    "highVolalityWarning": "Yüksek değişkenlik, daha sonra oluşturmayı deneyin",
+    "highVolalityWarning": "Çok erken, birkaç saat sonra deneyin",
     "compoundSuccess": "Çiftliğinizi başarıyla oluşturdunuz."
   }
 }
