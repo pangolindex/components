@@ -1,4 +1,4 @@
-import { Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { ONE_TOKEN } from 'src/constants';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
@@ -106,10 +106,14 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
       const token1 = pair.token1;
       const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
       const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
-      const [token0Amount, token1Amount] = pair.getLiquidityValues(
-        totalSupply,
-        new TokenAmount(pair.liquidityToken, ONE_TOKEN),
-      );
+      let token0Amount: TokenAmount = new TokenAmount(token0, '0');
+      let token1Amount: TokenAmount = new TokenAmount(token1, '0');
+      if (JSBI.greaterThan(totalSupply.raw, ONE_TOKEN) || JSBI.equal(totalSupply.raw, ONE_TOKEN)) {
+        [token0Amount, token1Amount] = pair.getLiquidityValues(
+          totalSupply,
+          new TokenAmount(pair.liquidityToken, ONE_TOKEN),
+        );
+      }
       const token0PairPrice = token0Amount.multiply(token0Price);
       const token1PairPrice = token1Amount.multiply(token1Price);
       const _pairPrice = token0PairPrice.add(token1PairPrice);
@@ -131,6 +135,7 @@ export function usePairCurrencyPrice(pair: { pair: Pair; totalSupply: TokenAmoun
   const currency = WAVAX[chainId];
 
   const _pair = pair.pair;
+  const totalSupply = pair.totalSupply;
   const token0 = _pair.token0;
   const token1 = _pair.token1;
   const tokensPrices = useTokensCurrencyPrice([token0, token1]);
@@ -138,10 +143,15 @@ export function usePairCurrencyPrice(pair: { pair: Pair; totalSupply: TokenAmoun
   const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
   const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
 
-  const [token0Amount, token1Amount] = _pair.getLiquidityValues(
-    pair.totalSupply,
-    new TokenAmount(_pair.liquidityToken, '1'),
-  );
+  let token0Amount: TokenAmount = new TokenAmount(token0, '0');
+  let token1Amount: TokenAmount = new TokenAmount(token1, '0');
+  if (JSBI.greaterThan(totalSupply.raw, ONE_TOKEN) || JSBI.equal(totalSupply.raw, ONE_TOKEN)) {
+    [token0Amount, token1Amount] = _pair.getLiquidityValues(
+      totalSupply,
+      new TokenAmount(_pair.liquidityToken, ONE_TOKEN),
+    );
+  }
+
   const token0PairPrice = token0Amount.multiply(token0Price);
   const token1PairPrice = token1Amount.multiply(token1Price);
 
