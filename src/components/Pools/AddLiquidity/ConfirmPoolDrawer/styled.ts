@@ -8,15 +8,14 @@ export const Root = styled(Box)`
 `;
 
 export const Header = styled(Box)`
-  padding: 0px 10px;
+  padding: 0px 20px;
 `;
 
 export const OutputText = styled(Text)`
   width: 100%;
-  font-style: italic;
-  font-size: 12px;
+  line-height: 18px;
   text-align: left;
-  color: ${({ theme }) => theme.text2};
+  color: ${({ theme }) => theme.color11};
 `;
 
 export const Footer = styled(Box)`
@@ -36,9 +35,12 @@ export const ErrorBox = styled(Box)`
   justify-content: center;
   flex-direction: column;
 `;
+
 export const StatWrapper = styled(Box)`
   display: grid;
   grid-template-columns: minmax(auto, 33%) minmax(auto, 33%) minmax(auto, 33%);
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: minmax(auto, 50%) minmax(auto, 50%);
+  `};
   grid-gap: 12px;
-  margin-top: 10px;
 `;

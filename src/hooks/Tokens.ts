@@ -13,7 +13,7 @@ import { useTokenHook } from './multiChainsHooks';
 import { useBytes32TokenContract, useTokenContract } from './useContract';
 import { useChainId } from './index';
 
-type TokenReturnType = Token | undefined | null;
+export type TokenReturnType = Token | undefined | null;
 
 export function useAllTokens(): { [address: string]: Token } {
   const chainId = useChainId();
@@ -328,7 +328,7 @@ export interface CoingeckoData {
  * */
 
 export function useCoinGeckoTokenData(coin: Token) {
-  const chain = CHAINS[coin.chainId].mainnet ? CHAINS[coin.chainId] : CHAINS[ChainId.AVALANCHE];
+  const chain = CHAINS[coin.chainId];
 
   return useQuery(['coingeckoToken', coin.address, chain.name], async () => {
     if (!chain.coingecko_id) {

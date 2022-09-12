@@ -47,7 +47,7 @@ const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
           onTokenClick && onTokenClick();
         }}
       >
-        <Aligner>
+        <Aligner active={Boolean(currency && currency.symbol)}>
           {renderCurrency()}
           {renderStyletoken()}
           <ChevronDown color={!Boolean(currency && currency.symbol) ? 'black' : undefined} />

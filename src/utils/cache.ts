@@ -6,6 +6,7 @@ class Cache {
   options = {
     // how long to live in ms
     ttl: 1000 * 60 * 5,
+    max: 1000,
   };
 
   constructor() {

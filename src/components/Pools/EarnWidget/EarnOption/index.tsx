@@ -17,7 +17,7 @@ const TradeOption: React.FC<Props> = ({ type, setType }) => {
   const { t } = useTranslation();
   return (
     <EarnWrapper>
-      <Box p={10}>
+      <Box p={20}>
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Text
             color="text1"

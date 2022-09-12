@@ -2,12 +2,13 @@ import { CAVAX, CHAINS, Fraction, Token } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React from 'react';
 import { Box, CoinDescription } from 'src/components';
+import StatDetail from 'src/components/Pools/DetailModal/StatDetail';
+import { ANALYTICS_PAGE } from 'src/constants';
 import { usePair } from 'src/data/Reserves';
-import { useChainId } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useGetPoolDollerWorth } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
-import StatDetail from '../StatDetail';
 import { DetailsContainer } from './styled';
 
 type Props = {
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const Details: React.FC<Props> = ({ stakingInfo }) => {
+  const { account } = usePangolinWeb3();
   const token0 = stakingInfo?.tokens[0];
   const token1 = stakingInfo?.tokens[1];
   const chainId = useChainId();
@@ -52,6 +54,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
           pair={pair}
           totalAmount={`${totalStakedInUsd}`}
           pgl={stakingInfo?.totalStakedAmount}
+          link={`${ANALYTICS_PAGE}/#/pair/${pair?.liquidityToken.address}`}
         />
 
         {Number(liquidityInUSD?.toFixed(4)) > 0 && (
@@ -63,6 +66,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
               pair={pair}
               totalAmount={yourLiquidity}
               pgl={userPgl}
+              link={`${ANALYTICS_PAGE}/#/account/${account}`}
             />
           </Box>
         )}
@@ -76,6 +80,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
               pair={pair}
               totalAmount={`${numeral((yourStakeInUsd as Fraction)?.toFixed(2)).format('$0.00a')}`}
               pgl={stakingInfo?.stakedAmount}
+              link={`${ANALYTICS_PAGE}/#/account/${account}`}
             />
           </Box>
         )}

@@ -9,6 +9,8 @@ interface Window {
   walletLinkExtension?: any;
   xfi?: any;
   talismanEth?: any;
+  bitkeep?: any;
+  isBitKeep?: true;
   ethereum?: {
     isCoinbaseWallet?: boolean;
     isMetaMask?: true;

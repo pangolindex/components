@@ -16,6 +16,7 @@ import {
 import Drawer from 'src/components/Drawer';
 import { Field } from 'src/state/pmint/actions';
 import { SpaceType } from 'src/state/pstake/types';
+import { Hidden } from 'src/theme/components';
 import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
 
 interface Props {
@@ -170,34 +171,26 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
   );
 
   const CardConfirmContent = (
-    <Box display="flex" flexDirection="column" p={10} height="100%">
+    <Box display="flex" flexDirection="column" px={20} pb={20} height="100%">
       <Box flex={1}>
         <StatWrapper>
-          <Box display="inline-block">
+          <Hidden upToSmall={true} display="inline-block">
             <Text color={'text1'} fontSize={[16, 14]}>
               {t('addLiquidity.deposited')}
             </Text>
 
             <Box display="flex" alignItems="center">
               <Text color={'text1'} fontSize={[20, 16]}>
-                {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}
+                {parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} {currencies[Field.CURRENCY_A]?.symbol}
               </Text>
-
-              <Box ml={10} mt="8px">
-                <CurrencyLogo currency={currencies[Field.CURRENCY_A]} size={24} />
-              </Box>
             </Box>
 
             <Box display="flex" alignItems="center">
               <Text color={'text1'} fontSize={[20, 16]}>
-                {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}
+                {parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} {currencies[Field.CURRENCY_B]?.symbol}
               </Text>
-
-              <Box ml={10} mt="8px">
-                <CurrencyLogo currency={currencies[Field.CURRENCY_B]} size={24} />
-              </Box>
             </Box>
-          </Box>
+          </Hidden>
 
           <Stat
             title={`PGL`}
@@ -215,12 +208,15 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
             statFontSize={16}
           />
         </StatWrapper>
-
-        <OutputText>{t('addLiquidity.outputEstimated', { allowedSlippage: allowedSlippage / 100 })}</OutputText>
+        <Box mt={10}>
+          <OutputText fontSize={12} fontWeight={400}>
+            {t('addLiquidity.outputEstimated', { allowedSlippage: allowedSlippage / 100 })}
+          </OutputText>
+        </Box>
       </Box>
       <Box mt={'10px'}>
         <Button variant="primary" onClick={onAdd} height="46px">
-          {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.confirmSupply')}
+          {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.giveOrder')}
         </Button>
       </Box>
     </Box>
@@ -228,7 +224,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
 
   const PendingContent = <Loader size={100} label={pendingText} />;
 
-  const ErroContent = (
+  const ErrorContent = (
     <ErrorWrapper>
       <ErrorBox>
         <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
@@ -270,7 +266,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
     }
 
     if (poolErrorMessage) {
-      return ErroContent;
+      return ErrorContent;
     }
 
     if (type === SpaceType.detail) {

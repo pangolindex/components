@@ -24,7 +24,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   return (
     <Box>
       <Box display="flex" justifyContent={label ? 'space-between' : 'flex-end'}>
-        {label && <Text color="text4">{label}</Text>}
+        {label && <Text color="textInput.labelText">{label}</Text>}
         {addonLabel && addonLabel}
       </Box>
       <InputWrapper>
@@ -33,6 +33,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
           {...(rest as any)}
           autoComplete={autoComplete}
           ref={(ref) => getRef(ref)}
+          type={isNumeric ? 'number' : 'text'}
           onChange={(e) => {
             const value = e.target.value;
 

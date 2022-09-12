@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
 import { Button } from 'src/components/Button';
-import { gnosisSafe, injected, talisman, xDefi } from 'src/connectors';
+import { bitKeep, gnosisSafe, injected, talisman, xDefi } from 'src/connectors';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { ExternalLink } from 'src/theme';
 import { Box, Modal, ToggleButtons } from '../../';
@@ -126,6 +126,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
   const isCbWalletDappBrowser = window?.ethereum?.isCoinbaseWallet;
   const isWalletlink = !!window?.WalletLinkProvider || !!window?.walletLinkExtension;
   const isCbWallet = isCbWalletDappBrowser || isWalletlink;
+  const isBitKeep = window.isBitKeep && !!window.bitkeep.ethereum;
 
   const tryActivation = async (
     activationConnector: AbstractConnector | SafeAppConnector | undefined,
@@ -186,6 +187,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
         return SUPPORTED_WALLETS.RABBY;
       } else if (isTalisman) {
         return SUPPORTED_WALLETS.TALISMAN;
+      } else if (isBitKeep) {
+        return SUPPORTED_WALLETS.BITKEEP;
       } else if (isMetamask) {
         return SUPPORTED_WALLETS.METAMASK;
       }
@@ -275,7 +278,21 @@ const WalletModal: React.FC<WalletModalProps> = ({
       }
 
       // overwrite injected when needed
-      else if (option.connector === xDefi) {
+      else if (option.connector === bitKeep) {
+        if (!isBitKeep) {
+          return (
+            <Option
+              id={`connect-${key}`}
+              key={key}
+              color={'#7a7cff'}
+              header={'Install BitKeep'}
+              subheader={null}
+              link={'https://bitkeep.com/'}
+              icon={option.iconName}
+            />
+          );
+        }
+      } else if (option.connector === xDefi) {
         // don't show injected if there's no injected provider
 
         if (!window.xfi) {
@@ -377,7 +394,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   const renderContent = () => {
     const isXDEFI = window.xfi && window.xfi.ethereum && window.xfi.ethereum.isXDEFI;
-    const supportsAddNetwork = isMetamask || isCbWallet || isXDEFI || isTalisman;
+    const supportsAddNetwork = isMetamask || isCbWallet || isXDEFI || isTalisman || isBitKeep;
 
     if (web3Error) {
       return (

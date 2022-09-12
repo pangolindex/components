@@ -105,7 +105,7 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
         </AddInputWrapper>
 
         {addError ? (
-          <Text title={addError} color="red2" fontSize={12}>
+          <Text title={addError} color="error" fontSize={12}>
             {addError}
           </Text>
         ) : null}

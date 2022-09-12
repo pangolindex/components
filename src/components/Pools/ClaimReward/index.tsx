@@ -7,6 +7,7 @@ import { useStakingContract } from 'src/hooks/useContract';
 import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
+import { waitForTransaction } from 'src/utils';
 import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
 export interface ClaimProps {
@@ -45,7 +46,7 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
 
       try {
         const response: TransactionResponse = await stakingContract[method](...args);
-        await response.wait(1);
+        await waitForTransaction(response, 1);
         addTransaction(response, {
           summary: t('earn.claimAccumulated', { symbol: 'PNG' }),
         });

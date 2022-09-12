@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Stat } from 'src/components';
 import { ONE_BIPS } from 'src/constants';
 import { useChainId } from 'src/hooks';
-import { useUSDCPricekHook } from 'src/hooks/multiChainsHooks';
+import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import { Field } from 'src/state/pmint/actions';
 import { GridContainer, Root } from './styled';
 
@@ -22,7 +22,7 @@ const PoolPriceBar = ({ currencies, noLiquidity, poolTokenPercentage, price, par
   const chainId = useChainId();
 
   const currency0 = currencies[Field.CURRENCY_A];
-  const useUSDCPrice = useUSDCPricekHook[chainId];
+  const useUSDCPrice = useUSDCPriceHook[chainId];
 
   const currency0PriceTmp = useUSDCPrice(currency0);
 
@@ -47,7 +47,7 @@ const PoolPriceBar = ({ currencies, noLiquidity, poolTokenPercentage, price, par
       <GridContainer>
         <Box>
           <Stat
-            title={`${t('migratePage.dollarWorth')}`}
+            title={`${t('migratePage.usd')}`}
             stat={sharePoolStat}
             titlePosition="top"
             titleFontSize={12}

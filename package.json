@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "4.0.4",
+  "version": "4.1.0-rc.14",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "engines": {
@@ -66,7 +66,9 @@
     "i18next": "20.6.1",
     "i18next-browser-languagedetector": "^6.1.4",
     "lodash.flatmap": "4.5.0",
+    "lodash.get": "^4.4.2",
     "lodash.isequal": "4.5.0",
+    "lodash.merge": "^4.6.2",
     "lru-cache": "^7.13.2",
     "near-api-js": "^0.44.2",
     "numeral": "^2.0.6",
@@ -100,7 +102,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
-    "@pangolindex/sdk": "2.1.11",
+    "@pangolindex/sdk": "3.1.2",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.5",

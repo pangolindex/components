@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
-import { JsonRpcSigner, TransactionReceipt, TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { JsonRpcSigner, TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouter.sol/IPangolinRouter.json';
 import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
@@ -33,46 +33,51 @@ export function isAddress(value: any): string | false {
 }
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
-  43113: CHAINS[ChainId.FUJI].blockExplorerUrls![0],
-  43114: CHAINS[ChainId.AVALANCHE].blockExplorerUrls![0],
-  11111: CHAINS[ChainId.WAGMI].blockExplorerUrls![0],
-  16: CHAINS[ChainId.COSTON].blockExplorerUrls![0],
-  329847900: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls![0],
-  329847901: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls![0],
+  43113: CHAINS[ChainId.FUJI].blockExplorerUrls?.[0] || '',
+  43114: CHAINS[ChainId.AVALANCHE].blockExplorerUrls?.[0] || '',
+  11111: CHAINS[ChainId.WAGMI].blockExplorerUrls?.[0] || '',
+  16: CHAINS[ChainId.COSTON].blockExplorerUrls?.[0] || '',
+  19: CHAINS[ChainId.SONGBIRD].blockExplorerUrls?.[0] || '',
+  329847900: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls?.[0] || '',
+  329847901: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls?.[0] || '',
 };
 
-const transactionPath = {
+const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: 'tx',
   [ChainId.AVALANCHE]: 'tx',
   [ChainId.WAGMI]: 'tx',
   [ChainId.COSTON]: 'tx',
+  [ChainId.SONGBIRD]: 'tx',
   [ChainId.NEAR_MAINNET]: 'transactions',
   [ChainId.NEAR_TESTNET]: 'transactions',
 };
 
-const addressPath = {
+const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: 'address',
   [ChainId.AVALANCHE]: 'address',
   [ChainId.WAGMI]: 'address',
   [ChainId.COSTON]: 'address',
+  [ChainId.SONGBIRD]: 'address',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
 };
 
-const blockPath = {
+const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: 'block',
   [ChainId.AVALANCHE]: 'block',
   [ChainId.WAGMI]: 'block',
   [ChainId.COSTON]: 'block',
+  [ChainId.SONGBIRD]: 'block',
   [ChainId.NEAR_MAINNET]: 'blocks',
   [ChainId.NEAR_TESTNET]: 'blocks',
 };
 
-const tokenPath = {
+const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: 'token',
   [ChainId.AVALANCHE]: 'token',
   [ChainId.WAGMI]: 'token',
   [ChainId.COSTON]: 'token',
+  [ChainId.SONGBIRD]: 'token',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
 };
@@ -103,7 +108,7 @@ export function getEtherscanLink(
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALANCHE, chars = 4): string {
-  const parsed = CHAINS[chainId]?.evm ? isAddress(address) : address;
+  const parsed = isEvmChain(chainId) ? isAddress(address) : address;
   if (!parsed) {
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
@@ -189,20 +194,16 @@ export function existSarContract(chainId: ChainId) {
 // https://github.com/ethers-io/ethers.js/issues/945#issuecomment-1074683436
 // wait for transaction confirmation or set timeout
 export async function waitForTransaction(
-  provider: any,
   tx: TransactionResponse,
   confirmations?: number,
-  timeout = 7000, // 7 seconds
+  timeout = 10000, // 10 seconds
 ) {
-  const result = await Promise.race([
+  await Promise.race([
     tx.wait(confirmations),
     (async () => {
       await wait(timeout);
-      const mempoolTx: TransactionReceipt | undefined = await provider.getTransactionReceipt(tx.hash);
-      return mempoolTx;
     })(),
   ]);
-  return result;
 }
 
 export function getBuyUrl(token: Token): string {

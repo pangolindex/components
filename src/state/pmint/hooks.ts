@@ -1,6 +1,5 @@
 import {
   CAVAX,
-  CHAINS,
   Currency,
   CurrencyAmount,
   InsufficientInputAmountError,
@@ -15,6 +14,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
+import { isEvmChain } from 'src/utils';
 import { PairState, usePair } from '../../data/Reserves';
 import { useTotalSupplyHook } from '../../data/TotalSupply';
 import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency';
@@ -69,11 +69,11 @@ export function useDerivedMintInfo(
   // pair
   const [pairState, pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]);
 
-  const pairOrToken = CHAINS[chainId]?.evm ? pair?.liquidityToken : pair;
+  const pairOrToken = isEvmChain(chainId) ? pair?.liquidityToken : pair;
   const totalSupply = useTotalSupply(pairOrToken as Token);
 
   const noLiquidity: boolean =
-    pairState === PairState.NOT_EXISTS || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO));
+    pairState === PairState.NOT_EXISTS || !totalSupply || Boolean(totalSupply && JSBI.equal(totalSupply.raw, ZERO));
 
   // balances
   const balances = useCurrencyBalances(chainId, account ?? undefined, [
@@ -106,8 +106,8 @@ export function useDerivedMintInfo(
         const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA;
         const dependentTokenAmount =
           dependentField === Field.CURRENCY_B
-            ? pair.priceOf(tokenA).quote(wrappedIndependentAmount, chainId)
-            : pair.priceOf(tokenB).quote(wrappedIndependentAmount, chainId);
+            ? pair.priceOf(tokenA, tokenB).quote(wrappedIndependentAmount, chainId)
+            : pair.priceOf(tokenB, tokenA).quote(wrappedIndependentAmount, chainId);
         return dependentCurrency === CAVAX[chainId]
           ? CurrencyAmount.ether(dependentTokenAmount.raw, chainId)
           : dependentTokenAmount;
@@ -147,9 +147,12 @@ export function useDerivedMintInfo(
       return undefined;
     } else {
       const wrappedCurrencyA = wrappedCurrency(currencyA, chainId);
-      return pair && wrappedCurrencyA ? pair.priceOf(wrappedCurrencyA) : undefined;
+      const wrappedCurrencyB = wrappedCurrency(currencyB, chainId);
+      return pair && wrappedCurrencyA && wrappedCurrencyB
+        ? pair.priceOf(wrappedCurrencyA, wrappedCurrencyB)
+        : undefined;
     }
-  }, [chainId, currencyA, noLiquidity, pair, parsedAmounts]);
+  }, [chainId, currencyA, currencyB, noLiquidity, pair, parsedAmounts]);
 
   // liquidity minted
   const liquidityMinted = useMemo(() => {
@@ -161,7 +164,7 @@ export function useDerivedMintInfo(
     insufficientInput = false; // eslint-disable-line react-hooks/exhaustive-deps
     if (pair && totalSupply && tokenAmountA && tokenAmountB) {
       try {
-        return pair.getLiquidityMinted(totalSupply, tokenAmountA, tokenAmountB);
+        return pair.getLiquidityMinted(totalSupply, [tokenAmountA, tokenAmountB]);
       } catch (err) {
         if (err instanceof InsufficientInputAmountError) {
           insufficientInput = true;
