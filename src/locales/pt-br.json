@@ -181,7 +181,9 @@
     "interfaceSettings": "Configurações da Interface",
     "toggleExpertMode": "Ativar modo expert",
     "expertModeHelper": "Ignora os modais de confirmação e permite alta variação de preço. Use por sua conta e risco.",
-    "toggleDarkMode": "Ativar modo escuro"
+    "toggleDarkMode": "Ativar modo escuro",
+    "slippage": "Slippage",
+    "percent": "Percent"
   },
   "swap": {
     "priceImpact": "Impacto no preço",
@@ -236,6 +238,7 @@
     "enterValidSlippage": "Digite uma porcentagem válida de variação de preço",
     "transactionMayFail": "Sua transação pode falhar",
     "transactionMayFrontrun": "Sua transação pode ser suscetível a frontrun",
+    "transactionActiveExpertMode": "Very high slippage, activate expert mode to be able to use more than 50%",
     "minutes": "minutos"
   },
   "vote": {

@@ -182,7 +182,9 @@
     "interfaceSettings": "Arayüz Ayarları",
     "toggleExpertMode": "Uzman Modu",
     "expertModeHelper": "İşlem onayları atlar ve yüksek slipajlı işlemlere izin verir. Kendi sorumluluğunuzda kullanın.",
-    "toggleDarkMode": "Karanlık Mod"
+    "toggleDarkMode": "Karanlık Mod",
+    "slippage": "Slippage",
+    "percent": "Percent"
   },
   "swap": {
     "priceImpact": "Fiyat Etkisi",
@@ -237,6 +239,7 @@
     "enterValidSlippage": "Geçerli bir slipaj yüzdesi girin",
     "transactionMayFail": "İşleminiz başarısız olabilir",
     "transactionMayFrontrun": "İşleminiz önden koşma ile karşılaşabilir",
+    "transactionActiveExpertMode": "Very high slippage, activate expert mode to be able to use more than 50%",
     "minutes": "dakika"
   },
   "vote": {

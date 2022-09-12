@@ -182,7 +182,9 @@
     "interfaceSettings": "Ajustes de la interfaz",
     "toggleExpertMode": "Avticar modo experto",
     "expertModeHelper": "Sobrepasa los avisos de confirmación y permite intercambios con altos deslizamientos. Úselo bajo su propio riesgo.",
-    "toggleDarkMode": "Activar modo oscuro"
+    "toggleDarkMode": "Activar modo oscuro",
+    "slippage": "Slippage",
+    "percent": "Percent"
   },
   "swap": {
     "priceImpact": "Impacto en el precio",
@@ -237,6 +239,7 @@
     "enterValidSlippage": "Introduce un porcentaje de deslizamieinto válido",
     "transactionMayFail": "Tu transacción puede fallar",
     "transactionMayFrontrun": "Tu transacción puede sufrir inversión ventajista",
+    "transactionActiveExpertMode": "Very high slippage, activate expert mode to be able to use more than 50%",
     "minutes": "minutos"
   },
   "vote": {

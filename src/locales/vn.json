@@ -182,7 +182,9 @@
     "interfaceSettings": "Giao diện cài đặt",
     "toggleExpertMode": "Chuyển đổi chế độ chuyên gia",
     "expertModeHelper": "Bỏ qua các phương thức xác nhận và cho phép các giao dịch có độ trượt cao. Sẽ sử dụng với nguy cơ của riêng bạn .",
-    "toggleDarkMode": "Chuyển đổi chế độ ban đêm"
+    "toggleDarkMode": "Chuyển đổi chế độ ban đêm",
+    "slippage": "Slippage",
+    "percent": "Percent"
   },
   "swap": {
     "priceImpact": "Tác động giá",
@@ -237,6 +239,7 @@
     "enterValidSlippage": "Nhập phần trăm trượt giá hợp lệ ",
     "transactionMayFail": "Giao dịch của bạn có thể thất bại",
     "transactionMayFrontrun": "Giao dịch của bạn có thể bị chèn",
+    "transactionActiveExpertMode": "Very high slippage, activate expert mode to be able to use more than 50%",
     "minutes": "phút"
   },
   "vote": {

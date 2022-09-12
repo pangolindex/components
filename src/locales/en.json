@@ -182,7 +182,9 @@
     "interfaceSettings": "Interface Settings",
     "toggleExpertMode": "Toggle Expert Mode",
     "expertModeHelper": "Bypasses confirmation modals and allows high slippage trades. Use at your own risk.",
-    "toggleDarkMode": "Toggle Dark Mode"
+    "toggleDarkMode": "Toggle Dark Mode",
+    "slippage": "Slippage",
+    "percent": "Percent"
   },
   "swap": {
     "priceImpact": "Price Impact",
@@ -237,6 +239,7 @@
     "enterValidSlippage": "Enter a valid slippage percentage",
     "transactionMayFail": "Your transaction may fail",
     "transactionMayFrontrun": "Your transaction may be frontrun",
+    "transactionActiveExpertMode": "Very high slippage, activate expert mode to be able to use more than 50%",
     "minutes": "minutes"
   },
   "vote": {

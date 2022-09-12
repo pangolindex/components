@@ -182,7 +182,9 @@
     "interfaceSettings": "界面设置",
     "toggleExpertMode": "切换专家模式",
     "expertModeHelper": "绕过确认模式并允许高滑点交易。使用风险自负。",
-    "toggleDarkMode": "切换深色模式"
+    "toggleDarkMode": "切换深色模式",
+    "slippage": "Slippage",
+    "percent": "Percent"
   },
   "swap": {
     "priceImpact": "价格影响",
@@ -237,6 +239,7 @@
     "enterValidSlippage": "输入有效的滑点百分比",
     "transactionMayFail": "您的交易可能会失败",
     "transactionMayFrontrun": "您的交易可能提前",
+    "transactionActiveExpertMode": "Very high slippage, activate expert mode to be able to use more than 50%",
     "minutes": "分钟"
   },
   "vote": {

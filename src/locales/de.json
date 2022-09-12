@@ -182,7 +182,9 @@
     "interfaceSettings": "Schnittstelleneinstellungen",
     "toggleExpertMode": "Expertenmodus",
     "expertModeHelper": "Umgeht Bestätigungsaufforderungen und ermöglicht Trades mit hoher Slippage. Verwendung auf eigene Gefahr.",
-    "toggleDarkMode": "Nachtmodus"
+    "toggleDarkMode": "Nachtmodus",
+    "slippage": "Slippage",
+    "percent": "Percent"
   },
   "swap": {
     "priceImpact": "Preisauswirkungen",
@@ -237,6 +239,7 @@
     "enterValidSlippage": "Gib eine gültige Slippage-Toleranz ein",
     "transactionMayFail": "Deine Transaktion kann fehlschlagen",
     "transactionMayFrontrun": "Deine Transaktion kann eventell gefrontrunnt werden",
+    "transactionActiveExpertMode": "Very high slippage, activate expert mode to be able to use more than 50%",
     "minutes": "Minuten"
   },
   "vote": {
