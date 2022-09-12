@@ -3599,10 +3599,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@pangolindex/sdk@3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-3.1.2.tgz#c1e5054e22c63003dec6a1905c6466064e4b4582"
-  integrity sha512-DSUIRu+320WJFb2tTsTbueriiIkUd4Q88G4AadgZcIQXU9zqbPymMJSsCPj5hKfHYGQv1cgqHImXg85MslpI5w==
+"@pangolindex/sdk@3.1.3":
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-3.1.3.tgz#e21447b9f4492d5354c73de1f98531a041235da7"
+  integrity sha512-3Vr0LyHpe3C0nKHhqudSbTI+e014vwEqRLpjvl3IuiLA1H9c2Iq4QFe7RgB5C1bW+4hYK/u1mVizUDnXRdBq3Q==
   dependencies:
     "@pangolindex/exchange-contracts" "2.1.5"
     big.js "^5.2.2"
