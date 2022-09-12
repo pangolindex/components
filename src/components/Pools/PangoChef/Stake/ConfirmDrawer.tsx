@@ -69,6 +69,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
             fontSize={14}
             color={'primary'}
             href={getEtherscanLink(chainId, txHash, 'transaction')}
+            target="_blank"
           >
             {t('transactionConfirmation.viewExplorer')}
           </Link>

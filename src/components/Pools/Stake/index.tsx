@@ -294,6 +294,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
     // if there was a tx hash, we want to clear the input
     if (hash) {
       setTypedValue('');
+      setStepIndex(0);
     }
     setHash('');
     setSignatureData(null);
@@ -336,6 +337,11 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
   };
   const dollerWarth = finalUsd ? `$${Number(finalUsd).toFixed(2)}` : '-';
 
+  const balanceLabel =
+    !!stakingInfo?.stakedAmount?.token && userLiquidityUnstaked
+      ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toSignificant(6)
+      : '-';
+
   return (
     <StakeWrapper>
       {!attempting && !hash && (
@@ -369,14 +375,14 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
                 isNumeric={true}
                 placeholder="0.00"
                 addonLabel={
-                  account && (
+                  account &&
+                  type === SpaceType.detail && (
                     <Text color="text2" fontWeight={500} fontSize={14}>
-                      {!!stakingInfo?.stakedAmount?.token && userLiquidityUnstaked
-                        ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toSignificant(6)
-                        : ' -'}
+                      {balanceLabel}
                     </Text>
                   )
                 }
+                label={type === SpaceType.card ? balanceLabel : undefined}
               />
 
               <Box mt={type === 'card' ? '25px' : '0px'}>

@@ -9,8 +9,8 @@ export const Root = styled(Box)`
   height: 100%;
   display: grid;
   grid-gap: 8px;
-  grid-template-rows: 4fr 1fr
-  padding: 10px;
+  grid-template-rows: 2fr 1fr
+  padding: 0px 10px 10px 10px;
 `;
 
 export const RewardWrapper = styled(Box)`

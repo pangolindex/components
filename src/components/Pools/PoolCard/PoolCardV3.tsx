@@ -14,8 +14,6 @@ const PoolCardV3 = ({ stakingInfo, onClickViewDetail, version }: PoolCardProps) 
 
   return (
     <PoolCardViewV3
-      combinedApr={stakingInfo.stakingApr}
-      earnedAmount={stakingInfo.earnedAmount}
       rewardTokens={rewardTokens}
       stakingInfo={stakingInfo}
       onClickViewDetail={onClickViewDetail}

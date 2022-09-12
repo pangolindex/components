@@ -24,3 +24,11 @@ export const StatWrapper = styled(Box)`
   justify-content: center;
   align-items: center;
 `;
+
+export const Buttons = styled(Box)`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  align-self: end;
+  margin-top: 10px;
+`;

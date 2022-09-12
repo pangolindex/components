@@ -140,7 +140,7 @@ export default function SarManageWidget() {
     <Wrapper paddingX="20px" paddingBottom="20px">
       <Header>
         <TokenRow>
-          <Text fontSize={24} fontWeight={500} color="text1" style={{ marginRight: '12px' }}>
+          <Text fontSize={20} fontWeight={500} color="text1" style={{ marginRight: '12px' }}>
             {parsedAmount?.toSignificant(6) ?? 0}
           </Text>
           <CurrencyLogo currency={png} size={24} imageSize={48} />
@@ -149,17 +149,26 @@ export default function SarManageWidget() {
           <Stat
             title={t('sarStake.dollarValue')}
             titlePosition="top"
+            titleFontSize={16}
+            statFontSize={12}
             stat={`$${dollerWorth ?? 0}`}
             titleColor="text2"
           />
-          <Stat title={t('sarStake.startingApr')} titlePosition="top" stat={'0%'} titleColor="text2" />
+          <Stat
+            title={t('sarStake.startingApr')}
+            titlePosition="top"
+            stat={'0%'}
+            titleColor="text2"
+            titleFontSize={16}
+            statFontSize={12}
+          />
         </Box>
         <Box display="flex" flexDirection="row" justifyContent="space-between">
           <Text color="text1">{t('sarStake.weeklyDistributed', { symbol: png.symbol })}</Text>
           <Text color="text1">{numeral(formatEther(weeklyPNG)).format('0.00a')}</Text>
         </Box>
-        <Box bgColor="color3" borderRadius="4px" padding="15px">
-          <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
+        <Box bgColor="color3" borderRadius="8px" padding="15px">
+          <Text color="text1" fontWeight={400} fontSize="12px" textAlign="center">
             {t('sarStake.confirmDescription', { symbol: png.symbol })}
           </Text>
         </Box>

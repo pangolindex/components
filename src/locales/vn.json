@@ -695,7 +695,7 @@
     "compoundWarning": "Tích lũy phần thưởng của bạn cho trang trại {{token0}} - {{token1}} sẽ nhận được phần thưởng của bạn vào trang trại {{currency}} - {{png}}. Bạn cần thêm giá trị tương đương của mã thông báo {{currency}} vào phần thưởng {{png}} đã tích lũy của mình.",
     "compoundAmountWarning": "Bạn cần thêm {{amount}} {{symbol}} để kết hợp.",
     "compoundAmountWarning2": "Hãy cẩn thận rằng bạn sẽ khóa nhóm {{symbol}} {{png}} của mình cho đến khi bạn nhận được phần thưởng của nhóm này.",
-    "highVolalityWarning": "Tính biến động cao, hãy thử soạn sau.",
+    "highVolalityWarning": "Còn quá sớm, hãy thử sau vài giờ",
     "compoundSuccess": "Bạn đã soạn thành công trang trại của mình."
   }
 }
