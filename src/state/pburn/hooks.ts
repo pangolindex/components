@@ -1,6 +1,7 @@
 import { Currency, CurrencyAmount, JSBI, Pair, Percent, Token, TokenAmount } from '@pangolindex/sdk';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { useTokenBalancesHook } from 'src/state/pwallet/multiChainsHooks';
@@ -64,6 +65,8 @@ export function useDerivedBurnInfo(
     userLiquidity &&
     tokenA &&
     tokenB &&
+    JSBI.greaterThan(totalSupply.raw, BIG_INT_ZERO) &&
+    JSBI.greaterThan(userLiquidity.raw, BIG_INT_ZERO) &&
     JSBI.greaterThanOrEqual(totalSupply.raw, userLiquidity.raw)
       ? pair.getLiquidityValues(totalSupply, userLiquidity, { feeOn: false })
       : [undefined, undefined];

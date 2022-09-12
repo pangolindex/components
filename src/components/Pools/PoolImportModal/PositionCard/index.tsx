@@ -2,6 +2,7 @@ import { Currency, JSBI, Pair, Percent, Token } from '@pangolindex/sdk';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, DoubleCurrencyLogo, Stat, Text } from 'src/components';
+import { BIG_INT_ZERO } from 'src/constants';
 import { useTotalSupplyHook } from 'src/data/TotalSupply';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
@@ -40,6 +41,8 @@ const PositionCard = ({ pair, onManagePoolsClick }: PositionCardProps) => {
     !!pair &&
     !!totalPoolTokens &&
     !!userPoolBalance &&
+    JSBI.greaterThan(totalPoolTokens.raw, BIG_INT_ZERO) &&
+    JSBI.greaterThan(userPoolBalance.raw, BIG_INT_ZERO) &&
     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
     JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
       ? pair.getLiquidityValues(totalPoolTokens, userPoolBalance, { feeOn: false })

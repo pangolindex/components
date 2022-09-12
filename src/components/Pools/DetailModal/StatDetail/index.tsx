@@ -4,6 +4,7 @@ import React from 'react';
 import AnalyticsIcon from 'src/assets/images/analytics.svg';
 import { Box, Stat, Text } from 'src/components';
 import { AnalyticsLink } from 'src/components/Stat/styled';
+import { BIG_INT_ZERO } from 'src/constants';
 import { useTotalSupply } from 'src/data/TotalSupply';
 import { StateContainer } from './styleds';
 
@@ -24,6 +25,8 @@ export default function StatDetail({ title, totalAmount, pair, pgl, currency0, c
     !!pair &&
     !!totalPoolTokens &&
     !!pgl &&
+    JSBI.greaterThan(totalPoolTokens.raw, BIG_INT_ZERO) &&
+    JSBI.greaterThan(pgl.raw, BIG_INT_ZERO) &&
     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
     JSBI.greaterThanOrEqual(totalPoolTokens.raw, pgl.raw)
       ? pair.getLiquidityValues(totalPoolTokens, pgl, { feeOn: false })
