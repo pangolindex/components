@@ -128,8 +128,8 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: '',
   },
   [ChainId.SONGBIRD]: {
-    inputCurrency: '',
-    outputCurrency: '',
+    inputCurrency: 'SGB',
+    outputCurrency: PNG[ChainId.SONGBIRD].address,
   },
   [ChainId.NEAR_MAINNET]: {
     inputCurrency: WAVAX[ChainId.NEAR_MAINNET].address,
