@@ -63,7 +63,7 @@ export function useSwapActionHandlers(chainId: ChainId): {
           currencyId:
             currency instanceof Token
               ? currency.address
-              : currency === CAVAX[chainId] && currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
+              : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
               ? (CAVAX[chainId]?.symbol as string)
               : '',
         }),
