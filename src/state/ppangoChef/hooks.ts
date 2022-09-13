@@ -27,16 +27,22 @@ export function usePangoChefInfos() {
   // get the length of pools
   const poolLenght: BigNumber | undefined = useSingleCallResult(pangoChefContract, 'poolsLength').result?.[0];
   // create array with length of pools
-  const poolsIds = new Array(poolLenght?.toBigInt() || 0).fill(0).map((_, index) => [index.toString()]);
+  const allPoolsIds = new Array(Number(poolLenght ? poolLenght.toString() : 0))
+    .fill(0)
+    .map((_, index) => [index.toString()]);
 
-  const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', poolsIds);
+  const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', allPoolsIds);
   // format the data to Pool type
-  const pools = useMemo(() => {
-    return poolsState?.map((callState) => {
-      const result = callState?.result;
+  const [pools, poolsIds] = useMemo(() => {
+    const _pools: Pool[] = [];
+    const _poolsIds: string[][] = [];
+
+    for (let i = 0; i < poolsState.length; i++) {
+      const result = poolsState[i]?.result;
       if (!result) {
-        return {} as Pool;
+        continue;
       }
+
       const tokenOrRecipient = result.tokenOrRecipient;
       const poolType = result.poolType as PoolType;
       const rewarder = result.rewarder;
@@ -45,10 +51,15 @@ export function usePangoChefInfos() {
       const rewardSummations = result.rewardSummationsStored as RewardSummations;
 
       if (!tokenOrRecipient || !poolType || !rewarder || !rewardPair || !valueVariables || !rewardSummations) {
-        return {} as Pool;
+        continue;
       }
 
-      return {
+      // remove not erc20 pool and remove this pool from poolsIds
+      if (poolType !== PoolType.ERC20_POOL) {
+        continue;
+      }
+
+      _pools.push({
         tokenOrRecipient: tokenOrRecipient,
         poolType: poolType,
         rewarder: rewarder,
@@ -58,8 +69,12 @@ export function usePangoChefInfos() {
           sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
         } as ValueVariables,
         rewardSummations: rewardSummations,
-      } as Pool;
-    });
+      } as Pool);
+
+      _poolsIds.push([i.toString()]);
+    }
+
+    return [_pools, _poolsIds];
   }, [poolsState]);
 
   // get reward rates for each pool
