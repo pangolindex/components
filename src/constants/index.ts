@@ -320,17 +320,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   },
 };
 
-export const PROVIDER_MAPPING = {
-  INJECTED: CommonEVMProvider,
-  METAMASK: CommonEVMProvider,
-  WALLET_LINK: CommonEVMProvider,
-  XDEFI: CommonEVMProvider,
-  GNOSISSAFE: CommonEVMProvider,
-  WALLET_CONNECT: CommonEVMProvider,
-  RABBY: CommonEVMProvider,
-  TALISMAN: CommonEVMProvider,
-  BITKEEP: CommonEVMProvider,
-  NEAR: NearProvider,
+export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } = {
+  [ChainId.FUJI]: CommonEVMProvider,
+  [ChainId.AVALANCHE]: CommonEVMProvider,
+  [ChainId.WAGMI]: CommonEVMProvider,
+  [ChainId.COSTON]: CommonEVMProvider,
+  [ChainId.SONGBIRD]: CommonEVMProvider,
+  [ChainId.NEAR_MAINNET]: NearProvider,
+  [ChainId.NEAR_TESTNET]: NearProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {
