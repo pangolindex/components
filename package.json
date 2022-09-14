@@ -87,6 +87,7 @@
     "react-portal": "^4.2.1",
     "react-query": "^3.34.16",
     "react-redux": "7.2.6",
+    "react-select": "^5.4.0",
     "react-slick": "0.28.1",
     "react-switch": "^6.0.0",
     "react-use": "15.3.8",

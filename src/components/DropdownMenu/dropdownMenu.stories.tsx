@@ -1,7 +1,8 @@
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
+import { MultiValue, SingleValue } from 'react-select';
 import { Box } from '../Box';
-import DropdownMenu from '.';
+import DropdownMenu, { DropdownMenuProps } from '.';
 
 export default {
   component: DropdownMenu,
@@ -11,8 +12,31 @@ export default {
   },
 };
 
-const TemplateSimpleDropdown: ComponentStory<typeof DropdownMenu> = () => {
-  const LimitOrderTypeOptions = [
+const TemplateSimpleDropdown: ComponentStory<typeof DropdownMenu> = (args: any) => {
+  const [activeMenu, setMenu] = useState<MultiValue<string> | SingleValue<string>>('');
+
+  return (
+    <Box width="100%">
+      <Box maxWidth="150px">
+        <DropdownMenu
+          {...args}
+          defaultValue={activeMenu}
+          onSelect={(value) => {
+            setMenu(value);
+          }}
+        />
+      </Box>
+    </Box>
+  );
+};
+
+export const Default = TemplateSimpleDropdown.bind({});
+Default.args = {
+  defaultValue: 'open',
+  onSelect: () => {},
+  placeHolder: 'Dropdown Title',
+  isMulti: false,
+  options: [
     {
       label: 'open',
       value: 'open',
@@ -25,24 +49,6 @@ const TemplateSimpleDropdown: ComponentStory<typeof DropdownMenu> = () => {
       label: 'cancelled',
       value: 'cancelled',
     },
-  ];
-
-  const [activeMenu, setMenu] = useState('');
-
-  return (
-    <Box width="100%">
-      <Box maxWidth="150px">
-        <DropdownMenu
-          title="Option:"
-          options={LimitOrderTypeOptions}
-          value={activeMenu}
-          onSelect={(value) => {
-            setMenu(value);
-          }}
-        />
-      </Box>
-    </Box>
-  );
-};
-
-export const Dafault = TemplateSimpleDropdown.bind({});
+  ],
+  height: '35px',
+} as Partial<DropdownMenuProps>;

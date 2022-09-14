@@ -88,9 +88,9 @@ const PoolCardListView = ({
               <Hidden upToSmall={true}>
                 <Box ml={10}>
                   <DropdownMenu
-                    title="Sort by:"
+                    placeHolder="Sort by:"
                     options={SortOptions}
-                    value={sortBy}
+                    defaultValue={sortBy}
                     onSelect={(value) => {
                       onChangeSortBy(value);
                     }}
@@ -102,15 +102,15 @@ const PoolCardListView = ({
             <MobileGridContainer>
               <DropdownMenu
                 options={menuItems}
-                value={activeMenu}
+                defaultValue={activeMenu}
                 onSelect={(value) => {
                   setMenu(value);
                 }}
               />
               <DropdownMenu
-                title="Sort by:"
+                placeHolder="Sort by:"
                 options={SortOptions}
-                value={sortBy}
+                defaultValue={sortBy}
                 onSelect={(value) => {
                   onChangeSortBy(value);
                 }}

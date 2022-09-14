@@ -1,6 +1,7 @@
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useTranslation } from 'react-i18next';
+import { MultiValue } from 'react-select';
 import { Box, DropdownMenu, Loader, Text } from 'src/components';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useGetUserLPHook } from 'src/state/pwallet/multiChainsHooks';
@@ -8,7 +9,7 @@ import WalletCard from './WalletCard';
 import { EmptyProposals, MobileContainer, PageWrapper, PanelWrapper } from './styleds';
 
 interface Props {
-  setMenu: (value: string) => void;
+  setMenu: (value: MultiValue<string> | string) => void;
   activeMenu: string;
   menuItems: Array<{ label: string; value: string }>;
 }
@@ -62,7 +63,7 @@ const Wallet: React.FC<Props> = ({ setMenu, activeMenu, menuItems }) => {
       <MobileContainer>
         <DropdownMenu
           options={menuItems}
-          value={activeMenu}
+          defaultValue={activeMenu}
           onSelect={(value) => {
             setMenu(value);
           }}

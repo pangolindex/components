@@ -1,6 +1,7 @@
 import { formatEther } from '@ethersproject/units';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { MultiValue } from 'react-select';
 import { useMedia, useWindowSize } from 'react-use';
 import { Position } from 'src/state/psarstake/hooks';
 import { MEDIA_WIDTHS } from 'src/theme';
@@ -22,7 +23,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
   const [itemOffset, setItemOffset] = useState(0);
   const [currentItems, setCurrentItems] = useState(positions.slice(0, itemsPerPage));
   const [selectedPositon, setSelectedPosition] = useState<Position | null>(null);
-  const [selectedOption, setSelectedOption] = useState<string>('');
+  const [selectedOption, setSelectedOption] = useState<MultiValue<string> | string>('');
 
   const node = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -31,7 +32,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
 
   const isMobile = useMedia(`(max-width: ${MEDIA_WIDTHS.upToMedium}px)`);
 
-  function sortItems(itemOffset: number, endOffset: number, sortOption: string) {
+  function sortItems(itemOffset: number, endOffset: number, sortOption: string | MultiValue<string>) {
     if (sortOption === 'apr') {
       setCurrentItems([...positions].sort((a, b) => b.apr.sub(a.apr).toNumber()).slice(itemOffset, endOffset));
     } else if (sortOption === 'amount') {
@@ -51,16 +52,16 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
     }
   }
 
-  const onSelect = (value: string) => {
-    setSelectedOption(value);
-    sortItems(0, itemsPerPage, value);
+  const onSelect = (selected: string | MultiValue<string>) => {
+    setSelectedOption(selected);
+    sortItems(0, itemsPerPage, selected);
   };
 
   const { width, height } = useWindowSize();
 
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;
-    sortItems(itemOffset, endOffset, selectedOption);
+    sortItems(itemOffset, endOffset, selectedOption || '');
     setPageCount(Math.ceil(positions.length / itemsPerPage));
   }, [itemOffset, itemsPerPage]);
 
@@ -124,9 +125,10 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
     <Box display="flex" flexDirection="column" width="100%">
       <Box display="flex" justifyContent="end" mb="20px">
         <DropdownMenu
-          title={`${t('sarPortfolio.sortBy')}:`}
+          placeHolder={`${t('sarPortfolio.sortBy')}:`}
           onSelect={onSelect}
-          value={selectedOption}
+          defaultValue={selectedOption}
+          isMulti={false}
           options={[
             { label: t('sarPortfolio.apr'), value: 'apr' },
             { label: t('sarPortfolio.amount'), value: 'amount' },
