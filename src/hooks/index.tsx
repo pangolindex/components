@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
-import { PROVIDER_MAPPING, SUPPORTED_WALLETS } from 'src/constants';
+import { PROVIDER_MAPPING } from 'src/constants';
 import { isAddress } from 'src/utils';
 
 interface Web3State {
@@ -75,20 +75,26 @@ export const useChainId = () => {
   return (chainId || ChainId.AVALANCHE) as ChainId;
 };
 
+// library -> web3.js
+// provider -> ethers.js
+// extendedProvider -> extended library
+
 export function useLibrary(): { library: any; provider: any } {
   const [result, setResult] = useState({} as { library: any; provider: any });
 
   const { connector } = useWeb3React();
+  const chainId = useChainId();
+  const { library: providerLibrary } = usePangolinWeb3();
 
   useEffect(() => {
     async function load() {
-      const walletKey = Object.keys(SUPPORTED_WALLETS).find(
-        (key) => SUPPORTED_WALLETS[key].connector === connector,
-      ) as string;
+      // const walletKey = Object.keys(SUPPORTED_WALLETS).find(
+      //   (key) => SUPPORTED_WALLETS[key].connector === connector,
+      // ) as string;
 
-      const selectedProvider = (await connector?.getProvider()) || window.ethereum;
+      const selectedProvider = (await connector?.getProvider()) || providerLibrary || window.ethereum;
       const provider = selectedProvider || window.ethereum;
-      const extendedProvider = provider && walletKey && (PROVIDER_MAPPING as any)[walletKey]?.(provider);
+      const extendedProvider = provider && (PROVIDER_MAPPING as any)[chainId]?.(provider);
 
       let library;
 
