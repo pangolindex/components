@@ -4,7 +4,7 @@ import { SpaceType } from 'src/state/pstake/types';
 
 export const StakeWrapper = styled(Box)`
   width: 100%;
-  padding: 10px;
+  padding: 0px 10px 10px 10px;
   height: 100%;
   display: flex;
   flex-direction: column;

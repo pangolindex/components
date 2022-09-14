@@ -4,6 +4,7 @@ import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput } from 'src/components';
+import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
@@ -174,8 +175,10 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
     // if there was a tx hash, we want to clear the input
     if (hash) {
       setTypedValue('');
+      setStepIndex(0);
     }
     setHash('');
+    setStakeError(undefined);
     setAttempting(false);
     setOpenDrawer(false);
     onComplete && onComplete();
@@ -218,6 +221,13 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   };
   const dollerWarth = finalUsd ? `$${Number(finalUsd).toFixed(2)}` : '-';
 
+  const png = PNG[chainId];
+
+  const balanceLabel =
+    !!stakingInfo?.stakedAmount?.token && userLiquidityUnstaked
+      ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toSignificant(6)
+      : '-';
+
   return (
     <StakeWrapper>
       {!attempting && !hash && (
@@ -251,14 +261,14 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
                 isNumeric={true}
                 placeholder="0.00"
                 addonLabel={
-                  account && (
+                  account &&
+                  type === SpaceType.detail && (
                     <Text color="text2" fontWeight={500} fontSize={14}>
-                      {!!stakingInfo?.stakedAmount?.token && userLiquidityUnstaked
-                        ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toSignificant(6)
-                        : ' -'}
+                      {balanceLabel}
                     </Text>
                   )
                 }
+                label={type === SpaceType.card ? balanceLabel : undefined}
               />
 
               <Box mt={type === 'card' ? '25px' : '0px'}>
@@ -287,7 +297,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
                 {!isSuperFarm && (
                   <Stat
                     title={t('dashboardPage.earned_weeklyIncome')}
-                    stat={`${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} PNG`}
+                    stat={`${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} ${png.symbol}`}
                     titlePosition="top"
                     titleFontSize={14}
                     statFontSize={16}

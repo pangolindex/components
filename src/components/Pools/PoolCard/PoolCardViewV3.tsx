@@ -1,10 +1,12 @@
-import { CHAINS, ChefType, Fraction, Token, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, Fraction, Price, Token, WAVAX } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Drawer, Stat, Text } from 'src/components';
+import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useTokenCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -27,19 +29,10 @@ export interface PoolCardViewProps {
   stakingInfo: PangoChefInfo;
   onClickViewDetail: () => void;
   version: number;
-  combinedApr?: number;
-  earnedAmount: TokenAmount;
   rewardTokens?: Array<Token | null | undefined> | null;
 }
 
-const PoolCardViewV3 = ({
-  stakingInfo,
-  onClickViewDetail,
-  version,
-  combinedApr,
-  earnedAmount,
-  rewardTokens,
-}: PoolCardViewProps) => {
+const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens }: PoolCardViewProps) => {
   const { t } = useTranslation();
   const [isCompoundDrawerVisible, setShowCompoundDrawer] = useState(false);
 
@@ -48,7 +41,6 @@ const PoolCardViewV3 = ({
 
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const chain = CHAINS[chainId];
 
   const token0 = stakingInfo.tokens[0];
   const token1 = stakingInfo.tokens[1];
@@ -76,21 +68,25 @@ const PoolCardViewV3 = ({
     setShowAddLiquidityDrawer(false);
   };
 
-  const getApr = () => {
-    const miniChefType = chain.contracts?.mini_chef?.type;
-    switch (miniChefType) {
-      case ChefType.MINI_CHEF:
-        return undefined;
-      case ChefType.MINI_CHEF_V2:
-        return combinedApr;
-      case ChefType.PANGO_CHEF:
-        return stakingInfo.stakingApr;
-      default:
-        return undefined;
-    }
-  };
+  const farmApr = stakingInfo.stakingApr;
+  const earnedAmount = stakingInfo.earnedAmount;
 
-  const apr = getApr();
+  const pngPRice = useTokenCurrencyPrice(PNG[chainId]) ?? new Price(PNG[chainId], WAVAX[chainId], '1', '0');
+
+  //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
+  const userRewardRate = stakingInfo.userRewardRate;
+  const userBalance = stakingInfo.userValueVariables.balance;
+  const pairPrice = stakingInfo.pairPrice;
+  const userApr =
+    !userBalance.isZero() && pairPrice.greaterThan('0')
+      ? pngPRice.raw
+          .multiply((86400 * 365 * 100).toString())
+          .multiply(userRewardRate.toString())
+          .divide(pairPrice.raw.multiply(userBalance.toString()))
+          .toFixed(0)
+      : 0;
+
+  const apr = isStaking ? userApr : farmApr;
 
   const renderButton = () => {
     if (isStaking && Boolean(earnedAmount.greaterThan('0')))
@@ -172,7 +168,7 @@ const PoolCardViewV3 = ({
           )}
 
           <Stat
-            title={`APR`}
+            title={isStaking ? 'Your APR' : 'Average APR'}
             stat={apr ? `${numeral(apr).format('0a')}%` : '-'}
             titlePosition="top"
             titleFontSize={[16, 14]}
@@ -219,7 +215,7 @@ const PoolCardViewV3 = ({
           version={version}
           backgroundColor="color5"
           stakingInfo={stakingInfo}
-          combinedApr={apr}
+          combinedApr={farmApr}
         />
       )}
 

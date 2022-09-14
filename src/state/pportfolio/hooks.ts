@@ -170,7 +170,7 @@ export function useGetWalletChainTokens(chainId: number) {
       let requestTokens: (TokenDataUser | PairDataUser)[] = data
         .filter((token: any) => token?.is_wallet && token?.is_verified)
         .map((token: any) => {
-          if (token?.id?.toLowerCase() === 'avax') {
+          if (token?.id?.toLowerCase() === (CAVAX[chainId]?.symbol).toLowerCase()) {
             return new TokenDataUser(CAVAX[chainId], token?.price, token?.amount);
           }
 

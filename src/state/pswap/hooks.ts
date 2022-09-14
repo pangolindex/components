@@ -60,7 +60,12 @@ export function useSwapActionHandlers(chainId: ChainId): {
       dispatch(
         selectCurrency({
           field,
-          currencyId: currency instanceof Token ? currency.address : currency === CAVAX[chainId] ? 'AVAX' : '',
+          currencyId:
+            currency instanceof Token
+              ? currency.address
+              : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
+              ? (CAVAX[chainId]?.symbol as string)
+              : '',
         }),
       );
     },
@@ -258,12 +263,12 @@ export function useDerivedSwapInfo(): {
   };
 }
 
-export function parseCurrencyFromURLParameter(urlParam: any): string {
+export function parseCurrencyFromURLParameter(urlParam: any, chainId: ChainId): string {
   if (typeof urlParam === 'string') {
     const valid = isAddress(urlParam);
     if (valid) return valid;
-    if (urlParam.toUpperCase() === 'AVAX') return 'AVAX';
-    if (valid === false) return 'AVAX';
+    if (urlParam.toUpperCase() === CAVAX[chainId]?.symbol?.toUpperCase()) return CAVAX[chainId]?.symbol as string;
+    if (valid === false) return CAVAX[chainId]?.symbol as string;
   }
   //return 'AVAX' ?? '';
   return '';
@@ -288,9 +293,9 @@ function validatedRecipient(recipient: any): string | null {
   return null;
 }
 
-export function queryParametersToSwapState(parsedQs: ParsedQs): SwapParams {
-  let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency);
-  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency);
+export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: ChainId): SwapParams {
+  let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency, chainId);
+  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency, chainId);
   if (inputCurrency === outputCurrency) {
     if (typeof parsedQs.outputCurrency === 'string') {
       inputCurrency = '';
@@ -333,7 +338,7 @@ export function useDefaultsFromURLSearch():
   useEffect(() => {
     if (!chainId) return;
 
-    const parsed = queryParametersToSwapState(parsedQs);
+    const parsed = queryParametersToSwapState(parsedQs, chainId);
 
     dispatch(
       replaceSwapState({

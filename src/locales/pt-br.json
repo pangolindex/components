@@ -61,7 +61,7 @@
     "enterAmount": "Insira um valor",
     "unclaimedReward": "{{ symbol }} não resgatado",
     "claim": "Reivindicar",
-    "claimReward": "{{ symbol }} Reivindicar",
+    "claimReward": "Reivindicar {{ symbol }}",
     "liquidityRemainsPool": "Quando você resgata sem retirar sua liquidez ela permanece na pool de mineração.",
     "withdrawingLiquidity": "Retirado {{ amount }} {{ symbol }}",
     "claimingReward": "Reivindicando {{ amount }} {{ symbol }}",
@@ -694,7 +694,7 @@
     "compoundWarning": "A composição de suas recompensas para a farm {{ token0 }}-{{ token1 }} fará com que suas recompensas sejam apostadas na farm {{ currency }}-{{ png }}. Você precisa adicionar o valor igual de {{ currency }} token para suas recompensas acumuladas de {{ png }}.",
     "compoundAmountWarning": "Você precisa adicionar {{ amount }} {{ symbol }} para compor.",
     "compoundAmountWarning2": "Tenha cuidado para bloquear sua pool de {{ symbol }} {{ png }} até reivindicar as recompensas desta pool.",
-    "highVolalityWarning": "Alta volatilidade, tente compor mais tarde",
+    "highVolalityWarning": "Muito cedo, tente em algumas horas",
     "compoundSuccess": "Você compôs sua farm com sucesso."
   }
 }

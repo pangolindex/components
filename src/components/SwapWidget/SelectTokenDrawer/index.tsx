@@ -25,7 +25,11 @@ interface Props {
 }
 
 const currencyKey = (currency: Currency, chainId: ChainId): string => {
-  return currency instanceof Token ? currency.address : currency === CAVAX[chainId] ? 'AVAX' : '';
+  return currency instanceof Token
+    ? currency.address
+    : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
+    ? (CAVAX[chainId]?.symbol as string)
+    : '';
 };
 
 const SelectTokenDrawer: React.FC<Props> = (props) => {
