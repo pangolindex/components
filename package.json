@@ -41,7 +41,6 @@
     "@gelatonetwork/limit-orders-react": "^2.3.1",
     "@gnosis.pm/safe-apps-web3-react": "^0.6.7",
     "@pangolindex/exchange-contracts": "2.1.6",
-    "@pangolindex/governance": "1.2.0",
     "@pangolindex/token-lists": "^1.0.2",
     "@pangolindex/web3-react-injected-connector": "1.0.1",
     "@reduxjs/toolkit": "1.8.0",
@@ -92,7 +91,7 @@
     "react-use": "15.3.8",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.5",
-    "recharts": "^2.1.6",
+    "recharts": "2.1.13",
     "redux-localstorage-simple": "2.4.1",
     "remark-gfm": "^3.0.1",
     "slick-carousel": "^1.8.1",
@@ -157,15 +156,16 @@
   },
   "peerDependencies": {
     "@pangolindex/sdk": ">=2.0.1",
-    "react": ">=17.0.1",
-    "react-dom": ">=17.0.1"
+    "react": ">=16.14.0",
+    "react-dom": ">=16.14.0"
   },
   "directories": {
     "lib": "lib"
   },
   "resolutions": {
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "@pangolindex/exchange-contracts": "^2.1.5"
   },
   "keywords": [],
   "description": "Pangolin Components",

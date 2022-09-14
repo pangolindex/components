@@ -1,8 +1,8 @@
 import { Contract } from '@ethersproject/contracts';
+import MiniChefV2 from '@pangolindex/exchange-contracts/artifacts/contracts/mini-chef/MiniChefV2.sol/MiniChefV2.json';
 import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
-import MiniChefV2 from '@pangolindex/governance/artifacts/contracts/MiniChefV2.sol/MiniChefV2.json';
-import Png from '@pangolindex/governance/artifacts/contracts/PNG.sol/Png.json';
-import StakingRewards from '@pangolindex/governance/artifacts/contracts/StakingRewards.sol/StakingRewards.json';
+import Png from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-token/Png.sol/Png.json';
+import StakingRewards from '@pangolindex/exchange-contracts/artifacts/contracts/staking-rewards/StakingRewards.sol/StakingRewards.json';
 import { WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { MINICHEF_ADDRESS, PANGOCHEF_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from 'src/constants';
