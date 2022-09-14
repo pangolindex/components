@@ -694,7 +694,7 @@
     "compoundWarning": "将您对 {{ token0 }}-{{ token1 }} 农场的奖励组合起来，您的奖励将投入 {{ currency }}-{{ png }} 农场。 您需要在累积的 {{ png }} 奖励中添加等值的 {{ currency }} 代币。",
     "compoundAmountWarning": "您需要添加 {{ amount }} {{ symbol }} 来复合。",
     "compoundAmountWarning2": "请注意，您将锁定您的 {{ symbol }} {{ png }} 池，直到您获得该池的奖励。",
-    "highVolalityWarning": "高波动性，稍后尝试组合。",
+    "highVolalityWarning": "太早了，过几个小时试试",
     "compoundSuccess": "你已经成功地组成了你的农场。"
   }
 }

@@ -294,9 +294,11 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             </Text>
           </Box>
 
-          <Button variant="primary" onClick={() => setConfirm(true)}>
-            {t('sarCompound.compound')}
-          </Button>
+          <Box width="100%" alignSelf="end">
+            <Button variant="primary" onClick={() => setConfirm(true)}>
+              {t('sarCompound.compound')}
+            </Button>
+          </Box>
         </Root>
       ) : !claimError && !attempting && !hash ? (
         confirmContent

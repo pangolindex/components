@@ -695,7 +695,7 @@
     "compoundWarning": "En combinant vos récompenses pour la ferme {{ token0 }}-{{ token1 }}, vos récompenses seront mises en jeu dans la ferme {{ currency }}-{{ png }}. Vous devez ajouter une valeur égale de {{ currency }}token à vos récompenses {{ png }} accumulées.",
     "compoundAmountWarning": "Vous devez ajouter {{ amount }} {{ symbol }} au composé.",
     "compoundAmountWarning2": "Faites attention que vous verrouillerez votre pool de {{ symbol }} {{ png }} jusqu'à ce que vous réclamiez les récompenses de ce pool.",
-    "highVolalityWarning": "Volatilité élevée, essayez de composer plus tard",
+    "highVolalityWarning": "Trop tôt, essayez dans quelques heures",
     "compoundSuccess": "Vous avez réussi à composer votre ferme."
   }
 }

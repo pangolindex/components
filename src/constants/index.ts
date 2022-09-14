@@ -133,8 +133,8 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: '',
   },
   [ChainId.SONGBIRD]: {
-    inputCurrency: '',
-    outputCurrency: '',
+    inputCurrency: 'SGB',
+    outputCurrency: PNG[ChainId.SONGBIRD].address,
   },
   [ChainId.HEDERA_TESTNET]: {
     inputCurrency: '',

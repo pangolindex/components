@@ -45,7 +45,7 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
       <MobileWrapper>
         <Header stakingInfo={stakingInfo} version={version} onClose={onDismiss} />
         <Box p={10}>
-          {isStaking && <EarnedDetail stakingInfo={stakingInfo} version={version} />}
+          {isStaking && renderEarnedDetail()}
           <Box mt={isStaking ? '10px' : '0px'}>
             <EarnWidget currencyA={currency0} currencyB={currency1} version={version} stakingInfo={stakingInfo} />
           </Box>

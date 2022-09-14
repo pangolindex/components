@@ -695,7 +695,7 @@
     "compoundWarning": "Wenn Sie Ihre Belohnungen für die {{ token0 }}-{{ token1 }}-Farm zusammensetzen, werden Ihre Belohnungen in die {{ currency }}-{{ png }} farm eingesetzt. Sie müssen den gleichen Wert von {{ currency }}Token für Ihre angesammelten {{ png }} Prämien.",
     "compoundAmountWarning": "Sie müssen {{ amount }} {{ symbol }} zur Verbindung hinzufügen.",
     "compoundAmountWarning2": "Zum Zusammensetzen. Seien Sie vorsichtig, dass Sie Ihren {{ symbol }} {{ png }} pool sperren, bis Sie die Belohnungen dieses Pools beanspruchen.",
-    "highVolalityWarning": "Hohe Volatilität, versuchen Sie später zu komponieren",
+    "highVolalityWarning": "Zu früh, versuchen Sie es in ein paar Stunden",
     "compoundSuccess": "Sie haben Ihre Farm erfolgreich zusammengestellt."
   }
 }
