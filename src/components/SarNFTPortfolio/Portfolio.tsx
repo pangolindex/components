@@ -49,6 +49,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
     } else {
       setCurrentItems(positions.slice(itemOffset, endOffset));
     }
+    setPageCount(0);
   }
 
   const onSelect = (value: string) => {
