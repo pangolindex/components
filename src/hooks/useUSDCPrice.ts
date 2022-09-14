@@ -2,10 +2,12 @@ import { parseUnits } from '@ethersproject/units';
 import { ChainId, Currency, JSBI, Price, TokenAmount, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { NEAR_API_BASE_URL } from 'src/constants';
-import { USDCe } from 'src/constants/tokens';
+import { USDC, USDCe } from 'src/constants/tokens';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { PairState, usePairs } from '../data/Reserves';
 import { useChainId } from '../hooks';
+import { useCoinGeckoCurrencyPrice } from './Tokens';
+import { useTokenCurrencyPrice } from './useCurrencyPrice';
 
 /**
  * Returns the price in USDC of the input currency
@@ -126,7 +128,21 @@ export function useNearUSDCPrice(currency?: Currency): Price | undefined {
   }, [chainId, currency, token, USDC, result]);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function useDummySongbirdUSDCPrice(_currency?: Currency): Price | undefined {
-  return undefined;
+export function useSongBirdUSDPrice(currency: Currency): Price | undefined {
+  const chainId = ChainId.SONGBIRD;
+
+  const wrapped = wrappedCurrency(currency, chainId);
+  const tokenPrice = useTokenCurrencyPrice(wrapped); // token price in sgb
+
+  const usd = USDC[chainId];
+
+  const { data: currencyPrice, isLoading } = useCoinGeckoCurrencyPrice(chainId); // sbg price in usd
+
+  return useMemo(() => {
+    if (!wrapped || !currencyPrice || !tokenPrice || isLoading) return new Price(currency, usd, '1', '0');
+
+    const tokenUSDPrice = tokenPrice.raw.multiply(parseUnits(currencyPrice.toString(), 18).toString());
+
+    return new Price(currency, usd, tokenUSDPrice.denominator, tokenUSDPrice.numerator);
+  }, [wrapped, currencyPrice, tokenPrice]);
 }
