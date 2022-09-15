@@ -1,28 +1,39 @@
 /// <reference types = "Cypress"/>
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data'
-import {newsLinks} from '../support/src/dashboard'
+import {newsLinks, socialLinks} from '../support/src/dashboard'
+
 describe('Dashboard', () => {
     Cypress.on('uncaught:exception', (err, runnable) => {
         // returning false here prevents Cypress from
         // failing the test
         return false
     })
-    const {returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken,tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn,newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD} = selectors.dashboard
-    const {returnToLegacy, languagesArray, tokenName, AvaxToken, switchArray, newsLinkArray, newsLinkAssertArray, chartTimeArray} = data.dashboard
+    const {returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken,tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn,newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, pngButton, pngModal, pngPriceSel} = selectors.dashboard
+    const {returnToLegacy, languagesArray, tokenName, AvaxToken, switchArray, newsLinkArray, newsLinkAssertArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, newsSongBird, usd} = data.dashboard
     const legUrl = "https://legacy.pangolin.exchange/#/"
     beforeEach('',() => {
         cy.visit('/dashboard')
     })
 
-    it('Verify that Return to lagacy site button redirects the user to the "Legacy site" page', () => {
+    it('TC-01, Verify that the side menu is expanded while hovering the pointer over it', () => {
+        cy.get(sideMenuCollapse).should(visible => {
+            expect(visible).to.be.visible
+        }).then(sidemenu => {
+            cy.get(sidemenu).trigger('mouseover')
+            cy.get(sideMenuExpand)
+                .should('be.visible')
+        })
+    })
+  
+    it('TC-05, Verify that Return to lagacy site button redirects the user to the "Legacy site" page', () => {
         cy.get(returnToLegacyBtn)
             .should('contain', returnToLegacy)
             .invoke('removeAttr', 'target').click()
         cy.url().should('include', legUrl)
     })
 
-    it('Verify that the user can change the language', () => {
+    it('TC-18, Verify that the user can change the language', () => {
         for(var i=1; i < noOfLanguages+1; i++){
             cy.get(languageBtn).click()
             cy.get(`${languageDropdown}:nth-child(${i})`).click();
@@ -31,7 +42,7 @@ describe('Dashboard', () => {
         }
     })
 
-    it('Verify that the user can change the theme to light mode', () => {
+    it('TC-19, Verify that the user can change the theme to light mode', () => {
         cy.get(lightMood)
             .invoke('attr', 'alt')
             .should('contain', 'Setting')
@@ -41,7 +52,7 @@ describe('Dashboard', () => {
             .should('contain', 'NightMode')
     })
 
-    it('Verify that the user can change the theme to dark mode', () => {
+    it('TC-20, Verify that the user can change the theme to dark mode', () => {
         cy.get(lightMood).click()
         cy.get(darkMood).click()
         cy.get(lightMood)
@@ -49,7 +60,7 @@ describe('Dashboard', () => {
             .should('contain', 'Setting')
     })
 
-    it('Verify that the user can search for a specific token to add to the watchlist', () => {
+    it('TC-24, Verify that the user can search for a specific token to add to the watchlist', () => {
         cy.contains(/Dashboard/)
         cy.get(watchListBtn).
             should('be.visible').click()
@@ -61,7 +72,7 @@ describe('Dashboard', () => {
             .should("contain",tokenName)
     })
 
-    it("Verify that the user can add the token to the watchlist", () => {
+    it("TC-25, Verify that the user can add the token to the watchlist", () => {
         cy.contains(/Dashboard/)
         cy.get(watchListBtn)
             .should('be.visible').click()
@@ -72,7 +83,7 @@ describe('Dashboard', () => {
             .should("contain", AvaxToken)
     })
 
-    it('verify that the user is able to switch between the tokens in watchlist', () => {
+    it('TC-27, Verify that the user is able to switch between the tokens in watchlist', () => {
         cy.contains(/Dashboard/i)
         for (var i =1; i < 3; i++) {
             cy.get(`${switchToken}:nth-child(${i})`).click()
@@ -82,7 +93,7 @@ describe('Dashboard', () => {
     })
 
     chartTimeArray.forEach( time => {
-    it(`Verify that the chart is updated by pressing ${time} in watchlist`, () => {
+    it(`TC-28,29,30,31,32,33, Verify that the chart is updated by pressing ${time} in watchlist`, () => {
         cy.get(watchlistTimeBtn)
             .should('have.attr', 'color', 'text1')
                 .contains(time).click()
@@ -93,7 +104,7 @@ describe('Dashboard', () => {
     })
 })
 
-    it('Verify that the user can remove the token from the watchlist', () => {
+    it('TC-26, Verify that the user can remove the token from the watchlist', () => {
         cy.contains(/Dashboard/)
         cy.get(tokenSection).then($avax => {
             if($avax.text().includes(AvaxToken)){
@@ -116,7 +127,7 @@ describe('Dashboard', () => {
         })  
     })
 
-    it('Verify that Link button redirects the user to the info.exchange page', () => {
+    it('TC-34, Verify that Link button redirects the user to the info.exchange page', () => {
         let linkUrl = "https://info.pangolin.exchange/#/token/0x60781C2586D68229fde47564546784ab3fACA982"
         cy.get(watchlistLinkBtn)
             .invoke("removeAttr","target").click()
@@ -125,7 +136,7 @@ describe('Dashboard', () => {
             .should("be.visible")
     })
 
-    it('Verify that the user can make a trade from the Dashboard', () => {
+    it('TC-35, Verify that the user can make a trade from the Dashboard', () => {
         let swap = "https://dev.pangolin.exchange/#/swap"
         cy.get(watchlistTradeBtn)
             .contains(/trade/i).click()
@@ -135,66 +146,122 @@ describe('Dashboard', () => {
             .should("be.visible")
     })
 
-    it('Verify that the user is able to switch between different news in News section', function() {
+    it('TC-36, Verify that the user is able to switch between different news in News section', function() {
         cy.get(newsBtn).then(news => {
             expect(news).to.be.visible
             cy.get(newsBody).then(newsAssert => {
-                expect(newsAssert).to.contain("We've rolled out a new Twitter ")
+                expect(newsAssert)
+                    .to.contain(newsSongBird)
             })
             
             cy.get(news).find(newsNextBtn).click()
             cy.get(newsBody).then(newsAssert => {
-                expect(newsAssert).to.contain("Q2 2022 was volatile.")
+                expect(newsAssert)
+                    .to.contain("We've rolled out a new Twitter ")
             })
             cy.get(news).find(newsPreBtn).click()
             cy.get(newsBody).then(newsAssert => {
-                expect(newsAssert).to.contain("We've rolled out a new Twitter ")
+                expect(newsAssert)
+                    .to.contain(newsSongBird)
             })
         })
     })
-    it('Verify that the user can see the all time token value in USD', function() {
+    
+    it('TC-37,38,39,40,41 Verify that the user can see the all time token value in USD', function() {
         cy.get(watchlistGraphLine).then( chart => {
             cy.get(chart).trigger('mouseover')
             cy.wait(500)
             cy.get(chart).find(graphUSD).then( usdChart => {
-                expect(usdChart).to.contain('USD')
-                expect(usdChart).to.have.text('USD')
-                assert.deepEqual('USD', 'USD')
+                expect(usdChart).to.contain(usd)
+                expect(usdChart).to.have.text(usd)
+                assert.deepEqual('USD', usd)
             })
         })
     })
     
-    it('Verify that the "Pangolin_Flare link" in the news section redirects the user to the "Pangolin Exchange" page', () => {
+    it('TC-42, Verify that the "Read the Litepaper" in the news section redirects the user to the "Pangolin Exchange" page', () => {
             cy.get(newsBody).then(newsAssert => {
-                expect(newsAssert).to.contain("We've rolled out a new Twitter ")
-                cy.get(newsAssert).contains('@Pangolin_Flare').invoke('removeAttr', 'target').click()
+                expect(newsAssert)
+                    .to.contain(newsSongBird)
+                cy.get(newsAssert).contains('Read the Litepaper')
+                    .invoke('removeAttr', 'target').click()
                 cy.wait(2000)
-                cy.contains(/Pangolin_Flare /i).should('be.visible')
+                cy.contains(/Litepaper: Pangolin Songbird/i)
+                    .should('be.visible')
         })
     })
 
-    it(`Verify that the ${newsLinkAssertArray[0]} in the "Read the 2H 2022 Roadmap" in news section redirects the user to the "Pangolin Exchange" page`, () => {
+    it(`TC-42, Verify that the ${newsLinkAssertArray[0]} in the "pangolin flare" in news section redirects the user to the "Pangolin Exchange" page`, () => {
         newsLinks(0,1,newsLinkAssertArray[0], newsLinkArray[0])
     })
-    it(`Verify that the ${newsLinkAssertArray[1]} link in the "songBirdLink" in news section redirects the user to the "Pangolin Exchange" page`, () => {
+
+    it(`TC-42, Verify that the ${newsLinkAssertArray[1]} in the "Read the 2H 2022 Roadmap" in news section redirects the user to the "Pangolin Exchange" page`, () => {
         newsLinks(0,2,newsLinkAssertArray[1], newsLinkArray[1])
     })
-    it(`Verify that the "${newsLinkAssertArray[1]}" link in the air drop in news section redirects the user to the "Pangolin Exchange" page`, () => {
-    
-        newsLinks(0, 3, newsLinkAssertArray[1], newsLinkArray[2])
-    })
-    it(`Verify that the ${newsLinkAssertArray[2]} link in the "limit orders" in the news section redirects the user to the "Pangolin Exchange" page`, () => {
 
+    it(`TC-42, Verify that the "${newsLinkAssertArray[2]}" link in the air drop songbird in news section redirects the user to the "Pangolin Exchange" page`, () => {
+    
+        newsLinks(0, 3, newsLinkAssertArray[2], newsLinkArray[2])
+    })
+
+    it(`TC-42, Verify that the "${newsLinkAssertArray[2]}" link in the air drop in news section redirects the user to the "Pangolin Exchange" page`, () => {
+    
         newsLinks(0, 4, newsLinkAssertArray[2], newsLinkArray[3])
     })
-    it(`Verify that the ${newsLinkAssertArray[2]} link in the moonpay in news section redirects the user to the "dashboard" page`, () => {
-        newsLinks(0, 5, newsLinkAssertArray[2], newsLinkArray[4])
-    })
-    it(`Verify that the ${newsLinkAssertArray[3]} link in the moonpay in news section redirects the user to the "dashboard" page`, () => {
 
-        newsLinks(0, 5, newsLinkAssertArray[3], newsLinkArray[5])
+    it(`TC-42, Verify that the ${newsLinkAssertArray[3]} link in the "limit orders" in the news section redirects the user to the "Pangolin Exchange" page`, () => {
+
+        newsLinks(0, 5, newsLinkAssertArray[3], newsLinkArray[4])
     })
-    it(`Verify that the ${newsLinkAssertArray[4]} link in the news section redirects the user to the "Multi-chain desk" page`, () => {
+
+    it(`TC-42, Verify that the ${newsLinkAssertArray[3]} link in the moonpay in news section redirects the user to the "dashboard" page`, () => {
+        newsLinks(0, 6, newsLinkAssertArray[3], newsLinkArray[5])
+    })
+
+    it(`TC-42, Verify that the ${newsLinkAssertArray[4]} link in the moonpay in news section redirects the user to the "dashboard" page`, () => {
+
         newsLinks(0, 6, newsLinkAssertArray[4], newsLinkArray[6])
+    })
+
+    it(`TC-42, Verify that the ${newsLinkAssertArray[5]} link in the news section redirects the user to the "Multi-chain desk" page`, () => {
+        newsLinks(0, 7, newsLinkAssertArray[5], newsLinkArray[7])
+    })
+
+    footerLinks.forEach( footerLink => {
+    it(`TC-44, 45, 46 Verify that the "${footerLink}" link on the footer opens the "${footerLink}" page`, () => {
+        cy.get(footerlinksSel)
+            .contains(footerLink).click()
+        cy.get(footerLinkBanner)
+            .should('be.visible').within( linksBanner => {
+            cy.get('strong').contains(footerLink)
+                .should('be.visible')
+            cy.get(linksBanner).find(footerLinkCloseBtn).click()
+        })
+    })
+})
+
+    for (let i = 0; i <= 6; i++) {
+    it(`TC-47, 48, 49, 50, 51, 52, 53, Verify that the user is redirected to the pangolin ${socialLinksContents[i]} page`, () => {
+        socialLinks(i, socialLinksArray[i])
+    })
+}
+
+    it('TC-54, Verify that the user cannot see the PNG value if the wallet is not connected', () => {
+        cy.get(pngButton).contains(/png/i).click()
+        cy.wait(1000)
+        cy.get(pngModal).within( modal => {
+            expect(modal).to.be.visible
+            cy.contains(/Your png breakdown/i).should( pngText => {
+                expect(pngText).to.be.visible
+            })
+            cy.get(pngPriceSel).then( png => {
+                cy.get(png).find('div').eq(1).then(pngPrice => {
+                    expect(pngPrice).to.contain("PNG price:")
+                })
+                cy.get(png).find('div').eq(2).then(pngValue => {
+                    expect(pngValue).to.contain('$-')
+                })
+            })
+        })
     })
 })

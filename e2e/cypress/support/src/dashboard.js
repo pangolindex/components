@@ -10,4 +10,14 @@ function newsLinks(startPoint, endPoint, link, assertMsg) {
     })
 })
 }
-export {newsLinks}
+function socialLinks(iteration, socialLinkArray) {
+    cy.get('div[class="sc-bsbRJL jTTilZ"]').should(visible => {
+        expect(visible).to.be.visible
+    }).then(sidemenu => {
+        cy.get(sidemenu).trigger('mouseover')
+        cy.get('div[class="sc-bsbRJL hLwfbT"]').should('be.visible')
+    })
+    cy.get('div[class="sc-hXRMBi dfHWNS"] a').eq(iteration).invoke('removeAttr', 'target').click()
+    cy.url().should('include', `${socialLinkArray}`)
+}
+export {newsLinks, socialLinks}

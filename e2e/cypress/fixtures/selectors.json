@@ -24,6 +24,14 @@
         "newsNextBtn": "div.qPvDD:nth-child(2)",
         "newsPreBtn": "div.qPvDD:nth-child(1)",
         "watchlistGraphLine": "div.recharts-wrapper:nth-child(1)",
-        "graphUSD": "div.recharts-tooltip-wrapper ul li span:nth-child(1)"
+        "graphUSD": "div.recharts-tooltip-wrapper ul li span:nth-child(1)",
+        "sideMenuCollapse": "div[class='sc-bsbRJL jTTilZ']",
+        "sideMenuExpand": "div[class='sc-bsbRJL hLwfbT']",
+        "footerlinksSel": "div[class='sc-cQFLBn hQUgJp'] div",
+        "footerLinkBanner": "div[class='sc-cbkKFq gUTrQx']",
+        "footerLinkCloseBtn": "svg.sc-dnqmqq",
+        "pngButton": "span[class='sc-kIPQKe iblkVR'] div[class='sc-kfGgVZ sc-esjQYD cueueu']",
+        "pngModal": "div[class='sc-kGXeez sc-iELTvK bieKzX']",
+        "pngPriceSel": "div[class='sc-bdVaJa sc-jKJlTe sc-eNQAEJ XssaD']"
     }
 }
