@@ -19,7 +19,10 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
   const { account } = usePangolinWeb3();
   const { data: positions, isLoading } = useSarPositions();
 
-  const filteredPositions = positions?.filter((position) => !position.balance.isZero()); // remove zero balances
+  // sort by balance
+  const filteredPositions = positions
+    ?.filter((position) => !position.balance.isZero())
+    .sort((a, b) => Number(b.balance.sub(a.balance).toString())); // remove zero balances and sort by balance
 
   const toggleWalletModal = useWalletModalToggle();
 
