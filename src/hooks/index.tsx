@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
-import { PROVIDER_MAPPING, SUPPORTED_WALLETS } from 'src/constants';
+import { PROVIDER_MAPPING } from 'src/constants';
 import { isAddress } from 'src/utils';
 
 interface Web3State {
@@ -75,30 +75,36 @@ export const useChainId = () => {
   return (chainId || ChainId.AVALANCHE) as ChainId;
 };
 
+// library -> web3.js
+// provider -> ethers.js
+// extendedProvider -> extended library
+
 export function useLibrary(): { library: any; provider: any } {
   const [result, setResult] = useState({} as { library: any; provider: any });
 
   const { connector } = useWeb3React();
+  const chainId = useChainId();
+  const { library: userProvidedLibrary } = usePangolinWeb3();
 
   useEffect(() => {
     async function load() {
-      const walletKey = Object.keys(SUPPORTED_WALLETS).find(
-        (key) => SUPPORTED_WALLETS[key].connector === connector,
-      ) as string;
+      // const walletKey = Object.keys(SUPPORTED_WALLETS).find(
+      //   (key) => SUPPORTED_WALLETS[key].connector === connector,
+      // ) as string;
 
-      const selectedProvider = (await connector?.getProvider()) || window.ethereum;
-      const provider = selectedProvider || window.ethereum;
-      const extendedProvider = provider && walletKey && (PROVIDER_MAPPING as any)[walletKey]?.(provider);
+      const web3jsProvider = (await connector?.getProvider()) || userProvidedLibrary || window.ethereum;
+      const finalWeb3jsProvider = web3jsProvider || window.ethereum;
+      const extendedWeb3Provider = finalWeb3jsProvider && (PROVIDER_MAPPING as any)[chainId]?.(finalWeb3jsProvider);
 
-      let library;
+      let finalEthersLibrary;
 
       try {
-        library = new Web3ProviderEthers(provider, 'any');
+        finalEthersLibrary = new Web3ProviderEthers(finalWeb3jsProvider, 'any');
       } catch (error) {
-        library = provider;
+        finalEthersLibrary = finalWeb3jsProvider;
       }
 
-      setResult({ library, provider: extendedProvider });
+      setResult({ library: finalEthersLibrary, provider: extendedWeb3Provider });
     }
     load();
   }, [connector]);
