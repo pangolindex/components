@@ -693,7 +693,7 @@
   "pangoChef": {
     "claimWarning1": "When you claim without withdrawing, your liquidity remains in the farm.",
     "claimWarning2": "Claiming rewards restarts your APR from 0%. Instead you may choose to compound.",
-    "compoundWarning": "Compounding your rewards for {{ token0 }}-{{ token1 }} farm will get your rewards staked into {{ currency }}-{{ png }} farm. You need to add equal value of {{ currency }}token to your accrued {{ png }} rewards.",
+    "compoundWarning": "Compounding your rewards for {{ token0 }}-{{ token1 }} farm will get your rewards staked into {{ currency }}-{{ png }} farm. You need to add equal value of {{ currency }} token to your accrued {{ png }} rewards.",
     "compoundAmountWarning": "You need to add {{ amount }} {{ symbol }} to compound.",
     "compoundAmountWarning2": "Be careful that you will be locking your {{ symbol }} {{ png }} pool till you claim the rewards of this pool.",
     "highVolalityWarning": "Too early, try in few hours",
