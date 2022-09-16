@@ -484,6 +484,7 @@ export function useSarPositions() {
 
       if (balance.isZero()) {
         setNftsIndexes([]);
+        return;
       }
 
       // get all positions ids
