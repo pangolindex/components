@@ -17,7 +17,7 @@ interface Props {
 
 export default function SarNFTPortfolio({ onSelectPosition }: Props) {
   const { account } = usePangolinWeb3();
-  const { data: positions, isLoading } = useSarPositions();
+  const { positions, isLoading } = useSarPositions();
 
   // sort by balance
   const filteredPositions = positions

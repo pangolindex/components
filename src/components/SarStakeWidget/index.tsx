@@ -34,7 +34,7 @@ export default function SarManageWidget() {
 
   const toggleWalletModal = useWalletModalToggle();
 
-  const { data: positions, isLoading } = useSarPositions();
+  const { positions, isLoading } = useSarPositions();
 
   // get fist position with balance 0
   const position = positions?.find((value) => value.balance.isZero());
