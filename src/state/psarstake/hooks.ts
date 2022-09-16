@@ -473,17 +473,16 @@ export function useSarPositions() {
 
   const sarStakingContract = useSarStakingContract();
 
-  const balanceState = useSingleCallResult(sarStakingContract, 'balanceOf', [account ?? ZERO_ADDRESS]);
-  const balance: BigNumber | undefined = balanceState.result?.[0];
-
   const [nftsIndexes, setNftsIndexes] = useState<string[][] | undefined>();
 
   useEffect(() => {
     const getNftsIndexes = async () => {
-      if (!sarStakingContract || !balance) return;
+      if (!sarStakingContract) return;
+
+      const balance: BigNumber = await sarStakingContract.balanceOf(account);
 
       if (balance.isZero()) {
-        setNftsIndexes([]);
+        setNftsIndexes([] as string[][]);
         return;
       }
 
@@ -494,15 +493,15 @@ export function useSarPositions() {
         balance.sub(1).toHexString(),
       );
 
-      const nftsIndexes = indexes?.map((index) => {
+      const _nftsIndexes = indexes?.map((index) => {
         return [index.toHexString()];
       });
 
-      setNftsIndexes(nftsIndexes);
+      setNftsIndexes(_nftsIndexes);
     };
 
     getNftsIndexes();
-  });
+  }, [sarStakingContract]);
 
   // get the staked amount for each position
   const positionsAmountState = useSingleContractMultipleData(sarStakingContract, 'positions', nftsIndexes ?? []);
@@ -539,19 +538,13 @@ export function useSarPositions() {
     const existErrorPendingReward = positionsPedingRewardsState.some((result) => result.error);
     const isValidPendingRewards = positionsPedingRewardsState.every((result) => result.valid);
 
-    const isLoading =
-      balanceState.loading ||
-      !isAllFetchedURI ||
-      !isAllFetchedAmount ||
-      !isAllFetchedRewardRate ||
-      !isAllFetchedPendingReward;
+    const isLoading = !isAllFetchedURI || !isAllFetchedAmount || !isAllFetchedRewardRate || !isAllFetchedPendingReward;
     // first moments loading is false and valid is false then is loading the query is true
-    const isValid = balanceState.valid && isValidURIs && isValidAmounts && isValidRewardRates && isValidPendingRewards;
+    const isValid = isValidURIs && isValidAmounts && isValidRewardRates && isValidPendingRewards;
 
-    const error =
-      balanceState.error || existErrorURI || existErrorAmount || existErrorRewardRate || existErrorPendingReward;
+    const error = existErrorURI || existErrorAmount || existErrorRewardRate || existErrorPendingReward;
 
-    if (error || !account || !existSarContract(chainId)) {
+    if (error || !account || !existSarContract(chainId) || (!!nftsIndexes && nftsIndexes.length === 0)) {
       return { positions: [] as Position[], isLoading: false };
     }
 
@@ -599,5 +592,5 @@ export function useSarPositions() {
     });
     // remove the empty positions
     return { positions: positions.filter((position) => !!position), isLoading: false };
-  }, [account, balanceState, positionsAmountState, positionsRewardRateState, nftsURIsState, nftsIndexes]);
+  }, [account, positionsAmountState, positionsRewardRateState, nftsURIsState, nftsIndexes]);
 }
