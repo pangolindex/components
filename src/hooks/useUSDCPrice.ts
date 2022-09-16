@@ -129,7 +129,7 @@ export function useNearUSDCPrice(currency?: Currency): Price | undefined {
   }, [chainId, currency, token, USDC, result]);
 }
 
-export function useSongBirdUSDPrice(currency: Currency): Price | undefined {
+export function useSongBirdUSDPrice(currency: Currency | undefined): Price | undefined {
   const chainId = ChainId.SONGBIRD;
 
   const wrapped = wrappedCurrency(currency, chainId);
@@ -140,7 +140,7 @@ export function useSongBirdUSDPrice(currency: Currency): Price | undefined {
   const { data: currencyPrice, isLoading } = useCoinGeckoCurrencyPrice(chainId); // sbg price in usd
 
   return useMemo(() => {
-    if (!wrapped || !currencyPrice || !tokenPrice || isLoading) return new Price(currency, usd, '1', '0');
+    if (!wrapped || !currencyPrice || !tokenPrice || isLoading || !currency) return undefined;
 
     const tokenUSDPrice = tokenPrice.raw.multiply(decimalToFraction(currencyPrice));
 
