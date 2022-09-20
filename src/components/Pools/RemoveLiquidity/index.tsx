@@ -175,7 +175,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
                   }
                 />
 
-                <Box>
+                <Box my="5px">
                   <NumberOptions
                     onChange={(value) => {
                       setPercetage(value);
