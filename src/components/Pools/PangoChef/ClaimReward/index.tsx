@@ -50,7 +50,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
         const response: TransactionResponse = await pangoChefContract[method](stakingInfo.pid);
         await waitForTransaction(response, 1);
         addTransaction(response, {
-          summary: t('earn.claimAccumulated', { symbol: 'PNG' }),
+          summary: t('earn.claimAccumulated', { symbol: png.symbol }),
         });
         setHash(response.hash);
       } catch (error) {
