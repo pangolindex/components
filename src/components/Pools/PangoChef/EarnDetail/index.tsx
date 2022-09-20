@@ -1,8 +1,10 @@
+import { formatEther } from '@ethersproject/units';
 import { TokenAmount } from '@pangolindex/sdk';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Drawer, Stat, Text } from 'src/components';
+import ToolTipText from 'src/components/TextToolTip';
 import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
@@ -74,13 +76,18 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
       </Box>
 
       <Container>
-        <Box width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <Box width="100%">
           <Text fontSize="12px" color="text1" textAlign="center">
             {t('earn.unclaimedReward', { symbol: png.symbol })}
           </Text>
-          <Text fontSize="18px" fontWeight={700} color="text1" textAlign="center">
-            {earnedAmount.toFixed(2)}
-          </Text>
+          <ToolTipText
+            fontSize="16px"
+            fontWeight={700}
+            color="text1"
+            textAlign="center"
+            text={earnedAmount.toFixed(2)}
+            toolTipText={formatEther(earnedAmount.raw.toString())}
+          />
         </Box>
         {isSuperFarm && (
           <>

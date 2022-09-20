@@ -14,6 +14,7 @@ import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { decimalToFraction } from 'src/utils';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
+import { getExtraTokensWeeklyRewardRate } from '../pstake/hooks';
 import { PangoChefInfo, Pool, PoolType, RewardSummations, UserInfo, ValueVariables } from './types';
 
 export function usePangoChefInfos() {
@@ -326,6 +327,7 @@ export function usePangoChefInfos() {
         totalRewardRatePerWeek: totalRewardRatePerWeek,
         rewardRatePerWeek: new TokenAmount(png, rewardRate.mul(60 * 60 * 24 * 7).toString()),
         getHypotheticalWeeklyRewardRate: getHypotheticalWeeklyRewardRate,
+        getExtraTokensWeeklyRewardRate: getExtraTokensWeeklyRewardRate,
         earnedAmount: pendingRewards,
         valueVariables: pool.valueVariables,
         userValueVariables: userInfo?.valueVariables,

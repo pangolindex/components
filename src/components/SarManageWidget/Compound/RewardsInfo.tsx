@@ -2,14 +2,13 @@ import numeral from 'numeral';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
-import CurrencyLogo from 'src/components/CurrencyLogo';
 import { Text } from 'src/components/Text';
+import ToolTipText from 'src/components/TextToolTip';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { Position } from 'src/state/psarstake/hooks';
 import Title from '../Title';
 import { Options } from '../types';
-import { ToolTipText } from './styleds';
 
 interface Props {
   selectedOption: Options;
@@ -39,13 +38,15 @@ export default function RewardsInfo({ selectedOption, selectedPosition, pendingR
           <Text color="text1" fontSize="16px" fontWeight={500} textAlign="center">
             {t('sarCompound.reward')}:
           </Text>
-          <ToolTipText color="text1" fontSize="36px" fontWeight={500} textAlign="center">
-            {formattedPedingRewards === 'NaN' ? '0.00' : formattedPedingRewards}
-            <CurrencyLogo currency={png} style={{ marginLeft: '5px' }} />
-            <span className="tooltip">
-              {pendingRewards} {png.symbol}
-            </span>
-          </ToolTipText>
+          <ToolTipText
+            color="text1"
+            fontSize="36px"
+            fontWeight={500}
+            textAlign="center"
+            text={formattedPedingRewards === 'NaN' ? '0.00' : formattedPedingRewards}
+            toolTipText={`${pendingRewards} ${png.symbol}`}
+            currency={png}
+          />
         </Box>
       )}
     </>
