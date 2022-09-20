@@ -207,9 +207,11 @@ export async function waitForTransaction(
   ]);
 }
 
-export function getBuyUrl(token: Token): string {
+export function getBuyUrl(token: Token, chainId?: ChainId): string {
   const origin = window.location.origin;
-  const path = `/#/swap?inputCurrency=${ZERO_ADDRESS}&outputCurrency=${token.address}`;
+  const path = `/#/swap?inputCurrency=${chainId ? CAVAX[chainId].symbol : ZERO_ADDRESS}&outputCurrency=${
+    token.address
+  }`;
   return origin.includes('localhost') || origin.includes('pangolin.exchange') ? path : `app.pangolin.exchange${path}`;
 }
 
