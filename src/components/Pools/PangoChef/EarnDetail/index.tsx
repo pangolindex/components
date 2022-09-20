@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Drawer, Stat, Text } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
+import { PNG } from 'src/constants/tokens';
+import { useChainId } from 'src/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import RemoveDrawer from '../../RemoveDrawer';
@@ -17,6 +19,7 @@ export interface EarnDetailProps {
 }
 
 const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
+  const chainId = useChainId();
   const { t } = useTranslation();
 
   const [isClaimDrawerVisible, setShowClaimDrawer] = useState(false);
@@ -55,6 +58,8 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
 
   const isDisabledButtons = !earnedAmount?.greaterThan(BIG_INT_ZERO);
 
+  const png = PNG[chainId];
+
   return (
     <Wrapper>
       <Box display="flex" justifyContent="space-between">
@@ -71,7 +76,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
       <Container>
         <Box width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
           <Text fontSize="12px" color="text1" textAlign="center">
-            Unclaimed PNG
+            {t('earn.unclaimedReward', { symbol: png.symbol })}
           </Text>
           <Text fontSize="18px" fontWeight={700} color="text1" textAlign="center">
             {earnedAmount.toFixed(2)}

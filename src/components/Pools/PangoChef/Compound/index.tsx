@@ -39,7 +39,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const [confirm, setConfirm] = useState(false);
   const [hash, setHash] = useState<string | undefined>();
   const [attempting, setAttempting] = useState(false);
-  const [claimError, setCompound] = useState<string | undefined>();
+  const [compoundError, setCompound] = useState<string | undefined>();
 
   const pangoChefContract = usePangoChefContract();
 
@@ -202,13 +202,13 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   }
 
   const renderDrawer = () => {
-    if (claimError) {
+    if (compoundError) {
       return (
         <ErrorWrapper paddingX="30px" paddingBottom="30px">
           <ErrorBox>
             <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
             <Text fontWeight={500} fontSize={16} color={'red1'} textAlign="center" style={{ width: '85%' }}>
-              {claimError}
+              {compoundError}
             </Text>
           </ErrorBox>
           <Button variant="primary" onClick={onClose}>
@@ -230,7 +230,9 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       <TextInput
         addonAfter={
           <Box padding="5px" bgColor="color2" borderRadius="8px">
-            <Text color="text1">{currency.symbol}</Text>
+            <Text color="text1">
+              {amountToAdd instanceof TokenAmount ? amountToAdd.token.symbol : amountToAdd.currency.symbol}
+            </Text>
           </Box>
         }
         disabled={true}
@@ -288,8 +290,8 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
               {t('pangoChef.compoundWarning', {
                 token0: currency0.symbol,
                 token1: currency1.symbol,
-                currency: currency.symbol,
-                png: png.symbol,
+                currency: isPNGPool ? currency0.symbol : currency.symbol,
+                png: isPNGPool ? currency1.symbol : png.symbol,
               })}
             </Text>
           </Box>
@@ -300,7 +302,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             </Button>
           </Box>
         </Root>
-      ) : !claimError && !attempting && !hash ? (
+      ) : !compoundError && !attempting && !hash ? (
         confirmContent
       ) : (
         renderDrawer()

@@ -1,5 +1,5 @@
 import { ALL_CHAINS, Chain } from '@pangolindex/sdk';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Box, Modal, Text, ToggleButtons } from 'src/components';
 import { ButtonFrame, ChainButton, ChainsList, CloseButton, Frame, Logo } from './styled';
@@ -20,41 +20,56 @@ const NetworkSelection: React.FC<NetworkProps> = (props) => {
   const [mainnet, setMainnet] = useState(true);
   const [chainListHeight, setChainListHeight] = useState(48);
   const { ethereum } = window;
-  const isMetaMask = ethereum && ethereum.isMetaMask;
 
   const chains = ALL_CHAINS.filter((chain) => chain.pangolin_is_live && chain.mainnet === mainnet);
+
+  const provider = useMemo(() => {
+    if (window.xfi && window.xfi.ethereum) {
+      return window.xfi.ethereum;
+    } else if (window.bitkeep && window.isBitKeep) {
+      return window.bitkeep.ethereum;
+    }
+    return window.ethereum;
+  }, undefined);
 
   useEffect(() => {
     if (chains.length / 2 <= 1) setChainListHeight(48);
     else if (chains.length / 2 <= 2) setChainListHeight(116);
     else setChainListHeight(184);
   }, [mainnet]);
+
   const changeChain = async (chain: Chain) => {
-    if (isMetaMask && ethereum) {
+    if (ethereum) {
       try {
-        await ethereum.request({
+        await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
         });
         window.location.reload();
+        closeModal();
       } catch (error) {
         // This error code indicates that the chain has not been added to MetaMask.
         const metamask = error as MetamaskError;
         if (metamask.code === 4902) {
-          await ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [
-              {
-                chainName: chain.name,
-                chainId: `0x${chain?.chain_id?.toString(16)}`,
-                //nativeCurrency: chain.nativeCurrency,
-                rpcUrls: [chain.rpc_uri],
-                blockExplorerUrls: chain.blockExplorerUrls,
-                iconUrls: chain.logo,
-                nativeCurrency: chain.nativeCurrency,
-              },
-            ],
-          });
+          try {
+            await provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainName: chain.name,
+                  chainId: `0x${chain?.chain_id?.toString(16)}`,
+                  //nativeCurrency: chain.nativeCurrency,
+                  rpcUrls: [chain.rpc_uri],
+                  blockExplorerUrls: chain.blockExplorerUrls,
+                  iconUrls: chain.logo,
+                  nativeCurrency: chain.nativeCurrency,
+                },
+              ],
+            });
+            closeModal();
+          } catch (_error) {
+            return;
+          }
         }
       }
     }

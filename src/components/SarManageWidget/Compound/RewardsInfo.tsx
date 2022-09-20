@@ -2,6 +2,7 @@ import numeral from 'numeral';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
+import CurrencyLogo from 'src/components/CurrencyLogo';
 import { Text } from 'src/components/Text';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
@@ -40,6 +41,7 @@ export default function RewardsInfo({ selectedOption, selectedPosition, pendingR
           </Text>
           <ToolTipText color="text1" fontSize="36px" fontWeight={500} textAlign="center">
             {formattedPedingRewards === 'NaN' ? '0.00' : formattedPedingRewards}
+            <CurrencyLogo currency={png} style={{ marginLeft: '5px' }} />
             <span className="tooltip">
               {pendingRewards} {png.symbol}
             </span>
