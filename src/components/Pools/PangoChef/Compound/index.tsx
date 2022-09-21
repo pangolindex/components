@@ -291,6 +291,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             bgColor="color3"
             borderRadius="8px"
             margin="auto"
+            flexGrow={1}
           >
             <Text color="text1" textAlign="center">
               {t('pangoChef.compoundWarning', {
@@ -302,7 +303,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             </Text>
           </Box>
 
-          <Box width="100%" alignSelf="end">
+          <Box width="100%" mt="10px">
             <Button variant="primary" onClick={() => setConfirm(true)}>
               {t('sarCompound.compound')}
             </Button>
