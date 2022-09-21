@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 import { TransactionResponse } from '@ethersproject/providers';
+import { parseUnits } from '@ethersproject/units';
 import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -108,7 +109,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
       const newAmount = (userLiquidityUnstaked as TokenAmount)
         .multiply(JSBI.BigInt(value))
         .divide(JSBI.BigInt(100)) as TokenAmount;
-      setTypedValue(newAmount.toSignificant(6));
+      setTypedValue(newAmount.toFixed(18));
     }
   };
 
@@ -146,6 +147,20 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   // wrapped onUserInput to clear signatures
   const onUserInput = useCallback((_typedValue: string) => {
     setTypedValue(_typedValue);
+    const percentage = Math.ceil(
+      Number(
+        userLiquidityUnstaked
+          ? JSBI.divide(
+              JSBI.multiply(
+                JSBI.BigInt(parseUnits(_typedValue, userLiquidityUnstaked.currency.decimals)),
+                JSBI.BigInt(100),
+              ),
+              userLiquidityUnstaked.raw,
+            ).toString()
+          : 0,
+      ),
+    );
+    setStepIndex(type === 'card' ? percentage : percentage / 25);
   }, []);
 
   async function onAttemptToApprove() {
