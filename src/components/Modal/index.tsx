@@ -35,15 +35,16 @@ interface ModalProps {
   onDismiss: () => void;
   children?: React.ReactNode;
   overlayBG?: string;
+  closeOnClickOutside?: boolean;
 }
 
-export default function Modal({ isOpen, onDismiss, children, overlayBG }: ModalProps) {
+export default function Modal({ isOpen, onDismiss, children, overlayBG, closeOnClickOutside = true }: ModalProps) {
   const node = useRef<HTMLDivElement>();
   const handleClose = useCallback(() => {
     onDismiss();
   }, [onDismiss]);
 
-  useOnClickOutside(node, isOpen ? handleClose : undefined);
+  useOnClickOutside(node, isOpen && closeOnClickOutside ? handleClose : undefined);
 
   return (
     <Portal>
