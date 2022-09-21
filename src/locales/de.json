@@ -98,7 +98,8 @@
     "withdraw": "Abheben",
     "extraReward": "Zusätzliche Belohnung",
     "poolRewards": "Pool-Belohnungen",
-    "rewardsIn": "Belohnungen ein"
+    "rewardsIn": "Belohnungen ein",
+    "removeWarning": "Sie entfernen Liquidität aus diesem Pool. Diese Aktion gibt Ihnen Ihre Token zurück. Alternativ können Sie sich dafür entscheiden, Ihre Token zu farmen, um Belohnungen zu verdienen."
   },
   "menu": {
     "code": "Code",
@@ -696,6 +697,7 @@
     "compoundAmountWarning": "Sie müssen {{ amount }} {{ symbol }} zur Verbindung hinzufügen.",
     "compoundAmountWarning2": "Zum Zusammensetzen. Seien Sie vorsichtig, dass Sie Ihren {{ symbol }} {{ png }} pool sperren, bis Sie die Belohnungen dieses Pools beanspruchen.",
     "highVolalityWarning": "Zu früh, versuchen Sie es in ein paar Stunden",
-    "compoundSuccess": "Sie haben Ihre Farm erfolgreich zusammengestellt."
+    "compoundSuccess": "Sie haben Ihre Farm erfolgreich zusammengestellt.",
+    "removeWarning": "Wenn Sie einen beliebigen Betrag von der Farm entfernen, wird Ihr effektiver Jahreszins auf 0 gesetzt. Sie können stattdessen Ihre Belohnungen aufstocken, ohne Ihren effektiven Jahreszins zu verlieren."
   }
 }

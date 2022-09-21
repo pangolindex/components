@@ -97,7 +97,8 @@
     "poolWeight": "Peso da piscina",
     "withdraw": "Retirar",
     "poolRewards": "Recompensas de pool",
-    "rewardsIn": "Recompensas em"
+    "rewardsIn": "Recompensas em",
+    "removeWarning": "Você está removendo liquidez deste pool. Esta ação devolverá seus tokens. Alternativamente, você pode optar por apostar seus tokens para farmar para ganhar recompensas."
   },
   "menu": {
     "code": "Código",
@@ -695,6 +696,7 @@
     "compoundAmountWarning": "Você precisa adicionar {{ amount }} {{ symbol }} para compor.",
     "compoundAmountWarning2": "Tenha cuidado para bloquear sua pool de {{ symbol }} {{ png }} até reivindicar as recompensas desta pool.",
     "highVolalityWarning": "Muito cedo, tente em algumas horas",
-    "compoundSuccess": "Você compôs sua farm com sucesso."
+    "compoundSuccess": "Você compôs com sucesso.",
+    "removeWarning": "A remoção de qualquer valor da fazenda fará com que seu APR seja 0. Você pode, em vez disso, compor suas recompensas sem perder seu APR."
   }
 }

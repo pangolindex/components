@@ -185,18 +185,26 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
             </>
           ) : (
             <Box display="grid" height="100%">
-              <Box bgColor="color3" borderRadius="8px" padding="15px">
+              <Box
+                bgColor="color3"
+                borderRadius="8px"
+                padding="15px"
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+              >
                 <Text color="text1" textAlign="center">
-                  You are removing liquidity from this pool. This action will give you back your tokens. Alternatively
-                  you can choose to stake your tokens to farm to earn rewards.
+                  {t(version === 3 ? 'pangoChef.removeWarning' : 'earn.removeWarning')}
                 </Text>
               </Box>
-              <Buttons>
-                <Button variant="outline" onClick={() => setShowCompoundDrawer(true)}>
-                  <Text color="text1">
-                    <Text color="text1">{t('sarCompound.compound')}</Text>
-                  </Text>
-                </Button>
+              <Buttons version={version}>
+                {version === 3 && (
+                  <Button variant="outline" onClick={() => setShowCompoundDrawer(true)}>
+                    <Text color="text1">
+                      <Text color="text1">{t('sarCompound.compound')}</Text>
+                    </Text>
+                  </Button>
+                )}
                 <Button variant="primary" onClick={onWithdraw}>
                   {error ?? t('earn.withdrawAndClaim')}
                 </Button>

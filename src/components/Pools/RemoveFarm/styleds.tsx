@@ -25,9 +25,9 @@ export const StatWrapper = styled(Box)`
   align-items: center;
 `;
 
-export const Buttons = styled(Box)`
+export const Buttons = styled(Box)<{ version: number }>`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr ${({ version }) => (version === 3 ? '1fr' : '')};
   grid-gap: 20px;
   align-self: end;
   margin-top: 10px;
