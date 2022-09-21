@@ -272,7 +272,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
           </Button>
         )}
         <Button variant="primary" isDisabled={!!_error} onClick={onCompound}>
-          {_error ?? `${t('sarStakeMore.add')}&${t('sarCompound.compound')}`}
+          {_error ?? `${t('sarStakeMore.add')} & ${t('sarCompound.compound')}`}
         </Button>
       </Buttons>
     </Box>
