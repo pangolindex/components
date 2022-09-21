@@ -1,4 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 import { CAVAX, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -152,6 +153,13 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     _error = _error ?? t('pangoChef.highVolalityWarning');
   }
 
+  const tokenOrCurrency = amountToAdd instanceof TokenAmount ? amountToAdd.token : amountToAdd.currency;
+
+  // Minimium amount to compound
+  if (amountToAdd.lessThan(parseUnits('0.1', tokenOrCurrency.decimals).toString())) {
+    _error = _error ?? t('pangoChef.highVolalityWarning');
+  }
+
   async function onCompound() {
     if (pangoChefContract && stakingInfo?.stakedAmount && pair && !_error) {
       setAttempting(true);
@@ -230,13 +238,11 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       <TextInput
         addonAfter={
           <Box padding="5px" bgColor="color2" borderRadius="8px">
-            <Text color="text1">
-              {amountToAdd instanceof TokenAmount ? amountToAdd.token.symbol : amountToAdd.currency.symbol}
-            </Text>
+            <Text color="text1">{tokenOrCurrency.symbol}</Text>
           </Box>
         }
         disabled={true}
-        value={amountToAdd.toFixed(2)}
+        value={formatUnits(amountToAdd.raw.toString(), tokenOrCurrency.decimals)}
       />
       <Box
         display="flex"
