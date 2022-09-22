@@ -21,7 +21,8 @@ let data = {
   socialLinksContents : ['twitter', 'telegram', 'Youtube', 'medium', 'github', 'discord', 'substack'],
   footerLinks : ["Privacy Policy", "Terms of Service", "Cookie Policy"],
   newsSongBird: "We're proud to announce we are live on Songbird Network!",
-  usd: 'USD'
+  usd: 'USD',
+  coinBase: "Coinbase has officially added"
 }
 }
 module.exports = data

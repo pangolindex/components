@@ -1,7 +1,7 @@
 {
     "baseUrl": "https://dev.pangolin.exchange/#",
-    "viewportWidth": 1000,
-    "viewportHeight": 660,
+    "viewportWidth": 1280,
+    "viewportHeight": 1024,
     "defaultCommandTimeout": 8000,
     "pageLoadTimeout": 120000,
     "video": false,
