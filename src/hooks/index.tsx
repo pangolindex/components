@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
@@ -5,6 +6,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
 import { PROVIDER_MAPPING } from 'src/constants';
+import { useBlockNumber } from 'src/state/papplication/hooks';
 import { isAddress } from 'src/utils';
 
 interface Web3State {
@@ -118,3 +120,36 @@ export const useRefetchMinichefSubgraph = () => {
 
   return async () => await queryClient.refetchQueries(['get-minichef-farms-v2', account]);
 };
+
+export function useGetBlockTimestamp(blockNumber?: number) {
+  const latestBlockNumber = useBlockNumber();
+  const _blockNumber = blockNumber ?? latestBlockNumber;
+
+  const { connector } = useWeb3React();
+
+  const [timestamp, setTimestamp] = useState<BigNumber | undefined>(undefined);
+
+  useEffect(() => {
+    async function getTimeStamp() {
+      if (!_blockNumber) return;
+
+      const provider =
+        window.ethereum || window.bitkeep?.ethereum || window.xfi?.ethereum || (await connector?.getProvider());
+
+      const result: { timestamp: string } | null = await provider.request({
+        method: 'eth_getBlockByNumber',
+        params: [`0x${_blockNumber.toString(16)}`, false],
+      });
+
+      if (result) {
+        setTimestamp(BigNumber.from(result.timestamp));
+      } else {
+        setTimestamp(BigNumber.from(0));
+      }
+    }
+
+    getTimeStamp();
+  }, [_blockNumber]);
+
+  return timestamp;
+}

@@ -1,12 +1,11 @@
-import { CHAINS, Fraction, Price, Token, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, Fraction, Token } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Drawer, Stat, Text } from 'src/components';
-import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTokenCurrencyPrice } from 'src/hooks/useCurrencyPrice';
+import { useUserAPR } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -71,20 +70,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
   const farmApr = stakingInfo.stakingApr;
   const earnedAmount = stakingInfo.earnedAmount;
 
-  const pngPRice = useTokenCurrencyPrice(PNG[chainId]) ?? new Price(PNG[chainId], WAVAX[chainId], '1', '0');
-
-  //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
-  const userRewardRate = stakingInfo.userRewardRate;
-  const userBalance = stakingInfo.userValueVariables.balance;
-  const pairPrice = stakingInfo.pairPrice;
-  const userApr =
-    !userBalance.isZero() && pairPrice.greaterThan('0')
-      ? pngPRice.raw
-          .multiply((86400 * 365 * 100).toString())
-          .multiply(userRewardRate.toString())
-          .divide(pairPrice.raw.multiply(userBalance.toString()))
-          .toFixed(0)
-      : 0;
+  const userApr = useUserAPR(stakingInfo);
 
   const apr = isStaking ? userApr : farmApr;
 

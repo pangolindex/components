@@ -8,7 +8,7 @@ import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
 import { useCoinGeckoCurrencyPrice, useTokens } from 'src/hooks/Tokens';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
@@ -350,4 +350,30 @@ export function usePangoChefInfos() {
     userPendingRewardsState,
     pairs,
   ]);
+}
+
+export function useUserAPR(stakingInfo?: PangoChefInfo) {
+  const blockTime = useGetBlockTimestamp();
+
+  return useMemo(() => {
+    if (!stakingInfo) return '0';
+
+    const userBalance = stakingInfo.userValueVariables.balance;
+    const userSumOfEntryTimes = stakingInfo.userValueVariables.sumOfEntryTimes;
+
+    const poolBalance = stakingInfo.valueVariables.balance;
+    const poolSumOfEntryTimes = stakingInfo.valueVariables.sumOfEntryTimes;
+
+    if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return '0';
+
+    //userAPR = poolAPR * (blockTime - (userValueVariables.sumOfEntryTimes / userValueVariables.balance)) / (blockTime - (poolValueVariables.sumOfEntryTimes / poolValueVariables.balance))
+    const a = userSumOfEntryTimes.div(userBalance);
+    const b = poolSumOfEntryTimes.div(poolBalance);
+    const c = blockTime.sub(a);
+    const d = blockTime.sub(b);
+    return BigNumber.from(stakingInfo.stakingApr ?? 0)
+      .mul(c)
+      .div(d)
+      .toString();
+  }, [blockTime, stakingInfo]);
 }
