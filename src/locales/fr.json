@@ -698,6 +698,7 @@
     "compoundAmountWarning2": "Faites attention que vous verrouillerez votre pool de {{ symbol }} {{ png }} jusqu'à ce que vous réclamiez les récompenses de ce pool.",
     "highVolalityWarning": "Trop tôt, essayez dans quelques heures",
     "compoundSuccess": "Vous avez réussi à composer votre ferme.",
+    "compoundTransactionSummary": "Ferme composée.",
     "removeWarning": "En retirant n'importe quel montant de la ferme, vous obtiendrez votre APR à 0. Vous pouvez à la place accumuler vos récompenses sans perdre votre APR."
   }
 }

@@ -698,6 +698,7 @@
     "compoundAmountWarning2": "Hãy cẩn thận rằng bạn sẽ khóa nhóm {{symbol}} {{png}} của mình cho đến khi bạn nhận được phần thưởng của nhóm này.",
     "highVolalityWarning": "Còn quá sớm, hãy thử sau vài giờ",
     "compoundSuccess": "Bạn đã soạn thành công trang trại của mình.",
+    "compoundTransactionSummary": "Trang trại tổng hợp.",
     "removeWarning": "Loại bỏ bất kỳ số tiền nào khỏi trang trại sẽ nhận được APR của bạn thành 0. Thay vào đó, bạn có thể gộp phần thưởng của mình mà không bị mất APR."
   }
 }

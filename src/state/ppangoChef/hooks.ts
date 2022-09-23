@@ -335,6 +335,7 @@ export function usePangoChefInfos() {
         stakingApr: apr,
         pairPrice: pairPrice,
         poolType: pool.poolType,
+        poolRewardRate: rewardRate,
       } as PangoChefInfo);
     }
     return farms;
@@ -375,5 +376,23 @@ export function useUserAPR(stakingInfo?: PangoChefInfo) {
       .mul(c)
       .div(d)
       .toString();
+  }, [blockTime, stakingInfo]);
+}
+
+export function useUserRewardRate(stakingInfo: PangoChefInfo) {
+  const blockTime = useGetBlockTimestamp();
+
+  return useMemo(() => {
+    const userBalance = stakingInfo.userValueVariables.balance;
+    const userSumOfEntryTimes = stakingInfo.userValueVariables.sumOfEntryTimes;
+
+    const poolBalance = stakingInfo.valueVariables.balance;
+    const poolSumOfEntryTimes = stakingInfo.valueVariables.sumOfEntryTimes;
+
+    if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return BigNumber.from(0);
+
+    const userValue = blockTime.mul(userBalance).sub(userSumOfEntryTimes);
+    const poolValue = blockTime.mul(poolBalance).sub(poolSumOfEntryTimes);
+    return userValue.isZero() ? BigNumber.from(0) : stakingInfo.poolRewardRate.mul(userValue).div(poolValue);
   }, [blockTime, stakingInfo]);
 }

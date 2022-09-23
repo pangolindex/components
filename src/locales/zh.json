@@ -697,6 +697,7 @@
     "compoundAmountWarning2": "请注意，您将锁定您的 {{ symbol }} {{ png }} 池，直到您获得该池的奖励。",
     "highVolalityWarning": "太早了，过几个小时试试",
     "compoundSuccess": "你已经成功地组成了你的农场。",
+    "compoundTransactionSummary": "复合农场。",
     "removeWarning": "从农场中删除任何金额将使您的 APR 变为 0。您可以在不损失 APR 的情况下复合您的奖励。"
   }
 }

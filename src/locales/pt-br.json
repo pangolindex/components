@@ -697,6 +697,7 @@
     "compoundAmountWarning2": "Tenha cuidado para bloquear sua pool de {{ symbol }} {{ png }} até reivindicar as recompensas desta pool.",
     "highVolalityWarning": "Muito cedo, tente em algumas horas",
     "compoundSuccess": "Você compôs com sucesso.",
+    "compoundTransactionSummary": "Farm composta.",
     "removeWarning": "A remoção de qualquer valor da fazenda fará com que seu APR seja 0. Você pode, em vez disso, compor suas recompensas sem perder seu APR."
   }
 }

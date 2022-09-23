@@ -39,4 +39,5 @@ export interface PangoChefInfo extends MinichefStakingInfo {
   userRewardRate: BigNumber;
   pairPrice: Price;
   poolType: PoolType;
+  poolRewardRate: BigNumber;
 }

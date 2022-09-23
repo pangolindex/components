@@ -698,6 +698,7 @@
     "compoundAmountWarning2": "Tenga cuidado de bloquear su fondo de {{ symbol }} {{ png }} hasta que reclame las recompensas de este fondo.",
     "highVolalityWarning": "Demasiado pronto, intente en unas pocas horas",
     "compoundSuccess": "Ha compuesto correctamente su granja",
+    "compoundTransactionSummary": "Granja compuesta",
     "removeWarning": "Eliminar cualquier cantidad de la granja hará que su APR sea 0. En su lugar, puede combinar sus recompensas sin perder su APR."
   }
 }
