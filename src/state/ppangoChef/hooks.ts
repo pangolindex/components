@@ -164,12 +164,14 @@ export function usePangoChefInfos() {
             balance: BigNumber.from(0),
             sumOfEntryTimes: BigNumber.from(0),
           },
+          isLockingPoolZero: false,
         } as UserInfo;
       }
 
       const valueVariables = result.valueVariables as ValueVariables;
       const rewardSummations = result.rewardSummationsPaid as RewardSummations;
       const previousValues = result.previousValues;
+      const isLockingPoolZero = result.isLockingPoolZero ?? false;
 
       if (!valueVariables || !rewardSummations || !previousValues) {
         return {
@@ -177,8 +179,10 @@ export function usePangoChefInfos() {
             balance: BigNumber.from(0),
             sumOfEntryTimes: BigNumber.from(0),
           },
+          isLockingPoolZero: false,
         } as UserInfo;
       }
+
       return {
         valueVariables: {
           balance: valueVariables?.balance,
@@ -186,6 +190,7 @@ export function usePangoChefInfos() {
         } as ValueVariables,
         rewardSummations: rewardSummations,
         previousValues: previousValues,
+        isLockingPoolZero: isLockingPoolZero,
       } as UserInfo;
     });
   }, [userInfosState]);
@@ -331,6 +336,7 @@ export function usePangoChefInfos() {
         earnedAmount: pendingRewards,
         valueVariables: pool.valueVariables,
         userValueVariables: userInfo?.valueVariables,
+        isLockingPoolZero: userInfo.isLockingPoolZero,
         userRewardRate: userRewardRateState.result?.[0] ?? BigNumber.from(0),
         stakingApr: apr,
         pairPrice: pairPrice,
@@ -395,4 +401,21 @@ export function useUserRewardRate(stakingInfo: PangoChefInfo) {
     const poolValue = blockTime.mul(poolBalance).sub(poolSumOfEntryTimes);
     return userValue.isZero() ? BigNumber.from(0) : stakingInfo.poolRewardRate.mul(userValue).div(poolValue);
   }, [blockTime, stakingInfo]);
+}
+
+export function useIsLockingPoolZero() {
+  const stakingInfos = usePangoChefInfos();
+
+  const pairs: [Token, Token][] = useMemo(() => {
+    const _pairs: [Token, Token][] = [];
+    stakingInfos.forEach((stakingInfo) => {
+      if (stakingInfo.isLockingPoolZero) {
+        const [token0, token1] = stakingInfo.tokens;
+        _pairs.push([token0, token1]);
+      }
+    });
+    return _pairs;
+  }, [stakingInfos]);
+
+  return pairs;
 }

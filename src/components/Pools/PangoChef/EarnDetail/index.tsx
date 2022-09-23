@@ -8,8 +8,10 @@ import ToolTipText from 'src/components/TextToolTip';
 import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
+import { useIsLockingPoolZero } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useMinichefPendingRewards } from 'src/state/pstake/hooks';
+import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RemoveDrawer from '../../RemoveDrawer';
 import ClaimRewardV3 from '../ClaimReward';
 import CompoundV3 from '../Compound';
@@ -62,6 +64,9 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
 
   const png = PNG[chainId];
 
+  const lockingPoolZeroPairs = useIsLockingPoolZero();
+  const isLockingToPoolZero = lockingPoolZeroPairs.length > 0 && stakingInfo.pid === '0';
+
   return (
     <Wrapper>
       <Box display="flex" justifyContent="space-between">
@@ -70,7 +75,13 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         </Text>
 
         {/* show unstak button */}
-        <Button variant="primary" width="100px" height="30px" onClick={() => setShowRemoveDrawer(true)}>
+        <Button
+          variant="primary"
+          width="100px"
+          height="30px"
+          onClick={() => setShowRemoveDrawer(true)}
+          isDisabled={isLockingToPoolZero}
+        >
           {t('removeLiquidity.remove')}
         </Button>
       </Box>
@@ -131,7 +142,13 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           display="flex"
         >
           <Text fontSize="12px" color="text1" textAlign="center">
-            {t('pangoChef.claimWarning1')}
+            {isLockingToPoolZero
+              ? `${t('pangoChef.lockingPoolZeroWarning')}${lockingPoolZeroPairs
+                  .map(
+                    (pair) => `${unwrappedToken(pair[0], chainId).symbol}-${unwrappedToken(pair[1], chainId).symbol}`,
+                  )
+                  .join(', ')}.`
+              : t('pangoChef.claimWarning1')}
           </Text>
         </Box>
       </Container>
@@ -140,9 +157,9 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         <Button
           padding="10px"
           variant="outline"
-          isDisabled={isDisabledButtons}
+          isDisabled={isDisabledButtons || isLockingToPoolZero}
           onClick={() => setShowClaimDrawer(true)}
-          color={!isDisabledButtons ? theme.text10 : undefined}
+          color={!isDisabledButtons && !isLockingToPoolZero ? theme.text10 : undefined}
         >
           {t('earnPage.claim')}
         </Button>

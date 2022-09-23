@@ -699,6 +699,7 @@
     "highVolalityWarning": "Zu früh, versuchen Sie es in ein paar Stunden",
     "compoundSuccess": "Sie haben Ihre Farm erfolgreich zusammengestellt.",
     "compoundTransactionSummary": "Zusammengesetzte Farm.",
-    "removeWarning": "Wenn Sie einen beliebigen Betrag von der Farm entfernen, wird Ihr effektiver Jahreszins auf 0 gesetzt. Sie können stattdessen Ihre Belohnungen aufstocken, ohne Ihren effektiven Jahreszins zu verlieren."
+    "removeWarning": "Wenn Sie einen beliebigen Betrag von der Farm entfernen, wird Ihr effektiver Jahreszins auf 0 gesetzt. Sie können stattdessen Ihre Belohnungen aufstocken, ohne Ihren effektiven Jahreszins zu verlieren.",
+    "lockingPoolZeroWarning": "Sie können Ihre Liquidität nicht entfernen oder Ihre Belohnungen von dieser Farm einfordern. Um sie zu entfernen, müssen Sie zuerst Ihren Anteil von diesen Farmen beanspruchen oder entfernen: "
   }
 }

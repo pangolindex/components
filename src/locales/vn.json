@@ -699,6 +699,7 @@
     "highVolalityWarning": "Còn quá sớm, hãy thử sau vài giờ",
     "compoundSuccess": "Bạn đã soạn thành công trang trại của mình.",
     "compoundTransactionSummary": "Trang trại tổng hợp.",
-    "removeWarning": "Loại bỏ bất kỳ số tiền nào khỏi trang trại sẽ nhận được APR của bạn thành 0. Thay vào đó, bạn có thể gộp phần thưởng của mình mà không bị mất APR."
+    "removeWarning": "Loại bỏ bất kỳ số tiền nào khỏi trang trại sẽ nhận được APR của bạn thành 0. Thay vào đó, bạn có thể gộp phần thưởng của mình mà không bị mất APR.",
+    "lockingPoolZeroWarning": "Bạn không thể xóa thanh khoản của mình hoặc yêu cầu phần thưởng của mình từ trang trại này. Để loại bỏ, trước tiên bạn cần xác nhận quyền sở hữu hoặc loại bỏ cổ phần của bạn khỏi các trang trại này: "
   }
 }

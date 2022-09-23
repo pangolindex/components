@@ -22,6 +22,7 @@ export interface UserInfo {
   valueVariables: ValueVariables;
   rewardSummations: RewardSummations;
   previousValues: BigNumber;
+  isLockingPoolZero: boolean;
 }
 
 export interface Pool {
@@ -40,4 +41,5 @@ export interface PangoChefInfo extends MinichefStakingInfo {
   pairPrice: Price;
   poolType: PoolType;
   poolRewardRate: BigNumber;
+  isLockingPoolZero: boolean;
 }

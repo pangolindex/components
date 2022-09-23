@@ -698,6 +698,7 @@
     "highVolalityWarning": "太早了，过几个小时试试",
     "compoundSuccess": "你已经成功地组成了你的农场。",
     "compoundTransactionSummary": "复合农场。",
-    "removeWarning": "从农场中删除任何金额将使您的 APR 变为 0。您可以在不损失 APR 的情况下复合您的奖励。"
+    "removeWarning": "从农场中删除任何金额将使您的 APR 变为 0。您可以在不损失 APR 的情况下复合您的奖励。",
+    "lockingPoolZeroWarning": "您无法从该农场移除您的流动性或索取您的奖励。 要移除，您首先需要从该农场申领或移除您的股份： "
   }
 }
