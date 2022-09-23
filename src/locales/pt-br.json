@@ -699,6 +699,6 @@
     "compoundSuccess": "Você compôs com sucesso.",
     "compoundTransactionSummary": "Farm composta.",
     "removeWarning": "A remoção de qualquer valor da fazenda fará com que seu APR seja 0. Você pode, em vez disso, compor suas recompensas sem perder seu APR.",
-    "lockingPoolZeroWarning": "Você não pode remover sua liquidez ou reivindicar suas recompensas desta farm. Para remover, primeiro você precisa reivindicar ou remover seu stake nestas farms:"
+    "lockingPoolZeroWarning": "Você não pode remover sua liquidez ou reivindicar suas recompensas desta farm. Para fazer isso, primeiro você precisa reivindicar sua participação nestas farms: "
   }
 }
