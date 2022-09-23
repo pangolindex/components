@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Currency, Pair } from '@pangolindex/sdk';
+import { Currency, Pair, Percent } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
@@ -10,7 +10,7 @@ import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Field } from 'src/state/pburn/actions';
-import { useBurnActionHandlers, useDerivedBurnInfo } from 'src/state/pburn/hooks';
+import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/state/pburn/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { useRemoveLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
 import { isEvmChain } from 'src/utils';
@@ -33,7 +33,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
 
-  // const { independentField, typedValue } = useBurnState()
+  const { independentField, typedValue } = useBurnState();
   const { pair, parsedAmounts, error, userLiquidity } = useDerivedBurnInfo(
     currencyA ?? undefined,
     currencyB ?? undefined,
@@ -49,19 +49,15 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   const deadline = useTransactionDeadline();
   const [allowedSlippage] = useUserSlippageTolerance();
 
-  // const formattedAmounts = {
-  //   [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
-  //     ? '0'
-  //     : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
-  //     ? '<1'
-  //     : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
-  //   [Field.LIQUIDITY]:
-  //     independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toSignificant(6) ?? '',
-  //   [Field.CURRENCY_A]:
-  //     independentField === Field.CURRENCY_A ? typedValue : parsedAmounts[Field.CURRENCY_A]?.toSignificant(6) ?? '',
-  //   [Field.CURRENCY_B]:
-  //     independentField === Field.CURRENCY_B ? typedValue : parsedAmounts[Field.CURRENCY_B]?.toSignificant(6) ?? ''
-  // }
+  const formattedAmounts = {
+    [Field.LIQUIDITY_PERCENT]: parsedAmounts[Field.LIQUIDITY_PERCENT].equalTo('0')
+      ? '0'
+      : parsedAmounts[Field.LIQUIDITY_PERCENT].lessThan(new Percent('1', '100'))
+      ? '<1'
+      : parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0),
+    [Field.LIQUIDITY]:
+      independentField === Field.LIQUIDITY ? typedValue : parsedAmounts[Field.LIQUIDITY]?.toExact() ?? '',
+  };
 
   // allowance handling
   // const [signatureData, setSignatureData] = useState<{ v: number; r: string; s: string; deadline: number } | null>(
@@ -100,9 +96,14 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
     (_typedValue: string) => {
       setSignatureData(null);
       _onUserInput(Field.LIQUIDITY, _typedValue);
+      setPercetage(0);
     },
     [_onUserInput],
   );
+
+  useEffect(() => {
+    setPercetage(Number(parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0)) / 25);
+  }, [parsedAmounts]);
 
   async function onRemove() {
     if (!chainId || !library || !account || !deadline) throw new Error(t('error.missingDependencies'));
@@ -152,7 +153,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
             <Box>
               <Box display="flex" flexDirection="column">
                 <TextInput
-                  value={parsedAmounts[Field.LIQUIDITY]?.toExact() || ''}
+                  value={formattedAmounts[Field.LIQUIDITY]}
                   addonAfter={
                     <Box display="flex" alignItems="center">
                       <Text color="text4" fontSize={[24, 18]}>
