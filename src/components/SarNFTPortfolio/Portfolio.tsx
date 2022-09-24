@@ -1,4 +1,5 @@
 import { formatEther } from '@ethersproject/units';
+import { BigNumber } from 'ethers';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MultiValue } from 'react-select';
@@ -22,8 +23,8 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
   const [currentItems, setCurrentItems] = useState(positions.slice(0, itemsPerPage));
-  const [selectedPositon, setSelectedPosition] = useState<Position | null>(null);
   const [selectedOption, setSelectedOption] = useState<MultiValue<string> | string>('');
+  const [selectedPositonId, setSelectedPositionId] = useState<BigNumber | null>(null);
 
   const node = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -50,6 +51,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
     } else {
       setCurrentItems(positions.slice(itemOffset, endOffset));
     }
+    setPageCount(0);
   }
 
   const onSelect = (selected: string | MultiValue<string>) => {
@@ -63,7 +65,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
     const endOffset = itemOffset + itemsPerPage;
     sortItems(itemOffset, endOffset, selectedOption || '');
     setPageCount(Math.ceil(positions.length / itemsPerPage));
-  }, [itemOffset, itemsPerPage]);
+  }, [positions, itemOffset, itemsPerPage]);
 
   // calcule items per page based on node size and image size
   useEffect(() => {
@@ -91,7 +93,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
   const renderItems = () => {
     return currentItems.map((position, index) => {
       const svg = Buffer.from(position?.uri.image.replace('data:image/svg+xml;base64,', ''), 'base64').toString(); // decode base64
-      const isSelected = !!selectedPositon && position?.id.eq(selectedPositon?.id);
+      const isSelected = !!selectedPositonId && position?.id.eq(selectedPositonId);
       return (
         <Box
           key={index}
@@ -107,12 +109,12 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
               const element = document.getElementById('sar-manage-widget');
               scrollElementIntoView(element, 'smooth');
             }
-            setSelectedPosition(isSelected ? null : position);
+            setSelectedPositionId(isSelected ? null : position.id);
             onSelectPosition(isSelected ? null : position);
           }}
           ref={imageRef}
         >
-          <StyledSVG dangerouslySetInnerHTML={{ __html: svg }} width="100%" />
+          <StyledSVG key={svg} dangerouslySetInnerHTML={{ __html: svg }} width="100%" />
           <Text color={isSelected ? 'black' : 'text1'} textAlign="center" fontWeight={500}>
             {t('sarPortfolio.positionId')}: {position?.id.toString()}
           </Text>

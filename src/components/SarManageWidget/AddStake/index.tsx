@@ -103,7 +103,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
       );
     } else if (!userPngBalance?.greaterThan('0')) {
       return (
-        <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png)}>
+        <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png, chainId)}>
           {t('sarStake.buy', { symbol: png.symbol })}
         </Button>
       );

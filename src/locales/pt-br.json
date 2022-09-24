@@ -61,7 +61,7 @@
     "enterAmount": "Insira um valor",
     "unclaimedReward": "{{ symbol }} não resgatado",
     "claim": "Reivindicar",
-    "claimReward": "{{ symbol }} Reivindicar",
+    "claimReward": "Reivindicar {{ symbol }}",
     "liquidityRemainsPool": "Quando você resgata sem retirar sua liquidez ela permanece na pool de mineração.",
     "withdrawingLiquidity": "Retirado {{ amount }} {{ symbol }}",
     "claimingReward": "Reivindicando {{ amount }} {{ symbol }}",

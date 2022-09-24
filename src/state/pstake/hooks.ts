@@ -306,6 +306,8 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
     !!pair &&
     !!totalPoolTokens &&
     !!userPgl &&
+    JSBI.greaterThan(totalPoolTokens.raw, BIG_INT_ZERO) &&
+    JSBI.greaterThan(userPgl.raw, BIG_INT_ZERO) &&
     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
     JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPgl.raw)
       ? pair.getLiquidityValues(totalPoolTokens, userPgl, { feeOn: false })

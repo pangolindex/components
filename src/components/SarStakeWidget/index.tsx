@@ -34,7 +34,7 @@ export default function SarManageWidget() {
 
   const toggleWalletModal = useWalletModalToggle();
 
-  const { data: positions, isLoading } = useSarPositions();
+  const { positions, isLoading } = useSarPositions();
 
   // get fist position with balance 0
   const position = positions?.find((value) => value.balance.isZero());
@@ -96,7 +96,7 @@ export default function SarManageWidget() {
       );
     } else if (!userPngBalance?.greaterThan('0')) {
       return (
-        <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png)} onClick={desativeOverlay}>
+        <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png, chainId)} onClick={desativeOverlay}>
           {t('sarStake.buy', { symbol: png.symbol })}
         </Button>
       );

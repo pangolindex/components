@@ -1,6 +1,6 @@
-import { Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { ONE_TOKEN } from 'src/constants';
+import { ONE_TOKEN, ZERO_ADDRESS } from 'src/constants';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId } from '.';
 
@@ -10,12 +10,12 @@ import { useChainId } from '.';
  * @param tokens array of tokens to get the price in wrapped gas coin
  * @returns object where the key is the address of the token and the value is the Price
  */
-export function useTokensCurrencyPrice(tokens: Token[]): { [x: string]: Price } {
+export function useTokensCurrencyPrice(tokens: (Token | undefined)[]): { [x: string]: Price } {
   const chainId = useChainId();
   const currency = WAVAX[chainId];
 
-  // remove currency if exist
-  const filteredTokens = tokens.filter((token) => !token.equals(currency));
+  // remove currency if exist e remove undefined
+  const filteredTokens = tokens.filter((token) => !!token && !token.equals(currency)) as Token[];
 
   const _pairs: [Token, Token][] = filteredTokens.map((token) => [token, currency]);
 
@@ -24,7 +24,7 @@ export function useTokensCurrencyPrice(tokens: Token[]): { [x: string]: Price } 
   const prices: { [x: string]: Price } = {};
 
   // if exist currency, add to object with price 1
-  const existCurrency = Boolean(tokens.find((token) => token.equals(currency)));
+  const existCurrency = Boolean(tokens.find((token) => !!token && token.equals(currency)));
   if (existCurrency) {
     prices[currency.address] = new Price(currency, currency, '1', '1');
   }
@@ -50,13 +50,15 @@ export function useTokensCurrencyPrice(tokens: Token[]): { [x: string]: Price } 
  * @param token token to get the price
  * @returns the price of token in relation to gas coin
  */
-export function useTokenCurrencyPrice(token: Token): Price {
+export function useTokenCurrencyPrice(token: Token | undefined): Price {
   const chainId = useChainId();
   const currency = WAVAX[chainId];
 
   const [pairState, pair] = usePair(token, currency);
 
   return useMemo(() => {
+    if (!token) return new Price(currency, currency, '1', '0');
+
     if (token.equals(currency)) {
       return new Price(currency, currency, '1', '1');
     }
@@ -106,10 +108,14 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
       const token1 = pair.token1;
       const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
       const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
-      const [token0Amount, token1Amount] = pair.getLiquidityValues(
-        totalSupply,
-        new TokenAmount(pair.liquidityToken, ONE_TOKEN),
-      );
+      let token0Amount: TokenAmount = new TokenAmount(token0, '0');
+      let token1Amount: TokenAmount = new TokenAmount(token1, '0');
+      if (JSBI.greaterThan(totalSupply.raw, ONE_TOKEN) || JSBI.equal(totalSupply.raw, ONE_TOKEN)) {
+        [token0Amount, token1Amount] = pair.getLiquidityValues(
+          totalSupply,
+          new TokenAmount(pair.liquidityToken, ONE_TOKEN),
+        );
+      }
       const token0PairPrice = token0Amount.multiply(token0Price);
       const token1PairPrice = token1Amount.multiply(token1Price);
       const _pairPrice = token0PairPrice.add(token1PairPrice);
@@ -126,25 +132,36 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
  * @param pair the pair and the total supply of pair
  * @returns the price of pair in relation to gas coin
  */
-export function usePairCurrencyPrice(pair: { pair: Pair; totalSupply: TokenAmount }): Price {
+export function usePairCurrencyPrice(pair: { pair: Pair | null; totalSupply: TokenAmount | undefined }): Price {
   const chainId = useChainId();
   const currency = WAVAX[chainId];
 
   const _pair = pair.pair;
-  const token0 = _pair.token0;
-  const token1 = _pair.token1;
+  const totalSupply = pair.totalSupply;
+  const token0 = _pair?.token0;
+  const token1 = _pair?.token1;
   const tokensPrices = useTokensCurrencyPrice([token0, token1]);
 
-  const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
-  const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
+  return useMemo(() => {
+    if (!token0 || !token1 || !_pair || !totalSupply)
+      return new Price(new Token(chainId, ZERO_ADDRESS, 18), currency, '1', '0');
 
-  const [token0Amount, token1Amount] = _pair.getLiquidityValues(
-    pair.totalSupply,
-    new TokenAmount(_pair.liquidityToken, '1'),
-  );
-  const token0PairPrice = token0Amount.multiply(token0Price);
-  const token1PairPrice = token1Amount.multiply(token1Price);
+    const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
+    const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
 
-  const _pairPrice = token0PairPrice.add(token1PairPrice);
-  return new Price(_pair.liquidityToken, currency, _pairPrice.denominator, _pairPrice.numerator);
+    let token0Amount: TokenAmount = new TokenAmount(token0, '0');
+    let token1Amount: TokenAmount = new TokenAmount(token1, '0');
+    if (JSBI.greaterThan(totalSupply.raw, ONE_TOKEN) || JSBI.equal(totalSupply?.raw, ONE_TOKEN)) {
+      [token0Amount, token1Amount] = _pair.getLiquidityValues(
+        totalSupply,
+        new TokenAmount(_pair.liquidityToken, ONE_TOKEN),
+      );
+    }
+
+    const token0PairPrice = token0Amount.multiply(token0Price);
+    const token1PairPrice = token1Amount.multiply(token1Price);
+
+    const _pairPrice = token0PairPrice.add(token1PairPrice);
+    return new Price(_pair.liquidityToken, currency, _pairPrice.denominator, _pairPrice.numerator);
+  }, [token0, token1, tokensPrices, _pair, totalSupply]);
 }

@@ -7,7 +7,7 @@ import { Button } from 'src/components/Button';
 import { Text } from 'src/components/Text';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import { Position, useDerivativeSarCompound, useSarStakeInfo } from 'src/state/psarstake/hooks';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Options } from '../types';
@@ -30,7 +30,8 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
 
   const chainId = useChainId();
   const png = PNG[chainId];
-  const pngPrice = useUSDCPrice(png);
+  const useUSDPrice = useUSDCPriceHook[chainId];
+  const pngPrice = useUSDPrice(png);
 
   const dollarValue = parseFloat(formatEther(oldBalance.add(pendingRewards))) * Number(pngPrice?.toFixed() ?? 0);
 

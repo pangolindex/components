@@ -7,7 +7,7 @@ import {
   useNearApproveCallback,
 } from './useApproveCallback';
 import { useNearSwapCallback, useSwapCallback } from './useSwapCallback';
-import { useDummySongbirdUSDCPrice, useNearUSDCPrice, useUSDCPrice } from './useUSDCPrice';
+import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
 import { useWrapCallback, useWrapNearCallback } from './useWrapCallback';
 
 export type UseWrapCallbackHookType = {
@@ -81,7 +81,7 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
 };
 
 export type UseUSDCPriceHookType = {
-  [chainId in ChainId]: typeof useUSDCPrice | typeof useNearUSDCPrice | typeof useDummySongbirdUSDCPrice;
+  [chainId in ChainId]: typeof useUSDCPrice | typeof useNearUSDCPrice | typeof useSongBirdUSDPrice;
 };
 
 export const useUSDCPriceHook: UseUSDCPriceHookType = {
@@ -89,7 +89,7 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
   [ChainId.AVALANCHE]: useUSDCPrice,
   [ChainId.WAGMI]: useUSDCPrice,
   [ChainId.COSTON]: useUSDCPrice,
-  [ChainId.SONGBIRD]: useDummySongbirdUSDCPrice,
+  [ChainId.SONGBIRD]: useSongBirdUSDPrice,
   [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
   [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
 };
