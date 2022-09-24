@@ -3,23 +3,24 @@ import styled from 'styled-components';
 import { Loading, LogoIcon } from 'src/components/Icons';
 import { Box, Text } from '../';
 
-const PendingWrapper = styled(Box)`
+const PendingWrapper = styled(Box)<{ height: string | number }>`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 100%;
+  height: ${({ height }) => height};
 `;
 
 export interface Props {
   size: number;
   label?: string;
+  height?: string | number;
 }
 const Loader: React.FC<Props> = (props) => {
-  const { size, label } = props;
+  const { size, label, height } = props;
 
   return (
-    <PendingWrapper>
+    <PendingWrapper height={height || '100%'}>
       <Box mb={'15px'} display="flex" alignItems="center" flexDirection="column">
         <Box width={size} height={size} position="relative" display="flex" alignItems="center" justifyContent="center">
           <Loading />

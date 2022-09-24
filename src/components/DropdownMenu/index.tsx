@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import Select, { MultiValue, OptionsOrGroups, SingleValue } from 'react-select';
+import { useTranslation } from 'react-i18next';
+import Select, { MenuPlacement, MultiValue, OptionsOrGroups, SingleValue } from 'react-select';
 import { ThemeContext } from 'styled-components';
 
 export interface DropdownMenuProps {
@@ -7,6 +8,7 @@ export interface DropdownMenuProps {
   onSelect: (value: MultiValue<string> | string) => void;
   placeHolder?: string;
   isMulti?: boolean;
+  menuPlacement?: MenuPlacement;
   options: OptionsOrGroups<any, any>;
   height?: string;
 }
@@ -16,6 +18,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   onSelect,
   placeHolder,
   isMulti = false,
+  menuPlacement,
   options,
   height,
 }) => {
@@ -93,14 +96,17 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
     },
   };
 
+  const { t } = useTranslation();
+
   return (
     <Select
       options={options}
       onChange={(selectedItems) => {
         onSelect(selectedItems?.value || '');
       }}
+      {...(menuPlacement && { menuPlacement })}
       defaultValue={defaultValue}
-      placeholder={placeHolder || 'Select'}
+      placeholder={placeHolder || t('dropdown.select')}
       isMulti={isMulti}
       styles={colourStyles}
       theme={(thm) => ({

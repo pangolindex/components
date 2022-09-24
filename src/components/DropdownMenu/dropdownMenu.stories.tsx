@@ -36,6 +36,7 @@ Default.args = {
   onSelect: () => {},
   placeHolder: 'Dropdown Title',
   isMulti: false,
+  menuPlacement: 'auto',
   options: [
     {
       label: 'open',

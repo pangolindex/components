@@ -701,5 +701,58 @@
     "compoundAmountWarning2": "Be careful that you will be locking your {{ symbol }} {{ png }} pool till you claim the rewards of this pool.",
     "highVolalityWarning": "Too early, try in few hours",
     "compoundSuccess": "You have successfully composed your farm."
+  },
+  "bridge": {
+    "availableRoutes": "Available Routes ({{ number }})",
+    "activeTransfers": "Active Transfers ({{ number }})",
+    "historicalTransfers": "Historical Transfers ({{ number }})",
+    "bridgeCard": {
+      "advanceOptions": "Advance Options",
+      "title": "Cross Chain",
+      "swap": "Swap",
+      "loader": {
+        "labels": {
+          "waitingReceivingChain": "Waiting for receiving chain..."
+        },
+        "bottomText": "Your transaction is still being processed. Sit back and relax. There is nothing you need to do on your end. It is also not possible to speed up this part of the process. If it takes an unusually long time for this to process, please do not worry. your funds are not missing."
+      },
+      "filter": {
+        "bridgePrioritization": "Bridge Prioritization",
+        "slippage": "Slippage",
+        "infiniteApproval": "Infinite Approval",
+        "activeInfiniteApproval": "Active Infinite Approval",
+        "bridges": "Bridges",
+        "exchanges": "Exchanges"
+      }
+    },
+    "bridgeInputsWidget": {
+      "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
+      "max": "MAX"
+    },
+    "bridgeRoute": {
+      "selected": "Selected",
+      "clickToSelect": "Click to select",
+      "singleTransaction": "Single transaction including",
+      "estimatedToken": "Estimated Token: {{ token }}",
+      "estimatedResult": "Estimated Result: {{ result }}",
+      "min": "{{ minute }} min",
+      "gasCost": "{{ gasCost }} Gas Cost"
+    },
+    "bridgeTransfer": {
+      "date": "Date",
+      "from": "From",
+      "to": "To",
+      "via": "Via",
+      "state": "State",
+      "resumeSwap": "Resume Swap"
+    },
+    "bridgePrioritizations": {
+      "recommended": "Recommended",
+      "fast": "Fast",
+      "normal": "Normal"
+    }
+  },
+  "dropdown": {
+    "select": "Select"
   }
 }

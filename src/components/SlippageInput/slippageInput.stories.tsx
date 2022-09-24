@@ -13,5 +13,6 @@ export const Default = TemplateSlippageInput.bind({});
 Default.args = {
   expertMode: false,
   slippageTolerance: '1',
+  showTitle: true,
   setSlippageTolerance: () => {},
 } as Partial<SlippageInputProps>;

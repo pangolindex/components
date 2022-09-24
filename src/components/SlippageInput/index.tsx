@@ -6,18 +6,20 @@ import { InputOptions } from './styled';
 export interface SlippageInputProps {
   expertMode?: boolean;
   slippageTolerance: string;
+  showTitle?: boolean;
   setSlippageTolerance: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SlippageInput: React.FC<SlippageInputProps> = ({
   expertMode = false,
   slippageTolerance,
+  showTitle = true,
   setSlippageTolerance,
 }) => {
   const { t } = useTranslation();
   return (
     <Box height="90px">
-      <Text color="swapWidget.secondary">{t('settings.slippage')}</Text>
+      {showTitle && <Text color="swapWidget.secondary">{t('settings.slippage')}</Text>}
       <InputOptions>
         <TextInput
           value={slippageTolerance}
