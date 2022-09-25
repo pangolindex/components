@@ -14,6 +14,16 @@ export default {
       },
     },
   },
+  argTypes: {
+    transactionType: {
+      control: 'select',
+      options: [
+        BridgePrioritizations[BridgePrioritizations.fast],
+        BridgePrioritizations[BridgePrioritizations.normal],
+        BridgePrioritizations[BridgePrioritizations.recommended],
+      ],
+    },
+  },
 };
 
 const steps: any[] = [

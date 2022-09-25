@@ -14,6 +14,12 @@ export default {
       },
     },
   },
+  argTypes: {
+    state: {
+      control: 'select',
+      options: [BridgeState[BridgeState.PENDING], BridgeState[BridgeState.FAILED], BridgeState[BridgeState.SUCCESS]],
+    },
+  },
 };
 
 const currency0 = new Token(ChainId.AVALANCHE, '0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15', 18, 'ETH', 'Ether');
