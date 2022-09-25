@@ -24,7 +24,7 @@ export const CurrencySelect = styled.button<{ selected: boolean; buttonStyle: Bu
     background-color: ${({ selected, theme }) => (selected ? theme.bg2 : darken(0.05, theme.primary))};
   } */
 
-  ${({ buttonStyle }) => buttonStyle && buttonStyle}
+  ${({ buttonStyle }) => buttonStyle}
 `;
 
 export const Aligner = styled.span<{ active?: boolean }>`
