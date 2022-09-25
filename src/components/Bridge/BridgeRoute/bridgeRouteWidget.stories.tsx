@@ -1,5 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
+import { BridgePrioritizations } from '..';
 import { BridgeRouteProps } from './types';
 import BridgeRoute from '.';
 
@@ -33,7 +34,7 @@ const TemplateBridgeRoute: ComponentStory<typeof BridgeRoute> = (args: any) => {
 export const Default = TemplateBridgeRoute.bind({});
 Default.args = {
   steps: steps,
-  transactionType: 'RECOMMENDED',
+  transactionType: BridgePrioritizations.recommended,
   estimatedToken: '0.0522 FRAX',
   estimatedResult: '$0.05 USD',
   min: '9:00',
