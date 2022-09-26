@@ -245,7 +245,7 @@ export function useNearTokens(tokensAddress: string[] = []): Array<TokenReturnTy
 
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
   const chainId = useChainId();
-  const isAVAX = currencyId?.toUpperCase() === CAVAX[chainId].symbol;
+  const isAVAX = currencyId?.toUpperCase() === CAVAX[chainId].symbol?.toUpperCase();
   const useToken_ = useTokenHook[chainId];
   const token = useToken_(isAVAX ? undefined : currencyId);
   return isAVAX ? chainId && CAVAX[chainId] : token;

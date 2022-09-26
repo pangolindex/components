@@ -24,6 +24,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
   const [currentItems, setCurrentItems] = useState(positions.slice(0, itemsPerPage));
   const [selectedPositonId, setSelectedPositionId] = useState<BigNumber | null>(null);
   const [selectedOption, setSelectedOption] = useState<string>('');
+  const [page, setPage] = useState<number | undefined>();
 
   const node = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -50,12 +51,13 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
     } else {
       setCurrentItems(positions.slice(itemOffset, endOffset));
     }
-    setPageCount(0);
   }
 
   const onSelect = (value: string) => {
     setSelectedOption(value);
     sortItems(0, itemsPerPage, value);
+    setPage(0);
+    setItemOffset(0);
   };
 
   const { width, height } = useWindowSize();
@@ -139,7 +141,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
       </Box>
       <Box display="flex" flexDirection="column" flexGrow={1}>
         <Frame ref={node}>{renderItems()}</Frame>
-        <Pagination pageCount={pageCount} onPageChange={handlePageClick} />
+        <Pagination pageCount={pageCount} onPageChange={handlePageClick} forcePage={page} />
       </Box>
     </Box>
   );

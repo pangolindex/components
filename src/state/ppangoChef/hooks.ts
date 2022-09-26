@@ -8,12 +8,13 @@ import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
 import { useCoinGeckoCurrencyPrice, useTokens } from 'src/hooks/Tokens';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { decimalToFraction } from 'src/utils';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
+import { getExtraTokensWeeklyRewardRate } from '../pstake/hooks';
 import { PangoChefInfo, Pool, PoolType, RewardSummations, UserInfo, ValueVariables } from './types';
 
 export function usePangoChefInfos() {
@@ -163,12 +164,14 @@ export function usePangoChefInfos() {
             balance: BigNumber.from(0),
             sumOfEntryTimes: BigNumber.from(0),
           },
+          isLockingPoolZero: false,
         } as UserInfo;
       }
 
       const valueVariables = result.valueVariables as ValueVariables;
       const rewardSummations = result.rewardSummationsPaid as RewardSummations;
       const previousValues = result.previousValues;
+      const isLockingPoolZero = result.isLockingPoolZero ?? false;
 
       if (!valueVariables || !rewardSummations || !previousValues) {
         return {
@@ -176,8 +179,10 @@ export function usePangoChefInfos() {
             balance: BigNumber.from(0),
             sumOfEntryTimes: BigNumber.from(0),
           },
+          isLockingPoolZero: false,
         } as UserInfo;
       }
+
       return {
         valueVariables: {
           balance: valueVariables?.balance,
@@ -185,6 +190,7 @@ export function usePangoChefInfos() {
         } as ValueVariables,
         rewardSummations: rewardSummations,
         previousValues: previousValues,
+        isLockingPoolZero: isLockingPoolZero,
       } as UserInfo;
     });
   }, [userInfosState]);
@@ -326,13 +332,16 @@ export function usePangoChefInfos() {
         totalRewardRatePerWeek: totalRewardRatePerWeek,
         rewardRatePerWeek: new TokenAmount(png, rewardRate.mul(60 * 60 * 24 * 7).toString()),
         getHypotheticalWeeklyRewardRate: getHypotheticalWeeklyRewardRate,
+        getExtraTokensWeeklyRewardRate: getExtraTokensWeeklyRewardRate,
         earnedAmount: pendingRewards,
         valueVariables: pool.valueVariables,
         userValueVariables: userInfo?.valueVariables,
+        isLockingPoolZero: userInfo.isLockingPoolZero,
         userRewardRate: userRewardRateState.result?.[0] ?? BigNumber.from(0),
         stakingApr: apr,
         pairPrice: pairPrice,
         poolType: pool.poolType,
+        poolRewardRate: rewardRate,
       } as PangoChefInfo);
     }
     return farms;
@@ -348,4 +357,67 @@ export function usePangoChefInfos() {
     userPendingRewardsState,
     pairs,
   ]);
+}
+
+export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
+  const blockTime = useGetBlockTimestamp();
+
+  return useMemo(() => {
+    if (!stakingInfo) return '0';
+
+    const userBalance = stakingInfo?.userValueVariables.balance;
+    const userSumOfEntryTimes = stakingInfo?.userValueVariables.sumOfEntryTimes;
+
+    const poolBalance = stakingInfo?.valueVariables.balance;
+    const poolSumOfEntryTimes = stakingInfo?.valueVariables.sumOfEntryTimes;
+
+    if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return '0';
+    const blockTimestamp = BigNumber.from(blockTime.toString());
+
+    //userAPR = poolAPR * (blockTime - (userValueVariables.sumOfEntryTimes / userValueVariables.balance)) / (blockTime - (poolValueVariables.sumOfEntryTimes / poolValueVariables.balance))
+    const a = userSumOfEntryTimes.div(userBalance);
+    const b = poolSumOfEntryTimes.div(poolBalance);
+    const c = blockTimestamp.sub(a);
+    const d = blockTimestamp.sub(b);
+    return BigNumber.from(stakingInfo.stakingApr ?? 0)
+      .mul(c)
+      .div(d)
+      .toString();
+  }, [blockTime, stakingInfo]);
+}
+
+export function useUserPangoChefRewardRate(stakingInfo: PangoChefInfo) {
+  const blockTime = useGetBlockTimestamp();
+
+  return useMemo(() => {
+    const userBalance = stakingInfo?.userValueVariables.balance;
+    const userSumOfEntryTimes = stakingInfo?.userValueVariables.sumOfEntryTimes;
+
+    const poolBalance = stakingInfo?.valueVariables.balance;
+    const poolSumOfEntryTimes = stakingInfo?.valueVariables.sumOfEntryTimes;
+
+    if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return BigNumber.from(0);
+
+    const blockTimestamp = BigNumber.from(blockTime.toString());
+    const userValue = blockTimestamp.mul(userBalance).sub(userSumOfEntryTimes);
+    const poolValue = blockTimestamp.mul(poolBalance).sub(poolSumOfEntryTimes);
+    return userValue.isZero() ? BigNumber.from(0) : stakingInfo.poolRewardRate.mul(userValue).div(poolValue);
+  }, [blockTime, stakingInfo]);
+}
+
+export function useIsLockingPoolZero() {
+  const stakingInfos = usePangoChefInfos();
+
+  const pairs: [Token, Token][] = useMemo(() => {
+    const _pairs: [Token, Token][] = [];
+    stakingInfos.forEach((stakingInfo) => {
+      if (stakingInfo.isLockingPoolZero) {
+        const [token0, token1] = stakingInfo.tokens;
+        _pairs.push([token0, token1]);
+      }
+    });
+    return _pairs;
+  }, [stakingInfos]);
+
+  return pairs;
 }

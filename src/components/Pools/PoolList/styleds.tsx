@@ -21,7 +21,7 @@ export const LoadingWrapper = styled(Box)`
 `;
 
 export const PanelWrapper = styled.div`
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   grid-template-rows: max-content;
   gap: 15px;
   display: inline-grid;

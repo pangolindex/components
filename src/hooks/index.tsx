@@ -5,6 +5,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
 import { PROVIDER_MAPPING } from 'src/constants';
+import { useBlockNumber } from 'src/state/papplication/hooks';
 import { isAddress } from 'src/utils';
 
 interface Web3State {
@@ -118,3 +119,25 @@ export const useRefetchMinichefSubgraph = () => {
 
   return async () => await queryClient.refetchQueries(['get-minichef-farms-v2', account]);
 };
+
+export function useGetBlockTimestamp(blockNumber?: number) {
+  const latestBlockNumber = useBlockNumber();
+  const _blockNumber = blockNumber ?? latestBlockNumber;
+
+  const { provider } = useLibrary();
+
+  const [timestamp, setTimestamp] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    async function getTimeStamp() {
+      if (!_blockNumber) return;
+
+      const timestamp = await provider.getBlockTimestamp(blockNumber);
+      setTimestamp(timestamp);
+    }
+
+    getTimeStamp();
+  }, [_blockNumber]);
+
+  return timestamp;
+}

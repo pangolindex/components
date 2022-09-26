@@ -29,8 +29,20 @@ export const CommonEVMProvider = (provider) => {
     };
 
     provider.execute = async (method, params) => {
-      const res = await (provider as any).send(method, params);
-      return res?.result;
+      const res = await (provider as any).request({ method: method, params: params });
+      return res;
+    };
+
+    provider.getBlockTimestamp = async (blockNumber: number) => {
+      const result: { timestamp: string } | null = await (provider as any).request({
+        method: 'eth_getBlockByNumber',
+        params: [`0x${blockNumber.toString(16)}`, false],
+      });
+
+      if (!result) {
+        return 0;
+      }
+      return result?.timestamp ?? 0;
     };
   }
   return provider;

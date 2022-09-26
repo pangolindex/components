@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react';
 import { AppState, useDispatch, useSelector } from 'src/state';
-import { usePangolinWeb3 } from '../../hooks';
+import { useChainId } from '../../hooks';
 import { ApplicationModal, PopupContent, addPopup, removePopup, setOpenModal } from './actions';
 
 export function useBlockNumber(): number | undefined {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
 
-  return useSelector((state: AppState) => state?.papplication?.blockNumber?.[chainId ?? -1]);
+  return useSelector((state: AppState) => state?.papplication?.blockNumber?.[chainId]);
 }
 
 export function useModalOpen(modal: ApplicationModal): boolean {
