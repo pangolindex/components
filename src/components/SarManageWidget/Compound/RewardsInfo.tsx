@@ -1,9 +1,11 @@
 import numeral from 'numeral';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import { Box } from 'src/components/Box';
+import CurrencyLogo from 'src/components/CurrencyLogo';
 import { Text } from 'src/components/Text';
-import ToolTipText from 'src/components/TextToolTip';
+import Tooltip from 'src/components/ToolTip';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { Position } from 'src/state/psarstake/hooks';
@@ -22,6 +24,8 @@ export default function RewardsInfo({ selectedOption, selectedPosition, pendingR
   const chainId = useChainId();
   const png = PNG[chainId];
 
+  const theme = useContext(ThemeContext);
+
   const formattedPedingRewards = numeral(pendingRewards).format('0.00a');
 
   return (
@@ -38,15 +42,15 @@ export default function RewardsInfo({ selectedOption, selectedPosition, pendingR
           <Text color="text1" fontSize="16px" fontWeight={500} textAlign="center">
             {t('sarCompound.reward')}:
           </Text>
-          <ToolTipText
-            color="text1"
-            fontSize="36px"
-            fontWeight={500}
-            textAlign="center"
-            text={formattedPedingRewards === 'NaN' ? '0.00' : formattedPedingRewards}
-            toolTipText={`${pendingRewards} ${png.symbol}`}
-            currency={png}
-          />
+          <Tooltip id="pendingRewards" effect="solid" backgroundColor={theme.primary}>
+            <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+              {pendingRewards} {png.symbol}
+            </Text>
+          </Tooltip>
+          <Text color="text1" fontSize="36px" fontWeight={500} textAlign="center" data-tip data-for="pendingRewards">
+            {formattedPedingRewards === 'NaN' ? '0.00' : formattedPedingRewards}
+            <CurrencyLogo currency={png} />
+          </Text>
         </Box>
       )}
     </>

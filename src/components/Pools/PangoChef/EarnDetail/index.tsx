@@ -4,7 +4,7 @@ import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Drawer, Stat, Text } from 'src/components';
-import ToolTipText from 'src/components/TextToolTip';
+import Tooltip from 'src/components/ToolTip';
 import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
@@ -91,14 +91,14 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           <Text fontSize="12px" color="text1" textAlign="center">
             {t('earn.unclaimedReward', { symbol: png.symbol })}
           </Text>
-          <ToolTipText
-            fontSize="16px"
-            fontWeight={700}
-            color="text1"
-            textAlign="center"
-            text={earnedAmount.toFixed(2)}
-            toolTipText={formatEther(earnedAmount.raw.toString())}
-          />
+          <Tooltip id="earnedAmount" effect="solid" backgroundColor={theme.primary}>
+            <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+              {formatEther(earnedAmount.raw.toString())}
+            </Text>
+          </Tooltip>
+          <Text color="text1" fontSize="16px" fontWeight={700} textAlign="center" data-tip data-for="earnedAmount">
+            {earnedAmount.toFixed(2)}
+          </Text>
         </Box>
         {isSuperFarm && (
           <>
