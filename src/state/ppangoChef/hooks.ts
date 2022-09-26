@@ -359,7 +359,7 @@ export function usePangoChefInfos() {
   ]);
 }
 
-export function useUserAPR(stakingInfo?: PangoChefInfo) {
+export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
   const blockTime = useGetBlockTimestamp();
 
   return useMemo(() => {
@@ -372,12 +372,13 @@ export function useUserAPR(stakingInfo?: PangoChefInfo) {
     const poolSumOfEntryTimes = stakingInfo.valueVariables.sumOfEntryTimes;
 
     if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return '0';
+    const blockTimestamp = BigNumber.from(blockTime.toString());
 
     //userAPR = poolAPR * (blockTime - (userValueVariables.sumOfEntryTimes / userValueVariables.balance)) / (blockTime - (poolValueVariables.sumOfEntryTimes / poolValueVariables.balance))
     const a = userSumOfEntryTimes.div(userBalance);
     const b = poolSumOfEntryTimes.div(poolBalance);
-    const c = blockTime.sub(a);
-    const d = blockTime.sub(b);
+    const c = blockTimestamp.sub(a);
+    const d = blockTimestamp.sub(b);
     return BigNumber.from(stakingInfo.stakingApr ?? 0)
       .mul(c)
       .div(d)
@@ -385,7 +386,7 @@ export function useUserAPR(stakingInfo?: PangoChefInfo) {
   }, [blockTime, stakingInfo]);
 }
 
-export function useUserRewardRate(stakingInfo: PangoChefInfo) {
+export function useUserPangoChefRewardRate(stakingInfo: PangoChefInfo) {
   const blockTime = useGetBlockTimestamp();
 
   return useMemo(() => {
@@ -397,8 +398,9 @@ export function useUserRewardRate(stakingInfo: PangoChefInfo) {
 
     if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return BigNumber.from(0);
 
-    const userValue = blockTime.mul(userBalance).sub(userSumOfEntryTimes);
-    const poolValue = blockTime.mul(poolBalance).sub(poolSumOfEntryTimes);
+    const blockTimestamp = BigNumber.from(blockTime.toString());
+    const userValue = blockTimestamp.mul(userBalance).sub(userSumOfEntryTimes);
+    const poolValue = blockTimestamp.mul(poolBalance).sub(poolSumOfEntryTimes);
     return userValue.isZero() ? BigNumber.from(0) : stakingInfo.poolRewardRate.mul(userValue).div(poolValue);
   }, [blockTime, stakingInfo]);
 }

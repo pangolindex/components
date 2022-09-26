@@ -14,7 +14,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
-import { useUserRewardRate } from 'src/state/ppangoChef/hooks';
+import { useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useTokenBalances } from 'src/state/pwallet/hooks';
@@ -144,7 +144,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     await approveCallback();
   }, [approveCallback]);
 
-  const userRewardRate = useUserRewardRate(stakingInfo);
+  const userRewardRate = useUserPangoChefRewardRate(stakingInfo);
   /*
   Let's say you get 1 png per sec, and 1 png equals 1 avax.
   In 10 secs you have 10 png rewards. you make a tx to send 10 avax.
