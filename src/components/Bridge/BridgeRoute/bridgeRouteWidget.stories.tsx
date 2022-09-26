@@ -16,12 +16,55 @@ export default {
   },
   argTypes: {
     transactionType: {
-      control: 'select',
-      options: [
-        BridgePrioritizations[BridgePrioritizations.fast],
-        BridgePrioritizations[BridgePrioritizations.normal],
-        BridgePrioritizations[BridgePrioritizations.recommended],
-      ],
+      name: 'Transaction Type',
+      type: { name: BridgePrioritizations, required: true },
+      control: {
+        type: 'select',
+        labels: {
+          0: 'Recommended',
+          1: 'Fast',
+          2: 'Normal',
+        },
+      },
+      options: [BridgePrioritizations.fast, BridgePrioritizations.normal, BridgePrioritizations.recommended],
+      description: 'Transaction type',
+    },
+    estimatedToken: {
+      name: 'Estimated Token',
+      control: 'text',
+      type: { name: 'string', required: true },
+      description: 'Estimated token',
+    },
+    estimatedResult: {
+      name: 'Estimated Result',
+      control: 'text',
+      type: { name: 'string', required: true },
+      description: 'Estimated result',
+    },
+    min: {
+      name: 'Min',
+      control: 'text',
+      type: { name: 'string', required: true },
+      description: 'Estimated Transfer time',
+    },
+    gasCost: {
+      name: 'Gas Cost',
+      control: 'text',
+      type: { name: 'string', required: true },
+      description: 'Estimated Gas Cost',
+    },
+    selected: {
+      name: 'Selected',
+      control: 'boolean',
+      type: { name: 'boolean', required: false },
+      defaultValue: false,
+      description: 'Selected',
+    },
+    steps: {
+      name: 'Steps',
+      control: 'array',
+      type: { name: 'array', required: true },
+      description: 'Transaction Steps',
     },
   },
 };

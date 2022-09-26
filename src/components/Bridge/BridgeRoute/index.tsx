@@ -64,7 +64,7 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
         </Information>
         <Information>
           <Text color="color12" fontSize={[16, 14]} fontWeight={400}>
-            {t('bridge.bridgeRoute.min', { gasCost: props.gasCost })}
+            {t('bridge.bridgeRoute.gasCost', { gasCost: props.gasCost })}
           </Text>
         </Information>
       </Informations>
