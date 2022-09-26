@@ -1,8 +1,7 @@
 import { ComponentStory } from '@storybook/react';
-import React, { useState } from 'react';
+import React from 'react';
 import { Box } from '../';
 import { Tab, TabList, TabPanel, Tabs } from './';
-import 'react-tabs/style/react-tabs.css';
 
 export default {
   component: Tabs,
@@ -10,11 +9,10 @@ export default {
 };
 
 const TemplateTabs: ComponentStory<typeof Tabs> = (args: any) => {
-  const [tabIndex, setTabIndex] = useState(0);
   return (
     <Box width="100%">
       <Box maxWidth="400px">
-        <Tabs {...args} selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
+        <Tabs {...args}>
           <TabList>
             <Tab>Tab 1</Tab>
             <Tab>Tab 2</Tab>
