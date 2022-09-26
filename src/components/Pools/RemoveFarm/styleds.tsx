@@ -1,3 +1,4 @@
+import { ChefType } from '@pangolindex/sdk';
 import styled from 'styled-components';
 import { Box } from 'src/components';
 
@@ -25,9 +26,9 @@ export const StatWrapper = styled(Box)`
   align-items: center;
 `;
 
-export const Buttons = styled(Box)<{ version: number }>`
+export const Buttons = styled(Box)<{ chefType: ChefType }>`
   display: grid;
-  grid-template-columns: 1fr ${({ version }) => (version === 3 ? '1fr' : '')};
+  grid-template-columns: 1fr ${({ chefType }) => (chefType === ChefType.PANGO_CHEF ? '1fr' : '')};
   grid-gap: 20px;
   align-self: end;
   margin-top: 10px;

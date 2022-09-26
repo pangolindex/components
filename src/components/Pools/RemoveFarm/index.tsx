@@ -49,6 +49,8 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
+  const chefType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
+
   useEffect(() => {
     if (onLoadingOrComplete) {
       if (hash || attempting || confirmRemove) {
@@ -194,11 +196,11 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
                 justifyContent="center"
               >
                 <Text color="text1" textAlign="center">
-                  {t(version === 3 ? 'pangoChef.removeWarning' : 'earn.removeWarning')}
+                  {t(chefType === ChefType.PANGO_CHEF ? 'pangoChef.removeWarning' : 'earn.removeWarning')}
                 </Text>
               </Box>
-              <Buttons version={version}>
-                {version === 3 && (
+              <Buttons chefType={chefType}>
+                {chefType === ChefType.PANGO_CHEF && (
                   <Button variant="outline" onClick={() => setShowCompoundDrawer(true)}>
                     <Text color="text1">
                       <Text color="text1">{t('sarCompound.compound')}</Text>

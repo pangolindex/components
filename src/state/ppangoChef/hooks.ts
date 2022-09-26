@@ -365,11 +365,11 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
   return useMemo(() => {
     if (!stakingInfo) return '0';
 
-    const userBalance = stakingInfo.userValueVariables.balance;
-    const userSumOfEntryTimes = stakingInfo.userValueVariables.sumOfEntryTimes;
+    const userBalance = stakingInfo?.userValueVariables.balance;
+    const userSumOfEntryTimes = stakingInfo?.userValueVariables.sumOfEntryTimes;
 
-    const poolBalance = stakingInfo.valueVariables.balance;
-    const poolSumOfEntryTimes = stakingInfo.valueVariables.sumOfEntryTimes;
+    const poolBalance = stakingInfo?.valueVariables.balance;
+    const poolSumOfEntryTimes = stakingInfo?.valueVariables.sumOfEntryTimes;
 
     if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return '0';
     const blockTimestamp = BigNumber.from(blockTime.toString());
@@ -390,11 +390,11 @@ export function useUserPangoChefRewardRate(stakingInfo: PangoChefInfo) {
   const blockTime = useGetBlockTimestamp();
 
   return useMemo(() => {
-    const userBalance = stakingInfo.userValueVariables.balance;
-    const userSumOfEntryTimes = stakingInfo.userValueVariables.sumOfEntryTimes;
+    const userBalance = stakingInfo?.userValueVariables.balance;
+    const userSumOfEntryTimes = stakingInfo?.userValueVariables.sumOfEntryTimes;
 
-    const poolBalance = stakingInfo.valueVariables.balance;
-    const poolSumOfEntryTimes = stakingInfo.valueVariables.sumOfEntryTimes;
+    const poolBalance = stakingInfo?.valueVariables.balance;
+    const poolSumOfEntryTimes = stakingInfo?.valueVariables.sumOfEntryTimes;
 
     if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return BigNumber.from(0);
 
