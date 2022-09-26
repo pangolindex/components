@@ -52,7 +52,7 @@ export default {
     },
     className: {
       name: 'HTML Enabled',
-      control: 'string',
+      control: 'text',
       type: { name: 'string', required: false },
       defaultValue: '',
       description: `classextra custom class, can use !important to overwrite tooltip's default class`,
