@@ -1,4 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber';
 import { Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
@@ -125,27 +124,16 @@ export function useGetBlockTimestamp(blockNumber?: number) {
   const latestBlockNumber = useBlockNumber();
   const _blockNumber = blockNumber ?? latestBlockNumber;
 
-  const { connector } = useWeb3React();
+  const { provider } = useLibrary();
 
-  const [timestamp, setTimestamp] = useState<BigNumber | undefined>(undefined);
+  const [timestamp, setTimestamp] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     async function getTimeStamp() {
       if (!_blockNumber) return;
 
-      const provider =
-        window.ethereum || window.bitkeep?.ethereum || window.xfi?.ethereum || (await connector?.getProvider());
-
-      const result: { timestamp: string } | null = await provider.request({
-        method: 'eth_getBlockByNumber',
-        params: [`0x${_blockNumber.toString(16)}`, false],
-      });
-
-      if (result) {
-        setTimestamp(BigNumber.from(result.timestamp));
-      } else {
-        setTimestamp(BigNumber.from(0));
-      }
+      const timestamp = await provider.getBlockTimestamp(blockNumber);
+      setTimestamp(timestamp);
     }
 
     getTimeStamp();
