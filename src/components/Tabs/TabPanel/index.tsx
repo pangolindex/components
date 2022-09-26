@@ -1,8 +1,10 @@
 import React from 'react';
-import { TabPanel as ReactTabPanel, TabPanelProps } from 'react-tabs';
+import { TabPanelProps } from 'react-tabs';
+import { STabPanel } from '../styles';
 
 const TabPanel: React.FC<TabPanelProps> = (props: any) => {
-  return <ReactTabPanel {...props} />;
+  console.log('props: ', props);
+  return <STabPanel {...props} />;
 };
 
 export default TabPanel;

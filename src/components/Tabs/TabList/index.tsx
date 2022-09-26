@@ -1,8 +1,9 @@
 import React from 'react';
-import { TabList as ReactTabList, TabListProps } from 'react-tabs';
+import { TabListProps } from 'react-tabs';
+import { STabList } from '../styles';
 
 const TabList: React.FC<TabListProps> = (props: any) => {
-  return <ReactTabList {...props} />;
+  return <STabList {...props} />;
 };
 
 export default TabList;

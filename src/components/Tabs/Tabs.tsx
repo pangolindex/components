@@ -1,8 +1,9 @@
 import React from 'react';
-import { Tabs as ReactTabs, TabsProps } from 'react-tabs';
+import { TabsProps } from 'react-tabs';
+import { STabs } from './styles';
 
 const Tabs: React.FC<TabsProps> = (props: any) => {
-  return <ReactTabs {...props} />;
+  return <STabs {...props} />;
 };
 
 export default Tabs;
