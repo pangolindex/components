@@ -1,5 +1,5 @@
-import React from 'react';
 import { hethers } from '@hashgraph/hethers';
+import React from 'react';
 
 export const HederaProvider = (provider) => {
   if (provider) {

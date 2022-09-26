@@ -323,7 +323,7 @@ export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: ChainId)
 export function useDefaultsFromURLSearch():
   | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
   | undefined {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   const dispatch = useDispatch();
   const parsedQs = useParsedQueryString();
   const [result, setResult] = useState<
@@ -340,6 +340,7 @@ export function useDefaultsFromURLSearch():
 
     const parsed = queryParametersToSwapState(parsedQs, chainId);
 
+    //TODO : to make swap with chainId
     dispatch(
       replaceSwapState({
         typedValue: parsed.typedValue,

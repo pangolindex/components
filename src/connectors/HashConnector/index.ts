@@ -1,9 +1,10 @@
+import { hethers } from '@hashgraph/hethers';
+import { Client } from '@hashgraph/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { HashConnect, HashConnectTypes } from 'hashconnect';
 import { HashConnectProvider } from 'hashconnect/dist/provider';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
-import { hethers } from '@hashgraph/hethers';
 
 export interface HashConfigType {
   networkId: string;
@@ -44,6 +45,13 @@ export class HashConnector extends AbstractConnector {
 
     //create the hashconnect instance
     this.instance = new HashConnect(true);
+
+    const client = Client.forMainnet();
+
+    client.setMirrorNetwork('hcs.testnet.mirrornode.hedera.com:5600');
+
+    console.log('client===', client);
+
     this.chainId = kwargs?.config?.chainId;
     this.normalizeChainId = kwargs?.normalizeChainId;
     this.normalizeAccount = kwargs?.normalizeAccount;
@@ -102,7 +110,16 @@ export class HashConnector extends AbstractConnector {
 
   public async getProvider(): Promise<any> {
     if (this.pairingData && this.pairingData?.accountIds[0]) {
-      const provider = this.instance.getProvider(this.network, this.topic, this.pairingData?.accountIds[0]);
+      const provider = hethers.providers.getDefaultProvider(this.network, undefined);
+
+      // const consensusNodeId = '0.0.3';
+      // const consensusNodeUrl = 'hcs.testnet.mirrornode.hedera.com:5600';
+      // const mirrorNodeUrl = 'https://testnet.mirrornode.hedera.com';
+      // const provider = new hethers.providers.HederaProvider(consensusNodeId, consensusNodeUrl, mirrorNodeUrl);
+
+      console.log('provider===', provider);
+
+      //const provider = this.instance.getProvider(this.network, this.topic, this.pairingData?.accountIds[0]);
       return provider;
     }
   }
@@ -158,7 +175,21 @@ export class HashConnector extends AbstractConnector {
       try {
         const newAccountId = this.pairingData?.accountIds[0];
 
+        console.log('newAccountId', newAccountId);
+
         const accountId = hethers.utils.getAddressFromAccount(newAccountId);
+
+        const WHBAR = hethers.utils.getAddressFromAccount('0.0.46026765');
+
+        console.log('WHBAR', WHBAR);
+
+        const USDC = hethers.utils.getAddressFromAccount('0.0.2276691');
+
+        console.log('USDC', USDC);
+
+        const test = hethers.utils.asAccountString('0x0000000000000000000000000000000002be500d');
+
+        console.log('test123', test);
 
         // const operatorAccount = '0.0.47977330';
         // const operatorPrivateKey =

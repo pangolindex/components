@@ -13,8 +13,18 @@ import rabbyIcon from 'src/assets/images/rabby.svg';
 import talismanIcon from 'src/assets/images/talisman.svg';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
-import { bitKeep, gnosisSafe, hashConnect, injected, near, talisman, walletconnect, walletlink, xDefi } from '../connectors';
-import { CommonEVMProvider, NearProvider, HederaProvider } from '../connectors/WalletProviders';
+import {
+  bitKeep,
+  gnosisSafe,
+  hashConnect,
+  injected,
+  near,
+  talisman,
+  walletconnect,
+  walletlink,
+  xDefi,
+} from '../connectors';
+import { CommonEVMProvider, HederaProvider, NearProvider } from '../connectors/WalletProviders';
 import { DAIe, PNG, USDC, USDCe, USDTe, UST, axlUST } from './tokens';
 
 export const BIG_INT_ZERO = JSBI.BigInt(0);
@@ -99,6 +109,7 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.WAGMI]: getPangoChefAddress(ChainId.WAGMI),
   [ChainId.COSTON]: getPangoChefAddress(ChainId.COSTON),
   [ChainId.SONGBIRD]: getPangoChefAddress(ChainId.SONGBIRD),
+  [ChainId.HEDERA_TESTNET]: undefined,
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
 };
@@ -340,18 +351,15 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   },
 };
 
-export const PROVIDER_MAPPING = {
-  INJECTED: CommonEVMProvider,
-  METAMASK: CommonEVMProvider,
-  WALLET_LINK: CommonEVMProvider,
-  XDEFI: CommonEVMProvider,
-  GNOSISSAFE: CommonEVMProvider,
-  WALLET_CONNECT: CommonEVMProvider,
-  RABBY: CommonEVMProvider,
-  TALISMAN: CommonEVMProvider,
-  BITKEEP: CommonEVMProvider,
-  NEAR: NearProvider,
-  HASH_CONNECT: HederaProvider,
+export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } = {
+  [ChainId.FUJI]: CommonEVMProvider,
+  [ChainId.AVALANCHE]: CommonEVMProvider,
+  [ChainId.WAGMI]: CommonEVMProvider,
+  [ChainId.COSTON]: CommonEVMProvider,
+  [ChainId.SONGBIRD]: CommonEVMProvider,
+  [ChainId.HEDERA_TESTNET]: HederaProvider,
+  [ChainId.NEAR_MAINNET]: NearProvider,
+  [ChainId.NEAR_TESTNET]: NearProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {
@@ -383,6 +391,7 @@ export const DIRECTUS_URL_NEWS = `https://pangolin.directus.app`;
 
 export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3`;
 export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
+export const HEDERA_API_BASE_URL = `https://testnet.mirrornode.hedera.com`;
 
 export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
 export const COINGECKO_API = 'https://api.coingecko.com/api/v3';

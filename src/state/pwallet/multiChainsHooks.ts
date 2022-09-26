@@ -4,6 +4,9 @@ import {
   useETHBalances,
   useGetNearUserLP,
   useGetUserLP,
+  useHederaBalance,
+  useHederaTokenBalance,
+  useHederaTokenBalances,
   useNearAddLiquidity,
   useNearBalance,
   useNearRemoveLiquidity,
@@ -24,7 +27,7 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.WAGMI]: useTokenBalances,
   [ChainId.COSTON]: useTokenBalances,
   [ChainId.SONGBIRD]: useTokenBalances,
-  [ChainId.HEDERA_TESTNET]: useTokenBalances,
+  [ChainId.HEDERA_TESTNET]: useHederaTokenBalances,
   [ChainId.NEAR_MAINNET]: useNearTokenBalances,
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
 };
@@ -39,13 +42,13 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.WAGMI]: useTokenBalance,
   [ChainId.COSTON]: useTokenBalance,
   [ChainId.SONGBIRD]: useTokenBalance,
-  [ChainId.HEDERA_TESTNET]: useTokenBalance,
+  [ChainId.HEDERA_TESTNET]: useHederaTokenBalance,
   [ChainId.NEAR_MAINNET]: useNearTokenBalance,
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
 };
 
 export type UseAccountBalanceHookType = {
-  [chainId in ChainId]: typeof useETHBalances | typeof useNearBalance;
+  [chainId in ChainId]: typeof useETHBalances | typeof useNearBalance | typeof useHederaBalance;
 };
 
 export const useAccountBalanceHook: UseAccountBalanceHookType = {
@@ -54,7 +57,7 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.WAGMI]: useETHBalances,
   [ChainId.COSTON]: useETHBalances,
   [ChainId.SONGBIRD]: useETHBalances,
-  [ChainId.HEDERA_TESTNET]: useETHBalances,
+  [ChainId.HEDERA_TESTNET]: useHederaBalance,
   [ChainId.NEAR_MAINNET]: useNearBalance,
   [ChainId.NEAR_TESTNET]: useNearBalance,
 };
