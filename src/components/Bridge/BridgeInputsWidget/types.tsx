@@ -14,5 +14,5 @@ export type BridgeInputsWidgetProps = {
   /**
    * Callback to open Token Drawer
    */
-  changeTokenDrawerStatus?: () => void;
+  onChangeTokenDrawerStatus?: () => void;
 };

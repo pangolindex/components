@@ -8,7 +8,7 @@ import { Currencies } from './styles';
 import { BridgeInputsWidgetProps } from './types';
 
 const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
-  const { changeTokenDrawerStatus, title, inputDisabled } = props;
+  const { onChangeTokenDrawerStatus, title, inputDisabled } = props;
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
 
@@ -36,7 +36,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
             padding: '1rem 1.1rem',
             width: '100%',
           }}
-          onTokenClick={changeTokenDrawerStatus}
+          onTokenClick={onChangeTokenDrawerStatus}
           isShowTextInput={false}
           currency={currency}
           fontSize={24}
@@ -52,7 +52,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
             padding: '1rem 1.1rem',
             width: '100%',
           }}
-          onTokenClick={changeTokenDrawerStatus}
+          onTokenClick={onChangeTokenDrawerStatus}
           isShowTextInput={false}
           currency={currency}
           fontSize={24}
