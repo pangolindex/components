@@ -18,8 +18,9 @@ interface WithdrawProps {
   stakingInfo: StakingInfo;
   version: number;
   onClose: () => void;
+  redirectToCompound?: () => void;
 }
-const Remove = ({ stakingInfo, version, onClose }: WithdrawProps) => {
+const Remove = ({ stakingInfo, version, onClose, redirectToCompound }: WithdrawProps) => {
   const chainId = useChainId();
   const [removeType, setRemoveType] = useState(
     stakingInfo.stakedAmount?.greaterThan('0') ? (REMOVE_TYPE.FARM as string) : (REMOVE_TYPE.LIQUIDITY as string),
@@ -79,6 +80,7 @@ const Remove = ({ stakingInfo, version, onClose }: WithdrawProps) => {
           onLoadingOrComplete={(isLoadingOrComplete: boolean) => {
             setShowRemoveTab(!isLoadingOrComplete);
           }}
+          redirectToCompound={redirectToCompound}
         />
       ) : (
         renderRemoveContent()

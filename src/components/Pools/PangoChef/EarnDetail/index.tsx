@@ -192,6 +192,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         }}
         stakingInfo={stakingInfo}
         version={version}
+        redirectToCompound={redirectToCompound}
       />
     </Wrapper>
   );
