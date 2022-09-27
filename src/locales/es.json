@@ -98,7 +98,8 @@
     "withdraw": "Retirar",
     "extraReward": "Recompensa adicional",
     "poolRewards": "Recompensas de la piscina",
-    "rewardsIn": "Recompensas en"
+    "rewardsIn": "Recompensas en",
+    "removeWarning": "Está eliminando liquidez de este grupo. Esta acción te devolverá tus tokens. Alternativamente, puede optar por apostar sus tokens en la granja para ganar recompensas."
   },
   "menu": {
     "code": "Código",
@@ -753,5 +754,9 @@
   },
   "dropdown": {
     "select": "Select"
+    "compoundSuccess": "Ha compuesto correctamente su granja",
+    "compoundTransactionSummary": "Granja compuesta",
+    "removeWarning": "Eliminar cualquier cantidad de la granja hará que su APR sea 0. En su lugar, puede combinar sus recompensas sin perder su APR.",
+    "lockingPoolZeroWarning": "No puede eliminar su liquidez o reclamar sus recompensas de esta granja. Para hacer esto, primero debe reclamar su participación de estas granjas: "
   }
 }

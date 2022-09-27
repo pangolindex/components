@@ -98,7 +98,8 @@
     "withdraw": "Retirer",
     "extraReward": "Récompense supplémentaire",
     "poolRewards": "Récompenses de pool",
-    "rewardsIn": "Récompenses en"
+    "rewardsIn": "Récompenses en",
+    "removeWarning": "Vous retirez des liquidités de ce pool. Cette action vous rendra vos jetons. Alternativement, vous pouvez choisir de miser vos jetons sur la ferme pour gagner des récompenses."
   },
   "menu": {
     "code": "Code",
@@ -753,5 +754,9 @@
   },
   "dropdown": {
     "select": "Select"
+    "compoundSuccess": "Vous avez réussi à composer votre ferme.",
+    "compoundTransactionSummary": "Ferme composée.",
+    "removeWarning": "En retirant n'importe quel montant de la ferme, vous obtiendrez votre APR à 0. Vous pouvez à la place accumuler vos récompenses sans perdre votre APR.",
+    "lockingPoolZeroWarning": "Vous ne pouvez pas retirer vos liquidités ou réclamer vos récompenses de cette ferme. Pour ce faire, vous devez d'abord réclamer votre participation à ces fermes : "
   }
 }

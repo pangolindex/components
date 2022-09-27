@@ -5,10 +5,11 @@ import { Paginate } from './styleds';
 
 interface Props {
   pageCount: number;
+  forcePage?: number;
   onPageChange: (selectedItem: { selected: number }) => void;
 }
 
-export default function Pagination({ pageCount, onPageChange }: Props) {
+export default function Pagination({ pageCount, forcePage, onPageChange }: Props) {
   return (
     <Box display="flex" justifyContent="center" alignItems="center">
       <Paginate
@@ -20,6 +21,7 @@ export default function Pagination({ pageCount, onPageChange }: Props) {
         nextLabel={<ChevronRight size={20} />}
         breakLabel="..."
         activeClassName="active"
+        forcePage={forcePage}
       />
     </Box>
   );

@@ -7,10 +7,9 @@ export const CompoundWrapper = styled(Box)`
 `;
 export const Root = styled(Box)`
   height: 100%;
-  display: grid;
-  grid-gap: 8px;
-  grid-template-rows: 2fr 1fr
-  padding: 0px 10px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 10px 10px 10px !important;
 `;
 
 export const RewardWrapper = styled(Box)`

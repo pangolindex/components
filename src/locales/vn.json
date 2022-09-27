@@ -98,7 +98,8 @@
     "withdraw": "Rút",
     "extraReward": "Phần thưởng bổ sung",
     "poolRewards": "Phần thưởng hồ bơi",
-    "rewardsIn": "Phần thưởng trong"
+    "rewardsIn": "Phần thưởng trong",
+    "removeWarning": "Bạn đang xóa thanh khoản khỏi nhóm này. Hành động này sẽ trả lại cho bạn các mã thông báo của bạn. Ngoài ra, bạn có thể chọn đặt cược mã thông báo của mình vào trang trại để kiếm phần thưởng."
   },
   "menu": {
     "code": "Mã",
@@ -753,5 +754,9 @@
   },
   "dropdown": {
     "select": "Select"
+    "compoundSuccess": "Bạn đã soạn thành công trang trại của mình.",
+    "compoundTransactionSummary": "Trang trại tổng hợp.",
+    "removeWarning": "Loại bỏ bất kỳ số tiền nào khỏi trang trại sẽ nhận được APR của bạn thành 0. Thay vào đó, bạn có thể gộp phần thưởng của mình mà không bị mất APR.",
+    "lockingPoolZeroWarning": "Bạn không thể xóa thanh khoản của mình hoặc yêu cầu phần thưởng của mình từ trang trại này. Để làm điều này, trước tiên bạn cần phải yêu cầu cổ phần của bạn từ các trang trại này: "
   }
 }

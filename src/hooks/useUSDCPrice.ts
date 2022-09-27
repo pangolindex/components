@@ -129,7 +129,7 @@ export function useNearUSDCPrice(currency?: Currency): Price | undefined {
   }, [chainId, currency, token, USDC, result]);
 }
 
-export function useSongBirdUSDPrice(currency: Currency | undefined): Price | undefined {
+export function useSongBirdUSDPrice(currency?: Currency): Price | undefined {
   const chainId = ChainId.SONGBIRD;
 
   const wrapped = wrappedCurrency(currency, chainId);

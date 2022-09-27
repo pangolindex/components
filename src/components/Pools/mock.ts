@@ -50,7 +50,7 @@ export const useGetMinichefStakingInfos = (): MinichefStakingInfo => {
   } as MinichefStakingInfo;
 };
 
-export const useGetPangoCheftInfos = (): PangoChefInfo => {
+export const useGetPangoChefInfos = (): PangoChefInfo => {
   const miniChefInfo = useGetMinichefStakingInfos();
 
   const wavax = miniChefInfo.tokens[1];

@@ -98,7 +98,8 @@
     "withdraw": "Abheben",
     "extraReward": "Zusätzliche Belohnung",
     "poolRewards": "Pool-Belohnungen",
-    "rewardsIn": "Belohnungen ein"
+    "rewardsIn": "Belohnungen ein",
+    "removeWarning": "Sie entfernen Liquidität aus diesem Pool. Diese Aktion gibt Ihnen Ihre Token zurück. Alternativ können Sie sich dafür entscheiden, Ihre Token zu farmen, um Belohnungen zu verdienen."
   },
   "menu": {
     "code": "Code",
@@ -753,5 +754,9 @@
   },
   "dropdown": {
     "select": "Select"
+    "compoundSuccess": "Sie haben Ihre Farm erfolgreich zusammengestellt.",
+    "compoundTransactionSummary": "Zusammengesetzte Farm.",
+    "removeWarning": "Wenn Sie einen beliebigen Betrag von der Farm entfernen, wird Ihr effektiver Jahreszins auf 0 gesetzt. Sie können stattdessen Ihre Belohnungen aufstocken, ohne Ihren effektiven Jahreszins zu verlieren.",
+    "lockingPoolZeroWarning": "Sie können Ihre Liquidität nicht entfernen oder Ihre Belohnungen von dieser Farm einfordern. Dazu müssen Sie zuerst entweder Ihren Anteil von diesen Farmen beanspruchen: "
   }
 }
