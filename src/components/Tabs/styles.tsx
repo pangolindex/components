@@ -10,7 +10,7 @@ export const STabs = styled(Tabs)`
 export const STabPanel = styled(TabPanel)`
   display: none;
   min-height: 40vh;
-  border-top: 1px solid ${({ theme }) => theme.color9};
+  border-top: 1px solid ${({ theme }) => theme.tabs?.tabPanelBorderColor};
   padding: 4px;
   margin-top: -5px;
 
@@ -21,7 +21,7 @@ export const STabPanel = styled(TabPanel)`
 STabPanel['tabsRole'] = 'TabPanel';
 
 export const STabList = styled(TabList)`
-  color: ${({ theme }) => theme.color11}
+  color: ${({ theme }) => theme.tabs?.tabListColor};
   list-style-type: none;
   padding-bottom: 5px;
   padding-left: 0px;
@@ -52,10 +52,10 @@ export const STab = styled(Tab)`
   }
 
   &.react-tabs__tab--disabled {
-    color: ${({ theme }) => theme.color9};
+    color: ${({ theme }) => theme.tabs?.tabColor};
     cursor: not-allowed;
     &:hover {
-      color: ${({ theme }) => theme.color9};
+      color: ${({ theme }) => theme.tabs?.tabColor};
       cursor: default;
     }
   }

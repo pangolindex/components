@@ -85,7 +85,7 @@ const BridgeCard = () => {
               setIsLoading(!isLoading);
             }}
           >
-            <X color={theme.mustardYellow} size={10} />
+            <X color={theme.bridge?.loaderCloseIconColor} size={10} />
           </CloseCircle>
           <Loader height={'auto'} label={t('bridge.bridgeCard.loader.labels.waitingReceivingChain')} size={100} />
           <BottomText>{t('bridge.bridgeCard.loader.bottomText')}</BottomText>

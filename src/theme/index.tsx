@@ -199,6 +199,13 @@ export const defaultColors: Colors = {
     text: white,
     routeInfoColor: darkSilver,
     transferKeyColor: darkSilver,
+    loaderCloseIconColor: mustardYellow,
+    informationBoxesBackgroundColor: chineseBlack,
+  },
+  tabs: {
+    tabColor: quickSilver,
+    tabListColor: black,
+    tabPanelBorderColor: quickSilver,
   },
 
   primary: philippineYellow,

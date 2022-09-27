@@ -17,7 +17,7 @@ export const Informations = styled(Box)`
 
 export const Information = styled(Box)`
   padding: 9px 13px;
-  background-color: ${({ theme }) => theme.chineseBlack};
+  background-color: ${({ theme }) => theme.bridge?.informationBoxesBackgroundColor};
   border-radius: 10px;
 `;
 
