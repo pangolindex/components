@@ -1,6 +1,7 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { formatUnits, parseUnits } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import { CAVAX, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { parseUnits } from 'ethers/lib/utils';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
@@ -84,12 +85,12 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   if (!account) {
     _error = t('earn.connectWallet');
   }
-  if (!stakingInfo?.stakedAmount) {
+  if (!stakingInfo?.stakedAmount || stakingInfo.stakedAmount.equalTo('0')) {
     _error = _error ?? t('earn.enterAmount');
   }
 
   const earnedAmount = stakingInfo.earnedAmount;
-  console.log(earnedAmount.raw.toString());
+
   const pngPrice = tokensPrices[png.address] ?? new Price(png, wrappedCurrency, '1', '0');
   let amountToAdd: CurrencyAmount | TokenAmount = new TokenAmount(wrappedCurrency, '0');
   // if is png pool and not is wrapped token as second token (eg PNG/USDC, PSB/SDOOD)
@@ -155,8 +156,10 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   also even after an hour or so, the rewards keep consantly increase, so 0% slippage would never work. 
   */
   if (
-    !userRewardRate.isZero() &&
-    !JSBI.greaterThan(JSBI.divide(earnedAmount.raw, JSBI.BigInt(userRewardRate.toString())), JSBI.BigInt(30 * 100))
+    !JSBI.greaterThan(
+      JSBI.divide(earnedAmount.raw, JSBI.BigInt(userRewardRate.isZero() ? '1' : userRewardRate.toString())),
+      JSBI.BigInt(30 * 55),
+    )
   ) {
     _error = _error ?? t('pangoChef.highVolalityWarning');
   }
@@ -164,7 +167,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const tokenOrCurrency = amountToAdd instanceof TokenAmount ? amountToAdd.token : amountToAdd.currency;
 
   // Minimium amount to compound
-  if (amountToAdd.lessThan(parseUnits('0.001', tokenOrCurrency.decimals).toString())) {
+  if (amountToAdd.lessThan(parseUnits('0.0001', tokenOrCurrency.decimals).toString())) {
     _error = _error ?? t('pangoChef.highVolalityWarning');
   }
 
@@ -173,7 +176,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       setAttempting(true);
       try {
         const method = isPNGPool ? 'compound' : 'compoundToPoolZero';
-        console.log('method', method);
+
         const minPairAmount = JSBI.BigInt(
           ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
         );
