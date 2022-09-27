@@ -112,7 +112,7 @@ describe('Dashboard', () => {
         cy.get(watchlistTimeBtn)
             .contains(time)
             .should('have.attr', 'color', 'mustardYellow')
-            .should('have.class','sc-gsnTZi gPFlPI')
+            .and('have.class','sc-gsnTZi gPFlPI')
     })
 })
 
@@ -178,7 +178,7 @@ describe('Dashboard', () => {
             })
         })
     })
-    
+    // still in progress 
     it('TC-37,38,39,40,41 Verify that the user can see the all time token value in USD', function() {
         cy.get(watchlistGraphLine).then( chart => {
             cy.get(chart).trigger('mouseover')
@@ -190,53 +190,48 @@ describe('Dashboard', () => {
             })
         })
     })
-    ////////// still in progress 
-    it('TC-42, Verify that the "Read the Litepaper" in the news section redirects the user to the "Pangolin Exchange" page', () => {
-            cy.get(newsBody).then(newsAssert => {
-                expect(newsAssert)
-                    .to.contain(coinBase)
-                cy.get(newsAssert).contains('Read the Litepaper')
-                    .invoke('removeAttr', 'target').click()
-                cy.wait(2000)
-                cy.contains(/Litepaper: Pangolin Songbird/i)
-                    .should('be.visible')
-        })
+
+    it(`TC-42, Verify that the ${newsLinkArray[3]} in the news section redirects the user to the "Pangolin Exchange" page`, () => {
+        newsLinks(0,0,newsLinkArray[3], newsLinkAssertArray[0])
     })
 
-    it.only(`TC-42, Verify that the ${newsLinkAssertArray[0]} in the "pangolin flare" in news section redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0,2,newsLinkAssertArray[0], newsLinkArray[0])
+    it(`TC-42, Verify that the ${newsLinkArray[0]} in the "pangolin flare" in news section redirects the user to the "Pangolin Exchange" page`, () => {
+        newsLinks(0,1,newsLinkArray[0], newsLinkAssertArray[1])
+    })
+    it(`TC-42, Verify that the ${newsLinkArray[1]} in the "pangolin flare" in news section redirects the user to the "Pangolin Exchange" page`, () => {
+        newsLinks(0,2,newsLinkArray[1], newsLinkAssertArray[2])
     })
 
-    it.only(`TC-42, Verify that the ${newsLinkAssertArray[1]} in the "Read the 2H 2022 Roadmap" in news section redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0,3,newsLinkAssertArray[1], newsLinkArray[1])
+    it(`TC-42, Verify that the ${newsLinkArray[2]} in the "Read the 2H 2022 Roadmap" in news section redirects the user to the "Pangolin Exchange" page`, () => {
+        newsLinks(0,3,newsLinkArray[2], newsLinkAssertArray[3])
     })
 
-    it.only(`TC-42, Verify that the "${newsLinkAssertArray[2]}" link in the air drop songbird in news section redirects the user to the "Pangolin Exchange" page`, () => {
+    it(`TC-42, Verify that the "${newsLinkArray[3]}" link in the air drop songbird in news section redirects the user to the "Pangolin Exchange" page`, () => {
     
-        newsLinks(0, 4, newsLinkAssertArray[2], newsLinkArray[2])
+        newsLinks(0, 4, newsLinkArray[3], newsLinkAssertArray[4])
     })
 
-    it.only(`TC-42, Verify that the "${newsLinkAssertArray[2]}" link in the air drop in news section redirects the user to the "Pangolin Exchange" page`, () => {
+    it(`TC-42, Verify that the "${newsLinkArray[3]}" link in the air drop in news section redirects the user to the "Pangolin Exchange" page`, () => {
     
-        newsLinks(0, 5, newsLinkAssertArray[2], newsLinkArray[3])
+        newsLinks(0, 5, newsLinkArray[3],  newsLinkAssertArray[5])
     })
 
-    it.only(`TC-42, Verify that the ${newsLinkAssertArray[3]} link in the "limit orders" in the news section redirects the user to the "Pangolin Exchange" page`, () => {
+    it(`TC-42, Verify that the ${newsLinkArray[4]} link in the "limit orders" in the news section redirects the user to the "Pangolin Exchange" page`, () => {
 
-        newsLinks(0, 6, newsLinkAssertArray[3], newsLinkArray[4])
+        newsLinks(0, 6, newsLinkArray[4],  newsLinkAssertArray[6])
     })
 
-    it.only(`TC-42, Verify that the ${newsLinkAssertArray[3]} link in the moonpay in news section redirects the user to the "dashboard" page`, () => {
-        newsLinks(0, 7, newsLinkAssertArray[3], newsLinkArray[5])
+    it(`TC-42, Verify that the ${newsLinkArray[4]} link in the moonpay in news section redirects the user to the "dashboard" page`, () => {
+        newsLinks(0, 7, newsLinkArray[4], newsLinkAssertArray[7])
     })
 
-    it.only(`TC-42, Verify that the ${newsLinkAssertArray[4]} link in the moonpay in news section redirects the user to the "dashboard" page`, () => {
+    it(`TC-42, Verify that the ${newsLinkArray[5]} link in the moonpay in news section redirects the user to the "dashboard" page`, () => {
 
-        newsLinks(0, 7, newsLinkAssertArray[4], newsLinkArray[6])
+        newsLinks(0, 7, newsLinkArray[5], newsLinkAssertArray[8])
     })
 
-    it.only(`TC-42, Verify that the ${newsLinkAssertArray[5]} link in the news section redirects the user to the "Multi-chain desk" page`, () => {
-        newsLinks(0, 8, newsLinkAssertArray[5], newsLinkArray[7])
+    it(`TC-42, Verify that the ${newsLinkArray[6]} link in the news section redirects the user to the "Multi-chain desk" page`, () => {
+        newsLinks(0, 8, newsLinkArray[6],  newsLinkAssertArray[9])
     })
 
     footerLinks.forEach( footerLink => {
