@@ -129,14 +129,14 @@ export function useGetBlockTimestamp(blockNumber?: number) {
   const [timestamp, setTimestamp] = useState<number | undefined>(undefined);
 
   useEffect(() => {
-    async function getTimeStamp() {
-      if (!_blockNumber) return;
+    async function getTimestamp() {
+      if (!_blockNumber || !provider) return;
 
-      const timestamp = await provider.getBlockTimestamp(blockNumber);
+      const timestamp = await (provider as any)?.getBlockTimestamp(_blockNumber);
       setTimestamp(timestamp);
     }
 
-    getTimeStamp();
+    getTimestamp();
   }, [_blockNumber]);
 
   return timestamp;
