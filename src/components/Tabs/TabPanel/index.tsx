@@ -6,4 +6,6 @@ const TabPanel: React.FC<TabPanelProps> = (props: any) => {
   return <STabPanel {...props} />;
 };
 
+(TabPanel as any).tabsRole = 'TabPanel';
+
 export default TabPanel;

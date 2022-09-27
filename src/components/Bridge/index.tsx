@@ -1,12 +1,13 @@
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Tab, TabList, TabPanel, Tabs } from '../Tabs';
 import BridgeCard from './BridgeCard';
 import BridgeRoute from './BridgeRoute';
 import { Step } from './BridgeRoute/types';
 import BridgeTransfer from './BridgeTransfer';
 import { BridgeState } from './BridgeTransfer/types';
-import { PageWrapper, Routes, STab, STabList, STabPanel, STabs, Transactions, Transfers } from './styles';
+import { PageWrapper, Routes, Transactions, Transfers } from './styles';
 
 export enum BridgePrioritizations {
   recommended,
@@ -47,18 +48,18 @@ const Bridge = () => {
     <PageWrapper>
       <BridgeCard />
       <Transactions>
-        <STabs
+        <Tabs
           selectedTabClassName="is-selected"
           selectedTabPanelClassName="is-selected"
           selectedIndex={tabIndex}
           onSelect={(index) => setTabIndex(index)}
         >
-          <STabList>
-            <STab>{t('bridge.availableRoutes', { number: 0 })}</STab>
-            <STab>{t('bridge.activeTransfers', { number: 0 })}</STab>
-            <STab disabled>{t('bridge.historicalTransfers', { number: 0 })}</STab>
-          </STabList>
-          <STabPanel>
+          <TabList>
+            <Tab>{t('bridge.availableRoutes', { number: 0 })}</Tab>
+            <Tab>{t('bridge.activeTransfers', { number: 0 })}</Tab>
+            <Tab disabled>{t('bridge.historicalTransfers', { number: 0 })}</Tab>
+          </TabList>
+          <TabPanel>
             <Routes>
               <BridgeRoute
                 steps={steps}
@@ -88,8 +89,8 @@ const Bridge = () => {
                 gasCost={'100.30 USD'}
               />
             </Routes>
-          </STabPanel>
-          <STabPanel>
+          </TabPanel>
+          <TabPanel>
             <Transfers>
               <BridgeTransfer
                 date={'9/10/2022, 7:53:00 AM'}
@@ -114,9 +115,9 @@ const Bridge = () => {
                 state={BridgeState.PENDING}
               />
             </Transfers>
-          </STabPanel>
-          <STabPanel>Panel 3</STabPanel>
-        </STabs>
+          </TabPanel>
+          <TabPanel>Panel 3</TabPanel>
+        </Tabs>
       </Transactions>
     </PageWrapper>
   );

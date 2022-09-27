@@ -6,4 +6,6 @@ const Tab: React.FC<TabProps> = (props: any) => {
   return <STab {...props} />;
 };
 
+(Tab as any).tabsRole = 'Tab';
+
 export default Tab;

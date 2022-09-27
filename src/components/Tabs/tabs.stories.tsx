@@ -1,6 +1,5 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { Box } from '../';
 import { Tab, TabList, TabPanel, Tabs } from './';
 
 export default {
@@ -10,26 +9,22 @@ export default {
 
 const TemplateTabs: ComponentStory<typeof Tabs> = (args: any) => {
   return (
-    <Box width="100%">
-      <Box maxWidth="400px">
-        <Tabs {...args}>
-          <TabList>
-            <Tab>Tab 1</Tab>
-            <Tab>Tab 2</Tab>
-            <Tab>Tab 3</Tab>
-          </TabList>
-          <TabPanel>
-            <h2>Any content 1</h2>
-          </TabPanel>
-          <TabPanel>
-            <h2>Any content 2</h2>
-          </TabPanel>
-          <TabPanel>
-            <h2>Any content 3</h2>
-          </TabPanel>
-        </Tabs>
-      </Box>
-    </Box>
+    <Tabs {...args}>
+      <TabList>
+        <Tab>Tab 1</Tab>
+        <Tab>Tab 2</Tab>
+        <Tab>Tab 3</Tab>
+      </TabList>
+      <TabPanel>
+        <h2>Any content 1</h2>
+      </TabPanel>
+      <TabPanel>
+        <h2>Any content 2</h2>
+      </TabPanel>
+      <TabPanel>
+        <h2>Any content 3</h2>
+      </TabPanel>
+    </Tabs>
   );
 };
 

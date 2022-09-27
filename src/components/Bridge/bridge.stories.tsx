@@ -1,5 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
+import { Box } from '../';
 import Bridge from '.';
 
 export default {
@@ -15,7 +16,11 @@ export default {
 };
 
 const TemplateBridge: ComponentStory<typeof Bridge> = (args: any) => {
-  return <Bridge {...args} />;
+  return (
+    <Box maxWidth={'1000px'}>
+      <Bridge {...args} />
+    </Box>
+  );
 };
 
 export const Default = TemplateBridge.bind({});

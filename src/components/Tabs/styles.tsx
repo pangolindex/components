@@ -18,7 +18,6 @@ export const STabPanel = styled(TabPanel)`
     display: block;
   }
 `;
-STabPanel['tabsRole'] = 'TabPanel';
 
 export const STabList = styled(TabList)`
   color: ${({ theme }) => theme.tabs?.tabListColor};
@@ -39,7 +38,6 @@ export const STabList = styled(TabList)`
   -ms-overflow-style: none;
   scrollbar-width: none;
 `;
-STabList['tabsRole'] = 'TabList';
 
 export const STab = styled(Tab)`
   padding: 4px;
@@ -68,4 +66,3 @@ export const STab = styled(Tab)`
     outline: none;
   }
 `;
-STab['tabsRole'] = 'Tab';

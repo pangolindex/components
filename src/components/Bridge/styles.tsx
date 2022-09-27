@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { Box } from '../Box';
-import { Tab, TabList, TabPanel, Tabs } from '../Tabs';
 
 export const PageWrapper = styled(Box)`
   width: 100%;
@@ -28,17 +27,6 @@ export const Transactions = styled(Box)`
     max-width: 90%;
   `};
 `;
-
-export const STabs = styled(Tabs)``;
-
-export const STabList = styled(TabList)``;
-STabList['tabsRole'] = 'TabList';
-
-export const STab = styled(Tab)``;
-STab['tabsRole'] = 'Tab';
-
-export const STabPanel = styled(TabPanel)``;
-STabPanel['tabsRole'] = 'TabPanel';
 
 export const Routes = styled.div`
   display: grid;
