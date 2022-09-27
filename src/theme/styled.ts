@@ -143,6 +143,12 @@ export interface Colors {
     };
   };
 
+  bridge?: {
+    backgroundColor?: Color;
+    secondBackgroundColor?: Color;
+    text?: Color;
+  };
+
   primary: Color;
   mustardYellow: Color;
   eerieBlack: Color;

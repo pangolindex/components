@@ -22,7 +22,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
 
   return (
     <Box>
-      <Text fontSize={18} fontWeight={500} pb={'4px'} color="text1">
+      <Text fontSize={18} fontWeight={500} pb={'4px'} color={'bridge.text'}>
         {props.title}
       </Text>
       <Currencies>
@@ -48,7 +48,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
             console.log('onChange', value);
           }}
           buttonStyle={{
-            backgroundColor: theme.color10,
+            backgroundColor: theme.bridge?.backgroundColor,
             padding: '1rem 1.1rem',
             width: '100%',
           }}
@@ -69,7 +69,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           props.inputDisabled ? (
             <Info
               size={16}
-              color={theme.text1}
+              color={theme.bridge?.text}
               data-tip={t('bridge.bridgeInputsWidget.tooltip', { amount: 10.3, currency: 'USDC' })}
             />
           ) : (
@@ -82,7 +82,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
                 console.log('onclick');
               }}
             >
-              <Text color="text1">{t('bridge.bridgeInputsWidget.max')}</Text>
+              <Text color={'bridge.text'}>{t('bridge.bridgeInputsWidget.max')}</Text>
             </Button>
           )
         }

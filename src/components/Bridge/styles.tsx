@@ -15,7 +15,7 @@ export const PageWrapper = styled(Box)`
 `;
 
 export const Transactions = styled(Box)`
-  background-color: ${({ theme }) => theme.color2};
+  background-color: ${({ theme }) => theme.bridge?.secondBackgroundColor};
   min-width: 70%;
   max-width: 70%;
   border-radius: 16px;

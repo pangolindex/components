@@ -17,14 +17,14 @@ const BridgeTransfer: React.FC<BridgeTransferProps> = (props) => {
       return (
         <Box display={'flex'} flexDirection={'row'}>
           <DoubleCurrencyLogo margin={false} currency0={chain} currency1={coin} />
-          <Text pl={'0.7rem'} fontSize={[16, 14]} fontWeight={400} color={'text1'}>
+          <Text pl={'0.7rem'} fontSize={[16, 14]} fontWeight={400} color={'bridge.text'}>
             {props[key.toLowerCase()]}
           </Text>
         </Box>
       );
     } else {
       return (
-        <Text fontSize={[16, 14]} fontWeight={400} color={'text1'}>
+        <Text fontSize={[16, 14]} fontWeight={400} color={'bridge.text'}>
           {props[key.toLowerCase()]}
         </Text>
       );
@@ -54,8 +54,8 @@ const BridgeTransfer: React.FC<BridgeTransferProps> = (props) => {
             minHeight="32px"
           >
             <ResumeLayout>
-              <Play size={18} color={theme.text1} />
-              <Text fontSize={[16, 14]} fontWeight={400} color={'text1'}>
+              <Play size={18} color={theme.bridge?.text} />
+              <Text fontSize={[16, 14]} fontWeight={400} color={'bridge.text'}>
                 {t('bridge.bridgeTransfer.resumeSwap')}
               </Text>
             </ResumeLayout>
@@ -68,7 +68,7 @@ const BridgeTransfer: React.FC<BridgeTransferProps> = (props) => {
             padding={'0.5rem 1rem'}
             minHeight="32px"
           >
-            <Trash size={16} color={theme.text1} />
+            <Trash size={16} color={theme.bridge?.text} />
           </Button>
         </Buttons>
       )}

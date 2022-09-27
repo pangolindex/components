@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Box, Text } from 'src/components';
 
 export const Wrapper = styled(Box)`
-  background-color: ${({ theme }) => theme.color2};
+  background-color: ${({ theme }) => theme.bridge?.secondBackgroundColor};
   border-radius: 10px;
   padding: 30px;
   margin-top: 30px;
@@ -27,7 +27,7 @@ export const FilterBox = styled(Box)`
 export const FilterInputHeader = styled(Text)`
   font-size: 16px;
   font-weight: 500;
-  color: ${({ theme }) => theme.text1}
+  color: ${({ theme }) => theme.bridge?.text};
   margin-bottom: 10px;
 `;
 
@@ -42,7 +42,7 @@ export const LoaderWrapper = styled(Box)`
   align-items: center;
   pointer-events: all;
   justify-content: center;
-  background-color: ${({ theme }) => theme.color2};
+  background-color: ${({ theme }) => theme.bridge?.secondBackgroundColor};
   margin: -30px;
 `;
 
@@ -61,9 +61,25 @@ export const CloseCircle = styled.div<{ onClick: () => void }>`
 export const BottomText = styled(Text)`
   font-size: 13px;
   font-weight: 400;
-  color: ${({ theme }) => theme.text1};
+  color: ${({ theme }) => theme.bridge?.text};
   position: absolute;
   bottom: 0;
   padding: 30px;
   text-align: center;
+`;
+
+export const ArrowWrapper = styled.div`
+  background-color: ${({ theme }) => theme.bridge?.backgroundColor};
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
 `;

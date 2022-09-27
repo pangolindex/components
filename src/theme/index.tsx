@@ -193,6 +193,12 @@ export const defaultColors: Colors = {
     },
   },
 
+  bridge: {
+    backgroundColor: eerieBlack,
+    secondBackgroundColor: chineseBlack,
+    text: white,
+  },
+
   primary: philippineYellow,
   mustardYellow,
   eerieBlack,

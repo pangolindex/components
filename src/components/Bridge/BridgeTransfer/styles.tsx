@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Box } from 'src/components';
 
 export const Transfer = styled.tr`
-  background-color: ${({ theme }) => theme.color10};
+  background-color: ${({ theme }) => theme.bridge?.backgroundColor};
   border-radius: 10px;
   padding: 30px;
   display: flex;

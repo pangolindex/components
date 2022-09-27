@@ -1,9 +1,8 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { ChevronDown, ChevronRight, X } from 'react-feather';
+import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { MultiValue, SingleValue } from 'react-select';
 import { ThemeContext } from 'styled-components';
-import SwapIcon from 'src/assets/images/swap.svg';
 import { Box, Button, Checkbox, Collapsed, DropdownMenu, Loader, Text } from 'src/components';
 import SlippageInput from 'src/components/SlippageInput';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
@@ -11,7 +10,7 @@ import { usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import BridgeInputsWidget from '../BridgeInputsWidget';
-import { BottomText, CloseCircle, FilterBox, FilterInputHeader, LoaderWrapper, Wrapper } from './styles';
+import { ArrowWrapper, BottomText, CloseCircle, FilterBox, FilterInputHeader, LoaderWrapper, Wrapper } from './styles';
 
 const BridgeCard = () => {
   const { account } = usePangolinWeb3();
@@ -92,7 +91,7 @@ const BridgeCard = () => {
           <BottomText>{t('bridge.bridgeCard.loader.bottomText')}</BottomText>
         </LoaderWrapper>
       )}
-      <Text fontSize={24} fontWeight={700} color="text1" pb={30}>
+      <Text fontSize={24} fontWeight={700} color={'bridge.text'} pb={30}>
         {t('bridge.bridgeCard.title')}
       </Text>
       <BridgeInputsWidget
@@ -102,13 +101,9 @@ const BridgeCard = () => {
         inputDisabled={false}
       />
       <Box display={'flex'} justifyContent={'center'} alignContent={'center'} marginY={20}>
-        <img
-          src={SwapIcon}
-          alt="swap-icon"
-          onClick={() => {
-            console.log('swap');
-          }}
-        />
+        <ArrowWrapper>
+          <RefreshCcw size="16" color={theme.bridge?.text} />
+        </ArrowWrapper>
       </Box>
       <BridgeInputsWidget title="To" inputDisabled={true} />
       <Box marginY={30}>
@@ -121,7 +116,6 @@ const BridgeCard = () => {
             variant="primary"
             onClick={() => {
               setIsLoading(true);
-              console.log('Swap');
             }}
           >
             {t('bridge.bridgeCard.swap')}
@@ -132,18 +126,18 @@ const BridgeCard = () => {
         <Collapsed
           collapse={
             <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
-              <Text fontSize={16} fontWeight={500} color={'text1'}>
+              <Text fontSize={16} fontWeight={500} color={'bridge.text'}>
                 {t('bridge.bridgeCard.advanceOptions')}
               </Text>
-              <ChevronDown size={16} color={theme.text1} />
+              <ChevronDown size={16} color={theme.bridge?.text} />
             </Box>
           }
           expand={
             <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
-              <Text fontSize={16} fontWeight={500} color={'text1'}>
+              <Text fontSize={16} fontWeight={500} color={'bridge.text'}>
                 {t('bridge.bridgeCard.advanceOptions')}
               </Text>
-              <ChevronRight size={16} color={theme.text1} />
+              <ChevronRight size={16} color={theme.bridge?.text} />
             </Box>
           }
         >
@@ -168,7 +162,7 @@ const BridgeCard = () => {
           </FilterBox>
           <FilterBox>
             <FilterInputHeader>{t('bridge.bridgeCard.filter.infiniteApproval')}</FilterInputHeader>
-            <Checkbox label={t('bridge.bridgeCard.filter.activeInfiniteApproval')} />
+            <Checkbox labelColor={'bridge.text'} label={t('bridge.bridgeCard.filter.activeInfiniteApproval')} />
           </FilterBox>
           <FilterBox>
             <FilterInputHeader>{t('bridge.bridgeCard.filter.bridges')}</FilterInputHeader>
