@@ -147,6 +147,8 @@ export interface Colors {
     backgroundColor?: Color;
     secondBackgroundColor?: Color;
     text?: Color;
+    routeInfoColor?: Color;
+    transferKeyColor?: Color;
   };
 
   primary: Color;

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import BridgeCard from './BridgeCard';
 import BridgeRoute from './BridgeRoute';
+import { Step } from './BridgeRoute/types';
 import BridgeTransfer from './BridgeTransfer';
 import { BridgeState } from './BridgeTransfer/types';
 import { PageWrapper, Routes, STab, STabList, STabPanel, STabs, Transactions, Transfers } from './styles';
@@ -15,7 +16,7 @@ export enum BridgePrioritizations {
 
 const Bridge = () => {
   const [tabIndex, setTabIndex] = useState(0);
-  const steps: any[] = [
+  const steps: Step[] = [
     {
       contractType: 'LI.FI Contract',
       subSteps: ['1. Swap to 0.0538 USDT via PANGOLIN', '2. Transfer to 0.0522 USDT via PANGOLIN'],

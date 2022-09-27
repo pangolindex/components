@@ -8,8 +8,9 @@ import { Currencies } from './styles';
 import { BridgeInputsWidgetProps } from './types';
 
 const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
-  const { changeTokenDrawerStatus } = props;
+  const { changeTokenDrawerStatus, title, inputDisabled } = props;
   const theme = useContext(ThemeContext);
+  const { t } = useTranslation();
 
   const currency = new Token(
     ChainId.AVALANCHE,
@@ -18,12 +19,11 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
     CHAINS[ChainId.AVALANCHE].png_symbol!,
     'Pangolin',
   );
-  const { t } = useTranslation();
 
   return (
     <Box>
       <Text fontSize={18} fontWeight={500} pb={'4px'} color={'bridge.text'}>
-        {props.title}
+        {title}
       </Text>
       <Currencies>
         <CurrencyInput
@@ -32,7 +32,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
             console.log('onChange', value);
           }}
           buttonStyle={{
-            backgroundColor: theme.color10,
+            backgroundColor: theme.bridge?.backgroundColor,
             padding: '1rem 1.1rem',
             width: '100%',
           }}
@@ -63,10 +63,10 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
       <TextInput
         value={''}
         isNumeric={true}
-        disabled={props.inputDisabled}
+        disabled={inputDisabled}
         placeholder="0.00"
         addonAfter={
-          props.inputDisabled ? (
+          inputDisabled ? (
             <Info
               size={16}
               color={theme.bridge?.text}
@@ -75,7 +75,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           ) : (
             <Button
               variant="plain"
-              backgroundColor="color2"
+              backgroundColor="bridge.secondBackgroundColor"
               padding="6px"
               height="auto"
               onClick={() => {

@@ -10,6 +10,7 @@ const BridgeTransfer: React.FC<BridgeTransferProps> = (props) => {
   const keys = ['date', 'from', 'to', 'via', 'state'];
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
+  const { state } = props;
   const generateData = (key: string) => {
     if (key === 'from' || key === 'to') {
       const chain = props[`${key.toLowerCase()}Chain`];
@@ -36,17 +37,17 @@ const BridgeTransfer: React.FC<BridgeTransferProps> = (props) => {
       <Box display={'flex'} flexDirection={'row'}>
         {keys.map((key, index) => (
           <Data key={index}>
-            <Text fontSize={[16, 14]} fontWeight={500} color={'color9'}>
+            <Text fontSize={[16, 14]} fontWeight={500} color={'bridge.transferKeyColor'}>
               {t(`bridge.bridgeTransfer.${key}`)}
             </Text>
             {generateData(key)}
           </Data>
         ))}
       </Box>
-      {props.state === BridgeState.PENDING && (
+      {state === BridgeState.PENDING && (
         <Buttons>
           <Button
-            backgroundColor="color2"
+            backgroundColor="bridge.secondBackgroundColor"
             variant="secondary"
             width={'fit-content'}
             borderRadius={'4px'}
@@ -61,7 +62,7 @@ const BridgeTransfer: React.FC<BridgeTransferProps> = (props) => {
             </ResumeLayout>
           </Button>
           <Button
-            backgroundColor="color2"
+            backgroundColor="bridge.secondBackgroundColor"
             variant="secondary"
             width={'fit-content'}
             borderRadius={'4px'}
