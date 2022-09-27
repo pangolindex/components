@@ -66,6 +66,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
     const endOffset = itemOffset + itemsPerPage;
     sortItems(itemOffset, endOffset, selectedOption);
     setPageCount(Math.ceil(positions.length / itemsPerPage));
+    setPage(undefined);
   }, [positions, itemOffset, itemsPerPage]);
 
   // calcule items per page based on node size and image size
@@ -84,6 +85,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
     } else {
       setItemsPerPage(12); // fallback to show 12 items per page
     }
+    setPage(undefined);
   }, [width, height]);
 
   const handlePageClick = (event) => {
