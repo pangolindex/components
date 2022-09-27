@@ -93,7 +93,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           </Text>
           <Tooltip id="earnedAmount" effect="solid" backgroundColor={theme.primary}>
             <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
-              {formatEther(earnedAmount.raw.toString())}
+              {formatEther(earnedAmount.raw.toString())} {png.symbol}
             </Text>
           </Tooltip>
           <Text color="text1" fontSize="16px" fontWeight={700} textAlign="center" data-tip data-for="earnedAmount">
