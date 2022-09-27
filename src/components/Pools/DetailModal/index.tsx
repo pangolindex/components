@@ -25,7 +25,12 @@ const DetailModal = ({ stakingInfo, version }: DetailModalProps) => {
   }, [detailModalOpen, dispatch]);
 
   return (
-    <Modal isOpen={detailModalOpen} onDismiss={togglePoolDetailModal} overlayBG={theme.modalBG2}>
+    <Modal
+      isOpen={detailModalOpen}
+      onDismiss={togglePoolDetailModal}
+      overlayBG={theme.modalBG2}
+      closeOnClickOutside={false}
+    >
       <DetailView stakingInfo={stakingInfo} onDismiss={togglePoolDetailModal} version={version} />
     </Modal>
   );

@@ -1,20 +1,20 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
-import { CHAINS, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_TWO, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
+import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
-import { DAIe, PNG, USDC, USDCe, USDTe } from 'src/constants/tokens';
+import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTokens } from 'src/hooks/Tokens';
+import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
+import { useCoinGeckoCurrencyPrice, useTokens } from 'src/hooks/Tokens';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import { decimalToFraction } from 'src/utils';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { calculateTotalStakedAmountInAvax, calculateTotalStakedAmountInAvaxFromPng } from '../pstake/hooks';
+import { getExtraTokensWeeklyRewardRate } from '../pstake/hooks';
 import { PangoChefInfo, Pool, PoolType, RewardSummations, UserInfo, ValueVariables } from './types';
 
 export function usePangoChefInfos() {
@@ -164,12 +164,14 @@ export function usePangoChefInfos() {
             balance: BigNumber.from(0),
             sumOfEntryTimes: BigNumber.from(0),
           },
+          isLockingPoolZero: false,
         } as UserInfo;
       }
 
       const valueVariables = result.valueVariables as ValueVariables;
       const rewardSummations = result.rewardSummationsPaid as RewardSummations;
       const previousValues = result.previousValues;
+      const isLockingPoolZero = result.isLockingPoolZero ?? false;
 
       if (!valueVariables || !rewardSummations || !previousValues) {
         return {
@@ -177,8 +179,10 @@ export function usePangoChefInfos() {
             balance: BigNumber.from(0),
             sumOfEntryTimes: BigNumber.from(0),
           },
+          isLockingPoolZero: false,
         } as UserInfo;
       }
+
       return {
         valueVariables: {
           balance: valueVariables?.balance,
@@ -186,6 +190,7 @@ export function usePangoChefInfos() {
         } as ValueVariables,
         rewardSummations: rewardSummations,
         previousValues: previousValues,
+        isLockingPoolZero: isLockingPoolZero,
       } as UserInfo;
     });
   }, [userInfosState]);
@@ -201,8 +206,6 @@ export function usePangoChefInfos() {
 
   const wavax = WAVAX[chainId];
   const [avaxPngPairState, avaxPngPair] = usePair(wavax, png);
-  const usdPriceTmp = useUSDCPrice(wavax);
-  const usdPrice = CHAINS[chainId]?.mainnet ? usdPriceTmp : undefined;
 
   const pairsToGetPrice = useMemo(() => {
     const _pairs: { pair: Pair; totalSupply: TokenAmount }[] = [];
@@ -219,6 +222,8 @@ export function usePangoChefInfos() {
   }, [pairs, pairTotalSuppliesState]);
 
   const pairPrices = usePairsCurrencyPrice(pairsToGetPrice);
+
+  const { data: currencyPrice = 0 } = useCoinGeckoCurrencyPrice(chainId);
 
   return useMemo(() => {
     if (!chainId || !png || pairs.length == 0) return [] as PangoChefInfo[];
@@ -264,8 +269,6 @@ export function usePangoChefInfos() {
         JSBI.BigInt(pool.valueVariables.balance.toString()),
       );
 
-      const totalSupply = new TokenAmount(pair.liquidityToken, JSBI.BigInt(pairTotalSupplyState?.result?.[0]));
-
       const userInfo = userInfos[index];
       const userTotalStakedAmount = new TokenAmount(
         pair.liquidityToken,
@@ -274,55 +277,17 @@ export function usePangoChefInfos() {
 
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
-      const isAvaxPool = Boolean(pair.involvesToken(wavax));
-      const isPngPool = Boolean(pair.involvesToken(png));
+      const pairPrice = pairPrices[pair.liquidityToken.address];
+      const pngPrice = avaxPngPair.priceOf(png, wavax);
+      const _totalStakedInWavax = pairPrice.raw.multiply(totalStakedAmount.raw);
+      const currencyPriceFraction = decimalToFraction(currencyPrice);
 
       // calculate the total staked amount in usd
-      let totalStakedInUsd = new TokenAmount(DAIe[chainId], BIG_INT_ZERO);
-      let totalStakedInWavax = new TokenAmount(wavax, BIG_INT_ZERO);
-
-      if (totalSupply.equalTo(BIG_INT_ZERO)) {
-        // Default to 0 values above avoiding division by zero errors
-      } else if (pair.involvesToken(DAIe[chainId])) {
-        const pairValueInDAI = JSBI.multiply(pair.reserveOfToken(DAIe[chainId]).raw, BIG_INT_TWO);
-        const stakedValueInDAI = JSBI.divide(JSBI.multiply(pairValueInDAI, totalStakedAmount.raw), totalSupply.raw);
-        totalStakedInUsd = new TokenAmount(DAIe[chainId], stakedValueInDAI);
-      } else if (pair.involvesToken(USDCe[chainId])) {
-        const pairValueInUSDC = JSBI.multiply(pair.reserveOfToken(USDCe[chainId]).raw, BIG_INT_TWO);
-        const stakedValueInUSDC = JSBI.divide(JSBI.multiply(pairValueInUSDC, totalStakedAmount.raw), totalSupply.raw);
-        totalStakedInUsd = new TokenAmount(USDCe[chainId], stakedValueInUSDC);
-      } else if (pair.involvesToken(USDC[chainId])) {
-        const pairValueInUSDC = JSBI.multiply(pair.reserveOfToken(USDC[chainId]).raw, BIG_INT_TWO);
-        const stakedValueInUSDC = JSBI.divide(JSBI.multiply(pairValueInUSDC, totalStakedAmount.raw), totalSupply.raw);
-        totalStakedInUsd = new TokenAmount(USDC[chainId], stakedValueInUSDC);
-      } else if (pair.involvesToken(USDTe[chainId])) {
-        const pairValueInUSDT = JSBI.multiply(pair.reserveOfToken(USDTe[chainId]).raw, BIG_INT_TWO);
-        const stakedValueInUSDT = JSBI.divide(JSBI.multiply(pairValueInUSDT, totalStakedAmount.raw), totalSupply.raw);
-        totalStakedInUsd = new TokenAmount(USDTe[chainId], stakedValueInUSDT);
-      } else if (isAvaxPool) {
-        const _totalStakedInWavax = calculateTotalStakedAmountInAvax(
-          totalStakedAmount.raw,
-          totalSupply.raw,
-          pair.reserveOfToken(wavax).raw,
-          chainId,
-        );
-        totalStakedInUsd = _totalStakedInWavax && (usdPrice?.quote(_totalStakedInWavax, chainId) as TokenAmount);
-        totalStakedInWavax = _totalStakedInWavax;
-      } else if (isPngPool) {
-        const _totalStakedInWavax = calculateTotalStakedAmountInAvaxFromPng(
-          totalStakedAmount.raw,
-          totalSupply.raw,
-          avaxPngPair.reserveOfToken(png).raw,
-          avaxPngPair.reserveOfToken(wavax).raw,
-          pair.reserveOfToken(png).raw,
-          chainId,
-        );
-        totalStakedInUsd = _totalStakedInWavax && (usdPrice?.quote(_totalStakedInWavax, chainId) as TokenAmount);
-        totalStakedInWavax = _totalStakedInWavax;
-      } else {
-        // Contains no stablecoin, WAVAX, nor PNG
-        console.error(`Could not identify total staked value for pair ${pair.liquidityToken.address}`);
-      }
+      const totalStakedInUsd = new TokenAmount(
+        USDC[chainId],
+        currencyPriceFraction.multiply(_totalStakedInWavax).toFixed(0),
+      );
+      const totalStakedInWavax = new TokenAmount(wavax, _totalStakedInWavax.toFixed(0));
 
       const getHypotheticalWeeklyRewardRate = (
         _stakedAmount: TokenAmount,
@@ -340,9 +305,6 @@ export function usePangoChefInfos() {
         );
       };
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
-      // userAPR = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
-      const pairPrice = pairPrices[pair.liquidityToken.address];
-      const pngPrice = avaxPngPair.priceOf(png, wavax);
       const apr =
         pool.valueVariables.balance.isZero() || pairPrice.equalTo('0')
           ? 0
@@ -370,13 +332,16 @@ export function usePangoChefInfos() {
         totalRewardRatePerWeek: totalRewardRatePerWeek,
         rewardRatePerWeek: new TokenAmount(png, rewardRate.mul(60 * 60 * 24 * 7).toString()),
         getHypotheticalWeeklyRewardRate: getHypotheticalWeeklyRewardRate,
+        getExtraTokensWeeklyRewardRate: getExtraTokensWeeklyRewardRate,
         earnedAmount: pendingRewards,
         valueVariables: pool.valueVariables,
         userValueVariables: userInfo?.valueVariables,
+        isLockingPoolZero: userInfo.isLockingPoolZero,
         userRewardRate: userRewardRateState.result?.[0] ?? BigNumber.from(0),
         stakingApr: apr,
         pairPrice: pairPrice,
         poolType: pool.poolType,
+        poolRewardRate: rewardRate,
       } as PangoChefInfo);
     }
     return farms;
@@ -392,4 +357,67 @@ export function usePangoChefInfos() {
     userPendingRewardsState,
     pairs,
   ]);
+}
+
+export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
+  const blockTime = useGetBlockTimestamp();
+
+  return useMemo(() => {
+    if (!stakingInfo) return '0';
+
+    const userBalance = stakingInfo?.userValueVariables.balance;
+    const userSumOfEntryTimes = stakingInfo?.userValueVariables.sumOfEntryTimes;
+
+    const poolBalance = stakingInfo?.valueVariables.balance;
+    const poolSumOfEntryTimes = stakingInfo?.valueVariables.sumOfEntryTimes;
+
+    if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return '0';
+    const blockTimestamp = BigNumber.from(blockTime.toString());
+
+    //userAPR = poolAPR * (blockTime - (userValueVariables.sumOfEntryTimes / userValueVariables.balance)) / (blockTime - (poolValueVariables.sumOfEntryTimes / poolValueVariables.balance))
+    const a = userSumOfEntryTimes.div(userBalance);
+    const b = poolSumOfEntryTimes.div(poolBalance);
+    const c = blockTimestamp.sub(a);
+    const d = blockTimestamp.sub(b);
+    return BigNumber.from(stakingInfo.stakingApr ?? 0)
+      .mul(c)
+      .div(d)
+      .toString();
+  }, [blockTime, stakingInfo]);
+}
+
+export function useUserPangoChefRewardRate(stakingInfo: PangoChefInfo) {
+  const blockTime = useGetBlockTimestamp();
+
+  return useMemo(() => {
+    const userBalance = stakingInfo?.userValueVariables.balance;
+    const userSumOfEntryTimes = stakingInfo?.userValueVariables.sumOfEntryTimes;
+
+    const poolBalance = stakingInfo?.valueVariables.balance;
+    const poolSumOfEntryTimes = stakingInfo?.valueVariables.sumOfEntryTimes;
+
+    if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return BigNumber.from(0);
+
+    const blockTimestamp = BigNumber.from(blockTime.toString());
+    const userValue = blockTimestamp.mul(userBalance).sub(userSumOfEntryTimes);
+    const poolValue = blockTimestamp.mul(poolBalance).sub(poolSumOfEntryTimes);
+    return userValue.isZero() ? BigNumber.from(0) : stakingInfo.poolRewardRate.mul(userValue).div(poolValue);
+  }, [blockTime, stakingInfo]);
+}
+
+export function useIsLockingPoolZero() {
+  const stakingInfos = usePangoChefInfos();
+
+  const pairs: [Token, Token][] = useMemo(() => {
+    const _pairs: [Token, Token][] = [];
+    stakingInfos.forEach((stakingInfo) => {
+      if (stakingInfo.isLockingPoolZero) {
+        const [token0, token1] = stakingInfo.tokens;
+        _pairs.push([token0, token1]);
+      }
+    });
+    return _pairs;
+  }, [stakingInfos]);
+
+  return pairs;
 }

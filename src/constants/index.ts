@@ -447,3 +447,13 @@ export enum SwapTypes {
 
 export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '100'); // 1% of slippage tolerange
 export const ONE_FRACTION = new Fraction('1');
+
+export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined } = {
+  [ChainId.FUJI]: undefined,
+  [ChainId.AVALANCHE]: 'avalanche-2',
+  [ChainId.WAGMI]: undefined,
+  [ChainId.COSTON]: undefined,
+  [ChainId.SONGBIRD]: 'songbird',
+  [ChainId.NEAR_MAINNET]: 'near',
+  [ChainId.NEAR_TESTNET]: undefined,
+};

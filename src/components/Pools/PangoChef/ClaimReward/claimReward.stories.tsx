@@ -1,7 +1,7 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { Box } from 'src/components/Box';
-import { useGetPangoCheftInfos } from '../../mock';
+import { useGetPangoChefInfos } from '../../mock';
 import ClaimReward from '.';
 
 export default {
@@ -10,7 +10,7 @@ export default {
 };
 
 const TemplateClaimReward: ComponentStory<typeof ClaimReward> = () => {
-  const stakingInfo = useGetPangoCheftInfos();
+  const stakingInfo = useGetPangoChefInfos();
   return (
     <Box maxWidth="376px" position="relative">
       <ClaimReward

@@ -1,21 +1,18 @@
 /* eslint-disable max-lines */
-import { FunctionFragment } from '@ethersproject/abi';
 import { BigNumber } from '@ethersproject/bignumber';
-import { Contract } from '@ethersproject/contracts';
 import { TransactionResponse } from '@ethersproject/providers';
 import { JSBI, Token, TokenAmount } from '@pangolindex/sdk';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery, useQueryClient } from 'react-query';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useApproveCallback } from 'src/hooks/useApproveCallback';
-import { useMulticallContract, useSarStakingContract } from 'src/hooks/useContract';
+import { useSarStakingContract } from 'src/hooks/useContract';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
-import { useSingleCallResult } from '../pmulticall/hooks';
+import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { useDerivedStakeInfo } from '../pstake/hooks';
 import { tryParseAmount } from '../pswap/hooks';
 import { useTransactionAdder } from '../ptransactions/hooks';
@@ -76,9 +73,6 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
-  const multiCallContract = useMulticallContract();
-
-  const queryClient = useQueryClient();
 
   const addTransaction = useTransactionAdder();
   const { t } = useTranslation();
@@ -152,18 +146,11 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
           gasLimit: calculateGasMargin(estimatedGas),
         });
       }
-      await waitForTransaction(response, 5);
+      await waitForTransaction(response, 3);
       addTransaction(response, {
         summary: t('sarStake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
       setHash(response.hash);
-      await queryClient.refetchQueries([
-        'getSarPortfolio',
-        account,
-        sarStakingContract?.address,
-        multiCallContract?.address,
-        chainId,
-      ]);
     } catch (err) {
       // we only care if the error is something _other_ than the user rejected the tx
       const _err = error as any;
@@ -261,9 +248,6 @@ export function useDerivativeSarUnstake(position: Position | null) {
   const png = PNG[chainId];
 
   const sarStakingContract = useSarStakingContract();
-  const multiCallContract = useMulticallContract();
-
-  const queryClient = useQueryClient();
 
   const stakedAmount = new TokenAmount(png, (position?.balance ?? 0).toString());
 
@@ -322,18 +306,11 @@ export function useDerivativeSarUnstake(position: Position | null) {
           gasLimit: calculateGasMargin(estimatedGas),
         },
       );
-      await waitForTransaction(response, 5);
+      await waitForTransaction(response, 3);
       addTransaction(response, {
         summary: t('sarUnstake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
       setHash(response.hash);
-      await queryClient.refetchQueries([
-        'getSarPortfolio',
-        account,
-        sarStakingContract?.address,
-        multiCallContract?.address,
-        chainId,
-      ]);
     } catch (err) {
       const _err = err as any;
       if (_err?.code !== 4001) {
@@ -383,12 +360,8 @@ export function useDerivativeSarCompound(position: Position | null) {
   const [compoundError, setCompoundError] = useState<string | null>(null);
 
   const { account } = usePangolinWeb3();
-  const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
-  const multiCallContract = useMulticallContract();
-
-  const queryClient = useQueryClient();
 
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
@@ -409,18 +382,11 @@ export function useDerivativeSarCompound(position: Position | null) {
       const response: TransactionResponse = await sarStakingContract.compound(position.id.toHexString(), {
         gasLimit: calculateGasMargin(estimatedGas),
       });
-      await waitForTransaction(response, 5);
+      await waitForTransaction(response, 3);
       addTransaction(response, {
         summary: t('sarCompound.transactionSummary'),
       });
       setHash(response.hash);
-      await queryClient.refetchQueries([
-        'getSarPortfolio',
-        account,
-        sarStakingContract?.address,
-        multiCallContract?.address,
-        chainId,
-      ]);
     } catch (error) {
       const err = error as any;
       if (err?.code !== 4001) {
@@ -450,12 +416,8 @@ export function useDerivativeSarClaim(position: Position | null) {
   const [claimError, setClaimError] = useState<string | null>(null);
 
   const { account } = usePangolinWeb3();
-  const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
-  const multiCallContract = useMulticallContract();
-
-  const queryClient = useQueryClient();
 
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
@@ -476,18 +438,11 @@ export function useDerivativeSarClaim(position: Position | null) {
       const response: TransactionResponse = await sarStakingContract.harvest(position.id.toHexString(), {
         gasLimit: calculateGasMargin(estimatedGas),
       });
-      await waitForTransaction(response, 5);
+      await waitForTransaction(response, 3);
       addTransaction(response, {
         summary: t('sarClaim.transactionSummary'),
       });
       setHash(response.hash);
-      await queryClient.refetchQueries([
-        'getSarPortfolio',
-        account,
-        sarStakingContract?.address,
-        multiCallContract?.address,
-        chainId,
-      ]);
     } catch (error) {
       const err = error as any;
       if (err?.code !== 4001) {
@@ -511,147 +466,131 @@ export function useDerivativeSarClaim(position: Position | null) {
   );
 }
 
-/**  Decode the multicall result data
- * @param contract - The contract
- * @param fragment - The function fragment
- * @param data - The data to decode
- */
-function decodeMulticallResult(contract: Contract, fragment: FunctionFragment, data: any[]): any {
-  return data.map((data) => {
-    return contract.interface.decodeFunctionResult(fragment, data);
-  });
-}
-
 // Returns a list of user positions
 export function useSarPositions() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
-  const multiCallContract = useMulticallContract();
 
-  return useQuery(
-    ['getSarPortfolio', account, sarStakingContract?.address, multiCallContract?.address, chainId],
-    async () => {
-      if (!account || !existSarContract(chainId)) {
-        return [] as Position[];
-      }
-      if (!multiCallContract || !sarStakingContract) {
-        return undefined;
-      }
+  const [nftsIndexes, setNftsIndexes] = useState<string[][] | undefined>();
 
-      // get total balance of all positions
+  useEffect(() => {
+    const getNftsIndexes = async () => {
+      if (!sarStakingContract) return;
+
       const balance: BigNumber = await sarStakingContract.balanceOf(account);
 
-      // if balance is 0, return empty list
       if (balance.isZero()) {
-        return [] as Position[];
+        setNftsIndexes([] as string[][]);
+        return;
       }
 
       // get all positions ids
-      const nfts: BigNumber[] = await sarStakingContract.tokensOfOwnerByIndex(
+      const indexes: BigNumber[] = await sarStakingContract.tokensOfOwnerByIndex(
         account,
         ZERO.toHexString(),
         balance.sub(1).toHexString(),
       );
 
-      const nftsIndexes = nfts?.map((index) => {
+      const _nftsIndexes = indexes?.map((index) => {
         return [index.toHexString()];
       });
 
-      // get the staked amount for each position via multicall
-      const positionsFragment = sarStakingContract.interface.getFunction('positions');
-      const positionsAmountCalls = nftsIndexes?.map((index) => {
-        return [sarStakingContract.address, sarStakingContract.interface.encodeFunctionData(positionsFragment, index)];
-      });
+      setNftsIndexes(_nftsIndexes);
+    };
 
-      // get the reward rate for each position via multicall
-      const rewardRateFragment = sarStakingContract.interface.getFunction('positionRewardRate');
-      const rewardRateCalls = nftsIndexes?.map((index) => {
-        return [sarStakingContract.address, sarStakingContract.interface.encodeFunctionData(rewardRateFragment, index)];
-      });
+    getNftsIndexes();
+  }, [sarStakingContract]);
 
-      // get peding rewards for each position via multicall
-      const pendingRewardsFragment = sarStakingContract.interface.getFunction('positionPendingRewards');
-      const pendingRewardsCalls = nftsIndexes?.map((index) => {
-        return [
-          sarStakingContract.address,
-          sarStakingContract.interface.encodeFunctionData(pendingRewardsFragment, index),
-        ];
-      });
+  // get the staked amount for each position
+  const positionsAmountState = useSingleContractMultipleData(sarStakingContract, 'positions', nftsIndexes ?? []);
+  // get the reward rate for each position
+  const positionsRewardRateState = useSingleContractMultipleData(
+    sarStakingContract,
+    'positionRewardRate',
+    nftsIndexes ?? [],
+  );
 
-      // get all NFTs URIs from the positions via multicall
-      const nftUrisFragment = sarStakingContract.interface.getFunction('tokenURI');
-      const nftUrisCalls = nftsIndexes?.map((index) => {
-        return [sarStakingContract.address, sarStakingContract.interface.encodeFunctionData(nftUrisFragment, index)];
-      });
+  const positionsPedingRewardsState = useSingleContractMultipleData(
+    sarStakingContract,
+    'positionPendingRewards',
+    nftsIndexes ?? [],
+  );
 
-      const results = await Promise.all([
-        multiCallContract.aggregate(positionsAmountCalls),
-        multiCallContract.aggregate(rewardRateCalls),
-        multiCallContract.aggregate(pendingRewardsCalls),
-        multiCallContract.aggregate(nftUrisCalls),
-      ]);
+  //get all NFTs URIs from the positions
+  const nftsURIsState = useSingleContractMultipleData(sarStakingContract, 'tokenURI', nftsIndexes ?? []);
 
-      // decode the results
-      const positionsAmount = decodeMulticallResult(sarStakingContract, positionsFragment, results?.[0]?.[1]);
-      const positionsRewardRate = decodeMulticallResult(sarStakingContract, rewardRateFragment, results?.[1]?.[1]);
-      const positionsPendingRewards = decodeMulticallResult(
-        sarStakingContract,
-        pendingRewardsFragment,
-        results?.[2]?.[1],
-      );
-      const nftsUris = decodeMulticallResult(sarStakingContract, nftUrisFragment, results?.[3]?.[1]);
+  return useMemo(() => {
+    const isAllFetchedURI = nftsURIsState.every((result) => !result.loading);
+    const existErrorURI = nftsURIsState.some((result) => result.error);
+    const isValidURIs = nftsURIsState.every((result) => result.valid);
 
-      if (!positionsAmount || !positionsRewardRate || !positionsPendingRewards || !nftsUris) {
-        return [] as Position[];
+    const isAllFetchedAmount = positionsAmountState.every((result) => !result.loading);
+    const existErrorAmount = positionsAmountState.some((result) => result.error);
+    const isValidAmounts = positionsAmountState.every((result) => result.valid);
+
+    const isAllFetchedRewardRate = positionsRewardRateState.every((result) => !result.loading);
+    const existErrorRewardRate = positionsRewardRateState.some((result) => result.error);
+    const isValidRewardRates = positionsRewardRateState.every((result) => result.valid);
+
+    const isAllFetchedPendingReward = positionsPedingRewardsState.every((result) => !result.loading);
+    const existErrorPendingReward = positionsPedingRewardsState.some((result) => result.error);
+    const isValidPendingRewards = positionsPedingRewardsState.every((result) => result.valid);
+
+    const isLoading = !isAllFetchedURI || !isAllFetchedAmount || !isAllFetchedRewardRate || !isAllFetchedPendingReward;
+    // first moments loading is false and valid is false then is loading the query is true
+    const isValid = isValidURIs && isValidAmounts && isValidRewardRates && isValidPendingRewards;
+
+    const error = existErrorURI || existErrorAmount || existErrorRewardRate || existErrorPendingReward;
+
+    if (error || !account || !existSarContract(chainId) || (!!nftsIndexes && nftsIndexes.length === 0)) {
+      return { positions: [] as Position[], isLoading: false };
+    }
+
+    // if is loading or exist error or not exist account return empty array
+    if (isLoading || !isValid || !nftsIndexes) {
+      return { positions: [] as Position[], isLoading: true };
+    }
+
+    // we need to decode the base64 uri to get the real uri
+    const nftsURIs = nftsURIsState.map((value) => {
+      if (value.result) {
+        const base64: string = value.result[0];
+        //need to remove the data:application/json;base64, to decode the base64
+        const nftUri = Buffer.from(base64.replace('data:application/json;base64,', ''), 'base64').toString();
+        return JSON.parse(nftUri) as URI;
+      }
+      return {} as URI;
+    });
+    const positions: Position[] = nftsURIs.map((uri, index) => {
+      const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
+        positionsAmountState[index].result?.valueVariables;
+      const rewardRate = positionsRewardRateState[index].result?.[0];
+      const pendingRewards = positionsPedingRewardsState[index].result?.[0];
+      const id = nftsIndexes[index][0];
+      const balance = valueVariables?.balance ?? BigNumber.from(0);
+      const apr = rewardRate
+        ?.mul(86400)
+        .mul(365)
+        .mul(100)
+        .div(balance.isZero() ? 1 : balance);
+
+      if (!valueVariables || !rewardRate || !pendingRewards || !uri) {
+        return {} as Position;
       }
 
-      // we need to decode the base64 uri to get the real uri
-      const nftsURIs = nftsUris.map((value) => {
-        if (value) {
-          const base64: string = value[0];
-          //need to remove the data:application/json;base64, to decode the base64
-          const nftUri = Buffer.from(base64.replace('data:application/json;base64,', ''), 'base64').toString();
-          return JSON.parse(nftUri) as URI;
-        }
-        return {} as URI;
-      });
-
-      const positions: Position[] = nftsURIs.map((uri, index) => {
-        const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
-          positionsAmount[index]?.valueVariables;
-        const rewardRate = positionsRewardRate[index][0];
-        const pendingRewards = positionsPendingRewards[index][0];
-        const id = nftsIndexes[index][0];
-        const balance = valueVariables?.balance ?? BigNumber.from(0);
-        const apr = rewardRate
-          ?.mul(86400)
-          .mul(365)
-          .mul(100)
-          .div(balance.isZero() ? 1 : balance);
-
-        if (!valueVariables || !rewardRate || !pendingRewards || !uri) {
-          return {} as Position;
-        }
-
-        return {
-          id: BigNumber.from(id),
-          balance: valueVariables?.balance,
-          sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
-          apr: apr,
-          rewardRate: rewardRate,
-          uri: uri,
-          pendingRewards: pendingRewards,
-        } as Position;
-      });
-      // remove the empty positions
-      return positions.filter((position) => !!position);
-    },
-    {
-      cacheTime: 60 * 5 * 1000, // 5 minutes
-      refetchOnWindowFocus: false,
-      refetchInterval: 60 * 5 * 1000, // 5 minutes
-    },
-  );
+      return {
+        id: BigNumber.from(id),
+        balance: valueVariables?.balance,
+        sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
+        apr: apr,
+        rewardRate: rewardRate,
+        uri: uri,
+        pendingRewards: pendingRewards,
+      } as Position;
+    });
+    // remove the empty positions
+    return { positions: positions.filter((position) => !!position), isLoading: false };
+  }, [account, positionsAmountState, positionsRewardRateState, nftsURIsState, nftsIndexes]);
 }

@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "4.2.0-rc.0",
+  "version": "4.2.0-rc.3",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "engines": {
@@ -91,6 +91,7 @@
     "react-redux": "7.2.6",
     "react-slick": "0.28.1",
     "react-switch": "^6.0.0",
+    "react-tooltip": "^4.2.21",
     "react-use": "15.3.8",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.5",

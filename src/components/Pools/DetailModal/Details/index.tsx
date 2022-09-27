@@ -42,7 +42,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
   const tokenB = pair?.token1 || token1;
   const currency0 = tokenA ? unwrappedToken(tokenA, chainId) : undefined;
   const currency1 = tokenB ? unwrappedToken(tokenB, chainId) : undefined;
-  const yourLiquidity = liquidityInUSD ? `$${liquidityInUSD?.toFixed(2)}` : '-';
+  const yourLiquidity = liquidityInUSD ? `${numeral(liquidityInUSD).format('$0.00a')}` : '-';
 
   return (
     <>
@@ -57,7 +57,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
           link={`${ANALYTICS_PAGE}/#/pair/${pair?.liquidityToken.address}`}
         />
 
-        {Number(liquidityInUSD?.toFixed(4)) > 0 && (
+        {userPgl?.greaterThan('0') && (
           <Box mt={25}>
             <StatDetail
               title={`Your Liquidity`}

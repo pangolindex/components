@@ -1,9 +1,10 @@
 /* eslint-disable max-lines */
 import { parseBytes32String } from '@ethersproject/strings';
 import { CAVAX, CHAINS, ChainId, Currency, Token } from '@pangolindex/sdk';
+import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery } from 'react-query';
-import { COINGECKO_API, COINGEKO_BASE_URL } from 'src/constants';
+import { COINGECKO_API, COINGECKO_CURRENCY_ID, COINGEKO_BASE_URL } from 'src/constants';
 import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
@@ -322,9 +323,7 @@ export function useHederaTokens(tokensAddress: string[] = []): Array<TokenReturn
 
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
   const chainId = useChainId();
-
-  const isAVAX = currencyId?.toUpperCase() === CAVAX[chainId].symbol;
-
+  const isAVAX = currencyId?.toUpperCase() === CAVAX[chainId].symbol?.toUpperCase();
   const useToken_ = useTokenHook[chainId];
   const token = useToken_(isAVAX ? undefined : currencyId);
   return isAVAX ? chainId && CAVAX[chainId] : token;
@@ -425,3 +424,22 @@ export function useCoinGeckoTokenData(coin: Token) {
 }
 
 /* eslint-enable max-lines */
+export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
+  const currencyId = COINGECKO_CURRENCY_ID[chainId];
+
+  return useQuery(['coingeckoCurrencyPrice', chainId], async (): Promise<number> => {
+    if (!currencyId) {
+      return 0;
+    }
+    try {
+      const response = await axios.get(`${COINGECKO_API}/simple/price?ids=${currencyId}&vs_currencies=usd`);
+      const data = response.data;
+
+      if (!data) return 0;
+
+      return data[currencyId]?.usd ?? 0;
+    } catch (error) {
+      return 0;
+    }
+  });
+}

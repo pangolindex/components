@@ -1,13 +1,11 @@
-import { BigNumber } from '@ethersproject/bignumber';
-import { CHAINS, ChefType, Price, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, ChefType } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
-import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useTokenCurrencyPrice } from 'src/hooks/useCurrencyPrice';
+import { useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetFarmApr, useGetRewardTokens } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -44,27 +42,12 @@ const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
 
   const totalApr = stakingApr + swapFeeApr;
 
-  const pngPRice = useTokenCurrencyPrice(PNG[chainId]) ?? new Price(PNG[chainId], WAVAX[chainId], '1', '0');
-
   const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
+  // old calculation, it's using if the userRewardRate is not broken
   //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
-  const userRewardRate =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).userRewardRate : BigNumber.from(0);
-  const userBalance =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).userValueVariables.balance : BigNumber.from(0);
-  const pairPrice =
-    cheftType === ChefType.PANGO_CHEF
-      ? (stakingInfo as PangoChefInfo).pairPrice
-      : new Price(PNG[chainId], WAVAX[chainId], '1', '0');
-  const userApr =
-    cheftType === ChefType.PANGO_CHEF && !userBalance.isZero() && pairPrice.greaterThan('0')
-      ? pngPRice.raw
-          .multiply((86400 * 365 * 100).toString())
-          .multiply(userRewardRate.toString())
-          .divide(pairPrice.raw.multiply(userBalance.toString()))
-          .toFixed(0)
-      : 0;
+
+  const userApr = useUserPangoChefAPR(cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined);
 
   return (
     <HeaderRoot>
@@ -93,7 +76,7 @@ const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
         {cheftType === ChefType.PANGO_CHEF && (
           <Stat
             title={`Your APR:`}
-            stat={!userRewardRate.isZero() ? `${numeral(userApr).format('0.00a')}%` : '-'}
+            stat={`${numeral(userApr).format('0.00a')}%`}
             titlePosition="top"
             titleFontSize={14}
             statFontSize={[24, 18]}

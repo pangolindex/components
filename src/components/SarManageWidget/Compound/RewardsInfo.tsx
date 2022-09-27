@@ -1,14 +1,16 @@
 import numeral from 'numeral';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import { Box } from 'src/components/Box';
+import CurrencyLogo from 'src/components/CurrencyLogo';
 import { Text } from 'src/components/Text';
+import Tooltip from 'src/components/ToolTip';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { Position } from 'src/state/psarstake/hooks';
 import Title from '../Title';
 import { Options } from '../types';
-import { ToolTipText } from './styleds';
 
 interface Props {
   selectedOption: Options;
@@ -21,6 +23,8 @@ export default function RewardsInfo({ selectedOption, selectedPosition, pendingR
   const { t } = useTranslation();
   const chainId = useChainId();
   const png = PNG[chainId];
+
+  const theme = useContext(ThemeContext);
 
   const formattedPedingRewards = numeral(pendingRewards).format('0.00a');
 
@@ -38,12 +42,15 @@ export default function RewardsInfo({ selectedOption, selectedPosition, pendingR
           <Text color="text1" fontSize="16px" fontWeight={500} textAlign="center">
             {t('sarCompound.reward')}:
           </Text>
-          <ToolTipText color="text1" fontSize="36px" fontWeight={500} textAlign="center">
-            {formattedPedingRewards === 'NaN' ? '0.00' : formattedPedingRewards}
-            <span className="tooltip">
+          <Tooltip id="pendingRewards" effect="solid" backgroundColor={theme.primary}>
+            <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
               {pendingRewards} {png.symbol}
-            </span>
-          </ToolTipText>
+            </Text>
+          </Tooltip>
+          <Text color="text1" fontSize="36px" fontWeight={500} textAlign="center" data-tip data-for="pendingRewards">
+            {formattedPedingRewards === 'NaN' ? '0.00' : formattedPedingRewards}
+            <CurrencyLogo currency={png} />
+          </Text>
         </Box>
       )}
     </>

@@ -1,4 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers';
+import { formatUnits, parseUnits } from '@ethersproject/units';
 import { CAVAX, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -13,6 +14,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
+import { useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useTokenBalances } from 'src/state/pwallet/hooks';
@@ -39,7 +41,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const [confirm, setConfirm] = useState(false);
   const [hash, setHash] = useState<string | undefined>();
   const [attempting, setAttempting] = useState(false);
-  const [claimError, setCompound] = useState<string | undefined>();
+  const [compoundError, setCompound] = useState<string | undefined>();
 
   const pangoChefContract = usePangoChefContract();
 
@@ -65,10 +67,16 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
 
   const tokensBalances = useTokenBalances(account ?? ZERO_ADDRESS, [token0, token1]);
 
-  const tokensPrices = useTokensCurrencyPrice([token0, token1]);
-
   const isPNGPool = token0.equals(png) || token1.equals(png);
   const isWrappedCurrencyPool = token0.equals(wrappedCurrency) || token1.equals(wrappedCurrency);
+
+  const tokensToGetPrice = [token0, token1];
+
+  if (!isPNGPool) {
+    tokensToGetPrice.push(png);
+  }
+
+  const tokensPrices = useTokensCurrencyPrice(tokensToGetPrice);
 
   let message = '';
 
@@ -81,15 +89,16 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   }
 
   const earnedAmount = stakingInfo.earnedAmount;
+  console.log(earnedAmount.raw.toString());
   const pngPrice = tokensPrices[png.address] ?? new Price(png, wrappedCurrency, '1', '0');
   let amountToAdd: CurrencyAmount | TokenAmount = new TokenAmount(wrappedCurrency, '0');
-  // if is png pool and not is wrapped token as second token
+  // if is png pool and not is wrapped token as second token (eg PNG/USDC, PSB/SDOOD)
   if (isPNGPool && !isWrappedCurrencyPool) {
     // need to calculate the token price in png, for this we using the token price on currency and png price on currency
     const token = token0.equals(png) ? token1 : token0;
     const tokenBalance = tokensBalances[token.address];
     const tokenPrice = tokensPrices[token.address] ?? new Price(token, wrappedCurrency, '1', '0');
-    const tokenPngPrice = pngPrice.equalTo('0') ? new Fraction('0') : tokenPrice.divide(pngPrice);
+    const tokenPngPrice = pngPrice.equalTo('0') ? new Fraction('0') : pngPrice.divide(tokenPrice);
     amountToAdd = new TokenAmount(token, tokenPngPrice.multiply(earnedAmount.raw).toFixed(0));
 
     if (amountToAdd.greaterThan(tokenBalance ?? '0')) {
@@ -135,7 +144,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     await approveCallback();
   }, [approveCallback]);
 
-  const userRewardRate = stakingInfo.userRewardRate;
+  const userRewardRate = useUserPangoChefRewardRate(stakingInfo);
   /*
   Let's say you get 1 png per sec, and 1 png equals 1 avax.
   In 10 secs you have 10 png rewards. you make a tx to send 10 avax.
@@ -152,11 +161,19 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     _error = _error ?? t('pangoChef.highVolalityWarning');
   }
 
+  const tokenOrCurrency = amountToAdd instanceof TokenAmount ? amountToAdd.token : amountToAdd.currency;
+
+  // Minimium amount to compound
+  if (amountToAdd.lessThan(parseUnits('0.001', tokenOrCurrency.decimals).toString())) {
+    _error = _error ?? t('pangoChef.highVolalityWarning');
+  }
+
   async function onCompound() {
     if (pangoChefContract && stakingInfo?.stakedAmount && pair && !_error) {
       setAttempting(true);
       try {
         const method = isPNGPool ? 'compound' : 'compoundToPoolZero';
+        console.log('method', method);
         const minPairAmount = JSBI.BigInt(
           ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
         );
@@ -165,27 +182,25 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
         );
         // the minPairAmount and maxPairAmount is amount of other token/currency to sent to compound with slippage tolerance
         const slippage = {
-          minPairAmount: `0x${minPairAmount.toString(16)}`,
+          minPairAmount: JSBI.lessThan(minPairAmount, JSBI.BigInt(0)) ? '0x0' : `0x${minPairAmount.toString(16)}`,
           maxPairAmount: `0x${maxPairAmount.toString(16)}`,
         };
-        const ethersParameters =
-          amountToAdd instanceof TokenAmount ? undefined : { value: `0x${maxPairAmount.toString(16)}` };
         const estimatedGas = await pangoChefContract.estimateGas[method](
           Number(stakingInfo.pid).toString(16),
           slippage,
-          ethersParameters,
+          { value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}` },
         );
         const response: TransactionResponse = await pangoChefContract[method](
           Number(stakingInfo.pid).toString(16),
           slippage,
           {
             gasLimit: calculateGasMargin(estimatedGas),
-            ...ethersParameters,
+            value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}`,
           },
         );
         await waitForTransaction(response, 1);
         addTransaction(response, {
-          summary: t('pangoChef.compoundSuccess'),
+          summary: t('pangoChef.compoundTransactionSummary'),
         });
         setHash(response.hash);
       } catch (error) {
@@ -202,13 +217,13 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   }
 
   const renderDrawer = () => {
-    if (claimError) {
+    if (compoundError) {
       return (
         <ErrorWrapper paddingX="30px" paddingBottom="30px">
           <ErrorBox>
             <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
             <Text fontWeight={500} fontSize={16} color={'red1'} textAlign="center" style={{ width: '85%' }}>
-              {claimError}
+              {compoundError}
             </Text>
           </ErrorBox>
           <Button variant="primary" onClick={onClose}>
@@ -230,11 +245,11 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       <TextInput
         addonAfter={
           <Box padding="5px" bgColor="color2" borderRadius="8px">
-            <Text color="text1">{currency.symbol}</Text>
+            <Text color="text1">{tokenOrCurrency.symbol}</Text>
           </Box>
         }
         disabled={true}
-        value={amountToAdd.toFixed(2)}
+        value={formatUnits(amountToAdd.raw.toString(), tokenOrCurrency.decimals)}
       />
       <Box
         display="flex"
@@ -264,7 +279,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
           </Button>
         )}
         <Button variant="primary" isDisabled={!!_error} onClick={onCompound}>
-          {_error ?? `${t('sarStakeMore.add')}&${t('sarCompound.compound')}`}
+          {_error ?? `${t('sarStakeMore.add')} & ${t('sarCompound.compound')}`}
         </Button>
       </Buttons>
     </Box>
@@ -283,24 +298,25 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             bgColor="color3"
             borderRadius="8px"
             margin="auto"
+            flexGrow={1}
           >
             <Text color="text1" textAlign="center">
               {t('pangoChef.compoundWarning', {
                 token0: currency0.symbol,
                 token1: currency1.symbol,
-                currency: currency.symbol,
-                png: png.symbol,
+                currency: isPNGPool ? currency0.symbol : currency.symbol,
+                png: isPNGPool ? currency1.symbol : png.symbol,
               })}
             </Text>
           </Box>
 
-          <Box width="100%" alignSelf="end">
+          <Box width="100%" mt="10px">
             <Button variant="primary" onClick={() => setConfirm(true)}>
               {t('sarCompound.compound')}
             </Button>
           </Box>
         </Root>
-      ) : !claimError && !attempting && !hash ? (
+      ) : !compoundError && !attempting && !hash ? (
         confirmContent
       ) : (
         renderDrawer()

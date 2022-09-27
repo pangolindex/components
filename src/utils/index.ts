@@ -13,6 +13,7 @@ import {
   ChainId,
   Currency,
   CurrencyAmount,
+  Fraction,
   JSBI,
   Percent,
   Token,
@@ -211,9 +212,11 @@ export async function waitForTransaction(
   ]);
 }
 
-export function getBuyUrl(token: Token): string {
+export function getBuyUrl(token: Token, chainId?: ChainId): string {
   const origin = window.location.origin;
-  const path = `/#/swap?inputCurrency=${ZERO_ADDRESS}&outputCurrency=${token.address}`;
+  const path = `/#/swap?inputCurrency=${chainId ? CAVAX[chainId].symbol : ZERO_ADDRESS}&outputCurrency=${
+    token.address
+  }`;
   return origin.includes('localhost') || origin.includes('pangolin.exchange') ? path : `app.pangolin.exchange${path}`;
 }
 
@@ -237,4 +240,24 @@ export function isEvmChain(chainId: ChainId = 43114): boolean {
     return true;
   }
   return false;
+}
+
+// http://jsfiddle.net/5QrhQ/5/
+export function decimalToFraction(number: number): Fraction {
+  const gcd = (a, b) => {
+    if (b < 0.0000001) return a; // Since there is a limited precision we need to limit the value.
+
+    return gcd(b, Math.floor(a % b)); // Discard any fractions due to limitations in precision.
+  };
+
+  const len = number.toString().length - 2;
+
+  let denominator = Math.pow(10, len);
+  let numerator = number * denominator;
+
+  const divisor = gcd(numerator, denominator);
+
+  numerator /= divisor;
+  denominator /= divisor;
+  return new Fraction(Math.floor(numerator).toString(), Math.floor(denominator).toString());
 }
