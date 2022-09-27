@@ -74,7 +74,7 @@ const TemplateSimpleDropdown: ComponentStory<typeof DropdownMenu> = (args: any) 
 
   return (
     <Box width="100%">
-      <Box maxWidth="150px">
+      <Box maxWidth="350px">
         <DropdownMenu
           {...args}
           defaultValue={activeMenu}
@@ -89,9 +89,9 @@ const TemplateSimpleDropdown: ComponentStory<typeof DropdownMenu> = (args: any) 
 
 export const Default = TemplateSimpleDropdown.bind({});
 Default.args = {
-  defaultValue: 'open',
+  defaultValue: '',
   onSelect: () => {},
-  placeHolder: 'Dropdown Title',
+  placeHolder: 'Select',
   isMulti: false,
   menuPlacement: 'auto',
   options: [
@@ -108,5 +108,5 @@ Default.args = {
       value: 'cancelled',
     },
   ],
-  height: '35px',
+  height: '50px',
 } as Partial<DropdownMenuProps>;

@@ -207,6 +207,10 @@ export const defaultColors: Colors = {
     tabListColor: black,
     tabPanelBorderColor: quickSilver,
   },
+  dropdown: {
+    color: white,
+    backgroundColor: darkGunmetal,
+  },
 
   primary: philippineYellow,
   mustardYellow,

@@ -159,6 +159,11 @@ export interface Colors {
     tabPanelBorderColor?: Color;
   };
 
+  dropdown?: {
+    color?: Color;
+    backgroundColor?: Color;
+  };
+
   primary: Color;
   mustardYellow: Color;
   eerieBlack: Color;

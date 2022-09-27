@@ -27,8 +27,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
     control: (styles) => {
       return {
         ...styles,
-        color: theme.color11,
-        backgroundColor: theme.color5,
+        color: theme.dropdown?.color,
+        backgroundColor: theme.dropdown?.backgroundColor,
         '&:hover': {
           borderColor: theme.primary,
         },
@@ -38,39 +38,39 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
     multiValue: (styles) => {
       return {
         ...styles,
-        backgroundColor: theme.color5,
-        border: `1px solid ${theme.color11}`,
-        color: theme.color11,
+        backgroundColor: theme.dropdown?.backgroundColor,
+        border: `1px solid ${theme.dropdown?.color}`,
+        color: theme.dropdown?.color,
       };
     },
     multiValueLabel: (styles) => {
       return {
         ...styles,
-        color: theme.color11,
+        color: theme.dropdown?.color,
       };
     },
     placeholder: (styles) => {
       return {
         ...styles,
-        color: theme.color11,
+        color: theme.dropdown?.color,
       };
     },
     singleValue: (styles) => {
       return {
         ...styles,
-        color: theme.color11,
+        color: theme.dropdown?.color,
       };
     },
     input: (styles) => {
       return {
         ...styles,
-        color: theme.color11,
+        color: theme.dropdown?.color,
       };
     },
     indicatorsContainer: (styles) => {
       return {
         ...styles,
-        color: theme.color11,
+        color: theme.dropdown?.color,
       };
     },
     indicatorSeparator: (styles) => {
@@ -82,8 +82,8 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
     option: (styles, { isDisabled }) => {
       return {
         ...styles,
-        color: theme.color11,
-        backgroundColor: theme.color5,
+        color: theme.dropdown?.color,
+        backgroundColor: theme.dropdown?.backgroundColor,
         cursor: isDisabled ? 'not-allowed' : 'default',
       };
     },
@@ -91,7 +91,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       return {
         ...styles,
         padding: 0,
-        color: theme.color11,
+        color: theme.dropdown?.color,
       };
     },
   };
