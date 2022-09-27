@@ -401,7 +401,9 @@ export function useUserPangoChefRewardRate(stakingInfo: PangoChefInfo) {
     const blockTimestamp = BigNumber.from(blockTime.toString());
     const userValue = blockTimestamp.mul(userBalance).sub(userSumOfEntryTimes);
     const poolValue = blockTimestamp.mul(poolBalance).sub(poolSumOfEntryTimes);
-    return userValue.isZero() ? BigNumber.from(0) : stakingInfo.poolRewardRate.mul(userValue).div(poolValue);
+    return userValue.lte(0) || poolValue.lte(0)
+      ? BigNumber.from(0)
+      : stakingInfo.poolRewardRate.mul(userValue).div(poolValue);
   }, [blockTime, stakingInfo]);
 }
 
