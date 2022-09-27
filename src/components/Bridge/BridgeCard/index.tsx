@@ -72,7 +72,7 @@ const BridgeCard = () => {
     },
   ];
 
-  const changeTokenDrawerStatus = useCallback(() => {
+  const onChangeTokenDrawerStatus = useCallback(() => {
     setIsTokenDrawerOpen(!isTokenDrawerOpen);
   }, [isTokenDrawerOpen]);
 
@@ -96,7 +96,7 @@ const BridgeCard = () => {
       </Text>
       <BridgeInputsWidget
         isTokenDrawerOpen
-        changeTokenDrawerStatus={changeTokenDrawerStatus}
+        onChangeTokenDrawerStatus={onChangeTokenDrawerStatus}
         title="From"
         inputDisabled={false}
       />
@@ -193,7 +193,7 @@ const BridgeCard = () => {
       {isTokenDrawerOpen && (
         <SelectTokenDrawer
           isOpen={isTokenDrawerOpen}
-          onClose={changeTokenDrawerStatus}
+          onClose={onChangeTokenDrawerStatus}
           onCurrencySelect={() => {
             console.log('onCurrencySelect');
           }}

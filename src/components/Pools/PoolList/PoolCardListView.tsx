@@ -91,7 +91,7 @@ const PoolCardListView = ({
                     placeHolder="Sort by:"
                     options={SortOptions}
                     defaultValue={sortBy}
-                    onSelect={(value) => {
+                    onSelect={(value: string) => {
                       onChangeSortBy(value);
                     }}
                     height="54px"
@@ -103,7 +103,7 @@ const PoolCardListView = ({
               <DropdownMenu
                 options={menuItems}
                 defaultValue={activeMenu}
-                onSelect={(value) => {
+                onSelect={(value: string) => {
                   setMenu(value);
                 }}
               />
@@ -111,7 +111,7 @@ const PoolCardListView = ({
                 placeHolder="Sort by:"
                 options={SortOptions}
                 defaultValue={sortBy}
-                onSelect={(value) => {
+                onSelect={(value: string) => {
                   onChangeSortBy(value);
                 }}
               />

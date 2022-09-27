@@ -2,7 +2,6 @@ import { formatEther } from '@ethersproject/units';
 import { BigNumber } from 'ethers';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MultiValue } from 'react-select';
 import { useMedia, useWindowSize } from 'react-use';
 import { Position } from 'src/state/psarstake/hooks';
 import { MEDIA_WIDTHS } from 'src/theme';
@@ -23,7 +22,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
   const [currentItems, setCurrentItems] = useState(positions.slice(0, itemsPerPage));
-  const [selectedOption, setSelectedOption] = useState<MultiValue<string> | string>('');
+  const [selectedOption, setSelectedOption] = useState<string>('');
   const [selectedPositonId, setSelectedPositionId] = useState<BigNumber | null>(null);
 
   const node = useRef<HTMLDivElement>(null);
@@ -33,7 +32,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
 
   const isMobile = useMedia(`(max-width: ${MEDIA_WIDTHS.upToMedium}px)`);
 
-  function sortItems(itemOffset: number, endOffset: number, sortOption: string | MultiValue<string>) {
+  function sortItems(itemOffset: number, endOffset: number, sortOption: string) {
     if (sortOption === 'apr') {
       setCurrentItems([...positions].sort((a, b) => b.apr.sub(a.apr).toNumber()).slice(itemOffset, endOffset));
     } else if (sortOption === 'amount') {
@@ -54,9 +53,9 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
     setPageCount(0);
   }
 
-  const onSelect = (selected: string | MultiValue<string>) => {
-    setSelectedOption(selected);
-    sortItems(0, itemsPerPage, selected);
+  const onSelect = (selected: string) => {
+    setSelectedOption(selected as string);
+    sortItems(0, itemsPerPage, selected as string);
   };
 
   const { width, height } = useWindowSize();
