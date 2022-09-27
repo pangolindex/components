@@ -91,8 +91,8 @@ const PoolCardListView = ({
                     placeHolder="Sort by:"
                     options={SortOptions}
                     defaultValue={sortBy}
-                    onSelect={(value: string) => {
-                      onChangeSortBy(value);
+                    onSelect={(value) => {
+                      onChangeSortBy(value as string);
                     }}
                     height="54px"
                   />
@@ -103,16 +103,16 @@ const PoolCardListView = ({
               <DropdownMenu
                 options={menuItems}
                 defaultValue={activeMenu}
-                onSelect={(value: string) => {
-                  setMenu(value);
+                onSelect={(value) => {
+                  setMenu(value as string);
                 }}
               />
               <DropdownMenu
                 placeHolder="Sort by:"
                 options={SortOptions}
                 defaultValue={sortBy}
-                onSelect={(value: string) => {
-                  onChangeSortBy(value);
+                onSelect={(value) => {
+                  onChangeSortBy(value as string);
                 }}
               />
             </MobileGridContainer>

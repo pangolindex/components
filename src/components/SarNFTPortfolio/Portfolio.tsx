@@ -53,7 +53,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
     setPageCount(0);
   }
 
-  const onSelect = (selected: string) => {
+  const onSelect = (selected) => {
     setSelectedOption(selected as string);
     sortItems(0, itemsPerPage, selected as string);
   };

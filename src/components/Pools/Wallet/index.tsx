@@ -63,8 +63,8 @@ const Wallet: React.FC<Props> = ({ setMenu, activeMenu, menuItems }) => {
         <DropdownMenu
           options={menuItems}
           defaultValue={activeMenu}
-          onSelect={(value: string) => {
-            setMenu(value);
+          onSelect={(value) => {
+            setMenu(value as string);
           }}
         />
       </MobileContainer>
