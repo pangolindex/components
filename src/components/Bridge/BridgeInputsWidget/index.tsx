@@ -69,7 +69,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           inputDisabled ? (
             <Info
               size={16}
-              color={theme.bridge?.text}
+              color={theme.bridge?.infoIconColor}
               data-tip={t('bridge.bridgeInputsWidget.tooltip', { amount: 10.3, currency: 'USDC' })}
             />
           ) : (

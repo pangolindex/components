@@ -147,6 +147,7 @@ export interface Colors {
     backgroundColor?: Color;
     secondBackgroundColor?: Color;
     text?: Color;
+    infoIconColor?: Color;
     routeInfoColor?: Color;
     transferKeyColor?: Color;
     loaderCloseIconColor?: Color;

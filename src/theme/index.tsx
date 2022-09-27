@@ -197,6 +197,7 @@ export const defaultColors: Colors = {
     backgroundColor: eerieBlack,
     secondBackgroundColor: chineseBlack,
     text: white,
+    infoIconColor: black,
     routeInfoColor: darkSilver,
     transferKeyColor: darkSilver,
     loaderCloseIconColor: mustardYellow,

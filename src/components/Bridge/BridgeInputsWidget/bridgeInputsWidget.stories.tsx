@@ -50,7 +50,7 @@ const TemplateBridgeInputsWidget: ComponentStory<typeof BridgeInputsWidget> = (a
 export const Default = TemplateBridgeInputsWidget.bind({});
 Default.args = {
   title: 'to',
-  inputDisabled: false,
+  inputDisabled: true,
   isTokenDrawerOpen: false,
   onTokenDrawerOpen: () => {},
 } as Partial<BridgeInputsWidgetProps>;
