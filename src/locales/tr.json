@@ -699,7 +699,10 @@
     "compoundAmountWarning": "Bileşik için {{ amount }} {{ symbol }} eklemeniz gerekiyor.",
     "compoundAmountWarning2": "Bu havuzun ödüllerini alana kadar {{ symbol }} {{ png }} havuzunuzu kilitleyeceğinize dikkat edin.",
     "highVolalityWarning": "Çok erken, birkaç saat sonra deneyin",
-    "compoundSuccess": "Çiftliğinizi başarıyla oluşturdunuz."
+    "compoundSuccess": "Çiftliğinizi başarıyla oluşturdunuz.",
+    "compoundTransactionSummary": "Birleşik çiftlik.",
+    "removeWarning": "Çiftlikten herhangi bir miktarı çıkarmak, APR'nizi 0'a getirecektir. Bunun yerine ödüllerinizi, APR'nizi kaybetmeden birleştirebilirsiniz.",
+    "lockingPoolZeroWarning": "Bu çiftlikten likiditenizi kaldıramaz veya ödüllerinizi talep edemezsiniz. Bunu yapmak için önce bu çiftliklerden hissenizi talep etmeniz gerekir: "
   },
   "bridge": {
     "availableRoutes": "Mevcut Rotalar ({{ number }})",
@@ -753,9 +756,5 @@
   },
   "dropdown": {
     "select": "Seç"
-    "compoundSuccess": "Çiftliğinizi başarıyla oluşturdunuz.",
-    "compoundTransactionSummary": "Birleşik çiftlik.",
-    "removeWarning": "Çiftlikten herhangi bir miktarı çıkarmak, APR'nizi 0'a getirecektir. Bunun yerine ödüllerinizi, APR'nizi kaybetmeden birleştirebilirsiniz.",
-    "lockingPoolZeroWarning": "Bu çiftlikten likiditenizi kaldıramaz veya ödüllerinizi talep edemezsiniz. Bunu yapmak için önce bu çiftliklerden hissenizi talep etmeniz gerekir: "
   }
 }

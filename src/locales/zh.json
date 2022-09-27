@@ -699,7 +699,10 @@
     "compoundAmountWarning": "您需要添加 {{ amount }} {{ symbol }} 来复合。",
     "compoundAmountWarning2": "请注意，您将锁定您的 {{ symbol }} {{ png }} 池，直到您获得该池的奖励。",
     "highVolalityWarning": "太早了，过几个小时试试",
-    "compoundSuccess": "你已经成功地组成了你的农场。"
+    "compoundSuccess": "你已经成功地组成了你的农场。",
+    "compoundTransactionSummary": "复合农场。",
+    "removeWarning": "从农场中删除任何金额将使您的 APR 变为 0。您可以在不损失 APR 的情况下复合您的奖励。",
+    "lockingPoolZeroWarning": "您无法从该农场移除您的流动性或索取您的奖励。 为此，您首先需要从该农场申领您的股份： "
   },
   "bridge": {
     "availableRoutes": "Available Routes ({{ number }})",
@@ -753,9 +756,5 @@
   },
   "dropdown": {
     "select": "Select"
-    "compoundSuccess": "你已经成功地组成了你的农场。",
-    "compoundTransactionSummary": "复合农场。",
-    "removeWarning": "从农场中删除任何金额将使您的 APR 变为 0。您可以在不损失 APR 的情况下复合您的奖励。",
-    "lockingPoolZeroWarning": "您无法从该农场移除您的流动性或索取您的奖励。 为此，您首先需要从该农场申领您的股份： "
   }
 }

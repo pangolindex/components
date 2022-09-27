@@ -94,7 +94,6 @@
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.5",
     "react-tabs": "4.2.1",
-    "react-tooltip": "^4.2.21",
     "react-collapsed": "^3.4.0",
     "recharts": "2.1.13",
     "redux-localstorage-simple": "2.4.1",

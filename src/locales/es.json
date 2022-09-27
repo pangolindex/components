@@ -700,7 +700,10 @@
     "compoundAmountWarning": "Necesitas agregar {{ amount }} {{ symbol }} al compuesto.",
     "compoundAmountWarning2": "Tenga cuidado de bloquear su fondo de {{ symbol }} {{ png }} hasta que reclame las recompensas de este fondo.",
     "highVolalityWarning": "Demasiado pronto, intente en unas pocas horas",
-    "compoundSuccess": "Ha compuesto correctamente su granja"
+    "compoundSuccess": "Ha compuesto correctamente su granja",
+    "compoundTransactionSummary": "Granja compuesta",
+    "removeWarning": "Eliminar cualquier cantidad de la granja hará que su APR sea 0. En su lugar, puede combinar sus recompensas sin perder su APR.",
+    "lockingPoolZeroWarning": "No puede eliminar su liquidez o reclamar sus recompensas de esta granja. Para hacer esto, primero debe reclamar su participación de estas granjas: "
   },
   "bridge": {
     "availableRoutes": "Available Routes ({{ number }})",
@@ -754,9 +757,5 @@
   },
   "dropdown": {
     "select": "Select"
-    "compoundSuccess": "Ha compuesto correctamente su granja",
-    "compoundTransactionSummary": "Granja compuesta",
-    "removeWarning": "Eliminar cualquier cantidad de la granja hará que su APR sea 0. En su lugar, puede combinar sus recompensas sin perder su APR.",
-    "lockingPoolZeroWarning": "No puede eliminar su liquidez o reclamar sus recompensas de esta granja. Para hacer esto, primero debe reclamar su participación de estas granjas: "
   }
 }

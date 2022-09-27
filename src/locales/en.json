@@ -701,7 +701,10 @@
     "compoundAmountWarning": "You need to add {{ amount }} {{ symbol }} to compound.",
     "compoundAmountWarning2": "Be careful that you will be locking your {{ symbol }} {{ png }} pool till you claim the rewards of this pool.",
     "highVolalityWarning": "Too early, try in few hours",
-    "compoundSuccess": "You have successfully composed your farm."
+    "compoundSuccess": "You have successfully composed your farm.",
+    "compoundTransactionSummary": "Compounded farm",
+    "removeWarning": "Removing any amount from farm will get your APR to 0. You can instead compound your rewards without losing your APR.",
+    "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim your stake from this farms: "
   },
   "bridge": {
     "availableRoutes": "Available Routes ({{ number }})",
@@ -755,9 +758,5 @@
   },
   "dropdown": {
     "select": "Select"
-    "compoundSuccess": "You have successfully composed your farm.",
-    "compoundTransactionSummary": "Compounded farm",
-    "removeWarning": "Removing any amount from farm will get your APR to 0. You can instead compound your rewards without losing your APR.",
-    "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim your stake from this farms: "
   }
 }
