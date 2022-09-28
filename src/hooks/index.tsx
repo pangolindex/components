@@ -1,7 +1,7 @@
 import { Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
 import { PROVIDER_MAPPING } from 'src/constants';
@@ -126,18 +126,22 @@ export function useGetBlockTimestamp(blockNumber?: number) {
 
   const { provider } = useLibrary();
 
-  const [timestamp, setTimestamp] = useState<number | undefined>(undefined);
+  const [timestamp, setTimestamp] = useState<string | undefined>(undefined);
+
+  const getTimestamp = useMemo(async () => {
+    if (!_blockNumber || !provider) return;
+
+    const result = await (provider as any)?.getBlockTimestamp(_blockNumber);
+    return result;
+  }, [_blockNumber, provider]);
 
   useEffect(() => {
-    async function getTimeStamp() {
-      if (!_blockNumber) return;
-
-      const timestamp = await provider.getBlockTimestamp(blockNumber);
-      setTimestamp(timestamp);
-    }
-
-    getTimeStamp();
-  }, [_blockNumber]);
+    const getResult = async () => {
+      const result = await getTimestamp;
+      setTimestamp(result);
+    };
+    getResult();
+  }, [_blockNumber, getTimestamp]);
 
   return timestamp;
 }

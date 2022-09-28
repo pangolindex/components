@@ -73,7 +73,7 @@ const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
             <RewardTokens rewardTokens={rewardTokens} size={24} />
           </Box>
         </Box>
-        {cheftType === ChefType.PANGO_CHEF && (
+        {cheftType === ChefType.PANGO_CHEF && stakingInfo.stakedAmount.greaterThan('0') && (
           <Stat
             title={`Your APR:`}
             stat={`${numeral(userApr).format('0.00a')}%`}

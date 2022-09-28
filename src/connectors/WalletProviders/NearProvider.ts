@@ -47,7 +47,7 @@ export const NearProvider = (provider) => {
 
     provider.getBlockTimestamp = async (blockNumber: number) => {
       const block = await provider.block(blockNumber);
-      return block?.header?.timestamp ?? 0;
+      return block?.header?.timestamp?.toString() ?? '0';
     };
   }
   return provider;
