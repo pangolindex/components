@@ -229,7 +229,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async getAccountBalance() {
-    if (this.pairingData) {
+    if (this.pairingData && this.provider) {
       const balance = await this.provider.getAccountBalance(this.pairingData?.accountIds[0]);
       return balance.toString();
     }

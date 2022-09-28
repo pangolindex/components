@@ -454,6 +454,7 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.WAGMI]: undefined,
   [ChainId.COSTON]: undefined,
   [ChainId.SONGBIRD]: 'songbird',
+  [ChainId.HEDERA_TESTNET]: 'hedera-hashgraph',
   [ChainId.NEAR_MAINNET]: 'near',
   [ChainId.NEAR_TESTNET]: undefined,
 };

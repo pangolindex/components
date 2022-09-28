@@ -95,7 +95,7 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
   [ChainId.WAGMI]: useUSDCPrice,
   [ChainId.COSTON]: useUSDCPrice,
   [ChainId.SONGBIRD]: useSongBirdUSDPrice,
-  [ChainId.HEDERA_TESTNET]: useDummySongbirdUSDCPrice,
+  [ChainId.HEDERA_TESTNET]: useUSDCPrice,
   [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
   [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
 };
