@@ -48,12 +48,7 @@ const Bridge = () => {
     <PageWrapper>
       <BridgeCard />
       <Transactions>
-        <Tabs
-          selectedTabClassName="is-selected"
-          selectedTabPanelClassName="is-selected"
-          selectedIndex={tabIndex}
-          onSelect={(index) => setTabIndex(index)}
-        >
+        <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
           <TabList>
             <Tab>{t('bridge.availableRoutes', { number: 0 })}</Tab>
             <Tab>{t('bridge.activeTransfers', { number: 0 })}</Tab>
