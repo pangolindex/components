@@ -32,7 +32,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
             console.log('onChange', value);
           }}
           buttonStyle={{
-            backgroundColor: theme.bridge?.backgroundColor,
+            backgroundColor: theme.bridge?.primaryBgColor,
             padding: '1rem 1.1rem',
             width: '100%',
           }}
@@ -48,7 +48,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
             console.log('onChange', value);
           }}
           buttonStyle={{
-            backgroundColor: theme.bridge?.backgroundColor,
+            backgroundColor: theme.bridge?.primaryBgColor,
             padding: '1rem 1.1rem',
             width: '100%',
           }}
@@ -75,7 +75,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           ) : (
             <Button
               variant="plain"
-              backgroundColor="bridge.secondBackgroundColor"
+              backgroundColor="bridge.secondaryBgColor"
               padding="6px"
               height="auto"
               onClick={() => {

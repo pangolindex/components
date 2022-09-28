@@ -1,5 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
+import { Box } from 'src/components';
 import { BridgeInputsWidgetProps } from './types';
 import BridgeInputsWidget from '.';
 
@@ -44,7 +45,11 @@ export default {
 };
 
 const TemplateBridgeInputsWidget: ComponentStory<typeof BridgeInputsWidget> = (args: any) => {
-  return <BridgeInputsWidget {...args} />;
+  return (
+    <Box width={'400px'}>
+      <BridgeInputsWidget {...args} />
+    </Box>
+  );
 };
 
 export const Default = TemplateBridgeInputsWidget.bind({});

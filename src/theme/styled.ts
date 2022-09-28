@@ -144,8 +144,8 @@ export interface Colors {
   };
 
   bridge?: {
-    backgroundColor?: Color;
-    secondBackgroundColor?: Color;
+    primaryBgColor?: Color;
+    secondaryBgColor?: Color;
     text?: Color;
     infoIconColor?: Color;
     routeInfoColor?: Color;
@@ -162,7 +162,7 @@ export interface Colors {
 
   dropdown?: {
     color?: Color;
-    backgroundColor?: Color;
+    primaryBgColor?: Color;
   };
 
   primary: Color;

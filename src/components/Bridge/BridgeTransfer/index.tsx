@@ -47,7 +47,7 @@ const BridgeTransfer: React.FC<BridgeTransferProps> = (props) => {
       {state === BridgeState.PENDING && (
         <Buttons>
           <Button
-            backgroundColor="bridge.secondBackgroundColor"
+            backgroundColor="bridge.secondaryBgColor"
             variant="secondary"
             width={'fit-content'}
             borderRadius={'4px'}
@@ -62,7 +62,7 @@ const BridgeTransfer: React.FC<BridgeTransferProps> = (props) => {
             </ResumeLayout>
           </Button>
           <Button
-            backgroundColor="bridge.secondBackgroundColor"
+            backgroundColor="bridge.secondaryBgColor"
             variant="secondary"
             width={'fit-content'}
             borderRadius={'4px'}

@@ -28,7 +28,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       return {
         ...styles,
         color: theme.dropdown?.color,
-        backgroundColor: theme.dropdown?.backgroundColor,
+        backgroundColor: theme.dropdown?.primaryBgColor,
         '&:hover': {
           borderColor: theme.primary,
         },
@@ -38,7 +38,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
     multiValue: (styles) => {
       return {
         ...styles,
-        backgroundColor: theme.dropdown?.backgroundColor,
+        backgroundColor: theme.dropdown?.primaryBgColor,
         border: `1px solid ${theme.dropdown?.color}`,
         color: theme.dropdown?.color,
       };
@@ -83,7 +83,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       return {
         ...styles,
         color: theme.dropdown?.color,
-        backgroundColor: theme.dropdown?.backgroundColor,
+        backgroundColor: theme.dropdown?.primaryBgColor,
         cursor: isDisabled ? 'not-allowed' : 'default',
       };
     },

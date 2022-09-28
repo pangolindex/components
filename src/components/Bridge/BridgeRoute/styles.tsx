@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Box } from 'src/components/Box';
 
 export const Route = styled(Box)<{ selected: boolean }>`
-  background-color: ${({ theme }) => theme.bridge?.backgroundColor};
+  background-color: ${({ theme }) => theme.bridge?.primaryBgColor};
   border-radius: 10px;
   padding: 30px;
   border: ${({ theme, selected }) => (selected ? `1px solid ${theme.primary}` : 'none')};

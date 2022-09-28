@@ -36,7 +36,7 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
                 <Text color={'bridge.text'} fontSize={[16, 14]} fontWeight={400} pb={'0.2rem'}>
                   {t('bridge.bridgeRoute.singleTransaction')}
                 </Text>
-                {step.subSteps.map((subStep, index) => {
+                {step.subSteps?.map((subStep, index) => {
                   return (
                     <Text pl={24} key={index} color={'bridge.text'} fontSize={[16, 14]} fontWeight={400} pb={'0.2rem'}>
                       {subStep}

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Box, Text } from 'src/components';
 
 export const Wrapper = styled(Box)`
-  background-color: ${({ theme }) => theme.bridge?.secondBackgroundColor};
+  background-color: ${({ theme }) => theme.bridge?.secondaryBgColor};
   border-radius: 10px;
   padding: 30px;
   margin-top: 30px;
@@ -42,7 +42,7 @@ export const LoaderWrapper = styled(Box)`
   align-items: center;
   pointer-events: all;
   justify-content: center;
-  background-color: ${({ theme }) => theme.bridge?.secondBackgroundColor};
+  background-color: ${({ theme }) => theme.bridge?.secondaryBgColor};
   margin: -30px;
 `;
 
@@ -69,7 +69,7 @@ export const BottomText = styled(Text)`
 `;
 
 export const ArrowWrapper = styled.div`
-  background-color: ${({ theme }) => theme.bridge?.backgroundColor};
+  background-color: ${({ theme }) => theme.bridge?.primaryBgColor};
   width: 30px;
   height: 30px;
   border-radius: 50%;
