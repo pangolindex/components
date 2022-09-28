@@ -167,7 +167,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const tokenOrCurrency = amountToAdd instanceof TokenAmount ? amountToAdd.token : amountToAdd.currency;
 
   // Minimium amount to compound
-  if (amountToAdd.lessThan(parseUnits('0.0001', tokenOrCurrency.decimals).toString())) {
+  if (JSBI.LE(amountToAdd.raw, parseUnits('0.0001', tokenOrCurrency.decimals).toString())) {
     _error = _error ?? t('pangoChef.highVolalityWarning');
   }
 
