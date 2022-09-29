@@ -88,7 +88,7 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
   return (
     <Drawer title="Manage Lists" isOpen={isOpen} onClose={onClose}>
       {/* Render Search Token Input */}
-      <Box padding="0px 10px">
+      <Box padding="0px 20px">
         <AddInputWrapper>
           <TextInput
             placeholder="https:// or ipfs://"

@@ -97,7 +97,8 @@
     "poolWeight": "Peso da piscina",
     "withdraw": "Retirar",
     "poolRewards": "Recompensas de pool",
-    "rewardsIn": "Recompensas em"
+    "rewardsIn": "Recompensas em",
+    "removeWarning": "Você está removendo liquidez deste pool. Esta ação devolverá seus tokens. Alternativamente, você pode optar por apostar seus tokens para farmar para ganhar recompensas."
   },
   "menu": {
     "code": "Código",
@@ -181,7 +182,9 @@
     "interfaceSettings": "Configurações da Interface",
     "toggleExpertMode": "Ativar modo expert",
     "expertModeHelper": "Ignora os modais de confirmação e permite alta variação de preço. Use por sua conta e risco.",
-    "toggleDarkMode": "Ativar modo escuro"
+    "toggleDarkMode": "Ativar modo escuro",
+    "slippage": "Slippage",
+    "percent": "Percent"
   },
   "swap": {
     "priceImpact": "Impacto no preço",
@@ -236,6 +239,7 @@
     "enterValidSlippage": "Digite uma porcentagem válida de variação de preço",
     "transactionMayFail": "Sua transação pode falhar",
     "transactionMayFrontrun": "Sua transação pode ser suscetível a frontrun",
+    "transactionActiveExpertMode": "Very high slippage, activate expert mode to be able to use more than 50%",
     "minutes": "minutos"
   },
   "vote": {
@@ -695,6 +699,62 @@
     "compoundAmountWarning": "Você precisa adicionar {{ amount }} {{ symbol }} para compor.",
     "compoundAmountWarning2": "Tenha cuidado para bloquear sua pool de {{ symbol }} {{ png }} até reivindicar as recompensas desta pool.",
     "highVolalityWarning": "Muito cedo, tente em algumas horas",
-    "compoundSuccess": "Você compôs sua farm com sucesso."
+    "compoundSuccess": "Você compôs com sucesso.",
+    "compoundTransactionSummary": "Farm composta.",
+    "removeWarning": "A remoção de qualquer valor da fazenda fará com que seu APR seja 0. Você pode, em vez disso, compor suas recompensas sem perder seu APR.",
+    "lockingPoolZeroWarning": "Você não pode remover sua liquidez ou reivindicar suas recompensas desta farm. Para fazer isso, primeiro você precisa reivindicar sua participação nestas farms: "
+  },
+  "bridge": {
+    "availableRoutes": "Available Routes ({{ number }})",
+    "activeTransfers": "Active Transfers ({{ number }})",
+    "historicalTransfers": "Historical Transfers ({{ number }})",
+    "bridgeCard": {
+      "advanceOptions": "Advance Options",
+      "title": "Cross Chain",
+      "swap": "Swap",
+      "loader": {
+        "labels": {
+          "waitingReceivingChain": "Waiting for receiving chain..."
+        },
+        "bottomText": "Your transaction is still being processed. Sit back and relax. There is nothing you need to do on your end. It is also not possible to speed up this part of the process. If it takes an unusually long time for this to process, please do not worry. your funds are not missing."
+      },
+      "filter": {
+        "bridgePrioritization": "Bridge Prioritization",
+        "slippage": "Slippage",
+        "infiniteApproval": "Infinite Approval",
+        "activeInfiniteApproval": "Active Infinite Approval",
+        "bridges": "Bridges",
+        "exchanges": "Exchanges"
+      }
+    },
+    "bridgeInputsWidget": {
+      "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
+      "max": "MAX"
+    },
+    "bridgeRoute": {
+      "selected": "Selected",
+      "clickToSelect": "Click to select",
+      "singleTransaction": "Single transaction including",
+      "estimatedToken": "Estimated Token: {{ token }}",
+      "estimatedResult": "Estimated Result: {{ result }}",
+      "min": "{{ minute }} min",
+      "gasCost": "{{ gasCost }} Gas Cost"
+    },
+    "bridgeTransfer": {
+      "date": "Date",
+      "from": "From",
+      "to": "To",
+      "via": "Via",
+      "state": "State",
+      "resumeSwap": "Resume Swap"
+    },
+    "bridgePrioritizations": {
+      "recommended": "Recommended",
+      "fast": "Fast",
+      "normal": "Normal"
+    }
+  },
+  "dropdown": {
+    "select": "Select"
   }
 }

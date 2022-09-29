@@ -128,8 +128,8 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: '',
   },
   [ChainId.SONGBIRD]: {
-    inputCurrency: '',
-    outputCurrency: '',
+    inputCurrency: 'SGB',
+    outputCurrency: PNG[ChainId.SONGBIRD].address,
   },
   [ChainId.NEAR_MAINNET]: {
     inputCurrency: WAVAX[ChainId.NEAR_MAINNET].address,
@@ -320,17 +320,14 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   },
 };
 
-export const PROVIDER_MAPPING = {
-  INJECTED: CommonEVMProvider,
-  METAMASK: CommonEVMProvider,
-  WALLET_LINK: CommonEVMProvider,
-  XDEFI: CommonEVMProvider,
-  GNOSISSAFE: CommonEVMProvider,
-  WALLET_CONNECT: CommonEVMProvider,
-  RABBY: CommonEVMProvider,
-  TALISMAN: CommonEVMProvider,
-  BITKEEP: CommonEVMProvider,
-  NEAR: NearProvider,
+export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } = {
+  [ChainId.FUJI]: CommonEVMProvider,
+  [ChainId.AVALANCHE]: CommonEVMProvider,
+  [ChainId.WAGMI]: CommonEVMProvider,
+  [ChainId.COSTON]: CommonEVMProvider,
+  [ChainId.SONGBIRD]: CommonEVMProvider,
+  [ChainId.NEAR_MAINNET]: NearProvider,
+  [ChainId.NEAR_TESTNET]: NearProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {
@@ -413,5 +410,15 @@ export enum SwapTypes {
   LIMIT = 'LIMIT',
 }
 
-export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '100'); // 1% of slippage tolerange
+export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '50'); // 2% of slippage tolerange
 export const ONE_FRACTION = new Fraction('1');
+
+export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined } = {
+  [ChainId.FUJI]: undefined,
+  [ChainId.AVALANCHE]: 'avalanche-2',
+  [ChainId.WAGMI]: undefined,
+  [ChainId.COSTON]: undefined,
+  [ChainId.SONGBIRD]: 'songbird',
+  [ChainId.NEAR_MAINNET]: 'near',
+  [ChainId.NEAR_TESTNET]: undefined,
+};

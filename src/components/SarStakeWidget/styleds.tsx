@@ -16,7 +16,7 @@ export const Wrapper = styled(Box)`
   width: 100%;
   background-color: ${({ theme }) => theme.color2};
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
   box-sizing: border-box;
 `;
 

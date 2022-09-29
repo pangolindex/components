@@ -98,7 +98,8 @@
     "withdraw": "Withdraw",
     "extraReward": "Extra Reward",
     "poolRewards": "Pool Rewards",
-    "rewardsIn": "Rewards in"
+    "rewardsIn": "Rewards in",
+    "removeWarning": "You are removing liquidity from this pool. This action will give you back your tokens. Alternatively you can choose to stake your tokens to farm to earn rewards."
   },
   "menu": {
     "code": "Code",
@@ -182,7 +183,9 @@
     "interfaceSettings": "Interface Settings",
     "toggleExpertMode": "Toggle Expert Mode",
     "expertModeHelper": "Bypasses confirmation modals and allows high slippage trades. Use at your own risk.",
-    "toggleDarkMode": "Toggle Dark Mode"
+    "toggleDarkMode": "Toggle Dark Mode",
+    "slippage": "Slippage",
+    "percent": "Percent"
   },
   "swap": {
     "priceImpact": "Price Impact",
@@ -237,6 +240,7 @@
     "enterValidSlippage": "Enter a valid slippage percentage",
     "transactionMayFail": "Your transaction may fail",
     "transactionMayFrontrun": "Your transaction may be frontrun",
+    "transactionActiveExpertMode": "Very high slippage, activate expert mode to be able to use more than 50%",
     "minutes": "minutes"
   },
   "vote": {
@@ -693,10 +697,66 @@
   "pangoChef": {
     "claimWarning1": "When you claim without withdrawing, your liquidity remains in the farm.",
     "claimWarning2": "Claiming rewards restarts your APR from 0%. Instead you may choose to compound.",
-    "compoundWarning": "Compounding your rewards for {{ token0 }}-{{ token1 }} farm will get your rewards staked into {{ currency }}-{{ png }} farm. You need to add equal value of {{ currency }}token to your accrued {{ png }} rewards.",
+    "compoundWarning": "Compounding your rewards for {{ token0 }}-{{ token1 }} farm will get your rewards staked into {{ currency }}-{{ png }} farm. You need to add equal value of {{ currency }} token to your accrued {{ png }} rewards.",
     "compoundAmountWarning": "You need to add {{ amount }} {{ symbol }} to compound.",
     "compoundAmountWarning2": "Be careful that you will be locking your {{ symbol }} {{ png }} pool till you claim the rewards of this pool.",
     "highVolalityWarning": "Too early, try in few hours",
-    "compoundSuccess": "You have successfully composed your farm."
+    "compoundSuccess": "You have successfully composed your farm.",
+    "compoundTransactionSummary": "Compounded farm",
+    "removeWarning": "Removing any amount from farm will get your APR to 0. You can instead compound your rewards without losing your APR.",
+    "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim your stake from this farms: "
+  },
+  "bridge": {
+    "availableRoutes": "Available Routes ({{ number }})",
+    "activeTransfers": "Active Transfers ({{ number }})",
+    "historicalTransfers": "Historical Transfers ({{ number }})",
+    "bridgeCard": {
+      "advanceOptions": "Advance Options",
+      "title": "Cross Chain",
+      "swap": "Swap",
+      "loader": {
+        "labels": {
+          "waitingReceivingChain": "Waiting for receiving chain..."
+        },
+        "bottomText": "Your transaction is still being processed. Sit back and relax. There is nothing you need to do on your end. It is also not possible to speed up this part of the process. If it takes an unusually long time for this to process, please do not worry. your funds are not missing."
+      },
+      "filter": {
+        "bridgePrioritization": "Bridge Prioritization",
+        "slippage": "Slippage",
+        "infiniteApproval": "Infinite Approval",
+        "activeInfiniteApproval": "Active Infinite Approval",
+        "bridges": "Bridges",
+        "exchanges": "Exchanges"
+      }
+    },
+    "bridgeInputsWidget": {
+      "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
+      "max": "MAX"
+    },
+    "bridgeRoute": {
+      "selected": "Selected",
+      "clickToSelect": "Click to select",
+      "singleTransaction": "Single transaction including",
+      "estimatedToken": "Estimated Token: {{ token }}",
+      "estimatedResult": "Estimated Result: {{ result }}",
+      "min": "{{ minute }} min",
+      "gasCost": "{{ gasCost }} Gas Cost"
+    },
+    "bridgeTransfer": {
+      "date": "Date",
+      "from": "From",
+      "to": "To",
+      "via": "Via",
+      "state": "State",
+      "resumeSwap": "Resume Swap"
+    },
+    "bridgePrioritizations": {
+      "recommended": "Recommended",
+      "fast": "Fast",
+      "normal": "Normal"
+    }
+  },
+  "dropdown": {
+    "select": "Select"
   }
 }

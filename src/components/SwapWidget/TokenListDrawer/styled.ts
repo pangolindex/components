@@ -2,11 +2,11 @@ import styled from 'styled-components';
 import { Box, Text } from '../../';
 
 export const Warning = styled(Box)`
-  padding: 10px;
+  padding: 10px 20px;
 `;
 
 export const List = styled(Box)`
-  padding: 10px;
+  padding: 10px 20px;
 `;
 
 export const AddInputWrapper = styled(Box)`

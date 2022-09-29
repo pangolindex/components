@@ -1,11 +1,16 @@
+import { formatEther } from '@ethersproject/units';
 import { TokenAmount } from '@pangolindex/sdk';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Drawer, Stat, Text } from 'src/components';
+import { Box, Button, Drawer, Stat, Text, Tooltip } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
+import { PNG } from 'src/constants/tokens';
+import { useChainId } from 'src/hooks';
+import { useIsLockingPoolZero } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useMinichefPendingRewards } from 'src/state/pstake/hooks';
+import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RemoveDrawer from '../../RemoveDrawer';
 import ClaimRewardV3 from '../ClaimReward';
 import CompoundV3 from '../Compound';
@@ -17,6 +22,7 @@ export interface EarnDetailProps {
 }
 
 const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
+  const chainId = useChainId();
   const { t } = useTranslation();
 
   const [isClaimDrawerVisible, setShowClaimDrawer] = useState(false);
@@ -55,6 +61,11 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
 
   const isDisabledButtons = !earnedAmount?.greaterThan(BIG_INT_ZERO);
 
+  const png = PNG[chainId];
+
+  const lockingPoolZeroPairs = useIsLockingPoolZero();
+  const isLockingToPoolZero = lockingPoolZeroPairs.length > 0 && stakingInfo.pid === '0';
+
   return (
     <Wrapper>
       <Box display="flex" justifyContent="space-between">
@@ -63,17 +74,28 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         </Text>
 
         {/* show unstak button */}
-        <Button variant="primary" width="100px" height="30px" onClick={() => setShowRemoveDrawer(true)}>
+        <Button
+          variant="primary"
+          width="100px"
+          height="30px"
+          onClick={() => setShowRemoveDrawer(true)}
+          isDisabled={isLockingToPoolZero}
+        >
           {t('removeLiquidity.remove')}
         </Button>
       </Box>
 
       <Container>
-        <Box width="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <Box width="100%">
           <Text fontSize="12px" color="text1" textAlign="center">
-            Unclaimed PNG
+            {t('earn.unclaimedReward', { symbol: png.symbol })}
           </Text>
-          <Text fontSize="18px" fontWeight={700} color="text1" textAlign="center">
+          <Tooltip id="earnedAmount" effect="solid" backgroundColor={theme.primary}>
+            <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+              {formatEther(earnedAmount.raw.toString())} {png.symbol}
+            </Text>
+          </Tooltip>
+          <Text color="text1" fontSize="16px" fontWeight={700} textAlign="center" data-tip data-for="earnedAmount">
             {earnedAmount.toFixed(2)}
           </Text>
         </Box>
@@ -119,7 +141,13 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           display="flex"
         >
           <Text fontSize="12px" color="text1" textAlign="center">
-            {t('pangoChef.claimWarning1')}
+            {isLockingToPoolZero
+              ? `${t('pangoChef.lockingPoolZeroWarning')}${lockingPoolZeroPairs
+                  .map(
+                    (pair) => `${unwrappedToken(pair[0], chainId).symbol}-${unwrappedToken(pair[1], chainId).symbol}`,
+                  )
+                  .join(', ')}.`
+              : t('pangoChef.claimWarning1')}
           </Text>
         </Box>
       </Container>
@@ -128,9 +156,9 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         <Button
           padding="10px"
           variant="outline"
-          isDisabled={isDisabledButtons}
+          isDisabled={isDisabledButtons || isLockingToPoolZero}
           onClick={() => setShowClaimDrawer(true)}
-          color={!isDisabledButtons ? theme.text10 : undefined}
+          color={!isDisabledButtons && !isLockingToPoolZero ? theme.text10 : undefined}
         >
           {t('earnPage.claim')}
         </Button>
@@ -163,6 +191,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         }}
         stakingInfo={stakingInfo}
         version={version}
+        redirectToCompound={redirectToCompound}
       />
     </Wrapper>
   );

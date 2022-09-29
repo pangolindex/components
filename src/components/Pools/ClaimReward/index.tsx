@@ -2,7 +2,8 @@ import { TransactionResponse } from '@ethersproject/providers';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
-import { usePangolinWeb3 } from 'src/hooks';
+import { PNG } from 'src/constants/tokens';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useStakingContract } from 'src/hooks/useContract';
 import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -17,6 +18,7 @@ export interface ClaimProps {
 }
 const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
   const { account } = usePangolinWeb3();
+  const chainId = useChainId();
 
   const { t } = useTranslation();
 
@@ -38,6 +40,8 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
     onClose();
   }
 
+  const png = PNG[chainId];
+
   async function onClaimReward() {
     if (stakingContract && poolMap && stakingInfo?.stakedAmount) {
       setAttempting(true);
@@ -48,7 +52,7 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
         const response: TransactionResponse = await stakingContract[method](...args);
         await waitForTransaction(response, 1);
         addTransaction(response, {
-          summary: t('earn.claimAccumulated', { symbol: 'PNG' }),
+          summary: t('earn.claimAccumulated', { symbol: png.symbol }),
         });
         setHash(response.hash);
       } catch (error) {

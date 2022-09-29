@@ -6,12 +6,10 @@ import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/compo
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
-import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { waitForTransaction } from 'src/utils';
-import CompoundV3 from '../PangoChef/Compound';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
@@ -21,11 +19,11 @@ interface RemoveFarmProps {
   onClose: () => void;
   // this prop will be used if user move away from first step
   onLoadingOrComplete?: (value: boolean) => void;
+  redirectToCompound?: () => void;
 }
-const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: RemoveFarmProps) => {
+const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redirectToCompound }: RemoveFarmProps) => {
   const { account } = usePangolinWeb3();
   const [isRemoveLiquidityDrawerVisible, setShowRemoveLiquidityDrawer] = useState(false);
-  const [isCompoundDrawerVisible, setShowCompoundDrawer] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState(false);
   const { t } = useTranslation();
 
@@ -48,6 +46,8 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
   const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
+
+  const chefType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
   useEffect(() => {
     if (onLoadingOrComplete) {
@@ -122,7 +122,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
 
   return (
     <FarmRemoveWrapper>
-      {!attempting && !hash && !isCompoundDrawerVisible && (
+      {!attempting && !hash && (
         <Root>
           {!confirmRemove ? (
             <>
@@ -185,18 +185,26 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
             </>
           ) : (
             <Box display="grid" height="100%">
-              <Box bgColor="color3" borderRadius="8px" padding="15px">
+              <Box
+                bgColor="color3"
+                borderRadius="8px"
+                padding="15px"
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+              >
                 <Text color="text1" textAlign="center">
-                  You are removing liquidity from this pool. This action will give you back your tokens. Alternatively
-                  you can choose to stake your tokens to farm to earn rewards.
+                  {t(chefType === ChefType.PANGO_CHEF ? 'pangoChef.removeWarning' : 'earn.removeWarning')}
                 </Text>
               </Box>
-              <Buttons>
-                <Button variant="outline" onClick={() => setShowCompoundDrawer(true)}>
-                  <Text color="text1">
-                    <Text color="text1">{t('sarCompound.compound')}</Text>
-                  </Text>
-                </Button>
+              <Buttons chefType={chefType}>
+                {chefType === ChefType.PANGO_CHEF && (
+                  <Button variant="outline" onClick={redirectToCompound}>
+                    <Text color="text1">
+                      <Text color="text1">{t('sarCompound.compound')}</Text>
+                    </Text>
+                  </Button>
+                )}
                 <Button variant="primary" onClick={onWithdraw}>
                   {error ?? t('earn.withdrawAndClaim')}
                 </Button>
@@ -226,16 +234,6 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete }: Remo
             wrappedOnDismiss();
           }}
           clickedLpTokens={[token0, token1]}
-        />
-      )}
-
-      {isCompoundDrawerVisible && (
-        <CompoundV3
-          stakingInfo={stakingInfo as PangoChefInfo}
-          onClose={() => {
-            setShowCompoundDrawer(false);
-            wrappedOnDismiss();
-          }}
         />
       )}
     </FarmRemoveWrapper>

@@ -25,7 +25,11 @@ interface Props {
 }
 
 const currencyKey = (currency: Currency, chainId: ChainId): string => {
-  return currency instanceof Token ? currency.address : currency === CAVAX[chainId] ? 'AVAX' : '';
+  return currency instanceof Token
+    ? currency.address
+    : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
+    ? (CAVAX[chainId]?.symbol as string)
+    : '';
 };
 
 const SelectTokenDrawer: React.FC<Props> = (props) => {
@@ -128,7 +132,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   return (
     <Drawer title="Select a token" isOpen={isOpen} onClose={onClose}>
       {/* Render Search Token Input */}
-      <Box padding="0px 10px">
+      <Box padding="0px 20px">
         <TextInput
           placeholder="Search"
           onChange={(value: any) => {

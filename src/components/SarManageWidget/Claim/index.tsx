@@ -9,7 +9,7 @@ import { Position, useDerivativeSarClaim } from 'src/state/psarstake/hooks';
 import RewardsInfo from '../Compound/RewardsInfo';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Options } from '../types';
-import { Root } from './styleds';
+import { Buttons, Root } from './styleds';
 
 interface Props {
   selectedOption: Options;
@@ -54,9 +54,14 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
       error = t('sarClaim.noRewards');
     }
     return (
-      <Button variant="primary" onClick={handleConfirm} isDisabled={!!error}>
-        {error ?? t('sarClaim.claim')}
-      </Button>
+      <Buttons>
+        <Button variant="primary" onClick={() => onChange(Options.COMPOUND)}>
+          {t('sarCompound.compound')}
+        </Button>
+        <Button variant="primary" onClick={handleConfirm} isDisabled={!!error}>
+          {error ?? t('sarClaim.claim')}
+        </Button>
+      </Buttons>
     );
   };
 

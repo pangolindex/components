@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "4.1.1",
+  "version": "4.2.0-rc.6",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "engines": {
@@ -41,7 +41,6 @@
     "@gelatonetwork/limit-orders-react": "^2.3.1",
     "@gnosis.pm/safe-apps-web3-react": "^0.6.7",
     "@pangolindex/exchange-contracts": "2.1.6",
-    "@pangolindex/governance": "1.2.0",
     "@pangolindex/token-lists": "^1.0.2",
     "@pangolindex/web3-react-injected-connector": "1.0.1",
     "@reduxjs/toolkit": "1.8.0",
@@ -87,12 +86,16 @@
     "react-portal": "^4.2.1",
     "react-query": "^3.34.16",
     "react-redux": "7.2.6",
+    "react-select": "^5.4.0",
     "react-slick": "0.28.1",
     "react-switch": "^6.0.0",
+    "react-tooltip": "^4.2.21",
     "react-use": "15.3.8",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.5",
-    "recharts": "^2.1.6",
+    "react-tabs": "4.2.1",
+    "react-collapsed": "^3.4.0",
+    "recharts": "2.1.13",
     "redux-localstorage-simple": "2.4.1",
     "remark-gfm": "^3.0.1",
     "slick-carousel": "^1.8.1",
@@ -122,6 +125,7 @@
     "@types/react-slick": "^0.23.7",
     "@types/react-virtualized-auto-sizer": "^1.0.0",
     "@types/react-window": "^1.8.2",
+    "@types/react-tabs": "2.3.4",
     "@types/styled-components": "^5.1.15",
     "@types/styled-system": "^5.1.13",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
@@ -157,15 +161,16 @@
   },
   "peerDependencies": {
     "@pangolindex/sdk": ">=2.0.1",
-    "react": ">=17.0.1",
-    "react-dom": ">=17.0.1"
+    "react": ">=16.14.0",
+    "react-dom": ">=16.14.0"
   },
   "directories": {
     "lib": "lib"
   },
   "resolutions": {
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "@pangolindex/exchange-contracts": "^2.1.5"
   },
   "keywords": [],
   "description": "Pangolin Components",

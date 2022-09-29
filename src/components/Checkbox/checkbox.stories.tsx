@@ -12,4 +12,5 @@ const TemplateCheckbox: ComponentStory<typeof Checkbox> = (args: any) => <Checkb
 export const Default = TemplateCheckbox.bind({});
 Default.args = {
   label: 'Is Popular',
+  labelColor: 'text1',
 };
