@@ -43,9 +43,9 @@ export const HederaProvider = (provider) => {
       return '';
     };
 
-    provider.execute = async (method, params) => {
-      // const res = await (provider as any).send(method, params);
-      // return res?.result;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    provider.execute = async (_method, _params) => {
+      //  implement it
     };
   }
   return provider;

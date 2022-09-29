@@ -1,4 +1,5 @@
 import { hethers } from '@hashgraph/hethers';
+import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { HEDERA_API_BASE_URL } from 'src/constants';
 
 export interface HederaTokenMetadata {
@@ -9,27 +10,94 @@ export interface HederaTokenMetadata {
   icon: string;
 }
 
+export type TokenBalanceResponse = {
+  balances: Array<{
+    account: string;
+    balance: any;
+  }>;
+};
+
+export interface AccountBalanceResponse {
+  balances: Array<{
+    account: string;
+    balance: any;
+    tokens: Array<{
+      token_id: string;
+      balance: any;
+    }>;
+  }>;
+}
+
+export interface TokenResponse {
+  decimals: string;
+  deleted: boolean;
+  name: string;
+  symbol: string;
+  token_id: string;
+  total_supply: string;
+  type: string;
+}
+
 class Hedera {
-  //Todo : Make a constructor  to call direct axios common call with base url
+  axios: AxiosInstance;
+
+  constructor() {
+    this.axios = BaseAxios.create({ timeout: 60000 });
+  }
+
+  async call<T>(config: AxiosRequestConfig) {
+    try {
+      const headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      };
+      const res = await this.axios.request<T>({
+        headers,
+        ...config,
+      });
+      return res?.data;
+    } catch (error) {
+      console.error('error', error);
+      throw error;
+    }
+  }
+
+  public async getAccountBalance(account: string) {
+    try {
+      const accountId = hethers.utils.asAccountString(account);
+
+      const response = await this.call<AccountBalanceResponse>({
+        baseURL: HEDERA_API_BASE_URL,
+        url: `/api/v1/balances?account.id=${accountId}`,
+        method: 'GET',
+      });
+
+      const balance = response?.balances?.[0]?.balance || 0;
+      return balance;
+    } catch (error) {
+      console.log(error);
+      return 0;
+    }
+  }
+
   public async getMetadata(address: string): Promise<HederaTokenMetadata | undefined> {
     try {
       const tokenId = hethers.utils.asAccountString(address);
 
-      return fetch(HEDERA_API_BASE_URL + '/api/v1/tokens/' + tokenId, {
+      const tokenInfo = await this.call<TokenResponse>({
+        baseURL: HEDERA_API_BASE_URL,
+        url: '/api/v1/tokens/' + tokenId,
         method: 'GET',
-        headers: { 'Content-type': 'application/json; charset=UTF-8' },
-      })
-        .then((res) => res.json())
-        .then((tokenInfo) => {
-          const token = {
-            id: address,
-            name: tokenInfo?.name,
-            symbol: tokenInfo?.symbol,
-            decimals: Number(tokenInfo?.decimals),
-            icon: '',
-          };
-          return token;
-        });
+      });
+
+      const token = {
+        id: address,
+        name: tokenInfo?.name,
+        symbol: tokenInfo?.symbol,
+        decimals: Number(tokenInfo?.decimals),
+        icon: '',
+      };
+      return token;
     } catch (error) {
       console.log(error);
       return undefined;
@@ -41,18 +109,17 @@ class Hedera {
       const tokenId = hethers.utils.asAccountString(address);
       const accountId = account ? hethers.utils.asAccountString(account) : '';
 
-      return fetch(HEDERA_API_BASE_URL + `/api/v1/tokens/${tokenId}/balances?account.id=${accountId}`, {
+      const response = await this.call<TokenBalanceResponse>({
+        baseURL: HEDERA_API_BASE_URL,
+        url: `/api/v1/tokens/${tokenId}/balances?account.id=${accountId}`,
         method: 'GET',
-        headers: { 'Content-type': 'application/json; charset=UTF-8' },
-      })
-        .then((res) => res.json())
-        .then((balance) => {
-          const tokenBalance = balance?.balances?.[0]?.balance;
-          return tokenBalance;
-        });
+      });
+
+      const tokenBalance = response?.balances?.[0]?.balance || 0;
+      return tokenBalance;
     } catch (error) {
       console.log(error);
-      return undefined;
+      return 0;
     }
   }
 }

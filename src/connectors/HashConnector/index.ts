@@ -50,8 +50,6 @@ export class HashConnector extends AbstractConnector {
 
     client.setMirrorNetwork('hcs.testnet.mirrornode.hedera.com:5600');
 
-    console.log('client===', client);
-
     this.chainId = kwargs?.config?.chainId;
     this.normalizeChainId = kwargs?.normalizeChainId;
     this.normalizeAccount = kwargs?.normalizeAccount;
@@ -72,18 +70,15 @@ export class HashConnector extends AbstractConnector {
         this.initData = data;
       })
       .catch((error) => {
-        1;
         console.log('hash connect err', error);
       });
   }
 
   private handleFoundExtensionEvent(data) {
-    console.log('Found extension', data);
     this.availableExtension = data;
   }
 
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
-    console.log('hashconnect state change event', state);
     this.state = state;
     if (state === HashConnectConnectionState.Disconnected) {
       this.emitDeactivate();
@@ -91,8 +86,6 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handlePairingEvent(data) {
-    console.log('Paired with wallet', data);
-
     this.pairingData = data.pairingData!;
 
     if (this.pairingData && this.pairingData?.accountIds[0]) {
@@ -111,22 +104,12 @@ export class HashConnector extends AbstractConnector {
   public async getProvider(): Promise<any> {
     if (this.pairingData && this.pairingData?.accountIds[0]) {
       const provider = hethers.providers.getDefaultProvider(this.network, undefined);
-
-      // const consensusNodeId = '0.0.3';
-      // const consensusNodeUrl = 'hcs.testnet.mirrornode.hedera.com:5600';
-      // const mirrorNodeUrl = 'https://testnet.mirrornode.hedera.com';
-      // const provider = new hethers.providers.HederaProvider(consensusNodeId, consensusNodeUrl, mirrorNodeUrl);
-
-      console.log('provider===', provider);
-
-      //const provider = this.instance.getProvider(this.network, this.topic, this.pairingData?.accountIds[0]);
       return provider;
     }
   }
 
   public async activate(): Promise<any> {
     if (this.initData) {
-      // const initData = await this.instance.init(APP_METADATA, this.network as any);
       this.instance.connectToLocalWallet();
       // generate a pairing string, which you can display and generate a QR code from
       this.pairingString = this.instance.generatePairingString(this.initData.topic, this.network, false);
@@ -147,7 +130,6 @@ export class HashConnector extends AbstractConnector {
   }
 
   setUpEvents() {
-    console.log('setting up events');
     this.instance.foundExtensionEvent.on(this.handleFoundExtensionEvent.bind(this));
     this.instance.pairingEvent.on(this.handlePairingEvent.bind(this));
 
@@ -170,41 +152,12 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async getAccount(): Promise<null | string> {
-    console.log('getAccount', this.pairingData);
     if (this.pairingData) {
       try {
         const newAccountId = this.pairingData?.accountIds[0];
 
-        console.log('newAccountId', newAccountId);
-
         const accountId = hethers.utils.getAddressFromAccount(newAccountId);
 
-        const WHBAR = hethers.utils.getAddressFromAccount('0.0.46026765');
-
-        console.log('WHBAR', WHBAR);
-
-        const USDC = hethers.utils.getAddressFromAccount('0.0.2276691');
-
-        console.log('USDC', USDC);
-
-        const test = hethers.utils.asAccountString('0x0000000000000000000000000000000002be500d');
-
-        console.log('test123', test);
-
-        // const operatorAccount = '0.0.47977330';
-        // const operatorPrivateKey =
-        //   '302e020100300506032b6570042204208b97c5c963a2ffa06ca9c3a5837eaebc9d21fd92c42a8b79baa2c13af306fa53';
-
-        // const client = Client.forTestnet();
-
-        // client.setOperator(operatorAccount, operatorPrivateKey);
-        // console.log('client', client);
-
-        // const query = new AccountInfoQuery().setAccountId(newAccountId);
-        // console.log('query', query);
-
-        // const accountInfo = await query.execute(client);
-        // console.log('accountInfo', accountInfo);
         return accountId;
       } catch (err) {
         console.log('error', err);
@@ -221,19 +174,10 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async close() {
-    console.log('close===connectore hedeara');
     if (this.pairingData) {
       this.instance.disconnect(this.pairingData?.topic);
       this.pairingData = null;
     }
-  }
-
-  public async getAccountBalance() {
-    if (this.pairingData && this.provider) {
-      const balance = await this.provider.getAccountBalance(this.pairingData?.accountIds[0]);
-      return balance.toString();
-    }
-    return undefined;
   }
 
   public async isAuthorized(): Promise<boolean> {

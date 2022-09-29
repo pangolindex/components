@@ -18,7 +18,7 @@ import qs from 'qs';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueries } from 'react-query';
-import { NEAR_EXCHANGE_CONTRACT_ADDRESS, hashConnect, near } from 'src/connectors';
+import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src/connectors';
 import {
   NEAR_LP_STORAGE_AMOUNT,
   NEAR_STORAGE_TO_REGISTER_WITH_FT,
@@ -130,14 +130,17 @@ export function useHederaBalance(
 
   useEffect(() => {
     async function checkHederaBalance() {
-      const balance = await hashConnect.getAccountBalance();
-      if (balance && accounts?.[0]) {
-        const hderaTokenBalance = new TokenAmount(hederaToken, balance);
+      if (accounts?.[0]) {
+        const balance = await hederaFn.getAccountBalance(accounts?.[0]);
 
-        const container = {} as { [address: string]: any | undefined };
-        container[accounts?.[0]] = hderaTokenBalance;
+        if (balance) {
+          const hderaTokenBalance = new TokenAmount(hederaToken, balance);
 
-        setHederaBalance(container);
+          const container = {} as { [address: string]: any | undefined };
+          container[accounts?.[0]] = hderaTokenBalance;
+
+          setHederaBalance(container);
+        }
       }
     }
 

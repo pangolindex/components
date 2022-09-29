@@ -337,6 +337,8 @@ export function useCoinGeckoTokenPrice(coin: Token) {
       try {
         const chain = coin.chainId === 43113 ? CHAINS[ChainId.AVALANCHE] : CHAINS[coin.chainId];
 
+        if (!chain) return null;
+
         const url = `${COINGEKO_BASE_URL}/simple/token_price/${
           chain.coingecko_id
         }?contract_addresses=${coin.address.toLowerCase()}&vs_currencies=usd`;
@@ -364,8 +366,10 @@ export function useCoinGeckoTokenPriceChart(coin: Token, days = '7') {
       try {
         const chain = coin.chainId === 43113 ? CHAINS[ChainId.AVALANCHE] : CHAINS[coin.chainId];
 
+        if (!chain) return null;
+
         const url = `${COINGEKO_BASE_URL}/coins/${
-          chain.coingecko_id
+          chain?.coingecko_id
         }/contract/${coin.address.toLowerCase()}/market_chart/?vs_currency=usd&days=${days}`;
 
         const response = await fetch(url);

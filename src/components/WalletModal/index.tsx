@@ -334,7 +334,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
         }
       } else if (option.connector === hashConnect) {
         // provide hashpack install link if not installed
-        console.log('===hashConnect', hashConnect);
+
         if (!hashConnect.availableExtension) {
           return (
             <Option
