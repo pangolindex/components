@@ -3,6 +3,7 @@ import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import Drawer from 'src/components/Drawer';
 import { NumberOptions } from 'src/components/NumberOptions';
+import SlippageInput from 'src/components/SlippageInput';
 import { Text } from 'src/components/Text';
 import { TextInput } from 'src/components/TextInput';
 import { ToggleButtons } from 'src/components/ToggleButtons';
@@ -72,49 +73,11 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
     <Drawer title="Settings" isOpen={isOpen} onClose={close}>
       <WarningModal isOpen={modalOpen} close={() => setModalOpen(false)} setExpertMode={setExpertMode} />
       <Frame>
-        {/*SLIPPAGE INPUT */}
-        <Box height="90px">
-          <Text color="swapWidget.secondary">Slippage</Text>
-          <InputOptions>
-            <TextInput
-              value={slippageTolerance}
-              addonAfter={
-                <Box bgColor="swapWidget.detailsBackground" paddingX="10px" paddingY="4px" borderRadius={4}>
-                  <Text color="swapWidget.secondary">Percent</Text>
-                </Box>
-              }
-              isNumeric={true}
-              placeholder="1"
-              onChange={(value) => {
-                setSlippageTolerance(value);
-              }}
-            />
-            <NumberOptions
-              options={[0.1, 0.5, 1]}
-              isPercentage={true}
-              currentValue={parseFloat(slippageTolerance)}
-              variant="box"
-              onChange={(number) => setSlippageTolerance(number.toString())}
-              isDisabled={false}
-            />
-          </InputOptions>
-          {Number(slippageTolerance) <= 0.1 && (
-            <Text color="swapWidget.secondary" fontSize={12} marginBottom={10}>
-              Your transaction may fail
-            </Text>
-          )}
-          {Number(slippageTolerance) > 50 && !expertMode ? (
-            <Text color="error" fontSize="10px" marginBottom={10}>
-              Very high slippage, activate expert mode to be able to use more than 50%
-            </Text>
-          ) : (
-            Number(slippageTolerance) > 5 && (
-              <Text color="primary" fontSize={12} marginBottom={10}>
-                Your transaction may be frontrun
-              </Text>
-            )
-          )}
-        </Box>
+        <SlippageInput
+          expertMode={expertMode}
+          slippageTolerance={slippageTolerance}
+          setSlippageTolerance={setSlippageTolerance}
+        />
         {/*DEADLINE INPUT */}
         <Box height="90px">
           <Text color="swapWidget.secondary">Time Limit</Text>

@@ -193,6 +193,26 @@ export const defaultColors: Colors = {
     },
   },
 
+  bridge: {
+    primaryBgColor: white,
+    secondaryBgColor: ghostWhite,
+    text: black,
+    infoIconColor: black,
+    routeInfoColor: platinum,
+    transferKeyColor: quickSilver,
+    loaderCloseIconColor: mustardYellow,
+    informationBoxesBackgroundColor: chineseBlack,
+  },
+  tabs: {
+    tabColor: quickSilver,
+    tabListColor: black,
+    tabPanelBorderColor: quickSilver,
+  },
+  dropdown: {
+    color: black,
+    primaryBgColor: white,
+  },
+
   primary: philippineYellow,
   mustardYellow,
   eerieBlack,

@@ -26,6 +26,7 @@ export const StyledInput = styled.input<TextInputProps>`
   outline: none;
   width: 100%;
   padding: 0;
+  cursor: ${(props) => (props?.disabled ? 'not-allowed' : 'default')};
   -moz-appearance: textfield;
   ::-webkit-inner-spin-button,
   ::-webkit-outer-spin-button {

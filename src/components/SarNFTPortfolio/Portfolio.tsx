@@ -22,8 +22,8 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
   const [currentItems, setCurrentItems] = useState(positions.slice(0, itemsPerPage));
-  const [selectedPositonId, setSelectedPositionId] = useState<BigNumber | null>(null);
   const [selectedOption, setSelectedOption] = useState<string>('');
+  const [selectedPositonId, setSelectedPositionId] = useState<BigNumber | null>(null);
   const [page, setPage] = useState<number | undefined>();
 
   const node = useRef<HTMLDivElement>(null);
@@ -52,10 +52,9 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
       setCurrentItems(positions.slice(itemOffset, endOffset));
     }
   }
-
-  const onSelect = (value: string) => {
-    setSelectedOption(value);
-    sortItems(0, itemsPerPage, value);
+  const onSelect = (value) => {
+    setSelectedOption(value as string);
+    sortItems(0, itemsPerPage, value as string);
     setPage(0);
     setItemOffset(0);
   };
@@ -64,7 +63,7 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
 
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;
-    sortItems(itemOffset, endOffset, selectedOption);
+    sortItems(itemOffset, endOffset, selectedOption || '');
     setPageCount(Math.ceil(positions.length / itemsPerPage));
     setPage(undefined);
   }, [positions, itemOffset, itemsPerPage]);
@@ -130,9 +129,10 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
     <Box display="flex" flexDirection="column" width="100%">
       <Box display="flex" justifyContent="end" mb="20px">
         <DropdownMenu
-          title={`${t('sarPortfolio.sortBy')}:`}
+          placeHolder={`${t('sarPortfolio.sortBy')}:`}
           onSelect={onSelect}
-          value={selectedOption}
+          defaultValue={selectedOption}
+          isMulti={false}
           options={[
             { label: t('sarPortfolio.apr'), value: 'apr' },
             { label: t('sarPortfolio.amount'), value: 'amount' },
