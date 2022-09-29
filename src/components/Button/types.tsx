@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export type ButtonProps = {
+export type ButtonProps = ButtonStyleProps & {
   /** Set as disabled button */
   isDisabled?: boolean;
   /** Text to display in the button */
@@ -17,21 +17,26 @@ export type ButtonProps = {
   onClick?: React.MouseEventHandler<HTMLElement>;
   /** Id value to be passed to the html input. */
   id?: string;
-  /** button height **/
-  height?: string | number;
-  /** button width **/
-  width?: string | number;
-  maxWidth?: string | number;
   /**  is loading **/
   loading?: boolean;
   /** loading icon **/
   loadingIcon?: React.ReactNode;
   loadingText?: string;
-  padding?: string;
-  borderRadius?: string;
   as?: string | React.ComponentType<any>;
   href?: string;
   target?: string;
+};
+
+export type ButtonStyleProps = {
+  /** button height **/
+  height?: string | number;
+  /** button width **/
+  width?: string | number;
+  maxWidth?: string | number;
+  minHeight?: string | number;
+  minWidth?: string | number;
+  padding?: string;
+  borderRadius?: string;
   backgroundColor?: string;
   color?: string;
   borderColor?: string;

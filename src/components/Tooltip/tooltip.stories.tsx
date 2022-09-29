@@ -52,7 +52,7 @@ export default {
     },
     className: {
       name: 'HTML Enabled',
-      control: 'string',
+      control: 'text',
       type: { name: 'string', required: false },
       defaultValue: '',
       description: `classextra custom class, can use !important to overwrite tooltip's default class`,
@@ -85,7 +85,7 @@ export default {
       type: { name: 'number', required: false },
       defaultValue: 0,
       description:
-        '`<p data-tip="tooltip" data-delay-update="1000"></p>` or `<Tooltip delayUpdate={1000} />` Sets a delay in calling getContent if the tooltip is already shown and you mouse over another target',
+        '`<p data-tip="tooltip" data-delay-update="1000"></p>` or `<Tooltip delayUpdate={1000} />` Sets a delay in calling getContent if the tooltip is already shown and you scroll over another target',
     },
     textColor: {
       name: 'Text Color',

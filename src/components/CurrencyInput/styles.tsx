@@ -1,7 +1,8 @@
 import { darken } from 'polished';
 import styled from 'styled-components';
+import { ButtonStyleProps } from '../Button/types';
 
-export const CurrencySelect = styled.button<{ selected: boolean }>`
+export const CurrencySelect = styled.button<{ selected: boolean; buttonStyle: ButtonStyleProps | undefined }>`
   align-items: center;
   height: 100%;
   font-size: 20px;
@@ -22,6 +23,8 @@ export const CurrencySelect = styled.button<{ selected: boolean }>`
   :hover {
     background-color: ${({ selected, theme }) => (selected ? theme.bg2 : darken(0.05, theme.primary))};
   } */
+
+  ${({ buttonStyle }) => buttonStyle}
 `;
 
 export const Aligner = styled.span<{ active?: boolean }>`

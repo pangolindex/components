@@ -183,7 +183,9 @@
     "interfaceSettings": "Paramètres de l'interface",
     "toggleExpertMode": "Passer en mode expert",
     "expertModeHelper": "Contourne les modales de confirmation et permet des transactions à fort slippage. À utiliser à vos risques et périls.",
-    "toggleDarkMode": "Basculer en mode sombre"
+    "toggleDarkMode": "Basculer en mode sombre",
+    "slippage": "Slippage",
+    "percent": "Percent"
   },
   "swap": {
     "priceImpact": "Impact du prix",
@@ -238,6 +240,7 @@
     "enterValidSlippage": "Entrez un pourcentage de slippage valide",
     "transactionMayFail": "Votre transaction peut échouer",
     "transactionMayFrontrun": "Votre transaction peut être devancée.",
+    "transactionActiveExpertMode": "Very high slippage, activate expert mode to be able to use more than 50%",
     "minutes": "minutes"
   },
   "vote": {
@@ -701,5 +704,58 @@
     "compoundTransactionSummary": "Ferme composée.",
     "removeWarning": "En retirant n'importe quel montant de la ferme, vous obtiendrez votre APR à 0. Vous pouvez à la place accumuler vos récompenses sans perdre votre APR.",
     "lockingPoolZeroWarning": "Vous ne pouvez pas retirer vos liquidités ou réclamer vos récompenses de cette ferme. Pour ce faire, vous devez d'abord réclamer votre participation à ces fermes : "
+  },
+  "bridge": {
+    "availableRoutes": "Available Routes ({{ number }})",
+    "activeTransfers": "Active Transfers ({{ number }})",
+    "historicalTransfers": "Historical Transfers ({{ number }})",
+    "bridgeCard": {
+      "advanceOptions": "Advance Options",
+      "title": "Cross Chain",
+      "swap": "Swap",
+      "loader": {
+        "labels": {
+          "waitingReceivingChain": "Waiting for receiving chain..."
+        },
+        "bottomText": "Your transaction is still being processed. Sit back and relax. There is nothing you need to do on your end. It is also not possible to speed up this part of the process. If it takes an unusually long time for this to process, please do not worry. your funds are not missing."
+      },
+      "filter": {
+        "bridgePrioritization": "Bridge Prioritization",
+        "slippage": "Slippage",
+        "infiniteApproval": "Infinite Approval",
+        "activeInfiniteApproval": "Active Infinite Approval",
+        "bridges": "Bridges",
+        "exchanges": "Exchanges"
+      }
+    },
+    "bridgeInputsWidget": {
+      "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
+      "max": "MAX"
+    },
+    "bridgeRoute": {
+      "selected": "Selected",
+      "clickToSelect": "Click to select",
+      "singleTransaction": "Single transaction including",
+      "estimatedToken": "Estimated Token: {{ token }}",
+      "estimatedResult": "Estimated Result: {{ result }}",
+      "min": "{{ minute }} min",
+      "gasCost": "{{ gasCost }} Gas Cost"
+    },
+    "bridgeTransfer": {
+      "date": "Date",
+      "from": "From",
+      "to": "To",
+      "via": "Via",
+      "state": "State",
+      "resumeSwap": "Resume Swap"
+    },
+    "bridgePrioritizations": {
+      "recommended": "Recommended",
+      "fast": "Fast",
+      "normal": "Normal"
+    }
+  },
+  "dropdown": {
+    "select": "Select"
   }
 }
