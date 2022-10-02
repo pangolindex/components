@@ -58,12 +58,14 @@ export class HashConnector extends AbstractConnector {
     this.availableExtension = undefined;
     this.topic = '';
     this.pairingString = '';
+    this.pairingData = null;
 
     this.handlePairingEvent = this.handlePairingEvent.bind(this);
     this.handleFoundExtensionEvent = this.handleFoundExtensionEvent.bind(this);
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
 
     this.setUpEvents();
+
     this.instance
       .init(APP_METADATA, this.network as any)
       .then((data) => {
@@ -104,19 +106,39 @@ export class HashConnector extends AbstractConnector {
   public async getProvider(): Promise<any> {
     if (this.pairingData && this.pairingData?.accountIds[0]) {
       const provider = hethers.providers.getDefaultProvider(this.network, undefined);
+
       return provider;
     }
   }
 
   public async activate(): Promise<any> {
-    if (this.initData) {
+    const isAuthorized = await this.isAuthorized();
+
+    if (!isAuthorized && this.initData) {
       this.instance.connectToLocalWallet();
+
+      await this.instance.init(APP_METADATA, this.network as any);
       // generate a pairing string, which you can display and generate a QR code from
       this.pairingString = this.instance.generatePairingString(this.initData.topic, this.network, false);
 
       this.topic = this.initData.topic;
       //Saved pairings will return here, generally you will only have one unless you are doing something advanced
-      this.pairingData = this.initData.savedPairings[0];
+      // this.pairingData = this.initData.savedPairings[0];
+
+      this.pairingData = this.instance.hcData.pairingData[0];
+      this.pairingString = this.initData.pairingString;
+      this.provider = await this.getProvider();
+      const accountId = await this.getAccount();
+      this.saveDataInLocalstorage();
+
+      return { chainId: this.chainId, provider: this.provider, account: accountId };
+    } else {
+      await this.instance.init(APP_METADATA, this.network as any);
+
+      this.topic = this.instance.hcData.topic;
+      //Saved pairings will return here, generally you will only have one unless you are doing something advanced
+      this.pairingData = this.instance.hcData.pairingData[0];
+      this.pairingString = this.instance.hcData.pairingString;
 
       this.provider = await this.getProvider();
       const accountId = await this.getAccount();
@@ -169,21 +191,44 @@ export class HashConnector extends AbstractConnector {
   public async deactivate() {
     if (this.pairingData) {
       this.instance.disconnect(this.pairingData?.topic);
-      this.pairingData = null;
+      this.instance.clearConnectionsAndData();
+      localStorage.removeItem('pangolinHashconnectData');
     }
   }
 
   public async close() {
     if (this.pairingData) {
       this.instance.disconnect(this.pairingData?.topic);
-      this.pairingData = null;
+      this.instance.clearConnectionsAndData();
+      localStorage.removeItem('pangolinHashconnectData');
     }
   }
 
   public async isAuthorized(): Promise<boolean> {
-    if (this.pairingData) {
+    if (this.loadLocalData()) {
       return true;
-    }
-    return false;
+    } else return false;
+  }
+
+  saveDataInLocalstorage() {
+    const saveData = {
+      topic: this.topic,
+      pairingData: this.pairingData,
+      pairingString: this.pairingString,
+    };
+    let data = JSON.stringify(saveData);
+
+    localStorage.setItem('pangolinHashconnectData', data);
+  }
+
+  loadLocalData(): boolean {
+    let foundData = localStorage.getItem('pangolinHashconnectData');
+
+    if (foundData) {
+      let saveData = JSON.parse(foundData);
+      this.topic = saveData.topic;
+      this.pairingString = saveData.pairingString;
+      return true;
+    } else return false;
   }
 }
