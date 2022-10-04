@@ -12,11 +12,18 @@ export interface HashConfigType {
   contractId: string;
 }
 
+const LocalStorageKey = 'pangolinHashPackData';
 //Intial App config
 const APP_METADATA: HashConnectTypes.AppMetadata = {
   name: 'Pangolin Exchange',
   description: '',
   icon: 'https://raw.githubusercontent.com/pangolindex/tokens/main/assets/43114/0x60781C2586D68229fde47564546784ab3fACA982/logo_48.png',
+};
+
+type HashPackLocalDataType = {
+  topic?: string;
+  pairingData?: HashConnectTypes.SavedPairingData | null;
+  pairingString?: string;
 };
 
 export class HashConnector extends AbstractConnector {
@@ -26,8 +33,6 @@ export class HashConnector extends AbstractConnector {
   private normalizeAccount!: boolean;
   private network!: string; //"testnet" | "mainnet" | "previewnet"
   private instance!: HashConnect;
-  private appMetadata: HashConnectTypes.AppMetadata;
-  private state: HashConnectConnectionState = HashConnectConnectionState.Disconnected;
   private topic: string;
   private pairingString: string;
   private pairingData: HashConnectTypes.SavedPairingData | null = null;
@@ -35,13 +40,13 @@ export class HashConnector extends AbstractConnector {
   private initData: HashConnectTypes.InitilizationData | null = null;
 
   public constructor(
-    kwargs: AbstractConnectorArguments & {
+    args: AbstractConnectorArguments & {
       normalizeChainId: boolean;
       normalizeAccount: boolean;
       config: HashConfigType;
     },
   ) {
-    super(kwargs);
+    super(args);
 
     //create the hashconnect instance
     this.instance = new HashConnect(true);
@@ -50,11 +55,10 @@ export class HashConnector extends AbstractConnector {
 
     client.setMirrorNetwork('hcs.testnet.mirrornode.hedera.com:5600');
 
-    this.chainId = kwargs?.config?.chainId;
-    this.normalizeChainId = kwargs?.normalizeChainId;
-    this.normalizeAccount = kwargs?.normalizeAccount;
-    this.network = kwargs?.config?.networkId;
-    this.appMetadata = APP_METADATA;
+    this.chainId = args?.config?.chainId;
+    this.normalizeChainId = args?.normalizeChainId;
+    this.normalizeAccount = args?.normalizeAccount;
+    this.network = args?.config?.networkId;
     this.availableExtension = undefined;
     this.topic = '';
     this.pairingString = '';
@@ -72,7 +76,7 @@ export class HashConnector extends AbstractConnector {
         this.initData = data;
       })
       .catch((error) => {
-        console.log('hash connect err', error);
+        console.log('==== hash connect err', error);
       });
   }
 
@@ -81,19 +85,30 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
-    this.state = state;
     if (state === HashConnectConnectionState.Disconnected) {
-      this.emitDeactivate();
+      this.deactivate();
     }
   }
 
   private handlePairingEvent(data) {
     this.pairingData = data.pairingData!;
-
-    if (this.pairingData && this.pairingData?.accountIds[0]) {
-      const accountId = this.pairingData?.accountIds[0];
-      this.emitUpdate({ account: accountId });
+    const accountId = this.pairingData?.accountIds?.[0];
+    if (accountId) {
+      this.saveDataInLocalstorage({ pairingData: this.pairingData });
+      this.emitUpdate({ account: this.convertAccountId(accountId) });
     }
+  }
+
+  setUpEvents() {
+    this.instance.foundExtensionEvent.on(this.handleFoundExtensionEvent.bind(this));
+    this.instance.pairingEvent.on(this.handlePairingEvent.bind(this));
+    this.instance.connectionStatusChangeEvent.on(this.handleConnectionStatusChangeEvent.bind(this));
+  }
+
+  destroyEvents() {
+    this.instance.foundExtensionEvent.off(this.handleFoundExtensionEvent.bind(this));
+    this.instance.pairingEvent.off(this.handlePairingEvent.bind(this));
+    this.instance.connectionStatusChangeEvent.off(this.handleConnectionStatusChangeEvent.bind(this));
   }
 
   public async getChainId(): Promise<number | string | any> {
@@ -122,24 +137,14 @@ export class HashConnector extends AbstractConnector {
       this.pairingString = this.instance.generatePairingString(this.initData.topic, this.network, false);
 
       this.topic = this.initData.topic;
-      //Saved pairings will return here, generally you will only have one unless you are doing something advanced
-      // this.pairingData = this.initData.savedPairings[0];
-
-      this.pairingData = this.instance.hcData.pairingData[0];
       this.pairingString = this.initData.pairingString;
+
       this.provider = await this.getProvider();
-      const accountId = await this.getAccount();
       this.saveDataInLocalstorage();
 
-      return { chainId: this.chainId, provider: this.provider, account: accountId };
+      return { chainId: this.chainId, provider: this.provider };
     } else {
       await this.instance.init(APP_METADATA, this.network as any);
-
-      this.topic = this.instance.hcData.topic;
-      //Saved pairings will return here, generally you will only have one unless you are doing something advanced
-      this.pairingData = this.instance.hcData.pairingData[0];
-      this.pairingString = this.instance.hcData.pairingString;
-
       this.provider = await this.getProvider();
       const accountId = await this.getAccount();
 
@@ -147,40 +152,15 @@ export class HashConnector extends AbstractConnector {
     }
   }
 
-  logEvent(data) {
-    console.log(data);
-  }
-
-  setUpEvents() {
-    this.instance.foundExtensionEvent.on(this.handleFoundExtensionEvent.bind(this));
-    this.instance.pairingEvent.on(this.handlePairingEvent.bind(this));
-
-    this.instance.acknowledgeMessageEvent.on(this.logEvent);
-    this.instance.additionalAccountRequestEvent.on(this.logEvent);
-    this.instance.connectionStatusChangeEvent.on(this.handleConnectionStatusChangeEvent.bind(this));
-    this.instance.authRequestEvent.on(this.logEvent);
-    this.instance.transactionEvent.on(this.logEvent);
-  }
-
-  destroyEvents() {
-    this.instance.foundExtensionEvent.off(this.handleFoundExtensionEvent.bind(this));
-    this.instance.pairingEvent.off(this.handlePairingEvent.bind(this));
-
-    this.instance.acknowledgeMessageEvent.off(this.logEvent);
-    this.instance.additionalAccountRequestEvent.off(this.logEvent);
-    this.instance.connectionStatusChangeEvent.off(this.handleConnectionStatusChangeEvent.bind(this));
-    this.instance.authRequestEvent.off(this.logEvent);
-    this.instance.transactionEvent.off(this.logEvent);
-  }
+  convertAccountId = (accountId: string) => {
+    return hethers.utils.getAddressFromAccount(accountId);
+  };
 
   public async getAccount(): Promise<null | string> {
     if (this.pairingData) {
       try {
-        const newAccountId = this.pairingData?.accountIds[0];
-
-        const accountId = hethers.utils.getAddressFromAccount(newAccountId);
-
-        return accountId;
+        const newAccountId = this.pairingData?.accountIds?.[0];
+        return this.convertAccountId(newAccountId);
       } catch (err) {
         console.log('error', err);
       }
@@ -192,7 +172,8 @@ export class HashConnector extends AbstractConnector {
     if (this.pairingData) {
       this.instance.disconnect(this.pairingData?.topic);
       this.instance.clearConnectionsAndData();
-      localStorage.removeItem('pangolinHashconnectData');
+      localStorage.removeItem(LocalStorageKey);
+      this.emitDeactivate();
     }
   }
 
@@ -200,35 +181,38 @@ export class HashConnector extends AbstractConnector {
     if (this.pairingData) {
       this.instance.disconnect(this.pairingData?.topic);
       this.instance.clearConnectionsAndData();
-      localStorage.removeItem('pangolinHashconnectData');
+      localStorage.removeItem(LocalStorageKey);
+      this.emitDeactivate();
     }
   }
 
   public async isAuthorized(): Promise<boolean> {
-    if (this.loadLocalData()) {
-      return true;
-    } else return false;
+    return this.loadLocalData();
   }
 
-  saveDataInLocalstorage() {
+  saveDataInLocalstorage(params: HashPackLocalDataType = {}) {
     const saveData = {
-      topic: this.topic,
-      pairingData: this.pairingData,
-      pairingString: this.pairingString,
+      topic: params.topic || this.topic,
+      pairingData: params.pairingData || this.pairingData,
+      pairingString: params.pairingString || this.pairingString,
     };
-    let data = JSON.stringify(saveData);
+    const data = JSON.stringify(saveData);
 
-    localStorage.setItem('pangolinHashconnectData', data);
+    localStorage.setItem(LocalStorageKey, data);
   }
 
   loadLocalData(): boolean {
-    let foundData = localStorage.getItem('pangolinHashconnectData');
+    const foundData = localStorage.getItem(LocalStorageKey);
 
     if (foundData) {
-      let saveData = JSON.parse(foundData);
-      this.topic = saveData.topic;
-      this.pairingString = saveData.pairingString;
+      const saveData: HashPackLocalDataType = JSON.parse(foundData);
+      this.topic = saveData.topic || '';
+      this.pairingString = saveData.pairingString || '';
+      if (saveData.pairingData) {
+        this.pairingData = saveData.pairingData;
+      }
       return true;
-    } else return false;
+    }
+    return false;
   }
 }
