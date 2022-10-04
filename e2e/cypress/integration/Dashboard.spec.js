@@ -97,7 +97,7 @@ describe('Dashboard', () => {
 
     it('TC-27, Verify that the user is able to switch between the tokens in watchlist', () => {
         cy.contains(/Dashboard/i)
-        for (var i =1; i < 3; i++) {
+        for (var i =1; i <= 3; i++) {
             cy.get(`${switchToken}:nth-child(${i})`).click()
             cy.get(watchListTokenAssert)
                 .should('contain',switchArray[i-1])
@@ -133,7 +133,7 @@ describe('Dashboard', () => {
                 cy.get(tokenSelect).eq(0).click()
                 cy.get(tokenAssert)
                     .should("contain",tokenName)
-                cy.get(tokenAssert).eq(0).trigger("mouseover")
+                cy.get(tokenAssert).eq(1).trigger("mouseover")
                 cy.get(crossBtn).click()
             }
         })  
@@ -178,7 +178,7 @@ describe('Dashboard', () => {
             })
         })
     })
-    // still in progress 
+
     it('TC-37,38,39,40,41 Verify that the user can see the all time token value in USD', function() {
         cy.get(watchlistGraphLine).then( chart => {
             cy.get(chart).trigger('mouseover')
@@ -205,13 +205,13 @@ describe('Dashboard', () => {
     it(`TC-42, Verify that the ${newsLinkArray[2]} in the "Read the 2H 2022 Roadmap" in news section redirects the user to the "Pangolin Exchange" page`, () => {
         newsLinks(0,3,newsLinkArray[2], newsLinkAssertArray[3])
     })
-
+    ///// in progress
     it(`TC-42, Verify that the "${newsLinkArray[3]}" link in the air drop songbird in news section redirects the user to the "Pangolin Exchange" page`, () => {
     
         newsLinks(0, 4, newsLinkArray[3], newsLinkAssertArray[4])
     })
-
-    it(`TC-42, Verify that the "${newsLinkArray[3]}" link in the air drop in news section redirects the user to the "Pangolin Exchange" page`, () => {
+    /// in progress
+    it(`TC-42, Verify that the "${newsLinkArray[3]}" link in the air drop WagmiPng in news section redirects the user to the "Pangolin Exchange" page`, () => {
     
         newsLinks(0, 5, newsLinkArray[3],  newsLinkAssertArray[5])
     })

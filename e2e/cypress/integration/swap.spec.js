@@ -23,7 +23,7 @@ describe('Swap', () => {
             .should("have.class","ACTIVE")
     })
 
-    it('TC-02, 03, 04, 05, 06, 07,08, 09, 10, 11, 13   Verify that the user can see the icon of the token selected from the "To" dropdown', () => {
+    it('TC-02, 03, 04, 05, 06, 07,08, 09, 10, 11, 13 Verify that the user can see the icon of the token selected from the "To" dropdown', () => {
         cy.get('#swap').click();
             cy.get('[class="sc-eCYdqJ sc-ftvSup fEptdj bnstfL"]')
                 .eq(1).find('button').click()

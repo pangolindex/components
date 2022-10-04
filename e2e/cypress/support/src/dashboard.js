@@ -1,11 +1,11 @@
 function newsLinks(startPoint, endPoint, link, assertMsg) {
-    cy.get('div.cOhaaa .fEptdj .iNbpQO .sc-gzzPqb').then(news => {
+    cy.get('div.cOhaaa .fEptdj .sc-fmrZth').then(news => {
         for(var i = startPoint; i < endPoint; i++){
-        cy.get(news).find(`div.qPvDD:nth-child(2)`).click()
+        cy.get(news).find(`div.sc-gzzPqb:nth-child(2)`).click()
         cy.wait(1000)
         }
-        cy.get('div.slick-current div[class="sc-eCYdqJ sc-hjriPb fEptdj jYTHXE"] p').then(newsAssert => {
-            cy.get(newsAssert).contains(link).scrollIntoView().invoke('removeAttr', 'target').click()
+        cy.get('div.slick-slider div[class="sc-eCYdqJ sc-fWjsSh fEptdj kQILAI"] p a').then(newsAssert => {
+            cy.get(newsAssert).contains(link).scrollIntoView().invoke('removeAttr', 'target').click({force:true})
             cy.contains(assertMsg).should('be.visible')
     })
 })
