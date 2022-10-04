@@ -7,6 +7,11 @@ export const CurrencyList = styled.div`
   flex: 1;
   flex-direction: column;
   overflow-y: auto;
+  &::-webkit-scrollbar {
+    display: none !important;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 
 export const CurrencyRowRoot = styled.div<{ disabled: boolean; selected: boolean }>`
@@ -18,7 +23,7 @@ export const CurrencyRowRoot = styled.div<{ disabled: boolean; selected: boolean
   grid-template-columns: auto minmax(auto, 1fr) minmax(0, 72px);
   grid-gap: 16px;
   align-items: center;
-  padding: 10px;
+  padding: 10px 20px;
 
   &:hover {
     background-color: ${({ theme, disabled }) =>
@@ -35,7 +40,7 @@ export const Balance = styled(Text)`
 
 export const ManageList = styled.div`
   background-color: ${({ theme }) => theme.swapWidget?.detailsBackground};
-  padding: 10px;
+  padding: 10px 20px;
   cursor: pointer;
 `;
 

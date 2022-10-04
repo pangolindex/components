@@ -143,6 +143,28 @@ export interface Colors {
     };
   };
 
+  bridge?: {
+    primaryBgColor?: Color;
+    secondaryBgColor?: Color;
+    text?: Color;
+    infoIconColor?: Color;
+    routeInfoColor?: Color;
+    transferKeyColor?: Color;
+    loaderCloseIconColor?: Color;
+    informationBoxesBackgroundColor?: Color;
+  };
+
+  tabs?: {
+    tabColor?: Color;
+    tabListColor?: Color;
+    tabPanelBorderColor?: Color;
+  };
+
+  dropdown?: {
+    color?: Color;
+    primaryBgColor?: Color;
+  };
+
   primary: Color;
   mustardYellow: Color;
   eerieBlack: Color;

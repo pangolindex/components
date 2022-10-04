@@ -37,7 +37,7 @@ export const CommonEVMProvider = (provider) => {
       return res;
     };
 
-    provider.getBlockTimestamp = async (blockNumber: number) => {
+    provider.getBlockTimestamp = async (blockNumber) => {
       const result: { timestamp: string } | null = await (provider as any).request({
         method: 'eth_getBlockByNumber',
         params: [`0x${blockNumber.toString(16)}`, false],
@@ -46,7 +46,7 @@ export const CommonEVMProvider = (provider) => {
       if (!result) {
         return 0;
       }
-      return result?.timestamp ?? 0;
+      return parseInt(result?.timestamp, 16).toString() ?? 0;
     };
   }
   return provider;

@@ -149,7 +149,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
     setTypedValue(_typedValue);
     const percentage = Math.ceil(
       Number(
-        userLiquidityUnstaked
+        userLiquidityUnstaked && _typedValue
           ? JSBI.divide(
               JSBI.multiply(
                 JSBI.BigInt(parseUnits(_typedValue, userLiquidityUnstaked.currency.decimals)),
@@ -160,7 +160,8 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
           : 0,
       ),
     );
-    setStepIndex(type === 'card' ? percentage : percentage / 25);
+
+    setStepIndex(percentage > 100 ? 4 : Math.round(percentage / 25));
   }, []);
 
   async function onAttemptToApprove() {
@@ -295,6 +296,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
                   currentValue={type === 'card' ? stepIndex * 25 : stepIndex}
                   variant={type === 'card' ? 'box' : 'step'}
                   isPercentage={true}
+                  isDisabled={userLiquidityUnstaked?.equalTo('0') ?? true}
                 />
               </Box>
             </InputWrapper>

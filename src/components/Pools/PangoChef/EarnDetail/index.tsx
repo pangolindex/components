@@ -3,8 +3,7 @@ import { TokenAmount } from '@pangolindex/sdk';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Drawer, Stat, Text } from 'src/components';
-import Tooltip from 'src/components/ToolTip';
+import { Box, Button, Drawer, Stat, Text, Tooltip } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
@@ -93,7 +92,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           </Text>
           <Tooltip id="earnedAmount" effect="solid" backgroundColor={theme.primary}>
             <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
-              {formatEther(earnedAmount.raw.toString())}
+              {formatEther(earnedAmount.raw.toString())} {png.symbol}
             </Text>
           </Tooltip>
           <Text color="text1" fontSize="16px" fontWeight={700} textAlign="center" data-tip data-for="earnedAmount">
@@ -192,6 +191,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         }}
         stakingInfo={stakingInfo}
         version={version}
+        redirectToCompound={redirectToCompound}
       />
     </Wrapper>
   );

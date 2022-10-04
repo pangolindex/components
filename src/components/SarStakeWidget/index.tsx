@@ -137,7 +137,7 @@ export default function SarManageWidget() {
   );
 
   const ConfirmContent = (
-    <Wrapper paddingX="20px" paddingBottom="20px">
+    <Box width="100%" height="100%" paddingX="20px" paddingBottom="20px">
       <Header>
         <TokenRow>
           <Text fontSize={20} fontWeight={500} color="text1" style={{ marginRight: '12px' }}>
@@ -145,7 +145,7 @@ export default function SarManageWidget() {
           </Text>
           <CurrencyLogo currency={png} size={24} imageSize={48} />
         </TokenRow>
-        <Box display="inline-grid" style={{ gridGap: '10px', gridTemplateColumns: 'auto auto' }}>
+        <Box display="inline-grid" style={{ gridGap: '10px', gridTemplateColumns: '1fr 1fr' }}>
           <Stat
             title={t('sarStake.dollarValue')}
             titlePosition="top"
@@ -167,7 +167,7 @@ export default function SarManageWidget() {
           <Text color="text1">{t('sarStake.weeklyDistributed', { symbol: png.symbol })}</Text>
           <Text color="text1">{numeral(formatEther(weeklyPNG)).format('0.00a')}</Text>
         </Box>
-        <Box bgColor="color3" borderRadius="8px" padding="15px">
+        <Box bgColor="color3" borderRadius="8px" padding="10px">
           <Text color="text1" fontWeight={400} fontSize="12px" textAlign="center">
             {t('sarStake.confirmDescription', { symbol: png.symbol })}
           </Text>
@@ -180,7 +180,7 @@ export default function SarManageWidget() {
           </Button>
         </Box>
       </Footer>
-    </Wrapper>
+    </Box>
   );
 
   return (
