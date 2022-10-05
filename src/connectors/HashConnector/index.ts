@@ -1,5 +1,4 @@
 import { hethers } from '@hashgraph/hethers';
-import { Client } from '@hashgraph/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { HashConnect, HashConnectTypes } from 'hashconnect';
@@ -50,10 +49,6 @@ export class HashConnector extends AbstractConnector {
 
     //create the hashconnect instance
     this.instance = new HashConnect(true);
-
-    const client = Client.forMainnet();
-
-    client.setMirrorNetwork('hcs.testnet.mirrornode.hedera.com:5600');
 
     this.chainId = args?.config?.chainId;
     this.normalizeChainId = args?.normalizeChainId;

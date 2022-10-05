@@ -52,6 +52,7 @@ class Hedera {
         'Content-Type': 'application/json',
       };
       const res = await this.axios.request<T>({
+        baseURL: HEDERA_API_BASE_URL,
         headers,
         ...config,
       });
@@ -67,7 +68,6 @@ class Hedera {
       const accountId = hethers.utils.asAccountString(account);
 
       const response = await this.call<AccountBalanceResponse>({
-        baseURL: HEDERA_API_BASE_URL,
         url: `/api/v1/balances?account.id=${accountId}`,
         method: 'GET',
       });
@@ -85,7 +85,6 @@ class Hedera {
       const tokenId = hethers.utils.asAccountString(address);
 
       const tokenInfo = await this.call<TokenResponse>({
-        baseURL: HEDERA_API_BASE_URL,
         url: '/api/v1/tokens/' + tokenId,
         method: 'GET',
       });
@@ -110,7 +109,6 @@ class Hedera {
       const accountId = account ? hethers.utils.asAccountString(account) : '';
 
       const response = await this.call<TokenBalanceResponse>({
-        baseURL: HEDERA_API_BASE_URL,
         url: `/api/v1/tokens/${tokenId}/balances?account.id=${accountId}`,
         method: 'GET',
       });
