@@ -12,11 +12,11 @@ describe('Swap', () => {
             // returning false here prevents Cypress from
             // failing the test
             return false
-        })    
+        }) 
+        cy.get('#swap').click()
     })
 
     it('TC-01, Verify that the swap page can be accessed from the side men', () => {
-        cy.get('#swap').click();
         cy.get('.cIKZSl')
             .should("have.css", "background-color", "rgb(255, 200, 0)")
         cy.get('div[class="sc-hMFtBS cIKZSl"] a')
@@ -24,10 +24,9 @@ describe('Swap', () => {
     })
 
     it('TC-02, 03, 04, 05, 06, 07,08, 09, 10, 11, 13 Verify that the user can see the icon of the token selected from the "To" dropdown', () => {
-        cy.get('#swap').click();
             cy.get('[class="sc-eCYdqJ sc-ftvSup fEptdj bnstfL"]')
                 .eq(1).find('button').click()
-            cy.get('[class="sc-kRktcz iieLhX"] div[class="sc-jSMfEi icpGcW"]')
+            cy.get('[class="sc-fpcwso kgTBKZ"] div[class="sc-lmHNfd cbAcSN"]')
                 .contains('aAVAXb').scrollIntoView().click()
             cy.get('div[class="sc-fzsDOv dhoLIG"]').within (header => {
                 cy.get(header).find('img[class="sc-ivTmOn htFfaf"]')
@@ -45,7 +44,6 @@ describe('Swap', () => {
             
     })
     it('TC-15, Verify that the user can search for a specific token to add to the watchlist', () => {
-        cy.get('#swap').click();
         cy.get(watchListBtn).
             should('be.visible').click()
         cy.get(watchlistDropDown)
@@ -56,7 +54,6 @@ describe('Swap', () => {
             .should("contain",tokenName)
     })
     it("TC-16, Verify that the user can add the token to the watchlist", () => {
-        cy.get('#swap').click();
         cy.get(watchListBtn)
             .should('be.visible').click()
         cy.get(watchlistDropDown)
@@ -66,7 +63,6 @@ describe('Swap', () => {
             .should("contain", AvaxToken)
     })
     it('TC-18, Verify that the user is able to switch between the tokens in watchlist', () => {
-        cy.get('#swap').click();
         for (var i =1; i < 3; i++) {
             cy.get(`${switchToken}:nth-child(${i})`).click()
             cy.get(watchListTokenAssert)
@@ -75,7 +71,6 @@ describe('Swap', () => {
     })
     chartTimeArray.forEach( time => {
         it(`TC-20,21,22,23,24, Verify that the chart is updated by pressing ${time} in watchlist`, () => {
-            cy.get('#swap').click();
             cy.get(watchlistTimeBtn)
                 .should('have.attr', 'color', 'text1')
                     .contains(time).click()
@@ -86,7 +81,6 @@ describe('Swap', () => {
         })
     })
     it('TC-17, Verify that the user can remove the token from the watchlist', () => {
-        cy.get('#swap').click();
         cy.get(tokenSection).then($avax => {
             if($avax.text().includes(AvaxToken)){
                 cy.get(tokenMouseOver).eq(0)
@@ -108,7 +102,6 @@ describe('Swap', () => {
         })  
     })
     it('TC-25, Verify that Link button redirects the user to the info.exchange page', () => {
-        cy.get('#swap').click();
         let linkUrl = "https://info.pangolin.exchange/#/token/0x60781C2586D68229fde47564546784ab3fACA982"
         cy.get(watchlistLinkBtn)
             .invoke("removeAttr","target").click()

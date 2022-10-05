@@ -181,7 +181,7 @@ describe('Dashboard', () => {
 
     it('TC-37,38,39,40,41 Verify that the user can see the all time token value in USD', function() {
         cy.get(watchlistGraphLine).then( chart => {
-            cy.get(chart).trigger('mouseover')
+            cy.get(chart).eq(0).trigger('mouseover')
             cy.wait(500)
             cy.get(chart).find(graphUSD).then( usdChart => {
                 expect(usdChart).to.contain(usd)
