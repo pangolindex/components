@@ -38,14 +38,19 @@ import {
   updateFeeInfo,
   updateFeeTo,
 } from './actions';
-import { SwapParams } from './reducer';
+import { DefaultSwapState, SwapParams } from './reducer';
 
 export interface LimitOrderInfo extends Order {
   pending?: boolean;
 }
 
-export function useSwapState(): AppState['pswap'] {
-  return useSelector<AppState['pswap']>((state) => state.pswap);
+export function useSwapState(): DefaultSwapState {
+  const chainId = useChainId();
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const swapState = chainId ? state[chainId] ?? {} : ({} as DefaultSwapState);
+  return swapState;
 }
 
 export function useSwapActionHandlers(chainId: ChainId): {
@@ -66,6 +71,7 @@ export function useSwapActionHandlers(chainId: ChainId): {
               : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
               ? (CAVAX[chainId]?.symbol as string)
               : '',
+          chainId,
         }),
       );
     },
@@ -73,19 +79,19 @@ export function useSwapActionHandlers(chainId: ChainId): {
   );
 
   const onSwitchTokens = useCallback(() => {
-    dispatch(switchCurrencies());
+    dispatch(switchCurrencies({ chainId }));
   }, [dispatch]);
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      dispatch(typeInput({ field, typedValue }));
+      dispatch(typeInput({ field, typedValue, chainId }));
     },
     [dispatch],
   );
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
-      dispatch(setRecipient({ recipient }));
+      dispatch(setRecipient({ recipient, chainId }));
     },
     [dispatch],
   );
@@ -323,7 +329,7 @@ export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: ChainId)
 export function useDefaultsFromURLSearch():
   | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
   | undefined {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   const dispatch = useDispatch();
   const parsedQs = useParsedQueryString();
   const [result, setResult] = useState<
@@ -355,6 +361,7 @@ export function useDefaultsFromURLSearch():
           ? outputCurrencyId
           : SWAP_DEFAULT_CURRENCY[chainId]?.outputCurrency,
         recipient: parsed.recipient,
+        chainId,
       }),
     );
 
@@ -366,7 +373,7 @@ export function useDefaultsFromURLSearch():
 }
 
 export function useGelatoLimitOrderDetail(order: Order) {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   const gelatoLibrary = useGelatoLimitOrdersLib();
 
   const inputCurrency = order.inputToken === NATIVE && chainId ? 'AVAX' : order.inputToken;
@@ -465,14 +472,16 @@ export function useGelatoLimitOrderList() {
 }
 
 export function useDaasFeeTo(): [string, (feeTo: string) => void] {
-  const dispatch = useDispatch();
-  const feeTo = useSelector<AppState['pswap']['feeTo']>((state) => {
-    return state.pswap.feeTo;
-  });
+  const chainId = useChainId();
 
+  const dispatch = useDispatch();
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const feeTo = state[chainId]?.feeTo;
   const setFeeTo = useCallback(
     (newFeeTo: string) => {
-      dispatch(updateFeeTo({ feeTo: newFeeTo }));
+      dispatch(updateFeeTo({ feeTo: newFeeTo, chainId }));
     },
     [dispatch],
   );
@@ -481,14 +490,17 @@ export function useDaasFeeTo(): [string, (feeTo: string) => void] {
 }
 
 export function useDaasFeeInfo(): [FeeInfo, (feeInfo: FeeInfo) => void] {
+  const chainId = useChainId();
+
   const dispatch = useDispatch();
-  const feeInfo = useSelector<AppState['pswap']['feeInfo']>((state) => {
-    return state.pswap.feeInfo;
-  });
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const feeInfo = state[chainId]?.feeInfo;
 
   const setFeeInfo = useCallback(
     (newFeeInfo: FeeInfo) => {
-      dispatch(updateFeeInfo({ feeInfo: newFeeInfo }));
+      dispatch(updateFeeInfo({ feeInfo: newFeeInfo, chainId }));
     },
     [dispatch],
   );

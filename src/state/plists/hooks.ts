@@ -2,6 +2,7 @@ import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { Tags, TokenInfo, TokenList } from '@pangolindex/token-lists';
 import { useMemo } from 'react';
 import { AEB_TOKENS } from 'src/constants/lists';
+import { useChainId } from 'src/hooks';
 import { AppState, useSelector } from '../index';
 
 type TagDetails = Tags[keyof Tags];
@@ -38,6 +39,7 @@ const EMPTY_LIST: TokenAddressMap = {
   [ChainId.WAGMI]: {},
   [ChainId.COSTON]: {},
   [ChainId.SONGBIRD]: {},
+  [ChainId.HEDERA_TESTNET]: {},
   [ChainId.NEAR_MAINNET]: {},
   [ChainId.NEAR_TESTNET]: {},
 };
@@ -154,6 +156,11 @@ export function useAllLists(): TokenList[] {
 }
 
 export function useIsSelectedAEBToken(): boolean {
-  const selectedOutputToken = useSelector<AppState['pswap']['OUTPUT']>((state) => state.pswap.OUTPUT);
+  const chainId = useChainId();
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const selectedOutputToken = state[chainId]?.OUTPUT;
+
   return AEB_TOKENS.some((tokenAddress) => tokenAddress === selectedOutputToken?.currencyId);
 }

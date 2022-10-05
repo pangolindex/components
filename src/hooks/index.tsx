@@ -100,7 +100,11 @@ export function useLibrary(): { library: any; provider: any } {
       let finalEthersLibrary;
 
       try {
-        finalEthersLibrary = new Web3ProviderEthers(finalWeb3jsProvider, 'any');
+        if (chainId === ChainId.HEDERA_TESTNET) {
+          finalEthersLibrary = finalWeb3jsProvider;
+        } else {
+          finalEthersLibrary = new Web3ProviderEthers(finalWeb3jsProvider, 'any');
+        }
       } catch (error) {
         finalEthersLibrary = finalWeb3jsProvider;
       }

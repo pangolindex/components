@@ -59,6 +59,7 @@ export const useTotalSupplyHook: UseTotalSupplyHookType = {
   [ChainId.WAGMI]: useTotalSupply,
   [ChainId.COSTON]: useTotalSupply,
   [ChainId.SONGBIRD]: useTotalSupply,
+  [ChainId.HEDERA_TESTNET]: useTotalSupply,
   [ChainId.NEAR_MAINNET]: useNearTotalSupply,
   [ChainId.NEAR_TESTNET]: useNearTotalSupply,
 };

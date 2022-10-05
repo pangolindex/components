@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { parseBytes32String } from '@ethersproject/strings';
 import { CAVAX, CHAINS, ChainId, Currency, Token } from '@pangolindex/sdk';
 import axios from 'axios';
@@ -8,6 +9,7 @@ import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
 import { isAddress } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import { NearTokenMetadata, nearFn } from 'src/utils/near';
 import ERC20_INTERFACE, { ERC20_BYTES32_INTERFACE } from '../constants/abis/erc20';
 import { useTokenHook } from './multiChainsHooks';
@@ -54,6 +56,7 @@ function parseStringOrBytes32(str: string | undefined, bytes32: string | undefin
 // otherwise returns the token
 export function useToken(tokenAddress?: string): TokenReturnType {
   const chainId = useChainId();
+
   const tokens = useAllTokens();
 
   const address = isAddress(tokenAddress);
@@ -121,6 +124,40 @@ export function useNearToken(tokenAddress?: string): TokenReturnType {
     async function getTokenData() {
       if (address) {
         const tokenMetaData = await nearFn.getMetadata(address);
+
+        setTokenData(tokenMetaData);
+      }
+    }
+
+    getTokenData();
+  }, [address]);
+
+  return useMemo(() => {
+    if (token) return token;
+    if (!chainId || !address) return undefined;
+
+    if (tokenData) {
+      return new Token(chainId, address, tokenData?.decimals, tokenData?.symbol, tokenData?.name);
+    }
+
+    return undefined;
+  }, [address, chainId, token, tokenData]);
+}
+
+export function useHederaToken(tokenAddress?: string): TokenReturnType {
+  const [tokenData, setTokenData] = useState<NearTokenMetadata>();
+
+  const chainId = useChainId();
+  const tokens = useAllTokens();
+
+  const address = tokenAddress;
+
+  const token: Token | undefined = address ? tokens[address] : undefined;
+
+  useEffect(() => {
+    async function getTokenData() {
+      if (address) {
+        const tokenMetaData = await hederaFn.getMetadata(address);
 
         setTokenData(tokenMetaData);
       }
@@ -243,6 +280,47 @@ export function useNearTokens(tokensAddress: string[] = []): Array<TokenReturnTy
   }, [results, tokens]);
 }
 
+const fetchHederaTokenMetadata = (address) => () => {
+  return nearFn.getMetadata(address);
+};
+
+export function useHederaTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
+  const chainId = useChainId();
+  const tokens = useAllTokens();
+
+  const queryParameter = useMemo(() => {
+    return (
+      tokensAddress?.map((address) => {
+        return { queryKey: ['token', address], queryFn: fetchHederaTokenMetadata(address) };
+      }) ?? []
+    );
+  }, [tokensAddress]);
+
+  const results = useQueries(queryParameter);
+
+  return useMemo(() => {
+    if (!tokensAddress || tokensAddress?.length === 0) return [];
+    if (!chainId) return [];
+
+    return results.reduce<Token[]>((acc, result) => {
+      const tokenData = result?.data;
+
+      if (tokenData && result?.isLoading === false) {
+        if (!!tokenData?.id && tokens[tokenData?.id]) {
+          // if we have user tokens already
+          acc.push(tokens[tokenData?.id]);
+        } else {
+          const token = new Token(chainId, tokenData?.id, tokenData?.decimals, tokenData?.symbol, tokenData?.name);
+
+          acc.push(token);
+        }
+      }
+
+      return acc;
+    }, []);
+  }, [results, tokens]);
+}
+
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
   const chainId = useChainId();
   const isAVAX = currencyId?.toUpperCase() === CAVAX[chainId].symbol?.toUpperCase();
@@ -258,6 +336,8 @@ export function useCoinGeckoTokenPrice(coin: Token) {
     const getCoinPriceData = async () => {
       try {
         const chain = coin.chainId === 43113 ? CHAINS[ChainId.AVALANCHE] : CHAINS[coin.chainId];
+
+        if (!chain) return null;
 
         const url = `${COINGEKO_BASE_URL}/simple/token_price/${
           chain.coingecko_id
@@ -286,8 +366,10 @@ export function useCoinGeckoTokenPriceChart(coin: Token, days = '7') {
       try {
         const chain = coin.chainId === 43113 ? CHAINS[ChainId.AVALANCHE] : CHAINS[coin.chainId];
 
+        if (!chain) return null;
+
         const url = `${COINGEKO_BASE_URL}/coins/${
-          chain.coingecko_id
+          chain?.coingecko_id
         }/contract/${coin.address.toLowerCase()}/market_chart/?vs_currency=usd&days=${days}`;
 
         const response = await fetch(url);
@@ -345,6 +427,7 @@ export function useCoinGeckoTokenData(coin: Token) {
   });
 }
 
+/* eslint-enable max-lines */
 export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
   const currencyId = COINGECKO_CURRENCY_ID[chainId];
 

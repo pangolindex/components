@@ -21,11 +21,15 @@ export const CommonEVMProvider = (provider) => {
     };
 
     provider.getBlockNumber = async () => {
-      const block = await (provider as any).request({
-        method: 'eth_blockNumber',
-        params: [],
-      });
-      return Number(block);
+      if ((provider as any).request) {
+        const block = await (provider as any).request({
+          method: 'eth_blockNumber',
+          params: [],
+        });
+        return Number(block);
+      }
+
+      return 0;
     };
 
     provider.execute = async (method, params) => {
