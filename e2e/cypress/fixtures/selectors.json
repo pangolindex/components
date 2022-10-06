@@ -33,5 +33,10 @@
         "pngButton": "span[class='sc-kIPQKe iblkVR'] div[class='sc-kfGgVZ sc-esjQYD cueueu']",
         "pngModal": "div[class='sc-kGXeez sc-iELTvK bieKzX']",
         "pngPriceSel": "div[class='sc-bdVaJa sc-jKJlTe sc-eNQAEJ XssaD']"
+    },
+    "swap": {
+        "fromField": "input[id='swap-currency-input']",
+        "toField": "input[id='swap-currency-output']",
+        "connectWalletBtn": "button[class='sc-gsnTZi jquISs']"
     }
 }

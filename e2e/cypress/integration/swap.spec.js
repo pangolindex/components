@@ -1,9 +1,10 @@
-/// <reference types = "Cypress"/>
+/// <reference types = "cypress"/>
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data'
 // import {newsLinks, socialLinks} from '../support/src/dashboard'
-const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn} = selectors.dashboard
+const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, watchlistLinkBtn} = selectors.dashboard
 const {tokenName, AvaxToken, switchArray, chartTimeArray} = data.dashboard
+const {fromField, toField, connectWalletBtn} = selectors.swap
 describe('Swap', () => {
     
     beforeEach('',() => {
@@ -110,13 +111,21 @@ describe('Swap', () => {
             .should("be.visible")
     })
 
-    it('TC-26, Verify that the user can make a trade from the Dashboard', () => {
-        let swap = "https://dev.pangolin.exchange/#/swap"
-        cy.get(watchlistTradeBtn)
-            .contains(/trade/i).click()
-        cy.url()
-            .should("include", swap)
-        cy.contains(/24H Change/i)
-            .should("be.visible")
+    it.only('TC-26, Verify that the user can see the "Enter an amount" button when the fields are kept empty', () => {
+        cy.get(fromField).should(fromValue => {
+            // From field
+            expect(fromValue).have.attr('placeholder','0.00')
+        
+        })
+        cy.get(toField).should(toValue => {
+            // To field
+            expect(toValue).have.attr('placeholder','0.00')
+        })
+
+        cy.get(connectWalletBtn).should(enterAmountBtn => {
+            expect(enterAmountBtn).to.contain('Connect Wallet')
+            expect(enterAmountBtn).have.css('background-color','rgb(229, 229, 229)')
+        })
     })
+    
 })
