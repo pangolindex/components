@@ -48,7 +48,7 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
     setSearchQuery(value.trim());
   }, []);
 
-  useEffect(() => {
+  const sort = () => {
     if (sortBy === SortingType.totalStakedInUsd) {
       const sortedFarms = [...stakingInfoData].sort(function (info_a, info_b) {
         return info_a.totalStakedInUsd?.greaterThan(info_b.totalStakedInUsd ?? BIG_INT_ZERO) ? -1 : 1;
@@ -60,7 +60,10 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
         .filter((element) => !!element);
       setStakingInfoData(sortedFarms);
     }
+  };
 
+  useEffect(() => {
+    sort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy]);
 
@@ -93,7 +96,7 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
       setStakingInfoByPid(finalArrByPid);
       setStakingInfoData(finalArr);
     }
-
+    sort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stakingInfos, debouncedSearchQuery]);
 
