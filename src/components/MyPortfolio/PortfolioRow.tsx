@@ -1,7 +1,6 @@
 import { ChainId, Token } from '@pangolindex/sdk';
-import React, { useContext } from 'react';
-import { HelpCircle, Lock } from 'react-feather';
-import { ThemeContext } from 'styled-components';
+import React from 'react';
+import { HelpCircle } from 'react-feather';
 import { PairDataUser, TokenDataUser } from 'src/state/pportfolio/hooks';
 import { Box } from '../Box';
 import CurrencyLogo from '../CurrencyLogo';
@@ -18,8 +17,6 @@ type Props = {
 };
 
 const PortfolioRow: React.FC<Props> = ({ coin, pair, showBalances }) => {
-  const theme = useContext(ThemeContext);
-
   const renderLogo = (size) => {
     if (coin) {
       if ((coin.token instanceof Token && coin.token.chainId == ChainId.AVALANCHE) || !(coin.token instanceof Token)) {
@@ -68,7 +65,9 @@ const PortfolioRow: React.FC<Props> = ({ coin, pair, showBalances }) => {
       </Box>
       <Box textAlign="right">
         {!showBalances ? (
-          <Lock color={theme.text13} size={16} />
+          <Text color="text13" fontSize={16} fontWeight={700}>
+            *
+          </Text>
         ) : (
           <Text color="text1" fontSize={14} fontWeight={500}>
             ${amount.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}
