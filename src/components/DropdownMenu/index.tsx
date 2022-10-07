@@ -8,9 +8,11 @@ export interface DropdownMenuProps {
   onSelect: (value: MultiValue<string> | string) => void;
   placeHolder?: string;
   isMulti?: boolean;
+  isSearchable?: boolean;
   menuPlacement?: MenuPlacement;
   options: OptionsOrGroups<any, any>;
   height?: string;
+  width?: string;
 }
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({
@@ -18,9 +20,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   onSelect,
   placeHolder,
   isMulti = false,
+  isSearchable = false,
   menuPlacement,
   options,
   height,
+  width,
 }) => {
   const theme = useContext(ThemeContext);
   const colourStyles = {
@@ -33,6 +37,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
           borderColor: theme.primary,
         },
         ...(height && { height: height }),
+        width: width ? width : 'max-content',
       };
     },
     multiValue: (styles) => {
@@ -108,6 +113,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       defaultValue={defaultValue}
       placeholder={placeHolder || t('dropdown.select')}
       isMulti={isMulti}
+      isSearchable={isSearchable}
       styles={colourStyles}
       theme={(thm) => ({
         ...thm,
