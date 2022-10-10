@@ -76,23 +76,22 @@ export const useChainId = () => {
   return (chainId || ChainId.AVALANCHE) as ChainId;
 };
 
-// props library -> web3.js
+// library -> web3.js/eip-1993/ethers provider
 // provider -> ethers.js
 // extendedProvider -> extended library
 
 /**
  *
- * @returns { library: ethers.js provider, provider: extended web3.js library }
+ * @returns { library: ethers.js provider, provider: extended provider }
  */
-export function useLibrary(): { library: any; provider: any; oldProvider: any } {
-  const [result, setResult] = useState({} as { library: any; provider: any; oldProvider: any });
+export function useLibrary(): { library: any; provider: any } {
+  const [result, setResult] = useState({} as { library: any; provider: any });
 
   const { connector } = useWeb3React();
   const chainId = useChainId();
   const { library: userProvidedLibrary } = usePangolinWeb3();
 
   useEffect(() => {
-    console.log('in useEffect');
     async function load() {
       // const walletKey = Object.keys(SUPPORTED_WALLETS).find(
       //   (key) => SUPPORTED_WALLETS[key].connector === connector,
@@ -100,7 +99,6 @@ export function useLibrary(): { library: any; provider: any; oldProvider: any } 
 
       // convert window.ethereum to ethers
       const ethersDefaultProvider = new Web3ProviderEthers(window.ethereum as ExternalProvider);
-
       // try to wrap connector provider
       const providerFromConnector = await connector?.getProvider();
       let ethersConnectorProvider;
@@ -109,15 +107,12 @@ export function useLibrary(): { library: any; provider: any; oldProvider: any } 
           ethersConnectorProvider = new Web3ProviderEthers(ethersConnectorProvider as ExternalProvider);
         } catch (error) {
           console.log('==== error ethersConnectorProvider', ethersConnectorProvider, error);
-
           // error will come incase of Near, Hedera provider
           ethersConnectorProvider = providerFromConnector;
         }
       } else {
         ethersConnectorProvider = providerFromConnector;
       }
-      console.log('==== userProvidedLibrary?._isProvider', userProvidedLibrary?._isProvider);
-
       // try to wrap user provided library
       let ethersUserProvidedLibrary = userProvidedLibrary?._isProvider ? userProvidedLibrary : undefined;
 
@@ -132,9 +127,8 @@ export function useLibrary(): { library: any; provider: any; oldProvider: any } 
 
       const finalEthersLibrary = ethersConnectorProvider || ethersUserProvidedLibrary || ethersDefaultProvider;
       const extendedWeb3Provider = finalEthersLibrary && (PROVIDER_MAPPING as any)[chainId]?.(finalEthersLibrary);
-      const oldExtendedProvider = userProvidedLibrary && (PROVIDER_MAPPING as any)[chainId]?.(userProvidedLibrary);
 
-      setResult({ library: finalEthersLibrary, provider: extendedWeb3Provider, oldProvider: oldExtendedProvider });
+      setResult({ library: finalEthersLibrary, provider: extendedWeb3Provider });
     }
     load();
   }, [connector, userProvidedLibrary, chainId]);
