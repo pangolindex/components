@@ -11,7 +11,7 @@
         "tokenSearch": "input[placeholder='Search']",
         "tokenSelect": ".sc-gsnTZi.jQHTpl",
         "tokenAssert": "div[class='sc-jSMfEi hiA-dmI']",
-        "tokenMouseOver": "div[class='sc-eCYdqJ sc-dWINGa fEptdj dfBwcX']",
+        "tokenMouseOver": "div[class='sc-eCYdqJ sc-bPyhqo fEptdj bUdpLI']",
         "crossBtn": "button[class='sc-fWIMVQ ccIOWP']",
         "switchToken": "div[class='sc-eCYdqJ sc-hAsxaJ fEptdj gUJACP'] div div div.sc-bPyhqo",
         "tokenSection": "div[class='sc-eCYdqJ sc-hAsxaJ fEptdj gUJACP']",

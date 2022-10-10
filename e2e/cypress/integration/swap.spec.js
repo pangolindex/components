@@ -1,6 +1,7 @@
 /// <reference types = "cypress"/>
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data'
+import { switchingValues, tokenDisable } from '../support/src/swap'
 // import {newsLinks, socialLinks} from '../support/src/dashboard'
 const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, watchlistLinkBtn} = selectors.dashboard
 const {tokenName, AvaxToken, switchArray, chartTimeArray} = data.dashboard
@@ -111,7 +112,7 @@ describe('Swap', () => {
             .should("be.visible")
     })
 
-    it.only('TC-26, Verify that the user can see the "Enter an amount" button when the fields are kept empty', () => {
+    it('TC-, Verify that the user can see the "Enter an amount" button when the fields are kept empty', () => {
         cy.get(fromField).should(fromValue => {
             // From field
             expect(fromValue).have.attr('placeholder','0.00')
@@ -128,4 +129,43 @@ describe('Swap', () => {
         })
     })
     
+    it('TC-30, Verify that the user can switch between the selected tokens', () => {
+        switchingValues(1, 'From', 'AVAX')
+        switchingValues(3, 'To', "USDC")
+        cy.get('div[class="sc-eCYdqJ sc-brCFrO fEptdj gIDZHZ"] div[class="sc-eCYdqJ kMEFVW"]').find('div[class="sc-eCYdqJ erxZVL"]').find('div[class="sc-evrZIY fmutkA"]').click()
+        switchingValues(1, 'From', 'USDC')
+        switchingValues(3, "To", "AVAX")
+    })
+
+    it('TC- 35, Verify that the selected token is disabled in the "From" dropdown', () => {
+        tokenDisable(1, "From", "AVAX", 0)
+    })
+
+    it('TC- 50, Verify that the "Save & Close" button is disabled when very high slippage is entered', () => {
+        cy.get('div[class="sc-eCYdqJ sc-lbxAil fEptdj cBXVhH"]').click()
+        cy.get('input[class="sc-iBkjds puNdi"]').eq(0).clear().type('111')
+        cy.get('div[color="error"][class="sc-jSMfEi gznKUx"]').should('have.text', 'Very high slippage, activate expert mode to be able to use more than 50%')
+        cy.get('button[class="sc-gsnTZi jquISs"]').then( saveCloseBtn => {
+            expect(saveCloseBtn).to.have.css('background-color', 'rgb(229, 229, 229)')
+        })
+    })
+    //still in progress
+    // const slipPage = ['0.1%', '0.5%', '1%']
+    // it('TC- 51, Verify that the user can set the slippage to 0.1%', () => {
+    //     cy.get('div[class="sc-eCYdqJ sc-lbxAil fEptdj cBXVhH"]').click()
+    //     for(var z = 0; z <= slipPage.length; z++ ) {
+    //         cy.get('div[class="sc-eCYdqJ sc-jTYCaT fEptdj eOrPya"]').eq()
+    //     }
+    // })
+
+    it('TC-57 , Verify that the user can "ON" the expert mode', () => {
+        cy.get('div[class="sc-eCYdqJ sc-lbxAil fEptdj cBXVhH"]').click()
+        cy.get('div[class="sc-jIZahH iqjIFB"]').contains('ON').click()
+        
+        cy.window().then(function(promptelement){
+            cy.stub(promptelement, 'prompt').returns("confirm");
+          });
+        cy.contains(/Turn On expert mode/i).click()
+        cy.get('button[class="sc-gsnTZi hePPZs"]').should('contain', 'Save & Close').click()
+    })
 })
