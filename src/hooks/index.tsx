@@ -1,4 +1,4 @@
-import { Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
+import { ExternalProvider, Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -76,43 +76,68 @@ export const useChainId = () => {
   return (chainId || ChainId.AVALANCHE) as ChainId;
 };
 
-// library -> web3.js
+// props library -> web3.js
 // provider -> ethers.js
 // extendedProvider -> extended library
 
-export function useLibrary(): { library: any; provider: any } {
-  const [result, setResult] = useState({} as { library: any; provider: any });
+/**
+ *
+ * @returns { library: ethers.js provider, provider: extended web3.js library }
+ */
+export function useLibrary(): { library: any; provider: any; oldProvider: any } {
+  const [result, setResult] = useState({} as { library: any; provider: any; oldProvider: any });
 
   const { connector } = useWeb3React();
   const chainId = useChainId();
   const { library: userProvidedLibrary } = usePangolinWeb3();
 
   useEffect(() => {
+    console.log('in useEffect');
     async function load() {
       // const walletKey = Object.keys(SUPPORTED_WALLETS).find(
       //   (key) => SUPPORTED_WALLETS[key].connector === connector,
       // ) as string;
 
-      const web3jsProvider = (await connector?.getProvider()) || userProvidedLibrary || window.ethereum;
-      const finalWeb3jsProvider = web3jsProvider || window.ethereum;
-      const extendedWeb3Provider = finalWeb3jsProvider && (PROVIDER_MAPPING as any)[chainId]?.(finalWeb3jsProvider);
+      // convert window.ethereum to ethers
+      const ethersDefaultProvider = new Web3ProviderEthers(window.ethereum as ExternalProvider);
 
-      let finalEthersLibrary;
+      // try to wrap connector provider
+      const providerFromConnector = await connector?.getProvider();
+      let ethersConnectorProvider;
+      if (providerFromConnector && !providerFromConnector._isProvider) {
+        try {
+          ethersConnectorProvider = new Web3ProviderEthers(ethersConnectorProvider as ExternalProvider);
+        } catch (error) {
+          console.log('==== error ethersConnectorProvider', ethersConnectorProvider, error);
 
-      try {
-        if (chainId === ChainId.HEDERA_TESTNET) {
-          finalEthersLibrary = finalWeb3jsProvider;
-        } else {
-          finalEthersLibrary = new Web3ProviderEthers(finalWeb3jsProvider, 'any');
+          // error will come incase of Near, Hedera provider
+          ethersConnectorProvider = providerFromConnector;
         }
-      } catch (error) {
-        finalEthersLibrary = finalWeb3jsProvider;
+      } else {
+        ethersConnectorProvider = providerFromConnector;
+      }
+      console.log('==== userProvidedLibrary?._isProvider', userProvidedLibrary?._isProvider);
+
+      // try to wrap user provided library
+      let ethersUserProvidedLibrary = userProvidedLibrary?._isProvider ? userProvidedLibrary : undefined;
+
+      if (userProvidedLibrary && !userProvidedLibrary?._isProvider) {
+        try {
+          ethersUserProvidedLibrary = new Web3ProviderEthers(userProvidedLibrary as any);
+        } catch (error) {
+          console.log('==== error ethersUserProvidedLibrary', error);
+          ethersUserProvidedLibrary = userProvidedLibrary;
+        }
       }
 
-      setResult({ library: finalEthersLibrary, provider: extendedWeb3Provider });
+      const finalEthersLibrary = ethersConnectorProvider || ethersUserProvidedLibrary || ethersDefaultProvider;
+      const extendedWeb3Provider = finalEthersLibrary && (PROVIDER_MAPPING as any)[chainId]?.(finalEthersLibrary);
+      const oldExtendedProvider = userProvidedLibrary && (PROVIDER_MAPPING as any)[chainId]?.(userProvidedLibrary);
+
+      setResult({ library: finalEthersLibrary, provider: extendedWeb3Provider, oldProvider: oldExtendedProvider });
     }
     load();
-  }, [connector]);
+  }, [connector, userProvidedLibrary, chainId]);
 
   return result;
 }
