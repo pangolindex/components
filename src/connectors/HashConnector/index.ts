@@ -2,7 +2,7 @@ import { hethers } from '@hashgraph/hethers';
 import { Client } from '@hashgraph/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
-import { HashConnect, HashConnectTypes } from 'hashconnect';
+import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { HashConnectProvider } from 'hashconnect/dist/provider';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
 
@@ -76,7 +76,7 @@ export class HashConnector extends AbstractConnector {
         this.initData = data;
       })
       .catch((error) => {
-        console.log('==== hash connect err', error);
+        console.log('hash connect err', error);
       });
   }
 
@@ -214,5 +214,20 @@ export class HashConnector extends AbstractConnector {
       return true;
     }
     return false;
+  }
+
+  public async sendTransaction(trans: Uint8Array, acctToSign: string, return_trans = false, hideNfts = false) {
+    const transaction: MessageTypes.Transaction = {
+      topic: this.topic,
+      byteArray: trans,
+
+      metadata: {
+        accountToSign: acctToSign,
+        returnTransaction: return_trans,
+        hideNft: hideNfts,
+      },
+    };
+
+    return await this.instance.sendTransaction(this.topic, transaction);
   }
 }

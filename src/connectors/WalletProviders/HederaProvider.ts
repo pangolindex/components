@@ -1,4 +1,5 @@
 import { hethers } from '@hashgraph/hethers';
+
 import React from 'react';
 
 export const HederaProvider = (provider) => {
@@ -7,7 +8,22 @@ export const HederaProvider = (provider) => {
       try {
         const hethersProvider = hethers.providers.getDefaultProvider('testnet', undefined);
 
-        const receipt = await hethersProvider.getTransaction(transactionId);
+        const replaceText = transactionId.replace('@', '-');
+
+        const lastIndex = replaceText.lastIndexOf('.');
+
+        let before = '';
+        let after = '';
+
+        if (lastIndex !== -1) {
+          before = replaceText.slice(0, lastIndex);
+          after = replaceText.slice(lastIndex + 1);
+        }
+
+        const newTransactionId = before + '-' + after;
+
+        //Transaction id. Please use "shard.realm.num-sss-nnn" format where sss are seconds and nnn are nanoseconds
+        const receipt = await hethersProvider.getTransaction(newTransactionId);
 
         if (!receipt?.hash) {
           return undefined;
@@ -40,7 +56,7 @@ export const HederaProvider = (provider) => {
     };
 
     provider.getBlockNumber = async () => {
-      return '';
+      return 0;
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

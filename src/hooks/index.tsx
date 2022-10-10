@@ -112,7 +112,7 @@ export function useLibrary(): { library: any; provider: any } {
       setResult({ library: finalEthersLibrary, provider: extendedWeb3Provider });
     }
     load();
-  }, [connector]);
+  }, [connector, chainId]);
 
   return result;
 }
