@@ -8,6 +8,8 @@ export const HederaProvider = (provider) => {
       try {
         const hethersProvider = hethers.providers.getDefaultProvider('testnet', undefined);
 
+        //getting this string as transactionId     "0.0.29562194@1645089473.013219243"
+        //we need to convert into                  "0.0.29562194-1645089473-013219243"
         const replaceText = transactionId.replace('@', '-');
 
         const lastIndex = replaceText.lastIndexOf('.');

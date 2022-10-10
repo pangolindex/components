@@ -302,11 +302,7 @@ export function useHederaTokenAssociated(): {
 
     const token = (tokens || []).find((token) => token.tokenId === currencyId);
 
-    if (token) {
-      return true;
-    } else {
-      return false;
-    }
+    return !!token;
   });
 
   return useMemo(() => {

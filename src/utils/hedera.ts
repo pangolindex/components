@@ -7,7 +7,6 @@ import {
   TokenAssociateTransaction,
   Transaction,
   TransactionId,
-  TransactionReceipt,
 } from '@hashgraph/sdk';
 import { ChainId } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
@@ -78,9 +77,11 @@ export interface APITransactionResponse {
 
 class Hedera {
   axios: AxiosInstance;
+  client: Client;
 
   constructor() {
     this.axios = BaseAxios.create({ timeout: 60000 });
+    this.client = Client.forTestnet(); // TODO check here for testnet and mainnet
   }
 
   public async makeBytes(transaction: Transaction, accountId: string) {
@@ -130,9 +131,9 @@ class Hedera {
     }
   }
 
-  public async getMetadata(tokemAddress: string): Promise<HederaTokenMetadata | undefined> {
+  public async getMetadata(tokenAddress: string): Promise<HederaTokenMetadata | undefined> {
     try {
-      const tokenId = hethers.utils.asAccountString(tokemAddress);
+      const tokenId = hethers.utils.asAccountString(tokenAddress);
 
       const tokenInfo = await this.call<TokenResponse>({
         url: '/api/v1/tokens/' + tokenId,
@@ -140,7 +141,7 @@ class Hedera {
       });
 
       const token = {
-        id: tokemAddress,
+        id: tokenAddress,
         name: tokenInfo?.name,
         symbol: tokenInfo?.symbol,
         decimals: Number(tokenInfo?.decimals),
@@ -153,9 +154,9 @@ class Hedera {
     }
   }
 
-  public async getTokenBalance(tokemAddress: string, account?: string) {
+  public async getTokenBalance(tokenAddress: string, account?: string) {
     try {
-      const tokenId = hethers.utils.asAccountString(tokemAddress);
+      const tokenId = hethers.utils.asAccountString(tokenAddress);
       const accountId = account ? hethers.utils.asAccountString(account) : '';
 
       const response = await this.call<TokenBalanceResponse>({
@@ -174,9 +175,9 @@ class Hedera {
   public async getAccountAssociatedTokens(account: string) {
     try {
       const accountId = account ? hethers.utils.asAccountString(account) : '';
-      const client = Client.forTestnet(); // TODO check here for testnet and mainnet
+
       const query = new AccountBalanceQuery().setAccountId(accountId);
-      const tokens = await query.execute(client);
+      const tokens = await query.execute(this.client);
 
       const allTokens = JSON.parse(JSON.stringify(tokens));
 
@@ -186,8 +187,8 @@ class Hedera {
     }
   }
 
-  public async tokenAssociate(tokemAddress: string, account: string, chainId: ChainId) {
-    const tokenId = hethers.utils.asAccountString(tokemAddress);
+  public async tokenAssociate(tokenAddress: string, account: string, chainId: ChainId) {
+    const tokenId = hethers.utils.asAccountString(tokenAddress);
     const accountId = account ? hethers.utils.asAccountString(account) : '';
 
     const transaction = new TokenAssociateTransaction();
@@ -199,14 +200,6 @@ class Hedera {
     const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
 
     const res = await hashConnect.sendTransaction(transBytes, accountId);
-
-    //handle response
-    const responseData: any = {
-      response: res,
-      receipt: null,
-    };
-
-    if (res.success) responseData.receipt = TransactionReceipt.fromBytes(res.receipt as Uint8Array);
 
     const receipt = res?.response as TransactionResponse;
     if (res.success) {
@@ -221,7 +214,7 @@ class Hedera {
         value: BigNumber.from(0),
         chainId: chainId,
         wait: async () => {
-          return responseData.receipt;
+          return null;
         },
       };
     }

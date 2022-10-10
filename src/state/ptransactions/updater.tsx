@@ -130,13 +130,7 @@ export default function Updater(): null {
     if (!chainId || !library || !lastBlockNumber) return;
 
     Object.keys(transactions)
-      .filter((hash) => {
-        if (transactions[hash].receipt) {
-          return false;
-        } else {
-          return true;
-        }
-      })
+      .filter((hash) => !transactions[hash].receipt)
       .filter((hash) => shouldCheck(lastBlockNumber, transactions[hash], chainId))
       .forEach(async (hash) => {
         try {
