@@ -75,25 +75,25 @@ export function useSwapActionHandlers(chainId: ChainId): {
         }),
       );
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   const onSwitchTokens = useCallback(() => {
     dispatch(switchCurrencies({ chainId }));
-  }, [dispatch]);
+  }, [dispatch, chainId]);
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
       dispatch(typeInput({ field, typedValue, chainId }));
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
       dispatch(setRecipient({ recipient, chainId }));
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   return {
