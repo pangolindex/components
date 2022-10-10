@@ -223,6 +223,6 @@ export class HashConnector extends AbstractConnector {
       },
     };
 
-    return await this.instance.sendTransaction(this.topic, transaction);
+    return this.instance.sendTransaction(this.topic, transaction);
   }
 }

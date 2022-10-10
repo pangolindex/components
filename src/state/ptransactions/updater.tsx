@@ -19,13 +19,7 @@ export function shouldCheck(
   },
   chainId: ChainId,
 ): boolean {
-  //if (tx.receipt) return false; // added directly in filter
-
-  console.log("dkf'lkfl;sdkf");
-
   if (!shouldCheckMapping[chainId]) {
-    console.log("dkf'lkfl;sdkf");
-
     return true;
   }
   if (!tx.lastCheckedBlockNumber) return true;

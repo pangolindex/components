@@ -273,7 +273,7 @@ export function useDerivedSwapInfo(): {
 }
 
 export function useHederaTokenAssociated(): {
-  associate?: undefined | (() => Promise<void>);
+  associate: undefined | (() => Promise<void>);
   isLoading: boolean;
   hederaAssociated: boolean;
 } {
