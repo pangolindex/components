@@ -6,7 +6,7 @@ import arrowRightIcon from 'src/assets/images/arrow-right.svg';
 import bitKeepIcon from 'src/assets/images/bitkeep.svg';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
-import hashIcon from 'src/assets/images/hashConnect.png';
+// import hashIcon from 'src/assets/images/hashConnect.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
 import nearIcon from 'src/assets/images/near.svg';
 import rabbyIcon from 'src/assets/images/rabby.svg';
@@ -16,7 +16,7 @@ import xDefiIcon from 'src/assets/images/xDefi.png';
 import {
   bitKeep,
   gnosisSafe,
-  hashConnect,
+  // hashConnect,
   injected,
   near,
   talisman,
@@ -339,16 +339,17 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     primary: true,
     isEVM: false,
   },
-  HASH_CONNECT: {
-    connector: hashConnect,
-    name: 'HashPack Wallet',
-    iconName: hashIcon,
-    description: 'HashPack Wallet Connect',
-    href: null,
-    color: '#7a7cff',
-    primary: true,
-    isEVM: true,
-  },
+  // Hiding hashpack for now
+  // HASH_CONNECT: {
+  //   connector: hashConnect,
+  //   name: 'HashPack Wallet',
+  //   iconName: hashIcon,
+  //   description: 'HashPack Wallet Connect',
+  //   href: null,
+  //   color: '#7a7cff',
+  //   primary: true,
+  //   isEVM: true,
+  // },
 };
 
 export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } = {
@@ -391,6 +392,7 @@ export const DIRECTUS_URL_NEWS = `https://pangolin.directus.app`;
 
 export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3`;
 export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
+// TODO: this needs to be based on chain id
 export const HEDERA_API_BASE_URL = `https://testnet.mirrornode.hedera.com`;
 
 export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
