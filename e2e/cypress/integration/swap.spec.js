@@ -149,14 +149,16 @@ describe('Swap', () => {
             expect(saveCloseBtn).to.have.css('background-color', 'rgb(229, 229, 229)')
         })
     })
-    //still in progress
-    // const slipPage = ['0.1%', '0.5%', '1%']
-    // it('TC- 51, Verify that the user can set the slippage to 0.1%', () => {
-    //     cy.get('div[class="sc-eCYdqJ sc-lbxAil fEptdj cBXVhH"]').click()
-    //     for(var z = 0; z <= slipPage.length; z++ ) {
-    //         cy.get('div[class="sc-eCYdqJ sc-jTYCaT fEptdj eOrPya"]').eq()
-    //     }
-    // })
+    
+    const slipPage = ['0.1%', '0.5%', '1%', '60', '300', '600']
+        it(`TC- 51, 52, 53, 54, 55, 56 Verify that the user can set the slippage to ${slipPage}`, () => {
+        for(var z = 0; z < slipPage.length; z++ ) {
+            cy.get('div[class="sc-eCYdqJ sc-lbxAil fEptdj cBXVhH"]').click()
+            cy.get('div.sc-eCYdqJ.sc-jTYCaT').eq(`${z}`).click()
+            cy.get('div.JuqvI').should('have.css', 'background-color', 'rgb(255, 200, 0)')
+            cy.get('button[class="sc-gsnTZi hePPZs"]').should('contain', 'Save & Close').click()
+        }
+    })
 
     it('TC-57 , Verify that the user can "ON" the expert mode', () => {
         cy.get('div[class="sc-eCYdqJ sc-lbxAil fEptdj cBXVhH"]').click()
