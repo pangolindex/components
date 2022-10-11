@@ -25,6 +25,7 @@ import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
+  useHederaTokenAssociated,
   useSwapActionHandlers,
   useSwapState,
 } from 'src/state/pswap/hooks';
@@ -131,6 +132,13 @@ const MarketOrder: React.FC<Props> = ({
     execute: onWrap,
     inputError: wrapInputError,
   } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue);
+
+  const {
+    associate: onAssociate,
+    isLoading: isLoadingAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+  } = useHederaTokenAssociated();
+
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE;
   const { address: recipientAddress } = useENS(recipient);
   const toggledVersion = useToggledVersion();
@@ -385,6 +393,14 @@ const MarketOrder: React.FC<Props> = ({
       return (
         <Button variant="primary" isDisabled>
           Insufficient liquidity for this trade.
+        </Button>
+      );
+    }
+
+    if (!isHederaTokenAssociated) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate ' + currencies[Field.OUTPUT]?.symbol}
         </Button>
       );
     }
