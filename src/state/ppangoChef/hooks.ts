@@ -375,14 +375,16 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
     const blockTimestamp = BigNumber.from(blockTime.toString());
 
     //userAPR = poolAPR * (blockTime - (userValueVariables.sumOfEntryTimes / userValueVariables.balance)) / (blockTime - (poolValueVariables.sumOfEntryTimes / poolValueVariables.balance))
-    const a = userSumOfEntryTimes.div(userBalance.isZero() ? BigNumber.from(1): userBalance);
-    const b = poolSumOfEntryTimes.div(poolBalance.isZero() ? BigNumber.from(1): poolBalance);
+    const a = userSumOfEntryTimes.div(userBalance.isZero() ? BigNumber.from(1) : userBalance);
+    const b = poolSumOfEntryTimes.div(poolBalance.isZero() ? BigNumber.from(1) : poolBalance);
     const c = blockTimestamp.sub(a);
     const d = blockTimestamp.sub(b);
-    return (c.lte(0) || d.lte(0)) ? '0' : BigNumber.from(stakingInfo.stakingApr ?? 0)
-      .mul(c)
-      .div(d)
-      .toString();
+    return c.lte(0) || d.lte(0)
+      ? '0'
+      : BigNumber.from(stakingInfo.stakingApr ?? 0)
+          .mul(c)
+          .div(d)
+          .toString();
   }, [blockTime, stakingInfo]);
 }
 
