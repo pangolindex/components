@@ -41,6 +41,7 @@ export default {
       defaultValue: () => {},
       description: 'The function to be called when the token button is clicked',
     },
+    //TODO: add rest of the fields
   },
 };
 

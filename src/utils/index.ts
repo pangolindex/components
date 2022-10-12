@@ -177,6 +177,10 @@ export function getChainByNumber(chainId: ChainId | number): Chain | undefined {
   return ALL_CHAINS.find((chain) => chain.chain_id === chainId);
 }
 
+export const getBridgeSupportedChains = () => {
+  return ALL_CHAINS.filter((chain) => chain?.supported_bridges);
+};
+
 export function calculateSlippageAmount(value: CurrencyAmount, slippage: number): [JSBI, JSBI] {
   if (slippage < 0 || slippage > 10000) {
     throw Error(`Unexpected slippage value: ${slippage}`);

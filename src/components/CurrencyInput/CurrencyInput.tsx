@@ -53,7 +53,7 @@ const CurrencyInput = ({
         }}
         buttonStyle={buttonStyle}
       >
-        <Aligner active={Boolean(currency && currency.symbol)}>
+        <Aligner buttonStyle={buttonStyle} active={Boolean(currency && currency.symbol)}>
           {renderCurrency()}
           {renderStyletoken()}
           <ChevronDown color={!Boolean(currency && currency.symbol) ? 'black' : undefined} />

@@ -4607,6 +4607,11 @@
     "@web3-react/abstract-connector" "^6.0.7"
     "@web3-react/types" "^6.0.7"
 
+"@thorchain/asgardex-util@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@thorchain/asgardex-util/-/asgardex-util-0.10.0.tgz#41bfe50a7421abeff1a2900ff38c35cbe3ad1d17"
+  integrity sha512-Bpa8tMQuf+u8mSWefa8u90QpfJC72aUOJvHFwLOM0VhcXxpQ9qp1PbFLNIkRnb5UJ5+Li0JgvnYPRjZRs+cl5Q==
+
 "@types/babel__core@^7.1.0":
   version "7.1.19"
   resolved "https://registry.npmjs.org/@types/babel__core/-/babel__core-7.1.19.tgz"
@@ -5761,6 +5766,16 @@
   integrity sha512-mwEVBDUVODlsQQ5dfuLUS5/Tf7jqUKyhKYHmVi4fPB6bDMOfWvUPJmKgS1Z7Za/sOI3vzWt4+O7yCiL/70MogA==
   dependencies:
     tslib "^1.9.3"
+
+"@xchainjs/xchain-midgard@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-midgard/-/xchain-midgard-0.1.0.tgz#96fe8ed8ca10892fb3bcca1153d9c2d667960a98"
+  integrity sha512-+y7ctEk8JBQvImeZNz0tM/tE9jqHXHamrJmfG+Km4mG2ROSEPPKH+yZLKad/rCKUIF8j8XJ8R0PWg6GnZESZSg==
+
+"@xchainjs/xchain-util@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-util/-/xchain-util-0.10.0.tgz#42e534313927094302a1ade140e3c42a3e2ad998"
+  integrity sha512-JZr2M8j+6VtjiqiYRUkNjK2JM8hSZbC7Cr2VmPvdvZa39Ks15D8xgrDw7IaCjPkENaLiejbzMzZZbtV9Qf9K4g==
 
 "@xobotyi/scrollbar-width@1.9.5":
   version "1.9.5"
@@ -15344,7 +15359,7 @@ queue-microtask@^1.2.2:
   resolved "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-raf@^3.1.0, raf@^3.4.0, raf@^3.4.1:
+raf@^3.1.0, raf@^3.4.1:
   version "3.4.1"
   resolved "https://registry.npmjs.org/raf/-/raf-3.4.1.tgz"
   integrity sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==

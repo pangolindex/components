@@ -1,3 +1,5 @@
+import { Chain, Currency, CurrencyAmount } from '@pangolindex/sdk';
+
 export type BridgeInputsWidgetProps = {
   /**
    * Title of the widget
@@ -8,9 +10,33 @@ export type BridgeInputsWidgetProps = {
    */
   inputDisabled: boolean;
   /**
-   * Is Token Drawer Open
+   * Chain
    */
-  isTokenDrawerOpen?: boolean;
+  chain?: Chain;
+  /**
+   * Currency
+   */
+  currency?: Currency;
+  /**
+   * Currency
+   */
+  amount?: CurrencyAmount;
+  /**
+   * Max currency amount
+   */
+  maxAmountInput?: CurrencyAmount;
+  /**
+   * Change amount to MAX
+   */
+  handleMaxInput?: () => void;
+  /**
+   * Change Amount
+   */
+  onChangeAmount?: (amount: string) => void;
+  /**
+   * Callback to open Chain Drawer
+   */
+  onChangeChainDrawerStatus?: () => void;
   /**
    * Callback to open Token Drawer
    */

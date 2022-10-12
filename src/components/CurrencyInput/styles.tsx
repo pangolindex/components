@@ -27,13 +27,15 @@ export const CurrencySelect = styled.button<{ selected: boolean; buttonStyle: Bu
   ${({ buttonStyle }) => buttonStyle}
 `;
 
-export const Aligner = styled.span<{ active?: boolean }>`
+export const Aligner = styled.span<{ active?: boolean; buttonStyle: ButtonStyleProps | undefined }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: inherit;
   svg {
-    stroke: ${({ active, theme }) => (active ? theme.currencySelect?.selectedText : theme.currencySelect?.defaultText)};
+    stroke: ${({ active, buttonStyle, theme }) =>
+      (buttonStyle && buttonStyle.color && buttonStyle.color) ||
+      (active ? theme.currencySelect?.selectedText : theme.currencySelect?.defaultText)};
   }
 `;
 
