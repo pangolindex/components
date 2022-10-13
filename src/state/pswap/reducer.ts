@@ -61,6 +61,7 @@ const initialState: SwapState = {
   [ChainId.WAGMI]: initialValue,
   [ChainId.COSTON]: initialValue,
   [ChainId.SONGBIRD]: initialValue,
+  [ChainId.FLARE_MAINNET]: initialValue,
   [ChainId.HEDERA_TESTNET]: initialValue,
   [ChainId.NEAR_MAINNET]: initialValue,
   [ChainId.NEAR_TESTNET]: initialValue,

@@ -7,7 +7,7 @@ import {
   useNearApproveCallback,
 } from './useApproveCallback';
 import { useNearSwapCallback, useSwapCallback } from './useSwapCallback';
-import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
+import { useFlareUSDPrice, useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
 import { useWrapCallback, useWrapNearCallback } from './useWrapCallback';
 
 export type UseWrapCallbackHookType = {
@@ -20,6 +20,7 @@ export const useWrapCallbackHook: UseWrapCallbackHookType = {
   [ChainId.WAGMI]: useWrapCallback,
   [ChainId.COSTON]: useWrapCallback,
   [ChainId.SONGBIRD]: useWrapCallback,
+  [ChainId.FLARE_MAINNET]: useWrapCallback,
   [ChainId.HEDERA_TESTNET]: useWrapCallback,
   [ChainId.NEAR_MAINNET]: useWrapNearCallback,
   [ChainId.NEAR_TESTNET]: useWrapNearCallback,
@@ -35,6 +36,7 @@ export const useTokenHook: UseTokenHookType = {
   [ChainId.WAGMI]: useToken,
   [ChainId.COSTON]: useToken,
   [ChainId.SONGBIRD]: useToken,
+  [ChainId.FLARE_MAINNET]: useToken,
   [ChainId.HEDERA_TESTNET]: useHederaToken,
   [ChainId.NEAR_MAINNET]: useNearToken,
   [ChainId.NEAR_TESTNET]: useNearToken,
@@ -50,6 +52,7 @@ export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookTyp
   [ChainId.WAGMI]: useApproveCallbackFromTrade,
   [ChainId.COSTON]: useApproveCallbackFromTrade,
   [ChainId.SONGBIRD]: useApproveCallbackFromTrade,
+  [ChainId.FLARE_MAINNET]: useApproveCallbackFromTrade,
   [ChainId.HEDERA_TESTNET]: useApproveCallbackFromTrade,
   [ChainId.NEAR_MAINNET]: useApproveCallbackFromNearTrade,
   [ChainId.NEAR_TESTNET]: useApproveCallbackFromNearTrade,
@@ -65,6 +68,7 @@ export const useSwapCallbackHook: UseSwapCallbackHookType = {
   [ChainId.WAGMI]: useSwapCallback,
   [ChainId.COSTON]: useSwapCallback,
   [ChainId.SONGBIRD]: useSwapCallback,
+  [ChainId.FLARE_MAINNET]: useSwapCallback,
   [ChainId.HEDERA_TESTNET]: useSwapCallback,
   [ChainId.NEAR_MAINNET]: useNearSwapCallback,
   [ChainId.NEAR_TESTNET]: useNearSwapCallback,
@@ -80,6 +84,7 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
   [ChainId.WAGMI]: useApproveCallback,
   [ChainId.COSTON]: useApproveCallback,
   [ChainId.SONGBIRD]: useApproveCallback,
+  [ChainId.FLARE_MAINNET]: useApproveCallback,
   [ChainId.HEDERA_TESTNET]: useApproveCallback,
   [ChainId.NEAR_MAINNET]: useNearApproveCallback,
   [ChainId.NEAR_TESTNET]: useNearApproveCallback,
@@ -95,6 +100,7 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
   [ChainId.WAGMI]: useUSDCPrice,
   [ChainId.COSTON]: useUSDCPrice,
   [ChainId.SONGBIRD]: useSongBirdUSDPrice,
+  [ChainId.FLARE_MAINNET]: useFlareUSDPrice,
   [ChainId.HEDERA_TESTNET]: useUSDCPrice,
   [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
   [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
@@ -110,6 +116,7 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.WAGMI]: useTokens,
   [ChainId.COSTON]: useTokens,
   [ChainId.SONGBIRD]: useTokens,
+  [ChainId.FLARE_MAINNET]: useTokens,
   [ChainId.HEDERA_TESTNET]: useHederaTokens,
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
