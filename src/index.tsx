@@ -1,3 +1,4 @@
+import { Web3Provider } from '@ethersproject/providers';
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
 import { ChainId } from '@pangolindex/sdk';
 import React from 'react';
@@ -81,6 +82,8 @@ export function PangolinProvider({
   children?: React.ReactNode;
   theme?: any;
 }) {
+  const ethersLibrary = library && !library?._isProvider ? new Web3Provider(library) : library;
+
   return (
     <Provider store={store} context={StoreContext}>
       <PangolinWeb3Provider chainId={chainId} library={library} account={account}>
@@ -94,7 +97,7 @@ export function PangolinProvider({
             {isEvmChain(chainId) ? (
               <Provider store={galetoStore}>
                 <GelatoProvider
-                  library={library}
+                  library={ethersLibrary}
                   chainId={chainId}
                   account={account ?? undefined}
                   useDefaultTheme={false}
