@@ -104,7 +104,7 @@ export function useLibrary(): { library: any; provider: any } {
       let ethersConnectorProvider;
       if (providerFromConnector && !providerFromConnector._isProvider) {
         try {
-          ethersConnectorProvider = new Web3ProviderEthers(ethersConnectorProvider as ExternalProvider);
+          ethersConnectorProvider = new Web3ProviderEthers(providerFromConnector as ExternalProvider);
         } catch (error) {
           console.log('==== error ethersConnectorProvider', ethersConnectorProvider, error);
           // error will come incase of Near, Hedera provider
