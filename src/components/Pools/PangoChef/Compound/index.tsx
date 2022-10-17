@@ -4,10 +4,10 @@ import { CAVAX, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from
 import { parseUnits } from 'ethers/lib/utils';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { AlertTriangle } from 'react-feather';
+import { AlertTriangle, HelpCircle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Loader, Text, TextInput, TransactionCompleted } from 'src/components';
+import { Box, Button, Loader, Text, TextInput, Tooltip, TransactionCompleted } from 'src/components';
 import { ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE, ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
@@ -256,7 +256,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       />
       <Box
         display="flex"
-        flexDirection="column"
+        flexDirection="row"
         justifyContent="center"
         alignItems="center"
         padding="20px"
@@ -269,6 +269,14 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
         <Text color="text1" textAlign="center" fontSize="12px">
           {message}
         </Text>
+        <Tooltip id="help" effect="solid" backgroundColor={theme.primary} place="left">
+          <Box maxWidth="200px">
+            <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+              {t('pangoChef.decreaseWarning')}
+            </Text>
+          </Box>
+        </Tooltip>
+        <HelpCircle size="24px" data-tip data-for="help" color={theme.text1} />
       </Box>
       <Buttons>
         {showApproveFlow && (
