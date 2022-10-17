@@ -95,7 +95,7 @@ export default createReducer<SwapState>(initialState, (builder) =>
           ...state[chainId],
           independentField: state[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
           [field]: { currencyId: currencyId },
-          [otherField]: { currencyId: state[field].currencyId },
+          [otherField]: { currencyId: state[chainId]?.[field].currencyId },
         };
       } else {
         // the normal case
@@ -111,8 +111,8 @@ export default createReducer<SwapState>(initialState, (builder) =>
       state[chainId] = {
         ...state[chainId],
         independentField: state[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
-        [Field.INPUT]: { currencyId: state[Field.OUTPUT].currencyId },
-        [Field.OUTPUT]: { currencyId: state[Field.INPUT].currencyId },
+        [Field.INPUT]: { currencyId: state[chainId]?.[Field.OUTPUT].currencyId },
+        [Field.OUTPUT]: { currencyId: state[chainId]?.[Field.INPUT].currencyId },
       };
 
       return state;

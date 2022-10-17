@@ -80,11 +80,6 @@ export function usePangoChefInfos() {
   // get reward rates for each pool
   const poolsRewardsRateState = useSingleContractMultipleData(pangoChefContract, 'poolRewardRate', poolsIds);
 
-  // get total reward rate
-  const totalRewardRateState = useSingleCallResult(pangoChefContract, 'rewardRate');
-  const totalRewardRate: BigNumber = totalRewardRateState?.result?.[0] ?? BigNumber.from(0);
-  const totalRewardRatePerSecond = new TokenAmount(png, totalRewardRate.toString());
-  const totalRewardRatePerWeek = new TokenAmount(png, totalRewardRate.mul(60 * 60 * 24 * 7).toString());
   // get the address of the rewarder for each pool
   const rewardsAddresses = useMemo(() => {
     if ((pools || []).length === 0) return [];
@@ -252,7 +247,6 @@ export function usePangoChefInfos() {
         userPendingRewardState.loading ||
         userRewardRateState.loading ||
         pairTotalSupplyState.loading ||
-        totalRewardRateState.loading ||
         pairState === PairState.LOADING ||
         avaxPngPairState == PairState.LOADING ||
         !pair ||
@@ -315,6 +309,18 @@ export function usePangoChefInfos() {
                 .toSignificant(2),
             );
 
+      const totalRewardRatePerSecond = new TokenAmount(png, rewardRate.toString());
+      const totalRewardRatePerWeek = new TokenAmount(
+        png,
+        JSBI.multiply(totalRewardRatePerSecond.raw, BIG_INT_SECONDS_IN_WEEK),
+      );
+
+      const userRewardRatePerWeek = getHypotheticalWeeklyRewardRate(
+        userTotalStakedAmount,
+        totalStakedAmount,
+        totalRewardRatePerSecond,
+      );
+
       farms.push({
         pid: pid,
         tokens: [pair.token0, pair.token1],
@@ -330,7 +336,7 @@ export function usePangoChefInfos() {
         rewardTokensAddress: [png.address, ...(rewardTokensState?.result?.[0] || [])],
         totalRewardRatePerSecond: totalRewardRatePerSecond,
         totalRewardRatePerWeek: totalRewardRatePerWeek,
-        rewardRatePerWeek: new TokenAmount(png, rewardRate.mul(60 * 60 * 24 * 7).toString()),
+        rewardRatePerWeek: userRewardRatePerWeek,
         getHypotheticalWeeklyRewardRate: getHypotheticalWeeklyRewardRate,
         getExtraTokensWeeklyRewardRate: getExtraTokensWeeklyRewardRate,
         earnedAmount: pendingRewards,
@@ -375,14 +381,16 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
     const blockTimestamp = BigNumber.from(blockTime.toString());
 
     //userAPR = poolAPR * (blockTime - (userValueVariables.sumOfEntryTimes / userValueVariables.balance)) / (blockTime - (poolValueVariables.sumOfEntryTimes / poolValueVariables.balance))
-    const a = userSumOfEntryTimes.div(userBalance);
-    const b = poolSumOfEntryTimes.div(poolBalance);
+    const a = userSumOfEntryTimes.div(userBalance.isZero() ? BigNumber.from(1) : userBalance);
+    const b = poolSumOfEntryTimes.div(poolBalance.isZero() ? BigNumber.from(1) : poolBalance);
     const c = blockTimestamp.sub(a);
     const d = blockTimestamp.sub(b);
-    return BigNumber.from(stakingInfo.stakingApr ?? 0)
-      .mul(c)
-      .div(d)
-      .toString();
+    return c.lte(0) || d.lte(0)
+      ? '0'
+      : BigNumber.from(stakingInfo.stakingApr ?? 0)
+          .mul(c)
+          .div(d)
+          .toString();
   }, [blockTime, stakingInfo]);
 }
 
