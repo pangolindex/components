@@ -101,6 +101,14 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         </Box>
         {isSuperFarm && (
           <>
+            <InnerWrapper>
+              <Text color="text1" fontSize="12px">
+                {t('dashboardPage.earned_weeklyIncome')}
+              </Text>
+              <Text color="text1" fontSize="12px">
+                {t('dashboardPage.earned_totalEarned')}
+              </Text>
+            </InnerWrapper>
             {(rewardTokensAmount || []).map((reward, index) => {
               const tokenMultiplier = rewardTokensMultiplier?.[index];
 
