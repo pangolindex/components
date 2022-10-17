@@ -23,6 +23,10 @@ let data = {
   newsSongBird: "We're proud to announce we are live on Songbird Network!",
   usd: 'USD',
   coinBase: "Coinbase has officially added"
+},
+swap : {
+  swapPercentage: ['25%' ,'50%' ,'75%' ,'100%'],
+  slipPage : ['0.1%', '0.5%', '1%', '60', '300', '600']
 }
 }
 module.exports = data

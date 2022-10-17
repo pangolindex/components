@@ -14,4 +14,9 @@ function tokenDisable (iter, value, token, toTokon) {
     cy.get('div[class="sc-eCYdqJ fEptdj"] div[class="sc-eCYdqJ jqkPHT"] ~ div[class="sc-eCYdqJ sc-gKXOVf fEptdj cjBzGg"] button.open-currency-select-button').eq(toTokon).click()
     cy.get('div[class="sc-lmHNfd chzbHR"]').should('have.attr','disabled')
 }
-export {switchingValues, tokenDisable}
+function tokenSwitching (iter, value, token, toTokon) {
+    switchingValues(iter, value, token)
+    cy.get('div[class="sc-eCYdqJ fEptdj"] div[class="sc-eCYdqJ jqkPHT"] ~ div[class="sc-eCYdqJ sc-gKXOVf fEptdj cjBzGg"] button.open-currency-select-button').eq(toTokon).click()
+    cy.get('div[class="sc-jSMfEi icpGcW"]').contains('AVAX').click()
+}
+export {switchingValues, tokenDisable, tokenSwitching}

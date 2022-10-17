@@ -32,11 +32,38 @@
         "footerLinkCloseBtn": "svg.sc-dnqmqq",
         "pngButton": "span[class='sc-kIPQKe iblkVR'] div[class='sc-kfGgVZ sc-esjQYD cueueu']",
         "pngModal": "div[class='sc-kGXeez sc-iELTvK bieKzX']",
-        "pngPriceSel": "div[class='sc-bdVaJa sc-jKJlTe sc-eNQAEJ XssaD']"
+        "pngPriceSel": "div[class='sc-bdVaJa sc-jKJlTe sc-eNQAEJ XssaD']",
+        "connectWallet": "div[id='connect-wallet']"
     },
     "swap": {
+        "swapSideMenu": ".cIKZSl",
+        "swapSideMenuSelect": "div[class='sc-hMFtBS cIKZSl'] a",
+        "tradeBtns": "[class='sc-eCYdqJ sc-ftvSup fEptdj bnstfL']",
         "fromField": "input[id='swap-currency-input']",
+        "tokenModal": "[class='sc-fpcwso kgTBKZ'] div[class='sc-lmHNfd cbAcSN']",
+        "headerDetailsModal":"div[class='sc-fzsDOv dhoLIG'",
+        "toTokenLogo": "img[class='sc-ivTmOn htFfaf']",
+        "toTokenName": "div[class='sc-jSMfEi bLwoif']",
+        "toTokenPrice": "div[class='sc-eCYdqJ cDcquI'] div",
         "toField": "input[id='swap-currency-output']",
-        "connectWalletBtn": "button[class='sc-gsnTZi jquISs']"
+        "connectWalletBtn": "button[class='sc-gsnTZi jquISs']",
+        "connectWalletMessage": "div[class='sc-jSMfEi hMQPrK']",
+        "tradeModal": "div[class='sc-eCYdqJ sc-brCFrO fEptdj gIDZHZ'] div[class='sc-eCYdqJ kMEFVW']",
+        "switchModal": "div[class='sc-eCYdqJ erxZVL']",
+        "switchBtn": "div[class='sc-evrZIY fmutkA']",
+        "limitBtn": "div[class='sc-jIZahH iqjIFB']",
+        "buyBtn": "div[class='sc-jIZahH iqjIFB']",
+        "swapPercentageBtns": "div.sc-fIavCj",
+        "limitPercentageBtns": "div.sc-GVOUr",
+        "settingBtn": "div[class='sc-eCYdqJ sc-lbxAil fEptdj cBXVhH']",
+        "slippageField": "input[class='sc-iBkjds puNdi']",
+        "transactionFailMessage": "div[class='sc-jSMfEi fyKUni']",
+        "transactionMayFortuneMessage": "div[class='sc-jSMfEi fePTab']",
+        "expertModeMessage": "[class='sc-jSMfEi gznKUx']",
+        "saveCloseBtn": "button[class='sc-gsnTZi jquISs']",
+        "saveCloseBtn1": "button[class='sc-gsnTZi hePPZs']",
+        "slipPageValues": "div.sc-eCYdqJ.sc-jTYCaT",
+        "slipPageValuesAssert": "div.JuqvI",
+        "toggleExpertMode": "div[class='sc-jIZahH iqjIFB']"
     }
 }
