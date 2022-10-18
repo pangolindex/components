@@ -22,7 +22,7 @@ import { useTokenBalances } from 'src/state/pwallet/hooks';
 import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { calculateGasMargin, waitForTransaction } from 'src/utils';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
-import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';
+import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root, WarningMessageWrapper } from './styleds';
 
 export interface CompoundProps {
   stakingInfo: PangoChefInfo;
@@ -105,13 +105,10 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     if (amountToAdd.greaterThan(tokenBalance ?? '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: token.symbol });
     }
-    message += `${t('pangoChef.compoundAmountWarning', {
+    message += t('pangoChef.compoundAmountWarning', {
       amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
       symbol: token.symbol,
-    })} ${t('pangoChef.compoundAmountWarning2', {
-      symbol: token.symbol,
-      png: png.symbol,
-    })}`;
+    });
   } else {
     amountToAdd = CurrencyAmount.ether(pngPrice.raw.multiply(earnedAmount.raw).toFixed(0), chainId);
     if (amountToAdd.greaterThan(currencyBalance ? currencyBalance[account ?? ZERO_ADDRESS] ?? '0' : '0')) {
@@ -121,6 +118,14 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
       symbol: currency.symbol,
     });
+    if (!isPNGPool) {
+      message +=
+        ' ' +
+        t('pangoChef.compoundAmountWarning2', {
+          token0: png.symbol,
+          token1: currency.symbol,
+        });
+    }
   }
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
@@ -254,18 +259,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
         disabled={true}
         value={formatUnits(amountToAdd.raw.toString(), tokenOrCurrency.decimals)}
       />
-      <Box
-        display="flex"
-        flexDirection="row"
-        justifyContent="center"
-        alignItems="center"
-        padding="20px"
-        bgColor="color3"
-        borderRadius="8px"
-        margin="auto"
-        width="100%"
-        flexGrow={1}
-      >
+      <WarningMessageWrapper>
         <Text color="text1" textAlign="center" fontSize="12px">
           {message}
         </Text>
@@ -276,8 +270,8 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             </Text>
           </Box>
         </Tooltip>
-        <HelpCircle size="24px" data-tip data-for="help" color={theme.text1} />
-      </Box>
+        <HelpCircle size="16px" data-tip data-for="help" color={theme.text1} />
+      </WarningMessageWrapper>
       <Buttons>
         {showApproveFlow && (
           <Button
