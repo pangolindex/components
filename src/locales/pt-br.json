@@ -702,7 +702,7 @@
     "compoundSuccess": "Você compôs com sucesso.",
     "compoundTransactionSummary": "Farm composta.",
     "removeWarning": "A remoção de qualquer valor da fazenda fará com que seu APR seja 0. Você pode, em vez disso, compor suas recompensas sem perder seu APR.",
-    "lockingPoolZeroWarning": "Você não pode remover sua liquidez ou reivindicar suas recompensas neste farm. Para fazer isso, primeiro você precisa reivindicar ou aumentar sua participação nestas farms: ",
+    "lockingPoolZeroWarning": "Você não pode remover sua liquidez ou reivindicar suas recompensas neste farm. Para fazer isso, primeiro você precisa reivindicar ou remover sua participação nestas fazendas: ",
     "decreaseWarning": "Seu APR diminuirá porque a nova parte composta começa com APR 0 e uma média será feita entre a parte antiga e a nova."
   },
   "bridge": {

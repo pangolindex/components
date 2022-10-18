@@ -704,7 +704,7 @@
     "compoundSuccess": "You have successfully compounded your farm.",
     "compoundTransactionSummary": "Compounded farm",
     "removeWarning": "Removing any amount from farm will get your APR to 0. You can instead compound your rewards without losing your APR.",
-    "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim or compound your stake from this farms: ",
+    "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim or remove your stake from this farms: ",
     "decreaseWarning": "Your apr will decrease because the new compounded part starts with apr 0 and an average will be taken between the old and new part."
   },
   "bridge": {

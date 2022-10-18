@@ -702,7 +702,7 @@
     "compoundSuccess": "你已经成功地组成了你的农场。",
     "compoundTransactionSummary": "复合农场。",
     "removeWarning": "从农场中删除任何金额将使您的 APR 变为 0。您可以在不损失 APR 的情况下复合您的奖励。",
-    "lockingPoolZeroWarning": "您无法从该农场移除您的流动性或索取您的奖励。 为此，您首先需要从该农场索取或复合您的股份： ",
+    "lockingPoolZeroWarning": "您无法从该农场移除您的流动性或索取您的奖励。 为此，您首先需要从该农场中认领或移除您的股份： ",
     "decreaseWarning": "你的 apr 会减少，因为新的复合部分从 apr 0 开始，并且将在新旧部分之间取平均值。"
   },
   "bridge": {

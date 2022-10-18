@@ -702,7 +702,7 @@
     "compoundSuccess": "Çiftliğinizi başarıyla oluşturdunuz.",
     "compoundTransactionSummary": "Birleşik çiftlik.",
     "removeWarning": "Çiftlikten herhangi bir miktarı çıkarmak, APR'nizi 0'a getirecektir. Bunun yerine ödüllerinizi, APR'nizi kaybetmeden birleştirebilirsiniz.",
-    "lockingPoolZeroWarning": "Bu çiftlikten likiditenizi kaldıramaz veya ödüllerinizi talep edemezsiniz. Bunu yapmak için önce bu çiftliklerden hissenizi talep etmeniz veya birleştirmeniz gerekir: ",
+    "lockingPoolZeroWarning": "Bu çiftlikten likiditenizi kaldıramaz veya ödüllerinizi talep edemezsiniz. Bunu yapmak için önce bu çiftliklerden hissenizi talep etmeniz veya kaldırmanız gerekir: ",
     "decreaseWarning": "Yeni bileşik kısım 0 nisan ile başladığı için apr'ınız düşecek ve eski ile yeni kısım arasında bir ortalama alınacaktır."
   },
   "bridge": {
