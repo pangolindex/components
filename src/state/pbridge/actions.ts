@@ -1,4 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
+import { Route } from './types';
 
 export enum ChainField {
   FROM = 'FROM',
@@ -24,6 +25,12 @@ export const replaceBridgeState = createAction<{
   fromChainId?: string;
   toChainId?: string;
   recipient: string | null;
+  routes?: Route[];
+  selectedRoute?: number;
+  routesLoaderStatus?: boolean;
 }>('pbridge/replaceBridgeState');
 export const setRecipient = createAction<{ recipient: string | null }>('pbridge/setRecipient');
 export const typeAmount = createAction<{ field: CurrencyField; typedValue: string }>('pbridge/typeAmount');
+export const setRoutes = createAction<{ routes: Route[]; routesLoaderStatus: boolean }>('pbridge/routes');
+export const selectRoute = createAction<{ selectedRoute: number }>('pbridge/selectRoute');
+export const changeRouteLoaderStatus = createAction<{ routesLoaderStatus: boolean }>('pbridge/changeRouteLoaderStatus');

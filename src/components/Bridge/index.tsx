@@ -1,34 +1,23 @@
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Box, Loader, Text } from 'src/components';
+import { useChainId } from 'src/hooks';
+import { useBridgeActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
 import { Tab, TabList, TabPanel, Tabs } from '../Tabs';
 import BridgeCard from './BridgeCard';
 import BridgeRoute from './BridgeRoute';
-import { Step } from './BridgeRoute/types';
 import BridgeTransfer from './BridgeTransfer';
 import { BridgeState } from './BridgeTransfer/types';
-import { PageWrapper, Routes, Transactions, Transfers } from './styles';
-
-export enum BridgePrioritizations {
-  recommended,
-  fast,
-  normal,
-}
+import { CustomTabPanel, LoaderWrapper, PageWrapper, Routes, Transactions, Transfers } from './styles';
 
 const Bridge = () => {
+  const chainId = useChainId();
+  const { routes, routesLoaderStatus } = useDerivedBridgeInfo();
+  const { onSelectRoute } = useBridgeActionHandlers(chainId);
   const [tabIndex, setTabIndex] = useState(0);
-  const steps: Step[] = [
-    {
-      contractType: 'LI.FI Contract',
-      subSteps: ['1. Swap to 0.0538 USDT via PANGOLIN', '2. Transfer to 0.0522 USDT via PANGOLIN'],
-    },
-    {
-      contractType: 'LI.FI Contract',
-      subSteps: ['1. Swap to 0.0538 USDT via DODO'],
-    },
-  ];
-
   const { t } = useTranslation();
+
   const currency0 = new Token(
     ChainId.AVALANCHE,
     CHAINS[ChainId.AVALANCHE].contracts!.png,
@@ -50,41 +39,50 @@ const Bridge = () => {
       <Transactions>
         <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
           <TabList>
-            <Tab>{t('bridge.availableRoutes', { number: 0 })}</Tab>
+            <Tab>{t('bridge.availableRoutes', { number: routes?.length || 0 })}</Tab>
             <Tab>{t('bridge.activeTransfers', { number: 0 })}</Tab>
             <Tab disabled>{t('bridge.historicalTransfers', { number: 0 })}</Tab>
           </TabList>
-          <TabPanel>
+          <CustomTabPanel>
+            {routesLoaderStatus && (
+              <LoaderWrapper>
+                <Loader height={'auto'} size={100} />
+              </LoaderWrapper>
+            )}
             <Routes>
-              <BridgeRoute
-                steps={steps}
-                transactionType={BridgePrioritizations.recommended}
-                selected={true}
-                estimatedToken={'0.0522 FRAX'}
-                estimatedResult={'$0.05 USD'}
-                min={'9:00'}
-                gasCost={'95.30 USD'}
-              />
-              <BridgeRoute
-                steps={steps}
-                transactionType={BridgePrioritizations.fast}
-                selected={false}
-                estimatedToken={'0.0520 FRAX'}
-                estimatedResult={'$0.0495 USD'}
-                min={'2:00'}
-                gasCost={'105.30 USD'}
-              />
-              <BridgeRoute
-                steps={steps}
-                transactionType={BridgePrioritizations.normal}
-                selected={false}
-                estimatedToken={'0.0529 FRAX'}
-                estimatedResult={'$0.0503 USD'}
-                min={'8:00'}
-                gasCost={'100.30 USD'}
-              />
+              {routes &&
+                routes.length > 0 &&
+                routes.map((route, index) => {
+                  return (
+                    <BridgeRoute
+                      key={index}
+                      onSelectRoute={() => {
+                        onSelectRoute(route);
+                      }}
+                      steps={route.steps}
+                      transactionType={route.transactionType}
+                      selected={route.selected}
+                      toAmount={route.toAmount}
+                      toAmountUSD={route.toAmountUSD}
+                      waitingTime={route.waitingTime}
+                      gasCostUSD={route.gasCostUSD}
+                      fromChainId={route.fromChainId}
+                      fromAmount={route.fromAmount}
+                      fromToken={route.fromToken}
+                      toChainId={route.toChainId}
+                      toToken={route.toToken}
+                    />
+                  );
+                })}
             </Routes>
-          </TabPanel>
+            {(!routes || routes.length === 0) && (
+              <Box display={'flex'} alignContent={'center'} justifyContent={'center'}>
+                <Text color={'bridge.text'} fontSize={[16, 14]} fontWeight={600} pb={'0.2rem'}>
+                  {t('bridge.noRoute')}
+                </Text>
+              </Box>
+            )}
+          </CustomTabPanel>
           <TabPanel>
             <Transfers>
               <BridgeTransfer

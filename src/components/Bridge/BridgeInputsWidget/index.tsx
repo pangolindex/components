@@ -1,3 +1,4 @@
+import { BTC_MAINNET } from '@pangolindex/sdk';
 import React, { useCallback, useContext } from 'react';
 import { Info } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -10,10 +11,12 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
   const {
     onChangeTokenDrawerStatus,
     onChangeChainDrawerStatus,
-    title,
+    onChangeRecipient,
     onChangeAmount,
-    maxAmountInput,
     handleMaxInput,
+    recipient,
+    title,
+    maxAmountInput,
     amount,
     chain,
     currency,
@@ -27,6 +30,13 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
       onChangeAmount && onChangeAmount(amount);
     },
     [onChangeAmount],
+  );
+
+  const handleChangeRecipient = useCallback(
+    (recipient: string) => {
+      onChangeRecipient && onChangeRecipient(recipient);
+    },
+    [onChangeRecipient],
   );
 
   return (
@@ -59,7 +69,12 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           id="swap-currency-input"
         />
       </Currencies>
-      <Tooltip effect="solid" />
+      <Tooltip id="minEarnedAmount" effect="solid">
+        {t('bridge.bridgeInputsWidget.tooltip', {
+          amount: amount?.toExact(),
+          currency: currency?.symbol,
+        })}
+      </Tooltip>
       <TextInput
         isNumeric={true}
         value={amount?.toExact()}
@@ -69,29 +84,44 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
         disabled={inputDisabled || !currency}
         placeholder="0.00"
         addonAfter={
-          inputDisabled
-            ? amount && (
-                <Info
-                  size={16}
-                  color={theme.bridge?.infoIconColor}
-                  data-tip={t('bridge.bridgeInputsWidget.tooltip', { amount: 10.3, currency: 'USDC' })}
-                />
-              )
-            : currency &&
-              maxAmountInput &&
-              maxAmountInput?.toExact() !== amount?.toExact() && (
-                <Button
-                  variant="plain"
-                  backgroundColor="bridge.secondaryBgColor"
-                  padding="6px"
-                  height="auto"
-                  onClick={handleMaxInput}
-                >
-                  <Text color={'bridge.text'}>{t('bridge.bridgeInputsWidget.max')}</Text>
-                </Button>
-              )
+          inputDisabled ? (
+            // TODO: We have to put it into DOM without any condition for Tooltip to work, so I had to hide it this way.
+            <Info size={amount ? 16 : 0} color={theme.bridge?.infoIconColor} data-tip data-for="minEarnedAmount" />
+          ) : (
+            currency &&
+            maxAmountInput &&
+            maxAmountInput?.toExact() !== amount?.toExact() && (
+              <Button
+                variant="plain"
+                backgroundColor="bridge.secondaryBgColor"
+                padding="6px"
+                height="auto"
+                onClick={handleMaxInput}
+              >
+                <Text color={'bridge.text'}>{t('bridge.bridgeInputsWidget.max')}</Text>
+              </Button>
+            )
+          )
         }
       />
+      {chain === BTC_MAINNET && (
+        <Box pt={20}>
+          <TextInput
+            label="Recipient" //TODO: use translation
+            placeholder="Bitcoin Wallet Address" //TODO: use translation
+            value={recipient as string}
+            required={true}
+            onChange={(value) => {
+              const withoutSpaces: string = value.replace(/\s+/g, '');
+              handleChangeRecipient(withoutSpaces);
+            }}
+            addonLabel={
+              recipient &&
+              !recipient.match(/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,59}$/) && <Text color="warning">Invalid Address</Text>
+            }
+          />
+        </Box>
+      )}
     </Box>
   );
 };

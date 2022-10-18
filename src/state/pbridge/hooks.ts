@@ -2,6 +2,7 @@ import { parseUnits } from '@ethersproject/units';
 import {
   ALL_CHAINS,
   CAVAX,
+  CHAINS,
   Chain,
   ChainId,
   Currency,
@@ -10,30 +11,38 @@ import {
   Token,
   TokenAmount,
 } from '@pangolindex/sdk';
-import {
-  PoolData,
-  getDoubleSwapFee,
-  getDoubleSwapOutput,
-  getDoubleSwapOutputWithFee,
-  getDoubleSwapSlip,
-} from '@thorchain/asgardex-util';
-import { Configuration, MidgardApi } from '@xchainjs/xchain-midgard';
-import { assetAmount, assetToBase, baseAmount, baseToAsset } from '@xchainjs/xchain-util';
+// import {
+//   PoolData,
+//   getDoubleSwapFee,
+//   getDoubleSwapOutput,
+//   getDoubleSwapOutputWithFee,
+//   getDoubleSwapSlip,
+// } from '@thorchain/asgardex-util';
+// import { Configuration, MidgardApi } from '@xchainjs/xchain-midgard';
+// import { assetAmount, assetToBase } from '@xchainjs/xchain-util';
+// import { BigNumber } from 'ethers';
 import React, { useCallback } from 'react';
+// import { BRIDGE_THORCHAIN_MIDGARD, BRIDGE_THORCHAIN_THORNODE } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useThorChainRoutes } from 'src/hooks/Routes';
 import { useCurrency } from 'src/hooks/Tokens';
 import { AppState, useDispatch, useSelector } from 'src/state';
+import { isBridgeSupportedChain } from 'src/utils';
 import { useCurrencyBalances } from '../pwallet/hooks';
 import {
   ChainField,
   CurrencyField,
+  changeRouteLoaderStatus,
   selectChain,
   selectCurrency,
+  selectRoute,
   setRecipient,
+  setRoutes,
   switchChains,
   switchCurrencies,
   typeAmount,
 } from './actions';
+import { Route } from './types';
 
 export function useBridgeState(): AppState['pbridge'] {
   return useSelector<AppState['pbridge']>((state) => state.pbridge);
@@ -43,11 +52,20 @@ export function useBridgeActionHandlers(chainId: ChainId): {
   onCurrencySelection: (field: CurrencyField, currency: Currency) => void;
   onChainSelection: (field: ChainField, chain: Chain) => void;
   onSwitchTokens: () => void;
+  onSelectRoute: (route: Route) => void;
   onSwitchChains: () => void;
   onUserInput: (field: CurrencyField, typedValue: string) => void;
   onChangeRecipient: (recipient: string | null) => void;
+  onChangeRouteLoaderStatus: () => void;
 } {
   const dispatch = useDispatch();
+  const { routes, routesLoaderStatus } = useBridgeState();
+
+  const onSelectRoute = (route: Route) => {
+    const selectedRouteIndex = routes.findIndex((r) => r === route);
+    dispatch(selectRoute({ selectedRoute: selectedRouteIndex }));
+  };
+
   const onCurrencySelection = useCallback(
     (field: CurrencyField, currency: Currency) => {
       dispatch(
@@ -99,13 +117,19 @@ export function useBridgeActionHandlers(chainId: ChainId): {
     [dispatch],
   );
 
+  const onChangeRouteLoaderStatus = useCallback(() => {
+    dispatch(changeRouteLoaderStatus({ routesLoaderStatus: !routesLoaderStatus }));
+  }, [dispatch]);
+
   return {
     onSwitchTokens,
     onCurrencySelection,
     onChainSelection,
     onSwitchChains,
+    onSelectRoute,
     onUserInput,
     onChangeRecipient,
+    onChangeRouteLoaderStatus,
   };
 }
 
@@ -138,21 +162,29 @@ export function useDerivedBridgeInfo(): {
   currencyBalances: { [field in CurrencyField]?: CurrencyAmount };
   parsedAmount: CurrencyAmount | undefined;
   inputError?: string;
+  routes?: Route[];
+  estimatedAmount?: CurrencyAmount | undefined;
+  recipient?: string | null;
+  routesLoaderStatus?: boolean;
 } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-
+  // select the current chain if it is supported by the bridge
+  const currentChain = (isBridgeSupportedChain(chainId) && CHAINS[chainId]) || undefined;
   const {
     typedValue,
     [CurrencyField.INPUT]: { currencyId: inputCurrencyId },
     [CurrencyField.OUTPUT]: { currencyId: outputCurrencyId },
     [ChainField.FROM]: { chainId: fromChainId },
     [ChainField.TO]: { chainId: toChainId },
+    routes,
+    recipient,
+    routesLoaderStatus,
   } = useBridgeState();
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
-  const fromChain = fromChainId ? ALL_CHAINS.find((x) => x.id === fromChainId) : undefined;
+  const fromChain = fromChainId ? ALL_CHAINS.find((x) => x.id === fromChainId) : currentChain;
   const toChain = toChainId ? ALL_CHAINS.find((x) => x.id === toChainId) : undefined;
 
   const relevantTokenBalances = useCurrencyBalances(chainId, account ?? undefined, [
@@ -161,7 +193,8 @@ export function useDerivedBridgeInfo(): {
   ]);
 
   const parsedAmount = tryParseAmount(typedValue, inputCurrency ?? undefined, chainId);
-
+  const selectedRoute = routes?.find((x: Route) => x.selected);
+  const estimatedAmount = tryParseAmount(selectedRoute?.toAmount, outputCurrency ?? undefined, chainId);
   const currencyBalances = {
     [CurrencyField.INPUT]: relevantTokenBalances[0],
     [CurrencyField.OUTPUT]: relevantTokenBalances[1],
@@ -200,67 +233,74 @@ export function useDerivedBridgeInfo(): {
     currencyBalances,
     parsedAmount,
     inputError,
+    routes,
+    estimatedAmount,
+    recipient,
+    routesLoaderStatus,
   };
 }
 
-//TODO:
 export function useBridgeSwapActionHandlers(): {
-  getRoutes: (amount: string) => void;
+  getRoutes: (
+    amount: string,
+    slipLimit: string,
+    fromChain?: Chain,
+    toChain?: Chain,
+    fromAddress?: string | null,
+    fromCurrency?: Currency,
+    toCurrency?: Currency,
+    recipient?: string | null | undefined,
+  ) => void;
 } {
-  const getRoutes = async (amount: string) => {
+  const dispatch = useDispatch();
+  const getRoutes = async (
+    amount: string,
+    slipLimit: string,
+    fromChain?: Chain,
+    toChain?: Chain,
+    fromAddress?: string | null,
+    fromCurrency?: Currency,
+    toCurrency?: Currency,
+    recipient?: string | null | undefined,
+  ) => {
     try {
-      const midgardBaseUrl = 'https://midgard.ninerealms.com/';
-      const thorchainBaseUrl = 'https://thornode.ninerealms.com/thorchain';
-      const apiconfig = new Configuration({ basePath: midgardBaseUrl });
-      const midgardApi = new MidgardApi(apiconfig);
-      const poolsRes = await midgardApi.getPools();
-      const thorchainPoolResponse = await fetch(`${thorchainBaseUrl}/pools`);
-      const thorchainPoolData = await thorchainPoolResponse.json();
-      const asgardVaultResponse = await fetch(`${midgardBaseUrl}/v2/thorchain/inbound_addresses`);
-      const asgardVaults = await asgardVaultResponse.json();
-      const assetInput = assetToBase(assetAmount(amount));
-      const assetPool: PoolData = {
-        assetBalance: assetToBase(assetAmount(thorchainPoolData[0].balance_asset)),
-        runeBalance: assetToBase(assetAmount(thorchainPoolData[0].balance_rune)),
-      };
-      const assetPool2: PoolData = {
-        assetBalance: assetToBase(assetAmount(thorchainPoolData[11].balance_asset)),
-        runeBalance: assetToBase(assetAmount(thorchainPoolData[11].balance_rune)),
-      };
-
-      console.log(
-        '\n Midgard pools: ',
-        poolsRes.data,
-        '\n Thorchain pools: ',
-        thorchainPoolData,
-        '\n asgardVaults: ',
-        asgardVaults.filter((x) => !x.halted),
-        `\n getDoubleSwapSlip: `,
-        baseToAsset(baseAmount(getDoubleSwapSlip(assetInput, assetPool, assetPool2)))
-          .amount()
-          .toString(),
-        `\n getDoubleSwapFee: ${thorchainPoolData[0].asset} -> ${thorchainPoolData[11].asset}`,
-        baseToAsset(getDoubleSwapFee(assetInput, assetPool, assetPool2)).amount().toString(),
-        '\n getDoubleSwapOutput: ${thorchainPoolData[0].asset} -> ${thorchainPoolData[11].asset}',
-        baseToAsset(getDoubleSwapOutput(assetInput, assetPool, assetPool2)).amount().toNumber(),
-        '\n getDoubleSwapOutputWithFee: ${thorchainPoolData[0].asset} -> ${thorchainPoolData[11].asset}',
-        baseToAsset(
-          getDoubleSwapOutputWithFee(
-            assetInput,
-            assetPool,
-            assetPool2,
-            getDoubleSwapFee(assetInput, assetPool, assetPool2),
-          ),
-        )
-          .amount()
-          .toNumber(),
-      );
+      // TODO: Whole function needs to be refactored
+      // const apiconfig = new Configuration({ basePath: BRIDGE_THORCHAIN_MIDGARD });
+      // const midgardApi = new MidgardApi(apiconfig);
+      // const poolsRes = await midgardApi.getPools();
+      // const thorchainPoolResponse = await fetch(`${BRIDGE_THORCHAIN_THORNODE}/pools`);
+      // const thorchainPoolData = await thorchainPoolResponse.json();
+      // const asgardVaultResponse = await fetch(`${BRIDGE_THORCHAIN_MIDGARD}/v2/thorchain/inbound_addresses`);
+      // const asgardVaults = await asgardVaultResponse.json();
+      // const assetInput = assetToBase(assetAmount(amount));
+      // const assetPool: PoolData = {
+      //   assetBalance: assetToBase(assetAmount(thorchainPoolData[0].balance_asset)),
+      //   runeBalance: assetToBase(assetAmount(thorchainPoolData[0].balance_rune)),
+      // };
+      // const assetPool2: PoolData = {
+      //   assetBalance: assetToBase(assetAmount(thorchainPoolData[11].balance_asset)),
+      //   runeBalance: assetToBase(assetAmount(thorchainPoolData[11].balance_rune)),
+      // };
+      if (parseFloat(amount) <= 0) {
+        dispatch(setRoutes({ routes: [], routesLoaderStatus: false }));
+        return;
+      } else {
+        useThorChainRoutes(
+          amount,
+          slipLimit,
+          fromChain,
+          toChain,
+          fromAddress,
+          fromCurrency,
+          toCurrency,
+          recipient,
+        ).then((routes: Route[]) => {
+          dispatch(setRoutes({ routes, routesLoaderStatus: false }));
+        });
+      }
     } catch (error) {
       console.log(error);
     }
-    // getSwapOutputWithFee();
-    // const outputField: CurrencyField = CurrencyField.OUTPUT;
-    // dispatch(typeAmount({ outputField, '0.1' }));
   };
   return {
     getRoutes,

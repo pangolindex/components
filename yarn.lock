@@ -5767,10 +5767,25 @@
   dependencies:
     tslib "^1.9.3"
 
+"@xchainjs/xchain-client@^0.13.1":
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-client/-/xchain-client-0.13.1.tgz#270002ed50fae808936694b76d0f4cf1bccb7292"
+  integrity sha512-bA+aPDCIfMAPD7ARuFwum7ti+sz61R45ZP6en5UZwmn/MKejO0pIcuKZ4FHhahpv9qQNlKw68eo6l50NFBBBMA==
+
 "@xchainjs/xchain-midgard@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@xchainjs/xchain-midgard/-/xchain-midgard-0.1.0.tgz#96fe8ed8ca10892fb3bcca1153d9c2d667960a98"
   integrity sha512-+y7ctEk8JBQvImeZNz0tM/tE9jqHXHamrJmfG+Km4mG2ROSEPPKH+yZLKad/rCKUIF8j8XJ8R0PWg6GnZESZSg==
+
+"@xchainjs/xchain-thorchain-query@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-thorchain-query/-/xchain-thorchain-query-0.1.0.tgz#6df1241d2be9e6a9b99347e27601821c0491b268"
+  integrity sha512-HuBneyavUak3lW2CD1QOfF/xIcnblwazJQSDaEKU6mP2xkDWhIq13BC4Gmm8C5X8NB4FxipAao4diHojvjcUFA==
+
+"@xchainjs/xchain-thornode@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-thornode/-/xchain-thornode-0.1.0.tgz#e8ca97a04e75a687205a8086ec5b7aa8ed2fffd0"
+  integrity sha512-84RiBLjDyNB42z0GuQiDXVpceLhfCe+On/D/JQUrN590SfAEO1wawbb0ssnamxHBGXB9Cyq5CMK1wKTStu5CgQ==
 
 "@xchainjs/xchain-util@^0.10.0":
   version "0.10.0"
@@ -6794,6 +6809,11 @@ bignumber.js@^9.0.1:
   version "9.0.2"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.2.tgz#71c6c6bed38de64e24a65ebe16cfcf23ae693673"
   integrity sha512-GAcQvbpsM0pUb0zw1EI0KhQEZ+lRwR5fYaAp3vPOYuP7aDvGy6cVN6XHLauvF8SOga2y0dcLcjt3iQDTSEliyw==
+
+bignumber.js@^9.1.0:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.1.0.tgz#8d340146107fe3a6cb8d40699643c302e8773b62"
+  integrity sha512-4LwHK4nfDOraBCtst+wOWIHbu1vhvAPJK8g8nROd4iuc3PSEjWif/qwbkh8jwCJz6yDBvtU4KPynETgrfh7y3A==
 
 binary-extensions@^1.0.0:
   version "1.13.1"

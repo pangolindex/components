@@ -1,5 +1,6 @@
-import { BRIDGES, Bridge, Chain, CurrencyAmount } from '@pangolindex/sdk';
-import React, { useCallback, useContext, useState } from 'react';
+/* eslint-disable max-lines */
+import { BRIDGES, Bridge, Chain, Currency, CurrencyAmount } from '@pangolindex/sdk';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { MultiValue, SingleValue } from 'react-select';
@@ -17,6 +18,7 @@ import {
 } from 'src/components';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { ChainField, CurrencyField } from 'src/state/pbridge/actions';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
@@ -38,8 +40,8 @@ const BridgeCard = () => {
   >('');
   const [activeBridges, setActiveBridges] = useState<MultiValue<string> | SingleValue<string>>(['']);
   const [activeExchanges, setActiveExchanges] = useState<MultiValue<string> | SingleValue<string>>(['']);
-  const [userslippage] = useUserSlippageTolerance();
-  const [slippageTolerance, setSlippageTolerance] = useState((userslippage / 100).toString());
+  const [userSlippage] = useUserSlippageTolerance();
+  const [slippageTolerance, setSlippageTolerance] = useState((userSlippage / 100).toString());
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { t } = useTranslation();
 
@@ -90,11 +92,18 @@ const BridgeCard = () => {
     setIsChainDrawerOpen(!isChainDrawerOpen);
   }, [isChainDrawerOpen]);
 
-  const { onSwitchTokens, onSwitchChains, onCurrencySelection, onChainSelection, onUserInput } =
-    useBridgeActionHandlers(chainId);
+  const {
+    onSwitchTokens,
+    onSwitchChains,
+    onCurrencySelection,
+    onChainSelection,
+    onUserInput,
+    onChangeRecipient,
+    onChangeRouteLoaderStatus,
+  } = useBridgeActionHandlers(chainId);
 
   const { getRoutes } = useBridgeSwapActionHandlers();
-  const { currencies, chains, currencyBalances, parsedAmount } = useDerivedBridgeInfo();
+  const { currencies, chains, currencyBalances, parsedAmount, estimatedAmount, recipient } = useDerivedBridgeInfo();
 
   const inputCurrency = currencies[CurrencyField.INPUT];
   const outputCurrency = currencies[CurrencyField.OUTPUT];
@@ -103,31 +112,54 @@ const BridgeCard = () => {
   const toChain = chains[ChainField.TO];
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[CurrencyField.INPUT]);
+  const debouncedAmountValue = useDebounce(parsedAmount?.toExact(), 500);
 
-  const changeAmountAndGetRoutes = useCallback(
+  useEffect(() => {
+    if (debouncedAmountValue) {
+      onChangeRouteLoaderStatus();
+      getRoutes(
+        debouncedAmountValue,
+        slippageTolerance,
+        fromChain,
+        toChain,
+        account,
+        inputCurrency,
+        outputCurrency,
+        recipient,
+      );
+    }
+  }, [debouncedAmountValue]);
+
+  const changeAmount = useCallback(
     (field: CurrencyField, amount: string) => {
       onUserInput(field, amount);
-      getRoutes(amount);
     },
-    [onUserInput, getRoutes],
+    [onUserInput],
   );
 
   const handleMaxInput = useCallback(() => {
-    maxAmountInput && changeAmountAndGetRoutes(CurrencyField.INPUT, maxAmountInput?.toExact());
-  }, [maxAmountInput, changeAmountAndGetRoutes]);
+    maxAmountInput && changeAmount(CurrencyField.INPUT, maxAmountInput?.toExact());
+  }, [maxAmountInput, changeAmount]);
 
   const onCurrencySelect = useCallback(
-    (currency) => {
+    (currency: Currency) => {
       onCurrencySelection(drawerType === ChainField.FROM ? CurrencyField.INPUT : CurrencyField.OUTPUT, currency);
     },
     [drawerType, onCurrencySelection],
   );
 
   const onChainSelect = useCallback(
-    (chain) => {
+    (chain: Chain) => {
       onChainSelection(drawerType, chain);
     },
     [drawerType, onChainSelection],
+  );
+
+  const changeRecipient = useCallback(
+    (recipient: string) => {
+      onChangeRecipient(recipient);
+    },
+    [onChangeRecipient],
   );
 
   return (
@@ -158,7 +190,7 @@ const BridgeCard = () => {
           onChangeChainDrawerStatus();
         }}
         onChangeAmount={(amount) => {
-          changeAmountAndGetRoutes(CurrencyField.INPUT, amount);
+          changeAmount(CurrencyField.INPUT, amount);
         }}
         maxAmountInput={maxAmountInput}
         amount={parsedAmount}
@@ -187,8 +219,11 @@ const BridgeCard = () => {
           setDrawerType(ChainField.TO);
           onChangeChainDrawerStatus();
         }}
+        onChangeRecipient={changeRecipient}
+        recipient={recipient}
         title="To"
         inputDisabled={true}
+        amount={estimatedAmount}
         chain={toChain}
         currency={outputCurrency}
       />

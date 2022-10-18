@@ -706,6 +706,7 @@
   },
   "bridge": {
     "availableRoutes": "Mevcut Rotalar ({{ number }})",
+    "noRoute": "Bu çift için geçerli bir rota bulunamadı.",
     "activeTransfers": "Aktif Transferler ({{ number }})",
     "historicalTransfers": "Geçmiş Transferler ({{ number }})",
     "bridgeCard": {

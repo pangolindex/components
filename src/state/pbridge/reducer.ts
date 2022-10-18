@@ -2,14 +2,18 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
   ChainField,
   CurrencyField,
+  changeRouteLoaderStatus,
   replaceBridgeState,
   selectChain,
   selectCurrency,
+  selectRoute,
   setRecipient,
+  setRoutes,
   switchChains,
   switchCurrencies,
   typeAmount,
 } from './actions';
+import { Route } from './types';
 
 export interface BridgeState {
   readonly typedValue: string;
@@ -25,8 +29,11 @@ export interface BridgeState {
   readonly [ChainField.TO]: {
     readonly chainId: string | undefined;
   };
-  // the typed recipient address or ENS name, or null if swap should go to sender
+  // the typed btc address
   readonly recipient: string | null;
+  readonly routes: Route[];
+  readonly selectedRoute: number;
+  readonly routesLoaderStatus: boolean;
 }
 
 const initialState: BridgeState = {
@@ -44,6 +51,9 @@ const initialState: BridgeState = {
     chainId: '',
   },
   recipient: null,
+  routes: [],
+  selectedRoute: 0,
+  routesLoaderStatus: false,
 };
 
 export default createReducer<BridgeState>(initialState, (builder) =>
@@ -76,6 +86,23 @@ export default createReducer<BridgeState>(initialState, (builder) =>
         [field]: { currencyId: currencyId },
       };
     })
+    .addCase(selectRoute, (state, { payload: { selectedRoute } }) => {
+      return {
+        ...state,
+        routes: state.routes.map((route, index) => {
+          return {
+            ...route,
+            selected: index === selectedRoute,
+          };
+        }),
+      };
+    })
+    .addCase(changeRouteLoaderStatus, (state, { payload: { routesLoaderStatus } }) => {
+      return {
+        ...state,
+        routesLoaderStatus,
+      };
+    })
     .addCase(selectChain, (state, { payload: { chainId, field } }) => {
       return {
         ...state,
@@ -104,6 +131,16 @@ export default createReducer<BridgeState>(initialState, (builder) =>
       };
     })
     .addCase(setRecipient, (state, { payload: { recipient } }) => {
-      state.recipient = recipient;
+      return {
+        ...state,
+        recipient,
+      };
+    })
+    .addCase(setRoutes, (state, { payload: { routes, routesLoaderStatus } }) => {
+      return {
+        ...state,
+        routes,
+        routesLoaderStatus,
+      };
     }),
 );

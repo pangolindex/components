@@ -19,9 +19,9 @@ const ChainInput = ({ buttonStyle, chain, onChainClick }: ChainInputProps) => {
     return (
       //TODO: 'Select Chain' -> i18n
       <StyledTokenName className="token-symbol-container" active={Boolean(chain && chain.symbol)}>
-        {(chain && chain.name && chain.name.length > 20
-          ? chain.name.slice(0, 4) + '...' + chain.name.slice(chain.name.length - 5, chain.name.length)
-          : chain?.name) || 'Select Chain'}
+        {(chain && chain.symbol && chain.symbol.length > 20
+          ? chain.symbol.slice(0, 4) + '...' + chain.symbol.slice(chain.symbol.length - 5, chain.symbol.length)
+          : chain?.symbol) || 'Select Chain'}
       </StyledTokenName>
     );
   };

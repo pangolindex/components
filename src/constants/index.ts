@@ -371,6 +371,11 @@ export const NEAR_ACCOUNT_MIN_STORAGE_AMOUNT = '0.005';
 export const NEAR_LP_STORAGE_AMOUNT = '0.01';
 export const ONLY_ZEROS = /^0*\.?0*$/;
 
+export const BRIDGE_THORCHAIN_MIDGARD = 'https://midgard.ninerealms.com';
+export const BRIDGE_THORCHAIN_THORNODE = 'https://thornode.ninerealms.com/thorchain';
+//TODO: use it or remove it
+export const BRIDGE_THORSWAP = 'https://dev-api.thorswap.net';
+
 const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.FUJI]: [WAVAX[ChainId.FUJI], PNG[ChainId.FUJI]],
   [ChainId.AVALANCHE]: [WAVAX[ChainId.AVALANCHE], PNG[ChainId.AVALANCHE]],

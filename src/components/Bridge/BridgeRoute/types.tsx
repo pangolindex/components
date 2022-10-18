@@ -1,16 +1,5 @@
-import { BridgePrioritizations } from '..';
+import { Route } from 'src/state/pbridge/types';
 
-export type Step = {
-  contractType?: string;
-  subSteps?: string[];
-};
-
-export type BridgeRouteProps = {
-  steps: Step[];
-  transactionType: BridgePrioritizations;
-  selected: boolean;
-  estimatedToken: string;
-  estimatedResult: string;
-  min: string;
-  gasCost: string;
+export type BridgeRouteProps = Route & {
+  onSelectRoute: () => void;
 };

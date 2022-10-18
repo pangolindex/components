@@ -1,16 +1,22 @@
-import React, { useContext } from 'react';
-import { Anchor } from 'react-feather';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ThemeContext } from 'styled-components';
 import { Box, Button, Text } from 'src/components';
-import { BridgePrioritizations } from '..';
+import { BridgePrioritizations, BridgeStep, Step } from 'src/state/pbridge/types';
 import { Information, Informations, Route, StepDetail } from './styles';
 import { BridgeRouteProps } from './types';
 
 const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
   const { t } = useTranslation();
-  const theme = useContext(ThemeContext);
-  const { selected, steps, transactionType, estimatedToken, estimatedResult, min, gasCost } = props;
+  const {
+    selected,
+    steps = [],
+    transactionType,
+    toAmount,
+    onSelectRoute,
+    toAmountUSD,
+    waitingTime,
+    gasCostUSD,
+  } = props;
   return (
     <Route selected={selected}>
       <Box display="flex" justifyContent="space-between" alignItems="center" pb={30}>
@@ -18,28 +24,38 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
           {t(`bridge.bridgePrioritizations.${BridgePrioritizations[transactionType]}`).toLocaleUpperCase()}
         </Text>
 
-        <Button variant="primary" width={'fit-content'} padding={'8px'} height="30px" isDisabled={selected}>
+        <Button
+          variant="primary"
+          width={'fit-content'}
+          padding={'8px'}
+          height="30px"
+          isDisabled={selected}
+          onClick={() => {
+            onSelectRoute();
+          }}
+        >
           {selected ? t('bridge.bridgeRoute.selected') : t('bridge.bridgeRoute.clickToSelect')}
         </Button>
       </Box>
       <div>
-        {steps.map((step, index) => {
+        {steps.map((step: Step, index) => {
           return (
             <Box key={index}>
               <Box display={'flex'} flexDirection={'row'} alignItems="center" pb={'0.5rem'}>
-                <Anchor size={20} color={theme.bridge?.text} />
+                <img src={(step as BridgeStep)?.bridge?.logo} width={20} height={20} />
                 <Text pl={18} color={'bridge.text'} fontSize={[16, 14]} fontWeight={600}>
-                  {step.contractType}
+                  {(step as BridgeStep)?.bridge.name}
                 </Text>
               </Box>
               <StepDetail lastItem={index === steps.length - 1}>
                 <Text color={'bridge.text'} fontSize={[16, 14]} fontWeight={400} pb={'0.2rem'}>
                   {t('bridge.bridgeRoute.singleTransaction')}
                 </Text>
-                {step.subSteps?.map((subStep, index) => {
+                {(step as BridgeStep)?.includedSteps?.map((subStep, index) => {
                   return (
+                    //TODO:
                     <Text pl={24} key={index} color={'bridge.text'} fontSize={[16, 14]} fontWeight={400} pb={'0.2rem'}>
-                      {subStep}
+                      {index + 1}. Swap to {subStep?.estimate?.toAmount} {subStep?.action?.toToken} via Thorchain
                     </Text>
                   );
                 })}
@@ -50,21 +66,21 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
       </div>
       <Box pb={10}>
         <Text color={'bridge.text'} fontSize={[16, 14]} fontWeight={600} pb={'0.2rem'}>
-          {t('bridge.bridgeRoute.estimatedToken', { token: estimatedToken })}
+          {t('bridge.bridgeRoute.estimatedToken', { token: toAmount })}
         </Text>
         <Text color={'bridge.text'} fontSize={[16, 14]} fontWeight={600}>
-          {t('bridge.bridgeRoute.estimatedResult', { result: estimatedResult })}
+          {t('bridge.bridgeRoute.estimatedResult', { result: toAmountUSD })}
         </Text>
       </Box>
       <Informations>
         <Information>
           <Text color="bridge.routeInfoColor" fontSize={[16, 14]} fontWeight={400}>
-            {t('bridge.bridgeRoute.min', { minute: min })}
+            {waitingTime}
           </Text>
         </Information>
         <Information>
           <Text color="bridge.routeInfoColor" fontSize={[16, 14]} fontWeight={400}>
-            {t('bridge.bridgeRoute.gasCost', { gasCost: gasCost })}
+            {t('bridge.bridgeRoute.gasCost', { gasCost: gasCostUSD })}
           </Text>
         </Information>
       </Informations>

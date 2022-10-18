@@ -121,6 +121,16 @@ export function calculateGasMargin(value: BigNumber): BigNumber {
   return value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000));
 }
 
+// it convert seconds to hours/minutes HH:MM
+export function calculateTransactionTime(seconds: number) {
+  if (seconds < 60) {
+    //TODO: i18n seconds min
+    return `${seconds} seconds`;
+  } else {
+    return `${new Date(seconds * 1000).toISOString().substring(11, 16)} min`;
+  }
+}
+
 // converts a basis points value to a sdk percent
 export function basisPointsToPercent(num: number): Percent {
   return new Percent(JSBI.BigInt(num), JSBI.BigInt(10000));
@@ -179,6 +189,11 @@ export function getChainByNumber(chainId: ChainId | number): Chain | undefined {
 
 export const getBridgeSupportedChains = () => {
   return ALL_CHAINS.filter((chain) => chain?.supported_bridges);
+};
+
+export const isBridgeSupportedChain = (chainId?: ChainId) => {
+  const bridgeSupportedChains = getBridgeSupportedChains();
+  return bridgeSupportedChains.findIndex((chain) => chain.chain_id === chainId) !== -1;
 };
 
 export function calculateSlippageAmount(value: CurrencyAmount, slippage: number): [JSBI, JSBI] {
