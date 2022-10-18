@@ -10,7 +10,7 @@ describe('Dashboard', () => {
         return false
     })
     const {returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken,tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn,newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, pngButton, pngModal, pngPriceSel} = selectors.dashboard
-    const {returnToLegacy, languagesArray, tokenName, AvaxToken, switchArray, newsLinkArray, newsLinkAssertArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, newsSongBird, usd, coinBase} = data.dashboard
+    const {returnToLegacy, languagesArray, tokenName, AvaxToken, switchArray, newsLinkArray, newsLinkAssertArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, newsSongBird, usd, coinBase,bridgeSwap} = data.dashboard
     const legUrl = "https://legacy.pangolin.exchange/#/"
     beforeEach('',() => {
         cy.visit('/dashboard')
@@ -163,18 +163,18 @@ describe('Dashboard', () => {
             expect(news).to.be.visible
             cy.get(newsBody).then(newsAssert => {
                 expect(newsAssert)
-                    .to.contain(coinBase)
+                    .to.contain(bridgeSwap)
             })
             
             cy.get(news).find(newsNextBtn).click()
             cy.get(newsBody).then(newsAssert => {
                 expect(newsAssert)
-                    .to.contain(newsSongBird)
+                    .to.contain(coinBase)
             })
             cy.get(news).find(newsPreBtn).click()
             cy.get(newsBody).then(newsAssert => {
                 expect(newsAssert)
-                    .to.contain(coinBase)
+                    .to.contain(bridgeSwap)
             })
         })
     })
@@ -192,31 +192,31 @@ describe('Dashboard', () => {
     })
 
     it(`TC-42, Verify that the ${newsLinkArray[3]} in the news section redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0,0,newsLinkArray[3], newsLinkAssertArray[0])
+        newsLinks(0,0,newsLinkArray[3], newsLinkAssertArray[7])
     })
 
     it(`TC-42, Verify that the ${newsLinkArray[0]} in the "pangolin flare" in news section redirects the user to the "Pangolin Exchange" page`, () => {
         newsLinks(0,1,newsLinkArray[0], newsLinkAssertArray[1])
     })
     it(`TC-42, Verify that the ${newsLinkArray[1]} in the "pangolin flare" in news section redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0,2,newsLinkArray[1], newsLinkAssertArray[2])
+        newsLinks(0,2,newsLinkArray[1], newsLinkAssertArray[1])
     })
 
     it(`TC-42, Verify that the ${newsLinkArray[2]} in the "Read the 2H 2022 Roadmap" in news section redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0,3,newsLinkArray[2], newsLinkAssertArray[3])
+        newsLinks(0,3,newsLinkArray[2], newsLinkAssertArray[2])
     })
     ///// in progress
     it(`TC-42, Verify that the "${newsLinkArray[3]}" link in the air drop songbird in news section redirects the user to the "Pangolin Exchange" page`, () => {
     
-        newsLinks(0, 4, newsLinkArray[3], newsLinkAssertArray[4])
+        newsLinks(0, 4, newsLinkArray[3], newsLinkAssertArray[3])
     })
     /// in progress
-    it(`TC-42, Verify that the "${newsLinkArray[3]}" link in the air drop WagmiPng in news section redirects the user to the "Pangolin Exchange" page`, () => {
+    it.only(`TC-42, Verify that the "${newsLinkArray[3]}" link in the air drop WagmiPng in news section redirects the user to the "Pangolin Exchange" page`, () => {
     
-        newsLinks(0, 5, newsLinkArray[3],  newsLinkAssertArray[5])
+        newsLinks(0, 5, newsLinkArray[3],  newsLinkAssertArray[4])
     })
 
-    it(`TC-42, Verify that the ${newsLinkArray[4]} link in the "limit orders" in the news section redirects the user to the "Pangolin Exchange" page`, () => {
+    it.only(`TC-42, Verify that the ${newsLinkArray[4]} link in the "limit orders" in the news section redirects the user to the "Pangolin Exchange" page`, () => {
 
         newsLinks(0, 6, newsLinkArray[4],  newsLinkAssertArray[6])
     })
