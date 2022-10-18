@@ -73,7 +73,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     tokens.unshift(CAVAX[chainId] as Token);
     return filterTokens(tokens, searchQuery);
   }, [isAddressSearch, searchToken, allTokens, searchQuery]);
-
+  
   const filteredSortedTokens: Token[] = useMemo(() => {
     if (searchToken) return [searchToken];
     const sorted = filteredTokens.sort(tokenComparator);
@@ -95,7 +95,9 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     if (searchQuery === '') {
       // remove Currency from array and add in first position
       const _tokens = filteredSortedTokens.filter((token) => token !== CAVAX[chainId]);
-      return CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : [..._tokens];
+      // Need to check when implement near
+      // return CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : [..._tokens];
+      return [CAVAX[chainId], ..._tokens];
     }
     return filteredSortedTokens;
   }, [filteredSortedTokens, chainId]);

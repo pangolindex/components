@@ -211,18 +211,33 @@ export class HashConnector extends AbstractConnector {
     return false;
   }
 
-  public async sendTransaction(trans: Uint8Array, acctToSign: string, return_trans = false, hideNfts = false) {
+  public async sendTransaction(
+    transactions: Uint8Array,
+    accountId: string,
+    returnTransaction = false,
+    hideNfts = false,
+  ) {
     const transaction: MessageTypes.Transaction = {
       topic: this.topic,
-      byteArray: trans,
+      byteArray: transactions,
 
       metadata: {
-        accountToSign: acctToSign,
-        returnTransaction: return_trans,
+        accountToSign: accountId,
+        returnTransaction: returnTransaction,
         hideNft: hideNfts,
       },
     };
 
     return this.instance.sendTransaction(this.topic, transaction);
+  }
+
+  public getSigner() {
+    if (this.pairingData && this.topic) {
+      const newAccountId = this.pairingData?.accountIds?.[0];
+      const provider = this.instance.getProvider(this.network, this.topic, newAccountId);
+      const signer = this.instance.getSigner(provider);
+      return signer;
+    }
+    return null;
   }
 }

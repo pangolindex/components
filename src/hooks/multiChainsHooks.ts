@@ -8,10 +8,10 @@ import {
 } from './useApproveCallback';
 import { useNearSwapCallback, useSwapCallback } from './useSwapCallback';
 import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
-import { useWrapCallback, useWrapNearCallback } from './useWrapCallback';
+import { useWrapCallback, useWrapNearCallback, useWrapHbarCallback } from './useWrapCallback';
 
 export type UseWrapCallbackHookType = {
-  [chainId in ChainId]: typeof useWrapCallback | typeof useWrapNearCallback;
+  [chainId in ChainId]: typeof useWrapCallback | typeof useWrapNearCallback | typeof useWrapHbarCallback;
 };
 
 export const useWrapCallbackHook: UseWrapCallbackHookType = {
@@ -20,7 +20,7 @@ export const useWrapCallbackHook: UseWrapCallbackHookType = {
   [ChainId.WAGMI]: useWrapCallback,
   [ChainId.COSTON]: useWrapCallback,
   [ChainId.SONGBIRD]: useWrapCallback,
-  [ChainId.HEDERA_TESTNET]: useWrapCallback,
+  [ChainId.HEDERA_TESTNET]: useWrapHbarCallback,
   [ChainId.NEAR_MAINNET]: useWrapNearCallback,
   [ChainId.NEAR_TESTNET]: useWrapNearCallback,
 };

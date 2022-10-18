@@ -7,11 +7,13 @@ import {
   TokenAssociateTransaction,
   Transaction,
   TransactionId,
+  ContractExecuteTransaction,
+  ContractFunctionParameters,
 } from '@hashgraph/sdk';
 import { ChainId } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
-import { HEDERA_API_BASE_URL } from 'src/constants';
+import { HEDERA_API_BASE_URL, WHBAR_CONTRACT_ID } from 'src/constants';
 
 export interface HederaTokenMetadata {
   id: string;
@@ -196,6 +198,76 @@ class Hedera {
 
     transaction.setTokenIds(tokenIds);
     transaction.setAccountId(accountId);
+
+    const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
+
+    const res = await hashConnect.sendTransaction(transBytes, accountId);
+
+    const receipt = res?.response as TransactionResponse;
+    if (res.success) {
+      return {
+        hash: receipt.transactionId,
+        //this variable arer dummy which is actually not usefull for now
+        confirmations: 1,
+        from: account,
+        nonce: 0,
+        gasLimit: BigNumber.from(0),
+        data: res?.topic,
+        value: BigNumber.from(0),
+        chainId: chainId,
+        wait: async () => {
+          return null;
+        },
+      };
+    }
+  }
+
+  //Wrap Function
+  public async depositAction(value: string, account: string, chainId: ChainId) {
+    const accountId = account ? hethers.utils.asAccountString(account) : '';
+
+    const transaction = new ContractExecuteTransaction();
+    transaction.setContractId(WHBAR_CONTRACT_ID);
+    transaction.setGas(1000000);
+    transaction.setFunction(
+      'deposit',
+      new ContractFunctionParameters().addString(value), // Token address
+    ); // NFT serial number
+
+    const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
+
+    const res = await hashConnect.sendTransaction(transBytes, accountId);
+    console.log('res===', res);
+    const receipt = res?.response as TransactionResponse;
+    if (res?.success) {
+      return {
+        hash: receipt.transactionId,
+        //this variable are dummy which is actually not usefull for now
+        confirmations: 1,
+        from: account,
+        nonce: 0,
+        gasLimit: BigNumber.from(0),
+        data: res?.topic,
+        value: BigNumber.from(0),
+        chainId: chainId,
+        wait: async () => {
+          return null;
+        },
+      };
+    }
+  }
+
+  //UnWrap Function
+  public async withdrawAction(value: string, account: string, chainId: ChainId) {
+    const accountId = account ? hethers.utils.asAccountString(account) : '';
+
+    const transaction = new ContractExecuteTransaction();
+    transaction.setContractId(WHBAR_CONTRACT_ID);
+    transaction.setGas(1000000);
+    transaction.setFunction(
+      'withdraw',
+      new ContractFunctionParameters().addString(value), // Token address
+    ); // NFT serial number
 
     const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
 

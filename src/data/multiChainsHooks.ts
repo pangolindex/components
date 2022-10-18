@@ -1,8 +1,8 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useNearPairs, usePairs } from './Reserves';
+import { useNearPairs, usePairs, useHederaPairs } from './Reserves';
 
 export type UsePairsHookType = {
-  [chainId in ChainId]: typeof usePairs | typeof useNearPairs;
+  [chainId in ChainId]: typeof usePairs | typeof useNearPairs | typeof useHederaPairs;
 };
 
 export const usePairsHook: UsePairsHookType = {
@@ -11,7 +11,7 @@ export const usePairsHook: UsePairsHookType = {
   [ChainId.WAGMI]: usePairs,
   [ChainId.COSTON]: usePairs,
   [ChainId.SONGBIRD]: usePairs,
-  [ChainId.HEDERA_TESTNET]: usePairs,
+  [ChainId.HEDERA_TESTNET]: useHederaPairs,
   [ChainId.NEAR_MAINNET]: useNearPairs,
   [ChainId.NEAR_TESTNET]: useNearPairs,
 };
