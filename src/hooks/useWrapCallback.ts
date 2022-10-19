@@ -1,8 +1,8 @@
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';
-import { Transaction, nearFn } from 'src/utils/near';
 import { hederaFn } from 'src/utils/hedera';
+import { Transaction, nearFn } from 'src/utils/near';
 import { tryParseAmount } from '../state/pswap/hooks';
 import { useTransactionAdder } from '../state/ptransactions/hooks';
 import { useCurrencyBalance } from '../state/pwallet/hooks';
@@ -178,8 +178,17 @@ export function useWrapHbarCallback(
   const chainId = useChainId();
 
   const balance = useCurrencyBalance(chainId, account ?? undefined, inputCurrency);
+  console.log('inputCurrency', inputCurrency);
+  console.log('inputCurrency==', CAVAX[chainId]);
+
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
-  const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue]);
+  const inputAmount = useMemo(
+    () => tryParseAmount(typedValue, inputCurrency, chainId),
+    [inputCurrency, typedValue, chainId],
+  );
+
+  console.log('inputAmount', inputAmount);
+
   const addTransaction = useTransactionAdder();
 
   return useMemo(() => {
@@ -194,9 +203,11 @@ export function useWrapHbarCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
-                  const txReceipt = await hederaFn.depositAction(`0x${inputAmount.raw.toString(16)}`, account, chainId);
-                  // const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` });
-                  // addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} AVAX to WAVAX` });
+                  const txReceipt = await hederaFn.depositAction(inputAmount, account, chainId);
+
+                  if (txReceipt) {
+                    addTransaction(txReceipt as any, { summary: `Wrap ${inputAmount.toSignificant(6)} HBAR to WHBAR` });
+                  }
                 } catch (error) {
                   console.error('Could not deposit', error);
                 }
@@ -211,14 +222,13 @@ export function useWrapHbarCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
-                  const txReceipt = await hederaFn.withdrawAction(
-                    `0x${inputAmount.raw.toString(16)}`,
-                    account,
-                    chainId,
-                  );
+                  const txReceipt = await hederaFn.withdrawAction(inputAmount, account, chainId);
 
-                  // const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`);
-                  // addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WAVAX to AVAX` });
+                  if (txReceipt) {
+                    addTransaction(txReceipt as any, {
+                      summary: `Unwrap ${inputAmount.toSignificant(6)} WHBAR to HBAR`,
+                    });
+                  }
                 } catch (error) {
                   console.error('Could not withdraw', error);
                 }

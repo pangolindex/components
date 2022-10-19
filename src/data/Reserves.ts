@@ -150,7 +150,10 @@ export function useNearPairs(currencies: [Currency | undefined, Currency | undef
   }, [allPools?.data, allPools?.isLoading, tokens, chainId]);
 }
 
-export function useHederaPairs(currencies: [Currency | undefined, Currency | undefined][]): [PairState, Pair | null][] {
+export function useHederaPairs(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _currencies: [Currency | undefined, Currency | undefined][],
+): [PairState, Pair | null][] {
   return [[PairState.INVALID, null]];
 }
 

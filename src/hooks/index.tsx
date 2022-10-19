@@ -4,10 +4,10 @@ import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
+import { network } from 'src/connectors';
 import { PROVIDER_MAPPING } from 'src/constants';
 import { useBlockNumber } from 'src/state/papplication/hooks';
 import { isAddress } from 'src/utils';
-import { network } from 'src/connectors';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;

@@ -1,5 +1,5 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useNearPairs, usePairs, useHederaPairs } from './Reserves';
+import { useHederaPairs, useNearPairs, usePairs } from './Reserves';
 
 export type UsePairsHookType = {
   [chainId in ChainId]: typeof usePairs | typeof useNearPairs | typeof useHederaPairs;

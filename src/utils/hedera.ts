@@ -1,17 +1,19 @@
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber';
 import { hethers } from '@hashgraph/hethers';
 import {
   AccountBalanceQuery,
   AccountId,
   Client,
+  ContractExecuteTransaction,
+  ContractFunctionParameters,
+  Hbar,
   TokenAssociateTransaction,
   Transaction,
   TransactionId,
-  ContractExecuteTransaction,
-  ContractFunctionParameters,
 } from '@hashgraph/sdk';
-import { ChainId } from '@pangolindex/sdk';
+import { ChainId, CurrencyAmount } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
+import BigNumber from 'bignumber.js';
 import { hashConnect } from 'src/connectors';
 import { HEDERA_API_BASE_URL, WHBAR_CONTRACT_ID } from 'src/constants';
 
@@ -55,11 +57,13 @@ export interface TransactionResponse {
   nodeId: string;
   transactionHash: string;
   transactionId: string;
+  consensusTimestamp: string;
 }
 
 export interface APITransactionResponse {
   transactions: Array<{
     entity_id: string;
+    consensus_timestamp: string;
     name: string;
     node: string;
     nonce: number;
@@ -74,6 +78,24 @@ export interface APITransactionResponse {
     }>;
     valid_duration_seconds: string;
     valid_start_timestamp: string;
+  }>;
+}
+
+export interface APIBlockResponse {
+  blocks: Array<{
+    count: number;
+    hapi_version: string;
+    hash: string;
+    name: string;
+    number: number;
+    previous_hash: string;
+    size: number;
+    timestamp: {
+      from: string;
+      to: string;
+    };
+    gas_used: number;
+    logs_bloom: string;
   }>;
 }
 
@@ -211,9 +233,9 @@ class Hedera {
         confirmations: 1,
         from: account,
         nonce: 0,
-        gasLimit: BigNumber.from(0),
+        gasLimit: EthersBigNumber.from(0),
         data: res?.topic,
-        value: BigNumber.from(0),
+        value: EthersBigNumber.from(0),
         chainId: chainId,
         wait: async () => {
           return null;
@@ -223,21 +245,19 @@ class Hedera {
   }
 
   //Wrap Function
-  public async depositAction(value: string, account: string, chainId: ChainId) {
+  public async depositAction(amount: CurrencyAmount, account: string, chainId: ChainId) {
     const accountId = account ? hethers.utils.asAccountString(account) : '';
-
+    //const contractId = hethers.utils.asAccountString(WAVAX[chainId].address);  // Todo
     const transaction = new ContractExecuteTransaction();
     transaction.setContractId(WHBAR_CONTRACT_ID);
     transaction.setGas(1000000);
-    transaction.setFunction(
-      'deposit',
-      new ContractFunctionParameters().addString(value), // Token address
-    ); // NFT serial number
+    transaction.setFunction('deposit');
+    transaction.setPayableAmount(Hbar.fromString(amount.toExact()));
 
     const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
 
     const res = await hashConnect.sendTransaction(transBytes, accountId);
-    console.log('res===', res);
+
     const receipt = res?.response as TransactionResponse;
     if (res?.success) {
       return {
@@ -246,28 +266,28 @@ class Hedera {
         confirmations: 1,
         from: account,
         nonce: 0,
-        gasLimit: BigNumber.from(0),
+        gasLimit: EthersBigNumber.from(0),
         data: res?.topic,
-        value: BigNumber.from(0),
+        value: EthersBigNumber.from(0),
         chainId: chainId,
         wait: async () => {
           return null;
         },
       };
     }
+
+    return null;
   }
 
   //UnWrap Function
-  public async withdrawAction(value: string, account: string, chainId: ChainId) {
+  public async withdrawAction(amount: CurrencyAmount, account: string, chainId: ChainId) {
     const accountId = account ? hethers.utils.asAccountString(account) : '';
-
+    //const contractId = hethers.utils.asAccountString(WAVAX[chainId].address); // Todo
     const transaction = new ContractExecuteTransaction();
     transaction.setContractId(WHBAR_CONTRACT_ID);
     transaction.setGas(1000000);
-    transaction.setFunction(
-      'withdraw',
-      new ContractFunctionParameters().addString(value), // Token address
-    ); // NFT serial number
+
+    transaction.setFunction('withdraw', new ContractFunctionParameters().addUint256(new BigNumber(amount.toExact())));
 
     const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
 
@@ -281,9 +301,9 @@ class Hedera {
         confirmations: 1,
         from: account,
         nonce: 0,
-        gasLimit: BigNumber.from(0),
+        gasLimit: EthersBigNumber.from(0),
         data: res?.topic,
-        value: BigNumber.from(0),
+        value: EthersBigNumber.from(0),
         chainId: chainId,
         wait: async () => {
           return null;
@@ -293,25 +313,47 @@ class Hedera {
   }
 
   public async getTransactionById(transactionId: string) {
-    try {
-      const response = await this.call<APITransactionResponse>({
-        baseURL: HEDERA_API_BASE_URL,
-        url: `/api/v1/transactions/${transactionId}`,
-        method: 'GET',
-      });
+    const response = await this.call<APITransactionResponse>({
+      baseURL: HEDERA_API_BASE_URL,
+      url: `/api/v1/transactions/${transactionId}`,
+      method: 'GET',
+    });
 
-      const transaction = response?.transactions?.[0];
+    const transaction = response?.transactions?.[0];
 
-      return {
-        transactionId: transaction?.transaction_id,
-        transactionHash: transaction?.transaction_hash,
-        status: transaction?.result === 'SUCCESS' ? 1 : 0,
-        from: transaction?.transaction_id?.split('-')[0],
-      };
-    } catch (error) {
-      console.log(error);
-      return 0;
-    }
+    return {
+      transactionId: transaction?.transaction_id,
+      transactionHash: transaction?.transaction_hash,
+      status: transaction?.result === 'SUCCESS' ? 1 : 0,
+      from: transaction?.transaction_id?.split('-')[0],
+      consensusTimestamp: transaction?.consensus_timestamp,
+    };
+  }
+
+  public async getTransactionBlock(timestamp: string) {
+    //https://testnet.mirrornode.hedera.com/api/v1/blocks?timestamp=gte:1666177911.828565483&limit=1&order=asc
+    const response = await this.call<APIBlockResponse>({
+      baseURL: HEDERA_API_BASE_URL,
+      url: `/api/v1/blocks?timestamp=gte:${timestamp}&limit=1&order=asc`,
+      method: 'GET',
+    });
+
+    const block = response?.blocks?.[0];
+
+    return block;
+  }
+
+  public async getTransactionLatestBlock() {
+    //https://testnet.mirrornode.hedera.com/api/v1/blocks?order=desc&limit=1
+    const response = await this.call<APIBlockResponse>({
+      baseURL: HEDERA_API_BASE_URL,
+      url: `/api/v1/blocks?limit=1&order=desc`,
+      method: 'GET',
+    });
+
+    const block = response?.blocks?.[0];
+
+    return block?.number;
   }
 }
 

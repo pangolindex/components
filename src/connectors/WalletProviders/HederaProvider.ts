@@ -1,6 +1,6 @@
 import { hethers } from '@hashgraph/hethers';
-
 import React from 'react';
+import { hederaFn } from 'src/utils/hedera';
 
 export const HederaProvider = (provider) => {
   if (provider) {
@@ -24,6 +24,8 @@ export const HederaProvider = (provider) => {
 
         const newTransactionId = before + '-' + after;
 
+        // const newTransactionId = '0.0.47977330-1666180129-211495607';
+
         //Transaction id. Please use "shard.realm.num-sss-nnn" format where sss are seconds and nnn are nanoseconds
         const receipt = await hethersProvider.getTransaction(newTransactionId);
 
@@ -31,9 +33,12 @@ export const HederaProvider = (provider) => {
           return undefined;
         }
 
+        const transaction = await hederaFn.getTransactionById(newTransactionId);
+        const block = await hederaFn.getTransactionBlock(transaction?.consensusTimestamp);
+
         return {
-          blockHash: '',
-          blockNumber: '',
+          blockHash: block?.hash,
+          blockNumber: block?.number,
           contractAddress: '',
           from: receipt?.from,
           status: receipt?.customData?.result === 'SUCCESS' ? 1 : 0,
@@ -43,6 +48,7 @@ export const HederaProvider = (provider) => {
           transactionIndex: 1,
         };
       } catch (error) {
+        console.log('receipt error', error);
         return {
           blockHash: '',
           blockNumber: '',
@@ -58,7 +64,9 @@ export const HederaProvider = (provider) => {
     };
 
     provider.getBlockNumber = async () => {
-      return 0;
+      const blockNumber = await hederaFn.getTransactionLatestBlock();
+
+      return blockNumber ? blockNumber : 0;
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

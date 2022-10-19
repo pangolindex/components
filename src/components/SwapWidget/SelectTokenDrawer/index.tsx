@@ -1,4 +1,4 @@
-import { CAVAX, CHAINS, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
+import { CAVAX, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -73,7 +73,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     tokens.unshift(CAVAX[chainId] as Token);
     return filterTokens(tokens, searchQuery);
   }, [isAddressSearch, searchToken, allTokens, searchQuery]);
-  
+
   const filteredSortedTokens: Token[] = useMemo(() => {
     if (searchToken) return [searchToken];
     const sorted = filteredTokens.sort(tokenComparator);
