@@ -55,6 +55,7 @@ import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
+import { PangoChefInfo } from './state/ppangoChef/types';
 import { Position, useSarPositions, useSarStakeInfo } from './state/psarstake/hooks';
 import SwapUpdater from './state/pswap/updater';
 import { default as ThemeProvider } from './theme';
@@ -122,7 +123,15 @@ export * from './state/papplication/hooks';
 export * from './state/papplication/actions';
 
 export * from '@gelatonetwork/limit-orders-react';
-export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, StakingInfo, DoubleSideStaking, Position };
+export type {
+  LimitOrderInfo,
+  MinichefStakingInfo,
+  DoubleSideStakingInfo,
+  StakingInfo,
+  DoubleSideStaking,
+  Position,
+  PangoChefInfo,
+};
 
 // components
 export { SelectTokenDrawer };
