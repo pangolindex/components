@@ -133,7 +133,7 @@ describe('Swap', () => {
             .should("be.visible")
     })
 
-    it('TC-30, Verify that the user can switch between the selected tokens', () => {
+    it.only('TC-30, Verify that the user can switch between the selected tokens', () => {
         //Switching between the selected tokens
         //Assertion of the tokens present in the "From" and "TO"
         switchingValues(1, 'From', `${AvaxToken}`)

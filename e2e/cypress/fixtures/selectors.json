@@ -33,7 +33,9 @@
         "pngButton": "span[class='sc-kIPQKe iblkVR'] div[class='sc-kfGgVZ sc-esjQYD cueueu']",
         "pngModal": "div[class='sc-kGXeez sc-iELTvK bieKzX']",
         "pngPriceSel": "div[class='sc-bdVaJa sc-jKJlTe sc-eNQAEJ XssaD']",
-        "connectWallet": "div[id='connect-wallet']"
+        "connectWallet": "div[id='connect-wallet']",
+        "linkBtn": "a[class='sc-gsnTZi jbbOxr']",
+        "pangolinLogo": "div.css-zkfaav [class='sc-ifAKCX sc-bZQynM sc-iwsKbI hbTVAQ'] img"
     },
     "swap": {
         "swapSideMenu": ".cIKZSl",
@@ -65,5 +67,16 @@
         "slipPageValues": "div.sc-eCYdqJ.sc-jTYCaT",
         "slipPageValuesAssert": "div.JuqvI",
         "toggleExpertMode": "div[class='sc-jIZahH iqjIFB']"
+    },
+    "pangolinLinks":{
+        "chart": "[id='charts']",
+        "forum": "[id='forum']",
+        "pangolinLogo": "[id='site-logo']",
+        "searchField": "div[class='sc-gFaPwZ louFOq'] div[class='sc-ifAKCX sc-bZQynM sc-iwsKbI hbTVAQ'] img"
+    },
+    "usefulLinks":{
+        "avalancheBridge": "a[id='bridge']",
+        "bridgeLogo": "[class='sc-hHEiqL iMRJMG']",
+        "sateliiteBridge": "a[id='satellite-bridge']"
     }
 }
