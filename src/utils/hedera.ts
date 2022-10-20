@@ -10,11 +10,10 @@ import {
   Transaction,
   TransactionId,
 } from '@hashgraph/sdk';
-import { ChainId, CurrencyAmount } from '@pangolindex/sdk';
+import { ChainId, CurrencyAmount, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
-import BigNumber from 'bignumber.js';
 import { hashConnect } from 'src/connectors';
-import { HEDERA_API_BASE_URL, WHBAR_CONTRACT_ID } from 'src/constants';
+import { HEDERA_API_BASE_URL } from 'src/constants';
 
 export interface HederaTokenMetadata {
   id: string;
@@ -137,9 +136,30 @@ class Hedera {
     }
   }
 
+  hederaId = (address: string) => {
+    return hethers.utils.asAccountString(address);
+  };
+
+  contractId = (id: string) => {
+    const lastIndex = id.lastIndexOf('.');
+
+    let before = '';
+    let after = '';
+
+    if (lastIndex !== -1) {
+      before = id.slice(0, lastIndex);
+      after = id.slice(lastIndex + 1);
+      after = (Number(after) - 1).toString();
+    }
+
+    const contractId = before + '.' + after;
+
+    return contractId;
+  };
+
   public async getAccountBalance(account: string) {
     try {
-      const accountId = hethers.utils.asAccountString(account);
+      const accountId = this.hederaId(account);
 
       const response = await this.call<AccountBalanceResponse>({
         url: `/api/v1/balances?account.id=${accountId}`,
@@ -156,7 +176,7 @@ class Hedera {
 
   public async getMetadata(tokenAddress: string): Promise<HederaTokenMetadata | undefined> {
     try {
-      const tokenId = hethers.utils.asAccountString(tokenAddress);
+      const tokenId = this.hederaId(tokenAddress);
 
       const tokenInfo = await this.call<TokenResponse>({
         url: '/api/v1/tokens/' + tokenId,
@@ -179,8 +199,8 @@ class Hedera {
 
   public async getTokenBalance(tokenAddress: string, account?: string) {
     try {
-      const tokenId = hethers.utils.asAccountString(tokenAddress);
-      const accountId = account ? hethers.utils.asAccountString(account) : '';
+      const tokenId = this.hederaId(tokenAddress);
+      const accountId = account ? this.hederaId(account) : '';
 
       const response = await this.call<TokenBalanceResponse>({
         url: `/api/v1/tokens/${tokenId}/balances?account.id=${accountId}`,
@@ -197,7 +217,7 @@ class Hedera {
 
   public async getAccountAssociatedTokens(account: string) {
     try {
-      const accountId = account ? hethers.utils.asAccountString(account) : '';
+      const accountId = account ? this.hederaId(account) : '';
 
       const query = new AccountBalanceQuery().setAccountId(accountId);
       const tokens = await query.execute(this.client);
@@ -210,10 +230,10 @@ class Hedera {
     }
   }
 
-  public async tokenAssociate(tokenAddress: string, account: string, chainId: ChainId) {
-    const tokenId = hethers.utils.asAccountString(tokenAddress);
-    const accountId = account ? hethers.utils.asAccountString(account) : '';
+  public async tokenAssociate(tokenAddress: string, account: string) {
+    const tokenId = this.hederaId(tokenAddress);
 
+    const accountId = account ? this.hederaId(account) : '';
     const transaction = new TokenAssociateTransaction();
     const tokenIds: string[] = [tokenId];
 
@@ -224,20 +244,17 @@ class Hedera {
 
     const res = await hashConnect.sendTransaction(transBytes, accountId);
 
-    const receipt = res?.response as TransactionResponse;
-    if (res.success) {
-      return {
-        hash: receipt.transactionId,
-      };
-    }
+    return res;
   }
 
   //Wrap Function
   public async depositAction(amount: CurrencyAmount, account: string, chainId: ChainId) {
-    const accountId = account ? hethers.utils.asAccountString(account) : '';
-    //const contractId = hethers.utils.asAccountString(WAVAX[chainId].address);  // Todo
+    const accountId = account ? this.hederaId(account) : '';
+    const tokenId = this.hederaId(WAVAX[chainId].address);
+
+    const contractId = this.contractId(tokenId);
     const transaction = new ContractExecuteTransaction();
-    transaction.setContractId(WHBAR_CONTRACT_ID);
+    transaction.setContractId(contractId);
     transaction.setGas(1000000);
     transaction.setFunction('deposit');
     transaction.setPayableAmount(Hbar.fromString(amount.toExact()));
@@ -246,54 +263,48 @@ class Hedera {
 
     const res = await hashConnect.sendTransaction(transBytes, accountId);
 
-    const receipt = res?.response as TransactionResponse;
-    if (res?.success) {
-      return {
-        hash: receipt.transactionId,
-      };
-    }
-
-    return null;
+    return res;
   }
 
   //UnWrap Function
   public async withdrawAction(amount: CurrencyAmount, account: string, chainId: ChainId) {
-    const accountId = account ? hethers.utils.asAccountString(account) : '';
-    //const contractId = hethers.utils.asAccountString(WAVAX[chainId].address); // Todo
+    const accountId = account ? this.hederaId(account) : '';
+    const tokenId = this.hederaId(WAVAX[chainId].address);
+    const contractId = this.contractId(tokenId);
     const transaction = new ContractExecuteTransaction();
-    transaction.setContractId(WHBAR_CONTRACT_ID);
+    transaction.setContractId(contractId);
     transaction.setGas(1000000);
 
-    transaction.setFunction('withdraw', new ContractFunctionParameters().addUint256(new BigNumber(amount.toExact())));
+    transaction.setFunction('withdraw', new ContractFunctionParameters().addUint256(amount.raw.toString() as any));
 
     const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
 
     const res = await hashConnect.sendTransaction(transBytes, accountId);
 
-    const receipt = res?.response as TransactionResponse;
-    if (res.success) {
-      return {
-        hash: receipt.transactionId,
-      };
-    }
+    return res;
   }
 
   public async getTransactionById(transactionId: string) {
-    const response = await this.call<APITransactionResponse>({
-      baseURL: HEDERA_API_BASE_URL,
-      url: `/api/v1/transactions/${transactionId}`,
-      method: 'GET',
-    });
+    try {
+      const response = await this.call<APITransactionResponse>({
+        baseURL: HEDERA_API_BASE_URL,
+        url: `/api/v1/transactions/${transactionId}`,
+        method: 'GET',
+      });
 
-    const transaction = response?.transactions?.[0];
+      const transaction = response?.transactions?.[0];
 
-    return {
-      transactionId: transaction?.transaction_id,
-      transactionHash: transaction?.transaction_hash,
-      status: transaction?.result === 'SUCCESS' ? 1 : 0,
-      from: transaction?.transaction_id?.split('-')[0],
-      consensusTimestamp: transaction?.consensus_timestamp,
-    };
+      return {
+        transactionId: transaction?.transaction_id,
+        transactionHash: transaction?.transaction_hash,
+        status: transaction?.result === 'SUCCESS' ? 1 : 0,
+        from: transaction?.transaction_id?.split('-')[0],
+        consensusTimestamp: transaction?.consensus_timestamp,
+      };
+    } catch (e) {
+      console.log(`Transaction ${transactionId} is still in progress or doesn't exist`);
+      return null;
+    }
   }
 
   public async getTransactionBlock(timestamp: string) {

@@ -150,8 +150,8 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: PNG[ChainId.SONGBIRD].address,
   },
   [ChainId.HEDERA_TESTNET]: {
-    inputCurrency: '',
-    outputCurrency: '',
+    inputCurrency: 'HBAR',
+    outputCurrency: WAVAX[ChainId.HEDERA_TESTNET].address,
   },
   [ChainId.NEAR_MAINNET]: {
     inputCurrency: WAVAX[ChainId.NEAR_MAINNET].address,

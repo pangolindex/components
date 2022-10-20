@@ -138,7 +138,7 @@ export function getSigner(library: Web3Provider, account: string): JsonRpcSigner
 
 // account is optional
 export function getProviderOrSigner(library: Web3Provider, account?: string): Web3Provider | JsonRpcSigner {
-  return account ? getSigner(library, account) : library; // TODO check direct return library
+  return account ? getSigner(library, account) : library;
 }
 
 // account is optional

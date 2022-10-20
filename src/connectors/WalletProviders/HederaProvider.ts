@@ -24,8 +24,6 @@ export const HederaProvider = (provider) => {
 
         const newTransactionId = before + '-' + after;
 
-        // const newTransactionId = '0.0.47977330-1666180129-211495607';
-
         //Transaction id. Please use "shard.realm.num-sss-nnn" format where sss are seconds and nnn are nanoseconds
         const receipt = await hethersProvider.getTransaction(newTransactionId);
 
@@ -34,6 +32,10 @@ export const HederaProvider = (provider) => {
         }
 
         const transaction = await hederaFn.getTransactionById(newTransactionId);
+        if (!transaction) {
+          return undefined;
+        }
+
         const block = await hederaFn.getTransactionBlock(transaction?.consensusTimestamp);
 
         return {

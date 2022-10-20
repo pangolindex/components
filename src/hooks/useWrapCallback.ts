@@ -172,22 +172,18 @@ export function useWrapHbarCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined,
-): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType; execute?: () => Promise<void>; inputError?: string } {
   const { account } = usePangolinWeb3();
 
   const chainId = useChainId();
 
   const balance = useCurrencyBalance(chainId, account ?? undefined, inputCurrency);
-  console.log('inputCurrency', inputCurrency);
-  console.log('inputCurrency==', CAVAX[chainId]);
 
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const inputAmount = useMemo(
     () => tryParseAmount(typedValue, inputCurrency, chainId),
     [inputCurrency, typedValue, chainId],
   );
-
-  console.log('inputAmount', inputAmount);
 
   const addTransaction = useTransactionAdder();
 
@@ -213,7 +209,7 @@ export function useWrapHbarCallback(
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient AVAX balance',
+        inputError: sufficientBalance ? undefined : 'Insufficient HBAR balance',
       };
     } else if (currencyEquals(WAVAX[chainId], inputCurrency) && outputCurrency === CAVAX[chainId]) {
       return {
@@ -234,7 +230,7 @@ export function useWrapHbarCallback(
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient WAVAX balance',
+        inputError: sufficientBalance ? undefined : 'Insufficient WHBAR balance',
       };
     } else {
       return NOT_APPLICABLE;

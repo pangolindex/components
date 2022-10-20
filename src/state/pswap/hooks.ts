@@ -24,6 +24,7 @@ import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { AppState, useDispatch, useSelector } from 'src/state';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { isAddress, isEvmChain } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
@@ -278,14 +279,14 @@ export function useHederaTokenAssociated(): {
   hederaAssociated: boolean;
 } {
   const { account } = usePangolinWeb3();
-  // const addTransaction = useTransactionAdder();
+  const addTransaction = useTransactionAdder();
   const chainId = useChainId();
 
   const {
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
   } = useSwapState();
 
-  // const outputCurrency = useCurrency(outputCurrencyId);
+  const outputCurrency = useCurrency(outputCurrencyId);
 
   const [loading, setLoading] = useState(false);
 
@@ -312,12 +313,12 @@ export function useHederaTokenAssociated(): {
           ? async () => {
               try {
                 setLoading(true);
-                const txReceipt = await hederaFn.tokenAssociate(outputCurrencyId, account, chainId);
+                const txReceipt = await hederaFn.tokenAssociate(outputCurrencyId, account);
                 if (txReceipt) {
                   setLoading(false);
                   refetch();
-                  //TODO : Need to check
-                  //addTransaction(txReceipt, { summary: `${outputCurrency?.symbol} successfully  associated` });
+
+                  addTransaction(txReceipt, { summary: `${outputCurrency?.symbol} successfully  associated` });
                 }
               } catch (error) {
                 setLoading(false);

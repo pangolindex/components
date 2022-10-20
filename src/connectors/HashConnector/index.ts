@@ -4,6 +4,7 @@ import { AbstractConnectorArguments } from '@web3-react/types';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { HashConnectProvider } from 'hashconnect/dist/provider';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
+import { TransactionResponse } from 'src/utils/hedera';
 
 export interface HashConfigType {
   networkId: string;
@@ -228,7 +229,16 @@ export class HashConnector extends AbstractConnector {
       },
     };
 
-    return this.instance.sendTransaction(this.topic, transaction);
+    const res = await this.instance.sendTransaction(this.topic, transaction);
+
+    const receipt = res?.response as TransactionResponse;
+    if (res.success) {
+      return {
+        hash: receipt.transactionId,
+      };
+    }
+
+    return null;
   }
 
   public getSigner() {
