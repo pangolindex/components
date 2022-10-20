@@ -34,8 +34,6 @@ export const NATIVE = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 export const BIG_INT_SECONDS_IN_WEEK = JSBI.BigInt(60 * 60 * 24 * 7);
 export const ONE_TOKEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18));
 
-export const WHBAR_CONTRACT_ID = '0.0.47549779';
-
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.router,
   [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].contracts!.router,
