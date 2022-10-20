@@ -1,4 +1,4 @@
-import { ALL_CHAINS, Chain, currencyEquals } from '@pangolindex/sdk';
+import { Chain, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -20,7 +20,7 @@ interface Props {
 }
 
 const SelectChainDrawer: React.FC<Props> = (props) => {
-  const { isOpen, onClose, onChainSelect, chains = ALL_CHAINS, otherSelectedChain, selectedChain } = props;
+  const { isOpen, onClose, onChainSelect, chains, otherSelectedChain, selectedChain } = props;
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -43,7 +43,7 @@ const SelectChainDrawer: React.FC<Props> = (props) => {
   }, [isOpen]);
 
   const filteredChains: Chain[] = useMemo(() => {
-    return filterChains(chains, searchQuery);
+    return filterChains(chains || [], searchQuery);
   }, [chains, searchQuery]);
 
   const filteredSortedChains: Chain[] = useMemo(() => {

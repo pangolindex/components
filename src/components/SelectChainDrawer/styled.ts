@@ -31,3 +31,7 @@ export const ChainRowRoot = styled.div<{ disabled: boolean; selected: boolean }>
 
   opacity: ${({ disabled, selected }) => (disabled || selected ? 0.5 : 1)};
 `;
+
+export const ChainLogo = styled.img`
+  border-radius: 50%;
+`;

@@ -1,4 +1,4 @@
-import { BTC_MAINNET, Chain, Currency, THORCHAIN } from '@pangolindex/sdk';
+import { BTC_MAINNET, Chain, Currency, THORSWAP } from '@pangolindex/sdk';
 import { Network } from '@xchainjs/xchain-client';
 import {
   CryptoAmount,
@@ -12,6 +12,7 @@ import {
 import { AssetRuneNative, assetAmount, assetFromString, assetToBase } from '@xchainjs/xchain-util';
 import { BigNumber } from 'bignumber.js';
 import React from 'react';
+// import { BRIDGE_THORSWAP } from 'src/constants';
 import { BridgePrioritizations, Route } from 'src/state/pbridge/types';
 import { calculateTransactionTime } from 'src/utils';
 
@@ -26,6 +27,10 @@ export async function useThorChainRoutes(
   recipient?: string | null | undefined,
 ): Promise<Route[]> {
   //TODO: Whole function needs to be refactored
+  // const thorswapPoolResponse = await fetch(
+  //   `${BRIDGE_THORSWAP}/universal/exchangeAmountDetails?from=${fromChain?.symbol}.${fromCurrency?.symbol}&to=${toChain?.symbol}.${toCurrency?.symbol}&amount=${amount}`,
+  // );
+  // console.log('thorswapPoolResponse: ', thorswapPoolResponse);
   const thorchainCache = new ThorchainCache(new Midgard(Network.Mainnet), new Thornode(Network.Mainnet));
   const thorchainQuery = new ThorchainQuery(thorchainCache);
   const fromAsset = assetFromString(`${fromChain?.symbol}.${fromCurrency?.symbol}`);
@@ -62,7 +67,7 @@ export async function useThorChainRoutes(
       gasCostUSD: `${totalFeeUsdcEqual.assetAmountFixedString()} USD`,
       steps: [
         {
-          bridge: THORCHAIN,
+          bridge: THORSWAP,
           type: 'bridge',
           includedSteps: [
             {
@@ -106,7 +111,7 @@ export async function useThorChainRoutes(
       gasCostUSD: `${totalFeeUsdcEqual.assetAmountFixedString()} USD`,
       steps: [
         {
-          bridge: THORCHAIN,
+          bridge: THORSWAP,
           type: 'bridge',
           includedSteps: [
             {

@@ -16,14 +16,15 @@ import {
   SlippageInput,
   Text,
 } from 'src/components';
+import { Option } from 'src/components/DropdownMenu/types';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { ChainField, CurrencyField } from 'src/state/pbridge/actions';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { getBridgeSupportedChains } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import BridgeInputsWidget from '../BridgeInputsWidget';
 import { ArrowWrapper, BottomText, CloseCircle, FilterBox, FilterInputHeader, LoaderWrapper, Wrapper } from './styles';
@@ -36,10 +37,10 @@ const BridgeCard = () => {
   const [isChainDrawerOpen, setIsChainDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [activeBridgePrioritization, setActiveBridgePrioritization] = useState<
-    MultiValue<string> | SingleValue<string>
+    MultiValue<Option> | SingleValue<string>
   >('');
-  const [activeBridges, setActiveBridges] = useState<MultiValue<string> | SingleValue<string>>(['']);
-  const [activeExchanges, setActiveExchanges] = useState<MultiValue<string> | SingleValue<string>>(['']);
+  const [activeBridges, setActiveBridges] = useState<MultiValue<Option>>([]);
+  const [activeExchanges, setActiveExchanges] = useState<MultiValue<Option> | SingleValue<string>>([]);
   const [userSlippage] = useUserSlippageTolerance();
   const [slippageTolerance, setSlippageTolerance] = useState((userSlippage / 100).toString());
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -60,8 +61,9 @@ const BridgeCard = () => {
     },
   ];
 
-  const Bridges = BRIDGES.map((bridge: Bridge) => ({ label: bridge.name, value: bridge.id }));
-  const bridgeSupportedChains: Chain[] = getBridgeSupportedChains() || [];
+  const bridges = BRIDGES.map((bridge: Bridge) => ({ label: bridge.name, value: bridge.id }));
+  const [chainList, setChainList] = useState<Chain[] | undefined>(undefined);
+  const chainHook = useBridgeChains();
   const chainId = useChainId();
   const [drawerType, setDrawerType] = useState(ChainField.FROM);
 
@@ -103,6 +105,7 @@ const BridgeCard = () => {
   } = useBridgeActionHandlers(chainId);
 
   const { getRoutes } = useBridgeSwapActionHandlers();
+
   const { currencies, chains, currencyBalances, parsedAmount, estimatedAmount, recipient } = useDerivedBridgeInfo();
 
   const inputCurrency = currencies[CurrencyField.INPUT];
@@ -113,6 +116,19 @@ const BridgeCard = () => {
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[CurrencyField.INPUT]);
   const debouncedAmountValue = useDebounce(parsedAmount?.toExact(), 500);
+
+  useEffect(() => {
+    if (chainHook) {
+      let data: Chain[] = [];
+      Object.values(chainHook).forEach((value) => {
+        data = data
+          ?.concat(value)
+          ?.filter((val, index, self) => index === self.findIndex((t) => t?.chain_id === val?.chain_id));
+      });
+
+      setChainList(data || []);
+    }
+  }, [chainHook?.lifi, chainHook?.thorswap]);
 
   useEffect(() => {
     if (debouncedAmountValue) {
@@ -288,12 +304,12 @@ const BridgeCard = () => {
           <FilterBox>
             <FilterInputHeader>{t('bridge.bridgeCard.filter.bridges')}</FilterInputHeader>
             <DropdownMenu
-              options={Bridges}
+              options={bridges}
               defaultValue={activeBridges}
               isMulti={true}
               menuPlacement={'top'}
               onSelect={(value) => {
-                setActiveBridges(value);
+                setActiveBridges(value as MultiValue<Option>);
               }}
             />
           </FilterBox>
@@ -314,7 +330,7 @@ const BridgeCard = () => {
       {isChainDrawerOpen && (
         <SelectChainDrawer
           isOpen={isChainDrawerOpen}
-          chains={bridgeSupportedChains}
+          chains={chainList}
           onClose={onChangeChainDrawerStatus}
           onChainSelect={onChainSelect}
           selectedChain={drawerType === ChainField.FROM ? fromChain : toChain}

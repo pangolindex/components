@@ -1,15 +1,13 @@
-import { Currency } from '@pangolindex/sdk';
 import * as React from 'react';
 import { ChevronDown } from 'react-feather';
 import { Box } from '../Box';
-import CurrencyLogo from '../CurrencyLogo';
-import { Aligner, ChainSelect, StyledTokenName } from './styles';
+import { Aligner, ChainLogo, ChainSelect, StyledTokenName } from './styles';
 import { ChainInputProps } from './types';
 
 const ChainInput = ({ buttonStyle, chain, onChainClick }: ChainInputProps) => {
   const renderChain = () => {
     if (chain) {
-      return <CurrencyLogo currency={chain.nativeCurrency as Currency} size={24} imageSize={48} />;
+      return <ChainLogo src={chain?.logo} width={24} height={24} />;
     } else {
       return null;
     }

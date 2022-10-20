@@ -1,33 +1,11 @@
 import { parseUnits } from '@ethersproject/units';
-import {
-  ALL_CHAINS,
-  CAVAX,
-  CHAINS,
-  Chain,
-  ChainId,
-  Currency,
-  CurrencyAmount,
-  JSBI,
-  Token,
-  TokenAmount,
-} from '@pangolindex/sdk';
-// import {
-//   PoolData,
-//   getDoubleSwapFee,
-//   getDoubleSwapOutput,
-//   getDoubleSwapOutputWithFee,
-//   getDoubleSwapSlip,
-// } from '@thorchain/asgardex-util';
-// import { Configuration, MidgardApi } from '@xchainjs/xchain-midgard';
-// import { assetAmount, assetToBase } from '@xchainjs/xchain-util';
-// import { BigNumber } from 'ethers';
+import { CAVAX, Chain, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
-// import { BRIDGE_THORCHAIN_MIDGARD, BRIDGE_THORCHAIN_THORNODE } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useThorChainRoutes } from 'src/hooks/Routes';
 import { useCurrency } from 'src/hooks/Tokens';
+import { useBridgeChainsAlternativeApproach } from 'src/hooks/bridge/Chains';
+import { useThorChainRoutes } from 'src/hooks/bridge/Routes';
 import { AppState, useDispatch, useSelector } from 'src/state';
-import { isBridgeSupportedChain } from 'src/utils';
 import { useCurrencyBalances } from '../pwallet/hooks';
 import {
   ChainField,
@@ -169,8 +147,10 @@ export function useDerivedBridgeInfo(): {
 } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
+  const { data } = useBridgeChainsAlternativeApproach();
+
   // select the current chain if it is supported by the bridge
-  const currentChain = (isBridgeSupportedChain(chainId) && CHAINS[chainId]) || undefined;
+  const currentChain = data?.find((x) => x.chain_id?.toString() === chainId?.toString()) || undefined;
   const {
     typedValue,
     [CurrencyField.INPUT]: { currencyId: inputCurrencyId },
@@ -181,12 +161,10 @@ export function useDerivedBridgeInfo(): {
     recipient,
     routesLoaderStatus,
   } = useBridgeState();
-
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
-  const fromChain = fromChainId ? ALL_CHAINS.find((x) => x.id === fromChainId) : currentChain;
-  const toChain = toChainId ? ALL_CHAINS.find((x) => x.id === toChainId) : undefined;
-
+  const fromChain = fromChainId ? data?.find((x) => x.id === fromChainId) : currentChain;
+  const toChain = toChainId ? data?.find((x) => x.id === toChainId) : undefined;
   const relevantTokenBalances = useCurrencyBalances(chainId, account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,

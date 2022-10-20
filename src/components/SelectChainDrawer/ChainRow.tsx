@@ -1,7 +1,7 @@
-import { Chain, Currency } from '@pangolindex/sdk';
+import { Chain } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
-import { CurrencyLogo, Text } from '..';
-import { ChainRowRoot } from './styled';
+import { Text } from '..';
+import { ChainLogo, ChainRowRoot } from './styled';
 
 interface Props {
   chain: Chain;
@@ -13,7 +13,6 @@ interface Props {
 
 const ChainRow: React.FC<Props> = (props) => {
   const { chain, style, onSelect, isSelected, otherSelected } = props;
-  const currency: Currency = chain?.nativeCurrency;
 
   const handleSelect = useCallback(() => {
     onSelect(chain);
@@ -21,9 +20,9 @@ const ChainRow: React.FC<Props> = (props) => {
 
   return (
     <ChainRowRoot style={style} onClick={handleSelect} disabled={isSelected} selected={otherSelected}>
-      <CurrencyLogo currency={currency} size={24} imageSize={48} />
-      <Text color="swapWidget.primary" fontSize={14} title={currency?.name}>
-        {currency?.name}
+      <ChainLogo src={chain?.logo} width={24} height={24} />
+      <Text color="swapWidget.primary" fontSize={14} title={chain?.name}>
+        {chain?.name}
       </Text>
     </ChainRowRoot>
   );

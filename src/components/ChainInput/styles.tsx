@@ -34,3 +34,7 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
   font-size:  16px;
   color: inherit;
 `;
+
+export const ChainLogo = styled.img`
+  border-radius: 50%;
+`;
