@@ -1,4 +1,3 @@
-import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber';
 import { hethers } from '@hashgraph/hethers';
 import {
   AccountBalanceQuery,
@@ -229,17 +228,6 @@ class Hedera {
     if (res.success) {
       return {
         hash: receipt.transactionId,
-        //this variable arer dummy which is actually not usefull for now
-        confirmations: 1,
-        from: account,
-        nonce: 0,
-        gasLimit: EthersBigNumber.from(0),
-        data: res?.topic,
-        value: EthersBigNumber.from(0),
-        chainId: chainId,
-        wait: async () => {
-          return null;
-        },
       };
     }
   }
@@ -262,17 +250,6 @@ class Hedera {
     if (res?.success) {
       return {
         hash: receipt.transactionId,
-        //this variable are dummy which is actually not usefull for now
-        confirmations: 1,
-        from: account,
-        nonce: 0,
-        gasLimit: EthersBigNumber.from(0),
-        data: res?.topic,
-        value: EthersBigNumber.from(0),
-        chainId: chainId,
-        wait: async () => {
-          return null;
-        },
       };
     }
 
@@ -297,17 +274,6 @@ class Hedera {
     if (res.success) {
       return {
         hash: receipt.transactionId,
-        //this variable arer dummy which is actually not usefull for now
-        confirmations: 1,
-        from: account,
-        nonce: 0,
-        gasLimit: EthersBigNumber.from(0),
-        data: res?.topic,
-        value: EthersBigNumber.from(0),
-        chainId: chainId,
-        wait: async () => {
-          return null;
-        },
       };
     }
   }

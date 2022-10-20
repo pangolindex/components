@@ -206,7 +206,7 @@ export function useWrapHbarCallback(
                   const txReceipt = await hederaFn.depositAction(inputAmount, account, chainId);
 
                   if (txReceipt) {
-                    addTransaction(txReceipt as any, { summary: `Wrap ${inputAmount.toSignificant(6)} HBAR to WHBAR` });
+                    addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} HBAR to WHBAR` });
                   }
                 } catch (error) {
                   console.error('Could not deposit', error);
@@ -225,7 +225,7 @@ export function useWrapHbarCallback(
                   const txReceipt = await hederaFn.withdrawAction(inputAmount, account, chainId);
 
                   if (txReceipt) {
-                    addTransaction(txReceipt as any, {
+                    addTransaction(txReceipt, {
                       summary: `Unwrap ${inputAmount.toSignificant(6)} WHBAR to HBAR`,
                     });
                   }
