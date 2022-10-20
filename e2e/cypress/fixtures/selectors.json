@@ -1,6 +1,8 @@
 {
     "dashboard": {
-        "returnToLegacyBtn": "a.sc-gsnTZi.iyNTDz",
+        "swapIcon":"a[id='swap']",
+        "dashboardIcon":"a[id='dashboard']",
+        "returnToLegacyBtn": "a[class='sc-gsnTZi iyNTDz']",
         "languageBtn": "button.sc-lhVmIH.fVBGEZ",
         "languageDropdown": "div.sc-bYSBpT.iBjjYK span a",
         "noOfLanguages": 8,
@@ -23,8 +25,12 @@
         "newsBody": "div.slick-slider div[class='sc-eCYdqJ sc-fWjsSh fEptdj kQILAI'] p",
         "newsNextBtn": "div.sc-gzzPqb:nth-child(2)",
         "newsPreBtn": "div.sc-gzzPqb:nth-child(1)",
+        "newsLinks1": "div.slick-slider div[class='sc-eCYdqJ sc-fWjsSh fEptdj kQILAI'] p a",
         "watchlistGraphLine": "div.recharts-wrapper:nth-child(1)",
         "graphUSD": "div.recharts-tooltip-wrapper ul li span:nth-child(1)",
+        "linksSideMenu": "div[class='sc-bsbRJL jTTilZ']",
+        "linksSideMenuExp": "div[class='sc-bsbRJL hLwfbT']",
+        "socialMediaLinks": "div[class='sc-hXRMBi dfHWNS'] a",
         "sideMenuCollapse": "div[class='sc-bsbRJL jTTilZ']",
         "sideMenuExpand": "div[class='sc-bsbRJL hLwfbT']",
         "footerlinksSel": "div[class='sc-cQFLBn hQUgJp'] div",

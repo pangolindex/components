@@ -2,11 +2,13 @@
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data'
 import { switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1 } from '../support/src/swap'
+import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
 // import {newsLinks, socialLinks} from '../support/src/dashboard'
-const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, watchlistLinkBtn, connectWallet} = selectors.dashboard
+const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, watchlistLinkBtn, connectWallet, linkBtn, watchlistTradeBtn} = selectors.dashboard
 const {tokenName, AvaxToken, switchArray, chartTimeArray} = data.dashboard
 const {fromField, toField, connectWalletBtn,limitBtn,buyBtn,swapPercentageBtns,limitPercentageBtns,swapSideMenu,swapSideMenuSelect,tradeBtns,tokenModal,headerDetailsModal,toTokenLogo,toTokenName,toTokenPrice,connectWalletMessage,tradeModal,switchModal,switchBtn,settingBtn,transactionFailMessage,transactionMayFortuneMessage,expertModeMessage,saveCloseBtn, slipPageValues, slipPageValuesAssert, toggleExpertMode, saveCloseBtn1} = selectors.swap
 const {swapPercentage, slipPage, aAVAXb, usdc, lowSlippageMessage, highSlippageMessage, veryHighSlippageMessage, saveCloseBtnTxt, connectWalletTxt} = data.swap
+const {pangolinLinksArr} = data
 describe('Swap', () => {
     
     beforeEach('',() => {
@@ -126,14 +128,10 @@ describe('Swap', () => {
     it('TC-25, Verify that Link button redirects the user to the info.exchange page', () => {
         //Clicking the link button on the watchlist
         let linkUrl = "https://info.pangolin.exchange/#/token/0x60781C2586D68229fde47564546784ab3fACA982"
-        cy.get(watchlistLinkBtn)
-            .invoke("removeAttr","target").click()
-        cy.url().should("include", linkUrl)
-        cy.contains(/pangolin/i)
-            .should("be.visible")
+        pangolinUsefulLinks(`${linkBtn}`, `${linkUrl}`, pangolinLinksArr[0])
     })
 
-    it.only('TC-30, Verify that the user can switch between the selected tokens', () => {
+    it('TC-30, Verify that the user can switch between the selected tokens', () => {
         //Switching between the selected tokens
         //Assertion of the tokens present in the "From" and "TO"
         switchingValues(1, 'From', `${AvaxToken}`)
