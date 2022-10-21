@@ -328,3 +328,14 @@ export function useNearSwapCallback(
     };
   }, [trade, poolId, library, account, chainId, recipientAddressOrName, addTransaction]);
 }
+
+export function useDummySwapCallback(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _trade: Trade | undefined, // trade to execute, required
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
+  return { state: SwapCallbackState.INVALID, callback: null, error: null };
+}

@@ -1,4 +1,4 @@
-import { CAVAX, CHAINS, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
+import { CAVAX, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -95,7 +95,9 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     if (searchQuery === '') {
       // remove Currency from array and add in first position
       const _tokens = filteredSortedTokens.filter((token) => token !== CAVAX[chainId]);
-      return CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : [..._tokens];
+      // Need to check when implement near
+      // return CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : [..._tokens];
+      return [CAVAX[chainId], ..._tokens];
     }
     return filteredSortedTokens;
   }, [filteredSortedTokens, chainId]);
