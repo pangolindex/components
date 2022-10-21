@@ -8,7 +8,7 @@ import { BRIDGE_THORSWAP } from 'src/constants';
 export function useThorSwapChains() {
   return useQuery(['thorswapChains'], async () => {
     const response = await fetch(`${BRIDGE_THORSWAP}/universal/chainsDetails`);
-    const chains = await response.json();
+    const chains = response && response.status === 200 ? await response.json() : [];
     const formattedChains: Chain[] = chains.map((chain) => {
       return {
         id: `${chain?.displayName.split(' ').join('').toLowerCase()}_mainnet`,
@@ -62,9 +62,8 @@ export function useBridgeChains() {
   const lifiChains = useLiFiSwapChains();
   return useMemo(() => {
     return {
-      // I didn't put loader because we can access via useQuery status field if we wish
-      [LIFIBridge.id]: lifiChains?.data ?? [],
-      [THORSWAP.id]: thorswapChains?.data ?? [],
+      [LIFIBridge.id]: lifiChains.status === 'success' ? lifiChains?.data ?? [] : [],
+      [THORSWAP.id]: thorswapChains.status === 'success' ? thorswapChains?.data ?? [] : [],
     };
   }, [thorswapChains, lifiChains]);
 }
@@ -92,7 +91,7 @@ export function useBridgeChainsAlternativeApproach() {
     });
 
     const response = await fetch(`${BRIDGE_THORSWAP}/universal/chainsDetails`);
-    const chainsThorswap = await response.json();
+    const chainsThorswap = response && response.status === 200 ? await response.json() : [];
     const formattedChainsThor: Chain[] = chainsThorswap.map((chain) => {
       return {
         id: `${chain?.displayName.split(' ').join('').toLowerCase()}_mainnet`,
