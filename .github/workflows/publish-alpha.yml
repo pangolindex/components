@@ -1,0 +1,21 @@
+name: Publish alpha version
+
+on:
+  workflow_run:
+    workflows: ['Create Build Artifacts']
+    types:
+      - completed
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: build_artifacts
+
+      - name: Display structure of downloaded files
+        run: ls -R
