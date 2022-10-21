@@ -38,7 +38,6 @@ jobs:
             fs.writeFileSync('${{github.workspace}}/build_artifacts.zip', Buffer.from(download.data));
 
       - run: unzip build_artifacts.zip
-      - run: ls -R
 
       - uses: actions/setup-node@v3
         with:
@@ -48,8 +47,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - run: yarn --frozen-lockfile
-
-      - run: npm publish
+      - run: npm publish --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
