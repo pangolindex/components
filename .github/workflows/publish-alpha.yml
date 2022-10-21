@@ -1,5 +1,11 @@
 name: Publish alpha version
 
+# this flow will be triggered once 'Create Build Artifacts' is completed
+# use of this flow is to publish alpha version
+# main intention for this flow is to support forked repo, because in pull_request trigger fork repo can't access secrets due to security purpose
+# so that when forked repo create a PR it should be deployed as alpha for testing
+# ref: https://securitylab.github.com/research/github-actions-preventing-pwn-requests
+
 on:
   workflow_run:
     workflows: ['Create Build Artifacts']
@@ -9,13 +15,41 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: >
-      github.event.workflow_run.event == 'pull_request' &&
-      github.event.workflow_run.conclusion == 'success'
     steps:
-      - uses: actions/download-artifact@v3
+      - name: 'Download artifact'
+        uses: actions/github-script@v3.1.0
         with:
-          name: build_artifacts
+          script: |
+            var artifacts = await github.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{github.event.workflow_run.id }},
+            });
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "build_artifacts"
+            })[0];
+            var download = await github.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{github.workspace}}/build_artifacts.zip', Buffer.from(download.data));
 
-      - name: Display structure of downloaded files
-        run: ls -R
+      - run: unzip build_artifacts.zip
+      - run: ls -R
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14.x'
+          cache: 'yarn'
+          registry-url: 'https://registry.npmjs.org/'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - run: yarn --frozen-lockfile
+
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

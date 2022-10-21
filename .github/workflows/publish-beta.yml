@@ -2,7 +2,7 @@ name: Publish beta package
 on:
   pull_request:
     branches:
-      - main
+      - main1
 jobs:
   release:
     runs-on: ubuntu-latest
