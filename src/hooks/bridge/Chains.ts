@@ -1,6 +1,6 @@
 import LIFI from '@lifi/sdk';
 import { ChainType, EVMChain } from '@lifi/types';
-import { Chain } from '@pangolindex/sdk';
+import { Chain, LIFI as LIFIBridge, THORSWAP } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { BRIDGE_THORSWAP } from 'src/constants';
@@ -63,8 +63,8 @@ export function useBridgeChains() {
   return useMemo(() => {
     return {
       // I didn't put loader because we can access via useQuery status field if we wish
-      lifi: lifiChains?.data ?? [],
-      thorswap: thorswapChains?.data ?? [],
+      [LIFIBridge.id]: lifiChains?.data ?? [],
+      [THORSWAP.id]: thorswapChains?.data ?? [],
     };
   }, [thorswapChains, lifiChains]);
 }

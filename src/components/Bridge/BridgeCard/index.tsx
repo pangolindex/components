@@ -34,12 +34,13 @@ const BridgeCard = () => {
   const toggleWalletModal = useWalletModalToggle();
   const theme = useContext(ThemeContext);
 
+  const bridges = BRIDGES.map((bridge: Bridge) => ({ label: bridge.name, value: bridge.id }));
   const [isChainDrawerOpen, setIsChainDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [activeBridgePrioritization, setActiveBridgePrioritization] = useState<
     MultiValue<Option> | SingleValue<string>
   >('');
-  const [activeBridges, setActiveBridges] = useState<MultiValue<Option>>([]);
+  const [activeBridges, setActiveBridges] = useState<MultiValue<Option>>(bridges);
   const [activeExchanges, setActiveExchanges] = useState<MultiValue<Option> | SingleValue<string>>([]);
   const [userSlippage] = useUserSlippageTolerance();
   const [slippageTolerance, setSlippageTolerance] = useState((userSlippage / 100).toString());
@@ -61,7 +62,6 @@ const BridgeCard = () => {
     },
   ];
 
-  const bridges = BRIDGES.map((bridge: Bridge) => ({ label: bridge.name, value: bridge.id }));
   const [chainList, setChainList] = useState<Chain[] | undefined>(undefined);
   const chainHook = useBridgeChains();
   const chainId = useChainId();
@@ -118,17 +118,25 @@ const BridgeCard = () => {
   const debouncedAmountValue = useDebounce(parsedAmount?.toExact(), 500);
 
   useEffect(() => {
-    if (chainHook) {
+    if (activeBridges) {
       let data: Chain[] = [];
-      Object.values(chainHook).forEach((value) => {
+      activeBridges.forEach((bridge: Option) => {
         data = data
-          ?.concat(value)
+          ?.concat(chainHook[bridge.value])
           ?.filter((val, index, self) => index === self.findIndex((t) => t?.chain_id === val?.chain_id));
       });
 
+      if (activeBridges.length === 0) {
+        Object.values(chainHook).forEach((value) => {
+          data = data
+            ?.concat(value)
+            ?.filter((val, index, self) => index === self.findIndex((t) => t?.chain_id === val?.chain_id));
+        });
+      }
+
       setChainList(data || []);
     }
-  }, [chainHook?.lifi, chainHook?.thorswap]);
+  }, [activeBridges, chainHook?.lifi, chainHook?.thorswap]);
 
   useEffect(() => {
     if (debouncedAmountValue) {
