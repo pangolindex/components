@@ -18,6 +18,7 @@
     "build": "rollup -c --environment ENV:production",
     "storybook": "start-storybook -p 6006 -s public -c ./src/.storybook",
     "build-storybook": "build-storybook -c ./src/.storybook",
+    "tsc": "tsc -p tsconfig.json",
     "prepare": "husky install",
     "prepublishOnly": "npm run build"
   },
