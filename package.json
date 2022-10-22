@@ -11,6 +11,7 @@
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx",
     "lint:staged": "lint-staged",
+    "lint:commit": "commitlint --edit",
     "release": "npm run build && npm publish",
     "dev": "concurrently \"rollup -c --watch\" \"npm run dev:watch\"",
     "dev:watch": "chokidar \"lib/**/*\" --silent -c \"yalc push\"",
@@ -109,6 +110,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
     "@pangolindex/sdk": "3.1.12",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-json": "^4.1.0",
