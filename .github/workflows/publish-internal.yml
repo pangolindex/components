@@ -51,7 +51,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - run: echo "LATEST_VERSION=$(npm show . version)" >> $GITHUB_ENV
+      - run: echo "LATEST_VERSION=$(jq -r .version ./package.json)" >> $GITHUB_ENV
 
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
