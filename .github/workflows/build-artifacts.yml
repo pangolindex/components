@@ -25,7 +25,7 @@ jobs:
 
       - name: Bump package.json
         run: |
-          npm --no-git-tag-version version $(npm show . version)-alpha.$(git rev-parse --short HEAD)
+          npm --no-git-tag-version version $(npm show . version)-internal.$(git rev-parse --short HEAD)
 
       - run: yarn tsc && yarn lint
       - run: yarn build
