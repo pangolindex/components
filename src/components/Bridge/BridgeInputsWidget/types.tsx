@@ -1,4 +1,4 @@
-import { Chain, Currency, CurrencyAmount } from '@pangolindex/sdk';
+import { BridgeCurrency, Chain, CurrencyAmount } from '@pangolindex/sdk';
 
 export type BridgeInputsWidgetProps = {
   /**
@@ -16,7 +16,7 @@ export type BridgeInputsWidgetProps = {
   /**
    * Currency
    */
-  currency?: Currency;
+  currency?: BridgeCurrency;
   /**
    * Currency Amount
    */

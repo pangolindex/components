@@ -1,9 +1,9 @@
 import { parseUnits } from '@ethersproject/units';
-import { CAVAX, Chain, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import { BridgeCurrency, Chain, ChainId, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useCurrency } from 'src/hooks/Tokens';
 import { useBridgeChainsAlternativeApproach } from 'src/hooks/bridge/Chains';
+import { useBridgeCurrenciesAlternativeApproach } from 'src/hooks/bridge/Currencies';
 import { useThorChainRoutes } from 'src/hooks/bridge/Routes';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { useCurrencyBalances } from '../pwallet/hooks';
@@ -26,8 +26,8 @@ export function useBridgeState(): AppState['pbridge'] {
   return useSelector<AppState['pbridge']>((state) => state.pbridge);
 }
 
-export function useBridgeActionHandlers(chainId: ChainId): {
-  onCurrencySelection: (field: CurrencyField, currency: Currency) => void;
+export function useBridgeActionHandlers(): {
+  onCurrencySelection: (field: CurrencyField, currency: BridgeCurrency) => void;
   onChainSelection: (field: ChainField, chain: Chain) => void;
   onSwitchTokens: () => void;
   onSelectRoute: (route: Route) => void;
@@ -45,16 +45,12 @@ export function useBridgeActionHandlers(chainId: ChainId): {
   };
 
   const onCurrencySelection = useCallback(
-    (field: CurrencyField, currency: Currency) => {
+    (field: CurrencyField, currency: BridgeCurrency) => {
       dispatch(
         selectCurrency({
           field,
-          currencyId:
-            currency instanceof Token
-              ? currency.address
-              : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
-              ? (CAVAX[chainId]?.symbol as string)
-              : '',
+          //TODO: address? Let's say we have same symbol. How to distinguish them?
+          currencyId: currency?.symbol || currency?.address || '',
         }),
       );
     },
@@ -113,7 +109,7 @@ export function useBridgeActionHandlers(chainId: ChainId): {
 
 export function tryParseAmount(
   value?: string,
-  currency?: Currency,
+  currency?: BridgeCurrency,
   chainId: ChainId = ChainId.AVALANCHE,
 ): CurrencyAmount | undefined {
   if (!value || !currency) {
@@ -135,7 +131,7 @@ export function tryParseAmount(
 }
 
 export function useDerivedBridgeInfo(): {
-  currencies: { [field in CurrencyField]?: Currency };
+  currencies: { [field in CurrencyField]?: BridgeCurrency };
   chains: { [field in ChainField]?: Chain };
   currencyBalances: { [field in CurrencyField]?: CurrencyAmount };
   parsedAmount: CurrencyAmount | undefined;
@@ -148,9 +144,10 @@ export function useDerivedBridgeInfo(): {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { data } = useBridgeChainsAlternativeApproach();
+  const bridgeCurrencies = useBridgeCurrenciesAlternativeApproach();
 
   // select the current chain if it is supported by the bridge
-  const currentChain = data?.find((x) => x.chain_id?.toString() === chainId?.toString()) || undefined;
+  // const currentChain = data?.find((x) => x.chain_id?.toString() === chainId?.toString()) || undefined;
   const {
     typedValue,
     [CurrencyField.INPUT]: { currencyId: inputCurrencyId },
@@ -161,10 +158,22 @@ export function useDerivedBridgeInfo(): {
     recipient,
     routesLoaderStatus,
   } = useBridgeState();
-  const inputCurrency = useCurrency(inputCurrencyId);
-  const outputCurrency = useCurrency(outputCurrencyId);
-  const fromChain = fromChainId ? data?.find((x) => x.id === fromChainId) : currentChain;
+
+  //TODO: need to put currentChain, but the currency list is not coming if we put it.
+  const fromChain = fromChainId ? data?.find((x) => x.id === fromChainId) : undefined;
   const toChain = toChainId ? data?.find((x) => x.id === toChainId) : undefined;
+
+  const inputCurrency =
+    bridgeCurrencies &&
+    bridgeCurrencies?.data?.find(
+      (x) => x?.symbol === inputCurrencyId && fromChain && x?.chainId === fromChain?.chain_id,
+    );
+  const outputCurrency =
+    bridgeCurrencies &&
+    bridgeCurrencies?.data?.find(
+      (x) => x?.symbol === outputCurrencyId && toChainId && x?.chainId === toChain?.chain_id,
+    );
+
   const relevantTokenBalances = useCurrencyBalances(chainId, account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
@@ -178,7 +187,7 @@ export function useDerivedBridgeInfo(): {
     [CurrencyField.OUTPUT]: relevantTokenBalances[1],
   };
 
-  const currencies: { [field in CurrencyField]?: Currency } = {
+  const currencies: { [field in CurrencyField]?: BridgeCurrency } = {
     [CurrencyField.INPUT]: inputCurrency ?? undefined,
     [CurrencyField.OUTPUT]: outputCurrency ?? undefined,
   };
@@ -225,8 +234,8 @@ export function useBridgeSwapActionHandlers(): {
     fromChain?: Chain,
     toChain?: Chain,
     fromAddress?: string | null,
-    fromCurrency?: Currency,
-    toCurrency?: Currency,
+    fromCurrency?: BridgeCurrency,
+    toCurrency?: BridgeCurrency,
     recipient?: string | null | undefined,
   ) => void;
 } {
@@ -237,8 +246,8 @@ export function useBridgeSwapActionHandlers(): {
     fromChain?: Chain,
     toChain?: Chain,
     fromAddress?: string | null,
-    fromCurrency?: Currency,
-    toCurrency?: Currency,
+    fromCurrency?: BridgeCurrency,
+    toCurrency?: BridgeCurrency,
     recipient?: string | null | undefined,
   ) => {
     try {

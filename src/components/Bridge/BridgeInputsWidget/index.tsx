@@ -1,4 +1,4 @@
-import { BTC_MAINNET } from '@pangolindex/sdk';
+import { BTC_MAINNET, Currency } from '@pangolindex/sdk';
 import React, { useCallback, useContext } from 'react';
 import { Info } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -62,10 +62,11 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
             padding: '1rem 1.1rem',
             width: '100%',
           }}
+          alternativeLogoSrc={currency?.logo}
           onTokenClick={onChangeTokenDrawerStatus}
           isShowTextInput={false}
           fontSize={24}
-          currency={currency}
+          currency={currency as Currency}
           id="swap-currency-input"
         />
       </Currencies>

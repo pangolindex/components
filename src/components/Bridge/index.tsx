@@ -2,7 +2,6 @@ import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Loader, Text } from 'src/components';
-import { useChainId } from 'src/hooks';
 import { useBridgeActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
 import { Tab, TabList, TabPanel, Tabs } from '../Tabs';
 import BridgeCard from './BridgeCard';
@@ -12,9 +11,8 @@ import { BridgeState } from './BridgeTransfer/types';
 import { CustomTabPanel, LoaderWrapper, PageWrapper, Routes, Transactions, Transfers } from './styles';
 
 const Bridge = () => {
-  const chainId = useChainId();
   const { routes, routesLoaderStatus } = useDerivedBridgeInfo();
-  const { onSelectRoute } = useBridgeActionHandlers(chainId);
+  const { onSelectRoute } = useBridgeActionHandlers();
   const [tabIndex, setTabIndex] = useState(0);
   const { t } = useTranslation();
 

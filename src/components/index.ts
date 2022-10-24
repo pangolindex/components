@@ -21,6 +21,7 @@ export { default as Drawer } from './Drawer';
 export { default as SwapWidget } from './SwapWidget';
 export { default as SlippageInput } from './SlippageInput';
 export { default as SelectChainDrawer } from './SelectChainDrawer';
+export { default as SelectBridgeCurrencyDrawer } from './SelectBridgeCurrencyDrawer';
 export { default as Modal } from './Modal';
 export { NumberOptions } from './NumberOptions';
 export { ShowMore } from './ShowMore';

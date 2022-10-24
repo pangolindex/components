@@ -44,3 +44,10 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
   font-size:  ${({ active }) => (active ? '20px' : '16px')};
   color: inherit;
 `;
+
+export const AlternativeLogo = styled.img<{ size: number }>`
+  border-radius: 50%;
+  width: ${({ size }) => `${size}px`};
+  height: ${({ size }) => `${size}px`};
+  margin-right: 10px;
+`;

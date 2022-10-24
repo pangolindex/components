@@ -1,4 +1,4 @@
-import { BTC_MAINNET, Chain, Currency, THORSWAP } from '@pangolindex/sdk';
+import { BTC_MAINNET, BridgeCurrency, Chain, THORSWAP } from '@pangolindex/sdk';
 import { Network } from '@xchainjs/xchain-client';
 import {
   CryptoAmount,
@@ -22,8 +22,8 @@ export async function useThorChainRoutes(
   fromChain?: Chain,
   toChain?: Chain,
   address?: string | null,
-  fromCurrency?: Currency,
-  toCurrency?: Currency,
+  fromCurrency?: BridgeCurrency,
+  toCurrency?: BridgeCurrency,
   recipient?: string | null | undefined,
 ): Promise<Route[]> {
   //TODO: Whole function needs to be refactored
