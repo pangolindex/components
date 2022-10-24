@@ -10,14 +10,15 @@ describe('Dashboard', () => {
         // failing the test
         return false
     })
-    const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, pngButton, pngModal, pngPriceSel, linkBtn, pangolinLogo, swapIcon, dashboardIcon } = selectors.dashboard
-    const { returnToLegacy, languagesArray, tokenName, AvaxToken, switchArray, newsLinkArray, newsLinkAssertArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, newsSongBird, usd, coinBase, bridgeSwap } = data.dashboard
+    const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, pngButton, pngModal, pngPriceSel, linkBtn, pangolinLogo, swapIcon, dashboardIcon, connectWalletMsg, connectWallet } = selectors.dashboard
+    const { returnToLegacy, languagesArray, tokenName, AvaxToken, switchArray, newsLinkArray, newsLinkAssertArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, newsSongBird, usd, coinBase, bridgeSwap, connectToWalletMsg, connectToWallet, linkUrl, swap } = data.dashboard
     const {pangolinLinksArr} = data
     const legUrl = "https://legacy.pangolin.exchange/#/"
     beforeEach('', () => {
         cy.visit('/dashboard')
     })
 
+/*************************************** Expanded the side menu when mouseover on it  ********************************************/
     it('TC-01, Verify that the side menu is expanded while hovering the pointer over it', () => {
         cy.get(sideMenuCollapse).should(visible => {
             expect(visible).to.be.visible
@@ -27,6 +28,8 @@ describe('Dashboard', () => {
                 .should('be.visible')
         })
     })
+
+/*********************************** Assert the Dashboard can accessed from sidemenu  ****************************************/    
     it('TC-03, Verify that the Dashboard page can be accessed from the side menu', () => {
         cy.get(sideMenuCollapse).should(visible => {
             expect(visible).to.be.visible
@@ -40,11 +43,14 @@ describe('Dashboard', () => {
             })
         })
     })
+
+/************************************ Assert the legacy site button redirect to legacy site  ***********************************/
     it('TC-05, Verify that Return to lagacy site button redirects the user to the "Legacy site" page', () => {
 
         pangolinUsefulLinks(returnToLegacyBtn, `${legUrl}`, pangolinLinksArr[3])
     })
 
+/***********************************************  Assert and click on languages  ********************************************/
     it('TC-18, Verify that the user can change the language', () => {
         for (var i = 1; i < noOfLanguages + 1; i++) {
             cy.get(languageBtn).click()
@@ -54,6 +60,7 @@ describe('Dashboard', () => {
         }
     })
 
+/*****************************************  Change the website background to Light mode  **********************************/
     it('TC-19, Verify that the user can change the theme to light mode', () => {
         cy.get(lightMood)
             .invoke('attr', 'alt')
@@ -64,6 +71,7 @@ describe('Dashboard', () => {
             .should('contain', 'NightMode')
     })
 
+/*****************************************  Change the website background to Dark mode  **********************************/
     it('TC-20, Verify that the user can change the theme to dark mode', () => {
         cy.get(lightMood).click()
         cy.get(darkMood).click()
@@ -72,6 +80,7 @@ describe('Dashboard', () => {
             .should('contain', 'Setting')
     })
 
+/*********************************** Adding token to watchlist by specific search  **************************************/
     it('TC-24, Verify that the user can search for a specific token to add to the watchlist', () => {
         cy.contains(/Dashboard/)
         cy.get(watchListBtn).
@@ -84,6 +93,7 @@ describe('Dashboard', () => {
             .should("contain", tokenName)
     })
 
+/*********************************** Adding token to watchlist through the Add button ********************************/
     it("TC-25, Verify that the user can add the token to the watchlist", () => {
         cy.contains(/Dashboard/)
         cy.get(watchListBtn)
@@ -95,6 +105,7 @@ describe('Dashboard', () => {
             .should("contain", AvaxToken)
     })
 
+/*********************************** Switching between the tokens in the watchlist  ***************************************/
     it('TC-27, Verify that the user is able to switch between the tokens in watchlist', () => {
         cy.contains(/Dashboard/i)
         for (var i = 1; i <= 3; i++) {
@@ -104,6 +115,7 @@ describe('Dashboard', () => {
         }
     })
 
+/**************************** Updating and asserting the chart by pressing the time buttons ******************************/
     chartTimeArray.forEach(time => {
         it(`TC-28,29,30,31,32,33, Verify that the chart is updated by pressing ${time} in watchlist`, () => {
             cy.get(watchlistTimeBtn)
@@ -116,6 +128,7 @@ describe('Dashboard', () => {
         })
     })
 
+/***********************************  Removing the token if already added  ********************************************/    
     it('TC-26, Verify that the user can remove the token from the watchlist', () => {
         cy.contains(/Dashboard/)
         cy.get(tokenSection).then($avax => {
@@ -139,16 +152,16 @@ describe('Dashboard', () => {
         })
     })
 
+/************************************* Clicking the link button on the watchlist  ****************************************/
     it('TC-34, Verify that Link button redirects the user to the info.exchange page', () => {
-        let linkUrl = "https://info.pangolin.exchange/#/token/0x60781C2586D68229fde47564546784ab3fACA982"
         pangolinUsefulLinks(`${linkBtn}`, `${linkUrl}`, pangolinLinksArr[0])
     })
 
     it('TC-35, Verify that the user can make a trade from the Dashboard', () => {
-        let swap = "https://dev.pangolin.exchange/#/swap"
         pangolinUsefulLinks(`${watchlistTradeBtn}`, `${swap}`, pangolinLinksArr[3])
     })
 
+/************************************* Clicking the trade button on the watchlist  ****************************************/    
     it('TC-36, Verify that the user is able to switch between different news in News section', function () {
         cy.get(newsBtn).then(news => {
             expect(news).to.be.visible
@@ -170,6 +183,7 @@ describe('Dashboard', () => {
         })
     })
 
+/********************************* Assert after mouseing over on chart, shows value in USD *********************************/   
     it('TC-37,38,39,40,41 Verify that the user can see the all time token value in USD', function () {
         cy.get(watchlistGraphLine).then(chart => {
             cy.get(chart).eq(0).trigger('mouseover')
@@ -182,6 +196,7 @@ describe('Dashboard', () => {
         })
     })
 
+/************************************* Click and Assert the links in the News section **************************************/  
     it(`TC-42, Verify that the ${newsLinkArray[0]} in the news section bridge Swap redirects the user to the "Pangolin Exchange" page`, () => {
         newsLinks(0, 0, newsLinkArray[0], newsLinkAssertArray[0])
     })
@@ -230,6 +245,7 @@ describe('Dashboard', () => {
         newsLinks(0, 9, newsLinkArray[8], newsLinkAssertArray[10])
     })
 
+/*************************************** Click and assert the footer links [privacy, cookies]***********************************/  
     footerLinks.forEach(footerLink => {
         it(`TC-44, 45, 46 Verify that the "${footerLink}" link on the footer opens the "${footerLink}" page`, () => {
             cy.get(footerlinksSel)
@@ -243,12 +259,14 @@ describe('Dashboard', () => {
         })
     })
 
+/********************************** Click and assert the social media links in the side menu *******************************/ 
     for (let i = 0; i <= 6; i++) {
         it(`TC-47, 48, 49, 50, 51, 52, 53, Verify that the user is redirected to the pangolin ${socialLinksContents[i]} page`, () => {
             socialLinks(i, socialLinksArray[i])
         })
     }
 
+/******************************** Click and assert PNG token value is not visible without wallet ****************************/
     it('TC-54, Verify that the user cannot see the PNG value if the wallet is not connected', () => {
         cy.get(pngButton).contains(/png/i).click()
         cy.wait(3000)
@@ -268,12 +286,37 @@ describe('Dashboard', () => {
             })
         })
     })
+
+/*********************************************  Connect to wallet button  ******************************************/
     it('TC-57, 58, 59, 60, 61, 62, Verify that the user can see the "Connect to a Wallet" button if the wallet is not connected', () => {
-        cy.get('div[id="connect-wallet"]')
-            .should('contain', "Connect to a wallet")
-        cy.get('div[class="sc-jSMfEi hMQPrK"]')
+        cy.get(connectWallet)
+            .should('contain', connectToWallet)
+        cy.get(connectWalletMsg)
             .should(chainText => {
-                expect(chainText).to.have.text('Connect a wallet to see your Portfolio')
+                expect(chainText).to.have.text(connectToWalletMsg)
             })
+    })
+    //In Progress
+    it.only('TC-63, Verify that the relevant tokens appear when the user type in the "Search" field',() =>{
+        cy.contains(/Dashboard/)
+        cy.get(watchListBtn).
+            should('be.visible').click()
+        cy.get(watchlistDropDown)
+            .should('be.visible')
+        cy.get(tokenSearch).type('p')
+        cy.get("div[class='sc-hsOonA kOcdQy']").each( relSearch => {
+        cy.wrap(relSearch).should('not.contain','p')
+        })
+    })
+
+    it('TC-64, Verify that the message "Not found" appears when no searches found', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type("search")
+            cy.contains('Not found')
+                
     })
 })

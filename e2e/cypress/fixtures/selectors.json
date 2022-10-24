@@ -41,7 +41,8 @@
         "pngPriceSel": "div[class='sc-bdVaJa sc-jKJlTe sc-eNQAEJ XssaD']",
         "connectWallet": "div[id='connect-wallet']",
         "linkBtn": "a[class='sc-gsnTZi jbbOxr']",
-        "pangolinLogo": "div.css-zkfaav [class='sc-ifAKCX sc-bZQynM sc-iwsKbI hbTVAQ'] img"
+        "pangolinLogo": "div.css-zkfaav [class='sc-ifAKCX sc-bZQynM sc-iwsKbI hbTVAQ'] img",
+        "connectWalletMsg": "div[class='sc-jSMfEi hMQPrK']"
     },
     "swap": {
         "swapSideMenu": ".cIKZSl",
