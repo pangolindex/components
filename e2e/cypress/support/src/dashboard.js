@@ -1,5 +1,5 @@
-import data from '../../fixtures/selectors.json'
-const {newsBtn, newsLinks1,newsNextBtn, linksSideMenu, linksSideMenuExp, socialMediaLinks } = data.dashboard
+import selectors from '../../fixtures/selectors.json'
+const {newsBtn, newsLinks1,newsNextBtn, linksSideMenu, linksSideMenuExp, socialMediaLinks } = selectors.dashboard
 function newsLinks(startPoint, endPoint, link, assertMsg) {
     cy.get(newsBtn).then(news => {
         for(var i = startPoint; i < endPoint; i++){

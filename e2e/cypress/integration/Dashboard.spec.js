@@ -3,6 +3,7 @@ import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data'
 import { newsLinks, socialLinks } from '../support/src/dashboard'
 import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
+import {switchingValues} from '../support/src/swap'
 
 describe('Dashboard', () => {
     Cypress.on('uncaught:exception', (err, runnable) => {
@@ -10,7 +11,7 @@ describe('Dashboard', () => {
         // failing the test
         return false
     })
-    const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, pngButton, pngModal, pngPriceSel, linkBtn, pangolinLogo, swapIcon, dashboardIcon, connectWalletMsg, connectWallet } = selectors.dashboard
+    const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, pngButton, pngModal, pngPriceSel, linkBtn, pangolinLogo, swapIcon, dashboardIcon, connectWalletMsg, connectWallet, tokenMouseOverEnable} = selectors.dashboard
     const { returnToLegacy, languagesArray, tokenName, AvaxToken, switchArray, newsLinkArray, newsLinkAssertArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, newsSongBird, usd, coinBase, bridgeSwap, connectToWalletMsg, connectToWallet, linkUrl, swap } = data.dashboard
     const {pangolinLinksArr} = data
     const legUrl = "https://legacy.pangolin.exchange/#/"
@@ -165,20 +166,19 @@ describe('Dashboard', () => {
     it('TC-36, Verify that the user is able to switch between different news in News section', function () {
         cy.get(newsBtn).then(news => {
             expect(news).to.be.visible
-            cy.get(newsBody).then(newsAssert => {
+            cy.get(newsBody).eq(1).then(newsAssert => {
                 expect(newsAssert)
-                    .to.contain(bridgeSwap)
+                    .to.contain("🪂 For those eligible, there are two weeks left to claim your $PSB airdrop. ")
             })
-
             cy.get(news).find(newsNextBtn).click()
-            cy.get(newsBody).then(newsAssert => {
-                expect(newsAssert)
-                    .to.contain(coinBase)
-            })
-            cy.get(news).find(newsPreBtn).click()
-            cy.get(newsBody).then(newsAssert => {
+            cy.get(newsBody).eq(2).then(newsAssert => {
                 expect(newsAssert)
                     .to.contain(bridgeSwap)
+            })
+            cy.get(news).find(newsPreBtn).click({force: true})
+            cy.get(newsBody).then(newsAssert => {
+                expect(newsAssert)
+                    .to.contain("🪂 For those eligible, there are two weeks left to claim your $PSB airdrop. ")
             })
         })
     })
@@ -197,52 +197,55 @@ describe('Dashboard', () => {
     })
 
 /************************************* Click and Assert the links in the News section **************************************/  
+    it(`TC-42, Verify that the Details here in the news section bridge Swap redirects the user to the "Pangolin Exchange" page`, () => {
+        newsLinks(0, 0, 'Details here', 'AIRDROP ALERT')
+    })
     it(`TC-42, Verify that the ${newsLinkArray[0]} in the news section bridge Swap redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0, 0, newsLinkArray[0], newsLinkAssertArray[0])
+        newsLinks(0, 1, newsLinkArray[0], newsLinkAssertArray[0])
     })
 
     it(`TC-42, Verify that the ${newsLinkArray[1]} in the "coinBase twitter" in news section Coinbase redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0, 1, newsLinkArray[1], newsLinkAssertArray[1])
+        newsLinks(0, 2, newsLinkArray[1], newsLinkAssertArray[1])
     })
 
     it(`TC-42, Verify that the ${newsLinkArray[2]} in the "songBird Network" in news section redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0, 2, newsLinkArray[2], newsLinkAssertArray[2])
+        newsLinks(0, 3, newsLinkArray[2], newsLinkAssertArray[2])
     })
 
     it(`TC-42, Verify that the ${newsLinkArray[3]} in the "Pangolin_Flare" in news section redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0, 3, newsLinkArray[3], newsLinkAssertArray[3])
+        newsLinks(0, 4, newsLinkArray[3], newsLinkAssertArray[3])
     })
 
     it(`TC-42, Verify that the "${newsLinkArray[4]}" link in the "Read the 2H 2022 Roadmap" in news section redirects the user to the "Pangolin Exchange" page`, () => {
 
-        newsLinks(0, 4, newsLinkArray[4], newsLinkAssertArray[4])
+        newsLinks(0, 5, newsLinkArray[4], newsLinkAssertArray[4])
     })
 
     it(`TC-42, Verify that the "${newsLinkArray[5]}" link in the song bird Coston in news section redirects the user to the "Pangolin Exchange" page`, () => {
 
-        newsLinks(0, 5, newsLinkArray[5], newsLinkAssertArray[5])
+        newsLinks(0, 6, newsLinkArray[5], newsLinkAssertArray[5])
     })
 
     it(`TC-42, Verify that the ${newsLinkArray[5]} link in the "airdrop wagmi" in the news section redirects the user to the "Pangolin Exchange" page`, () => {
 
-        newsLinks(0, 6, newsLinkArray[5], newsLinkAssertArray[6])
+        newsLinks(0, 7, 'Read More', newsLinkAssertArray[6])
     })
 
     it(`TC-42, Verify that the ${newsLinkArray[6]} link in the limit orders in news section redirects the user to the "dashboard" page`, () => {
-        newsLinks(0, 7, newsLinkArray[6], newsLinkAssertArray[7])
+        newsLinks(0, 8, newsLinkArray[6], newsLinkAssertArray[7])
     })
 
     it(`TC-42, Verify that the ${newsLinkArray[6]} link in the moonpay in news section redirects the user to the "dashboard" page`, () => {
 
-        newsLinks(0, 7, newsLinkArray[6], newsLinkAssertArray[8])
+        newsLinks(0, 9, newsLinkArray[6], newsLinkAssertArray[8])
     })
 
     it(`TC-42, Verify that the ${newsLinkArray[7]} link in the moonpay in news section redirects the user to the "Multi-chain desk" page`, () => {
-        newsLinks(0, 8, newsLinkArray[7], newsLinkAssertArray[9])
+        newsLinks(0, 9, newsLinkArray[7], newsLinkAssertArray[9])
     })
 
     it(`TC-42, Verify that the ${newsLinkArray[8]} link in the Grand build in news section redirects the user to the "Multi-chain desk" page`, () => {
-        newsLinks(0, 9, newsLinkArray[8], newsLinkAssertArray[10])
+        newsLinks(0, 10, newsLinkArray[8], newsLinkAssertArray[10])
     })
 
 /*************************************** Click and assert the footer links [privacy, cookies]***********************************/  
@@ -296,8 +299,9 @@ describe('Dashboard', () => {
                 expect(chainText).to.have.text(connectToWalletMsg)
             })
     })
-    //In Progress
-    it.only('TC-63, Verify that the relevant tokens appear when the user type in the "Search" field',() =>{
+
+/*********************************************  search for relevant result  ******************************************/
+    it('TC-63, Verify that the relevant tokens appear when the user type in the "Search" field',() =>{
         cy.contains(/Dashboard/)
         cy.get(watchListBtn).
             should('be.visible').click()
@@ -305,18 +309,70 @@ describe('Dashboard', () => {
             .should('be.visible')
         cy.get(tokenSearch).type('p')
         cy.get("div[class='sc-hsOonA kOcdQy']").each( relSearch => {
-        cy.wrap(relSearch).should('not.contain','p')
+        cy.wrap(relSearch).should('contain','p')
         })
     })
 
+/*********************************************   if token is not found   ******************************************/    
     it('TC-64, Verify that the message "Not found" appears when no searches found', () =>{
         cy.contains(/Dashboard/)
             cy.get(watchListBtn).
                 should('be.visible').click()
             cy.get(watchlistDropDown)
                 .should('be.visible')
-            cy.get(tokenSearch).type("search")
+            cy.get(tokenSearch).type("asdfg")
             cy.contains('Not found')
-                
     })
+
+/**************************************  button disable in the watchlist dropdown ***********************************/ 
+    it('TC-65, Verify that the token added to the watchlist is disabled in the dropdown', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type(AvaxToken)
+            cy.get(tokenSelect).eq(0).click()
+            cy.get(tokenAssert)
+                .should("contain", AvaxToken)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(`div[class="sc-hsOonA dUaQOo"]`).should('have.attr', 'disabled', 'disabled')
+            
+    })
+
+    it('TC-66, Verify that the token removed from the watchlist is enabled in the dropdown', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type(AvaxToken)
+            cy.get(tokenSelect).eq(0).click()
+            cy.get(tokenAssert)
+                .should("contain", AvaxToken)
+            cy.get(tokenMouseOverEnable).eq(0)
+                .trigger("mouseover")
+            cy.get(crossBtn).click()
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(`div[class="sc-hsOonA kOcdQy"]`).contains(AvaxToken).should('be.visible')
+    })
+
+
+    it('TC-67, Verify that the user can trade on the selected token from the watchlist', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type(tokenName)
+            cy.get(tokenSelect).eq(0).click()
+            cy.get(tokenAssert)
+                .should("contain", tokenName)
+            pangolinUsefulLinks(`${watchlistTradeBtn}`, `${swap}`, pangolinLinksArr[3])
+            switchingValues(1, 'From', `${tokenName}`)
+    })
+
+
 })

@@ -4,8 +4,8 @@ import data from '../fixtures/pangolin-data'
 import { switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1 } from '../support/src/swap'
 import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
 // import {newsLinks, socialLinks} from '../support/src/dashboard'
-const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, watchlistLinkBtn, connectWallet, linkBtn, watchlistTradeBtn} = selectors.dashboard
-const {tokenName, AvaxToken, switchArray, chartTimeArray, linkUrl, connectToWalletMsg} = data.dashboard
+const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, watchlistLinkBtn, connectWallet, linkBtn, watchlistTradeBtn, tokenMouseOverEnable} = selectors.dashboard
+const {tokenName, AvaxToken, switchArray, chartTimeArray, linkUrl, connectToWalletMsg, swap} = data.dashboard
 const {fromField, toField, connectWalletBtn,limitBtn,buyBtn,swapPercentageBtns,limitPercentageBtns,swapSideMenu,swapSideMenuSelect,tradeBtns,tokenModal,headerDetailsModal,toTokenLogo,toTokenName,toTokenPrice,connectWalletMessage,tradeModal,switchModal,switchBtn,settingBtn,transactionFailMessage,transactionMayFortuneMessage,expertModeMessage,saveCloseBtn, slipPageValues, slipPageValuesAssert, toggleExpertMode, saveCloseBtn1} = selectors.swap
 const {swapPercentage, slipPage, aAVAXb, usdc, lowSlippageMessage, highSlippageMessage, veryHighSlippageMessage, saveCloseBtnTxt, connectWalletTxt} = data.swap
 const {pangolinLinksArr} = data
@@ -243,5 +243,79 @@ describe('Swap', () => {
         tokenSwitching(1, "From", `${AvaxToken}`, 1)
         switchingValues(1, 'From', `${usdc}`)
         switchingValues(3, "To", `${AvaxToken}`)
+    })
+
+    /*********************************************  search for relevant result  ******************************************/
+    it('TC-125, Verify that the relevant tokens appear when the user type in the "Search" field',() =>{
+        cy.contains(/Dashboard/)
+        cy.get(watchListBtn).
+            should('be.visible').click()
+        cy.get(watchlistDropDown)
+            .should('be.visible')
+        cy.get(tokenSearch).type('p')
+        cy.get("div[class='sc-hsOonA kOcdQy']").each( relSearch => {
+        cy.wrap(relSearch).should('contain','p')
+        })
+    })
+
+/*********************************************   if token is not found   ******************************************/    
+    it('TC-126, Verify that the message "Not found" appears when no searches found', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type("asdfg")
+            cy.contains('Not found')
+    })
+
+/**************************************  button disable in the watchlist dropdown ***********************************/ 
+    it('TC-127, Verify that the token added to the watchlist is disabled in the dropdown', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type(AvaxToken)
+            cy.get(tokenSelect).eq(0).click()
+            cy.get(tokenAssert)
+                .should("contain", AvaxToken)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(`div[class="sc-hsOonA dUaQOo"]`).should('have.attr', 'disabled', 'disabled')
+            
+    })
+
+    it('TC-128, Verify that the token removed from the watchlist is enabled in the dropdown', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type(AvaxToken)
+            cy.get(tokenSelect).eq(0).click()
+            cy.get(tokenAssert)
+                .should("contain", AvaxToken)
+            cy.get(tokenMouseOverEnable).eq(0)
+                .trigger("mouseover")
+            cy.get(crossBtn).click()
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(`div[class="sc-hsOonA kOcdQy"]`).contains(AvaxToken).should('be.visible')
+    })
+
+
+    it('TC-129, Verify that the user can trade on the selected token from the watchlist', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type(tokenName)
+            cy.get(tokenSelect).eq(0).click()
+            cy.get(tokenAssert)
+                .should("contain", tokenName)
+            pangolinUsefulLinks(`button.jmaCMK`, `${swap}`, pangolinLinksArr[3])
+            switchingValues(1, 'From', `${tokenName}`)
     })
 })
