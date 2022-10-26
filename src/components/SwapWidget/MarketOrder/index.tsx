@@ -375,6 +375,15 @@ const MarketOrder: React.FC<Props> = ({
         </Button>
       );
     }
+
+    if (!isHederaTokenAssociated) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate ' + currencies[Field.OUTPUT]?.symbol}
+        </Button>
+      );
+    }
+
     if (showWrap) {
       return (
         <Button variant="primary" isDisabled={Boolean(wrapInputError)} onClick={onWrap}>
@@ -393,14 +402,6 @@ const MarketOrder: React.FC<Props> = ({
       return (
         <Button variant="primary" isDisabled>
           Insufficient liquidity for this trade.
-        </Button>
-      );
-    }
-
-    if (!isHederaTokenAssociated) {
-      return (
-        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-          {isLoadingAssociate ? 'Associating' : 'Associate ' + currencies[Field.OUTPUT]?.symbol}
         </Button>
       );
     }

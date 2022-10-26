@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "4.3.0-rc.0",
+  "version": "4.3.0-rc.2",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "engines": {
@@ -11,6 +11,7 @@
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx",
     "lint:staged": "lint-staged",
+    "lint:commit": "commitlint --edit",
     "release": "npm run build && npm publish",
     "dev": "concurrently \"rollup -c --watch\" \"npm run dev:watch\"",
     "dev:watch": "chokidar \"lib/**/*\" --silent -c \"yalc push\"",
@@ -18,6 +19,7 @@
     "build": "rollup -c --environment ENV:production",
     "storybook": "start-storybook -p 6006 -s public -c ./src/.storybook",
     "build-storybook": "build-storybook -c ./src/.storybook",
+    "tsc": "tsc -p tsconfig.json",
     "prepare": "husky install",
     "prepublishOnly": "npm run build"
   },
@@ -108,7 +110,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
-    "@pangolindex/sdk": "3.1.6",
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
+    "@pangolindex/sdk": "3.1.12",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
