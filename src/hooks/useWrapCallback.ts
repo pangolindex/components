@@ -1,6 +1,7 @@
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { hederaFn } from 'src/utils/hedera';
 import { Transaction, nearFn } from 'src/utils/near';
 import { tryParseAmount } from '../state/pswap/hooks';
@@ -31,6 +32,8 @@ export function useWrapCallback(
 
   const chainId = useChainId();
 
+  const { t } = useTranslation();
+
   const wethContract = useWETHContract();
   const balance = useCurrencyBalance(chainId, account ?? undefined, inputCurrency);
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
@@ -42,7 +45,13 @@ export function useWrapCallback(
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount);
 
+    let inputError = !typedValue ? t('swapHooks.enterAmount') : undefined;
+
     if (inputCurrency === CAVAX[chainId] && currencyEquals(WAVAX[chainId], outputCurrency)) {
+      inputError =
+        inputError ??
+        (sufficientBalance ? undefined : t('swapHooks.insufficientBalance', { symbol: CAVAX[chainId].symbol }));
+
       return {
         wrapType: WrapType.WRAP,
         execute:
@@ -56,9 +65,13 @@ export function useWrapCallback(
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient AVAX balance',
+        inputError: inputError,
       };
     } else if (currencyEquals(WAVAX[chainId], inputCurrency) && outputCurrency === CAVAX[chainId]) {
+      inputError =
+        inputError ??
+        (sufficientBalance ? undefined : t('swapHooks.insufficientBalance', { symbol: WAVAX[chainId].symbol }));
+
       return {
         wrapType: WrapType.UNWRAP,
         execute:
@@ -72,7 +85,7 @@ export function useWrapCallback(
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient WAVAX balance',
+        inputError: inputError,
       };
     } else {
       return NOT_APPLICABLE;
