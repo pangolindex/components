@@ -339,7 +339,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
                   {renderPoolDataRow(t('migratePage.dollarWorth'), `${dollerWarth}`)}
                   {renderPoolDataRow(
                     `${t('dashboardPage.earned_weeklyIncome')}`,
-                    `${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} PNG`,
+                    `${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} ${png.symbol}`,
                   )}
 
                   {isSuperFarm && (
