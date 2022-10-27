@@ -250,7 +250,7 @@ describe('Dashboard', () => {
 
 /*************************************** Click and assert the footer links [privacy, cookies]***********************************/  
     footerLinks.forEach(footerLink => {
-        it(`TC-44, 45, 46 Verify that the "${footerLink}" link on the footer opens the "${footerLink}" page`, () => {
+        it(`TC-43, 44, 45 Verify that the "${footerLink}" link on the footer opens the "${footerLink}" page`, () => {
             cy.get(footerlinksSel)
                 .contains(footerLink).click()
             cy.get(footerLinkBanner)
@@ -264,13 +264,13 @@ describe('Dashboard', () => {
 
 /********************************** Click and assert the social media links in the side menu *******************************/ 
     for (let i = 0; i <= 6; i++) {
-        it(`TC-47, 48, 49, 50, 51, 52, 53, Verify that the user is redirected to the pangolin ${socialLinksContents[i]} page`, () => {
+        it(`TC-46, 47, 48, 49, 50, 51, 52, Verify that the user is redirected to the pangolin ${socialLinksContents[i]} page`, () => {
             socialLinks(i, socialLinksArray[i])
         })
     }
 
 /******************************** Click and assert PNG token value is not visible without wallet ****************************/
-    it('TC-54, Verify that the user cannot see the PNG value if the wallet is not connected', () => {
+    it('TC-55, Verify that the user cannot see the Native token value if the wallet is not connected', () => {
         cy.get(pngButton).contains(/png/i).click()
         cy.wait(3000)
         cy.get(pngModal).within(modal => {
@@ -291,7 +291,7 @@ describe('Dashboard', () => {
     })
 
 /*********************************************  Connect to wallet button  ******************************************/
-    it('TC-57, 58, 59, 60, 61, 62, Verify that the user can see the "Connect to a Wallet" button if the wallet is not connected', () => {
+    it('TC-56, 57, 58, 59, 60, Verify that the user can see the "Connect to a Wallet" button if the wallet is not connected', () => {
         cy.get(connectWallet)
             .should('contain', connectToWallet)
         cy.get(connectWalletMsg)

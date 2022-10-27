@@ -86,5 +86,12 @@
         "avalancheBridge": "a[id='bridge']",
         "bridgeLogo": "[class='sc-hHEiqL iMRJMG']",
         "sateliiteBridge": "a[id='satellite-bridge']"
+    },
+    "vote":{
+        "voteSideMenu": ".cIKZSl",
+        "voteSideMenuSelect": "div[class='sc-hMFtBS cIKZSl'] a",
+        "proposalTitle": "div[class='sc-jSMfEi sc-dliRfk ckCJDb']",
+        "detailsBtn": "a[class='sc-gZMcBi jvraRZ']",
+        "proposalTitleInner": "div[class='sc-jSMfEi hxwgNI']"
     }
 }

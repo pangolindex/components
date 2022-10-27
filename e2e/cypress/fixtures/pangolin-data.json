@@ -44,5 +44,8 @@
     "saveCloseBtnTxt": "Save & Close",
     "connectWalletTxt": "Connect Wallet"
   },
-  "pangolinLinksArr": ["Pangolin Analytics", "Pangolin Governance - Vote with your PNG", "Avalanche Bridge: Transfer Assets To and From Ethereum", "Pangolin"]
+  "pangolinLinksArr": ["Pangolin Analytics", "Pangolin Governance - Vote with your PNG", "Avalanche Bridge: Transfer Assets To and From Ethereum", "Pangolin"],
+  "vote": {
+    "proposalsArray": ["Treasury Replenishment Request", "Efficient PNG Buybacks","Distributed PNG Buybacks","Treasury Replenishment Request","Pangolin V2 and The New Tokenomics","Increase Governance Agility","Hiring a Market Maker - PNG","Hiring a Market Maker - Fee Switch","Make the Pangolin Multisig Responsible for Incentive Changes","Increase Reward Rates for Avalanche-Native Pools","Create a Treasury for Pangolin's multisig","Add Pangolin Rewards for Verso token (VSO)","Add Pangolin Rewards for Snowball token (SNOB) pairs","Weighted Pangolin Rewards"]
+  }
 }
