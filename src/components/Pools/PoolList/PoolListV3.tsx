@@ -36,20 +36,20 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
     setSearchQuery(value.trim());
   }, []);
 
-  const sort = () => {
+  const sort = (farms: PangoChefInfo[]) => {
     if (sortBy === SortingType.totalStakedInUsd) {
-      const sortedFarms = [...stakingInfoData].sort(function (info_a, info_b) {
+      const sortedFarms = [...farms].sort(function (info_a, info_b) {
         return info_a.totalStakedInUsd?.greaterThan(info_b.totalStakedInUsd ?? BIG_INT_ZERO) ? -1 : 1;
       });
       setStakingInfoData(sortedFarms);
     } else if (sortBy === SortingType.totalApr) {
-      const sortedFarms = [...stakingInfoData].sort((a, b) => (b?.stakingApr ?? 0) - (a?.stakingApr ?? 0));
+      const sortedFarms = [...farms].sort((a, b) => (b?.stakingApr ?? 0) - (a?.stakingApr ?? 0));
       setStakingInfoData(sortedFarms);
     }
   };
 
   useEffect(() => {
-    sort();
+    sort(stakingInfoData);
   }, [sortBy]);
 
   useEffect(() => {
@@ -80,8 +80,8 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
 
       setStakingInfoByPid(finalArrByPid);
       setStakingInfoData(finalArr);
+      sort(finalArr);
     }
-    sort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stakingInfos, debouncedSearchQuery]);
 
