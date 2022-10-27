@@ -525,16 +525,14 @@
     "selectToken": "Select a token",
     "enterRecipient": "Enter a recipient",
     "invalidRecipient": "Invalid recipient",
-    "insufficient": "Insufficient ",
-    "balance": " balance"
+    "insufficientBalance": "Insufficient {{ symbol }} balance"
   },
   "mintHooks": {
     "connectWallet": "Connect Wallet",
     "insufficientInputAmount": "Insufficient input amount",
     "invalidPair": "Invalid pair",
     "enterAmount": "Enter an amount",
-    "insufficient": "Insufficient ",
-    "balance": " balance"
+    "insufficientBalance": "Insufficient {{ symbol }} balance"
   },
   "stakeHooks": {
     "connectWallet": "Connect Wallet",

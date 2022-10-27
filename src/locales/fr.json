@@ -525,20 +525,19 @@
     "selectToken": "Selectionner un jeton",
     "enterRecipient": "Saisir un destinataire",
     "invalidRecipient": "Destinataire non valide",
-    "insufficient": "Insuffisant ",
-    "balance": " balance"
+    "insufficientBalance": "Solde en {{ symbol }} insuffisant"
   },
   "mintHooks": {
     "connectWallet": "Connecter un Portefeuille",
     "insufficientInputAmount": "Quantité d'entrée insuffisante",
     "invalidPair": "Paire non valide",
     "enterAmount": "Entrer un montant",
-    "insufficient": "Insuffisant ",
-    "balance": " balance"
+    "insufficientBalance": "Solde en {{ symbol }} insuffisant"
   },
   "stakeHooks": {
     "connectWallet": "Connecter un Portefeuille",
-    "enterAmount": "Entrer un montant"
+    "enterAmount": "Entrer un montant",
+    "insufficientBalance": "Solde en {{ symbol }} insuffisant"
   },
   "burnHooks": {
     "connectWallet": "Connecter un Portefeuille",

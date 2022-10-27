@@ -524,20 +524,19 @@
     "selectToken": "Selecione um token",
     "enterRecipient": "Digite um destinatário",
     "invalidRecipient": "Destinatário inválido",
-    "insufficient": "Saldo de ",
-    "balance": " insuficiente"
+    "insufficientBalance": "Saldo de {{ symbol }} insuficiente"
   },
   "mintHooks": {
     "connectWallet": "Conectar a uma carteira",
     "insufficientInputAmount": "Quantidade de entrada insuficiente",
     "invalidPair": "Par inválido",
     "enterAmount": "Insira um valor",
-    "insufficient": "Saldo de ",
-    "balance": " insuficiente"
+    "insufficientBalance": "Saldo de {{ symbol }} insuficiente"
   },
   "stakeHooks": {
     "connectWallet": "Conectar a uma carteira",
-    "enterAmount": "Insira um valor"
+    "enterAmount": "Insira um valor",
+    "insufficientBalance": "Saldo de {{ symbol }} insuficiente"
   },
   "burnHooks": {
     "connectWallet": "Conectar a uma carteira",

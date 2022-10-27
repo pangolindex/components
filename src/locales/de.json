@@ -525,20 +525,19 @@
     "selectToken": "Wähle einen Token aus",
     "enterRecipient": "Gib einen Empfänger ein",
     "invalidRecipient": "Ungültiger Empfänger",
-    "insufficient": "Unzureichendes ",
-    "balance": " Guthaben"
+    "insufficientBalance": "Unzureichendes {{ symbol }}-Guthaben"
   },
   "mintHooks": {
     "connectWallet": "Mit Wallet verbinden",
     "insufficientInputAmount": "Unzureichende Eingangsmenge",
     "invalidPair": "Ungültiges Paar",
     "enterAmount": "Gib einen Betrag ein",
-    "insufficient": "Unzureichendes ",
-    "balance": " Guthaben"
+    "insufficientBalance": "Unzureichendes {{ symbol }}-Guthaben"
   },
   "stakeHooks": {
     "connectWallet": "Mit Wallet verbinden",
-    "enterAmount": "Gib einen Betrag ein"
+    "enterAmount": "Gib einen Betrag ein",
+    "insufficientBalance": "Unzureichendes {{ symbol }}-Guthaben"
   },
   "burnHooks": {
     "connectWallet": "Mit Wallet verbinden",

@@ -525,20 +525,19 @@
     "selectToken": "Chọn một token",
     "enterRecipient": "Nhập một người nhận",
     "invalidRecipient": "Người nhận không hợp lệ",
-    "insufficient": "Không đủ ",
-    "balance": " số dư"
+    "insufficientBalance": "Insufficient {{ symbol }} balance"
   },
   "mintHooks": {
     "connectWallet": "Kết nối ví",
     "insufficientInputAmount": "Số lượng đầu vào không đủ",
     "invalidPair": "Cặp không hợp lệ ",
     "enterAmount": "Nhập số lượng",
-    "insufficient": "Không đủ ",
-    "balance": " số dư"
+    "insufficientBalance": "Insufficient {{ symbol }} balance"
   },
   "stakeHooks": {
     "connectWallet": "Kết nối ví",
-    "enterAmount": "Nhập số lượng"
+    "enterAmount": "Nhập số lượng",
+    "insufficientBalance": "Insufficient {{ symbol }} balance"
   },
   "burnHooks": {
     "connectWallet": "Kết nối ví",

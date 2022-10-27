@@ -524,20 +524,19 @@
     "selectToken": "Bir token seçin",
     "enterRecipient": "Bir alıcı girin",
     "invalidRecipient": "Geçersiz alıcı",
-    "insufficient": "Yetersiz ",
-    "balance": " bakiyesi"
+    "insufficientBalance": "Yetersiz {{ symbol }} bakiyesi"
   },
   "mintHooks": {
     "connectWallet": "Cüzdanı Bağla",
     "insufficientInputAmount": "Yetersiz bakiye",
     "invalidPair": "Geçersiz işlem çifti",
     "enterAmount": "Bir tutar girin",
-    "insufficient": "Yetersiz",
-    "balance": " bakiyesi"
+    "insufficientBalance": "Yetersiz {{ symbol }} bakiyesi"
   },
   "stakeHooks": {
     "connectWallet": "Cüzdanı Bağla",
-    "enterAmount": "Bir tutar girin"
+    "enterAmount": "Bir tutar girin",
+    "insufficientBalance": "Yetersiz {{ symbol }} bakiyesi"
   },
   "burnHooks": {
     "connectWallet": "Cüzdanı Bağla",

@@ -524,20 +524,19 @@
     "selectToken": "选择一个代币",
     "enterRecipient": "输入收件人",
     "invalidRecipient": "收件人无效",
-    "insufficient": "不足的 ",
-    "balance": "资产"
+    "insufficientBalance": "{{ symbol }}余额不足"
   },
   "mintHooks": {
     "connectWallet": "连接钱包",
     "insufficientInputAmount": "输入数量不足",
     "invalidPair": "无效交易对",
     "enterAmount": "输入金额",
-    "insufficient": "不足的 ",
-    "balance": " balance"
+    "insufficientBalance": "{{ symbol }}余额不足"
   },
   "stakeHooks": {
     "connectWallet": "连接钱包",
-    "enterAmount": "输入金额"
+    "enterAmount": "输入金额",
+    "insufficientBalance": "{{ symbol }}余额不足"
   },
   "burnHooks": {
     "connectWallet": "连接钱包",
