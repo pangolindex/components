@@ -92,6 +92,13 @@
         "voteSideMenuSelect": "div[class='sc-hMFtBS cIKZSl'] a",
         "proposalTitle": "div[class='sc-jSMfEi sc-dliRfk ckCJDb']",
         "detailsBtn": "a[class='sc-gZMcBi jvraRZ']",
-        "proposalTitleInner": "div[class='sc-jSMfEi hxwgNI']"
+        "proposalTitleInner": "div[class='sc-jSMfEi hxwgNI']",
+        "forfield": "div.sc-kafWEX.fwaFKz div",
+        "forValue": "div[class='sc-jSMfEi kZurnt']",
+        "againstValue": "~ div[class='sc-jSMfEi duAyBD']",
+        "selfBtn": "[class='sc-gqjmRU cGBnKx sc-dTdPqK gHZHFK']",
+        "aboutSection": "[class='sc-jSMfEi IMWyv']",
+        "executedBtn": "button[class='sc-gsnTZi dWgDgB sc-hmXxxW gKNYRi']",
+        "proposalOrders": "div.sc-jSMfEi"
     }
 }

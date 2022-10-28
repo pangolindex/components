@@ -3,7 +3,7 @@ const {newsBtn, newsLinks1,newsNextBtn, linksSideMenu, linksSideMenuExp, socialM
 function newsLinks(startPoint, endPoint, link, assertMsg) {
     cy.get(newsBtn).then(news => {
         for(var i = startPoint; i < endPoint; i++){
-        cy.get(news).find(newsNextBtn).click()
+        cy.get(news).find(newsNextBtn).click({force: true})
         cy.wait(1000)
         }
         cy.get(newsLinks1).then(newsAssert => {

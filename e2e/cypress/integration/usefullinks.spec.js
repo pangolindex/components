@@ -14,7 +14,7 @@ describe(`Useful Links`, () => {
             // failing the test
             return false    
         }) 
-        cy.get('/dashboard').click()
+        cy.get('#dashboard').click()
     })
 
 /***********************************  Click and Assert the avalanche Bridge  ********************************************/

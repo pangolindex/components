@@ -1,9 +1,9 @@
 /// <reference types = "cypress"/>
 import selectors from '../fixtures/selectors.json'
-import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
 import data from '../fixtures/pangolin-data.json'
-const {proposalsArray} = data.vote
-const {voteSideMenu,voteSideMenuSelect,proposalTitle,detailsBtn,proposalTitleInner} = selectors.vote
+import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
+const {proposalsArray,proposalOrder} = data.vote
+const {voteSideMenu,voteSideMenuSelect,proposalTitle,detailsBtn,proposalTitleInner,forfield,forValue,againstValue,selfBtn,aboutSection,executedBtn,proposalOrders} = selectors.vote
 describe('Vote', () => {
     
     beforeEach('',() => {
@@ -16,53 +16,62 @@ describe('Vote', () => {
         cy.get('#vote').click()
     })
 
-/********************************************* Selecting vote from side menu ********************************************/
+    /******************* Selecting vote from side menu **************************/
     it('TC-01, Verify that the swap page can be accessed from the side menu', () => {
-        //Selecting vote from side menu 
         cy.get(voteSideMenu)
             .should("have.css", "background-color", "rgb(255, 200, 0)")
         cy.get(voteSideMenuSelect)
             .should("have.class","ACTIVE")
     })
 
-    it('TC-03,04,05 Verify that the user can see the executed proposal', () => {
-        
+    /******************* Accessing the proposals **************************/
+    it.only('TC-03,04,05,17,18,19,20,21 Verify that the user can see the executed proposal', () => {
+        cy.get(selfBtn)
+        .should('not.exist')
+        cy.contains(/Pangolin Governance/i).should('be.visible')
+        cy.get(aboutSection).should('contain', 'About')
+        for(let i = 0 ; i<14 ; i++){
+            cy.get(executedBtn).eq(i)
+            .should('have.css','user-select','none')
+            .should('have.attr','color','#18C145')
+            .should('contain','executed')
+            cy.get(proposalOrders).should('contain', `${proposalOrder[i]}`)
+        }
         for (let i =0; i < 14; i++){
-            cy.get(proposalTitle).should('contain', `${proposalsArray[i]}`)
+            cy.get(proposalTitle)
+                .should('contain', `${proposalsArray[i]}`)
             cy.get(detailsBtn).eq(i).click()
-            cy.get(proposalTitleInner).should('contain', `${proposalsArray[i]}`)
-            cy.get('div.sc-kafWEX.fwaFKz div' ).then( $test => {
+            cy.get(proposalTitleInner)
+                .should('contain', `${proposalsArray[i]}`)
+                let array = ["0x650f5865541f6d68bddfe977db933c293ea72358", "0x66c048d27aFB5EE59E4C07101A483654246A4eda", "0xefa94de7a4656d787667c749f7e1223d71e9fd88", "0xAc61FD938E762357eEe739EB30938783366f43a7"]
+                for (let j = 0; j<= array.length - 1; j++){
+                cy.get('a[class="sc-gqjmRU cGBnKx"]').contains(`${array[j]}`).invoke('removeAttr','target').scrollIntoView().click({force: true})
+                cy.contains('Block').should('be.visible')
+                cy.go('back')
+                cy.wait(5000)
+            }
+                // cy.pause()
+            // cy.get('a[class="sc-gqjmRU cGBnKx"]').invoke('removeAttr', 'target').each( $test3 => {
+            //     cy.get($test3).click({force: true})
+            //     cy.contains('Block').should('be.visible')
+            //     cy.go('back')
+            //     cy.wait(5000)
+            // })
+
+            cy.get(forfield ).then( $test => {
                 cy.contains($test[0].children[0].children[0].innerText).should('be.visible')
                 cy.contains($test[0].children[0].children[1].innerText).should('be.visible')
             })
-            cy.get('div[class="sc-jSMfEi kZurnt"]').contains('Against').should('be.visible').then($test1 => {
-                cy.get($test1).find('~ div[class="sc-jSMfEi duAyBD"]').then($test2 => {
-                    console.log($test2)
-                    cy.log(cy.contains($test2[0].innerText).should('be.visible'))
-                })
-            })
-            
+            // cy.get(forValue).contains('Against').should('be.visible').then($test1 => {
+            //     cy.get($test1).find(againstValue).then($test2 => {
+            //     cy.log(cy.contains($test2[0].innerText).should('be.visible'))
+            //     })
+            // })
+            // pangolinUsefulLinks('')
+            cy.get('a[class="sc-gqjmRU cGBnKx"]').contains('0xefa94de7a4656d787667c749f7e1223d71e9fd88').invoke('removeAttr','target').click()
+            cy.go('back')
+            cy.pause()
             cy.contains('Back to Proposals').click()
         }
     })
-    
-    it('TC-17, Verify that the user cannot "Delegate" the Native token if the wallet is not connected', () => {
-        //Verifying the button to be not exist 
-        cy.get('[class="sc-gqjmRU cGBnKx sc-dTdPqK gHZHFK"]')
-            .should('not.exist')
-        
-    })
-
-    it.only('TC-18, Verify that the title "Pangolin Governance" appears on the page', () => {
-        //Verifying the title to be exist
-        cy.contains(/Pangolin Governance/i).should('be.visible')
-        
-    })
-
-    it('TC-19, Verify that the about section appears on the page', () => {
-        //Verifying the about section to be exist
-        cy.get('[class="sc-jSMfEi IMWyv"]').should('contain', 'About')
-        
-    })
-
 })
