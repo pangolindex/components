@@ -195,9 +195,9 @@ export function useDerivedMintInfo(
     error = t('mintHooks.insufficientInputAmount');
   }
 
-  if (pairState === PairState.INVALID) {
-    error = error ?? t('mintHooks.invalidPair');
-  }
+  // if (pairState === PairState.INVALID) { // TODO -1
+  //   error = error ?? t('mintHooks.invalidPair');
+  // }
 
   if (!parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
     error = error ?? t('mintHooks.enterAmount');

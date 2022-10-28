@@ -4,8 +4,8 @@ import {
   useETHBalances,
   useGetNearUserLP,
   useGetUserLP,
+  useDummyGetUserLP,
   useHederaBalance,
-  useHederaTokenBalance,
   useHederaTokenBalances,
   useNearAddLiquidity,
   useNearBalance,
@@ -15,6 +15,7 @@ import {
   useRemoveLiquidity,
   useTokenBalance,
   useTokenBalances,
+  useHederaAddLiquidity,
 } from './hooks';
 
 export type UseTokenBalancesHookType = {
@@ -42,7 +43,7 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.WAGMI]: useTokenBalance,
   [ChainId.COSTON]: useTokenBalance,
   [ChainId.SONGBIRD]: useTokenBalance,
-  [ChainId.HEDERA_TESTNET]: useHederaTokenBalance,
+  [ChainId.HEDERA_TESTNET]: useTokenBalance,
   [ChainId.NEAR_MAINNET]: useNearTokenBalance,
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
 };
@@ -63,7 +64,7 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
 };
 
 export type UseAddLiquidityHookType = {
-  [chainId in ChainId]: typeof useAddLiquidity | typeof useNearAddLiquidity;
+  [chainId in ChainId]: typeof useAddLiquidity | typeof useNearAddLiquidity | typeof useHederaAddLiquidity;
 };
 
 export const useAddLiquidityHook: UseAddLiquidityHookType = {
@@ -72,7 +73,7 @@ export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.WAGMI]: useAddLiquidity,
   [ChainId.COSTON]: useAddLiquidity,
   [ChainId.SONGBIRD]: useAddLiquidity,
-  [ChainId.HEDERA_TESTNET]: useAddLiquidity,
+  [ChainId.HEDERA_TESTNET]: useHederaAddLiquidity,
   [ChainId.NEAR_MAINNET]: useNearAddLiquidity,
   [ChainId.NEAR_TESTNET]: useNearAddLiquidity,
 };
@@ -93,7 +94,7 @@ export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
 };
 
 export type UseGetUserLPHookType = {
-  [chainId in ChainId]: typeof useGetUserLP | typeof useGetNearUserLP;
+  [chainId in ChainId]: typeof useGetUserLP | typeof useGetNearUserLP | typeof useDummyGetUserLP;
 };
 
 export const useGetUserLPHook: UseGetUserLPHookType = {
@@ -102,7 +103,7 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.WAGMI]: useGetUserLP,
   [ChainId.COSTON]: useGetUserLP,
   [ChainId.SONGBIRD]: useGetUserLP,
-  [ChainId.HEDERA_TESTNET]: useGetUserLP,
+  [ChainId.HEDERA_TESTNET]: useDummyGetUserLP,
   [ChainId.NEAR_MAINNET]: useGetNearUserLP,
   [ChainId.NEAR_TESTNET]: useGetNearUserLP,
 };

@@ -169,10 +169,14 @@ const fetchNearPoolShare = (chainId: number, pair: Pair) => async () => {
 };
 
 const fetchHederaTokenBalance = (token?: Token, account?: string) => async () => {
-  if (token) {
-    const balance = await hederaFn.getTokenBalance(token?.address, account);
+  if (token && account) {
+    const tokens = await hederaFn.getAccountAssociatedTokens(account);
 
-    return new TokenAmount(token, balance);
+    const currencyId = account ? hederaFn.hederaId(token?.address) : '';
+
+    const tokenBalance = (tokens || []).find((token) => token.tokenId === currencyId);
+
+    return new TokenAmount(token, tokenBalance ? tokenBalance?.balance : 0);
   }
   return undefined;
 };
@@ -615,6 +619,94 @@ export function useNearAddLiquidity() {
     }
 
     return nearFn.executeMultipleTransactions(transactions);
+  };
+}
+
+export function useHederaAddLiquidity() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+  const addTransaction = useTransactionAdder();
+
+  return async (data: AddLiquidityProps) => {
+    if (!chainId || !library || !account) return;
+
+    const { parsedAmounts, deadline, noLiquidity, allowedSlippage, currencies } = data;
+
+    const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
+
+    const { [AddField.CURRENCY_A]: parsedAmountA, [AddField.CURRENCY_B]: parsedAmountB } = parsedAmounts;
+    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
+      return;
+    }
+
+    const amountsMin = {
+      [AddField.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
+      [AddField.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0],
+    };
+
+    const poolExists = false;
+    let response;
+    try {
+      if (currencyA === CAVAX[chainId] || currencyB === CAVAX[chainId]) {
+        const tokenBIsETH = currencyB === CAVAX[chainId];
+
+        const args = {
+          token: wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId), // token
+          tokenAmount: (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
+          HBARAmount: (tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString(), // HBAR desired
+          tokenAmountMin: amountsMin[tokenBIsETH ? AddField.CURRENCY_A : AddField.CURRENCY_B].toString(), // token min
+          HBARAmountMin: amountsMin[tokenBIsETH ? AddField.CURRENCY_B : AddField.CURRENCY_A].toString(), // eth min
+          account: account,
+          poolExists: poolExists,
+          deadline: deadline.toHexString(),
+          chainId: chainId,
+        };
+
+        response = await hederaFn.addNativeLiquidity(args);
+
+        await waitForTransaction(response as any, 5);
+      } else {
+        const args = {
+          tokenA: wrappedCurrency(currencyA, chainId),
+          tokenB: wrappedCurrency(currencyB, chainId),
+          tokenAAmount: parsedAmountA.raw.toString(),
+          tokenBAmount: parsedAmountB.raw.toString(),
+          tokenAAmountMin: amountsMin[AddField.CURRENCY_A].toString(),
+          tokenBAmountMin: amountsMin[AddField.CURRENCY_B].toString(),
+          account,
+          poolExists,
+          deadline: deadline.toHexString(),
+          chainId,
+        };
+
+        response = await hederaFn.addLiquidity(args);
+
+        await waitForTransaction(response as any, 5);
+      }
+
+      addTransaction(response, {
+        summary:
+          'Add ' +
+          parsedAmounts[AddField.CURRENCY_A]?.toSignificant(3) +
+          ' ' +
+          currencies[AddField.CURRENCY_A]?.symbol +
+          ' and ' +
+          parsedAmounts[AddField.CURRENCY_B]?.toSignificant(3) +
+          ' ' +
+          currencies[AddField.CURRENCY_B]?.symbol,
+      });
+
+      return response;
+    } catch (err) {
+      const _err = err as any;
+      // we only care if the error is something _other_ than the user rejected the tx
+      if (_err?.code !== 4001) {
+        console.error(_err);
+      }
+    } finally {
+      // This is intentional
+    }
   };
 }
 
@@ -1104,6 +1196,10 @@ export function useGetNearUserLP() {
   const pairs = (liquidityTokens || memoArray).length > 0 ? allV2PairsWithLiquidity : [];
 
   return useMemo(() => ({ v2IsLoading, allV2PairsWithLiquidity: pairs }), [v2IsLoading, pairs]);
+}
+
+export function useDummyGetUserLP() {
+  return { v2IsLoading: false, allPairs: [] };
 }
 
 export interface CreatePoolProps {

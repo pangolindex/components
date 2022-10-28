@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
 import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
-import { hethers } from '@hashgraph/hethers';
 import {
   CAVAX,
   ChainId,
@@ -299,7 +298,7 @@ export function useHederaTokenAssociated(): {
 
     const tokens = await hederaFn.getAccountAssociatedTokens(account);
 
-    const currencyId = account ? hethers.utils.asAccountString(outputCurrencyId) : '';
+    const currencyId = account ? hederaFn.hederaId(outputCurrencyId) : '';
 
     const token = (tokens || []).find((token) => token.tokenId === currencyId);
 

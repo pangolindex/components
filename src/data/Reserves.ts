@@ -154,7 +154,7 @@ export function useHederaPairs(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _currencies: [Currency | undefined, Currency | undefined][],
 ): [PairState, Pair | null][] {
-  return [[PairState.INVALID, null]];
+  return [[PairState.NOT_EXISTS , null]];
 }
 
 export function useGetNearPoolId(tokenA?: Token, tokenB?: Token): number | null {
