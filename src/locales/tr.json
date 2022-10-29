@@ -739,7 +739,7 @@
       "estimatedToken": "Tahmini Token: {{ token }}",
       "estimatedResult": "Tahmini Result: {{ result }}",
       "min": "{{ minute }} dk",
-      "gasCost": "{{ gasCost }} Gas Cost"
+      "gasCost": "{{ gasCost }} USD Gas Cost"
     },
     "bridgeTransfer": {
       "date": "Tarih",
@@ -751,8 +751,10 @@
     },
     "bridgePrioritizations": {
       "recommended": "Önerilen",
-      "fast": "Hızlı",
-      "normal": "Normal"
+      "fastest": "Hızlı",
+      "normal": "Normal",
+      "safest": "Güvenli",
+      "cheapest": "Ucuz"
     }
   },
   "dropdown": {

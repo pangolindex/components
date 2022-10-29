@@ -1,4 +1,4 @@
-import { BTC_MAINNET, Currency } from '@pangolindex/sdk';
+import { Currency } from '@pangolindex/sdk';
 import React, { useCallback, useContext } from 'react';
 import { Info } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
     title,
     maxAmountInput,
     amount,
+    amountNet,
     chain,
     currency,
     inputDisabled,
@@ -72,7 +73,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
       </Currencies>
       <Tooltip id="minEarnedAmount" effect="solid">
         {t('bridge.bridgeInputsWidget.tooltip', {
-          amount: amount?.toExact(),
+          amount: amountNet,
           currency: currency?.symbol,
         })}
       </Tooltip>
@@ -105,11 +106,11 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           )
         }
       />
-      {chain === BTC_MAINNET && (
+      {!chain?.evm && (
         <Box pt={20}>
           <TextInput
             label="Recipient" //TODO: use translation
-            placeholder="Bitcoin Wallet Address" //TODO: use translation
+            placeholder="Wallet Address" //TODO: use translation
             value={recipient as string}
             required={true}
             onChange={(value) => {

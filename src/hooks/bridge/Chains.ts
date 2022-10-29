@@ -3,11 +3,11 @@ import { ChainType, EVMChain } from '@lifi/types';
 import { Chain, LIFI as LIFIBridge, THORSWAP } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { BRIDGE_THORSWAP } from 'src/constants';
+import { BRIDGE_THORSWAP_DEV } from 'src/constants';
 
 export function useThorSwapChains() {
   return useQuery(['thorswapChains'], async () => {
-    const response = await fetch(`${BRIDGE_THORSWAP}/universal/chainsDetails`);
+    const response = await fetch(`${BRIDGE_THORSWAP_DEV}/universal/chainsDetails`);
     const chains = response && response.status === 200 ? await response.json() : [];
     const formattedChains: Chain[] = chains.map((chain) => {
       return {
@@ -65,7 +65,7 @@ export function useBridgeChains() {
       [LIFIBridge.id]: lifiChains.status === 'success' ? lifiChains?.data ?? [] : [],
       [THORSWAP.id]: thorswapChains.status === 'success' ? thorswapChains?.data ?? [] : [],
     };
-  }, [thorswapChains, lifiChains]);
+  }, [thorswapChains.status, lifiChains.status]);
 }
 
 //TODO: remove this when we have a better way to get the chain data
@@ -90,7 +90,7 @@ export function useBridgeChainsAlternativeApproach() {
       };
     });
 
-    const response = await fetch(`${BRIDGE_THORSWAP}/universal/chainsDetails`);
+    const response = await fetch(`${BRIDGE_THORSWAP_DEV}/universal/chainsDetails`);
     const chainsThorswap = response && response.status === 200 ? await response.json() : [];
     const formattedChainsThor: Chain[] = chainsThorswap.map((chain) => {
       return {

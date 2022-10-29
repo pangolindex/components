@@ -1,6 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { BridgePrioritizations } from '..';
+import { BridgePrioritizations } from 'src/state/pbridge/types';
 import { BridgeRouteProps } from './types';
 import BridgeRoute from '.';
 
@@ -26,7 +26,13 @@ export default {
           2: 'Normal',
         },
       },
-      options: [BridgePrioritizations.fast, BridgePrioritizations.normal, BridgePrioritizations.recommended],
+      options: [
+        BridgePrioritizations.FASTEST,
+        BridgePrioritizations.NORMAL,
+        BridgePrioritizations.RECOMMENDED,
+        BridgePrioritizations.CHEAPEST,
+        BridgePrioritizations.SAFEST,
+      ],
       description: 'Transaction type',
     },
     estimatedToken: {
@@ -87,7 +93,7 @@ const TemplateBridgeRoute: ComponentStory<typeof BridgeRoute> = (args: any) => {
 export const Default = TemplateBridgeRoute.bind({});
 Default.args = {
   steps: steps,
-  transactionType: BridgePrioritizations.recommended,
+  transactionType: BridgePrioritizations.RECOMMENDED,
   estimatedToken: '0.0522 FRAX',
   estimatedResult: '$0.05 USD',
   min: '9:00',

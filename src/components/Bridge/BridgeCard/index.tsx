@@ -25,6 +25,7 @@ import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { ChainField, CurrencyField } from 'src/state/pbridge/actions';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
+import { BridgePrioritizations } from 'src/state/pbridge/types';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import BridgeInputsWidget from '../BridgeInputsWidget';
@@ -37,8 +38,7 @@ const BridgeCard = () => {
 
   const bridges = BRIDGES.map((bridge: Bridge) => ({ label: bridge.name, value: bridge.id }));
   const [isChainDrawerOpen, setIsChainDrawerOpen] = useState(false);
-  const [isInputCurrencyDrawerOpen, setIsInputCurrencyDrawerOpen] = useState(false);
-  const [isOutputCurrencyDrawerOpen, setIsOutputCurrencyDrawerOpen] = useState(false);
+  const [isCurrencyDrawerOpen, setIsCurrencyDrawerOpen] = useState(false);
   const [activeBridgePrioritization, setActiveBridgePrioritization] = useState<
     MultiValue<Option> | SingleValue<string>
   >('');
@@ -49,22 +49,18 @@ const BridgeCard = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { t } = useTranslation();
 
-  const BridgePrioritizationItems = [
-    {
-      label: t('bridge.bridgePrioritizations.recommended'),
-      value: 'recommended',
-    },
-    {
-      label: t('bridge.bridgePrioritizations.fast'),
-      value: 'fast',
-    },
-    {
-      label: t('bridge.bridgePrioritizations.normal'),
-      value: 'normal',
-    },
-  ];
+  const BridgePrioritizationItems = Object.keys(BridgePrioritizations)
+    .filter((v) => isNaN(Number(v)))
+    .map((prioritization) => {
+      return {
+        label: t(`bridge.bridgePrioritizations.${prioritization?.toLowerCase()}`),
+        value: prioritization?.toLowerCase(),
+      };
+    });
+
   const [inputCurrencyList, setInputCurrencyList] = useState<BridgeCurrency[]>([]);
   const [outputCurrencyList, setOutputCurrencyList] = useState<BridgeCurrency[]>([]);
+  const [infiniteApproval, setInfiniteApproval] = useState<boolean>(false);
   const [chainList, setChainList] = useState<Chain[] | undefined>(undefined);
   const chainHook = useBridgeChains();
   const [allBridgeCurrencies, setAllBridgeCurrencies] = useState<BridgeCurrency[]>([]);
@@ -91,16 +87,9 @@ const BridgeCard = () => {
     },
   ];
 
-  const onChangeTokenDrawerStatus = useCallback(
-    (type: ChainField) => {
-      if (type === ChainField.FROM) {
-        setIsInputCurrencyDrawerOpen(!isInputCurrencyDrawerOpen);
-      } else {
-        setIsOutputCurrencyDrawerOpen(!isOutputCurrencyDrawerOpen);
-      }
-    },
-    [isInputCurrencyDrawerOpen, isOutputCurrencyDrawerOpen],
-  );
+  const onChangeTokenDrawerStatus = useCallback(() => {
+    setIsCurrencyDrawerOpen(!isCurrencyDrawerOpen);
+  }, [isCurrencyDrawerOpen]);
 
   const onChangeChainDrawerStatus = useCallback(() => {
     setIsChainDrawerOpen(!isChainDrawerOpen);
@@ -118,7 +107,8 @@ const BridgeCard = () => {
 
   const { getRoutes } = useBridgeSwapActionHandlers();
 
-  const { currencies, chains, currencyBalances, parsedAmount, estimatedAmount, recipient } = useDerivedBridgeInfo();
+  const { currencies, chains, currencyBalances, parsedAmount, estimatedAmount, amountNet, recipient } =
+    useDerivedBridgeInfo();
 
   const inputCurrency = currencies[CurrencyField.INPUT];
   const outputCurrency = currencies[CurrencyField.OUTPUT];
@@ -130,34 +120,35 @@ const BridgeCard = () => {
   const debouncedAmountValue = useDebounce(parsedAmount?.toExact(), 500);
 
   useEffect(() => {
-    //TODO: Error in this function
-    if (currencyHook) {
+    if (currencyHook && activeBridges) {
       let data: BridgeCurrency[] = [];
-      Object.values(currencyHook).forEach((value) => {
-        data = data
-          ?.concat(value)
-          ?.filter(
-            (val, index, self) =>
-              index === self.findIndex((t) => t?.symbol === val?.symbol && t?.chainId === val?.chainId),
-          );
+      Object.entries(currencyHook).forEach(([key, value]) => {
+        if (activeBridges.some((bridge) => bridge.value === key)) {
+          data = data
+            ?.concat(value)
+            ?.filter(
+              (val, index, self) =>
+                index === self.findIndex((t) => t?.symbol === val?.symbol && t?.chainId === val?.chainId),
+            );
+        }
       });
       setAllBridgeCurrencies(data || []);
     }
-  }, [currencyHook?.lifi, currencyHook?.thorswap]);
+  }, [currencyHook?.lifi, currencyHook?.thorswap, activeBridges]);
 
   useEffect(() => {
     if (allBridgeCurrencies && fromChain) {
-      const data = allBridgeCurrencies?.filter((val) => val?.chainId === fromChain?.chain_id);
+      const data = allBridgeCurrencies?.filter((val) => val?.chainId === fromChain?.chain_id?.toString());
       setInputCurrencyList(data || []);
     }
-  }, [fromChain]);
+  }, [fromChain, allBridgeCurrencies]);
 
   useEffect(() => {
     if (allBridgeCurrencies && toChain) {
-      const data = allBridgeCurrencies?.filter((val) => val?.chainId === toChain?.chain_id);
+      const data = allBridgeCurrencies?.filter((val) => val?.chainId === toChain?.chain_id?.toString());
       setOutputCurrencyList(data);
     }
-  }, [toChain]);
+  }, [toChain, allBridgeCurrencies]);
 
   useEffect(() => {
     if (activeBridges) {
@@ -186,6 +177,7 @@ const BridgeCard = () => {
       getRoutes(
         debouncedAmountValue,
         slippageTolerance,
+        infiniteApproval,
         fromChain,
         toChain,
         account,
@@ -249,7 +241,7 @@ const BridgeCard = () => {
       <BridgeInputsWidget
         onChangeTokenDrawerStatus={() => {
           setDrawerType(ChainField.FROM);
-          onChangeTokenDrawerStatus(ChainField.FROM);
+          onChangeTokenDrawerStatus();
         }}
         onChangeChainDrawerStatus={() => {
           setDrawerType(ChainField.FROM);
@@ -279,7 +271,7 @@ const BridgeCard = () => {
       <BridgeInputsWidget
         onChangeTokenDrawerStatus={() => {
           setDrawerType(ChainField.TO);
-          onChangeTokenDrawerStatus(ChainField.TO);
+          onChangeTokenDrawerStatus();
         }}
         onChangeChainDrawerStatus={() => {
           setDrawerType(ChainField.TO);
@@ -290,6 +282,7 @@ const BridgeCard = () => {
         title="To"
         inputDisabled={true}
         amount={estimatedAmount}
+        amountNet={amountNet}
         chain={toChain}
         currency={outputCurrency}
       />
@@ -349,7 +342,12 @@ const BridgeCard = () => {
           </FilterBox>
           <FilterBox>
             <FilterInputHeader>{t('bridge.bridgeCard.filter.infiniteApproval')}</FilterInputHeader>
-            <Checkbox labelColor={'bridge.text'} label={t('bridge.bridgeCard.filter.activeInfiniteApproval')} />
+            <Checkbox
+              value={infiniteApproval}
+              onChange={(value) => setInfiniteApproval(value)}
+              labelColor={'bridge.text'}
+              label={t('bridge.bridgeCard.filter.activeInfiniteApproval')}
+            />
           </FilterBox>
           <FilterBox>
             <FilterInputHeader>{t('bridge.bridgeCard.filter.bridges')}</FilterInputHeader>
@@ -387,24 +385,12 @@ const BridgeCard = () => {
           otherSelectedChain={drawerType === ChainField.TO ? toChain : fromChain}
         />
       )}
-      {isInputCurrencyDrawerOpen && (
+      {isCurrencyDrawerOpen && (
         <SelectBridgeCurrencyDrawer
-          isOpen={isInputCurrencyDrawerOpen}
-          bridgeCurrencies={inputCurrencyList}
+          isOpen={isCurrencyDrawerOpen}
+          bridgeCurrencies={drawerType === ChainField.FROM ? inputCurrencyList : outputCurrencyList}
           onClose={() => {
-            onChangeTokenDrawerStatus(ChainField.FROM);
-          }}
-          onCurrencySelect={onCurrencySelect}
-          selectedCurrency={drawerType === ChainField.FROM ? inputCurrency : outputCurrency}
-          otherSelectedCurrency={drawerType === ChainField.TO ? outputCurrency : inputCurrency}
-        />
-      )}
-      {isOutputCurrencyDrawerOpen && (
-        <SelectBridgeCurrencyDrawer
-          isOpen={isOutputCurrencyDrawerOpen}
-          bridgeCurrencies={outputCurrencyList}
-          onClose={() => {
-            onChangeTokenDrawerStatus(ChainField.TO);
+            onChangeTokenDrawerStatus();
           }}
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={drawerType === ChainField.FROM ? inputCurrency : outputCurrency}

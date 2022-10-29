@@ -3,15 +3,15 @@ import { Token } from '@lifi/types';
 import { BridgeCurrency, LIFI as LIFIBridge, THORSWAP } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { BRIDGE_THORSWAP } from 'src/constants';
+import { BRIDGE_THORSWAP_DEV } from 'src/constants';
 
 export function useThorSwapCurrencies() {
   return useQuery(['thorswapCurrencies'], async () => {
-    const response = await fetch(`${BRIDGE_THORSWAP}/universal/currenciesFull`);
+    const response = await fetch(`${BRIDGE_THORSWAP_DEV}/universal/currenciesFull`);
     const currencies = response && response.status === 200 ? await response.json() : [];
     const formattedCurrencies: BridgeCurrency[] = currencies.map((currency) => {
       return {
-        chainId: currency?.chainId,
+        chainId: currency?.chainId?.toString(),
         decimals: currency.decimals,
         symbol: currency?.ticker,
         name: currency?.name,
@@ -51,20 +51,20 @@ export function useBridgeCurrencies() {
   const lifiCurrencies = useLiFiSwapCurrencies();
   return useMemo(() => {
     return {
-      [LIFIBridge.id]: lifiCurrencies.status === 'success' ? lifiCurrencies?.data ?? [] : [],
       [THORSWAP.id]: thorswapCurrencies.status === 'success' ? thorswapCurrencies?.data ?? [] : [],
+      [LIFIBridge.id]: lifiCurrencies.status === 'success' ? lifiCurrencies?.data ?? [] : [],
     };
-  }, [thorswapCurrencies, lifiCurrencies]);
+  }, [thorswapCurrencies.status, lifiCurrencies.status]);
 }
 
 //TODO: remove this when we have a better way to get the chain data
 export function useBridgeCurrenciesAlternativeApproach() {
   const query = useQuery(['allCurrencies'], async () => {
-    const response = await fetch(`${BRIDGE_THORSWAP}/universal/currenciesFull`);
+    const response = await fetch(`${BRIDGE_THORSWAP_DEV}/universal/currenciesFull`);
     const currencies = response && response.status === 200 ? await response.json() : [];
     const formattedCurrenciesThorSwap: BridgeCurrency[] = currencies.map((currency) => {
       return {
-        chainId: currency?.chainId,
+        chainId: currency?.chainId?.toString(),
         decimals: currency.decimals,
         symbol: currency?.ticker,
         name: currency?.name,
@@ -90,7 +90,7 @@ export function useBridgeCurrenciesAlternativeApproach() {
       });
       formattedCurrencies = [...formattedCurrencies, ...chainTokens];
     });
-    return formattedCurrenciesThorSwap.concat(formattedCurrencies);
+    return formattedCurrencies.concat(formattedCurrenciesThorSwap); //"Sorting" is important
   });
 
   return useMemo(() => {

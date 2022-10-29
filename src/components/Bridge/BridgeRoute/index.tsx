@@ -12,6 +12,7 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
     steps = [],
     transactionType,
     toAmount,
+    toToken,
     onSelectRoute,
     toAmountUSD,
     waitingTime,
@@ -21,7 +22,9 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
     <Route selected={selected}>
       <Box display="flex" justifyContent="space-between" alignItems="center" pb={30}>
         <Text color={'bridge.text'} fontSize={[24, 20]} fontWeight={600}>
-          {t(`bridge.bridgePrioritizations.${BridgePrioritizations[transactionType]}`).toLocaleUpperCase()}
+          {t(
+            `bridge.bridgePrioritizations.${BridgePrioritizations[transactionType].toLowerCase()}`,
+          ).toLocaleUpperCase()}
         </Text>
 
         <Button
@@ -53,9 +56,9 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
                 </Text>
                 {(step as BridgeStep)?.includedSteps?.map((subStep, index) => {
                   return (
-                    //TODO:
                     <Text pl={24} key={index} color={'bridge.text'} fontSize={[16, 14]} fontWeight={400} pb={'0.2rem'}>
-                      {index + 1}. Swap to {subStep?.estimate?.toAmount} {subStep?.action?.toToken} via Thorchain
+                      {index + 1}. {subStep?.type ? subStep?.type[0].toUpperCase() + subStep?.type.slice(1) : 'Swap'} to{' '}
+                      {subStep?.estimate?.toAmount} {subStep?.action?.toToken} via {subStep?.integrator}
                     </Text>
                   );
                 })}
@@ -66,7 +69,7 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
       </div>
       <Box pb={10}>
         <Text color={'bridge.text'} fontSize={[16, 14]} fontWeight={600} pb={'0.2rem'}>
-          {t('bridge.bridgeRoute.estimatedToken', { token: toAmount })}
+          {t('bridge.bridgeRoute.estimatedToken', { token: `${toAmount} ${toToken}` })}
         </Text>
         <Text color={'bridge.text'} fontSize={[16, 14]} fontWeight={600}>
           {t('bridge.bridgeRoute.estimatedResult', { result: toAmountUSD })}
@@ -78,11 +81,13 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
             {waitingTime}
           </Text>
         </Information>
-        <Information>
-          <Text color="bridge.routeInfoColor" fontSize={[16, 14]} fontWeight={400}>
-            {t('bridge.bridgeRoute.gasCost', { gasCost: gasCostUSD })}
-          </Text>
-        </Information>
+        {gasCostUSD && (
+          <Information>
+            <Text color="bridge.routeInfoColor" fontSize={[16, 14]} fontWeight={400}>
+              {t('bridge.bridgeRoute.gasCost', { gasCost: gasCostUSD })}
+            </Text>
+          </Information>
+        )}
       </Informations>
     </Route>
   );

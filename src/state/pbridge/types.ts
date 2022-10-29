@@ -1,9 +1,11 @@
 import { Bridge } from '@pangolindex/sdk';
 
 export enum BridgePrioritizations {
-  recommended,
-  fast,
-  normal,
+  RECOMMENDED,
+  NORMAL,
+  FASTEST,
+  CHEAPEST,
+  SAFEST,
 }
 
 export type Route = {
@@ -15,6 +17,7 @@ export type Route = {
   fromAddress?: string;
   toChainId: string;
   toAmount: string;
+  toAmountNet: string;
   toAmountUSD: string;
   toToken: string;
   toAddress?: string;
@@ -23,9 +26,9 @@ export type Route = {
   transactionType: BridgePrioritizations;
   selected: boolean;
 };
-export declare type Step = SwapStep | BridgeStep;
+export declare type Step = SwapStep | BridgeStep | LifiStep | CrossStep | CustomStep;
 
-export declare type StepType = 'swap' | 'cross' | 'bridge' | 'custom';
+export declare type StepType = 'swap' | 'cross' | 'lifi' | 'bridge' | 'custom';
 
 export interface StepBase {
   id?: string;
@@ -44,31 +47,57 @@ export interface BridgeStep extends StepBase {
   includedSteps: Step[];
 }
 
+export interface LifiStep extends StepBase {
+  type: 'lifi';
+  bridge: Bridge;
+  action: Action;
+  estimate: Estimate;
+  includedSteps: Step[];
+}
+
+export interface CustomStep extends StepBase {
+  type: 'custom';
+  bridge: Bridge;
+  destinationCallInfo: {
+    toContractAddress: string;
+    toContractCallData: string;
+    toFallbackAddress: string;
+    callDataGasLimit: string;
+  };
+}
+
 export interface SwapStep extends StepBase {
   type: 'swap';
   action: Action;
   estimate: Estimate;
 }
 
+export interface CrossStep extends StepBase {
+  type: 'cross';
+  action: Action;
+  estimate: Estimate;
+}
+
 export interface Action {
-  fromChainId: number;
+  fromChainId: number | string;
   fromAmount: string;
   fromToken: string;
-  fromAddress?: string;
-  toChainId: number;
+  toChainId: number | string;
   toToken: string;
-  toAddress?: string;
   slippage: number;
+  toAddress?: string;
+  fromAddress?: string;
 }
 
 export interface Estimate {
   fromAmount: string;
-  fromAmountUSD?: string;
   toAmount: string;
-  toAmountUSD?: string;
   approvalAddress: string;
+  executionDuration: number;
+  fromAmountUSD?: string;
+  toAmountMin?: string;
+  toAmountUSD?: string;
   feeCostsUSD?: string;
   gasCostsUSD?: string;
-  executionDuration: number;
   data?: any;
 }

@@ -4969,11 +4969,6 @@
     "@web3-react/abstract-connector" "^6.0.7"
     "@web3-react/types" "^6.0.7"
 
-"@thorchain/asgardex-util@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@thorchain/asgardex-util/-/asgardex-util-0.10.0.tgz#41bfe50a7421abeff1a2900ff38c35cbe3ad1d17"
-  integrity sha512-Bpa8tMQuf+u8mSWefa8u90QpfJC72aUOJvHFwLOM0VhcXxpQ9qp1PbFLNIkRnb5UJ5+Li0JgvnYPRjZRs+cl5Q==
-
 "@types/babel__core@^7.1.0":
   version "7.1.19"
   resolved "https://registry.npmjs.org/@types/babel__core/-/babel__core-7.1.19.tgz"
@@ -6128,31 +6123,6 @@
   integrity sha512-mwEVBDUVODlsQQ5dfuLUS5/Tf7jqUKyhKYHmVi4fPB6bDMOfWvUPJmKgS1Z7Za/sOI3vzWt4+O7yCiL/70MogA==
   dependencies:
     tslib "^1.9.3"
-
-"@xchainjs/xchain-client@^0.13.1":
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-client/-/xchain-client-0.13.1.tgz#270002ed50fae808936694b76d0f4cf1bccb7292"
-  integrity sha512-bA+aPDCIfMAPD7ARuFwum7ti+sz61R45ZP6en5UZwmn/MKejO0pIcuKZ4FHhahpv9qQNlKw68eo6l50NFBBBMA==
-
-"@xchainjs/xchain-midgard@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-midgard/-/xchain-midgard-0.1.0.tgz#96fe8ed8ca10892fb3bcca1153d9c2d667960a98"
-  integrity sha512-+y7ctEk8JBQvImeZNz0tM/tE9jqHXHamrJmfG+Km4mG2ROSEPPKH+yZLKad/rCKUIF8j8XJ8R0PWg6GnZESZSg==
-
-"@xchainjs/xchain-thorchain-query@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-thorchain-query/-/xchain-thorchain-query-0.1.0.tgz#6df1241d2be9e6a9b99347e27601821c0491b268"
-  integrity sha512-HuBneyavUak3lW2CD1QOfF/xIcnblwazJQSDaEKU6mP2xkDWhIq13BC4Gmm8C5X8NB4FxipAao4diHojvjcUFA==
-
-"@xchainjs/xchain-thornode@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-thornode/-/xchain-thornode-0.1.0.tgz#e8ca97a04e75a687205a8086ec5b7aa8ed2fffd0"
-  integrity sha512-84RiBLjDyNB42z0GuQiDXVpceLhfCe+On/D/JQUrN590SfAEO1wawbb0ssnamxHBGXB9Cyq5CMK1wKTStu5CgQ==
-
-"@xchainjs/xchain-util@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@xchainjs/xchain-util/-/xchain-util-0.10.0.tgz#42e534313927094302a1ade140e3c42a3e2ad998"
-  integrity sha512-JZr2M8j+6VtjiqiYRUkNjK2JM8hSZbC7Cr2VmPvdvZa39Ks15D8xgrDw7IaCjPkENaLiejbzMzZZbtV9Qf9K4g==
 
 "@xobotyi/scrollbar-width@1.9.5":
   version "1.9.5"

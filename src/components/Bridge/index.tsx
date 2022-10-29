@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Loader, Text } from 'src/components';
 import { useBridgeActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
+import { Route } from 'src/state/pbridge/types';
 import { Tab, TabList, TabPanel, Tabs } from '../Tabs';
 import BridgeCard from './BridgeCard';
 import BridgeRoute from './BridgeRoute';
@@ -50,7 +51,7 @@ const Bridge = () => {
             <Routes>
               {routes &&
                 routes.length > 0 &&
-                routes.map((route, index) => {
+                routes.map((route: Route, index) => {
                   return (
                     <BridgeRoute
                       key={index}
@@ -61,9 +62,10 @@ const Bridge = () => {
                       transactionType={route.transactionType}
                       selected={route.selected}
                       toAmount={route.toAmount}
+                      toAmountNet={route.toAmountNet}
                       toAmountUSD={route.toAmountUSD}
                       waitingTime={route.waitingTime}
-                      gasCostUSD={route.gasCostUSD}
+                      gasCostUSD={route?.gasCostUSD}
                       fromChainId={route.fromChainId}
                       fromAmount={route.fromAmount}
                       fromToken={route.fromToken}

@@ -22,6 +22,10 @@ export type BridgeInputsWidgetProps = {
    */
   amount?: CurrencyAmount;
   /**
+   * Currency Amount Net
+   */
+  amountNet?: string;
+  /**
    * Max currency amount
    */
   maxAmountInput?: CurrencyAmount;
