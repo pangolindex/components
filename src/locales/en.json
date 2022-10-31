@@ -525,16 +525,14 @@
     "selectToken": "Select a token",
     "enterRecipient": "Enter a recipient",
     "invalidRecipient": "Invalid recipient",
-    "insufficient": "Insufficient ",
-    "balance": " balance"
+    "insufficientBalance": "Insufficient {{ symbol }} balance"
   },
   "mintHooks": {
     "connectWallet": "Connect Wallet",
     "insufficientInputAmount": "Insufficient input amount",
     "invalidPair": "Invalid pair",
     "enterAmount": "Enter an amount",
-    "insufficient": "Insufficient ",
-    "balance": " balance"
+    "insufficientBalance": "Insufficient {{ symbol }} balance"
   },
   "stakeHooks": {
     "connectWallet": "Connect Wallet",
@@ -698,13 +696,14 @@
     "claimWarning1": "When you claim without withdrawing, your liquidity remains in the farm.",
     "claimWarning2": "Claiming rewards restarts your APR from 0%. Instead you may choose to compound.",
     "compoundWarning": "Compounding your rewards for {{ token0 }}-{{ token1 }} farm will get your rewards staked into {{ currency }}-{{ png }} farm. You need to add equal value of {{ currency }} token to your accrued {{ png }} rewards.",
-    "compoundAmountWarning": "You need to add {{ amount }} {{ symbol }} to compound.",
-    "compoundAmountWarning2": "Be careful that you will be locking your {{ symbol }} {{ png }} pool till you claim the rewards of this pool.",
+    "compoundAmountWarning": "You need to add {{ amount }} {{ symbol }} to compound. Please beware that Compounding may slightly decrease your APR.",
+    "compoundAmountWarning2": "Be careful that you will be locking your {{ token0 }} {{ token1 }} pool till you claim the rewards of this pool.",
     "highVolalityWarning": "Too early, try in few hours",
-    "compoundSuccess": "You have successfully composed your farm.",
+    "compoundSuccess": "You have successfully compounded your farm.",
     "compoundTransactionSummary": "Compounded farm",
     "removeWarning": "Removing any amount from farm will get your APR to 0. You can instead compound your rewards without losing your APR.",
-    "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim your stake from this farms: "
+    "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim or remove your stake from this farms: ",
+    "decreaseWarning": "Your apr will decrease because the new compounded part starts with apr 0 and an average will be taken between the old and new part."
   },
   "bridge": {
     "availableRoutes": "Available Routes ({{ number }})",

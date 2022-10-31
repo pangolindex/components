@@ -1,8 +1,6 @@
 import { ALL_CHAINS } from '@pangolindex/sdk';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { Lock } from 'react-feather';
-import { ThemeContext } from 'styled-components';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { PairDataUser, TokenDataUser, useGetChainsBalances, useGetWalletChainTokens } from 'src/state/pportfolio/hooks';
 import { Box } from '../Box';
@@ -13,7 +11,6 @@ import PortfolioRow from './PortfolioRow';
 import { Body, Frame, Header, Root, SelectedCard } from './styleds';
 
 const MyPortfolio: React.FC = () => {
-  const theme = useContext(ThemeContext);
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
@@ -55,7 +52,9 @@ const MyPortfolio: React.FC = () => {
           ) : (
             <Box display="flex" flexDirection="row">
               {[...Array(4)].map((_value, _key) => (
-                <Lock color={theme.text13} size={14} key={_key} />
+                <Text color="text13" fontSize={14} fontWeight={700} key={_key}>
+                  *
+                </Text>
               ))}
             </Box>
           )}
@@ -75,7 +74,11 @@ const MyPortfolio: React.FC = () => {
         </Text>
       );
     }
-    return <Lock color={theme.text1} size={18} />;
+    return (
+      <Text color="text13" fontSize={14} fontWeight={700}>
+        *
+      </Text>
+    );
   };
 
   const renderRow = (item: TokenDataUser | PairDataUser, index: number) => {

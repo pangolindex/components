@@ -13,7 +13,6 @@ import { useAllTokens } from 'src/hooks/Tokens';
 import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
-import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
 import ApplicationUpdater from 'src/state/papplication/updater';
 import ListsUpdater from 'src/state/plists/updater';
 import MulticallUpdater from 'src/state/pmulticall/updater';
@@ -56,6 +55,7 @@ import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
+import { PangoChefInfo } from './state/ppangoChef/types';
 import { Position, useSarPositions, useSarStakeInfo } from './state/psarstake/hooks';
 import SwapUpdater from './state/pswap/updater';
 import { default as ThemeProvider } from './theme';
@@ -119,9 +119,19 @@ export function PangolinProvider({
 export * from './constants';
 export * from './connectors';
 export * from './components';
+export * from './state/papplication/hooks';
+export * from './state/papplication/actions';
 
 export * from '@gelatonetwork/limit-orders-react';
-export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, StakingInfo, DoubleSideStaking, Position };
+export type {
+  LimitOrderInfo,
+  MinichefStakingInfo,
+  DoubleSideStakingInfo,
+  StakingInfo,
+  DoubleSideStaking,
+  Position,
+  PangoChefInfo,
+};
 
 // components
 export { SelectTokenDrawer };
@@ -136,9 +146,6 @@ export {
   useDerivedSwapInfo,
   useUSDCPrice,
   useAllTokens,
-  useActivePopups,
-  useRemovePopup,
-  useAddPopup,
   usePair,
   useSwapActionHandlers,
   useLibrary,

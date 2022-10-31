@@ -14,6 +14,7 @@ import {
   TextInput,
   TransactionCompleted,
 } from 'src/components';
+import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
@@ -342,6 +343,8 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
       ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toSignificant(6)
       : '-';
 
+  const png = PNG[chainId];
+
   return (
     <StakeWrapper>
       {!attempting && !hash && (
@@ -411,7 +414,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
                 {!isSuperFarm && (
                   <Stat
                     title={t('dashboardPage.earned_weeklyIncome')}
-                    stat={`${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} PNG`}
+                    stat={`${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} ${png.symbol}`}
                     titlePosition="top"
                     titleFontSize={14}
                     statFontSize={16}
@@ -436,7 +439,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
                   {renderPoolDataRow(t('migratePage.dollarWorth'), `${dollerWarth}`)}
                   {renderPoolDataRow(
                     `${t('dashboardPage.earned_weeklyIncome')}`,
-                    `${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} PNG`,
+                    `${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} ${png.symbol}`,
                   )}
 
                   {isSuperFarm && (
