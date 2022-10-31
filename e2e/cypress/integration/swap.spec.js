@@ -319,4 +319,11 @@ describe('Swap', () => {
             pangolinUsefulLinks(`button.jmaCMK`, `${swap}`, pangolinLinksArr[3])
             switchingValues(1, 'From', `${tokenName}`)
     })
+
+    /**********************   Assertions on the Recipient   ************************/    
+        // it.only('TC-130, Verify that the user can see the "+ Add Recipient" link on the trade card', () =>{
+        //     cy.get('#add-recipient-button')
+        //     cy.pause()
+        //     .should("contain","+ Add Recipient")
+        // })
 })

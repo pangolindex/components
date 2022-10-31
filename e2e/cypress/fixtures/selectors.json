@@ -43,7 +43,11 @@
         "connectWallet": "div[id='connect-wallet']",
         "linkBtn": "a[class='sc-gsnTZi jbbOxr']",
         "pangolinLogo": "div.css-zkfaav [class='sc-ifAKCX sc-bZQynM sc-iwsKbI hbTVAQ'] img",
-        "connectWalletMsg": "div[class='sc-jSMfEi hMQPrK']"
+        "connectWalletMsg": "div[class='sc-jSMfEi hMQPrK']",
+        "PNGBtn": "[class='sc-kfGgVZ sc-esjQYD cueueu']",
+        "PNGValue": "[class='sc-kAzzGY cVbXJ css-5lj1gi']",
+        "addPNG": "[class='sc-kAzzGY cVbXJ css-8626y4']",
+        "PNGLogo": "[class='sc-VigVT dscGgR']"
     },
     "swap": {
         "swapSideMenu": ".cIKZSl",
@@ -100,5 +104,18 @@
         "aboutSection": "[class='sc-jSMfEi IMWyv']",
         "executedBtn": "button[class='sc-gsnTZi dWgDgB sc-hmXxxW gKNYRi']",
         "proposalOrders": "div.sc-jSMfEi"
+    },
+    "airdrop":{
+        "airdropSideMenu": ".cIKZSl",
+        "airdropSideMenuSelect": "div[class='sc-hMFtBS cIKZSl'] a",
+        "pangolinTitle": "p[class='sc-krDsej kIrOqg']",
+        "songbirdLogo": "img[class='sc-eMigcr eOBIOP']",
+        "cards": "div[class='sc-jSMfEi kvSvpp']",
+        "metamaskMenuTitle": "div[class='sc-bSakgD btUThD']",
+        "metamaskMenuCrossBtn": "svg[class='sc-bhVIhj sc-dSuTWQ gLGxRa aodbf']",
+        "haveQuestions": "div[class='sc-jSMfEi jimatc']",
+        "plusIcon": "div[class='sc-jSMfEi kaswRx']",
+        "faqExp": "[class='sc-jSMfEi jIyzJm']",
+        "minusIcon": "[class='sc-giadOv iQUDzh']"
     }
 }

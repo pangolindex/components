@@ -11,7 +11,7 @@ describe('Dashboard', () => {
         // failing the test
         return false
     })
-    const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, pngButton, pngModal, pngPriceSel, linkBtn, pangolinLogo, swapIcon, dashboardIcon, connectWalletMsg, connectWallet, tokenMouseOverEnable} = selectors.dashboard
+    const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, pngButton, pngModal, pngPriceSel, linkBtn, pangolinLogo, swapIcon, dashboardIcon, connectWalletMsg, connectWallet, tokenMouseOverEnable, PNGBtn, PNGValue, addPNG, PNGLogo} = selectors.dashboard
     const { returnToLegacy, languagesArray, tokenName, AvaxToken, switchArray, newsLinkArray, newsLinkAssertArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, newsSongBird, usd, coinBase, bridgeSwap, connectToWalletMsg, connectToWallet, linkUrl, swap } = data.dashboard
     const {pangolinLinksArr} = data
     const legUrl = "https://legacy.pangolin.exchange/#/"
@@ -20,7 +20,7 @@ describe('Dashboard', () => {
     })
 
     /********************* Expanded the side menu when mouseover on it  *********************/
-    it('TC-01, Verify that the side menu is expanded while hovering the pointer over it', () => {
+    it('TC-01,02, Verify that the side menu is expanded while hovering the pointer over it', () => {
         cy.get(sideMenuCollapse).should(visible => {
             expect(visible).to.be.visible
         }).then(sidemenu => {
@@ -268,29 +268,23 @@ describe('Dashboard', () => {
         })
     }
 
-    /*************** Click and assert PNG token value is not visible without wallet *************/
-    it('TC-55, Verify that the user cannot see the Native token value if the wallet is not connected', () => {
-        cy.get(pngButton).contains(/png/i).click()
-        cy.wait(3000)
-        cy.get(pngModal).within(modal => {
-            expect(modal).to.be.visible
-            cy.contains(/Your png breakdown/i)
-                .should(pngText => {
-                    expect(pngText).to.be.visible
-                })
-            cy.get(pngPriceSel).then(png => {
-                cy.get(png).find('div').eq(1).then(pngPrice => {
-                    expect(pngPrice).to.contain("PNG price:")
-                })
-                cy.get(png).find('div').eq(2).then(pngValue => {
-                    expect(pngValue).to.contain('$-')
-                })
-            })
-        })
-    })
-
+    
+    /***********************  Connect to mainnet assertions  ***************************/
+    // it.only('TC-53, Verify that the user cannot connect to the mainnet chain if the wallet is not connected', () => {
+    //     cy.get('[class="sc-bdVaJa sc-gxMtzJ sc-dfVpRl sc-eXEjpC fhNhgg"]')
+    //         .should('contain', "Avalanche").click()
+    //     cy.get('[class="sc-jSMfEi diEVGF"]').eq(2)
+    //         .click()  
+    //     cy.get('[class="unlock-page__title"]').should("contain","Welcome back!")
+        
+    // })
+    
     /***********************  Connect to wallet button  ***************************/
-    it('TC-56, 57, 58, 59, 60, Verify that the user can see the "Connect to a Wallet" button if the wallet is not connected', () => {
+    it.only('TC-55,56, 57, 58, 59, 60, Verify that the user can see the "Connect to a Wallet" button if the wallet is not connected', () => {
+        cy.get(PNGBtn).contains("PNG").click()
+        cy.get(PNGValue).should("not.exist")
+        cy.get(addPNG).contains("Add PNG to MetaMask").should("not.exist")
+        cy.get(PNGLogo).should("not.exist")
         cy.get(connectWallet)
             .should('contain', connectToWallet)
         cy.get(connectWalletMsg)
@@ -376,3 +370,4 @@ describe('Dashboard', () => {
 
 
 })
+

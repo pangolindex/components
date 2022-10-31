@@ -48,5 +48,12 @@
   "vote": {
     "proposalsArray": ["Treasury Replenishment Request", "Efficient PNG Buybacks","Distributed PNG Buybacks","Treasury Replenishment Request","Pangolin V2 and The New Tokenomics","Increase Governance Agility","Hiring a Market Maker - PNG","Hiring a Market Maker - Fee Switch","Make the Pangolin Multisig Responsible for Incentive Changes","Increase Reward Rates for Avalanche-Native Pools","Create a Treasury for Pangolin's multisig","Add Pangolin Rewards for Verso token (VSO)","Add Pangolin Rewards for Snowball token (SNOB) pairs","Weighted Pangolin Rewards"],
     "proposalOrder": ["14","13","12","11","10","9","8","7","6","5","4","3","2","1"]
+  },
+  "airdrop": {
+    "cardsNames": ["Old PSB Reimbursement","Claim PSB","Claim PNR","Claim PFL"],
+    "title": "Pangolin Going Crosschain",
+    "eligibleMsg": "Let's check if you are eligible!",
+    "comingSoonMsg": "Coming SOON...",
+    "haveQs": "HAVE QUESTIONS?"
   }
 }
