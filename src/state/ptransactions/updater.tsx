@@ -136,7 +136,7 @@ export default function Updater(): null {
         try {
           const receipt = await (provider as any).getTransactionReceipt(hash);
 
-          const status = receipt.status;
+          const status = receipt?.status;
 
           if (receipt) {
             dispatch(

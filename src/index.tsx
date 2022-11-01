@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
-import { ChainId } from '@pangolindex/sdk';
+import { ChainId, CHAINS } from '@pangolindex/sdk';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -94,7 +94,7 @@ export function PangolinProvider({
             <MulticallUpdater />
             <TransactionUpdater />
             <SwapUpdater />
-            {isEvmChain(chainId) ? (
+            {isEvmChain(chainId) && CHAINS[chainId]?.supported_by_gelato ? (
               <Provider store={galetoStore}>
                 <GelatoProvider
                   library={ethersLibrary}

@@ -5,6 +5,7 @@ import {
   useApproveCallbackFromNearTrade,
   useApproveCallbackFromTrade,
   useNearApproveCallback,
+  useHederaApproveCallback,
 } from './useApproveCallback';
 import { useDummySwapCallback, useNearSwapCallback, useSwapCallback } from './useSwapCallback';
 import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
@@ -71,7 +72,7 @@ export const useSwapCallbackHook: UseSwapCallbackHookType = {
 };
 
 export type UseApproveCallbackHookType = {
-  [chainId in ChainId]: typeof useApproveCallback | typeof useNearApproveCallback;
+  [chainId in ChainId]: typeof useApproveCallback | typeof useNearApproveCallback | typeof useHederaApproveCallback;
 };
 
 export const useApproveCallbackHook: UseApproveCallbackHookType = {
@@ -80,7 +81,7 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
   [ChainId.WAGMI]: useApproveCallback,
   [ChainId.COSTON]: useApproveCallback,
   [ChainId.SONGBIRD]: useApproveCallback,
-  [ChainId.HEDERA_TESTNET]: useApproveCallback,
+  [ChainId.HEDERA_TESTNET]: useHederaApproveCallback,
   [ChainId.NEAR_MAINNET]: useNearApproveCallback,
   [ChainId.NEAR_TESTNET]: useNearApproveCallback,
 };
@@ -101,7 +102,7 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
 };
 
 export type UseTokensHookType = {
-  [chainId in ChainId]: typeof useTokens | typeof useNearTokens | typeof useHederaTokens;
+  [chainId in ChainId]: typeof useTokens | typeof useNearTokens;
 };
 
 export const useTokensHook: UseTokensHookType = {
@@ -110,7 +111,7 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.WAGMI]: useTokens,
   [ChainId.COSTON]: useTokens,
   [ChainId.SONGBIRD]: useTokens,
-  [ChainId.HEDERA_TESTNET]: useHederaTokens,
+  [ChainId.HEDERA_TESTNET]: useTokens,
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
 };

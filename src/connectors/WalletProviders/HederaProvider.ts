@@ -25,13 +25,14 @@ export const HederaProvider = (provider) => {
         const newTransactionId = before + '-' + after;
 
         //Transaction id. Please use "shard.realm.num-sss-nnn" format where sss are seconds and nnn are nanoseconds
-        const receipt = await hethersProvider.getTransaction(newTransactionId);
-
-        if (!receipt?.hash) {
-          return undefined;
-        }
+        // const receipt = await hethersProvider.getTransaction(newTransactionId);
+        // console.log('receipt', receipt);
+        // if (!receipt?.hash) {
+        //   return undefined;
+        // }
 
         const transaction = await hederaFn.getTransactionById(newTransactionId);
+
         if (!transaction) {
           return undefined;
         }
@@ -42,11 +43,11 @@ export const HederaProvider = (provider) => {
           blockHash: block?.hash,
           blockNumber: block?.number,
           contractAddress: '',
-          from: receipt?.from,
-          status: receipt?.customData?.result === 'SUCCESS' ? 1 : 0,
-          to: receipt?.to,
-          hash: receipt?.hash,
-          transactionHash: receipt?.hash,
+          from: transaction?.from,
+          status: transaction?.status,
+          to: '',
+          hash: transaction?.transactionHash,
+          transactionHash: transaction?.transactionHash,
           transactionIndex: 1,
         };
       } catch (error) {

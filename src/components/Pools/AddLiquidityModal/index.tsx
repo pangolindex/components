@@ -67,7 +67,7 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
     if (!chainId) return;
 
     try {
-      if (!isEvmChain(chainId) && value) { // TODO-1
+      if (isEvmChain(chainId) && value) {
         setBodyState(value);
       } else if (!isEvmChain(chainId)) {
         const tokenA = currency0 ? wrappedCurrency(currency0, chainId) : undefined;

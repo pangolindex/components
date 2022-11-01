@@ -9,6 +9,7 @@ import {
   TokenAssociateTransaction,
   Transaction,
   TransactionId,
+  AccountAllowanceApproveTransaction,
 } from '@hashgraph/sdk';
 import { ChainId, CurrencyAmount, WAVAX, Token } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
@@ -138,6 +139,15 @@ export interface AddNativeLiquidityData {
   deadline: string;
   chainId: ChainId;
 }
+
+export interface SendingApprovalData {
+  tokenAddress: string;
+  amount: string;
+  spender?: string;
+  account?: string | null;
+  chainId: ChainId;
+}
+
 class Hedera {
   axios: AxiosInstance;
   client: Client;
@@ -213,21 +223,20 @@ class Hedera {
 
       const balance1 = response?.balances?.[0]?.balance || 0;
 
-      console.log('balance1', balance1);
-
+      return balance1;
       // return balance;
       // TODO
-      const query = new AccountBalanceQuery().setAccountId(accountId);
-      const tokens = await query.execute(this.client);
+      // const query = new AccountBalanceQuery().setAccountId(accountId);
+      // const tokens = await query.execute(this.client);
 
-      const allTokens = JSON.parse(JSON.stringify(tokens));
-      console.log('allTokens', allTokens);
+      // const allTokens = JSON.parse(JSON.stringify(tokens));
+      // console.log('allTokens', allTokens);
 
-      const balance = allTokens?.hbars.slice(0, -2);
+      // const balance = allTokens?.hbars.slice(0, -2);
 
-      console.log('test', Hbar.fromString(balance).toString());
+      // console.log('test', Hbar.fromString(balance).toString());
 
-      return balance1;
+      // return balance1;
     } catch (error) {
       console.log(error);
       return 0;
@@ -278,7 +287,6 @@ class Hedera {
   public async getAccountAssociatedTokens(account: string) {
     try {
       const accountId = account ? this.hederaId(account) : '';
-
       const query = new AccountBalanceQuery().setAccountId(accountId);
       const tokens = await query.execute(this.client);
 
@@ -407,20 +415,19 @@ class Hedera {
 
     console.log('chainId', chainId);
 
-    const tokenAddress = token ? this.hederaId(token?.address) : '';
+    const tokenAddress = token ? token?.address : '';
     console.log('tokenAddress', tokenAddress);
     const accountId = account ? this.hederaId(account) : '';
     console.log('accountId', accountId);
     const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
     console.log('contarctId', contarctId);
-    const routerId = this.contractId(contarctId);
-    console.log('routerId', routerId);
+
     const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
     console.log('maxGas', maxGas);
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the router contract
-      .setContractId(routerId)
+      .setContractId(contarctId)
       //Set the gas for the contract call
       .setGas(maxGas)
       //Amount of HBAR we want to provide
@@ -432,7 +439,7 @@ class Hedera {
           .addUint256(tokenAmount as any)
           .addUint256(tokenAmountMin as any)
           .addUint256(HBARAmountMin as any)
-          .addAddress(accountId)
+          .addAddress(account)
           .addUint256(deadline as any),
       );
 
@@ -519,6 +526,28 @@ class Hedera {
       );
 
     const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
+
+    const res = await hashConnect.sendTransaction(transBytes, accountId);
+    console.log('res', res);
+    return res;
+  }
+
+  public async spendingApproval(approvalData: SendingApprovalData) {
+    const { tokenAddress, amount, account, spender, chainId } = approvalData;
+
+    const accountId = account ? this.hederaId(account) : '';
+    const tokenId = this.hederaId(tokenAddress);
+    console.log('accountId', accountId);
+    const spenderId = spender ? this.hederaId(spender) : '';
+    const approvalTx = new AccountAllowanceApproveTransaction().approveTokenAllowance(
+      tokenId,
+      accountId,
+      spenderId,
+      amount as any,
+    );
+    console.log('Doing approval tx for tokenId ===', tokenId);
+
+    const transBytes: Uint8Array = await this.makeBytes(approvalTx, accountId);
 
     const res = await hashConnect.sendTransaction(transBytes, accountId);
     console.log('res', res);

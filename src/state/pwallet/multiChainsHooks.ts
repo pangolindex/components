@@ -28,7 +28,7 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.WAGMI]: useTokenBalances,
   [ChainId.COSTON]: useTokenBalances,
   [ChainId.SONGBIRD]: useTokenBalances,
-  [ChainId.HEDERA_TESTNET]: useHederaTokenBalances,
+  [ChainId.HEDERA_TESTNET]: useTokenBalances,
   [ChainId.NEAR_MAINNET]: useNearTokenBalances,
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
 };

@@ -110,6 +110,11 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
     ROUTER_ADDRESS[chainId],
   );
 
+  console.log('isValid', isValid);
+
+  console.log('approvalA', approvalA);
+  console.log('approvalB', approvalB);
+
   async function onAdd() {
     if (!chainId || !library || !account) return;
 
@@ -214,11 +219,10 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
             onClick={() => {
               expertMode ? onAdd() : setShowConfirm(true);
             }}
-            //isDisabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}  // TODO -1
+            isDisabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
             //error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
           >
-            {/* {error ?? t('addLiquidity.supply')} TODO-1 */}
-            {t('addLiquidity.supply')}
+            {error ?? t('addLiquidity.supply')}
           </Button>
         </Buttons>
       );
