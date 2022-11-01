@@ -47,7 +47,10 @@
         "PNGBtn": "[class='sc-kfGgVZ sc-esjQYD cueueu']",
         "PNGValue": "[class='sc-kAzzGY cVbXJ css-5lj1gi']",
         "addPNG": "[class='sc-kAzzGY cVbXJ css-8626y4']",
-        "PNGLogo": "[class='sc-VigVT dscGgR']"
+        "PNGLogo": "[class='sc-VigVT dscGgR']",
+        "BalanceBtn": "[class='sc-jmnVvD fNSYIV']",
+        "tokensList": "div[class='sc-hsOonA kOcdQy']",
+        "disabledTokens": "div[class='sc-hsOonA dUaQOo']"
     },
     "swap": {
         "swapSideMenu": ".cIKZSl",
@@ -103,7 +106,8 @@
         "selfBtn": "[class='sc-gqjmRU cGBnKx sc-dTdPqK gHZHFK']",
         "aboutSection": "[class='sc-jSMfEi IMWyv']",
         "executedBtn": "button[class='sc-gsnTZi dWgDgB sc-hmXxxW gKNYRi']",
-        "proposalOrders": "div.sc-jSMfEi"
+        "proposalOrders": "div.sc-jSMfEi",
+        "voteLinks": "a[class='sc-gqjmRU cGBnKx']"
     },
     "airdrop":{
         "airdropSideMenu": ".cIKZSl",
@@ -117,5 +121,6 @@
         "plusIcon": "div[class='sc-jSMfEi kaswRx']",
         "faqExp": "[class='sc-jSMfEi jIyzJm']",
         "minusIcon": "[class='sc-giadOv iQUDzh']"
+        
     }
 }

@@ -4,7 +4,7 @@ import data from '../fixtures/pangolin-data'
 import { switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1 } from '../support/src/swap'
 import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
 // import {newsLinks, socialLinks} from '../support/src/dashboard'
-const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, watchlistLinkBtn, connectWallet, linkBtn, watchlistTradeBtn, tokenMouseOverEnable} = selectors.dashboard
+const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, watchlistLinkBtn, connectWallet, linkBtn, watchlistTradeBtn, tokenMouseOverEnable, tokensList, disabledTokens} = selectors.dashboard
 const {tokenName, AvaxToken, switchArray, chartTimeArray, linkUrl, connectToWalletMsg, swap} = data.dashboard
 const {fromField, toField, connectWalletBtn,limitBtn,buyBtn,swapPercentageBtns,limitPercentageBtns,swapSideMenu,swapSideMenuSelect,tradeBtns,tokenModal,headerDetailsModal,toTokenLogo,toTokenName,toTokenPrice,connectWalletMessage,tradeModal,switchModal,switchBtn,settingBtn,transactionFailMessage,transactionMayFortuneMessage,expertModeMessage,saveCloseBtn, slipPageValues, slipPageValuesAssert, toggleExpertMode, saveCloseBtn1} = selectors.swap
 const {swapPercentage, slipPage, aAVAXb, usdc, lowSlippageMessage, highSlippageMessage, veryHighSlippageMessage, saveCloseBtnTxt, connectWalletTxt} = data.swap
@@ -23,7 +23,6 @@ describe('Swap', () => {
 
     /*********************** Selecting swap from side menu *****************************/
     it('TC-01, Verify that the swap page can be accessed from the side menu', () => {
-        //Selecting swap from side menu 
         cy.get(swapSideMenu)
             .should("have.css", "background-color", "rgb(255, 200, 0)")
         cy.get(swapSideMenuSelect)
@@ -139,6 +138,16 @@ describe('Swap', () => {
         tokenDisable(1, "From", `${AvaxToken}`, 0)
     })
 
+    /************* Assertion of the selected token in the "To" dropdown ****************/
+    it('TC- 36, Verify that the selected token is disabled in the "To" dropdown', () => {
+        
+        cy.get(tradeBtns)
+                .eq(1).find('button').click()
+            cy.get(tokenModal)
+                .contains(aAVAXb).scrollIntoView().click()
+        tokenDisable(1, "To", `${aAVAXb}`, 1)
+    })
+
     /************* Assertion on the validation message for a low slippage ***************/
     it(`TC- 47, Verify that the message ${lowSlippageMessage} appear when low slippage is entered`, () => {
         slippage('0.00001', `${transactionFailMessage}`, `${lowSlippageMessage}` )
@@ -232,10 +241,11 @@ describe('Swap', () => {
     it('TC-86,87,88,89 Verify that the user can see the message "Connect a wallet to see your Portfolio" if the wallet is not connnected', () => {
         cy.get(connectWallet)
             .should('contain', "Connect to a wallet") 
-        cy.get(connectWalletMessage)
-            .should( chainText => {
-                expect(chainText).to.contain(connectToWalletMsg)
-        })
+        // cy.get(connectWalletMessage)
+        //     .should( chainText => {
+        //         expect(chainText).to.contain(connectToWalletMsg)
+        // })
+        cy.contains('Connect a wallet to see your portfolio').should('be.visible')
     })
 
     /************  Assert the tokens in From and To dropdowns ************************/
@@ -247,13 +257,13 @@ describe('Swap', () => {
 
     /**************************  search for relevant result  ********************/
     it('TC-125, Verify that the relevant tokens appear when the user type in the "Search" field',() =>{
-        cy.contains(/Dashboard/)
+        
         cy.get(watchListBtn).
             should('be.visible').click()
         cy.get(watchlistDropDown)
             .should('be.visible')
         cy.get(tokenSearch).type('p')
-        cy.get("div[class='sc-hsOonA kOcdQy']").each( relSearch => {
+        cy.get(tokensList).each( relSearch => {
         cy.wrap(relSearch).should('contain','p')
         })
     })
@@ -271,7 +281,6 @@ describe('Swap', () => {
 
     /********************  token disable in the watchlist dropdown ***********************/ 
     it('TC-127, Verify that the token added to the watchlist is disabled in the dropdown', () =>{
-        cy.contains(/Dashboard/)
             cy.get(watchListBtn).
                 should('be.visible').click()
             cy.get(watchlistDropDown)
@@ -282,19 +291,19 @@ describe('Swap', () => {
                 .should("contain", AvaxToken)
             cy.get(watchListBtn).
                 should('be.visible').click()
-            cy.get(`div[class="sc-hsOonA dUaQOo"]`).should('have.attr', 'disabled', 'disabled')
+            cy.get(disabledTokens).should('have.attr', 'disabled', 'disabled')
             
     })
 
     /********************  Token enable in the watchlist dropdown ***********************/ 
     it('TC-128, Verify that the token removed from the watchlist is enabled in the dropdown', () =>{
-        cy.contains(/Dashboard/)
+        
             cy.get(watchListBtn).
                 should('be.visible').click()
             cy.get(watchlistDropDown)
                 .should('be.visible')
             cy.get(tokenSearch).type(AvaxToken)
-            cy.get(tokenSelect).eq(0).click()
+            cy.get(tokenSelect).eq(0).click({force: true})
             cy.get(tokenAssert)
                 .should("contain", AvaxToken)
             cy.get(tokenMouseOverEnable).eq(0)
@@ -302,12 +311,12 @@ describe('Swap', () => {
             cy.get(crossBtn).click()
             cy.get(watchListBtn).
                 should('be.visible').click()
-            cy.get(`div[class="sc-hsOonA kOcdQy"]`).contains(AvaxToken).should('be.visible')
+            cy.get(tokensList).contains(AvaxToken).should('be.visible')
     })
 
     /********************  Trade on the selected token ***********************/ 
     it('TC-129, Verify that the user can trade on the selected token from the watchlist', () =>{
-        cy.contains(/Dashboard/)
+        
             cy.get(watchListBtn).
                 should('be.visible').click()
             cy.get(watchlistDropDown)

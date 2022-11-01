@@ -26,12 +26,14 @@
     "bridgeSwap": "We're proud to announce we've been working on a new product, BridgeSwap.",
     "chartUrl": "https://info.pangolin.exchange/#/home",
     "forumUrl": "https://gov.pangolin.exchange/",
-    "avalancheBridgeUrl": "https://bridge.avax.network/login",
+    "avalancheBridgeUrl": "https://core.app/bridge",
     "satelliteBridgeUrl": "https://satellite.money/?source=ethereum&destination=axelar&asset_denom=uaxl&destination_address=",
     "connectToWallet": "Connect to a wallet",
     "connectToWalletMsg": "Connect a wallet to see your Portfolio",
     "linkUrl": "https://info.pangolin.exchange/#/token/0x60781C2586D68229fde47564546784ab3fACA982",
-    "swap": "https://dev.pangolin.exchange/#/swap"
+    "swap": "https://dev.pangolin.exchange/#/swap",
+    "hideBalance": "Hide Your Balance",
+    "showBalance": "Show Your Balance"
   },
   "swap": {
     "aAVAXb": "aAVAXb",
@@ -44,7 +46,7 @@
     "saveCloseBtnTxt": "Save & Close",
     "connectWalletTxt": "Connect Wallet"
   },
-  "pangolinLinksArr": ["Pangolin Analytics", "Pangolin Governance - Vote with your PNG", "Avalanche Bridge: Transfer Assets To and From Ethereum", "Pangolin"],
+  "pangolinLinksArr": ["Pangolin Analytics", "Pangolin Governance - Vote with your PNG", "Core Web: A Better Way to Connect to Web3", "Pangolin"],
   "vote": {
     "proposalsArray": ["Treasury Replenishment Request", "Efficient PNG Buybacks","Distributed PNG Buybacks","Treasury Replenishment Request","Pangolin V2 and The New Tokenomics","Increase Governance Agility","Hiring a Market Maker - PNG","Hiring a Market Maker - Fee Switch","Make the Pangolin Multisig Responsible for Incentive Changes","Increase Reward Rates for Avalanche-Native Pools","Create a Treasury for Pangolin's multisig","Add Pangolin Rewards for Verso token (VSO)","Add Pangolin Rewards for Snowball token (SNOB) pairs","Weighted Pangolin Rewards"],
     "proposalOrder": ["14","13","12","11","10","9","8","7","6","5","4","3","2","1"]

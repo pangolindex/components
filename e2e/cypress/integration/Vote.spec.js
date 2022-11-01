@@ -1,9 +1,8 @@
 /// <reference types = "cypress"/>
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data.json'
-import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
 const {proposalsArray,proposalOrder} = data.vote
-const {voteSideMenu,voteSideMenuSelect,proposalTitle,detailsBtn,proposalTitleInner,forfield,forValue,againstValue,selfBtn,aboutSection,executedBtn,proposalOrders} = selectors.vote
+const {voteSideMenu,voteSideMenuSelect,proposalTitle,detailsBtn,proposalTitleInner,forfield,forValue,againstValue,selfBtn,aboutSection,executedBtn,proposalOrders, voteLinks} = selectors.vote
 describe('Vote', () => {
     
     beforeEach('',() => {
@@ -25,7 +24,7 @@ describe('Vote', () => {
     })
 
     /******************* Accessing the proposals **************************/
-    it.only('TC-03,04,05,17,18,19,20,21 Verify that the user can see the executed proposal', () => {
+    it('TC-03,04,05,17,18,19,20,21 Verify that the user can see the executed proposal', () => {
         cy.get(selfBtn)
         .should('not.exist')
         cy.contains(/Pangolin Governance/i).should('be.visible')
@@ -43,34 +42,21 @@ describe('Vote', () => {
             cy.get(detailsBtn).eq(i).click()
             cy.get(proposalTitleInner)
                 .should('contain', `${proposalsArray[i]}`)
-                let array = ["0x650f5865541f6d68bddfe977db933c293ea72358", "0x66c048d27aFB5EE59E4C07101A483654246A4eda", "0xefa94de7a4656d787667c749f7e1223d71e9fd88", "0xAc61FD938E762357eEe739EB30938783366f43a7"]
-                for (let j = 0; j<= array.length - 1; j++){
-                cy.get('a[class="sc-gqjmRU cGBnKx"]').contains(`${array[j]}`).invoke('removeAttr','target').scrollIntoView().click({force: true})
-                cy.contains('Block').should('be.visible')
-                cy.go('back')
-                cy.wait(5000)
-            }
-                // cy.pause()
-            // cy.get('a[class="sc-gqjmRU cGBnKx"]').invoke('removeAttr', 'target').each( $test3 => {
-            //     cy.get($test3).click({force: true})
-            //     cy.contains('Block').should('be.visible')
-            //     cy.go('back')
-            //     cy.wait(5000)
-            // })
-
             cy.get(forfield ).then( $test => {
                 cy.contains($test[0].children[0].children[0].innerText).should('be.visible')
                 cy.contains($test[0].children[0].children[1].innerText).should('be.visible')
             })
-            // cy.get(forValue).contains('Against').should('be.visible').then($test1 => {
-            //     cy.get($test1).find(againstValue).then($test2 => {
-            //     cy.log(cy.contains($test2[0].innerText).should('be.visible'))
-            //     })
-            // })
-            // pangolinUsefulLinks('')
-            cy.get('a[class="sc-gqjmRU cGBnKx"]').contains('0xefa94de7a4656d787667c749f7e1223d71e9fd88').invoke('removeAttr','target').click()
-            cy.go('back')
-            cy.pause()
+            cy.get(forValue).contains('Against').should('be.visible').then($test1 => {
+                cy.get($test1).find(againstValue).then($test2 => {
+                cy.log(cy.contains($test2[0].innerText).should('be.visible'))
+                })
+            })
+           cy.get(voteLinks).each(page => {
+                cy.request(page.prop('href')).as('link');
+            });
+            cy.get('@link').should(response => {
+                expect(response.status).to.eq(200);
+            });
             cy.contains('Back to Proposals').click()
         }
     })

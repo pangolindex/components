@@ -11,8 +11,8 @@ describe('Dashboard', () => {
         // failing the test
         return false
     })
-    const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, pngButton, pngModal, pngPriceSel, linkBtn, pangolinLogo, swapIcon, dashboardIcon, connectWalletMsg, connectWallet, tokenMouseOverEnable, PNGBtn, PNGValue, addPNG, PNGLogo} = selectors.dashboard
-    const { returnToLegacy, languagesArray, tokenName, AvaxToken, switchArray, newsLinkArray, newsLinkAssertArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, newsSongBird, usd, coinBase, bridgeSwap, connectToWalletMsg, connectToWallet, linkUrl, swap } = data.dashboard
+    const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistLinkBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, pngButton, pngModal, pngPriceSel, linkBtn, pangolinLogo, swapIcon, dashboardIcon, connectWalletMsg, connectWallet, tokenMouseOverEnable, PNGBtn, PNGValue, addPNG, PNGLogo, BalanceBtn, tokensList, disabledTokens} = selectors.dashboard
+    const { returnToLegacy, languagesArray, tokenName, AvaxToken, switchArray, newsLinkArray, newsLinkAssertArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, newsSongBird, usd, coinBase, bridgeSwap, connectToWalletMsg, connectToWallet, linkUrl, swap, hideBalance, showBalance} = data.dashboard
     const {pangolinLinksArr} = data
     const legUrl = "https://legacy.pangolin.exchange/#/"
     beforeEach('', () => {
@@ -198,54 +198,63 @@ describe('Dashboard', () => {
 
     /**************** Click and Assert the links in the News section ***************************/  
     it(`TC-42, Verify that the Details here in the news section bridge Swap redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0, 0, 'Details here', 'AIRDROP ALERT')
+        // newsLinks(0, 0, 'Details here', 'AIRDROP ALERT')
+        for(let i =0; i < 10; i++) {
+            cy.get(newsBtn).find(newsNextBtn).click({force: true})
+            cy.get("div[class='slick-slide slick-active slick-current'] p a").each(page => {
+                cy.request(page.prop('href')).as('link');
+            });
+            cy.get('@link').should(response => {
+                expect(response.status).to.eq(200);
+            });
+        }
     })
-    it(`TC-42, Verify that the ${newsLinkArray[0]} in the news section bridge Swap redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0, 1, newsLinkArray[0], newsLinkAssertArray[0])
-    })
+    // it(`TC-42, Verify that the ${newsLinkArray[0]} in the news section bridge Swap redirects the user to the "Pangolin Exchange" page`, () => {
+    //     newsLinks(0, 1, newsLinkArray[0], newsLinkAssertArray[0])
+    // })
 
-    it(`TC-42, Verify that the ${newsLinkArray[1]} in the "coinBase twitter" in news section Coinbase redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0, 2, newsLinkArray[1], newsLinkAssertArray[1])
-    })
+    // it(`TC-42, Verify that the ${newsLinkArray[1]} in the "coinBase twitter" in news section Coinbase redirects the user to the "Pangolin Exchange" page`, () => {
+    //     newsLinks(0, 2, newsLinkArray[1], newsLinkAssertArray[1])
+    // })
 
-    it(`TC-42, Verify that the ${newsLinkArray[2]} in the "songBird Network" in news section redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0, 3, newsLinkArray[2], newsLinkAssertArray[2])
-    })
+    // it(`TC-42, Verify that the ${newsLinkArray[2]} in the "songBird Network" in news section redirects the user to the "Pangolin Exchange" page`, () => {
+    //     newsLinks(0, 3, newsLinkArray[2], newsLinkAssertArray[2])
+    // })
 
-    it(`TC-42, Verify that the ${newsLinkArray[3]} in the "Pangolin_Flare" in news section redirects the user to the "Pangolin Exchange" page`, () => {
-        newsLinks(0, 4, newsLinkArray[3], newsLinkAssertArray[3])
-    })
+    // it(`TC-42, Verify that the ${newsLinkArray[3]} in the "Pangolin_Flare" in news section redirects the user to the "Pangolin Exchange" page`, () => {
+    //     newsLinks(0, 4, newsLinkArray[3], newsLinkAssertArray[3])
+    // })
 
-    it(`TC-42, Verify that the "${newsLinkArray[4]}" link in the "Read the 2H 2022 Roadmap" in news section redirects the user to the "Pangolin Exchange" page`, () => {
+    // it(`TC-42, Verify that the "${newsLinkArray[4]}" link in the "Read the 2H 2022 Roadmap" in news section redirects the user to the "Pangolin Exchange" page`, () => {
 
-        newsLinks(0, 5, newsLinkArray[4], newsLinkAssertArray[4])
-    })
+    //     newsLinks(0, 5, newsLinkArray[4], newsLinkAssertArray[4])
+    // })
 
-    it(`TC-42, Verify that the "${newsLinkArray[5]}" link in the song bird Coston in news section redirects the user to the "Pangolin Exchange" page`, () => {
+    // it(`TC-42, Verify that the "${newsLinkArray[5]}" link in the song bird Coston in news section redirects the user to the "Pangolin Exchange" page`, () => {
 
-        newsLinks(0, 6, newsLinkArray[5], newsLinkAssertArray[5])
-    })
-    it(`TC-42, Verify that the ${newsLinkArray[5]} link in the "airdrop wagmi" in the news section redirects the user to the "Pangolin Exchange" page`, () => {
+    //     newsLinks(0, 6, newsLinkArray[5], newsLinkAssertArray[5])
+    // })
+    // it(`TC-42, Verify that the ${newsLinkArray[5]} link in the "airdrop wagmi" in the news section redirects the user to the "Pangolin Exchange" page`, () => {
 
-        newsLinks(0, 7, 'Read More', newsLinkAssertArray[6])
-    })
+    //     newsLinks(0, 7, 'Read More', newsLinkAssertArray[6])
+    // })
 
-    it(`TC-42, Verify that the ${newsLinkArray[6]} link in the limit orders in news section redirects the user to the "dashboard" page`, () => {
-        newsLinks(0, 8, newsLinkArray[6], newsLinkAssertArray[7])
-    })
+    // it(`TC-42, Verify that the ${newsLinkArray[6]} link in the limit orders in news section redirects the user to the "dashboard" page`, () => {
+    //     newsLinks(0, 8, newsLinkArray[6], newsLinkAssertArray[7])
+    // })
 
-    it(`TC-42, Verify that the ${newsLinkArray[6]} link in the moonpay in news section redirects the user to the "dashboard" page`, () => {
+    // it(`TC-42, Verify that the ${newsLinkArray[6]} link in the moonpay in news section redirects the user to the "dashboard" page`, () => {
 
-        newsLinks(0, 9, newsLinkArray[6], newsLinkAssertArray[8])
-    })
+    //     newsLinks(0, 9, newsLinkArray[6], newsLinkAssertArray[8])
+    // })
 
-    it(`TC-42, Verify that the ${newsLinkArray[7]} link in the moonpay in news section redirects the user to the "Multi-chain desk" page`, () => {
-        newsLinks(0, 9, newsLinkArray[7], newsLinkAssertArray[9])
-    })
+    // it(`TC-42, Verify that the ${newsLinkArray[7]} link in the moonpay in news section redirects the user to the "Multi-chain desk" page`, () => {
+    //     newsLinks(0, 9, newsLinkArray[7], newsLinkAssertArray[9])
+    // })
 
-    it(`TC-42, Verify that the ${newsLinkArray[8]} link in the Grand build in news section redirects the user to the "Multi-chain desk" page`, () => {
-        newsLinks(0, 10, newsLinkArray[8], newsLinkAssertArray[10])
-    })
+    // it(`TC-42, Verify that the ${newsLinkArray[8]} link in the Grand build in news section redirects the user to the "Multi-chain desk" page`, () => {
+    //     newsLinks(0, 10, newsLinkArray[8], newsLinkAssertArray[10])
+    // })
 
     /****************** Click and assert the footer links [privacy, cookies]********************/  
     footerLinks.forEach(footerLink => {
@@ -268,19 +277,8 @@ describe('Dashboard', () => {
         })
     }
 
-    
-    /***********************  Connect to mainnet assertions  ***************************/
-    // it.only('TC-53, Verify that the user cannot connect to the mainnet chain if the wallet is not connected', () => {
-    //     cy.get('[class="sc-bdVaJa sc-gxMtzJ sc-dfVpRl sc-eXEjpC fhNhgg"]')
-    //         .should('contain', "Avalanche").click()
-    //     cy.get('[class="sc-jSMfEi diEVGF"]').eq(2)
-    //         .click()  
-    //     cy.get('[class="unlock-page__title"]').should("contain","Welcome back!")
-        
-    // })
-    
     /***********************  Connect to wallet button  ***************************/
-    it.only('TC-55,56, 57, 58, 59, 60, Verify that the user can see the "Connect to a Wallet" button if the wallet is not connected', () => {
+    it('TC-55,56, 57, 58, 59, 60, Verify that the user can see the "Connect to a Wallet" button if the wallet is not connected', () => {
         cy.get(PNGBtn).contains("PNG").click()
         cy.get(PNGValue).should("not.exist")
         cy.get(addPNG).contains("Add PNG to MetaMask").should("not.exist")
@@ -293,6 +291,14 @@ describe('Dashboard', () => {
             })
     })
 
+    /******************************* Hide/Unhide balance **********************************/
+    it('TC-61,62, Verify that the user cannot hide the balance if the wallet is not connected', () => {
+        cy.get(BalanceBtn).contains(hideBalance).click()
+        cy.get(connectWalletMsg).should("contain", connectToWalletMsg)
+        cy.get(BalanceBtn).contains(showBalance).click()
+        cy.get(connectWalletMsg).should("contain", connectToWalletMsg)
+    })
+
     /********************************  search for relevant result  *************************/
     it('TC-63, Verify that the relevant tokens appear when the user type in the "Search" field',() =>{
         cy.contains(/Dashboard/)
@@ -301,7 +307,7 @@ describe('Dashboard', () => {
         cy.get(watchlistDropDown)
             .should('be.visible')
         cy.get(tokenSearch).type('p')
-        cy.get("div[class='sc-hsOonA kOcdQy']").each( relSearch => {
+        cy.get(tokensList).each( relSearch => {
         cy.wrap(relSearch).should('contain','p')
         })
     })
@@ -330,7 +336,7 @@ describe('Dashboard', () => {
                 .should("contain", AvaxToken)
             cy.get(watchListBtn).
                 should('be.visible').click()
-            cy.get(`div[class="sc-hsOonA dUaQOo"]`).should('have.attr', 'disabled', 'disabled')
+            cy.get(disabledTokens).should('have.attr', 'disabled', 'disabled')
             
     })
 
@@ -350,7 +356,7 @@ describe('Dashboard', () => {
             cy.get(crossBtn).click()
             cy.get(watchListBtn).
                 should('be.visible').click()
-            cy.get(`div[class="sc-hsOonA kOcdQy"]`).contains(AvaxToken).should('be.visible')
+            cy.get(tokensList).contains(AvaxToken).should('be.visible')
     })
 
     /********************  Trade on the selected token *********************************/ 
