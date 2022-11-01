@@ -465,7 +465,8 @@
     "cancelLimitOrder": "Comprar {{ outputCurrency }} com {{ inputCurrency }}",
     "executionPrice": "Preço de execução",
     "seeMore": "Ver mais",
-    "seeLess": "Ver menos"
+    "seeLess": "Ver menos",
+    "orderPlaced": "Ordem de {{ orderType }} colocada"
   },
   "buyPage": {
     "buyAvaxInfo": "Compre AVAX com moeda fiduciária do nosso parceiro Wyre.",

@@ -14,7 +14,9 @@ import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
 import { LimitField, LimitNewField } from 'src/state/pswap/actions';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
+import { capitalizeWord } from 'src/utils';
 import { galetoMaxAmountSpend } from 'src/utils/maxAmountSpend';
 import { unwrappedToken, wrappedGelatoCurrency } from 'src/utils/wrappedCurrency';
 import { Box, Button, Text, ToggleButtons } from '../../';
@@ -154,6 +156,7 @@ const LimitOrder: React.FC<Props> = ({
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
 
+  const addTransaction = useTransactionAdder();
   const handleTypeInput = useCallback(
     (value: string) => {
       onUserInput(LimitNewField.INPUT as any, value);
@@ -261,6 +264,8 @@ const LimitOrder: React.FC<Props> = ({
         throw new Error('No account');
       }
 
+      const orderType = activeTab === 'SELL' ? t('swapPage.sell') : t('swapPage.buy');
+
       handleLimitOrderSubmission({
         inputToken: currencies.input?.isNative ? NATIVE : currencies.input?.wrapped.address,
         outputToken: currencies.output?.isNative ? NATIVE : currencies.output?.wrapped.address,
@@ -268,14 +273,15 @@ const LimitOrder: React.FC<Props> = ({
         outputAmount: rawAmounts.output,
         owner: account,
       })
-        .then(({ hash }) => {
+        .then((response) => {
           setSwapState({
             attemptingTxn: false,
             tradeToConfirm,
             showConfirm,
             swapErrorMessage: undefined,
-            txHash: hash,
+            txHash: response.hash,
           });
+          addTransaction(response, { summary: t('swapPage.orderPlaced', { orderType: capitalizeWord(orderType) }) });
         })
         .catch((error) => {
           setSwapState({

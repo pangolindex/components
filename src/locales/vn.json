@@ -466,7 +466,8 @@
     "cancelLimitOrder": "Mua {{ outputCurrency }} với {{ inputCurrency }}",
     "executionPrice": "Giá thực hiện",
     "seeMore": "Xem thêm",
-    "seeLess": "Thấy ít"
+    "seeLess": "Thấy ít",
+    "orderPlaced": "{{ orderType }} order placed"
   },
   "buyPage": {
     "buyAvaxInfo": "Mua AVAX bằng fiat từ đối tác Wyre của chúng tôi.",

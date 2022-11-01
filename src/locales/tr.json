@@ -465,7 +465,8 @@
     "cancelLimitOrder": "{{ inputCurrency }} ile {{ outputCurrency }} swap yapma",
     "executionPrice": "Emrin Gerçekleştiği Fiyat",
     "seeMore": "Daha Fazlasını Gör",
-    "seeLess": "Daha Azını Gör"
+    "seeLess": "Daha Azını Gör",
+    "orderPlaced": "{{ orderType }} sipariş verildi."
   },
   "buyPage": {
     "buyAvaxInfo": "Partnerimiz Wyre aracılığıyla AVAX satın alın.",

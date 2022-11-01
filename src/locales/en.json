@@ -466,7 +466,8 @@
     "cancelLimitOrder": "Buy {{ outputCurrency }} with {{ inputCurrency }}",
     "executionPrice": "Execution Price",
     "seeMore": "See More",
-    "seeLess": "See Less"
+    "seeLess": "See Less",
+    "orderPlaced": "{{ orderType }} order placed."
   },
   "buyPage": {
     "buyAvaxInfo": "Buy AVAX with fiat from our partner Wyre.",
