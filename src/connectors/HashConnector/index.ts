@@ -1,8 +1,8 @@
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { hethers } from '@hashgraph/hethers';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
-import { HashConnectProvider } from 'hashconnect/dist/provider';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
 import { TransactionResponse } from 'src/utils/hedera';
 
@@ -27,7 +27,7 @@ type HashPackLocalDataType = {
 };
 
 export class HashConnector extends AbstractConnector {
-  private provider!: HashConnectProvider;
+  private provider!: JsonRpcProvider;
   private chainId!: number;
   private normalizeChainId!: boolean;
   private normalizeAccount!: boolean;
@@ -114,12 +114,8 @@ export class HashConnector extends AbstractConnector {
     return null;
   }
 
-  public async getProvider(): Promise<any> {
-    if (this.pairingData && this.pairingData?.accountIds[0]) {
-      const provider = hethers.providers.getDefaultProvider(this.network, undefined);
-
-      return provider;
-    }
+  public async getProvider() {
+    return new JsonRpcProvider(`https://hedera.testnet.arkhia.io/json-rpc/v1?x_api_key=xxxxx`);
   }
 
   public async activate(): Promise<any> {
