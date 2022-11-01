@@ -1,12 +1,12 @@
 import { ChainId } from '@pangolindex/sdk';
 import {
   useAddLiquidity,
+  useDummyGetUserLP,
   useETHBalances,
   useGetNearUserLP,
   useGetUserLP,
-  useDummyGetUserLP,
+  useHederaAddLiquidity,
   useHederaBalance,
-  useHederaTokenBalances,
   useNearAddLiquidity,
   useNearBalance,
   useNearRemoveLiquidity,
@@ -15,7 +15,6 @@ import {
   useRemoveLiquidity,
   useTokenBalance,
   useTokenBalances,
-  useHederaAddLiquidity,
 } from './hooks';
 
 export type UseTokenBalancesHookType = {

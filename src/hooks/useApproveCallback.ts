@@ -8,10 +8,10 @@ import { useTokenAllowance } from 'src/data/Allowances';
 import { Field } from 'src/state/pswap/actions';
 import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin, waitForTransaction } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import { computeSlippageAdjustedAmounts } from '../utils/prices';
 import { useTokenContract } from './useContract';
 import { useChainId, usePangolinWeb3 } from './index';
-import { hederaFn } from 'src/utils/hedera';
 
 export enum ApprovalState {
   UNKNOWN,
@@ -116,9 +116,6 @@ export function useHederaApproveCallback(
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender);
   const pendingApproval = useHasPendingApproval(token?.address, spender);
 
-  console.log('currentAllowance', currentAllowance);
-  console.log('pendingApproval', pendingApproval);
-
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN;
@@ -162,10 +159,7 @@ export function useHederaApproveCallback(
         spender: spender,
         amount: amountToApprove.raw.toString(),
         account,
-        chainId,
       });
-
-      console.log('response', response);
 
       if (response) {
         addTransaction(response, {

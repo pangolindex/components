@@ -6,17 +6,9 @@ import { useSingleCallResult } from '../state/pmulticall/hooks';
 export function useTokenAllowance(token?: Token, owner?: string, spender?: string): TokenAmount | undefined {
   const contract = useTokenContract(token?.address, false);
 
-  console.log('===owner', owner);
-  console.log('===spender', spender);
-
-  console.log('===contract', contract);
-
   const inputs = useMemo(() => [owner, spender], [owner, spender]);
-  console.log('===inputs', inputs);
-  const allowance = useSingleCallResult(contract, 'allowance', inputs).result;
 
-  console.log('===token', token);
-  console.log('===allowance111', allowance);
+  const allowance = useSingleCallResult(contract, 'allowance', inputs).result;
 
   return useMemo(
     () => (token && allowance ? new TokenAmount(token, allowance.toString()) : undefined),

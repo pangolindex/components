@@ -1,5 +1,7 @@
+/* eslint-disable max-lines */
 import { hethers } from '@hashgraph/hethers';
 import {
+  AccountAllowanceApproveTransaction,
   AccountBalanceQuery,
   AccountId,
   Client,
@@ -9,9 +11,8 @@ import {
   TokenAssociateTransaction,
   Transaction,
   TransactionId,
-  AccountAllowanceApproveTransaction,
 } from '@hashgraph/sdk';
-import { ChainId, CurrencyAmount, WAVAX, Token } from '@pangolindex/sdk';
+import { ChainId, CurrencyAmount, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
 import { HEDERA_API_BASE_URL, ROUTER_ADDRESS } from 'src/constants';
@@ -145,7 +146,31 @@ export interface SendingApprovalData {
   amount: string;
   spender?: string;
   account?: string | null;
-  chainId: ChainId;
+}
+
+export interface ContractData {
+  admin_key: {
+    _type: string;
+    key: string;
+  };
+  auto_renew_account: string;
+  auto_renew_period: number;
+  contract_id: string;
+  created_timestamp: string;
+  deleted: boolean;
+  evm_address: string;
+  expiration_timestamp: string;
+  file_id: string;
+  max_automatic_token_associations: number;
+  memo: string;
+  obtainer_id: string;
+  permanent_removal: boolean;
+  proxy_account_id: string;
+  timestamp: {
+    from: string;
+    to: string;
+  };
+  bytecode: string;
 }
 
 class Hedera {
@@ -191,7 +216,11 @@ class Hedera {
     return hethers.utils.asAccountString(address);
   };
 
-  contractId = (id: string) => {
+  idToAddress = (tokenId: string) => {
+    return hethers.utils.getChecksumAddress(hethers.utils.getAddressFromAccount(tokenId));
+  };
+
+  tokenToContractId = (id: string) => {
     const lastIndex = id.lastIndexOf('.');
 
     let before = '';
@@ -208,8 +237,21 @@ class Hedera {
     return contractId;
   };
 
-  idToAddress = (tokenId: string) => {
-    return hethers.utils.getChecksumAddress(hethers.utils.getAddressFromAccount(tokenId));
+  contractToTokenId = (id: string) => {
+    const lastIndex = id.lastIndexOf('.');
+
+    let before = '';
+    let after = '';
+
+    if (lastIndex !== -1) {
+      before = id.slice(0, lastIndex);
+      after = id.slice(lastIndex + 1);
+      after = (Number(after) + 1).toString();
+    }
+
+    const tokenId = before + '.' + after;
+
+    return tokenId;
   };
 
   public async getAccountBalance(account: string) {
@@ -291,7 +333,7 @@ class Hedera {
       const tokens = await query.execute(this.client);
 
       const allTokens = JSON.parse(JSON.stringify(tokens));
-      console.log('allTokens', allTokens);
+
       return allTokens?.tokens;
     } catch (errr) {
       console.log('errrr', errr);
@@ -320,7 +362,7 @@ class Hedera {
     const accountId = account ? this.hederaId(account) : '';
     const tokenId = this.hederaId(WAVAX[chainId].address);
 
-    const contractId = this.contractId(tokenId);
+    const contractId = this.tokenToContractId(tokenId);
     const transaction = new ContractExecuteTransaction();
     transaction.setContractId(contractId);
     transaction.setGas(1000000);
@@ -338,7 +380,7 @@ class Hedera {
   public async withdrawAction(amount: CurrencyAmount, account: string, chainId: ChainId) {
     const accountId = account ? this.hederaId(account) : '';
     const tokenId = this.hederaId(WAVAX[chainId].address);
-    const contractId = this.contractId(tokenId);
+    const contractId = this.tokenToContractId(tokenId);
     const transaction = new ContractExecuteTransaction();
     transaction.setContractId(contractId);
     transaction.setGas(1000000);
@@ -483,8 +525,8 @@ class Hedera {
     console.log('tokenAId', tokenAId);
     console.log('tokenBId', tokenBId);
 
-    const contractAId = this.contractId(tokenAId);
-    const contractBId = this.contractId(tokenBId);
+    const contractAId = this.tokenToContractId(tokenAId);
+    const contractBId = this.tokenToContractId(tokenBId);
 
     console.log('contractAId', contractAId);
     console.log('contractBId', contractBId);
@@ -521,7 +563,7 @@ class Hedera {
           .addUint256(tokenBAmount as any)
           .addUint256(tokenAAmountMin as any)
           .addUint256(tokenBAmountMin as any)
-          .addAddress(accountAddress)
+          .addAddress(account)
           .addUint256(deadline as any),
       );
 
@@ -533,11 +575,11 @@ class Hedera {
   }
 
   public async spendingApproval(approvalData: SendingApprovalData) {
-    const { tokenAddress, amount, account, spender, chainId } = approvalData;
+    const { tokenAddress, amount, account, spender } = approvalData;
 
     const accountId = account ? this.hederaId(account) : '';
     const tokenId = this.hederaId(tokenAddress);
-    console.log('accountId', accountId);
+
     const spenderId = spender ? this.hederaId(spender) : '';
     const approvalTx = new AccountAllowanceApproveTransaction().approveTokenAllowance(
       tokenId,
@@ -545,14 +587,30 @@ class Hedera {
       spenderId,
       amount as any,
     );
-    console.log('Doing approval tx for tokenId ===', tokenId);
 
     const transBytes: Uint8Array = await this.makeBytes(approvalTx, accountId);
 
     const res = await hashConnect.sendTransaction(transBytes, accountId);
-    console.log('res', res);
+
     return res;
+  }
+
+  public async getContractData(address: string) {
+    try {
+      const response = await this.call<ContractData>({
+        url: `/api/v1/contracts/${address}`,
+        method: 'GET',
+      });
+
+      console.log('response', response);
+
+      return response?.contract_id;
+    } catch (error) {
+      console.log(error);
+      return 0;
+    }
   }
 }
 
 export const hederaFn = new Hedera();
+/* eslint-enable max-lines */

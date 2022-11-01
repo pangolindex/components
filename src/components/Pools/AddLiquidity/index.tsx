@@ -110,11 +110,6 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
     ROUTER_ADDRESS[chainId],
   );
 
-  console.log('isValid', isValid);
-
-  console.log('approvalA', approvalA);
-  console.log('approvalB', approvalB);
-
   async function onAdd() {
     if (!chainId || !library || !account) return;
 

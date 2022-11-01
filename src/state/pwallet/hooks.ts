@@ -27,9 +27,9 @@ import {
   ROUTER_ADDRESS,
 } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
-import { useGetNearAllPool, useNearPairs, usePairs } from 'src/data/Reserves';
+import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useAllTokens, useNearTokens, useCurrency } from 'src/hooks/Tokens';
+import { useAllTokens, useNearTokens, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -49,8 +49,6 @@ import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { toV2LiquidityToken, useTrackedTokenPairs } from '../puser/hooks';
 import { useAccountBalanceHook, useTokenBalancesHook } from './multiChainsHooks';
-import { useQuery } from 'react-query';
-import { usePair } from 'src/data/Reserves';
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -269,6 +267,7 @@ export function useNearTokenBalances(
   );
 }
 
+// TODO: Need to remove
 export function useHederaTokenBalances(
   address?: string,
   tokens?: (Token | undefined)[],
@@ -321,7 +320,7 @@ export function useNearTokenBalance(account?: string, tokenOrPair?: Token | Pair
   }
 }
 
-// get the balance for a single token/account combo
+// TODO: Need to remove
 export function useHederaTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
   const tokenBalances = useHederaTokenBalances(account, [token]);
   if (!token) return undefined;
@@ -1279,72 +1278,40 @@ export function useNearCreatePool() {
 }
 
 export function useHederaPGLAssociated(
-  inputCurrencyId,
-  outputCurrencyId,
-): {
-  associate: undefined | (() => Promise<void>);
-  isLoading: boolean;
-  hederaAssociated: boolean;
-} {
-  const { account } = usePangolinWeb3();
-  const addTransaction = useTransactionAdder();
+  inputCurrency: Currency | undefined,
+  outputCurrency: Currency | undefined,
+): ReturnType<typeof useHederaTokenAssociated> {
   const chainId = useChainId();
 
-  const currency0 = useCurrency(inputCurrencyId);
-  const currency1 = useCurrency(outputCurrencyId);
+  const [token, setToken] = useState<Token | undefined>(undefined);
+  const [, pair] = usePair(inputCurrency, outputCurrency);
 
-  if (!currency0 || !currency1) {
-    return {
-      associate: undefined,
-      isLoading: false,
-      hederaAssociated: false,
-    };
-  }
+  const pairToken = pair?.liquidityToken;
 
-  const [pair] = usePair(currency0, currency1);
+  useEffect(() => {
+    async function fetch() {
+      try {
+        if (pairToken) {
+          const tokenAddress = pairToken ? pairToken?.address : '';
 
-  console.log('pair', pair);
-  const [loading, setLoading] = useState(false);
+          const contractId = await hederaFn.getContractData(tokenAddress);
 
-  const {
-    isLoading,
-    data: isAssociated = true,
-    refetch,
-  } = useQuery(['check-hedera-token-associated', outputCurrencyId, account], async () => {
-    if (!outputCurrencyId || !account || chainId !== ChainId.HEDERA_TESTNET) return;
+          const tokenId = hederaFn.contractToTokenId(contractId?.toString());
 
-    const tokens = await hederaFn.getAccountAssociatedTokens(account);
+          const newTokenAddress = hederaFn.idToAddress(tokenId);
 
-    const currencyId = account ? hederaFn.hederaId(outputCurrencyId) : '';
+          const token = new Token(chainId, newTokenAddress, pairToken?.decimals, pairToken?.symbol, pairToken?.name);
 
-    const token = (tokens || []).find((token) => token.tokenId === currencyId);
+          setToken(token);
+        }
+      } catch (error) {
+        console.error('Could not deposit', error);
+      }
+    }
 
-    return !!token;
-  });
+    fetch();
+  }, [pairToken]);
 
-  return useMemo(() => {
-    return {
-      associate:
-        account && outputCurrencyId
-          ? async () => {
-              try {
-                setLoading(true);
-                // const txReceipt = await hederaFn.tokenAssociate(outputCurrencyId, account);
-                // if (txReceipt) {
-                //   setLoading(false);
-                //   refetch();
-
-                //   // addTransaction(txReceipt, { summary: `${outputCurrency?.symbol} successfully  associated` });
-                // }
-              } catch (error) {
-                setLoading(false);
-                console.error('Could not deposit', error);
-              }
-            }
-          : undefined,
-      isLoading: loading,
-      hederaAssociated: isAssociated,
-    };
-  }, [chainId, outputCurrencyId, account, loading, isLoading, isAssociated]);
+  return useHederaTokenAssociated(token);
 }
 /* eslint-enable max-lines */

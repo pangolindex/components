@@ -16,6 +16,7 @@ import {
 import Drawer from 'src/components/Drawer';
 import { Field } from 'src/state/pmint/actions';
 import { SpaceType } from 'src/state/pstake/types';
+import { useHederaPGLAssociated } from 'src/state/pwallet/hooks';
 import { Hidden } from 'src/theme/components';
 import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
 
@@ -63,6 +64,15 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
 
+  const inputCurrency = currencies[Field.CURRENCY_A];
+  const outputCurrency = currencies[Field.CURRENCY_B];
+
+  const {
+    associate: onAssociate,
+    isLoading: isLoadingAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+  } = useHederaPGLAssociated(inputCurrency, outputCurrency);
+  
   const pendingText = `Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
     currencies[Field.CURRENCY_A]?.symbol
   } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`;
@@ -162,9 +172,15 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
       </Header>
       <Footer>
         <Box my={'10px'}>
-          <Button variant="primary" onClick={onAdd}>
-            {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.confirmSupply')}
-          </Button>
+          {isHederaTokenAssociated ? (
+            <Button variant="primary" onClick={onAdd}>
+              {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.confirmSupply')}
+            </Button>
+          ) : (
+            <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+              {isLoadingAssociate ? 'Associating' : 'Associate PGL'}
+            </Button>
+          )}
         </Box>
       </Footer>
     </Root>
@@ -215,9 +231,15 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
         </Box>
       </Box>
       <Box mt={'10px'}>
-        <Button variant="primary" onClick={onAdd} height="46px">
-          {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.giveOrder')}
-        </Button>
+        {isHederaTokenAssociated ? (
+          <Button variant="primary" onClick={onAdd} height="46px">
+            {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.giveOrder')}
+          </Button>
+        ) : (
+          <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+            {isLoadingAssociate ? 'Associating' : 'Associate PGL'}
+          </Button>
+        )}
       </Box>
     </Box>
   );

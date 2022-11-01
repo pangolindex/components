@@ -14,7 +14,8 @@ import { NearTokenMetadata, nearFn } from 'src/utils/near';
 import ERC20_INTERFACE, { ERC20_BYTES32_INTERFACE } from '../constants/abis/erc20';
 import { useTokenHook } from './multiChainsHooks';
 import { useBytes32TokenContract, useTokenContract } from './useContract';
-import { useChainId } from './index';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 
 export type TokenReturnType = Token | undefined | null;
 
@@ -284,6 +285,7 @@ const fetchHederaTokenMetadata = (address) => () => {
   return nearFn.getMetadata(address);
 };
 
+//TODO Need to remove
 export function useHederaTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
   const chainId = useChainId();
   const tokens = useAllTokens();
@@ -446,4 +448,59 @@ export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
       return 0;
     }
   });
+}
+
+export function useHederaTokenAssociated(token: Token | undefined): {
+  associate: undefined | (() => Promise<void>);
+  isLoading: boolean;
+  hederaAssociated: boolean;
+} {
+  const { account } = usePangolinWeb3();
+  const addTransaction = useTransactionAdder();
+  const chainId = useChainId();
+
+  const tokenAddress = token?.address;
+
+  const [loading, setLoading] = useState(false);
+
+  const {
+    isLoading,
+    data: isAssociated = true,
+    refetch,
+  } = useQuery(['check-hedera-token-associated', tokenAddress, account], async () => {
+    if (!tokenAddress || !account || chainId !== ChainId.HEDERA_TESTNET) return;
+
+    const tokens = await hederaFn.getAccountAssociatedTokens(account);
+
+    const currencyId = account ? hederaFn.hederaId(tokenAddress) : '';
+
+    const token = (tokens || []).find((token) => token.tokenId === currencyId);
+
+    return !!token;
+  });
+
+  return useMemo(() => {
+    return {
+      associate:
+        account && tokenAddress
+          ? async () => {
+              try {
+                setLoading(true);
+                const txReceipt = await hederaFn.tokenAssociate(tokenAddress, account);
+                if (txReceipt) {
+                  setLoading(false);
+                  refetch();
+
+                  addTransaction(txReceipt, { summary: `${token?.symbol} successfully  associated` });
+                }
+              } catch (error) {
+                setLoading(false);
+                console.error('Could not deposit', error);
+              }
+            }
+          : undefined,
+      isLoading: loading,
+      hederaAssociated: isAssociated,
+    };
+  }, [chainId, tokenAddress, account, loading, isLoading, isAssociated]);
 }

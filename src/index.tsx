@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
-import { ChainId, CHAINS } from '@pangolindex/sdk';
+import { CHAINS, ChainId } from '@pangolindex/sdk';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -13,7 +13,7 @@ import { useAllTokens } from 'src/hooks/Tokens';
 import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
-import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
+import { useActivePopups, useAddPopup, useBlockNumber, useRemovePopup } from 'src/state/papplication/hooks';
 import ApplicationUpdater from 'src/state/papplication/updater';
 import ListsUpdater from 'src/state/plists/updater';
 import MulticallUpdater from 'src/state/pmulticall/updater';
@@ -161,6 +161,7 @@ export {
   usePangoChefInfosHook,
   useUSDCPriceHook,
   useParsedQueryString,
+  useBlockNumber,
 };
 
 // misc

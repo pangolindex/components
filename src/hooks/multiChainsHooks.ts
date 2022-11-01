@@ -1,11 +1,11 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useHederaToken, useHederaTokens, useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
+import { useHederaToken, useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
 import {
   useApproveCallback,
   useApproveCallbackFromNearTrade,
   useApproveCallbackFromTrade,
-  useNearApproveCallback,
   useHederaApproveCallback,
+  useNearApproveCallback,
 } from './useApproveCallback';
 import { useDummySwapCallback, useNearSwapCallback, useSwapCallback } from './useSwapCallback';
 import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';

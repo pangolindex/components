@@ -39,7 +39,7 @@ export const PNG: { [chainId in ChainId]: Token } = {
   ),
   [ChainId.HEDERA_TESTNET]: new Token(
     ChainId.HEDERA_TESTNET,
-   '0x0000000000000000000000000000000002DfA5b2',
+    '0x0000000000000000000000000000000002DfA5b2',
     18,
     CHAINS[ChainId.HEDERA_TESTNET].png_symbol,
     'Songbird Pangolin',

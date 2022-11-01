@@ -15,17 +15,14 @@ import {
 } from '@pangolindex/sdk';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
 import { NATIVE, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useCurrency } from 'src/hooks/Tokens';
+import { useCurrency, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { AppState, useDispatch, useSelector } from 'src/state';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { isAddress, isEvmChain } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useUserSlippageTolerance } from '../puser/hooks';
@@ -272,13 +269,11 @@ export function useDerivedSwapInfo(): {
   };
 }
 
-export function useHederaTokenAssociated(): {
+export function useHederaSwapTokenAssociated(): {
   associate: undefined | (() => Promise<void>);
   isLoading: boolean;
   hederaAssociated: boolean;
 } {
-  const { account } = usePangolinWeb3();
-  const addTransaction = useTransactionAdder();
   const chainId = useChainId();
 
   const {
@@ -286,49 +281,14 @@ export function useHederaTokenAssociated(): {
   } = useSwapState();
 
   const outputCurrency = useCurrency(outputCurrencyId);
+  const token = outputCurrency ? wrappedCurrency(outputCurrency, chainId) : undefined;
+  const { associate, isLoading, hederaAssociated } = useHederaTokenAssociated(token);
 
-  const [loading, setLoading] = useState(false);
-
-  const {
+  return {
+    associate,
     isLoading,
-    data: isAssociated = true,
-    refetch,
-  } = useQuery(['check-hedera-token-associated', outputCurrencyId, account], async () => {
-    if (!outputCurrencyId || !account || chainId !== ChainId.HEDERA_TESTNET) return;
-
-    const tokens = await hederaFn.getAccountAssociatedTokens(account);
-
-    const currencyId = account ? hederaFn.hederaId(outputCurrencyId) : '';
-
-    const token = (tokens || []).find((token) => token.tokenId === currencyId);
-
-    return !!token;
-  });
-
-  return useMemo(() => {
-    return {
-      associate:
-        account && outputCurrencyId
-          ? async () => {
-              try {
-                setLoading(true);
-                const txReceipt = await hederaFn.tokenAssociate(outputCurrencyId, account);
-                if (txReceipt) {
-                  setLoading(false);
-                  refetch();
-
-                  addTransaction(txReceipt, { summary: `${outputCurrency?.symbol} successfully  associated` });
-                }
-              } catch (error) {
-                setLoading(false);
-                console.error('Could not deposit', error);
-              }
-            }
-          : undefined,
-      isLoading: loading,
-      hederaAssociated: isAssociated,
-    };
-  }, [chainId, outputCurrencyId, account, loading, isLoading, isAssociated]);
+    hederaAssociated,
+  };
 }
 
 export function parseCurrencyFromURLParameter(urlParam: any, chainId: ChainId): string {

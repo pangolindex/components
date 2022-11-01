@@ -1,4 +1,4 @@
-import { hethers } from '@hashgraph/hethers';
+// import { hethers } from '@hashgraph/hethers';
 import React from 'react';
 import { hederaFn } from 'src/utils/hedera';
 
@@ -6,7 +6,7 @@ export const HederaProvider = (provider) => {
   if (provider) {
     provider.getTransactionReceipt = async (transactionId: string) => {
       try {
-        const hethersProvider = hethers.providers.getDefaultProvider('testnet', undefined);
+        // const hethersProvider = hethers.providers.getDefaultProvider('testnet', undefined);
 
         //getting this string as transactionId     "0.0.29562194@1645089473.013219243"
         //we need to convert into                  "0.0.29562194-1645089473-013219243"
