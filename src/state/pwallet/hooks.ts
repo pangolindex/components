@@ -1196,7 +1196,7 @@ export function useGetNearUserLP() {
 }
 
 export function useDummyGetUserLP() {
-  return { v2IsLoading: false, allPairs: [] };
+  return { v2IsLoading: false, allPairs: [], allV2PairsWithLiquidity: [] };
 }
 
 export interface CreatePoolProps {
@@ -1273,14 +1273,14 @@ export function useNearCreatePool() {
   };
 }
 
-export function useHederaPGLAssociated(
-  inputCurrency: Currency | undefined,
-  outputCurrency: Currency | undefined,
-): ReturnType<typeof useHederaTokenAssociated> {
+export const useHederaPGLToken = (
+  currencyA: Currency | undefined,
+  currencyB: Currency | undefined,
+): [Token | undefined, Token | undefined] => {
   const chainId = useChainId();
 
-  const [token, setToken] = useState<Token | undefined>(undefined);
-  const [, pair] = usePair(inputCurrency, outputCurrency);
+  const [pglToken, setPglToken] = useState<Token | undefined>(undefined);
+  const [, pair] = usePair(currencyA, currencyB);
 
   const pairToken = pair?.liquidityToken;
 
@@ -1289,16 +1289,14 @@ export function useHederaPGLAssociated(
       try {
         if (pairToken) {
           const tokenAddress = pairToken ? pairToken?.address : '';
-
+          // get pair contract id using api call because `asAccountString` is not working for pair address
           const contractId = await hederaFn.getContractData(tokenAddress);
-
+          // get pair tokenId from pair contract id
           const tokenId = hederaFn.contractToTokenId(contractId?.toString());
-
+          // convert token id to evm address
           const newTokenAddress = hederaFn.idToAddress(tokenId);
-
           const token = new Token(chainId, newTokenAddress, pairToken?.decimals, pairToken?.symbol, pairToken?.name);
-
-          setToken(token);
+          setPglToken(token);
         }
       } catch (error) {
         console.error('Could not deposit', error);
@@ -1308,6 +1306,16 @@ export function useHederaPGLAssociated(
     fetch();
   }, [pairToken]);
 
-  return useHederaTokenAssociated(token);
+  // here pglToken is the token where we can call methods like totalSupply, allowance etc
+  // pair?.liquidityToken is the token with pair contract address where we can call methods like getReserves etc
+  return [pglToken, pair?.liquidityToken];
+};
+
+export function useHederaPGLAssociated(
+  currencyA: Currency | undefined,
+  currencyB: Currency | undefined,
+): ReturnType<typeof useHederaTokenAssociated> {
+  const [pglToken] = useHederaPGLToken(currencyA, currencyB);
+  return useHederaTokenAssociated(pglToken);
 }
 /* eslint-enable max-lines */

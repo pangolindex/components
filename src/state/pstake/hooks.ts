@@ -22,7 +22,7 @@ import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
-import { useTotalSupplyHook } from 'src/data/TotalSupply';
+import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import usePrevious from 'src/hooks/usePrevious';
@@ -291,7 +291,7 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
   const chainId = useChainId();
 
   const useTokenBalance = useTokenBalanceHook[chainId];
-  const useTotalSupply = useTotalSupplyHook[chainId];
+  const usePairTotalSupply = usePairTotalSupplyHook[chainId];
   const _useUSDCPrice = useUSDCPriceHook[chainId];
   const token0 = pair?.token0;
   const currency0 = unwrappedToken(token0 as Token, chainId);
@@ -300,7 +300,7 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
 
   const pairOrToken = isEvmChain(chainId) ? pair?.liquidityToken : pair;
   const userPgl = useTokenBalance(account ?? undefined, pairOrToken as Token);
-  const totalPoolTokens = useTotalSupply(pairOrToken as Token);
+  const totalPoolTokens = usePairTotalSupply(pair ?? undefined);
 
   const [token0Deposited] =
     !!pair &&
