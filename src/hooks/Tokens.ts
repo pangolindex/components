@@ -5,8 +5,10 @@ import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery } from 'react-query';
 import { COINGECKO_API, COINGECKO_CURRENCY_ID, COINGEKO_BASE_URL } from 'src/constants';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
 import { isAddress } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
@@ -14,8 +16,6 @@ import { NearTokenMetadata, nearFn } from 'src/utils/near';
 import ERC20_INTERFACE, { ERC20_BYTES32_INTERFACE } from '../constants/abis/erc20';
 import { useTokenHook } from './multiChainsHooks';
 import { useBytes32TokenContract, useTokenContract } from './useContract';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 
 export type TokenReturnType = Token | undefined | null;
 
