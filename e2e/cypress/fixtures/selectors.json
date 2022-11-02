@@ -48,7 +48,8 @@
         "PNGValue": "[class='sc-kAzzGY cVbXJ css-5lj1gi']",
         "addPNG": "[class='sc-kAzzGY cVbXJ css-8626y4']",
         "PNGLogo": "[class='sc-VigVT dscGgR']",
-        "BalanceBtn": "[class='sc-jmnVvD fNSYIV']",
+        "showBalanceBtn": "div[class='sc-jSMfEi iURhAV']",
+        "hideBalanceBtn": "div[class='sc-jSMfEi jETqVr']",
         "tokensList": "div[class='sc-hsOonA kOcdQy']",
         "disabledTokens": "div[class='sc-hsOonA dUaQOo']"
     },
@@ -57,13 +58,13 @@
         "swapSideMenuSelect": "div[class='sc-hMFtBS cIKZSl'] a",
         "tradeBtns": "[class='sc-eCYdqJ sc-ftvSup fEptdj bnstfL']",
         "fromField": "input[id='swap-currency-input']",
-        "tokenModal": "[class='sc-fpcwso kgTBKZ'] div[class='sc-lmHNfd cbAcSN']",
+        "tokenModal": "div[class='sc-jSMfEi icpGcW']",
         "headerDetailsModal":"div[class='sc-fzsDOv dhoLIG'",
         "toTokenLogo": "img[class='sc-ivTmOn htFfaf']",
         "toTokenName": "div[class='sc-jSMfEi bLwoif']",
         "toTokenPrice": "div[class='sc-eCYdqJ cDcquI'] div",
         "toField": "input[id='swap-currency-output']",
-        "connectWalletBtn": "button[class='sc-gsnTZi jquISs']",
+        "connectWalletBtn": "button[class='sc-gsnTZi hePPZs']",
         "connectWalletMessage": "div[class='sc-jSMfEi hMQPrK']",
         "tradeModal": "div[class='sc-eCYdqJ sc-brCFrO fEptdj gIDZHZ'] div[class='sc-eCYdqJ kMEFVW']",
         "switchModal": "div[class='sc-eCYdqJ erxZVL']",
@@ -115,12 +116,20 @@
         "pangolinTitle": "p[class='sc-krDsej kIrOqg']",
         "songbirdLogo": "img[class='sc-eMigcr eOBIOP']",
         "cards": "div[class='sc-jSMfEi kvSvpp']",
-        "metamaskMenuTitle": "div[class='sc-bSakgD btUThD']",
+        "metamaskMenuTitle": "div[class='sc-hjQCSK dwBqdT']",
         "metamaskMenuCrossBtn": "svg[class='sc-bhVIhj sc-dSuTWQ gLGxRa aodbf']",
         "haveQuestions": "div[class='sc-jSMfEi jimatc']",
         "plusIcon": "div[class='sc-jSMfEi kaswRx']",
         "faqExp": "[class='sc-jSMfEi jIyzJm']",
         "minusIcon": "[class='sc-giadOv iQUDzh']"
         
+    },
+    "stake":{
+        "stakeSideMenu": ".cIKZSl",
+        "stakeSideMenuSelect": "div[class='sc-hMFtBS cIKZSl'] a"
+    },
+    "pools":{
+        "poolsSideMenu": ".cIKZSl",
+        "poolsSideMenuSelect": "div[class='sc-hMFtBS cIKZSl'] a"
     }
 }

@@ -16,7 +16,7 @@ describe('Vote', () => {
     })
 
     /******************* Selecting vote from side menu **************************/
-    it('TC-01, Verify that the swap page can be accessed from the side menu', () => {
+    it('TC-01, Verify that the vote page can be accessed from the side menu', () => {
         cy.get(voteSideMenu)
             .should("have.css", "background-color", "rgb(255, 200, 0)")
         cy.get(voteSideMenuSelect)

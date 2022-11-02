@@ -14,7 +14,7 @@ function switchingValues (selectIter, headerAssert, token) {
 function tokenDisable (iter, value, token, toTokon) {
     switchingValues(iter, value, token)
     cy.get('div[class="sc-eCYdqJ fEptdj"] div[class="sc-eCYdqJ jqkPHT"] ~ div[class="sc-eCYdqJ sc-gKXOVf fEptdj cjBzGg"] button.open-currency-select-button').eq(toTokon).click()
-    cy.get('div[class="sc-lmHNfd chzbHR"]').should('have.attr','disabled')
+    cy.get('div[class="sc-bdxVC htyzVf"]').should('have.attr','disabled')
 }
 function tokenSwitching (iter, value, token, toTokon) {
     switchingValues(iter, value, token)
@@ -41,7 +41,7 @@ function connectWallet1 (fromSelector, toSelector, connectWalletBtnSel) {
     disconnectWallet(fromSelector, toSelector)
     cy.get(connectWalletBtnSel).should(enterAmountBtn => {
         expect(enterAmountBtn).to.contain('Connect Wallet')
-        expect(enterAmountBtn).have.css('background-color','rgb(229, 229, 229)')
+        expect(enterAmountBtn).have.css('background-color','rgb(255, 200, 0)')
     })
 }
 
