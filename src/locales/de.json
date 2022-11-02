@@ -525,20 +525,19 @@
     "selectToken": "Wähle einen Token aus",
     "enterRecipient": "Gib einen Empfänger ein",
     "invalidRecipient": "Ungültiger Empfänger",
-    "insufficient": "Unzureichendes ",
-    "balance": " Guthaben"
+    "insufficientBalance": "Unzureichendes {{ symbol }}-Guthaben"
   },
   "mintHooks": {
     "connectWallet": "Mit Wallet verbinden",
     "insufficientInputAmount": "Unzureichende Eingangsmenge",
     "invalidPair": "Ungültiges Paar",
     "enterAmount": "Gib einen Betrag ein",
-    "insufficient": "Unzureichendes ",
-    "balance": " Guthaben"
+    "insufficientBalance": "Unzureichendes {{ symbol }}-Guthaben"
   },
   "stakeHooks": {
     "connectWallet": "Mit Wallet verbinden",
-    "enterAmount": "Gib einen Betrag ein"
+    "enterAmount": "Gib einen Betrag ein",
+    "insufficientBalance": "Unzureichendes {{ symbol }}-Guthaben"
   },
   "burnHooks": {
     "connectWallet": "Mit Wallet verbinden",
@@ -697,13 +696,14 @@
     "claimWarning1": "Wenn Sie einen Anspruch geltend machen, ohne abzuheben, bleibt Ihre Liquidität im Mining-Pool.",
     "claimWarning2": "Wenn Sie Ihre Prämien beanspruchen, sinkt Ihr effektiver Jahreszins auf 0. Stattdessen können Sie sich für eine Aufzinsung entscheiden.",
     "compoundWarning": "Wenn Sie Ihre Belohnungen für die {{ token0 }}-{{ token1 }}-Farm zusammensetzen, werden Ihre Belohnungen in die {{ currency }}-{{ png }} farm eingesetzt. Sie müssen den gleichen Wert von {{ currency }}Token für Ihre angesammelten {{ png }} Prämien.",
-    "compoundAmountWarning": "Sie müssen {{ amount }} {{ symbol }} zur Verbindung hinzufügen.",
-    "compoundAmountWarning2": "Zum Zusammensetzen. Seien Sie vorsichtig, dass Sie Ihren {{ symbol }} {{ png }} pool sperren, bis Sie die Belohnungen dieses Pools beanspruchen.",
+    "compoundAmountWarning": "Sie müssen {{ amount }} {{ symbol }} zur Verbindung hinzufügen. Bitte beachten Sie, dass die Aufzinsung Ihren effektiven Jahreszins leicht verringern kann.",
+    "compoundAmountWarning2": "Zum Zusammensetzen. Seien Sie vorsichtig, dass Sie Ihren {{ token0 }} {{ token1 }} pool sperren, bis Sie die Belohnungen dieses Pools beanspruchen.",
     "highVolalityWarning": "Zu früh, versuchen Sie es in ein paar Stunden",
     "compoundSuccess": "Sie haben Ihre Farm erfolgreich zusammengestellt.",
     "compoundTransactionSummary": "Zusammengesetzte Farm.",
     "removeWarning": "Wenn Sie einen beliebigen Betrag von der Farm entfernen, wird Ihr effektiver Jahreszins auf 0 gesetzt. Sie können stattdessen Ihre Belohnungen aufstocken, ohne Ihren effektiven Jahreszins zu verlieren.",
-    "lockingPoolZeroWarning": "Sie können Ihre Liquidität nicht entfernen oder Ihre Belohnungen von dieser Farm einfordern. Dazu müssen Sie zuerst entweder Ihren Anteil von diesen Farmen beanspruchen: "
+    "lockingPoolZeroWarning": "Sie können Ihre Liquidität nicht entfernen oder Ihre Belohnungen von dieser Farm einfordern. Um dies zu tun, müssen Sie zuerst Ihren Anteil von diesen Farmen entweder beanspruchen oder entfernen: ",
+    "decreaseWarning": "Ihr APR wird sinken, da der neue zusammengesetzte Teil mit APR 0 beginnt und ein Durchschnitt zwischen dem alten und dem neuen Teil genommen wird."
   },
   "bridge": {
     "availableRoutes": "Available Routes ({{ number }})",

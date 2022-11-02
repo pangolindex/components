@@ -203,11 +203,11 @@ export function useDerivedMintInfo(
   const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts;
 
   if (currencyAAmount && currencyBalances?.[Field.CURRENCY_A]?.lessThan(currencyAAmount)) {
-    error = t('mintHooks.insufficient') + currencies[Field.CURRENCY_A]?.symbol + t('mintHooks.balance');
+    error = t('mintHooks.insufficientBalance', { symbol: currencies[Field.CURRENCY_A]?.symbol });
   }
 
   if (currencyBAmount && currencyBalances?.[Field.CURRENCY_B]?.lessThan(currencyBAmount)) {
-    error = t('mintHooks.insufficient') + currencies[Field.CURRENCY_B]?.symbol + t('mintHooks.balance');
+    error = t('mintHooks.insufficientBalance', { symbol: currencies[Field.CURRENCY_B]?.symbol });
   }
 
   return {

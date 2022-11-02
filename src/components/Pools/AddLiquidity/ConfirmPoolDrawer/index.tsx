@@ -210,10 +210,10 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
 
           <Stat
             title={`PGL`}
-            stat={noLiquidity ? '-' : `     ${liquidityMinted?.toSignificant(6)}`}
+            stat={noLiquidity ? '-' : `${liquidityMinted?.toSignificant(6)}`}
             titlePosition="top"
-            titleFontSize={16}
-            statFontSize={[20, 16]}
+            titleFontSize={14}
+            statFontSize={[16, 20]}
           />
 
           <Stat
@@ -221,7 +221,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
             stat={`${noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%`}
             titlePosition="top"
             titleFontSize={14}
-            statFontSize={16}
+            statFontSize={[16, 20]}
           />
         </StatWrapper>
         <Box mt={10}>
