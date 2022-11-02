@@ -263,22 +263,8 @@ class Hedera {
         method: 'GET',
       });
 
-      const balance1 = response?.balances?.[0]?.balance || 0;
-
-      return balance1;
-      // return balance;
-      // TODO
-      // const query = new AccountBalanceQuery().setAccountId(accountId);
-      // const tokens = await query.execute(this.client);
-
-      // const allTokens = JSON.parse(JSON.stringify(tokens));
-      // console.log('allTokens', allTokens);
-
-      // const balance = allTokens?.hbars.slice(0, -2);
-
-      // console.log('test', Hbar.fromString(balance).toString());
-
-      // return balance1;
+      const balance = response?.balances?.[0]?.balance || 0;
+      return balance;
     } catch (error) {
       console.log(error);
       return 0;
@@ -509,18 +495,6 @@ class Hedera {
 
     const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
 
-    console.log('accountId', accountId);
-    console.log('contarctId', contarctId);
-    console.log('tokenAAddress', tokenAAddress);
-    console.log('tokenBAddress', tokenBAddress);
-    console.log('tokenAAmount', tokenAAmount);
-    console.log('tokenBAmount', tokenBAmount);
-    console.log('tokenAAmountMin', tokenAAmountMin);
-    console.log('tokenBAmountMin', tokenBAmountMin);
-    console.log('account', account);
-    console.log('deadline', deadline);
-    console.log('chainId', chainId);
-
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the router contract
       .setContractId(contarctId)
@@ -574,9 +548,6 @@ class Hedera {
         url: `/api/v1/contracts/${address}`,
         method: 'GET',
       });
-
-      console.log('response', response);
-
       return response?.contract_id;
     } catch (error) {
       console.log(error);
