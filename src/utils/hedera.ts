@@ -125,7 +125,7 @@ export interface AddLiquidityData {
   tokenBAmountMin: string;
   account: string;
   poolExists: boolean;
-  deadline: string;
+  deadline: number;
   chainId: ChainId;
 }
 
@@ -137,7 +137,7 @@ export interface AddNativeLiquidityData {
   HBARAmountMin: string;
   account: string;
   poolExists: boolean;
-  deadline: string;
+  deadline: number;
   chainId: ChainId;
 }
 
@@ -447,6 +447,14 @@ class Hedera {
     const { token, tokenAmount, HBARAmount, tokenAmountMin, HBARAmountMin, account, poolExists, deadline, chainId } =
       addNativeLiquidityData;
 
+    const tokenAddress = token ? token?.address : '';
+    const accountId = account ? this.hederaId(account) : '';
+    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
+
+    console.log('tokenAddress', tokenAddress);
+    console.log('accountId', accountId);
+    console.log('contarctId', contarctId);
     console.log('token', token);
     console.log('tokenAmount', tokenAmount);
     console.log('HBARAmount', HBARAmount);
@@ -454,25 +462,12 @@ class Hedera {
     console.log('HBARAmountMin', HBARAmountMin);
     console.log('account', account);
     console.log('deadline', deadline);
-
     console.log('chainId', chainId);
-
-    const tokenAddress = token ? token?.address : '';
-    console.log('tokenAddress', tokenAddress);
-    const accountId = account ? this.hederaId(account) : '';
-    console.log('accountId', accountId);
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
-    console.log('contarctId', contarctId);
-
-    const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
     console.log('maxGas', maxGas);
 
     const transaction = new ContractExecuteTransaction()
-      //Set the ID of the router contract
       .setContractId(contarctId)
-      //Set the gas for the contract call
       .setGas(maxGas)
-      //Amount of HBAR we want to provide
       .setPayableAmount(HBARAmount)
       .setFunction(
         'addLiquidityHBAR',
@@ -506,8 +501,18 @@ class Hedera {
       chainId,
     } = addLiquidityData;
 
-    console.log('tokenA', tokenA);
-    console.log('tokenB', tokenB);
+    const tokenAAddress = tokenA ? tokenA?.address : '';
+    const tokenBAddress = tokenB ? tokenB?.address : '';
+
+    const accountId = account ? this.hederaId(account) : '';
+    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+
+    const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
+
+    console.log('accountId', accountId);
+    console.log('contarctId', contarctId);
+    console.log('tokenAAddress', tokenAAddress);
+    console.log('tokenBAddress', tokenBAddress);
     console.log('tokenAAmount', tokenAAmount);
     console.log('tokenBAmount', tokenBAmount);
     console.log('tokenAAmountMin', tokenAAmountMin);
@@ -515,38 +520,6 @@ class Hedera {
     console.log('account', account);
     console.log('deadline', deadline);
     console.log('chainId', chainId);
-
-    const tokenAId = tokenA ? this.hederaId(tokenA?.address) : '';
-    const tokenBId = tokenB ? this.hederaId(tokenB?.address) : '';
-
-    const tokenAAddress = tokenA ? tokenA?.address : '';
-    const tokenBAddress = tokenB ? tokenB?.address : '';
-
-    console.log('tokenAId', tokenAId);
-    console.log('tokenBId', tokenBId);
-
-    const contractAId = this.tokenToContractId(tokenAId);
-    const contractBId = this.tokenToContractId(tokenBId);
-
-    console.log('contractAId', contractAId);
-    console.log('contractBId', contractBId);
-
-    // const tokenAAddress = this.idToAddress(contractAId);
-    // const tokenBAddress = this.idToAddress(contractBId);
-
-    const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
-
-    const accountAddress = hethers.utils.getAddressFromAccount(account);
-
-    const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
-
-    console.log('tokenAAddress', tokenAAddress);
-    console.log('tokenBAddress', tokenBAddress);
-    console.log('accountId', accountId);
-    console.log('contarctId', contarctId);
-    console.log('tokenBAmount', tokenBAmount);
-    console.log('maxGas', maxGas);
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the router contract
@@ -564,7 +537,7 @@ class Hedera {
           .addUint256(tokenAAmountMin as any)
           .addUint256(tokenBAmountMin as any)
           .addAddress(account)
-          .addUint256(deadline as any),
+          .addUint256(deadline),
       );
 
     const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);

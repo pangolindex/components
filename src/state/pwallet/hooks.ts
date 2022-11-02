@@ -29,7 +29,7 @@ import {
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useAllTokens, useNearTokens, useHederaTokenAssociated } from 'src/hooks/Tokens';
+import { useAllTokens, useHederaTokenAssociated, useNearTokens } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -660,13 +660,11 @@ export function useHederaAddLiquidity() {
           HBARAmountMin: amountsMin[tokenBIsETH ? AddField.CURRENCY_B : AddField.CURRENCY_A].toString(), // eth min
           account: account,
           poolExists: poolExists,
-          deadline: deadline.toHexString(),
+          deadline: deadline.toNumber(),
           chainId: chainId,
         };
 
         response = await hederaFn.addNativeLiquidity(args);
-
-        await waitForTransaction(response as any, 5);
       } else {
         const args = {
           tokenA: wrappedCurrency(currencyA, chainId),
@@ -677,13 +675,11 @@ export function useHederaAddLiquidity() {
           tokenBAmountMin: amountsMin[AddField.CURRENCY_B].toString(),
           account,
           poolExists,
-          deadline: deadline.toHexString(),
+          deadline: deadline.toNumber(),
           chainId,
         };
 
         response = await hederaFn.addLiquidity(args);
-
-        await waitForTransaction(response as any, 5);
       }
 
       addTransaction(response, {

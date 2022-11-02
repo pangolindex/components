@@ -49,7 +49,7 @@ export class HashConnector extends AbstractConnector {
     super(args);
 
     //create the hashconnect instance
-    this.instance = new HashConnect(true);
+    this.instance = new HashConnect(false);
 
     this.chainId = args?.config?.chainId;
     this.normalizeChainId = args?.normalizeChainId;
