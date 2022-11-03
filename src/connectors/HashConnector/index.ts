@@ -1,5 +1,6 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { hethers } from '@hashgraph/hethers';
+import { AccountId, Transaction, TransactionId } from '@hashgraph/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
@@ -91,7 +92,7 @@ export class HashConnector extends AbstractConnector {
     const accountId = this.pairingData?.accountIds?.[0];
     if (accountId) {
       this.saveDataInLocalstorage({ pairingData: this.pairingData });
-      this.emitUpdate({ account: this.convertAccountId(accountId) });
+      this.emitUpdate({ account: this.toAddress(accountId) });
     }
   }
 
@@ -115,7 +116,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async getProvider() {
-    return new JsonRpcProvider(`https://hedera.testnet.arkhia.io/json-rpc/v1?x_api_key=xxxxx`);
+    return new JsonRpcProvider(`https://hedera.testnet.arkhia.io/json-rpc/v1?x_api_key=xxxx`);
   }
 
   public async activate(): Promise<any> {
@@ -144,7 +145,7 @@ export class HashConnector extends AbstractConnector {
     }
   }
 
-  convertAccountId = (accountId: string) => {
+  toAddress = (accountId: string) => {
     return hethers.utils.getAddressFromAccount(accountId);
   };
 
@@ -152,7 +153,7 @@ export class HashConnector extends AbstractConnector {
     if (this.pairingData) {
       try {
         const newAccountId = this.pairingData?.accountIds?.[0];
-        return this.convertAccountId(newAccountId);
+        return this.toAddress(newAccountId);
       } catch (err) {
         console.log('error', err);
       }
@@ -208,16 +209,27 @@ export class HashConnector extends AbstractConnector {
     return false;
   }
 
+  private makeBytes(transaction: Transaction, accountId: string) {
+    const transactionId = TransactionId.generate(accountId);
+    transaction.setTransactionId(transactionId);
+    transaction.setNodeAccountIds([new AccountId(3)]);
+
+    transaction.freeze();
+
+    return transaction.toBytes();
+  }
+
   public async sendTransaction(
-    transactions: Uint8Array,
+    transaction: Transaction,
     accountId: string,
     returnTransaction = false,
     hideNfts = false,
   ) {
-    const transaction: MessageTypes.Transaction = {
-      topic: this.topic,
-      byteArray: transactions,
+    const bytes = this.makeBytes(transaction, accountId);
 
+    const transactionToSend: MessageTypes.Transaction = {
+      topic: this.topic,
+      byteArray: bytes,
       metadata: {
         accountToSign: accountId,
         returnTransaction: returnTransaction,
@@ -225,7 +237,7 @@ export class HashConnector extends AbstractConnector {
       },
     };
 
-    const res = await this.instance.sendTransaction(this.topic, transaction);
+    const res = await this.instance.sendTransaction(this.topic, transactionToSend);
 
     const receipt = res?.response as TransactionResponse;
     if (res.success) {

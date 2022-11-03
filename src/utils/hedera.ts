@@ -3,16 +3,14 @@ import { hethers } from '@hashgraph/hethers';
 import {
   AccountAllowanceApproveTransaction,
   AccountBalanceQuery,
-  AccountId,
   Client,
   ContractExecuteTransaction,
   ContractFunctionParameters,
   Hbar,
+  HbarUnit,
   TokenAssociateTransaction,
-  Transaction,
-  TransactionId,
 } from '@hashgraph/sdk';
-import { ChainId, CurrencyAmount, Token, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, ChainId, CurrencyAmount, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
 import { HEDERA_API_BASE_URL, ROUTER_ADDRESS } from 'src/constants';
@@ -182,18 +180,6 @@ class Hedera {
     this.client = Client.forTestnet(); // TODO check here for testnet and mainnet
   }
 
-  public async makeBytes(transaction: Transaction, accountId: string) {
-    const transactionId = TransactionId.generate(accountId);
-    transaction.setTransactionId(transactionId);
-    transaction.setNodeAccountIds([new AccountId(3)]);
-
-    await transaction.freeze();
-
-    const transBytes = transaction.toBytes();
-
-    return transBytes;
-  }
-
   async call<T>(config: AxiosRequestConfig) {
     try {
       const headers = {
@@ -326,7 +312,7 @@ class Hedera {
     }
   }
 
-  public async tokenAssociate(tokenAddress: string, account: string) {
+  public tokenAssociate(tokenAddress: string, account: string) {
     const tokenId = this.hederaId(tokenAddress);
 
     const accountId = account ? this.hederaId(account) : '';
@@ -336,15 +322,11 @@ class Hedera {
     transaction.setTokenIds(tokenIds);
     transaction.setAccountId(accountId);
 
-    const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
-
-    const res = await hashConnect.sendTransaction(transBytes, accountId);
-
-    return res;
+    return hashConnect.sendTransaction(transaction, accountId);
   }
 
-  //Wrap Function
-  public async depositAction(amount: CurrencyAmount, account: string, chainId: ChainId) {
+  // Wrap Function
+  public depositAction(amount: CurrencyAmount, account: string, chainId: ChainId) {
     const accountId = account ? this.hederaId(account) : '';
     const tokenId = this.hederaId(WAVAX[chainId].address);
 
@@ -355,15 +337,11 @@ class Hedera {
     transaction.setFunction('deposit');
     transaction.setPayableAmount(Hbar.fromString(amount.toExact()));
 
-    const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
-
-    const res = await hashConnect.sendTransaction(transBytes, accountId);
-
-    return res;
+    return hashConnect.sendTransaction(transaction, accountId);
   }
 
-  //UnWrap Function
-  public async withdrawAction(amount: CurrencyAmount, account: string, chainId: ChainId) {
+  // UnWrap Function
+  public withdrawAction(amount: CurrencyAmount, account: string, chainId: ChainId) {
     const accountId = account ? this.hederaId(account) : '';
     const tokenId = this.hederaId(WAVAX[chainId].address);
     const contractId = this.tokenToContractId(tokenId);
@@ -373,11 +351,7 @@ class Hedera {
 
     transaction.setFunction('withdraw', new ContractFunctionParameters().addUint256(amount.raw.toString() as any));
 
-    const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
-
-    const res = await hashConnect.sendTransaction(transBytes, accountId);
-
-    return res;
+    return hashConnect.sendTransaction(transaction, accountId);
   }
 
   public async getTransactionById(transactionId: string) {
@@ -429,7 +403,29 @@ class Hedera {
     return block?.number;
   }
 
-  async addNativeLiquidity(addNativeLiquidityData: AddNativeLiquidityData) {
+  createPair(data: { chainId: ChainId; tokenA: Token; tokenB: Token; account: string }) {
+    const { chainId, tokenA, tokenB, account } = data;
+    const chain = CHAINS[chainId];
+    const factoryAddress = chain.contracts?.factory;
+    const accountId = this.hederaId(account);
+
+    if (!factoryAddress) return console.warn('factory address is missing');
+
+    const factoryId = this.hederaId(factoryAddress);
+    const maxGas = TRANSACTION_MAX_FEES.CREATE_POOL;
+    const tokenAAddress = tokenA.address;
+    const tokenBAddress = tokenB.address;
+
+    const transaction = new ContractExecuteTransaction()
+      .setContractId(factoryId)
+      .setGas(maxGas)
+      .setPayableAmount(Hbar.from(20, HbarUnit.Hbar))
+      .setFunction('createPair', new ContractFunctionParameters().addAddress(tokenAAddress).addAddress(tokenBAddress));
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  addNativeLiquidity(addNativeLiquidityData: AddNativeLiquidityData) {
     const { token, tokenAmount, HBARAmount, tokenAmountMin, HBARAmountMin, account, poolExists, deadline, chainId } =
       addNativeLiquidityData;
 
@@ -466,14 +462,10 @@ class Hedera {
           .addUint256(deadline as any),
       );
 
-    const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
-
-    const res = await hashConnect.sendTransaction(transBytes, accountId);
-
-    return res;
+    return hashConnect.sendTransaction(transaction, accountId);
   }
 
-  public async addLiquidity(addLiquidityData: AddLiquidityData) {
+  public addLiquidity(addLiquidityData: AddLiquidityData) {
     const {
       tokenA,
       tokenB,
@@ -514,14 +506,10 @@ class Hedera {
           .addUint256(deadline),
       );
 
-    const transBytes: Uint8Array = await this.makeBytes(transaction, accountId);
-
-    const res = await hashConnect.sendTransaction(transBytes, accountId);
-    console.log('res', res);
-    return res;
+    return hashConnect.sendTransaction(transaction, accountId);
   }
 
-  public async spendingApproval(approvalData: SendingApprovalData) {
+  public spendingApproval(approvalData: SendingApprovalData) {
     const { tokenAddress, amount, account, spender } = approvalData;
 
     const accountId = account ? this.hederaId(account) : '';
@@ -535,11 +523,7 @@ class Hedera {
       amount as any,
     );
 
-    const transBytes: Uint8Array = await this.makeBytes(approvalTx, accountId);
-
-    const res = await hashConnect.sendTransaction(transBytes, accountId);
-
-    return res;
+    return hashConnect.sendTransaction(approvalTx, accountId);
   }
 
   public async getContractData(address: string) {
