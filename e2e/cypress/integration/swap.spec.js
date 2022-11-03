@@ -134,13 +134,11 @@ describe('Swap', () => {
 
     /************* Assertion of the selected token in the "From" dropdown ****************/
     it('TC- 35, Verify that the selected token is disabled in the "From" dropdown', () => {
-        
         tokenDisable(1, "From", `${AvaxToken}`, 0)
     })
 
     /************* Assertion of the selected token in the "To" dropdown ****************/
     it('TC- 36, Verify that the selected token is disabled in the "To" dropdown', () => {
-        
         cy.get(tradeBtns)
                 .eq(1).find('button').click()
             cy.get(tokenModal)
@@ -257,7 +255,6 @@ describe('Swap', () => {
 
     /**************************  search for relevant result  ********************/
     it('TC-125, Verify that the relevant tokens appear when the user type in the "Search" field',() =>{
-        
         cy.get(watchListBtn).
             should('be.visible').click()
         cy.get(watchlistDropDown)
@@ -271,12 +268,12 @@ describe('Swap', () => {
     /**********************   if token is not found   ************************/    
     it('TC-126, Verify that the message "Not found" appears when no searches found', () =>{
         cy.contains(/Dashboard/)
-            cy.get(watchListBtn).
-                should('be.visible').click()
-            cy.get(watchlistDropDown)
-                .should('be.visible')
-            cy.get(tokenSearch).type("asdfg")
-            cy.contains('Not found')
+        cy.get(watchListBtn)
+            .should('be.visible').click()
+        cy.get(watchlistDropDown)
+            .should('be.visible')
+        cy.get(tokenSearch).type("asdfg")
+        cy.contains('Not found')
     })
 
     /********************  token disable in the watchlist dropdown ***********************/ 

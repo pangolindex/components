@@ -51,7 +51,8 @@
         "showBalanceBtn": "div[class='sc-jSMfEi iURhAV']",
         "hideBalanceBtn": "div[class='sc-jSMfEi jETqVr']",
         "tokensList": "div[class='sc-hsOonA kOcdQy']",
-        "disabledTokens": "div[class='sc-hsOonA dUaQOo']"
+        "disabledTokens": "div[class='sc-hsOonA dUaQOo']",
+        "newsLinks": "div[class='slick-slide slick-active slick-current'] p a"
     },
     "swap": {
         "swapSideMenu": ".cIKZSl",
@@ -130,6 +131,19 @@
     },
     "pools":{
         "poolsSideMenu": ".cIKZSl",
-        "poolsSideMenuSelect": "div[class='sc-hMFtBS cIKZSl'] a"
+        "poolsSideMenuSelect": "div[class='sc-hMFtBS cIKZSl'] a",
+        "searchFieldPool": "#token-search-input",
+        "cardTitleSuper": "div[class='sc-jSMfEi jPrZZL']",
+        "cardTitleAllFarm": "div[class='sc-eCYdqJ kBgWyD']",
+        "cardBody": "~ div[class='sc-eCYdqJ iLmnGI']",
+        "cardtvlApr": "div[class='sc-eCYdqJ dKzYyS']",
+        "cardTvl": "div[class='sc-eCYdqJ hdyZpf']",
+        "tvlAprValues": "div[class='sc-eCYdqJ fCMSgH']",
+        "rewardsInLogos": "~ div[class='sc-eCYdqJ iLmnGI'] img[class='sc-ivTmOn htFfaf']",
+        "seeDetailsBtn": "~ div[class='sc-eCYdqJ sc-hlqNbq fEptdj jMOesB'] button.eduyxG",
+        "detailsTitle": "div[class='sc-eCYdqJ sc-eyCGVO fEptdj jNAbZy']",
+        "detailsLinks": "a[class='sc-bczRLJ kbxJQv']",
+        "detailsCrossBtn": "svg[class='sc-bhVIhj gLGxRa']",
+        "superFarmTitle": "div[class='sc-dZeWys bQvbRy']"
     }
 }
