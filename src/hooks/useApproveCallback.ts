@@ -124,11 +124,15 @@ export function useHederaApproveCallback(
     if (!currentAllowance) return ApprovalState.UNKNOWN;
 
     // amountToApprove will be defined if currentAllowance is
-    return currentAllowance.lessThan(amountToApprove)
-      ? pendingApproval
-        ? ApprovalState.PENDING
-        : ApprovalState.NOT_APPROVED
-      : ApprovalState.APPROVED;
+    if (currentAllowance.lessThan(amountToApprove)) {
+      if (pendingApproval) {
+        return ApprovalState.PENDING;
+      } else {
+        return ApprovalState.NOT_APPROVED;
+      }
+    } else {
+      return ApprovalState.APPROVED;
+    }
   }, [amountToApprove, currentAllowance, pendingApproval, spender]);
 
   const addTransaction = useTransactionAdder();

@@ -150,14 +150,6 @@ export function useNearPairs(currencies: [Currency | undefined, Currency | undef
   }, [allPools?.data, allPools?.isLoading, tokens, chainId]);
 }
 
-//TODO - Need to remove
-export function useHederaPairs(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _currencies: [Currency | undefined, Currency | undefined][],
-): [PairState, Pair | null][] {
-  return [[PairState.NOT_EXISTS, null]];
-}
-
 export function useGetNearPoolId(tokenA?: Token, tokenB?: Token): number | null {
   const allPools = useGetNearAllPool();
   return useMemo(() => {

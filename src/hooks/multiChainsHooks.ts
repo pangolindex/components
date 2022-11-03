@@ -1,5 +1,5 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useHederaToken, useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
+import { useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
 import {
   useApproveCallback,
   useApproveCallbackFromNearTrade,
@@ -27,7 +27,7 @@ export const useWrapCallbackHook: UseWrapCallbackHookType = {
 };
 
 export type UseTokenHookType = {
-  [chainId in ChainId]: typeof useToken | typeof useNearToken | typeof useHederaToken;
+  [chainId in ChainId]: typeof useToken | typeof useNearToken;
 };
 
 export const useTokenHook: UseTokenHookType = {
@@ -36,7 +36,7 @@ export const useTokenHook: UseTokenHookType = {
   [ChainId.WAGMI]: useToken,
   [ChainId.COSTON]: useToken,
   [ChainId.SONGBIRD]: useToken,
-  [ChainId.HEDERA_TESTNET]: useHederaToken,
+  [ChainId.HEDERA_TESTNET]: useToken,
   [ChainId.NEAR_MAINNET]: useNearToken,
   [ChainId.NEAR_TESTNET]: useNearToken,
 };

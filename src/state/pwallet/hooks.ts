@@ -168,19 +168,6 @@ const fetchNearPoolShare = (chainId: number, pair: Pair) => async () => {
   return undefined;
 };
 
-const fetchHederaTokenBalance = (token?: Token, account?: string) => async () => {
-  if (token && account) {
-    const tokens = await hederaFn.getAccountAssociatedTokens(account);
-
-    const currencyId = account ? hederaFn.hederaId(token?.address) : '';
-
-    const tokenBalance = (tokens || []).find((token) => token.tokenId === currencyId);
-
-    return new TokenAmount(token, tokenBalance ? tokenBalance?.balance : 0);
-  }
-  return undefined;
-};
-
 /**
  * Returns a map of token addresses to their eventually consistent token balances for a single account.
  */
@@ -267,39 +254,6 @@ export function useNearTokenBalances(
   );
 }
 
-// TODO: Need to remove
-export function useHederaTokenBalances(
-  address?: string,
-  tokens?: (Token | undefined)[],
-): { [tokenAddress: string]: TokenAmount | undefined } {
-  const queryParameter = useMemo(() => {
-    return (
-      tokens?.map((item) => {
-        return {
-          queryKey: ['token-balance', item?.address, address],
-          queryFn: fetchHederaTokenBalance(item, address),
-        };
-      }) ?? []
-    );
-  }, [tokens]);
-
-  const results = useQueries(queryParameter);
-
-  return useMemo(
-    () =>
-      results.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, result, i) => {
-        const value = result?.data;
-        const token = tokens?.[i];
-
-        if (token && token instanceof Token) {
-          memo[token?.address] = value;
-        }
-        return memo;
-      }, {}),
-    [tokens, address, results],
-  );
-}
-
 // get the balance for a single token/account combo
 export function useTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
   const tokenBalances = useTokenBalances(account, [token]);
@@ -318,13 +272,6 @@ export function useNearTokenBalance(account?: string, tokenOrPair?: Token | Pair
   } else if (tokenOrPair && tokenOrPair instanceof Pair) {
     return tokenBalances[tokenOrPair?.liquidityToken?.address];
   }
-}
-
-// TODO: Need to remove
-export function useHederaTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
-  const tokenBalances = useHederaTokenBalances(account, [token]);
-  if (!token) return undefined;
-  return tokenBalances[token.address];
 }
 
 export function useCurrencyBalances(
