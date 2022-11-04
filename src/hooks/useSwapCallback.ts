@@ -107,8 +107,8 @@ function useSwapCallArguments(
 // and the user has approved the slippage adjusted input amount for the trade
 export function useSwapCallback(
   trade: Trade | undefined, // trade to execute, required
-  allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -247,9 +247,9 @@ export function useSwapCallback(
 
 export function useNearSwapCallback(
   trade: Trade | undefined, // trade to execute, required
+  recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
-  recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -335,8 +335,8 @@ export function useNearSwapCallback(
 // and the user has approved the slippage adjusted input amount for the trade
 export function useHederaSwapCallback(
   trade: Trade | undefined, // trade to execute, required
-  allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -404,14 +404,12 @@ export function useHederaSwapCallback(
             const outputAmount = trade.outputAmount.toSignificant(3);
 
             const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`;
-            const withRecipient =
-              recipient === account
-                ? base
-                : `${base} to ${
-                    recipientAddressOrName && isAddress(recipientAddressOrName)
-                      ? shortenAddress(recipientAddressOrName, chainId)
-                      : recipientAddressOrName
-                  }`;
+
+            if (recipientAddressOrName && isAddress(recipientAddressOrName)) {
+              recipientAddressOrName = shortenAddress(recipientAddressOrName, chainId);
+            }
+
+            const withRecipient = recipient === account ? base : `${base} to ${recipientAddressOrName}`;
 
             const withVersion =
               tradeVersion === Version.v2
