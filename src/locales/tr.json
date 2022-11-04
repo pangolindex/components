@@ -385,7 +385,9 @@
     "noFarms": "Çiftlik bulunamadı.",
     "successWithdraw": "Likiditeniz çiftlikten kaldırıldı ve tahakkuk eden ödüller talep edildi!",
     "importDescription1": "İçe aktarma işleviyle 'Havuzlarınız' bölümünde görünmeyen havuzları arayabilirsiniz.",
-    "importDescription2": "Havuzunuzda bulunan temel madeni paraları seçin."
+    "importDescription2": "Havuzunuzda bulunan temel madeni paraları seçin.",
+    "createPairDescription": "Oluşturma işleviyle yeni bir çift oluşturabilirsiniz. Sadece bir çift oluşturmak istediğiniz paraları arayın ve sistem ya Pangolin'de varsa havuzu bulur ya da yoksa yepyeni bir tane oluşturur.",
+    "addLiquidityDescription": "Likidite ekle işlevi ile bir çifte likidite eklersiniz. Sadece likidite eklemek istediğiniz paraları arayın ve sistem Pangolin'de varsa havuzu bulsun veya yoksa yeni bir tane oluşturun."
   },
   "poolFinder": {
     "connectToFind": "Havuzları bulmak için bir cüzdan bağlayın",

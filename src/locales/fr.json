@@ -386,7 +386,9 @@
     "noFarms": "Aucune ferme trouvée.",
     "successWithdraw": "Vos liquidités retirées de la ferme, et les récompenses accumulées réclamées !",
     "importDescription1": "Avec la fonction d'importation, vous pouvez rechercher des pools qui n'apparaissent pas dans la section 'Vos pools'.",
-    "importDescription2": "Choisissez simplement les pièces sous-jacentes qui se trouvaient dans votre pool."
+    "importDescription2": "Choisissez simplement les pièces sous-jacentes qui se trouvaient dans votre pool.",
+    "createPairDescription": "Avec la fonction de création, vous pouvez créer une nouvelle paire. Il vous suffit de rechercher les pièces pour lesquelles vous souhaitez créer une paire et le système trouvera le pool s'il existe sur Pangolin ou en créera un tout nouveau si ce n'est pas le cas.",
+    "addLiquidityDescription": "Avec la fonction d'ajout de liquidité, vous ajoutez de la liquidité à une paire. Recherchez simplement les pièces auxquelles vous souhaitez ajouter de la liquidité et le système trouvera le pool s'il existe dans Pangolin ou en créera un nouveau s'il n'existe pas."
   },
   "poolFinder": {
     "connectToFind": "Se connecter à un portefeuille pour trouver des pools",

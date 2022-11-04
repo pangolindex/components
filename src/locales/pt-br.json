@@ -385,7 +385,9 @@
     "noFarms": "Nenhuma fazenda encontrada.",
     "successWithdraw": "Sua liquidez removida da fazenda e recompensas acumuladas reivindicadas!",
     "importDescription1": "Com a função de importação você pode procurar por pools que não aparecem na seção 'Suas Pools'.",
-    "importDescription2": "Basta escolher as moedas subjacentes que estavam na sua pool."
+    "importDescription2": "Basta escolher as moedas subjacentes que estavam na sua pool.",
+    "createPairDescription": "Com a função de criação você pode criar um novo par. Basta pesquisar as moedas para as quais você deseja criar um par e o sistema encontrará a pool, se existir no Pangolin, ou criará um novo, se não houver.",
+    "addLiquidityDescription": "Com a função de adicionar liquidez voce adiciona liquidez ao um par. Basta pesquisar as moedas para as quais você deseja adiciona liquidez e o sistema encontrará o pool, se existir no Pangolin, ou criará um novo, se não houver."
   },
   "poolFinder": {
     "connectToFind": "Conecte-se a uma carteira para encontrar suas pools",

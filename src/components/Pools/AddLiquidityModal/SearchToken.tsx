@@ -82,7 +82,7 @@ const SearchToken = ({ currency0, currency1, onTokenClick, onClick }: Props) => 
   function renderCurrency(currency: Currency | undefined) {
     if (!currency) {
       return (
-        <Text color="text1" fontSize={[16, 12]}>
+        <Text color="text1" fontSize={[12, 16]}>
           {t('poolFinder.selectToken')}
         </Text>
       );
@@ -91,7 +91,7 @@ const SearchToken = ({ currency0, currency1, onTokenClick, onClick }: Props) => 
     return (
       <>
         <CurrencyLogo size={24} currency={currency} imageSize={48} />
-        <Text color="text2" fontSize={[16, 14]} fontWeight={500} lineHeight="40px" marginLeft={10}>
+        <Text color="text2" fontSize={[14, 16]} fontWeight={500} lineHeight="40px" marginLeft={10}>
           {currency?.symbol}
         </Text>
       </>
@@ -123,6 +123,11 @@ const SearchToken = ({ currency0, currency1, onTokenClick, onClick }: Props) => 
         </Box>
         <ChevronDown size="16" color={theme.text1} />
       </CurrencySelectWrapper>
+      <Box paddingX="10px" paddingY="20px" bgColor="color3" mt="10px" borderRadius="8px">
+        <Text color="text1" fontSize={[12, 14]} textAlign="center">
+          {pairState === PairState.EXISTS ? t('pool.addLiquidityDescription') : t('pool.createPairDescription')}
+        </Text>
+      </Box>
       {renderButton()}
     </Box>
   );

@@ -386,7 +386,9 @@
     "noFarms": "No se encontraron farms.",
     "successWithdraw": "¡Su liquidez eliminada de la granja y las recompensas acumuladas reclamadas!",
     "importDescription1": "Con la función de importación puedes buscar grupos que no aparecen en la sección 'Tus grupos'.",
-    "importDescription2": "Simplemente elija las monedas subyacentes que estaban en su grupo."
+    "importDescription2": "Simplemente elija las monedas subyacentes que estaban en su grupo.",
+    "createPairDescription": "Con la función de creación puede crear un nuevo par. Simplemente busque las monedas para las que desea crear un par y el sistema encontrará el grupo si existe en Pangolin o creará uno nuevo si no lo es.",
+    "addLiquidityDescription": "Con la función de agregar liquidez, agrega liquidez a un par. Simplemente busque las monedas a las que desea agregar liquidez y el sistema encontrará el grupo si existe en Pangolin o creará uno nuevo si no existe."
   },
   "poolFinder": {
     "connectToFind": "Conecte la cartera para encontrar pools",

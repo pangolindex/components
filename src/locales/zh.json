@@ -386,7 +386,9 @@
     "noFarms": "没有找到农场。",
     "successWithdraw": "您的流动性从农场中移除，并获得了应计奖励",
     "importDescription1": "使用导入功能，您可以查找未出现在“您的池”部分中的池。",
-    "importDescription2": "只需选择您池中的基础代币。"
+    "importDescription2": "只需选择您池中的基础代币。",
+    "createPairDescription": "使用 create 函数，您可以创建一个新对。 只需搜索您要为其创建一对的硬币，如果 Pangolin 上存在该池，系统将找到该池，如果不存在则创建一个全新的池。",
+    "addLiquidityDescription": "使用添加流动性功能，您可以为货币对添加流动性。 只需搜索您想要增加流动性的代币，如果 Pangolin 中存在该池，系统将找到该池，如果不存在则创建一个新池。"
   },
   "poolFinder": {
     "connectToFind": "连接到钱包以查找矿池",
