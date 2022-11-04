@@ -2,12 +2,13 @@ import { ChainId } from '@pangolindex/sdk';
 import { useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
 import {
   useApproveCallback,
+  useApproveCallbackFromHederaTrade,
   useApproveCallbackFromNearTrade,
   useApproveCallbackFromTrade,
   useHederaApproveCallback,
   useNearApproveCallback,
 } from './useApproveCallback';
-import { useDummySwapCallback, useNearSwapCallback, useSwapCallback } from './useSwapCallback';
+import { useHederaSwapCallback, useNearSwapCallback, useSwapCallback } from './useSwapCallback';
 import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
 import { useWrapCallback, useWrapHbarCallback, useWrapNearCallback } from './useWrapCallback';
 
@@ -42,7 +43,10 @@ export const useTokenHook: UseTokenHookType = {
 };
 
 export type UseApproveCallbackFromTradeHookType = {
-  [chainId in ChainId]: typeof useApproveCallbackFromTrade | typeof useApproveCallbackFromNearTrade;
+  [chainId in ChainId]:
+    | typeof useApproveCallbackFromTrade
+    | typeof useApproveCallbackFromNearTrade
+    | typeof useApproveCallbackFromHederaTrade;
 };
 
 export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookType = {
@@ -51,13 +55,13 @@ export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookTyp
   [ChainId.WAGMI]: useApproveCallbackFromTrade,
   [ChainId.COSTON]: useApproveCallbackFromTrade,
   [ChainId.SONGBIRD]: useApproveCallbackFromTrade,
-  [ChainId.HEDERA_TESTNET]: useApproveCallbackFromTrade,
+  [ChainId.HEDERA_TESTNET]: useApproveCallbackFromHederaTrade,
   [ChainId.NEAR_MAINNET]: useApproveCallbackFromNearTrade,
   [ChainId.NEAR_TESTNET]: useApproveCallbackFromNearTrade,
 };
 
 export type UseSwapCallbackHookType = {
-  [chainId in ChainId]: typeof useSwapCallback | typeof useNearSwapCallback;
+  [chainId in ChainId]: typeof useSwapCallback | typeof useNearSwapCallback | typeof useHederaSwapCallback;
 };
 
 export const useSwapCallbackHook: UseSwapCallbackHookType = {
@@ -66,7 +70,7 @@ export const useSwapCallbackHook: UseSwapCallbackHookType = {
   [ChainId.WAGMI]: useSwapCallback,
   [ChainId.COSTON]: useSwapCallback,
   [ChainId.SONGBIRD]: useSwapCallback,
-  [ChainId.HEDERA_TESTNET]: useDummySwapCallback,
+  [ChainId.HEDERA_TESTNET]: useHederaSwapCallback,
   [ChainId.NEAR_MAINNET]: useNearSwapCallback,
   [ChainId.NEAR_TESTNET]: useNearSwapCallback,
 };

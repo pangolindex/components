@@ -171,6 +171,18 @@ export interface ContractData {
   bytecode: string;
 }
 
+export interface SwapData {
+  methodName: string;
+  account: string;
+  tokenInAmount: string;
+  tokenOutAmount: string;
+  HBARAmount: string | undefined;
+  path: string[];
+  exactAmountIn: boolean;
+  chainId: ChainId;
+  deadline: number;
+}
+
 class Hedera {
   axios: AxiosInstance;
   client: Client;
@@ -537,6 +549,52 @@ class Hedera {
       console.log(error);
       return 0;
     }
+  }
+
+  public async swap(swapData: SwapData) {
+    const { methodName, account, tokenInAmount, tokenOutAmount, HBARAmount, path, exactAmountIn, chainId, deadline } =
+      swapData;
+
+    const accountId = account ? this.hederaId(account) : '';
+    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+
+    const extraSwaps = path.length - 2;
+
+    const maxGas =
+      TRANSACTION_MAX_FEES.BASE_SWAP +
+      extraSwaps * TRANSACTION_MAX_FEES.EXTRA_SWAP +
+      extraSwaps * TRANSACTION_MAX_FEES.TOKEN_OUT_EXACT_SWAP;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contarctId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    if (HBARAmount) {
+      transaction //Amount of HBAR we want to provide
+        .setPayableAmount(Hbar.fromString(HBARAmount))
+        .setFunction(
+          methodName,
+          new ContractFunctionParameters()
+            .addUint256(tokenOutAmount as any)
+            .addAddressArray(path)
+            .addAddress(account)
+            .addUint256(deadline),
+        );
+    } else {
+      transaction.setFunction(
+        methodName,
+        new ContractFunctionParameters()
+          .addUint256(exactAmountIn ? tokenInAmount : (tokenOutAmount as any))
+          .addUint256(exactAmountIn ? tokenOutAmount : (tokenInAmount as any))
+          .addAddressArray(path)
+          .addAddress(account)
+          .addUint256(deadline),
+      );
+    }
+
+    return hashConnect.sendTransaction(transaction, accountId);
   }
 }
 

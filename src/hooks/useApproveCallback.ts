@@ -210,6 +210,18 @@ export function useApproveCallbackFromNearTrade(_chainId: ChainId, _trade?: Trad
 }
 
 // wraps useApproveCallback in the context of a swap
+export function useApproveCallbackFromHederaTrade(chainId: ChainId, trade?: Trade, allowedSlippage = 0) {
+  const [amountToApprove, routerAddress] = useMemo(() => {
+    if (!chainId || !trade) return [undefined, undefined];
+    return [
+      computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT],
+      trade.feeTo === ZERO_ADDRESS ? ROUTER_ADDRESS[chainId] : ROUTER_DAAS_ADDRESS[chainId],
+    ];
+  }, [trade, allowedSlippage]);
+  return useHederaApproveCallback(chainId, amountToApprove, routerAddress);
+}
+
+// wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromInputCurrencyAmount(currencyAmountIn: any | undefined) {
   const chainId = useChainId();
   const gelatoLibrary = useGelatoLimitOrdersLib();
