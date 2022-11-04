@@ -383,7 +383,9 @@
     "yourFarms": "senin çiftliklerin",
     "yourPools": "Havuzlarınız",
     "noFarms": "Çiftlik bulunamadı.",
-    "successWithdraw": "Likiditeniz çiftlikten kaldırıldı ve tahakkuk eden ödüller talep edildi!"
+    "successWithdraw": "Likiditeniz çiftlikten kaldırıldı ve tahakkuk eden ödüller talep edildi!",
+    "importDescription1": "İçe aktarma işleviyle 'Havuzlarınız' bölümünde görünmeyen havuzları arayabilirsiniz.",
+    "importDescription2": "Havuzunuzda bulunan temel madeni paraları seçin."
   },
   "poolFinder": {
     "connectToFind": "Havuzları bulmak için bir cüzdan bağlayın",

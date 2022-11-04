@@ -384,7 +384,9 @@
     "yourFarms": "trang trại của bạn",
     "yourPools": "Hồ bơi của bạn",
     "noFarms": "Không tìm thấy trang trại nào.",
-    "successWithdraw": "Thanh khoản của bạn đã bị xóa khỏi trang trại và đã nhận được phần thưởng tích lũy!"
+    "successWithdraw": "Thanh khoản của bạn đã bị xóa khỏi trang trại và đã nhận được phần thưởng tích lũy!",
+    "importDescription1": "Với chức năng nhập, bạn có thể tìm kiếm các nhóm không xuất hiện trong phần 'Bể bơi của bạn'.",
+    "importDescription2": "Chỉ cần chọn các đồng tiền cơ bản trong nhóm của bạn."
   },
   "poolFinder": {
     "connectToFind": "Kêt nối với một ví để nhìn thấy bể",

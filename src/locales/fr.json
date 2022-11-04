@@ -384,7 +384,9 @@
     "yourFarms": "Voos Farms",
     "yourPools": "Vos Pools",
     "noFarms": "Aucune ferme trouvée.",
-    "successWithdraw": "Vos liquidités retirées de la ferme, et les récompenses accumulées réclamées !"
+    "successWithdraw": "Vos liquidités retirées de la ferme, et les récompenses accumulées réclamées !",
+    "importDescription1": "Avec la fonction d'importation, vous pouvez rechercher des pools qui n'apparaissent pas dans la section 'Vos pools'.",
+    "importDescription2": "Choisissez simplement les pièces sous-jacentes qui se trouvaient dans votre pool."
   },
   "poolFinder": {
     "connectToFind": "Se connecter à un portefeuille pour trouver des pools",

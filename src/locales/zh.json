@@ -384,7 +384,9 @@
     "yourFarms": "你的农场",
     "yourPools": "你的游泳池",
     "noFarms": "没有找到农场。",
-    "successWithdraw": "您的流动性从农场中移除，并获得了应计奖励"
+    "successWithdraw": "您的流动性从农场中移除，并获得了应计奖励",
+    "importDescription1": "使用导入功能，您可以查找未出现在“您的池”部分中的池。",
+    "importDescription2": "只需选择您池中的基础代币。"
   },
   "poolFinder": {
     "connectToFind": "连接到钱包以查找矿池",

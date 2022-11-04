@@ -384,7 +384,9 @@
     "yourFarms": "Your Farms",
     "yourPools": "Your Pools",
     "noFarms": "No farms found.",
-    "successWithdraw": "Your liquidity removed from farm, And accrued rewards claimed!"
+    "successWithdraw": "Your liquidity removed from farm, And accrued rewards claimed!",
+    "importDescription1": "With import function you can look for pools that doesn’t appear in 'Your Pools' section.",
+    "importDescription2": "Just choose the underlying coins that was in your pool."
   },
   "poolFinder": {
     "connectToFind": "Connect to a wallet to find pools",

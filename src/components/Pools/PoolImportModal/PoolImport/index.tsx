@@ -164,7 +164,14 @@ const PoolImport = ({ currency0, currency1, openTokenDrawer, setActiveField, onM
 
         <ChevronDown size="16" color={theme.text1} />
       </CurrencySelectWrapper>
-
+      <Box paddingX="10px" paddingY="20px" bgColor="color3" mt="10px" borderRadius="8px">
+        <Text color="text1" fontSize={14} textAlign="center">
+          {t('pool.importDescription1')}
+        </Text>
+        <Text color="text1" fontSize={14} marginTop="10px" textAlign="center">
+          {t('pool.importDescription2')}
+        </Text>
+      </Box>
       {currency0 && currency1 ? getCard() : prerequisiteMessage}
     </PoolImportWrapper>
   );

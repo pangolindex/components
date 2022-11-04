@@ -383,7 +383,9 @@
     "yourFarms": "Suas farms",
     "yourPools": "Suas pools",
     "noFarms": "Nenhuma fazenda encontrada.",
-    "successWithdraw": "Sua liquidez removida da fazenda e recompensas acumuladas reivindicadas!"
+    "successWithdraw": "Sua liquidez removida da fazenda e recompensas acumuladas reivindicadas!",
+    "importDescription1": "Com a função de importação você pode procurar por pools que não aparecem na seção 'Suas Pools'.",
+    "importDescription2": "Basta escolher as moedas subjacentes que estavam na sua pool."
   },
   "poolFinder": {
     "connectToFind": "Conecte-se a uma carteira para encontrar suas pools",

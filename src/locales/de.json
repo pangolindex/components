@@ -384,7 +384,9 @@
     "yourFarms": "Ihre Höfe",
     "yourPools": "Ihre Pools",
     "noFarms": "Keine Höfe gefunden.",
-    "successWithdraw": "Ihre Liquidität wurde aus der Farm entfernt und aufgelaufene Prämien eingefordert!"
+    "successWithdraw": "Ihre Liquidität wurde aus der Farm entfernt und aufgelaufene Prämien eingefordert!",
+    "importDescription1": "Mit der Importfunktion können Sie nach Pools suchen, die nicht im Abschnitt 'Ihre Pools' erscheinen.",
+    "importDescription2": "Wählen Sie einfach die zugrunde liegenden Münzen aus, die sich in Ihrem Pool befanden."
   },
   "poolFinder": {
     "connectToFind": "Verbinde mit einer Wallet, um Pools zu finden",
