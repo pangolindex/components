@@ -144,6 +144,7 @@
         "detailsTitle": "div[class='sc-eCYdqJ sc-eyCGVO fEptdj jNAbZy']",
         "detailsLinks": "a[class='sc-bczRLJ kbxJQv']",
         "detailsCrossBtn": "svg[class='sc-bhVIhj gLGxRa']",
-        "superFarmTitle": "div[class='sc-dZeWys bQvbRy']"
+        "superFarmTitle": "div[class='sc-dZeWys bQvbRy']",
+        "addLiqBtn": "~ div[class='sc-eCYdqJ sc-hlqNbq fEptdj jMOesB'] button.kAiJtd"
     }
 }
