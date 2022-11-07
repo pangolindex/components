@@ -602,7 +602,7 @@ export function useHederaAddLiquidity() {
         const args = {
           token: wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId), // token
           tokenAmount: (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
-          HBARAmount: (tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString(), // HBAR desired
+          HBARAmount: (tokenBIsETH ? parsedAmountB : parsedAmountA).toExact(), // HBAR desired
           tokenAmountMin: amountsMin[tokenBIsETH ? AddField.CURRENCY_A : AddField.CURRENCY_B].toString(), // token min
           HBARAmountMin: amountsMin[tokenBIsETH ? AddField.CURRENCY_B : AddField.CURRENCY_A].toString(), // eth min
           account: account,
