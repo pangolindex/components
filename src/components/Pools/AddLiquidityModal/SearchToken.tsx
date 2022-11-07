@@ -27,7 +27,7 @@ interface Props {
   onClick: (value: number) => void;
 }
 
-const SearchToken = ({ currency0, currency1, onTokenClick, onClick }: Props) => {
+const SearchTokenSection = ({ currency0, currency1, onTokenClick, onClick }: Props) => {
   const { account } = usePangolinWeb3();
   const theme = useContext(ThemeContext);
 
@@ -61,6 +61,16 @@ const SearchToken = ({ currency0, currency1, onTokenClick, onClick }: Props) => 
         <ConfirmButton onClick={() => onClick(BodyState.ADD_LIQUIDITY)}>
           {t('navigationTabs.addLiquidity')}
         </ConfirmButton>
+      );
+    }
+
+    if (pairState === PairState.LOADING) {
+      return (
+        <LightCard>
+          <Text textAlign="center" color="text1" fontSize={[16, 12]}>
+            {t('poolFinder.loading')}...
+          </Text>
+        </LightCard>
       );
     }
 
@@ -128,4 +138,4 @@ const SearchToken = ({ currency0, currency1, onTokenClick, onClick }: Props) => 
   );
 };
 
-export default SearchToken;
+export default SearchTokenSection;

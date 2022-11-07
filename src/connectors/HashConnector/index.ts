@@ -116,7 +116,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async getProvider() {
-    return new JsonRpcProvider(`https://hedera.testnet.arkhia.io/json-rpc/v1?x_api_key=xxxx`);
+    return new JsonRpcProvider(`https://hedera.testnet.arkhia.io/json-rpc/v1?x_api_key=${process.env.ARKHIA_API_KEY}`);
   }
 
   public async activate(): Promise<any> {

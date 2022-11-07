@@ -1,14 +1,17 @@
 import { ChainId } from '@pangolindex/sdk';
 import {
   useAddLiquidity,
+  useDummyCreatePair,
   useDummyGetUserLP,
   useETHBalances,
   useGetNearUserLP,
   useGetUserLP,
   useHederaAddLiquidity,
   useHederaBalance,
+  useHederaCreatePair,
   useNearAddLiquidity,
   useNearBalance,
+  useNearCreatePair,
   useNearRemoveLiquidity,
   useNearTokenBalance,
   useNearTokenBalances,
@@ -105,4 +108,23 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.HEDERA_TESTNET]: useDummyGetUserLP,
   [ChainId.NEAR_MAINNET]: useGetNearUserLP,
   [ChainId.NEAR_TESTNET]: useGetNearUserLP,
+};
+
+export type UseCreatePairHookType = {
+  [chainId in ChainId]: typeof useDummyCreatePair | typeof useNearCreatePair | typeof useHederaCreatePair;
+};
+
+/**
+ * Create Pair related hooks
+ * Basically takes 2 tokens to create a pair
+ */
+export const useCreatePairHook: UseCreatePairHookType = {
+  [ChainId.FUJI]: useDummyCreatePair,
+  [ChainId.AVALANCHE]: useDummyCreatePair,
+  [ChainId.WAGMI]: useDummyCreatePair,
+  [ChainId.COSTON]: useDummyCreatePair,
+  [ChainId.SONGBIRD]: useDummyCreatePair,
+  [ChainId.HEDERA_TESTNET]: useHederaCreatePair,
+  [ChainId.NEAR_MAINNET]: useNearCreatePair,
+  [ChainId.NEAR_TESTNET]: useNearCreatePair,
 };
