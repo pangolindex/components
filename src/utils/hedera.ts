@@ -462,7 +462,7 @@ class Hedera {
     const transaction = new ContractExecuteTransaction()
       .setContractId(contarctId)
       .setGas(maxGas)
-      .setPayableAmount(HBARAmount)
+      .setPayableAmount(Hbar.fromString(HBARAmount))
       .setFunction(
         'addLiquidityHBAR',
         new ContractFunctionParameters()

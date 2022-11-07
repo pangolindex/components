@@ -44,7 +44,7 @@ import {
   waitForTransaction,
 } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
-import { FunctionCallOptions, Transaction, nearFn } from 'src/utils/near';
+import { FunctionCallOptions, Transaction as NearTransaction, nearFn } from 'src/utils/near';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { toV2LiquidityToken, useTrackedTokenPairs } from '../puser/hooks';
@@ -446,7 +446,7 @@ export function useNearAddLiquidity() {
   return async (data: AddLiquidityProps) => {
     if (!chainId || !library || !account) return;
 
-    const depositTransactions: Transaction[] = [];
+    const depositTransactions: NearTransaction[] = [];
     const { parsedAmounts, deadline, currencies } = data;
     const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
 
@@ -531,7 +531,7 @@ export function useNearAddLiquidity() {
       },
     ];
 
-    const transactions: Transaction[] = [
+    const transactions: NearTransaction[] = [
       ...depositTransactions,
       {
         receiverId: exchangeContractId,
@@ -602,7 +602,7 @@ export function useHederaAddLiquidity() {
         const args = {
           token: wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId), // token
           tokenAmount: (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
-          HBARAmount: (tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString(), // HBAR desired
+          HBARAmount: (tokenBIsETH ? parsedAmountB : parsedAmountA).toExact(), // HBAR desired
           tokenAmountMin: amountsMin[tokenBIsETH ? AddField.CURRENCY_A : AddField.CURRENCY_B].toString(), // token min
           HBARAmountMin: amountsMin[tokenBIsETH ? AddField.CURRENCY_B : AddField.CURRENCY_A].toString(), // eth min
           account: account,
@@ -914,9 +914,9 @@ export function useNearRemoveLiquidity(pair: Pair) {
   const removeLiquidity = async (data: RemoveLiquidityProps) => {
     if (!chainId || !library || !account) return;
 
-    let transactions: Transaction[] = [];
+    let transactions: NearTransaction[] = [];
 
-    const withDrawTransactions: Transaction[] = [];
+    const withDrawTransactions: NearTransaction[] = [];
 
     const { parsedAmounts, deadline, allowedSlippage } = data;
 
@@ -1151,7 +1151,11 @@ export interface CreatePoolProps {
   tokenB?: Token;
 }
 
-export function useNearCreatePool() {
+export function useDummyCreatePair() {
+  return null;
+}
+
+export function useNearCreatePair() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { library } = useLibrary();
@@ -1159,7 +1163,7 @@ export function useNearCreatePool() {
   return async (data: CreatePoolProps) => {
     if (!chainId || !library || !account) return;
 
-    let transactions: Transaction[] = [];
+    let transactions: NearTransaction[] = [];
 
     const { tokenA, tokenB } = data;
 
@@ -1220,6 +1224,44 @@ export function useNearCreatePool() {
   };
 }
 
+export function useHederaCreatePair() {
+  const chainId = useChainId();
+  const { account } = usePangolinWeb3();
+  const addTransaction = useTransactionAdder();
+
+  return async (data: CreatePoolProps) => {
+    if (!chainId || !account) return;
+
+    const { tokenA, tokenB } = data;
+
+    if (!tokenA || !tokenB) {
+      throw new Error(`Select tokens`);
+    }
+
+    const response = await hederaFn.createPair({
+      account,
+      chainId,
+      tokenA,
+      tokenB,
+    });
+
+    if (response) {
+      addTransaction(response, {
+        summary: `Pair created for ${tokenA.symbol} and ${tokenB.symbol}`,
+      });
+
+      return response;
+    }
+  };
+}
+
+/**
+ * This hook used to get pgl token specifically for given Hedera pair
+ * Takes currencies as a input and return hedera pair token & token with pair contract address
+ * @param currencyA
+ * @param currencyB
+ * @returns [pglToken, pairToken]
+ */
 export const useHederaPGLToken = (
   currencyA: Currency | undefined,
   currencyB: Currency | undefined,

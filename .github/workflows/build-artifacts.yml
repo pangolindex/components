@@ -29,6 +29,8 @@ jobs:
 
       - run: yarn tsc && yarn lint
       - run: yarn build
+        env:
+          ARKHIA_API_KEY: ${{ secrets.ARKHIA_API_KEY }}
 
       - uses: actions/upload-artifact@v2
         with:
