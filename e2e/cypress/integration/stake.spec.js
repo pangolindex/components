@@ -28,7 +28,7 @@ describe('Stake', () => {
         cy.get('[class="sc-eCYdqJ sc-krDsej hoKraq"]').as("test123") 
         cy.get('@test123').should("contain","Stake Your PNG and Earn")
         
-        cy.get('div[class="sc-eCYdqJ sc-gPWkxV eiQojY"] div[class="sc-jSMfEi ejufgh"]').eq(0).contains('Total Staked').should('be.visible')
+        cy.waitUntil(() => cy.get('div[class="sc-eCYdqJ sc-gPWkxV eiQojY"] div[class="sc-jSMfEi ejufgh"]')).eq(0).contains('Total Staked').should('be.visible')
         // .then($test1 => {
         //     cy.get($test1).find(againstValue).then($test2 => {
         //     cy.log(cy.contains($test2[0].innerText).should('be.visible'))

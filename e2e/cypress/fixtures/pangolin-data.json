@@ -57,5 +57,9 @@
     "eligibleMsg": "Let's check if you are eligible!",
     "comingSoonMsg": "Coming SOON...",
     "haveQs": "HAVE QUESTIONS?"
+  },
+  "pools": {
+    "yourPoolsMessage": "Connect to a wallet to view your liquidity.",
+    "createPair": "Create a pair"
   }
 }

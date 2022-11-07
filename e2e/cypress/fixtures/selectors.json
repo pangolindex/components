@@ -145,6 +145,20 @@
         "detailsLinks": "a[class='sc-bczRLJ kbxJQv']",
         "detailsCrossBtn": "svg[class='sc-bhVIhj gLGxRa']",
         "superFarmTitle": "div[class='sc-dZeWys bQvbRy']",
-        "addLiqBtn": "~ div[class='sc-eCYdqJ sc-hlqNbq fEptdj jMOesB'] button.kAiJtd"
+        "addLiqBtn": "~ div[class='sc-eCYdqJ sc-hlqNbq fEptdj jMOesB'] button.kAiJtd",
+        "superFarm": "#superFarm",
+        "seeDetailsBlock": "div[class='sc-eCYdqJ fEptdj']",
+        "totalStakeBlock": "div[class='sc-gspIFj gSmSlS']",
+        "totalStakeTitle": "div[class='sc-jSMfEi hjZlDf']",
+        "titleValues": "div[class='sc-jSMfEi ePgoXL']",
+        "yourPools": "div[class='sc-jSMfEi sc-fzsDOv kMdDRR']",
+        "yourPoolsMsge": "div[class='sc-jSMfEi ZObtI']",
+        "createPairBtn": "a[class='sc-dTdPqK hkDJOQ']",
+        "createPairDropdown": "div[class='sc-eCYdqJ sc-iJRSss fEptdj bBumab']",
+        "createPairToken": "div[class='sc-jSMfEi icpGcW']",
+        "createPairMsge": "div[class='sc-jSMfEi jLwZpX']",
+        "addLiqField": "input[class='sc-iBkjds eslaVo']",
+        "addLiqConnectWalletBtn": "button[class='sc-gsnTZi dKnXIG']",
+        "addLiqCrossBtn": "div[class='sc-lbhYTY ghErwL']"
     }
 }

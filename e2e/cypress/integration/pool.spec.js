@@ -1,8 +1,12 @@
 /// <reference types = "cypress"/>
 import 'cypress-wait-until'
 import selectors from '../fixtures/selectors.json'
-const {poolsSideMenu, poolsSideMenuSelect, searchFieldPool, cardTitleSuper, cardTitleAllFarm, cardBody, cardtvlApr, cardTvl, tvlAprValues, rewardsInLogos, seeDetailsBtn, detailsTitle, detailsLinks, detailsCrossBtn, superFarmTitle, addLiqBtn} = selectors.pools
-let array = ["PNG logo", 'XETA logo', 'ncash logo', 'LOST logo', 'KTE logo']
+import data from '../fixtures/pangolin-data.json'
+const {poolsSideMenu, poolsSideMenuSelect, searchFieldPool, cardTitleSuper, cardTitleAllFarm, cardBody, cardtvlApr, cardTvl, tvlAprValues, rewardsInLogos, seeDetailsBtn, detailsTitle, detailsLinks, detailsCrossBtn, superFarmTitle, addLiqBtn, superFarm, seeDetailsBlock, totalStakeBlock, totalStakeTitle, titleValues, yourPools, yourPoolsMsge, createPairBtn, createPairDropdown, createPairToken, createPairMsge, addLiqField, addLiqConnectWalletBtn, addLiqCrossBtn} = selectors.pools
+const {yourPoolsMessage, createPair} = data.pools
+const {connectToWallet} = data.dashboard
+const {connectWalletTxt} = data.swap
+let superFarmRewards = ["PNG logo", 'XETA logo', 'ncash logo', 'LOST logo', 'KTE logo']
 describe('Pools', () => {
     
     beforeEach('',() => {
@@ -29,6 +33,39 @@ describe('Pools', () => {
             cy.get($titleAllFarm).scrollIntoView().should("be.visible")
         })
     })
+
+    /******************* Assertions on Super farm page **************************/
+    it('TC-03,06,07, Verify that the user is able to see all the super farms when clicking on the "Super Farms" Label', () => {
+        cy.wait(5000)
+        cy.get(superFarm).click()
+        cy.get(cardTitleAllFarm).each( $titleSuperfarm => {
+            cy.get($titleSuperfarm).scrollIntoView().should("be.visible")
+            cy.get($titleSuperfarm).find(cardBody).within( $tvlApr => {
+                cy.get($tvlApr).find(cardtvlApr).eq(0).within($tvl => {
+                    cy.wrap($tvl).find(cardTvl).should('contain', 'TVL')
+                    cy.wrap($tvl).find(tvlAprValues).then($tvlValue => {
+                        cy.contains($tvlValue[0].children[0].innerText).should('be.visible')
+                        })
+                    })
+                    cy.wait(5000)
+                    cy.get($tvlApr).find(cardtvlApr).eq(1).within($apr => {
+                        cy.wrap($apr).find(cardTvl).should('contain', 'APR')
+                        cy.wrap($apr).find(tvlAprValues).then($aprValue => {
+                        cy.contains($aprValue[0].children[0].innerText).should('be.visible')
+                        })
+                    })
+                })
+                cy.get($titleSuperfarm).find(superFarmTitle).should('contain', 'Super farm')
+                cy.get($titleSuperfarm).find (rewardsInLogos).
+                each($superRewardsLogos => {
+                    superFarmRewards.forEach( tokenAttr => {
+                        if($superRewardsLogos[0].alt === tokenAttr){
+                        cy.get($superRewardsLogos).should('have.attr', 'alt', tokenAttr) 
+                        }
+                    })
+                })
+            })
+        })
     
     /******************* Assertions on TVL APR Rewards **************************/
     it('TC-08, Verify that the user is able to see the "TVL", "APR" and "Rewards in" on the card', () => {
@@ -57,7 +94,7 @@ describe('Pools', () => {
         cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
             cy.get($titleAllFarm).find (rewardsInLogos).
             each( $rewardsLogos => {
-                array.forEach( tokenAttr => {
+                superFarmRewards.forEach( tokenAttr => {
                     if($rewardsLogos[0].alt === tokenAttr){
                         cy.get($rewardsLogos).should('have.attr', 'alt', tokenAttr) 
                     }
@@ -94,28 +131,28 @@ describe('Pools', () => {
             cy.get(detailsTitle).should("contain","Details")
             cy.wait(5000)
             
-            cy.get('div[class="sc-eCYdqJ fEptdj"]').find('div[class="sc-gspIFj gSmSlS"]').eq(1).within($totalStake => {
-                cy.wrap($totalStake).find('div[class="sc-jSMfEi hjZlDf"]').should('contain', 'Total Stake')
-                cy.wrap($totalStake).find('div[class="sc-jSMfEi ePgoXL"]').then($totalStakeVal => {
+            cy.get(seeDetailsBlock).find(totalStakeBlock).eq(1).within($totalStake => {
+                cy.wrap($totalStake).find(totalStakeTitle).should('contain', 'Total Stake')
+                cy.wrap($totalStake).find(titleValues).then($totalStakeVal => {
                     cy.waitUntil(() => cy.contains($totalStakeVal[0].innerText).should('be.visible'))
                 })
             })
 
-            cy.get('[class="sc-eCYdqJ fEptdj"]').find('div[class="sc-gspIFj gSmSlS"]').eq(1).within($underlyingFirst => {
-                cy.wrap($underlyingFirst).find('div[class="sc-jSMfEi hjZlDf"]').then($underlying => {
+            cy.get(seeDetailsBlock).find(totalStakeBlock).eq(1).within($underlyingFirst => {
+                cy.wrap($underlyingFirst).find(totalStakeTitle).then($underlying => {
                     cy.contains($underlying[1].innerText).should("be.visible")
                 })
-                cy.wrap($underlyingFirst).find('div[class="sc-jSMfEi ePgoXL"]').then($underlyingFirstVal => {
+                cy.wrap($underlyingFirst).find(titleValues).then($underlyingFirstVal => {
                     console.log($underlyingFirstVal)
                     cy.waitUntil(() => cy.contains($underlyingFirstVal[1].innerText).should('be.visible'))
                 })
             })
 
-            cy.get('[class="sc-eCYdqJ fEptdj"]').find('div[class="sc-gspIFj gSmSlS"]').eq(1).within($underlyingSec => {
-                cy.wrap($underlyingSec).find('div[class="sc-jSMfEi hjZlDf"]').then($underlying => {
+            cy.get(seeDetailsBlock).find(totalStakeBlock).eq(1).within($underlyingSec => {
+                cy.wrap($underlyingSec).find(totalStakeTitle).then($underlying => {
                     cy.contains($underlying[2].innerText).should("be.visible")
                 })
-                cy.wrap($underlyingSec).find('div[class="sc-jSMfEi ePgoXL"]').then($underlyingSecVal => {
+                cy.wrap($underlyingSec).find(titleValues).then($underlyingSecVal => {
                     console.log($underlyingSecVal)
                     cy.waitUntil(() => cy.contains($underlyingSecVal[2].innerText).should('be.visible'))
                 })
@@ -126,7 +163,7 @@ describe('Pools', () => {
     })
 
     /******************* Assertions on the links **************************/
-    it('TC-17, Verify that the user is redirected to the particular token site', () => {
+    it.only('TC-17, Verify that the user is redirected to the particular token site', () => {
         cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
             cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
             cy.get(detailsTitle).should("contain","Details")
@@ -141,55 +178,22 @@ describe('Pools', () => {
         })        
     })
     
-    /******************* Assertions on Super farm page **************************/
-    it('TC-03,06,07, Verify that the user is able to see all the super farms when clicking on the "Super Farms" Label', () => {
-        cy.wait(5000)
-        cy.get('#superFarm').click()
-        cy.get(cardTitleAllFarm).each( $titleSuperfarm => {
-            cy.get($titleSuperfarm).scrollIntoView().should("be.visible")
-            cy.get($titleSuperfarm).find(cardBody).within( $tvlApr => {
-                cy.get($tvlApr).find(cardtvlApr).eq(0).within($tvl => {
-                    cy.wrap($tvl).find(cardTvl).should('contain', 'TVL')
-                    cy.wrap($tvl).find(tvlAprValues).then($tvlValue => {
-                        cy.contains($tvlValue[0].children[0].innerText).should('be.visible')
-                    })
-                })
-                cy.wait(5000)
-                cy.get($tvlApr).find(cardtvlApr).eq(1).within($apr => {
-                    cy.wrap($apr).find(cardTvl).should('contain', 'APR')
-                    cy.wrap($apr).find(tvlAprValues).then($aprValue => {
-                        cy.contains($aprValue[0].children[0].innerText).should('be.visible')
-                    })
-                })
-            })
-            cy.get($titleSuperfarm).find(superFarmTitle).should('contain', 'Super farm')
-            cy.get($titleSuperfarm).find (rewardsInLogos).
-            each($superRewardsLogos => {
-                array.forEach( tokenAttr => {
-                    if($superRewardsLogos[0].alt === tokenAttr){
-                        cy.get($superRewardsLogos).should('have.attr', 'alt', tokenAttr) 
-                    }
-                })
-            })
-        })
-    })
-
     /******************* Assertions on the Your pools page **************************/
     it('TC-45, Verify that the user cannot see the pools in the Your Pools section if the wallet is not connected', () => {
         cy.wait(5000)
-        cy.get('div[class="sc-jSMfEi sc-fzsDOv kMdDRR"]').contains("Your Pools").click({force:true})
-        cy.get('div[class="sc-jSMfEi ZObtI"]').contains("Connect to a wallet to view your liquidity.").should("be.visible")
+        cy.get(yourPools).contains("Your Pools").click({force:true})
+        cy.get(yourPoolsMsge).contains(yourPoolsMessage).should("be.visible")
     })
 
     /******************* Assertions on Create card **************************/
     it('TC-46,47, Verify that the user cannot create a pair if the wallet is not connected', () => {
         cy.wait(5000)
-        cy.get('a[class="sc-dTdPqK hkDJOQ"]').contains("Create a pair").click({force:true})
-        cy.get('div[class="sc-eCYdqJ sc-iJRSss fEptdj bBumab"]').eq(0).click()
-        cy.get('div[class="sc-jSMfEi icpGcW"]').contains("aaBLOCK").click()
-        cy.get('div[class="sc-eCYdqJ sc-iJRSss fEptdj bBumab"]').eq(1).click()
-        cy.get('div[class="sc-jSMfEi icpGcW"]').contains("AVAX").click()
-        cy.get('div[class="sc-jSMfEi jLwZpX"]').contains("Connect to a wallet")
+        cy.get(createPairBtn).contains(createPair).click({force:true})
+        cy.get(createPairDropdown).eq(0).click()
+        cy.get(createPairToken).contains("aaBLOCK").click()
+        cy.get(createPairDropdown).eq(1).click()
+        cy.get(createPairToken).contains("AVAX").click()
+        cy.get(createPairMsge).contains(connectToWallet)
         .should("be.visible")
     })
 
@@ -198,8 +202,8 @@ describe('Pools', () => {
         cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
             cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
             cy.get(detailsTitle).should("contain","Details")
-            cy.get('input[class="sc-iBkjds eslaVo"]').eq(3).type('12')
-            cy.get('button[class="sc-gsnTZi dKnXIG"]').should("contain","Connect Wallet")
+            cy.get(addLiqField).eq(3).type('12')
+            cy.get(addLiqConnectWalletBtn).should("contain",connectWalletTxt)
             cy.get(detailsCrossBtn).eq(3).click()
         }) 
     })
@@ -208,8 +212,8 @@ describe('Pools', () => {
     it('TC-49, Verify that the user is not able to add the liquidity from the "All Farms" section if the wallet is not connected', () => {
         cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
             cy.get($titleAllFarm).find(addLiqBtn).click()
-            cy.get('button[class="sc-gsnTZi dKnXIG"]').should("contain","Connect Wallet")
-            cy.get('div[class="sc-lbhYTY ghErwL"]').click()
+            cy.get(addLiqConnectWalletBtn).should("contain",connectWalletTxt)
+            cy.get(addLiqCrossBtn).click()
         })
     })    
 })
