@@ -446,32 +446,19 @@ class Hedera {
     const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
     const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
 
-    console.log('tokenAddress', tokenAddress);
-    console.log('accountId', accountId);
-    console.log('contarctId', contarctId);
-    console.log('token', token);
-    console.log('tokenAmount', tokenAmount);
-    console.log('HBARAmount', HBARAmount);
-    console.log('tokenAmountMin', tokenAmountMin);
-    console.log('HBARAmountMin', HBARAmountMin);
-    console.log('account', account);
-    console.log('deadline', deadline);
-    console.log('chainId', chainId);
-    console.log('maxGas', maxGas);
-
     const transaction = new ContractExecuteTransaction()
       .setContractId(contarctId)
       .setGas(maxGas)
       .setPayableAmount(Hbar.fromString(HBARAmount))
       .setFunction(
-        'addLiquidityHBAR',
+        'addLiquidityAVAX',
         new ContractFunctionParameters()
           .addAddress(tokenAddress)
           .addUint256(tokenAmount as any)
           .addUint256(tokenAmountMin as any)
           .addUint256(HBARAmountMin as any)
           .addAddress(account)
-          .addUint256(deadline as any),
+          .addUint256(deadline),
       );
 
     return hashConnect.sendTransaction(transaction, accountId);

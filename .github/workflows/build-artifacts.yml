@@ -27,10 +27,16 @@ jobs:
         run: |
           npm --no-git-tag-version version $(npm show . version)-internal.$(git rev-parse --short HEAD)
 
+      # create env file from secrets
+      - run: echo "${{ secrets.ENV_FILE }}" > .env
+
       - run: yarn tsc && yarn lint
       - run: yarn build
         env:
           ARKHIA_API_KEY: ${{ secrets.ARKHIA_API_KEY }}
+
+      # remove .env so that we don't include in build_artifacts.zip file
+      - run: rm -rf .env
 
       - uses: actions/upload-artifact@v2
         with:
