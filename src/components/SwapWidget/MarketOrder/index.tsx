@@ -25,7 +25,7 @@ import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
-  useHederaTokenAssociated,
+  useHederaSwapTokenAssociated,
   useSwapActionHandlers,
   useSwapState,
 } from 'src/state/pswap/hooks';
@@ -137,7 +137,7 @@ const MarketOrder: React.FC<Props> = ({
     associate: onAssociate,
     isLoading: isLoadingAssociate,
     hederaAssociated: isHederaTokenAssociated,
-  } = useHederaTokenAssociated();
+  } = useHederaSwapTokenAssociated();
 
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE;
   const { address: recipientAddress } = useENS(recipient);

@@ -8,13 +8,11 @@ import { useChainId } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { SpaceType } from 'src/state/pstake/types';
-import { useNearCreatePool } from 'src/state/pwallet/hooks';
+import { useCreatePairHook } from 'src/state/pwallet/multiChainsHooks';
 import { CloseIcon } from 'src/theme/components';
-import { isEvmChain } from 'src/utils';
-import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import AddLiquidity from '../AddLiquidity';
-import SearchToken, { BodyState, Fields } from './SearchToken';
+import SearchTokenSection, { BodyState, Fields } from './SearchToken';
 import { Wrapper } from './styleds';
 
 export interface AddLiquidityModalProps {
@@ -36,7 +34,8 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
 
   const [bodyState, setBodyState] = useState<BodyState>(BodyState.SELECT_TOKENS);
 
-  const createPool = useNearCreatePool();
+  const useCreatePair = useCreatePairHook[chainId];
+  const createPair = useCreatePair();
 
   const parsedQs = useParsedQueryString();
 
@@ -64,26 +63,23 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
   );
 
   async function onButtonClick(value?: BodyState) {
-    if (!chainId) return;
+    if (!chainId || !value) return;
 
     try {
-      if (isEvmChain(chainId) && value) {
+      // if chain doesn't require explicit createPair for e.g. evm chain doesn't require explicit create pair
+      // or if value is ADD_LIQUIDITY then go to add liq
+      if (!createPair || value === BodyState.ADD_LIQUIDITY) {
         setBodyState(value);
-      } else if (!isEvmChain(chainId)) {
+      } else {
         const tokenA = currency0 ? wrappedCurrency(currency0, chainId) : undefined;
         const tokenB = currency1 ? wrappedCurrency(currency1, chainId) : undefined;
 
-        const poolId = await nearFn.getPoolId(chainId, tokenA, tokenB);
-        if (poolId > 0 && value) {
-          setBodyState(value);
-        } else {
-          const createPoolData = {
-            tokenA,
-            tokenB,
-          };
+        const createPairData = {
+          tokenA,
+          tokenB,
+        };
 
-          await createPool(createPoolData);
-        }
+        await createPair(createPairData);
       }
     } catch (err) {
       const _err = err as any;
@@ -136,7 +132,7 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
     if (bodyState === BodyState.SELECT_TOKENS) {
       return (
         <>
-          <SearchToken
+          <SearchTokenSection
             currency0={currency0}
             currency1={currency1}
             onTokenClick={onTokenClick}

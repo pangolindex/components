@@ -6,8 +6,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery } from 'react-query';
 import { COINGECKO_CURRENCY_ID, COINGEKO_BASE_URL } from 'src/constants';
 import { COINGECKO_TOKENS_MAPPING } from 'src/constants/coingeckoTokens';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
 import { isAddress } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
@@ -15,7 +17,6 @@ import { NearTokenMetadata, nearFn } from 'src/utils/near';
 import ERC20_INTERFACE, { ERC20_BYTES32_INTERFACE } from '../constants/abis/erc20';
 import { useTokenHook } from './multiChainsHooks';
 import { useBytes32TokenContract, useTokenContract } from './useContract';
-import { useChainId } from './index';
 
 export type TokenReturnType = Token | undefined | null;
 
@@ -145,40 +146,6 @@ export function useNearToken(tokenAddress?: string): TokenReturnType {
   }, [address, chainId, token, tokenData]);
 }
 
-export function useHederaToken(tokenAddress?: string): TokenReturnType {
-  const [tokenData, setTokenData] = useState<NearTokenMetadata>();
-
-  const chainId = useChainId();
-  const tokens = useAllTokens();
-
-  const address = tokenAddress;
-
-  const token: Token | undefined = address ? tokens[address] : undefined;
-
-  useEffect(() => {
-    async function getTokenData() {
-      if (address) {
-        const tokenMetaData = await hederaFn.getMetadata(address);
-
-        setTokenData(tokenMetaData);
-      }
-    }
-
-    getTokenData();
-  }, [address]);
-
-  return useMemo(() => {
-    if (token) return token;
-    if (!chainId || !address) return undefined;
-
-    if (tokenData) {
-      return new Token(chainId, address, tokenData?.decimals, tokenData?.symbol, tokenData?.name);
-    }
-
-    return undefined;
-  }, [address, chainId, token, tokenData]);
-}
-
 export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
   const chainId = useChainId();
   const tokens = useAllTokens();
@@ -252,47 +219,6 @@ export function useNearTokens(tokensAddress: string[] = []): Array<TokenReturnTy
     return (
       tokensAddress?.map((address) => {
         return { queryKey: ['token', address], queryFn: fetchNearTokenMetadata(address) };
-      }) ?? []
-    );
-  }, [tokensAddress]);
-
-  const results = useQueries(queryParameter);
-
-  return useMemo(() => {
-    if (!tokensAddress || tokensAddress?.length === 0) return [];
-    if (!chainId) return [];
-
-    return results.reduce<Token[]>((acc, result) => {
-      const tokenData = result?.data;
-
-      if (tokenData && result?.isLoading === false) {
-        if (!!tokenData?.id && tokens[tokenData?.id]) {
-          // if we have user tokens already
-          acc.push(tokens[tokenData?.id]);
-        } else {
-          const token = new Token(chainId, tokenData?.id, tokenData?.decimals, tokenData?.symbol, tokenData?.name);
-
-          acc.push(token);
-        }
-      }
-
-      return acc;
-    }, []);
-  }, [results, tokens]);
-}
-
-const fetchHederaTokenMetadata = (address) => () => {
-  return nearFn.getMetadata(address);
-};
-
-export function useHederaTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
-  const chainId = useChainId();
-  const tokens = useAllTokens();
-
-  const queryParameter = useMemo(() => {
-    return (
-      tokensAddress?.map((address) => {
-        return { queryKey: ['token', address], queryFn: fetchHederaTokenMetadata(address) };
       }) ?? []
     );
   }, [tokensAddress]);
@@ -495,4 +421,59 @@ export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
       cacheTime: 60 * 1000, // 1 minute
     },
   );
+}
+
+export function useHederaTokenAssociated(token: Token | undefined): {
+  associate: undefined | (() => Promise<void>);
+  isLoading: boolean;
+  hederaAssociated: boolean;
+} {
+  const { account } = usePangolinWeb3();
+  const addTransaction = useTransactionAdder();
+  const chainId = useChainId();
+
+  const tokenAddress = token?.address;
+
+  const [loading, setLoading] = useState(false);
+
+  const {
+    isLoading,
+    data: isAssociated = true,
+    refetch,
+  } = useQuery(['check-hedera-token-associated', tokenAddress, account], async () => {
+    if (!tokenAddress || !account || chainId !== ChainId.HEDERA_TESTNET) return;
+
+    const tokens = await hederaFn.getAccountAssociatedTokens(account);
+
+    const currencyId = account ? hederaFn.hederaId(tokenAddress) : '';
+
+    const token = (tokens || []).find((token) => token.tokenId === currencyId);
+
+    return !!token;
+  });
+
+  return useMemo(() => {
+    return {
+      associate:
+        account && tokenAddress
+          ? async () => {
+              try {
+                setLoading(true);
+                const txReceipt = await hederaFn.tokenAssociate(tokenAddress, account);
+                if (txReceipt) {
+                  setLoading(false);
+                  refetch();
+
+                  addTransaction(txReceipt, { summary: `${token?.symbol} successfully  associated` });
+                }
+              } catch (error) {
+                setLoading(false);
+                console.error('Could not deposit', error);
+              }
+            }
+          : undefined,
+      isLoading: loading,
+      hederaAssociated: isAssociated,
+    };
+  }, [chainId, tokenAddress, account, loading, isLoading, isAssociated]);
 }

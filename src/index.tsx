@@ -1,13 +1,14 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
-import { ChainId } from '@pangolindex/sdk';
+import { CHAINS, ChainId } from '@pangolindex/sdk';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { usePair } from 'src/data/Reserves';
-import { useTotalSupply, useTotalSupplyHook } from 'src/data/TotalSupply';
+import { useTotalSupply } from 'src/data/TotalSupply';
+import { useTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
@@ -16,7 +17,7 @@ import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import ApplicationUpdater from 'src/state/papplication/updater';
 import ListsUpdater from 'src/state/plists/updater';
 import MulticallUpdater from 'src/state/pmulticall/updater';
-import { usePangoChefInfos } from 'src/state/ppangoChef/hooks';
+import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
 import {
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
@@ -94,7 +95,7 @@ export function PangolinProvider({
             <MulticallUpdater />
             <TransactionUpdater />
             <SwapUpdater />
-            {isEvmChain(chainId) ? (
+            {isEvmChain(chainId) && CHAINS[chainId]?.supported_by_gelato ? (
               <Provider store={galetoStore}>
                 <GelatoProvider
                   library={ethersLibrary}
@@ -165,7 +166,7 @@ export {
   useGetAllFarmDataHook,
   useTokenBalanceHook,
   useTokenBalance,
-  usePangoChefInfos,
+  usePangoChefInfosHook,
   useUSDCPriceHook,
   useParsedQueryString,
 };

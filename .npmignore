@@ -5,3 +5,4 @@ __mocks__
 *.test.js
 storybook-static
 .idea
+.env
