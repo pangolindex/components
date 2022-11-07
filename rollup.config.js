@@ -11,8 +11,10 @@ import css from 'rollup-plugin-import-css';
 import path from 'path';
 import externals from 'rollup-plugin-node-externals';
 import { terser } from 'rollup-plugin-terser';
+import dotenv from 'rollup-plugin-dotenv';
 
 let plugins = [
+  dotenv(),
   externals(),
   peerDepsExternal(),
   includePaths({
