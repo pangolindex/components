@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       - uses: actions/cache@v2.1.4
         with:
-          path: "**/node_modules"
+          path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Configure Git
         run: |
@@ -42,7 +42,10 @@ jobs:
           github_token: ${{ secrets.GIT_ACCESS_TOKEN }}
           branch: ${{ github.ref }}
           tags: true
+
+      # create env file from secrets
+      - run: echo "${{ secrets.ENV_FILE }}" > .env
+
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          ARKHIA_API_KEY: ${{ secrets.ARKHIA_API_KEY }}
