@@ -1,13 +1,10 @@
-// import { hethers } from '@hashgraph/hethers';
 import React from 'react';
 import { hederaFn } from 'src/utils/hedera';
 
 export const HederaProvider = (provider) => {
   if (provider) {
-    provider.getTransactionReceipt = async (transactionId: string) => {
+    const getTransactionReceipt = async (transactionId: string) => {
       try {
-        // const hethersProvider = hethers.providers.getDefaultProvider('testnet', undefined);
-
         //getting this string as transactionId     "0.0.29562194@1645089473.013219243"
         //we need to convert into                  "0.0.29562194-1645089473-013219243"
         const replaceText = transactionId.replace('@', '-');
@@ -23,13 +20,6 @@ export const HederaProvider = (provider) => {
         }
 
         const newTransactionId = before + '-' + after;
-
-        //Transaction id. Please use "shard.realm.num-sss-nnn" format where sss are seconds and nnn are nanoseconds
-        // const receipt = await hethersProvider.getTransaction(newTransactionId);
-        // console.log('receipt', receipt);
-        // if (!receipt?.hash) {
-        //   return undefined;
-        // }
 
         const transaction = await hederaFn.getTransactionById(newTransactionId);
 
@@ -66,15 +56,21 @@ export const HederaProvider = (provider) => {
       }
     };
 
-    provider.getBlockNumber = async () => {
+    const getBlockNumber = async () => {
       const blockNumber = await hederaFn.getTransactionLatestBlock();
 
       return blockNumber ? blockNumber : 0;
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    provider.execute = async (_method, _params) => {
+    const execute = async (_method, _params) => {
       //  implement it
+    };
+
+    return {
+      getTransactionReceipt,
+      getBlockNumber,
+      execute,
     };
   }
   return provider;
