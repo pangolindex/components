@@ -3,11 +3,11 @@ import { Token } from '@lifi/types';
 import { BridgeCurrency, LIFI as LIFIBridge, THORSWAP } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { BRIDGE_THORSWAP_DEV } from 'src/constants';
+import { THORSWAP_API } from 'src/constants';
 
 export function useThorSwapCurrencies() {
   return useQuery(['thorswapCurrencies'], async () => {
-    const response = await fetch(`${BRIDGE_THORSWAP_DEV}/universal/currenciesFull`);
+    const response = await fetch(`${THORSWAP_API}/universal/currenciesFull`);
     const currencies = response && response.status === 200 ? await response.json() : [];
     const formattedCurrencies: BridgeCurrency[] = currencies.map((currency) => {
       return {
@@ -60,7 +60,7 @@ export function useBridgeCurrencies() {
 //TODO: remove this when we have a better way to get the chain data
 export function useBridgeCurrenciesAlternativeApproach() {
   const query = useQuery(['allCurrencies'], async () => {
-    const response = await fetch(`${BRIDGE_THORSWAP_DEV}/universal/currenciesFull`);
+    const response = await fetch(`${THORSWAP_API}/universal/currenciesFull`);
     const currencies = response && response.status === 200 ? await response.json() : [];
     const formattedCurrenciesThorSwap: BridgeCurrency[] = currencies.map((currency) => {
       return {

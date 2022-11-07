@@ -87,7 +87,6 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
         placeholder="0.00"
         addonAfter={
           inputDisabled ? (
-            // TODO: We have to put it into DOM without any condition for Tooltip to work, so I had to hide it this way.
             <Info size={amount ? 16 : 0} color={theme.bridge?.infoIconColor} data-tip data-for="minEarnedAmount" />
           ) : (
             currency &&
@@ -106,11 +105,11 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           )
         }
       />
-      {!chain?.evm && (
+      {chain?.evm === false && (
         <Box pt={20}>
           <TextInput
-            label="Recipient" //TODO: use translation
-            placeholder="Wallet Address" //TODO: use translation
+            label={t('bridge.bridgeInputsWidget.recipient')}
+            placeholder={t('bridge.bridgeInputsWidget.walletAddress')}
             value={recipient as string}
             required={true}
             onChange={(value) => {

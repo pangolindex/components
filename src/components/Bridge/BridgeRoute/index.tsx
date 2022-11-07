@@ -1,12 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Text } from 'src/components';
+import { useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
 import { BridgePrioritizations, BridgeStep, Step } from 'src/state/pbridge/types';
 import { Information, Informations, Route, StepDetail } from './styles';
 import { BridgeRouteProps } from './types';
 
 const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
   const { t } = useTranslation();
+  const { transactionLoaderStatus } = useDerivedBridgeInfo();
   const {
     selected,
     steps = [],
@@ -18,6 +20,7 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
     waitingTime,
     gasCostUSD,
   } = props;
+
   return (
     <Route selected={selected}>
       <Box display="flex" justifyContent="space-between" alignItems="center" pb={30}>
@@ -32,7 +35,7 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
           width={'fit-content'}
           padding={'8px'}
           height="30px"
-          isDisabled={selected}
+          isDisabled={selected || transactionLoaderStatus}
           onClick={() => {
             onSelectRoute();
           }}

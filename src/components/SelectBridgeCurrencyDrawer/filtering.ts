@@ -4,7 +4,6 @@ import { isAddress } from 'src/utils';
 export function filterBridgeCurrencies(bridgeCurrencies: BridgeCurrency[], search: string): BridgeCurrency[] {
   if (search.length === 0) return bridgeCurrencies;
 
-  // TODO: Will be so many address format. Need to check all of them. BTC etc... non-evm
   const searchingAddress = isAddress(search);
 
   if (searchingAddress) {

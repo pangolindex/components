@@ -371,8 +371,9 @@ export const NEAR_ACCOUNT_MIN_STORAGE_AMOUNT = '0.005';
 export const NEAR_LP_STORAGE_AMOUNT = '0.01';
 export const ONLY_ZEROS = /^0*\.?0*$/;
 
-export const BRIDGE_THORSWAP_DEV = 'https://dev-api.thorswap.net'; //TODO: Remove it
-export const BRIDGE_THORSWAP_PROD = 'https://api.thorswap.net';
+export const THORSWAP_API = 'https://api.thorswap.net';
+
+// export const SQUID_API = 'https://testnet.api.0xsquid.com';
 
 const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.FUJI]: [WAVAX[ChainId.FUJI], PNG[ChainId.FUJI]],

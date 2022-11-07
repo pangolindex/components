@@ -62,14 +62,9 @@ const Bridge = () => {
                       transactionType={route.transactionType}
                       selected={route.selected}
                       toAmount={route.toAmount}
-                      toAmountNet={route.toAmountNet}
                       toAmountUSD={route.toAmountUSD}
                       waitingTime={route.waitingTime}
                       gasCostUSD={route?.gasCostUSD}
-                      fromChainId={route.fromChainId}
-                      fromAmount={route.fromAmount}
-                      fromToken={route.fromToken}
-                      toChainId={route.toChainId}
                       toToken={route.toToken}
                     />
                   );

@@ -24,14 +24,13 @@ const BridgeCurrencyRow: React.FC<Props> = (props) => {
     onSelect(bridgeCurrency);
   }, [onSelect, bridgeCurrency]);
 
-  //TODO: swapWidget replace
   return (
     <BridgeCurrencyRowRoot style={style} onClick={handleSelect} disabled={isSelected} selected={otherSelected}>
       <BridgeCurrencyLogo src={bridgeCurrency?.logo} size={24} />
-      <Text color="swapWidget.primary" fontSize={14} title={bridgeCurrency?.name}>
+      <Text color="bridge.text" fontSize={14} title={bridgeCurrency?.name}>
         {bridgeCurrency?.symbol}
       </Text>
-      <Balance color="swapWidget.primary" fontSize={14}>
+      <Balance color="bridge.text" fontSize={14}>
         {balance ? balance.toSignificant(4) : account ? <LoaderIcon /> : null}
       </Balance>
     </BridgeCurrencyRowRoot>

@@ -57,13 +57,13 @@ const SelectBridgeCurrencyDrawer: React.FC<Props> = (props) => {
   const tokenComparator = useTokenComparator(invertSearchOrder);
 
   const filteredTokens: BridgeCurrency[] = useMemo(() => {
-    if (isAddressSearch) return searchToken ? [searchToken] : [];
+    if (isAddressSearch) return searchToken ? [searchToken as Currency as BridgeCurrency] : [];
     const bridgeCurrencies = allTokens || [];
     return filterBridgeCurrencies(bridgeCurrencies, searchQuery);
   }, [isAddressSearch, searchToken, allTokens, searchQuery]);
 
   const filteredSortedTokens: BridgeCurrency[] = useMemo(() => {
-    if (searchToken) return [searchToken];
+    if (searchToken) return [searchToken as Currency as BridgeCurrency];
     const sorted = filteredTokens.sort(tokenComparator);
     const symbolMatch = searchQuery
       .toLowerCase()
@@ -117,7 +117,7 @@ const SelectBridgeCurrencyDrawer: React.FC<Props> = (props) => {
   );
 
   return (
-    <Drawer title="Select a bridgeCurrency" isOpen={isOpen} onClose={onClose}>
+    <Drawer title="Select a Currency" isOpen={isOpen} onClose={onClose}>
       {/* Render Search BridgeCurrency Input */}
       <Box padding="0px 20px">
         <TextInput

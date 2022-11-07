@@ -2,13 +2,17 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
   ChainField,
   CurrencyField,
+  TransactionStatus,
   changeRouteLoaderStatus,
+  changeTransactionLoaderStatus,
+  clearTransactionData,
   replaceBridgeState,
   selectChain,
   selectCurrency,
   selectRoute,
   setRecipient,
   setRoutes,
+  setTransactionError,
   switchChains,
   switchCurrencies,
   typeAmount,
@@ -34,6 +38,9 @@ export interface BridgeState {
   readonly routes: Route[];
   readonly selectedRoute: number;
   readonly routesLoaderStatus: boolean;
+  readonly transactionLoaderStatus: boolean;
+  readonly transactionError: Error | undefined;
+  readonly transactionStatus: TransactionStatus | undefined;
 }
 
 const initialState: BridgeState = {
@@ -54,6 +61,9 @@ const initialState: BridgeState = {
   routes: [],
   selectedRoute: 0,
   routesLoaderStatus: false,
+  transactionLoaderStatus: false,
+  transactionError: undefined,
+  transactionStatus: undefined,
 };
 
 export default createReducer<BridgeState>(initialState, (builder) =>
@@ -130,6 +140,14 @@ export default createReducer<BridgeState>(initialState, (builder) =>
         [ChainField.TO]: { chainId: state[ChainField.FROM].chainId },
       };
     })
+    .addCase(clearTransactionData, (state) => {
+      return {
+        ...state,
+        transactionLoaderStatus: false,
+        transactionError: undefined,
+        transactionStatus: undefined,
+      };
+    })
     .addCase(setRecipient, (state, { payload: { recipient } }) => {
       return {
         ...state,
@@ -141,6 +159,19 @@ export default createReducer<BridgeState>(initialState, (builder) =>
         ...state,
         routes,
         routesLoaderStatus,
+      };
+    })
+    .addCase(changeTransactionLoaderStatus, (state, { payload: { transactionLoaderStatus, transactionStatus } }) => {
+      return {
+        ...state,
+        transactionLoaderStatus,
+        transactionStatus,
+      };
+    })
+    .addCase(setTransactionError, (state, { payload: { transactionError } }) => {
+      return {
+        ...state,
+        transactionError,
       };
     }),
 );

@@ -1,10 +1,13 @@
 /* eslint-disable max-lines */
 import { BRIDGES, Bridge, BridgeCurrency, Chain, CurrencyAmount } from '@pangolindex/sdk';
+import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { MultiValue, SingleValue } from 'react-select';
 import { ThemeContext } from 'styled-components';
+import CircleTick from 'src/assets/images/circleTick.svg';
+import ErrorTick from 'src/assets/images/errorTick.svg';
 import {
   Box,
   Button,
@@ -18,18 +21,27 @@ import {
   Text,
 } from 'src/components';
 import { Option } from 'src/components/DropdownMenu/types';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
 import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { ChainField, CurrencyField } from 'src/state/pbridge/actions';
+import { ChainField, CurrencyField, TransactionStatus } from 'src/state/pbridge/actions';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
 import { BridgePrioritizations } from 'src/state/pbridge/types';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import BridgeInputsWidget from '../BridgeInputsWidget';
-import { ArrowWrapper, BottomText, CloseCircle, FilterBox, FilterInputHeader, LoaderWrapper, Wrapper } from './styles';
+import {
+  ArrowWrapper,
+  BottomText,
+  CardWrapper,
+  CloseCircle,
+  FilterBox,
+  FilterInputHeader,
+  TransactionText,
+  Wrapper,
+} from './styles';
 
 const BridgeCard = () => {
   const { account } = usePangolinWeb3();
@@ -46,8 +58,21 @@ const BridgeCard = () => {
   const [activeExchanges, setActiveExchanges] = useState<MultiValue<Option> | SingleValue<string>>([]);
   const [userSlippage] = useUserSlippageTolerance();
   const [slippageTolerance, setSlippageTolerance] = useState((userSlippage / 100).toString());
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const { t } = useTranslation();
+  const {
+    currencies,
+    chains,
+    currencyBalances,
+    parsedAmount,
+    estimatedAmount,
+    amountNet,
+    recipient,
+    selectedRoute,
+    transactionLoaderStatus,
+    transactionError,
+    transactionStatus,
+  } = useDerivedBridgeInfo();
 
   const BridgePrioritizationItems = Object.keys(BridgePrioritizations)
     .filter((v) => isNaN(Number(v)))
@@ -65,8 +90,10 @@ const BridgeCard = () => {
   const chainHook = useBridgeChains();
   const [allBridgeCurrencies, setAllBridgeCurrencies] = useState<BridgeCurrency[]>([]);
   const currencyHook = useBridgeCurrencies();
-  const chainId = useChainId();
+  const sdkChainId = useChainId();
   const [drawerType, setDrawerType] = useState(ChainField.FROM);
+
+  const { library } = useLibrary();
 
   const Exchanges = [
     {
@@ -86,6 +113,39 @@ const BridgeCard = () => {
       value: 'quickswap',
     },
   ];
+  const { getRoutes, sendTransaction } = useBridgeSwapActionHandlers();
+
+  // TODO: Switch chain
+  // const { chainId, connector } = useWeb3React();
+  // const changeNetwork = useCallback(
+  //   (chain) => {
+  //     connector?.getProvider().then((provider) => {
+  //       provider
+  //         ?.request({
+  //           method: 'wallet_addEthereumChain',
+  //           params: [chain],
+  //         })
+  //         .then((val: null) => {
+  //           // The problem is; We can't understand if the user has changed the network or not.
+  //           console.log('Network Changed: ', val);
+  //         })
+  //         .catch((error: any) => {
+  //           console.log('error: ', error);
+  //         });
+  //     });
+  //   },
+  //   [connector],
+  // );
+
+  const onSendTransaction = useCallback(() => {
+    sendTransaction(
+      library,
+      // changeNetwork,
+      // toChain,
+      selectedRoute,
+      account,
+    );
+  }, [selectedRoute]);
 
   const onChangeTokenDrawerStatus = useCallback(() => {
     setIsCurrencyDrawerOpen(!isCurrencyDrawerOpen);
@@ -103,12 +163,8 @@ const BridgeCard = () => {
     onUserInput,
     onChangeRecipient,
     onChangeRouteLoaderStatus,
+    onClearTransactionData,
   } = useBridgeActionHandlers();
-
-  const { getRoutes } = useBridgeSwapActionHandlers();
-
-  const { currencies, chains, currencyBalances, parsedAmount, estimatedAmount, amountNet, recipient } =
-    useDerivedBridgeInfo();
 
   const inputCurrency = currencies[CurrencyField.INPUT];
   const outputCurrency = currencies[CurrencyField.OUTPUT];
@@ -116,7 +172,22 @@ const BridgeCard = () => {
   const fromChain = chains[ChainField.FROM];
   const toChain = chains[ChainField.TO];
 
-  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[CurrencyField.INPUT]);
+  // const onChangeNetwork = useCallback(() => {
+  //   const data = {
+  //     chainName: fromChain?.name,
+  //     nativeCurrency: {
+  //       name: fromChain?.nativeCurrency?.name,
+  //       symbol: fromChain?.nativeCurrency?.symbol,
+  //       decimals: fromChain?.nativeCurrency?.decimals,
+  //     },
+  //     blockExplorerUrls: fromChain?.blockExplorerUrls,
+  //     chainId: '0x' + Number(fromChain?.chain_id)?.toString(16),
+  //     rpcUrls: [fromChain?.rpc_uri],
+  //   };
+  //   changeNetwork(data);
+  // }, [fromChain]);
+
+  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(sdkChainId, currencyBalances[CurrencyField.INPUT]);
   const debouncedAmountValue = useDebounce(parsedAmount?.toExact(), 500);
 
   useEffect(() => {
@@ -160,11 +231,7 @@ const BridgeCard = () => {
       });
 
       if (activeBridges.length === 0) {
-        Object.values(chainHook).forEach((value) => {
-          data = data
-            ?.concat(value)
-            ?.filter((val, index, self) => index === self.findIndex((t) => t?.chain_id === val?.chain_id));
-        });
+        data = [];
       }
 
       setChainList(data || []);
@@ -222,18 +289,36 @@ const BridgeCard = () => {
 
   return (
     <Wrapper>
-      {isLoading && (
-        <LoaderWrapper>
-          <CloseCircle
-            onClick={() => {
-              setIsLoading(!isLoading);
-            }}
-          >
+      {transactionLoaderStatus && (
+        <CardWrapper>
+          {/* <CloseCircle onClick={() => {}}>
             <X color={theme.bridge?.loaderCloseIconColor} size={10} />
-          </CloseCircle>
+          </CloseCircle> */}
           <Loader height={'auto'} label={t('bridge.bridgeCard.loader.labels.waitingReceivingChain')} size={100} />
           <BottomText>{t('bridge.bridgeCard.loader.bottomText')}</BottomText>
-        </LoaderWrapper>
+        </CardWrapper>
+      )}
+      {transactionStatus === TransactionStatus.FAILED && (
+        <CardWrapper>
+          <CloseCircle onClick={onClearTransactionData}>
+            <X color={theme.bridge?.loaderCloseIconColor} size={10} />
+          </CloseCircle>
+          <Box flex="1" display="flex" alignItems="center" flexDirection={'column'} justifyContent={'center'}>
+            <img src={ErrorTick} alt="error-tick" />
+            {transactionError && <TransactionText>{transactionError.message}</TransactionText>}
+          </Box>
+        </CardWrapper>
+      )}
+      {transactionStatus === TransactionStatus.SUCCESS && (
+        <CardWrapper>
+          <CloseCircle onClick={onClearTransactionData}>
+            <X color={theme.bridge?.loaderCloseIconColor} size={10} />
+          </CloseCircle>
+          <Box flex="1" display="flex" alignItems="center" flexDirection={'column'} justifyContent={'center'}>
+            <img src={CircleTick} alt="circle-tick" />
+            <TransactionText>{t('bridge.bridgeCard.transactionSucceeded')}</TransactionText>
+          </Box>
+        </CardWrapper>
       )}
       <Text fontSize={24} fontWeight={700} color={'bridge.text'} pb={30}>
         {t('bridge.bridgeCard.title')}
@@ -295,8 +380,9 @@ const BridgeCard = () => {
           <Button
             variant="primary"
             onClick={() => {
-              setIsLoading(true);
+              onSendTransaction();
             }}
+            isDisabled={!selectedRoute}
           >
             {t('bridge.bridgeCard.swap')}
           </Button>

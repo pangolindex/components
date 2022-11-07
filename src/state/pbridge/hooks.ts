@@ -1,21 +1,39 @@
+/* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
-import { BridgeCurrency, Chain, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import LIFI, { Route as LifiRoute } from '@lifi/sdk';
+import {
+  BridgeCurrency,
+  Chain,
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  JSBI,
+  LIFI as LIFIBRIDGE,
+  Token,
+  TokenAmount,
+} from '@pangolindex/sdk';
+import { useWeb3React } from '@web3-react/core';
 import React, { useCallback } from 'react';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useBridgeChainsAlternativeApproach } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrenciesAlternativeApproach } from 'src/hooks/bridge/Currencies';
 import { useRoutes } from 'src/hooks/bridge/Routes';
 import { AppState, useDispatch, useSelector } from 'src/state';
+import { getSigner } from 'src/utils';
 import { useCurrencyBalances } from '../pwallet/hooks';
 import {
   ChainField,
   CurrencyField,
+  TransactionStatus,
   changeRouteLoaderStatus,
+  changeTransactionLoaderStatus,
+  clearTransactionData,
   selectChain,
   selectCurrency,
   selectRoute,
   setRecipient,
   setRoutes,
+  setTransactionError,
   switchChains,
   switchCurrencies,
   typeAmount,
@@ -35,6 +53,7 @@ export function useBridgeActionHandlers(): {
   onUserInput: (field: CurrencyField, typedValue: string) => void;
   onChangeRecipient: (recipient: string | null) => void;
   onChangeRouteLoaderStatus: () => void;
+  onClearTransactionData: () => void;
 } {
   const dispatch = useDispatch();
   const { routes, routesLoaderStatus } = useBridgeState();
@@ -49,8 +68,7 @@ export function useBridgeActionHandlers(): {
       dispatch(
         selectCurrency({
           field,
-          //TODO: address? Let's say we have same symbol. How to distinguish them?
-          currencyId: currency?.symbol || currency?.address || '',
+          currencyId: currency?.symbol || '',
         }),
       );
     },
@@ -75,6 +93,10 @@ export function useBridgeActionHandlers(): {
 
   const onSwitchChains = useCallback(() => {
     dispatch(switchChains());
+  }, [dispatch]);
+
+  const onClearTransactionData = useCallback(() => {
+    dispatch(clearTransactionData());
   }, [dispatch]);
 
   const onUserInput = useCallback(
@@ -104,6 +126,7 @@ export function useBridgeActionHandlers(): {
     onUserInput,
     onChangeRecipient,
     onChangeRouteLoaderStatus,
+    onClearTransactionData,
   };
 }
 
@@ -141,14 +164,16 @@ export function useDerivedBridgeInfo(): {
   amountNet?: string | undefined;
   recipient?: string | null;
   routesLoaderStatus?: boolean;
+  selectedRoute?: Route;
+  transactionLoaderStatus: boolean;
+  transactionStatus?: TransactionStatus;
+  transactionError?: Error;
 } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { data } = useBridgeChainsAlternativeApproach();
   const bridgeCurrencies = useBridgeCurrenciesAlternativeApproach();
 
-  // select the current chain if it is supported by the bridge
-  // const currentChain = data?.find((x) => x.chain_id?.toString() === chainId?.toString()) || undefined;
   const {
     typedValue,
     [CurrencyField.INPUT]: { currencyId: inputCurrencyId },
@@ -158,9 +183,11 @@ export function useDerivedBridgeInfo(): {
     routes,
     recipient,
     routesLoaderStatus,
+    transactionLoaderStatus,
+    transactionStatus,
+    transactionError,
   } = useBridgeState();
 
-  //TODO: need to put currentChain, but the currency list is not coming if we put it.
   const fromChain = fromChainId ? data?.find((x) => x.id === fromChainId) : undefined;
   const toChain = toChainId ? data?.find((x) => x.id === toChainId) : undefined;
 
@@ -227,6 +254,10 @@ export function useDerivedBridgeInfo(): {
     amountNet,
     recipient,
     routesLoaderStatus,
+    selectedRoute,
+    transactionLoaderStatus,
+    transactionStatus,
+    transactionError,
   };
 }
 
@@ -241,6 +272,13 @@ export function useBridgeSwapActionHandlers(): {
     fromCurrency?: BridgeCurrency,
     toCurrency?: BridgeCurrency,
     recipient?: string | null | undefined,
+  ) => void;
+  sendTransaction: (
+    library: any,
+    // changeNetwork: (chain) => void,
+    // toChain?: Chain,
+    route?: Route,
+    account?: string | null,
   ) => void;
 } {
   const dispatch = useDispatch();
@@ -274,7 +312,100 @@ export function useBridgeSwapActionHandlers(): {
       });
     }
   };
+
+  const sendTransaction = async (
+    library: any,
+    // changeNetwork: (chain) => void,
+    // toChain?: Chain,
+    selectedRoute?: Route,
+    account?: string | null,
+  ) => {
+    if (selectedRoute?.bridgeType === LIFIBRIDGE) {
+      dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
+      const lifi = new LIFI();
+
+      //TODO: We're not using this for now.
+      // const switchChainHook = () => {
+      //   const data = {
+      //     chainName: toChain?.name,
+      //     nativeCurrency: {
+      //       name: toChain?.nativeCurrency?.name,
+      //       symbol: toChain?.nativeCurrency?.symbol,
+      //       decimals: toChain?.nativeCurrency?.decimals,
+      //     },
+      //     blockExplorerUrls: toChain?.blockExplorerUrls,
+      //     chainId: '0x' + Number(toChain?.chain_id)?.toString(16),
+      //     rpcUrls: [toChain?.rpc_uri],
+      //   };
+      //   changeNetwork(data);
+      // };
+
+      const signer = await getSigner(library, account || '');
+      // executing a route
+      try {
+        await lifi.executeRoute(signer as any, selectedRoute.nativeRoute as LifiRoute);
+        dispatch(
+          changeTransactionLoaderStatus({
+            transactionLoaderStatus: false,
+            transactionStatus: TransactionStatus.SUCCESS,
+          }),
+        );
+      } catch (e: Error | unknown) {
+        if (e) {
+          dispatch(
+            changeTransactionLoaderStatus({
+              transactionLoaderStatus: false,
+              transactionStatus: TransactionStatus.FAILED,
+            }),
+          );
+          dispatch(setTransactionError({ transactionError: e as Error }));
+        } else {
+          dispatch(
+            changeTransactionLoaderStatus({
+              transactionLoaderStatus: false,
+              transactionStatus: TransactionStatus.SUCCESS,
+            }),
+          );
+        }
+      }
+    }
+    // else if (selectedRoute?.bridgeType === THORSWAP) {
+    //   const reqBody = {
+    //     from:
+    //       selectedRoute?.fromChainId +
+    //       '.' +
+    //       fromCurrency?.symbol +
+    //       (fromCurrency?.address && fromCurrency?.address.length > 0 && fromCurrency?.address !== ZERO_ADDRESS
+    //         ? '-' + fromCurrency?.address
+    //         : ''),
+    //     to:
+    //       selectedRoute?.toChainId +
+    //       '.' +
+    //       toCurrency?.symbol +
+    //       (toCurrency?.address && toCurrency?.address.length > 0 && toCurrency?.address !== ZERO_ADDRESS
+    //         ? '-' + toCurrency?.address
+    //         : ''),
+    //     address: selectedRoute?.toAddress,
+    //     amount: selectedRoute?.fromAmount,
+    //     slippage: slippageTolerance,
+    //     // affiliateFee: THORSWAP?.fee,
+    //     // affiliateAddress: THORSWAP?.affiliate,
+    //   };
+    //   const reqSettings = {
+    //     method: 'POST',
+    //     headers: {
+    //       Accept: 'application/json',
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(reqBody),
+    //   };
+
+    //   const response = await fetch(`${THORSWAP_API}/universal/transaction`, reqSettings);
+    //   console.log('Thorswap: ', response);
+    // }
+  };
   return {
     getRoutes,
+    sendTransaction,
   };
 }
