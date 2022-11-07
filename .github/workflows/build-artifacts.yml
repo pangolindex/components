@@ -33,7 +33,7 @@ jobs:
       - run: yarn tsc && yarn lint
       - run: yarn build
 
-      - run: ls -R
+      # remove .env so that we don't include in build_artifacts.zip file
       - run: rm -rf .env
 
       - uses: actions/upload-artifact@v2
