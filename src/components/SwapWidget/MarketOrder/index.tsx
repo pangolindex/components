@@ -240,7 +240,7 @@ const MarketOrder: React.FC<Props> = ({
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT]);
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient);
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, recipient, allowedSlippage);
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade);
 
