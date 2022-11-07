@@ -1,17 +1,7 @@
 /* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
 import LIFI, { Route as LifiRoute } from '@lifi/sdk';
-import {
-  BridgeCurrency,
-  Chain,
-  ChainId,
-  Currency,
-  CurrencyAmount,
-  JSBI,
-  LIFI as LIFIBRIDGE,
-  Token,
-  TokenAmount,
-} from '@pangolindex/sdk';
+import { BridgeCurrency, Chain, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { useCallback } from 'react';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
@@ -38,7 +28,7 @@ import {
   switchCurrencies,
   typeAmount,
 } from './actions';
-import { Route } from './types';
+import { Route, SendTransaction } from './types';
 
 export function useBridgeState(): AppState['pbridge'] {
   return useSelector<AppState['pbridge']>((state) => state.pbridge);
@@ -273,13 +263,7 @@ export function useBridgeSwapActionHandlers(): {
     toCurrency?: BridgeCurrency,
     recipient?: string | null | undefined,
   ) => void;
-  sendTransaction: (
-    library: any,
-    // changeNetwork: (chain) => void,
-    // toChain?: Chain,
-    route?: Route,
-    account?: string | null,
-  ) => void;
+  sendTransaction: SendTransaction;
 } {
   const dispatch = useDispatch();
   const getRoutes = async (
@@ -313,97 +297,110 @@ export function useBridgeSwapActionHandlers(): {
     }
   };
 
-  const sendTransaction = async (
+  const sendTransactionLifi = async (
     library: any,
     // changeNetwork: (chain) => void,
     // toChain?: Chain,
     selectedRoute?: Route,
     account?: string | null,
   ) => {
-    if (selectedRoute?.bridgeType === LIFIBRIDGE) {
-      dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
-      const lifi = new LIFI();
+    dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
+    const lifi = new LIFI();
 
-      //TODO: We're not using this for now.
-      // const switchChainHook = () => {
-      //   const data = {
-      //     chainName: toChain?.name,
-      //     nativeCurrency: {
-      //       name: toChain?.nativeCurrency?.name,
-      //       symbol: toChain?.nativeCurrency?.symbol,
-      //       decimals: toChain?.nativeCurrency?.decimals,
-      //     },
-      //     blockExplorerUrls: toChain?.blockExplorerUrls,
-      //     chainId: '0x' + Number(toChain?.chain_id)?.toString(16),
-      //     rpcUrls: [toChain?.rpc_uri],
-      //   };
-      //   changeNetwork(data);
-      // };
+    //TODO: We're not using this for now.
+    // const switchChainHook = () => {
+    //   const data = {
+    //     chainName: toChain?.name,
+    //     nativeCurrency: {
+    //       name: toChain?.nativeCurrency?.name,
+    //       symbol: toChain?.nativeCurrency?.symbol,
+    //       decimals: toChain?.nativeCurrency?.decimals,
+    //     },
+    //     blockExplorerUrls: toChain?.blockExplorerUrls,
+    //     chainId: '0x' + Number(toChain?.chain_id)?.toString(16),
+    //     rpcUrls: [toChain?.rpc_uri],
+    //   };
+    //   changeNetwork(data);
+    // };
 
-      const signer = await getSigner(library, account || '');
-      // executing a route
-      try {
-        await lifi.executeRoute(signer as any, selectedRoute.nativeRoute as LifiRoute);
+    const signer = await getSigner(library, account || '');
+    // executing a route
+    try {
+      await lifi.executeRoute(signer as any, selectedRoute?.nativeRoute as LifiRoute);
+      dispatch(
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.SUCCESS,
+        }),
+      );
+    } catch (e: Error | unknown) {
+      if (e) {
+        dispatch(
+          changeTransactionLoaderStatus({
+            transactionLoaderStatus: false,
+            transactionStatus: TransactionStatus.FAILED,
+          }),
+        );
+        dispatch(setTransactionError({ transactionError: e as Error }));
+      } else {
         dispatch(
           changeTransactionLoaderStatus({
             transactionLoaderStatus: false,
             transactionStatus: TransactionStatus.SUCCESS,
           }),
         );
-      } catch (e: Error | unknown) {
-        if (e) {
-          dispatch(
-            changeTransactionLoaderStatus({
-              transactionLoaderStatus: false,
-              transactionStatus: TransactionStatus.FAILED,
-            }),
-          );
-          dispatch(setTransactionError({ transactionError: e as Error }));
-        } else {
-          dispatch(
-            changeTransactionLoaderStatus({
-              transactionLoaderStatus: false,
-              transactionStatus: TransactionStatus.SUCCESS,
-            }),
-          );
-        }
       }
     }
-    // else if (selectedRoute?.bridgeType === THORSWAP) {
-    //   const reqBody = {
-    //     from:
-    //       selectedRoute?.fromChainId +
-    //       '.' +
-    //       fromCurrency?.symbol +
-    //       (fromCurrency?.address && fromCurrency?.address.length > 0 && fromCurrency?.address !== ZERO_ADDRESS
-    //         ? '-' + fromCurrency?.address
-    //         : ''),
-    //     to:
-    //       selectedRoute?.toChainId +
-    //       '.' +
-    //       toCurrency?.symbol +
-    //       (toCurrency?.address && toCurrency?.address.length > 0 && toCurrency?.address !== ZERO_ADDRESS
-    //         ? '-' + toCurrency?.address
-    //         : ''),
-    //     address: selectedRoute?.toAddress,
-    //     amount: selectedRoute?.fromAmount,
-    //     slippage: slippageTolerance,
-    //     // affiliateFee: THORSWAP?.fee,
-    //     // affiliateAddress: THORSWAP?.affiliate,
-    //   };
-    //   const reqSettings = {
-    //     method: 'POST',
-    //     headers: {
-    //       Accept: 'application/json',
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(reqBody),
-    //   };
-
-    //   const response = await fetch(`${THORSWAP_API}/universal/transaction`, reqSettings);
-    //   console.log('Thorswap: ', response);
-    // }
   };
+
+  // TODO:
+  // const sendTransactionThorswap = async (
+  //   library: any,
+  //   // changeNetwork: (chain) => void,
+  //   // toChain?: Chain,
+  //   selectedRoute?: Route,
+  //   account?: string | null,
+  // ) => {
+  //   // else if (selectedRoute?.bridgeType === THORSWAP) {
+  //   //   const reqBody = {
+  //   //     from:
+  //   //       selectedRoute?.fromChainId +
+  //   //       '.' +
+  //   //       fromCurrency?.symbol +
+  //   //       (fromCurrency?.address && fromCurrency?.address.length > 0 && fromCurrency?.address !== ZERO_ADDRESS
+  //   //         ? '-' + fromCurrency?.address
+  //   //         : ''),
+  //   //     to:
+  //   //       selectedRoute?.toChainId +
+  //   //       '.' +
+  //   //       toCurrency?.symbol +
+  //   //       (toCurrency?.address && toCurrency?.address.length > 0 && toCurrency?.address !== ZERO_ADDRESS
+  //   //         ? '-' + toCurrency?.address
+  //   //         : ''),
+  //   //     address: selectedRoute?.toAddress,
+  //   //     amount: selectedRoute?.fromAmount,
+  //   //     slippage: slippageTolerance,
+  //   //     // affiliateFee: THORSWAP?.fee,
+  //   //     // affiliateAddress: THORSWAP?.affiliate,
+  //   //   };
+  //   //   const reqSettings = {
+  //   //     method: 'POST',
+  //   //     headers: {
+  //   //       Accept: 'application/json',
+  //   //       'Content-Type': 'application/json',
+  //   //     },
+  //   //     body: JSON.stringify(reqBody),
+  //   //   };
+  //   //   const response = await fetch(`${THORSWAP_API}/universal/transaction`, reqSettings);
+  //   //   console.log('Thorswap: ', response);
+  //   // }
+  // };
+
+  const sendTransaction = {
+    lifi: sendTransactionLifi,
+    // thorswap: sendTransactionThorswap,
+  };
+
   return {
     getRoutes,
     sendTransaction,

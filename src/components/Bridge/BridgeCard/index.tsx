@@ -138,13 +138,14 @@ const BridgeCard = () => {
   // );
 
   const onSendTransaction = useCallback(() => {
-    sendTransaction(
-      library,
-      // changeNetwork,
-      // toChain,
-      selectedRoute,
-      account,
-    );
+    selectedRoute?.bridgeType?.id &&
+      sendTransaction[selectedRoute?.bridgeType?.id](
+        library,
+        // changeNetwork,
+        // toChain,
+        selectedRoute,
+        account,
+      );
   }, [selectedRoute]);
 
   const onChangeTokenDrawerStatus = useCallback(() => {

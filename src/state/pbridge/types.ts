@@ -78,3 +78,16 @@ export interface Action {
 export interface Estimate {
   toAmount: string;
 }
+
+export type SendTransactionFunc = (
+  library: any,
+  // changeNetwork: (chain) => void,
+  // toChain?: Chain,
+  selectedRoute?: Route,
+  account?: string | null,
+) => Promise<void>;
+
+export type SendTransaction = {
+  lifi: SendTransactionFunc;
+  thorswap: SendTransactionFunc;
+};
