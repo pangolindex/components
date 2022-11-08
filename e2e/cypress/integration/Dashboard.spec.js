@@ -166,19 +166,19 @@ describe('Dashboard', () => {
     it('TC-36, Verify that the user is able to switch between different news in News section', function () {
         cy.get(newsBtn).then(news => {
             expect(news).to.be.visible
-            cy.get(newsBody).eq(1).then(newsAssert => {
-                expect(newsAssert)
-                    .to.contain("🪂 For those eligible, there are two weeks left to claim your $PSB airdrop. ")
-            })
-            cy.get(news).find(newsNextBtn).click()
             cy.get(newsBody).eq(2).then(newsAssert => {
                 expect(newsAssert)
                     .to.contain(bridgeSwap)
             })
+            cy.get(news).find(newsNextBtn).click()
+            cy.get(newsBody).eq(3).then(newsAssert => {
+                expect(newsAssert)
+                    .to.contain(coinBase)
+            })
             cy.get(news).find(newsPreBtn).click({force: true})
             cy.get(newsBody).then(newsAssert => {
                 expect(newsAssert)
-                    .to.contain("🪂 For those eligible, there are two weeks left to claim your $PSB airdrop. ")
+                    .to.contain(bridgeSwap)
             })
         })
     })

@@ -159,6 +159,16 @@
         "createPairMsge": "div[class='sc-jSMfEi jLwZpX']",
         "addLiqField": "input[class='sc-iBkjds eslaVo']",
         "addLiqConnectWalletBtn": "button[class='sc-gsnTZi dKnXIG']",
-        "addLiqCrossBtn": "div[class='sc-lbhYTY ghErwL']"
+        "addLiqCrossBtn": "div[class='sc-lbhYTY ghErwL']",
+        "noFarmsMsge": "div[class='sc-eCYdqJ iZHHZW']",
+        "AllfarmsMaxBtn": "button[class='sc-ddcaxn Cohat']",
+        "AllfarmsMaxfield": "input[class='sc-iBkjds eslaVo']",
+        "AllfarmsFarmBtn": "div[class='sc-jIZahH iqjIFB']",
+        "AllfarmsConnectBtn": "button[class='sc-gsnTZi jquISs']",
+        "AllfarmsStepper": "div[class='sc-iqcoie cpgcb']",
+        "PGLField": "input[class='sc-iBkjds lccqjh']",
+        "dollarWorth": "div[class='sc-jSMfEi lDGzo']",
+        "weeklyIncome": "div[class='sc-jSMfEi lDGzo']",
+        "yourFarms": "div[class='sc-jSMfEi sc-fzsDOv kMdDRR']"
     }
 }

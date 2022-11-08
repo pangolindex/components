@@ -5,9 +5,9 @@ import { switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWall
 import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
 // import {newsLinks, socialLinks} from '../support/src/dashboard'
 const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, watchlistLinkBtn, connectWallet, linkBtn, watchlistTradeBtn, tokenMouseOverEnable, tokensList, disabledTokens} = selectors.dashboard
-const {tokenName, AvaxToken, switchArray, chartTimeArray, linkUrl, connectToWalletMsg, swap} = data.dashboard
+const {tokenName, AvaxToken, switchArray, chartTimeArray, linkUrl, swap, connectToWallet} = data.dashboard
 const {fromField, toField, connectWalletBtn,limitBtn,buyBtn,swapPercentageBtns,limitPercentageBtns,swapSideMenu,swapSideMenuSelect,tradeBtns,tokenModal,headerDetailsModal,toTokenLogo,toTokenName,toTokenPrice,connectWalletMessage,tradeModal,switchModal,switchBtn,settingBtn,transactionFailMessage,transactionMayFortuneMessage,expertModeMessage,saveCloseBtn, slipPageValues, slipPageValuesAssert, toggleExpertMode, saveCloseBtn1} = selectors.swap
-const {swapPercentage, slipPage, aAVAXb, usdc, lowSlippageMessage, highSlippageMessage, veryHighSlippageMessage, saveCloseBtnTxt, connectWalletTxt} = data.swap
+const {swapPercentage, slipPage, aAVAXb, usdc, lowSlippageMessage, highSlippageMessage, veryHighSlippageMessage, saveCloseBtnTxt, connectWalletTxt, connectWalletMsge } = data.swap
 const {pangolinLinksArr} = data
 describe('Swap', () => {
     
@@ -238,12 +238,8 @@ describe('Swap', () => {
     /********* Assert the connect a Wallet text when wallet is not connected in Watchlist ********/
     it('TC-86,87,88,89 Verify that the user can see the message "Connect a wallet to see your Portfolio" if the wallet is not connnected', () => {
         cy.get(connectWallet)
-            .should('contain', "Connect to a wallet") 
-        // cy.get(connectWalletMessage)
-        //     .should( chainText => {
-        //         expect(chainText).to.contain(connectToWalletMsg)
-        // })
-        cy.contains('Connect a wallet to see your portfolio').should('be.visible')
+            .should('contain', connectToWallet) 
+        cy.contains(connectWalletMsge).should('be.visible')
     })
 
     /************  Assert the tokens in From and To dropdowns ************************/

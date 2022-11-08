@@ -44,7 +44,8 @@
     "swapPercentage": ["25%", "50%", "75%", "100%"],
     "slipPage": ["0.1%", "0.5%", "1%", "60", "300", "600"],
     "saveCloseBtnTxt": "Save & Close",
-    "connectWalletTxt": "Connect Wallet"
+    "connectWalletTxt": "Connect Wallet",
+    "connectWalletMsge": "Connect a wallet to see your portfolio"
   },
   "pangolinLinksArr": ["Pangolin Analytics", "Pangolin Governance - Vote with your PNG", "Core Web: A Better Way to Connect to Web3", "Pangolin"],
   "vote": {

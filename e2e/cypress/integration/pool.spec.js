@@ -2,7 +2,7 @@
 import 'cypress-wait-until'
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data.json'
-const {poolsSideMenu, poolsSideMenuSelect, searchFieldPool, cardTitleSuper, cardTitleAllFarm, cardBody, cardtvlApr, cardTvl, tvlAprValues, rewardsInLogos, seeDetailsBtn, detailsTitle, detailsLinks, detailsCrossBtn, superFarmTitle, addLiqBtn, superFarm, seeDetailsBlock, totalStakeBlock, totalStakeTitle, titleValues, yourPools, yourPoolsMsge, createPairBtn, createPairDropdown, createPairToken, createPairMsge, addLiqField, addLiqConnectWalletBtn, addLiqCrossBtn} = selectors.pools
+const {poolsSideMenu, poolsSideMenuSelect, searchFieldPool, cardTitleSuper, cardTitleAllFarm, cardBody, cardtvlApr, cardTvl, tvlAprValues, rewardsInLogos, seeDetailsBtn, detailsTitle, detailsLinks, detailsCrossBtn, superFarmTitle, addLiqBtn, superFarm, seeDetailsBlock, totalStakeBlock, totalStakeTitle, titleValues, yourPools, yourPoolsMsge, createPairBtn, createPairDropdown, createPairToken, createPairMsge, addLiqField, addLiqConnectWalletBtn, addLiqCrossBtn, noFarmsMsge, AllfarmsMaxBtn, AllfarmsMaxfield, AllfarmsFarmBtn, AllfarmsConnectBtn, AllfarmsStepper, PGLField, dollarWorth, weeklyIncome, yourFarms} = selectors.pools
 const {yourPoolsMessage, createPair} = data.pools
 const {connectToWallet} = data.dashboard
 const {connectWalletTxt} = data.swap
@@ -105,14 +105,18 @@ describe('Pools', () => {
     })
 
     /******************* Assertions on Searching Tocken **************************/
-    it('TC-11, Verify that the user is able to search a pair by the token names', () => {
+    it('TC-11,76,77,78 Verify that the user is able to search a pair by the token names', () => {
         cy.waitUntil(() => cy.get(searchFieldPool).type("PNG"))
         cy.wait(5000)
         cy.get(cardTitleSuper).each($titlePng => {
             cy.get($titlePng).should("contain","PNG")
         })
         cy.get(searchFieldPool).clear()
-        
+        cy.get(searchFieldPool).should("have.attr", "placeholder", "Token Name")
+        cy.get(searchFieldPool).type("Search")
+        cy.get(noFarmsMsge).contains("No farms found.").should("be.visible")
+        cy.get(searchFieldPool).clear()
+
     })
 
     /******************* Assertions on Details **************************/
@@ -163,20 +167,20 @@ describe('Pools', () => {
     })
 
     /******************* Assertions on the links **************************/
-    it.only('TC-17, Verify that the user is redirected to the particular token site', () => {
-        cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
-            cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
-            cy.get(detailsTitle).should("contain","Details")
-            cy.wait(10000)
-                cy.waitUntil(() => cy.get(detailsLinks).each(page => {
-                cy.request(page.prop('href')).as('link');
-            }));
-            cy.get('@link').should(response => {
-                expect(response.status).to.eq(200);
-            })
-            cy.get(detailsCrossBtn).eq(3).click()
-        })        
-    })
+    // it('TC-17, Verify that the user is redirected to the particular token site', () => {
+    //     cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
+    //         cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
+    //         cy.get(detailsTitle).should("contain","Details")
+    //         cy.wait(10000)
+    //             cy.waitUntil(() => cy.get(detailsLinks).each(page => {
+    //             cy.request(page.prop('href')).as('link');
+    //         }));
+    //         cy.get('@link').should(response => {
+    //             expect(response.status).to.eq(200);
+    //         })
+    //         cy.get(detailsCrossBtn).eq(3).click()
+    //     })        
+    // })
     
     /******************* Assertions on the Your pools page **************************/
     it('TC-45, Verify that the user cannot see the pools in the Your Pools section if the wallet is not connected', () => {
@@ -190,11 +194,10 @@ describe('Pools', () => {
         cy.wait(5000)
         cy.get(createPairBtn).contains(createPair).click({force:true})
         cy.get(createPairDropdown).eq(0).click()
-        cy.get(createPairToken).contains("aaBLOCK").click()
+        cy.get(createPairToken).contains("aaBLOCK").click({force:true})
         cy.get(createPairDropdown).eq(1).click()
-        cy.get(createPairToken).contains("AVAX").click()
-        cy.get(createPairMsge).contains(connectToWallet)
-        .should("be.visible")
+        cy.get(createPairToken).contains("AVAX").click({force:true})
+        cy.get(createPairMsge).should("contain", connectToWallet)
     })
 
     /******************* Assertions on Add Liquidity **************************/
@@ -215,5 +218,88 @@ describe('Pools', () => {
             cy.get(addLiqConnectWalletBtn).should("contain",connectWalletTxt)
             cy.get(addLiqCrossBtn).click()
         })
-    })    
+    })
+    
+    /************************Assertions on the Max button */
+    it.only('TC-50, Verify that the "Max" button cannot populate the field with the maximum amount of the token if the wallet is not connected', () => {
+        cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
+            cy.get($titleAllFarm).find(addLiqBtn).click()
+            cy.get(AllfarmsMaxBtn).eq(0).click()
+            cy.get(AllfarmsMaxfield).eq(0).should("have.attr", "placeholder", "0.00")
+            cy.get(addLiqCrossBtn).click()
+        })
+    })
+
+    /******************* Assertions on the Max button **************************/
+    it('TC-51, Verify that the "Max" button in the details section cannot populate the field with the maximum amount of the token if the wallet is not connected', () => {
+        cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
+            cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
+            cy.get(detailsTitle).should("contain","Details")
+            cy.get(AllfarmsMaxBtn).eq(0).click({force:true})
+            cy.get(AllfarmsMaxfield).eq(0).should("have.attr", "placeholder", "0.00")
+            cy.get(detailsCrossBtn).eq(3).click()
+
+        }) 
+    })
+
+    /******************* Assertions on Adding farm **************************/
+    it.only('TC-52, Verify that the user cannot farm if the wallet is not connected', () => {
+        cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
+            cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
+            cy.get(detailsTitle).should("contain","Details")
+            cy.get(AllfarmsFarmBtn).eq(1).click({force:true})
+            cy.get(AllfarmsConnectBtn).eq(1).should("contain",connectWalletTxt)
+            cy.get(detailsCrossBtn).eq(3).click()
+            
+        }) 
+    })
+
+    /******************* Assertions on PGL field **************************/
+    it.only('TC-53, Verify that the "PGL" value is not changing according to the change in the stepper if the wallet is not connected', () => {
+        cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
+            cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
+            cy.get(detailsTitle).should("contain","Details")
+            cy.get(AllfarmsFarmBtn).eq(1).click({force:true})
+            cy.get(AllfarmsStepper).eq(1).click({force:true})
+            cy.get(PGLField).eq(0).should("have.attr", "value", "0")
+            cy.get(detailsCrossBtn).eq(3).click()
+
+        }) 
+    })
+
+     /******************* Assertions on Dollar worth **************************/
+     it.only('TC-54, Verify that the "Dollar Worth" does not populate according to the stepper if the wallet is not connected', () => {
+        cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
+            cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
+            cy.get(detailsTitle).should("contain","Details")
+            cy.get(AllfarmsFarmBtn).eq(1).click({force:true})
+            cy.get(AllfarmsStepper).eq(1).click({force:true})
+            cy.get(dollarWorth).eq(1).should("contain","-")
+            cy.get(detailsCrossBtn).eq(3).click()
+            
+        }) 
+    })
+
+    /******************* Assertions on Weekly income **************************/
+    it.only('TC-55, Verify that the "Weekly Income" does not populate according to the stepper if the wallet is not connected', () => {
+        cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
+            cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
+            cy.get(detailsTitle).should("contain","Details")
+            cy.get(AllfarmsFarmBtn).eq(1).click({force:true})
+            cy.get(AllfarmsStepper).eq(1).click({force:true})
+            cy.get(weeklyIncome).eq(3).should("contain","0 PNG")
+            cy.get(detailsCrossBtn).eq(3).click()
+
+        }) 
+    })
+
+    /******************* Assertions on Your Farms **************************/
+    it.only('TC-56, Verify that the user cannot see the "Your Farms" section if the wallet is not connected', () => {
+        cy.get(yourFarms).contains("Your Farms")
+            .should('not.exist')
+    })
+    
+
+
+
 })
