@@ -1,4 +1,5 @@
-import { CAVAX, CHAINS, Fraction, Token } from '@pangolindex/sdk';
+import { CHAINS, Fraction, Token } from '@pangolindex/sdk';
+import deepEqual from 'deep-equal';
 import numeral from 'numeral';
 import React from 'react';
 import { Box, CoinDescription } from 'src/components';
@@ -6,6 +7,7 @@ import StatDetail from 'src/components/Pools/DetailModal/StatDetail';
 import { ANALYTICS_PAGE } from 'src/constants';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { convertCoingeckoTokens } from 'src/hooks/Tokens';
 import { useGetPoolDollerWorth } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -43,6 +45,28 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
   const currency0 = tokenA ? unwrappedToken(tokenA, chainId) : undefined;
   const currency1 = tokenB ? unwrappedToken(tokenB, chainId) : undefined;
   const yourLiquidity = liquidityInUSD ? `${numeral(liquidityInUSD).format('$0.00a')}` : '-';
+
+  // converts the tokens to another token to fix the description and remove duplicate description
+  const getCoinDescriptions = () => {
+    const _tokenA = !(currency0 instanceof Token) ? currency0 : convertCoingeckoTokens(tokenA);
+    const _tokenB = !(currency1 instanceof Token) ? currency1 : convertCoingeckoTokens(tokenB);
+
+    return (
+      <>
+        {_tokenA && (
+          <Box mt={20}>
+            <CoinDescription coin={_tokenA} />
+          </Box>
+        )}
+
+        {_tokenB && !deepEqual(_tokenA, _tokenB) && (
+          <Box mt={20}>
+            <CoinDescription coin={_tokenB} />
+          </Box>
+        )}
+      </>
+    );
+  };
 
   return (
     <>
@@ -84,17 +108,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
             />
           </Box>
         )}
-        {currency0 !== CAVAX[chainId] && currency0 instanceof Token && (
-          <Box mt={20}>
-            <CoinDescription coin={currency0} />
-          </Box>
-        )}
-
-        {currency1 !== CAVAX[chainId] && currency1 instanceof Token && (
-          <Box mt={20}>
-            <CoinDescription coin={currency1} />
-          </Box>
-        )}
+        {getCoinDescriptions()}
       </DetailsContainer>
     </>
   );

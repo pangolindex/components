@@ -6,14 +6,25 @@ import arrowRightIcon from 'src/assets/images/arrow-right.svg';
 import bitKeepIcon from 'src/assets/images/bitkeep.svg';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
+import hashIcon from 'src/assets/images/hashConnect.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
 import nearIcon from 'src/assets/images/near.svg';
 import rabbyIcon from 'src/assets/images/rabby.svg';
 import talismanIcon from 'src/assets/images/talisman.svg';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
-import { bitKeep, gnosisSafe, injected, near, talisman, walletconnect, walletlink, xDefi } from '../connectors';
-import { CommonEVMProvider, NearProvider } from '../connectors/WalletProviders';
+import {
+  bitKeep,
+  gnosisSafe,
+  hashConnect,
+  injected,
+  near,
+  talisman,
+  walletconnect,
+  walletlink,
+  xDefi,
+} from '../connectors';
+import { CommonEVMProvider, HederaProvider, NearProvider } from '../connectors/WalletProviders';
 import { DAIe, PNG, USDC, USDCe, USDTe, UST, axlUST } from './tokens';
 
 export const BIG_INT_ZERO = JSBI.BigInt(0);
@@ -29,6 +40,7 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].contracts!.router,
   [ChainId.COSTON]: CHAINS[ChainId.COSTON].contracts!.router,
   [ChainId.SONGBIRD]: CHAINS[ChainId.SONGBIRD].contracts!.router,
+  [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET].contracts!.router,
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts!.router,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts!.router,
 };
@@ -39,6 +51,7 @@ export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: CHAINS[ChainId.WAGMI]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.COSTON]: CHAINS[ChainId.COSTON]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.SONGBIRD]: CHAINS[ChainId.SONGBIRD]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
 };
@@ -77,6 +90,7 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.WAGMI]: getMiniChefAddress(ChainId.WAGMI),
   [ChainId.COSTON]: getMiniChefAddress(ChainId.COSTON),
   [ChainId.SONGBIRD]: getMiniChefAddress(ChainId.SONGBIRD),
+  [ChainId.HEDERA_TESTNET]: getMiniChefAddress(ChainId.HEDERA_TESTNET),
   [ChainId.NEAR_MAINNET]: getMiniChefAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getMiniChefAddress(ChainId.NEAR_TESTNET),
 };
@@ -95,6 +109,7 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.WAGMI]: getPangoChefAddress(ChainId.WAGMI),
   [ChainId.COSTON]: getPangoChefAddress(ChainId.COSTON),
   [ChainId.SONGBIRD]: getPangoChefAddress(ChainId.SONGBIRD),
+  [ChainId.HEDERA_TESTNET]: undefined,
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
 };
@@ -106,6 +121,7 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
   [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI].address, PNG[ChainId.WAGMI].address],
   [ChainId.COSTON]: [WAVAX[ChainId.COSTON].address, PNG[ChainId.COSTON].address],
   [ChainId.SONGBIRD]: [WAVAX[ChainId.SONGBIRD].address, PNG[ChainId.SONGBIRD].address],
+  [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET].address, PNG[ChainId.HEDERA_TESTNET].address],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET].address, PNG[ChainId.NEAR_MAINNET].address],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET].address, PNG[ChainId.NEAR_TESTNET].address],
 };
@@ -130,6 +146,10 @@ export const SWAP_DEFAULT_CURRENCY = {
   [ChainId.SONGBIRD]: {
     inputCurrency: 'SGB',
     outputCurrency: PNG[ChainId.SONGBIRD].address,
+  },
+  [ChainId.HEDERA_TESTNET]: {
+    inputCurrency: 'HBAR',
+    outputCurrency: WAVAX[ChainId.HEDERA_TESTNET].address,
   },
   [ChainId.NEAR_MAINNET]: {
     inputCurrency: WAVAX[ChainId.NEAR_MAINNET].address,
@@ -157,6 +177,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI], PNG[ChainId.WAGMI]],
   [ChainId.COSTON]: [WAVAX[ChainId.COSTON], PNG[ChainId.COSTON]],
   [ChainId.SONGBIRD]: [WAVAX[ChainId.SONGBIRD], PNG[ChainId.SONGBIRD]],
+  [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET], PNG[ChainId.HEDERA_TESTNET]],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
 };
@@ -318,6 +339,16 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     primary: true,
     isEVM: false,
   },
+  HASH_CONNECT: {
+    connector: hashConnect,
+    name: 'HashPack Wallet',
+    iconName: hashIcon,
+    description: 'HashPack Wallet Connect',
+    href: null,
+    color: '#7a7cff',
+    primary: true,
+    isEVM: true,
+  },
 };
 
 export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } = {
@@ -326,6 +357,7 @@ export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } 
   [ChainId.WAGMI]: CommonEVMProvider,
   [ChainId.COSTON]: CommonEVMProvider,
   [ChainId.SONGBIRD]: CommonEVMProvider,
+  [ChainId.HEDERA_TESTNET]: HederaProvider,
   [ChainId.NEAR_MAINNET]: NearProvider,
   [ChainId.NEAR_TESTNET]: NearProvider,
 };
@@ -359,9 +391,10 @@ export const DIRECTUS_URL_NEWS = `https://pangolin.directus.app`;
 
 export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3`;
 export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
+// TODO: this needs to be based on chain id
+export const HEDERA_API_BASE_URL = `https://testnet.mirrornode.hedera.com`;
 
 export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
-export const COINGECKO_API = 'https://api.coingecko.com/api/v3';
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
 export const NEAR_STORAGE_PER_TOKEN = '0.005';
 export const NEAR_STORAGE_TO_REGISTER_WITH_FT = '0.1';
@@ -380,6 +413,7 @@ const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI], PNG[ChainId.WAGMI]],
   [ChainId.COSTON]: [WAVAX[ChainId.COSTON], PNG[ChainId.COSTON]],
   [ChainId.SONGBIRD]: [WAVAX[ChainId.SONGBIRD], PNG[ChainId.SONGBIRD]],
+  [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET], PNG[ChainId.HEDERA_TESTNET]],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
 };
@@ -403,6 +437,7 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
   [ChainId.WAGMI]: getSarAddress(ChainId.WAGMI),
   [ChainId.COSTON]: getSarAddress(ChainId.COSTON),
   [ChainId.SONGBIRD]: getSarAddress(ChainId.SONGBIRD),
+  [ChainId.HEDERA_TESTNET]: getSarAddress(ChainId.HEDERA_TESTNET),
   [ChainId.NEAR_MAINNET]: getSarAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getSarAddress(ChainId.NEAR_TESTNET),
 };
@@ -422,6 +457,7 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.WAGMI]: undefined,
   [ChainId.COSTON]: undefined,
   [ChainId.SONGBIRD]: 'songbird',
+  [ChainId.HEDERA_TESTNET]: 'hedera-hashgraph',
   [ChainId.NEAR_MAINNET]: 'near',
   [ChainId.NEAR_TESTNET]: undefined,
 };

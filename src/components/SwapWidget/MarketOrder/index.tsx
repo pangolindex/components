@@ -25,6 +25,7 @@ import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
+  useHederaSwapTokenAssociated,
   useSwapActionHandlers,
   useSwapState,
 } from 'src/state/pswap/hooks';
@@ -131,6 +132,13 @@ const MarketOrder: React.FC<Props> = ({
     execute: onWrap,
     inputError: wrapInputError,
   } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue);
+
+  const {
+    associate: onAssociate,
+    isLoading: isLoadingAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+  } = useHederaSwapTokenAssociated();
+
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE;
   const { address: recipientAddress } = useENS(recipient);
   const toggledVersion = useToggledVersion();
@@ -232,7 +240,7 @@ const MarketOrder: React.FC<Props> = ({
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT]);
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient);
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, recipient, allowedSlippage);
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade);
 
@@ -362,11 +370,20 @@ const MarketOrder: React.FC<Props> = ({
   const renderButton = () => {
     if (!account) {
       return (
-        <Button isDisabled={!account} variant="primary" onClick={toggleWalletModal}>
+        <Button variant="primary" onClick={toggleWalletModal}>
           Connect Wallet
         </Button>
       );
     }
+
+    if (!isHederaTokenAssociated) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate ' + currencies[Field.OUTPUT]?.symbol}
+        </Button>
+      );
+    }
+
     if (showWrap) {
       return (
         <Button variant="primary" isDisabled={Boolean(wrapInputError)} onClick={onWrap}>

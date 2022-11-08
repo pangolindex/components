@@ -524,20 +524,19 @@
     "selectToken": "Bir token seçin",
     "enterRecipient": "Bir alıcı girin",
     "invalidRecipient": "Geçersiz alıcı",
-    "insufficient": "Yetersiz ",
-    "balance": " bakiyesi"
+    "insufficientBalance": "Yetersiz {{ symbol }} bakiyesi"
   },
   "mintHooks": {
     "connectWallet": "Cüzdanı Bağla",
     "insufficientInputAmount": "Yetersiz bakiye",
     "invalidPair": "Geçersiz işlem çifti",
     "enterAmount": "Bir tutar girin",
-    "insufficient": "Yetersiz",
-    "balance": " bakiyesi"
+    "insufficientBalance": "Yetersiz {{ symbol }} bakiyesi"
   },
   "stakeHooks": {
     "connectWallet": "Cüzdanı Bağla",
-    "enterAmount": "Bir tutar girin"
+    "enterAmount": "Bir tutar girin",
+    "insufficientBalance": "Yetersiz {{ symbol }} bakiyesi"
   },
   "burnHooks": {
     "connectWallet": "Cüzdanı Bağla",
@@ -696,13 +695,14 @@
     "claimWarning1": "Likiditenizi çekmeden talep ettiğinizde madencilik havuzunda kalır.",
     "claimWarning2": "Ödüllerinizi talep etmek, APR'nizi 0'a düşürür. Bunun yerine birleştirmeyi seçebilirsiniz.",
     "compoundWarning": "{{ token0 }}-{{ token1 }} çiftliği için ödüllerinizi birleştirmek, ödüllerinizi {{ para birimi }}-{{ png }} çiftliğine yatırır. {{ currency }} 'a eşit değer eklemeniz gerekir. jeton, tahakkuk eden {{ png }} ödüllerinize.",
-    "compoundAmountWarning": "Bileşik için {{ amount }} {{ symbol }} eklemeniz gerekiyor.",
-    "compoundAmountWarning2": "Bu havuzun ödüllerini alana kadar {{ symbol }} {{ png }} havuzunuzu kilitleyeceğinize dikkat edin.",
+    "compoundAmountWarning": "Bileşik için {{ amount }} {{ symbol }} eklemeniz gerekiyor. Lütfen Bileşik oluşturmanın APR'nizi biraz azaltabileceğini unutmayın.",
+    "compoundAmountWarning2": "Bu havuzun ödüllerini alana kadar {{ token0 }} {{ token1 }} havuzunuzu kilitleyeceğinize dikkat edin.",
     "highVolalityWarning": "Çok erken, birkaç saat sonra deneyin",
     "compoundSuccess": "Çiftliğinizi başarıyla oluşturdunuz.",
     "compoundTransactionSummary": "Birleşik çiftlik.",
     "removeWarning": "Çiftlikten herhangi bir miktarı çıkarmak, APR'nizi 0'a getirecektir. Bunun yerine ödüllerinizi, APR'nizi kaybetmeden birleştirebilirsiniz.",
-    "lockingPoolZeroWarning": "Bu çiftlikten likiditenizi kaldıramaz veya ödüllerinizi talep edemezsiniz. Bunu yapmak için önce bu çiftliklerden hissenizi talep etmeniz gerekir: "
+    "lockingPoolZeroWarning": "Bu çiftlikten likiditenizi kaldıramaz veya ödüllerinizi talep edemezsiniz. Bunu yapmak için önce bu çiftliklerden hissenizi talep etmeniz veya kaldırmanız gerekir: ",
+    "decreaseWarning": "Yeni bileşik kısım 0 nisan ile başladığı için apr'ınız düşecek ve eski ile yeni kısım arasında bir ortalama alınacaktır."
   },
   "bridge": {
     "selectChain": "Select Chain",

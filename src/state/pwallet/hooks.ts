@@ -27,9 +27,9 @@ import {
   ROUTER_ADDRESS,
 } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
-import { useGetNearAllPool, useNearPairs, usePairs } from 'src/data/Reserves';
+import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useAllTokens, useNearTokens } from 'src/hooks/Tokens';
+import { useAllTokens, useHederaTokenAssociated, useNearTokens } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -43,7 +43,8 @@ import {
   isAddress,
   waitForTransaction,
 } from 'src/utils';
-import { FunctionCallOptions, Transaction, nearFn } from 'src/utils/near';
+import { hederaFn } from 'src/utils/hedera';
+import { FunctionCallOptions, Transaction as NearTransaction, nearFn } from 'src/utils/near';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { toV2LiquidityToken, useTrackedTokenPairs } from '../puser/hooks';
@@ -114,6 +115,39 @@ export function useNearBalance(
   }, [accounts, chainId]);
 
   return useMemo(() => nearBalance, [nearBalance]);
+}
+
+/**
+ * Returns a Hedera Wallet balance.
+ */
+export function useHederaBalance(
+  chainId: ChainId,
+  accounts?: (string | undefined)[],
+): { [address: string]: any } | undefined {
+  const [hederaBalance, setHederaBalance] = useState<{ [address: string]: any }>();
+
+  const hederaToken = WAVAX[chainId];
+
+  useEffect(() => {
+    async function checkHederaBalance() {
+      if (accounts?.[0]) {
+        const balance = await hederaFn.getAccountBalance(accounts?.[0]);
+
+        if (balance) {
+          const hderaTokenBalance = new TokenAmount(hederaToken, balance);
+
+          const container = {} as { [address: string]: any | undefined };
+          container[accounts?.[0]] = hderaTokenBalance;
+
+          setHederaBalance(container);
+        }
+      }
+    }
+
+    checkHederaBalance();
+  }, [accounts, chainId]);
+
+  return useMemo(() => hederaBalance, [hederaBalance]);
 }
 
 const fetchNearTokenBalance = (token?: Token, account?: string) => async () => {
@@ -412,7 +446,7 @@ export function useNearAddLiquidity() {
   return async (data: AddLiquidityProps) => {
     if (!chainId || !library || !account) return;
 
-    const depositTransactions: Transaction[] = [];
+    const depositTransactions: NearTransaction[] = [];
     const { parsedAmounts, deadline, currencies } = data;
     const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
 
@@ -497,7 +531,7 @@ export function useNearAddLiquidity() {
       },
     ];
 
-    const transactions: Transaction[] = [
+    const transactions: NearTransaction[] = [
       ...depositTransactions,
       {
         receiverId: exchangeContractId,
@@ -533,6 +567,90 @@ export function useNearAddLiquidity() {
     }
 
     return nearFn.executeMultipleTransactions(transactions);
+  };
+}
+
+export function useHederaAddLiquidity() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+  const addTransaction = useTransactionAdder();
+
+  return async (data: AddLiquidityProps) => {
+    if (!chainId || !library || !account) return;
+
+    const { parsedAmounts, deadline, noLiquidity, allowedSlippage, currencies } = data;
+
+    const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
+
+    const { [AddField.CURRENCY_A]: parsedAmountA, [AddField.CURRENCY_B]: parsedAmountB } = parsedAmounts;
+    if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
+      return;
+    }
+
+    const amountsMin = {
+      [AddField.CURRENCY_A]: calculateSlippageAmount(parsedAmountA, noLiquidity ? 0 : allowedSlippage)[0],
+      [AddField.CURRENCY_B]: calculateSlippageAmount(parsedAmountB, noLiquidity ? 0 : allowedSlippage)[0],
+    };
+
+    const poolExists = false;
+    let response;
+    try {
+      if (currencyA === CAVAX[chainId] || currencyB === CAVAX[chainId]) {
+        const tokenBIsETH = currencyB === CAVAX[chainId];
+
+        const args = {
+          token: wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId), // token
+          tokenAmount: (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
+          HBARAmount: (tokenBIsETH ? parsedAmountB : parsedAmountA).toExact(), // HBAR desired
+          tokenAmountMin: amountsMin[tokenBIsETH ? AddField.CURRENCY_A : AddField.CURRENCY_B].toString(), // token min
+          HBARAmountMin: amountsMin[tokenBIsETH ? AddField.CURRENCY_B : AddField.CURRENCY_A].toString(), // eth min
+          account: account,
+          poolExists: poolExists,
+          deadline: deadline.toNumber(),
+          chainId: chainId,
+        };
+
+        response = await hederaFn.addNativeLiquidity(args);
+      } else {
+        const args = {
+          tokenA: wrappedCurrency(currencyA, chainId),
+          tokenB: wrappedCurrency(currencyB, chainId),
+          tokenAAmount: parsedAmountA.raw.toString(),
+          tokenBAmount: parsedAmountB.raw.toString(),
+          tokenAAmountMin: amountsMin[AddField.CURRENCY_A].toString(),
+          tokenBAmountMin: amountsMin[AddField.CURRENCY_B].toString(),
+          account,
+          poolExists,
+          deadline: deadline.toNumber(),
+          chainId,
+        };
+
+        response = await hederaFn.addLiquidity(args);
+      }
+
+      addTransaction(response, {
+        summary:
+          'Add ' +
+          parsedAmounts[AddField.CURRENCY_A]?.toSignificant(3) +
+          ' ' +
+          currencies[AddField.CURRENCY_A]?.symbol +
+          ' and ' +
+          parsedAmounts[AddField.CURRENCY_B]?.toSignificant(3) +
+          ' ' +
+          currencies[AddField.CURRENCY_B]?.symbol,
+      });
+
+      return response;
+    } catch (err) {
+      const _err = err as any;
+      // we only care if the error is something _other_ than the user rejected the tx
+      if (_err?.code !== 4001) {
+        console.error(_err);
+      }
+    } finally {
+      // This is intentional
+    }
   };
 }
 
@@ -796,9 +914,9 @@ export function useNearRemoveLiquidity(pair: Pair) {
   const removeLiquidity = async (data: RemoveLiquidityProps) => {
     if (!chainId || !library || !account) return;
 
-    let transactions: Transaction[] = [];
+    let transactions: NearTransaction[] = [];
 
-    const withDrawTransactions: Transaction[] = [];
+    const withDrawTransactions: NearTransaction[] = [];
 
     const { parsedAmounts, deadline, allowedSlippage } = data;
 
@@ -1024,12 +1142,20 @@ export function useGetNearUserLP() {
   return useMemo(() => ({ v2IsLoading, allV2PairsWithLiquidity: pairs }), [v2IsLoading, pairs]);
 }
 
+export function useDummyGetUserLP() {
+  return { v2IsLoading: false, allPairs: [], allV2PairsWithLiquidity: [] };
+}
+
 export interface CreatePoolProps {
   tokenA?: Token;
   tokenB?: Token;
 }
 
-export function useNearCreatePool() {
+export function useDummyCreatePair() {
+  return null;
+}
+
+export function useNearCreatePair() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { library } = useLibrary();
@@ -1037,7 +1163,7 @@ export function useNearCreatePool() {
   return async (data: CreatePoolProps) => {
     if (!chainId || !library || !account) return;
 
-    let transactions: Transaction[] = [];
+    let transactions: NearTransaction[] = [];
 
     const { tokenA, tokenB } = data;
 
@@ -1098,4 +1224,87 @@ export function useNearCreatePool() {
   };
 }
 
+export function useHederaCreatePair() {
+  const chainId = useChainId();
+  const { account } = usePangolinWeb3();
+  const addTransaction = useTransactionAdder();
+
+  return async (data: CreatePoolProps) => {
+    if (!chainId || !account) return;
+
+    const { tokenA, tokenB } = data;
+
+    if (!tokenA || !tokenB) {
+      throw new Error(`Select tokens`);
+    }
+
+    const response = await hederaFn.createPair({
+      account,
+      chainId,
+      tokenA,
+      tokenB,
+    });
+
+    if (response) {
+      addTransaction(response, {
+        summary: `Pair created for ${tokenA.symbol} and ${tokenB.symbol}`,
+      });
+
+      return response;
+    }
+  };
+}
+
+/**
+ * This hook used to get pgl token specifically for given Hedera pair
+ * Takes currencies as a input and return hedera pair token & token with pair contract address
+ * @param currencyA
+ * @param currencyB
+ * @returns [pglToken, pairToken]
+ */
+export const useHederaPGLToken = (
+  currencyA: Currency | undefined,
+  currencyB: Currency | undefined,
+): [Token | undefined, Token | undefined] => {
+  const chainId = useChainId();
+
+  const [pglToken, setPglToken] = useState<Token | undefined>(undefined);
+  const [, pair] = usePair(currencyA, currencyB);
+
+  const pairToken = pair?.liquidityToken;
+
+  useEffect(() => {
+    async function fetch() {
+      try {
+        if (pairToken) {
+          const tokenAddress = pairToken ? pairToken?.address : '';
+          // get pair contract id using api call because `asAccountString` is not working for pair address
+          const contractId = await hederaFn.getContractData(tokenAddress);
+          // get pair tokenId from pair contract id
+          const tokenId = hederaFn.contractToTokenId(contractId?.toString());
+          // convert token id to evm address
+          const newTokenAddress = hederaFn.idToAddress(tokenId);
+          const token = new Token(chainId, newTokenAddress, pairToken?.decimals, pairToken?.symbol, pairToken?.name);
+          setPglToken(token);
+        }
+      } catch (error) {
+        console.error('Could not deposit', error);
+      }
+    }
+
+    fetch();
+  }, [pairToken]);
+
+  // here pglToken is the token where we can call methods like totalSupply, allowance etc
+  // pair?.liquidityToken is the token with pair contract address where we can call methods like getReserves etc
+  return [pglToken, pair?.liquidityToken];
+};
+
+export function useHederaPGLAssociated(
+  currencyA: Currency | undefined,
+  currencyB: Currency | undefined,
+): ReturnType<typeof useHederaTokenAssociated> {
+  const [pglToken] = useHederaPGLToken(currencyA, currencyB);
+  return useHederaTokenAssociated(pglToken);
+}
 /* eslint-enable max-lines */

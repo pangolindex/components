@@ -1,3 +1,4 @@
+import { ChainId } from '@pangolindex/sdk';
 import { createAction } from '@reduxjs/toolkit';
 
 export enum Field {
@@ -25,16 +26,18 @@ export interface FeeInfo {
   initialized: boolean;
 }
 
-export const selectCurrency = createAction<{ field: Field; currencyId: string }>('pswap/selectCurrency');
-export const switchCurrencies = createAction<void>('pswap/switchCurrencies');
-export const typeInput = createAction<{ field: Field; typedValue: string }>('pswap/typeInput');
+export const selectCurrency =
+  createAction<{ field: Field; currencyId: string; chainId: ChainId }>('pswap/selectCurrency');
+export const switchCurrencies = createAction<{ chainId: ChainId }>('pswap/switchCurrencies');
+export const typeInput = createAction<{ field: Field; typedValue: string; chainId: ChainId }>('pswap/typeInput');
 export const replaceSwapState = createAction<{
   field: Field;
   typedValue: string;
   inputCurrencyId?: string;
   outputCurrencyId?: string;
   recipient: string | null;
+  chainId: ChainId;
 }>('pswap/replaceSwapState');
-export const setRecipient = createAction<{ recipient: string | null }>('pswap/setRecipient');
-export const updateFeeTo = createAction<{ feeTo: string }>('pswap/updateFeeTo');
-export const updateFeeInfo = createAction<{ feeInfo: FeeInfo }>('pswap/updateFeeInfo');
+export const setRecipient = createAction<{ recipient: string | null; chainId: ChainId }>('pswap/setRecipient');
+export const updateFeeTo = createAction<{ feeTo: string; chainId: ChainId }>('pswap/updateFeeTo');
+export const updateFeeInfo = createAction<{ feeInfo: FeeInfo; chainId: ChainId }>('pswap/updateFeeInfo');

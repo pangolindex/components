@@ -1,9 +1,8 @@
 import { ChainId } from '@pangolindex/sdk';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
-import useIsWindowVisible from 'src/hooks/useIsWindowVisible';
 import { useDispatch } from 'src/state';
 import { updateBlockNumber } from './actions';
 
@@ -31,52 +30,47 @@ const NearApplicationUpdater = () => {
 
 export const EvmApplicationUpdater = () => {
   const { chainId } = usePangolinWeb3();
-  const { library, provider } = useLibrary();
+  const { provider } = useLibrary();
   const dispatch = useDispatch();
-
-  const windowVisible = useIsWindowVisible();
 
   const [state, setState] = useState<{ chainId: number | undefined; blockNumber: number | null }>({
     chainId,
     blockNumber: null,
   });
 
-  const blockNumberCallback = useCallback(
-    (blockNumber: number) => {
-      setState((_state) => {
-        if (chainId === _state.chainId) {
-          if (typeof _state.blockNumber !== 'number') return { chainId, blockNumber };
-          return { chainId, blockNumber: Math.max(blockNumber, _state.blockNumber) };
+  useQuery(
+    ['blocknumber'],
+    async () => {
+      try {
+        if (provider) {
+          const blockNumber = await provider?.getBlockNumber();
+          setState((_state) => {
+            if (chainId === _state.chainId) {
+              if (typeof _state.blockNumber !== 'number') return { chainId, blockNumber };
+              return { chainId, blockNumber: Math.max(blockNumber, _state.blockNumber) };
+            }
+            return _state;
+          });
         }
-        return _state;
-      });
+      } catch (error) {}
     },
-    [chainId, setState],
+    {
+      refetchInterval: 1000 * 30,
+    },
   );
 
-  // attach/detach listeners
   useEffect(() => {
-    if (!library || !chainId || !windowVisible) return undefined;
+    if (!chainId) return undefined;
 
     setState({ chainId, blockNumber: null });
-
-    provider
-      ?.getBlockNumber()
-      .then(blockNumberCallback)
-      .catch((error) => console.error(`Failed to get block number for chainId: ${chainId}`, error));
-
-    library.on && library.on('block', blockNumberCallback);
-    return () => {
-      library.removeListener && library.removeListener('block', blockNumberCallback);
-    };
-  }, [dispatch, chainId, library, blockNumberCallback, windowVisible]);
+  }, [chainId]);
 
   const debouncedState = useDebounce(state, 100);
 
   useEffect(() => {
-    if (!debouncedState.chainId || !debouncedState?.blockNumber || !windowVisible) return;
+    if (!debouncedState.chainId || !debouncedState?.blockNumber) return;
     dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState?.blockNumber }));
-  }, [windowVisible, dispatch, debouncedState?.blockNumber, debouncedState.chainId]);
+  }, [dispatch, debouncedState?.blockNumber, debouncedState.chainId]);
 
   return null;
 };
@@ -86,6 +80,7 @@ const updaterMapping: { [chainId in ChainId]: () => null } = {
   [ChainId.FUJI]: EvmApplicationUpdater,
   [ChainId.COSTON]: EvmApplicationUpdater,
   [ChainId.SONGBIRD]: EvmApplicationUpdater,
+  [ChainId.HEDERA_TESTNET]: EvmApplicationUpdater,
   [ChainId.WAGMI]: EvmApplicationUpdater,
   [ChainId.NEAR_MAINNET]: NearApplicationUpdater,
   [ChainId.NEAR_TESTNET]: NearApplicationUpdater,

@@ -7,14 +7,12 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
 import { Button } from 'src/components/Button';
-import { bitKeep, gnosisSafe, injected, talisman, xDefi } from 'src/connectors';
-import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
-import { ExternalLink } from 'src/theme';
+import { bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
+import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
 import {
-  Blurb,
   CloseButton,
   ContentWrapper,
   HeaderRow,
@@ -25,8 +23,6 @@ import {
   Wrapper,
 } from './styles';
 import { WalletModalProps } from './types';
-
-const WALLET_TUTORIAL = `${LANDING_PAGE}/tutorials/getting-started/#set-up-metamask`;
 
 enum CHAIN_TYPE {
   EVM_CHAINS = 'EVM CHAINS',
@@ -332,6 +328,22 @@ const WalletModal: React.FC<WalletModalProps> = ({
             />
           );
         }
+      } else if (option.connector === hashConnect) {
+        // provide hashpack install link if not installed
+
+        if (!hashConnect.availableExtension) {
+          return (
+            <Option
+              id={`connect-${key}`}
+              key={key}
+              color={option.color}
+              header={'Install Haspack'}
+              subheader={null}
+              link={'https://www.hashpack.app/download'}
+              icon={option.iconName}
+            />
+          );
+        }
       }
 
       // Not show Gnosis Safe option without Gnosis Interface
@@ -437,12 +449,6 @@ const WalletModal: React.FC<WalletModalProps> = ({
               </Box>
               <OptionGrid>{getOptions()}</OptionGrid>
             </>
-          )}
-          {walletView !== WALLET_VIEWS.PENDING && (
-            <Blurb>
-              <span>New to Avalanche? &nbsp;</span>{' '}
-              <ExternalLink href={WALLET_TUTORIAL}>Learn more about setting up a wallet</ExternalLink>
-            </Blurb>
           )}
         </ContentWrapper>
       );

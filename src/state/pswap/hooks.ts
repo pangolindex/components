@@ -17,7 +17,7 @@ import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { NATIVE, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useCurrency } from 'src/hooks/Tokens';
+import { useCurrency, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
@@ -38,14 +38,19 @@ import {
   updateFeeInfo,
   updateFeeTo,
 } from './actions';
-import { SwapParams } from './reducer';
+import { DefaultSwapState, SwapParams } from './reducer';
 
 export interface LimitOrderInfo extends Order {
   pending?: boolean;
 }
 
-export function useSwapState(): AppState['pswap'] {
-  return useSelector<AppState['pswap']>((state) => state.pswap);
+export function useSwapState(): DefaultSwapState {
+  const chainId = useChainId();
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const swapState = chainId ? state[chainId] ?? {} : ({} as DefaultSwapState);
+  return swapState;
 }
 
 export function useSwapActionHandlers(chainId: ChainId): {
@@ -66,28 +71,29 @@ export function useSwapActionHandlers(chainId: ChainId): {
               : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
               ? (CAVAX[chainId]?.symbol as string)
               : '',
+          chainId,
         }),
       );
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   const onSwitchTokens = useCallback(() => {
-    dispatch(switchCurrencies());
-  }, [dispatch]);
+    dispatch(switchCurrencies({ chainId }));
+  }, [dispatch, chainId]);
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      dispatch(typeInput({ field, typedValue }));
+      dispatch(typeInput({ field, typedValue, chainId }));
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
-      dispatch(setRecipient({ recipient }));
+      dispatch(setRecipient({ recipient, chainId }));
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   return {
@@ -263,6 +269,28 @@ export function useDerivedSwapInfo(): {
   };
 }
 
+export function useHederaSwapTokenAssociated(): {
+  associate: undefined | (() => Promise<void>);
+  isLoading: boolean;
+  hederaAssociated: boolean;
+} {
+  const chainId = useChainId();
+
+  const {
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+  } = useSwapState();
+
+  const outputCurrency = useCurrency(outputCurrencyId);
+  const token = outputCurrency ? wrappedCurrency(outputCurrency, chainId) : undefined;
+  const { associate, isLoading, hederaAssociated } = useHederaTokenAssociated(token);
+
+  return {
+    associate,
+    isLoading,
+    hederaAssociated,
+  };
+}
+
 export function parseCurrencyFromURLParameter(urlParam: any, chainId: ChainId): string {
   if (typeof urlParam === 'string') {
     const valid = isAddress(urlParam);
@@ -323,7 +351,7 @@ export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: ChainId)
 export function useDefaultsFromURLSearch():
   | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
   | undefined {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   const dispatch = useDispatch();
   const parsedQs = useParsedQueryString();
   const [result, setResult] = useState<
@@ -355,6 +383,7 @@ export function useDefaultsFromURLSearch():
           ? outputCurrencyId
           : SWAP_DEFAULT_CURRENCY[chainId]?.outputCurrency,
         recipient: parsed.recipient,
+        chainId,
       }),
     );
 
@@ -366,7 +395,7 @@ export function useDefaultsFromURLSearch():
 }
 
 export function useGelatoLimitOrderDetail(order: Order) {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   const gelatoLibrary = useGelatoLimitOrdersLib();
 
   const inputCurrency = order.inputToken === NATIVE && chainId ? 'AVAX' : order.inputToken;
@@ -465,14 +494,16 @@ export function useGelatoLimitOrderList() {
 }
 
 export function useDaasFeeTo(): [string, (feeTo: string) => void] {
-  const dispatch = useDispatch();
-  const feeTo = useSelector<AppState['pswap']['feeTo']>((state) => {
-    return state.pswap.feeTo;
-  });
+  const chainId = useChainId();
 
+  const dispatch = useDispatch();
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const feeTo = state[chainId]?.feeTo;
   const setFeeTo = useCallback(
     (newFeeTo: string) => {
-      dispatch(updateFeeTo({ feeTo: newFeeTo }));
+      dispatch(updateFeeTo({ feeTo: newFeeTo, chainId }));
     },
     [dispatch],
   );
@@ -481,14 +512,17 @@ export function useDaasFeeTo(): [string, (feeTo: string) => void] {
 }
 
 export function useDaasFeeInfo(): [FeeInfo, (feeInfo: FeeInfo) => void] {
+  const chainId = useChainId();
+
   const dispatch = useDispatch();
-  const feeInfo = useSelector<AppState['pswap']['feeInfo']>((state) => {
-    return state.pswap.feeInfo;
-  });
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const feeInfo = state[chainId]?.feeInfo;
 
   const setFeeInfo = useCallback(
     (newFeeInfo: FeeInfo) => {
-      dispatch(updateFeeInfo({ feeInfo: newFeeInfo }));
+      dispatch(updateFeeInfo({ feeInfo: newFeeInfo, chainId }));
     },
     [dispatch],
   );

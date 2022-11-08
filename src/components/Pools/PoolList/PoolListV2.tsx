@@ -48,19 +48,22 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
     setSearchQuery(value.trim());
   }, []);
 
-  useEffect(() => {
+  const sort = (farms: MinichefStakingInfo[]) => {
     if (sortBy === SortingType.totalStakedInUsd) {
-      const sortedFarms = [...stakingInfoData].sort(function (info_a, info_b) {
+      const sortedFarms = [...farms].sort(function (info_a, info_b) {
         return info_a.totalStakedInUsd?.greaterThan(info_b.totalStakedInUsd ?? BIG_INT_ZERO) ? -1 : 1;
       });
       setStakingInfoData(sortedFarms);
     } else if (sortBy === SortingType.totalApr) {
       const sortedFarms = sortedFarmsApr
-        .map((item) => stakingInfoData.find((infoItem) => infoItem?.pid === item.pid) as MinichefStakingInfo)
+        .map((item) => farms.find((infoItem) => infoItem?.pid === item.pid) as MinichefStakingInfo)
         .filter((element) => !!element);
       setStakingInfoData(sortedFarms);
     }
+  };
 
+  useEffect(() => {
+    sort(stakingInfoData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy]);
 
@@ -92,8 +95,8 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
 
       setStakingInfoByPid(finalArrByPid);
       setStakingInfoData(finalArr);
+      sort(finalArr);
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stakingInfos, debouncedSearchQuery]);
 

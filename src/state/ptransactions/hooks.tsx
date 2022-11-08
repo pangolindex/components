@@ -6,9 +6,11 @@ import { useChainId, usePangolinWeb3 } from '../../hooks';
 import { addTransaction, clearAllTransactions } from './actions';
 import { TransactionDetails } from './reducer';
 
+type TransactionOnlyWithHash = Pick<TransactionResponse, 'hash'>;
+
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
-  response: TransactionResponse,
+  response: TransactionOnlyWithHash,
   customData?: {
     summary?: string;
     approval?: { tokenAddress: string; spender: string };
@@ -20,7 +22,7 @@ export function useTransactionAdder(): (
 
   return useCallback(
     (
-      response: TransactionResponse,
+      response: TransactionOnlyWithHash,
       {
         summary,
         approval,
