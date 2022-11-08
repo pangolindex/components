@@ -6,7 +6,6 @@ import { FixedSizeList } from 'react-window';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
 import { useToken } from 'src/hooks/Tokens';
-import { useBridgeCurrenciesAlternativeApproach } from 'src/hooks/bridge/Currencies';
 import usePrevious from 'src/hooks/usePrevious';
 import { isAddress } from 'src/utils';
 import { Box, TextInput } from '../../';
@@ -48,7 +47,7 @@ const SelectBridgeCurrencyDrawer: React.FC<Props> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const allTokens = bridgeCurrencies || useBridgeCurrenciesAlternativeApproach()?.data;
+  const allTokens = bridgeCurrencies;
   const chainId = useChainId();
 
   const isAddressSearch = isAddress(searchQuery);

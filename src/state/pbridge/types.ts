@@ -89,5 +89,5 @@ export type SendTransactionFunc = (
 
 export type SendTransaction = {
   lifi: SendTransactionFunc;
-  // thorswap: SendTransactionFunc;
+  thorswap: SendTransactionFunc;
 };

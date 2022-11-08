@@ -1,5 +1,14 @@
 /* eslint-disable max-lines */
-import { BRIDGES, Bridge, BridgeCurrency, Chain, CurrencyAmount } from '@pangolindex/sdk';
+import {
+  BRIDGES,
+  Bridge,
+  BridgeCurrency,
+  Chain,
+  CurrencyAmount,
+  LIFI as LIFIBridge,
+  SQUID,
+  THORSWAP,
+} from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -205,7 +214,7 @@ const BridgeCard = () => {
       });
       setAllBridgeCurrencies(data || []);
     }
-  }, [currencyHook?.lifi, currencyHook?.thorswap, activeBridges]);
+  }, [currencyHook?.[LIFIBridge.id], currencyHook?.[THORSWAP.id], activeBridges]);
 
   useEffect(() => {
     if (allBridgeCurrencies && fromChain) {
@@ -236,7 +245,7 @@ const BridgeCard = () => {
 
       setChainList(data || []);
     }
-  }, [activeBridges, chainHook?.lifi, chainHook?.thorswap]);
+  }, [activeBridges, chainHook?.[LIFIBridge.id], chainHook?.[THORSWAP.id], chainHook?.[SQUID.id]]);
 
   useEffect(() => {
     if (debouncedAmountValue) {

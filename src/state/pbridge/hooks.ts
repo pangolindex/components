@@ -1,11 +1,26 @@
 /* eslint-disable max-lines */
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { parseUnits } from '@ethersproject/units';
 import LIFI, { Route as LifiRoute } from '@lifi/sdk';
-import { BridgeCurrency, Chain, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
-import React, { useCallback } from 'react';
+import {
+  BRIDGES,
+  Bridge,
+  BridgeCurrency,
+  Chain,
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  JSBI,
+  LIFI as LIFIBridge,
+  SQUID,
+  THORSWAP,
+  Token,
+  TokenAmount,
+} from '@pangolindex/sdk';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useBridgeChainsAlternativeApproach } from 'src/hooks/bridge/Chains';
-import { useBridgeCurrenciesAlternativeApproach } from 'src/hooks/bridge/Currencies';
+import { useBridgeChains } from 'src/hooks/bridge/Chains';
+import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
 import { useRoutes } from 'src/hooks/bridge/Routes';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { getSigner } from 'src/utils';
@@ -160,8 +175,39 @@ export function useDerivedBridgeInfo(): {
 } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const { data } = useBridgeChainsAlternativeApproach();
-  const bridgeCurrencies = useBridgeCurrenciesAlternativeApproach();
+  const [chainList, setChainList] = useState<Chain[]>([]);
+  const [currencyList, setCurrencyList] = useState<BridgeCurrency[]>([]);
+
+  const chainHook = useBridgeChains();
+  const currencyHook = useBridgeCurrencies();
+
+  useEffect(() => {
+    let data: BridgeCurrency[] = [];
+    BRIDGES.map((bridge: Bridge) => {
+      if (currencyHook?.[bridge.id]) {
+        data = data
+          ?.concat(currencyHook?.[bridge.id])
+          ?.filter(
+            (val, index, self) =>
+              index === self.findIndex((t) => t?.symbol === val?.symbol && t?.chainId === val?.chainId),
+          );
+        setCurrencyList(data || []);
+      }
+    });
+  }, [currencyHook?.[LIFIBridge.id], currencyHook?.[THORSWAP.id]]);
+
+  useEffect(() => {
+    let data: Chain[] = [];
+    BRIDGES.map((bridge: Bridge) => {
+      if (chainHook?.[bridge.id]) {
+        data = data
+          ?.concat(chainHook?.[bridge.id])
+          ?.filter((val, index, self) => index === self.findIndex((t) => t?.chain_id === val?.chain_id));
+
+        setChainList(data || []);
+      }
+    });
+  }, [chainHook?.[LIFIBridge.id], chainHook?.[THORSWAP.id], chainHook?.[SQUID.id]]);
 
   const {
     typedValue,
@@ -177,17 +223,17 @@ export function useDerivedBridgeInfo(): {
     transactionError,
   } = useBridgeState();
 
-  const fromChain = fromChainId ? data?.find((x) => x.id === fromChainId) : undefined;
-  const toChain = toChainId ? data?.find((x) => x.id === toChainId) : undefined;
+  const fromChain = fromChainId ? chainList?.find((x) => x.id === fromChainId) : undefined;
+  const toChain = toChainId ? chainList?.find((x) => x.id === toChainId) : undefined;
 
   const inputCurrency =
-    bridgeCurrencies &&
-    bridgeCurrencies?.data?.find(
+    currencyList &&
+    currencyList?.find(
       (x) => x?.symbol === inputCurrencyId && fromChain && x?.chainId === fromChain?.chain_id?.toString(),
     );
   const outputCurrency =
-    bridgeCurrencies &&
-    bridgeCurrencies?.data?.find(
+    currencyList &&
+    currencyList?.find(
       (x) => x?.symbol === outputCurrencyId && toChainId && x?.chainId === toChain?.chain_id?.toString(),
     );
 
@@ -321,7 +367,7 @@ export function useBridgeSwapActionHandlers(): {
     //   changeNetwork(data);
     // };
 
-    const signer = await getSigner(library, account || '');
+    const signer: JsonRpcSigner = await getSigner(library, account || '');
     // executing a route
     try {
       await lifi.executeRoute(signer as any, selectedRoute?.nativeRoute as LifiRoute);
@@ -352,51 +398,52 @@ export function useBridgeSwapActionHandlers(): {
   };
 
   // TODO:
-  // const sendTransactionThorswap = async (
-  //   library: any,
-  //   // changeNetwork: (chain) => void,
-  //   // toChain?: Chain,
-  //   selectedRoute?: Route,
-  //   account?: string | null,
-  // ) => {
-  //   // else if (selectedRoute?.bridgeType === THORSWAP) {
-  //   //   const reqBody = {
-  //   //     from:
-  //   //       selectedRoute?.fromChainId +
-  //   //       '.' +
-  //   //       fromCurrency?.symbol +
-  //   //       (fromCurrency?.address && fromCurrency?.address.length > 0 && fromCurrency?.address !== ZERO_ADDRESS
-  //   //         ? '-' + fromCurrency?.address
-  //   //         : ''),
-  //   //     to:
-  //   //       selectedRoute?.toChainId +
-  //   //       '.' +
-  //   //       toCurrency?.symbol +
-  //   //       (toCurrency?.address && toCurrency?.address.length > 0 && toCurrency?.address !== ZERO_ADDRESS
-  //   //         ? '-' + toCurrency?.address
-  //   //         : ''),
-  //   //     address: selectedRoute?.toAddress,
-  //   //     amount: selectedRoute?.fromAmount,
-  //   //     slippage: slippageTolerance,
-  //   //     // affiliateFee: THORSWAP?.fee,
-  //   //     // affiliateAddress: THORSWAP?.affiliate,
-  //   //   };
-  //   //   const reqSettings = {
-  //   //     method: 'POST',
-  //   //     headers: {
-  //   //       Accept: 'application/json',
-  //   //       'Content-Type': 'application/json',
-  //   //     },
-  //   //     body: JSON.stringify(reqBody),
-  //   //   };
-  //   //   const response = await fetch(`${THORSWAP_API}/universal/transaction`, reqSettings);
-  //   //   console.log('Thorswap: ', response);
-  //   // }
-  // };
+  const sendTransactionThorswap = async (
+    library: any,
+    // changeNetwork: (chain) => void,
+    // toChain?: Chain,
+    selectedRoute?: Route,
+    account?: string | null,
+  ) => {
+    console.log(library, selectedRoute, account);
+    // else if (selectedRoute?.bridgeType === THORSWAP) {
+    //   const reqBody = {
+    //     from:
+    //       selectedRoute?.fromChainId +
+    //       '.' +
+    //       fromCurrency?.symbol +
+    //       (fromCurrency?.address && fromCurrency?.address.length > 0 && fromCurrency?.address !== ZERO_ADDRESS
+    //         ? '-' + fromCurrency?.address
+    //         : ''),
+    //     to:
+    //       selectedRoute?.toChainId +
+    //       '.' +
+    //       toCurrency?.symbol +
+    //       (toCurrency?.address && toCurrency?.address.length > 0 && toCurrency?.address !== ZERO_ADDRESS
+    //         ? '-' + toCurrency?.address
+    //         : ''),
+    //     address: selectedRoute?.toAddress,
+    //     amount: selectedRoute?.fromAmount,
+    //     slippage: slippageTolerance,
+    //     // affiliateFee: THORSWAP?.fee,
+    //     // affiliateAddress: THORSWAP?.affiliate,
+    //   };
+    //   const reqSettings = {
+    //     method: 'POST',
+    //     headers: {
+    //       Accept: 'application/json',
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(reqBody),
+    //   };
+    //   const response = await fetch(`${THORSWAP_API}/universal/transaction`, reqSettings);
+    //   console.log('Thorswap: ', response);
+    // }
+  };
 
   const sendTransaction = {
     lifi: sendTransactionLifi,
-    // thorswap: sendTransactionThorswap,
+    thorswap: sendTransactionThorswap,
   };
 
   return {

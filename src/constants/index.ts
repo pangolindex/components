@@ -372,7 +372,7 @@ export const NEAR_LP_STORAGE_AMOUNT = '0.01';
 export const ONLY_ZEROS = /^0*\.?0*$/;
 
 export const THORSWAP_API = 'https://api.thorswap.net';
-// export const SQUID_API = 'https://testnet.api.0xsquid.com';
+export const SQUID_API = 'https://testnet.api.0xsquid.com';
 
 const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.FUJI]: [WAVAX[ChainId.FUJI], PNG[ChainId.FUJI]],
