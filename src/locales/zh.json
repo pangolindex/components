@@ -705,6 +705,7 @@
     "lockingPoolZeroWarning": "您无法从该农场移除您的流动性或索取您的奖励。 为此，您首先需要从该农场申领您的股份： "
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
     "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",

@@ -706,6 +706,7 @@
     "lockingPoolZeroWarning": "Sie können Ihre Liquidität nicht entfernen oder Ihre Belohnungen von dieser Farm einfordern. Dazu müssen Sie zuerst entweder Ihren Anteil von diesen Farmen beanspruchen: "
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
     "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",

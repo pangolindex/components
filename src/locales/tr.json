@@ -705,6 +705,7 @@
     "lockingPoolZeroWarning": "Bu çiftlikten likiditenizi kaldıramaz veya ödüllerinizi talep edemezsiniz. Bunu yapmak için önce bu çiftliklerden hissenizi talep etmeniz gerekir: "
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Mevcut Rotalar ({{ number }})",
     "noRoute": "Bu çift için geçerli bir rota bulunamadı.",
     "activeTransfers": "Aktif Transferler ({{ number }})",

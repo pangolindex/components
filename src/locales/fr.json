@@ -706,6 +706,7 @@
     "lockingPoolZeroWarning": "Vous ne pouvez pas retirer vos liquidités ou réclamer vos récompenses de cette ferme. Pour ce faire, vous devez d'abord réclamer votre participation à ces fermes : "
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
     "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",

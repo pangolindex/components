@@ -706,6 +706,7 @@
     "lockingPoolZeroWarning": "Bạn không thể xóa thanh khoản của mình hoặc yêu cầu phần thưởng của mình từ trang trại này. Để làm điều này, trước tiên bạn cần phải yêu cầu cổ phần của bạn từ các trang trại này: "
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
     "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",

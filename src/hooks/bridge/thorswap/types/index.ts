@@ -44,57 +44,6 @@ export interface IFees {
   totalFeeUSD: number;
 }
 
-// /**
-//  * Generic interface to return all possible calldata parameters
-//  * Empty because there are no common attributes between all variants
-//  */
-// export class ISwap {}
-
-// /**
-//  * Generic interface for TC to ERC20 swap out data
-//  */
-// export class ISwapOut extends ISwap {
-//   public fromAsset: string;
-//   public amountIn: string;
-//   public amountOutMin: string;
-//   public memo: string;
-//   public token: string;
-//   public toAddress: string;
-//   public aggregatorAddress: string;
-// }
-
-// // Provider specific SwapIn interfaces
-// export class ISwapInUniswap extends ISwap {
-//   public tcRouter: string;
-//   public tcVault: string;
-//   public tcMemo: string;
-//   public token: string;
-//   public amount: string;
-//   public amountOutMin: string;
-//   public deadline: string;
-// }
-
-// export class ISwapInPangolin extends ISwap {
-//   public tcRouter: string;
-//   public tcVault: string;
-//   public tcMemo: string;
-//   public token: string;
-//   public amount: string;
-//   public amountOutMin: string;
-//   public deadline: string;
-// }
-
-// export class IGenericSwapIn extends ISwap {
-//   public tcRouter: string;
-//   public tcVault: string;
-//   public tcMemo: string;
-//   public token: string;
-//   public amount: string;
-//   public router: string;
-//   public data: string;
-//   public deadline: string;
-// }
-
 export interface ITokenQuoteResponse {
   quoteId: string;
   contract: string;

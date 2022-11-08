@@ -32,7 +32,7 @@ export type BridgeInputsWidgetProps = {
   /**
    * Recipient address
    */
-  recipient?: string | null | undefined;
+  recipient?: string | null;
   /**
    * Callback when recipient input changes
    * @param recipient

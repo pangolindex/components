@@ -132,9 +132,9 @@ export async function useRoutes(
           bridgeType: THORSWAP,
           waitingTime: calculateTransactionTime(result?.estimatedTime),
           toToken: toCurrency?.symbol || '',
-          toAmount: parseFloat(route?.expectedOutput as string).toFixed(4),
-          toAmountNet: parseFloat(route?.expectedOutputMaxSlippage as string).toFixed(4),
-          toAmountUSD: `${parseFloat(route?.expectedOutput as string).toFixed(4)} USD`,
+          toAmount: parseFloat(route?.expectedOutput).toFixed(4),
+          toAmountNet: parseFloat(route?.expectedOutputMaxSlippage).toFixed(4),
+          toAmountUSD: `${parseFloat(route?.expectedOutput).toFixed(4)} USD`,
           gasCostUSD: Object.values(route?.fees as any)?.reduce(feeCalculator, 0),
           steps: [
             {
@@ -148,7 +148,7 @@ export async function useRoutes(
                     toToken: toCurrency?.symbol || '',
                   },
                   estimate: {
-                    toAmount: `${parseFloat(route?.expectedOutputMaxSlippage as string).toFixed(4)}`,
+                    toAmount: `${parseFloat(route?.expectedOutputMaxSlippage).toFixed(4)}`,
                   },
                 };
               }),

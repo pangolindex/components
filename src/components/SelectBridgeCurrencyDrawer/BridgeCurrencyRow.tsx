@@ -31,6 +31,7 @@ const BridgeCurrencyRow: React.FC<Props> = (props) => {
         {bridgeCurrency?.symbol}
       </Text>
       <Balance color="bridge.text" fontSize={14}>
+        {/* TODO: */}
         {balance ? balance.toSignificant(4) : account ? <LoaderIcon /> : null}
       </Balance>
     </BridgeCurrencyRowRoot>

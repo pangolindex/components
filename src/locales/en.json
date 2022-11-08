@@ -707,6 +707,7 @@
     "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim your stake from this farms: "
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
     "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",

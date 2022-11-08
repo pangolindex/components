@@ -124,7 +124,6 @@ export function calculateGasMargin(value: BigNumber): BigNumber {
 // it convert seconds to hours/minutes HH:MM
 export function calculateTransactionTime(seconds: number) {
   if (seconds < 60) {
-    //TODO: i18n seconds min
     return `${seconds} seconds`;
   } else {
     return `${new Date(seconds * 1000).toISOString().substring(11, 16)} min`;

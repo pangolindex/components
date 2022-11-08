@@ -706,6 +706,7 @@
     "lockingPoolZeroWarning": "No puede eliminar su liquidez o reclamar sus recompensas de esta granja. Para hacer esto, primero debe reclamar su participación de estas granjas: "
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
     "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",

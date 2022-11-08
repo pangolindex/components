@@ -2,7 +2,6 @@
 import { parseUnits } from '@ethersproject/units';
 import LIFI, { Route as LifiRoute } from '@lifi/sdk';
 import { BridgeCurrency, Chain, ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
-import { useWeb3React } from '@web3-react/core';
 import React, { useCallback } from 'react';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useBridgeChainsAlternativeApproach } from 'src/hooks/bridge/Chains';
@@ -150,8 +149,8 @@ export function useDerivedBridgeInfo(): {
   parsedAmount: CurrencyAmount | undefined;
   inputError?: string;
   routes?: Route[];
-  estimatedAmount?: CurrencyAmount | undefined;
-  amountNet?: string | undefined;
+  estimatedAmount?: CurrencyAmount;
+  amountNet?: string;
   recipient?: string | null;
   routesLoaderStatus?: boolean;
   selectedRoute?: Route;
@@ -279,7 +278,6 @@ export function useBridgeSwapActionHandlers(): {
   ) => {
     if (parseFloat(amount) <= 0) {
       dispatch(setRoutes({ routes: [], routesLoaderStatus: false }));
-      return;
     } else {
       useRoutes(
         amount,

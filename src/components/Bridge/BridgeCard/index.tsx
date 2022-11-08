@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import { BRIDGES, Bridge, BridgeCurrency, Chain, CurrencyAmount } from '@pangolindex/sdk';
-import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { useTranslation } from 'react-i18next';
