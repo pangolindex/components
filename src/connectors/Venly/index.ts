@@ -12,8 +12,8 @@ export class VenlyConnector extends AbstractConnector {
   private web3Provider!: Web3Provider;
   private venlyOptions = {
     clientId: venlyClientID,
-    skipAuthentication: true,
-    environment: 'staging',
+    skipAuthentication: process.env.NODE_ENV !== 'production',
+    environment: process.env.NODE_ENV === 'production' ? 'prod' : 'staging',
     secretType: 'AVAC' as any,
     signMethod: 'POPUP',
   };
