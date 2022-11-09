@@ -90,11 +90,11 @@ export class VenlyConnector extends AbstractConnector {
       }
     }
 
-    return { provider: this.web3Provider.provider, account };
+    return { provider: this.web3Provider, account };
   }
 
   public async getProvider() {
-    return this.web3Provider.provider;
+    return this.web3Provider;
   }
 
   public async getChainId(): Promise<number | string> {
@@ -121,7 +121,7 @@ export class VenlyConnector extends AbstractConnector {
   }
 
   public async isAuthorized(): Promise<boolean> {
-    if (!this.web3Provider.provider) {
+    if (!this.web3Provider || !this.web3Provider.provider) {
       return false;
     }
 
