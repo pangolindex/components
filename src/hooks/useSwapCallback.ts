@@ -335,7 +335,7 @@ export function useNearSwapCallback(
 // and the user has approved the slippage adjusted input amount for the trade
 export function useHederaSwapCallback(
   trade: Trade | undefined, // trade to execute, required
-  recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  recipientAddress: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account } = usePangolinWeb3();
@@ -350,15 +350,20 @@ export function useHederaSwapCallback(
 
   const addTransaction = useTransactionAdder();
 
-  const { address: recipientAddress } = useENS(recipientAddressOrName);
-  const recipient = recipientAddressOrName === null ? account : recipientAddress;
+  let recipient: string | null | undefined = '';
+
+  if (recipientAddress === null || !recipientAddress) {
+    recipient = account;
+  } else if (hederaFn.isHederaIdValid(recipientAddress)) {
+    recipient = hederaFn.idToAddress(recipientAddress);
+  }
 
   return useMemo(() => {
     if (!trade || !account || !chainId || !deadline) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' };
     }
     if (!recipient) {
-      if (recipientAddressOrName !== null) {
+      if (recipientAddress !== null) {
         return { state: SwapCallbackState.INVALID, callback: null, error: 'Invalid recipient' };
       } else {
         return { state: SwapCallbackState.LOADING, callback: null, error: null };
@@ -378,6 +383,8 @@ export function useHederaSwapCallback(
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
         try {
+          if (!recipient) return '';
+
           const inputCurrency = trade.inputAmount.currency;
 
           const amountIn = trade.maximumAmountIn(new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE));
@@ -390,6 +397,7 @@ export function useHederaSwapCallback(
             tokenInAmount: amountIn?.raw?.toString(),
             tokenOutAmount: amountOut?.raw?.toString(),
             path: trade.route.path.map((token) => token.address), // token address
+            recipient,
             account,
             chainId,
             deadline: deadline ? deadline?.toNumber() : 0,
@@ -405,11 +413,7 @@ export function useHederaSwapCallback(
 
             const base = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`;
 
-            if (recipientAddressOrName && isAddress(recipientAddressOrName)) {
-              recipientAddressOrName = shortenAddress(recipientAddressOrName, chainId);
-            }
-
-            const withRecipient = recipient === account ? base : `${base} to ${recipientAddressOrName}`;
+            const withRecipient = recipient === account ? base : `${base} to ${recipientAddress}`;
 
             const withVersion =
               tradeVersion === Version.v2
@@ -438,7 +442,7 @@ export function useHederaSwapCallback(
 
       error: null,
     };
-  }, [trade, account, chainId, recipient, recipientAddressOrName, addTransaction, deadline]);
+  }, [trade, account, chainId, recipient, recipientAddress, addTransaction, deadline]);
 }
 
 export function useDummySwapCallback(

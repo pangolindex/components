@@ -30,7 +30,7 @@ import {
   useSwapState,
 } from 'src/state/pswap/hooks';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { isAddress, isTokenOnList } from 'src/utils';
+import { isAddressMapping, isTokenOnList } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -97,6 +97,8 @@ const MarketOrder: React.FC<Props> = ({
   const useWrapCallback = useWrapCallbackHook[chainId];
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
   const useSwapCallback = useSwapCallbackHook[chainId];
+
+  const isAddress = isAddressMapping[chainId];
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
