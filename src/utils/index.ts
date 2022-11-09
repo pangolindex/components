@@ -262,6 +262,6 @@ export function decimalToFraction(number: number): Fraction {
   return new Fraction(Math.floor(numerator).toString(), Math.floor(denominator).toString());
 }
 
-export function capitalizeWord(word: string) {
+export function capitalizeWord(word = '') {
   return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
