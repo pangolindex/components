@@ -7,10 +7,8 @@ import {
   Bridge,
   BridgeCurrency,
   Chain,
-  ChainId,
   Currency,
   CurrencyAmount,
-  JSBI,
   LIFI as LIFIBridge,
   SQUID,
   THORSWAP,
@@ -57,7 +55,7 @@ export function useBridgeActionHandlers(): {
   onUserInput: (field: CurrencyField, typedValue: string) => void;
   onChangeRecipient: (recipient: string | null) => void;
   onChangeRouteLoaderStatus: () => void;
-  onClearTransactionData: () => void;
+  onClearTransactionData: (transactionStatus: TransactionStatus) => void;
 } {
   const dispatch = useDispatch();
   const { routes, routesLoaderStatus } = useBridgeState();
@@ -99,9 +97,15 @@ export function useBridgeActionHandlers(): {
     dispatch(switchChains());
   }, [dispatch]);
 
-  const onClearTransactionData = useCallback(() => {
-    dispatch(clearTransactionData());
-  }, [dispatch]);
+  const onClearTransactionData = useCallback(
+    (transactionStatus?: TransactionStatus) => {
+      dispatch(clearTransactionData());
+      if (transactionStatus === TransactionStatus.SUCCESS) {
+        dispatch(setRoutes({ routes: [], routesLoaderStatus: false }));
+      }
+    },
+    [dispatch],
+  );
 
   const onUserInput = useCallback(
     (field: CurrencyField, typedValue: string) => {
@@ -134,20 +138,14 @@ export function useBridgeActionHandlers(): {
   };
 }
 
-export function tryParseAmount(
-  value?: string,
-  currency?: BridgeCurrency,
-  chainId: ChainId = ChainId.AVALANCHE,
-): CurrencyAmount | undefined {
+export function tryParseAmount(value?: string, currency?: BridgeCurrency): CurrencyAmount | undefined {
   if (!value || !currency) {
     return undefined;
   }
   try {
     const typedValueParsed = parseUnits(value, currency.decimals).toString();
-    if (typedValueParsed !== '0') {
-      return (currency as Currency) instanceof Token
-        ? new TokenAmount(currency as Currency as Token, typedValueParsed)
-        : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed), chainId);
+    if (typedValueParsed && Number(typedValueParsed) !== 0) {
+      return new TokenAmount(currency as Currency as Token, typedValueParsed);
     }
   } catch (error) {
     // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
@@ -237,19 +235,20 @@ export function useDerivedBridgeInfo(): {
       (x) => x?.symbol === outputCurrencyId && toChainId && x?.chainId === toChain?.chain_id?.toString(),
     );
 
+  // TODO: Maybe debank?
   const relevantTokenBalances = useCurrencyBalances(chainId, account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
   ]);
-
-  const parsedAmount = tryParseAmount(typedValue, inputCurrency ?? undefined, chainId);
-  const selectedRoute = routes?.find((x: Route) => x.selected);
-  const estimatedAmount = tryParseAmount(selectedRoute?.toAmount, outputCurrency ?? undefined, chainId);
-  const amountNet = selectedRoute?.toAmountNet.toString();
   const currencyBalances = {
     [CurrencyField.INPUT]: relevantTokenBalances[0],
     [CurrencyField.OUTPUT]: relevantTokenBalances[1],
   };
+
+  const parsedAmount = tryParseAmount(typedValue, inputCurrency ?? undefined);
+  const selectedRoute = routes?.find((x: Route) => x.selected);
+  const estimatedAmount = tryParseAmount(selectedRoute?.toAmount, outputCurrency ?? undefined);
+  const amountNet = selectedRoute?.toAmountNet.toString();
 
   const currencies: { [field in CurrencyField]?: BridgeCurrency } = {
     [CurrencyField.INPUT]: inputCurrency ?? undefined,

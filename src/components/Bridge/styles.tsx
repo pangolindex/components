@@ -40,16 +40,16 @@ export const Routes = styled.div`
   `};
 `;
 
-export const Transfers = styled.table`
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  padding-top: 50px;
-  padding-bottom: 30px;
-  overflow-y: auto;
-  white-space: nowrap;
-  width: 100%;
-`;
+// export const Transfers = styled.table`
+//   display: flex;
+//   flex-direction: column;
+//   gap: 30px;
+//   padding-top: 50px;
+//   padding-bottom: 30px;
+//   overflow-y: auto;
+//   white-space: nowrap;
+//   width: 100%;
+// `;
 
 export const LoaderWrapper = styled(Box)`
   flex: 1;

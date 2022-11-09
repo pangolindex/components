@@ -1,10 +1,7 @@
-import { BridgeCurrency, Currency } from '@pangolindex/sdk';
+import { BridgeCurrency } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useCurrencyBalance } from 'src/state/pwallet/hooks';
 import { Text } from '..';
-import { LoaderIcon } from '../Icons';
-import { Balance, BridgeCurrencyLogo, BridgeCurrencyRowRoot } from './styled';
+import { BridgeCurrencyLogo, BridgeCurrencyRowRoot } from './styled';
 
 interface Props {
   bridgeCurrency: BridgeCurrency;
@@ -16,10 +13,10 @@ interface Props {
 
 const BridgeCurrencyRow: React.FC<Props> = (props) => {
   const { bridgeCurrency, style, onSelect, isSelected, otherSelected } = props;
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
+  // const { account } = usePangolinWeb3();
+  // const chainId = useChainId();
 
-  const balance = useCurrencyBalance(chainId, account ?? undefined, bridgeCurrency as Currency);
+  // const balance = useCurrencyBalance(chainId, account ?? undefined, bridgeCurrency as Currency);
   const handleSelect = useCallback(() => {
     onSelect(bridgeCurrency);
   }, [onSelect, bridgeCurrency]);
@@ -30,10 +27,10 @@ const BridgeCurrencyRow: React.FC<Props> = (props) => {
       <Text color="bridge.text" fontSize={14} title={bridgeCurrency?.name}>
         {bridgeCurrency?.symbol}
       </Text>
-      <Balance color="bridge.text" fontSize={14}>
-        {/* TODO: */}
+      {/* TODO: */}
+      {/* <Balance color="bridge.text" fontSize={14}>
         {balance ? balance.toSignificant(4) : account ? <LoaderIcon /> : null}
-      </Balance>
+      </Balance> */}
     </BridgeCurrencyRowRoot>
   );
 };

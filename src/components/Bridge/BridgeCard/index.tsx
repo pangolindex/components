@@ -195,9 +195,9 @@ const BridgeCard = () => {
   //   };
   //   changeNetwork(data);
   // }, [fromChain]);
-
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(sdkChainId, currencyBalances[CurrencyField.INPUT]);
-  const debouncedAmountValue = useDebounce(parsedAmount?.toExact(), 500);
+
+  const debouncedAmountValue = useDebounce(parsedAmount?.toExact(), 1500);
 
   useEffect(() => {
     if (currencyHook && activeBridges) {
@@ -262,7 +262,7 @@ const BridgeCard = () => {
         recipient,
       );
     }
-  }, [debouncedAmountValue]);
+  }, [debouncedAmountValue, slippageTolerance, infiniteApproval, inputCurrency, outputCurrency]);
 
   const changeAmount = useCallback(
     (field: CurrencyField, amount: string) => {
@@ -300,16 +300,17 @@ const BridgeCard = () => {
     <Wrapper>
       {transactionLoaderStatus && (
         <CardWrapper>
-          {/* <CloseCircle onClick={() => {}}>
-            <X color={theme.bridge?.loaderCloseIconColor} size={10} />
-          </CloseCircle> */}
           <Loader height={'auto'} label={t('bridge.bridgeCard.loader.labels.waitingReceivingChain')} size={100} />
           <BottomText>{t('bridge.bridgeCard.loader.bottomText')}</BottomText>
         </CardWrapper>
       )}
       {transactionStatus === TransactionStatus.FAILED && (
         <CardWrapper>
-          <CloseCircle onClick={onClearTransactionData}>
+          <CloseCircle
+            onClick={() => {
+              onClearTransactionData(transactionStatus);
+            }}
+          >
             <X color={theme.bridge?.loaderCloseIconColor} size={10} />
           </CloseCircle>
           <Box flex="1" display="flex" alignItems="center" flexDirection={'column'} justifyContent={'center'}>
@@ -320,7 +321,11 @@ const BridgeCard = () => {
       )}
       {transactionStatus === TransactionStatus.SUCCESS && (
         <CardWrapper>
-          <CloseCircle onClick={onClearTransactionData}>
+          <CloseCircle
+            onClick={() => {
+              onClearTransactionData(transactionStatus);
+            }}
+          >
             <X color={theme.bridge?.loaderCloseIconColor} size={10} />
           </CloseCircle>
           <Box flex="1" display="flex" alignItems="center" flexDirection={'column'} justifyContent={'center'}>
