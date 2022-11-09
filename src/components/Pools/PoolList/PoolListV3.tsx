@@ -49,10 +49,6 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
   };
 
   useEffect(() => {
-    sort(stakingInfoData);
-  }, [sortBy]);
-
-  useEffect(() => {
     if (stakingInfos?.length > 0) {
       const updatedStakingInfos = stakingInfos
         // sort by total staked
@@ -83,7 +79,7 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
       sort(finalArr);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stakingInfos, debouncedSearchQuery]);
+  }, [stakingInfos, debouncedSearchQuery, sortBy]);
 
   const selectedPool = !!selectedPoolIndex ? stakingInfoByPid[selectedPoolIndex] : ({} as MinichefStakingInfo);
 
