@@ -25,7 +25,7 @@ import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
-  useHederaTokenAssociated,
+  useHederaSwapTokenAssociated,
   useSwapActionHandlers,
   useSwapState,
 } from 'src/state/pswap/hooks';
@@ -137,7 +137,7 @@ const MarketOrder: React.FC<Props> = ({
     associate: onAssociate,
     isLoading: isLoadingAssociate,
     hederaAssociated: isHederaTokenAssociated,
-  } = useHederaTokenAssociated();
+  } = useHederaSwapTokenAssociated();
 
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE;
   const { address: recipientAddress } = useENS(recipient);
@@ -240,7 +240,7 @@ const MarketOrder: React.FC<Props> = ({
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT]);
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient);
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, recipient, allowedSlippage);
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade);
 

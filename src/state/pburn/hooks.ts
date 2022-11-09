@@ -2,12 +2,12 @@ import { Currency, CurrencyAmount, JSBI, Pair, Percent, Token, TokenAmount } fro
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO } from 'src/constants';
+import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { useTokenBalancesHook } from 'src/state/pwallet/multiChainsHooks';
 import { isEvmChain } from 'src/utils';
 import { usePair } from '../../data/Reserves';
-import { useTotalSupplyHook } from '../../data/TotalSupply';
 import { tryParseAmount } from '../../state/pswap/hooks';
 import { wrappedCurrency } from '../../utils/wrappedCurrency';
 import { Field, typeInput } from './actions';
@@ -34,7 +34,7 @@ export function useDerivedBurnInfo(
   const chainId = useChainId();
 
   const useTokenBalances = useTokenBalancesHook[chainId];
-  const useTotalSupply = useTotalSupplyHook[chainId];
+  const usePairTotalSupply = usePairTotalSupplyHook[chainId];
 
   const { t } = useTranslation();
 
@@ -57,7 +57,7 @@ export function useDerivedBurnInfo(
   };
 
   // liquidity values
-  const totalSupply = useTotalSupply(pairOrToken as Token);
+  const totalSupply = usePairTotalSupply(pair ?? undefined);
 
   const [liquidityValue0, liquidityValue1] =
     pair &&

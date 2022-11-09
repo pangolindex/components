@@ -33,7 +33,7 @@ export const useGetMinichefStakingInfosViaSubgraphHook: UseGetMinichefStakingInf
   [ChainId.WAGMI]: useGetMinichefStakingInfosViaSubgraph,
   [ChainId.COSTON]: useGetMinichefStakingInfosViaSubgraph,
   [ChainId.SONGBIRD]: useGetMinichefStakingInfosViaSubgraph,
-  [ChainId.HEDERA_TESTNET]: useGetMinichefStakingInfosViaSubgraph,
+  [ChainId.HEDERA_TESTNET]: useDummyMinichefStakingInfosViaSubgraph,
   [ChainId.NEAR_MAINNET]: useDummyMinichefStakingInfosViaSubgraph,
   [ChainId.NEAR_TESTNET]: useDummyMinichefStakingInfosViaSubgraph,
 };
@@ -48,7 +48,7 @@ export const useGetAllFarmDataHook: UseGetAllFarmDataHookType = {
   [ChainId.WAGMI]: useGetAllFarmData,
   [ChainId.COSTON]: useGetAllFarmData,
   [ChainId.SONGBIRD]: useGetAllFarmData,
-  [ChainId.HEDERA_TESTNET]: useGetAllFarmData,
+  [ChainId.HEDERA_TESTNET]: useGetDummyAllFarmData,
   [ChainId.NEAR_MAINNET]: useGetDummyAllFarmData,
   [ChainId.NEAR_TESTNET]: useGetDummyAllFarmData,
 };

@@ -16,6 +16,7 @@ import {
 import Drawer from 'src/components/Drawer';
 import { Field } from 'src/state/pmint/actions';
 import { SpaceType } from 'src/state/pstake/types';
+import { useHederaPGLAssociated } from 'src/state/pwallet/hooks';
 import { Hidden } from 'src/theme/components';
 import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
 
@@ -63,9 +64,50 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
 
+  const inputCurrency = currencies[Field.CURRENCY_A];
+  const outputCurrency = currencies[Field.CURRENCY_B];
+
+  const {
+    associate: onAssociate,
+    isLoading: isLoadingAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+  } = useHederaPGLAssociated(inputCurrency, outputCurrency);
+
   const pendingText = `Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
     currencies[Field.CURRENCY_A]?.symbol
   } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`;
+
+  function renderAssociatButton() {
+    return (
+      <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+        {isLoadingAssociate ? 'Associating' : 'Associate PGL'}
+      </Button>
+    );
+  }
+
+  function renderDetailConfirmContentButton() {
+    if (isHederaTokenAssociated) {
+      return (
+        <Button variant="primary" onClick={onAdd}>
+          {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.confirmSupply')}
+        </Button>
+      );
+    }
+
+    return renderAssociatButton();
+  }
+
+  function renderCardConfirmContentButton() {
+    if (isHederaTokenAssociated) {
+      return (
+        <Button variant="primary" onClick={onAdd} height="46px">
+          {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.giveOrder')}
+        </Button>
+      );
+    }
+
+    return renderAssociatButton();
+  }
 
   const DetailConfirmContent = (
     <Root>
@@ -161,11 +203,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
         </Box>
       </Header>
       <Footer>
-        <Box my={'10px'}>
-          <Button variant="primary" onClick={onAdd}>
-            {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.confirmSupply')}
-          </Button>
-        </Box>
+        <Box my={'10px'}>{renderDetailConfirmContentButton()}</Box>
       </Footer>
     </Root>
   );
@@ -214,11 +252,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
           </OutputText>
         </Box>
       </Box>
-      <Box mt={'10px'}>
-        <Button variant="primary" onClick={onAdd} height="46px">
-          {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.giveOrder')}
-        </Button>
-      </Box>
+      <Box mt={'10px'}>{renderCardConfirmContentButton()}</Box>
     </Box>
   );
 

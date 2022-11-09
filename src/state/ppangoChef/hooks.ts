@@ -365,6 +365,11 @@ export function usePangoChefInfos() {
   ]);
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
+export function useDummyPangoChefInfos() {
+  return [] as PangoChefInfo[];
+}
+
 export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
   const blockTime = useGetBlockTimestamp();
 
