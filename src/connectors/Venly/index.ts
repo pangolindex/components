@@ -1,10 +1,23 @@
+import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
 import { NoEthereumProviderError } from '@pangolindex/web3-react-injected-connector';
+import { Venly } from '@venly/web3-provider';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
 import warning from 'tiny-warning';
 import { UserRejectedRequestError } from '../DefiConnector';
 
-export class BitKeepConnector extends AbstractConnector {
+const venlyClientID = process.env.VENLY_ID ?? 'Testaccount';
+
+export class VenlyConnector extends AbstractConnector {
+  private web3Provider!: Web3Provider;
+  private venlyOptions = {
+    clientId: venlyClientID,
+    skipAuthentication: process.env.NODE_ENV !== 'production',
+    environment: process.env.NODE_ENV === 'production' ? 'prod' : 'staging',
+    secretType: 'AVAC' as any,
+    signMethod: 'POPUP',
+  };
+
   constructor(kwargs: AbstractConnectorArguments) {
     super(kwargs);
 
@@ -12,6 +25,26 @@ export class BitKeepConnector extends AbstractConnector {
     this.handleChainChanged = this.handleChainChanged.bind(this);
     this.handleAccountsChanged = this.handleAccountsChanged.bind(this);
     this.handleClose = this.handleClose.bind(this);
+
+    Venly.createProviderEngine(this.venlyOptions).then((provider) => {
+      this.web3Provider = new Web3Provider(this.convertProvider(provider));
+    });
+  }
+
+  private convertProvider(provider: any): ExternalProvider {
+    return {
+      sendAsync: (request: { method: string; params?: Array<any> }, callback: (error: any, response: any) => void) => {
+        provider.sendAsync(
+          {
+            method: request.method,
+            params: request.params ?? [],
+            id: 1,
+            jsonrpc: '2.0',
+          },
+          callback,
+        );
+      },
+    };
   }
 
   private handleChainChanged(chainId: string | number): void {
@@ -39,19 +72,9 @@ export class BitKeepConnector extends AbstractConnector {
   }
 
   public async activate(): Promise<ConnectorUpdate> {
-    if (!window?.bitkeep?.ethereum) {
-      throw new NoEthereumProviderError();
-    }
-
-    if (window?.bitkeep?.ethereum.on) {
-      window.bitkeep.ethereum.on('chainChanged', this.handleChainChanged);
-      window.bitkeep.ethereum.on('accountsChanged', this.handleAccountsChanged);
-      window.bitkeep.ethereum.on('close', this.handleClose);
-      window.bitkeep.ethereum.on('networkChanged', this.handleNetworkChanged);
-    }
-
-    if (window?.bitkeep?.ethereum.isBitKeep) {
-      window.bitkeep.ethereum.autoRefreshOnNetworkChange = false;
+    if (!this.web3Provider) {
+      const _provider = await Venly.createProviderEngine(this.venlyOptions);
+      this.web3Provider = new Web3Provider(this.convertProvider(_provider));
     }
 
     // try to activate + get account via eth_requestAccounts
@@ -67,47 +90,38 @@ export class BitKeepConnector extends AbstractConnector {
       }
     }
 
-    return { provider: window.bitkeep.ethereum, account };
+    return { provider: this.web3Provider, account };
   }
 
   public async getProvider() {
-    return window.bitkeep && window.bitkeep.ethereum;
+    return this.web3Provider;
   }
 
   public async getChainId(): Promise<number | string> {
-    if (!window?.bitkeep?.ethereum) {
+    if (!this.web3Provider || !this.web3Provider.provider) {
       throw new NoEthereumProviderError();
     }
 
-    let chainId = window.bitkeep.ethereum.chainId || window.bitkeep.ethereum.networkVersion;
-
-    if (!chainId) {
-      chainId = await window.bitkeep?.ethereum.request({ method: 'eth_chainId' });
-    }
+    const chainId = await this.web3Provider.send('eth_chainId', []);
 
     return chainId;
   }
 
   public async getAccount(): Promise<null | string> {
-    if (!window?.bitkeep?.ethereum) {
+    if (!this.web3Provider || !this.web3Provider.provider) {
       throw new NoEthereumProviderError();
     }
 
-    const accounts: string[] | undefined = await window.bitkeep?.ethereum.request({ method: 'eth_accounts' });
+    const accounts: string[] | undefined = await this.web3Provider.send('eth_accounts', []);
     return accounts && accounts.length > 0 ? accounts[0] : null;
   }
 
   public deactivate() {
-    if (window?.bitkeep?.ethereum && window?.bitkeep?.ethereum.removeListener) {
-      window.bitkeep.ethereum.removeListener('chainChanged', this.handleChainChanged);
-      window.bitkeep.ethereum.removeListener('accountsChanged', this.handleAccountsChanged);
-      window.bitkeep.ethereum.removeListener('close', this.handleClose);
-      window.bitkeep.ethereum.removeListener('networkChanged', this.handleNetworkChanged);
-    }
+    return null;
   }
 
   public async isAuthorized(): Promise<boolean> {
-    if (!window?.bitkeep?.ethereum) {
+    if (!this.web3Provider || !this.web3Provider.provider) {
       return false;
     }
 
