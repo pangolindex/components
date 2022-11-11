@@ -183,6 +183,27 @@ export interface SwapData {
   deadline: number;
 }
 
+export interface RemoveNativeLiquidityData {
+  token: Token | undefined;
+  liquidityAmount: string;
+  tokenAmountMin: string;
+  HBARAmountMin: string;
+  account: string;
+  deadline: number;
+  chainId: ChainId;
+}
+
+export interface RemoveLiquidityData {
+  tokenA: Token | undefined;
+  tokenB: Token | undefined;
+  liquidityAmount: string;
+  tokenAAmountMin: string;
+  tokenBAmountMin: string;
+  account: string;
+  deadline: number;
+  chainId: ChainId;
+}
+
 class Hedera {
   axios: AxiosInstance;
   client: Client;
@@ -499,6 +520,68 @@ class Hedera {
           .addAddress(tokenBAddress)
           .addUint256(tokenAAmount as any)
           .addUint256(tokenBAmount as any)
+          .addUint256(tokenAAmountMin as any)
+          .addUint256(tokenBAmountMin as any)
+          .addAddress(account)
+          .addUint256(deadline),
+      );
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public removeNativeLiquidity(removeNativeLiquidityData: RemoveNativeLiquidityData) {
+    const { token, liquidityAmount, tokenAmountMin, HBARAmountMin, account, deadline, chainId } =
+      removeNativeLiquidityData;
+
+    const tokenAddress = token ? token?.address : '';
+    const accountId = account ? this.hederaId(account) : '';
+    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+
+    const maxGas = TRANSACTION_MAX_FEES.REMOVE_NATIVE_LIQUIDITY;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contarctId)
+      //Set the gas for the contract call
+      .setGas(maxGas)
+      //Set the contract function to call
+      .setFunction(
+        'removeLiquidityAVAX',
+        new ContractFunctionParameters()
+          .addAddress(tokenAddress)
+          .addUint256(liquidityAmount as any)
+          .addUint256(tokenAmountMin as any)
+          .addUint256(HBARAmountMin as any)
+          .addAddress(account)
+          .addUint256(deadline),
+      );
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  async removeLiquidity(removeLiquidityData: RemoveLiquidityData) {
+    const { tokenA, tokenB, liquidityAmount, tokenAAmountMin, tokenBAmountMin, account, deadline, chainId } =
+      removeLiquidityData;
+
+    const tokenAAddress = tokenA ? tokenA?.address : '';
+    const tokenBAddress = tokenB ? tokenB?.address : '';
+
+    const accountId = account ? this.hederaId(account) : '';
+    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+
+    const maxGas = TRANSACTION_MAX_FEES.REMOVE_LIQUIDITY;
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contarctId)
+      //Set the gas for the contract call
+      .setGas(maxGas)
+      //Set the contract function to call
+      .setFunction(
+        'removeLiquidity',
+        new ContractFunctionParameters()
+          .addAddress(tokenAAddress)
+          .addAddress(tokenBAddress)
+          .addUint256(liquidityAmount as any)
           .addUint256(tokenAAmountMin as any)
           .addUint256(tokenBAmountMin as any)
           .addAddress(account)

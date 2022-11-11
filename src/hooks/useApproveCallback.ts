@@ -3,10 +3,12 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, ChainId, CurrencyAmount, TokenAmount, Trade } from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
+import { useQuery } from 'react-query';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, ZERO_ADDRESS } from 'src/constants';
 import { useTokenAllowance } from 'src/data/Allowances';
 import { Field } from 'src/state/pswap/actions';
 import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransactions/hooks';
+import { fetchHederaPGLToken } from 'src/state/pwallet/hooks';
 import { calculateGasMargin, waitForTransaction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { computeSlippageAdjustedAmounts } from '../utils/prices';
@@ -112,7 +114,15 @@ export function useHederaApproveCallback(
 ): [ApprovalState, () => Promise<void>] {
   const { account } = usePangolinWeb3();
 
-  const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined;
+  const amountToken = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined;
+
+  //Here for Hedera chain we need to pass fungibal token for get TokenAllowance so need to convert
+  const { isLoading, data } = useQuery(['get-pgl-token', amountToken], fetchHederaPGLToken(amountToken, chainId), {
+    enabled: amountToken?.symbol === 'PGL',
+  });
+
+  const token = amountToken?.symbol === 'PGL' && !isLoading && data ? data : amountToken;
+
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender);
   const pendingApproval = useHasPendingApproval(token?.address, spender);
 
