@@ -26,6 +26,8 @@ export async function useRoutes(
     slippage: parseFloat(slipLimit) / 100,
     infiniteApproval: infiniteApproval,
     allowSwitchChain: false,
+    // integrator: 'FROM SDK', //TODO:
+    // fee: Number('FROM SDK'), //TODO:
   };
 
   const routesRequest: RoutesRequest = {

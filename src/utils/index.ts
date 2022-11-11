@@ -127,7 +127,8 @@ export function calculateGasMargin(value: BigNumber): BigNumber {
 }
 
 // it convert seconds to hours/minutes HH:MM
-export function calculateTransactionTime(seconds: number) {
+export function calculateTransactionTime(seconds: number | undefined): string | undefined {
+  if (!seconds) return undefined;
   if (seconds < 60) {
     return `${seconds} seconds`;
   } else {

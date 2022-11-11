@@ -6,6 +6,7 @@ export { Text } from './Text';
 export { default as Steps, Step } from './Steps';
 export { Checkbox } from './Checkbox';
 export { CheckboxGroup } from './CheckboxGroup';
+export { CountdownCounter } from './CountdownCounter';
 export { RadioButton } from './RadioButton';
 export { RadioButtonGroup } from './RadioButtonGroup';
 export { DoubleCurrencyLogo } from './DoubleCurrencyLogo';

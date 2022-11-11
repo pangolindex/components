@@ -29,7 +29,7 @@ import {
   Text,
 } from 'src/components';
 import { Option } from 'src/components/DropdownMenu/types';
-import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useLibrary } from 'src/hooks';
 import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
 import useDebounce from 'src/hooks/useDebounce';
@@ -37,7 +37,6 @@ import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { ChainField, CurrencyField, TransactionStatus } from 'src/state/pbridge/actions';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
 import { BridgePrioritizations } from 'src/state/pbridge/types';
-import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import BridgeInputsWidget from '../BridgeInputsWidget';
 import {
@@ -50,9 +49,23 @@ import {
   TransactionText,
   Wrapper,
 } from './styles';
+import { BridgeCardProps } from './types';
 
-const BridgeCard = () => {
-  const { account } = usePangolinWeb3();
+const BridgeCard: React.FC<BridgeCardProps> = (props) => {
+  const {
+    account,
+    fromChain,
+    toChain,
+    infiniteApproval,
+    inputCurrency,
+    outputCurrency,
+    recipient,
+    slippageTolerance,
+    getRoutes,
+    setInfiniteApproval,
+    setSlippageTolerance,
+  } = props;
+
   const toggleWalletModal = useWalletModalToggle();
   const theme = useContext(ThemeContext);
 
@@ -64,18 +77,12 @@ const BridgeCard = () => {
   >('');
   const [activeBridges, setActiveBridges] = useState<MultiValue<Option>>(bridges);
   const [activeExchanges, setActiveExchanges] = useState<MultiValue<Option> | SingleValue<string>>([]);
-  const [userSlippage] = useUserSlippageTolerance();
-  const [slippageTolerance, setSlippageTolerance] = useState((userSlippage / 100).toString());
-
   const { t } = useTranslation();
   const {
-    currencies,
-    chains,
     currencyBalances,
     parsedAmount,
     estimatedAmount,
     amountNet,
-    recipient,
     selectedRoute,
     transactionLoaderStatus,
     transactionError,
@@ -93,7 +100,6 @@ const BridgeCard = () => {
 
   const [inputCurrencyList, setInputCurrencyList] = useState<BridgeCurrency[]>([]);
   const [outputCurrencyList, setOutputCurrencyList] = useState<BridgeCurrency[]>([]);
-  const [infiniteApproval, setInfiniteApproval] = useState<boolean>(false);
   const [chainList, setChainList] = useState<Chain[] | undefined>(undefined);
   const chainHook = useBridgeChains();
   const [allBridgeCurrencies, setAllBridgeCurrencies] = useState<BridgeCurrency[]>([]);
@@ -121,7 +127,7 @@ const BridgeCard = () => {
       value: 'quickswap',
     },
   ];
-  const { getRoutes, sendTransaction } = useBridgeSwapActionHandlers();
+  const { sendTransaction } = useBridgeSwapActionHandlers();
 
   // TODO: Switch chain
   // const { chainId, connector } = useWeb3React();
@@ -174,12 +180,6 @@ const BridgeCard = () => {
     onChangeRouteLoaderStatus,
     onClearTransactionData,
   } = useBridgeActionHandlers();
-
-  const inputCurrency = currencies[CurrencyField.INPUT];
-  const outputCurrency = currencies[CurrencyField.OUTPUT];
-
-  const fromChain = chains[ChainField.FROM];
-  const toChain = chains[ChainField.TO];
 
   // const onChangeNetwork = useCallback(() => {
   //   const data = {
