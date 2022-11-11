@@ -52,7 +52,17 @@
         "hideBalanceBtn": "div[class='sc-jSMfEi jETqVr']",
         "tokensList": "div[class='sc-hsOonA kOcdQy']",
         "disabledTokens": "div[class='sc-hsOonA dUaQOo']",
-        "newsLinks": "div[class='slick-slide slick-active slick-current'] p a"
+        "newsLinks": "div[class='slick-slide slick-active slick-current'] p a",
+        "avalancheBtn": "div[class='sc-bdVaJa sc-gxMtzJ sc-dfVpRl sc-eXEjpC fhNhgg']",
+        "selectChain": "div[class='sc-jSMfEi eVtNFq']",
+        "selectChainCrossBtn": "svg[class='sc-bhVIhj sc-iqGgem gLGxRa cJygHv']",
+        "claimLink": "a[class='sc-gZMcBi jvraRZ']",
+        "detailsCrossBtn": "svg[class='sc-jwKygS hivNzP']",
+        "detailsTitle": "div[class='sc-kAzzGY cVbXJ css-8626y4']",
+        "gasToken": "div[class='sc-ibxdXY UfbkG css-8visvh']",
+        "walletAdd": "#web3-status-connected",
+        "chains": "div[class='sc-eCYdqJ sc-jmnVvD fEptdj jwrNk']",
+        "poweredBy": "a[class='sc-gqjmRU cGBnKx']"
     },
     "swap": {
         "swapSideMenu": ".cIKZSl",

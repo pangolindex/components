@@ -221,7 +221,7 @@ describe('Pools', () => {
     })
     
     /************************Assertions on the Max button */
-    it.only('TC-50, Verify that the "Max" button cannot populate the field with the maximum amount of the token if the wallet is not connected', () => {
+    it('TC-50, Verify that the "Max" button cannot populate the field with the maximum amount of the token if the wallet is not connected', () => {
         cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
             cy.get($titleAllFarm).find(addLiqBtn).click()
             cy.get(AllfarmsMaxBtn).eq(0).click()
@@ -243,7 +243,7 @@ describe('Pools', () => {
     })
 
     /******************* Assertions on Adding farm **************************/
-    it.only('TC-52, Verify that the user cannot farm if the wallet is not connected', () => {
+    it('TC-52, Verify that the user cannot farm if the wallet is not connected', () => {
         cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
             cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
             cy.get(detailsTitle).should("contain","Details")
@@ -255,7 +255,7 @@ describe('Pools', () => {
     })
 
     /******************* Assertions on PGL field **************************/
-    it.only('TC-53, Verify that the "PGL" value is not changing according to the change in the stepper if the wallet is not connected', () => {
+    it('TC-53, Verify that the "PGL" value is not changing according to the change in the stepper if the wallet is not connected', () => {
         cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
             cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
             cy.get(detailsTitle).should("contain","Details")
@@ -268,7 +268,7 @@ describe('Pools', () => {
     })
 
      /******************* Assertions on Dollar worth **************************/
-     it.only('TC-54, Verify that the "Dollar Worth" does not populate according to the stepper if the wallet is not connected', () => {
+     it('TC-54, Verify that the "Dollar Worth" does not populate according to the stepper if the wallet is not connected', () => {
         cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
             cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
             cy.get(detailsTitle).should("contain","Details")
@@ -281,7 +281,7 @@ describe('Pools', () => {
     })
 
     /******************* Assertions on Weekly income **************************/
-    it.only('TC-55, Verify that the "Weekly Income" does not populate according to the stepper if the wallet is not connected', () => {
+    it('TC-55, Verify that the "Weekly Income" does not populate according to the stepper if the wallet is not connected', () => {
         cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
             cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
             cy.get(detailsTitle).should("contain","Details")
@@ -294,7 +294,7 @@ describe('Pools', () => {
     })
 
     /******************* Assertions on Your Farms **************************/
-    it.only('TC-56, Verify that the user cannot see the "Your Farms" section if the wallet is not connected', () => {
+    it('TC-56, Verify that the user cannot see the "Your Farms" section if the wallet is not connected', () => {
         cy.get(yourFarms).contains("Your Farms")
             .should('not.exist')
     })
