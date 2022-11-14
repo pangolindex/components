@@ -441,7 +441,7 @@ export function useHederaTokenAssociated(token: Token | undefined): {
     data: isAssociated = true,
     refetch,
   } = useQuery(['check-hedera-token-associated', tokenAddress, account], async () => {
-    if (!tokenAddress || !account || chainId !== ChainId.HEDERA_TESTNET) return;
+    if (!tokenAddress || !account || !hederaFn.isHederaChain(chainId)) return;
 
     const tokens = await hederaFn.getAccountAssociatedTokens(account);
 
