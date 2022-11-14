@@ -6,20 +6,19 @@ import {
   Chain,
   CurrencyAmount,
   LIFI as LIFIBridge,
-  SQUID,
-  THORSWAP,
+  // SQUID,
+  // THORSWAP,
 } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { useTranslation } from 'react-i18next';
-import { MultiValue, SingleValue } from 'react-select';
+import { MultiValue } from 'react-select';
 import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/images/circleTick.svg';
 import ErrorTick from 'src/assets/images/errorTick.svg';
 import {
   Box,
   Button,
-  Checkbox,
   Collapsed,
   DropdownMenu,
   Loader,
@@ -36,7 +35,6 @@ import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { ChainField, CurrencyField, TransactionStatus } from 'src/state/pbridge/actions';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
-import { BridgePrioritizations } from 'src/state/pbridge/types';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import BridgeInputsWidget from '../BridgeInputsWidget';
 import {
@@ -56,13 +54,10 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
     account,
     fromChain,
     toChain,
-    infiniteApproval,
     inputCurrency,
     outputCurrency,
-    recipient,
     slippageTolerance,
     getRoutes,
-    setInfiniteApproval,
     setSlippageTolerance,
   } = props;
 
@@ -72,11 +67,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
   const bridges = BRIDGES.map((bridge: Bridge) => ({ label: bridge.name, value: bridge.id }));
   const [isChainDrawerOpen, setIsChainDrawerOpen] = useState(false);
   const [isCurrencyDrawerOpen, setIsCurrencyDrawerOpen] = useState(false);
-  const [activeBridgePrioritization, setActiveBridgePrioritization] = useState<
-    MultiValue<Option> | SingleValue<string>
-  >('');
   const [activeBridges, setActiveBridges] = useState<MultiValue<Option>>(bridges);
-  const [activeExchanges, setActiveExchanges] = useState<MultiValue<Option> | SingleValue<string>>([]);
   const { t } = useTranslation();
   const {
     currencyBalances,
@@ -89,15 +80,6 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
     transactionStatus,
   } = useDerivedBridgeInfo();
 
-  const BridgePrioritizationItems = Object.keys(BridgePrioritizations)
-    .filter((v) => isNaN(Number(v)))
-    .map((prioritization) => {
-      return {
-        label: t(`bridge.bridgePrioritizations.${prioritization?.toLowerCase()}`),
-        value: prioritization?.toLowerCase(),
-      };
-    });
-
   const [inputCurrencyList, setInputCurrencyList] = useState<BridgeCurrency[]>([]);
   const [outputCurrencyList, setOutputCurrencyList] = useState<BridgeCurrency[]>([]);
   const [chainList, setChainList] = useState<Chain[] | undefined>(undefined);
@@ -109,57 +91,10 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
 
   const { library } = useLibrary();
 
-  const Exchanges = [
-    {
-      label: 'Pangolin',
-      value: 'pangolin',
-    },
-    {
-      label: 'Uniswap',
-      value: 'uniswap',
-    },
-    {
-      label: '1Inch',
-      value: '1inch',
-    },
-    {
-      label: 'Quickswap',
-      value: 'quickswap',
-    },
-  ];
   const { sendTransaction } = useBridgeSwapActionHandlers();
 
-  // TODO: Switch chain
-  // const { chainId, connector } = useWeb3React();
-  // const changeNetwork = useCallback(
-  //   (chain) => {
-  //     connector?.getProvider().then((provider) => {
-  //       provider
-  //         ?.request({
-  //           method: 'wallet_addEthereumChain',
-  //           params: [chain],
-  //         })
-  //         .then((val: null) => {
-  //           // The problem is; We can't understand if the user has changed the network or not.
-  //           console.log('Network Changed: ', val);
-  //         })
-  //         .catch((error: any) => {
-  //           console.log('error: ', error);
-  //         });
-  //     });
-  //   },
-  //   [connector],
-  // );
-
   const onSendTransaction = useCallback(() => {
-    selectedRoute?.bridgeType?.id &&
-      sendTransaction[selectedRoute?.bridgeType?.id](
-        library,
-        // changeNetwork,
-        // toChain,
-        selectedRoute,
-        account,
-      );
+    selectedRoute?.bridgeType?.id && sendTransaction[selectedRoute?.bridgeType?.id](library, selectedRoute, account);
   }, [selectedRoute]);
 
   const onChangeTokenDrawerStatus = useCallback(() => {
@@ -176,25 +111,10 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
     onCurrencySelection,
     onChainSelection,
     onUserInput,
-    onChangeRecipient,
     onChangeRouteLoaderStatus,
     onClearTransactionData,
   } = useBridgeActionHandlers();
 
-  // const onChangeNetwork = useCallback(() => {
-  //   const data = {
-  //     chainName: fromChain?.name,
-  //     nativeCurrency: {
-  //       name: fromChain?.nativeCurrency?.name,
-  //       symbol: fromChain?.nativeCurrency?.symbol,
-  //       decimals: fromChain?.nativeCurrency?.decimals,
-  //     },
-  //     blockExplorerUrls: fromChain?.blockExplorerUrls,
-  //     chainId: '0x' + Number(fromChain?.chain_id)?.toString(16),
-  //     rpcUrls: [fromChain?.rpc_uri],
-  //   };
-  //   changeNetwork(data);
-  // }, [fromChain]);
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(sdkChainId, currencyBalances[CurrencyField.INPUT]);
 
   const debouncedAmountValue = useDebounce(parsedAmount?.toExact(), 1500);
@@ -214,7 +134,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       });
       setAllBridgeCurrencies(data || []);
     }
-  }, [currencyHook?.[LIFIBridge.id], currencyHook?.[THORSWAP.id], activeBridges]);
+  }, [currencyHook?.[LIFIBridge.id], activeBridges]);
 
   useEffect(() => {
     if (allBridgeCurrencies && fromChain) {
@@ -245,24 +165,14 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
 
       setChainList(data || []);
     }
-  }, [activeBridges, chainHook?.[LIFIBridge.id], chainHook?.[THORSWAP.id], chainHook?.[SQUID.id]]);
+  }, [activeBridges, chainHook?.[LIFIBridge.id]]);
 
   useEffect(() => {
     if (debouncedAmountValue) {
       onChangeRouteLoaderStatus();
-      getRoutes(
-        debouncedAmountValue,
-        slippageTolerance,
-        infiniteApproval,
-        fromChain,
-        toChain,
-        account,
-        inputCurrency,
-        outputCurrency,
-        recipient,
-      );
+      getRoutes(debouncedAmountValue, slippageTolerance, fromChain, toChain, account, inputCurrency, outputCurrency);
     }
-  }, [debouncedAmountValue, slippageTolerance, infiniteApproval, inputCurrency, outputCurrency]);
+  }, [debouncedAmountValue, slippageTolerance, inputCurrency, outputCurrency]);
 
   const changeAmount = useCallback(
     (field: CurrencyField, amount: string) => {
@@ -287,13 +197,6 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       onChainSelection(drawerType, chain);
     },
     [drawerType, onChainSelection],
-  );
-
-  const changeRecipient = useCallback(
-    (recipient: string) => {
-      onChangeRecipient(recipient);
-    },
-    [onChangeRecipient],
   );
 
   return (
@@ -376,8 +279,6 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           setDrawerType(ChainField.TO);
           onChangeChainDrawerStatus();
         }}
-        onChangeRecipient={changeRecipient}
-        recipient={recipient}
         title="To"
         inputDisabled={true}
         amount={estimatedAmount}
@@ -421,16 +322,6 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
             </Box>
           }
         >
-          <FilterBox pt={'3.75rem'}>
-            <FilterInputHeader>{t('bridge.bridgeCard.filter.bridgePrioritization')}</FilterInputHeader>
-            <DropdownMenu
-              options={BridgePrioritizationItems}
-              defaultValue={activeBridgePrioritization}
-              onSelect={(value) => {
-                setActiveBridgePrioritization(value);
-              }}
-            />
-          </FilterBox>
           <FilterBox>
             <FilterInputHeader>{t('bridge.bridgeCard.filter.slippage')}</FilterInputHeader>
             <SlippageInput
@@ -438,15 +329,6 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
               expertMode={false}
               slippageTolerance={slippageTolerance}
               setSlippageTolerance={setSlippageTolerance}
-            />
-          </FilterBox>
-          <FilterBox>
-            <FilterInputHeader>{t('bridge.bridgeCard.filter.infiniteApproval')}</FilterInputHeader>
-            <Checkbox
-              value={infiniteApproval}
-              onChange={(value) => setInfiniteApproval(value)}
-              labelColor={'bridge.text'}
-              label={t('bridge.bridgeCard.filter.activeInfiniteApproval')}
             />
           </FilterBox>
           <FilterBox>
@@ -458,18 +340,6 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
               menuPlacement={'top'}
               onSelect={(value) => {
                 setActiveBridges(value as MultiValue<Option>);
-              }}
-            />
-          </FilterBox>
-          <FilterBox>
-            <FilterInputHeader>{t('bridge.bridgeCard.filter.exchanges')}</FilterInputHeader>
-            <DropdownMenu
-              options={Exchanges}
-              defaultValue={activeExchanges}
-              isMulti={true}
-              menuPlacement={'top'}
-              onSelect={(value) => {
-                setActiveExchanges(value);
               }}
             />
           </FilterBox>

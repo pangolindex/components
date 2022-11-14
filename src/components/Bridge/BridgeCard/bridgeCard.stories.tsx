@@ -14,13 +14,6 @@ export default {
     },
   },
   argTypes: {
-    infiniteApproval: {
-      name: 'Infinite Approval',
-      control: 'boolean',
-      defaultValue: false,
-      type: { name: 'boolean', required: false },
-      description: 'Infinite Approval',
-    },
     slippageTolerance: {
       name: 'Slippage Tolerance',
       control: 'text',
@@ -57,25 +50,12 @@ export default {
       type: { name: 'object', required: false },
       description: 'Output Currency',
     },
-    recipient: {
-      name: 'Recipient',
-      control: 'text',
-      type: { name: 'string', required: false },
-      description: 'Recipient Address',
-    },
     setSlippageTolerance: {
       name: 'Set Slippage Tolerance',
       control: 'function',
       type: { name: 'function', required: false },
       defaultValue: () => {},
       description: 'Set Slippage Tolerance',
-    },
-    setInfiniteApproval: {
-      name: 'Set Infinite Approval',
-      control: 'function',
-      type: { name: 'function', required: false },
-      defaultValue: () => {},
-      description: 'Set Infinite Approval',
     },
     getRoutes: {
       name: 'Get Routes',
@@ -93,15 +73,12 @@ const TemplateBridgeCard: ComponentStory<typeof BridgeCard> = (args: any) => {
 
 export const Default = TemplateBridgeCard.bind({});
 Default.args = {
-  infiniteApproval: false,
   slippageTolerance: '0.1',
   account: null,
   fromChain: undefined,
   inputCurrency: undefined,
   outputCurrency: undefined,
-  recipient: undefined,
   toChain: undefined,
   setSlippageTolerance: () => {},
-  setInfiniteApproval: () => {},
   getRoutes: () => {},
 } as Partial<BridgeCardProps>;

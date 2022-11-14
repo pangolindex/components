@@ -10,7 +10,6 @@ import {
   selectChain,
   selectCurrency,
   selectRoute,
-  setRecipient,
   setRoutes,
   setTransactionError,
   switchChains,
@@ -33,8 +32,6 @@ export interface BridgeState {
   readonly [ChainField.TO]: {
     readonly chainId: string | undefined;
   };
-  // the typed btc address
-  readonly recipient: string | null;
   readonly routes: Route[];
   readonly selectedRoute: number | undefined;
   readonly routesLoaderStatus: boolean;
@@ -57,7 +54,6 @@ const initialState: BridgeState = {
   [ChainField.TO]: {
     chainId: '',
   },
-  recipient: null,
   routes: [],
   selectedRoute: undefined,
   routesLoaderStatus: false,
@@ -146,12 +142,6 @@ export default createReducer<BridgeState>(initialState, (builder) =>
         transactionLoaderStatus: false,
         transactionError: undefined,
         transactionStatus: undefined,
-      };
-    })
-    .addCase(setRecipient, (state, { payload: { recipient } }) => {
-      return {
-        ...state,
-        recipient,
       };
     })
     .addCase(setRoutes, (state, { payload: { routes, routesLoaderStatus } }) => {

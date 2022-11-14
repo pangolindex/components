@@ -1,6 +1,5 @@
 import { Route as LifiRoute } from '@lifi/sdk';
 import { Bridge } from '@pangolindex/sdk';
-import { ThorswapRoute } from 'src/hooks/bridge/thorswap/types';
 
 export enum BridgePrioritizations {
   RECOMMENDED,
@@ -21,7 +20,7 @@ export type Route = {
   steps: Step[];
   transactionType: BridgePrioritizations;
   selected: boolean;
-  nativeRoute: LifiRoute | ThorswapRoute;
+  nativeRoute: LifiRoute;
 };
 export declare type Step = SwapStep | BridgeStep | LifiStep | CrossStep | CustomStep;
 
@@ -79,15 +78,8 @@ export interface Estimate {
   toAmount: string;
 }
 
-export type SendTransactionFunc = (
-  library: any,
-  // changeNetwork: (chain) => void,
-  // toChain?: Chain,
-  selectedRoute?: Route,
-  account?: string | null,
-) => Promise<void>;
+export type SendTransactionFunc = (library: any, selectedRoute?: Route, account?: string | null) => Promise<void>;
 
 export type SendTransaction = {
   lifi: SendTransactionFunc;
-  thorswap: SendTransactionFunc;
 };

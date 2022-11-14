@@ -11,18 +11,13 @@ import {
   Currency,
   CurrencyAmount,
   LIFI as LIFIBridge,
-  SQUID,
-  THORSWAP,
   Token,
   TokenAmount,
 } from '@pangolindex/sdk';
-import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { THORSWAP_API, ZERO_ADDRESS } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
-import { ThorswapRoute } from 'src/hooks/bridge/thorswap/types';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { calculateTransactionTime, getSigner } from 'src/utils';
 import { useCurrencyBalances } from '../pwallet/hooks';
@@ -36,7 +31,6 @@ import {
   selectChain,
   selectCurrency,
   selectRoute,
-  setRecipient,
   setRoutes,
   setTransactionError,
   switchChains,
@@ -56,7 +50,6 @@ export function useBridgeActionHandlers(): {
   onSelectRoute: (route: Route) => void;
   onSwitchChains: () => void;
   onUserInput: (field: CurrencyField, typedValue: string) => void;
-  onChangeRecipient: (recipient: string | null) => void;
   onChangeRouteLoaderStatus: () => void;
   onClearTransactionData: (transactionStatus: TransactionStatus) => void;
 } {
@@ -117,13 +110,6 @@ export function useBridgeActionHandlers(): {
     [dispatch],
   );
 
-  const onChangeRecipient = useCallback(
-    (recipient: string | null) => {
-      dispatch(setRecipient({ recipient }));
-    },
-    [dispatch],
-  );
-
   const onChangeRouteLoaderStatus = useCallback(() => {
     dispatch(changeRouteLoaderStatus({ routesLoaderStatus: !routesLoaderStatus }));
   }, [dispatch]);
@@ -135,7 +121,6 @@ export function useBridgeActionHandlers(): {
     onSwitchChains,
     onSelectRoute,
     onUserInput,
-    onChangeRecipient,
     onChangeRouteLoaderStatus,
     onClearTransactionData,
   };
@@ -167,7 +152,6 @@ export function useDerivedBridgeInfo(): {
   routes?: Route[];
   estimatedAmount?: CurrencyAmount;
   amountNet?: string;
-  recipient?: string | null;
   routesLoaderStatus?: boolean;
   selectedRoute?: Route;
   transactionLoaderStatus: boolean;
@@ -195,7 +179,7 @@ export function useDerivedBridgeInfo(): {
         setCurrencyList(data || []);
       }
     });
-  }, [currencyHook?.[LIFIBridge.id], currencyHook?.[THORSWAP.id]]);
+  }, [currencyHook?.[LIFIBridge.id]]);
 
   useEffect(() => {
     let data: Chain[] = [];
@@ -208,7 +192,7 @@ export function useDerivedBridgeInfo(): {
         setChainList(data || []);
       }
     });
-  }, [chainHook?.[LIFIBridge.id], chainHook?.[THORSWAP.id], chainHook?.[SQUID.id]]);
+  }, [chainHook?.[LIFIBridge.id]]);
 
   const {
     typedValue,
@@ -217,7 +201,6 @@ export function useDerivedBridgeInfo(): {
     [ChainField.FROM]: { chainId: fromChainId },
     [ChainField.TO]: { chainId: toChainId },
     routes,
-    recipient,
     routesLoaderStatus,
     transactionLoaderStatus,
     transactionStatus,
@@ -289,7 +272,6 @@ export function useDerivedBridgeInfo(): {
     routes,
     estimatedAmount,
     amountNet,
-    recipient,
     routesLoaderStatus,
     selectedRoute,
     transactionLoaderStatus,
@@ -298,26 +280,15 @@ export function useDerivedBridgeInfo(): {
   };
 }
 
-function feeCalculator(pValue, cValue) {
-  let fee = 0;
-  cValue.map((fields) => {
-    fee = fee + fields?.totalFeeUSD;
-  });
-  fee = fee + pValue;
-  return parseFloat(fee?.toString()).toFixed(4);
-}
-
 export function useBridgeSwapActionHandlers(): {
   getRoutes: (
     amount: string,
     slipLimit: string,
-    infiniteApproval?: boolean,
     fromChain?: Chain,
     toChain?: Chain,
     fromAddress?: string | null,
     fromCurrency?: BridgeCurrency,
     toCurrency?: BridgeCurrency,
-    recipient?: string | null | undefined,
   ) => void;
   sendTransaction: SendTransaction;
 } {
@@ -325,13 +296,11 @@ export function useBridgeSwapActionHandlers(): {
   const getRoutes = async (
     amount: string,
     slipLimit: string,
-    infiniteApproval?: boolean,
     fromChain?: Chain,
     toChain?: Chain,
     fromAddress?: string | null,
     fromCurrency?: BridgeCurrency,
     toCurrency?: BridgeCurrency,
-    recipient?: string | null | undefined,
   ) => {
     if (parseFloat(amount) <= 0) {
       dispatch(setRoutes({ routes: [], routesLoaderStatus: false }));
@@ -341,7 +310,6 @@ export function useBridgeSwapActionHandlers(): {
 
       const routeOptions: RouteOptions = {
         slippage: parseFloat(slipLimit) / 100,
-        infiniteApproval: infiniteApproval,
         allowSwitchChain: false,
         // integrator: 'FROM SDK', //TODO:
         // fee: Number('FROM SDK'), //TODO:
@@ -415,102 +383,13 @@ export function useBridgeSwapActionHandlers(): {
         };
       });
 
-      const thorswapReqParams = {
-        sellAsset:
-          fromChain?.symbol +
-          '.' +
-          fromCurrency?.symbol +
-          (fromCurrency?.address && fromCurrency?.address.length > 0 && fromCurrency?.address !== ZERO_ADDRESS
-            ? '-' + fromCurrency?.address
-            : ''),
-        buyAsset:
-          toChain?.symbol +
-          '.' +
-          toCurrency?.symbol +
-          (toCurrency?.address && toCurrency?.address.length > 0 && toCurrency?.address !== ZERO_ADDRESS
-            ? '-' + toCurrency?.address
-            : ''),
-        sellAmount: amount,
-        slippage: slipLimit,
-        senderAddress: fromAddress || '0x552008c0f6870c2f77e5cC1d2eb9bdff03e30Ea0', // We have to send an address, so we are using a placeholder address
-        recipientAddress: recipient || fromAddress || '',
-        // affiliateAddress: THORSWAP?.affiliate, //TODO:
-        // affiliateBasisPoints: THORSWAP?.fee, //TODO:
-      };
-
-      const result = await axios
-        .get(`${THORSWAP_API}/aggregator/tokens/quote`, { params: thorswapReqParams })
-        .then((res) => {
-          return res.data;
-        })
-        .catch(() => {
-          return {};
-        });
-
-      const thorswapRoutes: Route[] =
-        result?.routes
-          ?.map((route: ThorswapRoute) => {
-            return {
-              bridgeType: THORSWAP,
-              waitingTime: calculateTransactionTime(result?.estimatedTime),
-              toToken: toCurrency?.symbol || '',
-              toAmount: parseFloat(route?.expectedOutput).toFixed(4),
-              toAmountNet: parseFloat(route?.expectedOutputMaxSlippage).toFixed(4),
-              toAmountUSD: `${parseFloat(route?.expectedOutput).toFixed(4)} USD`,
-              gasCostUSD: Object.values(route?.fees as any)?.reduce(feeCalculator, 0),
-              steps: [
-                {
-                  bridge: THORSWAP,
-                  type: 'bridge',
-                  includedSteps: Object.values(route?.swaps).map((value) => {
-                    return {
-                      type: 'swap',
-                      integrator: value?.[0]?.[0]?.parts?.[0]?.provider || 'Thorswap',
-                      action: {
-                        toToken: toCurrency?.symbol || '',
-                      },
-                      estimate: {
-                        toAmount: `${parseFloat(route?.expectedOutputMaxSlippage).toFixed(4)}`,
-                      },
-                    };
-                  }),
-                },
-              ],
-              transactionType: route?.optimal ? BridgePrioritizations.RECOMMENDED : BridgePrioritizations.NORMAL,
-              selected: route?.optimal ? true : false,
-              nativeRoute: route,
-            };
-          })
-          ?.sort((a, b) => b.selected - a.selected) || [];
-      dispatch(setRoutes({ routes: [...thorswapRoutes, ...lifiRoutes], routesLoaderStatus: false }));
+      dispatch(setRoutes({ routes: lifiRoutes, routesLoaderStatus: false }));
     }
   };
 
-  const sendTransactionLifi = async (
-    library: any,
-    // changeNetwork: (chain) => void,
-    // toChain?: Chain,
-    selectedRoute?: Route,
-    account?: string | null,
-  ) => {
+  const sendTransactionLifi = async (library: any, selectedRoute?: Route, account?: string | null) => {
     dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
     const lifi = new LIFI();
-
-    //TODO: We're not using this for now.
-    // const switchChainHook = () => {
-    //   const data = {
-    //     chainName: toChain?.name,
-    //     nativeCurrency: {
-    //       name: toChain?.nativeCurrency?.name,
-    //       symbol: toChain?.nativeCurrency?.symbol,
-    //       decimals: toChain?.nativeCurrency?.decimals,
-    //     },
-    //     blockExplorerUrls: toChain?.blockExplorerUrls,
-    //     chainId: '0x' + Number(toChain?.chain_id)?.toString(16),
-    //     rpcUrls: [toChain?.rpc_uri],
-    //   };
-    //   changeNetwork(data);
-    // };
 
     const signer: JsonRpcSigner = await getSigner(library, account || '');
     // executing a route
@@ -542,53 +421,8 @@ export function useBridgeSwapActionHandlers(): {
     }
   };
 
-  // TODO:
-  const sendTransactionThorswap = async (
-    library: any,
-    // changeNetwork: (chain) => void,
-    // toChain?: Chain,
-    selectedRoute?: Route,
-    account?: string | null,
-  ) => {
-    console.log(library, selectedRoute, account);
-    // else if (selectedRoute?.bridgeType === THORSWAP) {
-    //   const reqBody = {
-    //     from:
-    //       selectedRoute?.fromChainId +
-    //       '.' +
-    //       fromCurrency?.symbol +
-    //       (fromCurrency?.address && fromCurrency?.address.length > 0 && fromCurrency?.address !== ZERO_ADDRESS
-    //         ? '-' + fromCurrency?.address
-    //         : ''),
-    //     to:
-    //       selectedRoute?.toChainId +
-    //       '.' +
-    //       toCurrency?.symbol +
-    //       (toCurrency?.address && toCurrency?.address.length > 0 && toCurrency?.address !== ZERO_ADDRESS
-    //         ? '-' + toCurrency?.address
-    //         : ''),
-    //     address: selectedRoute?.toAddress,
-    //     amount: selectedRoute?.fromAmount,
-    //     slippage: slippageTolerance,
-    //     // affiliateFee: THORSWAP?.fee,
-    //     // affiliateAddress: THORSWAP?.affiliate,
-    //   };
-    //   const reqSettings = {
-    //     method: 'POST',
-    //     headers: {
-    //       Accept: 'application/json',
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(reqBody),
-    //   };
-    //   const response = await fetch(`${THORSWAP_API}/universal/transaction`, reqSettings);
-    //   console.log('Thorswap: ', response);
-    // }
-  };
-
   const sendTransaction = {
     lifi: sendTransactionLifi,
-    thorswap: sendTransactionThorswap,
   };
 
   return {

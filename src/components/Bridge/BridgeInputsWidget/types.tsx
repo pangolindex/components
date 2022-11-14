@@ -30,15 +30,6 @@ export type BridgeInputsWidgetProps = {
    */
   maxAmountInput?: CurrencyAmount;
   /**
-   * Recipient address
-   */
-  recipient?: string | null;
-  /**
-   * Callback when recipient input changes
-   * @param recipient
-   */
-  onChangeRecipient?: (recipient: string) => void;
-  /**
    * Change amount to MAX
    */
   handleMaxInput?: () => void;

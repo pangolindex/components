@@ -15,14 +15,13 @@ const Bridge = () => {
   const { routes, routesLoaderStatus } = useDerivedBridgeInfo();
   const { getRoutes } = useBridgeSwapActionHandlers();
   const { onSelectRoute, onChangeRouteLoaderStatus } = useBridgeActionHandlers();
-  const [infiniteApproval, setInfiniteApproval] = useState<boolean>(false);
   const [userSlippage] = useUserSlippageTolerance();
   const [slippageTolerance, setSlippageTolerance] = useState((userSlippage / 100).toString());
   const [tabIndex, setTabIndex] = useState(0);
   const { t } = useTranslation();
   const { account } = usePangolinWeb3();
 
-  const { currencies, chains, parsedAmount, recipient } = useDerivedBridgeInfo();
+  const { currencies, chains, parsedAmount } = useDerivedBridgeInfo();
 
   const inputCurrency = currencies[CurrencyField.INPUT];
   const outputCurrency = currencies[CurrencyField.OUTPUT];
@@ -32,43 +31,20 @@ const Bridge = () => {
   const getAllRoutes = useCallback(() => {
     if (parsedAmount) {
       onChangeRouteLoaderStatus();
-      getRoutes(
-        parsedAmount?.toExact(),
-        slippageTolerance,
-        infiniteApproval,
-        fromChain,
-        toChain,
-        account,
-        inputCurrency,
-        outputCurrency,
-        recipient,
-      );
+      getRoutes(parsedAmount?.toExact(), slippageTolerance, fromChain, toChain, account, inputCurrency, outputCurrency);
     }
-  }, [
-    parsedAmount,
-    slippageTolerance,
-    infiniteApproval,
-    fromChain,
-    toChain,
-    account,
-    inputCurrency,
-    outputCurrency,
-    recipient,
-  ]);
+  }, [parsedAmount, slippageTolerance, fromChain, toChain, account, inputCurrency, outputCurrency]);
 
   return (
     <PageWrapper>
       <BridgeCard
-        infiniteApproval={infiniteApproval}
         slippageTolerance={slippageTolerance}
         account={account}
         fromChain={fromChain}
         inputCurrency={inputCurrency}
         outputCurrency={outputCurrency}
-        recipient={recipient}
         toChain={toChain}
         setSlippageTolerance={setSlippageTolerance}
-        setInfiniteApproval={setInfiniteApproval}
         getRoutes={getRoutes}
       />
       <Transactions>

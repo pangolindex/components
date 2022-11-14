@@ -11,10 +11,8 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
   const {
     onChangeTokenDrawerStatus,
     onChangeChainDrawerStatus,
-    onChangeRecipient,
     onChangeAmount,
     handleMaxInput,
-    recipient,
     title,
     maxAmountInput,
     amount,
@@ -31,13 +29,6 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
       onChangeAmount && onChangeAmount(amount);
     },
     [onChangeAmount],
-  );
-
-  const handleChangeRecipient = useCallback(
-    (recipient: string) => {
-      onChangeRecipient && onChangeRecipient(recipient);
-    },
-    [onChangeRecipient],
   );
 
   return (
@@ -105,24 +96,6 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           )
         }
       />
-      {chain?.evm === false && (
-        <Box pt={20}>
-          <TextInput
-            label={t('bridge.bridgeInputsWidget.recipient')}
-            placeholder={t('bridge.bridgeInputsWidget.walletAddress')}
-            value={recipient as string}
-            required={true}
-            onChange={(value) => {
-              const withoutSpaces: string = value.replace(/\s+/g, '');
-              handleChangeRecipient(withoutSpaces);
-            }}
-            addonLabel={
-              recipient &&
-              !recipient.match(/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,59}$/) && <Text color="warning">Invalid Address</Text>
-            }
-          />
-        </Box>
-      )}
     </Box>
   );
 };
