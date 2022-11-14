@@ -292,9 +292,9 @@ export function useNearPairBalance(account?: string, pair?: Pair): TokenAmount |
  */
 export function useEVMPairBalance(account?: string, pair?: Pair): TokenAmount | undefined {
   const token = pair?.liquidityToken;
-  if (!token) return undefined;
-  const tokenBalances = useTokenBalances(account, [token]);
 
+  const tokenBalances = useTokenBalances(account, [token]);
+  if (!token) return undefined;
   return tokenBalances[token.address];
 }
 
@@ -1573,10 +1573,9 @@ export function useHederaPairBalances(account?: string, pairs?: (Pair | undefine
 
 // get the balance for a single pair combo
 export function useHederaPairBalance(account?: string, pair?: Pair): TokenAmount | undefined {
-  if (!pair) return undefined;
   const [v2PairsBalances, fetchingV2PairBalances] = useHederaPairBalances(account, [pair]);
 
-  if (fetchingV2PairBalances) {
+  if (!pair || fetchingV2PairBalances) {
     return undefined;
   }
   return v2PairsBalances[pair?.liquidityToken?.address];
