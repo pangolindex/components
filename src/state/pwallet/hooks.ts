@@ -1526,6 +1526,7 @@ export const useHederaPGLTokens = (pairs?: (Pair | undefined)[]): [Token | undef
 };
 
 export function useHederaPairBalances(account?: string, pairs?: (Pair | undefined)[]) {
+  // here we need to use fungible token so get pgltoken based on pairs
   const pglTokens = useHederaPGLTokens(pairs);
 
   const liquidityTokens = useMemo(
@@ -1585,6 +1586,7 @@ export function useHederaPGLAssociated(
   currencyA: Currency | undefined,
   currencyB: Currency | undefined,
 ): ReturnType<typeof useHederaTokenAssociated> {
+  // here we need to use fungible token so get pgltoken based currency
   const [pglToken] = useHederaPGLToken(currencyA, currencyB);
   return useHederaTokenAssociated(pglToken);
 }
