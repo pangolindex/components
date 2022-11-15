@@ -23,6 +23,7 @@ function tokenSwitching (iter, value, token, toTokon) {
 }
 function slippage(type, selector, message){
     cy.get(settingBtn).click()
+    cy.get('div[class="sc-jSMfEi bjuyXL"]').should("contain","Settings")
     cy.get(slippageField).eq(0).clear().type(type)
     cy.get(selector).should('have.text', message)
 }

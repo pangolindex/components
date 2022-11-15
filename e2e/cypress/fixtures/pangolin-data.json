@@ -13,7 +13,7 @@
     ],
     "tokenName": "AGF",
     "AvaxToken": "AVAX",
-    "switchArray": ["PNG", "AGF", "AVAX"],
+    "switchArray": ["PNG","AVAX"],
     "newsLinkAssertArray": ["BridgeSwap: Coming Soon to Pangolin", "$PNG is officially live on @coinbase", "Litepaper: Pangolin Songbird", "Pangolin_Flare ", "2H 2022 Roadmap: Compounding Our Community", "Pangolin Exchange Is Live on Coston Testnet", "wagmiPNG Airdrop: Test Our New Airdrop Feature", "Introducing Limit Orders on Pangolin", "Pangolin", "Introducing MoonPay: Easy Crypto Payments on Pangolin V2", "Pangolin Becomes Multi-Chain DEX With NEAR Grants Program Award", "logo", "Pangolin Governance", "Avalanche Bridge", "Satellite"],
     "newsLinkArray": ["Learn more.", "on Twitter", "Read the Litepaper", "@Pangolin_Flare", "Read the 2H 2022 Roadmap", "Read more", "here", "Tutorial", "read"],
     "chartTimeArray": ["1D", "1W", "1M", "1Y", "ALL"],

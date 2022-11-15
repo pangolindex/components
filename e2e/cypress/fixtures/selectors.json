@@ -93,7 +93,12 @@
         "saveCloseBtn1": "button[class='sc-gsnTZi hePPZs']",
         "slipPageValues": "div.sc-eCYdqJ.sc-jTYCaT",
         "slipPageValuesAssert": "div.JuqvI",
-        "toggleExpertMode": "div[class='sc-jIZahH iqjIFB']"
+        "toggleExpertMode": "div[class='sc-jIZahH iqjIFB']",
+        "sureMenu": "div[class='sc-jSMfEi VYIOq']",
+        "settingCloseBtn": "button[class='sc-gsnTZi iQnbrR']",
+        "selectedSellBuyBtn": "div[class='sc-jIZahH jtApGr']",
+        "limitOrderSection": "div[class='sc-jSMfEi jPrZZL']",
+        "priceField": "input[class='sc-iBkjds lccqjh sc-ckMVTt iyvdDg']"
     },
     "pangolinLinks":{
         "chart": "[id='charts']",

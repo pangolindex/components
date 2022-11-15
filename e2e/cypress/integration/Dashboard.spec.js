@@ -104,6 +104,30 @@ describe('Dashboard', () => {
             .should("contain", tokenName)
     })
 
+     /********************************  search for relevant result  *************************/
+     it('TC-33, Verify that the relevant tokens appear when the user type in the "Search" field',() =>{
+        cy.contains(/Dashboard/)
+        cy.get(watchListBtn).
+            should('be.visible').click()
+        cy.get(watchlistDropDown)
+            .should('be.visible')
+        cy.get(tokenSearch).type('p')
+        cy.get(tokensList).each( relSearch => {
+        cy.wrap(relSearch).should('contain','p')
+        })
+    })
+
+    /**************************   if token is not found   *********************************/    
+    it('TC-34, Verify that the message "Not found" appears when no searches found', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type("asdfg")
+            cy.contains('Not found')
+    })
+
     /********************** Adding token to watchlist through the Add button *****************/
     it("TC-35, Verify that the user can add the token to the watchlist", () => {
         cy.contains(/Dashboard/)
@@ -116,27 +140,31 @@ describe('Dashboard', () => {
             .should("contain", AvaxToken)
     })
 
+     /*******************  button disable in the watchlist dropdown *************************/ 
+     it('TC-36, Verify that the token added to the watchlist is disabled in the dropdown', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click({force: true})
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type(AvaxToken)
+            cy.get(tokenSelect).eq(0).click({force: true})
+            cy.get(tokenAssert)
+                .should("contain", AvaxToken)
+            cy.get(watchListBtn).
+                should('be.visible').click({force: true})
+            cy.get(disabledTokens).should('have.attr', 'disabled', 'disabled')
+            
+    })
+
     /********************** Switching between the tokens in the watchlist ****************/
     it('TC-39, Verify that the user is able to switch between the tokens in watchlist', () => {
         cy.contains(/Dashboard/i)
-        for (var i = 1; i <= 3; i++) {
-            cy.get(`${switchToken}:nth-child(${i})`).click()
-            cy.get(watchListTokenAssert)
-                .should('contain', switchArray[i - 1])
-        }
-    })
-
-    /************** Updating and asserting the chart by pressing the time buttons ********/
-    chartTimeArray.forEach(time => {
-        it(`TC-40,41,42,43,44,45, Verify that the chart is updated by pressing ${time} in watchlist`, () => {
-            cy.get(watchlistTimeBtn)
-                .should('have.attr', 'color', 'text1')
-                .contains(time).click()
-            cy.get(watchlistTimeBtn)
-                .contains(time)
-                .should('have.attr', 'color', 'mustardYellow')
-                .and('have.class', 'sc-gsnTZi gPFlPI')
-        })
+            for (var i = 1; i <= 2; i++) {
+                cy.get(`${switchToken}:nth-child(${i})`).click()
+                cy.get(watchListTokenAssert)
+                    .should('contain', switchArray[i - 1])
+            }
     })
 
     /**********************  Removing the token if already added  *********************/    
@@ -163,6 +191,38 @@ describe('Dashboard', () => {
         })
     })
 
+     /********************  Token enable in the watchlist dropdown ***********************/ 
+     it('TC-38, Verify that the token removed from the watchlist is enabled in the dropdown', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type(AvaxToken)
+            cy.get(tokenSelect).eq(0).click({force:true})
+            cy.get(tokenAssert)
+                .should("contain", AvaxToken)
+            cy.get(tokenMouseOverEnable).eq(0)
+                .trigger("mouseover")
+            cy.get(crossBtn).click()
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(tokensList).contains(AvaxToken).should('be.visible')
+    })
+
+    /************** Updating and asserting the chart by pressing the time buttons ********/
+    chartTimeArray.forEach(time => {
+        it(`TC-40,41,42,43,44,45, Verify that the chart is updated by pressing ${time} in watchlist`, () => {
+            cy.get(watchlistTimeBtn)
+                .should('have.attr', 'color', 'text1')
+                .contains(time).click()
+            cy.get(watchlistTimeBtn)
+                .contains(time)
+                .should('have.attr', 'color', 'mustardYellow')
+                .and('have.class', 'sc-gsnTZi gPFlPI')
+        })
+    })
+
     /********************* Clicking the link button on the watchlist  **********************/
     it('TC-46, Verify that Link button redirects the user to the info.exchange page', () => {
         pangolinUsefulLinks(`${linkBtn}`, `${linkUrl}`, pangolinLinksArr[0])
@@ -170,6 +230,21 @@ describe('Dashboard', () => {
 
     it('TC-47, Verify that the user can make a trade from the Dashboard', () => {
         pangolinUsefulLinks(`${watchlistTradeBtn}`, `${swap}`, pangolinLinksArr[3])
+    })
+
+    /********************  Trade on the selected token *********************************/ 
+    it('TC-48, Verify that the user can trade on the selected token from the watchlist', () =>{
+        cy.contains(/Dashboard/)
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type(tokenName)
+            cy.get(tokenSelect).eq(0).click()
+            cy.get(tokenAssert)
+                .should("contain", tokenName)
+            pangolinUsefulLinks(`${watchlistTradeBtn}`, `${swap}`, pangolinLinksArr[3])
+            switchingValues(1, 'From', `${tokenName}`)
     })
 
     /************************* Clicking the trade button on the watchlist  ******************/    
@@ -282,82 +357,6 @@ describe('Dashboard', () => {
         cy.get(hideBalanceBtn).contains(showBalance).click()
         cy.get(connectWalletMsg).should("contain", connectToWalletMsg)
     })
-
-    /********************************  search for relevant result  *************************/
-    it('TC-33, Verify that the relevant tokens appear when the user type in the "Search" field',() =>{
-        cy.contains(/Dashboard/)
-        cy.get(watchListBtn).
-            should('be.visible').click()
-        cy.get(watchlistDropDown)
-            .should('be.visible')
-        cy.get(tokenSearch).type('p')
-        cy.get(tokensList).each( relSearch => {
-        cy.wrap(relSearch).should('contain','p')
-        })
-    })
-
-    /**************************   if token is not found   *********************************/    
-    it('TC-34, Verify that the message "Not found" appears when no searches found', () =>{
-        cy.contains(/Dashboard/)
-            cy.get(watchListBtn).
-                should('be.visible').click()
-            cy.get(watchlistDropDown)
-                .should('be.visible')
-            cy.get(tokenSearch).type("asdfg")
-            cy.contains('Not found')
-    })
-
-    /*******************  button disable in the watchlist dropdown *************************/ 
-    it('TC-36, Verify that the token added to the watchlist is disabled in the dropdown', () =>{
-        cy.contains(/Dashboard/)
-            cy.get(watchListBtn).
-                should('be.visible').click()
-            cy.get(watchlistDropDown)
-                .should('be.visible')
-            cy.get(tokenSearch).type(AvaxToken)
-            cy.get(tokenSelect).eq(0).click()
-            cy.get(tokenAssert)
-                .should("contain", AvaxToken)
-            cy.get(watchListBtn).
-                should('be.visible').click()
-            cy.get(disabledTokens).should('have.attr', 'disabled', 'disabled')
-            
-    })
-
-    /********************  Token enable in the watchlist dropdown ***********************/ 
-    it('TC-38, Verify that the token removed from the watchlist is enabled in the dropdown', () =>{
-        cy.contains(/Dashboard/)
-            cy.get(watchListBtn).
-                should('be.visible').click()
-            cy.get(watchlistDropDown)
-                .should('be.visible')
-            cy.get(tokenSearch).type(AvaxToken)
-            cy.get(tokenSelect).eq(0).click({force:true})
-            cy.get(tokenAssert)
-                .should("contain", AvaxToken)
-            cy.get(tokenMouseOverEnable).eq(0)
-                .trigger("mouseover")
-            cy.get(crossBtn).click()
-            cy.get(watchListBtn).
-                should('be.visible').click()
-            cy.get(tokensList).contains(AvaxToken).should('be.visible')
-    })
-
-    /********************  Trade on the selected token *********************************/ 
-    it('TC-48, Verify that the user can trade on the selected token from the watchlist', () =>{
-        cy.contains(/Dashboard/)
-            cy.get(watchListBtn).
-                should('be.visible').click()
-            cy.get(watchlistDropDown)
-                .should('be.visible')
-            cy.get(tokenSearch).type(tokenName)
-            cy.get(tokenSelect).eq(0).click()
-            cy.get(tokenAssert)
-                .should("contain", tokenName)
-            pangolinUsefulLinks(`${watchlistTradeBtn}`, `${swap}`, pangolinLinksArr[3])
-            switchingValues(1, 'From', `${tokenName}`)
-    })
-
 
 })
 
