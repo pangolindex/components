@@ -379,7 +379,7 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
     const b = poolSumOfEntryTimes.div(poolBalance);
     const c = blockTimestamp.sub(a);
     const d = blockTimestamp.sub(b);
-    return BigNumber.from(stakingInfo.stakingApr ?? 0)
+    return BigNumber.from(Math.floor(stakingInfo.stakingApr ?? 0))
       .mul(c)
       .div(d)
       .toString();
