@@ -384,7 +384,11 @@
     "yourFarms": "Your Farms",
     "yourPools": "Your Pools",
     "noFarms": "No farms found.",
-    "successWithdraw": "Your liquidity removed from farm, And accrued rewards claimed!"
+    "successWithdraw": "Your liquidity removed from farm, And accrued rewards claimed!",
+    "importDescription1": "With import function you can look for pools that doesn’t appear in 'Your Pools' section.",
+    "importDescription2": "Just choose the underlying coins that was in your pool.",
+    "createPairDescription": "With create function you can create a new pair. Just search the coins that you want to create a pair for and system will either finds the pool if exists on Pangolin or creates a brand new one if its not.",
+    "addLiquidityDescription": "With the add liquidity function you add liquidity to a pair. Just search for the coins you want to add liquidity to and the system will find the pool if it exists in Pangolin or create a new one if it doesn't."
   },
   "poolFinder": {
     "connectToFind": "Connect to a wallet to find pools",
@@ -466,7 +470,8 @@
     "cancelLimitOrder": "Buy {{ outputCurrency }} with {{ inputCurrency }}",
     "executionPrice": "Execution Price",
     "seeMore": "See More",
-    "seeLess": "See Less"
+    "seeLess": "See Less",
+    "orderPlaced": "{{ orderType }} order placed."
   },
   "buyPage": {
     "buyAvaxInfo": "Buy AVAX with fiat from our partner Wyre.",

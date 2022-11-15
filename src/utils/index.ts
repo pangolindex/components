@@ -20,6 +20,7 @@ import {
   Trade,
   currencyEquals,
 } from '@pangolindex/sdk';
+import { hederaFn } from 'src/utils/hedera';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { wait } from './retry';
@@ -32,6 +33,21 @@ export function isAddress(value: any): string | false {
     return false;
   }
 }
+
+export function isDummyAddress(value: any): string | false {
+  return value;
+}
+
+export const isAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+  [ChainId.FUJI]: isAddress,
+  [ChainId.AVALANCHE]: isAddress,
+  [ChainId.WAGMI]: isAddress,
+  [ChainId.COSTON]: isAddress,
+  [ChainId.SONGBIRD]: isAddress,
+  [ChainId.HEDERA_TESTNET]: hederaFn.isHederaIdValid,
+  [ChainId.NEAR_MAINNET]: isDummyAddress,
+  [ChainId.NEAR_TESTNET]: isDummyAddress,
+};
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   43113: CHAINS[ChainId.FUJI].blockExplorerUrls?.[0] || '',
@@ -270,4 +286,8 @@ export function decimalToFraction(number: number): Fraction {
   numerator /= divisor;
   denominator /= divisor;
   return new Fraction(Math.floor(numerator).toString(), Math.floor(denominator).toString());
+}
+
+export function capitalizeWord(word = '') {
+  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }

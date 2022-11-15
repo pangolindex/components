@@ -384,7 +384,11 @@
     "yourFarms": "trang trại của bạn",
     "yourPools": "Hồ bơi của bạn",
     "noFarms": "Không tìm thấy trang trại nào.",
-    "successWithdraw": "Thanh khoản của bạn đã bị xóa khỏi trang trại và đã nhận được phần thưởng tích lũy!"
+    "successWithdraw": "Thanh khoản của bạn đã bị xóa khỏi trang trại và đã nhận được phần thưởng tích lũy!",
+    "importDescription1": "Với chức năng nhập, bạn có thể tìm kiếm các nhóm không xuất hiện trong phần 'Bể bơi của bạn'.",
+    "importDescription2": "Chỉ cần chọn các đồng tiền cơ bản trong nhóm của bạn.",
+    "createPairDescription": "Với chức năng tạo, bạn có thể tạo một cặp mới. Chỉ cần tìm kiếm các đồng tiền mà bạn muốn tạo một cặp và hệ thống sẽ tìm thấy đồng tiền nếu tồn tại trên Pangolin hoặc tạo một đồng mới nếu không có.",
+    "addLiquidityDescription": "Với chức năng thêm thanh khoản, bạn thêm thanh khoản cho một cặp. Chỉ cần tìm kiếm những đồng tiền mà bạn muốn thêm thanh khoản và hệ thống sẽ tìm đồng tiền nếu nó tồn tại ở Pangolin hoặc tạo một đồng mới nếu nó không có."
   },
   "poolFinder": {
     "connectToFind": "Kêt nối với một ví để nhìn thấy bể",
@@ -466,7 +470,8 @@
     "cancelLimitOrder": "Mua {{ outputCurrency }} với {{ inputCurrency }}",
     "executionPrice": "Giá thực hiện",
     "seeMore": "Xem thêm",
-    "seeLess": "Thấy ít"
+    "seeLess": "Thấy ít",
+    "orderPlaced": "{{ orderType }} order placed"
   },
   "buyPage": {
     "buyAvaxInfo": "Mua AVAX bằng fiat từ đối tác Wyre của chúng tôi.",

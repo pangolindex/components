@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
-import { ChainId } from '@pangolindex/sdk';
+import { ALL_CHAINS, ChainId } from '@pangolindex/sdk';
 import { InjectedConnector } from '@pangolindex/web3-react-injected-connector';
 import { TalismanConnector } from '@talismn/web3react-v6-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
@@ -10,6 +10,11 @@ import { DefiConnector } from './DefiConnector';
 import { HashConnector } from './HashConnector';
 import { NearConnector } from './NearConnector';
 import { NetworkConnector } from './NetworkConnector';
+import { VenlyConnector } from './Venly';
+
+export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter((chain) => chain.pangolin_is_live && chain.evm).map(
+  (chain) => chain.chain_id ?? 43114,
+);
 
 const NETWORK_URL = 'https://api.avax.network/ext/bc/C/rpc';
 
@@ -37,20 +42,20 @@ export function getNetworkLibrary(): Web3Provider {
 }
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [43113, 43114, 11111, 16, 19],
+  supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
 export const talisman = new TalismanConnector({
-  supportedChainIds: [43113, 43114, 11111, 16, 19],
+  supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
 export const gnosisSafe = new SafeAppConnector({
-  supportedChainIds: [43113, 43114, 11111, 16, 19],
+  supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
 export const walletlink = new WalletLinkConnector({
   url: NETWORK_URL,
-  supportedChainIds: [43113, 43114, 11111, 16, 19],
+  supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
   appName: 'Pangolin',
   appLogoUrl: 'https://raw.githubusercontent.com/pangolindex/interface/master/public/images/384x384_App_Icon.png',
 });
@@ -68,7 +73,11 @@ export const xDefi = new DefiConnector({
 });
 
 export const bitKeep = new BitKeepConnector({
-  supportedChainIds: [43113, 43114, 11111, 16, 19],
+  supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
+});
+
+export const venly = new VenlyConnector({
+  supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
 function getNearMainnetConfig() {

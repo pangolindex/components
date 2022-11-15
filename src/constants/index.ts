@@ -11,6 +11,7 @@ import metamaskIcon from 'src/assets/images/metamask.png';
 import nearIcon from 'src/assets/images/near.svg';
 import rabbyIcon from 'src/assets/images/rabby.svg';
 import talismanIcon from 'src/assets/images/talisman.svg';
+import venlyIcon from 'src/assets/images/venly.png';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
 import {
@@ -20,6 +21,7 @@ import {
   injected,
   near,
   talisman,
+  venly,
   walletconnect,
   walletlink,
   xDefi,
@@ -346,6 +348,16 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'HashPack Wallet Connect',
     href: null,
     color: '#7a7cff',
+    primary: true,
+    isEVM: true,
+  },
+  VENLY: {
+    connector: venly,
+    name: 'Venly Wallet',
+    iconName: venlyIcon,
+    description: 'Venly Wallet Connect',
+    href: null,
+    color: '#7735ea',
     primary: true,
     isEVM: true,
   },
