@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
 import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
+import { hethers } from '@hashgraph/hethers';
 import {
   CAVAX,
   ChainId,
@@ -15,6 +16,7 @@ import {
 } from '@pangolindex/sdk';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
 import { NATIVE, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
@@ -23,6 +25,7 @@ import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { isAddress, isEvmChain } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useUserSlippageTolerance } from '../puser/hooks';
@@ -38,14 +41,19 @@ import {
   updateFeeInfo,
   updateFeeTo,
 } from './actions';
-import { SwapParams } from './reducer';
+import { DefaultSwapState, SwapParams } from './reducer';
 
 export interface LimitOrderInfo extends Order {
   pending?: boolean;
 }
 
-export function useSwapState(): AppState['pswap'] {
-  return useSelector<AppState['pswap']>((state) => state.pswap);
+export function useSwapState(): DefaultSwapState {
+  const chainId = useChainId();
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const swapState = chainId ? state[chainId] ?? {} : ({} as DefaultSwapState);
+  return swapState;
 }
 
 export function useSwapActionHandlers(chainId: ChainId): {
@@ -66,28 +74,29 @@ export function useSwapActionHandlers(chainId: ChainId): {
               : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
               ? (CAVAX[chainId]?.symbol as string)
               : '',
+          chainId,
         }),
       );
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   const onSwitchTokens = useCallback(() => {
-    dispatch(switchCurrencies());
-  }, [dispatch]);
+    dispatch(switchCurrencies({ chainId }));
+  }, [dispatch, chainId]);
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      dispatch(typeInput({ field, typedValue }));
+      dispatch(typeInput({ field, typedValue, chainId }));
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
-      dispatch(setRecipient({ recipient }));
+      dispatch(setRecipient({ recipient, chainId }));
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   return {
@@ -263,6 +272,65 @@ export function useDerivedSwapInfo(): {
   };
 }
 
+export function useHederaTokenAssociated(): {
+  associate: undefined | (() => Promise<void>);
+  isLoading: boolean;
+  hederaAssociated: boolean;
+} {
+  const { account } = usePangolinWeb3();
+  // const addTransaction = useTransactionAdder();
+  const chainId = useChainId();
+
+  const {
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+  } = useSwapState();
+
+  // const outputCurrency = useCurrency(outputCurrencyId);
+
+  const [loading, setLoading] = useState(false);
+
+  const {
+    isLoading,
+    data: isAssociated = true,
+    refetch,
+  } = useQuery(['check-hedera-token-associated', outputCurrencyId, account], async () => {
+    if (!outputCurrencyId || !account || chainId !== ChainId.HEDERA_TESTNET) return;
+
+    const tokens = await hederaFn.getAccountAssociatedTokens(account);
+
+    const currencyId = account ? hethers.utils.asAccountString(outputCurrencyId) : '';
+
+    const token = (tokens || []).find((token) => token.tokenId === currencyId);
+
+    return !!token;
+  });
+
+  return useMemo(() => {
+    return {
+      associate:
+        account && outputCurrencyId
+          ? async () => {
+              try {
+                setLoading(true);
+                const txReceipt = await hederaFn.tokenAssociate(outputCurrencyId, account, chainId);
+                if (txReceipt) {
+                  setLoading(false);
+                  refetch();
+                  //TODO : Need to check
+                  //addTransaction(txReceipt, { summary: `${outputCurrency?.symbol} successfully  associated` });
+                }
+              } catch (error) {
+                setLoading(false);
+                console.error('Could not deposit', error);
+              }
+            }
+          : undefined,
+      isLoading: loading,
+      hederaAssociated: isAssociated,
+    };
+  }, [chainId, outputCurrencyId, account, loading, isLoading, isAssociated]);
+}
+
 export function parseCurrencyFromURLParameter(urlParam: any, chainId: ChainId): string {
   if (typeof urlParam === 'string') {
     const valid = isAddress(urlParam);
@@ -323,7 +391,7 @@ export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: ChainId)
 export function useDefaultsFromURLSearch():
   | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
   | undefined {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   const dispatch = useDispatch();
   const parsedQs = useParsedQueryString();
   const [result, setResult] = useState<
@@ -355,6 +423,7 @@ export function useDefaultsFromURLSearch():
           ? outputCurrencyId
           : SWAP_DEFAULT_CURRENCY[chainId]?.outputCurrency,
         recipient: parsed.recipient,
+        chainId,
       }),
     );
 
@@ -366,7 +435,7 @@ export function useDefaultsFromURLSearch():
 }
 
 export function useGelatoLimitOrderDetail(order: Order) {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   const gelatoLibrary = useGelatoLimitOrdersLib();
 
   const inputCurrency = order.inputToken === NATIVE && chainId ? 'AVAX' : order.inputToken;
@@ -465,14 +534,16 @@ export function useGelatoLimitOrderList() {
 }
 
 export function useDaasFeeTo(): [string, (feeTo: string) => void] {
-  const dispatch = useDispatch();
-  const feeTo = useSelector<AppState['pswap']['feeTo']>((state) => {
-    return state.pswap.feeTo;
-  });
+  const chainId = useChainId();
 
+  const dispatch = useDispatch();
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const feeTo = state[chainId]?.feeTo;
   const setFeeTo = useCallback(
     (newFeeTo: string) => {
-      dispatch(updateFeeTo({ feeTo: newFeeTo }));
+      dispatch(updateFeeTo({ feeTo: newFeeTo, chainId }));
     },
     [dispatch],
   );
@@ -481,14 +552,17 @@ export function useDaasFeeTo(): [string, (feeTo: string) => void] {
 }
 
 export function useDaasFeeInfo(): [FeeInfo, (feeInfo: FeeInfo) => void] {
+  const chainId = useChainId();
+
   const dispatch = useDispatch();
-  const feeInfo = useSelector<AppState['pswap']['feeInfo']>((state) => {
-    return state.pswap.feeInfo;
-  });
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const feeInfo = state[chainId]?.feeInfo;
 
   const setFeeInfo = useCallback(
     (newFeeInfo: FeeInfo) => {
-      dispatch(updateFeeInfo({ feeInfo: newFeeInfo }));
+      dispatch(updateFeeInfo({ feeInfo: newFeeInfo, chainId }));
     },
     [dispatch],
   );

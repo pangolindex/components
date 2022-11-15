@@ -7,6 +7,7 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { BitKeepConnector } from './BitKeepConnector';
 import { DefiConnector } from './DefiConnector';
+import { HashConnector } from './HashConnector';
 import { NearConnector } from './NearConnector';
 import { NetworkConnector } from './NetworkConnector';
 
@@ -110,4 +111,15 @@ export const near = new NearConnector({
   normalizeAccount: false,
   config: getNearConfig('testnet'),
 });
-export { NearConnector };
+
+export const hashConnect = new HashConnector({
+  normalizeChainId: false,
+  normalizeAccount: false,
+  config: {
+    networkId: 'testnet',
+    chainId: ChainId.HEDERA_TESTNET,
+    contractId: 'contract -id',
+  },
+});
+
+export { NearConnector, HashConnector };

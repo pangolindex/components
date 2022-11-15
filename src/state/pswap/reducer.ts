@@ -1,3 +1,4 @@
+import { ChainId } from '@pangolindex/sdk';
 import { createReducer } from '@reduxjs/toolkit';
 import { ZERO_ADDRESS } from '../../constants';
 import {
@@ -12,11 +13,6 @@ import {
   updateFeeTo,
 } from './actions';
 
-export interface SwapState extends SwapParams {
-  readonly feeTo: string;
-  readonly feeInfo: FeeInfo;
-}
-
 export interface SwapParams {
   readonly independentField: Field;
   readonly typedValue: string;
@@ -30,7 +26,12 @@ export interface SwapParams {
   readonly recipient: string | null;
 }
 
-const initialState: SwapState = {
+export interface DefaultSwapState extends SwapParams {
+  readonly feeTo: string;
+  readonly feeInfo: FeeInfo;
+}
+
+const initialValue = {
   independentField: Field.INPUT,
   typedValue: '',
   [Field.INPUT]: {
@@ -50,13 +51,28 @@ const initialState: SwapState = {
   },
 };
 
+export type SwapState = {
+  [chainId in ChainId]: DefaultSwapState;
+};
+
+const initialState: SwapState = {
+  [ChainId.FUJI]: initialValue,
+  [ChainId.AVALANCHE]: initialValue,
+  [ChainId.WAGMI]: initialValue,
+  [ChainId.COSTON]: initialValue,
+  [ChainId.SONGBIRD]: initialValue,
+  [ChainId.HEDERA_TESTNET]: initialValue,
+  [ChainId.NEAR_MAINNET]: initialValue,
+  [ChainId.NEAR_TESTNET]: initialValue,
+};
+
 export default createReducer<SwapState>(initialState, (builder) =>
   builder
     .addCase(
       replaceSwapState,
-      (state, { payload: { typedValue, recipient, field, inputCurrencyId, outputCurrencyId } }) => {
-        return {
-          ...state,
+      (state, { payload: { typedValue, recipient, field, inputCurrencyId, outputCurrencyId, chainId } }) => {
+        state[chainId] = {
+          ...state[chainId],
           [Field.INPUT]: {
             currencyId: inputCurrencyId,
           },
@@ -67,48 +83,56 @@ export default createReducer<SwapState>(initialState, (builder) =>
           typedValue: typedValue,
           recipient,
         };
+
+        return state;
       },
     )
-    .addCase(selectCurrency, (state, { payload: { currencyId, field } }) => {
+    .addCase(selectCurrency, (state, { payload: { currencyId, field, chainId } }) => {
       const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT;
-      if (currencyId === state[otherField].currencyId) {
+      if (currencyId === state[chainId][otherField].currencyId) {
         // the case where we have to swap the order
-        return {
-          ...state,
-          independentField: state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
+        state[chainId] = {
+          ...state[chainId],
+          independentField: state[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
           [field]: { currencyId: currencyId },
-          [otherField]: { currencyId: state[field].currencyId },
+          [otherField]: { currencyId: state[chainId]?.[field].currencyId },
         };
       } else {
         // the normal case
-        return {
-          ...state,
+        state[chainId] = {
+          ...state[chainId],
           [field]: { currencyId: currencyId },
         };
       }
+
+      return state;
     })
-    .addCase(switchCurrencies, (state) => {
-      return {
-        ...state,
-        independentField: state.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
-        [Field.INPUT]: { currencyId: state[Field.OUTPUT].currencyId },
-        [Field.OUTPUT]: { currencyId: state[Field.INPUT].currencyId },
+    .addCase(switchCurrencies, (state, { payload: { chainId } }) => {
+      state[chainId] = {
+        ...state[chainId],
+        independentField: state[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
+        [Field.INPUT]: { currencyId: state[chainId]?.[Field.OUTPUT].currencyId },
+        [Field.OUTPUT]: { currencyId: state[chainId]?.[Field.INPUT].currencyId },
       };
+
+      return state;
     })
-    .addCase(typeInput, (state, { payload: { field, typedValue } }) => {
-      return {
-        ...state,
+    .addCase(typeInput, (state, { payload: { field, typedValue, chainId } }) => {
+      state[chainId] = {
+        ...state[chainId],
         independentField: field,
         typedValue,
       };
+
+      return state;
     })
-    .addCase(setRecipient, (state, { payload: { recipient } }) => {
-      state.recipient = recipient;
+    .addCase(setRecipient, (state, { payload: { recipient, chainId } }) => {
+      state[chainId].recipient = recipient;
     })
-    .addCase(updateFeeTo, (state, { payload: { feeTo } }) => {
-      state.feeTo = feeTo;
+    .addCase(updateFeeTo, (state, { payload: { feeTo, chainId } }) => {
+      state[chainId].feeTo = feeTo;
     })
-    .addCase(updateFeeInfo, (state, { payload: { feeInfo } }) => {
-      state.feeInfo = feeInfo;
+    .addCase(updateFeeInfo, (state, { payload: { feeInfo, chainId } }) => {
+      state[chainId].feeInfo = feeInfo;
     }),
 );

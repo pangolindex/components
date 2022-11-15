@@ -17,8 +17,11 @@ export function shouldCheck(
     };
     lastCheckedBlockNumber?: number;
   },
+  chainId: ChainId,
 ): boolean {
-  if (tx.receipt) return false;
+  if (!shouldCheckMapping[chainId]) {
+    return true;
+  }
   if (!tx.lastCheckedBlockNumber) return true;
   const blocksSinceCheck = lastBlockNumber - tx.lastCheckedBlockNumber;
   if (blocksSinceCheck < 1) return false;
@@ -83,9 +86,21 @@ const txCheckerMapping: { [chainId in ChainId]: (params: TxCheckerProps) => void
   [ChainId.FUJI]: txChecker,
   [ChainId.COSTON]: txChecker,
   [ChainId.SONGBIRD]: txChecker,
+  [ChainId.HEDERA_TESTNET]: txChecker,
   [ChainId.WAGMI]: txChecker,
   [ChainId.NEAR_MAINNET]: nearTxChecker,
   [ChainId.NEAR_TESTNET]: nearTxChecker,
+};
+
+const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
+  [ChainId.AVALANCHE]: true,
+  [ChainId.FUJI]: true,
+  [ChainId.COSTON]: true,
+  [ChainId.SONGBIRD]: true,
+  [ChainId.HEDERA_TESTNET]: false,
+  [ChainId.WAGMI]: true,
+  [ChainId.NEAR_MAINNET]: true,
+  [ChainId.NEAR_TESTNET]: true,
 };
 
 export default function Updater(): null {
@@ -115,12 +130,14 @@ export default function Updater(): null {
     if (!chainId || !library || !lastBlockNumber) return;
 
     Object.keys(transactions)
-      .filter((hash) => shouldCheck(lastBlockNumber, transactions[hash]))
+      .filter((hash) => !transactions[hash].receipt)
+      .filter((hash) => shouldCheck(lastBlockNumber, transactions[hash], chainId))
       .forEach(async (hash) => {
         try {
           const receipt = await (provider as any).getTransactionReceipt(hash);
 
           const status = receipt.status;
+
           if (receipt) {
             dispatch(
               finalizeTransaction({

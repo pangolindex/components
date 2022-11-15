@@ -43,6 +43,7 @@ import {
   isAddress,
   waitForTransaction,
 } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import { FunctionCallOptions, Transaction, nearFn } from 'src/utils/near';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../pmulticall/hooks';
@@ -116,6 +117,39 @@ export function useNearBalance(
   return useMemo(() => nearBalance, [nearBalance]);
 }
 
+/**
+ * Returns a Hedera Wallet balance.
+ */
+export function useHederaBalance(
+  chainId: ChainId,
+  accounts?: (string | undefined)[],
+): { [address: string]: any } | undefined {
+  const [hederaBalance, setHederaBalance] = useState<{ [address: string]: any }>();
+
+  const hederaToken = WAVAX[chainId];
+
+  useEffect(() => {
+    async function checkHederaBalance() {
+      if (accounts?.[0]) {
+        const balance = await hederaFn.getAccountBalance(accounts?.[0]);
+
+        if (balance) {
+          const hderaTokenBalance = new TokenAmount(hederaToken, balance);
+
+          const container = {} as { [address: string]: any | undefined };
+          container[accounts?.[0]] = hderaTokenBalance;
+
+          setHederaBalance(container);
+        }
+      }
+    }
+
+    checkHederaBalance();
+  }, [accounts, chainId]);
+
+  return useMemo(() => hederaBalance, [hederaBalance]);
+}
+
 const fetchNearTokenBalance = (token?: Token, account?: string) => async () => {
   if (token) {
     const balance = await nearFn.getTokenBalance(token?.address, account);
@@ -130,6 +164,15 @@ const fetchNearPoolShare = (chainId: number, pair: Pair) => async () => {
     const share = await nearFn.getSharesInPool(chainId, pair?.token0, pair?.token1);
 
     return new TokenAmount(pair?.liquidityToken, share);
+  }
+  return undefined;
+};
+
+const fetchHederaTokenBalance = (token?: Token, account?: string) => async () => {
+  if (token) {
+    const balance = await hederaFn.getTokenBalance(token?.address, account);
+
+    return new TokenAmount(token, balance);
   }
   return undefined;
 };
@@ -220,6 +263,38 @@ export function useNearTokenBalances(
   );
 }
 
+export function useHederaTokenBalances(
+  address?: string,
+  tokens?: (Token | undefined)[],
+): { [tokenAddress: string]: TokenAmount | undefined } {
+  const queryParameter = useMemo(() => {
+    return (
+      tokens?.map((item) => {
+        return {
+          queryKey: ['token-balance', item?.address, address],
+          queryFn: fetchHederaTokenBalance(item, address),
+        };
+      }) ?? []
+    );
+  }, [tokens]);
+
+  const results = useQueries(queryParameter);
+
+  return useMemo(
+    () =>
+      results.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, result, i) => {
+        const value = result?.data;
+        const token = tokens?.[i];
+
+        if (token && token instanceof Token) {
+          memo[token?.address] = value;
+        }
+        return memo;
+      }, {}),
+    [tokens, address, results],
+  );
+}
+
 // get the balance for a single token/account combo
 export function useTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
   const tokenBalances = useTokenBalances(account, [token]);
@@ -238,6 +313,13 @@ export function useNearTokenBalance(account?: string, tokenOrPair?: Token | Pair
   } else if (tokenOrPair && tokenOrPair instanceof Pair) {
     return tokenBalances[tokenOrPair?.liquidityToken?.address];
   }
+}
+
+// get the balance for a single token/account combo
+export function useHederaTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
+  const tokenBalances = useHederaTokenBalances(account, [token]);
+  if (!token) return undefined;
+  return tokenBalances[token.address];
 }
 
 export function useCurrencyBalances(
