@@ -29,7 +29,7 @@ import {
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useAllTokens, useHederaTokenAssociated, useNearTokens } from 'src/hooks/Tokens';
+import { useAllTokens, useHederaTokenAssociated, useNearTokens, useTokens } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -1208,9 +1208,35 @@ export function useGetHederaUserLP() {
 
   const v2AllPairs = usePairs(trackedTokenPairs);
 
+  const { data } = useQuery(['check-hedera-token-associated', account], async () => {
+    if (!account || chainId !== ChainId.HEDERA_TESTNET) return;
+    const tokens = await hederaFn.getAccountAssociatedTokens(account);
+    return tokens;
+  });
+
+  const allTokensAddress = useMemo(() => (data || []).map((token) => hederaFn.idToAddress(token?.tokenId)), [data]);
+
+  const tokens = useTokens(allTokensAddress);
+
+  //here we need to filter hedera pair with check of associated
+  const associatedPairAddress = (tokens || [])
+    .map((token) => {
+      if (token?.symbol === 'PGL') {
+        return token.address;
+      }
+    })
+    .filter((element) => {
+      return !!element;
+    });
+
+  const filterV2AllPairs = useMemo(
+    () => v2AllPairs.filter(([, pair]) => associatedPairAddress.includes(pair?.liquidityToken?.address)),
+    [v2AllPairs, associatedPairAddress],
+  );
+
   const allV2AllPairsWithLiquidity = useMemo(
-    () => v2AllPairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair)),
-    [v2AllPairs],
+    () => filterV2AllPairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair)),
+    [filterV2AllPairs],
   );
 
   const [v2PairsBalances, fetchingV2PairBalances] = useHederaPairBalances(

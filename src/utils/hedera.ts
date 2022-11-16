@@ -40,6 +40,12 @@ export interface HederaTokenMetadata {
   icon: string;
 }
 
+export interface HederaAssociateTokensData {
+  tokenId: string;
+  decimals: number;
+  balance: string;
+}
+
 export type TokenBalanceResponse = {
   balances: Array<{
     account: string;
@@ -331,7 +337,7 @@ class Hedera {
     }
   }
 
-  public async getAccountAssociatedTokens(account: string) {
+  public async getAccountAssociatedTokens(account: string): Promise<Array<HederaAssociateTokensData> | undefined> {
     try {
       const accountId = account ? this.hederaId(account) : '';
       const query = new AccountBalanceQuery().setAccountId(accountId);
@@ -339,7 +345,7 @@ class Hedera {
 
       const allTokens = JSON.parse(JSON.stringify(tokens));
 
-      return allTokens?.tokens;
+      return allTokens?.tokens as Array<HederaAssociateTokensData>;
     } catch (errr) {
       console.log('errrr', errr);
     }
