@@ -34,8 +34,7 @@ export const Aligner = styled.span<{ active?: boolean; buttonStyle: ButtonStyleP
   color: inherit;
   svg {
     stroke: ${({ active, buttonStyle, theme }) =>
-      (buttonStyle && buttonStyle.color && buttonStyle.color) ||
-      (active ? theme.currencySelect?.selectedText : theme.currencySelect?.defaultText)};
+      buttonStyle?.color || (active ? theme.currencySelect?.selectedText : theme.currencySelect?.defaultText)};
   }
 `;
 

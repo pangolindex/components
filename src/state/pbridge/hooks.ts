@@ -37,7 +37,7 @@ import {
   switchCurrencies,
   typeAmount,
 } from './actions';
-import { BridgePrioritizations, Route, SendTransaction } from './types';
+import { BridgePrioritizations, GetRoutes, Route, SendTransaction } from './types';
 
 export function useBridgeState(): AppState['pbridge'] {
   return useSelector<AppState['pbridge']>((state) => state.pbridge);
@@ -281,15 +281,7 @@ export function useDerivedBridgeInfo(): {
 }
 
 export function useBridgeSwapActionHandlers(): {
-  getRoutes: (
-    amount: string,
-    slipLimit: string,
-    fromChain?: Chain,
-    toChain?: Chain,
-    fromAddress?: string | null,
-    fromCurrency?: BridgeCurrency,
-    toCurrency?: BridgeCurrency,
-  ) => void;
+  getRoutes: GetRoutes;
   sendTransaction: SendTransaction;
 } {
   const dispatch = useDispatch();
@@ -421,7 +413,7 @@ export function useBridgeSwapActionHandlers(): {
     }
   };
 
-  const sendTransaction = {
+  const sendTransaction: SendTransaction = {
     lifi: sendTransactionLifi,
   };
 

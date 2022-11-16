@@ -6,14 +6,26 @@ import { CountdownCounterProps } from './types';
 import 'react-circular-progressbar/dist/styles.css';
 
 const CountdownCounter: React.FC<CountdownCounterProps> = (props) => {
-  const [percentage, setPercentage] = React.useState<number>(props.value);
+  const {
+    value,
+    minValue,
+    maxValue,
+    text,
+    strokeWidth,
+    background,
+    backgroundPadding,
+    circleRatio,
+    counterClockwise,
+    onFinish,
+  } = props;
+  const [percentage, setPercentage] = React.useState<number>(value);
   const theme = useContext(ThemeContext);
 
   useEffect(() => {
-    if (percentage === props.minValue) {
-      props.onFinish && props.onFinish();
+    if (percentage === minValue) {
+      onFinish && onFinish();
     }
-  }, [percentage]);
+  }, [percentage, minValue]);
 
   const setCurrentPercentage = () => {
     setPercentage(percentage - 1);
@@ -24,14 +36,14 @@ const CountdownCounter: React.FC<CountdownCounterProps> = (props) => {
   return (
     <CircularProgressbar
       value={percentage}
-      maxValue={props.maxValue}
-      minValue={props.minValue}
-      text={props.text}
-      strokeWidth={props.strokeWidth}
-      background={props.background}
-      backgroundPadding={props.backgroundPadding}
-      circleRatio={props.circleRatio}
-      counterClockwise={props.counterClockwise}
+      maxValue={maxValue}
+      minValue={minValue}
+      text={text}
+      strokeWidth={strokeWidth}
+      background={background}
+      backgroundPadding={backgroundPadding}
+      circleRatio={circleRatio}
+      counterClockwise={counterClockwise}
       styles={buildStyles({
         trailColor: theme.ghostWhite,
         pathColor: theme.primary,

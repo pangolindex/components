@@ -5,9 +5,9 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import Drawer from 'src/components/Drawer';
 import usePrevious from 'src/hooks/usePrevious';
+import { filterTokenOrChain } from 'src/utils';
 import { Box, TextInput } from '..';
 import ChainRow from './ChainRow';
-import { filterChains } from './filtering';
 import { ChainList } from './styled';
 
 interface Props {
@@ -43,7 +43,7 @@ const SelectChainDrawer: React.FC<Props> = (props) => {
   }, [isOpen]);
 
   const filteredChains: Chain[] = useMemo(() => {
-    return filterChains(chains || [], searchQuery);
+    return filterTokenOrChain(chains || [], searchQuery) as Chain[];
   }, [chains, searchQuery]);
 
   const filteredSortedChains: Chain[] = useMemo(() => {
@@ -52,7 +52,6 @@ const SelectChainDrawer: React.FC<Props> = (props) => {
       .split(/\s+/)
       .filter((s) => s.length > 0);
     if (symbolMatch.length > 1) return filteredChains;
-
     return [
       ...filteredChains.filter((chain) => chain.symbol?.toLowerCase() === symbolMatch[0]),
       ...filteredChains.filter((chain) => chain.symbol?.toLowerCase() !== symbolMatch[0]),

@@ -17,7 +17,6 @@ const ChainInput = ({ buttonStyle, chain, onChainClick }: ChainInputProps) => {
 
   const renderStyletoken = () => {
     return (
-      //TODO: 'Select Chain' -> i18n
       <StyledTokenName className="token-symbol-container" active={Boolean(chain && chain.symbol)}>
         {(chain && chain.symbol && chain.symbol.length > 20
           ? chain.symbol.slice(0, 4) + '...' + chain.symbol.slice(chain.symbol.length - 5, chain.symbol.length)
@@ -26,8 +25,8 @@ const ChainInput = ({ buttonStyle, chain, onChainClick }: ChainInputProps) => {
     );
   };
 
-  const addonAfter = () => {
-    return (
+  return (
+    <Box>
       <ChainSelect
         selected={!!chain}
         className="open-chain-select-button"
@@ -42,10 +41,8 @@ const ChainInput = ({ buttonStyle, chain, onChainClick }: ChainInputProps) => {
           <ChevronDown color={!Boolean(chain && chain.symbol) ? 'black' : undefined} />
         </Aligner>
       </ChainSelect>
-    );
-  };
-
-  return <Box>{addonAfter()}</Box>;
+    </Box>
+  );
 };
 
 export default ChainInput;

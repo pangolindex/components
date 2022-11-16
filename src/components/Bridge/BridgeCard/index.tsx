@@ -9,7 +9,7 @@ import {
   // SQUID,
   // THORSWAP,
 } from '@pangolindex/sdk';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { MultiValue } from 'react-select';
@@ -80,11 +80,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
     transactionStatus,
   } = useDerivedBridgeInfo();
 
-  const [inputCurrencyList, setInputCurrencyList] = useState<BridgeCurrency[]>([]);
-  const [outputCurrencyList, setOutputCurrencyList] = useState<BridgeCurrency[]>([]);
-  const [chainList, setChainList] = useState<Chain[] | undefined>(undefined);
   const chainHook = useBridgeChains();
-  const [allBridgeCurrencies, setAllBridgeCurrencies] = useState<BridgeCurrency[]>([]);
   const currencyHook = useBridgeCurrencies();
   const sdkChainId = useChainId();
   const [drawerType, setDrawerType] = useState(ChainField.FROM);
@@ -119,7 +115,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
 
   const debouncedAmountValue = useDebounce(parsedAmount?.toExact(), 1500);
 
-  useEffect(() => {
+  const allBridgeCurrencies = useMemo(() => {
     if (currencyHook && activeBridges) {
       let data: BridgeCurrency[] = [];
       Object.entries(currencyHook).forEach(([key, value]) => {
@@ -132,25 +128,21 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
             );
         }
       });
-      setAllBridgeCurrencies(data || []);
+      return data;
     }
   }, [currencyHook?.[LIFIBridge.id], activeBridges]);
 
-  useEffect(() => {
-    if (allBridgeCurrencies && fromChain) {
-      const data = allBridgeCurrencies?.filter((val) => val?.chainId === fromChain?.chain_id?.toString());
-      setInputCurrencyList(data || []);
-    }
+  const inputCurrencyList = useMemo(() => {
+    const data = allBridgeCurrencies?.filter((val) => val?.chainId === fromChain?.chain_id?.toString());
+    return data;
   }, [fromChain, allBridgeCurrencies]);
 
-  useEffect(() => {
-    if (allBridgeCurrencies && toChain) {
-      const data = allBridgeCurrencies?.filter((val) => val?.chainId === toChain?.chain_id?.toString());
-      setOutputCurrencyList(data);
-    }
+  const outputCurrencyList = useMemo(() => {
+    const data = allBridgeCurrencies?.filter((val) => val?.chainId === toChain?.chain_id?.toString());
+    return data;
   }, [toChain, allBridgeCurrencies]);
 
-  useEffect(() => {
+  const chainList = useMemo(() => {
     if (activeBridges) {
       let data: Chain[] = [];
       activeBridges.forEach((bridge: Option) => {
@@ -162,8 +154,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       if (activeBridges.length === 0) {
         data = [];
       }
-
-      setChainList(data || []);
+      return data;
     }
   }, [activeBridges, chainHook?.[LIFIBridge.id]]);
 

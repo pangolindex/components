@@ -58,9 +58,7 @@ const Bridge = () => {
                   maxValue={60}
                   minValue={0}
                   counterClockwise={false}
-                  onFinish={() => {
-                    getAllRoutes();
-                  }}
+                  onFinish={getAllRoutes}
                 />
               </div>
             )}

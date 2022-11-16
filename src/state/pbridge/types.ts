@@ -1,5 +1,5 @@
 import { Route as LifiRoute } from '@lifi/sdk';
-import { Bridge } from '@pangolindex/sdk';
+import { Bridge, BridgeCurrency, Chain } from '@pangolindex/sdk';
 
 export enum BridgePrioritizations {
   RECOMMENDED,
@@ -83,3 +83,13 @@ export type SendTransactionFunc = (library: any, selectedRoute?: Route, account?
 export type SendTransaction = {
   lifi: SendTransactionFunc;
 };
+
+export type GetRoutes = (
+  amount: string,
+  slipLimit: string,
+  fromChain?: Chain,
+  toChain?: Chain,
+  fromAddress?: string | null,
+  fromCurrency?: BridgeCurrency,
+  toCurrency?: BridgeCurrency,
+) => void;

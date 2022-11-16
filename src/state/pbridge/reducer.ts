@@ -66,7 +66,7 @@ export default createReducer<BridgeState>(initialState, (builder) =>
   builder
     .addCase(
       replaceBridgeState,
-      (state, { payload: { recipient, inputCurrencyId, outputCurrencyId, fromChainId, toChainId } }) => {
+      (state, { payload: { inputCurrencyId, outputCurrencyId, fromChainId, toChainId } }) => {
         return {
           ...state,
           typedValue: '',
@@ -82,7 +82,6 @@ export default createReducer<BridgeState>(initialState, (builder) =>
           [ChainField.TO]: {
             chainId: toChainId,
           },
-          recipient,
         };
       },
     )

@@ -6,7 +6,7 @@ import { ChainInput } from '.';
 
 export default {
   component: ChainInput,
-  title: 'Components/ChainInputs',
+  title: 'Components/ChainInput',
   parameters: {
     docs: {
       description: {
@@ -41,6 +41,8 @@ const TemplateChainInput: ComponentStory<typeof ChainInput> = (args: any) => <Ch
 export const Default = TemplateChainInput.bind({});
 Default.args = {
   chain: CHAINS[ChainId.AVALANCHE],
-  buttonStyle: {},
+  buttonStyle: {
+    padding: '1rem 1.1rem',
+  },
   onChainClick: () => {},
 } as Partial<ChainInputProps>;

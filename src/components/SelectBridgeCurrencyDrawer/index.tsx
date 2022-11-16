@@ -7,10 +7,9 @@ import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
 import { useToken } from 'src/hooks/Tokens';
 import usePrevious from 'src/hooks/usePrevious';
-import { isAddress } from 'src/utils';
+import { filterTokenOrChain, isAddress } from 'src/utils';
 import { Box, TextInput } from '../../';
 import BridgeCurrencyRow from './BridgeCurrencyRow';
-import { filterBridgeCurrencies } from './filtering';
 import { useTokenComparator } from './sorting';
 import { BridgeCurrencyList } from './styled';
 
@@ -58,7 +57,7 @@ const SelectBridgeCurrencyDrawer: React.FC<Props> = (props) => {
   const filteredTokens: BridgeCurrency[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken as Currency as BridgeCurrency] : [];
     const bridgeCurrencies = allTokens || [];
-    return filterBridgeCurrencies(bridgeCurrencies, searchQuery);
+    return filterTokenOrChain(bridgeCurrencies, searchQuery) as BridgeCurrency[];
   }, [isAddressSearch, searchToken, allTokens, searchQuery]);
 
   const filteredSortedTokens: BridgeCurrency[] = useMemo(() => {
