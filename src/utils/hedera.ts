@@ -180,6 +180,7 @@ export interface ContractData {
 export interface SwapData {
   methodName: string;
   account: string;
+  recipient: string;
   tokenInAmount: string;
   tokenOutAmount: string;
   HBARAmount: string | undefined;
@@ -236,6 +237,21 @@ class Hedera {
       throw error;
     }
   }
+
+  isHederaChain = (chainId: ChainId) => {
+    return chainId === ChainId.HEDERA_TESTNET;
+  };
+
+  isHederaIdValid = (hederaId: string): string | false => {
+    if (
+      hederaId &&
+      hederaId?.toLowerCase()?.match(/^(0|(?:[1-9]\d*))\.(0|(?:[1-9]\d*))\.(0|(?:[1-9]\d*))(?:-([a-z]{5}))?$/g)
+    ) {
+      return hederaId;
+    } else {
+      return false;
+    }
+  };
 
   hederaId = (address: string) => {
     return hethers.utils.asAccountString(address);
@@ -628,8 +644,18 @@ class Hedera {
   }
 
   public async swap(swapData: SwapData) {
-    const { methodName, account, tokenInAmount, tokenOutAmount, HBARAmount, path, exactAmountIn, chainId, deadline } =
-      swapData;
+    const {
+      methodName,
+      account,
+      recipient,
+      tokenInAmount,
+      tokenOutAmount,
+      HBARAmount,
+      path,
+      exactAmountIn,
+      chainId,
+      deadline,
+    } = swapData;
 
     const accountId = account ? this.hederaId(account) : '';
     const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
@@ -655,7 +681,7 @@ class Hedera {
           new ContractFunctionParameters()
             .addUint256(tokenOutAmount as any)
             .addAddressArray(path)
-            .addAddress(account)
+            .addAddress(recipient)
             .addUint256(deadline),
         );
     } else {
@@ -665,7 +691,7 @@ class Hedera {
           .addUint256(exactAmountIn ? tokenInAmount : (tokenOutAmount as any))
           .addUint256(exactAmountIn ? tokenOutAmount : (tokenInAmount as any))
           .addAddressArray(path)
-          .addAddress(account)
+          .addAddress(recipient)
           .addUint256(deadline),
       );
     }

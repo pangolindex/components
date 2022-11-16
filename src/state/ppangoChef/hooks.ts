@@ -392,7 +392,7 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
     const d = blockTimestamp.sub(b);
     return c.lte(0) || d.lte(0)
       ? '0'
-      : BigNumber.from(stakingInfo.stakingApr ?? 0)
+      : BigNumber.from(Math.floor(stakingInfo.stakingApr ?? 0))
           .mul(c)
           .div(d)
           .toString();
