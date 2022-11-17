@@ -1,12 +1,12 @@
 /* eslint-disable max-lines */
 import { CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import mixpanel from 'mixpanel-browser';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
-import ReactGA from 'react-ga';
 import { ThemeContext } from 'styled-components';
 import { SwapTypes, TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { MixPanelContext, useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import {
   useApproveCallbackFromTradeHook,
@@ -111,6 +111,9 @@ const MarketOrder: React.FC<Props> = ({
   const [allowedSlippage] = useUserSlippageTolerance();
 
   const [feeTo, setFeeTo] = useDaasFeeTo();
+
+  // get if is active mixpanel to emit events
+  const isActiveMixPanel = useContext(MixPanelContext);
 
   useEffect(() => {
     if (feeTo === partnerDaaS) return;
@@ -258,17 +261,18 @@ const MarketOrder: React.FC<Props> = ({
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash });
 
-        // eslint-disable-next-line import/no-named-as-default-member
-        ReactGA.event({
-          category: 'Swap',
-          action:
-            recipient === null
-              ? 'Swap w/o Send'
-              : (recipientAddress ?? recipient) === account
-              ? 'Swap w/o Send + recipient'
-              : 'Swap w/ Send',
-          label: [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol, Version.v2].join('/'),
-        });
+        if (trade && isActiveMixPanel) {
+          const path = trade.route.path;
+          const tokenA = path[0];
+          const tokenB = path[path.length - 1];
+          mixpanel.track('Swap', {
+            chainId: chainId,
+            tokenA: inputCurrency?.symbol,
+            tokenB: outputCurrency?.symbol,
+            tokenA_Address: tokenA.address,
+            tokenB_Address: tokenB.address,
+          });
+        }
       })
       .catch((error) => {
         setSwapState({
