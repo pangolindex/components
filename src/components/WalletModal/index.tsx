@@ -151,7 +151,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
               if (isActiveMixPanel) {
                 mixpanel.track('Wallet Connected', {
                   wallet_name: option?.name?.toLowerCase() ?? name?.toLowerCase(),
-                  source: 'components',
+                  source: 'pangolin-components',
                 });
               }
             })
@@ -172,7 +172,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
           if (isActiveMixPanel) {
             mixpanel.track('Wallet Connected', {
               wallet_name: option?.name ?? name?.toLowerCase(),
-              source: 'components',
+              source: 'pangolin-components',
             });
           }
         })

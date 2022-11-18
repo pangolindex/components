@@ -271,6 +271,7 @@ const MarketOrder: React.FC<Props> = ({
             tokenB: outputCurrency?.symbol,
             tokenA_Address: tokenA.address,
             tokenB_Address: tokenB.address,
+            source: 'pangolin-components',
           });
         }
       })
