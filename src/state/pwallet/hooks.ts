@@ -1210,9 +1210,7 @@ export function useGetHederaUserLP() {
   const pairTokens = useMemo(() => {
     return trackedTokenPairs.reduce<{ [liquidityAddress: string]: [Token, Token] }>((memo, [tokenA, tokenB]) => {
       const liquidityTokenAddress =
-        tokenA && tokenB && !tokenA.equals(tokenB)
-          ? Pair.getAddress(tokenA, tokenB, chainId ? chainId : ChainId.AVALANCHE)
-          : undefined;
+        tokenA && tokenB && !tokenA.equals(tokenB) ? Pair.getAddress(tokenA, tokenB, chainId) : undefined;
 
       if (liquidityTokenAddress) {
         memo[liquidityTokenAddress] = [tokenA, tokenB];
