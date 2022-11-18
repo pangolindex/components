@@ -1,9 +1,8 @@
 import React, { useContext, useEffect } from 'react';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { CircularProgressbar } from 'react-circular-progressbar';
 import { ThemeContext } from 'styled-components';
 import useInterval from 'src/hooks/useInterval';
 import { CountdownCounterProps } from './types';
-import 'react-circular-progressbar/dist/styles.css';
 
 const CountdownCounter: React.FC<CountdownCounterProps> = (props) => {
   const {
@@ -44,10 +43,23 @@ const CountdownCounter: React.FC<CountdownCounterProps> = (props) => {
       backgroundPadding={backgroundPadding}
       circleRatio={circleRatio}
       counterClockwise={counterClockwise}
-      styles={buildStyles({
-        trailColor: theme.ghostWhite,
-        pathColor: theme.primary,
-      })}
+      styles={{
+        path: {
+          stroke: theme.primary,
+          strokeLinecap: 'round',
+          transition: 'stroke-dashoffset 0.5s ease 0s',
+          transformOrigin: 'center center',
+        },
+        trail: {
+          stroke: theme.ghostWhite,
+          strokeLinecap: 'round',
+          transform: 'rotate(0.25turn)',
+          transformOrigin: 'center center',
+        },
+        text: {
+          fontSize: '16px',
+        },
+      }}
     />
   );
 };
