@@ -1203,23 +1203,57 @@ export function useGetUserLP() {
 export function useGetHederaUserLP() {
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
-  // fetch the user's balances of all tracked V2 LP tokens
+  // get all pairs
   const trackedTokenPairs = useTrackedTokenPairs();
 
-  const v2AllPairs = usePairs(trackedTokenPairs);
+  // make lp address wise Tokens
+  const pairTokens = useMemo(() => {
+    return trackedTokenPairs.reduce<{ [liquidityAddress: string]: [Token, Token] }>((memo, [tokenA, tokenB]) => {
+      const liquidityTokenAddress =
+        tokenA && tokenB && !tokenA.equals(tokenB)
+          ? Pair.getAddress(tokenA, tokenB, chainId ? chainId : ChainId.AVALANCHE)
+          : undefined;
 
-  const { data } = useQuery(['check-hedera-token-associated', account], async () => {
+      if (liquidityTokenAddress) {
+        memo[liquidityTokenAddress] = [tokenA, tokenB];
+      }
+      return memo;
+    }, {});
+  }, [trackedTokenPairs, chainId]);
+
+  // get liquidityTokenAddress array
+  const lpTokenAddresses = Object.keys(pairTokens);
+
+  // get liquidityTokenWise PGL(Fungible Token Address) mapping
+  const pglTokenAddresses = useHederaPGLTokenAddresses(lpTokenAddresses);
+
+  // get all associated token data based on given account
+  const { isLoading, data } = useQuery(['check-hedera-token-associated', account], async () => {
     if (!account || chainId !== ChainId.HEDERA_TESTNET) return;
     const tokens = await hederaFn.getAccountAssociatedTokens(account);
     return tokens;
   });
 
+  // make pgltokenwise balance array
+  const tokenBalances = useMemo(() => {
+    return (data || []).reduce<{ [pglTokenAddress: string]: string }>((memo, token) => {
+      const address = hederaFn.idToAddress(token?.tokenId);
+
+      if (address) {
+        memo[address] = token.balance;
+      }
+      return memo;
+    }, {});
+  }, [data]);
+
+  //get fungibleToken address based on Token Id
   const allTokensAddress = useMemo(() => (data || []).map((token) => hederaFn.idToAddress(token?.tokenId)), [data]);
 
+  // here we need to get token data to do filter based on PGL Symbol
   const tokens = useTokens(allTokensAddress);
 
   //here we need to filter hedera pair with check of associated
-  const associatedPairAddress = (tokens || [])
+  const associatedPglAddress = (tokens || [])
     .map((token) => {
       if (token?.symbol === 'PGL') {
         return token.address;
@@ -1229,59 +1263,45 @@ export function useGetHederaUserLP() {
       return !!element;
     });
 
-  const filterV2AllPairs = useMemo(
-    () => v2AllPairs.filter(([, pair]) => associatedPairAddress.includes(pair?.liquidityToken?.address)),
-    [v2AllPairs, associatedPairAddress],
-  );
-
-  const allV2AllPairsWithLiquidity = useMemo(
-    () => filterV2AllPairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair)),
-    [filterV2AllPairs],
-  );
-
-  const [v2PairsBalances, fetchingV2PairBalances] = useHederaPairBalances(
-    account ?? undefined,
-    allV2AllPairsWithLiquidity,
-  );
-
-  const tokenPairsWithLiquidityTokens = useMemo(
+  // here we will filter pairTokens based on associated pgl Address has pgl address
+  const filterPairTokens = useMemo(
     () =>
-      trackedTokenPairs.map((tokens) => ({
-        liquidityToken: toV2LiquidityToken(tokens, chainId),
-        tokens,
-      })),
-    [trackedTokenPairs, chainId],
+      Object.keys(pglTokenAddresses).reduce<[Token, Token][]>((memo, lpAddress) => {
+        if (associatedPglAddress.includes(pglTokenAddresses[lpAddress])) {
+          memo.push(pairTokens[lpAddress]);
+        }
+        return memo;
+      }, []),
+    [pglTokenAddresses, associatedPglAddress, pairTokens],
   );
 
-  //fetch the reserves for all V2 pools in which the user has a balance
-  const liquidityTokensWithBalances = useMemo(
-    () =>
-      tokenPairsWithLiquidityTokens.filter(({ liquidityToken }) =>
-        v2PairsBalances[liquidityToken.address]?.greaterThan('0'),
-      ),
-    [tokenPairsWithLiquidityTokens, v2PairsBalances],
+  const allPairs = usePairs(filterPairTokens);
+
+  const checkedAllPairs = useMemo(
+    () => allPairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair)),
+    [allPairs],
   );
 
-  const lpTokensWithBalances = useMemo(
-    () => liquidityTokensWithBalances.map(({ tokens }) => tokens),
-    [liquidityTokensWithBalances],
-  );
-
-  const v2Pairs = usePairs(lpTokensWithBalances);
-
-  const v2IsLoading =
-    fetchingV2PairBalances ||
-    v2Pairs?.length < liquidityTokensWithBalances.length ||
-    v2Pairs?.some((V2Pair) => !V2Pair);
-
+  // check pair balance greater than 0
   const allV2PairsWithLiquidity = useMemo(
-    () => v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair)),
-    [v2Pairs],
+    () =>
+      checkedAllPairs.filter((pair) => {
+        const lpAddress = pair?.liquidityToken?.address;
+
+        const pglTokenAddress = pglTokenAddresses[lpAddress];
+
+        const pairBalance = pglTokenAddress ? tokenBalances[pglTokenAddress] : 0;
+
+        return BigNumber.from(pairBalance).gt(0);
+      }),
+    [checkedAllPairs, tokenBalances, pglTokenAddresses],
   );
+
+  const v2IsLoading = isLoading || allV2PairsWithLiquidity?.some((V2Pair) => !V2Pair);
 
   return useMemo(
-    () => ({ v2IsLoading, allV2PairsWithLiquidity, allPairs: allV2AllPairsWithLiquidity }),
-    [v2IsLoading, allV2PairsWithLiquidity, allV2AllPairsWithLiquidity],
+    () => ({ v2IsLoading, allV2PairsWithLiquidity, allPairs: checkedAllPairs }),
+    [v2IsLoading, allV2PairsWithLiquidity, checkedAllPairs],
   );
 }
 
@@ -1466,6 +1486,26 @@ export function useHederaCreatePair() {
   };
 }
 
+export const fetchHederaPGLTokenAddress = (pairTokenAddress: string | undefined) => async () => {
+  try {
+    if (!pairTokenAddress) {
+      return undefined;
+    }
+
+    const tokenAddress = pairTokenAddress;
+    // get pair contract id using api call because `asAccountString` is not working for pair address
+    const contractId = await hederaFn.getContractData(tokenAddress);
+    // get pair tokenId from pair contract id
+    const tokenId = hederaFn.contractToTokenId(contractId?.toString());
+    // convert token id to evm address
+    const newTokenAddress = hederaFn.idToAddress(tokenId);
+
+    return newTokenAddress;
+  } catch {
+    return undefined;
+  }
+};
+
 export const fetchHederaPGLToken = (pairToken: Token | undefined, chainId: ChainId) => async () => {
   try {
     if (!pairToken) {
@@ -1504,7 +1544,7 @@ export const useHederaPGLToken = (
 
   const pairToken = pair?.liquidityToken;
 
-  const { isLoading, data } = useQuery(['get-pgl-token', pairToken], fetchHederaPGLToken(pairToken, chainId));
+  const { isLoading, data } = useQuery(['get-pgl-token', pairToken?.address], fetchHederaPGLToken(pairToken, chainId));
 
   useEffect(() => {
     if (!isLoading && !!data) {
@@ -1525,7 +1565,7 @@ export const useHederaPGLTokens = (pairs?: (Pair | undefined)[]): [Token | undef
       pairs?.map((pair) => {
         const pairToken = pair?.liquidityToken;
         return {
-          queryKey: ['get-pgl-token', pairToken],
+          queryKey: ['get-pgl-token', pairToken?.address],
           queryFn: fetchHederaPGLToken(pairToken, chainId),
         };
       }) ?? []
@@ -1551,8 +1591,57 @@ export const useHederaPGLTokens = (pairs?: (Pair | undefined)[]): [Token | undef
   }, [results, pairs]);
 };
 
+/**
+ * This hook used to get pgl Token(Fungible Token address) based on liquidityTokenAddress
+ * Takes liquidityAddresses as a input and return liquidityTokenAddress wise pgltokenaddress
+ * @param liquidityAddresses
+ * @returns {[tokenAddress: string]: pgl token address;}
+ */
+
+export const useHederaPGLTokenAddresses = (
+  liquidityAddresses?: (string | undefined)[],
+): { [liquidityAddress: string]: string | undefined } => {
+  const chainId = useChainId();
+
+  const queryParameter = useMemo(() => {
+    return (
+      liquidityAddresses?.map((address) => {
+        return {
+          queryKey: ['get-pgl-token-address', address],
+          queryFn: fetchHederaPGLTokenAddress(address),
+        };
+      }) ?? []
+    );
+  }, [liquidityAddresses]);
+
+  const results = useQueries(queryParameter);
+
+  return useMemo(() => {
+    if (!liquidityAddresses || liquidityAddresses?.length === 0) return {};
+    if (!chainId) return {};
+
+    return results.reduce<{ [liquidityAddress: string]: string }>((acc, result, i) => {
+      const pglAddress = result?.data;
+
+      const lpAddress = liquidityAddresses?.[i];
+
+      if (pglAddress && lpAddress && result?.isLoading === false) {
+        acc[lpAddress] = pglAddress;
+      }
+
+      return acc;
+    }, {});
+  }, [results, liquidityAddresses]);
+};
+
+/**
+ * This hook used to get balance for given Hedera pair
+ * Takes account and pair as a input and return liquidityTokenAddress wise balance
+ * @param account
+ * @param pair
+ * @returns {[tokenAddress: string]: TokenAmount | undefined;}
+ */
 export function useHederaPairBalances(account?: string, pairs?: (Pair | undefined)[]) {
-  // here we need to use fungible token so get pgltoken based on pairs
   const pglTokens = useHederaPGLTokens(pairs);
 
   const liquidityTokens = useMemo(
