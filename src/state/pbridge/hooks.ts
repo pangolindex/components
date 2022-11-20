@@ -221,7 +221,6 @@ export function useDerivedBridgeInfo(): {
       (x) => x?.symbol === outputCurrencyId && toChainId && x?.chainId === toChain?.chain_id?.toString(),
     );
 
-  // TODO: Maybe debank?
   const relevantTokenBalances = useCurrencyBalances(chainId, account ?? undefined, [
     inputCurrency ?? undefined,
     outputCurrency ?? undefined,
@@ -303,8 +302,6 @@ export function useBridgeSwapActionHandlers(): {
       const routeOptions: RouteOptions = {
         slippage: parseFloat(slipLimit) / 100,
         allowSwitchChain: false,
-        // integrator: 'FROM SDK', //TODO:
-        // fee: Number('FROM SDK'), //TODO:
       };
 
       const routesRequest: RoutesRequest = {

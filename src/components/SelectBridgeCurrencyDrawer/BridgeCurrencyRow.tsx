@@ -13,10 +13,7 @@ interface Props {
 
 const BridgeCurrencyRow: React.FC<Props> = (props) => {
   const { bridgeCurrency, style, onSelect, isSelected, otherSelected } = props;
-  // const { account } = usePangolinWeb3();
-  // const chainId = useChainId();
 
-  // const balance = useCurrencyBalance(chainId, account ?? undefined, bridgeCurrency as Currency);
   const handleSelect = useCallback(() => {
     onSelect(bridgeCurrency);
   }, [onSelect, bridgeCurrency]);
@@ -27,10 +24,6 @@ const BridgeCurrencyRow: React.FC<Props> = (props) => {
       <Text color="bridge.text" fontSize={14} title={bridgeCurrency?.name}>
         {bridgeCurrency?.symbol}
       </Text>
-      {/* TODO: */}
-      {/* <Balance color="bridge.text" fontSize={14}>
-        {balance ? balance.toSignificant(4) : account ? <LoaderIcon /> : null}
-      </Balance> */}
     </BridgeCurrencyRowRoot>
   );
 };
