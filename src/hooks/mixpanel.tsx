@@ -6,14 +6,16 @@ interface MixPanelProviderProps {
   mixpanelToken?: string;
 }
 
-type MixPanelContext = {
+type MixPanelContextType = {
   track: (event: string, properties: { [x: string]: any }) => void;
 };
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const dummyTrack = (event: string, properties: { [x: string]: any }) => {};
+const dummyTrack = (event: string, properties: { [x: string]: any }) => {
+  // This is intentional
+};
 
-export const MixPanelContext = createContext<MixPanelContext>({ track: dummyTrack });
+export const MixPanelContext = createContext<MixPanelContextType>({ track: dummyTrack });
 
 export const MixPanelProvider: FC<MixPanelProviderProps> = ({ children, mixpanelToken }: MixPanelProviderProps) => {
   const [activedMixPanel, setActivedMixPanel] = useState(false);
@@ -33,7 +35,7 @@ export const MixPanelProvider: FC<MixPanelProviderProps> = ({ children, mixpanel
     mixpanel.track(event, { ...properties, source: 'pangolin-components' });
   }, []);
 
-  const state: MixPanelContext = useMemo(() => {
+  const state: MixPanelContextType = useMemo(() => {
     return {
       track: activedMixPanel ? track : dummyTrack,
     };
