@@ -188,6 +188,14 @@
         "yourFarms": "div[class='sc-jSMfEi sc-fzsDOv kMdDRR']",
         "manageListsTitle": "div[class='sc-jSMfEi bjuyXL']",
         "tokenLists": "div[class='sc-eCYdqJ sc-eCDnqH fEptdj bfYQak']",
-        "dropdownArrow": "div[class='sc-eMWWsl eMuiCi']"
+        "dropdownArrow": "div[class='sc-eMWWsl eMuiCi']",
+        "removeList": "div[class='sc-jSMfEi sc-fpcwso qobJZ hSmWIM']",
+        "viewList": "a[class='sc-jSMfEi sc-fpcwso qobJZ gTPHjG']",
+        "toggleTokenList":"div[class='react-switch-handle']",
+        "tokenListSearch": "input[placeholder='https:// or ipfs://']",
+        "addBtn": "button[class='sc-gsnTZi gWablx']",
+        "addBtnEnabled": "button[class='sc-gsnTZi hqjTCF']",
+        "testnetTokenlist": "div[class='sc-jSMfEi gZmkHg']",
+        "removeListEnabled": "div[class='sc-jSMfEi sc-fpcwso qobJZ gTPHjG']"
     }
 }

@@ -25,3 +25,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import './commands'
 import 'cypress-metamask-v2'
+Cypress.Server.defaults({
+   
+    ignore: (xhr) => true
+})

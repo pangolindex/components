@@ -61,6 +61,7 @@
   },
   "pools": {
     "yourPoolsMessage": "Connect to a wallet to view your liquidity.",
-    "createPair": "Create a pair"
+    "createPair": "Create a pair",
+    "testnet": "https://gist.githubusercontent.com/SarjuHansaliya/2ad20cfa278b024a8d0dbbacb4259c01/raw/851983d69875ec01710491804cb675059b0870c3/near_tokens_testnet.json"
   }
 }

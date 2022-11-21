@@ -2,9 +2,9 @@
 import 'cypress-wait-until'
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data.json'
-import { eq } from 'lodash'
-const {poolsSideMenu, poolsSideMenuSelect, searchFieldPool, cardTitleSuper, cardTitleAllFarm, cardBody, cardtvlApr, cardTvl, tvlAprValues, rewardsInLogos, seeDetailsBtn, detailsTitle, detailsLinks, detailsCrossBtn, superFarmTitle, addLiqBtn, superFarm, seeDetailsBlock, totalStakeBlock, totalStakeTitle, titleValues, yourPools, yourPoolsMsge, createPairBtn, createPairDropdown, createPairToken, createPairMsge, addLiqField, addLiqConnectWalletBtn, addLiqCrossBtn, noFarmsMsge, AllfarmsMaxBtn, AllfarmsMaxfield, AllfarmsFarmBtn, AllfarmsConnectBtn, AllfarmsStepper, PGLField, dollarWorth, weeklyIncome, yourFarms} = selectors.pools
-const {yourPoolsMessage, createPair} = data.pools
+
+const {poolsSideMenu, poolsSideMenuSelect, searchFieldPool, cardTitleSuper, cardTitleAllFarm, cardBody, cardtvlApr, cardTvl, tvlAprValues, rewardsInLogos, seeDetailsBtn, detailsTitle, detailsLinks, detailsCrossBtn, superFarmTitle, addLiqBtn, superFarm, seeDetailsBlock, totalStakeBlock, totalStakeTitle, titleValues, yourPools, yourPoolsMsge, createPairBtn, createPairDropdown, createPairToken, createPairMsge, addLiqField, addLiqConnectWalletBtn, addLiqCrossBtn, noFarmsMsge, AllfarmsMaxBtn, AllfarmsMaxfield, AllfarmsFarmBtn, AllfarmsConnectBtn, AllfarmsStepper, PGLField, dollarWorth, weeklyIncome, yourFarms, manageListsTitle, tokenLists, dropdownArrow, removeList, viewList, toggleTokenList, tokenListSearch, addBtn, addBtnEnabled, testnetTokenlist, removeListEnabled} = selectors.pools
+const {yourPoolsMessage, createPair, testnet} = data.pools
 const {connectToWallet} = data.dashboard
 const {connectWalletTxt} = data.swap
 let superFarmRewards = ["PNG logo", 'XETA logo', 'ncash logo', 'LOST logo', 'KTE logo']
@@ -17,6 +17,15 @@ describe('Pools', () => {
             // failing the test
             return false
         }) 
+        // const app = window.top;
+        // if (!app.document.head.querySelector('[data-hide-command-log-request]')) {
+        // const style = app.document.createElement('style');
+        // style.innerHTML =
+        //     '.command-name-request, .command-name-xhr { display: none }';
+        // style.setAttribute('data-hide-command-log-request', '');
+
+        // app.document.head.appendChild(style);
+        // }
         cy.get('#pool').click()
     })
 
@@ -301,7 +310,7 @@ describe('Pools', () => {
     }) 
 
     /******************* Assertions on Pangolin Tokenlist **************************/
-    it('TC-187,188,189,190,191,192,193,194,195,196 Verify that the "Pangolin Tokenlist" link appears on the dropdown', () => {
+    it.only('TC-187,188,189,190,191,192,193,194,195,196 Verify that the "Pangolin Tokenlist" link appears on the dropdown', () => {
         cy.get(createPairBtn).contains(createPair).click({force:true})
         cy.get(createPairDropdown).eq(0).click()
         cy.get(createPairToken).contains("Pangolin Tokenlist").should("be.visible")
@@ -310,39 +319,39 @@ describe('Pools', () => {
         cy.get(tokenLists).then($tokenlists => {
             if($tokenlists.length === 1){
                 cy.get($tokenlists).find(dropdownArrow).click()
-                cy.get('div[class="sc-jSMfEi sc-fpcwso qobJZ hSmWIM"]').contains('Remove list').scrollIntoView().should('have.attr', 'disabled')
-                cy.get('a[class="sc-jSMfEi sc-fpcwso qobJZ gTPHjG"]').each(page => {
+                cy.get(removeList).contains('Remove list').scrollIntoView().should('have.attr', 'disabled')
+                cy.get(viewList).each(page => {
                     cy.request(page.prop('href')).as('link');
                 });
                 cy.get('@link').should(response => {
                     expect(response.status).to.eq(200);
                 });
-                cy.get('div[class="react-switch-handle"]').click()
-                cy.get('div[class="react-switch-handle"]').should("have.css", "background-color", "rgb(255, 200, 0)")
+                cy.get(toggleTokenList).click()
+                cy.get(toggleTokenList).should("have.css", "background-color", "rgb(255, 200, 0)")
             }
         })
-        cy.get('input[class="sc-iBkjds puNdi"]').eq(1).clear({force: true})
-        cy.get('button[class="sc-gsnTZi gWablx"]').should("have.css", "background-color", "rgb(229, 229, 229)")
+        cy.get(tokenListSearch).eq(1).clear({force: true})
+        cy.get(addBtn).should("have.css", "background-color", "rgb(229, 229, 229)")
         cy.wait(10000)
-        cy.get('input[placeholder="https:// or ipfs://"]').type("https://gist.githubusercontent.com/SarjuHansaliya/2ad20cfa278b024a8d0dbbacb4259c01/raw/851983d69875ec01710491804cb675059b0870c3/near_tokens_testnet.json")
+        cy.get(tokenListSearch).type(testnet)
         cy.wait(10000)
-        cy.waitUntil(() => cy.get('button[class="sc-gsnTZi hqjTCF"]')).contains("Add").should("have.css", "background-color", "rgb(255, 200, 0)")
-        cy.get('button[class="sc-gsnTZi hqjTCF"]').contains("Add").click({force: true})
-        cy.get('button[class="sc-gsnTZi gWablx"]').should("have.css", "background-color", "rgb(229, 229, 229)")
+        cy.waitUntil(() => cy.get(addBtnEnabled)).contains("Add").should("have.css", "background-color", "rgb(255, 200, 0)")
+        cy.get(addBtnEnabled).contains("Add").click({force: true})
+        cy.get(addBtn).should("have.css", "background-color", "rgb(229, 229, 229)")
         cy.wait(5000)
-        cy.get('div[class="sc-jSMfEi gZmkHg"]').contains("Testnet Tokens").should("be.visible")
+        cy.get(testnetTokenlist).contains("Testnet Tokens").should("be.visible")
         cy.get(tokenLists).then($tokenlists => {
             if($tokenlists.length > 1){
-                cy.get('div[class="react-switch-handle"]').eq(1).click({force: true})
-                cy.get('div[class="react-switch-handle"]').eq(1).should("have.css", "background-color", "rgb(255, 200, 0)")
-                cy.get('div[class="react-switch-handle"]').eq(1).click({force: true})
-                cy.get('div[class="react-switch-handle"]').eq(1).should("have.css", "background-color", "rgb(206, 208, 217)")
+                cy.get(toggleTokenList).eq(1).click({force: true})
+                cy.get(toggleTokenList).eq(1).should("have.css", "background-color", "rgb(255, 200, 0)")
+                cy.get(toggleTokenList).eq(1).click({force: true})
+                cy.get(toggleTokenList).eq(1).should("have.css", "background-color", "rgb(206, 208, 217)")
                 cy.get($tokenlists).find(dropdownArrow).eq(1).click({force: true})
                 cy.window().then(function(p){
                     cy.stub(p, "prompt").returns("remove");
-                    cy.get('div[class="sc-jSMfEi sc-fpcwso qobJZ gTPHjG"]').scrollIntoView().contains('Remove list').scrollIntoView().click({force: true})
+                    cy.get(removeListEnabled).scrollIntoView().contains('Remove list').scrollIntoView().click({force: true})
                  });
-                 cy.get('div[class="sc-jSMfEi gZmkHg"]').contains("Testnet Tokens").should("not.exist")
+                 cy.get(testnetTokenlist).contains("Testnet Tokens").should("not.exist")
             }
         })
     }) 
