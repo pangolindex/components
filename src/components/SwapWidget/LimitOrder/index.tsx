@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { NATIVE, SwapTypes } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useMixpanel } from 'src/hooks/mixpanel';
 import { useTokenHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
@@ -229,6 +230,8 @@ const LimitOrder: React.FC<Props> = ({
     currencyBalances[LimitField.INPUT],
   );
 
+  const mixpanel = useMixpanel();
+
   // for limit swap
   const handleSwap = useCallback(() => {
     if (!handleLimitOrderSubmission) {
@@ -282,6 +285,19 @@ const LimitOrder: React.FC<Props> = ({
             txHash: response.hash,
           });
           addTransaction(response, { summary: t('swapPage.orderPlaced', { orderType: capitalizeWord(orderType) }) });
+          if (trade) {
+            const path = trade.route.path;
+            const tokenA = path[0];
+            const tokenB = path[path.length - 1];
+            mixpanel.track('Limit Order Placed', {
+              chainId: chainId,
+              tokenA: inputCurrency?.symbol,
+              tokenB: outputCurrency?.symbol,
+              tokenA_Address: tokenA.address,
+              tokenB_Address: tokenB.address,
+              orderType: activeTab.toLowerCase(),
+            });
+          }
         })
         .catch((error) => {
           setSwapState({

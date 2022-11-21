@@ -8,6 +8,7 @@ import { Box, Button, Text, TextInput } from 'src/components';
 import { ROUTER_ADDRESS } from 'src/constants';
 import { PairState } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
+import { useMixpanel } from 'src/hooks/mixpanel';
 import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
@@ -19,6 +20,7 @@ import { useIsExpertMode, useUserSlippageTolerance } from 'src/state/puser/hooks
 import { useCurrencyBalance } from 'src/state/pwallet/hooks';
 import { useAddLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import ConfirmPoolDrawer from './ConfirmPoolDrawer';
 import PoolPriceBar from './PoolPriceBar';
 import { AddWrapper, ArrowWrapper, ButtonWrapper, Buttons, InputWrapper, LightCard, StyledBalanceMax } from './styleds';
@@ -98,6 +100,8 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
     {},
   );
 
+  const mixpanel = useMixpanel();
+
   // check whether the user has approved the router on the tokens
   const [approvalA, approveACallback] = useApproveCallback(
     chainId,
@@ -126,6 +130,14 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
       const response = await addLiquidity(addData);
 
       setTxHash(response?.hash as string);
+
+      mixpanel.track('Added Liquidity', {
+        chainId: chainId,
+        tokenA: currencyA?.symbol,
+        tokenB: currencyB?.symbol,
+        tokenA_Address: wrappedCurrency(currencyA, chainId)?.address,
+        tokenB_Address: wrappedCurrency(currencyB, chainId)?.address,
+      });
     } catch (err) {
       const _err = err as any;
 
