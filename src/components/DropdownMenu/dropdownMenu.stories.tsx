@@ -78,8 +78,8 @@ const TemplateSimpleDropdown: ComponentStory<typeof DropdownMenu> = (args: any) 
         <DropdownMenu
           {...args}
           defaultValue={activeMenu}
-          onSelect={(value) => {
-            setMenu(value as MultiValue<string> | string);
+          onSelect={(value: string | MultiValue<string>) => {
+            setMenu(value);
           }}
         />
       </Box>
