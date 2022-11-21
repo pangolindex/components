@@ -2,8 +2,10 @@ import { TransactionResponse } from '@ethersproject/providers';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
+import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useMixpanel } from 'src/hooks/mixpanel';
 import { useStakingContract } from 'src/hooks/useContract';
 import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -34,6 +36,8 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
+  const mixpanel = useMixpanel();
+
   function wrappedOnDismiss() {
     setHash(undefined);
     setAttempting(false);
@@ -55,6 +59,17 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
           summary: t('earn.claimAccumulated', { symbol: png.symbol }),
         });
         setHash(response.hash);
+        const tokenA = stakingInfo.tokens[0];
+        const tokenB = stakingInfo.tokens[1];
+        mixpanel.track('Claimed rewards', {
+          chainId: chainId,
+          tokenA: tokenA?.symbol,
+          tokenb: tokenB?.symbol,
+          tokenA_Address: tokenA?.symbol,
+          tokenB_Address: tokenB?.symbol,
+          pid: stakingInfo.pid,
+          farmType: FARM_TYPE[version]?.toLowerCase(),
+        });
       } catch (error) {
         setAttempting(false);
         const err = error as any;

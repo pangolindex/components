@@ -4,8 +4,10 @@ import { AlertTriangle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Loader, Text, TransactionCompleted } from 'src/components';
+import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { PangoChefInfo, PoolType } from 'src/state/ppangoChef/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
@@ -35,6 +37,8 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
 
   const pangoChefContract = usePangoChefContract();
 
+  const mixpanel = useMixpanel();
+
   function wrappedOnDismiss() {
     setHash(undefined);
     setAttempting(false);
@@ -53,6 +57,18 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
           summary: t('earn.claimAccumulated', { symbol: png.symbol }),
         });
         setHash(response.hash);
+
+        const tokenA = stakingInfo.tokens[0];
+        const tokenB = stakingInfo.tokens[1];
+        mixpanel.track('Claimed rewards', {
+          chainId: chainId,
+          tokenA: tokenA?.symbol,
+          tokenb: tokenB?.symbol,
+          tokenA_Address: tokenA?.symbol,
+          tokenB_Address: tokenB?.symbol,
+          pid: stakingInfo.pid,
+          farmType: FARM_TYPE[3]?.toLowerCase(),
+        });
       } catch (error) {
         const err = error as any;
         // we only care if the error is something _other_ than the user rejected the tx
