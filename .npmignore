@@ -6,3 +6,5 @@ __mocks__
 storybook-static
 .idea
 .env
+e2e/
+e2e/node_modules
