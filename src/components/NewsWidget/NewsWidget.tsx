@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { ArrowLeft, ArrowRight } from 'react-feather';
 import ReactMarkdown from 'react-markdown';
@@ -8,6 +8,7 @@ import { ThemeContext } from 'styled-components';
 import Earth from 'src/assets/images/earth.png';
 import { Box } from 'src/components/Box';
 import { Loader } from 'src/components/Loader';
+import { useMixpanel } from 'src/hooks/mixpanel';
 import { News, useGetNews } from 'src/state/pnews/hooks';
 import { ArrowWrapper, NewsContent, NewsDate, NewsSection, NewsTitle, SlickNext, TitleWrapper } from './styleds';
 import { NewsProps } from './types';
@@ -26,6 +27,8 @@ const NewsFeedSettings: Settings = {
 };
 
 const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
+  const [interactedNewsIds, setInteractedNewsIds] = useState<number[]>([]);
+
   const theme = useContext(ThemeContext);
   const sliderRef = useRef<Slider | null>(null);
   const handleNewsNext = () => {
@@ -35,6 +38,21 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
     sliderRef?.current?.slickPrev();
   };
   const { data: news, isLoading } = useGetNews();
+
+  const mixpanel = useMixpanel();
+
+  const onInteract = (news: News) => {
+    const interacted = interactedNewsIds.includes(news.id);
+    // don't send news interactions twice
+    if (!interacted) {
+      mixpanel.track('Interacted with News', {
+        newsID: news.id,
+        title: news.title,
+      });
+      setInteractedNewsIds([...interactedNewsIds, news.id]);
+    }
+  };
+
   return (
     <NewsSection img={Earth}>
       <TitleWrapper>
@@ -53,7 +71,7 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
           <Slider ref={sliderRef} {...NewsFeedSettings}>
             {news &&
               news.map((element: News) => (
-                <div key={element.id}>
+                <div key={element.id} onClick={() => onInteract(element)}>
                   <NewsContent>
                     <Scrollbars
                       style={{ minHeight: boxHeight, padding: '0px 10px' }}
