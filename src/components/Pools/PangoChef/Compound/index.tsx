@@ -8,10 +8,11 @@ import { AlertTriangle, HelpCircle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Loader, Text, TextInput, Tooltip, TransactionCompleted } from 'src/components';
-import { ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE, ZERO_ADDRESS } from 'src/constants';
+import { FARM_TYPE, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE, ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useMixpanel } from 'src/hooks/mixpanel';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
@@ -133,6 +134,8 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
 
   const [approval, approveCallback] = useApproveCallback(chainId, amountToAdd, pangoChefContract?.address);
 
+  const mixpanel = useMixpanel();
+
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true);
@@ -211,6 +214,18 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
           summary: t('pangoChef.compoundTransactionSummary'),
         });
         setHash(response.hash);
+
+        const tokenA = stakingInfo.tokens[0];
+        const tokenB = stakingInfo.tokens[1];
+        mixpanel.track('Compound farm', {
+          chainId: chainId,
+          tokenA: tokenA?.symbol,
+          tokenb: tokenB?.symbol,
+          tokenA_Address: tokenA?.symbol,
+          tokenB_Address: tokenB?.symbol,
+          pid: stakingInfo.pid,
+          farmType: FARM_TYPE[3]?.toLowerCase(),
+        });
       } catch (error) {
         const err = error as any;
         // we only care if the error is something _other_ than the user rejected the tx
