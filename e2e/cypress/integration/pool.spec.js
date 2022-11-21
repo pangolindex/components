@@ -168,20 +168,20 @@ describe('Pools', () => {
     })
 
     /******************* Assertions on the links **************************/
-    // it('TC-66, Verify that the user is redirected to the particular token site', () => {
-    //     cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
-    //         cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
-    //         cy.get(detailsTitle).should("contain","Details")
-    //         cy.wait(10000)
-    //             cy.waitUntil(() => cy.get(detailsLinks).each(page => {
-    //             cy.request(page.prop('href')).as('link');
-    //         }));
-    //         cy.get('@link').should(response => {
-    //             expect(response.status).to.eq(200);
-    //         })
-    //         cy.get(detailsCrossBtn).eq(3).click()
-    //     })        
-    // })
+    it('TC-66, Verify that the user is redirected to the particular token site', () => {
+        cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
+            cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
+            cy.get(detailsTitle).should("contain","Details")
+            cy.wait(10000)
+                cy.waitUntil(() => cy.get(detailsLinks).each(page => {
+                cy.request(page.prop('href')).as('link');
+            }));
+            cy.get('@link').should(response => {
+                expect(response.status).to.eq(200);
+            })
+            cy.get(detailsCrossBtn).eq(3).click()
+        })        
+    })
     
     /******************* Assertions on the Your pools page **************************/
     it('TC-205, Verify that the user cannot see the pools in the Your Pools section if the wallet is not connected', () => {
@@ -301,15 +301,15 @@ describe('Pools', () => {
     }) 
 
     /******************* Assertions on Pangolin Tokenlist **************************/
-    it.only('TC-187,188,189,190,191,192,193,194,195,196 Verify that the "Pangolin Tokenlist" link appears on the dropdown', () => {
+    it('TC-187,188,189,190,191,192,193,194,195,196 Verify that the "Pangolin Tokenlist" link appears on the dropdown', () => {
         cy.get(createPairBtn).contains(createPair).click({force:true})
         cy.get(createPairDropdown).eq(0).click()
-        cy.get('div[class="sc-jSMfEi icpGcW"]').contains("Pangolin Tokenlist").should("be.visible")
-        cy.get('div[class="sc-jSMfEi icpGcW"]').contains("Pangolin Tokenlist").click()
-        cy.get('div[class="sc-jSMfEi bjuyXL"]').contains("Manage Lists").should("be.visible")
-        cy.get('div[class="sc-eCYdqJ sc-eCDnqH fEptdj bfYQak"]').then($tokenlists => {
+        cy.get(createPairToken).contains("Pangolin Tokenlist").should("be.visible")
+        cy.get(createPairToken).contains("Pangolin Tokenlist").click()
+        cy.get(manageListsTitle).contains("Manage Lists").should("be.visible")
+        cy.get(tokenLists).then($tokenlists => {
             if($tokenlists.length === 1){
-                cy.get($tokenlists).find('div[class="sc-eMWWsl eMuiCi"]').click()
+                cy.get($tokenlists).find(dropdownArrow).click()
                 cy.get('div[class="sc-jSMfEi sc-fpcwso qobJZ hSmWIM"]').contains('Remove list').scrollIntoView().should('have.attr', 'disabled')
                 cy.get('a[class="sc-jSMfEi sc-fpcwso qobJZ gTPHjG"]').each(page => {
                     cy.request(page.prop('href')).as('link');
@@ -331,13 +331,13 @@ describe('Pools', () => {
         cy.get('button[class="sc-gsnTZi gWablx"]').should("have.css", "background-color", "rgb(229, 229, 229)")
         cy.wait(5000)
         cy.get('div[class="sc-jSMfEi gZmkHg"]').contains("Testnet Tokens").should("be.visible")
-        cy.get('div[class="sc-eCYdqJ sc-eCDnqH fEptdj bfYQak"]').then($tokenlists => {
+        cy.get(tokenLists).then($tokenlists => {
             if($tokenlists.length > 1){
                 cy.get('div[class="react-switch-handle"]').eq(1).click({force: true})
                 cy.get('div[class="react-switch-handle"]').eq(1).should("have.css", "background-color", "rgb(255, 200, 0)")
                 cy.get('div[class="react-switch-handle"]').eq(1).click({force: true})
                 cy.get('div[class="react-switch-handle"]').eq(1).should("have.css", "background-color", "rgb(206, 208, 217)")
-                cy.get($tokenlists).find('div[class="sc-eMWWsl eMuiCi"]').eq(1).click({force: true})
+                cy.get($tokenlists).find(dropdownArrow).eq(1).click({force: true})
                 cy.window().then(function(p){
                     cy.stub(p, "prompt").returns("remove");
                     cy.get('div[class="sc-jSMfEi sc-fpcwso qobJZ gTPHjG"]').scrollIntoView().contains('Remove list').scrollIntoView().click({force: true})

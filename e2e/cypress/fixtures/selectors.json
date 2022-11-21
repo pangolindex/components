@@ -98,7 +98,8 @@
         "settingCloseBtn": "button[class='sc-gsnTZi iQnbrR']",
         "selectedSellBuyBtn": "div[class='sc-jIZahH jtApGr']",
         "limitOrderSection": "div[class='sc-jSMfEi jPrZZL']",
-        "priceField": "input[class='sc-iBkjds lccqjh sc-ckMVTt iyvdDg']"
+        "priceField": "input[class='sc-iBkjds lccqjh sc-ckMVTt iyvdDg']",
+        "toggleExpertModeOn": "div[class='sc-jIZahH jtApGr']"
     },
     "pangolinLinks":{
         "chart": "[id='charts']",
@@ -184,6 +185,9 @@
         "PGLField": "input[class='sc-iBkjds lccqjh']",
         "dollarWorth": "div[class='sc-jSMfEi lDGzo']",
         "weeklyIncome": "div[class='sc-jSMfEi lDGzo']",
-        "yourFarms": "div[class='sc-jSMfEi sc-fzsDOv kMdDRR']"
+        "yourFarms": "div[class='sc-jSMfEi sc-fzsDOv kMdDRR']",
+        "manageListsTitle": "div[class='sc-jSMfEi bjuyXL']",
+        "tokenLists": "div[class='sc-eCYdqJ sc-eCDnqH fEptdj bfYQak']",
+        "dropdownArrow": "div[class='sc-eMWWsl eMuiCi']"
     }
 }

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "cy:open": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress open"
+    "cy:open": "npx cypress open",
+    "cy:run": "npx cypress run --record --key 1226d596-01aa-4f20-be40-7d22b2def37f"
   },
   "author": "",
   "license": "ISC",

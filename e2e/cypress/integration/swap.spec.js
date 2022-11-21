@@ -3,10 +3,9 @@ import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data'
 import { switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1 } from '../support/src/swap'
 import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
-// import {newsLinks, socialLinks} from '../support/src/dashboard'
 const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, connectWallet, linkBtn, tokenMouseOverEnable, tokensList, disabledTokens, connectWalletMsg, chains, showBalanceBtn, hideBalanceBtn} = selectors.dashboard
 const {tokenName, AvaxToken, switchArray, chartTimeArray, linkUrl, swap, connectToWallet, hideBalance, showBalance} = data.dashboard
-const {fromField, toField, connectWalletBtn,limitBtn,buyBtn,swapPercentageBtns,limitPercentageBtns,swapSideMenu,swapSideMenuSelect,tradeBtns,tokenModal,headerDetailsModal,toTokenLogo,toTokenName,toTokenPrice,tradeModal,switchModal,switchBtn,settingBtn,transactionFailMessage,transactionMayFortuneMessage,expertModeMessage,saveCloseBtn, slipPageValues, slipPageValuesAssert, toggleExpertMode, saveCloseBtn1, sureMenu, settingCloseBtn, selectedSellBuyBtn, limitOrderSection, priceField} = selectors.swap
+const {fromField, toField, connectWalletBtn,limitBtn,buyBtn,swapPercentageBtns,limitPercentageBtns,swapSideMenu,swapSideMenuSelect,tradeBtns,tokenModal,headerDetailsModal,toTokenLogo,toTokenName,toTokenPrice,tradeModal,switchModal,switchBtn,settingBtn,transactionFailMessage,transactionMayFortuneMessage,expertModeMessage,saveCloseBtn, slipPageValues, slipPageValuesAssert, toggleExpertMode, saveCloseBtn1, sureMenu, settingCloseBtn, selectedSellBuyBtn, limitOrderSection, priceField, toggleExpertModeOn} = selectors.swap
 const {swapPercentage, slipPage, aAVAXb, usdc, lowSlippageMessage, highSlippageMessage, veryHighSlippageMessage, saveCloseBtnTxt, connectWalletTxt, connectWalletMsge } = data.swap
 const {pangolinLinksArr} = data
 describe('Swap', () => {
@@ -256,16 +255,19 @@ describe('Swap', () => {
     })
 
     /*************** Clicking on the "Turn on expert mode" button on the popup ***************/
-    // it('TC-94, 95, 96 , Verify that the user can "ON" the expert mode', () => {
-    //     cy.get(settingBtn).click()
-    //     cy.get(toggleExpertMode).contains('ON').click()
-    //     cy.get(sureMenu).should("contain", "Are you sure?")
-    //     cy.contains(/Turn On expert mode/i).click({force: true})
-    //     cy.window().then(function(promptelement){
-    //         cy.stub(promptelement, 'prompt').returns("confirm");
-    //       });
-    //     cy.get(saveCloseBtn1).should('contain', `${saveCloseBtnTxt}`).click({force: true})
-    // })
+    it('TC-94, 95, 96 , Verify that the user can "ON" the expert mode', () => {
+        cy.get(settingBtn).click()
+        cy.get(toggleExpertMode).contains('ON').click()
+        cy.get(sureMenu).should("contain", "Are you sure?")
+        cy.window().then(function(promptelement){
+            cy.stub(promptelement, 'prompt').returns("confirm");
+            cy.contains(/Turn On expert mode/i).click({force: true})
+          });
+        cy.get(saveCloseBtn1).should('contain', `${saveCloseBtnTxt}`).click({force: true})
+        cy.get(settingBtn).click()
+        cy.get(toggleExpertModeOn).contains("ON").should("have.css", "background-color", "rgb(17, 17, 17)")
+
+    })
 
     /**********************  Assertion on the Save and Close button  **********************/
     it(`TC-97, Verify that the user can save the changes in the settings`, () => {

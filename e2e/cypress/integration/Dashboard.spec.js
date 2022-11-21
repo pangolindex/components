@@ -1,7 +1,7 @@
 /// <reference types = "Cypress"/>
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data'
-import { newsLinks, socialLinks } from '../support/src/dashboard'
+import { socialLinks } from '../support/src/dashboard'
 import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
 import {switchingValues} from '../support/src/swap'
 

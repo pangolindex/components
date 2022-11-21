@@ -1,10 +1,11 @@
 {
     "baseUrl": "https://dev.pangolin.exchange/#",
     "viewportWidth": 1280,
-    "viewportHeight": 1024,
+    "viewportHeight": 800,
     "defaultCommandTimeout": 10000,
     "pageLoadTimeout": 120000,
     "video": false,
     "screenshots": false,
-    "chromeWebSecurity": false
+    "chromeWebSecurity": false, 
+    "projectId": "m9mvat"
 }
