@@ -3,8 +3,10 @@ import { CHAINS, ChefType } from '@pangolindex/sdk';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
+import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
+import { useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -49,6 +51,8 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
 
   const chefType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
+  const mixpanel = useMixpanel();
+
   useEffect(() => {
     if (onLoadingOrComplete) {
       if (hash || attempting || confirmRemove) {
@@ -91,6 +95,16 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
           summary: t('earn.withdrawDepositedLiquidity'),
         });
         await refetchMinichefSubgraph();
+
+        mixpanel.track('Removed from farm', {
+          chainId: chainId,
+          tokenA: token0,
+          tokenB: token1,
+          tokenA_Address: token0.address,
+          tokenB_Address: token1.address,
+          farmType: FARM_TYPE[version]?.toLowerCase(),
+        });
+
         setHash(response.hash);
       } catch (err) {
         setAttempting(false);

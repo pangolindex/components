@@ -15,9 +15,11 @@ import {
   TextInput,
   TransactionCompleted,
 } from 'src/components';
+import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
+import { useMixpanel } from 'src/hooks/mixpanel';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePairContract, useStakingContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -73,6 +75,8 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
   const [typedValue, setTypedValue] = useState((userLiquidityUnstaked as TokenAmount)?.toExact() || '');
 
   const getSignature = useGetTransactionSignature();
+
+  const mixpanel = useMixpanel();
 
   const { parsedAmount, error } = useDerivedStakeInfo(
     typedValue,
@@ -191,6 +195,16 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
             summary: t('earn.depositLiquidity'),
           });
           setHash(response.hash);
+
+          mixpanel.track('Added to farm', {
+            chainId: chainId,
+            tokenA: token0,
+            tokenB: token1,
+            tokenA_Address: token0.address,
+            tokenB_Address: token1.address,
+            farmType: FARM_TYPE[version]?.toLowerCase(),
+            pid: poolMap[stakingInfo.stakedAmount.token.address] ?? '-1',
+          });
         } catch (err) {
           setAttempting(false);
           const _err = err as any;
