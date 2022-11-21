@@ -1,13 +1,13 @@
 /* eslint-disable max-lines */
 import { CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
-import mixpanel from 'mixpanel-browser';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { SwapTypes, TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
-import { MixPanelContext, useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
+import { useMixpanel } from 'src/hooks/mixpanel';
 import {
   useApproveCallbackFromTradeHook,
   useSwapCallbackHook,
@@ -112,8 +112,7 @@ const MarketOrder: React.FC<Props> = ({
 
   const [feeTo, setFeeTo] = useDaasFeeTo();
 
-  // get if is active mixpanel to emit events
-  const isActiveMixPanel = useContext(MixPanelContext);
+  const mixpanel = useMixpanel();
 
   useEffect(() => {
     if (feeTo === partnerDaaS) return;
@@ -261,7 +260,7 @@ const MarketOrder: React.FC<Props> = ({
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash });
 
-        if (trade && isActiveMixPanel) {
+        if (trade) {
           const path = trade.route.path;
           const tokenA = path[0];
           const tokenB = path[path.length - 1];
@@ -271,7 +270,6 @@ const MarketOrder: React.FC<Props> = ({
             tokenB: outputCurrency?.symbol,
             tokenA_Address: tokenA.address,
             tokenB_Address: tokenB.address,
-            source: 'pangolin-components',
           });
         }
       })

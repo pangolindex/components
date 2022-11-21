@@ -1,7 +1,6 @@
 import { ExternalProvider, Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
-import mixpanel from 'mixpanel-browser';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
@@ -23,18 +22,11 @@ interface Web3ProviderProps {
   chainId: number | undefined;
 }
 
-interface MixPanelProviderProps {
-  children: ReactNode;
-  mixpanelToken?: string;
-}
-
 const initialWeb3State: Web3State = {
   library: undefined,
   chainId: undefined,
   account: undefined,
 };
-
-export const MixPanelContext = createContext(false);
 
 const Web3Context = createContext<Web3State>({} as Web3State);
 
@@ -76,16 +68,6 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
       {children}
     </Web3Context.Provider>
   );
-};
-
-export const MixPanelProvider: FC<MixPanelProviderProps> = ({ children, mixpanelToken }: MixPanelProviderProps) => {
-  let isActiveMixPanel = false;
-  if (mixpanelToken) {
-    mixpanel.init(mixpanelToken);
-    isActiveMixPanel = true;
-  }
-
-  return <MixPanelContext.Provider value={isActiveMixPanel}>{children}</MixPanelContext.Provider>;
 };
 
 export default Web3Context;

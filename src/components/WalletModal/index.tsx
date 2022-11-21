@@ -3,13 +3,12 @@ import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import mixpanel from 'mixpanel-browser';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { Button } from 'src/components/Button';
 import { bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
-import { MixPanelContext } from 'src/hooks';
+import { useMixpanel } from 'src/hooks/mixpanel';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
@@ -61,8 +60,6 @@ const WalletModal: React.FC<WalletModalProps> = ({
   const [pendingError, setPendingError] = useState<boolean>();
 
   const [triedSafe, setTriedSafe] = useState<boolean>(!IS_IN_IFRAME);
-
-  const isActiveMixPanel = useContext(MixPanelContext);
 
   const walletModalOpen = open;
 
@@ -119,6 +116,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
     }
   }, [walletModalOpen]);
 
+  const mixpanel = useMixpanel();
+
   const isMetamask = window.ethereum && window.ethereum.isMetaMask;
   const isTalisman = window.ethereum && window.ethereum.isTalisman;
   const isRabby = window.ethereum && window.ethereum.isRabby;
@@ -148,12 +147,10 @@ const WalletModal: React.FC<WalletModalProps> = ({
           activate(activationConnector, undefined, true)
             .then(() => {
               onWalletConnect(getConnectorKey(activationConnector));
-              if (isActiveMixPanel) {
-                mixpanel.track('Wallet Connected', {
-                  wallet_name: option?.name?.toLowerCase() ?? name?.toLowerCase(),
-                  source: 'pangolin-components',
-                });
-              }
+              mixpanel.track('Wallet Connected', {
+                wallet_name: option?.name?.toLowerCase() ?? name?.toLowerCase(),
+                source: 'pangolin-components',
+              });
             })
             .catch(() => {
               setTriedSafe(true);
@@ -169,12 +166,9 @@ const WalletModal: React.FC<WalletModalProps> = ({
           } else {
             onWalletConnect(getConnectorKey(activationConnector));
           }
-          if (isActiveMixPanel) {
-            mixpanel.track('Wallet Connected', {
-              wallet_name: option?.name ?? name?.toLowerCase(),
-              source: 'pangolin-components',
-            });
-          }
+          mixpanel.track('Wallet Connected', {
+            wallet_name: option?.name ?? name?.toLowerCase(),
+          });
         })
         .catch((error) => {
           if (error instanceof UnsupportedChainIdError) {

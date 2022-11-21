@@ -9,7 +9,7 @@ import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { usePair } from 'src/data/Reserves';
 import { useTotalSupply } from 'src/data/TotalSupply';
 import { useTotalSupplyHook } from 'src/data/multiChainsHooks';
-import { MixPanelProvider, PangolinWeb3Provider, useLibrary } from 'src/hooks';
+import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
@@ -54,6 +54,7 @@ import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/mu
 import { existSarContract, getEtherscanLink, isEvmChain, shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { MixPanelProvider } from './hooks/mixpanel';
 import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
 import { PangoChefInfo } from './state/ppangoChef/types';
