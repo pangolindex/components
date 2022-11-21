@@ -4,11 +4,16 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { RefreshCcw } from 'react-feather';
 import ReactGA from 'react-ga';
 import { ThemeContext } from 'styled-components';
-import { TRUSTED_TOKEN_ADDRESSES } from 'src/constants';
+import { SwapTypes, TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
-import { useApproveCallbackFromTradeHook, useSwapCallbackHook, useWrapCallbackHook } from 'src/hooks/multiChainsHooks';
+import {
+  useApproveCallbackFromTradeHook,
+  useSwapCallbackHook,
+  useTokenHook,
+  useWrapCallbackHook,
+} from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useENS from 'src/hooks/useENS';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
@@ -17,16 +22,18 @@ import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
 import { Field } from 'src/state/pswap/actions';
 import {
+  useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
+  useHederaSwapTokenAssociated,
   useSwapActionHandlers,
   useSwapState,
 } from 'src/state/pswap/hooks';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { isAddress, isTokenOnList } from 'src/utils';
+import { isAddressMapping, isTokenOnList } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Box, Button, Text, TextInput } from '../../';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
 import SelectTokenDrawer from '../SelectTokenDrawer';
@@ -41,12 +48,23 @@ import { ArrowWrapper, CurrencyInputTextBox, LinkStyledButton, PValue, Root, Swa
 
 interface Props {
   swapType: string;
-  setSwapType: (value: string) => void;
+  setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
   showSettings: boolean;
+  partnerDaaS?: string;
+  defaultInputAddress?: string;
+  defaultOutputAddress?: string;
 }
 
-const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible, showSettings }) => {
+const MarketOrder: React.FC<Props> = ({
+  swapType,
+  setSwapType,
+  isLimitOrderVisible,
+  showSettings,
+  partnerDaaS = ZERO_ADDRESS,
+  defaultInputAddress,
+  defaultOutputAddress,
+}) => {
   // const [isRetryDrawerOpen, setIsRetryDrawerOpen] = useState(false);
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
@@ -74,11 +92,13 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
 
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
+  const useToken = useTokenHook[chainId];
   const theme = useContext(ThemeContext);
-
   const useWrapCallback = useWrapCallbackHook[chainId];
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
   const useSwapCallback = useSwapCallbackHook[chainId];
+
+  const isAddress = isAddressMapping[chainId];
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
@@ -90,6 +110,13 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
   // get custom setting values for user
   const [allowedSlippage] = useUserSlippageTolerance();
 
+  const [feeTo, setFeeTo] = useDaasFeeTo();
+
+  useEffect(() => {
+    if (feeTo === partnerDaaS) return;
+    setFeeTo(partnerDaaS);
+  }, [feeTo, partnerDaaS]);
+
   // swap state
   const { independentField, typedValue, recipient } = useSwapState();
   const {
@@ -99,6 +126,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
     parsedAmount,
     currencies,
     inputError: swapInputError,
+    isLoading: isLoadingSwap,
   } = useDerivedSwapInfo();
 
   const {
@@ -106,6 +134,13 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
     execute: onWrap,
     inputError: wrapInputError,
   } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue);
+
+  const {
+    associate: onAssociate,
+    isLoading: isLoadingAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+  } = useHederaSwapTokenAssociated();
+
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE;
   const { address: recipientAddress } = useENS(recipient);
   const toggledVersion = useToggledVersion();
@@ -146,6 +181,21 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
     },
     [onUserInput],
   );
+
+  // setting default tokens
+  const defaultInputToken = useToken(defaultInputAddress);
+  const defaultInputCurrency = defaultInputToken ? unwrappedToken(defaultInputToken as Token, chainId) : undefined;
+  const defaultOututToken = useToken(defaultOutputAddress);
+  const defaultOutputCurrency = defaultOututToken ? unwrappedToken(defaultOututToken as Token, chainId) : undefined;
+
+  useEffect(() => {
+    if (defaultInputCurrency) {
+      onCurrencySelection(Field.INPUT, defaultInputCurrency);
+    }
+    if (defaultOutputCurrency) {
+      onCurrencySelection(Field.OUTPUT, defaultOutputCurrency);
+    }
+  }, [chainId, defaultInputAddress, defaultOutputAddress, defaultInputCurrency, defaultOutputCurrency]);
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -192,7 +242,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT]);
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient);
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, recipient, allowedSlippage);
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade);
 
@@ -322,15 +372,31 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
   const renderButton = () => {
     if (!account) {
       return (
-        <Button isDisabled={!account} variant="primary" onClick={toggleWalletModal}>
+        <Button variant="primary" onClick={toggleWalletModal}>
           Connect Wallet
         </Button>
       );
     }
+
+    if (!isHederaTokenAssociated) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate ' + currencies[Field.OUTPUT]?.symbol}
+        </Button>
+      );
+    }
+
     if (showWrap) {
       return (
         <Button variant="primary" isDisabled={Boolean(wrapInputError)} onClick={onWrap}>
           {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'unwrap' : null)}
+        </Button>
+      );
+    }
+    if (isLoadingSwap && !swapInputError) {
+      return (
+        <Button variant="primary" isDisabled>
+          Loading
         </Button>
       );
     }
@@ -348,7 +414,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
           <Box mr="10px" width="100%">
             <Button
               variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
-              onClick={approveCallback}
+              onClick={() => approveCallback()}
               isDisabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
               loading={approval === ApprovalState.PENDING}
               loadingText="Approving"
@@ -451,7 +517,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
         onConfirm={handleConfirmTokenWarning}
       />
 
-      <SwapWrapper>
+      <SwapWrapper showRoute={showRoute}>
         <Box p={10}>
           {isAEBToken && <DeprecatedWarning />}
 
@@ -481,7 +547,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
                 onSwitchTokens();
               }}
             >
-              <RefreshCcw size="16" color={theme.text4} />
+              <RefreshCcw size="16" color={theme.swapWidget?.interactiveColor} />
             </ArrowWrapper>
           </Box>
 
@@ -503,7 +569,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
             id="swap-currency-output"
             addonLabel={
               tradePrice && (
-                <Text color="text4" fontSize={16}>
+                <Text color="swapWidget.secondary" fontSize={16}>
                   Price: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )
@@ -539,7 +605,7 @@ const MarketOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisib
                   const withoutSpaces = value.replace(/\s+/g, '');
                   onChangeRecipient(withoutSpaces);
                 }}
-                addonLabel={recipient && !isAddress(recipient) && <Text color="text1">Invalid Address</Text>}
+                addonLabel={recipient && !isAddress(recipient) && <Text color="warning">Invalid Address</Text>}
               />
             </Box>
           ) : null}

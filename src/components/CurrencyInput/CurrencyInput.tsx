@@ -7,9 +7,14 @@ import { TextInput } from '../TextInput';
 import { Aligner, CurrencySelect, StyledTokenName } from './styles';
 import { CurrencyInputProps } from './types';
 
-const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
-  const { pair, currency, onTokenClick, ...rest } = props;
-
+const CurrencyInput = ({
+  buttonStyle,
+  pair,
+  currency,
+  isShowTextInput = true,
+  onTokenClick,
+  ...rest
+}: CurrencyInputProps) => {
   const renderCurrency = () => {
     if (pair) {
       return <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />;
@@ -46,8 +51,9 @@ const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
         onClick={() => {
           onTokenClick && onTokenClick();
         }}
+        buttonStyle={buttonStyle}
       >
-        <Aligner>
+        <Aligner active={Boolean(currency && currency.symbol)}>
           {renderCurrency()}
           {renderStyletoken()}
           <ChevronDown color={!Boolean(currency && currency.symbol) ? 'black' : undefined} />
@@ -55,11 +61,7 @@ const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
       </CurrencySelect>
     );
   };
-  return (
-    <Box>
-      <TextInput {...(rest as any)} addonAfter={addonAfter()} />
-    </Box>
-  );
+  return <Box>{isShowTextInput ? <TextInput {...(rest as any)} addonAfter={addonAfter()} /> : addonAfter()} </Box>;
 };
 
 export default CurrencyInput;

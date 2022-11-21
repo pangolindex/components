@@ -3,7 +3,6 @@ import { parseUnits } from '@ethersproject/units';
 import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import {
   CAVAX,
-  CHAINS,
   ChainId,
   Currency,
   CurrencyAmount,
@@ -16,28 +15,42 @@ import {
 } from '@pangolindex/sdk';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { NATIVE, ROUTER_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
+import { NATIVE, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useCurrency } from 'src/hooks/Tokens';
+import { useCurrency, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
+import { AppState, useDispatch, useSelector } from 'src/state';
+import { isAddress, isAddressMapping, isEvmChain } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { isAddress } from '../../utils';
-import { AppDispatch, AppState } from '../index';
 import { useUserSlippageTolerance } from '../puser/hooks';
 import { useCurrencyBalances } from '../pwallet/hooks';
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions';
-import { SwapState } from './reducer';
+import {
+  FeeInfo,
+  Field,
+  replaceSwapState,
+  selectCurrency,
+  setRecipient,
+  switchCurrencies,
+  typeInput,
+  updateFeeInfo,
+  updateFeeTo,
+} from './actions';
+import { DefaultSwapState, SwapParams } from './reducer';
 
 export interface LimitOrderInfo extends Order {
   pending?: boolean;
 }
 
-export function useSwapState(): AppState['pswap'] {
-  return useSelector<AppState, AppState['pswap']>((state) => state.pswap);
+export function useSwapState(): DefaultSwapState {
+  const chainId = useChainId();
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const swapState = chainId ? state[chainId] ?? {} : ({} as DefaultSwapState);
+  return swapState;
 }
 
 export function useSwapActionHandlers(chainId: ChainId): {
@@ -46,35 +59,41 @@ export function useSwapActionHandlers(chainId: ChainId): {
   onUserInput: (field: Field, typedValue: string) => void;
   onChangeRecipient: (recipient: string | null) => void;
 } {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
       dispatch(
         selectCurrency({
           field,
-          currencyId: currency instanceof Token ? currency.address : currency === CAVAX[chainId] ? 'AVAX' : '',
+          currencyId:
+            currency instanceof Token
+              ? currency.address
+              : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
+              ? (CAVAX[chainId]?.symbol as string)
+              : '',
+          chainId,
         }),
       );
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   const onSwitchTokens = useCallback(() => {
-    dispatch(switchCurrencies());
-  }, [dispatch]);
+    dispatch(switchCurrencies({ chainId }));
+  }, [dispatch, chainId]);
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      dispatch(typeInput({ field, typedValue }));
+      dispatch(typeInput({ field, typedValue, chainId }));
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
-      dispatch(setRecipient({ recipient }));
+      dispatch(setRecipient({ recipient, chainId }));
     },
-    [dispatch],
+    [dispatch, chainId],
   );
 
   return {
@@ -112,6 +131,7 @@ export function tryParseAmount(
 const BAD_RECIPIENT_ADDRESSES: string[] = [
   FACTORY_ADDRESS[ChainId.AVALANCHE], // v2 factory
   ROUTER_ADDRESS[ChainId.AVALANCHE], // v2 router 02
+  ROUTER_DAAS_ADDRESS[ChainId.AVALANCHE], // DaaS router
 ];
 
 /**
@@ -122,7 +142,7 @@ const BAD_RECIPIENT_ADDRESSES: string[] = [
 function involvesAddress(trade: Trade, checksummedAddress: string): boolean {
   return (
     trade.route.path.some((token) => token.address === checksummedAddress) ||
-    trade.route.pairs.some((pair) => pair.liquidityToken.address === checksummedAddress)
+    trade.route.pools.some((pool) => pool.liquidityToken.address === checksummedAddress)
   );
 }
 
@@ -134,11 +154,14 @@ export function useDerivedSwapInfo(): {
   v2Trade: Trade | undefined;
   inputError?: string;
   v1Trade: Trade | undefined;
+  isLoading: boolean;
 } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
   const toggledVersion = useToggledVersion();
+
+  const isAddress = isAddressMapping[chainId];
 
   const {
     independentField,
@@ -150,7 +173,7 @@ export function useDerivedSwapInfo(): {
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
-  const recipientAddress = CHAINS[chainId]?.evm ? isAddress(recipient) : recipient;
+  const recipientAddress = isEvmChain(chainId) ? isAddress(recipient) : recipient;
   const to: string | null = (recipientAddress ? recipientAddress : account) ?? null;
 
   const relevantTokenBalances = useCurrencyBalances(chainId, account ?? undefined, [
@@ -161,8 +184,14 @@ export function useDerivedSwapInfo(): {
   const isExactIn: boolean = independentField === Field.INPUT;
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId);
 
-  const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined);
-  const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined);
+  const { trade: bestTradeExactIn, isLoading: isLoadingIn } = useTradeExactIn(
+    isExactIn ? parsedAmount : undefined,
+    outputCurrency ?? undefined,
+  );
+  const { trade: bestTradeExactOut, isLoading: isLoadingOut } = useTradeExactOut(
+    inputCurrency ?? undefined,
+    !isExactIn ? parsedAmount : undefined,
+  );
 
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut;
 
@@ -192,7 +221,7 @@ export function useDerivedSwapInfo(): {
     inputError = inputError ?? 'Select a token';
   }
 
-  const formattedTo = CHAINS[chainId]?.evm ? isAddress(to) : to;
+  const formattedTo = isEvmChain(chainId) ? isAddress(to) : to;
   if (!to || !formattedTo) {
     inputError = inputError ?? 'Enter a recipient';
   } else {
@@ -226,8 +255,10 @@ export function useDerivedSwapInfo(): {
   ];
 
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
-    inputError = 'Insufficient' + amountIn.currency.symbol + ' balance';
+    inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance';
   }
+
+  const isLoading = isExactIn ? isLoadingIn : isLoadingOut;
 
   return {
     currencies,
@@ -236,15 +267,38 @@ export function useDerivedSwapInfo(): {
     v2Trade: v2Trade ?? undefined,
     inputError,
     v1Trade,
+    isLoading,
   };
 }
 
-function parseCurrencyFromURLParameter(urlParam: any): string {
+export function useHederaSwapTokenAssociated(): {
+  associate: undefined | (() => Promise<void>);
+  isLoading: boolean;
+  hederaAssociated: boolean;
+} {
+  const chainId = useChainId();
+
+  const {
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+  } = useSwapState();
+
+  const outputCurrency = useCurrency(outputCurrencyId);
+  const token = outputCurrency ? wrappedCurrency(outputCurrency, chainId) : undefined;
+  const { associate, isLoading, hederaAssociated } = useHederaTokenAssociated(token);
+
+  return {
+    associate,
+    isLoading,
+    hederaAssociated,
+  };
+}
+
+export function parseCurrencyFromURLParameter(urlParam: any, chainId: ChainId): string {
   if (typeof urlParam === 'string') {
     const valid = isAddress(urlParam);
     if (valid) return valid;
-    if (urlParam.toUpperCase() === 'AVAX') return 'AVAX';
-    if (valid === false) return 'AVAX';
+    if (urlParam.toUpperCase() === CAVAX[chainId]?.symbol?.toUpperCase()) return CAVAX[chainId]?.symbol as string;
+    if (valid === false) return CAVAX[chainId]?.symbol as string;
   }
   //return 'AVAX' ?? '';
   return '';
@@ -269,9 +323,9 @@ function validatedRecipient(recipient: any): string | null {
   return null;
 }
 
-export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
-  let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency);
-  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency);
+export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: ChainId): SwapParams {
+  let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency, chainId);
+  let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency, chainId);
   if (inputCurrency === outputCurrency) {
     if (typeof parsedQs.outputCurrency === 'string') {
       inputCurrency = '';
@@ -299,8 +353,8 @@ export function queryParametersToSwapState(parsedQs: ParsedQs): SwapState {
 export function useDefaultsFromURLSearch():
   | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
   | undefined {
-  const { chainId } = usePangolinWeb3();
-  const dispatch = useDispatch<AppDispatch>();
+  const chainId = useChainId();
+  const dispatch = useDispatch();
   const parsedQs = useParsedQueryString();
   const [result, setResult] = useState<
     { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined
@@ -314,7 +368,7 @@ export function useDefaultsFromURLSearch():
   useEffect(() => {
     if (!chainId) return;
 
-    const parsed = queryParametersToSwapState(parsedQs);
+    const parsed = queryParametersToSwapState(parsedQs, chainId);
 
     dispatch(
       replaceSwapState({
@@ -331,6 +385,7 @@ export function useDefaultsFromURLSearch():
           ? outputCurrencyId
           : SWAP_DEFAULT_CURRENCY[chainId]?.outputCurrency,
         recipient: parsed.recipient,
+        chainId,
       }),
     );
 
@@ -342,7 +397,7 @@ export function useDefaultsFromURLSearch():
 }
 
 export function useGelatoLimitOrderDetail(order: Order) {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   const gelatoLibrary = useGelatoLimitOrdersLib();
 
   const inputCurrency = order.inputToken === NATIVE && chainId ? 'AVAX' : order.inputToken;
@@ -438,5 +493,42 @@ export function useGelatoLimitOrderList() {
     }),
     [allOrders, allOpenOrders, allCancelledOrders, executed],
   );
+}
+
+export function useDaasFeeTo(): [string, (feeTo: string) => void] {
+  const chainId = useChainId();
+
+  const dispatch = useDispatch();
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const feeTo = state[chainId]?.feeTo;
+  const setFeeTo = useCallback(
+    (newFeeTo: string) => {
+      dispatch(updateFeeTo({ feeTo: newFeeTo, chainId }));
+    },
+    [dispatch],
+  );
+
+  return [feeTo, setFeeTo];
+}
+
+export function useDaasFeeInfo(): [FeeInfo, (feeInfo: FeeInfo) => void] {
+  const chainId = useChainId();
+
+  const dispatch = useDispatch();
+
+  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+
+  const feeInfo = state[chainId]?.feeInfo;
+
+  const setFeeInfo = useCallback(
+    (newFeeInfo: FeeInfo) => {
+      dispatch(updateFeeInfo({ feeInfo: newFeeInfo, chainId }));
+    },
+    [dispatch],
+  );
+
+  return [feeInfo, setFeeInfo];
 }
 /* eslint-enable max-lines */

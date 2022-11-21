@@ -103,7 +103,6 @@ export function useGetChainsBalances() {
 export function useGetWalletChainTokens(chainId: number) {
   const { account } = usePangolinWeb3();
   let chain = getChainByNumber(chainId);
-  // This functions is temporary for Pangolin birthday
   const getPangolinPairs = async () => {
     const query = qs.stringify(
       {
@@ -171,7 +170,7 @@ export function useGetWalletChainTokens(chainId: number) {
       let requestTokens: (TokenDataUser | PairDataUser)[] = data
         .filter((token: any) => token?.is_wallet && token?.is_verified)
         .map((token: any) => {
-          if (token?.id?.toLowerCase() === 'avax') {
+          if (token?.id?.toLowerCase() === (CAVAX[chainId]?.symbol).toLowerCase()) {
             return new TokenDataUser(CAVAX[chainId], token?.price, token?.amount);
           }
 

@@ -18,6 +18,12 @@ export enum PairState {
   INVALID,
 }
 
+export enum PoolType {
+  SIMPLE_POOL = 'SIMPLE_POOL',
+  STABLE_SWAP = 'STABLE_SWAP',
+  RATED_SWAP = 'RATED_SWAP',
+}
+
 export function usePairs(currencies: [Currency | undefined, Currency | undefined][]): [PairState, Pair | null][] {
   const chainId = useChainId();
 
@@ -67,8 +73,11 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
 
 export function usePair(tokenA?: Currency, tokenB?: Currency): [PairState, Pair | null] {
   const chainId = useChainId();
+
+  const tokens: [Currency | undefined, Currency | undefined][] = useMemo(() => [[tokenA, tokenB]], [tokenA, tokenB]);
+
   const usePairs_ = usePairsHook[chainId];
-  return usePairs_([[tokenA, tokenB]])[0];
+  return usePairs_(tokens)[0];
 }
 
 export function useGetNearAllPool() {
@@ -93,8 +102,8 @@ export function useNearPairs(currencies: [Currency | undefined, Currency | undef
   const allPools = useGetNearAllPool();
 
   return useMemo(() => {
-    if (!allPools?.isLoading && tokens) {
-      const results = allPools?.data || [];
+    if (allPools && !allPools.isLoading && tokens) {
+      const results = allPools.data || [];
 
       return tokens.map(([tokenA, tokenB]) => {
         let indexOfToken0 = 0;
@@ -106,6 +115,8 @@ export function useNearPairs(currencies: [Currency | undefined, Currency | undef
         const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA];
 
         const filterResults = results.filter((v) => {
+          if (v?.pool_kind !== PoolType.SIMPLE_POOL) return false;
+
           const tokenIds = v?.token_account_ids || [];
 
           if (tokenIds.includes(token0?.address) && tokenIds.includes(token1?.address)) {
@@ -113,12 +124,13 @@ export function useNearPairs(currencies: [Currency | undefined, Currency | undef
           }
         });
 
-        if (filterResults) {
-          const result = filterResults?.[0];
-          const tokenIds = result?.token_account_ids || [];
+        const result = filterResults?.[0];
+
+        if (result) {
+          const tokenIds = result.token_account_ids || [];
           indexOfToken0 = tokenIds.findIndex((element) => element.includes(token0?.address));
           indexOfToken1 = tokenIds.findIndex((element) => element.includes(token1?.address));
-          reserveAmounts = result?.amounts;
+          reserveAmounts = result.amounts || [];
         }
 
         if (reserveAmounts.length === 0) return [PairState.NOT_EXISTS, null];
@@ -145,6 +157,8 @@ export function useGetNearPoolId(tokenA?: Token, tokenB?: Token): number | null 
       const results = allPools?.data || [];
 
       return results.findIndex((element) => {
+        if (element?.pool_kind !== PoolType.SIMPLE_POOL) return false;
+
         const tokenIds = element?.token_account_ids || [];
 
         if (tokenIds.includes(tokenA?.address) && tokenIds.includes(tokenB?.address)) {

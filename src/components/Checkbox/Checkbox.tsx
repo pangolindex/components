@@ -3,7 +3,7 @@ import { InnerSquare, Label, OuterSquare, Root } from './styles';
 import { CheckboxProps } from './types';
 
 const Checkbox: React.FC<CheckboxProps> = (props) => {
-  const { value, label, onChange, disabled, size, checked } = props;
+  const { value, label, labelColor = 'text1', onChange, disabled, size, checked } = props;
 
   const [internalChekced, setInternalChecked] = useState(checked);
 
@@ -23,7 +23,7 @@ const Checkbox: React.FC<CheckboxProps> = (props) => {
       <OuterSquare size={size as number}>
         <InnerSquare selected={internalChekced} size={size as number} />
       </OuterSquare>
-      {Boolean(label) && <Label color="text1">{label}</Label>}
+      {Boolean(label) && <Label color={labelColor}>{label}</Label>}
     </Root>
   );
 };

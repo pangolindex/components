@@ -1,26 +1,33 @@
+import { opacify } from 'polished';
 import styled from 'styled-components';
-import { Text } from '../../';
+import { Box, Text } from 'src/components';
 
 export const CurrencyList = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
   overflow-y: auto;
+  &::-webkit-scrollbar {
+    display: none !important;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 
-export const CurrencyRowRoot = styled.div<{ disabled: boolean; selected: boolean }>`
-  min-height: 56px;
-  font-size: 16px;
+export const CurrencyRoot = styled(Box)<{ disabled: boolean; selected: boolean }>`
   cursor: ${({ disabled }) => !disabled && 'pointer'};
   pointer-events: ${({ disabled }) => disabled && 'none'};
-  display: grid;
-  grid-template-columns: auto minmax(auto, 1fr) minmax(0, 72px);
-  grid-gap: 16px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 10px;
+  justify-content: center;
+  padding: 10px 20px;
+  background-color: ${({ theme }) => theme.color3};
+  border-radius: 8px;
 
   &:hover {
-    background-color: ${({ theme, disabled }) => !disabled && theme.bg3};
+    background-color: ${({ theme, disabled }) =>
+      !disabled && opacify(0.9, theme.swapWidget?.detailsBackground as string)};
   }
 
   opacity: ${({ disabled, selected }) => (disabled || selected ? 0.5 : 1)};
@@ -32,8 +39,8 @@ export const Balance = styled(Text)`
 `;
 
 export const ManageList = styled.div`
-  background-color: ${({ theme }) => theme.bg1};
-  padding: 10px;
+  background-color: ${({ theme }) => theme.swapWidget?.detailsBackground};
+  padding: 10px 20px;
   cursor: pointer;
 `;
 

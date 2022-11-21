@@ -1,6 +1,5 @@
 import { CAVAX, ChainId, Currency, Token, WAVAX } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import { Box, TextInput } from 'src/components';
@@ -9,7 +8,7 @@ import { useTokenComparator } from 'src/components/SearchModal/sorting';
 import { useChainId } from 'src/hooks';
 import { useToken } from 'src/hooks/Tokens';
 import usePrevious from 'src/hooks/usePrevious';
-import { AppDispatch } from 'src/state';
+import { useDispatch } from 'src/state';
 import { addCurrency } from 'src/state/pwatchlists/actions';
 import { isAddress } from 'src/utils';
 import CurrencyRow from './CurrencyRow';
@@ -23,7 +22,11 @@ interface Props {
 }
 
 const currencyKey = (currency: Currency, chainId: ChainId): string => {
-  return currency instanceof Token ? currency.address : currency === CAVAX[chainId] ? 'AVAX' : '';
+  return currency instanceof Token
+    ? currency.address
+    : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
+    ? (CAVAX[chainId]?.symbol as string)
+    : '';
 };
 
 const CurrencyPopover: React.FC<Props> = ({
@@ -86,7 +89,7 @@ const CurrencyPopover: React.FC<Props> = ({
 
   const currencies = filteredSortedTokens;
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   const onCurrencySelection = useCallback(
     (address: string) => {

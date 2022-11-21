@@ -3,8 +3,8 @@ import React, { useCallback } from 'react';
 import { LoaderIcon } from 'src/components/Icons';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks';
-import { CurrencyLogo, Text } from '../../';
-import { Balance, CurrencyRowRoot } from './styled';
+import { CurrencyLogo, Text } from '../..';
+import { Balance, CurrencyRoot } from './styled';
 
 interface Props {
   currency: Currency;
@@ -14,7 +14,7 @@ interface Props {
   otherSelected: boolean;
 }
 
-const CurrencyRow: React.FC<Props> = (props) => {
+const CurrencyGrid: React.FC<Props> = (props) => {
   const { currency, style, onSelect, isSelected, otherSelected } = props;
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -26,15 +26,22 @@ const CurrencyRow: React.FC<Props> = (props) => {
   }, [onSelect, currency]);
 
   return (
-    <CurrencyRowRoot style={style} onClick={handleSelect} disabled={isSelected} selected={otherSelected}>
+    <CurrencyRoot style={style} onClick={handleSelect} disabled={isSelected} selected={otherSelected}>
       <CurrencyLogo currency={currency} size={24} imageSize={48} />
-      <Text color="text1" fontSize={14} title={currency?.name}>
+      <Text
+        color="swapWidget.primary"
+        fontSize={14}
+        title={currency?.name}
+        fontWeight={500}
+        marginBottom="10px"
+        marginTop="5px"
+      >
         {currency?.symbol}
       </Text>
-      <Balance color="text1" fontSize={14}>
+      <Balance color="swapWidget.primary" fontSize={14}>
         {balance ? balance.toSignificant(4) : account ? <LoaderIcon /> : null}
       </Balance>
-    </CurrencyRowRoot>
+    </CurrencyRoot>
   );
 };
-export default CurrencyRow;
+export default CurrencyGrid;

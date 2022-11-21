@@ -1,12 +1,45 @@
+import { Web3Provider } from '@ethersproject/providers';
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Provider } from 'react-redux';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { usePair } from 'src/data/Reserves';
+import { useTotalSupply } from 'src/data/TotalSupply';
+import { useTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
-import { useActivePopups, useAddPopup, useRemovePopup } from 'src/state/papplication/hooks';
+import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import useParsedQueryString from 'src/hooks/useParsedQueryString';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import ApplicationUpdater from 'src/state/papplication/updater';
+import ListsUpdater from 'src/state/plists/updater';
+import MulticallUpdater from 'src/state/pmulticall/updater';
+import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
+import {
+  calculateTotalStakedAmountInAvax,
+  calculateTotalStakedAmountInAvaxFromPng,
+  fetchChunkedAprs,
+  fetchMinichefData,
+  useDerivedStakeInfo,
+  useGetAllFarmData,
+  useMinichefPools,
+  useMinichefStakingInfos,
+} from 'src/state/pstake/hooks';
+import {
+  useGetAllFarmDataHook,
+  useGetMinichefStakingInfosViaSubgraphHook,
+  useMinichefStakingInfosHook,
+} from 'src/state/pstake/multiChainsHooks';
+import {
+  DoubleSideStaking,
+  DoubleSideStakingInfo,
+  MinichefStakingInfo,
+  PoolType,
+  StakingInfo,
+} from 'src/state/pstake/types';
 import {
   LimitOrderInfo,
   useDerivedSwapInfo,
@@ -14,20 +47,28 @@ import {
   useGelatoLimitOrderList,
   useSwapActionHandlers,
 } from 'src/state/pswap/hooks';
-import { useAllTransactions } from 'src/state/ptransactions/hooks';
-import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { shortenAddress } from 'src/utils';
+import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransactions/hooks';
+import TransactionUpdater from 'src/state/ptransactions/updater';
+import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks';
+import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { existSarContract, getEtherscanLink, isEvmChain, shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
-import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { PANGOLIN_PERSISTED_KEYS, pangolinReducers } from './state';
-import ApplicationUpdater from './state/papplication/updater';
-import ListsUpdater from './state/plists/updater';
-import MulticallUpdater from './state/pmulticall/updater';
-import * as transactionActions from './state/ptransactions/actions';
-import TransactionUpdater from './state/ptransactions/updater';
+import i18n, { availableLanguages } from './i18n';
+import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
+import { PangoChefInfo } from './state/ppangoChef/types';
+import { Position, useSarPositions, useSarStakeInfo } from './state/psarstake/hooks';
+import SwapUpdater from './state/pswap/updater';
 import { default as ThemeProvider } from './theme';
-const queryClient = new QueryClient();
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 1000 * 60,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export function PangolinProvider({
   chainId = ChainId.AVALANCHE,
@@ -42,39 +83,56 @@ export function PangolinProvider({
   children?: React.ReactNode;
   theme?: any;
 }) {
+  const ethersLibrary = library && !library?._isProvider ? new Web3Provider(library) : library;
+
   return (
-    <PangolinWeb3Provider chainId={chainId} library={library} account={account}>
-      <ThemeProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          <ListsUpdater />
-          <ApplicationUpdater />
-          <MulticallUpdater />
-          <TransactionUpdater />
-          {CHAINS[chainId]?.evm ? (
-            <GelatoProvider
-              library={library}
-              chainId={chainId}
-              account={account ?? undefined}
-              useDefaultTheme={false}
-              handler={'pangolin'}
-            >
-              {children}
-            </GelatoProvider>
-          ) : (
-            children
-          )}
-        </QueryClientProvider>
-      </ThemeProvider>
-    </PangolinWeb3Provider>
+    <Provider store={store} context={StoreContext}>
+      <PangolinWeb3Provider chainId={chainId} library={library} account={account}>
+        <ThemeProvider theme={theme}>
+          <QueryClientProvider client={queryClient}>
+            <ListsUpdater />
+            <ApplicationUpdater />
+            <MulticallUpdater />
+            <TransactionUpdater />
+            <SwapUpdater />
+            {isEvmChain(chainId) && CHAINS[chainId]?.supported_by_gelato ? (
+              <Provider store={galetoStore}>
+                <GelatoProvider
+                  library={ethersLibrary}
+                  chainId={chainId}
+                  account={account ?? undefined}
+                  useDefaultTheme={false}
+                  handler={'pangolin'}
+                >
+                  {children}
+                </GelatoProvider>
+              </Provider>
+            ) : (
+              children
+            )}
+          </QueryClientProvider>
+        </ThemeProvider>
+      </PangolinWeb3Provider>
+    </Provider>
   );
 }
 
 export * from './constants';
 export * from './connectors';
 export * from './components';
+export * from './state/papplication/hooks';
+export * from './state/papplication/actions';
 
 export * from '@gelatonetwork/limit-orders-react';
-export type { LimitOrderInfo };
+export type {
+  LimitOrderInfo,
+  MinichefStakingInfo,
+  DoubleSideStakingInfo,
+  StakingInfo,
+  DoubleSideStaking,
+  Position,
+  PangoChefInfo,
+};
 
 // components
 export { SelectTokenDrawer };
@@ -84,22 +142,50 @@ export { useGelatoLimitOrderDetail, useGelatoLimitOrderList };
 
 // hooks
 export {
+  useSarStakeInfo,
+  useSarPositions,
   useDerivedSwapInfo,
   useUSDCPrice,
   useAllTokens,
-  useActivePopups,
-  useRemovePopup,
-  useAddPopup,
   usePair,
   useSwapActionHandlers,
   useLibrary,
-  shortenAddress,
   useAllTransactions,
+  useAllTransactionsClearer,
   useAccountBalanceHook,
+  useTranslation,
+  useMinichefStakingInfosHook,
+  useGetAllFarmData,
+  useGetMinichefStakingInfosViaSubgraphHook,
+  useGetUserLP,
+  useMinichefStakingInfos,
+  useDerivedStakeInfo,
+  useMinichefPools,
+  useTotalSupplyHook,
+  useTotalSupply,
+  useGetAllFarmDataHook,
+  useTokenBalanceHook,
+  useTokenBalance,
+  usePangoChefInfosHook,
+  useUSDCPriceHook,
+  useParsedQueryString,
 };
 
-//Actions
-export { transactionActions };
-
 // misc
-export { pangolinReducers, PANGOLIN_PERSISTED_KEYS, wrappedCurrency, nearFn };
+export {
+  pangolinReducers,
+  PANGOLIN_PERSISTED_KEYS,
+  wrappedCurrency,
+  nearFn,
+  i18n,
+  availableLanguages,
+  Trans,
+  PoolType,
+  fetchMinichefData,
+  fetchChunkedAprs,
+  calculateTotalStakedAmountInAvax,
+  calculateTotalStakedAmountInAvaxFromPng,
+  existSarContract,
+  getEtherscanLink,
+  shortenAddress,
+};

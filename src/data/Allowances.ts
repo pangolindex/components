@@ -1,6 +1,5 @@
 import { Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-
 import { useTokenContract } from '../hooks/useContract';
 import { useSingleCallResult } from '../state/pmulticall/hooks';
 
@@ -8,6 +7,7 @@ export function useTokenAllowance(token?: Token, owner?: string, spender?: strin
   const contract = useTokenContract(token?.address, false);
 
   const inputs = useMemo(() => [owner, spender], [owner, spender]);
+
   const allowance = useSingleCallResult(contract, 'allowance', inputs).result;
 
   return useMemo(

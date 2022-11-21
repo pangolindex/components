@@ -1,10 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import ReactGA from 'react-ga';
-import { useDispatch, useSelector } from 'react-redux';
 import Drawer from 'src/components/Drawer';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';
-import { AppDispatch, AppState } from 'src/state';
+import { AppState, useDispatch, useSelector } from 'src/state';
 import { removeList } from 'src/state/plists/actions';
 import { parseENSAddress } from 'src/utils/parseENSAddress';
 import uriToHttp from 'src/utils/uriToHttp';
@@ -19,8 +18,8 @@ interface Props {
 
 const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
   const [listUrlInput, setListUrlInput] = useState<string>('');
-  const dispatch = useDispatch<AppDispatch>();
-  const lists = useSelector<AppState, AppState['plists']['byUrl']>((state) => state.plists.byUrl);
+  const dispatch = useDispatch();
+  const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
   const adding = Boolean(lists[listUrlInput]?.loadingRequestId);
   const [addError, setAddError] = useState<string | null>(null);
 
@@ -89,7 +88,7 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
   return (
     <Drawer title="Manage Lists" isOpen={isOpen} onClose={onClose}>
       {/* Render Search Token Input */}
-      <Box padding="0px 10px">
+      <Box padding="0px 20px">
         <AddInputWrapper>
           <TextInput
             placeholder="https:// or ipfs://"
@@ -106,7 +105,7 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
         </AddInputWrapper>
 
         {addError ? (
-          <Text title={addError} color="red2" fontSize={12}>
+          <Text title={addError} color="error" fontSize={12}>
             {addError}
           </Text>
         ) : null}

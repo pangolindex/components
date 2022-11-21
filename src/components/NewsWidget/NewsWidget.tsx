@@ -11,8 +11,8 @@ import { Loader } from 'src/components/Loader';
 import { News, useGetNews } from 'src/state/pnews/hooks';
 import { ArrowWrapper, NewsContent, NewsDate, NewsSection, NewsTitle, SlickNext, TitleWrapper } from './styleds';
 import { NewsProps } from './types';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+// import 'slick-carousel/slick/slick.css';
+// import 'slick-carousel/slick/slick-theme.css';
 
 const NewsFeedSettings: Settings = {
   dots: false,

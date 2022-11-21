@@ -6,11 +6,11 @@ import { Box, Button, CurrencyLogo, Text } from 'src/components';
 import { ANALYTICS_PAGE, TIMEFRAME } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import { useCoinGeckoTokenPrice, useCoinGeckoTokenPriceChart } from 'src/hooks/Tokens';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { Field } from 'src/state/pswap/actions';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks';
 import { useTokenPriceData } from 'src/state/ptoken/hooks';
 import { formattedNum, toNiceDateYear } from 'src/utils/charts';
-import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { DurationBtns, SelectedCoinInfo, TrackIcons } from './styleds';
 
@@ -76,7 +76,7 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
       <SelectedCoinInfo>
         <CurrencyLogo currency={token} size={48} />
         <Box>
-          <Text color="text1" fontSize="24px">
+          <Text color="text1" fontSize="24px" fontWeight={500}>
             {token.symbol}
           </Text>
           <Text color="green1" fontSize="16px">

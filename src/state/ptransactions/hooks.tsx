@@ -1,15 +1,16 @@
 import { TransactionResponse } from '@ethersproject/providers';
 import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { AppState, useDispatch, useSelector } from 'src/state';
 
-import { usePangolinWeb3 } from '../../hooks';
-import { AppDispatch, AppState } from '../index';
-import { addTransaction } from './actions';
+import { useChainId, usePangolinWeb3 } from '../../hooks';
+import { addTransaction, clearAllTransactions } from './actions';
 import { TransactionDetails } from './reducer';
+
+type TransactionOnlyWithHash = Pick<TransactionResponse, 'hash'>;
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
-  response: TransactionResponse,
+  response: TransactionOnlyWithHash,
   customData?: {
     summary?: string;
     approval?: { tokenAddress: string; spender: string };
@@ -17,11 +18,11 @@ export function useTransactionAdder(): (
   },
 ) => void {
   const { chainId, account } = usePangolinWeb3();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   return useCallback(
     (
-      response: TransactionResponse,
+      response: TransactionOnlyWithHash,
       {
         summary,
         approval,
@@ -41,11 +42,19 @@ export function useTransactionAdder(): (
   );
 }
 
+export function useAllTransactionsClearer() {
+  const chainId = useChainId();
+  const dispatch = useDispatch();
+  return useCallback(() => {
+    dispatch(clearAllTransactions({ chainId }));
+  }, [chainId, dispatch]);
+}
+
 // returns all the transactions for the current chain
 export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
   const { chainId } = usePangolinWeb3();
 
-  const state = useSelector<AppState, AppState['ptransactions']>((state) => state.ptransactions);
+  const state = useSelector<AppState['ptransactions']>((state) => state.ptransactions);
 
   return chainId ? state[chainId] ?? {} : {};
 }

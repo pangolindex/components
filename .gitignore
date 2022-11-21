@@ -5,3 +5,6 @@ out
 .DS_Store
 .idea
 storybook-static
+.yalc
+yalc.lock
+.env

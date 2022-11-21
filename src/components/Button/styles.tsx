@@ -1,3 +1,4 @@
+import get from 'lodash.get';
 import { lighten } from 'polished';
 import styled, { css } from 'styled-components';
 import { ButtonProps } from './types';
@@ -83,9 +84,9 @@ export const Root = styled.button<ButtonProps>`
   ${Confirmed}
 
   /* Customizable Colors */
-  color: ${({ color, theme }) => (color && theme[color]) || color};
-  background-color: ${({ backgroundColor, theme }) => (backgroundColor && theme[backgroundColor]) || backgroundColor};
-  border: ${({ borderColor, theme }) => `1px solid ${(borderColor && theme[borderColor]) || borderColor}`};
+  color: ${({ color, theme }) => color && get(theme, color, color)};
+  background-color: ${({ backgroundColor, theme }) => backgroundColor && get(theme, backgroundColor, backgroundColor)};
+  border: ${({ borderColor, theme }) => `1px solid ${borderColor && get(theme, borderColor, borderColor)}`};
 
   > * {
     user-select: none;

@@ -3,18 +3,16 @@ import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
 import { Button } from 'src/components/Button';
-import { gnosisSafe, injected, xDefi, avalancheCore } from 'src/connectors';
-import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
-import { ExternalLink } from 'src/theme';
+import { avalancheCore, bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
+import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
 import {
-  Blurb,
   CloseButton,
   ContentWrapper,
   HeaderRow,
@@ -25,8 +23,6 @@ import {
   Wrapper,
 } from './styles';
 import { WalletModalProps } from './types';
-
-const WALLET_TUTORIAL = `${LANDING_PAGE}/tutorials/getting-started/#set-up-metamask`;
 
 enum CHAIN_TYPE {
   EVM_CHAINS = 'EVM CHAINS',
@@ -39,6 +35,9 @@ const WALLET_VIEWS = {
   ACCOUNT: 'account',
   PENDING: 'pending',
 };
+
+const getConnectorKey = (connector: AbstractConnector) =>
+  Object.keys(SUPPORTED_WALLETS).find((key) => SUPPORTED_WALLETS[key].connector === connector) ?? null;
 
 const WalletModal: React.FC<WalletModalProps> = ({
   open,
@@ -84,21 +83,21 @@ const WalletModal: React.FC<WalletModalProps> = ({
     }
   }, [walletType]);
 
-  function addAvalancheNetwork() {
-    injected.getProvider().then((provider) => {
+  const addAvalancheNetwork = useCallback(() => {
+    connector?.getProvider().then((provider) => {
       provider
         ?.request({
           method: 'wallet_addEthereumChain',
           params: [AVALANCHE_CHAIN_PARAMS],
         })
         .then(() => {
-          onWalletConnect();
+          onWalletConnect(getConnectorKey(connector));
         })
         .catch((error: any) => {
           console.log(error);
         });
     });
-  }
+  }, [connector]);
 
   // always reset to account view
   useEffect(() => {
@@ -120,11 +119,13 @@ const WalletModal: React.FC<WalletModalProps> = ({
   }, [walletModalOpen]);
 
   const isMetamask = window.ethereum && window.ethereum.isMetaMask;
+  const isTalisman = window.ethereum && window.ethereum.isTalisman;
   const isRabby = window.ethereum && window.ethereum.isRabby;
   const isCbWalletDappBrowser = window?.ethereum?.isCoinbaseWallet;
   const isWalletlink = !!window?.WalletLinkProvider || !!window?.walletLinkExtension;
   const isCbWallet = isCbWalletDappBrowser || isWalletlink;
   const isAvalancheCore = window.avalanche && window.avalanche.isAvalanche;
+  const isBitKeep = window.isBitKeep && !!window.bitkeep.ethereum;
 
   const tryActivation = async (
     activationConnector: AbstractConnector | SafeAppConnector | undefined,
@@ -156,7 +157,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
         if (loadedInSafe) {
           activate(activationConnector, undefined, true)
             .then(() => {
-              onWalletConnect();
+              onWalletConnect(getConnectorKey(activationConnector));
             })
             .catch(() => {
               setTriedSafe(true);
@@ -172,8 +173,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
           if (isCbWallet) {
             addAvalancheNetwork();
           } else {
-            console.log('askdjhklasdjklsajd======');
-            onWalletConnect();
+            onWalletConnect(getConnectorKey(activationConnector));
           }
         })
         .catch((error) => {
@@ -191,6 +191,10 @@ const WalletModal: React.FC<WalletModalProps> = ({
     if (connector === injected) {
       if (isRabby) {
         return SUPPORTED_WALLETS.RABBY;
+      } else if (isTalisman) {
+        return SUPPORTED_WALLETS.TALISMAN;
+      } else if (isBitKeep) {
+        return SUPPORTED_WALLETS.BITKEEP;
       } else if (isMetamask) {
         return SUPPORTED_WALLETS.METAMASK;
       }
@@ -280,10 +284,24 @@ const WalletModal: React.FC<WalletModalProps> = ({
       }
 
       // overwrite injected when needed
-      else if (option.connector === xDefi) {
+      else if (option.connector === bitKeep) {
+        if (!isBitKeep) {
+          return (
+            <Option
+              id={`connect-${key}`}
+              key={key}
+              color={'#7a7cff'}
+              header={'Install BitKeep'}
+              subheader={null}
+              link={'https://bitkeep.com/'}
+              icon={option.iconName}
+            />
+          );
+        }
+      } else if (option.connector === xDefi) {
         // don't show injected if there's no injected provider
 
-        if (!(window.xfi && window.xfi.ethereum && window.xfi.ethereum.isXDEFI)) {
+        if (!window.xfi) {
           if (option.name === 'XDEFI Wallet') {
             return (
               <Option
@@ -304,6 +322,37 @@ const WalletModal: React.FC<WalletModalProps> = ({
         // likewise for generic
         else if (option.name === 'Injected' && (isMetamask || isXDEFI)) {
           return null;
+        }
+      } else if (option.connector === talisman) {
+        // provide talisman install link if not installed
+        if (!window.talismanEth) {
+          return (
+            <Option
+              id={`connect-${key}`}
+              key={key}
+              color={option.color}
+              header={'Install Talisman'}
+              subheader={null}
+              link={'https://talisman.xyz'}
+              icon={option.iconName}
+            />
+          );
+        }
+      } else if (option.connector === hashConnect) {
+        // provide hashpack install link if not installed
+
+        if (!hashConnect.availableExtension) {
+          return (
+            <Option
+              id={`connect-${key}`}
+              key={key}
+              color={option.color}
+              header={'Install Haspack'}
+              subheader={null}
+              link={'https://www.hashpack.app/download'}
+              icon={option.iconName}
+            />
+          );
         }
       }
 
@@ -391,14 +440,15 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   const renderContent = () => {
     const isXDEFI = window.xfi && window.xfi.ethereum && window.xfi.ethereum.isXDEFI;
-    const isMetamaskOrCbWallet = isMetamask || isCbWallet || isXDEFI;
+    const supportsAddNetwork = isMetamask || isCbWallet || isXDEFI || isTalisman || isBitKeep;
+
     if (web3Error) {
       return (
         <ContentWrapper>
           {web3Error instanceof UnsupportedChainIdError ? (
             <>
               <h5>Please connect to the appropriate Avalanche network.</h5>
-              {isMetamaskOrCbWallet && (
+              {supportsAddNetwork && (
                 <Button variant="primary" onClick={addAvalancheNetwork}>
                   Switch to Avalanche Chain
                 </Button>
@@ -433,12 +483,6 @@ const WalletModal: React.FC<WalletModalProps> = ({
               </Box>
               <OptionGrid>{getOptions()}</OptionGrid>
             </>
-          )}
-          {walletView !== WALLET_VIEWS.PENDING && (
-            <Blurb>
-              <span>New to Avalanche? &nbsp;</span>{' '}
-              <ExternalLink href={WALLET_TUTORIAL}>Learn more about setting up a wallet</ExternalLink>
-            </Blurb>
           )}
         </ContentWrapper>
       );

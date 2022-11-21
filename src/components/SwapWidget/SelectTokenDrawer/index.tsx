@@ -1,7 +1,8 @@
-import { CAVAX, CHAINS, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
+import { CAVAX, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { FixedSizeList } from 'react-window';
+import { FixedSizeGrid } from 'react-window';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
 import { useAllTokens, useToken } from 'src/hooks/Tokens';
@@ -12,7 +13,7 @@ import { Box, Text, TextInput } from '../../';
 import { filterTokens } from '../SearchModal/filtering';
 import { useTokenComparator } from '../SearchModal/sorting';
 import TokenListDrawer from '../TokenListDrawer';
-import CurrencyRow from './CurrencyRow';
+import CurrencyGrid from './CurrencyGrid';
 import { CurrencyList, ListLogo, ManageList } from './styled';
 
 interface Props {
@@ -23,8 +24,15 @@ interface Props {
   otherSelectedCurrency?: Currency;
 }
 
-const currencyKey = (currency: Currency, chainId: ChainId): string => {
-  return currency instanceof Token ? currency.address : currency === CAVAX[chainId] ? 'AVAX' : '';
+const currencyKey = (columnIndex: number, rowIndex: number, data: Currency[], chainId: ChainId): string => {
+  const index = rowIndex * 4 + columnIndex;
+  const currency = data[index];
+
+  return currency instanceof Token
+    ? currency.address
+    : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
+    ? (CAVAX[chainId]?.symbol as string)
+    : '';
 };
 
 const SelectTokenDrawer: React.FC<Props> = (props) => {
@@ -65,7 +73,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : [];
     const tokens = Object.values(allTokens);
-    tokens.unshift(CAVAX[chainId]);
+    tokens.unshift(CAVAX[chainId] as Token);
     return filterTokens(tokens, searchQuery);
   }, [isAddressSearch, searchToken, allTokens, searchQuery]);
 
@@ -90,7 +98,9 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     if (searchQuery === '') {
       // remove Currency from array and add in first position
       const _tokens = filteredSortedTokens.filter((token) => token !== CAVAX[chainId]);
-      return CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : [..._tokens];
+      // Need to check when implement near
+      // return CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : [..._tokens];
+      return [CAVAX[chainId], ..._tokens];
     }
     return filteredSortedTokens;
   }, [filteredSortedTokens, chainId]);
@@ -104,15 +114,25 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     [onCurrencySelect, onClose],
   );
 
-  const Row = useCallback(
-    ({ data, index, style }) => {
+  const Item = useCallback(
+    ({ data, columnIndex, rowIndex, style }) => {
+      const index = rowIndex * 4 + columnIndex;
       const currency: Currency = data?.[index];
       const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency));
       const otherSelected = Boolean(otherSelectedCurrency && currencyEquals(otherSelectedCurrency, currency));
 
+      // add gap
+      const styles = {
+        ...style,
+        left: Number(style.left) + 10,
+        top: Number(style.top) + 10,
+        width: Number(style.width) - 10,
+        height: Number(style.height) - 10,
+      };
+
       return currency ? (
-        <CurrencyRow
-          style={style}
+        <CurrencyGrid
+          style={styles}
           currency={currency}
           isSelected={isSelected}
           onSelect={onSelect}
@@ -135,22 +155,29 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
           }}
           value={searchQuery}
           getRef={(ref: HTMLInputElement) => ((inputRef as any).current = ref)}
+          onClick={() => {
+            if (isMobile) {
+              inputRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
         />
       </Box>
       {/* Render All Selected Tokens */}
       <CurrencyList>
-        <AutoSizer disableWidth>
-          {({ height }) => (
-            <FixedSizeList
+        <AutoSizer>
+          {({ height, width }) => (
+            <FixedSizeGrid
               height={height}
-              width="100%"
-              itemCount={currencies.length}
-              itemSize={56}
+              columnWidth={(width - 10) / 4}
+              rowHeight={120}
+              columnCount={4}
+              rowCount={currencies.length / 4}
+              width={width}
               itemData={currencies}
-              itemKey={(index, data) => currencyKey(data[index], chainId)}
+              itemKey={({ columnIndex, rowIndex, data }) => currencyKey(columnIndex, rowIndex, data, chainId)}
             >
-              {Row}
-            </FixedSizeList>
+              {Item}
+            </FixedSizeGrid>
           )}
         </AutoSizer>
       </CurrencyList>
@@ -158,10 +185,10 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
       <ManageList onClick={() => setIsTokenListOpen(true)}>
         {selectedListInfo.multipleSelected ? (
           <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
-            <Text fontSize={14} color="text1">
+            <Text fontSize={14} color="swapWidget.primary">
               {selectedListInfo.selectedCount} lists selected
             </Text>
-            <Text fontSize={12} color="text1">
+            <Text fontSize={12} color="swapWidget.primary">
               Change
             </Text>
           </Box>
@@ -173,11 +200,11 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
                 src={selectedListInfo?.current?.logoURI}
                 alt={`${selectedListInfo?.current?.name} list logo`}
               />
-              <Text fontSize={14} color="text1">
+              <Text fontSize={14} color="swapWidget.primary">
                 {selectedListInfo?.current?.name}
               </Text>
             </Box>
-            <Text fontSize={12} color="text1">
+            <Text fontSize={12} color="swapWidget.primary">
               Change
             </Text>
           </Box>
@@ -188,6 +215,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     </Drawer>
   );
 };
+
 export default memo(SelectTokenDrawer, (prevProps, nextProps) => {
   const isEqual =
     prevProps.isOpen === nextProps.isOpen &&

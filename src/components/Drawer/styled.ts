@@ -1,4 +1,4 @@
-import { X } from 'react-feather';
+import get from 'lodash.get';
 import styled from 'styled-components';
 
 export const DrawerRoot = styled.div<{ isOpen: boolean; backgroundColor?: string }>`
@@ -6,7 +6,8 @@ export const DrawerRoot = styled.div<{ isOpen: boolean; backgroundColor?: string
   position: absolute;
   z-index: 99;
   transition: all 350ms ease;
-  background-color: ${({ theme, backgroundColor }: any) => (backgroundColor ? theme[backgroundColor] : theme.bg2)};
+  background-color: ${({ theme, backgroundColor }: any) =>
+    backgroundColor ? get(theme, backgroundColor) : theme.drawer?.backgroundColor};
   transform: ${({ isOpen }) => (!isOpen ? 'translate(100%, 0px)' : 'translate(0px, 0px)')};
   width: 100%;
   display: flex;
@@ -32,6 +33,12 @@ export const DrawerContent = styled.div`
   display: flex;
   flex-direction: column;
 `;
-export const CloseIcon = styled(X)<{ onClick: () => void }>`
+
+export const CloseCircle = styled.div<{ onClick: () => void }>`
   cursor: pointer;
+  background-color: ${({ theme }) => theme.closeCircleBG};
+  padding: 2.5px 8px;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
 `;

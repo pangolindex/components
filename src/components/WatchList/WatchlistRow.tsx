@@ -1,17 +1,16 @@
 import { Token } from '@pangolindex/sdk';
 import React, { useContext, useEffect, useState } from 'react';
 import { X } from 'react-feather';
-import { useDispatch } from 'react-redux';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
 import { ThemeContext } from 'styled-components';
 import { Box, CurrencyLogo, Text } from 'src/components';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { useCoinGeckoTokenPrice, useCoinGeckoTokenPriceChart } from 'src/hooks/Tokens';
-import { AppDispatch } from 'src/state';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import { useDispatch } from 'src/state';
 import { useTokenWeeklyChartData } from 'src/state/ptoken/hooks';
 import { removeCurrency } from 'src/state/pwatchlists/actions';
-import useUSDCPrice from 'src/utils/useUSDCPrice';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { DeleteButton, RowWrapper } from './styleds';
 
@@ -45,7 +44,7 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, onRemove, isSelected }) 
 
   const token = unwrappedToken(coin, chainId);
 
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
 
   const removeToken = () => {
     onRemove();

@@ -1,9 +1,13 @@
-import { Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
-import { ChainId } from '@pangolindex/sdk';
+import { ExternalProvider, Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
+import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
-import { PROVIDER_MAPPING, SUPPORTED_WALLETS } from 'src/constants';
+import { useQueryClient } from 'react-query';
+import { network } from 'src/connectors';
+import { PROVIDER_MAPPING } from 'src/constants';
+import { useBlockNumber } from 'src/state/papplication/hooks';
+import { isAddress } from 'src/utils';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -43,10 +47,15 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   const [state, setState] = useState<Web3State>(initialWeb3State);
 
   useEffect(() => {
+    let normalizedAccount;
+    if (chainId) {
+      normalizedAccount = CHAINS?.[chainId as ChainId]?.evm ? isAddress(account) : account;
+    }
+
     setState({
       library,
       chainId: chainId || ChainId.AVALANCHE,
-      account,
+      account: normalizedAccount,
     });
   }, [library, chainId, account]);
 
@@ -65,36 +74,98 @@ export default Web3Context;
 
 export const useChainId = () => {
   const { chainId } = usePangolinWeb3();
-  return chainId || ChainId.AVALANCHE;
+  return (chainId || ChainId.AVALANCHE) as ChainId;
 };
 
+// library -> web3.js/eip-1993/ethers provider
+// provider -> ethers.js
+// extendedProvider -> extended library
+
+/**
+ *
+ * @returns { library: ethers.js provider, provider: extended provider }
+ */
 export function useLibrary(): { library: any; provider: any } {
   const [result, setResult] = useState({} as { library: any; provider: any });
 
   const { connector } = useWeb3React();
+  const chainId = useChainId();
+  const { library: userProvidedLibrary } = usePangolinWeb3();
 
   useEffect(() => {
     async function load() {
-      const walletKey = Object.keys(SUPPORTED_WALLETS).find(
-        (key) => SUPPORTED_WALLETS[key].connector === connector,
-      ) as string;
+      // const walletKey = Object.keys(SUPPORTED_WALLETS).find(
+      //   (key) => SUPPORTED_WALLETS[key].connector === connector,
+      // ) as string;
 
-      const selectedProvider = (await connector?.getProvider()) || window.ethereum;
-      const provider = selectedProvider || window.ethereum;
-      const extendedProvider = provider && walletKey && (PROVIDER_MAPPING as any)[walletKey]?.(provider);
+      // convert window.ethereum to ethers
+      const ethersDefaultProvider = new Web3ProviderEthers((window.ethereum as ExternalProvider) || network.provider);
+      // try to wrap connector provider
+      const providerFromConnector = await connector?.getProvider();
+      let ethersConnectorProvider;
+      if (providerFromConnector && !providerFromConnector._isProvider) {
+        try {
+          ethersConnectorProvider = new Web3ProviderEthers(providerFromConnector as ExternalProvider);
+        } catch (error) {
+          console.log('==== error ethersConnectorProvider', ethersConnectorProvider, error);
+          // error will come incase of Near, Hedera provider
+          ethersConnectorProvider = providerFromConnector;
+        }
+      } else {
+        ethersConnectorProvider = providerFromConnector;
+      }
+      // try to wrap user provided library
+      let ethersUserProvidedLibrary = userProvidedLibrary?._isProvider ? userProvidedLibrary : undefined;
 
-      let library;
-
-      try {
-        library = new Web3ProviderEthers(provider, 'any');
-      } catch (error) {
-        library = provider;
+      if (userProvidedLibrary && !userProvidedLibrary?._isProvider) {
+        try {
+          ethersUserProvidedLibrary = new Web3ProviderEthers(userProvidedLibrary as any);
+        } catch (error) {
+          console.log('==== error ethersUserProvidedLibrary', error);
+          ethersUserProvidedLibrary = userProvidedLibrary;
+        }
       }
 
-      setResult({ library, provider: extendedProvider });
+      const finalEthersLibrary = ethersConnectorProvider || ethersUserProvidedLibrary || ethersDefaultProvider;
+      const extendedWeb3Provider = finalEthersLibrary && (PROVIDER_MAPPING as any)[chainId]?.(finalEthersLibrary);
+
+      setResult({ library: finalEthersLibrary, provider: extendedWeb3Provider });
     }
     load();
-  }, [connector]);
+  }, [connector, userProvidedLibrary, chainId]);
 
   return result;
+}
+
+export const useRefetchMinichefSubgraph = () => {
+  const { account } = usePangolinWeb3();
+  const queryClient = useQueryClient();
+
+  return async () => await queryClient.refetchQueries(['get-minichef-farms-v2', account]);
+};
+
+export function useGetBlockTimestamp(blockNumber?: number) {
+  const latestBlockNumber = useBlockNumber();
+  const _blockNumber = blockNumber ?? latestBlockNumber;
+
+  const { provider } = useLibrary();
+
+  const [timestamp, setTimestamp] = useState<string | undefined>(undefined);
+
+  const getTimestamp = useMemo(async () => {
+    if (!_blockNumber || !provider) return;
+
+    const result = await (provider as any)?.getBlockTimestamp(_blockNumber);
+    return result;
+  }, [_blockNumber, provider]);
+
+  useEffect(() => {
+    const getResult = async () => {
+      const result = await getTimestamp;
+      setTimestamp(result);
+    };
+    getResult();
+  }, [_blockNumber, getTimestamp]);
+
+  return timestamp;
 }

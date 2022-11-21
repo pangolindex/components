@@ -4,17 +4,21 @@ import { CAVAX, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { NATIVE } from 'src/constants';
+import { NATIVE, SwapTypes } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useTokenHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
 import { LimitField, LimitNewField } from 'src/state/pswap/actions';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
+import { capitalizeWord } from 'src/utils';
 import { galetoMaxAmountSpend } from 'src/utils/maxAmountSpend';
-import { wrappedGelatoCurrency } from 'src/utils/wrappedCurrency';
+import { unwrappedToken, wrappedGelatoCurrency } from 'src/utils/wrappedCurrency';
 import { Box, Button, Text, ToggleButtons } from '../../';
 import ConfirmLimitOrderDrawer from '../ConfirmLimitOrderDrawer';
 import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
@@ -30,20 +34,31 @@ enum Rate {
 
 interface Props {
   swapType: string;
-  setSwapType: (value: string) => void;
+  setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
+  defaultInputAddress?: string;
+  defaultOutputAddress?: string;
 }
 
-const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisible }) => {
+const LimitOrder: React.FC<Props> = ({
+  swapType,
+  setSwapType,
+  isLimitOrderVisible,
+  defaultInputAddress,
+  defaultOutputAddress,
+}) => {
   const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const [tokenDrawerType, setTokenDrawerType] = useState(LimitNewField.INPUT);
   const [activeTab, setActiveTab] = useState<'SELL' | 'BUY'>('SELL');
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
+  const useToken = useTokenHook[chainId];
   const theme = useContext(ThemeContext);
 
   const percentageValue = [25, 50, 75, 100];
+
+  const { t } = useTranslation();
 
   const {
     handlers: {
@@ -141,6 +156,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
 
+  const addTransaction = useTransactionAdder();
   const handleTypeInput = useCallback(
     (value: string) => {
       onUserInput(LimitNewField.INPUT as any, value);
@@ -162,6 +178,21 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
     },
     [onUserInput],
   );
+
+  // setting default tokens
+  const defaultInputToken = useToken(defaultInputAddress);
+  const defaultInputCurrency = defaultInputToken ? unwrappedToken(defaultInputToken as Token, chainId) : undefined;
+  const defaultOutputToken = useToken(defaultOutputAddress);
+  const defaultOutputCurrency = defaultOutputToken ? unwrappedToken(defaultOutputToken as Token, chainId) : undefined;
+
+  useEffect(() => {
+    if (defaultInputCurrency) {
+      onCurrencySelect(defaultInputCurrency, LimitNewField.INPUT);
+    }
+    if (defaultOutputCurrency) {
+      onCurrencySelect(defaultOutputCurrency, LimitNewField.OUTPUT);
+    }
+  }, [chainId, defaultInputAddress, defaultOutputAddress, defaultInputCurrency, defaultOutputCurrency]);
 
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
@@ -233,6 +264,8 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
         throw new Error('No account');
       }
 
+      const orderType = activeTab === 'SELL' ? t('swapPage.sell') : t('swapPage.buy');
+
       handleLimitOrderSubmission({
         inputToken: currencies.input?.isNative ? NATIVE : currencies.input?.wrapped.address,
         outputToken: currencies.output?.isNative ? NATIVE : currencies.output?.wrapped.address,
@@ -240,14 +273,15 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
         outputAmount: rawAmounts.output,
         owner: account,
       })
-        .then(({ hash }) => {
+        .then((response) => {
           setSwapState({
             attemptingTxn: false,
             tradeToConfirm,
             showConfirm,
             swapErrorMessage: undefined,
-            txHash: hash,
+            txHash: response.hash,
           });
+          addTransaction(response, { summary: t('swapPage.orderPlaced', { orderType: capitalizeWord(orderType) }) });
         })
         .catch((error) => {
           setSwapState({
@@ -312,8 +346,9 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash]);
 
   const onCurrencySelect = useCallback(
-    (currency) => {
-      if (tokenDrawerType === (LimitNewField.INPUT as any)) {
+    (currency: any, tokenDrawerTypeArg?: LimitNewField) => {
+      const type = tokenDrawerTypeArg ?? tokenDrawerType;
+      if (type === (LimitNewField.INPUT as any)) {
         setApprovalSubmitted(false); // reset 2 step UI for approvals
       }
 
@@ -325,9 +360,9 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
         newCurrency.isToken = true;
       }
 
-      onCurrencySelection(tokenDrawerType as any, newCurrency);
+      onCurrencySelection(type as any, newCurrency);
       // this is to update tokens on chart on token selection
-      onSwapCurrencySelection(tokenDrawerType as any, currency);
+      onSwapCurrencySelection(type as any, currency);
     },
     [tokenDrawerType, onCurrencySelection, onSwapCurrencySelection],
   );
@@ -351,8 +386,8 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
   const renderButton = () => {
     if (!account) {
       return (
-        <Button isDisabled={!account} variant="primary" onClick={toggleWalletModal}>
-          Connect Wallet
+        <Button variant="primary" onClick={toggleWalletModal}>
+          {t('swapPage.connectWallet')}
         </Button>
       );
     }
@@ -366,11 +401,11 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
               onClick={handleApprove}
               isDisabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
               loading={approval === ApprovalState.PENDING}
-              loadingText="Approving"
+              loadingText={t('swapPage.approving')}
             >
               {approvalSubmitted && approval === ApprovalState.APPROVED
-                ? 'Approved'
-                : 'Approve' + currencies[LimitField.INPUT]?.symbol}
+                ? t('swapPage.approved')
+                : `${t('swapPage.approve')} ${currencies[LimitField.INPUT]?.symbol}`}
             </Button>
           </Box>
 
@@ -381,7 +416,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
             isDisabled={!isValid || approval !== ApprovalState.APPROVED}
             //error={isValid}
           >
-            Place Order
+            {t('swapPage.placeOrder')}
           </Button>
         </Box>
       );
@@ -395,7 +430,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
         isDisabled={!isValid || !!swapInputError}
         backgroundColor={isValid ? 'primary' : undefined}
       >
-        {swapInputError ? swapInputError : 'Place Order'}
+        {swapInputError ? swapInputError : t('swapPage.placeOrder')}
       </Button>
     );
   };
@@ -427,12 +462,6 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
     );
   };
 
-  const determineColor = () => {
-    if (currencies.input && currencies.output) {
-      return theme.text1;
-    } else return theme.text4;
-  };
-
   const inputCurrency = getInputCurrency();
   const outputCurrency = getOutputCurrency();
 
@@ -457,7 +486,11 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
           {isAEBToken && <DeprecatedWarning />}
 
           <CurrencyInputTextBox
-            label={independentField === (LimitNewField.OUTPUT as any) && trade ? 'From (estimated)' : 'From'}
+            label={
+              independentField === (LimitNewField.OUTPUT as any) && trade
+                ? t('swapPage.fromEstimated')
+                : t('swapPage.from')
+            }
             value={formattedAmounts[LimitField.INPUT]}
             onChange={(value: any) => {
               setSelectedPercentage(0);
@@ -478,9 +511,9 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
           <Box width="100%" textAlign="center" alignItems="center" display="flex" justifyContent={'center'} mt={10}>
             <ArrowWrapper>
               {rateType === Rate.MUL ? (
-                <X size="16" color={determineColor()} />
+                <X size="16" color={theme.swapWidget?.interactiveColor} />
               ) : (
-                <Divide size="16" color={determineColor()} />
+                <Divide size="16" color={theme.swapWidget?.interactiveColor} />
               )}
             </ArrowWrapper>
           </Box>
@@ -492,7 +525,7 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
               fontSize={24}
               isNumeric={true}
               placeholder="0.00"
-              label="Price"
+              label={t('swapPage.price')}
             />
           </Box>
           <Box width="100%" textAlign="center" alignItems="center" display="flex" justifyContent={'center'} mt={10}>
@@ -502,11 +535,13 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
                 onSwitchTokens();
               }}
             >
-              <RefreshCcw size="16" color={theme.text4} />
+              <RefreshCcw size="16" color={theme.swapWidget?.interactiveColor} />
             </ArrowWrapper>
           </Box>
           <CurrencyInputTextBox
-            label={independentField === (LimitNewField.INPUT as any) && trade ? 'To (estimated)' : 'To'}
+            label={
+              independentField === (LimitNewField.INPUT as any) && trade ? t('swapPage.toEstimated') : t('swapPage.to')
+            }
             value={formattedAmounts[LimitField.OUTPUT]}
             onChange={(value: any) => {
               setSelectedPercentage(0);
@@ -523,8 +558,8 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
             id="swap-currency-output"
             addonLabel={
               tradePrice && (
-                <Text color="text4" fontSize={16}>
-                  Price: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
+                <Text color="swapWidget.secondary" fontSize={16}>
+                  {t('swapPage.price')}: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )
             }
@@ -538,14 +573,15 @@ const LimitOrder: React.FC<Props> = ({ swapType, setSwapType, isLimitOrderVisibl
         </Box>
       </SwapWrapper>
 
-      {/* Token Drawer */}
-      <SelectTokenDrawer
-        isOpen={isTokenDrawerOpen}
-        onClose={handleSelectTokenDrawerClose}
-        onCurrencySelect={onCurrencySelect}
-        selectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? inputCurrency : outputCurrency}
-        otherSelectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? outputCurrency : inputCurrency}
-      />
+      {isTokenDrawerOpen && (
+        <SelectTokenDrawer
+          isOpen={isTokenDrawerOpen}
+          onClose={handleSelectTokenDrawerClose}
+          onCurrencySelect={onCurrencySelect}
+          selectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? inputCurrency : outputCurrency}
+          otherSelectedCurrency={tokenDrawerType === (LimitNewField.INPUT as any) ? outputCurrency : inputCurrency}
+        />
+      )}
 
       {/* Confirm Swap Drawer */}
       {trade && (

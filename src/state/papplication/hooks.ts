@@ -1,13 +1,12 @@
 import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { usePangolinWeb3 } from '../../hooks';
-import { AppDispatch, AppState } from '../index';
+import { AppState, useDispatch, useSelector } from 'src/state';
+import { useChainId } from '../../hooks';
 import { ApplicationModal, PopupContent, addPopup, removePopup, setOpenModal } from './actions';
 
 export function useBlockNumber(): number | undefined {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
 
-  return useSelector((state: AppState) => state.papplication.blockNumber[chainId ?? -1]);
+  return useSelector((state: AppState) => state?.papplication?.blockNumber?.[chainId]);
 }
 
 export function useModalOpen(modal: ApplicationModal): boolean {
@@ -17,12 +16,16 @@ export function useModalOpen(modal: ApplicationModal): boolean {
 
 export function useToggleModal(modal: ApplicationModal): () => void {
   const open = useModalOpen(modal);
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   return useCallback(() => dispatch(setOpenModal(open ? null : modal)), [dispatch, modal, open]);
 }
 
 export function useWalletModalToggle(): () => void {
   return useToggleModal(ApplicationModal.WALLET);
+}
+
+export function usePoolDetailnModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.POOL_DETAIL);
 }
 
 // returns a function that allows adding a popup
