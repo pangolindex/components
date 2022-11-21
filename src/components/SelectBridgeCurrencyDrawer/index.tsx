@@ -62,7 +62,7 @@ const SelectBridgeCurrencyDrawer: React.FC<Props> = (props) => {
 
   const filteredSortedTokens: BridgeCurrency[] = useMemo(() => {
     if (searchToken) return [searchToken as Currency as BridgeCurrency];
-    const sorted = filteredTokens.sort(tokenComparator);
+    const sorted = [...filteredTokens].sort(tokenComparator);
     const symbolMatch = searchQuery
       .toLowerCase()
       .split(/\s+/)
