@@ -2,10 +2,11 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import Select, { MenuPlacement, MultiValue, OptionsOrGroups, SingleValue } from 'react-select';
 import { ThemeContext } from 'styled-components';
+import { Option } from './types';
 
 export interface DropdownMenuProps {
-  defaultValue: MultiValue<string> | SingleValue<string>;
-  onSelect: (value: MultiValue<string> | string) => void;
+  defaultValue: MultiValue<Option> | SingleValue<string>;
+  onSelect: (value: MultiValue<Option> | string) => void;
   placeHolder?: string;
   isMulti?: boolean;
   isSearchable?: boolean;
@@ -107,7 +108,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
     <Select
       options={options}
       onChange={(selectedItems) => {
-        onSelect(selectedItems?.value || '');
+        if (Array.isArray(selectedItems)) {
+          onSelect(selectedItems);
+        } else {
+          onSelect(selectedItems?.value || '');
+        }
       }}
       {...(menuPlacement && { menuPlacement })}
       defaultValue={defaultValue}

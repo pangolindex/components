@@ -5,6 +5,7 @@ import { TextInputProps } from '../TextInput/types';
 export type CurrencyInputProps = TextInputProps & {
   currency?: Currency | null;
   pair?: Pair | null;
+  alternativeLogoSrc?: string | null;
   isShowTextInput?: boolean;
   buttonStyle?: ButtonStyleProps;
   onTokenClick?: () => void;

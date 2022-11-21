@@ -8,9 +8,8 @@ import { useChainId } from 'src/hooks';
 import { useAllTokens, useToken } from 'src/hooks/Tokens';
 import usePrevious from 'src/hooks/usePrevious';
 import { useSelectedListInfo } from 'src/state/plists/hooks';
-import { isAddress } from 'src/utils';
+import { filterTokenOrChain, isAddress } from 'src/utils';
 import { Box, Text, TextInput } from '../../';
-import { filterTokens } from '../SearchModal/filtering';
 import { useTokenComparator } from '../SearchModal/sorting';
 import TokenListDrawer from '../TokenListDrawer';
 import CurrencyGrid from './CurrencyGrid';
@@ -74,7 +73,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     if (isAddressSearch) return searchToken ? [searchToken] : [];
     const tokens = Object.values(allTokens);
     tokens.unshift(CAVAX[chainId] as Token);
-    return filterTokens(tokens, searchQuery);
+    return filterTokenOrChain(tokens, searchQuery) as Token[];
   }, [isAddressSearch, searchToken, allTokens, searchQuery]);
 
   const filteredSortedTokens: Token[] = useMemo(() => {

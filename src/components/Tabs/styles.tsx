@@ -25,7 +25,7 @@ export const STabList = styled(TabList)`
   padding-bottom: 5px;
   padding-left: 0px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 2.5rem;
   margin: 0;
   ${({ theme }) => theme.mediaWidth.upToSmall`

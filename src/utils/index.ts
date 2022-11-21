@@ -7,6 +7,7 @@ import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts
 import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
   ALL_CHAINS,
+  BridgeCurrency,
   CAVAX,
   CHAINS,
   Chain,
@@ -17,6 +18,7 @@ import {
   JSBI,
   Percent,
   Token,
+  TokenAmount,
   Trade,
   currencyEquals,
 } from '@pangolindex/sdk';
@@ -128,6 +130,77 @@ export function getEtherscanLink(
   }
 }
 
+// compare two token amounts with highest one coming first
+export function balanceComparator(balanceA?: TokenAmount, balanceB?: TokenAmount) {
+  if (balanceA && balanceB) {
+    return balanceA.greaterThan(balanceB) ? -1 : balanceA.equalTo(balanceB) ? 0 : 1;
+  } else if (balanceA && balanceA.greaterThan('0')) {
+    return -1;
+  } else if (balanceB && balanceB.greaterThan('0')) {
+    return 1;
+  }
+  return 0;
+}
+
+export function getTokenComparator(balances: {
+  [tokenAddress: string]: TokenAmount | undefined;
+}): (tokenA: BridgeCurrency | Token, tokenB: BridgeCurrency | Token) => number {
+  return function sortTokens(tokenA: BridgeCurrency | Token, tokenB: BridgeCurrency | Token): number {
+    // -1 = a is first
+    // 1 = b is first
+
+    // sort by balances
+    const balanceA = balances[tokenA.address];
+    const balanceB = balances[tokenB.address];
+
+    const balanceComp = balanceComparator(balanceA, balanceB);
+    if (balanceComp !== 0) return balanceComp;
+
+    if (tokenA.symbol && tokenB.symbol) {
+      // sort by symbol
+      return tokenA.symbol.toLowerCase() < tokenB.symbol.toLowerCase() ? -1 : 1;
+    } else {
+      return tokenA.symbol ? -1 : tokenB.symbol ? -1 : 0;
+    }
+  };
+}
+
+export function filterTokenOrChain(
+  data: (BridgeCurrency | Token | Chain)[],
+  search: string,
+): (BridgeCurrency | Token | Chain)[] {
+  if (search.length === 0) return data;
+  const searchingAddress = isAddress(search);
+
+  if (searchingAddress) {
+    return (data as (BridgeCurrency | Token)[]).filter((element) => element?.address === searchingAddress);
+  }
+
+  const lowerSearchParts = search
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((s) => s.length > 0);
+
+  if (lowerSearchParts.length === 0) {
+    return data;
+  }
+
+  const matchesSearch = (s: string): boolean => {
+    const sParts = s
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((s) => s.length > 0);
+
+    return lowerSearchParts.every((p) => p.length === 0 || sParts.some((sp) => sp.startsWith(p) || sp.endsWith(p)));
+  };
+
+  return data.filter((element) => {
+    const { symbol, name } = element;
+
+    return (symbol && matchesSearch(symbol)) || (name && matchesSearch(name));
+  });
+}
+
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALANCHE, chars = 4): string {
   const parsed = isEvmChain(chainId) ? isAddress(address) : address;
@@ -140,6 +213,16 @@ export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALA
 // add 10%
 export function calculateGasMargin(value: BigNumber): BigNumber {
   return value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000));
+}
+
+// it convert seconds to hours/minutes HH:MM
+export function calculateTransactionTime(seconds: number | undefined): string | undefined {
+  if (!seconds) return undefined;
+  if (seconds < 60) {
+    return `${seconds} seconds`;
+  } else {
+    return `${new Date(seconds * 1000).toISOString().substring(11, 16)} min`;
+  }
 }
 
 // converts a basis points value to a sdk percent
