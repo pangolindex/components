@@ -7,6 +7,7 @@ import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { DefiConnector } from './DefiConnector';
 import { NearConnector } from './NearConnector';
 import { NetworkConnector } from './NetworkConnector';
+import { AvalancheCoreConnector } from './AvalancheCoreConnector';
 
 const NETWORK_URL = 'https://api.avax.network/ext/bc/C/rpc';
 
@@ -100,4 +101,9 @@ export const near = new NearConnector({
   normalizeAccount: false,
   config: getNearConfig('testnet'),
 });
+
+export const avalancheCore = new AvalancheCoreConnector({
+  supportedChainIds: [43113, 43114],
+});
+
 export { NearConnector };

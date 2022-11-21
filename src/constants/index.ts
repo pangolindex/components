@@ -9,7 +9,8 @@ import nearIcon from 'src/assets/images/near.svg';
 import rabbyIcon from 'src/assets/images/rabby.svg';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
-import { gnosisSafe, injected, near, walletconnect, walletlink, xDefi } from '../connectors';
+import avalancheCoreIcon from 'src/assets/images/avalancheCore.svg';
+import { gnosisSafe, injected, near, walletconnect, walletlink, xDefi, avalancheCore } from '../connectors';
 import { CommonEVMProvider, NearProvider } from '../connectors/WalletProviders';
 import { PNG } from './tokens';
 
@@ -335,7 +336,6 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#7a7cff',
     isEVM: true,
   },
-
   NEAR: {
     connector: near,
     name: 'Near',
@@ -345,6 +345,15 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     color: '#315CF5',
     primary: true,
     isEVM: false,
+  },
+  AVALANCHECORE: {
+    connector: avalancheCore,
+    name: 'Avalanche Core Wallet',
+    iconName: avalancheCoreIcon,
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#E8831D',
+    isEVM: true,
   },
 };
 
@@ -356,6 +365,7 @@ export const PROVIDER_MAPPING = {
   GNOSISSAFE: CommonEVMProvider,
   WALLET_CONNECT: CommonEVMProvider,
   RABBY: CommonEVMProvider,
+  AVALANCHECORE: CommonEVMProvider,
   NEAR: NearProvider,
 };
 

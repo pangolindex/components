@@ -7,7 +7,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
 import { Button } from 'src/components/Button';
-import { gnosisSafe, injected, xDefi } from 'src/connectors';
+import { gnosisSafe, injected, xDefi, avalancheCore } from 'src/connectors';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { ExternalLink } from 'src/theme';
 import { Box, Modal, ToggleButtons } from '../../';
@@ -50,6 +50,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
 }) => {
   // important that these are destructed from the account-specific web3-react context
   const { connector, activate, error: web3Error } = useWeb3React();
+
+  console.log('connector====', connector);
 
   const [walletType, setWalletType] = useState(CHAIN_TYPE.EVM_CHAINS as string);
 
@@ -122,12 +124,14 @@ const WalletModal: React.FC<WalletModalProps> = ({
   const isCbWalletDappBrowser = window?.ethereum?.isCoinbaseWallet;
   const isWalletlink = !!window?.WalletLinkProvider || !!window?.walletLinkExtension;
   const isCbWallet = isCbWalletDappBrowser || isWalletlink;
+  const isAvalancheCore = window.avalanche && window.avalanche.isAvalanche;
 
   const tryActivation = async (
     activationConnector: AbstractConnector | SafeAppConnector | undefined,
     option: WalletInfo | undefined,
   ) => {
     const name = Object.keys(walletOptions).find((key) => walletOptions[key].connector === activationConnector);
+
     // log selected wallet
     // eslint-disable-next-line import/no-named-as-default-member
     ReactGA.event({
@@ -144,7 +148,10 @@ const WalletModal: React.FC<WalletModalProps> = ({
       activationConnector.walletConnectProvider = undefined;
     }
 
+    console.log('activationConnector', activationConnector);
+
     if (!triedSafe && activationConnector instanceof SafeAppConnector) {
+      console.log('1===');
       activationConnector.isSafeApp().then((loadedInSafe) => {
         if (loadedInSafe) {
           activate(activationConnector, undefined, true)
@@ -158,15 +165,19 @@ const WalletModal: React.FC<WalletModalProps> = ({
         setTriedSafe(true);
       });
     } else if (activationConnector) {
+      console.log('2===', activationConnector);
       activate(activationConnector, undefined, true)
         .then(() => {
+          console.log('2-1...====');
           if (isCbWallet) {
             addAvalancheNetwork();
           } else {
+            console.log('askdjhklasdjklsajd======');
             onWalletConnect();
           }
         })
         .catch((error) => {
+          console.log('error', error);
           if (error instanceof UnsupportedChainIdError) {
             activate(activationConnector); // a little janky...can't use setError because the connector isn't set
           } else {
@@ -293,6 +304,30 @@ const WalletModal: React.FC<WalletModalProps> = ({
         // likewise for generic
         else if (option.name === 'Injected' && (isMetamask || isXDEFI)) {
           return null;
+        }
+      }
+
+      // overwrite avalanche when needed
+      else if (option.connector === avalancheCore) {
+        // don't show avalanche if there's no avalanche provider
+
+        console.log('window.avalanche==', window.avalanche);
+        if (!window.avalanche) {
+          if (option.name === 'Avalanche Core Wallet') {
+            return (
+              <Option
+                id={`connect-${key}`}
+                key={key}
+                color={'#E8831D'}
+                header={'Install Avalanche Core Wallet'}
+                subheader={null}
+                link={'https://chrome.google.com/webstore/detail/core/agoakfejjabomempkjlepdflaleeobhb'}
+                icon={option.iconName}
+              />
+            );
+          } else {
+            return null; //dont want to return install twice
+          }
         }
       }
 
