@@ -1,8 +1,9 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
 import warning from 'tiny-warning';
-import { detectAvalancheProvider } from './detectAvalanche';
-import { Send, SendOld, SendReturn, SendReturnResult } from './types';
+
+type SendReturnResult = { result: any };
+type SendReturn = any;
 
 function parseSendReturn(sendReturn: SendReturnResult | SendReturn): any {
   return sendReturn.hasOwnProperty('result') ? sendReturn.result : sendReturn;
@@ -41,7 +42,6 @@ export class AvalancheCoreConnector extends AbstractConnector {
     this.handleAccountsChanged = this.handleAccountsChanged.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.provider = window.avalanche;
-    //this.init();
   }
 
   private handleChainChanged(chainId: string | number): void {
@@ -68,15 +68,6 @@ export class AvalancheCoreConnector extends AbstractConnector {
     this.emitUpdate({ chainId: networkId, provider: this.provider });
   }
 
-  public async init() {
-    const avalancheProvider = await detectAvalancheProvider({
-      mustBeAvalanche: true,
-      silent: false,
-      timeout: 30000,
-    });
-    this.provider = avalancheProvider;
-  }
-
   public async activate(): Promise<ConnectorUpdate> {
     if (!this.provider) {
       throw new NoAvalancheCoreError();
@@ -88,12 +79,9 @@ export class AvalancheCoreConnector extends AbstractConnector {
       const accounts = await this.provider.request({ method: 'eth_requestAccounts' });
 
       if (accounts) {
-        account = accounts[0];
+        account = parseSendReturn(accounts)[0];
       }
     } catch (error) {
-      // if ((error as any).code === 4001) {
-      //   throw new UserRejectedRequestError();
-      // }
       warning(false, 'eth_requestAccounts was unsuccessful, falling back to enable');
     }
 
@@ -103,7 +91,7 @@ export class AvalancheCoreConnector extends AbstractConnector {
       const accounts = await this.provider.enable();
 
       if (accounts) {
-        account = accounts[0];
+        account = parseSendReturn(accounts)[0];
       }
     }
 
@@ -121,7 +109,7 @@ export class AvalancheCoreConnector extends AbstractConnector {
 
     let chainId;
     try {
-      chainId = await this.provider.request({ method: 'eth_chainId' }).then(parseSendReturn);
+      chainId = await this.provider.request({ method: 'eth_chainId' });
     } catch {
       warning(false, 'eth_chainId was unsuccessful, falling back to net_version');
     }
@@ -138,21 +126,33 @@ export class AvalancheCoreConnector extends AbstractConnector {
 
     let account;
     try {
-      account = await (this.provider.send as Send)('eth_accounts').then((sendReturn) => parseSendReturn(sendReturn)[0]);
+      const accounts = await this.provider.send({ method: 'eth_accounts' });
+
+      if (accounts) {
+        account = parseSendReturn(accounts)[0];
+      }
     } catch {
       warning(false, 'eth_accounts was unsuccessful, falling back to enable');
     }
 
     if (!account) {
       try {
-        account = await this.provider.enable().then((sendReturn: any) => parseSendReturn(sendReturn)[0]);
+        const accounts = await this.provider.enable();
+
+        if (accounts) {
+          account = parseSendReturn(accounts)[0];
+        }
       } catch {
         warning(false, 'enable was unsuccessful, falling back to eth_accounts v2');
       }
     }
 
     if (!account) {
-      account = parseSendReturn((this.provider.send as SendOld)({ method: 'eth_accounts' }))[0];
+      const accounts = await this.provider.send({ method: 'eth_accounts' });
+
+      if (accounts) {
+        account = parseSendReturn(accounts)[0];
+      }
     }
 
     return account;
@@ -173,10 +173,5 @@ export class AvalancheCoreConnector extends AbstractConnector {
       return true;
     }
     return false;
-
-    // if (!this.provider?.isConnected?.()) {
-    //   return true;
-    // }
-    // return false;
   }
 }
