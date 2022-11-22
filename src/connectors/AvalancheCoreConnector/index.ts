@@ -1,8 +1,8 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
 import warning from 'tiny-warning';
-import { SendReturn, SendReturnResult, Send, SendOld } from './types';
 import { detectAvalancheProvider } from './detectAvalanche';
+import { Send, SendOld, SendReturn, SendReturnResult } from './types';
 
 function parseSendReturn(sendReturn: SendReturnResult | SendReturn): any {
   return sendReturn.hasOwnProperty('result') ? sendReturn.result : sendReturn;
@@ -40,8 +40,8 @@ export class AvalancheCoreConnector extends AbstractConnector {
     this.handleChainChanged = this.handleChainChanged.bind(this);
     this.handleAccountsChanged = this.handleAccountsChanged.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    //this.provider = window.avalanche;
-    this.init();
+    this.provider = window.avalanche;
+    //this.init();
   }
 
   private handleChainChanged(chainId: string | number): void {
@@ -85,20 +85,26 @@ export class AvalancheCoreConnector extends AbstractConnector {
     // try to activate + get account via eth_requestAccounts
     let account;
     try {
-      account = await (this.provider.send as Send)('eth_requestAccounts').then(
-        (sendReturn) => parseSendReturn(sendReturn)[0],
-      );
-    } catch (error) {
-      if ((error as any).code === 4001) {
-        throw new UserRejectedRequestError();
+      const accounts = await this.provider.request({ method: 'eth_requestAccounts' });
+
+      if (accounts) {
+        account = accounts[0];
       }
+    } catch (error) {
+      // if ((error as any).code === 4001) {
+      //   throw new UserRejectedRequestError();
+      // }
       warning(false, 'eth_requestAccounts was unsuccessful, falling back to enable');
     }
 
     // if unsuccessful, try enable
     if (!account) {
       // if enable is successful but doesn't return accounts, fall back to getAccount (not happy i have to do this...)
-      account = await this.provider.enable().then((sendReturn: any) => sendReturn && parseSendReturn(sendReturn)[0]);
+      const accounts = await this.provider.enable();
+
+      if (accounts) {
+        account = accounts[0];
+      }
     }
 
     return { provider: this.provider, ...(account ? { account } : {}) };
@@ -157,13 +163,20 @@ export class AvalancheCoreConnector extends AbstractConnector {
   }
 
   public async isAuthorized(): Promise<boolean> {
+    const account = await this.getAccount();
+
     if (!this.provider) {
       throw new NoAvalancheCoreError();
     }
 
-    if (!this.provider?.isConnected?.()) {
+    if (account) {
       return true;
     }
     return false;
+
+    // if (!this.provider?.isConnected?.()) {
+    //   return true;
+    // }
+    // return false;
   }
 }

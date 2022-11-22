@@ -50,8 +50,6 @@ const WalletModal: React.FC<WalletModalProps> = ({
   // important that these are destructed from the account-specific web3-react context
   const { connector, activate, error: web3Error } = useWeb3React();
 
-  console.log('connector====', connector);
-
   const [walletType, setWalletType] = useState(CHAIN_TYPE.EVM_CHAINS as string);
 
   const [walletView, setWalletView] = useState('');
@@ -149,10 +147,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
       activationConnector.walletConnectProvider = undefined;
     }
 
-    console.log('activationConnector', activationConnector);
-
     if (!triedSafe && activationConnector instanceof SafeAppConnector) {
-      console.log('1===');
       activationConnector.isSafeApp().then((loadedInSafe) => {
         if (loadedInSafe) {
           activate(activationConnector, undefined, true)
@@ -166,10 +161,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
         setTriedSafe(true);
       });
     } else if (activationConnector) {
-      console.log('2===', activationConnector);
       activate(activationConnector, undefined, true)
         .then(() => {
-          console.log('2-1...====');
           if (isCbWallet) {
             addAvalancheNetwork();
           } else {
@@ -177,7 +170,6 @@ const WalletModal: React.FC<WalletModalProps> = ({
           }
         })
         .catch((error) => {
-          console.log('error', error);
           if (error instanceof UnsupportedChainIdError) {
             activate(activationConnector); // a little janky...can't use setError because the connector isn't set
           } else {
@@ -197,6 +189,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
         return SUPPORTED_WALLETS.BITKEEP;
       } else if (isMetamask) {
         return SUPPORTED_WALLETS.METAMASK;
+      } else if (isAvalancheCore) {
+        return SUPPORTED_WALLETS.AVALANCHECORE;
       }
       return SUPPORTED_WALLETS.INJECTED;
     }
@@ -360,7 +354,6 @@ const WalletModal: React.FC<WalletModalProps> = ({
       else if (option.connector === avalancheCore) {
         // don't show avalanche if there's no avalanche provider
 
-        console.log('window.avalanche==', window.avalanche);
         if (!window.avalanche) {
           if (option.name === 'Avalanche Core Wallet') {
             return (
