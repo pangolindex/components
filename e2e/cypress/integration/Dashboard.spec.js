@@ -6,16 +6,21 @@ import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
 import {switchingValues} from '../support/src/swap'
 
 describe('Dashboard', () => {
-    Cypress.on('uncaught:exception', (err, runnable) => {
-        // returning false here prevents Cypress from
-        // failing the test
-        return false
-    })
     const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, linkBtn, swapIcon, dashboardIcon, connectWalletMsg, connectWallet, tokenMouseOverEnable, PNGBtn, PNGValue, addPNG, PNGLogo, showBalanceBtn, hideBalanceBtn, tokensList, disabledTokens, newsLinks, avalancheBtn, selectChain, selectChainCrossBtn, claimLink, detailsCrossBtn, detailsTitle, gasToken, walletAdd, chains, poweredBy} = selectors.dashboard
     const { languagesArray, tokenName, AvaxToken, switchArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, usd, coinBase, bridgeSwap, connectToWalletMsg, connectToWallet, linkUrl, swap, hideBalance, showBalance} = data.dashboard
     const {pangolinLinksArr} = data
     const legUrl = "https://legacy.pangolin.exchange/#/"
     beforeEach('', () => {
+        Cypress.on('uncaught:exception', (err, runnable, promise) => {
+
+            // if (err.message.includes("TypeError")) {
+            //     return false
+            // }
+          
+            if (err.name === "TypeError: Cannot read properties of undefined (reading 'onFail')") {
+                return false
+            }
+          })
         cy.visit('/dashboard')
     })
 

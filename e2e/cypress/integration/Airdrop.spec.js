@@ -8,12 +8,22 @@ const {connectToWallet} = data.dashboard
 describe(`Airdrop`, () => {
     beforeEach('',() => {
         cy.visit('/')
-            // Preserve cookie in every test
-        Cypress.on('uncaught:exception', (err, runnable) => {
-            // returning false here prevents Cypress from
-            // failing the test
-            return false
-        })
+        // Cypress.on('uncaught:exception', (err, runnable) => {
+        //     // returning false here prevents Cypress from
+        //     // failing the test
+        //     return false
+        // })
+        Cypress.on('uncaught:exception', (err, runnable, promise) => {
+
+            // if (err.message.includes("TypeError")) {
+            //     return false
+            // }
+          
+            if (err.name === 'TypeError') {
+                return false
+            }
+          })
+
         cy.get('#airdrop').click()
     })
     

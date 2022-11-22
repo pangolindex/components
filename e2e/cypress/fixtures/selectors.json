@@ -196,6 +196,11 @@
         "addBtn": "button[class='sc-gsnTZi gWablx']",
         "addBtnEnabled": "button[class='sc-gsnTZi hqjTCF']",
         "testnetTokenlist": "div[class='sc-jSMfEi gZmkHg']",
-        "removeListEnabled": "div[class='sc-jSMfEi sc-fpcwso qobJZ gTPHjG']"
+        "removeListEnabled": "div[class='sc-jSMfEi sc-fpcwso qobJZ gTPHjG']",
+        "importPoolLink": "div[class='sc-jSMfEi gTbsrK']",
+        "importPoolTitle": "div[class='sc-jSMfEi cKdnJn']",
+        "importConnectWalletBtn": "div[class='sc-jSMfEi RXmdt']",
+        "importSelectTokens": "div[class='sc-jSMfEi bNwKAa']",
+        "importDropdownTokens": "div[class='sc-bdxVC hZpdoX']"
     }
 }

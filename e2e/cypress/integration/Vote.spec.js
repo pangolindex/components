@@ -44,11 +44,11 @@ describe('Vote', () => {
                 .should('contain', `${proposalsArray[i]}`)
             cy.get(forfield ).then( $test => {
                 cy.contains($test[0].children[0].children[0].innerText).should('be.visible')
-                cy.contains($test[0].children[0].children[1].innerText).should('be.visible')
+                cy.contains($test[0].children[0].children[1].innerText).should('not.be.empty')
             })
             cy.get(forValue).contains('Against').should('be.visible').then($test1 => {
                 cy.get($test1).find(againstValue).then($test2 => {
-                cy.log(cy.contains($test2[0].innerText).should('be.visible'))
+                cy.log(cy.contains($test2[0].innerText).should('not.be.empty'))
                 })
             })
            cy.get(voteLinks).each(page => {

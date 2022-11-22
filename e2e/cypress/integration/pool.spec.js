@@ -3,7 +3,7 @@ import 'cypress-wait-until'
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data.json'
 
-const {poolsSideMenu, poolsSideMenuSelect, searchFieldPool, cardTitleSuper, cardTitleAllFarm, cardBody, cardtvlApr, cardTvl, tvlAprValues, rewardsInLogos, seeDetailsBtn, detailsTitle, detailsLinks, detailsCrossBtn, superFarmTitle, addLiqBtn, superFarm, seeDetailsBlock, totalStakeBlock, totalStakeTitle, titleValues, yourPools, yourPoolsMsge, createPairBtn, createPairDropdown, createPairToken, createPairMsge, addLiqField, addLiqConnectWalletBtn, addLiqCrossBtn, noFarmsMsge, AllfarmsMaxBtn, AllfarmsMaxfield, AllfarmsFarmBtn, AllfarmsConnectBtn, AllfarmsStepper, PGLField, dollarWorth, weeklyIncome, yourFarms, manageListsTitle, tokenLists, dropdownArrow, removeList, viewList, toggleTokenList, tokenListSearch, addBtn, addBtnEnabled, testnetTokenlist, removeListEnabled} = selectors.pools
+const {poolsSideMenu, poolsSideMenuSelect, searchFieldPool, cardTitleSuper, cardTitleAllFarm, cardBody, cardtvlApr, cardTvl, tvlAprValues, rewardsInLogos, seeDetailsBtn, detailsTitle, detailsLinks, detailsCrossBtn, superFarmTitle, addLiqBtn, superFarm, seeDetailsBlock, totalStakeBlock, totalStakeTitle, titleValues, yourPools, yourPoolsMsge, createPairBtn, createPairDropdown, createPairToken, createPairMsge, addLiqField, addLiqConnectWalletBtn, addLiqCrossBtn, noFarmsMsge, AllfarmsMaxBtn, AllfarmsMaxfield, AllfarmsFarmBtn, AllfarmsConnectBtn, AllfarmsStepper, PGLField, dollarWorth, weeklyIncome, yourFarms, manageListsTitle, tokenLists, dropdownArrow, removeList, viewList, toggleTokenList, tokenListSearch, addBtn, addBtnEnabled, testnetTokenlist, removeListEnabled, importPoolLink, importPoolTitle, importConnectWalletBtn, importSelectTokens, importDropdownTokens} = selectors.pools
 const {yourPoolsMessage, createPair, testnet} = data.pools
 const {connectToWallet} = data.dashboard
 const {connectWalletTxt} = data.swap
@@ -17,15 +17,6 @@ describe('Pools', () => {
             // failing the test
             return false
         }) 
-        // const app = window.top;
-        // if (!app.document.head.querySelector('[data-hide-command-log-request]')) {
-        // const style = app.document.createElement('style');
-        // style.innerHTML =
-        //     '.command-name-request, .command-name-xhr { display: none }';
-        // style.setAttribute('data-hide-command-log-request', '');
-
-        // app.document.head.appendChild(style);
-        // }
         cy.get('#pool').click()
     })
 
@@ -191,6 +182,59 @@ describe('Pools', () => {
             cy.get(detailsCrossBtn).eq(3).click()
         })        
     })
+
+    /******************* Assertions on Pangolin Tokenlist **************************/
+    it('TC-187,188,189,190,191,192,193,194,195,196 Verify that the "Pangolin Tokenlist" link appears on the dropdown', () => {
+        cy.get(createPairBtn).contains(createPair).click({force:true})
+        cy.get(createPairDropdown).eq(0).click()
+        cy.get(createPairToken).contains("Pangolin Tokenlist").should("be.visible")
+        cy.get(createPairToken).contains("Pangolin Tokenlist").click()
+        cy.get(manageListsTitle).contains("Manage Lists").should("be.visible")
+        cy.get(tokenLists).then($tokenlists => {
+            if($tokenlists.length === 1){
+                cy.get($tokenlists).find(dropdownArrow).click()
+                cy.get(removeList).contains('Remove list').scrollIntoView().should('have.attr', 'disabled')
+                cy.get(viewList).each(page => {
+                    cy.request(page.prop('href')).as('link');
+                });
+                cy.get('@link').should(response => {
+                    expect(response.status).to.eq(200);
+                });
+                cy.get(toggleTokenList).click()
+                cy.get(toggleTokenList).should("have.css", "background-color", "rgb(255, 200, 0)")
+            }
+        })
+        cy.get(tokenListSearch).clear({force: true})
+        cy.get(addBtn).should("have.css", "background-color", "rgb(229, 229, 229)")
+        cy.wait(10000)
+        cy.get(tokenListSearch).type(testnet)
+        cy.wait(10000)
+        cy.waitUntil(() => cy.get(addBtnEnabled)).contains("Add").should("have.css", "background-color", "rgb(255, 200, 0)")
+        cy.get(addBtnEnabled).contains("Add").click({force: true})
+        cy.get(addBtn).should("have.css", "background-color", "rgb(229, 229, 229)")
+        cy.wait(5000)
+        cy.get(testnetTokenlist).contains("Testnet Tokens").should("be.visible")
+        cy.get(tokenLists).then($tokenlists => {
+            if($tokenlists.length > 1){
+                cy.get(toggleTokenList).eq(1).click({force: true})
+                cy.get(toggleTokenList).eq(1).should("have.css", "background-color", "rgb(255, 200, 0)")
+                cy.get(toggleTokenList).eq(1).click({force: true})
+                cy.get(toggleTokenList).eq(1).should("have.css", "background-color", "rgb(206, 208, 217)")
+                cy.get($tokenlists).find(dropdownArrow).eq(1).click({force: true})
+                cy.window().then(function(p){
+                    cy.stub(p, "prompt").returns("remove");
+                    cy.get(removeListEnabled).scrollIntoView().contains('Remove list').scrollIntoView().click({force: true})
+                 });
+                 cy.get(testnetTokenlist).contains("Testnet Tokens").should("not.exist")
+            }
+        })
+    })
+
+    /******************* Assertions on Import Pool **************************/
+    it('TC-197, Verify that the "Import Pool" card appears when the user clicks on the import link', () => {
+        cy.get(importPoolLink).contains("Import it.").click()
+        cy.get(importPoolTitle).contains("Import Pool").should("be.visible")
+    })
     
     /******************* Assertions on the Your pools page **************************/
     it('TC-205, Verify that the user cannot see the pools in the Your Pools section if the wallet is not connected', () => {
@@ -309,50 +353,15 @@ describe('Pools', () => {
         }) 
     }) 
 
-    /******************* Assertions on Pangolin Tokenlist **************************/
-    it.only('TC-187,188,189,190,191,192,193,194,195,196 Verify that the "Pangolin Tokenlist" link appears on the dropdown', () => {
-        cy.get(createPairBtn).contains(createPair).click({force:true})
-        cy.get(createPairDropdown).eq(0).click()
-        cy.get(createPairToken).contains("Pangolin Tokenlist").should("be.visible")
-        cy.get(createPairToken).contains("Pangolin Tokenlist").click()
-        cy.get(manageListsTitle).contains("Manage Lists").should("be.visible")
-        cy.get(tokenLists).then($tokenlists => {
-            if($tokenlists.length === 1){
-                cy.get($tokenlists).find(dropdownArrow).click()
-                cy.get(removeList).contains('Remove list').scrollIntoView().should('have.attr', 'disabled')
-                cy.get(viewList).each(page => {
-                    cy.request(page.prop('href')).as('link');
-                });
-                cy.get('@link').should(response => {
-                    expect(response.status).to.eq(200);
-                });
-                cy.get(toggleTokenList).click()
-                cy.get(toggleTokenList).should("have.css", "background-color", "rgb(255, 200, 0)")
-            }
-        })
-        cy.get(tokenListSearch).eq(1).clear({force: true})
-        cy.get(addBtn).should("have.css", "background-color", "rgb(229, 229, 229)")
-        cy.wait(10000)
-        cy.get(tokenListSearch).type(testnet)
-        cy.wait(10000)
-        cy.waitUntil(() => cy.get(addBtnEnabled)).contains("Add").should("have.css", "background-color", "rgb(255, 200, 0)")
-        cy.get(addBtnEnabled).contains("Add").click({force: true})
-        cy.get(addBtn).should("have.css", "background-color", "rgb(229, 229, 229)")
-        cy.wait(5000)
-        cy.get(testnetTokenlist).contains("Testnet Tokens").should("be.visible")
-        cy.get(tokenLists).then($tokenlists => {
-            if($tokenlists.length > 1){
-                cy.get(toggleTokenList).eq(1).click({force: true})
-                cy.get(toggleTokenList).eq(1).should("have.css", "background-color", "rgb(255, 200, 0)")
-                cy.get(toggleTokenList).eq(1).click({force: true})
-                cy.get(toggleTokenList).eq(1).should("have.css", "background-color", "rgb(206, 208, 217)")
-                cy.get($tokenlists).find(dropdownArrow).eq(1).click({force: true})
-                cy.window().then(function(p){
-                    cy.stub(p, "prompt").returns("remove");
-                    cy.get(removeListEnabled).scrollIntoView().contains('Remove list').scrollIntoView().click({force: true})
-                 });
-                 cy.get(testnetTokenlist).contains("Testnet Tokens").should("not.exist")
-            }
-        })
+    /******************* Assertions on importing pool **************************/
+    it('TC-217, Verify that the user cannot import/find a pool if the wallet is not connected', () => {
+        cy.get(importPoolLink).contains("Import it.").click()
+        cy.get(importPoolTitle).contains("Import Pool").should("be.visible") 
+        cy.get(importConnectWalletBtn).contains("Connect to a wallet to find pools")
+            .should("be.visible")
+        cy.get(importSelectTokens).click()
+        cy.get(importDropdownTokens).eq(1).click()
+        cy.get(importConnectWalletBtn).contains("Connect to a wallet to find pools")
+            .should("be.visible")
     }) 
 })
