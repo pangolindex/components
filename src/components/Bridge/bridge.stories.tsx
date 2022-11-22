@@ -17,7 +17,7 @@ export default {
 
 const TemplateBridge: ComponentStory<typeof Bridge> = (args: any) => {
   return (
-    <Box maxWidth={'1000px'}>
+    <Box maxWidth={'1250px'}>
       <Bridge {...args} />
     </Box>
   );

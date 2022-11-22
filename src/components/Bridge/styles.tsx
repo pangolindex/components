@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Box } from '../Box';
+import { TabPanel } from '../Tabs';
 
 export const PageWrapper = styled(Box)`
   width: 100%;
@@ -39,13 +40,20 @@ export const Routes = styled.div`
   `};
 `;
 
-export const Transfers = styled.table`
+export const LoaderWrapper = styled(Box)`
+  flex: 1;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  padding-top: 50px;
-  padding-bottom: 30px;
-  overflow-y: auto;
-  white-space: nowrap;
-  width: 100%;
+  z-index: 999;
+  position: absolute;
+  align-items: center;
+  pointer-events: all;
+  justify-content: center;
+  background-color: ${({ theme }) => theme.bridge?.secondaryBgColor + '70'}; // opacity 70%
+`;
+
+export const CustomTabPanel = styled(TabPanel)`
+  position: relative;
 `;
