@@ -2,13 +2,6 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
 import warning from 'tiny-warning';
 
-type SendReturnResult = { result: any };
-type SendReturn = any;
-
-function parseSendReturn(sendReturn: SendReturnResult | SendReturn): any {
-  return sendReturn.hasOwnProperty('result') ? sendReturn.result : sendReturn;
-}
-
 export const AVALANCHE_NOT_INSTALLED_ERROR = 'Avalanche not installed';
 
 function parseChainId(chainId: string) {
@@ -79,7 +72,7 @@ export class AvalancheCoreConnector extends AbstractConnector {
       const accounts = await this.provider.request({ method: 'eth_requestAccounts' });
 
       if (accounts) {
-        account = parseSendReturn(accounts)[0];
+        account = accounts[0];
       }
     } catch (error) {
       warning(false, 'eth_requestAccounts was unsuccessful, falling back to enable');
@@ -91,7 +84,7 @@ export class AvalancheCoreConnector extends AbstractConnector {
       const accounts = await this.provider.enable();
 
       if (accounts) {
-        account = parseSendReturn(accounts)[0];
+        account = accounts[0];
       }
     }
 
@@ -126,10 +119,10 @@ export class AvalancheCoreConnector extends AbstractConnector {
 
     let account;
     try {
-      const accounts = await this.provider.send({ method: 'eth_accounts' });
+      const accounts = await this.provider.request({ method: 'eth_accounts' });
 
       if (accounts) {
-        account = parseSendReturn(accounts)[0];
+        account = accounts[0];
       }
     } catch {
       warning(false, 'eth_accounts was unsuccessful, falling back to enable');
@@ -140,7 +133,7 @@ export class AvalancheCoreConnector extends AbstractConnector {
         const accounts = await this.provider.enable();
 
         if (accounts) {
-          account = parseSendReturn(accounts)[0];
+          account = accounts[0];
         }
       } catch {
         warning(false, 'enable was unsuccessful, falling back to eth_accounts v2');
@@ -148,10 +141,10 @@ export class AvalancheCoreConnector extends AbstractConnector {
     }
 
     if (!account) {
-      const accounts = await this.provider.send({ method: 'eth_accounts' });
+      const accounts = await this.provider.request({ method: 'eth_accounts' });
 
       if (accounts) {
-        account = parseSendReturn(accounts)[0];
+        account = accounts[0];
       }
     }
 
