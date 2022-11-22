@@ -2,6 +2,7 @@ import { ALL_CHAINS } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useMixpanel } from 'src/hooks/mixpanel';
 import { PairDataUser, TokenDataUser, useGetChainsBalances, useGetWalletChainTokens } from 'src/state/pportfolio/hooks';
 import { Box } from '../Box';
 import { Loader } from '../Loader';
@@ -20,6 +21,8 @@ const MyPortfolio: React.FC = () => {
   const { data: balances, isLoading } = useGetChainsBalances();
   const { data: chainTokens, isLoading: isLoadingTokens } = useGetWalletChainTokens(selectChain);
 
+  const mixpanel = useMixpanel();
+
   useEffect(() => {
     if (balances) {
       if (balances.chains.length > 0) {
@@ -32,6 +35,7 @@ const MyPortfolio: React.FC = () => {
 
   const handleShowBalances = useCallback(() => {
     setShowBalances(!showBalances);
+    mixpanel.track(!showBalances ? 'Hidden Balance' : 'Shown Balance', { widget: 'portfolio' });
   }, [showBalances]);
 
   const renderChain = (_chain: { chainID: number; balance: number }, key: number) => {
