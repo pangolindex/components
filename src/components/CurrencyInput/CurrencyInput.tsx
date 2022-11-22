@@ -4,19 +4,22 @@ import { Box } from '../Box';
 import CurrencyLogo from '../CurrencyLogo';
 import { DoubleCurrencyLogo } from '../DoubleCurrencyLogo';
 import { TextInput } from '../TextInput';
-import { Aligner, CurrencySelect, StyledTokenName } from './styles';
+import { Aligner, AlternativeLogo, CurrencySelect, StyledTokenName } from './styles';
 import { CurrencyInputProps } from './types';
 
 const CurrencyInput = ({
   buttonStyle,
   pair,
+  alternativeLogoSrc = null,
   currency,
   isShowTextInput = true,
   onTokenClick,
   ...rest
 }: CurrencyInputProps) => {
   const renderCurrency = () => {
-    if (pair) {
+    if (alternativeLogoSrc) {
+      return <AlternativeLogo src={alternativeLogoSrc} size={24} />;
+    } else if (pair) {
       return <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />;
     } else if (currency) {
       return <CurrencyLogo currency={currency} size={24} imageSize={48} />;
@@ -53,7 +56,7 @@ const CurrencyInput = ({
         }}
         buttonStyle={buttonStyle}
       >
-        <Aligner active={Boolean(currency && currency.symbol)}>
+        <Aligner buttonStyle={buttonStyle} active={Boolean(currency && currency.symbol)}>
           {renderCurrency()}
           {renderStyletoken()}
           <ChevronDown color={!Boolean(currency && currency.symbol) ? 'black' : undefined} />

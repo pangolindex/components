@@ -710,13 +710,16 @@
     "decreaseWarning": "Yeni bileşik kısım 0 nisan ile başladığı için apr'ınız düşecek ve eski ile yeni kısım arasında bir ortalama alınacaktır."
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Mevcut Rotalar ({{ number }})",
+    "noRoute": "Bu çift için geçerli bir rota bulunamadı.",
     "activeTransfers": "Aktif Transferler ({{ number }})",
     "historicalTransfers": "Geçmiş Transferler ({{ number }})",
     "bridgeCard": {
       "advanceOptions": "Gelişmiş Seçenekler",
       "title": "Cross Chain",
       "swap": "Swap",
+      "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
           "waitingReceivingChain": "Waiting for receiving chain..."
@@ -734,7 +737,9 @@
     },
     "bridgeInputsWidget": {
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
-      "max": "MAX"
+      "max": "MAX",
+      "recipient": "Recipient",
+      "walletAddress": "Wallet Address"
     },
     "bridgeRoute": {
       "selected": "Seçildi",
@@ -743,7 +748,7 @@
       "estimatedToken": "Tahmini Token: {{ token }}",
       "estimatedResult": "Tahmini Result: {{ result }}",
       "min": "{{ minute }} dk",
-      "gasCost": "{{ gasCost }} Gas Cost"
+      "gasCost": "{{ gasCost }} USD Gas Cost"
     },
     "bridgeTransfer": {
       "date": "Tarih",
@@ -755,8 +760,10 @@
     },
     "bridgePrioritizations": {
       "recommended": "Önerilen",
-      "fast": "Hızlı",
-      "normal": "Normal"
+      "fastest": "Hızlı",
+      "normal": "Normal",
+      "safest": "Güvenli",
+      "cheapest": "Ucuz"
     }
   },
   "dropdown": {
