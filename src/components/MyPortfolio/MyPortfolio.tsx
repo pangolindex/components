@@ -1,8 +1,9 @@
-import { ALL_CHAINS } from '@pangolindex/sdk';
+import { ALL_CHAINS, CHAINS, Chain } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { PairDataUser, TokenDataUser, useGetChainsBalances, useGetWalletChainTokens } from 'src/state/pportfolio/hooks';
+import { useShowBalancesManager } from 'src/state/puser/hooks';
 import { Box } from '../Box';
 import { Loader } from '../Loader';
 import ToggleBalanceButton from '../Portfolio/ToggleBalanceButton';
@@ -14,7 +15,8 @@ const MyPortfolio: React.FC = () => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
-  const [showBalances, setShowBalances] = useState(true);
+  const [showUserBalances, setUserShowBalances] = useShowBalancesManager();
+  const [showBalances, setShowBalances] = useState(showUserBalances);
   const [selectChain, setSelectChain] = useState(43114);
 
   const { data: balances, isLoading } = useGetChainsBalances();
@@ -22,24 +24,30 @@ const MyPortfolio: React.FC = () => {
 
   useEffect(() => {
     if (balances) {
-      if (balances.chains.length > 0) {
+      if (Object.keys(balances).length > 0) {
         // if chainId in balances.chains then selectChain = chainId
-        const _chain = balances.chains.find((chain) => chain.chainID === chainId);
-        setSelectChain(_chain ? chainId : balances.chains[0].chainID);
+        const _chain = Object.keys(balances).find(
+          (chainID) => chainID.toLowerCase() === CHAINS[chainId].symbol.toLowerCase(),
+        );
+        // find in ALL_CHAINS the chainid of first chain key in balances, if doesn't exist put avalance
+        const firstChainId =
+          ALL_CHAINS.find((chain) => chain.symbol.toLowerCase() === Object.keys(balances)[0].toLowerCase())?.chain_id ??
+          43114;
+        setSelectChain(_chain ? chainId : firstChainId);
       }
     }
   }, [balances]);
 
   const handleShowBalances = useCallback(() => {
+    setUserShowBalances(!showBalances);
     setShowBalances(!showBalances);
   }, [showBalances]);
 
-  const renderChain = (_chain: { chainID: number; balance: number }, key: number) => {
-    const chain = ALL_CHAINS.filter((value) => value.chain_id === _chain.chainID)[0];
-    const balance = _chain.balance.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
-    const isSelected = selectChain === _chain.chainID;
+  const renderChain = (chain: Chain, balance: number, key: number) => {
+    const balanceFormmated = balance.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+    const isSelected = selectChain === chain.chain_id;
     return (
-      <SelectedCard key={key} onClick={() => setSelectChain(_chain.chainID)} selected={isSelected}>
+      <SelectedCard key={key} onClick={() => setSelectChain(chain.chain_id ?? 43114)} selected={isSelected}>
         <img width="26px" height="26px" src={chain?.logo} alt={'Chain logo'} />
         <Box height="100%" display="flex" justifyContent="center" flexDirection="column">
           <Text fontSize={12} color="text1">
@@ -47,7 +55,7 @@ const MyPortfolio: React.FC = () => {
           </Text>
           {showBalances ? (
             <Text fontSize={12} color="text13">
-              ${balance}
+              ${balanceFormmated}
             </Text>
           ) : (
             <Box display="flex" flexDirection="row">
@@ -134,14 +142,24 @@ const MyPortfolio: React.FC = () => {
               </Box>
               <Box width="100%" height="100%" minHeight="128px">
                 <Scrollbars style={{ width: '100%', height: '100%' }}>
-                  <Frame>{balances.chains.map((chain, key) => renderChain(chain, key))}</Frame>
+                  <Frame>
+                    {Object.keys(balances.chains).map((chainID, key) => {
+                      const chain = ALL_CHAINS.find((value) => value.symbol.toLowerCase() == chainID.toLowerCase());
+                      const balance = balances.chains[chainID] as number; // if exist chain key exist balance
+
+                      if (chain) {
+                        return renderChain(chain, balance, key);
+                      }
+                      return null;
+                    })}
+                  </Frame>
                 </Scrollbars>
               </Box>
             </Box>
             <Box width="100%">
-              {isLoadingTokens || !chainTokens ? (
+              {isLoadingTokens ? (
                 <Loader size={100} />
-              ) : chainTokens.length == 0 ? (
+              ) : !chainTokens || chainTokens.length == 0 ? (
                 <Text fontSize={18} color="text1" textAlign="center">
                   Not found tokens on this chain
                 </Text>
