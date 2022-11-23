@@ -3,6 +3,7 @@ import { CHAINS, ChainId, ChefType, Fraction, JSBI, Percent, StakingType, Token,
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import BN from 'bn.js';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
+import avalancheCoreIcon from 'src/assets/images/avalancheCore.svg';
 import bitKeepIcon from 'src/assets/images/bitkeep.svg';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
@@ -15,6 +16,7 @@ import venlyIcon from 'src/assets/images/venly.png';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
 import {
+  avalancheCore,
   bitKeep,
   gnosisSafe,
   hashConnect,
@@ -358,6 +360,16 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     description: 'Venly Wallet Connect',
     href: null,
     color: '#7735ea',
+    primary: true,
+    isEVM: true,
+  },
+  AVALANCHECORE: {
+    connector: avalancheCore,
+    name: 'Avalanche Core Wallet',
+    iconName: avalancheCoreIcon,
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#E8831D',
     primary: true,
     isEVM: true,
   },
