@@ -29,6 +29,7 @@ export const MixPanelProvider: FC<MixPanelProviderProps> = ({ children, mixpanel
         console.error('Error activating Mixpanel: ', error);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const track = useCallback((event: string, properties: { [x: string]: any }) => {
@@ -39,7 +40,7 @@ export const MixPanelProvider: FC<MixPanelProviderProps> = ({ children, mixpanel
     return {
       track: activedMixPanel ? track : dummyTrack,
     };
-  }, [activedMixPanel]);
+  }, [activedMixPanel, track]);
 
   return <MixPanelContext.Provider value={state}>{children}</MixPanelContext.Provider>;
 };
