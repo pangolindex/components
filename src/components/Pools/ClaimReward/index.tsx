@@ -5,7 +5,7 @@ import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/compo
 import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useStakingContract } from 'src/hooks/useContract';
 import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -61,7 +61,7 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
         setHash(response.hash);
         const tokenA = stakingInfo.tokens[0];
         const tokenB = stakingInfo.tokens[1];
-        mixpanel.track('Claimed rewards', {
+        mixpanel.track(MixPanelEvents.CLAIM_REWARDS, {
           chainId: chainId,
           tokenA: tokenA?.symbol,
           tokenb: tokenB?.symbol,
