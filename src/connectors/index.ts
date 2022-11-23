@@ -5,6 +5,7 @@ import { InjectedConnector } from '@pangolindex/web3-react-injected-connector';
 import { TalismanConnector } from '@talismn/web3react-v6-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
+import { AvalancheCoreConnector } from './AvalancheCoreConnector';
 import { BitKeepConnector } from './BitKeepConnector';
 import { DefiConnector } from './DefiConnector';
 import { HashConnector } from './HashConnector';
@@ -129,6 +130,10 @@ export const hashConnect = new HashConnector({
     chainId: ChainId.HEDERA_TESTNET,
     contractId: 'contract -id',
   },
+});
+
+export const avalancheCore = new AvalancheCoreConnector({
+  supportedChainIds: [43113, 43114],
 });
 
 export { NearConnector, HashConnector };
