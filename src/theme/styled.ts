@@ -165,6 +165,11 @@ export interface Colors {
     primaryBgColor?: Color;
   };
 
+  chainInput: {
+    text?: Color;
+    primaryBgColor?: Color;
+  };
+
   primary: Color;
   mustardYellow: Color;
   eerieBlack: Color;

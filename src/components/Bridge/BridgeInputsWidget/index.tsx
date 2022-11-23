@@ -1,23 +1,34 @@
-import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
-import React, { useContext } from 'react';
+import { Currency } from '@pangolindex/sdk';
+import React, { useCallback, useContext } from 'react';
 import { Info } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, CurrencyInput, Text, TextInput, Tooltip } from 'src/components';
+import { Box, Button, ChainInput, CurrencyInput, Text, TextInput, Tooltip } from 'src/components';
 import { Currencies } from './styles';
 import { BridgeInputsWidgetProps } from './types';
 
 const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
-  const { onChangeTokenDrawerStatus, title, inputDisabled } = props;
+  const {
+    onChangeTokenDrawerStatus,
+    onChangeChainDrawerStatus,
+    onChangeAmount,
+    handleMaxInput,
+    title,
+    maxAmountInput,
+    amount,
+    amountNet,
+    chain,
+    currency,
+    inputDisabled,
+  } = props;
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
 
-  const currency = new Token(
-    ChainId.AVALANCHE,
-    CHAINS[ChainId.AVALANCHE].contracts!.png,
-    18,
-    CHAINS[ChainId.AVALANCHE].png_symbol!,
-    'Pangolin',
+  const handleInput = useCallback(
+    (amount: string) => {
+      onChangeAmount && onChangeAmount(amount);
+    },
+    [onChangeAmount],
   );
 
   return (
@@ -26,69 +37,64 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
         {title}
       </Text>
       <Currencies>
-        <CurrencyInput
-          // value={formattedAmounts[LimitField.INPUT]}
-          onChange={(value: any) => {
-            console.log('onChange', value);
-          }}
+        <ChainInput
           buttonStyle={{
             backgroundColor: theme.bridge?.primaryBgColor,
+            color: theme.bridge?.text,
             padding: '1rem 1.1rem',
             width: '100%',
           }}
-          onTokenClick={onChangeTokenDrawerStatus}
-          isShowTextInput={false}
-          currency={currency}
-          fontSize={24}
-          id="swap-currency-input"
+          onChainClick={onChangeChainDrawerStatus}
+          chain={chain}
         />
         <CurrencyInput
-          // value={formattedAmounts[LimitField.INPUT]}
-          onChange={(value: any) => {
-            console.log('onChange', value);
-          }}
           buttonStyle={{
             backgroundColor: theme.bridge?.primaryBgColor,
+            color: theme.bridge?.text,
             padding: '1rem 1.1rem',
             width: '100%',
           }}
+          alternativeLogoSrc={currency?.logo}
           onTokenClick={onChangeTokenDrawerStatus}
           isShowTextInput={false}
-          currency={currency}
           fontSize={24}
+          currency={currency as Currency}
           id="swap-currency-input"
         />
       </Currencies>
-      <Tooltip effect="solid" />
+      <Tooltip id="minEarnedAmount" effect="solid">
+        {t('bridge.bridgeInputsWidget.tooltip', {
+          amount: amountNet,
+          currency: currency?.symbol,
+        })}
+      </Tooltip>
       <TextInput
-        value={''}
         isNumeric={true}
-        disabled={inputDisabled}
+        value={amount?.toExact()}
+        onChange={(value: any) => {
+          handleInput(value);
+        }}
+        disabled={inputDisabled || !currency}
         placeholder="0.00"
         addonAfter={
           inputDisabled ? (
-            <Info
-              size={16}
-              color={theme.bridge?.infoIconColor}
-              data-tip={t('bridge.bridgeInputsWidget.tooltip', { amount: 10.3, currency: 'USDC' })}
-            />
+            <Info size={amount ? 16 : 0} color={theme.bridge?.infoIconColor} data-tip data-for="minEarnedAmount" />
           ) : (
-            <Button
-              variant="plain"
-              backgroundColor="bridge.secondaryBgColor"
-              padding="6px"
-              height="auto"
-              onClick={() => {
-                console.log('onclick');
-              }}
-            >
-              <Text color={'bridge.text'}>{t('bridge.bridgeInputsWidget.max')}</Text>
-            </Button>
+            currency &&
+            maxAmountInput &&
+            maxAmountInput?.toExact() !== amount?.toExact() && (
+              <Button
+                variant="plain"
+                backgroundColor="bridge.secondaryBgColor"
+                padding="6px"
+                height="auto"
+                onClick={handleMaxInput}
+              >
+                <Text color={'bridge.text'}>{t('bridge.bridgeInputsWidget.max')}</Text>
+              </Button>
+            )
           )
         }
-        onChange={(value: any) => {
-          console.log(value);
-        }}
       />
     </Box>
   );

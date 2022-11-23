@@ -31,7 +31,7 @@ export const FilterInputHeader = styled(Text)`
   margin-bottom: 10px;
 `;
 
-export const LoaderWrapper = styled(Box)`
+export const CardWrapper = styled(Box)`
   flex: 1;
   width: 100%;
   height: 100%;
@@ -64,6 +64,14 @@ export const BottomText = styled(Text)`
   color: ${({ theme }) => theme.bridge?.text};
   position: absolute;
   bottom: 0;
+  padding: 30px;
+  text-align: center;
+`;
+
+export const TransactionText = styled(Text)`
+  font-size: 16px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.bridge?.text};
   padding: 30px;
   text-align: center;
 `;

@@ -212,6 +212,10 @@ export const defaultColors: Colors = {
     color: black,
     primaryBgColor: white,
   },
+  chainInput: {
+    text: black,
+    primaryBgColor: ghostWhite,
+  },
 
   primary: philippineYellow,
   mustardYellow,

@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import ReactGA from 'react-ga';
 import { Button } from 'src/components/Button';
-import { bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
+import { avalancheCore, bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
@@ -122,6 +122,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
   const isCbWalletDappBrowser = window?.ethereum?.isCoinbaseWallet;
   const isWalletlink = !!window?.WalletLinkProvider || !!window?.walletLinkExtension;
   const isCbWallet = isCbWalletDappBrowser || isWalletlink;
+  const isAvalancheCore = window.avalanche && window.avalanche.isAvalanche;
   const isBitKeep = window.isBitKeep && !!window.bitkeep.ethereum;
 
   const tryActivation = async (
@@ -129,6 +130,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
     option: WalletInfo | undefined,
   ) => {
     const name = Object.keys(walletOptions).find((key) => walletOptions[key].connector === activationConnector);
+
     // log selected wallet
     // eslint-disable-next-line import/no-named-as-default-member
     ReactGA.event({
@@ -187,6 +189,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
         return SUPPORTED_WALLETS.BITKEEP;
       } else if (isMetamask) {
         return SUPPORTED_WALLETS.METAMASK;
+      } else if (isAvalancheCore) {
+        return SUPPORTED_WALLETS.AVALANCHECORE;
       }
       return SUPPORTED_WALLETS.INJECTED;
     }
@@ -343,6 +347,29 @@ const WalletModal: React.FC<WalletModalProps> = ({
               icon={option.iconName}
             />
           );
+        }
+      }
+
+      // overwrite avalanche when needed
+      else if (option.connector === avalancheCore) {
+        // don't show avalanche if there's no avalanche provider
+
+        if (!window.avalanche) {
+          if (option.name === 'Avalanche Core Wallet') {
+            return (
+              <Option
+                id={`connect-${key}`}
+                key={key}
+                color={'#E8831D'}
+                header={'Install Avalanche Core Wallet'}
+                subheader={null}
+                link={'https://chrome.google.com/webstore/detail/core/agoakfejjabomempkjlepdflaleeobhb'}
+                icon={option.iconName}
+              />
+            );
+          } else {
+            return null; //dont want to return install twice
+          }
         }
       }
 
