@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useGetChainsBalances } from 'src/state/pportfolio/hooks';
+import { useShowBalancesManager } from 'src/state/puser/hooks';
 import { Box } from '../Box';
 import { Loader } from '../Loader';
 import { Text } from '../Text';
@@ -12,9 +13,11 @@ import { ChainCard, Frame, PortfolioHeader, PortfolioRoot } from './styleds';
 const Portfolio: React.FC = () => {
   const { account } = usePangolinWeb3();
   const { data: balances, isRefetching, isLoading } = useGetChainsBalances();
-  const [showBalances, setShowBalances] = useState(true);
+  const [showUserBalances, setUserShowBalances] = useShowBalancesManager();
+  const [showBalances, setShowBalances] = useState(showUserBalances);
 
   const handleShowBalances = useCallback(() => {
+    setUserShowBalances(!showBalances);
     setShowBalances(!showBalances);
   }, [showBalances]);
 
