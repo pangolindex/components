@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import { TransactionResponse } from '@ethersproject/providers';
-import { parseUnits } from '@ethersproject/units';
 import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -210,21 +209,6 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
   const onUserInput = useCallback((_typedValue: string) => {
     setSignatureData(null);
     setTypedValue(_typedValue);
-    const percentage = Math.ceil(
-      Number(
-        userLiquidityUnstaked && _typedValue
-          ? JSBI.divide(
-              JSBI.multiply(
-                JSBI.BigInt(parseUnits(_typedValue, userLiquidityUnstaked.currency.decimals)),
-                JSBI.BigInt(100),
-              ),
-              userLiquidityUnstaked.raw,
-            ).toString()
-          : 0,
-      ),
-    );
-
-    setStepIndex(percentage > 100 ? 4 : Math.round(percentage / 25));
   }, []);
 
   // used for max input button
