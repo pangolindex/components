@@ -16,6 +16,8 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+
       - name: 'Download artifact'
         uses: actions/github-script@v3.1.0
         with:
@@ -70,6 +72,8 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - run: yarn --frozen-lockfile
 
       - run: npm publish --ignore-scripts --tag internal
         env:
