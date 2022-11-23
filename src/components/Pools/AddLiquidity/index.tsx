@@ -8,7 +8,7 @@ import { Box, Button, Text, TextInput } from 'src/components';
 import { ROUTER_ADDRESS } from 'src/constants';
 import { PairState } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
@@ -131,7 +131,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
 
       setTxHash(response?.hash as string);
 
-      mixpanel.track('Added Liquidity', {
+      mixpanel.track(MixPanelEvents.ADD_LIQUIDITY, {
         chainId: chainId,
         tokenA: currencyA?.symbol,
         tokenB: currencyB?.symbol,

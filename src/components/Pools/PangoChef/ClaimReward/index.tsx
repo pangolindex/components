@@ -7,7 +7,7 @@ import { Box, Button, Loader, Text, TransactionCompleted } from 'src/components'
 import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { PangoChefInfo, PoolType } from 'src/state/ppangoChef/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
@@ -60,7 +60,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
 
         const tokenA = stakingInfo.tokens[0];
         const tokenB = stakingInfo.tokens[1];
-        mixpanel.track('Claimed rewards', {
+        mixpanel.track(MixPanelEvents.CLAIM_REWARDS, {
           chainId: chainId,
           tokenA: tokenA?.symbol,
           tokenb: tokenB?.symbol,

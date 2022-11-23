@@ -12,7 +12,7 @@ import { FARM_TYPE, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE, ZERO_ADDRESS } fr
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
@@ -217,7 +217,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
 
         const tokenA = stakingInfo.tokens[0];
         const tokenB = stakingInfo.tokens[1];
-        mixpanel.track('Compound farm', {
+        mixpanel.track(MixPanelEvents.COMPOUND_REWARDS, {
           chainId: chainId,
           tokenA: tokenA?.symbol,
           tokenb: tokenB?.symbol,

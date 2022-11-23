@@ -7,7 +7,7 @@ import { Box, CurrencyLogo, Text } from 'src/components';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { useCoinGeckoTokenPrice, useCoinGeckoTokenPriceChart } from 'src/hooks/Tokens';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { useDispatch } from 'src/state';
 import { useTokenWeeklyChartData } from 'src/state/ptoken/hooks';
@@ -52,7 +52,7 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, onRemove, isSelected }) 
   const removeToken = () => {
     onRemove();
     dispatch(removeCurrency(coin?.address));
-    mixpanel.track('Removed Token from Watchlist', {
+    mixpanel.track(MixPanelEvents.REMOVE_WATCHLIST, {
       chainId: chainId,
       token: coin?.symbol,
       tokenAddress: coin?.address,

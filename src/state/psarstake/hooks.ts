@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useApproveCallback } from 'src/hooks/useApproveCallback';
 import { useSarStakingContract } from 'src/hooks/useContract';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
@@ -154,7 +154,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
         summary: t('sarStake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
       setHash(response.hash);
-      mixpanel.track('Staked in SAR', {
+      mixpanel.track(MixPanelEvents.SAR_STAKE, {
         chainId: chainId,
         isNewPosition: !positionId,
       });

@@ -8,7 +8,7 @@ import { ThemeContext } from 'styled-components';
 import Earth from 'src/assets/images/earth.png';
 import { Box } from 'src/components/Box';
 import { Loader } from 'src/components/Loader';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { News, useGetNews } from 'src/state/pnews/hooks';
 import { ArrowWrapper, NewsContent, NewsDate, NewsSection, NewsTitle, SlickNext, TitleWrapper } from './styleds';
 import { NewsProps } from './types';
@@ -45,7 +45,7 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
     const interacted = interactedNewsIds.includes(news.id);
     // don't send news interactions twice
     if (!interacted) {
-      mixpanel.track('Interacted with News', {
+      mixpanel.track(MixPanelEvents.NEWS, {
         newsID: news.id,
         title: news.title,
       });

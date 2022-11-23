@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
 import { ROUTER_ADDRESS } from 'src/constants';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
@@ -124,7 +124,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
       const response = await removeLiquidity(removeData);
 
       setHash(response?.hash);
-      mixpanel.track('Removed Liquidity', {
+      mixpanel.track(MixPanelEvents.REMOVE_LIQUIDITY, {
         chainId: chainId,
         tokenA: currencyA?.symbol,
         tokenB: currencyB?.symbol,

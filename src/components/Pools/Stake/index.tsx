@@ -19,7 +19,7 @@ import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePairContract, useStakingContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -196,7 +196,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
           });
           setHash(response.hash);
 
-          mixpanel.track('Added to farm', {
+          mixpanel.track(MixPanelEvents.ADD_FARM, {
             chainId: chainId,
             tokenA: token0,
             tokenB: token1,

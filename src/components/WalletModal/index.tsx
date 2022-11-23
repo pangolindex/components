@@ -8,7 +8,7 @@ import { isMobile } from 'react-device-detect';
 import { Button } from 'src/components/Button';
 import { bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
@@ -147,7 +147,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
           activate(activationConnector, undefined, true)
             .then(() => {
               onWalletConnect(getConnectorKey(activationConnector));
-              mixpanel.track('Wallet Connected', {
+              mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
                 wallet_name: option?.name?.toLowerCase() ?? name?.toLowerCase(),
                 source: 'pangolin-components',
               });
@@ -166,7 +166,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
           } else {
             onWalletConnect(getConnectorKey(activationConnector));
           }
-          mixpanel.track('Wallet Connected', {
+          mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
             wallet_name: option?.name ?? name?.toLowerCase(),
           });
         })

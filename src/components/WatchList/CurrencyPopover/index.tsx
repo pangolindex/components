@@ -6,7 +6,7 @@ import { Box, TextInput } from 'src/components';
 import { useTokenComparator } from 'src/components/SearchModal/sorting';
 import { useChainId } from 'src/hooks';
 import { useToken } from 'src/hooks/Tokens';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import usePrevious from 'src/hooks/usePrevious';
 import { useDispatch } from 'src/state';
 import { addCurrency } from 'src/state/pwatchlists/actions';
@@ -112,7 +112,7 @@ const CurrencyPopover: React.FC<Props> = ({
           onSelect={(address) => {
             onSelectCurrency(currency);
             onCurrencySelection(address);
-            mixpanel.track('Added Token in Watchlist', {
+            mixpanel.track(MixPanelEvents.ADD_WATCHLIST, {
               chainId: chainId,
               token: currency.symbol,
               tokenAddress: address,

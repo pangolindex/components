@@ -1,17 +1,35 @@
 import mixpanel from 'mixpanel-browser';
 import React, { FC, ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
+export enum MixPanelEvents {
+  WALLET_CONNECT = 'Wallet Connected',
+  SWAP = 'Swap',
+  NEWS = 'Interacted with News',
+  ADD_LIQUIDITY = 'Added Liquidity',
+  REMOVE_LIQUIDITY = 'Removed Liquidity',
+  ADD_FARM = 'Added to farm',
+  REMOVE_FARM = 'Removed from farm',
+  CLAIM_REWARDS = 'Claimed rewards',
+  COMPOUND_REWARDS = 'Compound farm',
+  SAR_STAKE = 'Staked in SAR',
+  LIMIT_ORDER = 'Limit Order Placed',
+  SHOW_BALANCES = 'Shown Balance',
+  HIDE_BALANCES = 'Hidden Balance',
+  ADD_WATCHLIST = 'Added Token in Watchlist',
+  REMOVE_WATCHLIST = 'Removed Token from Watchlist',
+}
+
 interface MixPanelProviderProps {
   children: ReactNode;
   mixpanelToken?: string;
 }
 
 type MixPanelContextType = {
-  track: (event: string, properties: { [x: string]: any }) => void;
+  track: (event: MixPanelEvents, properties: { [x: string]: any }) => void;
 };
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const dummyTrack = (event: string, properties: { [x: string]: any }) => {
+const dummyTrack = (event: MixPanelEvents, properties: { [x: string]: any }) => {
   // This is intentional
 };
 
@@ -32,7 +50,7 @@ export const MixPanelProvider: FC<MixPanelProviderProps> = ({ children, mixpanel
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const track = useCallback((event: string, properties: { [x: string]: any }) => {
+  const track = useCallback((event: MixPanelEvents, properties: { [x: string]: any }) => {
     mixpanel.track(event, { ...properties, source: 'pangolin-components' });
   }, []);
 

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { NATIVE, SwapTypes } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useTokenHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
@@ -289,7 +289,7 @@ const LimitOrder: React.FC<Props> = ({
             const path = trade.route.path;
             const tokenA = path[0];
             const tokenB = path[path.length - 1];
-            mixpanel.track('Limit Order Placed', {
+            mixpanel.track(MixPanelEvents.LIMIT_ORDER, {
               chainId: chainId,
               tokenA: inputCurrency?.symbol,
               tokenB: outputCurrency?.symbol,

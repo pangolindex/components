@@ -6,7 +6,7 @@ import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/compo
 import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -96,7 +96,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
         });
         await refetchMinichefSubgraph();
 
-        mixpanel.track('Removed from farm', {
+        mixpanel.track(MixPanelEvents.REMOVE_FARM, {
           chainId: chainId,
           tokenA: token0,
           tokenB: token1,

@@ -7,7 +7,7 @@ import { SwapTypes, TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants'
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
-import { useMixpanel } from 'src/hooks/mixpanel';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import {
   useApproveCallbackFromTradeHook,
   useSwapCallbackHook,
@@ -264,7 +264,7 @@ const MarketOrder: React.FC<Props> = ({
           const path = trade.route.path;
           const tokenA = path[0];
           const tokenB = path[path.length - 1];
-          mixpanel.track('Swap', {
+          mixpanel.track(MixPanelEvents.SWAP, {
             chainId: chainId,
             tokenA: inputCurrency?.symbol,
             tokenB: outputCurrency?.symbol,
