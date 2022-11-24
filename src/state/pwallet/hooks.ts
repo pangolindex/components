@@ -298,6 +298,68 @@ export function useEVMPairBalance(account?: string, pair?: Pair): TokenAmount | 
   return tokenBalances[token.address];
 }
 
+/**
+ * This hook used to get balance for given Hedera pair
+ * Takes account and pair as a input and return liquidityTokenAddress wise balance
+ * @param account
+ * @param pair
+ * @returns {[tokenAddress: string]: TokenAmount | undefined;}
+ */
+export function useHederaPairBalances(account?: string, pairs?: (Pair | undefined)[]) {
+  const pglTokens = useHederaPGLTokens(pairs);
+
+  const liquidityTokens = useMemo(
+    () =>
+      pglTokens.map((pglToken) => {
+        return pglToken[0];
+      }),
+    [pglTokens],
+  );
+
+  const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
+    account ?? undefined,
+    liquidityTokens,
+  );
+
+  const newV2PairsBalances = useMemo(
+    () =>
+      Object.keys(v2PairsBalances).length > 0
+        ? pglTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, pglToken) => {
+            const pglTokenData = pglToken[0];
+            const liquidityToken = pglToken[1];
+
+            const isExitPairBalance = Object.keys(v2PairsBalances).find((address) => address === pglTokenData?.address);
+
+            if (
+              isExitPairBalance &&
+              liquidityToken &&
+              pglTokenData &&
+              v2PairsBalances[pglTokenData?.address]?.raw?.toString()
+            ) {
+              memo[liquidityToken?.address] = new TokenAmount(
+                liquidityToken,
+                v2PairsBalances[pglTokenData?.address]?.raw?.toString() ?? JSBI.BigInt(0),
+              );
+            }
+            return memo;
+          }, {})
+        : {},
+    [v2PairsBalances],
+  );
+
+  return [newV2PairsBalances, fetchingV2PairBalances];
+}
+
+// get the balance for a single pair combo
+export function useHederaPairBalance(account?: string, pair?: Pair): TokenAmount | undefined {
+  const [v2PairsBalances, fetchingV2PairBalances] = useHederaPairBalances(account, [pair]);
+
+  if (!pair || fetchingV2PairBalances) {
+    return undefined;
+  }
+  return v2PairsBalances[pair?.liquidityToken?.address];
+}
+
 export function useCurrencyBalances(
   chainId: ChainId,
   account?: string,
@@ -1068,51 +1130,35 @@ export function useHederaRemoveLiquidity(pair?: Pair | null | undefined) {
     if (!tokenA || !tokenB) throw new Error(t('error.couldNotWrap'));
 
     try {
-      let response;
+      const args = {
+        tokenA: wrappedCurrency(currencyA, chainId),
+        tokenB: wrappedCurrency(currencyB, chainId),
+        liquidityAmount: liquidityAmount.raw.toString(),
+        tokenAAmountMin: amountsMin[AddField.CURRENCY_A].toString(),
+        tokenBAmountMin: amountsMin[AddField.CURRENCY_B].toString(),
+        account,
+        deadline: deadline.toNumber(),
+        chainId,
+      };
 
-      if (currencyA === CAVAX[chainId] || currencyB === CAVAX[chainId]) {
-        const tokenBIsETH = currencyB === CAVAX[chainId];
+      const response = await hederaFn.removeLiquidity(args);
+      if (response) {
+        addTransaction(response, {
+          summary:
+            t('removeLiquidity.remove') +
+            ' ' +
+            parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+            ' ' +
+            currencyA?.symbol +
+            ' and ' +
+            parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+            ' ' +
+            currencyB?.symbol,
+        });
 
-        const args = {
-          token: wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId), // token
-          liquidityAmount: liquidityAmount.raw.toString(),
-          tokenAmountMin: amountsMin[tokenBIsETH ? AddField.CURRENCY_A : AddField.CURRENCY_B].toString(), // token min
-          HBARAmountMin: amountsMin[tokenBIsETH ? AddField.CURRENCY_B : AddField.CURRENCY_A].toString(), // eth min
-          account: account,
-          deadline: deadline.toNumber(),
-          chainId: chainId,
-        };
-
-        response = await hederaFn.removeNativeLiquidity(args);
-      } else {
-        const args = {
-          tokenA: wrappedCurrency(currencyA, chainId),
-          tokenB: wrappedCurrency(currencyB, chainId),
-          liquidityAmount: liquidityAmount.raw.toString(),
-          tokenAAmountMin: amountsMin[AddField.CURRENCY_A].toString(),
-          tokenBAmountMin: amountsMin[AddField.CURRENCY_B].toString(),
-          account,
-          deadline: deadline.toNumber(),
-          chainId,
-        };
-
-        response = await hederaFn.removeLiquidity(args);
+        return response;
       }
-
-      addTransaction(response, {
-        summary:
-          t('removeLiquidity.remove') +
-          ' ' +
-          parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-          ' ' +
-          currencyA?.symbol +
-          ' and ' +
-          parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
-          ' ' +
-          currencyB?.symbol,
-      });
-
-      return response;
+      return;
     } catch (err) {
       const _err = err as any;
       // we only care if the error is something _other_ than the user rejected the tx
@@ -1631,68 +1677,6 @@ export const useHederaPGLTokenAddresses = (
     }, {});
   }, [results, liquidityAddresses]);
 };
-
-/**
- * This hook used to get balance for given Hedera pair
- * Takes account and pair as a input and return liquidityTokenAddress wise balance
- * @param account
- * @param pair
- * @returns {[tokenAddress: string]: TokenAmount | undefined;}
- */
-export function useHederaPairBalances(account?: string, pairs?: (Pair | undefined)[]) {
-  const pglTokens = useHederaPGLTokens(pairs);
-
-  const liquidityTokens = useMemo(
-    () =>
-      pglTokens.map((pglToken) => {
-        return pglToken[0];
-      }),
-    [pglTokens],
-  );
-
-  const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
-    account ?? undefined,
-    liquidityTokens,
-  );
-
-  const newV2PairsBalances = useMemo(
-    () =>
-      Object.keys(v2PairsBalances).length > 0
-        ? pglTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, pglToken) => {
-            const pglTokenData = pglToken[0];
-            const liquidityToken = pglToken[1];
-
-            const isExitPairBalance = Object.keys(v2PairsBalances).find((address) => address === pglTokenData?.address);
-
-            if (
-              isExitPairBalance &&
-              liquidityToken &&
-              pglTokenData &&
-              v2PairsBalances[pglTokenData?.address]?.raw?.toString()
-            ) {
-              memo[liquidityToken?.address] = new TokenAmount(
-                liquidityToken,
-                v2PairsBalances[pglTokenData?.address]?.raw?.toString() ?? JSBI.BigInt(0),
-              );
-            }
-            return memo;
-          }, {})
-        : {},
-    [v2PairsBalances],
-  );
-
-  return [newV2PairsBalances, fetchingV2PairBalances];
-}
-
-// get the balance for a single pair combo
-export function useHederaPairBalance(account?: string, pair?: Pair): TokenAmount | undefined {
-  const [v2PairsBalances, fetchingV2PairBalances] = useHederaPairBalances(account, [pair]);
-
-  if (!pair || fetchingV2PairBalances) {
-    return undefined;
-  }
-  return v2PairsBalances[pair?.liquidityToken?.address];
-}
 
 export function useHederaPGLAssociated(
   currencyA: Currency | undefined,
