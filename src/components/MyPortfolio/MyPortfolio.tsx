@@ -15,8 +15,7 @@ const MyPortfolio: React.FC = () => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
-  const [showUserBalances, setUserShowBalances] = useShowBalancesManager();
-  const [showBalances, setShowBalances] = useState(showUserBalances);
+  const [showBalances, setShowBalances] = useShowBalancesManager();
   const [selectChain, setSelectChain] = useState(43114);
 
   const { data: balances, isLoading } = useGetChainsBalances();
@@ -39,7 +38,6 @@ const MyPortfolio: React.FC = () => {
   }, [balances]);
 
   const handleShowBalances = useCallback(() => {
-    setUserShowBalances(!showBalances);
     setShowBalances(!showBalances);
   }, [showBalances]);
 

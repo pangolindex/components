@@ -1,5 +1,5 @@
 import { ALL_CHAINS, Chain } from '@pangolindex/sdk';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useGetChainsBalances } from 'src/state/pportfolio/hooks';
@@ -13,11 +13,9 @@ import { ChainCard, Frame, PortfolioHeader, PortfolioRoot } from './styleds';
 const Portfolio: React.FC = () => {
   const { account } = usePangolinWeb3();
   const { data: balances, isRefetching, isLoading } = useGetChainsBalances();
-  const [showUserBalances, setUserShowBalances] = useShowBalancesManager();
-  const [showBalances, setShowBalances] = useState(showUserBalances);
+  const [showBalances, setShowBalances] = useShowBalancesManager();
 
   const handleShowBalances = useCallback(() => {
-    setUserShowBalances(!showBalances);
     setShowBalances(!showBalances);
   }, [showBalances]);
 
