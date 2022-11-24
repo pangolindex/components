@@ -482,3 +482,9 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.NEAR_MAINNET]: 'near',
   [ChainId.NEAR_TESTNET]: undefined,
 };
+
+export const FARM_TYPE: { [x: number]: string | undefined } = {
+  1: ChefType.MINI_CHEF,
+  2: ChefType.MINI_CHEF_V2,
+  3: ChefType.PANGO_CHEF,
+};

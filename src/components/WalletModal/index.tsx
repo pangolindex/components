@@ -5,10 +5,10 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
-import ReactGA from 'react-ga';
 import { Button } from 'src/components/Button';
 import { avalancheCore, bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
@@ -116,6 +116,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
     }
   }, [walletModalOpen]);
 
+  const mixpanel = useMixpanel();
+
   const isMetamask = window.ethereum && window.ethereum.isMetaMask;
   const isTalisman = window.ethereum && window.ethereum.isTalisman;
   const isRabby = window.ethereum && window.ethereum.isRabby;
@@ -132,12 +134,6 @@ const WalletModal: React.FC<WalletModalProps> = ({
     const name = Object.keys(walletOptions).find((key) => walletOptions[key].connector === activationConnector);
 
     // log selected wallet
-    // eslint-disable-next-line import/no-named-as-default-member
-    ReactGA.event({
-      category: 'Wallet',
-      action: 'Change Wallet',
-      label: name,
-    });
     setPendingWallet(connector); // set wallet for pending view
     setSelectedOption(option);
     setWalletView(WALLET_VIEWS.PENDING);
@@ -153,6 +149,10 @@ const WalletModal: React.FC<WalletModalProps> = ({
           activate(activationConnector, undefined, true)
             .then(() => {
               onWalletConnect(getConnectorKey(activationConnector));
+              mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
+                wallet_name: option?.name?.toLowerCase() ?? name?.toLowerCase(),
+                source: 'pangolin-components',
+              });
             })
             .catch(() => {
               setTriedSafe(true);
@@ -168,6 +168,9 @@ const WalletModal: React.FC<WalletModalProps> = ({
           } else {
             onWalletConnect(getConnectorKey(activationConnector));
           }
+          mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
+            wallet_name: option?.name ?? name?.toLowerCase(),
+          });
         })
         .catch((error) => {
           if (error instanceof UnsupportedChainIdError) {

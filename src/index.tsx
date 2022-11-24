@@ -54,6 +54,7 @@ import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/mu
 import { existSarContract, getEtherscanLink, isEvmChain, shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { MixPanelProvider } from './hooks/mixpanel';
 import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
 import { PangoChefInfo } from './state/ppangoChef/types';
@@ -76,42 +77,46 @@ export function PangolinProvider({
   children,
   account,
   theme,
+  mixpanelToken,
 }: {
   chainId: number | undefined;
   library: any | undefined;
   account: string | undefined;
   children?: React.ReactNode;
   theme?: any;
+  mixpanelToken?: string;
 }) {
   const ethersLibrary = library && !library?._isProvider ? new Web3Provider(library) : library;
 
   return (
     <Provider store={store} context={StoreContext}>
       <PangolinWeb3Provider chainId={chainId} library={library} account={account}>
-        <ThemeProvider theme={theme}>
-          <QueryClientProvider client={queryClient}>
-            <ListsUpdater />
-            <ApplicationUpdater />
-            <MulticallUpdater />
-            <TransactionUpdater />
-            <SwapUpdater />
-            {isEvmChain(chainId) && CHAINS[chainId]?.supported_by_gelato ? (
-              <Provider store={galetoStore}>
-                <GelatoProvider
-                  library={ethersLibrary}
-                  chainId={chainId}
-                  account={account ?? undefined}
-                  useDefaultTheme={false}
-                  handler={'pangolin'}
-                >
-                  {children}
-                </GelatoProvider>
-              </Provider>
-            ) : (
-              children
-            )}
-          </QueryClientProvider>
-        </ThemeProvider>
+        <MixPanelProvider mixpanelToken={mixpanelToken}>
+          <ThemeProvider theme={theme}>
+            <QueryClientProvider client={queryClient}>
+              <ListsUpdater />
+              <ApplicationUpdater />
+              <MulticallUpdater />
+              <TransactionUpdater />
+              <SwapUpdater />
+              {isEvmChain(chainId) && CHAINS[chainId]?.supported_by_gelato ? (
+                <Provider store={galetoStore}>
+                  <GelatoProvider
+                    library={ethersLibrary}
+                    chainId={chainId}
+                    account={account ?? undefined}
+                    useDefaultTheme={false}
+                    handler={'pangolin'}
+                  >
+                    {children}
+                  </GelatoProvider>
+                </Provider>
+              ) : (
+                children
+              )}
+            </QueryClientProvider>
+          </ThemeProvider>
+        </MixPanelProvider>
       </PangolinWeb3Provider>
     </Provider>
   );
