@@ -32,8 +32,7 @@ import {
   updateMinichefStakingAllData,
   updateMinichefStakingAllFarmsEarnedAmount,
 } from 'src/state/pstake/actions';
-import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { isEvmChain } from 'src/utils';
+import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { useTokens } from '../../hooks/Tokens';
 import { useMiniChefContract, useRewardViaMultiplierContract, useStakingContract } from '../../hooks/useContract';
@@ -290,7 +289,7 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
-  const useTokenBalance = useTokenBalanceHook[chainId];
+  const usePairBalance = usePairBalanceHook[chainId];
   const usePairTotalSupply = usePairTotalSupplyHook[chainId];
   const _useUSDCPrice = useUSDCPriceHook[chainId];
   const token0 = pair?.token0;
@@ -298,8 +297,7 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
   const currency0PriceTmp = _useUSDCPrice(currency0);
   const currency0Price = CHAINS[chainId]?.mainnet ? currency0PriceTmp : undefined;
 
-  const pairOrToken = isEvmChain(chainId) ? pair?.liquidityToken : pair;
-  const userPgl = useTokenBalance(account ?? undefined, pairOrToken as Token);
+  const userPgl = usePairBalance(account ?? undefined, pair ?? undefined);
   const totalPoolTokens = usePairTotalSupply(pair ?? undefined);
 
   const [token0Deposited] =
