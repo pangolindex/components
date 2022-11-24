@@ -18,8 +18,6 @@ const Portfolio: React.FC = () => {
 
   const mixpanel = useMixpanel();
 
-  const mixpanel = useMixpanel();
-
   const handleShowBalances = useCallback(() => {
     setShowBalances(!showBalances);
     mixpanel.track(!showBalances ? MixPanelEvents.HIDE_BALANCES : MixPanelEvents.SHOW_BALANCES, {
