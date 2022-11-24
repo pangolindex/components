@@ -1,9 +1,10 @@
-import { ALL_CHAINS } from '@pangolindex/sdk';
-import React, { useCallback, useState } from 'react';
+import { ALL_CHAINS, Chain } from '@pangolindex/sdk';
+import React, { useCallback } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useGetChainsBalances } from 'src/state/pportfolio/hooks';
+import { useShowBalancesManager } from 'src/state/puser/hooks';
 import { Box } from '../Box';
 import { Loader } from '../Loader';
 import { Text } from '../Text';
@@ -13,7 +14,9 @@ import { ChainCard, Frame, PortfolioHeader, PortfolioRoot } from './styleds';
 const Portfolio: React.FC = () => {
   const { account } = usePangolinWeb3();
   const { data: balances, isRefetching, isLoading } = useGetChainsBalances();
-  const [showBalances, setShowBalances] = useState(true);
+  const [showBalances, setShowBalances] = useShowBalancesManager();
+
+  const mixpanel = useMixpanel();
 
   const mixpanel = useMixpanel();
 
@@ -24,9 +27,8 @@ const Portfolio: React.FC = () => {
     });
   }, [showBalances]);
 
-  const renderChain = (_chain: { chainID: number; balance: number }, key: number) => {
-    const chain = ALL_CHAINS.filter((value) => value.chain_id === _chain.chainID)[0];
-    const balance = _chain.balance.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+  const renderChain = (chain: Chain, balance: number, key: number) => {
+    const balanceFormatted = balance.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 });
     return (
       <ChainCard key={key}>
         <img width="48px" height="48px" src={chain?.logo} alt={'Chain logo'} />
@@ -36,7 +38,7 @@ const Portfolio: React.FC = () => {
           </Text>
           {showBalances ? (
             <Text fontSize={14} color="text13">
-              ${balance}
+              ${balanceFormatted}
             </Text>
           ) : (
             <Box display="flex" flexDirection="row">
@@ -104,9 +106,19 @@ const Portfolio: React.FC = () => {
               {renderTotalBalance()}
             </Box>
             <Box width="100%" minHeight="140px">
-              {balances.chains.length > 0 ? (
+              {Object.values(balances.chains).length > 0 ? (
                 <Scrollbars style={{ width: '100%', height: '100%', minHeight: '140px' }}>
-                  <Frame>{balances.chains.map((chain, key) => renderChain(chain, key))}</Frame>
+                  <Frame>
+                    {Object.keys(balances.chains).map((chainID, key) => {
+                      const chain = ALL_CHAINS.find((value) => value.symbol.toLowerCase() == chainID.toLowerCase());
+                      const balance = balances.chains[chainID] as number; // if exist chain key exist balance
+
+                      if (chain) {
+                        return renderChain(chain, balance, key);
+                      }
+                      return null;
+                    })}
+                  </Frame>
                 </Scrollbars>
               ) : (
                 <Text fontSize={18} color="text1" textAlign="center">

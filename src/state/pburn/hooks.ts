@@ -1,12 +1,11 @@
-import { Currency, CurrencyAmount, JSBI, Pair, Percent, Token, TokenAmount } from '@pangolindex/sdk';
+import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@pangolindex/sdk';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO } from 'src/constants';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
-import { useTokenBalancesHook } from 'src/state/pwallet/multiChainsHooks';
-import { isEvmChain } from 'src/utils';
+import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { usePair } from '../../data/Reserves';
 import { tryParseAmount } from '../../state/pswap/hooks';
 import { wrappedCurrency } from '../../utils/wrappedCurrency';
@@ -33,7 +32,8 @@ export function useDerivedBurnInfo(
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
-  const useTokenBalances = useTokenBalancesHook[chainId];
+  const usePairBalance = usePairBalanceHook[chainId];
+
   const usePairTotalSupply = usePairTotalSupplyHook[chainId];
 
   const { t } = useTranslation();
@@ -42,12 +42,9 @@ export function useDerivedBurnInfo(
 
   // pair + totalsupply
   const [, pair] = usePair(currencyA, currencyB);
-  const pairOrToken = isEvmChain(chainId) ? pair?.liquidityToken : pair;
 
   // balances
-  const relevantTokenBalances = useTokenBalances(account ?? undefined, [pairOrToken] as Token[]);
-
-  const userLiquidity: undefined | TokenAmount = relevantTokenBalances?.[pair?.liquidityToken?.address ?? ''];
+  const userLiquidity = usePairBalance(account ?? undefined, pair ?? undefined);
 
   const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)];
   const tokens = {

@@ -8,6 +8,7 @@ import {
   removeSerializedToken,
   updateUserDeadline,
   updateUserExpertMode,
+  updateUserShowBalances,
   updateUserSlippageTolerance,
 } from './actions';
 
@@ -20,6 +21,7 @@ export interface UserState {
   userExpertMode: boolean;
   // deadline set by user in minutes, used in all txns
   userDeadline: string;
+  userShowBalances: boolean;
   tokens: {
     [chainId: number]: {
       [address: string]: SerializedToken;
@@ -43,6 +45,7 @@ export const initialState: UserState = {
   timestamp: currentTimestamp(),
   userExpertMode: false,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
+  userShowBalances: true,
   pairs: {},
 };
 
@@ -59,6 +62,9 @@ export default createReducer(initialState, (builder) =>
     .addCase(updateUserDeadline, (state, action) => {
       state.userDeadline = action.payload.userDeadline;
       state.timestamp = currentTimestamp();
+    })
+    .addCase(updateUserShowBalances, (state, action) => {
+      state.userShowBalances = action.payload.userShowBalances;
     })
     .addCase(addSerializedToken, (state, { payload: { serializedToken } }) => {
       state.tokens[serializedToken.chainId] = state.tokens[serializedToken.chainId] || {};
