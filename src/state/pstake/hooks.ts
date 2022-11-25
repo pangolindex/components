@@ -234,6 +234,7 @@ export const useMinichefPools = (): { [key: string]: number } => {
 
 export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const { account } = usePangolinWeb3();
+  const chainId = useChainId();
 
   const rewardData = useRef(
     {} as {
@@ -248,7 +249,23 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const getRewardMultipliersRes = useSingleCallResult(rewardContract, 'getRewardMultipliers');
   const { earnedAmount: _earnedAmount } = useGetEarnedAmount(miniChefStaking?.pid as string);
 
-  const earnedAmount = miniChefStaking?.earnedAmount || _earnedAmount;
+  // this function will always return the maximum value earnedAmount
+  const getEarnedAmount = () => {
+    // if _earnedAmount is greater than 0 or miniChefStaking.earnedAmount use this
+    if (
+      _earnedAmount?.greaterThan('0') ||
+      (miniChefStaking?.earnedAmount && _earnedAmount?.greaterThan(miniChefStaking.earnedAmount))
+    ) {
+      return _earnedAmount;
+    }
+    // else if exist miniChefStaking.earnedAmount use this
+    if (miniChefStaking?.earnedAmount) {
+      return miniChefStaking.earnedAmount;
+    }
+    return new TokenAmount(PNG[chainId], '0');
+  };
+
+  const earnedAmount = getEarnedAmount();
 
   const rewardTokensAddress = getRewardTokensRes?.result?.[0];
   const rewardTokensMultiplier = getRewardMultipliersRes?.result?.[0];
