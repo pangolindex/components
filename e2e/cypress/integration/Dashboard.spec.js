@@ -7,7 +7,7 @@ import {switchingValues} from '../support/src/swap'
 
 describe('Dashboard', () => {
     const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, linkBtn, swapIcon, dashboardIcon, connectWalletMsg, connectWallet, tokenMouseOverEnable, PNGBtn, PNGValue, addPNG, PNGLogo, showBalanceBtn, hideBalanceBtn, tokensList, disabledTokens, newsLinks, avalancheBtn, selectChain, selectChainCrossBtn, claimLink, detailsCrossBtn, detailsTitle, gasToken, walletAdd, chains, poweredBy} = selectors.dashboard
-    const { languagesArray, tokenName, AvaxToken, switchArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, usd, coinBase, bridgeSwap, connectToWalletMsg, connectToWallet, linkUrl, swap, hideBalance, showBalance} = data.dashboard
+    const { languagesArray, tokenName, AvaxToken, switchArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, usd, coinBase, bridgeSwap, connectToWalletMsg, connectToWallet, linkUrl, swap, hideBalance, showBalance, newsSongBird} = data.dashboard
     const {pangolinLinksArr} = data
     const legUrl = "https://legacy.pangolin.exchange/#/"
     beforeEach('', () => {
@@ -199,6 +199,13 @@ describe('Dashboard', () => {
      /********************  Token enable in the watchlist dropdown ***********************/ 
      it('TC-38, Verify that the token removed from the watchlist is enabled in the dropdown', () =>{
         cy.contains(/Dashboard/)
+        // cy.get(tokenSection).then($avax => {
+        //     if ($avax.text().includes(AvaxToken)) {
+        //         cy.get(tokenMouseOver).eq(0)
+        //             .trigger("mouseover")
+        //         cy.get(crossBtn).click()
+        //     }
+        // })
             cy.get(watchListBtn).
                 should('be.visible').click()
             cy.get(watchlistDropDown)
@@ -207,9 +214,9 @@ describe('Dashboard', () => {
             cy.get(tokenSelect).eq(0).click({force:true})
             cy.get(tokenAssert)
                 .should("contain", AvaxToken)
-            cy.get(tokenMouseOverEnable).eq(0)
+            cy.get('div[class="sc-eCYdqJ sc-gUAEMC fEptdj doTaHD"]').eq(0)
                 .trigger("mouseover")
-            cy.get(crossBtn).click()
+            cy.get('button[class="sc-fWjsSh bUSiWi"]').click()
             cy.get(watchListBtn).
                 should('be.visible').click()
             cy.get(tokensList).contains(AvaxToken).should('be.visible')
@@ -256,12 +263,12 @@ describe('Dashboard', () => {
     it('TC-49, Verify that the user is able to switch between different news in News section', function () {
         cy.get(newsBtn).then(news => {
             expect(news).to.be.visible
-            cy.get(newsBody).eq(2).then(newsAssert => {
+            cy.get(newsBody).then(newsAssert => {
                 expect(newsAssert)
                     .to.contain(bridgeSwap)
             })
             cy.get(news).find(newsNextBtn).click()
-            cy.get(newsBody).eq(3).then(newsAssert => {
+            cy.get(newsBody).then(newsAssert => {
                 expect(newsAssert)
                     .to.contain(coinBase)
             })

@@ -1,7 +1,7 @@
 import selectors from '../../fixtures/selectors.json'
 const {settingBtn, slippageField} =selectors.swap
 function switchingValues (selectIter, headerAssert, token) {
-    cy.get('div[class="sc-eCYdqJ sc-brCFrO fEptdj gIDZHZ"] div[class="sc-eCYdqJ kMEFVW"]').within( $banner => {
+    cy.get('div[class="sc-eCYdqJ sc-dkdnUF fEptdj gilYEX"] div[class="sc-eCYdqJ fEptdj"]').within( $banner => {
         cy.wrap($banner).find(`div[class="sc-eCYdqJ fEptdj"]:nth-child(${selectIter})`).within( fromToken => {
             cy.get(fromToken).contains('div[class="sc-eCYdqJ jqkPHT"]', `${headerAssert}`).should('be.visible').within( fromTokenValBtn => {
                 cy.get(fromTokenValBtn).find(' ~ div[class="sc-eCYdqJ sc-gKXOVf fEptdj cjBzGg"] button.open-currency-select-button').then(fromTokenVal => {
