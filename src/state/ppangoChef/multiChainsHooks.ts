@@ -1,5 +1,5 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyPangoChefInfos, usePangoChefInfos, useHederaPangoChefInfos } from './hooks';
+import { useDummyPangoChefInfos, useHederaPangoChefInfos, usePangoChefInfos } from './hooks';
 
 export type UsePangoChefInfosHookType = {
   [chainId in ChainId]: typeof usePangoChefInfos | typeof useHederaPangoChefInfos | typeof useDummyPangoChefInfos;

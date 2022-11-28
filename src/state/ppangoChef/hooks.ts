@@ -12,12 +12,12 @@ import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
 import { useCoinGeckoCurrencyPrice, useTokens } from 'src/hooks/Tokens';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
+import { useHederaPGLTokenAddresses } from 'src/state/pwallet/hooks';
 import { decimalToFraction } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { getExtraTokensWeeklyRewardRate } from '../pstake/hooks';
 import { PangoChefInfo, Pool, PoolType, RewardSummations, UserInfo, ValueVariables } from './types';
-import { useHederaPGLTokenAddresses } from 'src/state/pwallet/hooks';
-import { hederaFn } from 'src/utils/hedera';
 
 export function usePangoChefInfos() {
   const { account } = usePangolinWeb3();
