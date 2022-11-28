@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
@@ -49,6 +50,21 @@ export const isAddressMapping: { [chainId in ChainId]: (value: any) => string | 
   [ChainId.HEDERA_TESTNET]: hederaFn.isHederaIdValid,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
+  [ChainId.ETHEREUM]: isDummyAddress,
+  [ChainId.POLYGON]: isDummyAddress,
+  [ChainId.FANTOM]: isDummyAddress,
+  [ChainId.XDAI]: isDummyAddress,
+  [ChainId.BSC]: isDummyAddress,
+  [ChainId.ARBITRUM]: isDummyAddress,
+  [ChainId.CELO]: isDummyAddress,
+  [ChainId.OKXCHAIN]: isDummyAddress,
+  [ChainId.VELAS]: isDummyAddress,
+  [ChainId.AURORA]: isDummyAddress,
+  [ChainId.CRONOS]: isDummyAddress,
+  [ChainId.FUSE]: isDummyAddress,
+  [ChainId.MOONRIVER]: isDummyAddress,
+  [ChainId.MOONBEAM]: isDummyAddress,
+  [ChainId.OP]: isDummyAddress,
 };
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
@@ -60,6 +76,21 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   296: CHAINS[ChainId.HEDERA_TESTNET].blockExplorerUrls?.[0] || '',
   329847900: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls?.[0] || '',
   329847901: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls?.[0] || '',
+  1: '',
+  137: '',
+  66: '',
+  106: '',
+  56: '',
+  42220: '',
+  42161: '',
+  1313161554: '',
+  25: '',
+  250: '',
+  122: '',
+  1285: '',
+  1284: '',
+  10: '',
+  100: '',
 };
 
 const transactionPath: { [chainId in ChainId]: string } = {
@@ -71,6 +102,21 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'tx',
   [ChainId.NEAR_MAINNET]: 'transactions',
   [ChainId.NEAR_TESTNET]: 'transactions',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
 };
 
 const addressPath: { [chainId in ChainId]: string } = {
@@ -82,6 +128,21 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'address',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
 };
 
 const blockPath: { [chainId in ChainId]: string } = {
@@ -93,6 +154,21 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'block',
   [ChainId.NEAR_MAINNET]: 'blocks',
   [ChainId.NEAR_TESTNET]: 'blocks',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
 };
 
 const tokenPath: { [chainId in ChainId]: string } = {
@@ -104,6 +180,21 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'token',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
 };
 
 export function getEtherscanLink(

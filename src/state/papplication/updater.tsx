@@ -84,6 +84,22 @@ const updaterMapping: { [chainId in ChainId]: () => null } = {
   [ChainId.WAGMI]: EvmApplicationUpdater,
   [ChainId.NEAR_MAINNET]: NearApplicationUpdater,
   [ChainId.NEAR_TESTNET]: NearApplicationUpdater,
+  //TODO: remove this once we have proper implementation
+  [ChainId.ETHEREUM]: EvmApplicationUpdater,
+  [ChainId.POLYGON]: EvmApplicationUpdater,
+  [ChainId.FANTOM]: EvmApplicationUpdater,
+  [ChainId.XDAI]: EvmApplicationUpdater,
+  [ChainId.BSC]: EvmApplicationUpdater,
+  [ChainId.ARBITRUM]: EvmApplicationUpdater,
+  [ChainId.CELO]: EvmApplicationUpdater,
+  [ChainId.OKXCHAIN]: EvmApplicationUpdater,
+  [ChainId.VELAS]: EvmApplicationUpdater,
+  [ChainId.AURORA]: EvmApplicationUpdater,
+  [ChainId.CRONOS]: EvmApplicationUpdater,
+  [ChainId.FUSE]: EvmApplicationUpdater,
+  [ChainId.MOONRIVER]: EvmApplicationUpdater,
+  [ChainId.MOONBEAM]: EvmApplicationUpdater,
+  [ChainId.OP]: EvmApplicationUpdater,
 };
 
 export default function ApplicationUpdater() {

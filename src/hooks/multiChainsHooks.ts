@@ -12,8 +12,16 @@ import { useHederaSwapCallback, useNearSwapCallback, useSwapCallback } from './u
 import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
 import { useWrapCallback, useWrapHbarCallback, useWrapNearCallback } from './useWrapCallback';
 
+export function useDummyHook() {
+  return;
+}
+
 export type UseWrapCallbackHookType = {
-  [chainId in ChainId]: typeof useWrapCallback | typeof useWrapNearCallback | typeof useWrapHbarCallback;
+  [chainId in ChainId]:
+    | typeof useWrapCallback
+    | typeof useWrapNearCallback
+    | typeof useWrapHbarCallback
+    | typeof useDummyHook;
 };
 
 export const useWrapCallbackHook: UseWrapCallbackHookType = {
@@ -25,10 +33,25 @@ export const useWrapCallbackHook: UseWrapCallbackHookType = {
   [ChainId.HEDERA_TESTNET]: useWrapHbarCallback,
   [ChainId.NEAR_MAINNET]: useWrapNearCallback,
   [ChainId.NEAR_TESTNET]: useWrapNearCallback,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
 };
 
 export type UseTokenHookType = {
-  [chainId in ChainId]: typeof useToken | typeof useNearToken;
+  [chainId in ChainId]: typeof useToken | typeof useNearToken | typeof useDummyHook;
 };
 
 export const useTokenHook: UseTokenHookType = {
@@ -40,13 +63,29 @@ export const useTokenHook: UseTokenHookType = {
   [ChainId.HEDERA_TESTNET]: useToken,
   [ChainId.NEAR_MAINNET]: useNearToken,
   [ChainId.NEAR_TESTNET]: useNearToken,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
 };
 
 export type UseApproveCallbackFromTradeHookType = {
   [chainId in ChainId]:
     | typeof useApproveCallbackFromTrade
     | typeof useApproveCallbackFromNearTrade
-    | typeof useApproveCallbackFromHederaTrade;
+    | typeof useApproveCallbackFromHederaTrade
+    | typeof useDummyHook;
 };
 
 export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookType = {
@@ -58,10 +97,29 @@ export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookTyp
   [ChainId.HEDERA_TESTNET]: useApproveCallbackFromHederaTrade,
   [ChainId.NEAR_MAINNET]: useApproveCallbackFromNearTrade,
   [ChainId.NEAR_TESTNET]: useApproveCallbackFromNearTrade,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
 };
 
 export type UseSwapCallbackHookType = {
-  [chainId in ChainId]: typeof useSwapCallback | typeof useNearSwapCallback | typeof useHederaSwapCallback;
+  [chainId in ChainId]:
+    | typeof useSwapCallback
+    | typeof useNearSwapCallback
+    | typeof useHederaSwapCallback
+    | typeof useDummyHook;
 };
 
 export const useSwapCallbackHook: UseSwapCallbackHookType = {
@@ -73,10 +131,29 @@ export const useSwapCallbackHook: UseSwapCallbackHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaSwapCallback,
   [ChainId.NEAR_MAINNET]: useNearSwapCallback,
   [ChainId.NEAR_TESTNET]: useNearSwapCallback,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
 };
 
 export type UseApproveCallbackHookType = {
-  [chainId in ChainId]: typeof useApproveCallback | typeof useNearApproveCallback | typeof useHederaApproveCallback;
+  [chainId in ChainId]:
+    | typeof useApproveCallback
+    | typeof useNearApproveCallback
+    | typeof useHederaApproveCallback
+    | typeof useDummyHook;
 };
 
 export const useApproveCallbackHook: UseApproveCallbackHookType = {
@@ -88,10 +165,29 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaApproveCallback,
   [ChainId.NEAR_MAINNET]: useNearApproveCallback,
   [ChainId.NEAR_TESTNET]: useNearApproveCallback,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
 };
 
 export type UseUSDCPriceHookType = {
-  [chainId in ChainId]: typeof useUSDCPrice | typeof useNearUSDCPrice | typeof useSongBirdUSDPrice;
+  [chainId in ChainId]:
+    | typeof useUSDCPrice
+    | typeof useNearUSDCPrice
+    | typeof useSongBirdUSDPrice
+    | typeof useDummyHook;
 };
 
 export const useUSDCPriceHook: UseUSDCPriceHookType = {
@@ -103,10 +199,25 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
   [ChainId.HEDERA_TESTNET]: useUSDCPrice,
   [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
   [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
 };
 
 export type UseTokensHookType = {
-  [chainId in ChainId]: typeof useTokens | typeof useNearTokens;
+  [chainId in ChainId]: typeof useTokens | typeof useNearTokens | typeof useDummyHook;
 };
 
 export const useTokensHook: UseTokensHookType = {
@@ -118,4 +229,19 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.HEDERA_TESTNET]: useTokens,
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
 };
