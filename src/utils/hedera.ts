@@ -13,7 +13,7 @@ import {
 import { CHAINS, ChainId, CurrencyAmount, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
-import { HEDERA_API_BASE_URL, ROUTER_ADDRESS } from 'src/constants';
+import { HEDERA_API_BASE_URL, PANGOCHEF_ADDRESS, ROUTER_ADDRESS } from 'src/constants';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
@@ -696,6 +696,15 @@ class Hedera {
       );
     }
 
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async createPangoChefUserStorageContract(chainId: string, accountId: string) {
+    const maxGas = 2300000;
+    const transaction = new ContractExecuteTransaction()
+      .setContractId(PANGOCHEF_ADDRESS[chainId])
+      .setGas(maxGas)
+      .setFunction('createUserStorageContract');
     return hashConnect.sendTransaction(transaction, accountId);
   }
 }
