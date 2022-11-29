@@ -34,6 +34,7 @@ export function useTokensCurrencyPrice(tokens: (Token | undefined)[]): { [x: str
       const token = filteredTokens[index];
       // if not exist pair, return 0 for price of this token
       if (pairState !== PairState.EXISTS || !pair) {
+        console.log('pairState', pairState);
         prices[token.address] = new Price(token, currency, '1', '0'); // 0
       } else {
         const tokenCurrencyPrice = pair.priceOf(token, currency);
