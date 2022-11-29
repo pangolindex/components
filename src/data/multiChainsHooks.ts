@@ -11,7 +11,7 @@ import {
 } from './TotalSupply';
 
 export type UsePairsHookType = {
-  [chainId in ChainId]: typeof usePairs | typeof useNearPairs | typeof useDummyHook;
+  [chainId in ChainId]: typeof usePairs | typeof useNearPairs;
 };
 
 export const usePairsHook: UsePairsHookType = {
@@ -23,21 +23,22 @@ export const usePairsHook: UsePairsHookType = {
   [ChainId.HEDERA_TESTNET]: usePairs,
   [ChainId.NEAR_MAINNET]: useNearPairs,
   [ChainId.NEAR_TESTNET]: useNearPairs,
-  [ChainId.ETHEREUM]: useDummyHook,
-  [ChainId.POLYGON]: useDummyHook,
-  [ChainId.FANTOM]: useDummyHook,
-  [ChainId.XDAI]: useDummyHook,
-  [ChainId.BSC]: useDummyHook,
-  [ChainId.ARBITRUM]: useDummyHook,
-  [ChainId.CELO]: useDummyHook,
-  [ChainId.OKXCHAIN]: useDummyHook,
-  [ChainId.VELAS]: useDummyHook,
-  [ChainId.AURORA]: useDummyHook,
-  [ChainId.CRONOS]: useDummyHook,
-  [ChainId.FUSE]: useDummyHook,
-  [ChainId.MOONRIVER]: useDummyHook,
-  [ChainId.MOONBEAM]: useDummyHook,
-  [ChainId.OP]: useDummyHook,
+  //TODO: We used usePairs for now, but we need to check following chains
+  [ChainId.ETHEREUM]: usePairs,
+  [ChainId.POLYGON]: usePairs,
+  [ChainId.FANTOM]: usePairs,
+  [ChainId.XDAI]: usePairs,
+  [ChainId.BSC]: usePairs,
+  [ChainId.ARBITRUM]: usePairs,
+  [ChainId.CELO]: usePairs,
+  [ChainId.OKXCHAIN]: usePairs,
+  [ChainId.VELAS]: usePairs,
+  [ChainId.AURORA]: usePairs,
+  [ChainId.CRONOS]: usePairs,
+  [ChainId.FUSE]: usePairs,
+  [ChainId.MOONRIVER]: usePairs,
+  [ChainId.MOONBEAM]: usePairs,
+  [ChainId.OP]: usePairs,
 };
 
 export type UseTokenAllowanceHookType = {
