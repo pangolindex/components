@@ -25,6 +25,7 @@ export const useWrapCallbackHook: UseWrapCallbackHookType = {
   [ChainId.HEDERA_TESTNET]: useWrapHbarCallback,
   [ChainId.NEAR_MAINNET]: useWrapNearCallback,
   [ChainId.NEAR_TESTNET]: useWrapNearCallback,
+  [ChainId.EVMOS_TESTNET]: useWrapCallback,
 };
 
 export type UseTokenHookType = {
@@ -40,6 +41,7 @@ export const useTokenHook: UseTokenHookType = {
   [ChainId.HEDERA_TESTNET]: useToken,
   [ChainId.NEAR_MAINNET]: useNearToken,
   [ChainId.NEAR_TESTNET]: useNearToken,
+  [ChainId.EVMOS_TESTNET]: useToken,
 };
 
 export type UseApproveCallbackFromTradeHookType = {
@@ -58,6 +60,7 @@ export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookTyp
   [ChainId.HEDERA_TESTNET]: useApproveCallbackFromHederaTrade,
   [ChainId.NEAR_MAINNET]: useApproveCallbackFromNearTrade,
   [ChainId.NEAR_TESTNET]: useApproveCallbackFromNearTrade,
+  [ChainId.EVMOS_TESTNET]: useApproveCallbackFromTrade,
 };
 
 export type UseSwapCallbackHookType = {
@@ -73,6 +76,7 @@ export const useSwapCallbackHook: UseSwapCallbackHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaSwapCallback,
   [ChainId.NEAR_MAINNET]: useNearSwapCallback,
   [ChainId.NEAR_TESTNET]: useNearSwapCallback,
+  [ChainId.EVMOS_TESTNET]: useSwapCallback,
 };
 
 export type UseApproveCallbackHookType = {
@@ -88,6 +92,7 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaApproveCallback,
   [ChainId.NEAR_MAINNET]: useNearApproveCallback,
   [ChainId.NEAR_TESTNET]: useNearApproveCallback,
+  [ChainId.EVMOS_TESTNET]: useApproveCallback,
 };
 
 export type UseUSDCPriceHookType = {
@@ -103,6 +108,7 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
   [ChainId.HEDERA_TESTNET]: useUSDCPrice,
   [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
   [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
+  [ChainId.EVMOS_TESTNET]: useUSDCPrice,
 };
 
 export type UseTokensHookType = {
@@ -118,4 +124,5 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.HEDERA_TESTNET]: useTokens,
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
+  [ChainId.EVMOS_TESTNET]: useTokens,
 };

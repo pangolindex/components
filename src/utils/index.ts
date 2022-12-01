@@ -49,6 +49,7 @@ export const isAddressMapping: { [chainId in ChainId]: (value: any) => string | 
   [ChainId.HEDERA_TESTNET]: hederaFn.isHederaIdValid,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
+  [ChainId.EVMOS_TESTNET]: isAddress,
 };
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
@@ -60,6 +61,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   296: CHAINS[ChainId.HEDERA_TESTNET].blockExplorerUrls?.[0] || '',
   329847900: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls?.[0] || '',
   329847901: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls?.[0] || '',
+  9000: CHAINS[ChainId.EVMOS_TESTNET].blockExplorerUrls?.[0] || '',
 };
 
 const transactionPath: { [chainId in ChainId]: string } = {
@@ -71,6 +73,7 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'tx',
   [ChainId.NEAR_MAINNET]: 'transactions',
   [ChainId.NEAR_TESTNET]: 'transactions',
+  [ChainId.EVMOS_TESTNET]: 'tx',
 };
 
 const addressPath: { [chainId in ChainId]: string } = {
@@ -82,6 +85,7 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'address',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
+  [ChainId.EVMOS_TESTNET]: 'address',
 };
 
 const blockPath: { [chainId in ChainId]: string } = {
@@ -93,6 +97,7 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'block',
   [ChainId.NEAR_MAINNET]: 'blocks',
   [ChainId.NEAR_TESTNET]: 'blocks',
+  [ChainId.EVMOS_TESTNET]: 'block',
 };
 
 const tokenPath: { [chainId in ChainId]: string } = {
@@ -104,6 +109,7 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'token',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
+  [ChainId.EVMOS_TESTNET]: 'token',
 };
 
 export function getEtherscanLink(

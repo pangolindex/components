@@ -84,6 +84,7 @@ const updaterMapping: { [chainId in ChainId]: () => null } = {
   [ChainId.WAGMI]: EvmApplicationUpdater,
   [ChainId.NEAR_MAINNET]: NearApplicationUpdater,
   [ChainId.NEAR_TESTNET]: NearApplicationUpdater,
+  [ChainId.EVMOS_TESTNET]: EvmApplicationUpdater,
 };
 
 export default function ApplicationUpdater() {

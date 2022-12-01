@@ -14,4 +14,5 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.HEDERA_TESTNET]: useDummyPangoChefInfos,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefInfos,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefInfos,
+  [ChainId.EVMOS_TESTNET]: usePangoChefInfos,
 };

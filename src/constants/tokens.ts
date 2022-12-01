@@ -58,6 +58,13 @@ export const PNG: { [chainId in ChainId]: Token } = {
     CHAINS[ChainId.NEAR_TESTNET].png_symbol,
     'Pangolin Near',
   ),
+  [ChainId.EVMOS_TESTNET]: new Token(
+    ChainId.EVMOS_TESTNET,
+    CHAINS[ChainId.EVMOS_TESTNET].contracts!.png,
+    18,
+    CHAINS[ChainId.EVMOS_TESTNET].png_symbol,
+    'Pangolin Evmos',
+  ),
 };
 
 export const DAIe: { [chainId in ChainId]: Token } = {
@@ -75,6 +82,7 @@ export const DAIe: { [chainId in ChainId]: Token } = {
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.EVMOS_TESTNET]: new Token(ChainId.EVMOS_TESTNET, ZERO_ADDRESS, 18, '', ''),
 };
 
 export const USDCe: { [chainId in ChainId]: Token } = {
@@ -92,6 +100,7 @@ export const USDCe: { [chainId in ChainId]: Token } = {
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.EVMOS_TESTNET]: new Token(ChainId.EVMOS_TESTNET, ZERO_ADDRESS, 18, '', ''),
 };
 
 export const USDC: { [chainId in ChainId]: Token } = {
@@ -109,6 +118,7 @@ export const USDC: { [chainId in ChainId]: Token } = {
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, 'usdc.fakes.testnet', 18, 'USDC', 'USDC'),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, 'usdc.fakes.testnet', 18, 'USDC', 'USDC'),
+  [ChainId.EVMOS_TESTNET]: new Token(ChainId.EVMOS_TESTNET, ZERO_ADDRESS, 18, '', ''),
 };
 
 export const USDTe: { [chainId in ChainId]: Token } = {
@@ -126,6 +136,7 @@ export const USDTe: { [chainId in ChainId]: Token } = {
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 6, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.EVMOS_TESTNET]: new Token(ChainId.EVMOS_TESTNET, ZERO_ADDRESS, 6, '', ''),
 };
 
 export const axlUST: { [chainId in ChainId]: Token } = {
@@ -143,6 +154,7 @@ export const axlUST: { [chainId in ChainId]: Token } = {
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.EVMOS_TESTNET]: new Token(ChainId.EVMOS_TESTNET, ZERO_ADDRESS, 18, '', ''),
 };
 
 export const UST: { [chainId in ChainId]: Token } = {
@@ -160,4 +172,5 @@ export const UST: { [chainId in ChainId]: Token } = {
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.EVMOS_TESTNET]: new Token(ChainId.EVMOS_TESTNET, ZERO_ADDRESS, 18, '', ''),
 };

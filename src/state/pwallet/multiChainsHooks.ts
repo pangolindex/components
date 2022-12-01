@@ -38,6 +38,7 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.HEDERA_TESTNET]: useTokenBalances,
   [ChainId.NEAR_MAINNET]: useNearTokenBalances,
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
+  [ChainId.EVMOS_TESTNET]: useTokenBalances,
 };
 
 export type UseTokenBalanceHookType = {
@@ -53,6 +54,7 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.HEDERA_TESTNET]: useTokenBalance,
   [ChainId.NEAR_MAINNET]: useNearTokenBalance,
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
+  [ChainId.EVMOS_TESTNET]: useTokenBalance,
 };
 
 export type UsePairBalanceHookType = {
@@ -68,6 +70,7 @@ export const usePairBalanceHook: UsePairBalanceHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaPairBalance,
   [ChainId.NEAR_MAINNET]: useNearPairBalance,
   [ChainId.NEAR_TESTNET]: useNearPairBalance,
+  [ChainId.EVMOS_TESTNET]: useEVMPairBalance,
 };
 
 export type UseAccountBalanceHookType = {
@@ -83,6 +86,7 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaBalance,
   [ChainId.NEAR_MAINNET]: useNearBalance,
   [ChainId.NEAR_TESTNET]: useNearBalance,
+  [ChainId.EVMOS_TESTNET]: useETHBalances,
 };
 
 export type UseAddLiquidityHookType = {
@@ -98,6 +102,7 @@ export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaAddLiquidity,
   [ChainId.NEAR_MAINNET]: useNearAddLiquidity,
   [ChainId.NEAR_TESTNET]: useNearAddLiquidity,
+  [ChainId.EVMOS_TESTNET]: useAddLiquidity,
 };
 
 export type UseRemoveLiquidityHookType = {
@@ -113,6 +118,7 @@ export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaRemoveLiquidity,
   [ChainId.NEAR_MAINNET]: useNearRemoveLiquidity,
   [ChainId.NEAR_TESTNET]: useNearRemoveLiquidity,
+  [ChainId.EVMOS_TESTNET]: useRemoveLiquidity,
 };
 
 export type UseGetUserLPHookType = {
@@ -132,6 +138,7 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.HEDERA_TESTNET]: useGetHederaUserLP,
   [ChainId.NEAR_MAINNET]: useGetNearUserLP,
   [ChainId.NEAR_TESTNET]: useGetNearUserLP,
+  [ChainId.EVMOS_TESTNET]: useGetUserLP,
 };
 
 export type UseCreatePairHookType = {
@@ -151,4 +158,5 @@ export const useCreatePairHook: UseCreatePairHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaCreatePair,
   [ChainId.NEAR_MAINNET]: useNearCreatePair,
   [ChainId.NEAR_TESTNET]: useNearCreatePair,
+  [ChainId.EVMOS_TESTNET]: useDummyCreatePair,
 };

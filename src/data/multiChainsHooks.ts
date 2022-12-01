@@ -22,6 +22,7 @@ export const usePairsHook: UsePairsHookType = {
   [ChainId.HEDERA_TESTNET]: usePairs,
   [ChainId.NEAR_MAINNET]: useNearPairs,
   [ChainId.NEAR_TESTNET]: useNearPairs,
+  [ChainId.EVMOS_TESTNET]: usePairs,
 };
 
 export type UseTokenAllowanceHookType = {
@@ -37,6 +38,7 @@ export const useTokenAllowanceHook: UseTokenAllowanceHookType = {
   [ChainId.HEDERA_TESTNET]: useTokenAllowance,
   [ChainId.NEAR_MAINNET]: useTokenAllowance,
   [ChainId.NEAR_TESTNET]: useTokenAllowance,
+  [ChainId.EVMOS_TESTNET]: useTokenAllowance,
 };
 
 export type UseTotalSupplyHookType = {
@@ -57,6 +59,7 @@ export const useTotalSupplyHook: UseTotalSupplyHookType = {
   [ChainId.HEDERA_TESTNET]: useTotalSupply,
   [ChainId.NEAR_MAINNET]: useNearTotalSupply,
   [ChainId.NEAR_TESTNET]: useNearTotalSupply,
+  [ChainId.EVMOS_TESTNET]: useTotalSupply,
 };
 
 export type UsePairTotalSupplyHookType = {
@@ -77,4 +80,5 @@ export const usePairTotalSupplyHook: UsePairTotalSupplyHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaPairTotalSupply,
   [ChainId.NEAR_MAINNET]: useNearPairTotalSupply,
   [ChainId.NEAR_TESTNET]: useNearPairTotalSupply,
+  [ChainId.EVMOS_TESTNET]: useEvmPairTotalSupply,
 };

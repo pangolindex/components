@@ -64,6 +64,7 @@ const initialState: SwapState = {
   [ChainId.HEDERA_TESTNET]: initialValue,
   [ChainId.NEAR_MAINNET]: initialValue,
   [ChainId.NEAR_TESTNET]: initialValue,
+  [ChainId.EVMOS_TESTNET]: initialValue,
 };
 
 export default createReducer<SwapState>(initialState, (builder) =>
