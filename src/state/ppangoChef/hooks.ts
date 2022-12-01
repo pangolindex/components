@@ -29,14 +29,10 @@ export function usePangoChefInfos() {
   // get the length of pools
   const poolLenght: BigNumber | undefined = useSingleCallResult(pangoChefContract, 'poolsLength').result?.[0];
 
-  console.log('poolLenght', poolLenght);
-
   // create array with length of pools
   const allPoolsIds = new Array(Number(poolLenght ? poolLenght.toString() : 0))
     .fill(0)
     .map((_, index) => [index.toString()]);
-
-  console.log('allPoolsIds', allPoolsIds);
 
   const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', allPoolsIds);
   // format the data to Pool type
@@ -83,9 +79,6 @@ export function usePangoChefInfos() {
 
     return [_pools, _poolsIds];
   }, [poolsState]);
-
-  console.log('pools', pools);
-  console.log('poolsIds', poolsIds);
 
   // get reward rates for each pool
   const poolsRewardsRateState = useSingleContractMultipleData(pangoChefContract, 'poolRewardRate', poolsIds);
@@ -381,22 +374,20 @@ export function useHederaPangoChefInfos() {
   const chainId = useChainId();
   const pangoChefContract = usePangoChefContract();
 
-  console.log('1==pangoChefContract', pangoChefContract);
-
   const png = PNG[chainId];
+
+  const userStorage = useSingleCallResult(pangoChefContract, 'getUserStorageContract', [account ?? '']).result?.[0];
 
   // get the length of pools
   const poolLenght: BigNumber | undefined = useSingleCallResult(pangoChefContract, 'poolsLength').result?.[0];
-  console.log('2==poolLenght', poolLenght);
+
   // create array with length of pools
   const allPoolsIds = new Array(Number(poolLenght ? poolLenght.toString() : 0))
     .fill(0)
     .map((_, index) => [index.toString()]);
-  console.log('3==allPoolsIds', allPoolsIds);
 
   const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', allPoolsIds);
 
-  console.log('4==poolsState', poolsState);
   // format the data to Pool type
   const [pools, poolsIds] = useMemo(() => {
     const _pools: Pool[] = [];
@@ -442,13 +433,8 @@ export function useHederaPangoChefInfos() {
     return [_pools, _poolsIds];
   }, [poolsState]);
 
-  console.log('4==pools', pools);
-  console.log('5==poolsIds', poolsIds);
-
   // get reward rates for each pool
   const poolsRewardsRateState = useSingleContractMultipleData(pangoChefContract, 'poolRewardRate', poolsIds);
-
-  console.log('6==poolsRewardsRateState', poolsRewardsRateState);
 
   // get the address of the rewarder for each pool
   const rewardsAddresses = useMemo(() => {
@@ -461,8 +447,6 @@ export function useHederaPangoChefInfos() {
     });
   }, [pools]);
 
-  console.log('7==rewardsAddresses', rewardsAddresses);
-
   const rewardsTokensState = useMultipleContractSingleData(
     rewardsAddresses,
     REWARDER_VIA_MULTIPLIER_INTERFACE,
@@ -470,15 +454,11 @@ export function useHederaPangoChefInfos() {
     [],
   );
 
-  console.log('8==rewardsTokensState', rewardsTokensState);
-
   // get the address of lp tokens for each pool
   const lpTokens = useMemo(() => {
     if ((pools || []).length === 0) return [];
     return pools.map((pool) => pool?.tokenOrRecipient);
   }, [pools]);
-
-  console.log('9==lpTokens', lpTokens);
 
   const lpTokenContracts = useMemo(() => {
     return lpTokens.map((lpAddress) => {
@@ -488,45 +468,34 @@ export function useHederaPangoChefInfos() {
     });
   }, [lpTokens]);
 
-  console.log('91==lpTokenContracts', lpTokenContracts);
+  console.log('lpTokenContracts', lpTokenContracts);
 
   // get the tokens for each pool
   const tokens0State = useMultipleContractSingleData(
+    //lpTokenContracts,
     ['0x9dd21fc0e08f895b4289ab163291e637a94fc3ad'], // TODO
     PANGOLIN_PAIR_INTERFACE,
     'token0',
     [],
   );
   const tokens1State = useMultipleContractSingleData(
+    //lpTokenContracts,
     ['0x9dd21fc0e08f895b4289ab163291e637a94fc3ad'], // TODO
     PANGOLIN_PAIR_INTERFACE,
     'token1',
     [],
   );
 
-  console.log('10==tokens0State', tokens0State);
-  console.log('11==tokens1State', tokens1State);
-
   const tokens0Adrr = useMemo(() => {
     return tokens0State.map((result) => (result.result && result.result.length > 0 ? result.result[0] : null));
   }, [tokens0State]);
-
-  console.log('12==tokens0Adrr', tokens0Adrr);
 
   const tokens1Adrr = useMemo(() => {
     return tokens1State.map((result) => (result.result && result.result.length > 0 ? result.result[0] : null));
   }, [tokens1State]);
 
-  console.log('13==tokens1Adrr', tokens1Adrr);
-
-  // const tokens0Adrr = ['0x0000000000000000000000000000000002Db0600'];
-  // const tokens1Adrr = ['0x0000000000000000000000000000000002DfA5b2'];
-
   const tokens0 = useTokens(tokens0Adrr);
   const tokens1 = useTokens(tokens1Adrr);
-
-  console.log('14==tokens0', tokens0);
-  console.log('15==tokens1', tokens1);
 
   const tokensPairs = useMemo(() => {
     if (tokens0 && tokens1 && tokens0?.length === tokens1?.length) {
@@ -542,40 +511,30 @@ export function useHederaPangoChefInfos() {
     return [] as [Token | undefined, Token | undefined][];
   }, [tokens0, tokens1]);
 
-  console.log('16==tokensPairs', tokensPairs);
-
   // get the pairs for each pool
   const pairs = usePairs(tokensPairs);
-
-  console.log('17==pairs', pairs);
 
   const pairAddresses = useMemo(() => {
     return pairs.map(([, pair]) => pair?.liquidityToken?.address);
   }, [pairs]);
 
-  console.log('18==pairAddresses', pairAddresses);
-
   const pglTokenAddresses = useHederaPGLTokenAddresses(pairAddresses);
 
   const allPglTokenAddress = useMemo(() => Object.values(pglTokenAddresses ?? {}), [pglTokenAddresses]);
 
-  console.log('181==allPglTokenAddress', allPglTokenAddress);
-
   const pairTotalSuppliesState = useMultipleContractSingleData(allPglTokenAddress, ERC20_INTERFACE, 'totalSupply');
-
-  console.log('19==pairTotalSuppliesState', pairTotalSuppliesState);
 
   const userInfoInput = useMemo(() => {
     if (poolsIds.length === 0 || !account) return [];
     return poolsIds.map((pid) => [pid[0], account]);
   }, [poolsIds, account]); // [[pid, account], ...] [[0, account], [1, account], [2, account] ...]
 
-  console.log('20==userInfoInput', userInfoInput);
+  const userInfosState = useSingleContractMultipleData(
+    pangoChefContract,
+    'getUser',
+    userStorage && userInfoInput ? userInfoInput : [],
+  );
 
-  // const userInfosState = useSingleContractMultipleData(pangoChefContract, 'getUser', userInfoInput ?? []);
-  // TODO: Check
-  const userInfosState = useSingleContractMultipleData(pangoChefContract, 'getUser', []);
-  console.log('21==userInfosState', userInfosState);
   // format the data to UserInfo type
   const userInfos = useMemo(() => {
     return userInfosState.map((callState) => {
@@ -617,27 +576,21 @@ export function useHederaPangoChefInfos() {
     });
   }, [userInfosState]);
 
-  console.log('22==userInfos', userInfos);
-
   // get the user pending rewards for each pool
-  // const userPendingRewardsState = useSingleContractMultipleData(
-  //   pangoChefContract,
-  //   'userPendingRewards',
-  //   userInfoInput ?? [],
-  // );
-  const userPendingRewardsState = useSingleContractMultipleData(pangoChefContract, 'userPendingRewards', []); // TODO
+  const userPendingRewardsState = useSingleContractMultipleData(
+    pangoChefContract,
+    'userPendingRewards',
+    userStorage && userInfoInput ? userInfoInput : [],
+  );
 
-  console.log('23==userPendingRewardsState', userPendingRewardsState);
-
-  // const userRewardRatesState = useSingleContractMultipleData(pangoChefContract, 'userRewardRate', userInfoInput ?? []);
-  const userRewardRatesState = useSingleContractMultipleData(pangoChefContract, 'userRewardRate', []); // TODO CHECK
-  // console.log('24==userRewardRatesState', userRewardRatesState);
+  const userRewardRatesState = useSingleContractMultipleData(
+    pangoChefContract,
+    'userRewardRate',
+    userStorage && userInfoInput ? userInfoInput : [],
+  );
 
   const wavax = WAVAX[chainId];
   const [avaxPngPairState, avaxPngPair] = usePair(wavax, png);
-
-  console.log('25==avaxPngPairState', avaxPngPairState);
-  console.log('26==avaxPngPair', avaxPngPair);
 
   const pairsToGetPrice = useMemo(() => {
     const _pairs: { pair: Pair; totalSupply: TokenAmount }[] = [];
@@ -653,19 +606,15 @@ export function useHederaPangoChefInfos() {
     return _pairs;
   }, [pairs, pairTotalSuppliesState]);
 
-  console.log('27==pairsToGetPrice', pairsToGetPrice);
-
   const pairPrices = usePairsCurrencyPrice(pairsToGetPrice);
-  console.log('28==pairPrices', pairPrices);
+
   const { data: currencyPrice = 0 } = useCoinGeckoCurrencyPrice(chainId);
 
   return useMemo(() => {
     if (!chainId || !png || pairs.length == 0) return [] as PangoChefInfo[];
-    console.log('29====');
+
     const farms: PangoChefInfo[] = [];
     for (let index = 0; index < poolsIds.length; index++) {
-      console.log('30====', index);
-
       const poolState = poolsState[index];
       const poolRewardRateState = poolsRewardsRateState[index];
       const userInfoState = userInfosState[index];
@@ -693,7 +642,6 @@ export function useHederaPangoChefInfos() {
         !pair ||
         !avaxPngPair
       ) {
-        console.log('31================');
         continue;
       }
 
@@ -793,7 +741,6 @@ export function useHederaPangoChefInfos() {
       } as PangoChefInfo);
     }
 
-    console.log('32==farms', farms);
     return farms;
   }, [
     poolsIds,
@@ -807,8 +754,6 @@ export function useHederaPangoChefInfos() {
     userPendingRewardsState,
     pairs,
   ]);
-
-  //return [] as PangoChefInfo[];
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */

@@ -49,6 +49,7 @@ import {
   MinichefV2,
   StakingInfo,
 } from './types';
+import { useTokensHook } from 'src/hooks/multiChainsHooks';
 
 export const useGetFarmApr = (pid: string) => {
   const chainId = useChainId();
@@ -362,8 +363,15 @@ export function useDerivedStakeInfo(
     error,
   };
 }
-
+/**
+ * here we can get rewardToken from address
+ * @param rewardTokens
+ * @param rewardTokensAddress
+ * @returns rewardTokens
+ */
 export function useGetRewardTokens(rewardTokens?: Array<Token>, rewardTokensAddress?: Array<string>) {
+  const chainId = useChainId();
+  const useTokens = useTokensHook[chainId];
   const _rewardTokens = useTokens(rewardTokensAddress);
 
   return useMemo(() => {

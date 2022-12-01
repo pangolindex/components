@@ -7,7 +7,6 @@ import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import FarmDrawer from '../FarmDrawer';
@@ -23,6 +22,7 @@ import {
   Panel,
   StatWrapper,
 } from './styleds';
+import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 
 export interface PoolCardViewProps {
   stakingInfo: PangoChefInfo;
@@ -41,21 +41,23 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
-  const token0 = stakingInfo.tokens[0];
-  const token1 = stakingInfo.tokens[1];
+  const usePairBalance = usePairBalanceHook[chainId];
+
+  const token0 = stakingInfo?.tokens[0];
+  const token1 = stakingInfo?.tokens[1];
 
   const currency0 = unwrappedToken(token0, chainId);
   const currency1 = unwrappedToken(token1, chainId);
 
   const [, stakingTokenPair] = usePair(token0, token1);
 
-  const isStaking = Boolean(stakingInfo.stakedAmount.greaterThan('0'));
+  const isStaking = Boolean(stakingInfo?.stakedAmount.greaterThan('0'));
 
   const yourStackedInUsd = CHAINS[chainId]?.mainnet
     ? stakingInfo?.totalStakedInUsd.multiply(stakingInfo?.stakedAmount).divide(stakingInfo?.totalStakedAmount)
     : undefined;
 
-  const userPgl = useTokenBalance(account ?? undefined, stakingTokenPair?.liquidityToken);
+  const userPgl = usePairBalance(account ?? undefined, stakingTokenPair ?? undefined);
 
   const isLiquidity = Boolean(userPgl?.greaterThan('0'));
 
@@ -67,8 +69,8 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
     setShowAddLiquidityDrawer(false);
   };
 
-  const farmApr = stakingInfo.stakingApr;
-  const earnedAmount = stakingInfo.earnedAmount;
+  const farmApr = stakingInfo?.stakingApr;
+  const earnedAmount = stakingInfo?.earnedAmount;
 
   const userApr = useUserPangoChefAPR(stakingInfo);
 
