@@ -1,7 +1,8 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useQuery } from 'react-query';
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
@@ -12,7 +13,8 @@ import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
 import { useCoinGeckoCurrencyPrice, useTokens } from 'src/hooks/Tokens';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
-import { useHederaPGLTokenAddresses } from 'src/state/pwallet/hooks';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
+import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks';
 import { decimalToFraction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
@@ -376,13 +378,15 @@ export function useHederaPangoChefInfos() {
 
   const png = PNG[chainId];
 
-  const userStorage = useSingleCallResult(pangoChefContract, 'getUserStorageContract', [account ?? '']).result?.[0];
+  const [userStorage] = useHederaPangochefContractCreateCallback();
 
+  //const userStorage = useSingleCallResult(pangoChefContract, 'getUserStorageContract', [account ?? '']).result?.[0];
+  console.log('==31', userStorage);
   // get the length of pools
-  const poolLenght: BigNumber | undefined = useSingleCallResult(pangoChefContract, 'poolsLength').result?.[0];
+  const poolLength: BigNumber | undefined = useSingleCallResult(pangoChefContract, 'poolsLength').result?.[0];
 
   // create array with length of pools
-  const allPoolsIds = new Array(Number(poolLenght ? poolLenght.toString() : 0))
+  const allPoolsIds = new Array(Number(poolLength ? poolLength.toString() : 0))
     .fill(0)
     .map((_, index) => [index.toString()]);
 
@@ -460,38 +464,29 @@ export function useHederaPangoChefInfos() {
     return pools.map((pool) => pool?.tokenOrRecipient);
   }, [pools]);
 
-  const lpTokenContracts = useMemo(() => {
-    return lpTokens.map((lpAddress) => {
-      const tokenId = hederaFn.hederaId(lpAddress);
-      const contractId = hederaFn.tokenToContractId(tokenId);
-      return hederaFn.idToAddress(contractId);
-    });
-  }, [lpTokens]);
+  // const lpTokenContracts = useMemo(() => {
+  //   return lpTokens.map((lpAddress) => {
+  //     const tokenId = hederaFn.hederaId(lpAddress);
+  //     return hederaFn.tokenToContractId(tokenId);
+  //   });
+  // }, [lpTokens]);
 
-  console.log('lpTokenContracts', lpTokenContracts);
+  console.log('lpTokens', lpTokens);
+
+  const pglTokenEvmAddresses = useHederaPairContractEVMAddresses(lpTokens);
+
+  console.log('pglTokenEvmAddresses', pglTokenEvmAddresses);
 
   // get the tokens for each pool
-  const tokens0State = useMultipleContractSingleData(
-    //lpTokenContracts,
-    ['0x9dd21fc0e08f895b4289ab163291e637a94fc3ad'], // TODO
-    PANGOLIN_PAIR_INTERFACE,
-    'token0',
-    [],
-  );
-  const tokens1State = useMultipleContractSingleData(
-    //lpTokenContracts,
-    ['0x9dd21fc0e08f895b4289ab163291e637a94fc3ad'], // TODO
-    PANGOLIN_PAIR_INTERFACE,
-    'token1',
-    [],
-  );
+  const tokens0State = useMultipleContractSingleData(pglTokenEvmAddresses, PANGOLIN_PAIR_INTERFACE, 'token0', []);
+  const tokens1State = useMultipleContractSingleData(pglTokenEvmAddresses, PANGOLIN_PAIR_INTERFACE, 'token1', []);
 
   const tokens0Adrr = useMemo(() => {
-    return tokens0State.map((result) => (result.result && result.result.length > 0 ? result.result[0] : null));
+    return tokens0State.map((result) => (result?.result && result?.result?.length > 0 ? result?.result[0] : null));
   }, [tokens0State]);
 
   const tokens1Adrr = useMemo(() => {
-    return tokens1State.map((result) => (result.result && result.result.length > 0 ? result.result[0] : null));
+    return tokens1State.map((result) => (result?.result && result?.result?.length > 0 ? result?.result[0] : null));
   }, [tokens1State]);
 
   const tokens0 = useTokens(tokens0Adrr);
@@ -827,3 +822,51 @@ export function useIsLockingPoolZero() {
 
   return pairs;
 }
+
+export function useHederaPangochefContractCreateCallback(): [boolean, () => Promise<void>] {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const pangoChefContract = usePangoChefContract();
+  const addTransaction = useTransactionAdder();
+
+  const { data: userStorage } = useQuery(['userstoragecontract', account], async (): Promise<any> => {
+    if (!account) {
+      return 0;
+    }
+    try {
+      const response = await pangoChefContract?.getUserStorageContract(account);
+
+      console.log('===response', response);
+      return response;
+    } catch (error) {
+      console.log('===21', error);
+      return '';
+    }
+  });
+
+  console.log('===userStorage', userStorage);
+
+  // const userStorage = useSingleCallResult(pangoChefContract, 'getUserStorageContract', [account ?? '']).result?.[0];
+
+  const create = useCallback(async (): Promise<void> => {
+    if (!account) {
+      console.error('no account');
+      return;
+    }
+
+    try {
+      const response = await hederaFn.createPangoChefUserStorageContract(chainId, account);
+
+      if (response) {
+        addTransaction(response, {
+          summary: 'Created Pangochef User Storage Contract',
+        });
+      }
+    } catch (error) {
+      console.debug('Failed to create pangochef contract', error);
+    }
+  }, [account, chainId, addTransaction]);
+
+  return [userStorage ? true : false, create];
+}
+/* eslint-enable max-lines */

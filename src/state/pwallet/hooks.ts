@@ -1538,7 +1538,7 @@ export const fetchHederaPGLTokenAddress = (pairTokenAddress: string | undefined)
 
     const tokenAddress = pairTokenAddress;
     // get pair contract id using api call because `asAccountString` is not working for pair address
-    const contractId = await hederaFn.getContractData(tokenAddress);
+    const { contractId } = await hederaFn.getContractData(tokenAddress);
     // get pair tokenId from pair contract id
     const tokenId = hederaFn.contractToTokenId(contractId?.toString());
     // convert token id to evm address
@@ -1565,6 +1565,26 @@ export const fetchHederaPGLToken = (pairToken: Token | undefined, chainId: Chain
     const newTokenAddress = hederaFn.idToAddress(tokenId);
     const token = new Token(chainId, newTokenAddress, pairToken?.decimals, pairToken?.symbol, pairToken?.name);
     return token;
+  } catch {
+    return undefined;
+  }
+};
+
+export const fetchHederaPGLTokenEVMAddress = (pairTokenAddress: string | undefined) => async () => {
+  try {
+    if (!pairTokenAddress) {
+      return undefined;
+    }
+
+    const tokenAddress = pairTokenAddress;
+    // get pair contract id using api call because `asAccountString` is not working for pair address
+    const { evmAddress } = await hederaFn.getContractData(tokenAddress);
+    // // get pair tokenId from pair contract id
+    // const tokenId = hederaFn.contractToTokenId(contractId?.toString());
+    // // convert token id to evm address
+    // const newTokenAddress = hederaFn.idToAddress(tokenId);
+
+    return evmAddress;
   } catch {
     return undefined;
   }
@@ -1686,4 +1706,51 @@ export function useHederaPGLAssociated(
   const [pglToken] = useHederaPGLToken(currencyA, currencyB);
   return useHederaTokenAssociated(pglToken);
 }
+
+/**
+ * This hook used to get pgl Token evm address (Fungible Token address) based on lpTokenAddress
+ * Takes lpTokenAddress as a input and return pgl evm token address
+ * @param lpTokenAddress
+ * @returns [pair lptoken evm address]
+ */
+
+export const useHederaPairContractEVMAddresses = (lpTokenAddress?: string[]): string[] => {
+  const chainId = useChainId();
+
+  const lpTokenContracts = useMemo(() => {
+    return (lpTokenAddress || []).map((lpAddress) => {
+      const tokenId = hederaFn.hederaId(lpAddress);
+      return hederaFn.tokenToContractId(tokenId);
+    });
+  }, [lpTokenAddress]);
+
+  const queryParameter = useMemo(() => {
+    return (
+      lpTokenContracts?.map((address) => {
+        return {
+          queryKey: ['get-pgl-token-evm-address', address],
+          queryFn: fetchHederaPGLTokenEVMAddress(address),
+        };
+      }) ?? []
+    );
+  }, [lpTokenContracts]);
+
+  const results = useQueries(queryParameter);
+
+  console.log('results', results);
+
+  return useMemo(() => {
+    if (!chainId) return [];
+
+    return results.reduce<string[]>((acc, result, i) => {
+      const evmAddress = result?.data;
+
+      if (evmAddress && result?.isLoading === false) {
+        acc.push(evmAddress);
+      }
+
+      return acc;
+    }, []);
+  }, [results]);
+};
 /* eslint-enable max-lines */

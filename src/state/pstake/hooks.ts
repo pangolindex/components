@@ -24,7 +24,7 @@ import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import { useTokensHook, useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import usePrevious from 'src/hooks/usePrevious';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import {
@@ -49,7 +49,6 @@ import {
   MinichefV2,
   StakingInfo,
 } from './types';
-import { useTokensHook } from 'src/hooks/multiChainsHooks';
 
 export const useGetFarmApr = (pid: string) => {
   const chainId = useChainId();

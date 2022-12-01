@@ -636,10 +636,14 @@ class Hedera {
         url: `/api/v1/contracts/${address}`,
         method: 'GET',
       });
-      return response?.contract_id;
+
+      return {
+        contractId: response?.contract_id,
+        evmAddress: response?.evm_address,
+      };
     } catch (error) {
       console.log(error);
-      return 0;
+      return { contractId: '', evmAddress: '' };
     }
   }
 
@@ -699,10 +703,11 @@ class Hedera {
     return hashConnect.sendTransaction(transaction, accountId);
   }
 
-  public async createPangoChefUserStorageContract(chainId: string, accountId: string) {
-    const maxGas = 2300000;
+  public async createPangoChefUserStorageContract(chainId: ChainId, accountId: string) {
+    const contractId = PANGOCHEF_ADDRESS[chainId];
+    const maxGas = TRANSACTION_MAX_FEES.CREATE_POOL;
     const transaction = new ContractExecuteTransaction()
-      .setContractId(PANGOCHEF_ADDRESS[chainId])
+      .setContractId(contractId ? contractId : '')
       .setGas(maxGas)
       .setFunction('createUserStorageContract');
     return hashConnect.sendTransaction(transaction, accountId);

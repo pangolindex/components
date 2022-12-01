@@ -1,7 +1,12 @@
 import React from 'react';
+import { Box, Button } from 'src/components';
+import { useChainId } from 'src/hooks';
+// import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { PoolType } from 'src/state/pstake/types';
+import { hederaFn } from 'src/utils/hedera';
 import PoolListV3 from './PoolList/PoolListV3';
+import { ContractWrapper } from './styleds';
 
 interface Props {
   type: string;
@@ -12,6 +17,9 @@ interface Props {
 }
 
 const PoolV3: React.FC<Props> = ({ type, setMenu, activeMenu, menuItems, pangoChefStakingInfos }) => {
+  // const chainId = useChainId();
+  // const [userStorage, create] = useHederaPangochefContractCreateCallback();
+
   if (type === PoolType.own) {
     pangoChefStakingInfos = (pangoChefStakingInfos || []).filter((stakingInfo) => {
       return Boolean(stakingInfo.stakedAmount.greaterThan('0'));
@@ -24,15 +32,32 @@ const PoolV3: React.FC<Props> = ({ type, setMenu, activeMenu, menuItems, pangoCh
     );
   }
 
-  return (
-    <PoolListV3
-      version="3"
-      stakingInfos={pangoChefStakingInfos}
-      activeMenu={activeMenu}
-      setMenu={setMenu}
-      menuItems={menuItems}
-    />
-  );
+  const renderContent = () => {
+    // if (hederaFn.isHederaChain(chainId) && !userStorage) {
+    //   return (
+    //     <ContractWrapper>
+    //       <Box textAlign="center" color="color4">
+    //         Create Your Pangochef Contract
+    //       </Box>
+    //       <Button variant="primary" onClick={create} height="45px">
+    //         Create
+    //       </Button>
+    //     </ContractWrapper>
+    //   );
+    // } else {
+    return (
+      <PoolListV3
+        version="3"
+        stakingInfos={pangoChefStakingInfos}
+        activeMenu={activeMenu}
+        setMenu={setMenu}
+        menuItems={menuItems}
+      />
+    );
+    //}
+  };
+
+  return <>{renderContent()}</>;
 };
 
 export default PoolV3;

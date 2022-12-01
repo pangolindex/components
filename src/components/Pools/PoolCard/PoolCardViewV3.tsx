@@ -7,6 +7,7 @@ import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
+import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import FarmDrawer from '../FarmDrawer';
@@ -22,7 +23,6 @@ import {
   Panel,
   StatWrapper,
 } from './styleds';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 
 export interface PoolCardViewProps {
   stakingInfo: PangoChefInfo;
