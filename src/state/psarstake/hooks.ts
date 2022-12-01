@@ -142,7 +142,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
       });
     } catch (err) {
       // we only care if the error is something _other_ than the user rejected the tx
-      const _err = error as any;
+      const _err = err as any;
       if (_err?.code !== 4001) {
         console.error(_err);
         setStakeError(_err?.message);
