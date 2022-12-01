@@ -464,7 +464,7 @@ export function useIsLockingPoolZero() {
  * @param pairPrice pair price in wrapped gas coin
  * @returns return the extra percentage of apr provided by super farm extra reward tokens
  */
-export function useExtraFarmApr(
+export function usePangoChefExtraFarmApr(
   rewardTokens: Array<Token | null | undefined> | null | undefined,
   rewardRate: BigNumber,
   multipliers: JSBI[] | undefined,
@@ -473,15 +473,10 @@ export function useExtraFarmApr(
 ) {
   const chainId = useChainId();
   // remove png and null
-  const _rewardTokens =
-    rewardTokens
-      ?.map((token) => {
-        if (!token) {
-          return undefined;
-        }
-        return token;
-      })
-      ?.filter((token) => !!token && !PNG[chainId].equals(token)) || ([] as (Token | undefined)[]);
+  const _rewardTokens = (rewardTokens?.filter((token) => !!token && !PNG[chainId].equals(token)) || []) as (
+    | Token
+    | undefined
+  )[];
 
   const tokensPrices = useTokensCurrencyPrice(_rewardTokens);
 

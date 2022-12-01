@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
-import { useExtraFarmApr, useUserPangoChefAPR, useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
+import { usePangoChefExtraFarmApr, useUserPangoChefAPR, useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetFarmApr, useGetRewardTokens } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -60,14 +60,14 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
   const userBalance =
     cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).userValueVariables.balance : BigNumber.from(0);
 
-  const extraFarmAPR = useExtraFarmApr(
+  const extraFarmAPR = usePangoChefExtraFarmApr(
     rewardTokens,
     poolRewardRate,
     stakingInfo.rewardTokensMultiplier,
     poolBalance,
     pairPrice,
   );
-  const extraUserAPR = useExtraFarmApr(
+  const extraUserAPR = usePangoChefExtraFarmApr(
     rewardTokens,
     userRewardRate,
     stakingInfo.rewardTokensMultiplier,
