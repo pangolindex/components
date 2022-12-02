@@ -829,20 +829,18 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
   const pangoChefContract = usePangoChefContract();
   const addTransaction = useTransactionAdder();
 
-  const { data: userStorage } = useQuery(['userstoragecontract', account], async (): Promise<any> => {
-    if (!account) {
-      return 0;
-    }
-    try {
-      const response = await pangoChefContract?.getUserStorageContract(account);
-
-      console.log('===response', response);
-      return response;
-    } catch (error) {
-      console.log('===21', error);
-      return '';
-    }
-  });
+  const { data: userStorage } = useQuery(
+    ['hedera-pangochef-user-storage', account],
+    async (): Promise<string> => {
+      try {
+        const response = await pangoChefContract?.getUserStorageContract(account);
+        return response as string;
+      } catch (error) {
+        return '';
+      }
+    },
+    { enabled: Boolean(pangoChefContract) && Boolean(account) },
+  );
 
   console.log('===userStorage', userStorage);
 
