@@ -1729,7 +1729,7 @@ export const useHederaPairContractEVMAddresses = (lpTokenAddress?: string[]): st
       lpTokenContracts?.map((address) => {
         return {
           queryKey: ['get-pgl-token-evm-address', address],
-          queryFn: fetchHederaPGLTokenEVMAddress(address),
+          queryFn: () => hederaFn.getContractData(address),
         };
       }) ?? []
     );
@@ -1737,13 +1737,11 @@ export const useHederaPairContractEVMAddresses = (lpTokenAddress?: string[]): st
 
   const results = useQueries(queryParameter);
 
-  console.log('results', results);
-
   return useMemo(() => {
     if (!chainId) return [];
 
-    return results.reduce<string[]>((acc, result, i) => {
-      const evmAddress = result?.data;
+    return results.reduce<string[]>((acc, result) => {
+      const evmAddress = result?.data?.evmAddress;
 
       if (evmAddress && result?.isLoading === false) {
         acc.push(evmAddress);

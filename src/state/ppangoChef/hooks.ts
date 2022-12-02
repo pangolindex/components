@@ -380,8 +380,6 @@ export function useHederaPangoChefInfos() {
 
   const [userStorage] = useHederaPangochefContractCreateCallback();
 
-  //const userStorage = useSingleCallResult(pangoChefContract, 'getUserStorageContract', [account ?? '']).result?.[0];
-  console.log('==31', userStorage);
   // get the length of pools
   const poolLength: BigNumber | undefined = useSingleCallResult(pangoChefContract, 'poolsLength').result?.[0];
 
@@ -464,18 +462,7 @@ export function useHederaPangoChefInfos() {
     return pools.map((pool) => pool?.tokenOrRecipient);
   }, [pools]);
 
-  // const lpTokenContracts = useMemo(() => {
-  //   return lpTokens.map((lpAddress) => {
-  //     const tokenId = hederaFn.hederaId(lpAddress);
-  //     return hederaFn.tokenToContractId(tokenId);
-  //   });
-  // }, [lpTokens]);
-
-  console.log('lpTokens', lpTokens);
-
   const pglTokenEvmAddresses = useHederaPairContractEVMAddresses(lpTokens);
-
-  console.log('pglTokenEvmAddresses', pglTokenEvmAddresses);
 
   // get the tokens for each pool
   const tokens0State = useMultipleContractSingleData(pglTokenEvmAddresses, PANGOLIN_PAIR_INTERFACE, 'token0', []);
@@ -591,10 +578,10 @@ export function useHederaPangoChefInfos() {
     const _pairs: { pair: Pair; totalSupply: TokenAmount }[] = [];
     pairs.forEach(([, pair], index) => {
       const pairTotalSupplyState = pairTotalSuppliesState[index];
-      if (pair && pairTotalSupplyState.result) {
+      if (pair && pairTotalSupplyState?.result) {
         _pairs.push({
           pair: pair,
-          totalSupply: new TokenAmount(pair.liquidityToken, JSBI.BigInt(pairTotalSupplyState?.result?.[0])),
+          totalSupply: new TokenAmount(pair?.liquidityToken, JSBI.BigInt(pairTotalSupplyState?.result?.[0] ?? 0)),
         });
       }
     });
@@ -642,23 +629,25 @@ export function useHederaPangoChefInfos() {
 
       const pid = poolsIds[index][0];
       const pool = pools[index];
-      const rewardRate: BigNumber = poolRewardRateState.result?.[0] ?? BigNumber.from(0);
+
+      const rewardRate: BigNumber = poolRewardRateState?.result?.[0] ?? BigNumber.from(0);
       const totalStakedAmount = new TokenAmount(
-        pair.liquidityToken,
-        JSBI.BigInt(pool.valueVariables.balance.toString()),
+        pair?.liquidityToken,
+        JSBI.BigInt(pool?.valueVariables?.balance?.toString() ?? 0),
       );
 
       const userInfo = userInfos[index];
       const userTotalStakedAmount = new TokenAmount(
-        pair.liquidityToken,
-        JSBI.BigInt(userInfo?.valueVariables.balance ?? 0),
+        pair?.liquidityToken,
+        JSBI.BigInt(userInfo?.valueVariables?.balance ?? 0),
       );
 
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
-      const pairPrice = pairPrices[pair.liquidityToken.address];
+      const pairPrice = pairPrices[pair?.liquidityToken?.address];
       const pngPrice = avaxPngPair.priceOf(png, wavax);
-      const _totalStakedInWavax = pairPrice.raw.multiply(totalStakedAmount.raw);
+
+      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? 0;
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
       // calculate the total staked amount in usd
@@ -675,14 +664,18 @@ export function useHederaPangoChefInfos() {
       ): TokenAmount => {
         return new TokenAmount(
           png,
-          JSBI.greaterThan(_totalStakedAmount.raw, JSBI.BigInt(0))
+          JSBI.greaterThan(_totalStakedAmount?.raw, JSBI.BigInt(0))
             ? JSBI.divide(
-                JSBI.multiply(JSBI.multiply(_totalRewardRatePerSecond.raw, _stakedAmount.raw), BIG_INT_SECONDS_IN_WEEK),
-                _totalStakedAmount.raw,
+                JSBI.multiply(
+                  JSBI.multiply(_totalRewardRatePerSecond?.raw, _stakedAmount?.raw),
+                  BIG_INT_SECONDS_IN_WEEK,
+                ),
+                _totalStakedAmount?.raw,
               )
             : JSBI.BigInt(0),
         );
       };
+
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
         pool.valueVariables.balance.isZero() || pairPrice.equalTo('0')
@@ -690,14 +683,14 @@ export function useHederaPangoChefInfos() {
           : Number(
               pngPrice.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
-                .divide(pairPrice.raw.multiply(pool.valueVariables.balance.toString()))
+                .divide(pairPrice?.raw.multiply(pool.valueVariables.balance.toString()))
                 .toSignificant(2),
             );
 
       const totalRewardRatePerSecond = new TokenAmount(png, rewardRate.toString());
       const totalRewardRatePerWeek = new TokenAmount(
         png,
-        JSBI.multiply(totalRewardRatePerSecond.raw, BIG_INT_SECONDS_IN_WEEK),
+        JSBI.multiply(totalRewardRatePerSecond?.raw, BIG_INT_SECONDS_IN_WEEK),
       );
 
       const userRewardRatePerWeek = getHypotheticalWeeklyRewardRate(
@@ -749,6 +742,7 @@ export function useHederaPangoChefInfos() {
     userPendingRewardsState,
     pairs,
   ]);
+  // return [] as PangoChefInfo[];
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -829,6 +823,15 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
   const pangoChefContract = usePangoChefContract();
   const addTransaction = useTransactionAdder();
 
+  if (!hederaFn.isHederaChain(chainId)) {
+    return [
+      false,
+      () => {
+        return Promise.resolve();
+      },
+    ];
+  }
+
   const { data: userStorage } = useQuery(
     ['hedera-pangochef-user-storage', account],
     async (): Promise<string> => {
@@ -841,10 +844,6 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
     },
     { enabled: Boolean(pangoChefContract) && Boolean(account) },
   );
-
-  console.log('===userStorage', userStorage);
-
-  // const userStorage = useSingleCallResult(pangoChefContract, 'getUserStorageContract', [account ?? '']).result?.[0];
 
   const create = useCallback(async (): Promise<void> => {
     if (!account) {
@@ -865,6 +864,6 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
     }
   }, [account, chainId, addTransaction]);
 
-  return [userStorage ? true : false, create];
+  return [userStorage ? false : true, create];
 }
 /* eslint-enable max-lines */
