@@ -28,7 +28,8 @@ export const updateBlockNumber = createAction<{ chainId: number; blockNumber: nu
 );
 export const setOpenModal = createAction<ApplicationModal | null>('papplication/setOpenModal');
 
-export const addPopup =
-  createAction<{ key?: string; removeAfterMs?: number | null; content: PopupContent }>('papplication/addPopup');
+export const addPopup = createAction<{ key?: string; removeAfterMs?: number | null; content: PopupContent }>(
+  'papplication/addPopup',
+);
 
 export const removePopup = createAction<{ key: string }>('papplication/removePopup');

@@ -26,8 +26,9 @@ export interface FeeInfo {
   initialized: boolean;
 }
 
-export const selectCurrency =
-  createAction<{ field: Field; currencyId: string; chainId: ChainId }>('pswap/selectCurrency');
+export const selectCurrency = createAction<{ field: Field; currencyId: string; chainId: ChainId }>(
+  'pswap/selectCurrency',
+);
 export const switchCurrencies = createAction<{ chainId: ChainId }>('pswap/switchCurrencies');
 export const typeInput = createAction<{ field: Field; typedValue: string; chainId: ChainId }>('pswap/typeInput');
 export const replaceSwapState = createAction<{
