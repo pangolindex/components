@@ -378,7 +378,7 @@ export function useHederaPangoChefInfos() {
 
   const png = PNG[chainId];
 
-  const [userStorage] = useHederaPangochefContractCreateCallback();
+  const [shouldCreateStorage] = useHederaPangochefContractCreateCallback();
 
   // get the length of pools
   const poolLength: BigNumber | undefined = useSingleCallResult(pangoChefContract, 'poolsLength').result?.[0];
@@ -514,7 +514,7 @@ export function useHederaPangoChefInfos() {
   const userInfosState = useSingleContractMultipleData(
     pangoChefContract,
     'getUser',
-    userStorage && userInfoInput ? userInfoInput : [],
+    !shouldCreateStorage && userInfoInput ? userInfoInput : [],
   );
 
   // format the data to UserInfo type
@@ -562,13 +562,13 @@ export function useHederaPangoChefInfos() {
   const userPendingRewardsState = useSingleContractMultipleData(
     pangoChefContract,
     'userPendingRewards',
-    userStorage && userInfoInput ? userInfoInput : [],
+    !shouldCreateStorage && userInfoInput ? userInfoInput : [],
   );
 
   const userRewardRatesState = useSingleContractMultipleData(
     pangoChefContract,
     'userRewardRate',
-    userStorage && userInfoInput ? userInfoInput : [],
+    !shouldCreateStorage && userInfoInput ? userInfoInput : [],
   );
 
   const wavax = WAVAX[chainId];
@@ -823,16 +823,7 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
   const pangoChefContract = usePangoChefContract();
   const addTransaction = useTransactionAdder();
 
-  if (!hederaFn.isHederaChain(chainId)) {
-    return [
-      false,
-      () => {
-        return Promise.resolve();
-      },
-    ];
-  }
-
-  const { data: userStorage } = useQuery(
+  const { data: userStorageAddress, refetch } = useQuery(
     ['hedera-pangochef-user-storage', account],
     async (): Promise<string> => {
       try {
@@ -842,8 +833,10 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
         return '';
       }
     },
-    { enabled: Boolean(pangoChefContract) && Boolean(account) },
+    { enabled: Boolean(pangoChefContract) && Boolean(account) && hederaFn.isHederaChain(chainId) },
   );
+
+  const shouldCreateStorage = userStorageAddress ? false : true;
 
   const create = useCallback(async (): Promise<void> => {
     if (!account) {
@@ -855,6 +848,7 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
       const response = await hederaFn.createPangoChefUserStorageContract(chainId, account);
 
       if (response) {
+        refetch();
         addTransaction(response, {
           summary: 'Created Pangochef User Storage Contract',
         });
@@ -864,6 +858,15 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
     }
   }, [account, chainId, addTransaction]);
 
-  return [userStorage ? false : true, create];
+  if (!hederaFn.isHederaChain(chainId)) {
+    return [
+      false,
+      () => {
+        return Promise.resolve();
+      },
+    ];
+  }
+
+  return [shouldCreateStorage, create];
 }
 /* eslint-enable max-lines */

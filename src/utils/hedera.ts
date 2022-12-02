@@ -704,11 +704,14 @@ class Hedera {
   }
 
   public async createPangoChefUserStorageContract(chainId: ChainId, account: string) {
-    const contractId = PANGOCHEF_ADDRESS[chainId];
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+
     const maxGas = TRANSACTION_MAX_FEES.CREATE_POOL;
     const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
     const transaction = new ContractExecuteTransaction()
-      .setContractId(contractId ? contractId : '')
+      .setContractId(contractId)
       .setGas(maxGas)
       .setFunction('createUserStorageContract');
     return hashConnect.sendTransaction(transaction, accountId);

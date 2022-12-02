@@ -17,7 +17,6 @@ import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import ApplicationUpdater from 'src/state/papplication/updater';
 import ListsUpdater from 'src/state/plists/updater';
 import MulticallUpdater from 'src/state/pmulticall/updater';
-import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/hooks';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
 import {
   calculateTotalStakedAmountInAvax,
@@ -175,7 +174,6 @@ export {
   usePangoChefInfosHook,
   useUSDCPriceHook,
   useParsedQueryString,
-  useHederaPangochefContractCreateCallback,
 };
 
 // misc

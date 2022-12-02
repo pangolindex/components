@@ -1570,26 +1570,6 @@ export const fetchHederaPGLToken = (pairToken: Token | undefined, chainId: Chain
   }
 };
 
-export const fetchHederaPGLTokenEVMAddress = (pairTokenAddress: string | undefined) => async () => {
-  try {
-    if (!pairTokenAddress) {
-      return undefined;
-    }
-
-    const tokenAddress = pairTokenAddress;
-    // get pair contract id using api call because `asAccountString` is not working for pair address
-    const { evmAddress } = await hederaFn.getContractData(tokenAddress);
-    // // get pair tokenId from pair contract id
-    // const tokenId = hederaFn.contractToTokenId(contractId?.toString());
-    // // convert token id to evm address
-    // const newTokenAddress = hederaFn.idToAddress(tokenId);
-
-    return evmAddress;
-  } catch {
-    return undefined;
-  }
-};
-
 /**
  * This hook used to get pgl token specifically for given Hedera pair
  * Takes currencies as a input and return hedera pair token & token with pair contract address
