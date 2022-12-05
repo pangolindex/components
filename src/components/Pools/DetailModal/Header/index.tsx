@@ -1,11 +1,12 @@
-import { CHAINS, ChefType } from '@pangolindex/sdk';
+import { CHAINS, ChefType, Price } from '@pangolindex/sdk';
+import { BigNumber } from 'ethers';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
-import { useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
+import { usePangoChefExtraFarmApr, useUserPangoChefAPR, useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetFarmApr, useGetRewardTokens } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -16,11 +17,10 @@ import { HeaderRoot, HeaderWrapper, StatsWrapper } from './styled';
 
 type Props = {
   stakingInfo: StakingInfo;
-  version: number;
   onClose: () => void;
 };
 
-const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
+const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
   const theme = useContext(ThemeContext);
   const chainId = useChainId();
 
@@ -36,18 +36,79 @@ const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
 
   const { swapFeeApr: _swapFeeApr, stakingApr: _stakingApr } = useGetFarmApr(stakingInfo?.pid as string);
 
-  const stakingApr = version !== 2 ? stakingInfo?.stakingApr || 0 : _stakingApr;
-
-  const swapFeeApr = version !== 2 ? stakingInfo?.swapFeeApr || 0 : _swapFeeApr;
-
-  const totalApr = stakingApr + swapFeeApr;
-
   const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
   // old calculation, it's using if the userRewardRate is not broken
   //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
 
-  const userApr = useUserPangoChefAPR(cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined);
+  const _userApr = useUserPangoChefAPR(cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined);
+
+  const isStaking = Boolean(stakingInfo.stakedAmount.greaterThan('0'));
+
+  const userRewardRate = useUserPangoChefRewardRate(
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined,
+  );
+
+  const pairPrice =
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).pairPrice : new Price(token0, token1, '1', '0'); // dummy value, this don't use tokens
+
+  const poolBalance =
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).valueVariables.balance : BigNumber.from(0);
+  const poolRewardRate =
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).poolRewardRate : BigNumber.from(0);
+
+  const userBalance =
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).userValueVariables.balance : BigNumber.from(0);
+
+  const extraFarmAPR = usePangoChefExtraFarmApr(
+    rewardTokens,
+    poolRewardRate,
+    stakingInfo.rewardTokensMultiplier,
+    poolBalance,
+    pairPrice,
+  );
+  const extraUserAPR = usePangoChefExtraFarmApr(
+    rewardTokens,
+    userRewardRate,
+    stakingInfo.rewardTokensMultiplier,
+    userBalance,
+    pairPrice,
+  );
+
+  const getAPRs = () => {
+    if (cheftType === ChefType.MINI_CHEF_V2) {
+      // for minichef v2 we get the data from redux
+      return {
+        totalApr: _stakingApr + _swapFeeApr,
+        stakingApr: _stakingApr,
+        swapFeeApr: _swapFeeApr,
+        extraFarmApr: 0,
+        userApr: _stakingApr + _swapFeeApr,
+      };
+    }
+
+    const stakingAPR = stakingInfo.stakingApr || 0;
+    const swapFeeAPR = stakingInfo.swapFeeApr || 0;
+    // for rest we get the data from contract calls if exist, else put 0 for this data
+    if (cheftType === ChefType.PANGO_CHEF) {
+      return {
+        totalApr: stakingAPR + swapFeeAPR + extraFarmAPR,
+        stakingApr: stakingAPR + extraFarmAPR,
+        swapFeeApr: swapFeeAPR,
+        extraFarmApr: extraFarmAPR,
+        userApr: Number(_userApr) + extraUserAPR,
+      };
+    }
+    return {
+      totalApr: stakingAPR + swapFeeAPR,
+      stakingApr: stakingAPR,
+      swapFeeApr: swapFeeAPR,
+      extraFarmApr: 0,
+      userApr: stakingAPR + swapFeeAPR,
+    };
+  };
+
+  const { totalApr, stakingApr, swapFeeApr, userApr } = getAPRs();
 
   return (
     <HeaderRoot>
@@ -73,7 +134,7 @@ const Header: React.FC<Props> = ({ stakingInfo, version, onClose }) => {
             <RewardTokens rewardTokens={rewardTokens} size={24} />
           </Box>
         </Box>
-        {cheftType === ChefType.PANGO_CHEF && stakingInfo.stakedAmount.greaterThan('0') && (
+        {cheftType === ChefType.PANGO_CHEF && isStaking && (
           <Stat
             title={`Your APR:`}
             stat={`${numeral(userApr).format('0.00a')}%`}
