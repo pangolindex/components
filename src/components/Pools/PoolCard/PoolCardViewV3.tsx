@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Drawer, Stat, Text } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
+import { usePangoChefExtraFarmApr, useUserPangoChefAPR, useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -72,7 +72,20 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
 
   const userApr = useUserPangoChefAPR(stakingInfo);
 
+  const userRewardRate = useUserPangoChefRewardRate(stakingInfo);
+  const rewardRate = isStaking ? userRewardRate : stakingInfo?.poolRewardRate;
+  const balance = isStaking ? stakingInfo?.userValueVariables?.balance : stakingInfo?.valueVariables?.balance;
+
+  const extraAPR = usePangoChefExtraFarmApr(
+    rewardTokens,
+    rewardRate,
+    stakingInfo.rewardTokensMultiplier,
+    balance,
+    stakingInfo.pairPrice,
+  );
   const apr = isStaking ? userApr : farmApr;
+
+  const totalApr = Number(apr ?? 0) + extraAPR;
 
   const renderButton = () => {
     if (isStaking && Boolean(earnedAmount.greaterThan('0')))
@@ -155,7 +168,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
 
           <Stat
             title={isStaking ? 'Your APR' : 'Average APR'}
-            stat={apr ? `${numeral(apr).format('0a')}%` : '-'}
+            stat={apr ? `${numeral(totalApr).format('0a')}%` : '-'}
             titlePosition="top"
             titleFontSize={[16, 14]}
             statFontSize={[24, 18]}

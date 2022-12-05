@@ -32,8 +32,7 @@ import {
   updateMinichefStakingAllData,
   updateMinichefStakingAllFarmsEarnedAmount,
 } from 'src/state/pstake/actions';
-import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { isEvmChain } from 'src/utils';
+import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { useTokens } from '../../hooks/Tokens';
 import { useMiniChefContract, useRewardViaMultiplierContract, useStakingContract } from '../../hooks/useContract';
@@ -235,6 +234,7 @@ export const useMinichefPools = (): { [key: string]: number } => {
 
 export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const { account } = usePangolinWeb3();
+  const chainId = useChainId();
 
   const rewardData = useRef(
     {} as {
@@ -249,7 +249,23 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const getRewardMultipliersRes = useSingleCallResult(rewardContract, 'getRewardMultipliers');
   const { earnedAmount: _earnedAmount } = useGetEarnedAmount(miniChefStaking?.pid as string);
 
-  const earnedAmount = miniChefStaking?.earnedAmount || _earnedAmount;
+  // this function will always return the maximum value earnedAmount
+  const getEarnedAmount = () => {
+    // if _earnedAmount is greater than 0 or miniChefStaking.earnedAmount use this
+    if (
+      _earnedAmount?.greaterThan('0') ||
+      (miniChefStaking?.earnedAmount && _earnedAmount?.greaterThan(miniChefStaking.earnedAmount))
+    ) {
+      return _earnedAmount;
+    }
+    // else if exist miniChefStaking.earnedAmount use this
+    if (miniChefStaking?.earnedAmount) {
+      return miniChefStaking.earnedAmount;
+    }
+    return new TokenAmount(PNG[chainId], '0');
+  };
+
+  const earnedAmount = getEarnedAmount();
 
   const rewardTokensAddress = getRewardTokensRes?.result?.[0];
   const rewardTokensMultiplier = getRewardMultipliersRes?.result?.[0];
@@ -290,7 +306,7 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
-  const useTokenBalance = useTokenBalanceHook[chainId];
+  const usePairBalance = usePairBalanceHook[chainId];
   const usePairTotalSupply = usePairTotalSupplyHook[chainId];
   const _useUSDCPrice = useUSDCPriceHook[chainId];
   const token0 = pair?.token0;
@@ -298,8 +314,7 @@ export function useGetPoolDollerWorth(pair: Pair | null) {
   const currency0PriceTmp = _useUSDCPrice(currency0);
   const currency0Price = CHAINS[chainId]?.mainnet ? currency0PriceTmp : undefined;
 
-  const pairOrToken = isEvmChain(chainId) ? pair?.liquidityToken : pair;
-  const userPgl = useTokenBalance(account ?? undefined, pairOrToken as Token);
+  const userPgl = usePairBalance(account ?? undefined, pair ?? undefined);
   const totalPoolTokens = usePairTotalSupply(pair ?? undefined);
 
   const [token0Deposited] =

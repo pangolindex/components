@@ -418,7 +418,7 @@ export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
 // TODO: this needs to be based on chain id
 export const HEDERA_API_BASE_URL = `https://testnet.mirrornode.hedera.com`;
 
-export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
+export const OPEN_API_DEBANK = 'https://api.debank.com/';
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
 export const NEAR_STORAGE_PER_TOKEN = '0.005';
 export const NEAR_STORAGE_TO_REGISTER_WITH_FT = '0.1';
@@ -481,4 +481,10 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.HEDERA_TESTNET]: 'hedera-hashgraph',
   [ChainId.NEAR_MAINNET]: 'near',
   [ChainId.NEAR_TESTNET]: undefined,
+};
+
+export const FARM_TYPE: { [x: number]: string | undefined } = {
+  1: ChefType.MINI_CHEF,
+  2: ChefType.MINI_CHEF_V2,
+  3: ChefType.PANGO_CHEF,
 };

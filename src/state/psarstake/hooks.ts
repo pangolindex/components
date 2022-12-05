@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useApproveCallback } from 'src/hooks/useApproveCallback';
 import { useSarStakingContract } from 'src/hooks/useContract';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
@@ -99,6 +100,8 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   const { parsedAmount, error } = useDerivedStakeInfo(typedValue, png, userPngBalance);
   const [approval, approveCallback] = useApproveCallback(chainId, parsedAmount, sarStakingContract?.address);
 
+  const mixpanel = useMixpanel();
+
   const onUserInput = useCallback((_typedValue: string) => {
     setTypedValue(_typedValue);
   }, []);
@@ -151,6 +154,10 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
         summary: t('sarStake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
       setHash(response.hash);
+      mixpanel.track(MixPanelEvents.SAR_STAKE, {
+        chainId: chainId,
+        isNewPosition: !positionId,
+      });
     } catch (err) {
       // we only care if the error is something _other_ than the user rejected the tx
       const _err = error as any;
