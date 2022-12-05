@@ -13,7 +13,7 @@ import {
 import { CHAINS, ChainId, CurrencyAmount, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
-import { HEDERA_API_BASE_URL, ROUTER_ADDRESS } from 'src/constants';
+import { HEDERA_API_BASE_URL, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
@@ -31,6 +31,7 @@ export const TRANSACTION_MAX_FEES = {
   STAKE_LP_TOKEN: 230000,
   COLLECT_REWARDS: 300000,
   EXIT_CAMPAIGN: 300000,
+  NFT_MINT: 800000,
 };
 export interface HederaTokenMetadata {
   id: string;
@@ -208,6 +209,14 @@ export interface RemoveLiquidityData {
   tokenBAmountMin: string;
   account: string;
   deadline: number;
+  chainId: ChainId;
+}
+
+export interface SarStake {
+  amount: number;
+  positionId?: number;
+  methodName: 'mint' | 'stake';
+  account: string;
   chainId: ChainId;
 }
 
@@ -694,6 +703,36 @@ class Hedera {
           .addAddress(recipient)
           .addUint256(deadline),
       );
+    }
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async sarStake(stakeData: SarStake) {
+    const { positionId, amount, methodName, account, chainId } = stakeData;
+
+    const accountId = account ? this.hederaId(account) : '';
+    const address = SAR_STAKING_ADDRESS[chainId];
+    const contractId = address ? this.hederaId(address) : '';
+
+    const maxGas =
+      TRANSACTION_MAX_FEES.STAKE_LP_TOKEN + TRANSACTION_MAX_FEES.TRANSFER_ERC20 + TRANSACTION_MAX_FEES.NFT_MINT;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    if (methodName == 'mint') {
+      transaction
+        .setPayableAmount(new Hbar(4))
+        .setFunction(methodName, new ContractFunctionParameters().addUint256(amount));
+    }
+    if (!!positionId && methodName == 'stake') {
+      transaction
+        .setPayableAmount(new Hbar(4))
+        .setFunction(methodName, new ContractFunctionParameters().addUint256(positionId).addUint256(amount));
     }
 
     return hashConnect.sendTransaction(transaction, accountId);

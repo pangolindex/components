@@ -459,7 +459,7 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
   [ChainId.WAGMI]: getSarAddress(ChainId.WAGMI),
   [ChainId.COSTON]: getSarAddress(ChainId.COSTON),
   [ChainId.SONGBIRD]: getSarAddress(ChainId.SONGBIRD),
-  [ChainId.HEDERA_TESTNET]: getSarAddress(ChainId.HEDERA_TESTNET),
+  [ChainId.HEDERA_TESTNET]: '0x0000000000000000000000000000000002ec28c3',
   [ChainId.NEAR_MAINNET]: getSarAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getSarAddress(ChainId.NEAR_TESTNET),
 };

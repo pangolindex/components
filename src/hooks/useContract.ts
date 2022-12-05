@@ -118,8 +118,8 @@ export function useSarNFTStakingContract() {
   let address: string | undefined = undefined;
   if (sarContractAddress) {
     // for hedera we need to add 1 to contract address to get the nft/token contract address, it happens because the nft/tokens have different contract
-    // eg. 0.0.49003042 is contract address it's only possible to call positions, rewardRate, etc...
-    // 0.0.49003043 is nft contract address it's only possible to call tokenURI, balanceOf, etc..., the available fuctions of ERC721 interface
+    // eg. 0.0.49031363 is contract address it's only possible to call positions, rewardRate, etc...
+    // 0.0.49031364 is nft contract address it's only possible to call tokenURI, balanceOf, etc..., the available fuctions of ERC721 interface
     const _address = (Number(sarContractAddress) + 1).toString(16);
     // need to fill rest of address to get valid address
     address = getAddress('0x' + new Array(41 - _address.length).join('0') + _address);
