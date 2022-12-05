@@ -1,6 +1,5 @@
 import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
 import { NoEthereumProviderError } from '@pangolindex/web3-react-injected-connector';
-import { Venly } from '@venly/web3-provider';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
 import warning from 'tiny-warning';
@@ -25,10 +24,6 @@ export class VenlyConnector extends AbstractConnector {
     this.handleChainChanged = this.handleChainChanged.bind(this);
     this.handleAccountsChanged = this.handleAccountsChanged.bind(this);
     this.handleClose = this.handleClose.bind(this);
-
-    Venly.createProviderEngine(this.venlyOptions).then((provider) => {
-      this.web3Provider = new Web3Provider(this.convertProvider(provider));
-    });
   }
 
   private convertProvider(provider: any): ExternalProvider {
@@ -73,7 +68,7 @@ export class VenlyConnector extends AbstractConnector {
 
   public async activate(): Promise<ConnectorUpdate> {
     if (!this.web3Provider) {
-      const _provider = await Venly.createProviderEngine(this.venlyOptions);
+      const _provider = null;
       this.web3Provider = new Web3Provider(this.convertProvider(_provider));
     }
 

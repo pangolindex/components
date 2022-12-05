@@ -1,6 +1,7 @@
 import { ChainId } from '@pangolindex/sdk';
 import { AnyAction } from '@reduxjs/toolkit';
 import { Dispatch, useEffect } from 'react';
+import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { nearFn } from 'src/utils/near';
 import { useChainId, useLibrary } from '../../hooks';
@@ -90,6 +91,21 @@ const txCheckerMapping: { [chainId in ChainId]: (params: TxCheckerProps) => void
   [ChainId.WAGMI]: txChecker,
   [ChainId.NEAR_MAINNET]: nearTxChecker,
   [ChainId.NEAR_TESTNET]: nearTxChecker,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
 };
 
 const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
@@ -101,6 +117,22 @@ const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
   [ChainId.WAGMI]: true,
   [ChainId.NEAR_MAINNET]: true,
   [ChainId.NEAR_TESTNET]: true,
+  //TODO: remove this once we have proper implementation
+  [ChainId.ETHEREUM]: false,
+  [ChainId.POLYGON]: false,
+  [ChainId.FANTOM]: false,
+  [ChainId.XDAI]: false,
+  [ChainId.BSC]: false,
+  [ChainId.ARBITRUM]: false,
+  [ChainId.CELO]: false,
+  [ChainId.OKXCHAIN]: false,
+  [ChainId.VELAS]: false,
+  [ChainId.AURORA]: false,
+  [ChainId.CRONOS]: false,
+  [ChainId.FUSE]: false,
+  [ChainId.MOONRIVER]: false,
+  [ChainId.MOONBEAM]: false,
+  [ChainId.OP]: false,
 };
 
 export default function Updater(): null {

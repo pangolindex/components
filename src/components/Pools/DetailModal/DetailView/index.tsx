@@ -55,7 +55,7 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
   return (
     <>
       <MobileWrapper>
-        <Header stakingInfo={stakingInfo} version={version} onClose={onDismiss} />
+        <Header stakingInfo={stakingInfo} onClose={onDismiss} />
         <Box p={10}>
           {renderWidget()}
           <Box mt={isStaking ? '10px' : '0px'}>
@@ -71,7 +71,7 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
         </Box>
       </MobileWrapper>
       <DesktopWrapper style={{ maxHeight: height - 150 }}>
-        <Header stakingInfo={stakingInfo} version={version} onClose={onDismiss} />
+        <Header stakingInfo={stakingInfo} onClose={onDismiss} />
         <DetailsWrapper>
           <LeftSection>
             <Tabs>
