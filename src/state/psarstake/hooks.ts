@@ -8,9 +8,9 @@ import { BIGNUMBER_ZERO, ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import { useApproveCallback } from 'src/hooks/useApproveCallback';
 import { useSarStakingContract } from 'src/hooks/useContract';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
@@ -44,7 +44,11 @@ export function useSarStakeInfo() {
   }, [rewardRate, totalValueVariables]);
 }
 
-// Return some utils functions for stake more or create a new Position
+/**
+ *
+ * @param positionId Id of a Position
+ * @returns Return some utils functions for stake more or create a new Position
+ */
 export function useDerivativeSarStake(positionId?: BigNumber) {
   const [attempting, setAttempting] = useState(false);
   const [hash, setHash] = useState<string | null>(null);
@@ -67,6 +71,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   // used for max input button
   const maxAmountInput = maxAmountSpend(chainId, userPngBalance);
 
+  const useUSDCPrice = useUSDCPriceHook[chainId];
   const usdcPrice = useUSDCPrice(png);
   const dollerWorth =
     userPngBalance?.greaterThan('0') && usdcPrice ? Number(typedValue) * Number(usdcPrice.toFixed()) : undefined;
@@ -125,7 +130,10 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
           gasLimit: calculateGasMargin(estimatedGas),
         });
       } else {
-        const estimatedGas = await sarStakingContract.estimateGas.mint(`0x${parsedAmount.raw.toString(16)}`);
+        const estimatedGas = await sarStakingContract.estimateGas.stake(
+          positionId.toHexString(),
+          `0x${parsedAmount.raw.toString(16)}`,
+        );
         // adding more png to an existing position
         response = await sarStakingContract.stake(positionId.toHexString(), `0x${parsedAmount.raw.toString(16)}`, {
           gasLimit: calculateGasMargin(estimatedGas),
