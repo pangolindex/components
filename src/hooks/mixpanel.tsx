@@ -51,7 +51,7 @@ export const MixPanelProvider: FC<MixPanelProviderProps> = ({ children, mixpanel
   }, []);
 
   const track = useCallback((event: MixPanelEvents, properties: { [x: string]: any }) => {
-    mixpanel.track(event, { ...properties, source: 'pangolin-components' });
+    mixpanel.track(event, { source: 'pangolin-components', ...properties });
   }, []);
 
   const state: MixPanelContextType = useMemo(() => {

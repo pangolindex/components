@@ -418,7 +418,7 @@ export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
 // TODO: this needs to be based on chain id
 export const HEDERA_API_BASE_URL = `https://testnet.mirrornode.hedera.com`;
 
-export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
+export const OPEN_API_DEBANK = 'https://api.debank.com/';
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
 export const NEAR_STORAGE_PER_TOKEN = '0.005';
 export const NEAR_STORAGE_TO_REGISTER_WITH_FT = '0.1';

@@ -54,14 +54,13 @@ import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/mu
 import { existSarContract, getEtherscanLink, isEvmChain, shortenAddress } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { MixPanelProvider } from './hooks/mixpanel';
+import { MixPanelEvents, MixPanelProvider, useMixpanel } from './hooks/mixpanel';
 import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
 import { PangoChefInfo } from './state/ppangoChef/types';
 import { Position, useSarPositions, useSarStakeInfo } from './state/psarstake/hooks';
 import SwapUpdater from './state/pswap/updater';
 import { default as ThemeProvider } from './theme';
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -174,6 +173,7 @@ export {
   usePangoChefInfosHook,
   useUSDCPriceHook,
   useParsedQueryString,
+  useMixpanel,
 };
 
 // misc
@@ -193,4 +193,5 @@ export {
   existSarContract,
   getEtherscanLink,
   shortenAddress,
+  MixPanelEvents,
 };
