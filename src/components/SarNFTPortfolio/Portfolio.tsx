@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMedia, useWindowSize } from 'react-use';
-import { Position } from 'src/state/psarstake/hooks';
+import { Position } from 'src/state/psarstake/types';
 import { MEDIA_WIDTHS } from 'src/theme';
 import { scrollElementIntoView } from 'src/utils';
 import { Box } from '../Box';
