@@ -1,14 +1,22 @@
 import { ChainId } from '@pangolindex/sdk';
 import {
   useAddLiquidity,
+  useDummyCreatePair,
+  useDummyGetUserLP,
   useETHBalances,
+  useEVMPairBalance,
+  useGetHederaUserLP,
   useGetNearUserLP,
   useGetUserLP,
+  useHederaAddLiquidity,
   useHederaBalance,
-  useHederaTokenBalance,
-  useHederaTokenBalances,
+  useHederaCreatePair,
+  useHederaPairBalance,
+  useHederaRemoveLiquidity,
   useNearAddLiquidity,
   useNearBalance,
+  useNearCreatePair,
+  useNearPairBalance,
   useNearRemoveLiquidity,
   useNearTokenBalance,
   useNearTokenBalances,
@@ -27,7 +35,7 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.WAGMI]: useTokenBalances,
   [ChainId.COSTON]: useTokenBalances,
   [ChainId.SONGBIRD]: useTokenBalances,
-  [ChainId.HEDERA_TESTNET]: useHederaTokenBalances,
+  [ChainId.HEDERA_TESTNET]: useTokenBalances,
   [ChainId.NEAR_MAINNET]: useNearTokenBalances,
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
 };
@@ -42,9 +50,24 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.WAGMI]: useTokenBalance,
   [ChainId.COSTON]: useTokenBalance,
   [ChainId.SONGBIRD]: useTokenBalance,
-  [ChainId.HEDERA_TESTNET]: useHederaTokenBalance,
+  [ChainId.HEDERA_TESTNET]: useTokenBalance,
   [ChainId.NEAR_MAINNET]: useNearTokenBalance,
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
+};
+
+export type UsePairBalanceHookType = {
+  [chainId in ChainId]: typeof useEVMPairBalance | typeof useHederaPairBalance | typeof useNearPairBalance;
+};
+
+export const usePairBalanceHook: UsePairBalanceHookType = {
+  [ChainId.FUJI]: useEVMPairBalance,
+  [ChainId.AVALANCHE]: useEVMPairBalance,
+  [ChainId.WAGMI]: useEVMPairBalance,
+  [ChainId.COSTON]: useEVMPairBalance,
+  [ChainId.SONGBIRD]: useEVMPairBalance,
+  [ChainId.HEDERA_TESTNET]: useHederaPairBalance,
+  [ChainId.NEAR_MAINNET]: useNearPairBalance,
+  [ChainId.NEAR_TESTNET]: useNearPairBalance,
 };
 
 export type UseAccountBalanceHookType = {
@@ -63,7 +86,7 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
 };
 
 export type UseAddLiquidityHookType = {
-  [chainId in ChainId]: typeof useAddLiquidity | typeof useNearAddLiquidity;
+  [chainId in ChainId]: typeof useAddLiquidity | typeof useNearAddLiquidity | typeof useHederaAddLiquidity;
 };
 
 export const useAddLiquidityHook: UseAddLiquidityHookType = {
@@ -72,13 +95,13 @@ export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.WAGMI]: useAddLiquidity,
   [ChainId.COSTON]: useAddLiquidity,
   [ChainId.SONGBIRD]: useAddLiquidity,
-  [ChainId.HEDERA_TESTNET]: useAddLiquidity,
+  [ChainId.HEDERA_TESTNET]: useHederaAddLiquidity,
   [ChainId.NEAR_MAINNET]: useNearAddLiquidity,
   [ChainId.NEAR_TESTNET]: useNearAddLiquidity,
 };
 
 export type UseRemoveLiquidityHookType = {
-  [chainId in ChainId]: typeof useRemoveLiquidity | typeof useNearRemoveLiquidity;
+  [chainId in ChainId]: typeof useRemoveLiquidity | typeof useNearRemoveLiquidity | typeof useHederaRemoveLiquidity;
 };
 
 export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
@@ -87,13 +110,17 @@ export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
   [ChainId.WAGMI]: useRemoveLiquidity,
   [ChainId.COSTON]: useRemoveLiquidity,
   [ChainId.SONGBIRD]: useRemoveLiquidity,
-  [ChainId.HEDERA_TESTNET]: useRemoveLiquidity,
+  [ChainId.HEDERA_TESTNET]: useHederaRemoveLiquidity,
   [ChainId.NEAR_MAINNET]: useNearRemoveLiquidity,
   [ChainId.NEAR_TESTNET]: useNearRemoveLiquidity,
 };
 
 export type UseGetUserLPHookType = {
-  [chainId in ChainId]: typeof useGetUserLP | typeof useGetNearUserLP;
+  [chainId in ChainId]:
+    | typeof useGetUserLP
+    | typeof useGetNearUserLP
+    | typeof useDummyGetUserLP
+    | typeof useGetHederaUserLP;
 };
 
 export const useGetUserLPHook: UseGetUserLPHookType = {
@@ -102,7 +129,26 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.WAGMI]: useGetUserLP,
   [ChainId.COSTON]: useGetUserLP,
   [ChainId.SONGBIRD]: useGetUserLP,
-  [ChainId.HEDERA_TESTNET]: useGetUserLP,
+  [ChainId.HEDERA_TESTNET]: useGetHederaUserLP,
   [ChainId.NEAR_MAINNET]: useGetNearUserLP,
   [ChainId.NEAR_TESTNET]: useGetNearUserLP,
+};
+
+export type UseCreatePairHookType = {
+  [chainId in ChainId]: typeof useDummyCreatePair | typeof useNearCreatePair | typeof useHederaCreatePair;
+};
+
+/**
+ * Create Pair related hooks
+ * Basically takes 2 tokens to create a pair
+ */
+export const useCreatePairHook: UseCreatePairHookType = {
+  [ChainId.FUJI]: useDummyCreatePair,
+  [ChainId.AVALANCHE]: useDummyCreatePair,
+  [ChainId.WAGMI]: useDummyCreatePair,
+  [ChainId.COSTON]: useDummyCreatePair,
+  [ChainId.SONGBIRD]: useDummyCreatePair,
+  [ChainId.HEDERA_TESTNET]: useHederaCreatePair,
+  [ChainId.NEAR_MAINNET]: useNearCreatePair,
+  [ChainId.NEAR_TESTNET]: useNearCreatePair,
 };

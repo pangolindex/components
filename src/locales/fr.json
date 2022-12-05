@@ -384,7 +384,11 @@
     "yourFarms": "Voos Farms",
     "yourPools": "Vos Pools",
     "noFarms": "Aucune ferme trouvée.",
-    "successWithdraw": "Vos liquidités retirées de la ferme, et les récompenses accumulées réclamées !"
+    "successWithdraw": "Vos liquidités retirées de la ferme, et les récompenses accumulées réclamées !",
+    "importDescription1": "Avec la fonction d'importation, vous pouvez rechercher des pools qui n'apparaissent pas dans la section 'Vos pools'.",
+    "importDescription2": "Choisissez simplement les pièces sous-jacentes qui se trouvaient dans votre pool.",
+    "createPairDescription": "Avec la fonction de création, vous pouvez créer une nouvelle paire. Il vous suffit de rechercher les pièces pour lesquelles vous souhaitez créer une paire et le système trouvera le pool s'il existe sur Pangolin ou en créera un tout nouveau si ce n'est pas le cas.",
+    "addLiquidityDescription": "Avec la fonction d'ajout de liquidité, vous ajoutez de la liquidité à une paire. Recherchez simplement les pièces auxquelles vous souhaitez ajouter de la liquidité et le système trouvera le pool s'il existe dans Pangolin ou en créera un nouveau s'il n'existe pas."
   },
   "poolFinder": {
     "connectToFind": "Se connecter à un portefeuille pour trouver des pools",
@@ -466,7 +470,8 @@
     "cancelLimitOrder": "Acheter {{ outputCurrency }} avec {{ inputCurrency }}",
     "executionPrice": "Prix ​​d'exécution",
     "seeMore": "Voir plus",
-    "seeLess": "Voir moins"
+    "seeLess": "Voir moins",
+    "orderPlaced": "ordre de {{ orderType }} passé."
   },
   "buyPage": {
     "buyAvaxInfo": "Achetez AVAX avec monnaie fiat chez notre partenaire Wyre.",
@@ -525,20 +530,19 @@
     "selectToken": "Selectionner un jeton",
     "enterRecipient": "Saisir un destinataire",
     "invalidRecipient": "Destinataire non valide",
-    "insufficient": "Insuffisant ",
-    "balance": " balance"
+    "insufficientBalance": "Solde en {{ symbol }} insuffisant"
   },
   "mintHooks": {
     "connectWallet": "Connecter un Portefeuille",
     "insufficientInputAmount": "Quantité d'entrée insuffisante",
     "invalidPair": "Paire non valide",
     "enterAmount": "Entrer un montant",
-    "insufficient": "Insuffisant ",
-    "balance": " balance"
+    "insufficientBalance": "Solde en {{ symbol }} insuffisant"
   },
   "stakeHooks": {
     "connectWallet": "Connecter un Portefeuille",
-    "enterAmount": "Entrer un montant"
+    "enterAmount": "Entrer un montant",
+    "insufficientBalance": "Solde en {{ symbol }} insuffisant"
   },
   "burnHooks": {
     "connectWallet": "Connecter un Portefeuille",
@@ -697,22 +701,26 @@
     "claimWarning1": "Lorsque vous réclamez sans retirer votre liquidité reste dans le pool de minage.",
     "claimWarning2": "Réclamer vos récompenses fera tomber votre APR à 0. À la place, vous pouvez choisir de composer.",
     "compoundWarning": "En combinant vos récompenses pour la ferme {{ token0 }}-{{ token1 }}, vos récompenses seront mises en jeu dans la ferme {{ currency }}-{{ png }}. Vous devez ajouter une valeur égale de {{ currency }}token à vos récompenses {{ png }} accumulées.",
-    "compoundAmountWarning": "Vous devez ajouter {{ amount }} {{ symbol }} au composé.",
-    "compoundAmountWarning2": "Faites attention que vous verrouillerez votre pool de {{ symbol }} {{ png }} jusqu'à ce que vous réclamiez les récompenses de ce pool.",
+    "compoundAmountWarning": "Vous devez ajouter {{ amount }} {{ symbol }} au composé. Veuillez noter que la capitalisation peut légèrement diminuer votre APR.",
+    "compoundAmountWarning2": "Faites attention que vous verrouillerez votre pool de {{ token0 }} {{ token1 }} jusqu'à ce que vous réclamiez les récompenses de ce pool.",
     "highVolalityWarning": "Trop tôt, essayez dans quelques heures",
     "compoundSuccess": "Vous avez réussi à composer votre ferme.",
     "compoundTransactionSummary": "Ferme composée.",
     "removeWarning": "En retirant n'importe quel montant de la ferme, vous obtiendrez votre APR à 0. Vous pouvez à la place accumuler vos récompenses sans perdre votre APR.",
-    "lockingPoolZeroWarning": "Vous ne pouvez pas retirer vos liquidités ou réclamer vos récompenses de cette ferme. Pour ce faire, vous devez d'abord réclamer votre participation à ces fermes : "
+    "lockingPoolZeroWarning": "Vous ne pouvez pas retirer vos liquidités ou réclamer vos récompenses de cette ferme. Pour ce faire, vous devez d'abord réclamer ou retirer votre mise de ces fermes : ",
+    "decreaseWarning": "Votre apr diminuera car la nouvelle partie composée commence par apr 0 et une moyenne sera prise entre l'ancienne et la nouvelle partie."
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
+    "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "bridgeCard": {
       "advanceOptions": "Advance Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
           "waitingReceivingChain": "Waiting for receiving chain..."
@@ -730,7 +738,9 @@
     },
     "bridgeInputsWidget": {
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
-      "max": "MAX"
+      "max": "MAX",
+      "recipient": "Recipient",
+      "walletAddress": "Wallet Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -739,7 +749,7 @@
       "estimatedToken": "Estimated Token: {{ token }}",
       "estimatedResult": "Estimated Result: {{ result }}",
       "min": "{{ minute }} min",
-      "gasCost": "{{ gasCost }} Gas Cost"
+      "gasCost": "{{ gasCost }} USD Gas Cost"
     },
     "bridgeTransfer": {
       "date": "Date",
@@ -751,8 +761,10 @@
     },
     "bridgePrioritizations": {
       "recommended": "Recommended",
-      "fast": "Fast",
-      "normal": "Normal"
+      "fastest": "fastest",
+      "normal": "Normal",
+      "safest": "Safest",
+      "cheapest": "Cheapest"
     }
   },
   "dropdown": {

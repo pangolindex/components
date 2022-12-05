@@ -384,7 +384,11 @@
     "yourFarms": "你的农场",
     "yourPools": "你的游泳池",
     "noFarms": "没有找到农场。",
-    "successWithdraw": "您的流动性从农场中移除，并获得了应计奖励"
+    "successWithdraw": "您的流动性从农场中移除，并获得了应计奖励",
+    "importDescription1": "使用导入功能，您可以查找未出现在“您的池”部分中的池。",
+    "importDescription2": "只需选择您池中的基础代币。",
+    "createPairDescription": "使用 create 函数，您可以创建一个新对。 只需搜索您要为其创建一对的硬币，如果 Pangolin 上存在该池，系统将找到该池，如果不存在则创建一个全新的池。",
+    "addLiquidityDescription": "使用添加流动性功能，您可以为货币对添加流动性。 只需搜索您想要增加流动性的代币，如果 Pangolin 中存在该池，系统将找到该池，如果不存在则创建一个新池。"
   },
   "poolFinder": {
     "connectToFind": "连接到钱包以查找矿池",
@@ -465,7 +469,8 @@
     "cancelLimitOrder": "买 {{ outputCurrency }} 和 {{ inputCurrency }}",
     "executionPrice": "执行价格",
     "seeMore": "查看更多",
-    "seeLess": "少看"
+    "seeLess": "少看",
+    "orderPlaced": "{{ orderType } 订单已下。"
   },
   "buyPage": {
     "buyAvaxInfo": "用我们的合作伙伴怀尔的法定资金购买 AVAX。",
@@ -524,20 +529,19 @@
     "selectToken": "选择一个代币",
     "enterRecipient": "输入收件人",
     "invalidRecipient": "收件人无效",
-    "insufficient": "不足的 ",
-    "balance": "资产"
+    "insufficientBalance": "{{ symbol }}余额不足"
   },
   "mintHooks": {
     "connectWallet": "连接钱包",
     "insufficientInputAmount": "输入数量不足",
     "invalidPair": "无效交易对",
     "enterAmount": "输入金额",
-    "insufficient": "不足的 ",
-    "balance": " balance"
+    "insufficientBalance": "{{ symbol }}余额不足"
   },
   "stakeHooks": {
     "connectWallet": "连接钱包",
-    "enterAmount": "输入金额"
+    "enterAmount": "输入金额",
+    "insufficientBalance": "{{ symbol }}余额不足"
   },
   "burnHooks": {
     "connectWallet": "连接钱包",
@@ -696,22 +700,26 @@
     "claimWarning1": "当您在未提取流动性的情况下申领时，您的流动性仍保留在矿池中。",
     "claimWarning2": "领取您的奖励将使您的 APR 降至 0。相反，您可以选择复合。",
     "compoundWarning": "将您对 {{ token0 }}-{{ token1 }} 农场的奖励组合起来，您的奖励将投入 {{ currency }}-{{ png }} 农场。 您需要在累积的 {{ png }} 奖励中添加等值的 {{ currency }} 代币。",
-    "compoundAmountWarning": "您需要添加 {{ amount }} {{ symbol }} 来复合。",
-    "compoundAmountWarning2": "请注意，您将锁定您的 {{ symbol }} {{ png }} 池，直到您获得该池的奖励。",
+    "compoundAmountWarning": "您需要添加 {{ amount }} {{ symbol }} 来复合。请注意，复利可能会略微降低您的 APR。",
+    "compoundAmountWarning2": "请注意，您将锁定您的 {{ token0 }} {{ token1 }} 池，直到您获得该池的奖励。",
     "highVolalityWarning": "太早了，过几个小时试试",
     "compoundSuccess": "你已经成功地组成了你的农场。",
     "compoundTransactionSummary": "复合农场。",
     "removeWarning": "从农场中删除任何金额将使您的 APR 变为 0。您可以在不损失 APR 的情况下复合您的奖励。",
-    "lockingPoolZeroWarning": "您无法从该农场移除您的流动性或索取您的奖励。 为此，您首先需要从该农场申领您的股份： "
+    "lockingPoolZeroWarning": "您无法从该农场移除您的流动性或索取您的奖励。 为此，您首先需要从该农场中认领或移除您的股份： ",
+    "decreaseWarning": "你的 apr 会减少，因为新的复合部分从 apr 0 开始，并且将在新旧部分之间取平均值。"
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
+    "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "bridgeCard": {
       "advanceOptions": "Advance Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
           "waitingReceivingChain": "Waiting for receiving chain..."
@@ -729,7 +737,9 @@
     },
     "bridgeInputsWidget": {
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
-      "max": "MAX"
+      "max": "MAX",
+      "recipient": "Recipient",
+      "walletAddress": "Wallet Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -738,7 +748,7 @@
       "estimatedToken": "Estimated Token: {{ token }}",
       "estimatedResult": "Estimated Result: {{ result }}",
       "min": "{{ minute }} min",
-      "gasCost": "{{ gasCost }} Gas Cost"
+      "gasCost": "{{ gasCost }} USD Gas Cost"
     },
     "bridgeTransfer": {
       "date": "Date",
@@ -750,8 +760,10 @@
     },
     "bridgePrioritizations": {
       "recommended": "Recommended",
-      "fast": "Fast",
-      "normal": "Normal"
+      "fastest": "Fastest",
+      "normal": "Normal",
+      "safest": "Safest",
+      "cheapest": "Cheapest"
     }
   },
   "dropdown": {

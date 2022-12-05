@@ -1,19 +1,18 @@
-import { CAVAX, CHAINS, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
+import { CAVAX, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { FixedSizeList } from 'react-window';
+import { FixedSizeGrid } from 'react-window';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
 import { useAllTokens, useToken } from 'src/hooks/Tokens';
 import usePrevious from 'src/hooks/usePrevious';
 import { useSelectedListInfo } from 'src/state/plists/hooks';
-import { isAddress } from 'src/utils';
+import { filterTokenOrChain, isAddress } from 'src/utils';
 import { Box, Text, TextInput } from '../../';
-import { filterTokens } from '../SearchModal/filtering';
 import { useTokenComparator } from '../SearchModal/sorting';
 import TokenListDrawer from '../TokenListDrawer';
-import CurrencyRow from './CurrencyRow';
+import CurrencyGrid from './CurrencyGrid';
 import { CurrencyList, ListLogo, ManageList } from './styled';
 
 interface Props {
@@ -24,7 +23,10 @@ interface Props {
   otherSelectedCurrency?: Currency;
 }
 
-const currencyKey = (currency: Currency, chainId: ChainId): string => {
+const currencyKey = (columnIndex: number, rowIndex: number, data: Currency[], chainId: ChainId): string => {
+  const index = rowIndex * 4 + columnIndex;
+  const currency = data[index];
+
   return currency instanceof Token
     ? currency.address
     : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
@@ -71,7 +73,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     if (isAddressSearch) return searchToken ? [searchToken] : [];
     const tokens = Object.values(allTokens);
     tokens.unshift(CAVAX[chainId] as Token);
-    return filterTokens(tokens, searchQuery);
+    return filterTokenOrChain(tokens, searchQuery) as Token[];
   }, [isAddressSearch, searchToken, allTokens, searchQuery]);
 
   const filteredSortedTokens: Token[] = useMemo(() => {
@@ -95,7 +97,9 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     if (searchQuery === '') {
       // remove Currency from array and add in first position
       const _tokens = filteredSortedTokens.filter((token) => token !== CAVAX[chainId]);
-      return CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : [..._tokens];
+      // Need to check when implement near
+      // return CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : [..._tokens];
+      return [CAVAX[chainId], ..._tokens];
     }
     return filteredSortedTokens;
   }, [filteredSortedTokens, chainId]);
@@ -109,15 +113,25 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     [onCurrencySelect, onClose],
   );
 
-  const Row = useCallback(
-    ({ data, index, style }) => {
+  const Item = useCallback(
+    ({ data, columnIndex, rowIndex, style }) => {
+      const index = rowIndex * 4 + columnIndex;
       const currency: Currency = data?.[index];
       const isSelected = Boolean(selectedCurrency && currencyEquals(selectedCurrency, currency));
       const otherSelected = Boolean(otherSelectedCurrency && currencyEquals(otherSelectedCurrency, currency));
 
+      // add gap
+      const styles = {
+        ...style,
+        left: Number(style.left) + 10,
+        top: Number(style.top) + 10,
+        width: Number(style.width) - 10,
+        height: Number(style.height) - 10,
+      };
+
       return currency ? (
-        <CurrencyRow
-          style={style}
+        <CurrencyGrid
+          style={styles}
           currency={currency}
           isSelected={isSelected}
           onSelect={onSelect}
@@ -132,7 +146,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   return (
     <Drawer title="Select a token" isOpen={isOpen} onClose={onClose}>
       {/* Render Search Token Input */}
-      <Box padding="0px 20px">
+      <Box padding="0px 10px">
         <TextInput
           placeholder="Search"
           onChange={(value: any) => {
@@ -149,18 +163,20 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
       </Box>
       {/* Render All Selected Tokens */}
       <CurrencyList>
-        <AutoSizer disableWidth>
-          {({ height }) => (
-            <FixedSizeList
+        <AutoSizer>
+          {({ height, width }) => (
+            <FixedSizeGrid
               height={height}
-              width="100%"
-              itemCount={currencies.length}
-              itemSize={56}
+              columnWidth={(width - 10) / 4}
+              rowHeight={120}
+              columnCount={4}
+              rowCount={currencies.length / 4}
+              width={width}
               itemData={currencies}
-              itemKey={(index, data) => currencyKey(data[index], chainId)}
+              itemKey={({ columnIndex, rowIndex, data }) => currencyKey(columnIndex, rowIndex, data, chainId)}
             >
-              {Row}
-            </FixedSizeList>
+              {Item}
+            </FixedSizeGrid>
           )}
         </AutoSizer>
       </CurrencyList>

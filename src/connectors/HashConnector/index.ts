@@ -1,9 +1,11 @@
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { hethers } from '@hashgraph/hethers';
+import { AccountId, Transaction, TransactionId } from '@hashgraph/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
-import { HashConnectProvider } from 'hashconnect/dist/provider';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
+import { TransactionResponse } from 'src/utils/hedera';
 
 export interface HashConfigType {
   networkId: string;
@@ -26,7 +28,7 @@ type HashPackLocalDataType = {
 };
 
 export class HashConnector extends AbstractConnector {
-  private provider!: HashConnectProvider;
+  private provider!: JsonRpcProvider;
   private chainId!: number;
   private normalizeChainId!: boolean;
   private normalizeAccount!: boolean;
@@ -48,7 +50,7 @@ export class HashConnector extends AbstractConnector {
     super(args);
 
     //create the hashconnect instance
-    this.instance = new HashConnect(true);
+    this.instance = new HashConnect(false);
 
     this.chainId = args?.config?.chainId;
     this.normalizeChainId = args?.normalizeChainId;
@@ -90,7 +92,7 @@ export class HashConnector extends AbstractConnector {
     const accountId = this.pairingData?.accountIds?.[0];
     if (accountId) {
       this.saveDataInLocalstorage({ pairingData: this.pairingData });
-      this.emitUpdate({ account: this.convertAccountId(accountId) });
+      this.emitUpdate({ account: this.toAddress(accountId) });
     }
   }
 
@@ -113,12 +115,8 @@ export class HashConnector extends AbstractConnector {
     return null;
   }
 
-  public async getProvider(): Promise<any> {
-    if (this.pairingData && this.pairingData?.accountIds[0]) {
-      const provider = hethers.providers.getDefaultProvider(this.network, undefined);
-
-      return provider;
-    }
+  public async getProvider() {
+    return new JsonRpcProvider(`https://hedera.testnet.arkhia.io/json-rpc/v1?x_api_key=${process.env.ARKHIA_API_KEY}`);
   }
 
   public async activate(): Promise<any> {
@@ -147,7 +145,7 @@ export class HashConnector extends AbstractConnector {
     }
   }
 
-  convertAccountId = (accountId: string) => {
+  toAddress = (accountId: string) => {
     return hethers.utils.getAddressFromAccount(accountId);
   };
 
@@ -155,7 +153,7 @@ export class HashConnector extends AbstractConnector {
     if (this.pairingData) {
       try {
         const newAccountId = this.pairingData?.accountIds?.[0];
-        return this.convertAccountId(newAccountId);
+        return this.toAddress(newAccountId);
       } catch (err) {
         console.log('error', err);
       }
@@ -211,18 +209,53 @@ export class HashConnector extends AbstractConnector {
     return false;
   }
 
-  public async sendTransaction(trans: Uint8Array, acctToSign: string, return_trans = false, hideNfts = false) {
-    const transaction: MessageTypes.Transaction = {
-      topic: this.topic,
-      byteArray: trans,
+  private makeBytes(transaction: Transaction, accountId: string) {
+    const transactionId = TransactionId.generate(accountId);
+    transaction.setTransactionId(transactionId);
+    transaction.setNodeAccountIds([new AccountId(3)]);
 
+    transaction.freeze();
+
+    return transaction.toBytes();
+  }
+
+  public async sendTransaction(
+    transaction: Transaction,
+    accountId: string,
+    returnTransaction = false,
+    hideNfts = false,
+  ) {
+    const bytes = this.makeBytes(transaction, accountId);
+
+    const transactionToSend: MessageTypes.Transaction = {
+      topic: this.topic,
+      byteArray: bytes,
       metadata: {
-        accountToSign: acctToSign,
-        returnTransaction: return_trans,
+        accountToSign: accountId,
+        returnTransaction: returnTransaction,
         hideNft: hideNfts,
       },
     };
 
-    return this.instance.sendTransaction(this.topic, transaction);
+    const res = await this.instance.sendTransaction(this.topic, transactionToSend);
+
+    const receipt = res?.response as TransactionResponse;
+    if (res.success) {
+      return {
+        hash: receipt.transactionId,
+      };
+    }
+
+    return null;
+  }
+
+  public getSigner() {
+    if (this.pairingData && this.topic) {
+      const newAccountId = this.pairingData?.accountIds?.[0];
+      const provider = this.instance.getProvider(this.network, this.topic, newAccountId);
+      const signer = this.instance.getSigner(provider);
+      return signer;
+    }
+    return null;
   }
 }

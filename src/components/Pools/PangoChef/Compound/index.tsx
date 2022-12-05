@@ -4,14 +4,15 @@ import { CAVAX, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from
 import { parseUnits } from 'ethers/lib/utils';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { AlertTriangle } from 'react-feather';
+import { AlertTriangle, HelpCircle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Loader, Text, TextInput, TransactionCompleted } from 'src/components';
-import { ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE, ZERO_ADDRESS } from 'src/constants';
+import { Box, Button, Loader, Text, TextInput, Tooltip, TransactionCompleted } from 'src/components';
+import { FARM_TYPE, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE, ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
@@ -22,7 +23,7 @@ import { useTokenBalances } from 'src/state/pwallet/hooks';
 import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { calculateGasMargin, waitForTransaction } from 'src/utils';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
-import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';
+import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root, WarningMessageWrapper } from './styleds';
 
 export interface CompoundProps {
   stakingInfo: PangoChefInfo;
@@ -105,13 +106,10 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     if (amountToAdd.greaterThan(tokenBalance ?? '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: token.symbol });
     }
-    message += `${t('pangoChef.compoundAmountWarning', {
+    message += t('pangoChef.compoundAmountWarning', {
       amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
       symbol: token.symbol,
-    })} ${t('pangoChef.compoundAmountWarning2', {
-      symbol: token.symbol,
-      png: png.symbol,
-    })}`;
+    });
   } else {
     amountToAdd = CurrencyAmount.ether(pngPrice.raw.multiply(earnedAmount.raw).toFixed(0), chainId);
     if (amountToAdd.greaterThan(currencyBalance ? currencyBalance[account ?? ZERO_ADDRESS] ?? '0' : '0')) {
@@ -121,12 +119,22 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
       symbol: currency.symbol,
     });
+    if (!isPNGPool) {
+      message +=
+        ' ' +
+        t('pangoChef.compoundAmountWarning2', {
+          token0: png.symbol,
+          token1: currency.symbol,
+        });
+    }
   }
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
 
   const [approval, approveCallback] = useApproveCallback(chainId, amountToAdd, pangoChefContract?.address);
+
+  const mixpanel = useMixpanel();
 
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
@@ -206,6 +214,18 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
           summary: t('pangoChef.compoundTransactionSummary'),
         });
         setHash(response.hash);
+
+        const tokenA = stakingInfo.tokens[0];
+        const tokenB = stakingInfo.tokens[1];
+        mixpanel.track(MixPanelEvents.COMPOUND_REWARDS, {
+          chainId: chainId,
+          tokenA: tokenA?.symbol,
+          tokenb: tokenB?.symbol,
+          tokenA_Address: tokenA?.symbol,
+          tokenB_Address: tokenB?.symbol,
+          pid: stakingInfo.pid,
+          farmType: FARM_TYPE[3]?.toLowerCase(),
+        });
       } catch (error) {
         const err = error as any;
         // we only care if the error is something _other_ than the user rejected the tx
@@ -254,22 +274,19 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
         disabled={true}
         value={formatUnits(amountToAdd.raw.toString(), tokenOrCurrency.decimals)}
       />
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        padding="20px"
-        bgColor="color3"
-        borderRadius="8px"
-        margin="auto"
-        width="100%"
-        flexGrow={1}
-      >
+      <WarningMessageWrapper>
         <Text color="text1" textAlign="center" fontSize="12px">
           {message}
         </Text>
-      </Box>
+        <Tooltip id="help" effect="solid" backgroundColor={theme.primary} place="left">
+          <Box maxWidth="200px">
+            <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+              {t('pangoChef.decreaseWarning')}
+            </Text>
+          </Box>
+        </Tooltip>
+        <HelpCircle size="16px" data-tip data-for="help" color={theme.text1} />
+      </WarningMessageWrapper>
       <Buttons>
         {showApproveFlow && (
           <Button

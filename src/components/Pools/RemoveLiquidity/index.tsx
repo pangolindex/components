@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
 import { ROUTER_ADDRESS } from 'src/constants';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
@@ -14,6 +15,7 @@ import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/sta
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { useRemoveLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
 import { isEvmChain } from 'src/utils';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { ButtonWrapper, RemoveWrapper } from './styleds';
 
 interface RemoveLiquidityProps {
@@ -101,6 +103,8 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
     [_onUserInput],
   );
 
+  const mixpanel = useMixpanel();
+
   useEffect(() => {
     setPercetage(Number(parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0)) / 25);
   }, [parsedAmounts]);
@@ -120,6 +124,13 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
       const response = await removeLiquidity(removeData);
 
       setHash(response?.hash);
+      mixpanel.track(MixPanelEvents.REMOVE_LIQUIDITY, {
+        chainId: chainId,
+        tokenA: currencyA?.symbol,
+        tokenB: currencyB?.symbol,
+        tokenA_Address: wrappedCurrency(currencyA, chainId)?.address,
+        tokenB_Address: wrappedCurrency(currencyB, chainId)?.address,
+      });
     } catch (err) {
       const _err = err as any;
 

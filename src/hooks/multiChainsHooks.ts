@@ -1,17 +1,19 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useHederaToken, useHederaTokens, useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
+import { useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
 import {
   useApproveCallback,
+  useApproveCallbackFromHederaTrade,
   useApproveCallbackFromNearTrade,
   useApproveCallbackFromTrade,
+  useHederaApproveCallback,
   useNearApproveCallback,
 } from './useApproveCallback';
-import { useNearSwapCallback, useSwapCallback } from './useSwapCallback';
+import { useHederaSwapCallback, useNearSwapCallback, useSwapCallback } from './useSwapCallback';
 import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
-import { useWrapCallback, useWrapNearCallback } from './useWrapCallback';
+import { useWrapCallback, useWrapHbarCallback, useWrapNearCallback } from './useWrapCallback';
 
 export type UseWrapCallbackHookType = {
-  [chainId in ChainId]: typeof useWrapCallback | typeof useWrapNearCallback;
+  [chainId in ChainId]: typeof useWrapCallback | typeof useWrapNearCallback | typeof useWrapHbarCallback;
 };
 
 export const useWrapCallbackHook: UseWrapCallbackHookType = {
@@ -20,13 +22,13 @@ export const useWrapCallbackHook: UseWrapCallbackHookType = {
   [ChainId.WAGMI]: useWrapCallback,
   [ChainId.COSTON]: useWrapCallback,
   [ChainId.SONGBIRD]: useWrapCallback,
-  [ChainId.HEDERA_TESTNET]: useWrapCallback,
+  [ChainId.HEDERA_TESTNET]: useWrapHbarCallback,
   [ChainId.NEAR_MAINNET]: useWrapNearCallback,
   [ChainId.NEAR_TESTNET]: useWrapNearCallback,
 };
 
 export type UseTokenHookType = {
-  [chainId in ChainId]: typeof useToken | typeof useNearToken | typeof useHederaToken;
+  [chainId in ChainId]: typeof useToken | typeof useNearToken;
 };
 
 export const useTokenHook: UseTokenHookType = {
@@ -35,13 +37,16 @@ export const useTokenHook: UseTokenHookType = {
   [ChainId.WAGMI]: useToken,
   [ChainId.COSTON]: useToken,
   [ChainId.SONGBIRD]: useToken,
-  [ChainId.HEDERA_TESTNET]: useHederaToken,
+  [ChainId.HEDERA_TESTNET]: useToken,
   [ChainId.NEAR_MAINNET]: useNearToken,
   [ChainId.NEAR_TESTNET]: useNearToken,
 };
 
 export type UseApproveCallbackFromTradeHookType = {
-  [chainId in ChainId]: typeof useApproveCallbackFromTrade | typeof useApproveCallbackFromNearTrade;
+  [chainId in ChainId]:
+    | typeof useApproveCallbackFromTrade
+    | typeof useApproveCallbackFromNearTrade
+    | typeof useApproveCallbackFromHederaTrade;
 };
 
 export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookType = {
@@ -50,13 +55,13 @@ export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookTyp
   [ChainId.WAGMI]: useApproveCallbackFromTrade,
   [ChainId.COSTON]: useApproveCallbackFromTrade,
   [ChainId.SONGBIRD]: useApproveCallbackFromTrade,
-  [ChainId.HEDERA_TESTNET]: useApproveCallbackFromTrade,
+  [ChainId.HEDERA_TESTNET]: useApproveCallbackFromHederaTrade,
   [ChainId.NEAR_MAINNET]: useApproveCallbackFromNearTrade,
   [ChainId.NEAR_TESTNET]: useApproveCallbackFromNearTrade,
 };
 
 export type UseSwapCallbackHookType = {
-  [chainId in ChainId]: typeof useSwapCallback | typeof useNearSwapCallback;
+  [chainId in ChainId]: typeof useSwapCallback | typeof useNearSwapCallback | typeof useHederaSwapCallback;
 };
 
 export const useSwapCallbackHook: UseSwapCallbackHookType = {
@@ -65,13 +70,13 @@ export const useSwapCallbackHook: UseSwapCallbackHookType = {
   [ChainId.WAGMI]: useSwapCallback,
   [ChainId.COSTON]: useSwapCallback,
   [ChainId.SONGBIRD]: useSwapCallback,
-  [ChainId.HEDERA_TESTNET]: useSwapCallback,
+  [ChainId.HEDERA_TESTNET]: useHederaSwapCallback,
   [ChainId.NEAR_MAINNET]: useNearSwapCallback,
   [ChainId.NEAR_TESTNET]: useNearSwapCallback,
 };
 
 export type UseApproveCallbackHookType = {
-  [chainId in ChainId]: typeof useApproveCallback | typeof useNearApproveCallback;
+  [chainId in ChainId]: typeof useApproveCallback | typeof useNearApproveCallback | typeof useHederaApproveCallback;
 };
 
 export const useApproveCallbackHook: UseApproveCallbackHookType = {
@@ -80,7 +85,7 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
   [ChainId.WAGMI]: useApproveCallback,
   [ChainId.COSTON]: useApproveCallback,
   [ChainId.SONGBIRD]: useApproveCallback,
-  [ChainId.HEDERA_TESTNET]: useApproveCallback,
+  [ChainId.HEDERA_TESTNET]: useHederaApproveCallback,
   [ChainId.NEAR_MAINNET]: useNearApproveCallback,
   [ChainId.NEAR_TESTNET]: useNearApproveCallback,
 };
@@ -101,7 +106,7 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
 };
 
 export type UseTokensHookType = {
-  [chainId in ChainId]: typeof useTokens | typeof useNearTokens | typeof useHederaTokens;
+  [chainId in ChainId]: typeof useTokens | typeof useNearTokens;
 };
 
 export const useTokensHook: UseTokensHookType = {
@@ -110,7 +115,7 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.WAGMI]: useTokens,
   [ChainId.COSTON]: useTokens,
   [ChainId.SONGBIRD]: useTokens,
-  [ChainId.HEDERA_TESTNET]: useHederaTokens,
+  [ChainId.HEDERA_TESTNET]: useTokens,
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
 };

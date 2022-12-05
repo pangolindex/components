@@ -384,7 +384,11 @@
     "yourFars": "Tus Farms",
     "yourPools": "Tus Pools",
     "noFarms": "No se encontraron farms.",
-    "successWithdraw": "¡Su liquidez eliminada de la granja y las recompensas acumuladas reclamadas!"
+    "successWithdraw": "¡Su liquidez eliminada de la granja y las recompensas acumuladas reclamadas!",
+    "importDescription1": "Con la función de importación puedes buscar grupos que no aparecen en la sección 'Tus grupos'.",
+    "importDescription2": "Simplemente elija las monedas subyacentes que estaban en su grupo.",
+    "createPairDescription": "Con la función de creación puede crear un nuevo par. Simplemente busque las monedas para las que desea crear un par y el sistema encontrará el grupo si existe en Pangolin o creará uno nuevo si no lo es.",
+    "addLiquidityDescription": "Con la función de agregar liquidez, agrega liquidez a un par. Simplemente busque las monedas a las que desea agregar liquidez y el sistema encontrará el grupo si existe en Pangolin o creará uno nuevo si no existe."
   },
   "poolFinder": {
     "connectToFind": "Conecte la cartera para encontrar pools",
@@ -466,7 +470,8 @@
     "cancelLimitOrder": "Comprar {{ outputCurrency }} con {{ inputCurrency }}",
     "executionPrice": "Precio de ejecución",
     "seeMore": "Ver más",
-    "seeLess": "Ver menos"
+    "seeLess": "Ver menos",
+    "orderPlaced": "pedido de {{ orderType }} realizado."
   },
   "buyPage": {
     "buyAvaxInfo": "Compre AVAX con fiat de nuestro socio Wyre.",
@@ -525,20 +530,19 @@
     "selectToken": "Select a token",
     "enterRecipient": "Introduzca un destinatario",
     "invalidRecipient": "Destinatario no válido",
-    "insufficient": "Insuficiente ",
-    "balance": " balance"
+    "insufficientBalance": "Saldo en {{ symbol }} insuficiente"
   },
   "mintHooks": {
     "connectWallet": "Conectar cartera",
     "insufficientInputAmount": "Cantidad de aporte insuficiente",
     "invalidPair": "Pareja no válida",
     "enterAmount": "Introduzca una cantidad",
-    "insufficient": "Insufciciente ",
-    "balance": " balance"
+    "insufficientBalance": "Saldo en {{ symbol }} insuficiente"
   },
   "stakeHooks": {
     "connectWallet": "Conectar cartera",
-    "enterAmount": "Introduzca una cantidad"
+    "enterAmount": "Introduzca una cantidad",
+    "insufficientBalance": "Saldo en {{ symbol }} insuficiente"
   },
   "burnHooks": {
     "connectWallet": "Conectar cartera",
@@ -550,7 +554,7 @@
     "add": "AGREGAR",
     "remove": "RETIRAR",
     "startMigratingNow": "EMPIECE A MIGRAR AHORA",
-    "startMigratingNowDescription": "A continuación encontrará todas las granjas que necesitará para migrar a los contratos V2 de Pangolin",
+    "startMigratingNowDescription": "A continuación encontrará todas las farms que necesitará para migrar a los contratos V2 de Pangolin",
     "seeMore": "VER MÁS",
     "migrateWithEase": "MIGRA CON FACILIDAD",
     "migrateWithDescription": "Hemos diseñado un asistente elegante, que lo guiará a través del proceso de migración de sus Fincas.",
@@ -559,7 +563,7 @@
     "alreadyEarned": "ya gana",
     "migrateNow": "MIGRA AHORA",
     "learn": "APRENDER",
-    "moveYourTokensToNewContracts": "Migre sus granjas a Pangolin V2",
+    "moveYourTokensToNewContracts": "Migre sus farms a Pangolin V2",
     "readyToMigrate": "Lista para migrar",
     "apr": "APR:",
     "totalValueLocked": "Valor total bloqueado",
@@ -582,7 +586,7 @@
     "back": "atrás",
     "availableToUnstake": "Disponible para desaplicar: ",
     "submittingTransaction": "Enviar transacción",
-    "moveYourTokensToNewContractsDescription": "Como parte del lanzamiento de Pangolin a nuevos contratos mejorados, deberá migrar sus granjas. Si necesita ayuda u orientación, haga clic en el botón 'Aprender'",
+    "moveYourTokensToNewContractsDescription": "Como parte del lanzamiento de Pangolin a nuevos contratos mejorados, deberá migrar sus farms. Si necesita ayuda u orientación, haga clic en el botón 'Aprender'",
     "migrateModalHeading": "Migrar {{ current }} de {{ total }} granja"
   },
   "dashboardPage": {
@@ -697,22 +701,26 @@
     "claimWarning1": "Cuando reclamas sin retirar tu liquidez permanece en el pool de minería.",
     "claimWarning2": "Reclamar sus recompensas reducirá su APR a 0. En su lugar, puede optar por capitalizar.",
     "compoundWarning": "Combinar sus recompensas para {{ token0 }}-{{ token1 }} hará que sus recompensas se apuesten en {{ currency }}-{{ png }} granja. Debe agregar el mismo valor de {{ currency }} token a sus {{ png }} recompensas acumuladas.",
-    "compoundAmountWarning": "Necesitas agregar {{ amount }} {{ symbol }} al compuesto.",
-    "compoundAmountWarning2": "Tenga cuidado de bloquear su fondo de {{ symbol }} {{ png }} hasta que reclame las recompensas de este fondo.",
+    "compoundAmountWarning": "Necesitas agregar {{ amount }} {{ symbol }} al compuesto. Tenga en cuenta que la capitalización puede disminuir ligeramente su APR.",
+    "compoundAmountWarning2": "Tenga cuidado de bloquear su fondo de {{ token0 }} {{ token1 }} hasta que reclame las recompensas de este fondo.",
     "highVolalityWarning": "Demasiado pronto, intente en unas pocas horas",
     "compoundSuccess": "Ha compuesto correctamente su granja",
     "compoundTransactionSummary": "Granja compuesta",
     "removeWarning": "Eliminar cualquier cantidad de la granja hará que su APR sea 0. En su lugar, puede combinar sus recompensas sin perder su APR.",
-    "lockingPoolZeroWarning": "No puede eliminar su liquidez o reclamar sus recompensas de esta granja. Para hacer esto, primero debe reclamar su participación de estas granjas: "
+    "lockingPoolZeroWarning": "No puede eliminar su liquidez o reclamar sus recompensas de esta granja. Para hacer esto, primero debe reclamar o eliminar su participación de estas farms:",
+    "decreaseWarning": "Su apr disminuirá porque la nueva parte compuesta comienza con apr 0 y se tomará un promedio entre la parte antigua y la nueva."
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
+    "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "bridgeCard": {
       "advanceOptions": "Advance Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
           "waitingReceivingChain": "Waiting for receiving chain..."
@@ -730,7 +738,9 @@
     },
     "bridgeInputsWidget": {
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
-      "max": "MAX"
+      "max": "MAX",
+      "recipient": "Recipient",
+      "walletAddress": "Wallet Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -739,7 +749,7 @@
       "estimatedToken": "Estimated Token: {{ token }}",
       "estimatedResult": "Estimated Result: {{ result }}",
       "min": "{{ minute }} min",
-      "gasCost": "{{ gasCost }} Gas Cost"
+      "gasCost": "{{ gasCost }} USD Gas Cost"
     },
     "bridgeTransfer": {
       "date": "Date",
@@ -751,8 +761,10 @@
     },
     "bridgePrioritizations": {
       "recommended": "Recommended",
-      "fast": "Fast",
-      "normal": "Normal"
+      "fastest": "Fastest",
+      "normal": "Normal",
+      "safest": "Safest",
+      "cheapest": "Cheapest"
     }
   },
   "dropdown": {

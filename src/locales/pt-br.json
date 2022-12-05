@@ -383,7 +383,11 @@
     "yourFarms": "Suas farms",
     "yourPools": "Suas pools",
     "noFarms": "Nenhuma fazenda encontrada.",
-    "successWithdraw": "Sua liquidez removida da fazenda e recompensas acumuladas reivindicadas!"
+    "successWithdraw": "Sua liquidez removida da fazenda e recompensas acumuladas reivindicadas!",
+    "importDescription1": "Com a função de importação você pode procurar por pools que não aparecem na seção 'Suas Pools'.",
+    "importDescription2": "Basta escolher as moedas subjacentes que estavam na sua pool.",
+    "createPairDescription": "Com a função de criação você pode criar um novo par. Basta pesquisar as moedas para as quais você deseja criar um par e o sistema encontrará a pool, se existir no Pangolin, ou criará um novo, se não houver.",
+    "addLiquidityDescription": "Com a função de adicionar liquidez voce adiciona liquidez ao um par. Basta pesquisar as moedas para as quais você deseja adiciona liquidez e o sistema encontrará o pool, se existir no Pangolin, ou criará um novo, se não houver."
   },
   "poolFinder": {
     "connectToFind": "Conecte-se a uma carteira para encontrar suas pools",
@@ -465,7 +469,8 @@
     "cancelLimitOrder": "Comprar {{ outputCurrency }} com {{ inputCurrency }}",
     "executionPrice": "Preço de execução",
     "seeMore": "Ver mais",
-    "seeLess": "Ver menos"
+    "seeLess": "Ver menos",
+    "orderPlaced": "Ordem de {{ orderType }} colocada"
   },
   "buyPage": {
     "buyAvaxInfo": "Compre AVAX com moeda fiduciária do nosso parceiro Wyre.",
@@ -524,20 +529,19 @@
     "selectToken": "Selecione um token",
     "enterRecipient": "Digite um destinatário",
     "invalidRecipient": "Destinatário inválido",
-    "insufficient": "Saldo de ",
-    "balance": " insuficiente"
+    "insufficientBalance": "Saldo de {{ symbol }} insuficiente"
   },
   "mintHooks": {
     "connectWallet": "Conectar a uma carteira",
     "insufficientInputAmount": "Quantidade de entrada insuficiente",
     "invalidPair": "Par inválido",
     "enterAmount": "Insira um valor",
-    "insufficient": "Saldo de ",
-    "balance": " insuficiente"
+    "insufficientBalance": "Saldo de {{ symbol }} insuficiente"
   },
   "stakeHooks": {
     "connectWallet": "Conectar a uma carteira",
-    "enterAmount": "Insira um valor"
+    "enterAmount": "Insira um valor",
+    "insufficientBalance": "Saldo de {{ symbol }} insuficiente"
   },
   "burnHooks": {
     "connectWallet": "Conectar a uma carteira",
@@ -696,22 +700,26 @@
     "claimWarning1": "Quando você reivindica sem retirar sua liquidez permanece no pool de mineração.",
     "claimWarning2": "Reivindicar suas recompensas reduzirá sua APR para 0. Em vez disso, você pode optar por compor.",
     "compoundWarning": "A composição de suas recompensas para a farm {{ token0 }}-{{ token1 }} fará com que suas recompensas sejam apostadas na farm {{ currency }}-{{ png }}. Você precisa adicionar o valor igual de {{ currency }} token para suas recompensas acumuladas de {{ png }}.",
-    "compoundAmountWarning": "Você precisa adicionar {{ amount }} {{ symbol }} para compor.",
-    "compoundAmountWarning2": "Tenha cuidado para bloquear sua pool de {{ symbol }} {{ png }} até reivindicar as recompensas desta pool.",
+    "compoundAmountWarning": "Você precisa adicionar {{ amount }} {{ symbol }} para compor. Por favor, esteja ciente de que a composição pode diminuir ligeiramente o seu APR.",
+    "compoundAmountWarning2": "Tenha cuidado para bloquear sua pool de {{ token0 }} {{ token1 }} até reivindicar as recompensas desta pool.",
     "highVolalityWarning": "Muito cedo, tente em algumas horas",
     "compoundSuccess": "Você compôs com sucesso.",
     "compoundTransactionSummary": "Farm composta.",
     "removeWarning": "A remoção de qualquer valor da fazenda fará com que seu APR seja 0. Você pode, em vez disso, compor suas recompensas sem perder seu APR.",
-    "lockingPoolZeroWarning": "Você não pode remover sua liquidez ou reivindicar suas recompensas desta farm. Para fazer isso, primeiro você precisa reivindicar sua participação nestas farms: "
+    "lockingPoolZeroWarning": "Você não pode remover sua liquidez ou reivindicar suas recompensas neste farm. Para fazer isso, primeiro você precisa reivindicar ou remover sua participação nestas fazendas: ",
+    "decreaseWarning": "Seu APR diminuirá porque a nova parte composta começa com APR 0 e uma média será feita entre a parte antiga e a nova."
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
+    "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "bridgeCard": {
       "advanceOptions": "Advance Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
           "waitingReceivingChain": "Waiting for receiving chain..."
@@ -729,7 +737,9 @@
     },
     "bridgeInputsWidget": {
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
-      "max": "MAX"
+      "max": "MAX",
+      "recipient": "Recipient",
+      "walletAddress": "Wallet Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -738,7 +748,7 @@
       "estimatedToken": "Estimated Token: {{ token }}",
       "estimatedResult": "Estimated Result: {{ result }}",
       "min": "{{ minute }} min",
-      "gasCost": "{{ gasCost }} Gas Cost"
+      "gasCost": "{{ gasCost }} USD Gas Cost"
     },
     "bridgeTransfer": {
       "date": "Date",
@@ -750,8 +760,10 @@
     },
     "bridgePrioritizations": {
       "recommended": "Recommended",
-      "fast": "Fast",
-      "normal": "Normal"
+      "fastest": "fastest",
+      "normal": "Normal",
+      "safest": "Safest",
+      "cheapest": "Cheapest"
     }
   },
   "dropdown": {

@@ -44,6 +44,7 @@ export const CurrencySelectWrapper = styled(Box)`
   color: ${({ theme }) => theme.text4};
   cursor: pointer;
 `;
+
 export const Dots = styled.span`
   &::after {
     display: inline-block;

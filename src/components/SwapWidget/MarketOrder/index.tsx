@@ -2,12 +2,12 @@
 import { CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
-import ReactGA from 'react-ga';
 import { ThemeContext } from 'styled-components';
 import { SwapTypes, TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import {
   useApproveCallbackFromTradeHook,
   useSwapCallbackHook,
@@ -25,12 +25,12 @@ import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
-  useHederaTokenAssociated,
+  useHederaSwapTokenAssociated,
   useSwapActionHandlers,
   useSwapState,
 } from 'src/state/pswap/hooks';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { isAddress, isTokenOnList } from 'src/utils';
+import { isAddressMapping, isTokenOnList } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -98,6 +98,8 @@ const MarketOrder: React.FC<Props> = ({
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
   const useSwapCallback = useSwapCallbackHook[chainId];
 
+  const isAddress = isAddressMapping[chainId];
+
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
 
@@ -109,6 +111,8 @@ const MarketOrder: React.FC<Props> = ({
   const [allowedSlippage] = useUserSlippageTolerance();
 
   const [feeTo, setFeeTo] = useDaasFeeTo();
+
+  const mixpanel = useMixpanel();
 
   useEffect(() => {
     if (feeTo === partnerDaaS) return;
@@ -137,7 +141,7 @@ const MarketOrder: React.FC<Props> = ({
     associate: onAssociate,
     isLoading: isLoadingAssociate,
     hederaAssociated: isHederaTokenAssociated,
-  } = useHederaTokenAssociated();
+  } = useHederaSwapTokenAssociated();
 
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE;
   const { address: recipientAddress } = useENS(recipient);
@@ -240,7 +244,7 @@ const MarketOrder: React.FC<Props> = ({
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT]);
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, allowedSlippage, recipient);
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, recipient, allowedSlippage);
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade);
 
@@ -256,17 +260,18 @@ const MarketOrder: React.FC<Props> = ({
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash });
 
-        // eslint-disable-next-line import/no-named-as-default-member
-        ReactGA.event({
-          category: 'Swap',
-          action:
-            recipient === null
-              ? 'Swap w/o Send'
-              : (recipientAddress ?? recipient) === account
-              ? 'Swap w/o Send + recipient'
-              : 'Swap w/ Send',
-          label: [trade?.inputAmount?.currency?.symbol, trade?.outputAmount?.currency?.symbol, Version.v2].join('/'),
-        });
+        if (trade) {
+          const path = trade.route.path;
+          const tokenA = path[0];
+          const tokenB = path[path.length - 1];
+          mixpanel.track(MixPanelEvents.SWAP, {
+            chainId: chainId,
+            tokenA: inputCurrency?.symbol,
+            tokenB: outputCurrency?.symbol,
+            tokenA_Address: tokenA.address,
+            tokenB_Address: tokenB.address,
+          });
+        }
       })
       .catch((error) => {
         setSwapState({
@@ -370,11 +375,20 @@ const MarketOrder: React.FC<Props> = ({
   const renderButton = () => {
     if (!account) {
       return (
-        <Button isDisabled={!account} variant="primary" onClick={toggleWalletModal}>
+        <Button variant="primary" onClick={toggleWalletModal}>
           Connect Wallet
         </Button>
       );
     }
+
+    if (!isHederaTokenAssociated) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate ' + currencies[Field.OUTPUT]?.symbol}
+        </Button>
+      );
+    }
+
     if (showWrap) {
       return (
         <Button variant="primary" isDisabled={Boolean(wrapInputError)} onClick={onWrap}>
@@ -393,14 +407,6 @@ const MarketOrder: React.FC<Props> = ({
       return (
         <Button variant="primary" isDisabled>
           Insufficient liquidity for this trade.
-        </Button>
-      );
-    }
-
-    if (!isHederaTokenAssociated) {
-      return (
-        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-          {isLoadingAssociate ? 'Associating' : 'Associate ' + currencies[Field.OUTPUT]?.symbol}
         </Button>
       );
     }

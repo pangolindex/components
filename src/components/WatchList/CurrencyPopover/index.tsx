@@ -3,14 +3,14 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import { Box, TextInput } from 'src/components';
-import { filterTokens } from 'src/components/SearchModal/filtering';
 import { useTokenComparator } from 'src/components/SearchModal/sorting';
 import { useChainId } from 'src/hooks';
 import { useToken } from 'src/hooks/Tokens';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import usePrevious from 'src/hooks/usePrevious';
 import { useDispatch } from 'src/state';
 import { addCurrency } from 'src/state/pwatchlists/actions';
-import { isAddress } from 'src/utils';
+import { filterTokenOrChain, isAddress } from 'src/utils';
 import CurrencyRow from './CurrencyRow';
 import { AddInputWrapper, CurrencyList, PopoverContainer } from './styled';
 
@@ -66,7 +66,7 @@ const CurrencyPopover: React.FC<Props> = ({
 
   const filteredTokens: Token[] = useMemo(() => {
     if (isAddressSearch) return searchToken ? [searchToken] : [];
-    return filterTokens(Object.values(coins), searchQuery);
+    return filterTokenOrChain(Object.values(coins), searchQuery) as Token[];
   }, [isAddressSearch, searchToken, coins, searchQuery]);
 
   const filteredSortedTokens: Token[] = useMemo(() => {
@@ -91,6 +91,8 @@ const CurrencyPopover: React.FC<Props> = ({
 
   const dispatch = useDispatch();
 
+  const mixpanel = useMixpanel();
+
   const onCurrencySelection = useCallback(
     (address: string) => {
       dispatch(addCurrency(address));
@@ -110,6 +112,11 @@ const CurrencyPopover: React.FC<Props> = ({
           onSelect={(address) => {
             onSelectCurrency(currency);
             onCurrencySelection(address);
+            mixpanel.track(MixPanelEvents.ADD_WATCHLIST, {
+              chainId: chainId,
+              token: currency.symbol,
+              tokenAddress: address,
+            });
           }}
         />
       ) : null;

@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 import { TransactionResponse } from '@ethersproject/providers';
+import { parseUnits } from '@ethersproject/units';
 import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,8 +15,11 @@ import {
   TextInput,
   TransactionCompleted,
 } from 'src/components';
+import { FARM_TYPE } from 'src/constants';
+import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePairContract, useStakingContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -71,6 +75,8 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
   const [typedValue, setTypedValue] = useState((userLiquidityUnstaked as TokenAmount)?.toExact() || '');
 
   const getSignature = useGetTransactionSignature();
+
+  const mixpanel = useMixpanel();
 
   const { parsedAmount, error } = useDerivedStakeInfo(
     typedValue,
@@ -189,6 +195,16 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
             summary: t('earn.depositLiquidity'),
           });
           setHash(response.hash);
+
+          mixpanel.track(MixPanelEvents.ADD_FARM, {
+            chainId: chainId,
+            tokenA: token0,
+            tokenB: token1,
+            tokenA_Address: token0.address,
+            tokenB_Address: token1.address,
+            farmType: FARM_TYPE[version]?.toLowerCase(),
+            pid: poolMap[stakingInfo.stakedAmount.token.address] ?? '-1',
+          });
         } catch (err) {
           setAttempting(false);
           const _err = err as any;
@@ -208,6 +224,21 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
   const onUserInput = useCallback((_typedValue: string) => {
     setSignatureData(null);
     setTypedValue(_typedValue);
+    const percentage = Math.ceil(
+      Number(
+        userLiquidityUnstaked && _typedValue
+          ? JSBI.divide(
+              JSBI.multiply(
+                JSBI.BigInt(parseUnits(_typedValue, userLiquidityUnstaked.currency.decimals)),
+                JSBI.BigInt(100),
+              ),
+              userLiquidityUnstaked.raw,
+            ).toString()
+          : 0,
+      ),
+    );
+
+    setStepIndex(percentage > 100 ? 4 : Math.round(percentage / 25));
   }, []);
 
   // used for max input button
@@ -342,6 +373,8 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
       ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toSignificant(6)
       : '-';
 
+  const png = PNG[chainId];
+
   return (
     <StakeWrapper>
       {!attempting && !hash && (
@@ -411,7 +444,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
                 {!isSuperFarm && (
                   <Stat
                     title={t('dashboardPage.earned_weeklyIncome')}
-                    stat={`${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} PNG`}
+                    stat={`${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} ${png.symbol}`}
                     titlePosition="top"
                     titleFontSize={14}
                     statFontSize={16}
@@ -436,7 +469,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
                   {renderPoolDataRow(t('migratePage.dollarWorth'), `${dollerWarth}`)}
                   {renderPoolDataRow(
                     `${t('dashboardPage.earned_weeklyIncome')}`,
-                    `${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} PNG`,
+                    `${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} ${png.symbol}`,
                   )}
 
                   {isSuperFarm && (

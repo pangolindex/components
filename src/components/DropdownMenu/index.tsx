@@ -2,15 +2,18 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import Select, { MenuPlacement, MultiValue, OptionsOrGroups, SingleValue } from 'react-select';
 import { ThemeContext } from 'styled-components';
+import { Option } from './types';
 
 export interface DropdownMenuProps {
-  defaultValue: MultiValue<string> | SingleValue<string>;
-  onSelect: (value: MultiValue<string> | string) => void;
+  defaultValue: MultiValue<Option> | SingleValue<string>;
+  onSelect: (value: MultiValue<Option> | string) => void;
   placeHolder?: string;
   isMulti?: boolean;
+  isSearchable?: boolean;
   menuPlacement?: MenuPlacement;
   options: OptionsOrGroups<any, any>;
   height?: string;
+  width?: string;
 }
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({
@@ -18,9 +21,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
   onSelect,
   placeHolder,
   isMulti = false,
+  isSearchable = false,
   menuPlacement,
   options,
   height,
+  width,
 }) => {
   const theme = useContext(ThemeContext);
   const colourStyles = {
@@ -33,6 +38,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
           borderColor: theme.primary,
         },
         ...(height && { height: height }),
+        width: width ? width : 'max-content',
       };
     },
     multiValue: (styles) => {
@@ -102,12 +108,17 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
     <Select
       options={options}
       onChange={(selectedItems) => {
-        onSelect(selectedItems?.value || '');
+        if (Array.isArray(selectedItems)) {
+          onSelect(selectedItems);
+        } else {
+          onSelect(selectedItems?.value || '');
+        }
       }}
       {...(menuPlacement && { menuPlacement })}
       defaultValue={defaultValue}
       placeholder={placeHolder || t('dropdown.select')}
       isMulti={isMulti}
+      isSearchable={isSearchable}
       styles={colourStyles}
       theme={(thm) => ({
         ...thm,

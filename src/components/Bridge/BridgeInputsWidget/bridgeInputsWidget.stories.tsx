@@ -18,7 +18,7 @@ export default {
     title: {
       name: 'Title',
       control: 'text',
-      type: { name: 'string', required: true },
+      type: { name: 'string', required: false },
       description: 'Title of the widget',
     },
     inputDisabled: {
@@ -27,19 +27,63 @@ export default {
       type: { name: 'boolean', required: true },
       description: 'Disable the input',
     },
-    isTokenDrawerOpen: {
-      name: 'Token Drawer Status',
-      control: 'boolean',
-      type: { name: 'boolean', required: false },
-      defaultValue: false,
-      description: 'Token drawer Status',
+    chain: {
+      name: 'Chain',
+      control: 'object',
+      type: { name: 'object', required: false },
+      description: 'Chain',
     },
-    onTokenDrawerOpen: {
-      name: 'Token Drawer Open',
+    currency: {
+      name: 'Currency',
+      control: 'object',
+      type: { name: 'object', required: false },
+      description: 'Currency',
+    },
+    amount: {
+      name: 'Amount',
+      control: 'object',
+      type: { name: 'object', required: false },
+      description: 'Currency Amount',
+    },
+    amountNet: {
+      name: 'Amount Net',
+      control: 'text',
+      type: { name: 'string', required: false },
+      description: 'Net Amount',
+    },
+    maxAmountInput: {
+      name: 'Max Amount',
+      control: 'object',
+      type: { name: 'object', required: false },
+      description: 'Max Amount',
+    },
+    handleMaxInput: {
+      name: 'Handle Max Input',
       control: 'function',
       type: { name: 'function', required: false },
       defaultValue: () => {},
-      description: 'The function to be called when the token button is clicked',
+      description: 'The function to be called when user click on Max button',
+    },
+    onChangeAmount: {
+      name: 'Change Amount',
+      control: 'function',
+      type: { name: 'function', required: false },
+      defaultValue: () => {},
+      description: 'The function to be called when user change the amount',
+    },
+    onChangeChainDrawerStatus: {
+      name: 'Change Chain Drawer',
+      control: 'function',
+      type: { name: 'function', required: false },
+      defaultValue: () => {},
+      description: 'The function to be called when user open the ChainDrawer ',
+    },
+    onChangeTokenDrawerStatus: {
+      name: 'Change Token Drawer',
+      control: 'function',
+      type: { name: 'function', required: false },
+      defaultValue: () => {},
+      description: 'The function to be called when user open the TokenDrawer ',
     },
   },
 };
@@ -56,6 +100,13 @@ export const Default = TemplateBridgeInputsWidget.bind({});
 Default.args = {
   title: 'to',
   inputDisabled: true,
-  isTokenDrawerOpen: false,
-  onTokenDrawerOpen: () => {},
+  chain: undefined,
+  currency: undefined,
+  amount: undefined,
+  amountNet: undefined,
+  maxAmountInput: undefined,
+  handleMaxInput: () => {},
+  onChangeAmount: () => {},
+  onChangeChainDrawerStatus: () => {},
+  onChangeTokenDrawerStatus: () => {},
 } as Partial<BridgeInputsWidgetProps>;

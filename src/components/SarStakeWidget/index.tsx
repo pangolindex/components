@@ -74,7 +74,7 @@ export default function SarManageWidget() {
     wrappedOnDismiss();
   }, [onUserInput]);
 
-  const desativeOverlay = () => {
+  const deactivateOverlay = () => {
     const sarOverlayElement = document.getElementById('sar-portfolio-overlay');
     if (sarOverlayElement) {
       sarOverlayElement.style.display = 'none';
@@ -96,7 +96,7 @@ export default function SarManageWidget() {
       );
     } else if (!userPngBalance?.greaterThan('0')) {
       return (
-        <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png, chainId)} onClick={desativeOverlay}>
+        <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png, chainId)} onClick={deactivateOverlay}>
           {t('sarStake.buy', { symbol: png.symbol })}
         </Button>
       );
@@ -118,7 +118,7 @@ export default function SarManageWidget() {
             isDisabled={!!error || approval !== ApprovalState.APPROVED || isLoading || !positions}
             onClick={() => {
               setOpenDrawer(true);
-              desativeOverlay();
+              deactivateOverlay();
             }}
             height="46px"
           >

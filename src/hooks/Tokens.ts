@@ -1,12 +1,15 @@
 /* eslint-disable max-lines */
 import { parseBytes32String } from '@ethersproject/strings';
 import { CAVAX, CHAINS, ChainId, Currency, Token } from '@pangolindex/sdk';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery } from 'react-query';
-import { COINGECKO_API, COINGECKO_CURRENCY_ID, COINGEKO_BASE_URL } from 'src/constants';
+import { COINGECKO_CURRENCY_ID, COINGEKO_BASE_URL } from 'src/constants';
+import { COINGECKO_TOKENS_MAPPING } from 'src/constants/coingeckoTokens';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
 import { isAddress } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
@@ -14,7 +17,6 @@ import { NearTokenMetadata, nearFn } from 'src/utils/near';
 import ERC20_INTERFACE, { ERC20_BYTES32_INTERFACE } from '../constants/abis/erc20';
 import { useTokenHook } from './multiChainsHooks';
 import { useBytes32TokenContract, useTokenContract } from './useContract';
-import { useChainId } from './index';
 
 export type TokenReturnType = Token | undefined | null;
 
@@ -144,40 +146,6 @@ export function useNearToken(tokenAddress?: string): TokenReturnType {
   }, [address, chainId, token, tokenData]);
 }
 
-export function useHederaToken(tokenAddress?: string): TokenReturnType {
-  const [tokenData, setTokenData] = useState<NearTokenMetadata>();
-
-  const chainId = useChainId();
-  const tokens = useAllTokens();
-
-  const address = tokenAddress;
-
-  const token: Token | undefined = address ? tokens[address] : undefined;
-
-  useEffect(() => {
-    async function getTokenData() {
-      if (address) {
-        const tokenMetaData = await hederaFn.getMetadata(address);
-
-        setTokenData(tokenMetaData);
-      }
-    }
-
-    getTokenData();
-  }, [address]);
-
-  return useMemo(() => {
-    if (token) return token;
-    if (!chainId || !address) return undefined;
-
-    if (tokenData) {
-      return new Token(chainId, address, tokenData?.decimals, tokenData?.symbol, tokenData?.name);
-    }
-
-    return undefined;
-  }, [address, chainId, token, tokenData]);
-}
-
 export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
   const chainId = useChainId();
   const tokens = useAllTokens();
@@ -251,47 +219,6 @@ export function useNearTokens(tokensAddress: string[] = []): Array<TokenReturnTy
     return (
       tokensAddress?.map((address) => {
         return { queryKey: ['token', address], queryFn: fetchNearTokenMetadata(address) };
-      }) ?? []
-    );
-  }, [tokensAddress]);
-
-  const results = useQueries(queryParameter);
-
-  return useMemo(() => {
-    if (!tokensAddress || tokensAddress?.length === 0) return [];
-    if (!chainId) return [];
-
-    return results.reduce<Token[]>((acc, result) => {
-      const tokenData = result?.data;
-
-      if (tokenData && result?.isLoading === false) {
-        if (!!tokenData?.id && tokens[tokenData?.id]) {
-          // if we have user tokens already
-          acc.push(tokens[tokenData?.id]);
-        } else {
-          const token = new Token(chainId, tokenData?.id, tokenData?.decimals, tokenData?.symbol, tokenData?.name);
-
-          acc.push(token);
-        }
-      }
-
-      return acc;
-    }, []);
-  }, [results, tokens]);
-}
-
-const fetchHederaTokenMetadata = (address) => () => {
-  return nearFn.getMetadata(address);
-};
-
-export function useHederaTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
-  const chainId = useChainId();
-  const tokens = useAllTokens();
-
-  const queryParameter = useMemo(() => {
-    return (
-      tokensAddress?.map((address) => {
-        return { queryKey: ['token', address], queryFn: fetchHederaTokenMetadata(address) };
       }) ?? []
     );
   }, [tokensAddress]);
@@ -404,46 +331,149 @@ export interface CoingeckoData {
   description: string;
 }
 
+const coingeckoAPI = axios.create({
+  baseURL: COINGEKO_BASE_URL,
+  timeout: 5000, // 5 seconds
+});
+/**
+ *
+ * @param token - Token to convert to another token if it exists in COINGECKO_TOKENS_MAPPING
+ * @returns Original token or converted token if it exists in COINGECKO_TOKENS_MAPPING
+ */
+export function convertCoingeckoTokens(token: Token): Token {
+  const chainId = token.chainId;
+  const tokens: { [x: string]: Token | undefined } | undefined = COINGECKO_TOKENS_MAPPING[chainId];
+
+  if (!tokens) {
+    return token;
+  }
+
+  const _token = tokens[token.address];
+  return _token ?? token;
+}
+
 /**
  * Get the coingecko data for a token
  * @param coin - Token or Currency
  * @returns CoingeckoData of token if exist in coingecko else null
  * */
+export function useCoinGeckoTokenData(coin: Token | Currency) {
+  const chainId = useChainId();
+  const chain = CHAINS[chainId];
 
-export function useCoinGeckoTokenData(coin: Token) {
-  const chain = CHAINS[coin.chainId];
+  const queryKey: (string | undefined)[] = ['coingeckoToken', chain.name];
+  if (coin instanceof Token) {
+    queryKey.push(coin.address);
+  } else {
+    queryKey.push(coin.name, coin.symbol);
+  }
 
-  return useQuery(['coingeckoToken', coin.address, chain.name], async () => {
-    if (!chain.coingecko_id) {
-      return null;
-    }
-    const response = await fetch(`${COINGECKO_API}/coins/${chain.coingecko_id}/contract/${coin.address.toLowerCase()}`);
-    const data = await response.json();
-    return {
-      coinId: data?.id,
-      homePage: data?.links?.homepage[0],
-      description: data?.description?.en,
-    } as CoingeckoData;
-  });
+  return useQuery(
+    queryKey,
+    async () => {
+      if (!chain.coingecko_id) {
+        return undefined;
+      }
+      let response: AxiosResponse;
+
+      if (coin instanceof Token) {
+        response = await coingeckoAPI.get(`/coins/${chain.coingecko_id}/contract/${coin.address.toLowerCase()}`);
+      } else {
+        response = await coingeckoAPI.get(`/coins/${COINGECKO_CURRENCY_ID[chainId]}`);
+      }
+
+      const data = response.data;
+      return {
+        coinId: data?.id,
+        homePage: data?.links?.homepage[0],
+        description: data?.description?.en,
+      } as CoingeckoData;
+    },
+    {
+      cacheTime: Infinity,
+      refetchInterval: false,
+    },
+  );
 }
 
 /* eslint-enable max-lines */
 export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
   const currencyId = COINGECKO_CURRENCY_ID[chainId];
 
-  return useQuery(['coingeckoCurrencyPrice', chainId], async (): Promise<number> => {
-    if (!currencyId) {
-      return 0;
-    }
-    try {
-      const response = await axios.get(`${COINGECKO_API}/simple/price?ids=${currencyId}&vs_currencies=usd`);
-      const data = response.data;
+  return useQuery(
+    ['coingeckoCurrencyPrice', chainId],
+    async (): Promise<number> => {
+      if (!currencyId) {
+        return 0;
+      }
+      try {
+        const response = await coingeckoAPI.get(`/simple/price?ids=${currencyId}&vs_currencies=usd`);
+        const data = response.data;
 
-      if (!data) return 0;
+        if (!data) return 0;
 
-      return data[currencyId]?.usd ?? 0;
-    } catch (error) {
-      return 0;
-    }
+        return data[currencyId]?.usd ?? 0;
+      } catch (error) {
+        return 0;
+      }
+    },
+    {
+      cacheTime: 60 * 1000, // 1 minute
+    },
+  );
+}
+
+export function useHederaTokenAssociated(token: Token | undefined): {
+  associate: undefined | (() => Promise<void>);
+  isLoading: boolean;
+  hederaAssociated: boolean;
+} {
+  const { account } = usePangolinWeb3();
+  const addTransaction = useTransactionAdder();
+  const chainId = useChainId();
+
+  const tokenAddress = token?.address;
+
+  const [loading, setLoading] = useState(false);
+
+  const {
+    isLoading,
+    data: isAssociated = true,
+    refetch,
+  } = useQuery(['check-hedera-token-associated', tokenAddress, account], async () => {
+    if (!tokenAddress || !account || !hederaFn.isHederaChain(chainId)) return;
+
+    const tokens = await hederaFn.getAccountAssociatedTokens(account);
+
+    const currencyId = account ? hederaFn.hederaId(tokenAddress) : '';
+
+    const token = (tokens || []).find((token) => token.tokenId === currencyId);
+
+    return !!token;
   });
+
+  return useMemo(() => {
+    return {
+      associate:
+        account && tokenAddress
+          ? async () => {
+              try {
+                setLoading(true);
+                const txReceipt = await hederaFn.tokenAssociate(tokenAddress, account);
+                if (txReceipt) {
+                  setLoading(false);
+                  refetch();
+
+                  addTransaction(txReceipt, { summary: `${token?.symbol} successfully  associated` });
+                }
+              } catch (error) {
+                setLoading(false);
+                console.error('Could not deposit', error);
+              }
+            }
+          : undefined,
+      isLoading: loading,
+      hederaAssociated: isAssociated,
+    };
+  }, [chainId, tokenAddress, account, loading, isLoading, isAssociated]);
 }

@@ -3,6 +3,7 @@ import { CHAINS, ChainId, ChefType, Fraction, JSBI, Percent, StakingType, Token,
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import BN from 'bn.js';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
+import avalancheCoreIcon from 'src/assets/images/avalancheCore.svg';
 import bitKeepIcon from 'src/assets/images/bitkeep.svg';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
@@ -11,15 +12,18 @@ import metamaskIcon from 'src/assets/images/metamask.png';
 import nearIcon from 'src/assets/images/near.svg';
 import rabbyIcon from 'src/assets/images/rabby.svg';
 import talismanIcon from 'src/assets/images/talisman.svg';
+// import venlyIcon from 'src/assets/images/venly.png';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
 import {
+  avalancheCore,
   bitKeep,
   gnosisSafe,
   hashConnect,
   injected,
   near,
   talisman,
+  // venly,
   walletconnect,
   walletlink,
   xDefi,
@@ -148,8 +152,8 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: PNG[ChainId.SONGBIRD].address,
   },
   [ChainId.HEDERA_TESTNET]: {
-    inputCurrency: '',
-    outputCurrency: '',
+    inputCurrency: 'HBAR',
+    outputCurrency: WAVAX[ChainId.HEDERA_TESTNET].address,
   },
   [ChainId.NEAR_MAINNET]: {
     inputCurrency: WAVAX[ChainId.NEAR_MAINNET].address,
@@ -349,6 +353,26 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     primary: true,
     isEVM: true,
   },
+  // VENLY: {
+  //   connector: venly,
+  //   name: 'Venly Wallet',
+  //   iconName: venlyIcon,
+  //   description: 'Venly Wallet Connect',
+  //   href: null,
+  //   color: '#7735ea',
+  //   primary: true,
+  //   isEVM: true,
+  // },
+  AVALANCHECORE: {
+    connector: avalancheCore,
+    name: 'Avalanche Core Wallet',
+    iconName: avalancheCoreIcon,
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#E8831D',
+    primary: true,
+    isEVM: true,
+  },
 };
 
 export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } = {
@@ -394,8 +418,7 @@ export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
 // TODO: this needs to be based on chain id
 export const HEDERA_API_BASE_URL = `https://testnet.mirrornode.hedera.com`;
 
-export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
-export const COINGECKO_API = 'https://api.coingecko.com/api/v3';
+export const OPEN_API_DEBANK = 'https://api.debank.com/';
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
 export const NEAR_STORAGE_PER_TOKEN = '0.005';
 export const NEAR_STORAGE_TO_REGISTER_WITH_FT = '0.1';
@@ -458,4 +481,10 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.HEDERA_TESTNET]: 'hedera-hashgraph',
   [ChainId.NEAR_MAINNET]: 'near',
   [ChainId.NEAR_TESTNET]: undefined,
+};
+
+export const FARM_TYPE: { [x: number]: string | undefined } = {
+  1: ChefType.MINI_CHEF,
+  2: ChefType.MINI_CHEF_V2,
+  3: ChefType.PANGO_CHEF,
 };

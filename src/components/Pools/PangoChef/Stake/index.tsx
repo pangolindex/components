@@ -5,9 +5,11 @@ import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput } from 'src/components';
+import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
 import { usePairContract, usePangoChefContract } from 'src/hooks/useContract';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
@@ -98,6 +100,8 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   const currency0 = unwrappedToken(stakingTokenPair?.token0 as Token, chainId);
   const currency1 = unwrappedToken(stakingTokenPair?.token1 as Token, chainId);
 
+  const mixpanel = useMixpanel();
+
   const onChangePercentage = (value: number) => {
     if (!userLiquidityUnstaked) {
       setTypedValue('0');
@@ -127,6 +131,16 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
             summary: t('earn.depositLiquidity'),
           });
           setHash(response.hash);
+
+          mixpanel.track(MixPanelEvents.ADD_FARM, {
+            chainId: chainId,
+            tokenA: token0,
+            tokenB: token1,
+            tokenA_Address: token0.address,
+            tokenB_Address: token1.address,
+            farmType: FARM_TYPE[3]?.toLowerCase(),
+            pid: stakingInfo?.pid ?? '-1',
+          });
         } catch (err) {
           const _err = err as any;
           // we only care if the error is something _other_ than the user rejected the tx
@@ -339,7 +353,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
                   {renderPoolDataRow(t('migratePage.dollarWorth'), `${dollerWarth}`)}
                   {renderPoolDataRow(
                     `${t('dashboardPage.earned_weeklyIncome')}`,
-                    `${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} PNG`,
+                    `${hypotheticalWeeklyRewardRate.toSignificant(4, { groupSeparator: ',' })} ${png.symbol}`,
                   )}
 
                   {isSuperFarm && (

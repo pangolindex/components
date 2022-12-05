@@ -1,111 +1,282 @@
-import React, { useCallback, useContext, useState } from 'react';
+/* eslint-disable max-lines */
+import {
+  BRIDGES,
+  Bridge,
+  BridgeCurrency,
+  Chain,
+  CurrencyAmount,
+  LIFI as LIFIBridge,
+  // SQUID,
+  // THORSWAP,
+} from '@pangolindex/sdk';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { useTranslation } from 'react-i18next';
-import { MultiValue, SingleValue } from 'react-select';
+import { MultiValue } from 'react-select';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Checkbox, Collapsed, DropdownMenu, Loader, Text } from 'src/components';
-import SlippageInput from 'src/components/SlippageInput';
-import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
-import { usePangolinWeb3 } from 'src/hooks';
+import CircleTick from 'src/assets/images/circleTick.svg';
+import ErrorTick from 'src/assets/images/errorTick.svg';
+import {
+  Box,
+  Button,
+  Collapsed,
+  DropdownMenu,
+  Loader,
+  SelectBridgeCurrencyDrawer,
+  SelectChainDrawer,
+  SlippageInput,
+  Text,
+} from 'src/components';
+import { Option } from 'src/components/DropdownMenu/types';
+import { useChainId, useLibrary } from 'src/hooks';
+import { useBridgeChains } from 'src/hooks/bridge/Chains';
+import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
+import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useUserSlippageTolerance } from 'src/state/puser/hooks';
+import { ChainField, CurrencyField, TransactionStatus } from 'src/state/pbridge/actions';
+import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
+import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import BridgeInputsWidget from '../BridgeInputsWidget';
-import { ArrowWrapper, BottomText, CloseCircle, FilterBox, FilterInputHeader, LoaderWrapper, Wrapper } from './styles';
+import {
+  ArrowWrapper,
+  BottomText,
+  CardWrapper,
+  CloseCircle,
+  FilterBox,
+  FilterInputHeader,
+  TransactionText,
+  Wrapper,
+} from './styles';
+import { BridgeCardProps } from './types';
 
-const BridgeCard = () => {
-  const { account } = usePangolinWeb3();
+const BridgeCard: React.FC<BridgeCardProps> = (props) => {
+  const {
+    account,
+    fromChain,
+    toChain,
+    inputCurrency,
+    outputCurrency,
+    slippageTolerance,
+    getRoutes,
+    setSlippageTolerance,
+  } = props;
+
   const toggleWalletModal = useWalletModalToggle();
   const theme = useContext(ThemeContext);
 
-  const [isTokenDrawerOpen, setIsTokenDrawerOpen] = useState(false);
-  const [activeBridgePrioritization, setActiveBridgePrioritization] = useState<
-    MultiValue<string> | SingleValue<string>
-  >('');
-  const [activeBridges, setActiveBridges] = useState<MultiValue<string> | SingleValue<string>>(['']);
-  const [activeExchanges, setActiveExchanges] = useState<MultiValue<string> | SingleValue<string>>(['']);
-  const [userslippage] = useUserSlippageTolerance();
-  const [slippageTolerance, setSlippageTolerance] = useState((userslippage / 100).toString());
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const bridges = BRIDGES.map((bridge: Bridge) => ({ label: bridge.name, value: bridge.id }));
+  const [isChainDrawerOpen, setIsChainDrawerOpen] = useState(false);
+  const [isCurrencyDrawerOpen, setIsCurrencyDrawerOpen] = useState(false);
+  const [activeBridges, setActiveBridges] = useState<MultiValue<Option>>(bridges);
   const { t } = useTranslation();
+  const {
+    currencyBalances,
+    parsedAmount,
+    estimatedAmount,
+    amountNet,
+    selectedRoute,
+    transactionLoaderStatus,
+    transactionError,
+    transactionStatus,
+  } = useDerivedBridgeInfo();
 
-  const BridgePrioritizationItems = [
-    {
-      label: t('bridge.bridgePrioritizations.recommended'),
-      value: 'recommended',
-    },
-    {
-      label: t('bridge.bridgePrioritizations.fast'),
-      value: 'fast',
-    },
-    {
-      label: t('bridge.bridgePrioritizations.normal'),
-      value: 'normal',
-    },
-  ];
+  const chainHook = useBridgeChains();
+  const currencyHook = useBridgeCurrencies();
+  const sdkChainId = useChainId();
+  const [drawerType, setDrawerType] = useState(ChainField.FROM);
 
-  const Bridges = [
-    {
-      label: 'Thorchain',
-      value: 'thorchain',
-    },
-    {
-      label: 'DeFiChain',
-      value: 'defichain',
-    },
-  ];
-  const Exchanges = [
-    {
-      label: 'Pangolin',
-      value: 'pangolin',
-    },
-    {
-      label: 'Uniswap',
-      value: 'uniswap',
-    },
-    {
-      label: '1Inch',
-      value: '1inch',
-    },
-    {
-      label: 'Quickswap',
-      value: 'quickswap',
-    },
-  ];
+  const { library } = useLibrary();
+
+  const { sendTransaction } = useBridgeSwapActionHandlers();
+
+  const onSendTransaction = useCallback(() => {
+    selectedRoute?.bridgeType?.id && sendTransaction[selectedRoute?.bridgeType?.id](library, selectedRoute, account);
+  }, [selectedRoute]);
 
   const onChangeTokenDrawerStatus = useCallback(() => {
-    setIsTokenDrawerOpen(!isTokenDrawerOpen);
-  }, [isTokenDrawerOpen]);
+    setIsCurrencyDrawerOpen(!isCurrencyDrawerOpen);
+  }, [isCurrencyDrawerOpen]);
+
+  const onChangeChainDrawerStatus = useCallback(() => {
+    setIsChainDrawerOpen(!isChainDrawerOpen);
+  }, [isChainDrawerOpen]);
+
+  const {
+    onSwitchTokens,
+    onSwitchChains,
+    onCurrencySelection,
+    onChainSelection,
+    onUserInput,
+    onChangeRouteLoaderStatus,
+    onClearTransactionData,
+  } = useBridgeActionHandlers();
+
+  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(sdkChainId, currencyBalances[CurrencyField.INPUT]);
+
+  const debouncedAmountValue = useDebounce(parsedAmount?.toExact(), 1500);
+
+  const allBridgeCurrencies = useMemo(() => {
+    if (currencyHook && activeBridges) {
+      let data: BridgeCurrency[] = [];
+      Object.entries(currencyHook).forEach(([key, value]) => {
+        if (activeBridges.some((bridge) => bridge.value === key)) {
+          data = data
+            ?.concat(value)
+            ?.filter(
+              (val, index, self) =>
+                index === self.findIndex((t) => t?.symbol === val?.symbol && t?.chainId === val?.chainId),
+            );
+        }
+      });
+      return data;
+    }
+  }, [currencyHook?.[LIFIBridge.id], activeBridges]);
+
+  const inputCurrencyList = useMemo(() => {
+    const data = allBridgeCurrencies?.filter((val) => val?.chainId === fromChain?.chain_id?.toString());
+    return data;
+  }, [fromChain, allBridgeCurrencies]);
+
+  const outputCurrencyList = useMemo(() => {
+    const data = allBridgeCurrencies?.filter((val) => val?.chainId === toChain?.chain_id?.toString());
+    return data;
+  }, [toChain, allBridgeCurrencies]);
+
+  const chainList = useMemo(() => {
+    if (activeBridges) {
+      let data: Chain[] = [];
+      activeBridges.forEach((bridge: Option) => {
+        data = data
+          ?.concat(chainHook[bridge.value])
+          ?.filter((val, index, self) => index === self.findIndex((t) => t?.chain_id === val?.chain_id));
+      });
+
+      if (activeBridges.length === 0) {
+        data = [];
+      }
+      return data;
+    }
+  }, [activeBridges, chainHook?.[LIFIBridge.id]]);
+
+  useEffect(() => {
+    if (debouncedAmountValue) {
+      onChangeRouteLoaderStatus();
+      getRoutes(debouncedAmountValue, slippageTolerance, fromChain, toChain, account, inputCurrency, outputCurrency);
+    }
+  }, [debouncedAmountValue, slippageTolerance, inputCurrency, outputCurrency]);
+
+  const changeAmount = useCallback(
+    (field: CurrencyField, amount: string) => {
+      onUserInput(field, amount);
+    },
+    [onUserInput],
+  );
+
+  const handleMaxInput = useCallback(() => {
+    maxAmountInput && changeAmount(CurrencyField.INPUT, maxAmountInput?.toExact());
+  }, [maxAmountInput, changeAmount]);
+
+  const onCurrencySelect = useCallback(
+    (currency: BridgeCurrency) => {
+      onCurrencySelection(drawerType === ChainField.FROM ? CurrencyField.INPUT : CurrencyField.OUTPUT, currency);
+    },
+    [drawerType, onCurrencySelection],
+  );
+
+  const onChainSelect = useCallback(
+    (chain: Chain) => {
+      onChainSelection(drawerType, chain);
+    },
+    [drawerType, onChainSelection],
+  );
 
   return (
     <Wrapper>
-      {isLoading && (
-        <LoaderWrapper>
+      {transactionLoaderStatus && (
+        <CardWrapper>
+          <Loader height={'auto'} label={t('bridge.bridgeCard.loader.labels.waitingReceivingChain')} size={100} />
+          <BottomText>{t('bridge.bridgeCard.loader.bottomText')}</BottomText>
+        </CardWrapper>
+      )}
+      {transactionStatus === TransactionStatus.FAILED && (
+        <CardWrapper>
           <CloseCircle
             onClick={() => {
-              setIsLoading(!isLoading);
+              onClearTransactionData(transactionStatus);
             }}
           >
             <X color={theme.bridge?.loaderCloseIconColor} size={10} />
           </CloseCircle>
-          <Loader height={'auto'} label={t('bridge.bridgeCard.loader.labels.waitingReceivingChain')} size={100} />
-          <BottomText>{t('bridge.bridgeCard.loader.bottomText')}</BottomText>
-        </LoaderWrapper>
+          <Box flex="1" display="flex" alignItems="center" flexDirection={'column'} justifyContent={'center'}>
+            <img src={ErrorTick} alt="error-tick" />
+            {transactionError && <TransactionText>{transactionError.message}</TransactionText>}
+          </Box>
+        </CardWrapper>
+      )}
+      {transactionStatus === TransactionStatus.SUCCESS && (
+        <CardWrapper>
+          <CloseCircle
+            onClick={() => {
+              onClearTransactionData(transactionStatus);
+            }}
+          >
+            <X color={theme.bridge?.loaderCloseIconColor} size={10} />
+          </CloseCircle>
+          <Box flex="1" display="flex" alignItems="center" flexDirection={'column'} justifyContent={'center'}>
+            <img src={CircleTick} alt="circle-tick" />
+            <TransactionText>{t('bridge.bridgeCard.transactionSucceeded')}</TransactionText>
+          </Box>
+        </CardWrapper>
       )}
       <Text fontSize={24} fontWeight={700} color={'bridge.text'} pb={30}>
         {t('bridge.bridgeCard.title')}
       </Text>
       <BridgeInputsWidget
-        isTokenDrawerOpen
-        onChangeTokenDrawerStatus={onChangeTokenDrawerStatus}
+        onChangeTokenDrawerStatus={() => {
+          setDrawerType(ChainField.FROM);
+          onChangeTokenDrawerStatus();
+        }}
+        onChangeChainDrawerStatus={() => {
+          setDrawerType(ChainField.FROM);
+          onChangeChainDrawerStatus();
+        }}
+        onChangeAmount={(amount) => {
+          changeAmount(CurrencyField.INPUT, amount);
+        }}
+        maxAmountInput={maxAmountInput}
+        amount={parsedAmount}
+        handleMaxInput={handleMaxInput}
         title="From"
         inputDisabled={false}
+        chain={fromChain}
+        currency={inputCurrency}
       />
       <Box display={'flex'} justifyContent={'center'} alignContent={'center'} marginY={20}>
-        <ArrowWrapper>
+        <ArrowWrapper
+          onClick={() => {
+            onSwitchTokens();
+            onSwitchChains();
+          }}
+        >
           <RefreshCcw size="16" color={theme.bridge?.text} />
         </ArrowWrapper>
       </Box>
-      <BridgeInputsWidget title="To" inputDisabled={true} />
+      <BridgeInputsWidget
+        onChangeTokenDrawerStatus={() => {
+          setDrawerType(ChainField.TO);
+          onChangeTokenDrawerStatus();
+        }}
+        onChangeChainDrawerStatus={() => {
+          setDrawerType(ChainField.TO);
+          onChangeChainDrawerStatus();
+        }}
+        title="To"
+        inputDisabled={true}
+        amount={estimatedAmount}
+        amountNet={amountNet}
+        chain={toChain}
+        currency={outputCurrency}
+      />
       <Box marginY={30}>
         {!account ? (
           <Button variant="primary" onClick={toggleWalletModal}>
@@ -115,8 +286,9 @@ const BridgeCard = () => {
           <Button
             variant="primary"
             onClick={() => {
-              setIsLoading(true);
+              onSendTransaction();
             }}
+            isDisabled={!selectedRoute}
           >
             {t('bridge.bridgeCard.swap')}
           </Button>
@@ -141,16 +313,6 @@ const BridgeCard = () => {
             </Box>
           }
         >
-          <FilterBox pt={'3.75rem'}>
-            <FilterInputHeader>{t('bridge.bridgeCard.filter.bridgePrioritization')}</FilterInputHeader>
-            <DropdownMenu
-              options={BridgePrioritizationItems}
-              defaultValue={activeBridgePrioritization}
-              onSelect={(value) => {
-                setActiveBridgePrioritization(value);
-              }}
-            />
-          </FilterBox>
           <FilterBox>
             <FilterInputHeader>{t('bridge.bridgeCard.filter.slippage')}</FilterInputHeader>
             <SlippageInput
@@ -161,42 +323,39 @@ const BridgeCard = () => {
             />
           </FilterBox>
           <FilterBox>
-            <FilterInputHeader>{t('bridge.bridgeCard.filter.infiniteApproval')}</FilterInputHeader>
-            <Checkbox labelColor={'bridge.text'} label={t('bridge.bridgeCard.filter.activeInfiniteApproval')} />
-          </FilterBox>
-          <FilterBox>
             <FilterInputHeader>{t('bridge.bridgeCard.filter.bridges')}</FilterInputHeader>
             <DropdownMenu
-              options={Bridges}
+              options={bridges}
               defaultValue={activeBridges}
               isMulti={true}
               menuPlacement={'top'}
               onSelect={(value) => {
-                setActiveBridges(value);
-              }}
-            />
-          </FilterBox>
-          <FilterBox>
-            <FilterInputHeader>{t('bridge.bridgeCard.filter.exchanges')}</FilterInputHeader>
-            <DropdownMenu
-              options={Exchanges}
-              defaultValue={activeExchanges}
-              isMulti={true}
-              menuPlacement={'top'}
-              onSelect={(value) => {
-                setActiveExchanges(value);
+                setActiveBridges(value as MultiValue<Option>);
               }}
             />
           </FilterBox>
         </Collapsed>
       </Box>
-      {isTokenDrawerOpen && (
-        <SelectTokenDrawer
-          isOpen={isTokenDrawerOpen}
-          onClose={onChangeTokenDrawerStatus}
-          onCurrencySelect={() => {
-            console.log('onCurrencySelect');
+      {isChainDrawerOpen && (
+        <SelectChainDrawer
+          isOpen={isChainDrawerOpen}
+          chains={chainList}
+          onClose={onChangeChainDrawerStatus}
+          onChainSelect={onChainSelect}
+          selectedChain={drawerType === ChainField.FROM ? fromChain : toChain}
+          otherSelectedChain={drawerType === ChainField.TO ? toChain : fromChain}
+        />
+      )}
+      {isCurrencyDrawerOpen && (
+        <SelectBridgeCurrencyDrawer
+          isOpen={isCurrencyDrawerOpen}
+          bridgeCurrencies={drawerType === ChainField.FROM ? inputCurrencyList : outputCurrencyList}
+          onClose={() => {
+            onChangeTokenDrawerStatus();
           }}
+          onCurrencySelect={onCurrencySelect}
+          selectedCurrency={drawerType === ChainField.FROM ? inputCurrency : outputCurrency}
+          otherSelectedCurrency={drawerType === ChainField.TO ? outputCurrency : inputCurrency}
         />
       )}
     </Wrapper>

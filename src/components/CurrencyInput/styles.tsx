@@ -27,13 +27,14 @@ export const CurrencySelect = styled.button<{ selected: boolean; buttonStyle: Bu
   ${({ buttonStyle }) => buttonStyle}
 `;
 
-export const Aligner = styled.span<{ active?: boolean }>`
+export const Aligner = styled.span<{ active?: boolean; buttonStyle: ButtonStyleProps | undefined }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: inherit;
   svg {
-    stroke: ${({ active, theme }) => (active ? theme.currencySelect?.selectedText : theme.currencySelect?.defaultText)};
+    stroke: ${({ active, buttonStyle, theme }) =>
+      buttonStyle?.color || (active ? theme.currencySelect?.selectedText : theme.currencySelect?.defaultText)};
   }
 `;
 
@@ -41,4 +42,11 @@ export const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
   font-size:  ${({ active }) => (active ? '20px' : '16px')};
   color: inherit;
+`;
+
+export const AlternativeLogo = styled.img<{ size: number }>`
+  border-radius: 50%;
+  width: ${({ size }) => `${size}px`};
+  height: ${({ size }) => `${size}px`};
+  margin-right: 10px;
 `;

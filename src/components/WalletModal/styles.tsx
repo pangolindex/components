@@ -39,6 +39,7 @@ export const HeaderRow = styled.div`
 export const ContentWrapper = styled.div`
   padding: 0 2rem 2rem 2rem;
   ${({ theme }) => theme.mediaWidth.upToMedium`padding: 0 1rem 1rem 1rem`};
+  width: 380px;
 `;
 
 export const UpperSection = styled.div`
@@ -59,18 +60,6 @@ export const UpperSection = styled.div`
     margin-top: 0;
     font-weight: 500;
   }
-`;
-
-export const Blurb = styled.div`
-  ${({ theme }) => theme.flexRowNoWrap}
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 2rem;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    margin: 1rem;
-    font-size: 12px;
-  `};
 `;
 
 export const OptionGrid = styled.div`

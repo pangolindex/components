@@ -384,7 +384,11 @@
     "yourFarms": "Your Farms",
     "yourPools": "Your Pools",
     "noFarms": "No farms found.",
-    "successWithdraw": "Your liquidity removed from farm, And accrued rewards claimed!"
+    "successWithdraw": "Your liquidity removed from farm, And accrued rewards claimed!",
+    "importDescription1": "With import function you can look for pools that doesn’t appear in 'Your Pools' section.",
+    "importDescription2": "Just choose the underlying coins that was in your pool.",
+    "createPairDescription": "With create function you can create a new pair. Just search the coins that you want to create a pair for and system will either finds the pool if exists on Pangolin or creates a brand new one if its not.",
+    "addLiquidityDescription": "With the add liquidity function you add liquidity to a pair. Just search for the coins you want to add liquidity to and the system will find the pool if it exists in Pangolin or create a new one if it doesn't."
   },
   "poolFinder": {
     "connectToFind": "Connect to a wallet to find pools",
@@ -466,7 +470,8 @@
     "cancelLimitOrder": "Buy {{ outputCurrency }} with {{ inputCurrency }}",
     "executionPrice": "Execution Price",
     "seeMore": "See More",
-    "seeLess": "See Less"
+    "seeLess": "See Less",
+    "orderPlaced": "{{ orderType }} order placed."
   },
   "buyPage": {
     "buyAvaxInfo": "Buy AVAX with fiat from our partner Wyre.",
@@ -525,16 +530,14 @@
     "selectToken": "Select a token",
     "enterRecipient": "Enter a recipient",
     "invalidRecipient": "Invalid recipient",
-    "insufficient": "Insufficient ",
-    "balance": " balance"
+    "insufficientBalance": "Insufficient {{ symbol }} balance"
   },
   "mintHooks": {
     "connectWallet": "Connect Wallet",
     "insufficientInputAmount": "Insufficient input amount",
     "invalidPair": "Invalid pair",
     "enterAmount": "Enter an amount",
-    "insufficient": "Insufficient ",
-    "balance": " balance"
+    "insufficientBalance": "Insufficient {{ symbol }} balance"
   },
   "stakeHooks": {
     "connectWallet": "Connect Wallet",
@@ -698,22 +701,26 @@
     "claimWarning1": "When you claim without withdrawing, your liquidity remains in the farm.",
     "claimWarning2": "Claiming rewards restarts your APR from 0%. Instead you may choose to compound.",
     "compoundWarning": "Compounding your rewards for {{ token0 }}-{{ token1 }} farm will get your rewards staked into {{ currency }}-{{ png }} farm. You need to add equal value of {{ currency }} token to your accrued {{ png }} rewards.",
-    "compoundAmountWarning": "You need to add {{ amount }} {{ symbol }} to compound.",
-    "compoundAmountWarning2": "Be careful that you will be locking your {{ symbol }} {{ png }} pool till you claim the rewards of this pool.",
+    "compoundAmountWarning": "You need to add {{ amount }} {{ symbol }} to compound. Please beware that Compounding may slightly decrease your APR.",
+    "compoundAmountWarning2": "Be careful that you will be locking your {{ token0 }} {{ token1 }} pool till you claim the rewards of this pool.",
     "highVolalityWarning": "Too early, try in few hours",
-    "compoundSuccess": "You have successfully composed your farm.",
+    "compoundSuccess": "You have successfully compounded your farm.",
     "compoundTransactionSummary": "Compounded farm",
     "removeWarning": "Removing any amount from farm will get your APR to 0. You can instead compound your rewards without losing your APR.",
-    "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim your stake from this farms: "
+    "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim or remove your stake from this farms: ",
+    "decreaseWarning": "Your apr will decrease because the new compounded part starts with apr 0 and an average will be taken between the old and new part."
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
+    "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "bridgeCard": {
       "advanceOptions": "Advance Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
           "waitingReceivingChain": "Waiting for receiving chain..."
@@ -731,7 +738,9 @@
     },
     "bridgeInputsWidget": {
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
-      "max": "MAX"
+      "max": "MAX",
+      "recipient": "Recipient",
+      "walletAddress": "Wallet Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -740,7 +749,7 @@
       "estimatedToken": "Estimated Token: {{ token }}",
       "estimatedResult": "Estimated Result: {{ result }}",
       "min": "{{ minute }} min",
-      "gasCost": "{{ gasCost }} Gas Cost"
+      "gasCost": "{{ gasCost }} USD Gas Cost"
     },
     "bridgeTransfer": {
       "date": "Date",
@@ -752,8 +761,10 @@
     },
     "bridgePrioritizations": {
       "recommended": "Recommended",
-      "fast": "Fast",
-      "normal": "Normal"
+      "fastest": "Fastest",
+      "normal": "Normal",
+      "safest": "Safest",
+      "cheapest": "Cheapest"
     }
   },
   "dropdown": {

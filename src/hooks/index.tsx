@@ -4,6 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
+import { network } from 'src/connectors';
 import { PROVIDER_MAPPING } from 'src/constants';
 import { useBlockNumber } from 'src/state/papplication/hooks';
 import { isAddress } from 'src/utils';
@@ -98,7 +99,7 @@ export function useLibrary(): { library: any; provider: any } {
       // ) as string;
 
       // convert window.ethereum to ethers
-      const ethersDefaultProvider = new Web3ProviderEthers(window.ethereum as ExternalProvider);
+      const ethersDefaultProvider = new Web3ProviderEthers((window.ethereum as ExternalProvider) || network.provider);
       // try to wrap connector provider
       const providerFromConnector = await connector?.getProvider();
       let ethersConnectorProvider;
