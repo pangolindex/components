@@ -4550,10 +4550,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@pangolindex/sdk@4.0.0-rc.0":
-  version "4.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-4.0.0-rc.0.tgz#90ce8e0ac9809d4f2101d8f0dc8f80441e38aca2"
-  integrity sha512-XUb7Yj3im7eHTXTthTVakxIcLI+MZun37Wvl9oUIpqWj3W9ecHDk8Bw/1LB8qbceZ+A2/nv+gMVEgExjAtGr9g==
+"@pangolindex/sdk@3.1.13-internal.4984477":
+  version "3.1.13-internal.4984477"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-3.1.13-internal.4984477.tgz#ce4d4cad46a103d19ec707d93a768e8f2bee5dfe"
+  integrity sha512-hxqo3Ody8ttCf/l5WXFPvJvMx8iCIASG7KRKgFchn4cM5TdVX2g9Y06LmKDc71BoozRBCidiU/bGeXwhxBoSQQ==
   dependencies:
     big.js "^5.2.2"
     decimal.js-light "^2.5.0"
