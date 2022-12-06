@@ -423,63 +423,11 @@ export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
   );
 }
 
-export function useHederaTokenAssociated(token: Token | undefined): {
+export function useHederaTokenAssociated(
+  address: string | undefined,
+  symbol: string | undefined,
+): {
   associate: undefined | (() => Promise<void>);
-  isLoading: boolean;
-  hederaAssociated: boolean;
-} {
-  const { account } = usePangolinWeb3();
-  const addTransaction = useTransactionAdder();
-  const chainId = useChainId();
-
-  const tokenAddress = token?.address;
-
-  const [loading, setLoading] = useState(false);
-
-  const {
-    isLoading,
-    data: isAssociated = true,
-    refetch,
-  } = useQuery(['check-hedera-token-associated', tokenAddress, account], async () => {
-    if (!tokenAddress || !account || !hederaFn.isHederaChain(chainId)) return;
-
-    const tokens = await hederaFn.getAccountAssociatedTokens(account);
-
-    const currencyId = account ? hederaFn.hederaId(tokenAddress) : '';
-
-    const token = (tokens || []).find((token) => token.tokenId === currencyId);
-
-    return !!token;
-  });
-
-  return useMemo(() => {
-    return {
-      associate:
-        account && tokenAddress
-          ? async () => {
-              try {
-                setLoading(true);
-                const txReceipt = await hederaFn.tokenAssociate(tokenAddress, account);
-                if (txReceipt) {
-                  setLoading(false);
-                  refetch();
-
-                  addTransaction(txReceipt, { summary: `${token?.symbol} successfully  associated` });
-                }
-              } catch (error) {
-                setLoading(false);
-                console.error('Could not deposit', error);
-              }
-            }
-          : undefined,
-      isLoading: loading,
-      hederaAssociated: isAssociated,
-    };
-  }, [chainId, tokenAddress, account, loading, isLoading, isAssociated]);
-}
-
-export function useHederaAddressAssociated(address: string | undefined): {
-  associate: () => Promise<void>;
   isLoading: boolean;
   hederaAssociated: boolean;
 } {
@@ -505,25 +453,28 @@ export function useHederaAddressAssociated(address: string | undefined): {
     return !!token;
   });
 
-  const associate = async () => {
-    try {
-      if (!address || !account) return;
-      const txReceipt = await hederaFn.tokenAssociate(address, account);
-      if (txReceipt) {
-        refetch();
-        addTransaction(txReceipt, { summary: 'Pangolin SAR NFT successfully associated' });
-      }
-    } catch (error) {
-      setLoading(false);
-      console.error('Could not associate the Pangolin SAR NFT', error);
-    }
-  };
-
   return useMemo(() => {
     return {
-      associate: associate,
+      associate:
+        account && address
+          ? async () => {
+              try {
+                setLoading(true);
+                const txReceipt = await hederaFn.tokenAssociate(address, account);
+                if (txReceipt) {
+                  setLoading(false);
+                  refetch();
+
+                  addTransaction(txReceipt, { summary: `${symbol} successfully  associated` });
+                }
+              } catch (error) {
+                setLoading(false);
+                console.error('Could not deposit', error);
+              }
+            }
+          : undefined,
       isLoading: loading,
       hederaAssociated: isAssociated,
     };
-  }, [chainId, address, account, loading, isLoading, isAssociated, associate]);
+  }, [chainId, address, symbol, account, loading, isLoading, isAssociated]);
 }

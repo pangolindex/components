@@ -1,4 +1,3 @@
-import { getAddress } from '@ethersproject/address';
 import { Contract } from '@ethersproject/contracts';
 import MiniChefV2 from '@pangolindex/exchange-contracts/artifacts/contracts/mini-chef/MiniChefV2.sol/MiniChefV2.json';
 import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
@@ -16,7 +15,8 @@ import WETH_ABI from 'src/constants/abis/weth.json';
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from 'src/constants/multicall';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
-import { getContract, getProviderOrSigner } from 'src/utils';
+import { getContract } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -27,32 +27,6 @@ function useContract(address: string | undefined, ABI: any, withSignerIfPossible
     if (!address || address === ZERO_ADDRESS || !ABI || !library) return null;
     try {
       return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined);
-    } catch (error) {
-      console.error('Failed to get contract', error);
-      return null;
-    }
-  }, [address, ABI, library, withSignerIfPossible, account]);
-}
-
-/**
- * This function is used to return ethers contract instance without isAddress check because some address from Hedera is not valid Ethereum address
- * @param address address of contract
- * @param ABI ABI of contract
- * @param withSignerIfPossible whether to use signer (if it exists) to sign messages or not
- * @returns Return's Ethers Contract Instance
- */
-function useHederaContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
-  const { account } = usePangolinWeb3();
-  const { library } = useLibrary();
-
-  return useMemo(() => {
-    if (!address || address === ZERO_ADDRESS || !ABI || !library) return null;
-    try {
-      return new Contract(
-        address,
-        ABI,
-        getProviderOrSigner(library, withSignerIfPossible && account ? account : undefined) as any,
-      );
     } catch (error) {
       console.error('Failed to get contract', error);
       return null;
@@ -115,16 +89,10 @@ export function useSarNFTStakingContract() {
   const chainId = useChainId();
   const sarContractAddress = SAR_STAKING_ADDRESS[chainId];
 
-  let address: string | undefined = undefined;
-  if (sarContractAddress) {
-    // for hedera we need to add 1 to contract address to get the nft/token contract address, it happens because the nft/tokens have different contract
-    // eg. 0.0.49031363 is contract address it's only possible to call positions, rewardRate, etc...
-    // 0.0.49031364 is nft contract address it's only possible to call tokenURI, balanceOf, etc..., the available fuctions of ERC721 interface
-    const _address = (Number(sarContractAddress) + 1).toString(16);
-    // need to fill rest of address to get valid address
-    address = getAddress('0x' + new Array(41 - _address.length).join('0') + _address);
-  }
-  return useHederaContract(address, SarStaking, true);
+  const sarContractId = hederaFn.hederaId(sarContractAddress ?? '');
+  const nftTokenId = hederaFn.contractToTokenId(sarContractId);
+  const nftTokenAddress = hederaFn.idToAddress(nftTokenId);
+  return useContract(nftTokenAddress, SarStaking, true);
 }
 
 export function usePangoChefContract(): Contract | null {

@@ -1684,6 +1684,6 @@ export function useHederaPGLAssociated(
 ): ReturnType<typeof useHederaTokenAssociated> {
   // here we need to use fungible token so get pgltoken based currency
   const [pglToken] = useHederaPGLToken(currencyA, currencyB);
-  return useHederaTokenAssociated(pglToken);
+  return useHederaTokenAssociated(pglToken?.address, pglToken?.symbol);
 }
 /* eslint-enable max-lines */

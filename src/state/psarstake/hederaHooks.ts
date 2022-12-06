@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { BIGNUMBER_ZERO, ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useHederaAddressAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
+import { useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import { useHederaApproveCallback } from 'src/hooks/useApproveCallback';
@@ -94,48 +94,40 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
   };
 
   const {
-    associate: associatePNG,
-    hederaAssociated: isAssociatedPNG,
-    isLoading: isLoadingPNG,
-  } = useHederaTokenAssociated(PNG[chainId]);
-
-  const {
     associate: associate,
     hederaAssociated: isAssociated,
     isLoading: isLoading,
-  } = useHederaAddressAssociated(sarNftContract?.address);
+  } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
   const onStake = async () => {
-    if (!sarStakingContract || !parsedAmount || !account || isLoading || isLoadingPNG || !associatePNG) {
+    if (!sarStakingContract || !parsedAmount || !account || isLoading) {
       return;
     }
     setAttempting(true);
     try {
       let response: { hash: string } | null;
-      if (!isAssociatedPNG) {
-        await associatePNG();
-      }
 
-      if (!isAssociated) {
+      if (!isAssociated && !!associate) {
         await associate();
       }
 
-      if (!isAssociated || !isAssociatedPNG) return;
+      // double check
+      if (!isAssociated) return;
 
       if (!positionId) {
         response = await hederaFn.sarStake({
           methodName: 'mint',
-          amount: Number(parsedAmount.raw.toString()),
+          amount: parsedAmount.raw.toString(),
           chainId: chainId,
           account: account,
         });
       } else {
         response = await hederaFn.sarStake({
           methodName: 'stake',
-          amount: Number(parsedAmount.raw.toString()),
+          amount: parsedAmount.raw.toString(),
           chainId: chainId,
           account: account,
-          positionId: positionId.toNumber(),
+          positionId: positionId.toString(),
         });
       }
 
@@ -195,10 +187,7 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
       sarStakingContract,
       isLoading,
       isAssociated,
-      isLoadingPNG,
-      isAssociatedPNG,
       associate,
-      associatePNG,
       approveCallback,
       onUserInput,
       handleMax,
@@ -218,7 +207,7 @@ export function useHederaSarPositions() {
 
   useEffect(() => {
     const getNftsIndexes = async () => {
-      if (!sarStakingContract || !sarNFTcontract) return;
+      if (!sarStakingContract || !sarNFTcontract || !account) return;
 
       const balance: BigNumber = await sarNFTcontract.balanceOf(account);
 

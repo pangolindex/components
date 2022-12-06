@@ -212,9 +212,9 @@ export interface RemoveLiquidityData {
   chainId: ChainId;
 }
 
-export interface SarStake {
-  amount: number;
-  positionId?: number;
+export interface SarStakeData {
+  amount: string;
+  positionId?: string;
   methodName: 'mint' | 'stake';
   account: string;
   chainId: ChainId;
@@ -708,7 +708,7 @@ class Hedera {
     return hashConnect.sendTransaction(transaction, accountId);
   }
 
-  public async sarStake(stakeData: SarStake) {
+  public async sarStake(stakeData: SarStakeData) {
     const { positionId, amount, methodName, account, chainId } = stakeData;
 
     const accountId = account ? this.hederaId(account) : '';
@@ -724,15 +724,14 @@ class Hedera {
       //Set the gas for the contract call
       .setGas(maxGas);
 
-    if (methodName == 'mint') {
-      transaction
-        .setPayableAmount(new Hbar(4))
-        .setFunction(methodName, new ContractFunctionParameters().addUint256(amount));
+    if (methodName === 'mint') {
+      transaction.setFunction(methodName, new ContractFunctionParameters().addUint256(amount as any));
     }
-    if (!!positionId && methodName == 'stake') {
-      transaction
-        .setPayableAmount(new Hbar(4))
-        .setFunction(methodName, new ContractFunctionParameters().addUint256(positionId).addUint256(amount));
+    if (!!positionId && methodName === 'stake') {
+      transaction.setFunction(
+        methodName,
+        new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
+      );
     }
 
     return hashConnect.sendTransaction(transaction, accountId);
