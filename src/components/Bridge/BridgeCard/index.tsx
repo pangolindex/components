@@ -181,6 +181,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
         });
+        window.location.reload();
       } catch (error) {
         // This error code indicates that the chain has not been added to MetaMask.
         const metamask = error as MetamaskError;
@@ -199,6 +200,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
                 },
               ],
             });
+            window.location.reload();
           } catch (_error) {
             return;
           }
