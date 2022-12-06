@@ -352,7 +352,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           collapse={
             <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
               <Text fontSize={16} fontWeight={500} color={'bridge.text'}>
-                {t('bridge.bridgeCard.advanceOptions')}
+                {t('bridge.bridgeCard.advancedOptions')}
               </Text>
               <ChevronDown size={16} color={theme.bridge?.text} />
             </Box>
@@ -360,7 +360,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           expand={
             <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
               <Text fontSize={16} fontWeight={500} color={'bridge.text'}>
-                {t('bridge.bridgeCard.advanceOptions')}
+                {t('bridge.bridgeCard.advancedOptions')}
               </Text>
               <ChevronRight size={16} color={theme.bridge?.text} />
             </Box>
