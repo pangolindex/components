@@ -1,9 +1,10 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { JSBI, TokenAmount } from '@pangolindex/sdk';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BIGNUMBER_ZERO, ZERO_ADDRESS } from 'src/constants';
+import { useQuery } from 'react-query';
+import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useHederaTokenAssociated } from 'src/hooks/Tokens';
@@ -203,35 +204,25 @@ export function useHederaSarPositions() {
   const sarStakingContract = useSarStakingContract();
   const sarNFTcontract = useSarNFTStakingContract();
 
-  const [nftsIndexes, setNftsIndexes] = useState<string[][] | undefined>();
+  const { data, isLoading: isLoadingIndexes } = useQuery(
+    ['hedera-nft-index', account, sarNFTcontract?.address],
+    async () => {
+      const nfts = await hederaFn.getNftInfo(sarNFTcontract?.address ?? '', account ?? '');
+      const _nftsIndexes: (string | undefined)[][] = [];
+      const _nftURIs: (string | undefined)[] = [];
 
-  useEffect(() => {
-    const getNftsIndexes = async () => {
-      if (!sarStakingContract || !sarNFTcontract || !account) return;
-
-      const balance: BigNumber = await sarNFTcontract.balanceOf(account);
-
-      if (balance.isZero()) {
-        setNftsIndexes([] as string[][]);
-        return;
-      }
-
-      // get all positions ids
-      const indexes: BigNumber[] = await sarStakingContract.tokensOfOwnerByIndex(
-        account,
-        BIGNUMBER_ZERO.toHexString(),
-        balance.sub(1).toHexString(),
-      );
-
-      const _nftsIndexes = indexes?.map((index) => {
-        return [index.toHexString()];
+      nfts.forEach((nft) => {
+        _nftsIndexes.push([nft.serial_number.toString()]);
+        // the metadata from this endpoint is returned in encoded in base64
+        _nftURIs.push(Buffer.from(nft.metadata, 'base64').toString());
       });
 
-      setNftsIndexes(_nftsIndexes);
-    };
+      return { nftsIndexes: _nftsIndexes, nftsURIs: _nftURIs };
+    },
+  );
 
-    getNftsIndexes();
-  }, [sarStakingContract, sarNFTcontract]);
+  const nftsIndexes = data?.nftsIndexes;
+  const nftsURIs = data?.nftsURIs;
 
   // get the staked amount for each position
   const positionsAmountState = useSingleContractMultipleData(sarStakingContract, 'positions', nftsIndexes ?? []);
@@ -248,14 +239,7 @@ export function useHederaSarPositions() {
     nftsIndexes ?? [],
   );
 
-  //get all NFTs URIs from the positions
-  const nftsURIsState = useSingleContractMultipleData(sarNFTcontract, 'tokenURI', nftsIndexes ?? []);
-
   return useMemo(() => {
-    const isAllFetchedURI = nftsURIsState.every((result) => !result.loading);
-    const existErrorURI = nftsURIsState.some((result) => result.error);
-    const isValidURIs = nftsURIsState.every((result) => result.valid);
-
     const isAllFetchedAmount = positionsAmountState.every((result) => !result.loading);
     const existErrorAmount = positionsAmountState.some((result) => result.error);
     const isValidAmounts = positionsAmountState.every((result) => result.valid);
@@ -268,32 +252,31 @@ export function useHederaSarPositions() {
     const existErrorPendingReward = positionsPedingRewardsState.some((result) => result.error);
     const isValidPendingRewards = positionsPedingRewardsState.every((result) => result.valid);
 
-    const isLoading = !isAllFetchedURI || !isAllFetchedAmount || !isAllFetchedRewardRate || !isAllFetchedPendingReward;
+    const isLoading = !isAllFetchedAmount || !isAllFetchedRewardRate || !isAllFetchedPendingReward || isLoadingIndexes;
     // first moments loading is false and valid is false then is loading the query is true
-    const isValid = isValidURIs && isValidAmounts && isValidRewardRates && isValidPendingRewards;
+    const isValid = isValidAmounts && isValidRewardRates && isValidPendingRewards;
 
-    const error = existErrorURI || existErrorAmount || existErrorRewardRate || existErrorPendingReward;
+    const error = existErrorAmount || existErrorRewardRate || existErrorPendingReward;
 
     if (error || !account || !existSarContract(chainId) || (!!nftsIndexes && nftsIndexes.length === 0)) {
       return { positions: [] as Position[], isLoading: false };
     }
 
     // if is loading or exist error or not exist account return empty array
-    if (isLoading || !isValid || !nftsIndexes) {
+    if (isLoading || !isValid || !nftsIndexes || !nftsURIs) {
       return { positions: [] as Position[], isLoading: true };
     }
 
     // we need to decode the base64 uri to get the real uri
-    const nftsURIs = nftsURIsState.map((value) => {
-      if (value.result) {
-        const base64: string = value.result[0];
-        //need to remove the data:application/json;base64, to decode the base64
-        const nftUri = Buffer.from(base64.replace('data:application/json;base64,', ''), 'base64').toString();
-        return JSON.parse(nftUri) as URI;
+    const _nftsURIs = nftsURIs.map((uri) => {
+      if (!uri || uri.length === 0) {
+        return {} as URI;
       }
-      return {} as URI;
+      //need to remove the data:application/json;base64, to decode the base64
+      const nftUri = Buffer.from(uri.replace('data:application/json;base64,', ''), 'base64').toString();
+      return JSON.parse(nftUri) as URI;
     });
-    const positions: Position[] = nftsURIs.map((uri, index) => {
+    const positions: Position[] = _nftsURIs.map((uri, index) => {
       const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
         positionsAmountState[index].result?.valueVariables;
       const rewardRate = positionsRewardRateState[index].result?.[0];
@@ -322,5 +305,5 @@ export function useHederaSarPositions() {
     });
     // remove the empty positions
     return { positions: positions.filter((position) => !!position), isLoading: false };
-  }, [account, positionsAmountState, positionsRewardRateState, nftsURIsState, nftsIndexes]);
+  }, [account, positionsAmountState, positionsRewardRateState, nftsURIs, nftsIndexes, isLoadingIndexes]);
 }

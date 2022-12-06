@@ -94,7 +94,9 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
 
   const renderItems = () => {
     return currentItems.map((position, index) => {
-      const svg = Buffer.from(position?.uri.image.replace('data:image/svg+xml;base64,', ''), 'base64').toString(); // decode base64
+      const svg = position?.uri?.image
+        ? Buffer.from(position.uri.image.replace('data:image/svg+xml;base64,', ''), 'base64').toString()
+        : ''; // decode base64
       const isSelected = !!selectedPositonId && position?.id.eq(selectedPositonId);
       return (
         <Box

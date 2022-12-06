@@ -376,6 +376,26 @@ class Hedera {
     }
   }
 
+  public async getNftInfo(address: string | undefined, account: string | undefined) {
+    if (!address || !account) {
+      return [] as { metadata: string; serial_number: number }[];
+    }
+
+    const addressId = this.hederaId(address);
+    const accountId = this.hederaId(account);
+
+    try {
+      const response = await this.call({
+        url: `/api/v1/tokens/${addressId}/nfts?account.id=${accountId}`,
+        method: 'GET',
+      });
+      return response?.['nfts'] as { metadata: string; serial_number: number }[];
+    } catch (error) {
+      console.error('Error in fetch NFT info', error);
+      return [] as { metadata: string; serial_number: number }[];
+    }
+  }
+
   public tokenAssociate(tokenAddress: string, account: string) {
     const tokenId = this.hederaId(tokenAddress);
 
