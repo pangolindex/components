@@ -1,7 +1,8 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useQuery } from 'react-query';
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
@@ -12,7 +13,10 @@ import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
 import { useCoinGeckoCurrencyPrice, useTokens } from 'src/hooks/Tokens';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice, useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
+import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks';
 import { decimalToFraction } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { getExtraTokensWeeklyRewardRate } from '../pstake/hooks';
 import { PangoChefInfo, Pool, PoolType, RewardSummations, UserInfo, ValueVariables } from './types';
@@ -26,6 +30,7 @@ export function usePangoChefInfos() {
 
   // get the length of pools
   const poolLenght: BigNumber | undefined = useSingleCallResult(pangoChefContract, 'poolsLength').result?.[0];
+
   // create array with length of pools
   const allPoolsIds = new Array(Number(poolLenght ? poolLenght.toString() : 0))
     .fill(0)
@@ -380,6 +385,395 @@ export function usePangoChefInfos() {
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+export function useHederaPangoChefInfos() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const pangoChefContract = usePangoChefContract();
+
+  const png = PNG[chainId];
+
+  const [shouldCreateStorage] = useHederaPangochefContractCreateCallback();
+
+  // get the length of pools
+  const poolLength: BigNumber | undefined = useSingleCallResult(pangoChefContract, 'poolsLength').result?.[0];
+
+  // create array with length of pools
+  const allPoolsIds = new Array(Number(poolLength ? poolLength.toString() : 0))
+    .fill(0)
+    .map((_, index) => [index.toString()]);
+
+  const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', allPoolsIds);
+
+  // format the data to Pool type
+  const [pools, poolsIds] = useMemo(() => {
+    const _pools: Pool[] = [];
+    const _poolsIds: string[][] = [];
+
+    for (let i = 0; i < poolsState.length; i++) {
+      const result = poolsState[i]?.result;
+      if (!result) {
+        continue;
+      }
+
+      const tokenOrRecipient = result.tokenOrRecipient;
+      const poolType = result.poolType as PoolType;
+      const rewarder = result.rewarder;
+      const rewardPair = result.rewardPair;
+      const valueVariables = result.valueVariables as ValueVariables;
+      const rewardSummations = result.rewardSummationsStored as RewardSummations;
+
+      if (!tokenOrRecipient || !poolType || !rewarder || !rewardPair || !valueVariables || !rewardSummations) {
+        continue;
+      }
+
+      // remove not erc20 pool and remove this pool from poolsIds
+      if (poolType !== PoolType.ERC20_POOL) {
+        continue;
+      }
+
+      _pools.push({
+        tokenOrRecipient: tokenOrRecipient,
+        poolType: poolType,
+        rewarder: rewarder,
+        rewardPair: rewardPair,
+        valueVariables: {
+          balance: valueVariables?.balance,
+          sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
+        } as ValueVariables,
+        rewardSummations: rewardSummations,
+      } as Pool);
+
+      _poolsIds.push([i.toString()]);
+    }
+
+    return [_pools, _poolsIds];
+  }, [poolsState]);
+
+  // get reward rates for each pool
+  const poolsRewardsRateState = useSingleContractMultipleData(pangoChefContract, 'poolRewardRate', poolsIds);
+
+  // get the address of the rewarder for each pool
+  const rewardsAddresses = useMemo(() => {
+    if ((pools || []).length === 0) return [];
+    return pools.map((pool) => {
+      if (!!pool?.rewarder && pool?.rewarder !== ZERO_ADDRESS) {
+        return pool.rewarder;
+      }
+      return undefined;
+    });
+  }, [pools]);
+
+  const rewardsTokensState = useMultipleContractSingleData(
+    rewardsAddresses,
+    REWARDER_VIA_MULTIPLIER_INTERFACE,
+    'getRewardTokens',
+    [],
+  );
+
+  const rewardsMultipliersState = useMultipleContractSingleData(
+    rewardsAddresses,
+    REWARDER_VIA_MULTIPLIER_INTERFACE,
+    'getRewardMultipliers',
+    [],
+  );
+
+  // get the address of lp tokens for each pool
+  const lpTokens = useMemo(() => {
+    if ((pools || []).length === 0) return [];
+    return pools.map((pool) => pool?.tokenOrRecipient);
+  }, [pools]);
+
+  const pglTokenEvmAddresses = useHederaPairContractEVMAddresses(lpTokens);
+
+  // get the tokens for each pool
+  const tokens0State = useMultipleContractSingleData(pglTokenEvmAddresses, PANGOLIN_PAIR_INTERFACE, 'token0', []);
+  const tokens1State = useMultipleContractSingleData(pglTokenEvmAddresses, PANGOLIN_PAIR_INTERFACE, 'token1', []);
+
+  const tokens0Adrr = useMemo(() => {
+    return tokens0State.map((result) => (result?.result && result?.result?.length > 0 ? result?.result[0] : null));
+  }, [tokens0State]);
+
+  const tokens1Adrr = useMemo(() => {
+    return tokens1State.map((result) => (result?.result && result?.result?.length > 0 ? result?.result[0] : null));
+  }, [tokens1State]);
+
+  const tokens0 = useTokens(tokens0Adrr);
+  const tokens1 = useTokens(tokens1Adrr);
+
+  const tokensPairs = useMemo(() => {
+    if (tokens0 && tokens1 && tokens0?.length === tokens1?.length) {
+      const tokens: [Token | undefined, Token | undefined][] = [];
+      tokens0.forEach((token0, index) => {
+        const token1 = tokens1[index];
+        if (token0 && token1) {
+          tokens.push([token0, token1]);
+        }
+      });
+      return tokens;
+    }
+    return [] as [Token | undefined, Token | undefined][];
+  }, [tokens0, tokens1]);
+
+  // get the pairs for each pool
+  const pairs = usePairs(tokensPairs);
+
+  const pairAddresses = useMemo(() => {
+    return pairs.map(([, pair]) => pair?.liquidityToken?.address);
+  }, [pairs]);
+
+  const pglTokenAddresses = useHederaPGLTokenAddresses(pairAddresses);
+
+  const allPglTokenAddress = useMemo(() => Object.values(pglTokenAddresses ?? {}), [pglTokenAddresses]);
+
+  const pairTotalSuppliesState = useMultipleContractSingleData(allPglTokenAddress, ERC20_INTERFACE, 'totalSupply');
+
+  const userInfoInput = useMemo(() => {
+    if (poolsIds.length === 0 || !account) return [];
+    return poolsIds.map((pid) => [pid[0], account]);
+  }, [poolsIds, account]); // [[pid, account], ...] [[0, account], [1, account], [2, account] ...]
+
+  const userInfosState = useSingleContractMultipleData(
+    pangoChefContract,
+    'getUser',
+    !shouldCreateStorage && userInfoInput ? userInfoInput : [],
+  );
+
+  // format the data to UserInfo type
+  const userInfos = useMemo(() => {
+    return userInfosState.map((callState) => {
+      const result = callState?.result?.[0];
+      if (!result || callState.loading) {
+        return {
+          valueVariables: {
+            balance: BigNumber.from(0),
+            sumOfEntryTimes: BigNumber.from(0),
+          },
+          isLockingPoolZero: false,
+        } as UserInfo;
+      }
+
+      const valueVariables = result.valueVariables as ValueVariables;
+      const rewardSummations = result.rewardSummationsPaid as RewardSummations;
+      const previousValues = result.previousValues;
+      const isLockingPoolZero = result.isLockingPoolZero ?? false;
+
+      if (!valueVariables || !rewardSummations || !previousValues) {
+        return {
+          valueVariables: {
+            balance: BigNumber.from(0),
+            sumOfEntryTimes: BigNumber.from(0),
+          },
+          isLockingPoolZero: false,
+        } as UserInfo;
+      }
+
+      return {
+        valueVariables: {
+          balance: valueVariables?.balance,
+          sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
+        } as ValueVariables,
+        rewardSummations: rewardSummations,
+        previousValues: previousValues,
+        isLockingPoolZero: isLockingPoolZero,
+      } as UserInfo;
+    });
+  }, [userInfosState]);
+
+  // get the user pending rewards for each pool
+  const userPendingRewardsState = useSingleContractMultipleData(
+    pangoChefContract,
+    'userPendingRewards',
+    !shouldCreateStorage && userInfoInput ? userInfoInput : [],
+  );
+
+  const userRewardRatesState = useSingleContractMultipleData(
+    pangoChefContract,
+    'userRewardRate',
+    !shouldCreateStorage && userInfoInput ? userInfoInput : [],
+  );
+
+  const wavax = WAVAX[chainId];
+  const [avaxPngPairState, avaxPngPair] = usePair(wavax, png);
+
+  const pairsToGetPrice = useMemo(() => {
+    const _pairs: { pair: Pair; totalSupply: TokenAmount }[] = [];
+    pairs.forEach(([, pair], index) => {
+      const pairTotalSupplyState = pairTotalSuppliesState[index];
+      if (pair && pairTotalSupplyState?.result) {
+        _pairs.push({
+          pair: pair,
+          totalSupply: new TokenAmount(pair?.liquidityToken, JSBI.BigInt(pairTotalSupplyState?.result?.[0] ?? 0)),
+        });
+      }
+    });
+    return _pairs;
+  }, [pairs, pairTotalSuppliesState]);
+
+  const pairPrices = usePairsCurrencyPrice(pairsToGetPrice);
+
+  const { data: currencyPrice = 0 } = useCoinGeckoCurrencyPrice(chainId);
+
+  return useMemo(() => {
+    if (!chainId || !png || pairs.length == 0) return [] as PangoChefInfo[];
+
+    const farms: PangoChefInfo[] = [];
+    for (let index = 0; index < poolsIds.length; index++) {
+      const poolState = poolsState[index];
+      const poolRewardRateState = poolsRewardsRateState[index];
+      const userInfoState = userInfosState[index];
+      const token0State = tokens0State[index];
+      const token1State = tokens1State[index];
+      const rewardTokensState = rewardsTokensState[index];
+      const rewardMultipliersState = rewardsMultipliersState[index];
+      const userPendingRewardState = userPendingRewardsState[index];
+      const pairTotalSupplyState = pairTotalSuppliesState[index];
+      const userRewardRateState = userRewardRatesState[index];
+      const [pairState, pair] = pairs[index];
+
+      // if is loading or not exist pair continue
+      if (
+        poolState?.loading ||
+        poolRewardRateState?.loading ||
+        userInfoState?.loading ||
+        token0State?.loading ||
+        token1State?.loading ||
+        rewardTokensState?.loading ||
+        rewardMultipliersState.loading ||
+        userPendingRewardState?.loading ||
+        userRewardRateState?.loading ||
+        pairTotalSupplyState?.loading ||
+        pairState === PairState.LOADING ||
+        avaxPngPairState == PairState.LOADING ||
+        !pair ||
+        !avaxPngPair
+      ) {
+        continue;
+      }
+
+      const pid = poolsIds[index][0];
+      const pool = pools[index];
+
+      const rewardRate: BigNumber = poolRewardRateState?.result?.[0] ?? BigNumber.from(0);
+      const totalStakedAmount = new TokenAmount(
+        pair?.liquidityToken,
+        JSBI.BigInt(pool?.valueVariables?.balance?.toString() ?? 0),
+      );
+
+      const userInfo = userInfos[index];
+      const userTotalStakedAmount = new TokenAmount(
+        pair?.liquidityToken,
+        JSBI.BigInt(userInfo?.valueVariables?.balance ?? 0),
+      );
+
+      const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
+
+      const pairPrice = pairPrices[pair?.liquidityToken?.address];
+      const pngPrice = avaxPngPair.priceOf(png, wavax);
+
+      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? 0;
+      const currencyPriceFraction = decimalToFraction(currencyPrice);
+
+      // calculate the total staked amount in usd
+      const totalStakedInUsd = new TokenAmount(
+        USDC[chainId],
+        currencyPriceFraction.multiply(_totalStakedInWavax).toFixed(0),
+      );
+      const totalStakedInWavax = new TokenAmount(wavax, _totalStakedInWavax.toFixed(0));
+
+      const getHypotheticalWeeklyRewardRate = (
+        _stakedAmount: TokenAmount,
+        _totalStakedAmount: TokenAmount,
+        _totalRewardRatePerSecond: TokenAmount,
+      ): TokenAmount => {
+        return new TokenAmount(
+          png,
+          JSBI.greaterThan(_totalStakedAmount?.raw, JSBI.BigInt(0))
+            ? JSBI.divide(
+                JSBI.multiply(
+                  JSBI.multiply(_totalRewardRatePerSecond?.raw, _stakedAmount?.raw),
+                  BIG_INT_SECONDS_IN_WEEK,
+                ),
+                _totalStakedAmount?.raw,
+              )
+            : JSBI.BigInt(0),
+        );
+      };
+
+      // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
+      const apr =
+        pool.valueVariables.balance.isZero() || pairPrice.equalTo('0')
+          ? 0
+          : Number(
+              pngPrice.raw
+                .multiply(rewardRate.mul(365 * 86400 * 100).toString())
+                .divide(pairPrice?.raw.multiply(pool.valueVariables.balance.toString()))
+                .toSignificant(2),
+            );
+
+      const totalRewardRatePerSecond = new TokenAmount(png, rewardRate.toString());
+      const totalRewardRatePerWeek = new TokenAmount(
+        png,
+        JSBI.multiply(totalRewardRatePerSecond?.raw, BIG_INT_SECONDS_IN_WEEK),
+      );
+
+      const userRewardRatePerWeek = getHypotheticalWeeklyRewardRate(
+        userTotalStakedAmount,
+        totalStakedAmount,
+        totalRewardRatePerSecond,
+      );
+
+      const rewardMultipliers: JSBI[] = rewardMultipliersState?.result?.[0].map((value: BigNumber) => {
+        return JSBI.BigInt(value.toString());
+      });
+
+      farms.push({
+        pid: pid,
+        tokens: [pair.token0, pair.token1],
+        stakingRewardAddress: pangoChefContract?.address,
+        totalStakedAmount: totalStakedAmount,
+        totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
+        totalStakedInWavax: totalStakedInWavax,
+        multiplier: BIG_INT_ZERO,
+        stakedAmount: userTotalStakedAmount,
+        isPeriodFinished: rewardRate.isZero(),
+        periodFinish: undefined,
+        rewardsAddress: pool.rewarder,
+        rewardTokensAddress: [png.address, ...(rewardTokensState?.result?.[0] || [])],
+        rewardTokensMultiplier: rewardMultipliers,
+        totalRewardRatePerSecond: totalRewardRatePerSecond,
+        totalRewardRatePerWeek: totalRewardRatePerWeek,
+        rewardRatePerWeek: userRewardRatePerWeek,
+        getHypotheticalWeeklyRewardRate: getHypotheticalWeeklyRewardRate,
+        getExtraTokensWeeklyRewardRate: getExtraTokensWeeklyRewardRate,
+        earnedAmount: pendingRewards,
+        valueVariables: pool.valueVariables,
+        userValueVariables: userInfo?.valueVariables,
+        isLockingPoolZero: userInfo?.isLockingPoolZero,
+        userRewardRate: userRewardRateState?.result?.[0] ?? BigNumber.from(0),
+        stakingApr: apr,
+        pairPrice: pairPrice,
+        poolType: pool.poolType,
+        poolRewardRate: rewardRate,
+      } as PangoChefInfo);
+    }
+
+    return farms;
+  }, [
+    poolsIds,
+    poolsState,
+    poolsRewardsRateState,
+    userInfosState,
+    tokens0State,
+    tokens1State,
+    rewardsTokensState,
+    pairTotalSuppliesState,
+    userPendingRewardsState,
+    pairs,
+  ]);
+  // return [] as PangoChefInfo[];
+}
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export function useDummyPangoChefInfos() {
   return [] as PangoChefInfo[];
 }
@@ -390,11 +784,11 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
   return useMemo(() => {
     if (!stakingInfo) return '0';
 
-    const userBalance = stakingInfo?.userValueVariables.balance;
-    const userSumOfEntryTimes = stakingInfo?.userValueVariables.sumOfEntryTimes;
+    const userBalance = stakingInfo?.userValueVariables?.balance || BigNumber.from(0);
+    const userSumOfEntryTimes = stakingInfo?.userValueVariables?.sumOfEntryTimes;
 
-    const poolBalance = stakingInfo?.valueVariables.balance;
-    const poolSumOfEntryTimes = stakingInfo?.valueVariables.sumOfEntryTimes;
+    const poolBalance = stakingInfo?.valueVariables?.balance;
+    const poolSumOfEntryTimes = stakingInfo?.valueVariables?.sumOfEntryTimes;
 
     if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return '0';
     const blockTimestamp = BigNumber.from(blockTime.toString());
@@ -406,7 +800,7 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
     const d = blockTimestamp.sub(b);
     return c.lte(0) || d.lte(0)
       ? '0'
-      : BigNumber.from(Math.floor(stakingInfo.stakingApr ?? 0))
+      : BigNumber.from(Math.floor(stakingInfo?.stakingApr ?? 0))
           .mul(c)
           .div(d)
           .toString();
@@ -455,6 +849,64 @@ export function useIsLockingPoolZero() {
   return pairs;
 }
 
+/**
+ * this hook is useful to check whether user has created pangochef storage contract or not
+ * if not then using this hook we can create user's storage contract
+ * @returns [boolean, function_to_create]
+ */
+export function useHederaPangochefContractCreateCallback(): [boolean, () => Promise<void>] {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const pangoChefContract = usePangoChefContract();
+  const addTransaction = useTransactionAdder();
+
+  const { data: userStorageAddress, refetch } = useQuery(
+    ['hedera-pangochef-user-storage', account],
+    async (): Promise<string> => {
+      try {
+        const response = await pangoChefContract?.getUserStorageContract(account);
+        return response as string;
+      } catch (error) {
+        return '';
+      }
+    },
+    { enabled: Boolean(pangoChefContract) && Boolean(account) && hederaFn.isHederaChain(chainId) },
+  );
+
+  const shouldCreateStorage = userStorageAddress ? false : true;
+
+  const create = useCallback(async (): Promise<void> => {
+    if (!account) {
+      console.error('no account');
+      return;
+    }
+
+    try {
+      const response = await hederaFn.createPangoChefUserStorageContract(chainId, account);
+
+      if (response) {
+        refetch();
+        addTransaction(response, {
+          summary: 'Created Pangochef User Storage Contract',
+        });
+      }
+    } catch (error) {
+      console.debug('Failed to create pangochef contract', error);
+    }
+  }, [account, chainId, addTransaction]);
+
+  if (!hederaFn.isHederaChain(chainId)) {
+    return [
+      false,
+      () => {
+        return Promise.resolve();
+      },
+    ];
+  }
+
+  return [shouldCreateStorage, create];
+}
+/* eslint-enable max-lines */
 /**
  * This hook returns the extra value provided by super farm extra reward tokens
  * @param rewardTokens array os tokens

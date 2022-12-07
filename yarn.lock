@@ -3733,7 +3733,7 @@
     tweetnacl "^1.0.3"
     utf8 "^3.0.0"
 
-"@hashgraph/hethers@^1.2.2":
+"@hashgraph/hethers@1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@hashgraph/hethers/-/hethers-1.2.2.tgz#9ea6bf64946f023220e1d312f043ffa9efcac906"
   integrity sha512-nQkYYJ35xUJSAVv/80lj3zA1YhjQIklVj3sZeC/RYHt+k8vhJsKx+NJQEd0LXMUWLk07+r8cvMPcVIUvPieHIg==
@@ -3762,14 +3762,14 @@
     long "^4.0.0"
     protobufjs "^6.11.3"
 
-"@hashgraph/sdk@^2.14.2":
-  version "2.18.0"
-  resolved "https://registry.yarnpkg.com/@hashgraph/sdk/-/sdk-2.18.0.tgz#868f14eefa60f2841a32b79144eef73b6f4c0225"
-  integrity sha512-+ycMaHKk9HWdhMSuw5BCo450FT9CCpjIwbWpw2lpJ+QKeifORzM1wc70nAm27FkING8/azC4/FL7CLf1DelgTA==
+"@hashgraph/sdk@2.18.1", "@hashgraph/sdk@^2.17.1":
+  version "2.18.1"
+  resolved "https://registry.yarnpkg.com/@hashgraph/sdk/-/sdk-2.18.1.tgz#26daf0d3ed73d6caf63b721454227420a99a2217"
+  integrity sha512-9eZ8jLT+fVa9hxGxL+2N5QHbLtTS8Dj3Ed+ls6gu7BHlvBOj1nKKw4v90J3oLDc6aD2tqTX5+NnOfN0F13LkEw==
   dependencies:
     "@ethersproject/rlp" "^5.6.1"
     "@grpc/grpc-js" "^1.6.7"
-    "@hashgraph/cryptography" "^1.4.0"
+    "@hashgraph/cryptography" "^1.4.1"
     "@hashgraph/proto" "2.9.0"
     axios "^0.27.2"
     bignumber.js "^9.0.2"
@@ -3780,14 +3780,14 @@
     protobufjs "^6.11.3"
     utf8 "^3.0.0"
 
-"@hashgraph/sdk@^2.17.1", "@hashgraph/sdk@^2.18.1":
-  version "2.18.1"
-  resolved "https://registry.yarnpkg.com/@hashgraph/sdk/-/sdk-2.18.1.tgz#26daf0d3ed73d6caf63b721454227420a99a2217"
-  integrity sha512-9eZ8jLT+fVa9hxGxL+2N5QHbLtTS8Dj3Ed+ls6gu7BHlvBOj1nKKw4v90J3oLDc6aD2tqTX5+NnOfN0F13LkEw==
+"@hashgraph/sdk@^2.14.2":
+  version "2.18.0"
+  resolved "https://registry.yarnpkg.com/@hashgraph/sdk/-/sdk-2.18.0.tgz#868f14eefa60f2841a32b79144eef73b6f4c0225"
+  integrity sha512-+ycMaHKk9HWdhMSuw5BCo450FT9CCpjIwbWpw2lpJ+QKeifORzM1wc70nAm27FkING8/azC4/FL7CLf1DelgTA==
   dependencies:
     "@ethersproject/rlp" "^5.6.1"
     "@grpc/grpc-js" "^1.6.7"
-    "@hashgraph/cryptography" "^1.4.1"
+    "@hashgraph/cryptography" "^1.4.0"
     "@hashgraph/proto" "2.9.0"
     axios "^0.27.2"
     bignumber.js "^9.0.2"
@@ -4550,10 +4550,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@pangolindex/sdk@4.0.0-rc.0":
-  version "4.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-4.0.0-rc.0.tgz#90ce8e0ac9809d4f2101d8f0dc8f80441e38aca2"
-  integrity sha512-XUb7Yj3im7eHTXTthTVakxIcLI+MZun37Wvl9oUIpqWj3W9ecHDk8Bw/1LB8qbceZ+A2/nv+gMVEgExjAtGr9g==
+"@pangolindex/sdk@4.0.0-rc.1":
+  version "4.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-4.0.0-rc.1.tgz#80edcc022551900e44660d1e8bbcc8f4cab5bfab"
+  integrity sha512-oWElTAp54HM+FqU1ab9G7SDUnnptqo/K6NBKaMAzYRsE6kuZMOq6q0nOrYGVWSfYPROcxLdM/+kLqY3jKAcLPA==
   dependencies:
     big.js "^5.2.2"
     decimal.js-light "^2.5.0"

@@ -24,8 +24,8 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
   const chainId = useChainId();
 
   const totalStakedInUsd = CHAINS[chainId]?.mainnet
-    ? numeral(stakingInfo.totalStakedInUsd.toSignificant(4)).format('$0.00a')
-    : numeral(stakingInfo.totalStakedInUsd).format('$0.00a');
+    ? numeral(stakingInfo?.totalStakedInUsd.toSignificant(4)).format('$0.00a')
+    : numeral(stakingInfo?.totalStakedInUsd).format('$0.00a');
 
   const yourStakeInUsd = CHAINS[chainId]?.mainnet
     ? stakingInfo?.totalStakedInUsd.multiply(stakingInfo?.stakedAmount).divide(stakingInfo?.totalStakedAmount)
@@ -36,7 +36,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
   const pair = stakingTokenPair;
   const { userPgl, liquidityInUSD } = useGetPoolDollerWorth(pair);
 
-  const isStaking = Boolean(stakingInfo.stakedAmount.greaterThan('0'));
+  const isStaking = Boolean(stakingInfo?.stakedAmount.greaterThan('0'));
 
   // if pair is available then taking tokens from pair otherwise display tokens from staking info
   // we are taking token from pair because sometime order of tokens is different
