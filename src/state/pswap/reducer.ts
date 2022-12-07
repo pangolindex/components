@@ -64,6 +64,22 @@ const initialState: SwapState = {
   [ChainId.HEDERA_TESTNET]: initialValue,
   [ChainId.NEAR_MAINNET]: initialValue,
   [ChainId.NEAR_TESTNET]: initialValue,
+  // TODO:
+  [ChainId.ETHEREUM]: initialValue,
+  [ChainId.POLYGON]: initialValue,
+  [ChainId.FANTOM]: initialValue,
+  [ChainId.XDAI]: initialValue,
+  [ChainId.BSC]: initialValue,
+  [ChainId.ARBITRUM]: initialValue,
+  [ChainId.CELO]: initialValue,
+  [ChainId.OKXCHAIN]: initialValue,
+  [ChainId.VELAS]: initialValue,
+  [ChainId.AURORA]: initialValue,
+  [ChainId.CRONOS]: initialValue,
+  [ChainId.FUSE]: initialValue,
+  [ChainId.MOONRIVER]: initialValue,
+  [ChainId.MOONBEAM]: initialValue,
+  [ChainId.OP]: initialValue,
 };
 
 export default createReducer<SwapState>(initialState, (builder) =>

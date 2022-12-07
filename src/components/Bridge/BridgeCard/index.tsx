@@ -158,6 +158,55 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
     }
   }, [activeBridges, chainHook?.[LIFIBridge.id]]);
 
+  const provider = useMemo(() => {
+    if (window.xfi && window.xfi.ethereum) {
+      return window.xfi.ethereum;
+    } else if (window.bitkeep && window.isBitKeep) {
+      return window.bitkeep.ethereum;
+    }
+    return window.ethereum;
+  }, undefined);
+
+  const { ethereum } = window;
+  interface MetamaskError {
+    code: number;
+    message: string;
+  }
+
+  const changeChain = async () => {
+    const chain = fromChain;
+    if (ethereum && chain) {
+      try {
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
+        });
+      } catch (error) {
+        // This error code indicates that the chain has not been added to MetaMask.
+        const metamask = error as MetamaskError;
+        if (metamask.code === 4902) {
+          try {
+            await provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainName: chain.name,
+                  chainId: `0x${chain?.chain_id?.toString(16)}`,
+                  rpcUrls: [chain.rpc_uri],
+                  blockExplorerUrls: chain.blockExplorerUrls,
+                  iconUrls: chain.logo,
+                  nativeCurrency: chain.nativeCurrency,
+                },
+              ],
+            });
+          } catch (_error) {
+            return;
+          }
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     if (debouncedAmountValue) {
       onChangeRouteLoaderStatus();
@@ -282,6 +331,10 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           <Button variant="primary" onClick={toggleWalletModal}>
             Connect Wallet
           </Button>
+        ) : sdkChainId !== fromChain?.chain_id ? (
+          <Button variant="primary" onClick={changeChain} isDisabled={!fromChain}>
+            {fromChain ? 'Switch Chain' : 'Please Select Chain'}
+          </Button>
         ) : (
           <Button
             variant="primary"
@@ -299,7 +352,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           collapse={
             <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
               <Text fontSize={16} fontWeight={500} color={'bridge.text'}>
-                {t('bridge.bridgeCard.advanceOptions')}
+                {t('bridge.bridgeCard.advancedOptions')}
               </Text>
               <ChevronDown size={16} color={theme.bridge?.text} />
             </Box>
@@ -307,7 +360,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           expand={
             <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
               <Text fontSize={16} fontWeight={500} color={'bridge.text'}>
-                {t('bridge.bridgeCard.advanceOptions')}
+                {t('bridge.bridgeCard.advancedOptions')}
               </Text>
               <ChevronRight size={16} color={theme.bridge?.text} />
             </Box>

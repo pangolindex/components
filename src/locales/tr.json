@@ -716,7 +716,7 @@
     "activeTransfers": "Aktif Transferler ({{ number }})",
     "historicalTransfers": "Geçmiş Transferler ({{ number }})",
     "bridgeCard": {
-      "advanceOptions": "Gelişmiş Seçenekler",
+      "advancedOptions": "Gelişmiş Seçenekler",
       "title": "Cross Chain",
       "swap": "Swap",
       "transactionSucceeded": "Transaction Succeeded.",
