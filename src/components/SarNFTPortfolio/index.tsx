@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePangolinWeb3 } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Position, useSarPositions } from 'src/state/psarstake/hooks';
+import { useSarPositionsHook } from 'src/state/psarstake/multiChainsHooks';
+import { Position } from 'src/state/psarstake/types';
 import { scrollElementIntoView } from 'src/utils';
 import { Box } from '../Box';
 import { Button } from '../Button';
@@ -17,6 +18,9 @@ interface Props {
 
 export default function SarNFTPortfolio({ onSelectPosition }: Props) {
   const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+
+  const useSarPositions = useSarPositionsHook[chainId];
   const { positions, isLoading } = useSarPositions();
 
   // sort by balance

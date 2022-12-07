@@ -4,13 +4,13 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ZERO_ADDRESS } from 'src/constants';
+import { BIGNUMBER_ZERO, ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import { useApproveCallback } from 'src/hooks/useApproveCallback';
 import { useSarStakingContract } from 'src/hooks/useContract';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
@@ -18,25 +18,7 @@ import { useDerivedStakeInfo } from '../pstake/hooks';
 import { tryParseAmount } from '../pswap/hooks';
 import { useTransactionAdder } from '../ptransactions/hooks';
 import { useTokenBalance } from '../pwallet/hooks';
-
-const ZERO = BigNumber.from('0');
-export interface URI {
-  name: string;
-  description: string;
-  external_url: string;
-  attributes: any[];
-  image: string;
-}
-
-export interface Position {
-  id: BigNumber;
-  balance: BigNumber;
-  sumOfEntryTimes: BigNumber;
-  apr: BigNumber;
-  rewardRate: BigNumber;
-  pendingRewards: BigNumber;
-  uri: URI;
-}
+import { Position, URI } from './types';
 
 // Return the info of the sar stake
 export function useSarStakeInfo() {
@@ -54,15 +36,19 @@ export function useSarStakeInfo() {
         : null;
     const totalStaked = new TokenAmount(png, totalValueVariables ? totalValueVariables?.balance.toString() : '0');
 
-    const weeklyPNG = !!rewardRate ? rewardRate.mul(86400).mul(7) : ZERO;
+    const weeklyPNG = !!rewardRate ? rewardRate.mul(86400).mul(7) : BIGNUMBER_ZERO;
 
-    const sumOfEntryTimes: BigNumber = totalValueVariables ? totalValueVariables?.sumOfEntryTimes : ZERO;
+    const sumOfEntryTimes: BigNumber = totalValueVariables ? totalValueVariables?.sumOfEntryTimes : BIGNUMBER_ZERO;
 
-    return { apr, totalStaked, sumOfEntryTimes, rewardRate: rewardRate ?? ZERO, weeklyPNG };
+    return { apr, totalStaked, sumOfEntryTimes, rewardRate: rewardRate ?? BIGNUMBER_ZERO, weeklyPNG };
   }, [rewardRate, totalValueVariables]);
 }
 
-// Return some utils functions for stake more or create a new Position
+/**
+ *
+ * @param positionId Id of a Position
+ * @returns Return some utils functions for stake more or create a new Position
+ */
 export function useDerivativeSarStake(positionId?: BigNumber) {
   const [attempting, setAttempting] = useState(false);
   const [hash, setHash] = useState<string | null>(null);
@@ -85,6 +71,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   // used for max input button
   const maxAmountInput = maxAmountSpend(chainId, userPngBalance);
 
+  const useUSDCPrice = useUSDCPriceHook[chainId];
   const usdcPrice = useUSDCPrice(png);
   const dollerWorth =
     userPngBalance?.greaterThan('0') && usdcPrice ? Number(typedValue) * Number(usdcPrice.toFixed()) : undefined;
@@ -143,7 +130,10 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
           gasLimit: calculateGasMargin(estimatedGas),
         });
       } else {
-        const estimatedGas = await sarStakingContract.estimateGas.mint(`0x${parsedAmount.raw.toString(16)}`);
+        const estimatedGas = await sarStakingContract.estimateGas.stake(
+          positionId.toHexString(),
+          `0x${parsedAmount.raw.toString(16)}`,
+        );
         // adding more png to an existing position
         response = await sarStakingContract.stake(positionId.toHexString(), `0x${parsedAmount.raw.toString(16)}`, {
           gasLimit: calculateGasMargin(estimatedGas),
@@ -160,7 +150,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
       });
     } catch (err) {
       // we only care if the error is something _other_ than the user rejected the tx
-      const _err = error as any;
+      const _err = err as any;
       if (_err?.code !== 4001) {
         console.error(_err);
         setStakeError(_err?.message);
@@ -496,7 +486,7 @@ export function useSarPositions() {
       // get all positions ids
       const indexes: BigNumber[] = await sarStakingContract.tokensOfOwnerByIndex(
         account,
-        ZERO.toHexString(),
+        BIGNUMBER_ZERO.toHexString(),
         balance.sub(1).toHexString(),
       );
 

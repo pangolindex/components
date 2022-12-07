@@ -5,7 +5,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, CurrencyLogo, Text, Tooltip } from 'src/components';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { Position } from 'src/state/psarstake/hooks';
+import { Position } from 'src/state/psarstake/types';
 import Title from '../Title';
 import { Options } from '../types';
 
