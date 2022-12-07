@@ -849,6 +849,11 @@ export function useIsLockingPoolZero() {
   return pairs;
 }
 
+/**
+ * this hook is useful to check whether user has created pangochef storage contract or not
+ * if not then using this hook we can create user's storage contract
+ * @returns [boolean, function_to_create]
+ */
 export function useHederaPangochefContractCreateCallback(): [boolean, () => Promise<void>] {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();

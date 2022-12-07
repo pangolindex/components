@@ -1688,10 +1688,10 @@ export function useHederaPGLAssociated(
 }
 
 /**
- * This hook used to get pgl Token evm address (Fungible Token address) based on lpTokenAddress
- * Takes lpTokenAddress as a input and return pgl evm token address
- * @param lpTokenAddress
- * @returns [pair lptoken evm address]
+ * This hook used to get pair contract address for given lpTokenAddress ( Fungible token address )
+ * Takes lpTokenAddress as a input and return pair contract address
+ * @param lpTokenAddress string[]
+ * @returns [pair contract address]
  */
 
 export const useHederaPairContractEVMAddresses = (lpTokenAddress?: string[]): string[] => {
