@@ -235,7 +235,7 @@ export const useMinichefPools = (): { [key: string]: number } => {
 export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-
+  const useTokens = useTokensHook[chainId];
   const rewardData = useRef(
     {} as {
       rewardTokensAmount: TokenAmount[];

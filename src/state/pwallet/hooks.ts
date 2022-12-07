@@ -1558,7 +1558,7 @@ export const fetchHederaPGLToken = (pairToken: Token | undefined, chainId: Chain
 
     const tokenAddress = pairToken ? pairToken?.address : '';
     // get pair contract id using api call because `asAccountString` is not working for pair address
-    const contractId = await hederaFn.getContractData(tokenAddress);
+    const { contractId } = await hederaFn.getContractData(tokenAddress);
     // get pair tokenId from pair contract id
     const tokenId = hederaFn.contractToTokenId(contractId?.toString());
     // convert token id to evm address
