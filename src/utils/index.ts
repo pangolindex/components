@@ -8,6 +8,7 @@ import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts
 import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
   ALL_CHAINS,
+  BridgeChain,
   BridgeCurrency,
   CAVAX,
   CHAINS,
@@ -257,9 +258,9 @@ export function getTokenComparator(balances: {
 }
 
 export function filterTokenOrChain(
-  data: (BridgeCurrency | Token | Chain)[],
+  data: (BridgeCurrency | Token | Chain | BridgeChain)[],
   search: string,
-): (BridgeCurrency | Token | Chain)[] {
+): (BridgeCurrency | Token | Chain | BridgeChain)[] {
   if (search.length === 0) return data;
   const searchingAddress = isAddress(search);
 
@@ -307,8 +308,7 @@ export function calculateGasMargin(value: BigNumber): BigNumber {
 }
 
 // it convert seconds to hours/minutes HH:MM
-export function calculateTransactionTime(seconds: number | undefined): string | undefined {
-  if (!seconds) return undefined;
+export function calculateTransactionTime(seconds: number): string {
   if (seconds < 60) {
     return `${seconds} seconds`;
   } else {
