@@ -1,9 +1,13 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
-import { useDummyPangoChefInfos, usePangoChefInfos } from './hooks';
+import { useDummyPangoChefInfos, useHederaPangoChefInfos, usePangoChefInfos } from './hooks';
 
 export type UsePangoChefInfosHookType = {
-  [chainId in ChainId]: typeof usePangoChefInfos | typeof useDummyPangoChefInfos | typeof useDummyHook;
+  [chainId in ChainId]:
+    | typeof usePangoChefInfos
+    | typeof useHederaPangoChefInfos
+    | typeof useDummyPangoChefInfos
+    | typeof useDummyHook;
 };
 
 export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
@@ -12,7 +16,7 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.WAGMI]: useDummyPangoChefInfos,
   [ChainId.COSTON]: usePangoChefInfos,
   [ChainId.SONGBIRD]: usePangoChefInfos,
-  [ChainId.HEDERA_TESTNET]: useDummyPangoChefInfos,
+  [ChainId.HEDERA_TESTNET]: useHederaPangoChefInfos,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefInfos,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefInfos,
   [ChainId.ETHEREUM]: useDummyHook,

@@ -13,7 +13,7 @@ import {
 import { CHAINS, ChainId, CurrencyAmount, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
-import { HEDERA_API_BASE_URL, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
+import { HEDERA_API_BASE_URL, PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
@@ -684,10 +684,14 @@ class Hedera {
         url: `/api/v1/contracts/${address}`,
         method: 'GET',
       });
-      return response?.contract_id;
+
+      return {
+        contractId: response?.contract_id,
+        evmAddress: response?.evm_address,
+      };
     } catch (error) {
       console.log(error);
-      return 0;
+      return { contractId: '', evmAddress: '' };
     }
   }
 
@@ -778,6 +782,20 @@ class Hedera {
         );
     }
 
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async createPangoChefUserStorageContract(chainId: ChainId, account: string) {
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+
+    const maxGas = TRANSACTION_MAX_FEES.CREATE_POOL;
+    const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
+    const transaction = new ContractExecuteTransaction()
+      .setContractId(contractId)
+      .setGas(maxGas)
+      .setFunction('createUserStorageContract');
     return hashConnect.sendTransaction(transaction, accountId);
   }
 }

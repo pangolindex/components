@@ -24,7 +24,7 @@ import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import { useTokensHook, useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import usePrevious from 'src/hooks/usePrevious';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import {
@@ -379,8 +379,15 @@ export function useDerivedStakeInfo(
     error,
   };
 }
-
+/**
+ * here we can get rewardToken from address
+ * @param rewardTokens
+ * @param rewardTokensAddress
+ * @returns rewardTokens
+ */
 export function useGetRewardTokens(rewardTokens?: Array<Token>, rewardTokensAddress?: Array<string>) {
+  const chainId = useChainId();
+  const useTokens = useTokensHook[chainId];
   const _rewardTokens = useTokens(rewardTokensAddress);
 
   return useMemo(() => {

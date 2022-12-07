@@ -716,7 +716,7 @@
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "bridgeCard": {
-      "advanceOptions": "Advance Options",
+      "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
       "swap": "Swap",
       "transactionSucceeded": "Transaction Succeeded.",
