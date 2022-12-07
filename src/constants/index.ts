@@ -606,6 +606,10 @@ export enum SwapTypes {
   LIMIT = 'LIMIT',
 }
 
+export interface MetamaskError {
+  code: number;
+  message: string;
+}
 export const BIGNUMBER_ZERO = BigNumber.from('0');
 
 export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '50'); // 2% of slippage tolerange
