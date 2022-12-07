@@ -11,7 +11,7 @@ import { useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import { useHederaApproveCallback } from 'src/hooks/useApproveCallback';
-import { useSarNFTStakingContract, useSarStakingContract } from 'src/hooks/useContract';
+import { useHederaSarNFTContract, useSarStakingContract } from 'src/hooks/useContract';
 import { existSarContract } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
@@ -37,7 +37,7 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
   const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
-  const sarNftContract = useSarNFTStakingContract();
+  const sarNftContract = useHederaSarNFTContract();
 
   const addTransaction = useTransactionAdder();
   const { t } = useTranslation();
@@ -202,7 +202,7 @@ export function useHederaSarPositions() {
   const chainId = useChainId();
 
   const sarStakingContract = useSarStakingContract();
-  const sarNFTcontract = useSarNFTStakingContract();
+  const sarNFTcontract = useHederaSarNFTContract();
 
   const { data, isLoading: isLoadingIndexes } = useQuery(
     ['hedera-nft-index', account, sarNFTcontract?.address],

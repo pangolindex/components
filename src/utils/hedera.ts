@@ -121,6 +121,25 @@ export interface APIBlockResponse {
   }>;
 }
 
+export interface NFTInfoResponse {
+  nfts: {
+    account_id: string;
+    create_timestamp: string;
+    delegating_spender: any;
+    delegated: boolean;
+    metadata: string;
+    modified_timestamp: string;
+    serial_number: number;
+    spender: any;
+    token_id: string;
+  }[];
+  links: {
+    next: string | null;
+  };
+}
+
+export type NFTResponse = NFTInfoResponse['nfts'];
+
 export interface AddLiquidityData {
   tokenA: Token | undefined;
   tokenB: Token | undefined;
@@ -378,21 +397,21 @@ class Hedera {
 
   public async getNftInfo(address: string | undefined, account: string | undefined) {
     if (!address || !account) {
-      return [] as { metadata: string; serial_number: number }[];
+      return [] as NFTResponse;
     }
 
     const addressId = this.hederaId(address);
     const accountId = this.hederaId(account);
 
     try {
-      const response = await this.call({
+      const response = await this.call<NFTInfoResponse>({
         url: `/api/v1/tokens/${addressId}/nfts?account.id=${accountId}`,
         method: 'GET',
       });
-      return response?.['nfts'] as { metadata: string; serial_number: number }[];
+      return response['nfts'];
     } catch (error) {
       console.error('Error in fetch NFT info', error);
-      return [] as { metadata: string; serial_number: number }[];
+      return [] as NFTResponse;
     }
   }
 
@@ -745,13 +764,18 @@ class Hedera {
       .setGas(maxGas);
 
     if (methodName === 'mint') {
-      transaction.setFunction(methodName, new ContractFunctionParameters().addUint256(amount as any));
+      transaction
+        // Todo: send 0.1$ in HBAR
+        .setPayableAmount(new Hbar(4))
+        .setFunction(methodName, new ContractFunctionParameters().addUint256(amount as any));
     }
     if (!!positionId && methodName === 'stake') {
-      transaction.setFunction(
-        methodName,
-        new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
-      );
+      transaction
+        .setPayableAmount(new Hbar(4))
+        .setFunction(
+          methodName,
+          new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
+        );
     }
 
     return hashConnect.sendTransaction(transaction, accountId);

@@ -85,7 +85,7 @@ export function useSarStakingContract(): Contract | null {
 }
 
 // this is designed for Hedera
-export function useSarNFTStakingContract() {
+export function useHederaSarNFTContract() {
   const chainId = useChainId();
   const sarContractAddress = SAR_STAKING_ADDRESS[chainId];
 
