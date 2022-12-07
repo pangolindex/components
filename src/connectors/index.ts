@@ -13,9 +13,9 @@ import { NearConnector } from './NearConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
 
-export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter((chain) => chain.pangolin_is_live && chain.evm).map(
-  (chain) => chain.chain_id ?? 43114,
-);
+export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter(
+  (chain) => (chain.pangolin_is_live || chain.supported_by_bridge) && chain.evm,
+).map((chain) => chain.chain_id ?? 43114);
 
 const NETWORK_URL = 'https://api.avax.network/ext/bc/C/rpc';
 

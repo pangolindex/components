@@ -1,4 +1,5 @@
 import { ChainId } from '@pangolindex/sdk';
+import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import {
   useAddLiquidity,
   useDummyCreatePair,
@@ -39,10 +40,26 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.NEAR_MAINNET]: useNearTokenBalances,
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
   [ChainId.EVMOS_TESTNET]: useTokenBalances,
+  // TODO: We need to check following chains
+  [ChainId.ETHEREUM]: useTokenBalances,
+  [ChainId.POLYGON]: useTokenBalances,
+  [ChainId.FANTOM]: useTokenBalances,
+  [ChainId.XDAI]: useTokenBalances,
+  [ChainId.BSC]: useTokenBalances,
+  [ChainId.ARBITRUM]: useTokenBalances,
+  [ChainId.CELO]: useTokenBalances,
+  [ChainId.OKXCHAIN]: useTokenBalances,
+  [ChainId.VELAS]: useTokenBalances,
+  [ChainId.AURORA]: useTokenBalances,
+  [ChainId.CRONOS]: useTokenBalances,
+  [ChainId.FUSE]: useTokenBalances,
+  [ChainId.MOONRIVER]: useTokenBalances,
+  [ChainId.MOONBEAM]: useTokenBalances,
+  [ChainId.OP]: useTokenBalances,
 };
 
 export type UseTokenBalanceHookType = {
-  [chainId in ChainId]: typeof useTokenBalance | typeof useNearTokenBalance;
+  [chainId in ChainId]: typeof useTokenBalance | typeof useNearTokenBalance | typeof useDummyHook;
 };
 
 export const useTokenBalanceHook: UseTokenBalanceHookType = {
@@ -54,6 +71,21 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.HEDERA_TESTNET]: useTokenBalance,
   [ChainId.NEAR_MAINNET]: useNearTokenBalance,
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
   [ChainId.EVMOS_TESTNET]: useTokenBalance,
 };
 
@@ -71,10 +103,26 @@ export const usePairBalanceHook: UsePairBalanceHookType = {
   [ChainId.NEAR_MAINNET]: useNearPairBalance,
   [ChainId.NEAR_TESTNET]: useNearPairBalance,
   [ChainId.EVMOS_TESTNET]: useEVMPairBalance,
+  // TODO: Need to implement following chains
+  [ChainId.ETHEREUM]: useEVMPairBalance,
+  [ChainId.POLYGON]: useEVMPairBalance,
+  [ChainId.FANTOM]: useEVMPairBalance,
+  [ChainId.XDAI]: useEVMPairBalance,
+  [ChainId.BSC]: useEVMPairBalance,
+  [ChainId.ARBITRUM]: useEVMPairBalance,
+  [ChainId.CELO]: useEVMPairBalance,
+  [ChainId.OKXCHAIN]: useEVMPairBalance,
+  [ChainId.VELAS]: useEVMPairBalance,
+  [ChainId.AURORA]: useEVMPairBalance,
+  [ChainId.CRONOS]: useEVMPairBalance,
+  [ChainId.FUSE]: useEVMPairBalance,
+  [ChainId.MOONRIVER]: useEVMPairBalance,
+  [ChainId.MOONBEAM]: useEVMPairBalance,
+  [ChainId.OP]: useEVMPairBalance,
 };
 
 export type UseAccountBalanceHookType = {
-  [chainId in ChainId]: typeof useETHBalances | typeof useNearBalance | typeof useHederaBalance;
+  [chainId in ChainId]: typeof useETHBalances | typeof useNearBalance | typeof useHederaBalance | typeof useDummyHook;
 };
 
 export const useAccountBalanceHook: UseAccountBalanceHookType = {
@@ -86,6 +134,21 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaBalance,
   [ChainId.NEAR_MAINNET]: useNearBalance,
   [ChainId.NEAR_TESTNET]: useNearBalance,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
   [ChainId.EVMOS_TESTNET]: useETHBalances,
 };
 
@@ -103,6 +166,22 @@ export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.NEAR_MAINNET]: useNearAddLiquidity,
   [ChainId.NEAR_TESTNET]: useNearAddLiquidity,
   [ChainId.EVMOS_TESTNET]: useAddLiquidity,
+  // TODO: Need to implement following chains
+  [ChainId.ETHEREUM]: useAddLiquidity,
+  [ChainId.POLYGON]: useAddLiquidity,
+  [ChainId.FANTOM]: useAddLiquidity,
+  [ChainId.XDAI]: useAddLiquidity,
+  [ChainId.BSC]: useAddLiquidity,
+  [ChainId.ARBITRUM]: useAddLiquidity,
+  [ChainId.CELO]: useAddLiquidity,
+  [ChainId.OKXCHAIN]: useAddLiquidity,
+  [ChainId.VELAS]: useAddLiquidity,
+  [ChainId.AURORA]: useAddLiquidity,
+  [ChainId.CRONOS]: useAddLiquidity,
+  [ChainId.FUSE]: useAddLiquidity,
+  [ChainId.MOONRIVER]: useAddLiquidity,
+  [ChainId.MOONBEAM]: useAddLiquidity,
+  [ChainId.OP]: useAddLiquidity,
 };
 
 export type UseRemoveLiquidityHookType = {
@@ -119,6 +198,22 @@ export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
   [ChainId.NEAR_MAINNET]: useNearRemoveLiquidity,
   [ChainId.NEAR_TESTNET]: useNearRemoveLiquidity,
   [ChainId.EVMOS_TESTNET]: useRemoveLiquidity,
+  // TODO: Remove these hooks later on
+  [ChainId.ETHEREUM]: useRemoveLiquidity,
+  [ChainId.POLYGON]: useRemoveLiquidity,
+  [ChainId.FANTOM]: useRemoveLiquidity,
+  [ChainId.XDAI]: useRemoveLiquidity,
+  [ChainId.BSC]: useRemoveLiquidity,
+  [ChainId.ARBITRUM]: useRemoveLiquidity,
+  [ChainId.CELO]: useRemoveLiquidity,
+  [ChainId.OKXCHAIN]: useRemoveLiquidity,
+  [ChainId.VELAS]: useRemoveLiquidity,
+  [ChainId.AURORA]: useRemoveLiquidity,
+  [ChainId.CRONOS]: useRemoveLiquidity,
+  [ChainId.FUSE]: useRemoveLiquidity,
+  [ChainId.MOONRIVER]: useRemoveLiquidity,
+  [ChainId.MOONBEAM]: useRemoveLiquidity,
+  [ChainId.OP]: useRemoveLiquidity,
 };
 
 export type UseGetUserLPHookType = {
@@ -139,10 +234,30 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.NEAR_MAINNET]: useGetNearUserLP,
   [ChainId.NEAR_TESTNET]: useGetNearUserLP,
   [ChainId.EVMOS_TESTNET]: useGetUserLP,
+  // TODO: Remove these hooks later on
+  [ChainId.ETHEREUM]: useGetUserLP,
+  [ChainId.POLYGON]: useGetUserLP,
+  [ChainId.FANTOM]: useGetUserLP,
+  [ChainId.XDAI]: useGetUserLP,
+  [ChainId.BSC]: useGetUserLP,
+  [ChainId.ARBITRUM]: useGetUserLP,
+  [ChainId.CELO]: useGetUserLP,
+  [ChainId.OKXCHAIN]: useGetUserLP,
+  [ChainId.VELAS]: useGetUserLP,
+  [ChainId.AURORA]: useGetUserLP,
+  [ChainId.CRONOS]: useGetUserLP,
+  [ChainId.FUSE]: useGetUserLP,
+  [ChainId.MOONRIVER]: useGetUserLP,
+  [ChainId.MOONBEAM]: useGetUserLP,
+  [ChainId.OP]: useGetUserLP,
 };
 
 export type UseCreatePairHookType = {
-  [chainId in ChainId]: typeof useDummyCreatePair | typeof useNearCreatePair | typeof useHederaCreatePair;
+  [chainId in ChainId]:
+    | typeof useDummyCreatePair
+    | typeof useNearCreatePair
+    | typeof useHederaCreatePair
+    | typeof useDummyHook;
 };
 
 /**
@@ -159,4 +274,19 @@ export const useCreatePairHook: UseCreatePairHookType = {
   [ChainId.NEAR_MAINNET]: useNearCreatePair,
   [ChainId.NEAR_TESTNET]: useNearCreatePair,
   [ChainId.EVMOS_TESTNET]: useDummyCreatePair,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
 };

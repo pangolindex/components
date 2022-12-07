@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
-import { JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
@@ -11,7 +11,7 @@ import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
 import { useCoinGeckoCurrencyPrice, useTokens } from 'src/hooks/Tokens';
 import { usePangoChefContract } from 'src/hooks/useContract';
-import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
+import { usePairsCurrencyPrice, useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { decimalToFraction } from 'src/utils';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { getExtraTokensWeeklyRewardRate } from '../pstake/hooks';
@@ -95,6 +95,13 @@ export function usePangoChefInfos() {
     rewardsAddresses,
     REWARDER_VIA_MULTIPLIER_INTERFACE,
     'getRewardTokens',
+    [],
+  );
+
+  const rewardsMultipliersState = useMultipleContractSingleData(
+    rewardsAddresses,
+    REWARDER_VIA_MULTIPLIER_INTERFACE,
+    'getRewardMultipliers',
     [],
   );
 
@@ -231,6 +238,7 @@ export function usePangoChefInfos() {
       const token0State = tokens0State[index];
       const token1State = tokens1State[index];
       const rewardTokensState = rewardsTokensState[index];
+      const rewardMultipliersState = rewardsMultipliersState[index];
       const userPendingRewardState = userPendingRewardsState[index];
       const pairTotalSupplyState = pairTotalSuppliesState[index];
       const userRewardRateState = userRewardRatesState[index];
@@ -244,6 +252,7 @@ export function usePangoChefInfos() {
         token0State.loading ||
         token1State.loading ||
         rewardTokensState.loading ||
+        rewardMultipliersState.loading ||
         userPendingRewardState.loading ||
         userRewardRateState.loading ||
         pairTotalSupplyState.loading ||
@@ -321,6 +330,10 @@ export function usePangoChefInfos() {
         totalRewardRatePerSecond,
       );
 
+      const rewardMultipliers: JSBI[] = rewardMultipliersState?.result?.[0].map((value: BigNumber) => {
+        return JSBI.BigInt(value.toString());
+      });
+
       farms.push({
         pid: pid,
         tokens: [pair.token0, pair.token1],
@@ -334,6 +347,7 @@ export function usePangoChefInfos() {
         periodFinish: undefined,
         rewardsAddress: pool.rewarder,
         rewardTokensAddress: [png.address, ...(rewardTokensState?.result?.[0] || [])],
+        rewardTokensMultiplier: rewardMultipliers,
         totalRewardRatePerSecond: totalRewardRatePerSecond,
         totalRewardRatePerWeek: totalRewardRatePerWeek,
         rewardRatePerWeek: userRewardRatePerWeek,
@@ -399,10 +413,14 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
   }, [blockTime, stakingInfo]);
 }
 
-export function useUserPangoChefRewardRate(stakingInfo: PangoChefInfo) {
+export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
   const blockTime = useGetBlockTimestamp();
 
   return useMemo(() => {
+    if (!stakingInfo) {
+      return BigNumber.from(0);
+    }
+
     const userBalance = stakingInfo?.userValueVariables.balance;
     const userSumOfEntryTimes = stakingInfo?.userValueVariables.sumOfEntryTimes;
 
@@ -435,4 +453,66 @@ export function useIsLockingPoolZero() {
   }, [stakingInfos]);
 
   return pairs;
+}
+
+/**
+ * This hook returns the extra value provided by super farm extra reward tokens
+ * @param rewardTokens array os tokens
+ * @param rewardRate reward rate in png/s
+ * @param multipliers multipler fro each token provider in rewardTokens
+ * @param balance valueVariables from contract
+ * @param pairPrice pair price in wrapped gas coin
+ * @returns return the extra percentage of apr provided by super farm extra reward tokens
+ */
+export function usePangoChefExtraFarmApr(
+  rewardTokens: Array<Token | null | undefined> | null | undefined,
+  rewardRate: BigNumber,
+  multipliers: JSBI[] | undefined,
+  balance: BigNumber,
+  pairPrice: Price,
+) {
+  const chainId = useChainId();
+  // remove png and null
+  const _rewardTokens = (rewardTokens?.filter((token) => !!token && !PNG[chainId].equals(token)) || []) as (
+    | Token
+    | undefined
+  )[];
+
+  const tokensPrices = useTokensCurrencyPrice(_rewardTokens);
+
+  return useMemo(() => {
+    let extraAPR = 0;
+
+    if (!rewardTokens || !multipliers || _rewardTokens.length === 0) {
+      return extraAPR;
+    }
+
+    for (let index = 0; index < _rewardTokens.length; index++) {
+      const token = _rewardTokens[index];
+
+      if (!token) {
+        continue;
+      }
+
+      const tokenPrice = tokensPrices[token.address];
+      const multiplier = multipliers[index];
+      if (!tokenPrice || !multiplier) {
+        continue;
+      }
+      //extraAPR = poolRewardRate(POOL_ID) * rewardMultiplier / (10** token.decimals) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
+      extraAPR +=
+        balance.isZero() || pairPrice.equalTo('0')
+          ? 0
+          : Number(
+              tokenPrice.raw
+                .multiply(rewardRate.mul(365 * 86400 * 100).toString())
+                .multiply(multiplier)
+                .divide(pairPrice.raw.multiply(balance.toString()))
+                .divide((10 ** token.decimals).toString())
+                .toSignificant(2),
+            );
+    }
+
+    return extraAPR;
+  }, [rewardTokens, rewardRate, multipliers, balance, pairPrice, tokensPrices, _rewardTokens]);
 }
