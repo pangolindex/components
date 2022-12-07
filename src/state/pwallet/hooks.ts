@@ -1538,7 +1538,7 @@ export const fetchHederaPGLTokenAddress = (pairTokenAddress: string | undefined)
 
     const tokenAddress = pairTokenAddress;
     // get pair contract id using api call because `asAccountString` is not working for pair address
-    const contractId = await hederaFn.getContractData(tokenAddress);
+    const { contractId } = await hederaFn.getContractData(tokenAddress);
     // get pair tokenId from pair contract id
     const tokenId = hederaFn.contractToTokenId(contractId?.toString());
     // convert token id to evm address
@@ -1686,4 +1686,49 @@ export function useHederaPGLAssociated(
   const [pglToken] = useHederaPGLToken(currencyA, currencyB);
   return useHederaTokenAssociated(pglToken);
 }
+
+/**
+ * This hook used to get pair contract address for given lpTokenAddress ( Fungible token address )
+ * Takes lpTokenAddress as a input and return pair contract address
+ * @param lpTokenAddress string[]
+ * @returns [pair contract address]
+ */
+
+export const useHederaPairContractEVMAddresses = (lpTokenAddress?: string[]): string[] => {
+  const chainId = useChainId();
+
+  const lpTokenContracts = useMemo(() => {
+    return (lpTokenAddress || []).map((lpAddress) => {
+      const tokenId = hederaFn.hederaId(lpAddress);
+      return hederaFn.tokenToContractId(tokenId);
+    });
+  }, [lpTokenAddress]);
+
+  const queryParameter = useMemo(() => {
+    return (
+      lpTokenContracts?.map((address) => {
+        return {
+          queryKey: ['get-pgl-token-evm-address', address],
+          queryFn: () => hederaFn.getContractData(address),
+        };
+      }) ?? []
+    );
+  }, [lpTokenContracts]);
+
+  const results = useQueries(queryParameter);
+
+  return useMemo(() => {
+    if (!chainId) return [];
+
+    return results.reduce<string[]>((acc, result) => {
+      const evmAddress = result?.data?.evmAddress;
+
+      if (evmAddress && result?.isLoading === false) {
+        acc.push(evmAddress);
+      }
+
+      return acc;
+    }, []);
+  }, [results]);
+};
 /* eslint-enable max-lines */

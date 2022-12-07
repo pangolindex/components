@@ -21,8 +21,10 @@ module.exports = {
         'pascal-case', // PascalCase
         'sentence-case', // Sentence case
         'snake-case', // snake_case
-        'start-case', // Start Case
+        'start-case', // Start Case,
+        'upper-case', // Upper case
       ],
     ],
   },
+  ignores: [(commit) => commit.includes('[skip ci]')],
 };
