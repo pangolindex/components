@@ -221,7 +221,7 @@ export function getEtherscanLink(
   }
 }
 
-const provider = () => {
+const walletProvider = () => {
   if (window.xfi && window.xfi.ethereum) {
     return window.xfi.ethereum;
   } else if (window.bitkeep && window.isBitKeep) {
@@ -235,7 +235,7 @@ export async function changeNetwork(chain: Chain) {
 
   if (ethereum) {
     try {
-      await provider().request({
+      await walletProvider().request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
       });
@@ -245,7 +245,7 @@ export async function changeNetwork(chain: Chain) {
       const metamask = error as MetamaskError;
       if (metamask.code === 4902) {
         try {
-          await provider().request({
+          await walletProvider().request({
             method: 'wallet_addEthereumChain',
             params: [
               {
