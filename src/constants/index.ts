@@ -605,6 +605,11 @@ export enum SwapTypes {
   LIMIT = 'LIMIT',
 }
 
+export interface MetamaskError {
+  code: number;
+  message: string;
+}
+
 export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '50'); // 2% of slippage tolerange
 export const ONE_FRACTION = new Fraction('1');
 

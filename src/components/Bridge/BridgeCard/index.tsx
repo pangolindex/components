@@ -35,6 +35,7 @@ import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { ChainField, CurrencyField, TransactionStatus } from 'src/state/pbridge/actions';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
+import { changeNetwork } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import BridgeInputsWidget from '../BridgeInputsWidget';
 import {
@@ -157,57 +158,6 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       return data;
     }
   }, [activeBridges, chainHook?.[LIFIBridge.id]]);
-
-  const provider = useMemo(() => {
-    if (window.xfi && window.xfi.ethereum) {
-      return window.xfi.ethereum;
-    } else if (window.bitkeep && window.isBitKeep) {
-      return window.bitkeep.ethereum;
-    }
-    return window.ethereum;
-  }, undefined);
-
-  const { ethereum } = window;
-  interface MetamaskError {
-    code: number;
-    message: string;
-  }
-
-  const changeChain = async () => {
-    const chain = fromChain;
-    if (ethereum && chain) {
-      try {
-        await provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
-        });
-        window.location.reload();
-      } catch (error) {
-        // This error code indicates that the chain has not been added to MetaMask.
-        const metamask = error as MetamaskError;
-        if (metamask.code === 4902) {
-          try {
-            await provider.request({
-              method: 'wallet_addEthereumChain',
-              params: [
-                {
-                  chainName: chain.name,
-                  chainId: `0x${chain?.chain_id?.toString(16)}`,
-                  rpcUrls: [chain.rpc_uri],
-                  blockExplorerUrls: chain.blockExplorerUrls,
-                  iconUrls: chain.logo,
-                  nativeCurrency: chain.nativeCurrency,
-                },
-              ],
-            });
-            window.location.reload();
-          } catch (_error) {
-            return;
-          }
-        }
-      }
-    }
-  };
 
   useEffect(() => {
     if (debouncedAmountValue) {
@@ -334,7 +284,13 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
             Connect Wallet
           </Button>
         ) : sdkChainId !== fromChain?.chain_id ? (
-          <Button variant="primary" onClick={changeChain} isDisabled={!fromChain}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              fromChain && changeNetwork(fromChain);
+            }}
+            isDisabled={!fromChain}
+          >
             {fromChain ? 'Switch Chain' : 'Please Select Chain'}
           </Button>
         ) : (
