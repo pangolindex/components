@@ -34,9 +34,13 @@ export function useDummyDerivativeSarStake() {
 
   const approval = ApprovalState.UNKNOWN;
 
-  const approveCallback = async () => {};
+  const approveCallback = async () => {
+    // This is intentional
+  };
 
-  const onStake = async () => {};
+  const onStake = async () => {
+    // This is intentional
+  };
 
   const onUserInput = (_typedValue: string) => {
     setTypedValue(_typedValue);
