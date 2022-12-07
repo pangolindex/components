@@ -195,8 +195,8 @@ export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> 
           chainId,
           tokenAddress,
           decimal?.result?.[0],
-          parseStringOrBytes32(symbol.result?.[0], symbolBytes32.result?.[0], 'UNKNOWN'),
-          parseStringOrBytes32(tokenName.result?.[0], tokenNameBytes32.result?.[0], 'Unknown Token'),
+          parseStringOrBytes32(symbol?.result?.[0], symbolBytes32?.result?.[0], 'UNKNOWN'),
+          parseStringOrBytes32(tokenName?.result?.[0], tokenNameBytes32?.result?.[0], 'Unknown Token'),
         );
 
         acc.push(token);
