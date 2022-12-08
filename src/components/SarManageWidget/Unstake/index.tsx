@@ -1,4 +1,4 @@
-import { formatEther } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import numeral from 'numeral';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -127,7 +127,7 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
             <Text color="text4">
               {t('sarUnstake.stakedBalance', {
                 symbol: png.symbol,
-                balance: numeral(formatEther(stakedAmount)).format('0.00a'),
+                balance: numeral(formatUnits(stakedAmount, png.decimals)).format('0.00a'),
               })}
             </Text>
           </Box>
