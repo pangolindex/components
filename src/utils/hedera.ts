@@ -231,6 +231,13 @@ export interface RemoveLiquidityData {
   chainId: ChainId;
 }
 
+export interface StakeData {
+  account: string;
+  amount: string;
+  poolId: string;
+  chainId: ChainId;
+}
+
 export interface SarStakeData {
   amount: string;
   positionId?: string;
@@ -534,11 +541,11 @@ class Hedera {
 
     const tokenAddress = token ? token?.address : '';
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
     const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
 
     const transaction = new ContractExecuteTransaction()
-      .setContractId(contarctId)
+      .setContractId(contractId)
       .setGas(maxGas)
       .setPayableAmount(Hbar.fromString(HBARAmount))
       .setFunction(
@@ -573,13 +580,13 @@ class Hedera {
     const tokenBAddress = tokenB ? tokenB?.address : '';
 
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the router contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas)
       //Set the contract function to call
@@ -605,13 +612,13 @@ class Hedera {
 
     const tokenAddress = token ? token?.address : '';
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const maxGas = TRANSACTION_MAX_FEES.REMOVE_NATIVE_LIQUIDITY;
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas)
       //Set the contract function to call
@@ -637,12 +644,12 @@ class Hedera {
     const tokenBAddress = tokenB ? tokenB?.address : '';
 
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const maxGas = TRANSACTION_MAX_FEES.REMOVE_LIQUIDITY;
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas)
       //Set the contract function to call
@@ -710,7 +717,7 @@ class Hedera {
     } = swapData;
 
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const extraSwaps = path.length - 2;
 
@@ -721,7 +728,7 @@ class Hedera {
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas);
 
@@ -796,6 +803,29 @@ class Hedera {
       .setContractId(contractId)
       .setGas(maxGas)
       .setFunction('createUserStorageContract');
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async stake(stakeData: StakeData) {
+    const { account, amount, poolId, chainId } = stakeData;
+
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
+    const maxGas = TRANSACTION_MAX_FEES.STAKE_LP_TOKEN;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    transaction.setFunction(
+      'stake',
+      new ContractFunctionParameters().addUint256(Number(poolId)).addUint256(amount ? amount : (amount as any)),
+    );
+
     return hashConnect.sendTransaction(transaction, accountId);
   }
 }

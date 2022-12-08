@@ -1,7 +1,9 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
+import { TransactionResponse } from '@ethersproject/providers';
 import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
@@ -13,9 +15,10 @@ import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
 import { useCoinGeckoCurrencyPrice, useTokens } from 'src/hooks/Tokens';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice, useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
+import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks';
-import { decimalToFraction } from 'src/utils';
+import { decimalToFraction, waitForTransaction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { getExtraTokensWeeklyRewardRate } from '../pstake/hooks';
@@ -701,12 +704,12 @@ export function useHederaPangoChefInfos() {
 
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
-        pool.valueVariables.balance.isZero() || pairPrice.equalTo('0')
+        pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0')
           ? 0
           : Number(
-              pngPrice.raw
+              pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
-                .divide(pairPrice?.raw.multiply(pool.valueVariables.balance.toString()))
+                .divide(pairPrice?.raw?.multiply(pool.valueVariables.balance.toString()))
                 .toSignificant(2),
             );
 
@@ -833,11 +836,14 @@ export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
 }
 
 export function useIsLockingPoolZero() {
+  const chainId = useChainId();
+  const usePangoChefInfos = usePangoChefInfosHook[chainId];
+
   const stakingInfos = usePangoChefInfos();
 
   const pairs: [Token, Token][] = useMemo(() => {
     const _pairs: [Token, Token][] = [];
-    stakingInfos.forEach((stakingInfo) => {
+    stakingInfos?.forEach((stakingInfo) => {
       if (stakingInfo.isLockingPoolZero) {
         const [token0, token1] = stakingInfo.tokens;
         _pairs.push([token0, token1]);
@@ -906,7 +912,6 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
 
   return [shouldCreateStorage, create];
 }
-/* eslint-enable max-lines */
 /**
  * This hook returns the extra value provided by super farm extra reward tokens
  * @param rewardTokens array os tokens
@@ -968,3 +973,112 @@ export function usePangoChefExtraFarmApr(
     return extraAPR;
   }, [rewardTokens, rewardRate, multipliers, balance, pairPrice, tokensPrices, _rewardTokens]);
 }
+
+/**
+ * pangochef stack callback function
+ * @param poolId
+ * @param amount
+ * @returns callback and error
+ */
+export function useEVMPangoChefStakeCallback(
+  poolId: string | null,
+  amount: string | undefined,
+): { callback: null | (() => Promise<string>); error: string | null } {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { t } = useTranslation();
+  const addTransaction = useTransactionAdder();
+
+  const pangochefContract = usePangoChefContract();
+  return useMemo(() => {
+    return {
+      callback: async function onSwap(): Promise<string> {
+        try {
+          if (!pangochefContract) return '';
+          const response: TransactionResponse = await pangochefContract.stake(poolId, amount);
+          await waitForTransaction(response, 5);
+
+          if (response) {
+            addTransaction(response, {
+              summary: t('earn.depositLiquidity'),
+            });
+            return response.hash;
+          }
+
+          return '';
+        } catch (error: any) {
+          // if the user rejected the tx, pass this along
+          if (error?.code === 4001) {
+            throw new Error('Transaction rejected.');
+          } else {
+            // otherwise, the error was unexpected and we need to convey that
+            console.error(`Swap failed`, error);
+
+            throw new Error(`${t('earn.attemptingToStakeError')} :${error.message}`);
+          }
+        }
+      },
+      error: null,
+    };
+  }, [poolId, account, chainId, amount, addTransaction, pangochefContract]);
+}
+
+/**
+ * hedera pangochef stack callback function
+ * @param poolId
+ * @param amount
+ * @returns callback and error
+ */
+export function useHederaPangoChefStakeCallback(
+  poolId: string | null,
+  amount: string | undefined,
+): { callback: null | (() => Promise<string>); error: string | null } {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { t } = useTranslation();
+  const addTransaction = useTransactionAdder();
+
+  return useMemo(() => {
+    if (!poolId || !account || !chainId || !amount) {
+      return { callback: null, error: 'Missing dependencies' };
+    }
+
+    return {
+      callback: async function onSwap(): Promise<string> {
+        try {
+          const args = {
+            poolId,
+            account,
+            chainId,
+            amount,
+          };
+          const response = await hederaFn.stake(args);
+
+          if (response) {
+            addTransaction(response, {
+              summary: t('earn.depositLiquidity'),
+            });
+            return response.hash;
+          }
+
+          return '';
+        } catch (error: any) {
+          // if the user rejected the tx, pass this along
+          if (error?.code === 4001) {
+            throw new Error('Transaction rejected.');
+          } else {
+            // otherwise, the error was unexpected and we need to convey that
+            console.error(`Stake failed`, error);
+            throw new Error(`${t('earn.attemptingToStakeError')} :${error.message}`);
+          }
+        }
+      },
+      error: null,
+    };
+  }, [poolId, account, chainId, amount, addTransaction]);
+}
+
+export function useDummyPangoChefStakeCallback(): { callback: null | (() => Promise<string>); error: string | null } {
+  return { callback: null, error: null };
+}
+/* eslint-enable max-lines */

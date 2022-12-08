@@ -29,6 +29,7 @@ export default function CurrencyLogo({
       currency === CAVAX[ChainId.WAGMI] ||
       currency === CAVAX[ChainId.COSTON] ||
       currency === CAVAX[ChainId.SONGBIRD] ||
+      currency === CAVAX[ChainId.HEDERA_TESTNET] ||
       currency === CAVAX[ChainId.NEAR_TESTNET] ||
       currency === CAVAX[ChainId.NEAR_MAINNET]
     )

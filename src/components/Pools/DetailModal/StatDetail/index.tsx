@@ -5,7 +5,8 @@ import AnalyticsIcon from 'src/assets/images/analytics.svg';
 import { Box, Stat, Text } from 'src/components';
 import { AnalyticsLink } from 'src/components/Stat/styled';
 import { BIG_INT_ZERO } from 'src/constants';
-import { useTotalSupply } from 'src/data/TotalSupply';
+import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
+import { useChainId } from 'src/hooks';
 import { StateContainer } from './styleds';
 
 interface Props {
@@ -19,7 +20,10 @@ interface Props {
 }
 
 export default function StatDetail({ title, totalAmount, pair, pgl, currency0, currency1, link }: Props) {
-  const totalPoolTokens = useTotalSupply(pair?.liquidityToken);
+  const chainId = useChainId();
+  const usePairTotalSupply = usePairTotalSupplyHook[chainId];
+
+  const totalPoolTokens = usePairTotalSupply(pair ?? undefined);
 
   const [token0Deposited, token1Deposited] =
     !!pair &&
