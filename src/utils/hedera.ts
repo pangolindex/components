@@ -237,6 +237,7 @@ export interface SarStakeData {
   methodName: 'mint' | 'stake';
   account: string;
   chainId: ChainId;
+  HBARAmount: number;
 }
 
 class Hedera {
@@ -752,11 +753,15 @@ class Hedera {
   }
 
   public async sarStake(stakeData: SarStakeData) {
-    const { positionId, amount, methodName, account, chainId } = stakeData;
+    const { positionId, amount, methodName, account, chainId, HBARAmount } = stakeData;
 
     const accountId = account ? this.hederaId(account) : '';
     const address = SAR_STAKING_ADDRESS[chainId];
     const contractId = address ? this.hederaId(address) : '';
+
+    if (HBARAmount === 0) {
+      throw new Error('Unpredictable HBAR amount to pay rent');
+    }
 
     const maxGas =
       TRANSACTION_MAX_FEES.STAKE_LP_TOKEN + TRANSACTION_MAX_FEES.TRANSFER_ERC20 + TRANSACTION_MAX_FEES.NFT_MINT;
@@ -770,12 +775,12 @@ class Hedera {
     if (methodName === 'mint') {
       transaction
         // Todo: send 0.1$ in HBAR
-        .setPayableAmount(new Hbar(4))
+        .setPayableAmount(new Hbar(HBARAmount))
         .setFunction(methodName, new ContractFunctionParameters().addUint256(amount as any));
     }
     if (!!positionId && methodName === 'stake') {
       transaction
-        .setPayableAmount(new Hbar(4))
+        .setPayableAmount(new Hbar(HBARAmount))
         .setFunction(
           methodName,
           new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
