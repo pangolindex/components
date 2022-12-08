@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
 import { Text } from 'src/components/Text';
 import { ToggleButtons } from 'src/components/ToggleButtons';
-import { Position } from 'src/state/psarstake/hooks';
+import { Position } from 'src/state/psarstake/types';
 import { Options } from './types';
 
 interface Props {

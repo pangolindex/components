@@ -2,6 +2,7 @@
 import { CHAINS, ChainId, ChefType, Fraction, JSBI, Percent, StakingType, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import BN from 'bn.js';
+import { BigNumber } from 'ethers';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
 import avalancheCoreIcon from 'src/assets/images/avalancheCore.svg';
 import bitKeepIcon from 'src/assets/images/bitkeep.svg';
@@ -604,6 +605,12 @@ export enum SwapTypes {
   MARKET = 'MARKET',
   LIMIT = 'LIMIT',
 }
+
+export interface MetamaskError {
+  code: number;
+  message: string;
+}
+export const BIGNUMBER_ZERO = BigNumber.from('0');
 
 export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '50'); // 2% of slippage tolerange
 export const ONE_FRACTION = new Fraction('1');

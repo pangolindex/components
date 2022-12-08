@@ -24,7 +24,7 @@ import {
   currencyEquals,
 } from '@pangolindex/sdk';
 import { hederaFn } from 'src/utils/hedera';
-import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
+import { MetamaskError, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { wait } from './retry';
 
@@ -217,6 +217,52 @@ export function getEtherscanLink(
     case 'address':
     default: {
       return `${prefix}/${addressPath[chainId]}/${data}`;
+    }
+  }
+}
+
+const walletProvider = () => {
+  if (window.xfi && window.xfi.ethereum) {
+    return window.xfi.ethereum;
+  } else if (window.bitkeep && window.isBitKeep) {
+    return window.bitkeep.ethereum;
+  }
+  return window.ethereum;
+};
+
+export async function changeNetwork(chain: Chain) {
+  const { ethereum } = window;
+
+  if (ethereum) {
+    try {
+      await walletProvider().request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
+      });
+      window.location.reload();
+    } catch (error) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      const metamask = error as MetamaskError;
+      if (metamask.code === 4902) {
+        try {
+          await walletProvider().request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainName: chain.name,
+                chainId: `0x${chain?.chain_id?.toString(16)}`,
+                //nativeCurrency: chain.nativeCurrency,
+                rpcUrls: [chain.rpc_uri],
+                blockExplorerUrls: chain.blockExplorerUrls,
+                iconUrls: chain.logo,
+                nativeCurrency: chain.nativeCurrency,
+              },
+            ],
+          });
+        } catch (_error) {
+          return;
+        }
+      }
     }
   }
 }

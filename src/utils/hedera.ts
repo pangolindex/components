@@ -13,7 +13,7 @@ import {
 import { CHAINS, ChainId, CurrencyAmount, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
-import { HEDERA_API_BASE_URL, PANGOCHEF_ADDRESS, ROUTER_ADDRESS } from 'src/constants';
+import { HEDERA_API_BASE_URL, PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
@@ -31,6 +31,7 @@ export const TRANSACTION_MAX_FEES = {
   STAKE_LP_TOKEN: 230000,
   COLLECT_REWARDS: 300000,
   EXIT_CAMPAIGN: 300000,
+  NFT_MINT: 800000,
 };
 export interface HederaTokenMetadata {
   id: string;
@@ -119,6 +120,25 @@ export interface APIBlockResponse {
     logs_bloom: string;
   }>;
 }
+
+export interface NFTInfoResponse {
+  nfts: {
+    account_id: string;
+    create_timestamp: string;
+    delegating_spender: any;
+    delegated: boolean;
+    metadata: string;
+    modified_timestamp: string;
+    serial_number: number;
+    spender: any;
+    token_id: string;
+  }[];
+  links: {
+    next: string | null;
+  };
+}
+
+export type NFTResponse = NFTInfoResponse['nfts'];
 
 export interface AddLiquidityData {
   tokenA: Token | undefined;
@@ -215,6 +235,14 @@ export interface StakeData {
   account: string;
   amount: string;
   poolId: string;
+  chainId: ChainId;
+}
+
+export interface SarStakeData {
+  amount: string;
+  positionId?: string;
+  methodName: 'mint' | 'stake';
+  account: string;
   chainId: ChainId;
 }
 
@@ -371,6 +399,26 @@ class Hedera {
       return allTokens?.tokens as Array<HederaAssociateTokensData>;
     } catch (errr) {
       console.log('errrr', errr);
+    }
+  }
+
+  public async getNftInfo(address: string | undefined, account: string | undefined) {
+    if (!address || !account) {
+      return [] as NFTResponse;
+    }
+
+    const addressId = this.hederaId(address);
+    const accountId = this.hederaId(account);
+
+    try {
+      const response = await this.call<NFTInfoResponse>({
+        url: `/api/v1/tokens/${addressId}/nfts?account.id=${accountId}`,
+        method: 'GET',
+      });
+      return response['nfts'];
+    } catch (error) {
+      console.error('Error in fetch NFT info', error);
+      return [] as NFTResponse;
     }
   }
 
@@ -705,6 +753,40 @@ class Hedera {
           .addAddress(recipient)
           .addUint256(deadline),
       );
+    }
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async sarStake(stakeData: SarStakeData) {
+    const { positionId, amount, methodName, account, chainId } = stakeData;
+
+    const accountId = account ? this.hederaId(account) : '';
+    const address = SAR_STAKING_ADDRESS[chainId];
+    const contractId = address ? this.hederaId(address) : '';
+
+    const maxGas =
+      TRANSACTION_MAX_FEES.STAKE_LP_TOKEN + TRANSACTION_MAX_FEES.TRANSFER_ERC20 + TRANSACTION_MAX_FEES.NFT_MINT;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    if (methodName === 'mint') {
+      transaction
+        // Todo: send 0.1$ in HBAR
+        .setPayableAmount(new Hbar(4))
+        .setFunction(methodName, new ContractFunctionParameters().addUint256(amount as any));
+    }
+    if (!!positionId && methodName === 'stake') {
+      transaction
+        .setPayableAmount(new Hbar(4))
+        .setFunction(
+          methodName,
+          new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
+        );
     }
 
     return hashConnect.sendTransaction(transaction, accountId);

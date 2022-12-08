@@ -13,7 +13,8 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useDerivativeSarStake, useSarPositions, useSarStakeInfo } from 'src/state/psarstake/hooks';
+import { useSarStakeInfo } from 'src/state/psarstake/hooks';
+import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/state/psarstake/multiChainsHooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
@@ -34,10 +35,13 @@ export default function SarManageWidget() {
 
   const toggleWalletModal = useWalletModalToggle();
 
+  const useSarPositions = useSarPositionsHook[chainId];
   const { positions, isLoading } = useSarPositions();
 
   // get fist position with balance 0
   const position = positions?.find((value) => value.balance.isZero());
+
+  const useDerivativeSarStake = useDerivativeSarStakeHook[chainId];
 
   const {
     attempting,
