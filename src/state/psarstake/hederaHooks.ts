@@ -216,7 +216,7 @@ export function useHederaSarPositions() {
   const { data, isLoading: isLoadingIndexes } = useQuery(
     ['hedera-nft-index', account, sarNFTcontract?.address],
     async () => {
-      const nfts = await hederaFn.getNftInfo(sarNFTcontract?.address ?? '', account ?? '');
+      const nfts = await hederaFn.getNftInfo(sarNFTcontract?.address, account);
       const _nftsIndexes: (string | undefined)[][] = [];
       const _nftURIs: (string | undefined)[] = [];
 

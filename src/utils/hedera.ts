@@ -396,7 +396,7 @@ class Hedera {
     }
   }
 
-  public async getNftInfo(address: string | undefined, account: string | undefined) {
+  public async getNftInfo(address: string | undefined, account: string | null | undefined) {
     if (!address || !account) {
       return [] as NFTResponse;
     }
@@ -405,11 +405,29 @@ class Hedera {
     const accountId = this.hederaId(account);
 
     try {
-      const response = await this.call<NFTInfoResponse>({
-        url: `/api/v1/tokens/${addressId}/nfts?account.id=${accountId}`,
-        method: 'GET',
-      });
-      return response['nfts'];
+      // get only last 100 nfts
+      // by default the API returns 25 values
+      const nfts: NFTResponse = [];
+      let url = `/api/v1/tokens/${addressId}/nfts?account.id=${accountId}`;
+      for (let index = 0; index < 4; index++) {
+        const response = await this.call<NFTInfoResponse>({
+          url: url,
+          method: 'GET',
+        });
+
+        const _nfts = response['nfts'];
+        if (_nfts.length > 0) {
+          nfts.push(..._nfts);
+        }
+
+        // if the "next" field is null, it's because not exist more nfts to get
+        if (!!response.links.next) {
+          url = response.links.next;
+        } else {
+          break; // exit from loop if no next nfts exists
+        }
+      }
+      return nfts;
     } catch (error) {
       console.error('Error in fetch NFT info', error);
       return [] as NFTResponse;
