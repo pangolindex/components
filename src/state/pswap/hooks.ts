@@ -284,7 +284,7 @@ export function useHederaSwapTokenAssociated(): {
 
   const outputCurrency = useCurrency(outputCurrencyId);
   const token = outputCurrency ? wrappedCurrency(outputCurrency, chainId) : undefined;
-  const { associate, isLoading, hederaAssociated } = useHederaTokenAssociated(token);
+  const { associate, isLoading, hederaAssociated } = useHederaTokenAssociated(token?.address, token?.symbol);
 
   return {
     associate,

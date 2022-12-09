@@ -2,6 +2,7 @@
 import { CHAINS, ChainId, ChefType, Fraction, JSBI, Percent, StakingType, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import BN from 'bn.js';
+import { BigNumber } from 'ethers';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
 import avalancheCoreIcon from 'src/assets/images/avalancheCore.svg';
 import bitKeepIcon from 'src/assets/images/bitkeep.svg';
@@ -160,7 +161,7 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.WAGMI]: getPangoChefAddress(ChainId.WAGMI),
   [ChainId.COSTON]: getPangoChefAddress(ChainId.COSTON),
   [ChainId.SONGBIRD]: getPangoChefAddress(ChainId.SONGBIRD),
-  [ChainId.HEDERA_TESTNET]: undefined,
+  [ChainId.HEDERA_TESTNET]: getPangoChefAddress(ChainId.HEDERA_TESTNET),
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
   [ChainId.ETHEREUM]: undefined,
@@ -606,6 +607,12 @@ export enum SwapTypes {
   MARKET = 'MARKET',
   LIMIT = 'LIMIT',
 }
+
+export interface MetamaskError {
+  code: number;
+  message: string;
+}
+export const BIGNUMBER_ZERO = BigNumber.from('0');
 
 export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '50'); // 2% of slippage tolerange
 export const ONE_FRACTION = new Fraction('1');

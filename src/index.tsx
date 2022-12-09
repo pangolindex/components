@@ -58,7 +58,9 @@ import { MixPanelEvents, MixPanelProvider, useMixpanel } from './hooks/mixpanel'
 import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
 import { PangoChefInfo } from './state/ppangoChef/types';
-import { Position, useSarPositions, useSarStakeInfo } from './state/psarstake/hooks';
+import { useSarStakeInfo } from './state/psarstake/hooks';
+import { useSarPositionsHook } from './state/psarstake/multiChainsHooks';
+import { Position } from './state/psarstake/types';
 import SwapUpdater from './state/pswap/updater';
 import { default as ThemeProvider } from './theme';
 const queryClient = new QueryClient({
@@ -147,7 +149,7 @@ export { useGelatoLimitOrderDetail, useGelatoLimitOrderList };
 // hooks
 export {
   useSarStakeInfo,
-  useSarPositions,
+  useSarPositionsHook,
   useDerivedSwapInfo,
   useUSDCPrice,
   useAllTokens,

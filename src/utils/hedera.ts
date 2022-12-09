@@ -13,7 +13,7 @@ import {
 import { CHAINS, ChainId, CurrencyAmount, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
-import { HEDERA_API_BASE_URL, ROUTER_ADDRESS } from 'src/constants';
+import { HEDERA_API_BASE_URL, PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
@@ -30,7 +30,8 @@ export const TRANSACTION_MAX_FEES = {
   TRANSFER_ERC20: 60000,
   STAKE_LP_TOKEN: 230000,
   COLLECT_REWARDS: 300000,
-  EXIT_CAMPAIGN: 300000,
+  WITHDRAW: 300000,
+  NFT_MINT: 800000,
 };
 export interface HederaTokenMetadata {
   id: string;
@@ -120,6 +121,25 @@ export interface APIBlockResponse {
   }>;
 }
 
+export interface NFTInfoResponse {
+  nfts: {
+    account_id: string;
+    create_timestamp: string;
+    delegating_spender: any;
+    delegated: boolean;
+    metadata: string;
+    modified_timestamp: string;
+    serial_number: number;
+    spender: any;
+    token_id: string;
+  }[];
+  links: {
+    next: string | null;
+  };
+}
+
+export type NFTResponse = NFTInfoResponse['nfts'];
+
 export interface AddLiquidityData {
   tokenA: Token | undefined;
   tokenB: Token | undefined;
@@ -208,6 +228,29 @@ export interface RemoveLiquidityData {
   tokenBAmountMin: string;
   account: string;
   deadline: number;
+  chainId: ChainId;
+}
+
+export interface StakeOrWithdrawData {
+  account: string;
+  amount: string;
+  poolId: string;
+  chainId: ChainId;
+  methodName: 'stake' | 'withdraw';
+}
+
+export interface ClaimRewardData {
+  account: string;
+  methodName: string;
+  poolId: string;
+  chainId: ChainId;
+}
+
+export interface SarStakeData {
+  amount: string;
+  positionId?: string;
+  methodName: 'mint' | 'stake';
+  account: string;
   chainId: ChainId;
 }
 
@@ -367,6 +410,26 @@ class Hedera {
     }
   }
 
+  public async getNftInfo(address: string | undefined, account: string | undefined) {
+    if (!address || !account) {
+      return [] as NFTResponse;
+    }
+
+    const addressId = this.hederaId(address);
+    const accountId = this.hederaId(account);
+
+    try {
+      const response = await this.call<NFTInfoResponse>({
+        url: `/api/v1/tokens/${addressId}/nfts?account.id=${accountId}`,
+        method: 'GET',
+      });
+      return response['nfts'];
+    } catch (error) {
+      console.error('Error in fetch NFT info', error);
+      return [] as NFTResponse;
+    }
+  }
+
   public tokenAssociate(tokenAddress: string, account: string) {
     const tokenId = this.hederaId(tokenAddress);
 
@@ -486,11 +549,11 @@ class Hedera {
 
     const tokenAddress = token ? token?.address : '';
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
     const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
 
     const transaction = new ContractExecuteTransaction()
-      .setContractId(contarctId)
+      .setContractId(contractId)
       .setGas(maxGas)
       .setPayableAmount(Hbar.fromString(HBARAmount))
       .setFunction(
@@ -525,13 +588,13 @@ class Hedera {
     const tokenBAddress = tokenB ? tokenB?.address : '';
 
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the router contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas)
       //Set the contract function to call
@@ -557,13 +620,13 @@ class Hedera {
 
     const tokenAddress = token ? token?.address : '';
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const maxGas = TRANSACTION_MAX_FEES.REMOVE_NATIVE_LIQUIDITY;
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas)
       //Set the contract function to call
@@ -589,12 +652,12 @@ class Hedera {
     const tokenBAddress = tokenB ? tokenB?.address : '';
 
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const maxGas = TRANSACTION_MAX_FEES.REMOVE_LIQUIDITY;
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas)
       //Set the contract function to call
@@ -636,10 +699,14 @@ class Hedera {
         url: `/api/v1/contracts/${address}`,
         method: 'GET',
       });
-      return response?.contract_id;
+
+      return {
+        contractId: response?.contract_id,
+        evmAddress: response?.evm_address,
+      };
     } catch (error) {
       console.log(error);
-      return 0;
+      return { contractId: '', evmAddress: '' };
     }
   }
 
@@ -658,7 +725,7 @@ class Hedera {
     } = swapData;
 
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const extraSwaps = path.length - 2;
 
@@ -669,7 +736,7 @@ class Hedera {
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas);
 
@@ -695,6 +762,97 @@ class Hedera {
           .addUint256(deadline),
       );
     }
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async sarStake(stakeData: SarStakeData) {
+    const { positionId, amount, methodName, account, chainId } = stakeData;
+
+    const accountId = account ? this.hederaId(account) : '';
+    const address = SAR_STAKING_ADDRESS[chainId];
+    const contractId = address ? this.hederaId(address) : '';
+
+    const maxGas =
+      TRANSACTION_MAX_FEES.STAKE_LP_TOKEN + TRANSACTION_MAX_FEES.TRANSFER_ERC20 + TRANSACTION_MAX_FEES.NFT_MINT;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    if (methodName === 'mint') {
+      transaction
+        // Todo: send 0.1$ in HBAR
+        .setPayableAmount(new Hbar(4))
+        .setFunction(methodName, new ContractFunctionParameters().addUint256(amount as any));
+    }
+    if (!!positionId && methodName === 'stake') {
+      transaction
+        .setPayableAmount(new Hbar(4))
+        .setFunction(
+          methodName,
+          new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
+        );
+    }
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async createPangoChefUserStorageContract(chainId: ChainId, account: string) {
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+
+    const maxGas = TRANSACTION_MAX_FEES.CREATE_POOL;
+    const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
+    const transaction = new ContractExecuteTransaction()
+      .setContractId(contractId)
+      .setGas(maxGas)
+      .setFunction('createUserStorageContract');
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async stakeOrWithdraw(stakeOrWithdrawData: StakeOrWithdrawData) {
+    const { account, amount, poolId, chainId, methodName } = stakeOrWithdrawData;
+
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
+    const maxGas = methodName === 'stake' ? TRANSACTION_MAX_FEES.STAKE_LP_TOKEN : TRANSACTION_MAX_FEES.WITHDRAW;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    transaction.setFunction(
+      methodName,
+      new ContractFunctionParameters().addUint256(Number(poolId)).addUint256(amount ? amount : (amount as any)),
+    );
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async claimReward(claimRewardData: ClaimRewardData) {
+    const { account, methodName, poolId, chainId } = claimRewardData;
+
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
+    const maxGas = TRANSACTION_MAX_FEES.COLLECT_REWARDS;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    transaction.setFunction(methodName, new ContractFunctionParameters().addUint256(Number(poolId)));
 
     return hashConnect.sendTransaction(transaction, accountId);
   }

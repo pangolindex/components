@@ -1,7 +1,8 @@
 import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { ONE_TOKEN, ZERO_ADDRESS } from 'src/constants';
-import { PairState, usePair, usePairs } from 'src/data/Reserves';
+import { PairState, usePair } from 'src/data/Reserves';
+import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useChainId } from '.';
 
 /**
@@ -12,6 +13,9 @@ import { useChainId } from '.';
  */
 export function useTokensCurrencyPrice(tokens: (Token | undefined)[]): { [x: string]: Price } {
   const chainId = useChainId();
+
+  const usePairs = usePairsHook[chainId];
+
   const currency = WAVAX[chainId];
 
   // remove currency if exist e remove undefined

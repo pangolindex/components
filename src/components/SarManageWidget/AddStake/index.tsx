@@ -13,7 +13,9 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Position, useDerivativeSarStake, useSarStakeInfo } from 'src/state/psarstake/hooks';
+import { useSarStakeInfo } from 'src/state/psarstake/hooks';
+import { useDerivativeSarStakeHook } from 'src/state/psarstake/multiChainsHooks';
+import { Position } from 'src/state/psarstake/types';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
 import ConfirmDrawer from '../ConfirmDrawer';
@@ -42,6 +44,8 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
   const { apr } = useSarStakeInfo();
 
   const toggleWalletModal = useWalletModalToggle();
+
+  const useDerivativeSarStake = useDerivativeSarStakeHook[chainId];
 
   const {
     attempting,
