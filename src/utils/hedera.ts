@@ -10,7 +10,7 @@ import {
   HbarUnit,
   TokenAssociateTransaction,
 } from '@hashgraph/sdk';
-import { CHAINS, ChainId, CurrencyAmount, Token, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
 import { HEDERA_API_BASE_URL, PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
@@ -140,6 +140,18 @@ export interface NFTInfoResponse {
 
 export type NFTResponse = NFTInfoResponse['nfts'];
 
+interface BaseExchangeRate {
+  cent_equivalent: number;
+  expiration_time: number;
+  hbar_equivalent: number;
+}
+
+export interface ExchangeRateResponse {
+  current_rate: BaseExchangeRate;
+  next_rate: BaseExchangeRate;
+  timestamp: string;
+}
+
 export interface AddLiquidityData {
   tokenA: Token | undefined;
   tokenB: Token | undefined;
@@ -237,8 +249,10 @@ export interface SarStakeData {
   methodName: 'mint' | 'stake';
   account: string;
   chainId: ChainId;
-  HBARAmount: number;
+  rent: Hbar;
 }
+
+export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & { positionId: string };
 
 class Hedera {
   axios: AxiosInstance;
@@ -396,6 +410,33 @@ class Hedera {
     }
   }
 
+  public async getExchangeRate() {
+    try {
+      // "response" is the data from request
+      const response = await this.call<ExchangeRateResponse>({
+        url: '/api/v1/network/exchangerate',
+        method: 'GET',
+      });
+      return response;
+    } catch (error) {
+      console.error('Error in fetch Exchange Rate: ', error);
+      const timestamp = Math.floor(Date.now() / 1000); // timestamp in seconds
+      return {
+        current_rate: {
+          cent_equivalent: 0,
+          hbar_equivalent: 0,
+          expiration_time: timestamp + 3600, // add 1 hour in timestamp
+        },
+        next_rate: {
+          cent_equivalent: 0,
+          hbar_equivalent: 0,
+          expiration_time: timestamp + 3600 * 2, // add 2 hours in timestamp
+        },
+        timestamp: timestamp.toString(),
+      } as ExchangeRateResponse;
+    }
+  }
+
   public async getNftInfo(address: string | undefined, account: string | null | undefined) {
     if (!address || !account) {
       return [] as NFTResponse;
@@ -429,7 +470,7 @@ class Hedera {
       }
       return nfts;
     } catch (error) {
-      console.error('Error in fetch NFT info', error);
+      console.error('Error in fetch NFT info: ', error);
       return [] as NFTResponse;
     }
   }
@@ -771,13 +812,13 @@ class Hedera {
   }
 
   public async sarStake(stakeData: SarStakeData) {
-    const { positionId, amount, methodName, account, chainId, HBARAmount } = stakeData;
+    const { positionId, amount, methodName, account, chainId, rent } = stakeData;
 
     const accountId = account ? this.hederaId(account) : '';
     const address = SAR_STAKING_ADDRESS[chainId];
     const contractId = address ? this.hederaId(address) : '';
 
-    if (HBARAmount === 0) {
+    if (rent.to(HbarUnit.Hbar).toNumber() === 0) {
       throw new Error('Unpredictable HBAR amount to pay rent');
     }
 
@@ -792,18 +833,46 @@ class Hedera {
 
     if (methodName === 'mint') {
       transaction
-        // Todo: send 0.1$ in HBAR
-        .setPayableAmount(new Hbar(HBARAmount))
+        .setPayableAmount(rent)
         .setFunction(methodName, new ContractFunctionParameters().addUint256(amount as any));
     }
     if (!!positionId && methodName === 'stake') {
       transaction
-        .setPayableAmount(new Hbar(HBARAmount))
+        .setPayableAmount(rent)
         .setFunction(
           methodName,
           new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
         );
     }
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async sarUnstake(unstakeData: SarUnstakeData) {
+    const { positionId, amount, account, chainId, rent } = unstakeData;
+
+    const accountId = account ? this.hederaId(account) : '';
+    const address = SAR_STAKING_ADDRESS[chainId];
+    const contractId = address ? this.hederaId(address) : '';
+
+    if (rent.to(HbarUnit.Hbar).toNumber() === 0) {
+      throw new Error('Unpredictable HBAR amount to pay rent');
+    }
+
+    const maxGas = TRANSACTION_MAX_FEES.REMOVE_LIQUIDITY + TRANSACTION_MAX_FEES.TRANSFER_ERC20;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    transaction
+      .setPayableAmount(rent)
+      .setFunction(
+        'withdraw',
+        new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
+      );
 
     return hashConnect.sendTransaction(transaction, accountId);
   }
@@ -820,6 +889,63 @@ class Hedera {
       .setGas(maxGas)
       .setFunction('createUserStorageContract');
     return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public HBarToTinyBars(value: string) {
+    const [interger, decimals] = value.split('.');
+
+    try {
+      if (Number(value) === 0) {
+        return '0';
+      }
+    } catch {
+      return '0';
+    }
+
+    let formattedNumber = '';
+    // Hbar only accepts 8 decimals
+    if (!!decimals && decimals.length > 8) {
+      // get only the first 8 decimals
+      formattedNumber = interger + decimals.slice(0, 8);
+    } else if (!!decimals) {
+      formattedNumber = value;
+    } else {
+      formattedNumber = interger;
+    }
+
+    const hbarValue = new Hbar(formattedNumber);
+    return hbarValue.to(HbarUnit.Tinybar).toString();
+  }
+
+  public TinyBarToHbar(value: string) {
+    try {
+      const formattedNumber = Math.ceil(Number(value)).toString();
+      return Hbar.fromTinybars(formattedNumber);
+    } catch {
+      return new Hbar(0);
+    }
+  }
+
+  public tinyCentsToTinyBars(
+    tinyCents: string,
+    exchangeRate: {
+      cent_equivalent: number;
+      hbar_equivalent: number;
+    },
+  ) {
+    const tinyCentsRate = this.HBarToTinyBars(exchangeRate.cent_equivalent.toString());
+    const tinyBarRate = this.HBarToTinyBars(exchangeRate.hbar_equivalent.toString());
+
+    try {
+      if (Number(tinyCentsRate) === 0) {
+        return '0';
+      }
+    } catch {
+      return '0';
+    }
+    const tinyHbarPerTinyCents = new Fraction(tinyBarRate, tinyCentsRate); // HBAR/CENTS
+
+    return tinyHbarPerTinyCents.multiply(tinyCents).toFixed(0);
   }
 }
 

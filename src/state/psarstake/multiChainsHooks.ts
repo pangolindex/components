@@ -1,7 +1,7 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyDerivativeSarStake, useDummySarPositions } from './dummyHooks';
-import { useDerivativeHederaSarStake, useHederaSarPositions } from './hederaHooks';
-import { useDerivativeSarStake, useSarPositions } from './hooks';
+import { useDummyDerivativeSarStake, useDummyDerivativeSarUnstake, useDummySarPositions } from './dummyHooks';
+import { useDerivativeHederaSarStake, useDerivativeHederaSarUnstake, useHederaSarPositions } from './hederaHooks';
+import { useDerivativeSarStake, useDerivativeSarUnstake, useSarPositions } from './hooks';
 
 export type useSarPositionsType = {
   [chainId in ChainId]: typeof useSarPositions;
@@ -9,6 +9,10 @@ export type useSarPositionsType = {
 
 export type useDerivativeSarStakeType = {
   [chainId in ChainId]: typeof useDerivativeSarStake;
+};
+
+export type useDerivativeSarUnstakeType = {
+  [chainId in ChainId]: typeof useDerivativeSarUnstake;
 };
 
 export const useSarPositionsHook: useSarPositionsType = {
@@ -61,4 +65,30 @@ export const useDerivativeSarStakeHook: useDerivativeSarStakeType = {
   [ChainId.MOONRIVER]: useDummyDerivativeSarStake,
   [ChainId.MOONBEAM]: useDummyDerivativeSarStake,
   [ChainId.OP]: useDummyDerivativeSarStake,
+};
+
+export const useDerivativeSarUnstakeHook: useDerivativeSarUnstakeType = {
+  [ChainId.FUJI]: useDerivativeSarUnstake,
+  [ChainId.AVALANCHE]: useDerivativeSarUnstake,
+  [ChainId.WAGMI]: useDerivativeSarUnstake,
+  [ChainId.COSTON]: useDerivativeSarUnstake,
+  [ChainId.SONGBIRD]: useDerivativeSarUnstake,
+  [ChainId.HEDERA_TESTNET]: useDerivativeHederaSarUnstake,
+  [ChainId.NEAR_MAINNET]: useDummyDerivativeSarUnstake,
+  [ChainId.NEAR_TESTNET]: useDummyDerivativeSarUnstake,
+  [ChainId.ETHEREUM]: useDummyDerivativeSarUnstake,
+  [ChainId.POLYGON]: useDummyDerivativeSarUnstake,
+  [ChainId.FANTOM]: useDummyDerivativeSarUnstake,
+  [ChainId.XDAI]: useDummyDerivativeSarUnstake,
+  [ChainId.BSC]: useDummyDerivativeSarUnstake,
+  [ChainId.ARBITRUM]: useDummyDerivativeSarUnstake,
+  [ChainId.CELO]: useDummyDerivativeSarUnstake,
+  [ChainId.OKXCHAIN]: useDummyDerivativeSarUnstake,
+  [ChainId.VELAS]: useDummyDerivativeSarUnstake,
+  [ChainId.AURORA]: useDummyDerivativeSarUnstake,
+  [ChainId.CRONOS]: useDummyDerivativeSarUnstake,
+  [ChainId.FUSE]: useDummyDerivativeSarUnstake,
+  [ChainId.MOONRIVER]: useDummyDerivativeSarUnstake,
+  [ChainId.MOONBEAM]: useDummyDerivativeSarUnstake,
+  [ChainId.OP]: useDummyDerivativeSarUnstake,
 };

@@ -199,7 +199,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   );
 }
 
-function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiquidityStaked?: TokenAmount) {
+export function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiquidityStaked?: TokenAmount) {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
@@ -227,7 +227,12 @@ function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiqu
     error,
   };
 }
-// Return some utils functions for unstake
+
+/**
+ *
+ * @param position Id of a Posttion
+ * @returns Return some utils functions for unstake
+ */
 export function useDerivativeSarUnstake(position: Position | null) {
   const [typedValue, setTypedValue] = useState('');
   const [stepIndex, setStepIndex] = useState(0);
