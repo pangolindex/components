@@ -30,7 +30,7 @@ export const TRANSACTION_MAX_FEES = {
   TRANSFER_ERC20: 60000,
   STAKE_LP_TOKEN: 230000,
   COLLECT_REWARDS: 300000,
-  EXIT_CAMPAIGN: 300000,
+  WITHDRAW: 300000,
   NFT_MINT: 800000,
 };
 export interface HederaTokenMetadata {
@@ -231,9 +231,17 @@ export interface RemoveLiquidityData {
   chainId: ChainId;
 }
 
-export interface StakeData {
+export interface StakeOrWithdrawData {
   account: string;
   amount: string;
+  poolId: string;
+  chainId: ChainId;
+  methodName: 'stake' | 'withdraw';
+}
+
+export interface ClaimRewardData {
+  account: string;
+  methodName: string;
   poolId: string;
   chainId: ChainId;
 }
@@ -806,14 +814,14 @@ class Hedera {
     return hashConnect.sendTransaction(transaction, accountId);
   }
 
-  public async stake(stakeData: StakeData) {
-    const { account, amount, poolId, chainId } = stakeData;
+  public async stakeOrWithdraw(stakeOrWithdrawData: StakeOrWithdrawData) {
+    const { account, amount, poolId, chainId, methodName } = stakeOrWithdrawData;
 
     const pangoChefId = PANGOCHEF_ADDRESS[chainId];
     const accountId = account ? this.hederaId(account) : '';
     const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
 
-    const maxGas = TRANSACTION_MAX_FEES.STAKE_LP_TOKEN;
+    const maxGas = methodName === 'stake' ? TRANSACTION_MAX_FEES.STAKE_LP_TOKEN : TRANSACTION_MAX_FEES.WITHDRAW;
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
@@ -822,9 +830,29 @@ class Hedera {
       .setGas(maxGas);
 
     transaction.setFunction(
-      'stake',
+      methodName,
       new ContractFunctionParameters().addUint256(Number(poolId)).addUint256(amount ? amount : (amount as any)),
     );
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async claimReward(claimRewardData: ClaimRewardData) {
+    const { account, methodName, poolId, chainId } = claimRewardData;
+
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
+    const maxGas = TRANSACTION_MAX_FEES.COLLECT_REWARDS;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    transaction.setFunction(methodName, new ContractFunctionParameters().addUint256(Number(poolId)));
 
     return hashConnect.sendTransaction(transaction, accountId);
   }
