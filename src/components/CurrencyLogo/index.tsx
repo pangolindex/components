@@ -1,6 +1,7 @@
 import { CAVAX, ChainId, Currency, Token } from '@pangolindex/sdk';
 import deepEqual from 'deep-equal';
 import React, { useMemo } from 'react';
+import HederaLogo from 'src/assets/images/hedera.svg';
 import NearLogo from 'src/assets/images/near.svg';
 import SongBirdLogo from 'src/assets/images/songbird.png';
 import WgmiLogo from 'src/assets/images/wagmi.png';
@@ -29,6 +30,7 @@ export default function CurrencyLogo({
       currency === CAVAX[ChainId.WAGMI] ||
       currency === CAVAX[ChainId.COSTON] ||
       currency === CAVAX[ChainId.SONGBIRD] ||
+      currency === CAVAX[ChainId.HEDERA_TESTNET] ||
       currency === CAVAX[ChainId.NEAR_TESTNET] ||
       currency === CAVAX[ChainId.NEAR_MAINNET]
     )
@@ -52,6 +54,8 @@ export default function CurrencyLogo({
     return <img src={NearLogo} width={`${size}px`} height={`${size}px`} />;
   } else if (deepEqual(currency, CAVAX[ChainId.SONGBIRD])) {
     return <img src={SongBirdLogo} width={`${size}px`} height={`${size}px`} />;
+  } else if (deepEqual(currency, CAVAX[ChainId.HEDERA_TESTNET])) {
+    return <img src={HederaLogo} width={`${size}px`} height={`${size}px`} />;
   }
 
   return <StyledLogo size={`${size}px`} srcs={srcs} alt={`${currency?.symbol ?? 'token'} logo`} style={style} />;
