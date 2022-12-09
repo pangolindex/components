@@ -11,17 +11,17 @@ import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
-import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useGetBlockTimestamp, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { useCoinGeckoCurrencyPrice, useTokens } from 'src/hooks/Tokens';
-import { usePangoChefContract } from 'src/hooks/useContract';
+import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice, useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { getExtraTokensWeeklyRewardRate, useMinichefPools } from 'src/state/pstake/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks';
 import { decimalToFraction, waitForTransaction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { getExtraTokensWeeklyRewardRate } from '../pstake/hooks';
 import { PangoChefInfo, Pool, PoolType, RewardSummations, UserInfo, ValueVariables } from './types';
 
 export function usePangoChefInfos() {
@@ -975,7 +975,7 @@ export function usePangoChefExtraFarmApr(
 }
 
 /**
- * pangochef stack callback function
+ * pangochef stake callback function
  * @param poolId
  * @param amount
  * @returns callback and error
@@ -989,13 +989,13 @@ export function useEVMPangoChefStakeCallback(
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
 
-  const pangochefContract = usePangoChefContract();
+  const pangoChefContract = usePangoChefContract();
   return useMemo(() => {
     return {
-      callback: async function onSwap(): Promise<string> {
+      callback: async function onStake(): Promise<string> {
         try {
-          if (!pangochefContract) return '';
-          const response: TransactionResponse = await pangochefContract.stake(poolId, amount);
+          if (!pangoChefContract) return '';
+          const response: TransactionResponse = await pangoChefContract.stake(poolId, amount);
           await waitForTransaction(response, 5);
 
           if (response) {
@@ -1020,11 +1020,11 @@ export function useEVMPangoChefStakeCallback(
       },
       error: null,
     };
-  }, [poolId, account, chainId, amount, addTransaction, pangochefContract]);
+  }, [poolId, account, chainId, amount, addTransaction, pangoChefContract]);
 }
 
 /**
- * hedera pangochef stack callback function
+ * hedera pangochef stake callback function
  * @param poolId
  * @param amount
  * @returns callback and error
@@ -1044,15 +1044,15 @@ export function useHederaPangoChefStakeCallback(
     }
 
     return {
-      callback: async function onSwap(): Promise<string> {
+      callback: async function onStake(): Promise<string> {
         try {
-          const args = {
+          const response = await hederaFn.stakeOrWithdraw({
             poolId,
             account,
             chainId,
             amount,
-          };
-          const response = await hederaFn.stake(args);
+            methodName: 'stake',
+          });
 
           if (response) {
             addTransaction(response, {
@@ -1078,7 +1078,247 @@ export function useHederaPangoChefStakeCallback(
   }, [poolId, account, chainId, amount, addTransaction]);
 }
 
-export function useDummyPangoChefStakeCallback(): { callback: null | (() => Promise<string>); error: string | null } {
+export function useDummyPangoChefCallback(): { callback: null | (() => Promise<string>); error: string | null } {
   return { callback: null, error: null };
+}
+
+/**
+ * pangochef claim reward callback function
+ * @param poolId
+ * @param poolType
+ * @returns callback and error
+ */
+export function useEVMPangoChefClaimRewardCallback(
+  poolId: string | null,
+  poolType: PoolType,
+): { callback: null | (() => Promise<string>); error: string | null } {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { t } = useTranslation();
+
+  const png = PNG[chainId];
+
+  const addTransaction = useTransactionAdder();
+
+  const pangoChefContract = usePangoChefContract();
+  return useMemo(() => {
+    return {
+      callback: async function onClaimReward(): Promise<string> {
+        try {
+          if (!pangoChefContract) return '';
+          const method = poolType === PoolType.RELAYER_POOL ? 'claim' : 'harvest';
+
+          const response: TransactionResponse = await pangoChefContract[method](poolId);
+          await waitForTransaction(response, 1);
+          if (response) {
+            addTransaction(response, {
+              summary: t('earn.claimAccumulated', { symbol: png.symbol }),
+            });
+            return response.hash;
+          }
+
+          return '';
+        } catch (error: any) {
+          // if the user rejected the tx, pass this along
+          if (error?.code === 4001) {
+            throw new Error('Transaction rejected.');
+          } else {
+            // otherwise, the error was unexpected and we need to convey that
+            console.error(`Claim failed`, error);
+
+            throw new Error(`error :${error.message}`);
+          }
+        }
+      },
+      error: null,
+    };
+  }, [poolId, account, chainId, poolType, addTransaction, pangoChefContract]);
+}
+
+/**
+ * hedera pangochef claim reward callback function
+ * @param poolId
+ * @param poolType
+ * @returns callback and error
+ */
+export function useHederaPangoChefClaimRewardCallback(
+  poolId: string | null,
+  poolType: PoolType,
+): { callback: null | (() => Promise<string>); error: string | null } {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { t } = useTranslation();
+
+  const addTransaction = useTransactionAdder();
+  const png = PNG[chainId];
+  return useMemo(() => {
+    if (!poolId || !account || !chainId || !poolType) {
+      return { callback: null, error: 'Missing dependencies' };
+    }
+
+    return {
+      callback: async function onClaimReward(): Promise<string> {
+        try {
+          const method = poolType === PoolType.RELAYER_POOL ? 'claim' : 'harvest';
+
+          const args = {
+            poolId,
+            account,
+            chainId,
+            methodName: method,
+          };
+          const response = await hederaFn.claimReward(args);
+
+          if (response) {
+            addTransaction(response, {
+              summary: t('earn.claimAccumulated', { symbol: png.symbol }),
+            });
+            return response.hash;
+          }
+
+          return '';
+        } catch (error: any) {
+          // if the user rejected the tx, pass this along
+          if (error?.code === 4001) {
+            throw new Error('Transaction rejected.');
+          } else {
+            // otherwise, the error was unexpected and we need to convey that
+            console.error(`Claim Reward failed`, error);
+            throw new Error(`error :${error.message}`);
+          }
+        }
+      },
+      error: null,
+    };
+  }, [poolId, account, chainId, poolType, addTransaction]);
+}
+
+export interface WithdrawData {
+  version?: number;
+  poolId: string | undefined;
+  stakedAmount: TokenAmount;
+  stakingRewardAddress?: string;
+}
+
+/**
+ * pangochef withdraw callback function
+ * @param withdrawData
+ * @param version
+ * @returns callback and error
+ */
+export function useEVMPangoChefWithdrawCallback(withdrawData: WithdrawData): {
+  callback: null | (() => Promise<string>);
+  error: string | null;
+} {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { t } = useTranslation();
+  const addTransaction = useTransactionAdder();
+
+  const { version, poolId, stakedAmount, stakingRewardAddress } = withdrawData;
+
+  const poolMap = useMinichefPools();
+  const stakingContract = useStakingContract(stakingRewardAddress);
+  const pangoChefContract = usePangoChefContract();
+
+  const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
+  const contract = version && version <= 2 ? stakingContract : pangoChefContract;
+
+  return useMemo(() => {
+    return {
+      callback: async function onWithdraw(): Promise<string> {
+        try {
+          if (!contract || (version === 2 && !poolMap)) return '';
+
+          const method = version === 1 ? 'exit' : version === 2 ? 'withdrawAndHarvest' : 'withdraw';
+          const args =
+            version === 1
+              ? []
+              : version === 2
+              ? [poolMap[stakedAmount?.token?.address], `0x${stakedAmount?.raw.toString(16)}`, account]
+              : [poolId, `0x${stakedAmount?.raw.toString(16)}`];
+
+          const response: TransactionResponse = await contract[method](...args);
+
+          await waitForTransaction(response, 5);
+
+          if (response) {
+            addTransaction(response, {
+              summary: t('earn.withdrawDepositedLiquidity'),
+            });
+            await refetchMinichefSubgraph();
+            return response.hash;
+          }
+
+          return '';
+        } catch (error: any) {
+          // if the user rejected the tx, pass this along
+          if (error?.code === 4001) {
+            throw new Error('Transaction rejected.');
+          } else {
+            // otherwise, the error was unexpected and we need to convey that
+            console.error(`Withdraw failed`, error);
+
+            throw new Error(`Error :${error.message}`);
+          }
+        }
+      },
+      error: null,
+    };
+  }, [account, chainId, poolId, stakedAmount, addTransaction, contract]);
+}
+
+/**
+ * hedera pangochef withdraw callback function
+ * @param withdrawData
+ * @returns callback and error
+ */
+export function useHederaPangoChefWithdrawCallback(withdrawData: WithdrawData): {
+  callback: null | (() => Promise<string>);
+  error: string | null;
+} {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { t } = useTranslation();
+  const addTransaction = useTransactionAdder();
+  const { poolId, stakedAmount } = withdrawData;
+  return useMemo(() => {
+    if (!account || !chainId || !poolId || !stakedAmount) {
+      return { callback: null, error: 'Missing dependencies' };
+    }
+
+    return {
+      callback: async function onWithdraw(): Promise<string> {
+        try {
+          const response = await hederaFn.stakeOrWithdraw({
+            poolId,
+            account,
+            chainId,
+            amount: stakedAmount?.raw?.toString(),
+            methodName: 'withdraw',
+          });
+
+          if (response) {
+            addTransaction(response, {
+              summary: t('earn.withdrawDepositedLiquidity'),
+            });
+            return response.hash;
+          }
+
+          return '';
+        } catch (error: any) {
+          // if the user rejected the tx, pass this along
+          if (error?.code === 4001) {
+            throw new Error('Transaction rejected.');
+          } else {
+            // otherwise, the error was unexpected and we need to convey that
+            console.error(`Withdraw failed`, error);
+            throw new Error(`Error :${error.message}`);
+          }
+        }
+      },
+      error: null,
+    };
+  }, [account, chainId, poolId, stakedAmount, addTransaction]);
 }
 /* eslint-enable max-lines */
