@@ -537,7 +537,7 @@ class Hedera {
     const transaction = new ContractExecuteTransaction()
       .setContractId(factoryId)
       .setGas(maxGas)
-      .setPayableAmount(Hbar.from(20, HbarUnit.Hbar))
+      .setPayableAmount(Hbar.from(25, HbarUnit.Hbar))
       .setFunction('createPair', new ContractFunctionParameters().addAddress(tokenAAddress).addAddress(tokenBAddress));
 
     return hashConnect.sendTransaction(transaction, accountId);
