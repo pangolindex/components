@@ -189,11 +189,12 @@ export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> 
         symbol?.loading === false &&
         symbolBytes32?.loading === false &&
         decimal?.loading === false &&
-        address
+        address &&
+        decimal?.result?.[0]
       ) {
         const token = new Token(
           chainId,
-          tokenAddress,
+          address,
           decimal?.result?.[0],
           parseStringOrBytes32(symbol?.result?.[0], symbolBytes32?.result?.[0], 'UNKNOWN'),
           parseStringOrBytes32(tokenName?.result?.[0], tokenNameBytes32?.result?.[0], 'Unknown Token'),

@@ -31,7 +31,7 @@ const currencyKey = (columnIndex: number, rowIndex: number, data: Currency[], ch
     ? currency.address
     : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
     ? (CAVAX[chainId]?.symbol as string)
-    : '';
+    : `${rowIndex}-${columnIndex}`;
 };
 
 const SelectTokenDrawer: React.FC<Props> = (props) => {
