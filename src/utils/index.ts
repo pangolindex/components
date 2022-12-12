@@ -41,7 +41,7 @@ export function isDummyAddress(value: any): string | false {
   return value;
 }
 
-export const isAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
   [ChainId.FUJI]: isAddress,
   [ChainId.AVALANCHE]: isAddress,
   [ChainId.WAGMI]: isAddress,
