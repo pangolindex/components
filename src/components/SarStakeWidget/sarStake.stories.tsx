@@ -1,6 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
-import { Position } from 'src/state/psarstake/hooks';
+import { Position } from 'src/state/psarstake/types';
 import SarManageWidget from '../SarManageWidget';
 import SarNFTPortfolio from '../SarNFTPortfolio';
 import SarStakeWidget from '.';

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
@@ -23,7 +24,7 @@ import {
   currencyEquals,
 } from '@pangolindex/sdk';
 import { hederaFn } from 'src/utils/hedera';
-import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
+import { MetamaskError, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { wait } from './retry';
 
@@ -40,26 +41,56 @@ export function isDummyAddress(value: any): string | false {
   return value;
 }
 
-export const isAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
   [ChainId.FUJI]: isAddress,
   [ChainId.AVALANCHE]: isAddress,
   [ChainId.WAGMI]: isAddress,
   [ChainId.COSTON]: isAddress,
   [ChainId.SONGBIRD]: isAddress,
-  [ChainId.HEDERA_TESTNET]: hederaFn.isHederaIdValid,
+  [ChainId.HEDERA_TESTNET]: hederaFn.isAddressValid,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
+  [ChainId.ETHEREUM]: isDummyAddress,
+  [ChainId.POLYGON]: isDummyAddress,
+  [ChainId.FANTOM]: isDummyAddress,
+  [ChainId.XDAI]: isDummyAddress,
+  [ChainId.BSC]: isDummyAddress,
+  [ChainId.ARBITRUM]: isDummyAddress,
+  [ChainId.CELO]: isDummyAddress,
+  [ChainId.OKXCHAIN]: isDummyAddress,
+  [ChainId.VELAS]: isDummyAddress,
+  [ChainId.AURORA]: isDummyAddress,
+  [ChainId.CRONOS]: isDummyAddress,
+  [ChainId.FUSE]: isDummyAddress,
+  [ChainId.MOONRIVER]: isDummyAddress,
+  [ChainId.MOONBEAM]: isDummyAddress,
+  [ChainId.OP]: isDummyAddress,
 };
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
-  43113: CHAINS[ChainId.FUJI].blockExplorerUrls?.[0] || '',
-  43114: CHAINS[ChainId.AVALANCHE].blockExplorerUrls?.[0] || '',
-  11111: CHAINS[ChainId.WAGMI].blockExplorerUrls?.[0] || '',
-  16: CHAINS[ChainId.COSTON].blockExplorerUrls?.[0] || '',
-  19: CHAINS[ChainId.SONGBIRD].blockExplorerUrls?.[0] || '',
-  296: CHAINS[ChainId.HEDERA_TESTNET].blockExplorerUrls?.[0] || '',
-  329847900: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls?.[0] || '',
-  329847901: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls?.[0] || '',
+  [ChainId.FUJI]: CHAINS[ChainId.FUJI].blockExplorerUrls?.[0] || '',
+  [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].blockExplorerUrls?.[0] || '',
+  [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].blockExplorerUrls?.[0] || '',
+  [ChainId.COSTON]: CHAINS[ChainId.COSTON].blockExplorerUrls?.[0] || '',
+  [ChainId.SONGBIRD]: CHAINS[ChainId.SONGBIRD].blockExplorerUrls?.[0] || '',
+  [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET].blockExplorerUrls?.[0] || '',
+  [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls?.[0] || '',
+  [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls?.[0] || '',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
 };
 
 const transactionPath: { [chainId in ChainId]: string } = {
@@ -71,6 +102,21 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'tx',
   [ChainId.NEAR_MAINNET]: 'transactions',
   [ChainId.NEAR_TESTNET]: 'transactions',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
 };
 
 const addressPath: { [chainId in ChainId]: string } = {
@@ -82,6 +128,21 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'address',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
 };
 
 const blockPath: { [chainId in ChainId]: string } = {
@@ -93,6 +154,21 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'block',
   [ChainId.NEAR_MAINNET]: 'blocks',
   [ChainId.NEAR_TESTNET]: 'blocks',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
 };
 
 const tokenPath: { [chainId in ChainId]: string } = {
@@ -104,6 +180,21 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'token',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
 };
 
 export function getEtherscanLink(
@@ -126,6 +217,52 @@ export function getEtherscanLink(
     case 'address':
     default: {
       return `${prefix}/${addressPath[chainId]}/${data}`;
+    }
+  }
+}
+
+const walletProvider = () => {
+  if (window.xfi && window.xfi.ethereum) {
+    return window.xfi.ethereum;
+  } else if (window.bitkeep && window.isBitKeep) {
+    return window.bitkeep.ethereum;
+  }
+  return window.ethereum;
+};
+
+export async function changeNetwork(chain: Chain) {
+  const { ethereum } = window;
+
+  if (ethereum) {
+    try {
+      await walletProvider().request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
+      });
+      window.location.reload();
+    } catch (error) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      const metamask = error as MetamaskError;
+      if (metamask.code === 4902) {
+        try {
+          await walletProvider().request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainName: chain.name,
+                chainId: `0x${chain?.chain_id?.toString(16)}`,
+                //nativeCurrency: chain.nativeCurrency,
+                rpcUrls: [chain.rpc_uri],
+                blockExplorerUrls: chain.blockExplorerUrls,
+                iconUrls: chain.logo,
+                nativeCurrency: chain.nativeCurrency,
+              },
+            ],
+          });
+        } catch (_error) {
+          return;
+        }
+      }
     }
   }
 }

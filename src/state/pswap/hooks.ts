@@ -22,7 +22,7 @@ import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { AppState, useDispatch, useSelector } from 'src/state';
-import { isAddress, isAddressMapping, isEvmChain } from 'src/utils';
+import { checkRecipientAddressMapping, isAddress, isEvmChain } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useUserSlippageTolerance } from '../puser/hooks';
@@ -161,7 +161,7 @@ export function useDerivedSwapInfo(): {
 
   const toggledVersion = useToggledVersion();
 
-  const isAddress = isAddressMapping[chainId];
+  const checkRecipientAddress = checkRecipientAddressMapping[chainId];
 
   const {
     independentField,
@@ -173,7 +173,7 @@ export function useDerivedSwapInfo(): {
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
-  const recipientAddress = isEvmChain(chainId) ? isAddress(recipient) : recipient;
+  const recipientAddress = isEvmChain(chainId) && recipient ? checkRecipientAddress(recipient) : recipient;
   const to: string | null = (recipientAddress ? recipientAddress : account) ?? null;
 
   const relevantTokenBalances = useCurrencyBalances(chainId, account ?? undefined, [
@@ -221,7 +221,8 @@ export function useDerivedSwapInfo(): {
     inputError = inputError ?? 'Select a token';
   }
 
-  const formattedTo = isEvmChain(chainId) ? isAddress(to) : to;
+  const formattedTo = to;
+
   if (!to || !formattedTo) {
     inputError = inputError ?? 'Enter a recipient';
   } else {
@@ -284,7 +285,7 @@ export function useHederaSwapTokenAssociated(): {
 
   const outputCurrency = useCurrency(outputCurrencyId);
   const token = outputCurrency ? wrappedCurrency(outputCurrency, chainId) : undefined;
-  const { associate, isLoading, hederaAssociated } = useHederaTokenAssociated(token);
+  const { associate, isLoading, hederaAssociated } = useHederaTokenAssociated(token?.address, token?.symbol);
 
   return {
     associate,

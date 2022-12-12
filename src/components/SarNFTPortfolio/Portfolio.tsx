@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMedia, useWindowSize } from 'react-use';
-import { Position } from 'src/state/psarstake/hooks';
+import { Position } from 'src/state/psarstake/types';
 import { MEDIA_WIDTHS } from 'src/theme';
 import { scrollElementIntoView } from 'src/utils';
 import { Box } from '../Box';
@@ -94,7 +94,9 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
 
   const renderItems = () => {
     return currentItems.map((position, index) => {
-      const svg = Buffer.from(position?.uri.image.replace('data:image/svg+xml;base64,', ''), 'base64').toString(); // decode base64
+      const svg = position?.uri?.image
+        ? Buffer.from(position.uri.image.replace('data:image/svg+xml;base64,', ''), 'base64').toString()
+        : ''; // decode base64
       const isSelected = !!selectedPositonId && position?.id.eq(selectedPositonId);
       return (
         <Box

@@ -189,14 +189,15 @@ export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> 
         symbol?.loading === false &&
         symbolBytes32?.loading === false &&
         decimal?.loading === false &&
-        address
+        address &&
+        decimal?.result?.[0]
       ) {
         const token = new Token(
           chainId,
-          tokenAddress,
+          address,
           decimal?.result?.[0],
-          parseStringOrBytes32(symbol.result?.[0], symbolBytes32.result?.[0], 'UNKNOWN'),
-          parseStringOrBytes32(tokenName.result?.[0], tokenNameBytes32.result?.[0], 'Unknown Token'),
+          parseStringOrBytes32(symbol?.result?.[0], symbolBytes32?.result?.[0], 'UNKNOWN'),
+          parseStringOrBytes32(tokenName?.result?.[0], tokenNameBytes32?.result?.[0], 'Unknown Token'),
         );
 
         acc.push(token);
@@ -423,7 +424,10 @@ export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
   );
 }
 
-export function useHederaTokenAssociated(token: Token | undefined): {
+export function useHederaTokenAssociated(
+  address: string | undefined,
+  symbol: string | undefined,
+): {
   associate: undefined | (() => Promise<void>);
   isLoading: boolean;
   hederaAssociated: boolean;
@@ -432,20 +436,18 @@ export function useHederaTokenAssociated(token: Token | undefined): {
   const addTransaction = useTransactionAdder();
   const chainId = useChainId();
 
-  const tokenAddress = token?.address;
-
   const [loading, setLoading] = useState(false);
 
   const {
     isLoading,
     data: isAssociated = true,
     refetch,
-  } = useQuery(['check-hedera-token-associated', tokenAddress, account], async () => {
-    if (!tokenAddress || !account || !hederaFn.isHederaChain(chainId)) return;
+  } = useQuery(['check-hedera-token-associated', address, account], async () => {
+    if (!address || !account || !hederaFn.isHederaChain(chainId)) return;
 
     const tokens = await hederaFn.getAccountAssociatedTokens(account);
 
-    const currencyId = account ? hederaFn.hederaId(tokenAddress) : '';
+    const currencyId = account ? hederaFn.hederaId(address) : '';
 
     const token = (tokens || []).find((token) => token.tokenId === currencyId);
 
@@ -455,16 +457,16 @@ export function useHederaTokenAssociated(token: Token | undefined): {
   return useMemo(() => {
     return {
       associate:
-        account && tokenAddress
+        account && address
           ? async () => {
               try {
                 setLoading(true);
-                const txReceipt = await hederaFn.tokenAssociate(tokenAddress, account);
+                const txReceipt = await hederaFn.tokenAssociate(address, account);
                 if (txReceipt) {
                   setLoading(false);
                   refetch();
 
-                  addTransaction(txReceipt, { summary: `${token?.symbol} successfully  associated` });
+                  addTransaction(txReceipt, { summary: `${symbol} successfully  associated` });
                 }
               } catch (error) {
                 setLoading(false);
@@ -475,5 +477,5 @@ export function useHederaTokenAssociated(token: Token | undefined): {
       isLoading: loading,
       hederaAssociated: isAssociated,
     };
-  }, [chainId, tokenAddress, account, loading, isLoading, isAssociated]);
+  }, [chainId, address, symbol, account, loading, isLoading, isAssociated]);
 }

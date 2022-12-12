@@ -35,6 +35,7 @@ import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { ChainField, CurrencyField, TransactionStatus } from 'src/state/pbridge/actions';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
+import { changeNetwork } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import BridgeInputsWidget from '../BridgeInputsWidget';
 import {
@@ -282,6 +283,16 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           <Button variant="primary" onClick={toggleWalletModal}>
             Connect Wallet
           </Button>
+        ) : sdkChainId !== fromChain?.chain_id ? (
+          <Button
+            variant="primary"
+            onClick={() => {
+              fromChain && changeNetwork(fromChain);
+            }}
+            isDisabled={!fromChain}
+          >
+            {fromChain ? 'Switch Chain' : 'Please Select Chain'}
+          </Button>
         ) : (
           <Button
             variant="primary"
@@ -299,7 +310,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           collapse={
             <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
               <Text fontSize={16} fontWeight={500} color={'bridge.text'}>
-                {t('bridge.bridgeCard.advanceOptions')}
+                {t('bridge.bridgeCard.advancedOptions')}
               </Text>
               <ChevronDown size={16} color={theme.bridge?.text} />
             </Box>
@@ -307,7 +318,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           expand={
             <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
               <Text fontSize={16} fontWeight={500} color={'bridge.text'}>
-                {t('bridge.bridgeCard.advanceOptions')}
+                {t('bridge.bridgeCard.advancedOptions')}
               </Text>
               <ChevronRight size={16} color={theme.bridge?.text} />
             </Box>

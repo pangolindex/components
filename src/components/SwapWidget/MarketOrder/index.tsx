@@ -30,7 +30,7 @@ import {
   useSwapState,
 } from 'src/state/pswap/hooks';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { isAddressMapping, isTokenOnList } from 'src/utils';
+import { checkRecipientAddressMapping, isTokenOnList } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -98,7 +98,7 @@ const MarketOrder: React.FC<Props> = ({
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
   const useSwapCallback = useSwapCallbackHook[chainId];
 
-  const isAddress = isAddressMapping[chainId];
+  const checkRecipientAddress = checkRecipientAddressMapping[chainId];
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
@@ -608,7 +608,9 @@ const MarketOrder: React.FC<Props> = ({
                   const withoutSpaces = value.replace(/\s+/g, '');
                   onChangeRecipient(withoutSpaces);
                 }}
-                addonLabel={recipient && !isAddress(recipient) && <Text color="warning">Invalid Address</Text>}
+                addonLabel={
+                  recipient && !checkRecipientAddress(recipient) && <Text color="warning">Invalid Address</Text>
+                }
               />
             </Box>
           ) : null}
