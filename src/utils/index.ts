@@ -41,13 +41,13 @@ export function isDummyAddress(value: any): string | false {
   return value;
 }
 
-export const isAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
   [ChainId.FUJI]: isAddress,
   [ChainId.AVALANCHE]: isAddress,
   [ChainId.WAGMI]: isAddress,
   [ChainId.COSTON]: isAddress,
   [ChainId.SONGBIRD]: isAddress,
-  [ChainId.HEDERA_TESTNET]: hederaFn.isAddressValid,
+  [ChainId.HEDERA_TESTNET]: hederaFn.isHederaIdValid,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
   [ChainId.ETHEREUM]: isDummyAddress,
