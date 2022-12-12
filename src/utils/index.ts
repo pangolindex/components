@@ -47,7 +47,7 @@ export const isAddressMapping: { [chainId in ChainId]: (value: any) => string | 
   [ChainId.WAGMI]: isAddress,
   [ChainId.COSTON]: isAddress,
   [ChainId.SONGBIRD]: isAddress,
-  [ChainId.HEDERA_TESTNET]: hederaFn.isHederaIdValid,
+  [ChainId.HEDERA_TESTNET]: hederaFn.isAddressValid,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
   [ChainId.ETHEREUM]: isDummyAddress,

@@ -296,6 +296,14 @@ class Hedera {
     }
   };
 
+  isAddressValid = (address: string): string | false => {
+    if (address && hethers.utils.isAddress(address.toLowerCase())) {
+      return address;
+    } else {
+      return false;
+    }
+  };
+
   hederaId = (address: string) => {
     return hethers.utils.asAccountString(address);
   };
