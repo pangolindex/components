@@ -36,6 +36,50 @@ export function useHederaExchangeRate() {
 }
 
 /**
+ * This hook return the rent value of a position
+ * @param positionId The id of position
+ * Returns rent value in tiny bars
+ */
+function useHederaRent(positionId: string | undefined) {
+  const sarStakingContract = useSarStakingContract();
+  const blockTimestamp = useGetBlockTimestamp();
+
+  const positionState = useSingleCallResult(
+    positionId ? sarStakingContract : undefined,
+    'positions',
+    positionId ? [positionId] : [],
+  );
+
+  const { data: exchangeRate, isLoading: isLoadingRate } = useHederaExchangeRate();
+
+  /*
+    rentTime = block.timestamp - position.lastUpdate;
+    rentAmount = rentTime * tinyCentsToTinyBars(500_000_000) / (90 days/s);
+  */
+
+  return useMemo(() => {
+    const isLoading = isLoadingRate || positionState.loading;
+    if (!positionId || !blockTimestamp || isLoading || !exchangeRate || positionState.error || !positionState.valid) {
+      return undefined;
+    }
+
+    try {
+      const tinyBars = hederaFn.tinyCentsToTinyBars('500000000', exchangeRate.current_rate);
+      const lastUpdate = positionState.result?.lastUpdate;
+      const rentTime = Number(blockTimestamp) - lastUpdate;
+      const days = 90 * 24 * 60 * 60;
+      const rentAmount = JSBI.divide(
+        JSBI.multiply(JSBI.BigInt(rentTime.toString()), JSBI.BigInt(tinyBars)),
+        JSBI.BigInt(days.toString()),
+      );
+      return new Fraction('12', '10').multiply(rentAmount).toFixed(0);
+    } catch {
+      return undefined;
+    }
+  }, [positionId, blockTimestamp, exchangeRate, isLoadingRate, positionState, sarStakingContract]);
+}
+
+/**
  *
  * @param positionId Id of a Position
  * @returns Return some utils functions for stake more or create a new Position
@@ -109,6 +153,7 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
   };
 
   const { data: exchangeRate, isLoading: isloadingExchangeRate } = useHederaExchangeRate();
+  const tinyRentAddMore = useHederaRent(positionId?.toString());
 
   const {
     associate: associate,
@@ -117,7 +162,7 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
   } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
   const onStake = async () => {
-    if (!sarStakingContract || !parsedAmount || !account || isLoading || !exchangeRate) {
+    if (!sarStakingContract || !parsedAmount || !account || isLoading || !exchangeRate || !tinyRentAddMore) {
       return;
     }
     setAttempting(true);
@@ -132,7 +177,9 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
       // we need to send 0.1$ in hbar amount to mint
       const tinyCents = hederaFn.HBarToTinyBars('10'); // 10 cents = 0.1$
       const tinyRent = hederaFn.tinyCentsToTinyBars(tinyCents, exchangeRate.current_rate);
-      const rent = hederaFn.TinyBarToHbar(tinyRent);
+      console.log({ tinyRent, tinyRentAddMore });
+      const rent = hederaFn.TinyBarToHbar(!positionId ? tinyRent : tinyRentAddMore);
+      console.log({ rent });
 
       const response = await hederaFn.sarStake({
         methodName: !positionId ? 'mint' : 'stake',
@@ -202,56 +249,13 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
       isAssociated,
       exchangeRate,
       isloadingExchangeRate,
+      tinyRentAddMore,
       associate,
       approveCallback,
       onUserInput,
       handleMax,
     ],
   );
-}
-
-/**
- * This hook return the rent value of a position
- * @param positionId The id of position
- * Returns rent value in tiny bars
- */
-function useHederaRent(positionId: string | undefined) {
-  const sarStakingContract = useSarStakingContract();
-  const blockTimestamp = useGetBlockTimestamp();
-
-  const positionState = useSingleCallResult(
-    positionId ? sarStakingContract : undefined,
-    'positions',
-    positionId ? [positionId] : [],
-  );
-
-  const { data: exchangeRate, isLoading: isLoadingRate } = useHederaExchangeRate();
-
-  /*
-    rentTime = block.timestamp - position.lastUpdate;
-    rentAmount = rentTime * tinyCentsToTinyBars(500_000_000) / (90 days/s);
-  */
-
-  return useMemo(() => {
-    const isLoading = isLoadingRate || positionState.loading;
-    if (!positionId || !blockTimestamp || isLoading || !exchangeRate || positionState.error || !positionState.valid) {
-      return undefined;
-    }
-
-    try {
-      const tinyBars = hederaFn.tinyCentsToTinyBars('500000000', exchangeRate.current_rate);
-      const lastUpdate = positionState.result?.lastUpdate;
-      const rentTime = Number(blockTimestamp) - lastUpdate;
-      const days = 90 * 24 * 60 * 60;
-      const rentAmount = JSBI.divide(
-        JSBI.multiply(JSBI.BigInt(rentTime.toString()), JSBI.BigInt(tinyBars)),
-        JSBI.BigInt(days.toString()),
-      );
-      return new Fraction('12', '10').multiply(rentAmount).toFixed(0);
-    } catch {
-      return undefined;
-    }
-  }, [positionId, blockTimestamp, exchangeRate, isLoadingRate, positionState, sarStakingContract]);
 }
 
 /**
