@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { JSBI, TokenAmount } from '@pangolindex/sdk';
+import { JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ZERO_ADDRESS } from 'src/constants';
@@ -11,6 +11,7 @@ import { useSarStakingContract } from 'src/hooks/useContract';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { CallState } from '../pmulticall/hooks';
 import { useDerivedStakeInfo } from '../pstake/hooks';
+import { tryParseAmount } from '../pswap/hooks';
 import { useTransactionAdder } from '../ptransactions/hooks';
 import { useTokenBalanceHook } from '../pwallet/multiChainsHooks';
 import { Position, URI } from './types';
@@ -163,4 +164,121 @@ export function formatPosition(
   });
   // remove the empty positions
   return { positions: positions.filter((position) => !!position), isLoading: false };
+}
+
+export function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiquidityStaked?: TokenAmount) {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+
+  const { t } = useTranslation();
+
+  const parsedInput = tryParseAmount(typedValue, stakingToken, chainId);
+  const parsedAmount =
+    parsedInput && userLiquidityStaked && JSBI.lessThanOrEqual(parsedInput.raw, userLiquidityStaked.raw)
+      ? parsedInput
+      : undefined;
+
+  let error: string | undefined;
+  if (!account) {
+    error = t('stakeHooks.connectWallet');
+  }
+  if (parsedInput && !parsedAmount) {
+    error = error ?? t('stakeHooks.insufficientBalance', { symbol: stakingToken.symbol });
+  }
+  if (!parsedAmount) {
+    error = error ?? t('stakeHooks.enterAmount');
+  }
+
+  return {
+    parsedAmount,
+    error,
+  };
+}
+
+/**
+ *
+ * @param position The position
+ * @returns  Returns the defaults functions used for all sar unstake hooks
+ */
+export function useDefaultUnstake(position: Position | null) {
+  const [typedValue, setTypedValue] = useState('');
+  const [stepIndex, setStepIndex] = useState(0);
+  const [unstakeError, setUnstakeError] = useState<string | null>(null);
+
+  const [attempting, setAttempting] = useState(false);
+  const [hash, setHash] = useState<string | null>(null);
+
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+
+  const { t } = useTranslation();
+  const addTransaction = useTransactionAdder();
+
+  const png = PNG[chainId];
+
+  const sarStakingContract = useSarStakingContract();
+
+  const stakedAmount = new TokenAmount(png, (position?.balance ?? 0).toString());
+
+  const { parsedAmount, error } = useUnstakeParseAmount(typedValue, png, stakedAmount);
+
+  // used for max input button
+  const maxAmountInput = maxAmountSpend(chainId, stakedAmount);
+
+  const wrappedOnDismiss = useCallback(() => {
+    setUnstakeError(null);
+    setTypedValue('');
+    setStepIndex(0);
+    setHash(null);
+    setAttempting(false);
+  }, []);
+
+  const onUserInput = useCallback((_typedValue: string) => {
+    setTypedValue(_typedValue);
+  }, []);
+
+  const handleMax = useCallback(() => {
+    maxAmountInput && onUserInput(maxAmountInput.toExact());
+    setStepIndex(4);
+  }, [maxAmountInput, onUserInput]);
+
+  const onChangePercentage = (value: number) => {
+    if (stakedAmount.lessThan('0')) {
+      setTypedValue('0');
+      return;
+    }
+    if (value === 100) {
+      setTypedValue(stakedAmount.toExact());
+    } else if (value === 0) {
+      setTypedValue('0');
+    } else {
+      const newAmount = stakedAmount.multiply(JSBI.BigInt(value)).divide(JSBI.BigInt(100)) as TokenAmount;
+
+      setTypedValue(newAmount.toSignificant(6));
+    }
+  };
+
+  return {
+    typedValue,
+    stepIndex,
+    chainId,
+    setStepIndex,
+    unstakeError,
+    setUnstakeError,
+    attempting,
+    setAttempting,
+    hash,
+    setHash,
+    account,
+    t,
+    addTransaction,
+    png,
+    sarStakingContract,
+    parsedAmount,
+    error,
+    wrappedOnDismiss,
+    onUserInput,
+    handleMax,
+    onChangePercentage,
+  };
 }

@@ -1,22 +1,17 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
-import { Fraction, JSBI, TokenAmount } from '@pangolindex/sdk';
-import { useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Fraction, JSBI } from '@pangolindex/sdk';
+import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { PNG } from 'src/constants/tokens';
 import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
 import { useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useHederaSarNFTContract, useSarStakingContract } from 'src/hooks/useContract';
 import { existSarContract } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
-import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { useTransactionAdder } from '../ptransactions/hooks';
-import { useUnstakeParseAmount } from './hooks';
 import { Position, URI } from './types';
-import { formatPosition, useDefaultSarStake } from './utils';
+import { formatPosition, useDefaultSarStake, useDefaultUnstake } from './utils';
 
 export function useHederaExchangeRate() {
   return useQuery(
@@ -223,62 +218,29 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
  * @returns Return some utils functions for unstake
  */
 export function useDerivativeHederaSarUnstake(position: Position | null) {
-  const [typedValue, setTypedValue] = useState('');
-  const [stepIndex, setStepIndex] = useState(0);
-  const [unstakeError, setUnstakeError] = useState<string | null>(null);
-
-  const [attempting, setAttempting] = useState(false);
-  const [hash, setHash] = useState<string | null>(null);
-
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-
-  const { t } = useTranslation();
-  const addTransaction = useTransactionAdder();
-
-  const png = PNG[chainId];
-
-  const sarStakingContract = useSarStakingContract();
-
-  const stakedAmount = new TokenAmount(png, (position?.balance ?? 0).toString());
-
-  const { parsedAmount, error } = useUnstakeParseAmount(typedValue, png, stakedAmount);
-
-  // used for max input button
-  const maxAmountInput = maxAmountSpend(chainId, stakedAmount);
-
-  const wrappedOnDismiss = useCallback(() => {
-    setUnstakeError(null);
-    setTypedValue('');
-    setStepIndex(0);
-    setHash(null);
-    setAttempting(false);
-  }, []);
-
-  const onUserInput = useCallback((_typedValue: string) => {
-    setTypedValue(_typedValue);
-  }, []);
-
-  const handleMax = useCallback(() => {
-    maxAmountInput && onUserInput(maxAmountInput.toExact());
-    setStepIndex(4);
-  }, [maxAmountInput, onUserInput]);
-
-  const onChangePercentage = (value: number) => {
-    if (stakedAmount.lessThan('0')) {
-      setTypedValue('0');
-      return;
-    }
-    if (value === 100) {
-      setTypedValue(stakedAmount.toExact());
-    } else if (value === 0) {
-      setTypedValue('0');
-    } else {
-      const newAmount = stakedAmount.multiply(JSBI.BigInt(value)).divide(JSBI.BigInt(100)) as TokenAmount;
-
-      setTypedValue(newAmount.toSignificant(6));
-    }
-  };
+  const {
+    account,
+    addTransaction,
+    attempting,
+    chainId,
+    error,
+    handleMax,
+    hash,
+    onChangePercentage,
+    onUserInput,
+    parsedAmount,
+    png,
+    sarStakingContract,
+    setAttempting,
+    setHash,
+    setStepIndex,
+    setUnstakeError,
+    stepIndex,
+    t,
+    typedValue,
+    unstakeError,
+    wrappedOnDismiss,
+  } = useDefaultUnstake(position);
 
   const tinyRent = useHederaRent(position?.id?.toHexString());
 

@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
-import { JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import { TokenAmount } from '@pangolindex/sdk';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIGNUMBER_ZERO } from 'src/constants';
@@ -10,12 +10,10 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useSarStakingContract } from 'src/hooks/useContract';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
-import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { tryParseAmount } from '../pswap/hooks';
 import { useTransactionAdder } from '../ptransactions/hooks';
 import { Position, URI } from './types';
-import { formatPosition, useDefaultSarStake } from './utils';
+import { formatPosition, useDefaultSarStake, useDefaultUnstake } from './utils';
 
 // Return the info of the sar stake
 export function useSarStakeInfo() {
@@ -158,97 +156,34 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   );
 }
 
-export function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiquidityStaked?: TokenAmount) {
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-
-  const { t } = useTranslation();
-
-  const parsedInput = tryParseAmount(typedValue, stakingToken, chainId);
-  const parsedAmount =
-    parsedInput && userLiquidityStaked && JSBI.lessThanOrEqual(parsedInput.raw, userLiquidityStaked.raw)
-      ? parsedInput
-      : undefined;
-
-  let error: string | undefined;
-  if (!account) {
-    error = t('stakeHooks.connectWallet');
-  }
-  if (parsedInput && !parsedAmount) {
-    error = error ?? t('stakeHooks.insufficientBalance', { symbol: stakingToken.symbol });
-  }
-  if (!parsedAmount) {
-    error = error ?? t('stakeHooks.enterAmount');
-  }
-
-  return {
-    parsedAmount,
-    error,
-  };
-}
-
 /**
  *
  * @param position Id of a Posttion
  * @returns Return some utils functions for unstake
  */
 export function useDerivativeSarUnstake(position: Position | null) {
-  const [typedValue, setTypedValue] = useState('');
-  const [stepIndex, setStepIndex] = useState(0);
-  const [unstakeError, setUnstakeError] = useState<string | null>(null);
-
-  const [attempting, setAttempting] = useState(false);
-  const [hash, setHash] = useState<string | null>(null);
-
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-
-  const { t } = useTranslation();
-  const addTransaction = useTransactionAdder();
-
-  const png = PNG[chainId];
-
-  const sarStakingContract = useSarStakingContract();
-
-  const stakedAmount = new TokenAmount(png, (position?.balance ?? 0).toString());
-
-  const { parsedAmount, error } = useUnstakeParseAmount(typedValue, png, stakedAmount);
-
-  // used for max input button
-  const maxAmountInput = maxAmountSpend(chainId, stakedAmount);
-
-  const wrappedOnDismiss = useCallback(() => {
-    setUnstakeError(null);
-    setTypedValue('');
-    setStepIndex(0);
-    setHash(null);
-    setAttempting(false);
-  }, []);
-
-  const onUserInput = useCallback((_typedValue: string) => {
-    setTypedValue(_typedValue);
-  }, []);
-
-  const handleMax = useCallback(() => {
-    maxAmountInput && onUserInput(maxAmountInput.toExact());
-    setStepIndex(4);
-  }, [maxAmountInput, onUserInput]);
-
-  const onChangePercentage = (value: number) => {
-    if (stakedAmount.lessThan('0')) {
-      setTypedValue('0');
-      return;
-    }
-    if (value === 100) {
-      setTypedValue(stakedAmount.toExact());
-    } else if (value === 0) {
-      setTypedValue('0');
-    } else {
-      const newAmount = stakedAmount.multiply(JSBI.BigInt(value)).divide(JSBI.BigInt(100)) as TokenAmount;
-
-      setTypedValue(newAmount.toSignificant(6));
-    }
-  };
+  const {
+    account,
+    addTransaction,
+    attempting,
+    error,
+    handleMax,
+    hash,
+    onChangePercentage,
+    onUserInput,
+    parsedAmount,
+    png,
+    sarStakingContract,
+    setAttempting,
+    setHash,
+    setStepIndex,
+    setUnstakeError,
+    stepIndex,
+    t,
+    typedValue,
+    unstakeError,
+    wrappedOnDismiss,
+  } = useDefaultUnstake(position);
 
   const onUnstake = async () => {
     if (!sarStakingContract || !parsedAmount || !position) {
