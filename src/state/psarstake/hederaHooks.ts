@@ -4,23 +4,19 @@ import { Fraction, JSBI, TokenAmount } from '@pangolindex/sdk';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
 import { useHederaTokenAssociated } from 'src/hooks/Tokens';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
-import { useHederaApproveCallback } from 'src/hooks/useApproveCallback';
+import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useHederaSarNFTContract, useSarStakingContract } from 'src/hooks/useContract';
 import { existSarContract } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { useDerivedStakeInfo } from '../pstake/hooks';
 import { useTransactionAdder } from '../ptransactions/hooks';
-import { useTokenBalance } from '../pwallet/hooks';
 import { useUnstakeParseAmount } from './hooks';
 import { Position, URI } from './types';
+import { formatPosition, useDefaultSarStake } from './utils';
 
 export function useHederaExchangeRate() {
   return useQuery(
@@ -73,7 +69,8 @@ function useHederaRent(positionId: string | undefined) {
         JSBI.BigInt(days.toString()),
       );
       return new Fraction('12', '10').multiply(rentAmount).toFixed(0);
-    } catch {
+    } catch (error) {
+      console.log(error);
       return undefined;
     }
   }, [positionId, blockTimestamp, exchangeRate, isLoadingRate, positionState, sarStakingContract]);
@@ -85,72 +82,35 @@ function useHederaRent(positionId: string | undefined) {
  * @returns Return some utils functions for stake more or create a new Position
  */
 export function useDerivativeHederaSarStake(positionId?: BigNumber) {
-  const [attempting, setAttempting] = useState(false);
-  const [hash, setHash] = useState<string | null>(null);
-  const [typedValue, setTypedValue] = useState('');
-  const [stepIndex, setStepIndex] = useState(4);
-  const [stakeError, setStakeError] = useState<string | null>(null);
+  const {
+    account,
+    addTransaction,
+    approval,
+    approveCallback,
+    attempting,
+    chainId,
+    dollerWorth,
+    error,
+    handleMax,
+    hash,
+    mixpanel,
+    onChangePercentage,
+    onUserInput,
+    parsedAmount,
+    png,
+    sarStakingContract,
+    setAttempting,
+    setHash,
+    setStakeError,
+    setStepIndex,
+    stakeError,
+    stepIndex,
+    t,
+    typedValue,
+    wrappedOnDismiss,
+  } = useDefaultSarStake();
 
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-
-  const sarStakingContract = useSarStakingContract();
   const sarNftContract = useHederaSarNFTContract();
-
-  const addTransaction = useTransactionAdder();
-  const { t } = useTranslation();
-
-  const png = PNG[chainId];
-
-  const userPngBalance = useTokenBalance(account ?? ZERO_ADDRESS, png);
-
-  // used for max input button
-  const maxAmountInput = maxAmountSpend(chainId, userPngBalance);
-
-  const useUSDCPrice = useUSDCPriceHook[chainId];
-  const usdcPrice = useUSDCPrice(png);
-  const dollerWorth =
-    userPngBalance?.greaterThan('0') && usdcPrice ? Number(typedValue) * Number(usdcPrice.toFixed()) : undefined;
-
-  const wrappedOnDismiss = useCallback(() => {
-    setStakeError(null);
-    setTypedValue('');
-    setStepIndex(0);
-    setHash(null);
-    setAttempting(false);
-  }, []);
-
-  const { parsedAmount, error } = useDerivedStakeInfo(typedValue, png, userPngBalance);
-  const [approval, approveCallback] = useHederaApproveCallback(chainId, parsedAmount, sarStakingContract?.address);
-
-  const mixpanel = useMixpanel();
-
-  const onUserInput = useCallback((_typedValue: string) => {
-    setTypedValue(_typedValue);
-  }, []);
-
-  const handleMax = useCallback(() => {
-    maxAmountInput && onUserInput(maxAmountInput.toExact());
-    setStepIndex(4);
-  }, [maxAmountInput, onUserInput]);
-
-  const onChangePercentage = (value: number) => {
-    if (!userPngBalance) {
-      setTypedValue('0');
-      return;
-    }
-    if (value === 100) {
-      setTypedValue((userPngBalance as TokenAmount).toExact());
-    } else if (value === 0) {
-      setTypedValue('0');
-    } else {
-      const newAmount = (userPngBalance as TokenAmount)
-        .multiply(JSBI.BigInt(value))
-        .divide(JSBI.BigInt(100)) as TokenAmount;
-
-      setTypedValue(newAmount.toSignificant(6));
-    }
-  };
 
   const { data: exchangeRate, isLoading: isloadingExchangeRate } = useHederaExchangeRate();
   const tinyRentAddMore = useHederaRent(positionId?.toString());
@@ -162,7 +122,7 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
   } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
   const onStake = async () => {
-    if (!sarStakingContract || !parsedAmount || !account || isLoading || !exchangeRate || !tinyRentAddMore) {
+    if (!sarStakingContract || !parsedAmount || !account || isLoading || !exchangeRate) {
       return;
     }
     setAttempting(true);
@@ -177,9 +137,8 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
       // we need to send 0.1$ in hbar amount to mint
       const tinyCents = hederaFn.HBarToTinyBars('10'); // 10 cents = 0.1$
       const tinyRent = hederaFn.tinyCentsToTinyBars(tinyCents, exchangeRate.current_rate);
-      console.log({ tinyRent, tinyRentAddMore });
-      const rent = hederaFn.TinyBarToHbar(!positionId ? tinyRent : tinyRentAddMore);
-      console.log({ rent });
+      const tinyValue = !positionId ? tinyRent : tinyRentAddMore;
+      const rent = hederaFn.TinyBarToHbar(tinyValue ?? '0');
 
       const response = await hederaFn.sarStake({
         methodName: !positionId ? 'mint' : 'stake',
@@ -402,7 +361,7 @@ export function useHederaSarPositions() {
     ['hedera-nft-index', account, sarNFTcontract?.address],
     async () => {
       const nfts = await hederaFn.getNftInfo(sarNFTcontract?.address, account);
-      const _nftsIndexes: (string | undefined)[][] = [];
+      const _nftsIndexes: string[][] = [];
       const _nftURIs: (string | undefined)[] = [];
 
       nfts.forEach((nft) => {
@@ -470,34 +429,12 @@ export function useHederaSarPositions() {
       const nftUri = Buffer.from(uri.replace('data:application/json;base64,', ''), 'base64').toString();
       return JSON.parse(nftUri) as URI;
     });
-    const positions: Position[] = _nftsURIs.map((uri, index) => {
-      const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
-        positionsAmountState[index].result?.valueVariables;
-      const rewardRate = positionsRewardRateState[index].result?.[0];
-      const pendingRewards = positionsPedingRewardsState[index].result?.[0];
-      const id = nftsIndexes[index][0];
-      const balance = valueVariables?.balance ?? BigNumber.from(0);
-      const apr = rewardRate
-        ?.mul(86400)
-        .mul(365)
-        .mul(100)
-        .div(balance.isZero() ? 1 : balance);
-
-      if (!valueVariables || !rewardRate || !pendingRewards || !uri) {
-        return {} as Position;
-      }
-
-      return {
-        id: BigNumber.from(id),
-        balance: valueVariables?.balance,
-        sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
-        apr: apr,
-        rewardRate: rewardRate,
-        uri: uri,
-        pendingRewards: pendingRewards,
-      } as Position;
-    });
-    // remove the empty positions
-    return { positions: positions.filter((position) => !!position), isLoading: false };
+    return formatPosition(
+      _nftsURIs,
+      nftsIndexes,
+      positionsAmountState,
+      positionsRewardRateState,
+      positionsPedingRewardsState,
+    );
   }, [account, positionsAmountState, positionsRewardRateState, nftsURIs, nftsIndexes, isLoadingIndexes]);
 }
