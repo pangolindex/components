@@ -32,7 +32,7 @@ export function useLiFiSwapChains() {
 
 export function useSquidChains() {
   return useQuery(['squidChains'], async () => {
-    const response = await fetch(`${SQUID_API}/chains`);
+    const response = await fetch(`${SQUID_API}/v1/chains`);
     const chains = response && response.status === 200 ? ((await response.json())?.chains as ChainData[]) : [];
 
     const formattedChains: BridgeChain[] = chains.map((chain: ChainData): BridgeChain => {

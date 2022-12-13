@@ -31,7 +31,7 @@ export function useLiFiSwapCurrencies() {
 
 export function useSquidCurrencies() {
   return useQuery(['squidCurrencies'], async () => {
-    const response = await fetch(`${SQUID_API}/tokens`);
+    const response = await fetch(`${SQUID_API}/v1/tokens`);
     const tokens = response && response.status === 200 ? ((await response.json())?.tokens as TokenData[]) : [];
     const formattedTokens: BridgeCurrency[] = tokens.map((token: TokenData) => {
       return {

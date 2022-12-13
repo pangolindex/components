@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Call, GetRoute, RouteResponse, Route as SquidRoute, RouteData as SquidRouteData } from '@0xsquid/sdk';
+import { Call, GetRoute, RouteResponse, Squid, Route as SquidRoute, RouteData as SquidRouteData } from '@0xsquid/sdk';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { parseUnits } from '@ethersproject/units';
 import LIFI from '@lifi/sdk';
@@ -410,7 +410,7 @@ export function useBridgeSwapActionHandlers(): {
 
       let squidRouteRes: RouteResponse | null;
       try {
-        const squidRoutes = await axios.get(`${SQUID_API}/route`, {
+        const squidRoutes = await axios.get(`${SQUID_API}/v1/route`, {
           params: params,
         });
         squidRouteRes = squidRoutes.data;
@@ -431,7 +431,7 @@ export function useBridgeSwapActionHandlers(): {
               toCurrency as Currency as Token,
               squidRouteRes.route.estimate.toAmountMin,
             ).toFixed(4),
-            toAmountUSD: `${'NULL'} USD`,
+            toAmountUSD: `${(squidRouteRes.route.estimate as any)?.toAmountUSD} USD`, // TODO: Related field returns from API, but not defined in their SDK
             gasCostUSD: squidRouteRes.route.estimate.gasCosts
               .reduce((prevValue, currentValue) => {
                 return prevValue + parseFloat(currentValue.amountUSD);
@@ -558,23 +558,32 @@ export function useBridgeSwapActionHandlers(): {
     dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
     const signer: JsonRpcSigner = await getSigner(library, account || '');
     const squidRoute = selectedRoute?.nativeRoute as SquidRouteData;
-    console.log(signer, squidRoute);
-    // async () => {
-    //   console.log('test');
-    // const squid = new Squid({
-    //   baseUrl: 'https://api.0xsquid.com',
-    // });
-    //   console.log('test 1');
-    //   await squid.init();
-    //   console.log('test 2');
-    //   const tx = await squid.executeRoute({
-    //     signer: signer as any,
-    //     route: squidRoute,
-    //   });
+    const squid = new Squid({
+      baseUrl: SQUID_API,
+    });
+    await squid.init();
 
-    //   const txReceipt = await tx.wait();
-    //   console.log(txReceipt);
-    // };
+    try {
+      const tx = await squid.executeRoute({
+        signer: signer as any,
+        route: squidRoute,
+      });
+      await tx.wait();
+      dispatch(
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.SUCCESS,
+        }),
+      );
+    } catch (e: Error | unknown) {
+      dispatch(
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.FAILED,
+        }),
+      );
+      dispatch(setTransactionError({ transactionError: e as Error }));
+    }
   };
 
   const sendTransaction: SendTransaction = {
