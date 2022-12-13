@@ -120,6 +120,7 @@ const getMiniChefAddress = (chainId: ChainId) => {
 };
 
 export const SQUID_API = 'https://api.0xsquid.com/v1';
+export const HASHPORT_API = 'https://mainnet.api.hashport.network/api/v1';
 
 export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.FUJI]: getMiniChefAddress(ChainId.FUJI),

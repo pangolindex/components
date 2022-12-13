@@ -6,6 +6,7 @@ import {
   BridgeCurrency,
   Chain,
   CurrencyAmount,
+  HASHPORT,
   LIFI as LIFIBridge,
   SQUID,
   // THORSWAP,
@@ -134,7 +135,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       });
       return data;
     }
-  }, [currencyHook?.[LIFIBridge.id], currencyHook?.[SQUID.id], activeBridges]);
+  }, [currencyHook?.[LIFIBridge.id], currencyHook?.[SQUID.id], currencyHook?.[HASHPORT.id], activeBridges]);
 
   const inputCurrencyList = useMemo(() => {
     const data = allBridgeCurrencies?.filter((val) => val?.chainId === fromChain?.chain_id?.toString());
@@ -160,7 +161,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       }
       return data;
     }
-  }, [activeBridges, chainHook?.[LIFIBridge.id], chainHook?.[SQUID.id]]);
+  }, [activeBridges, chainHook?.[LIFIBridge.id], chainHook?.[SQUID.id], chainHook?.[HASHPORT.id]]);
 
   useEffect(() => {
     if (debouncedAmountValue) {

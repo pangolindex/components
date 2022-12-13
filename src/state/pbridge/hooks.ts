@@ -12,6 +12,7 @@ import {
   Chain,
   Currency,
   CurrencyAmount,
+  HASHPORT,
   LIFI as LIFIBridge,
   SQUID,
   Token,
@@ -195,7 +196,7 @@ export function useDerivedBridgeInfo(): {
         setCurrencyList(data || []);
       }
     });
-  }, [currencyHook?.[LIFIBridge.id], currencyHook?.[SQUID.id]]);
+  }, [currencyHook?.[LIFIBridge.id], currencyHook?.[SQUID.id], currencyHook?.[HASHPORT.id]]);
 
   useEffect(() => {
     let data: BridgeChain[] = [];
@@ -208,7 +209,7 @@ export function useDerivedBridgeInfo(): {
         setChainList(data || []);
       }
     });
-  }, [chainHook?.[LIFIBridge.id], chainHook?.[SQUID.id]]);
+  }, [chainHook?.[LIFIBridge.id], chainHook?.[SQUID.id], chainHook?.[HASHPORT.id]]);
 
   const {
     typedValue,

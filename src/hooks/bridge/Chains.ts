@@ -1,10 +1,10 @@
 import type { ChainData } from '@0xsquid/sdk';
 import LIFI from '@lifi/sdk';
 import { ChainType, EVMChain } from '@lifi/types';
-import { BridgeChain, LIFI as LIFIBridge, SQUID } from '@pangolindex/sdk';
+import { ALL_CHAINS, BridgeChain, HASHPORT, LIFI as LIFIBridge, SQUID } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { SQUID_API } from 'src/constants';
+import { HASHPORT_API, SQUID_API } from 'src/constants';
 
 export function useLiFiSwapChains() {
   return useQuery(['lifiChains'], async () => {
@@ -26,6 +26,7 @@ export function useLiFiSwapChains() {
         logo: chain?.logoURI,
       };
     });
+    console.log('formattedChains: ', formattedChains);
     return formattedChains;
   });
 }
@@ -55,13 +56,42 @@ export function useSquidChains() {
   });
 }
 
+export function useHashportChains() {
+  return useQuery(['hashportChains'], async () => {
+    const response = await fetch(`${HASHPORT_API}/networks`);
+    const chains = response && response.status === 200 ? await response.json() : [];
+    const formattedChains: BridgeChain[] = chains.map((chain): BridgeChain => {
+      // We have to add below line, because Hashport doesn't give enough data via API
+      const relatedChain = ALL_CHAINS.find((c) => c.id === `${chain?.name.toLowerCase()}_mainnet`);
+      return {
+        id: relatedChain?.id,
+        name: relatedChain?.name,
+        chain_id: relatedChain?.chain_id,
+        mainnet: relatedChain?.mainnet,
+        evm: relatedChain?.evm,
+        pangolin_is_live: relatedChain?.pangolin_is_live,
+        tracked_by_debank: relatedChain?.tracked_by_debank,
+        supported_by_gelato: relatedChain?.supported_by_gelato,
+        nativeCurrency: relatedChain?.nativeCurrency,
+        rpc_uri: relatedChain?.rpc_uri,
+        symbol: relatedChain?.symbol,
+        logo: relatedChain?.logo,
+      };
+    });
+    return formattedChains;
+  });
+}
+
 export function useBridgeChains() {
   const lifiChains = useLiFiSwapChains();
   const squidChains = useSquidChains();
+  const hashportChains = useHashportChains();
+
   return useMemo(() => {
     return {
       [LIFIBridge.id]: lifiChains.status === 'success' ? lifiChains?.data ?? [] : [],
       [SQUID.id]: squidChains.status === 'success' ? squidChains?.data ?? [] : [],
+      [HASHPORT.id]: hashportChains.status === 'success' ? hashportChains?.data ?? [] : [],
     };
-  }, [lifiChains.status, squidChains.status]);
+  }, [lifiChains.status, squidChains.status, hashportChains.status]);
 }
