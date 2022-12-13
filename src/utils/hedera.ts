@@ -906,39 +906,12 @@ class Hedera {
     return hashConnect.sendTransaction(transaction, accountId);
   }
 
-  public HBarToTinyBars(value: string) {
-    const [interger, decimals] = value.split('.');
-
-    try {
-      if (Number(value) === 0) {
-        return '0';
-      }
-    } catch {
-      return '0';
-    }
-
-    let formattedNumber = '';
-    // Hbar only accepts 8 decimals
-    if (!!decimals && decimals.length > 8) {
-      // get only the first 8 decimals
-      formattedNumber = interger + decimals.slice(0, 8);
-    } else if (!!decimals) {
-      formattedNumber = value;
-    } else {
-      formattedNumber = interger;
-    }
-
-    const hbarValue = new Hbar(formattedNumber);
-    return hbarValue.to(HbarUnit.Tinybar).toString();
+  public HBarToTinyBars(value: string | number) {
+    return new Hbar(value).to(HbarUnit.Tinybar).toString();
   }
 
-  public TinyBarToHbar(value: string) {
-    try {
-      const formattedNumber = Math.ceil(Number(value)).toString();
-      return Hbar.fromTinybars(formattedNumber);
-    } catch {
-      return new Hbar(0);
-    }
+  public TinyBarToHbar(value: string | number) {
+    return Hbar.fromTinybars(value);
   }
 
   public tinyCentsToTinyBars(

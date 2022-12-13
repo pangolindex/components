@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
-import { useCoinGeckoCurrencyPrice, useHederaTokenAssociated } from 'src/hooks/Tokens';
+import { useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import { useHederaApproveCallback } from 'src/hooks/useApproveCallback';
@@ -21,6 +21,19 @@ import { useTransactionAdder } from '../ptransactions/hooks';
 import { useTokenBalance } from '../pwallet/hooks';
 import { useUnstakeParseAmount } from './hooks';
 import { Position, URI } from './types';
+
+export function useHederaExchangeRate() {
+  return useQuery(
+    'get-hedera-exchange-rate',
+    async () => {
+      const rate = await hederaFn.getExchangeRate();
+      return rate;
+    },
+    {
+      cacheTime: 60 * 1000, // 1 minute
+    },
+  );
+}
 
 /**
  *
@@ -77,8 +90,6 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
     setStepIndex(4);
   }, [maxAmountInput, onUserInput]);
 
-  const { data: HBARPrice } = useCoinGeckoCurrencyPrice(chainId);
-
   const onChangePercentage = (value: number) => {
     if (!userPngBalance) {
       setTypedValue('0');
@@ -97,6 +108,8 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
     }
   };
 
+  const { data: exchangeRate, isLoading: isloadingExchangeRate } = useHederaExchangeRate();
+
   const {
     associate: associate,
     hederaAssociated: isAssociated,
@@ -104,13 +117,11 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
   } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
   const onStake = async () => {
-    if (!sarStakingContract || !parsedAmount || !account || isLoading || !HBARPrice) {
+    if (!sarStakingContract || !parsedAmount || !account || isLoading || !exchangeRate) {
       return;
     }
     setAttempting(true);
     try {
-      let response: { hash: string } | null;
-
       if (!isAssociated && !!associate) {
         await associate();
       }
@@ -119,28 +130,18 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
       if (!isAssociated) return;
 
       // we need to send 0.1$ in hbar amount to mint
-      const HBARAmount = HBARPrice !== 0 ? 0.1 / HBARPrice : 0;
+      const tinyCents = hederaFn.HBarToTinyBars('10'); // 10 cents = 0.1$
+      const tinyRent = hederaFn.tinyCentsToTinyBars(tinyCents, exchangeRate.current_rate);
+      const rent = hederaFn.TinyBarToHbar(tinyRent);
 
-      const rent = hederaFn.TinyBarToHbar(hederaFn.HBarToTinyBars(HBARAmount.toString()));
-
-      if (!positionId) {
-        response = await hederaFn.sarStake({
-          methodName: 'mint',
-          amount: parsedAmount.raw.toString(),
-          chainId: chainId,
-          account: account,
-          rent: rent,
-        });
-      } else {
-        response = await hederaFn.sarStake({
-          methodName: 'stake',
-          amount: parsedAmount.raw.toString(),
-          chainId: chainId,
-          account: account,
-          positionId: positionId.toString(),
-          rent: rent,
-        });
-      }
+      const response = await hederaFn.sarStake({
+        methodName: !positionId ? 'mint' : 'stake',
+        amount: parsedAmount.raw.toString(),
+        chainId: chainId,
+        account: account,
+        positionId: positionId?.toString(),
+        rent: rent,
+      });
 
       if (response) {
         addTransaction(response, {
@@ -199,7 +200,8 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
       sarStakingContract,
       isLoading,
       isAssociated,
-      HBARPrice,
+      exchangeRate,
+      isloadingExchangeRate,
       associate,
       approveCallback,
       onUserInput,
@@ -223,16 +225,7 @@ function useHederaRent(positionId: string | undefined) {
     positionId ? [positionId] : [],
   );
 
-  const { data: exchangeRate, isLoading: isLoadingRate } = useQuery(
-    'get-hedera-exchange-rate',
-    async () => {
-      const rate = await hederaFn.getExchangeRate();
-      return rate;
-    },
-    {
-      cacheTime: 60 * 1000, // 1 minute
-    },
-  );
+  const { data: exchangeRate, isLoading: isLoadingRate } = useHederaExchangeRate();
 
   /*
     rentTime = block.timestamp - position.lastUpdate;
@@ -333,7 +326,7 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
     setAttempting(true);
 
     const rent = hederaFn.TinyBarToHbar(tinyRent);
-    console.log('rent ', rent.toString());
+
     try {
       const response = await hederaFn.sarUnstake({
         amount: parsedAmount.raw.toString(),

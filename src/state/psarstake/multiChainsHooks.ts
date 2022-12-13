@@ -4,15 +4,21 @@ import { useDerivativeHederaSarStake, useDerivativeHederaSarUnstake, useHederaSa
 import { useDerivativeSarStake, useDerivativeSarUnstake, useSarPositions } from './hooks';
 
 export type useSarPositionsType = {
-  [chainId in ChainId]: typeof useSarPositions;
+  [chainId in ChainId]: typeof useSarPositions | typeof useHederaSarPositions | typeof useDummySarPositions;
 };
 
 export type useDerivativeSarStakeType = {
-  [chainId in ChainId]: typeof useDerivativeSarStake;
+  [chainId in ChainId]:
+    | typeof useDerivativeSarStake
+    | typeof useDerivativeHederaSarStake
+    | typeof useDummyDerivativeSarStake;
 };
 
 export type useDerivativeSarUnstakeType = {
-  [chainId in ChainId]: typeof useDerivativeSarUnstake;
+  [chainId in ChainId]:
+    | typeof useDerivativeSarUnstake
+    | typeof useDerivativeHederaSarUnstake
+    | typeof useDummyDerivativeSarUnstake;
 };
 
 export const useSarPositionsHook: useSarPositionsType = {
