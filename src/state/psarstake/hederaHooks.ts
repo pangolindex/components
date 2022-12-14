@@ -31,7 +31,7 @@ export function useHederaExchangeRate() {
  * @param positionId The id of position
  * Returns rent value in tiny bars
  */
-function useHederaRent(positionId: string | undefined) {
+function useHederaSarRent(positionId: string | undefined) {
   const sarStakingContract = useSarStakingContract();
   const blockTimestamp = useGetBlockTimestamp();
 
@@ -108,7 +108,7 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
   const sarNftContract = useHederaSarNFTContract();
 
   const { data: exchangeRate, isLoading: isloadingExchangeRate } = useHederaExchangeRate();
-  const tinyRentAddMore = useHederaRent(positionId?.toString());
+  const tinyRentAddMore = useHederaSarRent(positionId?.toString());
 
   const {
     associate: associate,
@@ -242,7 +242,7 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
     wrappedOnDismiss,
   } = useDefaultSarUnstake(position);
 
-  const tinyRent = useHederaRent(position?.id?.toHexString());
+  const tinyRent = useHederaSarRent(position?.id?.toHexString());
 
   const onUnstake = async () => {
     if (!sarStakingContract || !parsedAmount || !position || !account || !tinyRent) {
