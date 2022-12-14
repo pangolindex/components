@@ -1,9 +1,10 @@
-import { Chain, Currency } from '@pangolindex/sdk';
+import { Chain, Currency, NetworkType } from '@pangolindex/sdk';
 import React, { useCallback, useContext } from 'react';
 import { Info } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, ChainInput, CurrencyInput, Text, TextInput, Tooltip } from 'src/components';
+import { checkAddressNetworkBaseMapping } from 'src/utils';
 import { Currencies } from './styles';
 import { BridgeInputsWidgetProps } from './types';
 
@@ -39,6 +40,8 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
     },
     [onChangeRecipient],
   );
+
+  const isAddress = checkAddressNetworkBaseMapping[chain?.network_type || NetworkType.EVM];
 
   return (
     <Box>
@@ -117,8 +120,11 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
               handleChangeRecipient(withoutSpaces);
             }}
             addonLabel={
-              recipient &&
-              !recipient.match(/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,59}$/) && <Text color="warning">Invalid Address</Text>
+              recipient ? (
+                !isAddress(recipient, chain) && <Text color="warning">Invalid Address</Text>
+              ) : (
+                <Text color="error">Required</Text>
+              )
             }
           />
         </Box>

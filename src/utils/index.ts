@@ -18,6 +18,7 @@ import {
   CurrencyAmount,
   Fraction,
   JSBI,
+  NetworkType,
   Percent,
   Token,
   TokenAmount,
@@ -33,6 +34,22 @@ import { wait } from './retry';
 export function isAddress(value: any): string | false {
   try {
     return getAddress(value);
+  } catch {
+    return false;
+  }
+}
+
+export function isCosmosAddress(value: string | undefined, bridgeChain: BridgeChain): string | false {
+  try {
+    if (typeof value !== 'string' || !value) {
+      return false;
+    }
+    const prefix = bridgeChain?.meta_data?.cosmosPrefix;
+    if (prefix) {
+      return value.startsWith(prefix) ? value : false;
+    } else {
+      return false;
+    }
   } catch {
     return false;
   }
@@ -66,6 +83,13 @@ export const isAddressMapping: { [chainId in ChainId]: (value: any) => string | 
   [ChainId.MOONRIVER]: isDummyAddress,
   [ChainId.MOONBEAM]: isDummyAddress,
   [ChainId.OP]: isDummyAddress,
+};
+
+export const checkAddressNetworkBaseMapping: {
+  [networkType in NetworkType]: (value: any, bridgeChain: BridgeChain) => string | false;
+} = {
+  [NetworkType.EVM]: isDummyAddress,
+  [NetworkType.COSMOS]: isCosmosAddress,
 };
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {

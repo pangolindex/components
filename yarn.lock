@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@0xsquid/sdk@1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@0xsquid/sdk/-/sdk-1.3.1.tgz#8870f6761c0d9c8946885125523261ebdcfd9492"
-  integrity sha512-g9bw3pJLft13FXGcbLp6iim602ujgflSRowqQpNIWX7iJhQbeEJji3Dx7pBmLwsUfrVhC/7pzJBn/jiXcXJe0Q==
+"@0xsquid/sdk@1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@0xsquid/sdk/-/sdk-1.3.2.tgz#4f0f11804d2bba32c2a3a24b8769fc1812d9cd9a"
+  integrity sha512-aFYI32H4FAkgZcPceVmp+bo8t4/uxm5ZJmBjeMtl/DXzy0y3DdChG4VN/92GeZ3SAtOymr0OduyAgKFkyMG+VQ==
   dependencies:
     "@release-it/conventional-changelog" release-it/conventional-changelog
     axios "^0.27.2"
@@ -4845,7 +4845,7 @@
     redux-thunk "^2.4.1"
     reselect "^4.1.5"
 
-"@release-it/conventional-changelog@release-it/conventional-changelog":
+"@release-it/conventional-changelog@github:release-it/conventional-changelog":
   version "5.1.1"
   resolved "https://codeload.github.com/release-it/conventional-changelog/tar.gz/8f43427bd3c7ec08bda3dbebd20f583e21fd3b48"
   dependencies:

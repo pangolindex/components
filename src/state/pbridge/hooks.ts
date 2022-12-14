@@ -403,9 +403,9 @@ export function useBridgeSwapActionHandlers(): {
           toCurrency?.address
             ?.toString()
             ?.replace('0x0000000000000000000000000000000000000000', '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') || '',
-        toAddress: recipient || fromAddress || '0x0000000000000000000000000000000000000000', // the recipient's address
-        slippage: parseFloat(slipLimit), // 3 --> 3.00% slippage. SDK supports 2 decimals
-        enableForecall: true, // optional, defaults to true
+        toAddress: recipient || fromAddress || '0x0000000000000000000000000000000000000000',
+        slippage: parseFloat(slipLimit),
+        enableForecall: true,
       };
 
       let squidRouteRes: RouteResponse | null;
@@ -431,7 +431,7 @@ export function useBridgeSwapActionHandlers(): {
               toCurrency as Currency as Token,
               squidRouteRes.route.estimate.toAmountMin,
             ).toFixed(4),
-            toAmountUSD: `${(squidRouteRes.route.estimate as any)?.toAmountUSD} USD`, // TODO: Related field returns from API, but not defined in their SDK
+            toAmountUSD: `${squidRouteRes.route.estimate?.toAmountUSD} USD`,
             gasCostUSD: squidRouteRes.route.estimate.gasCosts
               .reduce((prevValue, currentValue) => {
                 return prevValue + parseFloat(currentValue.amountUSD);

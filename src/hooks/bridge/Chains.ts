@@ -1,7 +1,7 @@
 import type { ChainData } from '@0xsquid/sdk';
 import LIFI from '@lifi/sdk';
 import { ChainType, EVMChain } from '@lifi/types';
-import { BridgeChain, LIFI as LIFIBridge, SQUID } from '@pangolindex/sdk';
+import { BridgeChain, LIFI as LIFIBridge, NetworkType, SQUID } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { SQUID_API } from 'src/constants';
@@ -13,6 +13,7 @@ export function useLiFiSwapChains() {
     const formattedChains: BridgeChain[] = chains.map((chain: EVMChain) => {
       return {
         id: `${chain?.name.toLowerCase()}_mainnet`,
+        network_type: NetworkType.EVM,
         name: chain?.name,
         chain_id: chain?.id,
         mainnet: chain?.mainnet,
@@ -38,6 +39,12 @@ export function useSquidChains() {
     const formattedChains: BridgeChain[] = chains.map((chain: ChainData): BridgeChain => {
       return {
         id: `${chain?.chainName.toLowerCase()}_mainnet`,
+        network_type: chain?.chainType === 'evm' ? NetworkType.EVM : NetworkType.COSMOS,
+        ...('bech32Config' in chain && {
+          meta_data: {
+            cosmosPrefix: chain?.bech32Config?.bech32PrefixAccAddr,
+          },
+        }),
         name: chain?.chainName,
         chain_id: chain?.chainId,
         mainnet: true,
