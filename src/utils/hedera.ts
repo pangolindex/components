@@ -906,11 +906,11 @@ class Hedera {
     return hashConnect.sendTransaction(transaction, accountId);
   }
 
-  public HBarToTinyBars(value: string | number) {
+  public convertHBarToTinyBars(value: string | number) {
     return new Hbar(value).to(HbarUnit.Tinybar).toString();
   }
 
-  public TinyBarToHbar(value: string | number) {
+  public convertTinyBarToHbar(value: string | number) {
     return Hbar.fromTinybars(value);
   }
 
@@ -921,8 +921,8 @@ class Hedera {
       hbar_equivalent: number;
     },
   ) {
-    const tinyCentsRate = this.HBarToTinyBars(exchangeRate.cent_equivalent.toString());
-    const tinyBarRate = this.HBarToTinyBars(exchangeRate.hbar_equivalent.toString());
+    const tinyCentsRate = this.convertHBarToTinyBars(exchangeRate.cent_equivalent.toString());
+    const tinyBarRate = this.convertHBarToTinyBars(exchangeRate.hbar_equivalent.toString());
 
     try {
       if (Number(tinyCentsRate) === 0) {
