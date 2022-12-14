@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { formatEther } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
@@ -34,7 +34,8 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
   const useUSDPrice = useUSDCPriceHook[chainId];
   const pngPrice = useUSDPrice(png);
 
-  const dollarValue = parseFloat(formatEther(oldBalance.add(pendingRewards))) * Number(pngPrice?.toFixed() ?? 0);
+  const dollarValue =
+    parseFloat(formatUnits(oldBalance.add(pendingRewards), png.decimals)) * Number(pngPrice?.toFixed() ?? 0);
 
   const { t } = useTranslation();
 
@@ -72,7 +73,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
         <RewardsInfo
           selectedOption={selectedOption}
           onChange={onChange}
-          pendingRewards={formatEther(pendingRewards.toString())}
+          pendingRewards={formatUnits(pendingRewards.toString(), png.decimals)}
           selectedPosition={selectedPosition}
         />
 
