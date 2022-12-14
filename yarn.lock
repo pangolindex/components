@@ -4675,10 +4675,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@pangolindex/sdk@4.0.0-rc.2":
-  version "4.0.0-rc.2"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-4.0.0-rc.2.tgz#f83527c1676bd7e163be08dce4b1773a6e710818"
-  integrity sha512-UyhaTD/S+lb6CrXYdKXTzBXCrULwZrMNqAg4byPCwOMOD8U0Zi8sNifWY7Wa8Hb8AwEy8PxrVzRShTZ3h2c7wQ==
+"@pangolindex/sdk@4.0.2-internal.fe5fb3a":
+  version "4.0.2-internal.fe5fb3a"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-4.0.2-internal.fe5fb3a.tgz#5caa74a615269f5ad9e652cd3d624fb4f3a34837"
+  integrity sha512-0N+hwjrqRXcr6Xwr4n3kSYYUmJTn3mIKjWkbQrbnp3jSTS8W+fCnZTP7BlFwxEEgkOWUwVKc1rX2KB/cedh+ng==
   dependencies:
     big.js "^5.2.2"
     decimal.js-light "^2.5.0"
@@ -4845,7 +4845,7 @@
     redux-thunk "^2.4.1"
     reselect "^4.1.5"
 
-"@release-it/conventional-changelog@github:release-it/conventional-changelog":
+"@release-it/conventional-changelog@release-it/conventional-changelog":
   version "5.1.1"
   resolved "https://codeload.github.com/release-it/conventional-changelog/tar.gz/8f43427bd3c7ec08bda3dbebd20f583e21fd3b48"
   dependencies:
