@@ -11,7 +11,7 @@ import { existSarContract } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { Position, URI } from './types';
-import { formatPosition, useDefaultSarStake, useDefaultUnstake } from './utils';
+import { formatPosition, useDefaultSarStake, useDefaultSarUnstake } from './utils';
 
 export function useHederaExchangeRate() {
   return useQuery(
@@ -240,7 +240,7 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
     typedValue,
     unstakeError,
     wrappedOnDismiss,
-  } = useDefaultUnstake(position);
+  } = useDefaultSarUnstake(position);
 
   const tinyRent = useHederaRent(position?.id?.toHexString());
 

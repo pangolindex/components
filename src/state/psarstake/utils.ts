@@ -200,7 +200,7 @@ export function useUnstakeParseAmount(typedValue: string, stakingToken: Token, u
  * @param position The position
  * @returns  Returns the defaults functions used for all sar unstake hooks
  */
-export function useDefaultUnstake(position: Position | null) {
+export function useDefaultSarUnstake(position: Position | null) {
   const [typedValue, setTypedValue] = useState('');
   const [stepIndex, setStepIndex] = useState(0);
   const [unstakeError, setUnstakeError] = useState<string | null>(null);

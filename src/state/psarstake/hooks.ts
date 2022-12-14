@@ -13,7 +13,7 @@ import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/ut
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { useTransactionAdder } from '../ptransactions/hooks';
 import { Position, URI } from './types';
-import { formatPosition, useDefaultSarStake, useDefaultUnstake } from './utils';
+import { formatPosition, useDefaultSarStake, useDefaultSarUnstake } from './utils';
 
 // Return the info of the sar stake
 export function useSarStakeInfo() {
@@ -183,7 +183,7 @@ export function useDerivativeSarUnstake(position: Position | null) {
     typedValue,
     unstakeError,
     wrappedOnDismiss,
-  } = useDefaultUnstake(position);
+  } = useDefaultSarUnstake(position);
 
   const onUnstake = async () => {
     if (!sarStakingContract || !parsedAmount || !position) {
