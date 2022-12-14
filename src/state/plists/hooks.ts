@@ -42,6 +42,7 @@ const EMPTY_LIST: TokenAddressMap = {
   [ChainId.HEDERA_TESTNET]: {},
   [ChainId.NEAR_MAINNET]: {},
   [ChainId.NEAR_TESTNET]: {},
+  [ChainId.COSTON2]: {},
   [ChainId.ETHEREUM]: {},
   [ChainId.POLYGON]: {},
   [ChainId.FANTOM]: {},
