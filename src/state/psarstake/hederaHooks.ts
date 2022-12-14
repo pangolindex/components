@@ -132,8 +132,7 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
       // we need to send 0.1$ in hbar amount to mint
       const tinyCents = hederaFn.convertHBarToTinyBars('10'); // 10 cents = 0.1$
       const tinyRent = hederaFn.tinyCentsToTinyBars(tinyCents, exchangeRate.current_rate);
-      const tinyValue = !positionId ? tinyRent : tinyRentAddMore;
-      const rent = hederaFn.convertTinyBarToHbar(tinyValue ?? '0');
+      const rent = !positionId ? tinyRent : tinyRentAddMore;
 
       const response = await hederaFn.sarStake({
         methodName: !positionId ? 'mint' : 'stake',
@@ -141,7 +140,7 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
         chainId: chainId,
         account: account,
         positionId: positionId?.toString(),
-        rent: rent,
+        rent: rent ?? '0',
       });
 
       if (response) {
@@ -250,14 +249,12 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
     }
     setAttempting(true);
 
-    const rent = hederaFn.convertTinyBarToHbar(tinyRent);
-
     try {
       const response = await hederaFn.sarUnstake({
         amount: parsedAmount.raw.toString(),
         chainId: chainId,
         account: account,
-        rent: rent,
+        rent: tinyRent,
         positionId: position.id.toString(),
       });
       if (response) {

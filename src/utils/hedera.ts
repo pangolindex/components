@@ -264,7 +264,7 @@ export interface SarStakeData {
   methodName: 'mint' | 'stake';
   account: string;
   chainId: ChainId;
-  rent: Hbar;
+  rent: string; // rent in tinybars
 }
 
 export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & { positionId: string };
@@ -833,8 +833,13 @@ class Hedera {
     const address = SAR_STAKING_ADDRESS[chainId];
     const contractId = address ? this.hederaId(address) : '';
 
-    if (rent.to(HbarUnit.Hbar).toNumber() === 0) {
-      throw new Error('Unpredictable HBAR amount to pay rent');
+    const error = new Error('Unpredictable HBAR amount to pay rent');
+    try {
+      if (Number(rent) === 0) {
+        throw error;
+      }
+    } catch {
+      throw error;
     }
 
     const maxGas =
@@ -848,12 +853,12 @@ class Hedera {
 
     if (methodName === 'mint') {
       transaction
-        .setPayableAmount(rent)
+        .setPayableAmount(Hbar.fromTinybars(rent))
         .setFunction(methodName, new ContractFunctionParameters().addUint256(amount as any));
     }
     if (!!positionId && methodName === 'stake') {
       transaction
-        .setPayableAmount(rent)
+        .setPayableAmount(Hbar.fromTinybars(rent))
         .setFunction(
           methodName,
           new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
@@ -870,8 +875,13 @@ class Hedera {
     const address = SAR_STAKING_ADDRESS[chainId];
     const contractId = address ? this.hederaId(address) : '';
 
-    if (rent.to(HbarUnit.Hbar).toNumber() === 0) {
-      throw new Error('Unpredictable HBAR amount to pay rent');
+    const error = new Error('Unpredictable HBAR amount to pay rent');
+    try {
+      if (Number(rent) === 0) {
+        throw error;
+      }
+    } catch {
+      throw error;
     }
 
     const maxGas = TRANSACTION_MAX_FEES.REMOVE_LIQUIDITY + TRANSACTION_MAX_FEES.TRANSFER_ERC20;
@@ -883,7 +893,7 @@ class Hedera {
       .setGas(maxGas);
 
     transaction
-      .setPayableAmount(rent)
+      .setPayableAmount(Hbar.fromTinybars(rent))
       .setFunction(
         'withdraw',
         new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
