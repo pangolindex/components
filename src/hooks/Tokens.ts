@@ -398,6 +398,11 @@ export function useCoinGeckoTokenData(coin: Token | Currency) {
 }
 
 /* eslint-enable max-lines */
+/**
+ * Returns the gas coin price in usd of the chain
+ * @param chainId the id of chain
+ * @returns Returns the useQuery where data is a usd value in number of gas coin price
+ */
 export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
   const currencyId = COINGECKO_CURRENCY_ID[chainId];
 

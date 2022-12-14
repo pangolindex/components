@@ -80,3 +80,57 @@ export function useDummyDerivativeSarStake() {
     setStepIndex,
   };
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function useDummyDerivativeSarUnstake(position: Position | null) {
+  const chainId = useChainId();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const png = PNG[chainId];
+
+  const [typedValue, setTypedValue] = useState('');
+  const [stepIndex, setStepIndex] = useState(0);
+
+  const attempting = false;
+  const parsedAmount = new TokenAmount(png, '0');
+
+  const error = undefined;
+  const hash = null;
+  const unstakeError = null;
+
+  const onUnstake = async () => {
+    // This is intentional
+  };
+
+  const onUserInput = (_typedValue: string) => {
+    setTypedValue(_typedValue);
+  };
+
+  const wrappedOnDismiss = () => {
+    setTypedValue('');
+  };
+
+  const handleMax = () => {
+    setStepIndex(4);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onChangePercentage = (value: number) => {
+    setTypedValue('0');
+  };
+
+  return {
+    attempting,
+    hash,
+    stepIndex,
+    typedValue,
+    parsedAmount,
+    error,
+    unstakeError,
+    onUserInput,
+    wrappedOnDismiss,
+    handleMax,
+    onUnstake,
+    onChangePercentage,
+    setStepIndex,
+  };
+}

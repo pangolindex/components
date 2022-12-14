@@ -1,4 +1,4 @@
-import { formatEther } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -169,7 +169,7 @@ export default function SarManageWidget() {
         </Box>
         <Box display="flex" flexDirection="row" justifyContent="space-between">
           <Text color="text1">{t('sarStake.weeklyDistributed', { symbol: png.symbol })}</Text>
-          <Text color="text1">{numeral(formatEther(weeklyPNG)).format('0.00a')}</Text>
+          <Text color="text1">{numeral(formatUnits(weeklyPNG, png.decimals)).format('0.00a')}</Text>
         </Box>
         <Box bgColor="color3" borderRadius="8px" padding="10px">
           <Text color="text1" fontWeight={400} fontSize="12px" textAlign="center">
