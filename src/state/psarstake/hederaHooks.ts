@@ -329,12 +329,6 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
 
   const onClaim = async () => {
     if (!sarStakingContract || !position || !account || !rent) {
-      console.log({
-        sarStakingContract,
-        position,
-        account,
-        rent,
-      });
       return;
     }
     setAttempting(true);
