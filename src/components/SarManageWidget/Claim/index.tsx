@@ -7,7 +7,7 @@ import { Button } from 'src/components/Button';
 import { Text } from 'src/components/Text';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useDerivativeSarClaim } from 'src/state/psarstake/hooks';
+import { useDerivativeSarClaimHook } from 'src/state/psarstake/multiChainsHooks';
 import { Position } from 'src/state/psarstake/types';
 import RewardsInfo from '../Compound/RewardsInfo';
 import ConfirmDrawer from '../ConfirmDrawer';
@@ -23,9 +23,11 @@ interface Props {
 export default function Claim({ selectedOption, selectedPosition, onChange }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
 
+  const chainId = useChainId();
+
+  const useDerivativeSarClaim = useDerivativeSarClaimHook[chainId];
   const { attempting, hash, claimError, wrappedOnDismiss, onClaim } = useDerivativeSarClaim(selectedPosition);
 
-  const chainId = useChainId();
   const png = PNG[chainId];
 
   const { t } = useTranslation();

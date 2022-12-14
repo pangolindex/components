@@ -13,7 +13,7 @@ import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/ut
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { useTransactionAdder } from '../ptransactions/hooks';
 import { Position, URI } from './types';
-import { formatPosition, useDefaultSarStake, useDefaultSarUnstake } from './utils';
+import { formatPosition, useDefaultSarClaim, useDefaultSarStake, useDefaultSarUnstake } from './utils';
 
 // Return the info of the sar stake
 export function useSarStakeInfo() {
@@ -307,22 +307,19 @@ export function useDerivativeSarCompound(position: Position | null) {
 }
 
 export function useDerivativeSarClaim(position: Position | null) {
-  const [attempting, setAttempting] = useState(false);
-  const [hash, setHash] = useState<string | null>(null);
-  const [claimError, setClaimError] = useState<string | null>(null);
-
-  const { account } = usePangolinWeb3();
-
-  const sarStakingContract = useSarStakingContract();
-
-  const { t } = useTranslation();
-  const addTransaction = useTransactionAdder();
-
-  const wrappedOnDismiss = useCallback(() => {
-    setClaimError(null);
-    setHash(null);
-    setAttempting(false);
-  }, []);
+  const {
+    account,
+    addTransaction,
+    attempting,
+    claimError,
+    hash,
+    sarStakingContract,
+    setAttempting,
+    setClaimError,
+    setHash,
+    t,
+    wrappedOnDismiss,
+  } = useDefaultSarClaim();
 
   const onClaim = async () => {
     if (!sarStakingContract || !position) {

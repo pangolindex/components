@@ -11,7 +11,7 @@ import { existSarContract } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { Position, URI } from './types';
-import { formatPosition, useDefaultSarStake, useDefaultSarUnstake } from './utils';
+import { formatPosition, useDefaultSarClaim, useDefaultSarStake, useDefaultSarUnstake } from './utils';
 
 export function useHederaExchangeRate() {
   return useQuery(
@@ -305,6 +305,72 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
       handleMax,
       position,
     ],
+  );
+}
+
+export function useDerivativeHederaSarClaim(position: Position | null) {
+  const {
+    account,
+    addTransaction,
+    attempting,
+    claimError,
+    hash,
+    sarStakingContract,
+    setAttempting,
+    setClaimError,
+    setHash,
+    t,
+    wrappedOnDismiss,
+  } = useDefaultSarClaim();
+
+  const chainId = useChainId();
+
+  const rent = useHederaSarRent(position?.id?.toHexString());
+
+  const onClaim = async () => {
+    if (!sarStakingContract || !position || !account || !rent) {
+      console.log({
+        sarStakingContract,
+        position,
+        account,
+        rent,
+      });
+      return;
+    }
+    setAttempting(true);
+    try {
+      const response = await hederaFn.sarClaim({
+        account: account,
+        chainId: chainId,
+        positionId: position.id.toString(),
+        rent: rent,
+      });
+      if (response) {
+        addTransaction(response, {
+          summary: t('sarClaim.transactionSummary'),
+        });
+        setHash(response.hash);
+      }
+    } catch (error) {
+      const err = error as any;
+      if (err?.code !== 4001) {
+        console.error(err);
+        setClaimError(err?.message);
+      }
+    } finally {
+      setAttempting(false);
+    }
+  };
+
+  return useMemo(
+    () => ({
+      attempting,
+      hash,
+      claimError,
+      wrappedOnDismiss,
+      onClaim,
+    }),
+    [sarStakingContract, attempting, hash, account, rent, position],
   );
 }
 

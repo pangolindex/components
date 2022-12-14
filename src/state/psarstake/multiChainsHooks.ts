@@ -1,7 +1,17 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyDerivativeSarStake, useDummyDerivativeSarUnstake, useDummySarPositions } from './dummyHooks';
-import { useDerivativeHederaSarStake, useDerivativeHederaSarUnstake, useHederaSarPositions } from './hederaHooks';
-import { useDerivativeSarStake, useDerivativeSarUnstake, useSarPositions } from './hooks';
+import {
+  useDummyDerivativeSarClaim,
+  useDummyDerivativeSarStake,
+  useDummyDerivativeSarUnstake,
+  useDummySarPositions,
+} from './dummyHooks';
+import {
+  useDerivativeHederaSarClaim,
+  useDerivativeHederaSarStake,
+  useDerivativeHederaSarUnstake,
+  useHederaSarPositions,
+} from './hederaHooks';
+import { useDerivativeSarClaim, useDerivativeSarStake, useDerivativeSarUnstake, useSarPositions } from './hooks';
 
 export type useSarPositionsType = {
   [chainId in ChainId]: typeof useSarPositions | typeof useHederaSarPositions | typeof useDummySarPositions;
@@ -19,6 +29,13 @@ export type useDerivativeSarUnstakeType = {
     | typeof useDerivativeSarUnstake
     | typeof useDerivativeHederaSarUnstake
     | typeof useDummyDerivativeSarUnstake;
+};
+
+export type useDerivativeSarClaimType = {
+  [chainId in ChainId]:
+    | typeof useDerivativeSarClaim
+    | typeof useDerivativeHederaSarClaim
+    | typeof useDummyDerivativeSarClaim;
 };
 
 export const useSarPositionsHook: useSarPositionsType = {
@@ -97,4 +114,30 @@ export const useDerivativeSarUnstakeHook: useDerivativeSarUnstakeType = {
   [ChainId.MOONRIVER]: useDummyDerivativeSarUnstake,
   [ChainId.MOONBEAM]: useDummyDerivativeSarUnstake,
   [ChainId.OP]: useDummyDerivativeSarUnstake,
+};
+
+export const useDerivativeSarClaimHook: useDerivativeSarClaimType = {
+  [ChainId.FUJI]: useDerivativeSarClaim,
+  [ChainId.AVALANCHE]: useDerivativeSarClaim,
+  [ChainId.WAGMI]: useDerivativeSarClaim,
+  [ChainId.COSTON]: useDerivativeSarClaim,
+  [ChainId.SONGBIRD]: useDerivativeSarClaim,
+  [ChainId.HEDERA_TESTNET]: useDerivativeHederaSarClaim,
+  [ChainId.NEAR_MAINNET]: useDummyDerivativeSarClaim,
+  [ChainId.NEAR_TESTNET]: useDummyDerivativeSarClaim,
+  [ChainId.ETHEREUM]: useDummyDerivativeSarClaim,
+  [ChainId.POLYGON]: useDummyDerivativeSarClaim,
+  [ChainId.FANTOM]: useDummyDerivativeSarClaim,
+  [ChainId.XDAI]: useDummyDerivativeSarClaim,
+  [ChainId.BSC]: useDummyDerivativeSarClaim,
+  [ChainId.ARBITRUM]: useDummyDerivativeSarClaim,
+  [ChainId.CELO]: useDummyDerivativeSarClaim,
+  [ChainId.OKXCHAIN]: useDummyDerivativeSarClaim,
+  [ChainId.VELAS]: useDummyDerivativeSarClaim,
+  [ChainId.AURORA]: useDummyDerivativeSarClaim,
+  [ChainId.CRONOS]: useDummyDerivativeSarClaim,
+  [ChainId.FUSE]: useDummyDerivativeSarClaim,
+  [ChainId.MOONRIVER]: useDummyDerivativeSarClaim,
+  [ChainId.MOONBEAM]: useDummyDerivativeSarClaim,
+  [ChainId.OP]: useDummyDerivativeSarClaim,
 };
