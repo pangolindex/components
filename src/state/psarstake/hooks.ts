@@ -2,8 +2,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { TokenAmount } from '@pangolindex/sdk';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useEffect, useMemo, useState } from 'react';
 import { BIGNUMBER_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
@@ -11,9 +10,8 @@ import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useSarStakingContract } from 'src/hooks/useContract';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { useTransactionAdder } from '../ptransactions/hooks';
 import { Position, URI } from './types';
-import { formatPosition, useDefaultSarClaim, useDefaultSarStake, useDefaultSarUnstake } from './utils';
+import { formatPosition, useDefaultSarFunctions, useDefaultSarStake, useDefaultSarUnstake } from './utils';
 
 // Return the info of the sar stake
 export function useSarStakeInfo() {
@@ -251,22 +249,19 @@ export function useDerivativeSarUnstake(position: Position | null) {
 }
 
 export function useDerivativeSarCompound(position: Position | null) {
-  const [attempting, setAttempting] = useState(false);
-  const [hash, setHash] = useState<string | null>(null);
-  const [compoundError, setCompoundError] = useState<string | null>(null);
-
-  const { account } = usePangolinWeb3();
-
-  const sarStakingContract = useSarStakingContract();
-
-  const { t } = useTranslation();
-  const addTransaction = useTransactionAdder();
-
-  const wrappedOnDismiss = useCallback(() => {
-    setCompoundError(null);
-    setHash(null);
-    setAttempting(false);
-  }, []);
+  const {
+    account,
+    addTransaction,
+    attempting,
+    functionError: compoundError,
+    hash,
+    sarStakingContract,
+    setAttempting,
+    setFunctionError: setCompoundError,
+    setHash,
+    t,
+    wrappedOnDismiss,
+  } = useDefaultSarFunctions();
 
   const onCompound = async () => {
     if (!sarStakingContract || !position) {
@@ -311,15 +306,15 @@ export function useDerivativeSarClaim(position: Position | null) {
     account,
     addTransaction,
     attempting,
-    claimError,
+    functionError: claimError,
     hash,
     sarStakingContract,
     setAttempting,
-    setClaimError,
+    setFunctionError: setClaimError,
     setHash,
     t,
     wrappedOnDismiss,
-  } = useDefaultSarClaim();
+  } = useDefaultSarFunctions();
 
   const onClaim = async () => {
     if (!sarStakingContract || !position) {

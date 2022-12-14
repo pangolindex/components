@@ -150,3 +150,23 @@ export function useDummyDerivativeSarClaim(position: Position | null) {
     onClaim,
   };
 }
+
+export function useDummyDerivativeSarCompound(position: Position | null) {
+  const attempting = false;
+  const hash = null;
+  const compoundError = null;
+
+  const wrappedOnDismiss = () => {
+    // This is intentional
+  };
+
+  const onCompound = async () => {};
+
+  return {
+    attempting,
+    hash,
+    compoundError,
+    wrappedOnDismiss,
+    onCompound,
+  };
+}

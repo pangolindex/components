@@ -285,12 +285,12 @@ export function useDefaultSarUnstake(position: Position | null) {
 
 /**
  *
- * @returns Returns the defaults functions used for all sar unstake hooks
+ * @returns Returns the defaults functions used for all sar claim and compound hooks
  */
-export function useDefaultSarClaim() {
+export function useDefaultSarFunctions() {
   const [attempting, setAttempting] = useState(false);
   const [hash, setHash] = useState<string | null>(null);
-  const [claimError, setClaimError] = useState<string | null>(null);
+  const [functionError, setFunctionError] = useState<string | null>(null);
 
   const { account } = usePangolinWeb3();
 
@@ -300,7 +300,7 @@ export function useDefaultSarClaim() {
   const addTransaction = useTransactionAdder();
 
   const wrappedOnDismiss = useCallback(() => {
-    setClaimError(null);
+    setFunctionError(null);
     setHash(null);
     setAttempting(false);
   }, []);
@@ -310,8 +310,8 @@ export function useDefaultSarClaim() {
     setAttempting,
     hash,
     setHash,
-    claimError,
-    setClaimError,
+    functionError,
+    setFunctionError,
     account,
     sarStakingContract,
     t,

@@ -1,17 +1,25 @@
 import { ChainId } from '@pangolindex/sdk';
 import {
   useDummyDerivativeSarClaim,
+  useDummyDerivativeSarCompound,
   useDummyDerivativeSarStake,
   useDummyDerivativeSarUnstake,
   useDummySarPositions,
 } from './dummyHooks';
 import {
   useDerivativeHederaSarClaim,
+  useDerivativeHederaSarCompound,
   useDerivativeHederaSarStake,
   useDerivativeHederaSarUnstake,
   useHederaSarPositions,
 } from './hederaHooks';
-import { useDerivativeSarClaim, useDerivativeSarStake, useDerivativeSarUnstake, useSarPositions } from './hooks';
+import {
+  useDerivativeSarClaim,
+  useDerivativeSarCompound,
+  useDerivativeSarStake,
+  useDerivativeSarUnstake,
+  useSarPositions,
+} from './hooks';
 
 export type useSarPositionsType = {
   [chainId in ChainId]: typeof useSarPositions | typeof useHederaSarPositions | typeof useDummySarPositions;
@@ -36,6 +44,13 @@ export type useDerivativeSarClaimType = {
     | typeof useDerivativeSarClaim
     | typeof useDerivativeHederaSarClaim
     | typeof useDummyDerivativeSarClaim;
+};
+
+export type useDerivativeSarCompoundType = {
+  [chainId in ChainId]:
+    | typeof useDerivativeSarCompound
+    | typeof useDerivativeHederaSarCompound
+    | typeof useDummyDerivativeSarCompound;
 };
 
 export const useSarPositionsHook: useSarPositionsType = {
@@ -140,4 +155,30 @@ export const useDerivativeSarClaimHook: useDerivativeSarClaimType = {
   [ChainId.MOONRIVER]: useDummyDerivativeSarClaim,
   [ChainId.MOONBEAM]: useDummyDerivativeSarClaim,
   [ChainId.OP]: useDummyDerivativeSarClaim,
+};
+
+export const useDerivativeSarCompoundHook: useDerivativeSarCompoundType = {
+  [ChainId.FUJI]: useDerivativeSarCompound,
+  [ChainId.AVALANCHE]: useDerivativeSarCompound,
+  [ChainId.WAGMI]: useDerivativeSarCompound,
+  [ChainId.COSTON]: useDerivativeSarCompound,
+  [ChainId.SONGBIRD]: useDerivativeSarCompound,
+  [ChainId.HEDERA_TESTNET]: useDerivativeHederaSarCompound,
+  [ChainId.NEAR_MAINNET]: useDummyDerivativeSarCompound,
+  [ChainId.NEAR_TESTNET]: useDummyDerivativeSarCompound,
+  [ChainId.ETHEREUM]: useDummyDerivativeSarCompound,
+  [ChainId.POLYGON]: useDummyDerivativeSarCompound,
+  [ChainId.FANTOM]: useDummyDerivativeSarCompound,
+  [ChainId.XDAI]: useDummyDerivativeSarCompound,
+  [ChainId.BSC]: useDummyDerivativeSarCompound,
+  [ChainId.ARBITRUM]: useDummyDerivativeSarCompound,
+  [ChainId.CELO]: useDummyDerivativeSarCompound,
+  [ChainId.OKXCHAIN]: useDummyDerivativeSarCompound,
+  [ChainId.VELAS]: useDummyDerivativeSarCompound,
+  [ChainId.AURORA]: useDummyDerivativeSarCompound,
+  [ChainId.CRONOS]: useDummyDerivativeSarCompound,
+  [ChainId.FUSE]: useDummyDerivativeSarCompound,
+  [ChainId.MOONRIVER]: useDummyDerivativeSarCompound,
+  [ChainId.MOONBEAM]: useDummyDerivativeSarCompound,
+  [ChainId.OP]: useDummyDerivativeSarCompound,
 };

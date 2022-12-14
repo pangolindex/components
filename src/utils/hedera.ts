@@ -914,8 +914,8 @@ class Hedera {
     return hashConnect.sendTransaction(transaction, accountId);
   }
 
-  public async sarClaim(unstakeData: SarBaseData) {
-    const { positionId, account, chainId, rent } = unstakeData;
+  public async sarFunction(baseData: SarBaseData, methodName: 'harvest' | 'compound') {
+    const { positionId, account, chainId, rent } = baseData;
 
     const accountId = account ? this.hederaId(account) : '';
     const address = SAR_STAKING_ADDRESS[chainId];
@@ -940,7 +940,7 @@ class Hedera {
 
     transaction
       .setPayableAmount(Hbar.fromTinybars(rent))
-      .setFunction('harvest', new ContractFunctionParameters().addUint256(positionId as any));
+      .setFunction(methodName, new ContractFunctionParameters().addUint256(positionId as any));
 
     return hashConnect.sendTransaction(transaction, accountId);
   }
