@@ -171,3 +171,5 @@ export function useDummyDerivativeSarCompound(position: Position | null) {
     onCompound,
   };
 }
+
+/* eslint-enable @typescript-eslint/no-unused-vars */
