@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { formatEther } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
@@ -8,7 +8,8 @@ import { Text } from 'src/components/Text';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
-import { useDerivativeSarCompound, useSarStakeInfo } from 'src/state/psarstake/hooks';
+import { useSarStakeInfo } from 'src/state/psarstake/hooks';
+import { useDerivativeSarCompoundHook } from 'src/state/psarstake/multiChainsHooks';
 import { Position } from 'src/state/psarstake/types';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Options } from '../types';
@@ -22,19 +23,21 @@ interface Props {
 
 export default function Compound({ selectedOption, selectedPosition, onChange }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
+  const chainId = useChainId();
 
+  const useDerivativeSarCompound = useDerivativeSarCompoundHook[chainId];
   const { attempting, hash, compoundError, wrappedOnDismiss, onCompound } = useDerivativeSarCompound(selectedPosition);
   const { apr } = useSarStakeInfo();
 
   const oldBalance = selectedPosition?.balance ?? BigNumber.from('0');
   const pendingRewards = selectedPosition?.pendingRewards ?? BigNumber.from('0');
 
-  const chainId = useChainId();
   const png = PNG[chainId];
   const useUSDPrice = useUSDCPriceHook[chainId];
   const pngPrice = useUSDPrice(png);
 
-  const dollarValue = parseFloat(formatEther(oldBalance.add(pendingRewards))) * Number(pngPrice?.toFixed() ?? 0);
+  const dollarValue =
+    parseFloat(formatUnits(oldBalance.add(pendingRewards), png.decimals)) * Number(pngPrice?.toFixed() ?? 0);
 
   const { t } = useTranslation();
 
@@ -72,7 +75,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
         <RewardsInfo
           selectedOption={selectedOption}
           onChange={onChange}
-          pendingRewards={formatEther(pendingRewards.toString())}
+          pendingRewards={formatUnits(pendingRewards.toString(), png.decimals)}
           selectedPosition={selectedPosition}
         />
 

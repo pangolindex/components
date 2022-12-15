@@ -258,13 +258,17 @@ export interface ClaimRewardData {
   chainId: ChainId;
 }
 
-export interface SarStakeData {
-  amount: string;
-  positionId?: string;
-  methodName: 'mint' | 'stake';
+export interface SarBaseData {
+  positionId: string;
   account: string;
   chainId: ChainId;
   rent: string; // rent in tinybars
+}
+
+export interface SarStakeData extends Omit<SarBaseData, 'positionId'> {
+  amount: string;
+  positionId?: string;
+  methodName: 'mint' | 'stake';
 }
 
 export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & { positionId: string };
@@ -906,6 +910,37 @@ class Hedera {
         'withdraw',
         new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
       );
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async sarHarvestOrCompound(baseData: SarBaseData, methodName: 'harvest' | 'compound') {
+    const { positionId, account, chainId, rent } = baseData;
+
+    const accountId = account ? this.hederaId(account) : '';
+    const address = SAR_STAKING_ADDRESS[chainId];
+    const contractId = address ? this.hederaId(address) : '';
+
+    const error = new Error('Unpredictable HBAR amount to pay rent');
+    try {
+      if (Number(rent) === 0) {
+        throw error;
+      }
+    } catch {
+      throw error;
+    }
+
+    const maxGas = TRANSACTION_MAX_FEES.COLLECT_REWARDS + TRANSACTION_MAX_FEES.TRANSFER_ERC20;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    transaction
+      .setPayableAmount(Hbar.fromTinybars(rent))
+      .setFunction(methodName, new ContractFunctionParameters().addUint256(positionId as any));
 
     return hashConnect.sendTransaction(transaction, accountId);
   }
