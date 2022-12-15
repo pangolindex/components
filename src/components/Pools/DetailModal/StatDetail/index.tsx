@@ -32,7 +32,7 @@ export default function StatDetail({ title, totalAmount, pair, pgl, currency0, c
     JSBI.greaterThan(totalPoolTokens.raw, BIG_INT_ZERO) &&
     JSBI.greaterThan(pgl.raw, BIG_INT_ZERO) &&
     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-    JSBI.greaterThanOrEqual(totalPoolTokens.raw, pgl.raw)
+    JSBI.greaterThanOrEqual(totalPoolTokens?.raw, pgl?.raw)
       ? pair.getLiquidityValues(totalPoolTokens, pgl, { feeOn: false })
       : [undefined, undefined];
 
@@ -59,7 +59,9 @@ export default function StatDetail({ title, totalAmount, pair, pgl, currency0, c
         {currency0 && (
           <Stat
             title={`Underlying ${currency0?.symbol ? currency0?.symbol : ''}`}
-            stat={`${token0Deposited ? numeral(parseFloat(token0Deposited?.toSignificant(6))).format('0.00a') : '-'}`}
+            stat={`${
+              token0Deposited ? numeral(parseFloat(token0Deposited?.toSignificant(6)).toFixed(6)).format('0.00a') : '-'
+            }`}
             titlePosition="top"
             titleFontSize={12}
             statFontSize={[20, 16]}

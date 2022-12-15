@@ -4,9 +4,11 @@ import {
   useDummyPangoChefCallback,
   useDummyPangoChefInfos,
   useEVMPangoChefClaimRewardCallback,
+  useEVMPangoChefCompoundCallback,
   useEVMPangoChefStakeCallback,
   useEVMPangoChefWithdrawCallback,
   useHederaPangoChefClaimRewardCallback,
+  useHederaPangoChefCompoundCallback,
   useHederaPangoChefInfos,
   useHederaPangoChefStakeCallback,
   useHederaPangoChefWithdrawCallback,
@@ -127,6 +129,39 @@ export const usePangoChefWithdrawCallbackHook: UsePangoChefWithdrawCallbackHookT
   [ChainId.COSTON]: useEVMPangoChefWithdrawCallback,
   [ChainId.SONGBIRD]: useEVMPangoChefWithdrawCallback,
   [ChainId.HEDERA_TESTNET]: useHederaPangoChefWithdrawCallback,
+  [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
+  [ChainId.ETHEREUM]: useDummyPangoChefCallback,
+  [ChainId.POLYGON]: useDummyPangoChefCallback,
+  [ChainId.FANTOM]: useDummyPangoChefCallback,
+  [ChainId.XDAI]: useDummyPangoChefCallback,
+  [ChainId.BSC]: useDummyPangoChefCallback,
+  [ChainId.ARBITRUM]: useDummyPangoChefCallback,
+  [ChainId.CELO]: useDummyPangoChefCallback,
+  [ChainId.OKXCHAIN]: useDummyPangoChefCallback,
+  [ChainId.VELAS]: useDummyPangoChefCallback,
+  [ChainId.AURORA]: useDummyPangoChefCallback,
+  [ChainId.CRONOS]: useDummyPangoChefCallback,
+  [ChainId.FUSE]: useDummyPangoChefCallback,
+  [ChainId.MOONRIVER]: useDummyPangoChefCallback,
+  [ChainId.MOONBEAM]: useDummyPangoChefCallback,
+  [ChainId.OP]: useDummyPangoChefCallback,
+};
+
+export type UsePangoChefCompoundCallbackHookType = {
+  [chainId in ChainId]:
+    | typeof useEVMPangoChefCompoundCallback
+    | typeof useHederaPangoChefCompoundCallback
+    | typeof useDummyPangoChefCallback;
+};
+
+export const usePangoChefCompoundCallbackHook: UsePangoChefCompoundCallbackHookType = {
+  [ChainId.FUJI]: useEVMPangoChefCompoundCallback,
+  [ChainId.AVALANCHE]: useEVMPangoChefCompoundCallback,
+  [ChainId.WAGMI]: useEVMPangoChefCompoundCallback,
+  [ChainId.COSTON]: useEVMPangoChefCompoundCallback,
+  [ChainId.SONGBIRD]: useEVMPangoChefCompoundCallback,
+  [ChainId.HEDERA_TESTNET]: useHederaPangoChefCompoundCallback,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
   [ChainId.ETHEREUM]: useDummyPangoChefCallback,

@@ -29,7 +29,8 @@ import {
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useAllTokens, useHederaTokenAssociated, useNearTokens, useTokens } from 'src/hooks/Tokens';
+import { useAllTokens, useHederaTokenAssociated, useNearTokens } from 'src/hooks/Tokens';
+import { useTokensHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -1249,6 +1250,8 @@ export function useGetUserLP() {
 export function useGetHederaUserLP() {
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
+
+  const useTokens = useTokensHook[chainId];
   // get all pairs
   const trackedTokenPairs = useTrackedTokenPairs();
 

@@ -271,6 +271,17 @@ export interface SarStakeData extends Omit<SarBaseData, 'positionId'> {
   methodName: 'mint' | 'stake';
 }
 
+export interface CompoundData {
+  slippage: {
+    minPairAmount: string;
+    maxPairAmount: string;
+  };
+  poolId: string;
+  methodName: 'compound' | 'compoundToPoolZero';
+  account: string;
+  chainId: ChainId;
+}
+
 export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & { positionId: string };
 
 class Hedera {
@@ -1028,6 +1039,31 @@ class Hedera {
       .setGas(maxGas);
 
     transaction.setFunction(methodName, new ContractFunctionParameters().addUint256(Number(poolId)));
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async compound(compoundData: CompoundData) {
+    const { account, methodName, poolId, chainId, slippage } = compoundData;
+
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
+    const maxGas = TRANSACTION_MAX_FEES.NFT_MINT;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+    transaction.setPayableAmount(Hbar.fromString(slippage?.maxPairAmount, HbarUnit.Tinybar));
+    transaction.setFunction(
+      methodName,
+      new ContractFunctionParameters()
+        .addUint256(Number(poolId))
+        .addUint256Array([slippage?.minPairAmount as any, slippage?.maxPairAmount as any]),
+    );
 
     return hashConnect.sendTransaction(transaction, accountId);
   }
