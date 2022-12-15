@@ -245,8 +245,8 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: PNG[ChainId.NEAR_TESTNET].address,
   },
   [ChainId.COSTON2]: {
-    inputCurrency: '',
-    outputCurrency: '',
+    inputCurrency: WAVAX[ChainId.COSTON2].address,
+    outputCurrency: PNG[ChainId.COSTON2].address,
   },
 };
 
