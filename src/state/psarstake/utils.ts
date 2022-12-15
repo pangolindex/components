@@ -287,7 +287,7 @@ export function useDefaultSarUnstake(position: Position | null) {
  *
  * @returns Returns the defaults functions used for all sar claim and compound hooks
  */
-export function useDefaultSarFunctions() {
+export function useDefaultSarClaimOrCompound() {
   const [attempting, setAttempting] = useState(false);
   const [hash, setHash] = useState<string | null>(null);
   const [functionError, setFunctionError] = useState<string | null>(null);

@@ -914,7 +914,7 @@ class Hedera {
     return hashConnect.sendTransaction(transaction, accountId);
   }
 
-  public async sarFunction(baseData: SarBaseData, methodName: 'harvest' | 'compound') {
+  public async sarHarvestOrCompound(baseData: SarBaseData, methodName: 'harvest' | 'compound') {
     const { positionId, account, chainId, rent } = baseData;
 
     const accountId = account ? this.hederaId(account) : '';

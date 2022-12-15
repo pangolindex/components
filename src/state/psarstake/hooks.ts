@@ -11,7 +11,7 @@ import { useSarStakingContract } from 'src/hooks/useContract';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { Position, URI } from './types';
-import { formatPosition, useDefaultSarFunctions, useDefaultSarStake, useDefaultSarUnstake } from './utils';
+import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from './utils';
 
 // Return the info of the sar stake
 export function useSarStakeInfo() {
@@ -261,7 +261,7 @@ export function useDerivativeSarCompound(position: Position | null) {
     setHash,
     t,
     wrappedOnDismiss,
-  } = useDefaultSarFunctions();
+  } = useDefaultSarClaimOrCompound();
 
   const onCompound = async () => {
     if (!sarStakingContract || !position) {
@@ -314,7 +314,7 @@ export function useDerivativeSarClaim(position: Position | null) {
     setHash,
     t,
     wrappedOnDismiss,
-  } = useDefaultSarFunctions();
+  } = useDefaultSarClaimOrCompound();
 
   const onClaim = async () => {
     if (!sarStakingContract || !position) {

@@ -5,6 +5,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { Position } from './types';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export function useDummySarPositions(): {
   positions: Position[];
   isLoading: boolean;
@@ -14,7 +15,7 @@ export function useDummySarPositions(): {
     isLoading: false,
   };
 }
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 export function useDummyDerivativeSarStake() {
   const chainId = useChainId();
   const { account } = usePangolinWeb3();

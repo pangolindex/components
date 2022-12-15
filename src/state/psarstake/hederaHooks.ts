@@ -11,7 +11,7 @@ import { existSarContract } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { Position, URI } from './types';
-import { formatPosition, useDefaultSarFunctions, useDefaultSarStake, useDefaultSarUnstake } from './utils';
+import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from './utils';
 
 export function useHederaExchangeRate() {
   return useQuery(
@@ -321,7 +321,7 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
     setHash,
     t,
     wrappedOnDismiss,
-  } = useDefaultSarFunctions();
+  } = useDefaultSarClaimOrCompound();
 
   const chainId = useChainId();
 
@@ -333,7 +333,7 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
     }
     setAttempting(true);
     try {
-      const response = await hederaFn.sarFunction(
+      const response = await hederaFn.sarHarvestOrCompound(
         {
           account: account,
           chainId: chainId,
@@ -384,7 +384,7 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
     setHash,
     t,
     wrappedOnDismiss,
-  } = useDefaultSarFunctions();
+  } = useDefaultSarClaimOrCompound();
 
   const chainId = useChainId();
 
@@ -396,7 +396,7 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
     }
     setAttempting(true);
     try {
-      const response = await hederaFn.sarFunction(
+      const response = await hederaFn.sarHarvestOrCompound(
         {
           account: account,
           chainId: chainId,
