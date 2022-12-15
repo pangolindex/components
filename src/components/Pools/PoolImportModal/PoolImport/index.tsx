@@ -1,4 +1,4 @@
-import { Currency, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import { Currency, JSBI, TokenAmount } from '@pangolindex/sdk';
 import React, { useContext, useEffect } from 'react';
 import { ChevronDown, Plus } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -7,8 +7,7 @@ import { Box, CurrencyLogo, Text } from 'src/components';
 import { PairState, usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePairAdder } from 'src/state/puser/hooks';
-import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { isEvmChain } from 'src/utils';
+import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import PositionCard from '../PositionCard';
 import { ArrowWrapper, CurrencySelectWrapper, Dots, LightCard, PoolImportWrapper } from './styleds';
 
@@ -32,7 +31,7 @@ const PoolImport = ({ currency0, currency1, openTokenDrawer, setActiveField, onM
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);
 
-  const useTokenBalance = useTokenBalanceHook[chainId];
+  const usePairBalance = usePairBalanceHook[chainId];
 
   const [pairState, pair] = usePair(currency0 ?? undefined, currency1 ?? undefined);
   const addPair = usePairAdder();
@@ -50,8 +49,8 @@ const PoolImport = ({ currency0, currency1, openTokenDrawer, setActiveField, onM
         JSBI.equal(pair.reserve0.raw, JSBI.BigInt(0)) &&
         JSBI.equal(pair.reserve1.raw, JSBI.BigInt(0)),
     );
-  const pairOrToken = isEvmChain(chainId) ? pair?.liquidityToken : pair;
-  const position: TokenAmount | undefined = useTokenBalance(account ?? undefined, pairOrToken as Token);
+
+  const position: TokenAmount | undefined = usePairBalance(account ?? undefined, pair ?? undefined);
   const hasPosition = Boolean(position && JSBI.greaterThan(position.raw, JSBI.BigInt(0)));
 
   const prerequisiteMessage = (
