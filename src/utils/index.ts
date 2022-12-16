@@ -230,7 +230,7 @@ const walletProvider = () => {
   return window.ethereum;
 };
 
-export async function changeNetwork(chain: Chain) {
+export async function changeNetwork(chain: Chain, action?: () => void) {
   const { ethereum } = window;
 
   if (ethereum) {
@@ -239,7 +239,7 @@ export async function changeNetwork(chain: Chain) {
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
       });
-      window.location.reload();
+      action && action();
     } catch (error) {
       // This error code indicates that the chain has not been added to MetaMask.
       const metamask = error as MetamaskError;

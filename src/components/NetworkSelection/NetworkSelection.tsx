@@ -44,7 +44,7 @@ const NetworkSelection: React.FC<NetworkProps> = (props) => {
           <Scrollbars>
             <ChainsList>
               {chains.map((chain, index) => (
-                <ChainButton key={index} onClick={() => changeNetwork(chain)}>
+                <ChainButton key={index} onClick={() => changeNetwork(chain, closeModal)}>
                   <Logo src={chain.logo} />
                   <Text color="text1">{chain.name}</Text>
                 </ChainButton>
