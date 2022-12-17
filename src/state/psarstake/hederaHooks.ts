@@ -11,7 +11,7 @@ import { existSarContract } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { Position, URI } from './types';
-import { formatPosition, useDefaultSarStake, useDefaultSarUnstake } from './utils';
+import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from './utils';
 
 export function useHederaExchangeRate() {
   return useQuery(
@@ -305,6 +305,132 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
       handleMax,
       position,
     ],
+  );
+}
+
+export function useDerivativeHederaSarCompound(position: Position | null) {
+  const {
+    account,
+    addTransaction,
+    attempting,
+    functionError: compoundError,
+    hash,
+    sarStakingContract,
+    setAttempting,
+    setFunctionError: setCompoundError,
+    setHash,
+    t,
+    wrappedOnDismiss,
+  } = useDefaultSarClaimOrCompound();
+
+  const chainId = useChainId();
+
+  const rent = useHederaSarRent(position?.id?.toHexString());
+
+  const onCompound = async () => {
+    if (!sarStakingContract || !position || !account || !rent) {
+      return;
+    }
+    setAttempting(true);
+    try {
+      const response = await hederaFn.sarHarvestOrCompound(
+        {
+          account: account,
+          chainId: chainId,
+          positionId: position.id.toString(),
+          rent: rent,
+        },
+        'compound',
+      );
+      if (response) {
+        addTransaction(response, {
+          summary: t('sarCompound.transactionSummary'),
+        });
+        setHash(response.hash);
+      }
+    } catch (error) {
+      const err = error as any;
+      if (err?.code !== 4001) {
+        console.error(err);
+        setCompoundError(err?.message);
+      }
+    } finally {
+      setAttempting(false);
+    }
+  };
+
+  return useMemo(
+    () => ({
+      attempting,
+      hash,
+      compoundError,
+      wrappedOnDismiss,
+      onCompound,
+    }),
+    [sarStakingContract, attempting, hash, account, rent, position],
+  );
+}
+
+export function useDerivativeHederaSarClaim(position: Position | null) {
+  const {
+    account,
+    addTransaction,
+    attempting,
+    functionError: claimError,
+    hash,
+    sarStakingContract,
+    setAttempting,
+    setFunctionError: setClaimError,
+    setHash,
+    t,
+    wrappedOnDismiss,
+  } = useDefaultSarClaimOrCompound();
+
+  const chainId = useChainId();
+
+  const rent = useHederaSarRent(position?.id?.toHexString());
+
+  const onClaim = async () => {
+    if (!sarStakingContract || !position || !account || !rent) {
+      return;
+    }
+    setAttempting(true);
+    try {
+      const response = await hederaFn.sarHarvestOrCompound(
+        {
+          account: account,
+          chainId: chainId,
+          positionId: position.id.toString(),
+          rent: rent,
+        },
+        'harvest',
+      );
+      if (response) {
+        addTransaction(response, {
+          summary: t('sarClaim.transactionSummary'),
+        });
+        setHash(response.hash);
+      }
+    } catch (error) {
+      const err = error as any;
+      if (err?.code !== 4001) {
+        console.error(err);
+        setClaimError(err?.message);
+      }
+    } finally {
+      setAttempting(false);
+    }
+  };
+
+  return useMemo(
+    () => ({
+      attempting,
+      hash,
+      claimError,
+      wrappedOnDismiss,
+      onClaim,
+    }),
+    [sarStakingContract, attempting, hash, account, rent, position],
   );
 }
 

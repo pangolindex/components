@@ -258,13 +258,28 @@ export interface ClaimRewardData {
   chainId: ChainId;
 }
 
-export interface SarStakeData {
-  amount: string;
-  positionId?: string;
-  methodName: 'mint' | 'stake';
+export interface SarBaseData {
+  positionId: string;
   account: string;
   chainId: ChainId;
   rent: string; // rent in tinybars
+}
+
+export interface SarStakeData extends Omit<SarBaseData, 'positionId'> {
+  amount: string;
+  positionId?: string;
+  methodName: 'mint' | 'stake';
+}
+
+export interface CompoundData {
+  slippage: {
+    minPairAmount: string;
+    maxPairAmount: string;
+  };
+  poolId: string;
+  methodName: 'compound' | 'compoundToPoolZero';
+  account: string;
+  chainId: ChainId;
 }
 
 export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & { positionId: string };
@@ -910,6 +925,37 @@ class Hedera {
     return hashConnect.sendTransaction(transaction, accountId);
   }
 
+  public async sarHarvestOrCompound(baseData: SarBaseData, methodName: 'harvest' | 'compound') {
+    const { positionId, account, chainId, rent } = baseData;
+
+    const accountId = account ? this.hederaId(account) : '';
+    const address = SAR_STAKING_ADDRESS[chainId];
+    const contractId = address ? this.hederaId(address) : '';
+
+    const error = new Error('Unpredictable HBAR amount to pay rent');
+    try {
+      if (Number(rent) === 0) {
+        throw error;
+      }
+    } catch {
+      throw error;
+    }
+
+    const maxGas = TRANSACTION_MAX_FEES.COLLECT_REWARDS + TRANSACTION_MAX_FEES.TRANSFER_ERC20;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    transaction
+      .setPayableAmount(Hbar.fromTinybars(rent))
+      .setFunction(methodName, new ContractFunctionParameters().addUint256(positionId as any));
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
   public async createPangoChefUserStorageContract(chainId: ChainId, account: string) {
     const pangoChefId = PANGOCHEF_ADDRESS[chainId];
 
@@ -993,6 +1039,31 @@ class Hedera {
       .setGas(maxGas);
 
     transaction.setFunction(methodName, new ContractFunctionParameters().addUint256(Number(poolId)));
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async compound(compoundData: CompoundData) {
+    const { account, methodName, poolId, chainId, slippage } = compoundData;
+
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
+    const maxGas = TRANSACTION_MAX_FEES.NFT_MINT;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+    transaction.setPayableAmount(Hbar.fromString(slippage?.maxPairAmount, HbarUnit.Tinybar));
+    transaction.setFunction(
+      methodName,
+      new ContractFunctionParameters()
+        .addUint256(Number(poolId))
+        .addUint256Array([slippage?.minPairAmount as any, slippage?.maxPairAmount as any]),
+    );
 
     return hashConnect.sendTransaction(transaction, accountId);
   }
