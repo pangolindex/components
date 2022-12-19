@@ -5,7 +5,7 @@ import PoolV1 from './PoolV1';
 import PoolV2 from './PoolV2';
 import PoolV3 from './PoolV3';
 
-interface Props {
+export interface PoolProps {
   version: number;
   type: string;
   stakingInfoV1: DoubleSideStakingInfo[];
@@ -16,7 +16,7 @@ interface Props {
   menuItems: Array<{ label: string; value: string }>;
 }
 
-const Pools: React.FC<Props> = ({
+const Pools: React.FC<PoolProps> = ({
   version,
   type,
   stakingInfoV1,
