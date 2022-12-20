@@ -685,9 +685,16 @@ export function useHederaPangoChefInfos() {
       // calculate the total staked amount in usd
       const totalStakedInUsd = new TokenAmount(
         USDC[chainId],
-        currencyPriceFraction.multiply(_totalStakedInWavax).toFixed(0),
+        currencyPriceFraction
+          .multiply(_totalStakedInWavax)
+          .multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(USDC[chainId]?.decimals)))
+          .toFixed(0),
       );
-      const totalStakedInWavax = new TokenAmount(wavax, _totalStakedInWavax.toFixed(0));
+
+      const totalStakedInWavax = new TokenAmount(
+        wavax,
+        _totalStakedInWavax.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(wavax?.decimals))).toFixed(0),
+      );
 
       const getHypotheticalWeeklyRewardRate = (
         _stakedAmount: TokenAmount,

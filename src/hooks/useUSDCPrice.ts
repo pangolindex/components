@@ -147,3 +147,26 @@ export function useSongBirdUSDPrice(currency?: Currency): Price | undefined {
     return new Price(currency, usd, tokenUSDPrice.denominator, tokenUSDPrice.numerator);
   }, [wrapped, currencyPrice, tokenPrice]);
 }
+
+export function useHederaUSDPrice(currency?: Currency): Price | undefined {
+  const chainId = useChainId();
+
+  const wrapped = wrappedCurrency(currency, chainId);
+
+  const tokenPrice = useTokenCurrencyPrice(wrapped); // token price in sgb
+
+  const usd = USDC[chainId];
+
+  const { data: currencyPrice, isLoading } = useCoinGeckoCurrencyPrice(chainId); // sbg price in usd
+
+  return useMemo(() => {
+    if (!wrapped || !currencyPrice || !tokenPrice || isLoading || !currency) return undefined;
+
+    const tokenUSDPrice = tokenPrice.raw.multiply(decimalToFraction(currencyPrice));
+
+    const denominatorAmount = new TokenAmount(wrapped, tokenUSDPrice.denominator);
+    const numeratorAmount = new TokenAmount(usd, tokenUSDPrice.numerator);
+    //here if both currency decimal different  then we need to pass like this
+    return new Price(currency, usd, denominatorAmount.raw, numeratorAmount.raw);
+  }, [wrapped, currencyPrice, tokenPrice]);
+}
