@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { BIG_INT_ZERO } from 'src/constants';
 import useDebounce from 'src/hooks/useDebounce';
-import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
+import { useGetSelectedPoolId, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/hooks';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
@@ -28,9 +28,10 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
   const [stakingInfoData, setStakingInfoData] = useState<PangoChefInfo[]>([]);
   const [stakingInfoByPid, setStakingInfoByPid] = useState<StakingInfoByPid>({});
 
-  const [selectedPoolIndex, setSelectedPoolIndex] = useState('');
-
   const togglePoolDetailModal = usePoolDetailnModalToggle();
+  //we store selected Pool Id bcoz when we create pangochef storage  its reoad modal so at that time redux storage which is good
+  const selectedPoolIndex = useGetSelectedPoolId();
+  const updateSelectedPoolId = useUpdateSelectedPoolId();
 
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());
@@ -102,7 +103,8 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
           key={stakingInfo?.pid}
           stakingInfo={stakingInfo}
           onClickViewDetail={() => {
-            setSelectedPoolIndex(stakingInfo?.pid);
+            //setSelectedPoolIndex(stakingInfo?.pid);
+            updateSelectedPoolId(stakingInfo?.pid);
             togglePoolDetailModal();
           }}
           version={Number(version)}

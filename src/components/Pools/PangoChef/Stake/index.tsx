@@ -46,8 +46,8 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   const usePairBalance = usePairBalanceHook[chainId];
   const useStakeCallback = usePangoChefStakeCallbackHook[chainId];
   const [shouldCreateStorage, create] = useHederaPangochefContractCreateCallback();
-  const token0 = stakingInfo.tokens[0];
-  const token1 = stakingInfo.tokens[1];
+  const token0 = stakingInfo.tokens?.[0];
+  const token1 = stakingInfo.tokens?.[1];
 
   const [, stakingTokenPair] = usePair(token0, token1);
 

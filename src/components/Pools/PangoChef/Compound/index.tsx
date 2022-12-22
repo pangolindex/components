@@ -20,6 +20,7 @@ import { useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
 import { usePangoChefCompoundCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useAccountBalanceHook, useTokenBalancesHook } from 'src/state/pwallet/multiChainsHooks';
+import { hederaFn } from 'src/utils/hedera';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root, WarningMessageWrapper } from './styleds';
 
@@ -56,7 +57,8 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const png = PNG[chainId];
   const wrappedCurrency = WAVAX[chainId];
   const currency = CAVAX[chainId];
-  const [token0, token1] = stakingInfo.tokens;
+
+  const [token0, token1] = stakingInfo?.tokens;
 
   const [, pair] = usePair(token0, token1);
 
@@ -94,7 +96,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const pngPrice = tokensPrices[png.address] ?? new Price(png, wrappedCurrency, '1', '0');
   let amountToAdd: CurrencyAmount | TokenAmount = new TokenAmount(wrappedCurrency, '0');
   // if is png pool and not is wrapped token as second token (eg PNG/USDC, PSB/SDOOD)
-  if (isPNGPool && !isWrappedCurrencyPool) {
+  if ((isPNGPool && !isWrappedCurrencyPool) || hederaFn.isHederaChain(chainId)) {
     // need to calculate the token price in png, for this we using the token price on currency and png price on currency
     const token = token0.equals(png) ? token1 : token0;
     const tokenBalance = tokensBalances[token.address];
@@ -269,7 +271,6 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
             isDisabled={approval !== ApprovalState.NOT_APPROVED}
             onClick={handleApprove}
-            height="46px"
           >
             {t('earn.approve')}
           </Button>
@@ -301,7 +302,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
                 token0: currency0.symbol,
                 token1: currency1.symbol,
                 currency: isPNGPool ? currency0.symbol : currency.symbol,
-                png: isPNGPool ? currency1.symbol : png.symbol,
+                png: isPNGPool ? tokenOrCurrency?.symbol : png.symbol,
               })}
             </Text>
           </Box>

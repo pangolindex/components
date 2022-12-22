@@ -19,8 +19,9 @@ type Props = {
 
 const Details: React.FC<Props> = ({ stakingInfo }) => {
   const { account } = usePangolinWeb3();
-  const token0 = stakingInfo?.tokens[0];
-  const token1 = stakingInfo?.tokens[1];
+
+  const token0 = stakingInfo?.tokens?.[0];
+  const token1 = stakingInfo?.tokens?.[1];
   const chainId = useChainId();
 
   const totalStakedInUsd = CHAINS[chainId]?.mainnet
@@ -36,7 +37,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
   const pair = stakingTokenPair;
   const { userPgl, liquidityInUSD } = useGetPoolDollerWorth(pair);
 
-  const isStaking = Boolean(stakingInfo?.stakedAmount.greaterThan('0'));
+  const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
 
   // if pair is available then taking tokens from pair otherwise display tokens from staking info
   // we are taking token from pair because sometime order of tokens is different

@@ -1,7 +1,8 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
-import { CAVAX, ChainId, CurrencyAmount, TokenAmount, Trade } from '@pangolindex/sdk';
+import { CAVAX, ChainId, CurrencyAmount, JSBI, TokenAmount, Trade } from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, ZERO_ADDRESS } from 'src/constants';
@@ -171,11 +172,14 @@ export function useHederaApproveCallback(
       return;
     }
 
+    const ONE_TOKEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(amountToApprove?.currency?.decimals));
+
     try {
       const response = await hederaFn.spendingApproval({
         tokenAddress: token.address,
         spender: spender,
-        amount: amountToApprove.raw.toString(),
+        // here we add ONE_TOKEN bcoz every second amountToApprove constantly increase so we already approve more amopunt
+        amount: BigNumber.from(ONE_TOKEN?.toString()).add(amountToApprove?.raw?.toString()).toString(),
         account,
       });
 
