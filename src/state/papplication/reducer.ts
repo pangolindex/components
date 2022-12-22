@@ -15,7 +15,7 @@ export interface ApplicationState {
   readonly blockNumber: { readonly [chainId: number]: number };
   readonly popupList: PopupList;
   readonly openModal: ApplicationModal | null;
-  readonly selectedPoolId: string | undefined;
+  readonly selectedPoolId: string | undefined; //used for detail modal to get stakingInfo Data
 }
 
 const initialState: ApplicationState = {
