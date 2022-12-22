@@ -1,4 +1,4 @@
-import type { ChainData } from '@0xsquid/sdk';
+import { ChainData, Squid } from '@0xsquid/sdk';
 import LIFI from '@lifi/sdk';
 import { ChainType, EVMChain } from '@lifi/types';
 import { BridgeChain, LIFI as LIFIBridge, NetworkType, SQUID } from '@pangolindex/sdk';
@@ -33,8 +33,11 @@ export function useLiFiSwapChains() {
 
 export function useSquidChains() {
   return useQuery(['squidChains'], async () => {
-    const response = await fetch(`${SQUID_API}/v1/chains`);
-    const chains = response && response.status === 200 ? ((await response.json())?.chains as ChainData[]) : [];
+    const squid = new Squid({
+      baseUrl: SQUID_API,
+    });
+    await squid.init();
+    const chains = squid.chains as ChainData[];
 
     const formattedChains: BridgeChain[] = chains.map((chain: ChainData): BridgeChain => {
       return {

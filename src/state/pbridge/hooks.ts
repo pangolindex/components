@@ -471,7 +471,7 @@ export function useBridgeSwapActionHandlers(): {
 
       dispatch(
         setRoutes({
-          routes: [...lifiRoutes, squidRoute].filter((x: Route | undefined) => x !== undefined) as Route[],
+          routes: [...lifiRoutes, squidRoute].filter((x: Route | undefined) => !!x) as Route[],
           routesLoaderStatus: false,
         }),
       );

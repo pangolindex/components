@@ -375,6 +375,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       {isChainDrawerOpen && (
         <SelectChainDrawer
           isOpen={isChainDrawerOpen}
+          // We can't show non-evm chains here. Because we don't have non-evm chain wallet integration yet. (in Bridge wise.)
           chains={drawerType === ChainField.FROM ? chainList?.filter((x) => x.evm) : chainList}
           onClose={onChangeChainDrawerStatus}
           onChainSelect={onChainSelect}
