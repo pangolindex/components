@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { Modal } from 'src/components';
 import { useDispatch } from 'src/state';
@@ -25,24 +25,14 @@ const DetailModal = ({ stakingInfo, version }: DetailModalProps) => {
     dispatch(resetMintState());
   }, [detailModalOpen, dispatch]);
 
+  const handleOnDismiss = useCallback(() => {
+    updateSelectedPoolId(undefined);
+    togglePoolDetailModal();
+  }, [updateSelectedPoolId, togglePoolDetailModal]);
+
   return (
-    <Modal
-      isOpen={detailModalOpen}
-      onDismiss={() => {
-        updateSelectedPoolId(undefined);
-        togglePoolDetailModal();
-      }}
-      overlayBG={theme.modalBG2}
-      closeOnClickOutside={false}
-    >
-      <DetailView
-        stakingInfo={stakingInfo}
-        onDismiss={() => {
-          updateSelectedPoolId(undefined);
-          togglePoolDetailModal();
-        }}
-        version={version}
-      />
+    <Modal isOpen={detailModalOpen} onDismiss={handleOnDismiss} overlayBG={theme.modalBG2} closeOnClickOutside={false}>
+      <DetailView stakingInfo={stakingInfo} onDismiss={handleOnDismiss} version={version} />
     </Modal>
   );
 };

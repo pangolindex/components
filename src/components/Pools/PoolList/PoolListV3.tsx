@@ -103,7 +103,6 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
           key={stakingInfo?.pid}
           stakingInfo={stakingInfo}
           onClickViewDetail={() => {
-            //setSelectedPoolIndex(stakingInfo?.pid);
             updateSelectedPoolId(stakingInfo?.pid);
             togglePoolDetailModal();
           }}
