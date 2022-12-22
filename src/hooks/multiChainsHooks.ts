@@ -9,7 +9,7 @@ import {
   useNearApproveCallback,
 } from './useApproveCallback';
 import { useHederaSwapCallback, useNearSwapCallback, useSwapCallback } from './useSwapCallback';
-import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
+import { useHederaUSDPrice, useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
 import { useWrapCallback, useWrapHbarCallback, useWrapNearCallback } from './useWrapCallback';
 
 export function useDummyHook() {
@@ -183,6 +183,7 @@ export type UseUSDCPriceHookType = {
     | typeof useUSDCPrice
     | typeof useNearUSDCPrice
     | typeof useSongBirdUSDPrice
+    | typeof useHederaUSDPrice
     | typeof useDummyHook;
 };
 
@@ -192,7 +193,7 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
   [ChainId.WAGMI]: useUSDCPrice,
   [ChainId.COSTON]: useUSDCPrice,
   [ChainId.SONGBIRD]: useSongBirdUSDPrice,
-  [ChainId.HEDERA_TESTNET]: useUSDCPrice,
+  [ChainId.HEDERA_TESTNET]: useHederaUSDPrice,
   [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
   [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
   [ChainId.EVMOS_TESTNET]: useUSDCPrice,

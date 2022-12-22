@@ -10,10 +10,10 @@ import {
   HbarUnit,
   TokenAssociateTransaction,
 } from '@hashgraph/sdk';
-import { CHAINS, ChainId, CurrencyAmount, Token, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
-import { HEDERA_API_BASE_URL, PANGOCHEF_ADDRESS, ROUTER_ADDRESS } from 'src/constants';
+import { HEDERA_API_BASE_URL, PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
@@ -30,7 +30,8 @@ export const TRANSACTION_MAX_FEES = {
   TRANSFER_ERC20: 60000,
   STAKE_LP_TOKEN: 230000,
   COLLECT_REWARDS: 300000,
-  EXIT_CAMPAIGN: 300000,
+  WITHDRAW: 300000,
+  NFT_MINT: 800000,
 };
 export interface HederaTokenMetadata {
   id: string;
@@ -118,6 +119,37 @@ export interface APIBlockResponse {
     gas_used: number;
     logs_bloom: string;
   }>;
+}
+
+export interface NFTInfoResponse {
+  nfts: {
+    account_id: string;
+    create_timestamp: string;
+    delegating_spender: any;
+    delegated: boolean;
+    metadata: string;
+    modified_timestamp: string;
+    serial_number: number;
+    spender: any;
+    token_id: string;
+  }[];
+  links: {
+    next: string | null;
+  };
+}
+
+export type NFTResponse = NFTInfoResponse['nfts'];
+
+interface BaseExchangeRate {
+  cent_equivalent: number;
+  expiration_time: number;
+  hbar_equivalent: number;
+}
+
+export interface ExchangeRateResponse {
+  current_rate: BaseExchangeRate;
+  next_rate: BaseExchangeRate;
+  timestamp: string;
 }
 
 export interface AddLiquidityData {
@@ -211,6 +243,47 @@ export interface RemoveLiquidityData {
   chainId: ChainId;
 }
 
+export interface StakeOrWithdrawData {
+  account: string;
+  amount: string;
+  poolId: string;
+  chainId: ChainId;
+  methodName: 'stake' | 'withdraw';
+}
+
+export interface ClaimRewardData {
+  account: string;
+  methodName: string;
+  poolId: string;
+  chainId: ChainId;
+}
+
+export interface SarBaseData {
+  positionId: string;
+  account: string;
+  chainId: ChainId;
+  rent: string; // rent in tinybars
+}
+
+export interface SarStakeData extends Omit<SarBaseData, 'positionId'> {
+  amount: string;
+  positionId?: string;
+  methodName: 'mint' | 'stake';
+}
+
+export interface CompoundData {
+  slippage: {
+    minPairAmount: string;
+    maxPairAmount: string;
+  };
+  poolId: string;
+  methodName: 'compound' | 'compoundToPoolZero';
+  account: string;
+  chainId: ChainId;
+}
+
+export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & { positionId: string };
+
 class Hedera {
   axios: AxiosInstance;
   client: Client;
@@ -248,6 +321,14 @@ class Hedera {
       hederaId?.toLowerCase()?.match(/^(0|(?:[1-9]\d*))\.(0|(?:[1-9]\d*))\.(0|(?:[1-9]\d*))(?:-([a-z]{5}))?$/g)
     ) {
       return hederaId;
+    } else {
+      return false;
+    }
+  };
+
+  isAddressValid = (address: string): string | false => {
+    if (address && hethers.utils.isAddress(address.toLowerCase())) {
+      return address;
     } else {
       return false;
     }
@@ -367,6 +448,71 @@ class Hedera {
     }
   }
 
+  public async getExchangeRate() {
+    try {
+      // "response" is the data from request
+      const response = await this.call<ExchangeRateResponse>({
+        url: '/api/v1/network/exchangerate',
+        method: 'GET',
+      });
+      return response;
+    } catch (error) {
+      console.error('Error in fetch Exchange Rate: ', error);
+      const timestamp = Math.floor(Date.now() / 1000); // timestamp in seconds
+      return {
+        current_rate: {
+          cent_equivalent: 0,
+          hbar_equivalent: 0,
+          expiration_time: timestamp + 3600, // add 1 hour in timestamp
+        },
+        next_rate: {
+          cent_equivalent: 0,
+          hbar_equivalent: 0,
+          expiration_time: timestamp + 3600 * 2, // add 2 hours in timestamp
+        },
+        timestamp: timestamp.toString(),
+      } as ExchangeRateResponse;
+    }
+  }
+
+  public async getNftInfo(address: string | undefined, account: string | null | undefined) {
+    if (!address || !account) {
+      return [] as NFTResponse;
+    }
+
+    const addressId = this.hederaId(address);
+    const accountId = this.hederaId(account);
+
+    try {
+      // get only last 100 nfts
+      // by default the API returns 25 values
+      const nfts: NFTResponse = [];
+      let url = `/api/v1/tokens/${addressId}/nfts?account.id=${accountId}`;
+      for (let index = 0; index < 4; index++) {
+        const response = await this.call<NFTInfoResponse>({
+          url: url,
+          method: 'GET',
+        });
+
+        const _nfts = response['nfts'];
+        if (_nfts.length > 0) {
+          nfts.push(..._nfts);
+        }
+
+        // if the "next" field is null, it's because not exist more nfts to get
+        if (!!response.links.next) {
+          url = response.links.next;
+        } else {
+          break; // exit from loop if no next nfts exists
+        }
+      }
+      return nfts;
+    } catch (error) {
+      console.error('Error in fetch NFT info: ', error);
+      return [] as NFTResponse;
+    }
+  }
+
   public tokenAssociate(tokenAddress: string, account: string) {
     const tokenId = this.hederaId(tokenAddress);
 
@@ -474,7 +620,7 @@ class Hedera {
     const transaction = new ContractExecuteTransaction()
       .setContractId(factoryId)
       .setGas(maxGas)
-      .setPayableAmount(Hbar.from(20, HbarUnit.Hbar))
+      .setPayableAmount(Hbar.from(25, HbarUnit.Hbar))
       .setFunction('createPair', new ContractFunctionParameters().addAddress(tokenAAddress).addAddress(tokenBAddress));
 
     return hashConnect.sendTransaction(transaction, accountId);
@@ -486,11 +632,11 @@ class Hedera {
 
     const tokenAddress = token ? token?.address : '';
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
     const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
 
     const transaction = new ContractExecuteTransaction()
-      .setContractId(contarctId)
+      .setContractId(contractId)
       .setGas(maxGas)
       .setPayableAmount(Hbar.fromString(HBARAmount))
       .setFunction(
@@ -525,13 +671,13 @@ class Hedera {
     const tokenBAddress = tokenB ? tokenB?.address : '';
 
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the router contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas)
       //Set the contract function to call
@@ -557,13 +703,13 @@ class Hedera {
 
     const tokenAddress = token ? token?.address : '';
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const maxGas = TRANSACTION_MAX_FEES.REMOVE_NATIVE_LIQUIDITY;
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas)
       //Set the contract function to call
@@ -589,12 +735,12 @@ class Hedera {
     const tokenBAddress = tokenB ? tokenB?.address : '';
 
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const maxGas = TRANSACTION_MAX_FEES.REMOVE_LIQUIDITY;
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas)
       //Set the contract function to call
@@ -662,7 +808,7 @@ class Hedera {
     } = swapData;
 
     const accountId = account ? this.hederaId(account) : '';
-    const contarctId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
 
     const extraSwaps = path.length - 2;
 
@@ -673,7 +819,7 @@ class Hedera {
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
-      .setContractId(contarctId)
+      .setContractId(contractId)
       //Set the gas for the contract call
       .setGas(maxGas);
 
@@ -703,6 +849,113 @@ class Hedera {
     return hashConnect.sendTransaction(transaction, accountId);
   }
 
+  public async sarStake(stakeData: SarStakeData) {
+    const { positionId, amount, methodName, account, chainId, rent } = stakeData;
+
+    const accountId = account ? this.hederaId(account) : '';
+    const address = SAR_STAKING_ADDRESS[chainId];
+    const contractId = address ? this.hederaId(address) : '';
+
+    const error = new Error('Unpredictable HBAR amount to pay rent');
+    try {
+      if (Number(rent) === 0) {
+        throw error;
+      }
+    } catch {
+      throw error;
+    }
+
+    const maxGas =
+      TRANSACTION_MAX_FEES.STAKE_LP_TOKEN + TRANSACTION_MAX_FEES.TRANSFER_ERC20 + TRANSACTION_MAX_FEES.NFT_MINT;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    if (methodName === 'mint') {
+      transaction
+        .setPayableAmount(Hbar.fromTinybars(rent))
+        .setFunction(methodName, new ContractFunctionParameters().addUint256(amount as any));
+    }
+    if (!!positionId && methodName === 'stake') {
+      transaction
+        .setPayableAmount(Hbar.fromTinybars(rent))
+        .setFunction(
+          methodName,
+          new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
+        );
+    }
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async sarUnstake(unstakeData: SarUnstakeData) {
+    const { positionId, amount, account, chainId, rent } = unstakeData;
+
+    const accountId = account ? this.hederaId(account) : '';
+    const address = SAR_STAKING_ADDRESS[chainId];
+    const contractId = address ? this.hederaId(address) : '';
+
+    const error = new Error('Unpredictable HBAR amount to pay rent');
+    try {
+      if (Number(rent) === 0) {
+        throw error;
+      }
+    } catch {
+      throw error;
+    }
+
+    const maxGas = TRANSACTION_MAX_FEES.REMOVE_LIQUIDITY + TRANSACTION_MAX_FEES.TRANSFER_ERC20;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    transaction
+      .setPayableAmount(Hbar.fromTinybars(rent))
+      .setFunction(
+        'withdraw',
+        new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
+      );
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async sarHarvestOrCompound(baseData: SarBaseData, methodName: 'harvest' | 'compound') {
+    const { positionId, account, chainId, rent } = baseData;
+
+    const accountId = account ? this.hederaId(account) : '';
+    const address = SAR_STAKING_ADDRESS[chainId];
+    const contractId = address ? this.hederaId(address) : '';
+
+    const error = new Error('Unpredictable HBAR amount to pay rent');
+    try {
+      if (Number(rent) === 0) {
+        throw error;
+      }
+    } catch {
+      throw error;
+    }
+
+    const maxGas = TRANSACTION_MAX_FEES.COLLECT_REWARDS + TRANSACTION_MAX_FEES.TRANSFER_ERC20;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    transaction
+      .setPayableAmount(Hbar.fromTinybars(rent))
+      .setFunction(methodName, new ContractFunctionParameters().addUint256(positionId as any));
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
   public async createPangoChefUserStorageContract(chainId: ChainId, account: string) {
     const pangoChefId = PANGOCHEF_ADDRESS[chainId];
 
@@ -714,6 +967,104 @@ class Hedera {
       .setContractId(contractId)
       .setGas(maxGas)
       .setFunction('createUserStorageContract');
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public convertHBarToTinyBars(value: string | number) {
+    return new Hbar(value).to(HbarUnit.Tinybar).toString();
+  }
+
+  public convertTinyBarToHbar(value: string | number) {
+    return Hbar.fromTinybars(value);
+  }
+
+  public tinyCentsToTinyBars(
+    tinyCents: string,
+    exchangeRate: {
+      cent_equivalent: number;
+      hbar_equivalent: number;
+    },
+  ) {
+    const tinyCentsRate = this.convertHBarToTinyBars(exchangeRate.cent_equivalent.toString());
+    const tinyBarRate = this.convertHBarToTinyBars(exchangeRate.hbar_equivalent.toString());
+
+    try {
+      if (Number(tinyCentsRate) === 0) {
+        return '0';
+      }
+    } catch {
+      return '0';
+    }
+    const tinyHbarPerTinyCents = new Fraction(tinyBarRate, tinyCentsRate); // HBAR/CENTS
+
+    return tinyHbarPerTinyCents.multiply(tinyCents).toFixed(0);
+  }
+
+  public async stakeOrWithdraw(stakeOrWithdrawData: StakeOrWithdrawData) {
+    const { account, amount, poolId, chainId, methodName } = stakeOrWithdrawData;
+
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
+    const maxGas = methodName === 'stake' ? TRANSACTION_MAX_FEES.STAKE_LP_TOKEN : TRANSACTION_MAX_FEES.WITHDRAW;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    transaction.setFunction(
+      methodName,
+      new ContractFunctionParameters().addUint256(Number(poolId)).addUint256(amount ? amount : (amount as any)),
+    );
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async claimReward(claimRewardData: ClaimRewardData) {
+    const { account, methodName, poolId, chainId } = claimRewardData;
+
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
+    const maxGas = TRANSACTION_MAX_FEES.COLLECT_REWARDS;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+
+    transaction.setFunction(methodName, new ContractFunctionParameters().addUint256(Number(poolId)));
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public async compound(compoundData: CompoundData) {
+    const { account, methodName, poolId, chainId, slippage } = compoundData;
+
+    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const accountId = account ? this.hederaId(account) : '';
+    const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
+
+    const maxGas = TRANSACTION_MAX_FEES.NFT_MINT;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas);
+    transaction.setPayableAmount(Hbar.fromString(slippage?.maxPairAmount, HbarUnit.Tinybar));
+    transaction.setFunction(
+      methodName,
+      new ContractFunctionParameters()
+        .addUint256(Number(poolId))
+        .addUint256Array([slippage?.minPairAmount as any, slippage?.maxPairAmount as any]),
+    );
+
     return hashConnect.sendTransaction(transaction, accountId);
   }
 }

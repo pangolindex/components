@@ -24,7 +24,7 @@ import {
   currencyEquals,
 } from '@pangolindex/sdk';
 import { hederaFn } from 'src/utils/hedera';
-import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
+import { MetamaskError, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { wait } from './retry';
 
@@ -41,13 +41,13 @@ export function isDummyAddress(value: any): string | false {
   return value;
 }
 
-export const isAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
   [ChainId.FUJI]: isAddress,
   [ChainId.AVALANCHE]: isAddress,
   [ChainId.WAGMI]: isAddress,
   [ChainId.COSTON]: isAddress,
   [ChainId.SONGBIRD]: isAddress,
-  [ChainId.HEDERA_TESTNET]: hederaFn.isHederaIdValid,
+  [ChainId.HEDERA_TESTNET]: hederaFn.isAddressValid,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
   [ChainId.ETHEREUM]: isDummyAddress,
@@ -223,6 +223,52 @@ export function getEtherscanLink(
     case 'address':
     default: {
       return `${prefix}/${addressPath[chainId]}/${data}`;
+    }
+  }
+}
+
+const walletProvider = () => {
+  if (window.xfi && window.xfi.ethereum) {
+    return window.xfi.ethereum;
+  } else if (window.bitkeep && window.isBitKeep) {
+    return window.bitkeep.ethereum;
+  }
+  return window.ethereum;
+};
+
+export async function changeNetwork(chain: Chain, action?: () => void) {
+  const { ethereum } = window;
+
+  if (ethereum) {
+    try {
+      await walletProvider().request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
+      });
+      action && action();
+    } catch (error) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      const metamask = error as MetamaskError;
+      if (metamask.code === 4902) {
+        try {
+          await walletProvider().request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainName: chain.name,
+                chainId: `0x${chain?.chain_id?.toString(16)}`,
+                //nativeCurrency: chain.nativeCurrency,
+                rpcUrls: [chain.rpc_uri],
+                blockExplorerUrls: chain.blockExplorerUrls,
+                iconUrls: chain.logo,
+                nativeCurrency: chain.nativeCurrency,
+              },
+            ],
+          });
+        } catch (_error) {
+          return;
+        }
+      }
     }
   }
 }

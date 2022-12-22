@@ -5,7 +5,8 @@ import AnalyticsIcon from 'src/assets/images/analytics.svg';
 import { Box, Stat, Text } from 'src/components';
 import { AnalyticsLink } from 'src/components/Stat/styled';
 import { BIG_INT_ZERO } from 'src/constants';
-import { useTotalSupply } from 'src/data/TotalSupply';
+import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
+import { useChainId } from 'src/hooks';
 import { StateContainer } from './styleds';
 
 interface Props {
@@ -19,7 +20,10 @@ interface Props {
 }
 
 export default function StatDetail({ title, totalAmount, pair, pgl, currency0, currency1, link }: Props) {
-  const totalPoolTokens = useTotalSupply(pair?.liquidityToken);
+  const chainId = useChainId();
+  const usePairTotalSupply = usePairTotalSupplyHook[chainId];
+
+  const totalPoolTokens = usePairTotalSupply(pair ?? undefined);
 
   const [token0Deposited, token1Deposited] =
     !!pair &&
@@ -28,7 +32,7 @@ export default function StatDetail({ title, totalAmount, pair, pgl, currency0, c
     JSBI.greaterThan(totalPoolTokens.raw, BIG_INT_ZERO) &&
     JSBI.greaterThan(pgl.raw, BIG_INT_ZERO) &&
     // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-    JSBI.greaterThanOrEqual(totalPoolTokens.raw, pgl.raw)
+    JSBI.greaterThanOrEqual(totalPoolTokens?.raw, pgl?.raw)
       ? pair.getLiquidityValues(totalPoolTokens, pgl, { feeOn: false })
       : [undefined, undefined];
 
@@ -55,7 +59,9 @@ export default function StatDetail({ title, totalAmount, pair, pgl, currency0, c
         {currency0 && (
           <Stat
             title={`Underlying ${currency0?.symbol ? currency0?.symbol : ''}`}
-            stat={`${token0Deposited ? numeral(parseFloat(token0Deposited?.toSignificant(6))).format('0.00a') : '-'}`}
+            stat={`${
+              token0Deposited ? numeral(parseFloat(token0Deposited?.toSignificant(6)).toFixed(6)).format('0.00a') : '-'
+            }`}
             titlePosition="top"
             titleFontSize={12}
             statFontSize={[20, 16]}

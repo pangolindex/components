@@ -1,4 +1,3 @@
-import { TransactionResponse } from '@ethersproject/providers';
 import React, { useContext, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +8,8 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefContract } from 'src/hooks/useContract';
-import { PangoChefInfo, PoolType } from 'src/state/ppangoChef/types';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { waitForTransaction } from 'src/utils';
+import { usePangoChefClaimRewardCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { Buttons, ClaimWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';
 
 export interface ClaimProps {
@@ -22,7 +20,7 @@ export interface ClaimProps {
 const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-
+  const useClaimRewardCallback = usePangoChefClaimRewardCallbackHook[chainId];
   const { t } = useTranslation();
 
   const theme = useContext(ThemeContext);
@@ -30,7 +28,6 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
   const png = PNG[chainId];
 
   // monitor call to help UI loading state
-  const addTransaction = useTransactionAdder();
   const [hash, setHash] = useState<string | undefined>();
   const [attempting, setAttempting] = useState(false);
   const [claimError, setClaimError] = useState<string | undefined>();
@@ -38,6 +35,8 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
   const pangoChefContract = usePangoChefContract();
 
   const mixpanel = useMixpanel();
+
+  const { callback: claimRewardCallback } = useClaimRewardCallback(stakingInfo.pid, stakingInfo.poolType);
 
   function wrappedOnDismiss() {
     setHash(undefined);
@@ -47,16 +46,11 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
   }
 
   async function onClaimReward() {
-    if (pangoChefContract && stakingInfo?.stakedAmount) {
+    if (pangoChefContract && stakingInfo?.stakedAmount && claimRewardCallback) {
       setAttempting(true);
       try {
-        const method = stakingInfo.poolType === PoolType.RELAYER_POOL ? 'claim' : 'harvest';
-        const response: TransactionResponse = await pangoChefContract[method](stakingInfo.pid);
-        await waitForTransaction(response, 1);
-        addTransaction(response, {
-          summary: t('earn.claimAccumulated', { symbol: png.symbol }),
-        });
-        setHash(response.hash);
+        const hash = await claimRewardCallback();
+        setHash(hash);
 
         const tokenA = stakingInfo.tokens[0];
         const tokenB = stakingInfo.tokens[1];

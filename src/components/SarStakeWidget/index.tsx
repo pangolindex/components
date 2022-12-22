@@ -1,4 +1,4 @@
-import { formatEther } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,8 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useDerivativeSarStake, useSarPositions, useSarStakeInfo } from 'src/state/psarstake/hooks';
+import { useSarStakeInfo } from 'src/state/psarstake/hooks';
+import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/state/psarstake/multiChainsHooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
@@ -34,10 +35,13 @@ export default function SarManageWidget() {
 
   const toggleWalletModal = useWalletModalToggle();
 
+  const useSarPositions = useSarPositionsHook[chainId];
   const { positions, isLoading } = useSarPositions();
 
   // get fist position with balance 0
   const position = positions?.find((value) => value.balance.isZero());
+
+  const useDerivativeSarStake = useDerivativeSarStakeHook[chainId];
 
   const {
     attempting,
@@ -165,7 +169,7 @@ export default function SarManageWidget() {
         </Box>
         <Box display="flex" flexDirection="row" justifyContent="space-between">
           <Text color="text1">{t('sarStake.weeklyDistributed', { symbol: png.symbol })}</Text>
-          <Text color="text1">{numeral(formatEther(weeklyPNG)).format('0.00a')}</Text>
+          <Text color="text1">{numeral(formatUnits(weeklyPNG, png.decimals)).format('0.00a')}</Text>
         </Box>
         <Box bgColor="color3" borderRadius="8px" padding="10px">
           <Text color="text1" fontWeight={400} fontSize="12px" textAlign="center">

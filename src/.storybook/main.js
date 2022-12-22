@@ -1,4 +1,5 @@
 const path = require('path');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = {
   webpackFinal: async (config) => {
@@ -18,10 +19,17 @@ module.exports = {
 
     return {
       ...updatedConfig,
-      plugins,
+      // we are using NodePolyfillPlugin to support node polyfill in webpack 5
+      plugins: [...plugins, new NodePolyfillPlugin()],
     };
   },
 
   stories: ['../**/*.stories.mdx', '../**/*.stories.@(js|jsx|ts|tsx)'],
-  addons: ['@storybook/addon-links', '@storybook/addon-essentials', '@storybook/preset-create-react-app'],
+  addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
+  features: {
+    babelModeV7: true,
+  },
+  core: {
+    builder: 'webpack5',
+  },
 };

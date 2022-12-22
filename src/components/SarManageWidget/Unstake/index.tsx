@@ -1,4 +1,4 @@
-import { formatEther } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import numeral from 'numeral';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,8 @@ import { TextInput } from 'src/components/TextInput';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Position, useDerivativeSarUnstake } from 'src/state/psarstake/hooks';
+import { useDerivativeSarUnstakeHook } from 'src/state/psarstake/multiChainsHooks';
+import { Position } from 'src/state/psarstake/types';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import Title from '../Title';
@@ -36,6 +37,8 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
   const stakedAmount = selectedPosition?.balance ?? 0;
 
   const { t } = useTranslation();
+
+  const useDerivativeSarUnstake = useDerivativeSarUnstakeHook[chainId];
 
   const {
     attempting,
@@ -126,7 +129,7 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
             <Text color="text4">
               {t('sarUnstake.stakedBalance', {
                 symbol: png.symbol,
-                balance: numeral(formatEther(stakedAmount)).format('0.00a'),
+                balance: numeral(formatUnits(stakedAmount, png.decimals)).format('0.00a'),
               })}
             </Text>
           </Box>

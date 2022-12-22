@@ -1,6 +1,19 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
-import { useDummyPangoChefInfos, useHederaPangoChefInfos, usePangoChefInfos } from './hooks';
+import {
+  useDummyPangoChefCallback,
+  useDummyPangoChefInfos,
+  useEVMPangoChefClaimRewardCallback,
+  useEVMPangoChefCompoundCallback,
+  useEVMPangoChefStakeCallback,
+  useEVMPangoChefWithdrawCallback,
+  useHederaPangoChefClaimRewardCallback,
+  useHederaPangoChefCompoundCallback,
+  useHederaPangoChefInfos,
+  useHederaPangoChefStakeCallback,
+  useHederaPangoChefWithdrawCallback,
+  usePangoChefInfos,
+} from './hooks';
 
 export type UsePangoChefInfosHookType = {
   [chainId in ChainId]:
@@ -35,4 +48,140 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
   [ChainId.EVMOS_TESTNET]: usePangoChefInfos,
+};
+
+export type UsePangoChefStakeCallbackHookType = {
+  [chainId in ChainId]:
+    | typeof useEVMPangoChefStakeCallback
+    | typeof useHederaPangoChefStakeCallback
+    | typeof useDummyPangoChefCallback;
+};
+
+export const usePangoChefStakeCallbackHook: UsePangoChefStakeCallbackHookType = {
+  [ChainId.FUJI]: useEVMPangoChefStakeCallback,
+  [ChainId.AVALANCHE]: useEVMPangoChefStakeCallback,
+  [ChainId.WAGMI]: useEVMPangoChefStakeCallback,
+  [ChainId.COSTON]: useEVMPangoChefStakeCallback,
+  [ChainId.SONGBIRD]: useEVMPangoChefStakeCallback,
+  [ChainId.HEDERA_TESTNET]: useHederaPangoChefStakeCallback,
+  [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
+  [ChainId.ETHEREUM]: useDummyPangoChefCallback,
+  [ChainId.POLYGON]: useDummyPangoChefCallback,
+  [ChainId.FANTOM]: useDummyPangoChefCallback,
+  [ChainId.XDAI]: useDummyPangoChefCallback,
+  [ChainId.BSC]: useDummyPangoChefCallback,
+  [ChainId.ARBITRUM]: useDummyPangoChefCallback,
+  [ChainId.CELO]: useDummyPangoChefCallback,
+  [ChainId.OKXCHAIN]: useDummyPangoChefCallback,
+  [ChainId.VELAS]: useDummyPangoChefCallback,
+  [ChainId.AURORA]: useDummyPangoChefCallback,
+  [ChainId.CRONOS]: useDummyPangoChefCallback,
+  [ChainId.FUSE]: useDummyPangoChefCallback,
+  [ChainId.MOONRIVER]: useDummyPangoChefCallback,
+  [ChainId.MOONBEAM]: useDummyPangoChefCallback,
+  [ChainId.OP]: useDummyPangoChefCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefStakeCallback,
+};
+
+export type UsePangoChefClaimRewardCallbackHookType = {
+  [chainId in ChainId]:
+    | typeof useEVMPangoChefClaimRewardCallback
+    | typeof useHederaPangoChefClaimRewardCallback
+    | typeof useDummyPangoChefCallback;
+};
+
+export const usePangoChefClaimRewardCallbackHook: UsePangoChefClaimRewardCallbackHookType = {
+  [ChainId.FUJI]: useEVMPangoChefClaimRewardCallback,
+  [ChainId.AVALANCHE]: useEVMPangoChefClaimRewardCallback,
+  [ChainId.WAGMI]: useEVMPangoChefClaimRewardCallback,
+  [ChainId.COSTON]: useEVMPangoChefClaimRewardCallback,
+  [ChainId.SONGBIRD]: useEVMPangoChefClaimRewardCallback,
+  [ChainId.HEDERA_TESTNET]: useHederaPangoChefClaimRewardCallback,
+  [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
+  [ChainId.ETHEREUM]: useDummyPangoChefCallback,
+  [ChainId.POLYGON]: useDummyPangoChefCallback,
+  [ChainId.FANTOM]: useDummyPangoChefCallback,
+  [ChainId.XDAI]: useDummyPangoChefCallback,
+  [ChainId.BSC]: useDummyPangoChefCallback,
+  [ChainId.ARBITRUM]: useDummyPangoChefCallback,
+  [ChainId.CELO]: useDummyPangoChefCallback,
+  [ChainId.OKXCHAIN]: useDummyPangoChefCallback,
+  [ChainId.VELAS]: useDummyPangoChefCallback,
+  [ChainId.AURORA]: useDummyPangoChefCallback,
+  [ChainId.CRONOS]: useDummyPangoChefCallback,
+  [ChainId.FUSE]: useDummyPangoChefCallback,
+  [ChainId.MOONRIVER]: useDummyPangoChefCallback,
+  [ChainId.MOONBEAM]: useDummyPangoChefCallback,
+  [ChainId.OP]: useDummyPangoChefCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefClaimRewardCallback,
+};
+
+export type UsePangoChefWithdrawCallbackHookType = {
+  [chainId in ChainId]:
+    | typeof useEVMPangoChefWithdrawCallback
+    | typeof useHederaPangoChefWithdrawCallback
+    | typeof useDummyPangoChefCallback;
+};
+
+export const usePangoChefWithdrawCallbackHook: UsePangoChefWithdrawCallbackHookType = {
+  [ChainId.FUJI]: useEVMPangoChefWithdrawCallback,
+  [ChainId.AVALANCHE]: useEVMPangoChefWithdrawCallback,
+  [ChainId.WAGMI]: useEVMPangoChefWithdrawCallback,
+  [ChainId.COSTON]: useEVMPangoChefWithdrawCallback,
+  [ChainId.SONGBIRD]: useEVMPangoChefWithdrawCallback,
+  [ChainId.HEDERA_TESTNET]: useHederaPangoChefWithdrawCallback,
+  [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
+  [ChainId.ETHEREUM]: useDummyPangoChefCallback,
+  [ChainId.POLYGON]: useDummyPangoChefCallback,
+  [ChainId.FANTOM]: useDummyPangoChefCallback,
+  [ChainId.XDAI]: useDummyPangoChefCallback,
+  [ChainId.BSC]: useDummyPangoChefCallback,
+  [ChainId.ARBITRUM]: useDummyPangoChefCallback,
+  [ChainId.CELO]: useDummyPangoChefCallback,
+  [ChainId.OKXCHAIN]: useDummyPangoChefCallback,
+  [ChainId.VELAS]: useDummyPangoChefCallback,
+  [ChainId.AURORA]: useDummyPangoChefCallback,
+  [ChainId.CRONOS]: useDummyPangoChefCallback,
+  [ChainId.FUSE]: useDummyPangoChefCallback,
+  [ChainId.MOONRIVER]: useDummyPangoChefCallback,
+  [ChainId.MOONBEAM]: useDummyPangoChefCallback,
+  [ChainId.OP]: useDummyPangoChefCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefWithdrawCallback,
+};
+
+export type UsePangoChefCompoundCallbackHookType = {
+  [chainId in ChainId]:
+    | typeof useEVMPangoChefCompoundCallback
+    | typeof useHederaPangoChefCompoundCallback
+    | typeof useDummyPangoChefCallback;
+};
+
+export const usePangoChefCompoundCallbackHook: UsePangoChefCompoundCallbackHookType = {
+  [ChainId.FUJI]: useEVMPangoChefCompoundCallback,
+  [ChainId.AVALANCHE]: useEVMPangoChefCompoundCallback,
+  [ChainId.WAGMI]: useEVMPangoChefCompoundCallback,
+  [ChainId.COSTON]: useEVMPangoChefCompoundCallback,
+  [ChainId.SONGBIRD]: useEVMPangoChefCompoundCallback,
+  [ChainId.HEDERA_TESTNET]: useHederaPangoChefCompoundCallback,
+  [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
+  [ChainId.ETHEREUM]: useDummyPangoChefCallback,
+  [ChainId.POLYGON]: useDummyPangoChefCallback,
+  [ChainId.FANTOM]: useDummyPangoChefCallback,
+  [ChainId.XDAI]: useDummyPangoChefCallback,
+  [ChainId.BSC]: useDummyPangoChefCallback,
+  [ChainId.ARBITRUM]: useDummyPangoChefCallback,
+  [ChainId.CELO]: useDummyPangoChefCallback,
+  [ChainId.OKXCHAIN]: useDummyPangoChefCallback,
+  [ChainId.VELAS]: useDummyPangoChefCallback,
+  [ChainId.AURORA]: useDummyPangoChefCallback,
+  [ChainId.CRONOS]: useDummyPangoChefCallback,
+  [ChainId.FUSE]: useDummyPangoChefCallback,
+  [ChainId.MOONRIVER]: useDummyPangoChefCallback,
+  [ChainId.MOONBEAM]: useDummyPangoChefCallback,
+  [ChainId.OP]: useDummyPangoChefCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefCompoundCallback,
 };

@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { TransactionResponse } from '@ethersproject/providers';
 import { parseUnits } from '@ethersproject/units';
 import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -10,15 +9,16 @@ import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
+import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
+import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { usePairContract, usePangoChefContract } from 'src/hooks/useContract';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
+import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/hooks';
+import { usePangoChefStakeCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useDerivedStakeInfo, useGetPoolDollerWorth, useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { SpaceType } from 'src/state/pstake/types';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
-import { waitForTransaction } from 'src/utils';
+import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
 import ConfirmDrawer from './ConfirmDrawer';
 import {
@@ -42,12 +42,17 @@ interface StakeProps {
 const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
+  const useApproveCallback = useApproveCallbackHook[chainId];
+  const usePairBalance = usePairBalanceHook[chainId];
+  const useStakeCallback = usePangoChefStakeCallbackHook[chainId];
+  const [shouldCreateStorage, create] = useHederaPangochefContractCreateCallback();
   const token0 = stakingInfo.tokens[0];
   const token1 = stakingInfo.tokens[1];
 
   const [, stakingTokenPair] = usePair(token0, token1);
 
-  const userLiquidityUnstaked = useTokenBalance(account ?? undefined, stakingTokenPair?.liquidityToken);
+  const userLiquidityUnstaked = usePairBalance(account ?? undefined, stakingTokenPair ?? undefined);
+
   const { liquidityInUSD } = useGetPoolDollerWorth(stakingTokenPair);
 
   // track and parse user input
@@ -74,7 +79,6 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
   // state for pending and submitted txn views
-  const addTransaction = useTransactionAdder();
   const [attempting, setAttempting] = useState<boolean>(false);
   const [hash, setHash] = useState<string | undefined>();
   const [stakeError, setStakeError] = useState<string | undefined>();
@@ -96,6 +100,11 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   const [stepIndex, setStepIndex] = useState(4);
   const [approval, approveCallback] = useApproveCallback(chainId, parsedAmount, stakingInfo?.stakingRewardAddress);
 
+  const { callback: stakeCallback, error: stakeCallbackError } = useStakeCallback(
+    stakingInfo.pid,
+    parsedAmount?.raw?.toString() ?? undefined,
+  );
+
   const pangochefContract = usePangoChefContract();
   const currency0 = unwrappedToken(stakingTokenPair?.token0 as Token, chainId);
   const currency1 = unwrappedToken(stakingTokenPair?.token1 as Token, chainId);
@@ -113,24 +122,17 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
       const newAmount = (userLiquidityUnstaked as TokenAmount)
         .multiply(JSBI.BigInt(value))
         .divide(JSBI.BigInt(100)) as TokenAmount;
-      setTypedValue(newAmount.toFixed(18));
+      setTypedValue(newAmount?.toFixed(0));
     }
   };
 
   async function onStake() {
     if (pangochefContract && parsedAmount && deadline) {
       setAttempting(true);
-      if (approval === ApprovalState.APPROVED) {
+      if (approval === ApprovalState.APPROVED && stakeCallback) {
         try {
-          const response: TransactionResponse = await pangochefContract.stake(
-            stakingInfo.pid,
-            parsedAmount.raw.toString(),
-          );
-          await waitForTransaction(response, 5);
-          addTransaction(response, {
-            summary: t('earn.depositLiquidity'),
-          });
-          setHash(response.hash);
+          const hash = await stakeCallback();
+          setHash(hash);
 
           mixpanel.track(MixPanelEvents.ADD_FARM, {
             chainId: chainId,
@@ -255,8 +257,44 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
 
   const balanceLabel =
     !!stakingInfo?.stakedAmount?.token && userLiquidityUnstaked
-      ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toSignificant(6)
+      ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toExact()
       : '-';
+
+  const renderButton = () => {
+    if (shouldCreateStorage) {
+      return (
+        <Buttons>
+          <Button variant="primary" onClick={create} height="45px">
+            Create Storage Contract
+          </Button>
+        </Buttons>
+      );
+    } else {
+      return (
+        <Buttons>
+          <Button
+            variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
+            onClick={onAttemptToApprove}
+            isDisabled={approval !== ApprovalState.NOT_APPROVED}
+            loading={attempting && !hash}
+            loadingText={t('migratePage.loading')}
+          >
+            {t('earn.approve')}
+          </Button>
+
+          <Button
+            variant="primary"
+            isDisabled={!!error || approval !== ApprovalState.APPROVED || !!stakeCallbackError}
+            onClick={type === SpaceType.detail ? onConfirm : onStake}
+            loading={attempting && !hash}
+            loadingText={t('migratePage.loading')}
+          >
+            {error ?? t('earn.deposit')}
+          </Button>
+        </Buttons>
+      );
+    }
+  };
 
   return (
     <StakeWrapper>
@@ -388,27 +426,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
             )}
           </Box>
 
-          <Buttons>
-            <Button
-              variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
-              onClick={onAttemptToApprove}
-              isDisabled={approval !== ApprovalState.NOT_APPROVED}
-              loading={attempting && !hash}
-              loadingText={t('migratePage.loading')}
-            >
-              {t('earn.approve')}
-            </Button>
-
-            <Button
-              variant="primary"
-              isDisabled={!!error || approval !== ApprovalState.APPROVED}
-              onClick={type === SpaceType.detail ? onConfirm : onStake}
-              loading={attempting && !hash}
-              loadingText={t('migratePage.loading')}
-            >
-              {error ?? t('earn.deposit')}
-            </Button>
-          </Buttons>
+          {renderButton()}
         </>
       )}
 

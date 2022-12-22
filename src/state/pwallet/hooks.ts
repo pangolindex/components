@@ -29,7 +29,8 @@ import {
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useAllTokens, useHederaTokenAssociated, useNearTokens, useTokens } from 'src/hooks/Tokens';
+import { useAllTokens, useHederaTokenAssociated, useNearTokens } from 'src/hooks/Tokens';
+import { useTokensHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -1249,6 +1250,8 @@ export function useGetUserLP() {
 export function useGetHederaUserLP() {
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
+
+  const useTokens = useTokensHook[chainId];
   // get all pairs
   const trackedTokenPairs = useTrackedTokenPairs();
 
@@ -1558,7 +1561,7 @@ export const fetchHederaPGLToken = (pairToken: Token | undefined, chainId: Chain
 
     const tokenAddress = pairToken ? pairToken?.address : '';
     // get pair contract id using api call because `asAccountString` is not working for pair address
-    const contractId = await hederaFn.getContractData(tokenAddress);
+    const { contractId } = await hederaFn.getContractData(tokenAddress);
     // get pair tokenId from pair contract id
     const tokenId = hederaFn.contractToTokenId(contractId?.toString());
     // convert token id to evm address
@@ -1684,7 +1687,7 @@ export function useHederaPGLAssociated(
 ): ReturnType<typeof useHederaTokenAssociated> {
   // here we need to use fungible token so get pgltoken based currency
   const [pglToken] = useHederaPGLToken(currencyA, currencyB);
-  return useHederaTokenAssociated(pglToken);
+  return useHederaTokenAssociated(pglToken?.address, pglToken?.symbol);
 }
 
 /**
