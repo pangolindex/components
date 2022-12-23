@@ -1055,8 +1055,11 @@ class Hedera {
 
     const maxGas = TRANSACTION_MAX_FEES.COMPOUND;
 
+    // compound transaction is little different than all other transaction
+    // because in compound input we have slippage which is tuple
+    // tuple as input is not supported by hedera sdk as of now
+    // so we are enconding function parameters and passing it as Uint8Array
     const functionCallAsUint8Array = contract.interface.encodeFunctionData(methodName, [poolId, slippage]);
-
     const encodedParametersHex = functionCallAsUint8Array.slice(2);
 
     const params = Buffer.from(encodedParametersHex, 'hex');

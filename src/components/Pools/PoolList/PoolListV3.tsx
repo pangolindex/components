@@ -29,7 +29,9 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
   const [stakingInfoByPid, setStakingInfoByPid] = useState<StakingInfoByPid>({});
 
   const togglePoolDetailModal = usePoolDetailnModalToggle();
-  //we store selected Pool Id bcoz when we create pangochef storage  its reoad modal so at that time redux storage which is good
+  // we store selected Pool Id because when we create pangochef storage ( in hedera )
+  // its reloading detail modal for a second so at that time we are loosing state if we have it in useState
+  // so instead we are storing it in redux to make it persist
   const selectedPoolIndex = useGetSelectedPoolId();
   const updateSelectedPoolId = useUpdateSelectedPoolId();
 

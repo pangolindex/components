@@ -178,7 +178,8 @@ export function useHederaApproveCallback(
       const response = await hederaFn.spendingApproval({
         tokenAddress: token.address,
         spender: spender,
-        // here we add ONE_TOKEN bcoz every second amountToApprove constantly increase so we already approve more amopunt
+        // here we add ONE_TOKEN because amountToApprove constantly increasing every second
+        // so by adding more amount, approved amount will be valid for transaction
         amount: BigNumber.from(ONE_TOKEN?.toString()).add(amountToApprove?.raw?.toString()).toString(),
         account,
       });

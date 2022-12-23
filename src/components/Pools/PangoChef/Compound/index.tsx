@@ -96,6 +96,8 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const pngPrice = tokensPrices[png.address] ?? new Price(png, wrappedCurrency, '1', '0');
   let amountToAdd: CurrencyAmount | TokenAmount = new TokenAmount(wrappedCurrency, '0');
   // if is png pool and not is wrapped token as second token (eg PNG/USDC, PSB/SDOOD)
+  // or for hedera chain we want to consider pbar-whbar pool instead of pbar-hbar pool
+  // so for hedera also we want to go into if condition
   if ((isPNGPool && !isWrappedCurrencyPool) || hederaFn.isHederaChain(chainId)) {
     // need to calculate the token price in png, for this we using the token price on currency and png price on currency
     const token = token0.equals(png) ? token1 : token0;
