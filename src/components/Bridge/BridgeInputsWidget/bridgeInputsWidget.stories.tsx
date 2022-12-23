@@ -57,6 +57,19 @@ export default {
       type: { name: 'object', required: false },
       description: 'Max Amount',
     },
+    recipient: {
+      name: 'Recipient',
+      control: 'text',
+      type: { name: 'string', required: false },
+      description: 'Recipient Address',
+    },
+    onChangeRecipient: {
+      name: 'Change Recipient',
+      control: 'function',
+      type: { name: 'function', required: false },
+      defaultValue: () => {},
+      description: 'The function to be called when user change the address',
+    },
     handleMaxInput: {
       name: 'Handle Max Input',
       control: 'function',
@@ -105,6 +118,8 @@ Default.args = {
   amount: undefined,
   amountNet: undefined,
   maxAmountInput: undefined,
+  recipient: undefined,
+  onChangeRecipient: () => {},
   handleMaxInput: () => {},
   onChangeAmount: () => {},
   onChangeChainDrawerStatus: () => {},

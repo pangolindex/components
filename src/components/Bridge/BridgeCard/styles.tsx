@@ -76,7 +76,7 @@ export const TransactionText = styled(Text)`
   text-align: center;
 `;
 
-export const ArrowWrapper = styled.div`
+export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   background-color: ${({ theme }) => theme.bridge?.primaryBgColor};
   width: 30px;
   height: 30px;
@@ -87,7 +87,6 @@ export const ArrowWrapper = styled.div`
   justify-content: center;
 
   &:hover {
-    cursor: pointer;
-    opacity: 0.8;
+    ${({ clickable }) => (clickable ? `cursor: pointer; opacity: 0.8;` : `cursor: not-allowed;`)}
   }
 `;

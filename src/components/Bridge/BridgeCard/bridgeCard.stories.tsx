@@ -50,6 +50,12 @@ export default {
       type: { name: 'object', required: false },
       description: 'Output Currency',
     },
+    recipient: {
+      name: 'Recipient',
+      control: 'text',
+      type: { name: 'string', required: false },
+      description: 'Recipient Address',
+    },
     setSlippageTolerance: {
       name: 'Set Slippage Tolerance',
       control: 'function',
@@ -78,6 +84,7 @@ Default.args = {
   fromChain: undefined,
   inputCurrency: undefined,
   outputCurrency: undefined,
+  recipient: undefined,
   toChain: undefined,
   setSlippageTolerance: () => {},
   getRoutes: () => {},

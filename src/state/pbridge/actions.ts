@@ -29,6 +29,7 @@ export const replaceBridgeState = createAction<{
   outputCurrencyId?: string;
   fromChainId?: string;
   toChainId?: string;
+  recipient: string | null;
   routes?: Route[];
   selectedRoute?: number;
   routesLoaderStatus?: boolean;
@@ -36,6 +37,7 @@ export const replaceBridgeState = createAction<{
   transactionError?: Error;
   transactionStatus?: TransactionStatus;
 }>('pbridge/replaceBridgeState');
+export const setRecipient = createAction<{ recipient: string | null }>('pbridge/setRecipient');
 export const typeAmount = createAction<{ field: CurrencyField; typedValue: string }>('pbridge/typeAmount');
 export const setRoutes = createAction<{ routes: Route[]; routesLoaderStatus: boolean }>('pbridge/routes');
 export const selectRoute = createAction<{ selectedRoute: number }>('pbridge/selectRoute');
