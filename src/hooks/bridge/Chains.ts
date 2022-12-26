@@ -1,7 +1,7 @@
 import type { ChainData } from '@0xsquid/sdk';
 import LIFI from '@lifi/sdk';
 import { ChainType, EVMChain } from '@lifi/types';
-import { ALL_CHAINS, BridgeChain, HASHPORT, LIFI as LIFIBridge, SQUID } from '@pangolindex/sdk';
+import { ALL_CHAINS, BridgeChain, Chain, HASHPORT, LIFI as LIFIBridge, SQUID } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { HASHPORT_API, SQUID_API } from 'src/constants';
@@ -62,7 +62,7 @@ export function useHashportChains() {
     const chains = response && response.status === 200 ? await response.json() : [];
     const formattedChains: BridgeChain[] = chains.map((chain): BridgeChain => {
       // We have to add below line, because Hashport doesn't give enough data via API
-      const relatedChain = ALL_CHAINS.find((c) => c.id === `${chain?.name.toLowerCase()}_mainnet`);
+      const relatedChain = ALL_CHAINS.find((c) => c.id === `${chain?.name.toLowerCase()}_mainnet`) as Chain;
       return {
         id: relatedChain?.id,
         name: relatedChain?.name,
