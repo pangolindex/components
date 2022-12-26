@@ -52,10 +52,9 @@ export function useHashportCurrencies() {
     const response = await fetch(`${HASHPORT_API}/assets/amounts`);
     const chains = response && response.status === 200 ? await response.json() : [];
     const tokenList: any[] = Object.values(chains);
-    const formattedCurrencies: any = [];
+    const formattedCurrencies: BridgeCurrency[] = [];
     tokenList.map((tokens: any) => {
-      Object.entries(tokens).forEach(([key, value]: any) => {
-        console.log(key);
+      Object.values(tokens).forEach((value: any) => {
         const data = {
           chainId: value?.networkId.toString(),
           decimals: value?.decimals,
@@ -63,11 +62,52 @@ export function useHashportCurrencies() {
           name: value?.name,
           logo: 'https://app.hashport.network/assets/HBAR_DARK.311aac1e.svg',
           address: value?.id,
+          ...(value?.bridgeableNetworks && {
+            bridgeableNetworks: Object.values(value.bridgeableNetworks).map((val: any) => {
+              const asset = val.wrappedAsset;
+              const data = {
+                chainId: asset.networkId,
+                decimals: asset.decimals,
+                symbol: asset.symbol,
+                name: asset.name,
+                logo: 'https://app.hashport.network/assets/HBAR_DARK.311aac1e.svg',
+                address: asset.id,
+              };
+              return data;
+            }),
+          }),
         };
         formattedCurrencies.push(data);
       });
     });
-    return formattedCurrencies;
+    const updatedFormattedCurrencies = [...formattedCurrencies];
+    // reverse bridgeableNetwork field
+    // e.g. if USDC[hts] is bridgeable to USDC, USDC should also be bridgeable to USDC[hts]
+    // so we add USDC[hts] to USDC's bridgeableNetworks field (hashport didn't make this field available in destination asset)
+    formattedCurrencies.map((currency) => {
+      if (currency?.bridgeableNetworks) {
+        currency.bridgeableNetworks.map((bridgeableNetwork) => {
+          const index = updatedFormattedCurrencies.findIndex(
+            (item) => item.address === bridgeableNetwork.address && item.chainId === bridgeableNetwork.chainId,
+          );
+          if (index !== -1) {
+            if (!updatedFormattedCurrencies[index].bridgeableNetworks) {
+              updatedFormattedCurrencies[index].bridgeableNetworks = [];
+            }
+            updatedFormattedCurrencies[index]?.bridgeableNetworks?.push({
+              chainId: currency.chainId,
+              decimals: currency.decimals,
+              symbol: currency.symbol,
+              name: currency.name,
+              logo: currency.logo,
+              address: currency.address,
+            });
+          }
+        });
+      }
+    });
+
+    return updatedFormattedCurrencies;
   });
 }
 

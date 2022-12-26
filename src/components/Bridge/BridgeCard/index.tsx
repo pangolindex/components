@@ -9,7 +9,6 @@ import {
   HASHPORT,
   LIFI as LIFIBridge,
   SQUID,
-  // THORSWAP,
 } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
@@ -143,9 +142,12 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
   }, [fromChain, allBridgeCurrencies]);
 
   const outputCurrencyList = useMemo(() => {
-    const data = allBridgeCurrencies?.filter((val) => val?.chainId === toChain?.chain_id?.toString());
+    let data = allBridgeCurrencies?.filter((val) => val?.chainId === toChain?.chain_id?.toString());
+    if (fromChain && inputCurrency?.bridgeableNetworks) {
+      data = inputCurrency?.bridgeableNetworks?.filter((val) => val?.chainId === toChain?.chain_id?.toString());
+    }
     return data;
-  }, [toChain, allBridgeCurrencies]);
+  }, [inputCurrency, outputCurrency, toChain, allBridgeCurrencies]);
 
   const chainList = useMemo(() => {
     if (activeBridges) {
@@ -309,7 +311,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           <Button
             variant="primary"
             onClick={() => {
-              fromChain && changeNetwork(fromChain);
+              fromChain && changeNetwork(fromChain as Chain);
             }}
             isDisabled={!fromChain}
           >
