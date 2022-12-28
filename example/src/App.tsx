@@ -1,33 +1,40 @@
-// @ts-ignore
-import React from 'react';
-import './App.css';
+import React, { useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import { Button, SwapWidget } from '@components/index';
-import { injected, useEagerConnect, useInactiveListener } from './utils/hooks';
+import { Button, Pools, PoolType, usePangoChefInfosHook, WalletModal } from '@components/index';
+import { useChainId } from '@components/hooks';
 
 function App() {
   const context = useWeb3React();
   const { account } = context;
-  const triedEager = useEagerConnect();
+  const chainId = useChainId();
+  const [open, setOpen] = useState<boolean>(false);
 
-  // handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
-  useInactiveListener(!triedEager);
+  const info = usePangoChefInfosHook[chainId]();
 
   return (
     <div className="App">
-      <Button
-        variant="primary"
-        isDisabled={!!account}
-        onClick={() => {
-          injected.activate();
-        }}
-        width="400px"
-      >
-        {!account ? 'Connect Wallet' : account}
+      <Button variant="primary" onClick={() => setOpen(true)}>
+        {account ? `Wallet connected: ${account}` : 'Connect Wallet'}
       </Button>
-      <div style={{ marginTop: '10px', maxWidth: '400px' }}>
-        <SwapWidget />
-      </div>
+      <WalletModal
+        open={open}
+        closeModal={() => {
+          setOpen(false);
+        }}
+        onWalletConnect={() => {
+          setOpen(false);
+        }}
+      />
+      <Pools
+        type={PoolType.all}
+        version={3}
+        stakingInfoV1={[]}
+        miniChefStakingInfo={[]}
+        pangoChefStakingInfo={info || []}
+        activeMenu={'allFarmV3'}
+        setMenu={() => {}}
+        menuItems={[{ label: '', value: '' }]}
+      />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Web3Provider } from '@ethersproject/providers';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './normalize.css';
 import App from './App';
 import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
 import { PangolinProvider } from '@components/index';
