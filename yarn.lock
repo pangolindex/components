@@ -5489,10 +5489,10 @@
   resolved "https://registry.npmjs.org/@pangolindex/token-lists/-/token-lists-1.0.2.tgz"
   integrity sha512-+hU1kZ1vrHQwWWIZk7gQIOTStEIqZ0MVEVHiIGGE80/FOBK2Med+3gSdnVr5Gc9it/KN5zAGmxZbEXv083oT+Q==
 
-"@pangolindex/web3-react-injected-connector@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@pangolindex/web3-react-injected-connector/-/web3-react-injected-connector-1.0.1.tgz"
-  integrity sha512-W2mHL5OzL85BxJNevW/CmzxpMGf0PL2OWpGHO6nNL5sFyYjUAWxYnlDPyHnlIrHMnttVxfDg0Qn6XAcichMvHg==
+"@pangolindex/web3-react-injected-connector@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@pangolindex/web3-react-injected-connector/-/web3-react-injected-connector-1.0.2.tgz#03c87cc39c08ac5ececd4f14375c979cfcea961c"
+  integrity sha512-97NbP1xUJYleKNxUm9Sc4L2eRypsnvn2kqKK0w1ll0jGOc+GLdw94NbtNadtR2jzR2KO6RiV/LrrRBolEDzzjQ==
   dependencies:
     "@web3-react/abstract-connector" "^6.0.7"
     "@web3-react/types" "^6.0.7"
