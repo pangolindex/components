@@ -18,7 +18,13 @@
     "jsx": "react-jsx",
     "declaration": true,
     "outDir": "./lib",
-    "rootDir": "src"
+    "rootDir": "src",
+    "plugins": [
+      {
+        "transform": "@zerollup/ts-transform-paths",
+        "exclude": ["*"]
+      }
+    ]
   },
   "include": ["src", "./src/**/*.ts", "./src/**/*.tsx", "./index.d.ts"],
   "exclude": ["node_modules", "lib"]
