@@ -3,7 +3,7 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { useEffect, useState } from "react";
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [43114, 43113],
+  supportedChainIds: [43114, 43113, 19],
 });
 
 export function useEagerConnect() {
