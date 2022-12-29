@@ -2,7 +2,7 @@ import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
 import { Button } from '../../Button';
-import { useGetMinichefStakingInfos } from '../mock';
+import { useGetMinichefStakingInfos } from '../Pool/mock';
 import DetailModal from '.';
 
 export default {

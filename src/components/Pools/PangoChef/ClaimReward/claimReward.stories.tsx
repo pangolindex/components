@@ -1,7 +1,7 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { Box } from 'src/components/Box';
-import { useGetPangoChefInfos } from '../../mock';
+import { useGetPangoChefInfos } from '../../Pool/mock';
 import ClaimReward from '.';
 
 export default {
