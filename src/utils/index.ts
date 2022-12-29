@@ -8,6 +8,7 @@ import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts
 import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
   ALL_CHAINS,
+  BridgeChain,
   BridgeCurrency,
   CAVAX,
   CHAINS,
@@ -17,6 +18,7 @@ import {
   CurrencyAmount,
   Fraction,
   JSBI,
+  NetworkType,
   Percent,
   Token,
   TokenAmount,
@@ -32,6 +34,22 @@ import { wait } from './retry';
 export function isAddress(value: any): string | false {
   try {
     return getAddress(value);
+  } catch {
+    return false;
+  }
+}
+
+export function isCosmosAddress(value: string | undefined, bridgeChain: BridgeChain): string | false {
+  try {
+    if (typeof value !== 'string' || !value) {
+      return false;
+    }
+    const prefix = bridgeChain?.meta_data?.cosmosPrefix;
+    if (prefix) {
+      return value.startsWith(prefix) ? value : false;
+    } else {
+      return false;
+    }
   } catch {
     return false;
   }
@@ -66,6 +84,13 @@ export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) 
   [ChainId.MOONRIVER]: isDummyAddress,
   [ChainId.MOONBEAM]: isDummyAddress,
   [ChainId.OP]: isDummyAddress,
+};
+
+export const checkAddressNetworkBaseMapping: {
+  [networkType in NetworkType]: (value: any, bridgeChain: BridgeChain) => string | false;
+} = {
+  [NetworkType.EVM]: isDummyAddress,
+  [NetworkType.COSMOS]: isCosmosAddress,
 };
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
@@ -236,7 +261,7 @@ const walletProvider = () => {
   return window.ethereum;
 };
 
-export async function changeNetwork(chain: Chain) {
+export async function changeNetwork(chain: Chain, action?: () => void) {
   const { ethereum } = window;
 
   if (ethereum) {
@@ -245,7 +270,7 @@ export async function changeNetwork(chain: Chain) {
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
       });
-      window.location.reload();
+      action && action();
     } catch (error) {
       // This error code indicates that the chain has not been added to MetaMask.
       const metamask = error as MetamaskError;
@@ -309,9 +334,9 @@ export function getTokenComparator(balances: {
 }
 
 export function filterTokenOrChain(
-  data: (BridgeCurrency | Token | Chain)[],
+  data: (BridgeCurrency | Token | Chain | BridgeChain)[],
   search: string,
-): (BridgeCurrency | Token | Chain)[] {
+): (BridgeCurrency | Token | Chain | BridgeChain)[] {
   if (search.length === 0) return data;
   const searchingAddress = isAddress(search);
 
@@ -359,8 +384,7 @@ export function calculateGasMargin(value: BigNumber): BigNumber {
 }
 
 // it convert seconds to hours/minutes HH:MM
-export function calculateTransactionTime(seconds: number | undefined): string | undefined {
-  if (!seconds) return undefined;
+export function calculateTransactionTime(seconds: number): string {
   if (seconds < 60) {
     return `${seconds} seconds`;
   } else {

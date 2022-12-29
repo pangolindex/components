@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { Modal } from 'src/components';
 import { useDispatch } from 'src/state';
 import { ApplicationModal } from 'src/state/papplication/actions';
-import { useModalOpen, usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
+import { useModalOpen, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
 import { resetMintState } from 'src/state/pmint/actions';
 import { StakingInfo } from 'src/state/pstake/types';
 import DetailView from './DetailView';
@@ -16,6 +16,7 @@ export interface DetailModalProps {
 const DetailModal = ({ stakingInfo, version }: DetailModalProps) => {
   const detailModalOpen = useModalOpen(ApplicationModal.POOL_DETAIL);
   const togglePoolDetailModal = usePoolDetailnModalToggle();
+  const updateSelectedPoolId = useUpdateSelectedPoolId();
   const theme = useContext(ThemeContext);
 
   const dispatch = useDispatch();
@@ -24,14 +25,14 @@ const DetailModal = ({ stakingInfo, version }: DetailModalProps) => {
     dispatch(resetMintState());
   }, [detailModalOpen, dispatch]);
 
+  const handleOnDismiss = useCallback(() => {
+    updateSelectedPoolId(undefined);
+    togglePoolDetailModal();
+  }, [updateSelectedPoolId, togglePoolDetailModal]);
+
   return (
-    <Modal
-      isOpen={detailModalOpen}
-      onDismiss={togglePoolDetailModal}
-      overlayBG={theme.modalBG2}
-      closeOnClickOutside={false}
-    >
-      <DetailView stakingInfo={stakingInfo} onDismiss={togglePoolDetailModal} version={version} />
+    <Modal isOpen={detailModalOpen} onDismiss={handleOnDismiss} overlayBG={theme.modalBG2} closeOnClickOutside={false}>
+      <DetailView stakingInfo={stakingInfo} onDismiss={handleOnDismiss} version={version} />
     </Modal>
   );
 };

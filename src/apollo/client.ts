@@ -10,7 +10,7 @@ export const client = new ApolloClient({
     uri: `${SUBGRAPH_BASE_URL}/exchange`,
   }),
   cache: new InMemoryCache(),
-  shouldBatch: true,
+  // shouldBatch: true,
 });
 
 export const blockClient = new ApolloClient({

@@ -13,6 +13,7 @@ import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { usePairContract, usePangoChefContract } from 'src/hooks/useContract';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
+import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/hooks';
 import { usePangoChefStakeCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useDerivedStakeInfo, useGetPoolDollerWorth, useMinichefPendingRewards } from 'src/state/pstake/hooks';
@@ -44,9 +45,9 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   const useApproveCallback = useApproveCallbackHook[chainId];
   const usePairBalance = usePairBalanceHook[chainId];
   const useStakeCallback = usePangoChefStakeCallbackHook[chainId];
-
-  const token0 = stakingInfo.tokens[0];
-  const token1 = stakingInfo.tokens[1];
+  const [shouldCreateStorage, create] = useHederaPangochefContractCreateCallback();
+  const token0 = stakingInfo.tokens?.[0];
+  const token1 = stakingInfo.tokens?.[1];
 
   const [, stakingTokenPair] = usePair(token0, token1);
 
@@ -121,7 +122,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
       const newAmount = (userLiquidityUnstaked as TokenAmount)
         .multiply(JSBI.BigInt(value))
         .divide(JSBI.BigInt(100)) as TokenAmount;
-      setTypedValue(newAmount.toFixed(18));
+      setTypedValue(newAmount?.toFixed(0));
     }
   };
 
@@ -256,8 +257,44 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
 
   const balanceLabel =
     !!stakingInfo?.stakedAmount?.token && userLiquidityUnstaked
-      ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toSignificant(6)
+      ? t('currencyInputPanel.balance') + userLiquidityUnstaked?.toExact()
       : '-';
+
+  const renderButton = () => {
+    if (shouldCreateStorage) {
+      return (
+        <Buttons>
+          <Button variant="primary" onClick={create} height="45px">
+            Create Storage Contract
+          </Button>
+        </Buttons>
+      );
+    } else {
+      return (
+        <Buttons>
+          <Button
+            variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
+            onClick={onAttemptToApprove}
+            isDisabled={approval !== ApprovalState.NOT_APPROVED}
+            loading={attempting && !hash}
+            loadingText={t('migratePage.loading')}
+          >
+            {t('earn.approve')}
+          </Button>
+
+          <Button
+            variant="primary"
+            isDisabled={!!error || approval !== ApprovalState.APPROVED || !!stakeCallbackError}
+            onClick={type === SpaceType.detail ? onConfirm : onStake}
+            loading={attempting && !hash}
+            loadingText={t('migratePage.loading')}
+          >
+            {error ?? t('earn.deposit')}
+          </Button>
+        </Buttons>
+      );
+    }
+  };
 
   return (
     <StakeWrapper>
@@ -389,27 +426,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
             )}
           </Box>
 
-          <Buttons>
-            <Button
-              variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
-              onClick={onAttemptToApprove}
-              isDisabled={approval !== ApprovalState.NOT_APPROVED}
-              loading={attempting && !hash}
-              loadingText={t('migratePage.loading')}
-            >
-              {t('earn.approve')}
-            </Button>
-
-            <Button
-              variant="primary"
-              isDisabled={!!error || approval !== ApprovalState.APPROVED || !!stakeCallbackError}
-              onClick={type === SpaceType.detail ? onConfirm : onStake}
-              loading={attempting && !hash}
-              loadingText={t('migratePage.loading')}
-            >
-              {error ?? t('earn.deposit')}
-            </Button>
-          </Buttons>
+          {renderButton()}
         </>
       )}
 

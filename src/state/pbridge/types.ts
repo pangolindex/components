@@ -1,5 +1,6 @@
+import { CallType, RouteData as SquidRoute } from '@0xsquid/sdk';
 import { Route as LifiRoute } from '@lifi/sdk';
-import { Bridge, BridgeCurrency, Chain } from '@pangolindex/sdk';
+import { Bridge, BridgeChain, BridgeCurrency } from '@pangolindex/sdk';
 
 export enum BridgePrioritizations {
   RECOMMENDED,
@@ -20,9 +21,10 @@ export type Route = {
   steps: Step[];
   transactionType: BridgePrioritizations;
   selected: boolean;
-  nativeRoute: LifiRoute;
+  nativeRoute: LifiRoute | SquidRoute;
 };
-export declare type Step = SwapStep | BridgeStep | LifiStep | CrossStep | CustomStep;
+
+export declare type Step = SwapStep | BridgeStep | LifiStep | CrossStep | CustomStep | SquidStep;
 
 export declare type StepType = 'swap' | 'cross' | 'lifi' | 'bridge' | 'custom';
 
@@ -64,6 +66,13 @@ export interface SwapStep extends StepBase {
   estimate: Estimate;
 }
 
+export interface SquidStep {
+  type: CallType;
+  integrator?: string;
+  action: Action;
+  estimate: Estimate;
+}
+
 export interface CrossStep extends StepBase {
   type: 'cross';
   action: Action;
@@ -82,14 +91,16 @@ export type SendTransactionFunc = (library: any, selectedRoute?: Route, account?
 
 export type SendTransaction = {
   lifi: SendTransactionFunc;
+  squid: SendTransactionFunc;
 };
 
 export type GetRoutes = (
   amount: string,
   slipLimit: string,
-  fromChain?: Chain,
-  toChain?: Chain,
+  fromChain?: BridgeChain,
+  toChain?: BridgeChain,
   fromAddress?: string | null,
   fromCurrency?: BridgeCurrency,
   toCurrency?: BridgeCurrency,
+  recipient?: string | null | undefined,
 ) => void;

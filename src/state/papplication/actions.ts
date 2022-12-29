@@ -32,3 +32,5 @@ export const addPopup =
   createAction<{ key?: string; removeAfterMs?: number | null; content: PopupContent }>('papplication/addPopup');
 
 export const removePopup = createAction<{ key: string }>('papplication/removePopup');
+
+export const updateSelectedPoolId = createAction<string | undefined>('papplication/updateSelectedPoolId');

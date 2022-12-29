@@ -1,4 +1,4 @@
-import { Chain, currencyEquals } from '@pangolindex/sdk';
+import { BridgeChain, Chain, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -14,9 +14,9 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onChainSelect: (chain: Chain) => void;
-  chains?: Chain[];
-  selectedChain?: Chain;
-  otherSelectedChain?: Chain;
+  chains?: BridgeChain[];
+  selectedChain?: BridgeChain;
+  otherSelectedChain?: BridgeChain;
 }
 
 const SelectChainDrawer: React.FC<Props> = (props) => {
@@ -42,11 +42,11 @@ const SelectChainDrawer: React.FC<Props> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const filteredChains: Chain[] = useMemo(() => {
-    return filterTokenOrChain(chains || [], searchQuery) as Chain[];
+  const filteredChains: BridgeChain[] = useMemo(() => {
+    return filterTokenOrChain(chains || [], searchQuery) as BridgeChain[];
   }, [chains, searchQuery]);
 
-  const filteredSortedChains: Chain[] = useMemo(() => {
+  const filteredSortedChains: BridgeChain[] = useMemo(() => {
     const symbolMatch = searchQuery
       .toLowerCase()
       .split(/\s+/)
