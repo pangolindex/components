@@ -30,6 +30,16 @@ const Sidebar = ({ setMenu, activeMenu, menuItems, onManagePoolsClick }: MenuPro
   const handlePoolImportModalClose = useCallback(() => {
     setIsPoolImportModalOpen(false);
   }, [setIsPoolImportModalOpen]);
+
+  const handlePoolImportModalOpen = useCallback(() => {
+    setIsPoolImportModalOpen(true);
+  }, [setIsPoolImportModalOpen]);
+
+  const handleManagePoolsClick = useCallback(() => {
+    setIsPoolImportModalOpen(false);
+    onManagePoolsClick();
+  }, [setIsPoolImportModalOpen, onManagePoolsClick]);
+
   return (
     <SidebarWrapper>
       <Text color="text1" fontSize={[32, 28]} fontWeight={500} ml={20} mt={10}>
@@ -54,7 +64,7 @@ const Sidebar = ({ setMenu, activeMenu, menuItems, onManagePoolsClick }: MenuPro
           {t('pool.noSeePoolJoined')}
         </Text>
 
-        <Text fontSize={14} color="primary" onClick={() => setIsPoolImportModalOpen(true)} cursor="pointer">
+        <Text fontSize={14} color="primary" onClick={handlePoolImportModalOpen} cursor="pointer">
           {t('pool.importIt')}
         </Text>
       </Box>
@@ -62,10 +72,7 @@ const Sidebar = ({ setMenu, activeMenu, menuItems, onManagePoolsClick }: MenuPro
       <PoolImportModal
         isOpen={isPoolImportModalOpen}
         onClose={handlePoolImportModalClose}
-        onManagePoolsClick={() => {
-          setIsPoolImportModalOpen(false);
-          onManagePoolsClick();
-        }}
+        onManagePoolsClick={handleManagePoolsClick}
       />
     </SidebarWrapper>
   );
