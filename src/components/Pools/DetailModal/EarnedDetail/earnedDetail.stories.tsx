@@ -1,7 +1,7 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { Box } from '../../../Box';
-import { useGetMinichefStakingInfos } from '../../mock';
+import { useGetMinichefStakingInfos } from '../../Pool/mock';
 import EarnedDetail from '.';
 
 export default {

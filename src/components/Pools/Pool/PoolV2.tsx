@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMinichefPools } from 'src/state/pstake/hooks';
 import { MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
-import PoolListV2 from './PoolList/PoolListV2';
+import PoolListV2 from '../PoolList/PoolListV2';
 
 interface Props {
   type: string;
