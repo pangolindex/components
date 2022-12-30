@@ -1,7 +1,7 @@
 import React from 'react';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { PoolType } from 'src/state/pstake/types';
-import PoolListV3 from './PoolList/PoolListV3';
+import PoolListV3 from '../PoolList/PoolListV3';
 
 interface Props {
   type: string;
