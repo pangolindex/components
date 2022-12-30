@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
-import { Button, Pools, PoolType, usePangoChefInfosHook, WalletModal } from '@components/index';
+import { Button, PoolsUI, PoolType, usePangoChefInfosHook, WalletModal } from '@components/index';
 import { useChainId } from '@components/hooks';
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
   const info = usePangoChefInfosHook[chainId]();
 
   return (
-    <div className="App">
+    <div>
       <Button variant="primary" onClick={() => setOpen(true)}>
         {account ? `Wallet connected: ${account}` : 'Connect Wallet'}
       </Button>
@@ -25,16 +25,7 @@ function App() {
           setOpen(false);
         }}
       />
-      <Pools
-        type={PoolType.all}
-        version={3}
-        stakingInfoV1={[]}
-        miniChefStakingInfo={[]}
-        pangoChefStakingInfo={info || []}
-        activeMenu={'allFarmV3'}
-        setMenu={() => {}}
-        menuItems={[{ label: '', value: '' }]}
-      />
+      <PoolsUI />
     </div>
   );
 }

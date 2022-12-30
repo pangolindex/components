@@ -8,14 +8,28 @@
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
+
  html {
+  color: #fff;
+  background-color: #111111;
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
 }
 
-* {
+body {
+  min-height: unset;
+  background-position: 0 -30vh;
+  background-repeat: no-repeat;
+  background-image: 'unset';
+  background-color: #1c1c1c;
+}
+
+
+ * {
+  font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
 }
+
 
 /* Sections
    ========================================================================== */
