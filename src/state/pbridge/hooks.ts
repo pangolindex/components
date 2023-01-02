@@ -5,6 +5,7 @@ import { parseUnits } from '@ethersproject/units';
 import LIFI from '@lifi/sdk';
 import { Route as LifiRoute, Step as LifiStep, RouteOptions, RoutesRequest, isLifiStep } from '@lifi/types';
 import {
+  ALL_CHAINS,
   BRIDGES,
   Bridge,
   BridgeChain,
@@ -20,12 +21,12 @@ import {
 } from '@pangolindex/sdk';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { SQUID_API } from 'src/constants';
+import { HASHPORT_API, SQUID_API } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
 import { AppState, useDispatch, useSelector } from 'src/state';
-import { calculateTransactionTime, getSigner } from 'src/utils';
+import { calculateTransactionTime, changeNetwork, getSigner } from 'src/utils';
 import { useCurrencyBalances } from '../pwallet/hooks';
 import {
   ChainField,
@@ -321,7 +322,7 @@ export function useBridgeSwapActionHandlers(): {
 
       const routeOptions: RouteOptions = {
         slippage: parseFloat(slipLimit) / 100,
-        allowSwitchChain: false,
+        allowSwitchChain: true,
       };
 
       const routesRequest: RoutesRequest = {
@@ -470,9 +471,56 @@ export function useBridgeSwapActionHandlers(): {
           }
         : undefined;
 
+      let hashportRoute: Route | undefined;
+      try {
+        const assetDetailReq = await axios.get(
+          `${HASHPORT_API}/networks/${fromChain?.chain_id}/assets/${fromCurrency?.address?.toString()}`,
+        );
+        const assetDetail = assetDetailReq.data;
+        if (assetDetail) {
+          const toAmountFee =
+            parseFloat(parsedAmount) * (assetDetail.feePercentage.amount / assetDetail.feePercentage.maxPercentage);
+          const toAmount = new TokenAmount(
+            fromCurrency as Currency as Token, // TODO:
+            (parseFloat(parsedAmount) - toAmountFee).toString(),
+          ).toFixed(4);
+          hashportRoute = {
+            nativeRoute: assetDetail, // TODO: Need to add HashportRoute type
+            bridgeType: HASHPORT,
+            waitingTime: calculateTransactionTime(60), // TODO:
+            toToken: toCurrency?.symbol || '',
+            toAmount: toAmount,
+            toAmountNet: toAmount,
+            toAmountUSD: `${'NULL'} USD`, // TODO:
+            gasCostUSD: 'NULL', // TODO:
+            steps: [
+              {
+                bridge: HASHPORT,
+                type: 'bridge',
+                includedSteps: [], // TODO:
+                action: {
+                  toToken: toCurrency?.symbol || '',
+                },
+                estimate: {
+                  toAmount: toAmount,
+                },
+              },
+            ],
+            transactionType: BridgePrioritizations.RECOMMENDED,
+            selected: false,
+          };
+        } else {
+          hashportRoute = undefined;
+        }
+      } catch (error) {
+        hashportRoute = undefined;
+      }
+
       dispatch(
         setRoutes({
-          routes: [...lifiRoutes, squidRoute].filter((x: Route | undefined) => x !== undefined) as Route[],
+          routes: [...lifiRoutes, squidRoute, hashportRoute].filter(
+            (x: Route | undefined) => x !== undefined,
+          ) as Route[],
           routesLoaderStatus: false,
         }),
       );
@@ -524,11 +572,26 @@ export function useBridgeSwapActionHandlers(): {
   const sendTransactionLifi = async (library: any, selectedRoute?: Route, account?: string | null) => {
     dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
     const lifi = new LIFI();
+    const toChain: Chain = ALL_CHAINS.filter(
+      (chain) => chain.chain_id === (selectedRoute?.nativeRoute as LifiRoute)?.toChainId,
+    )[0];
+
+    const switchNetwork = async () => {
+      await changeNetwork(toChain);
+      return getSigner(library, account || '') as any;
+    };
 
     const signer: JsonRpcSigner = await getSigner(library, account || '');
     // executing a route
     try {
-      await lifi.executeRoute(signer as any, selectedRoute?.nativeRoute as LifiRoute);
+      const executedRoute = await lifi.executeRoute(signer as any, selectedRoute?.nativeRoute as LifiRoute, {
+        // TODO:
+        updateCallback: (updatedRoute) => {
+          console.log(updatedRoute);
+        },
+        switchChainHook: switchNetwork,
+      });
+      console.log(executedRoute);
       dispatch(
         changeTransactionLoaderStatus({
           transactionLoaderStatus: false,
@@ -537,6 +600,8 @@ export function useBridgeSwapActionHandlers(): {
       );
     } catch (e: Error | unknown) {
       if (e) {
+        // TODO:
+        // containsSwitchChain=true -> Send to directus.app with related data
         dispatch(
           changeTransactionLoaderStatus({
             transactionLoaderStatus: false,
