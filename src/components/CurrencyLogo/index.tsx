@@ -32,7 +32,8 @@ export default function CurrencyLogo({
       currency === CAVAX[ChainId.SONGBIRD] ||
       currency === CAVAX[ChainId.HEDERA_TESTNET] ||
       currency === CAVAX[ChainId.NEAR_TESTNET] ||
-      currency === CAVAX[ChainId.NEAR_MAINNET]
+      currency === CAVAX[ChainId.NEAR_MAINNET] ||
+      currency === CAVAX[ChainId.COSTON2]
     )
       return [];
     if (currency instanceof Token || !!(currency as Token).address) {
@@ -56,6 +57,8 @@ export default function CurrencyLogo({
     return <img src={SongBirdLogo} width={`${size}px`} height={`${size}px`} />;
   } else if (deepEqual(currency, CAVAX[ChainId.HEDERA_TESTNET])) {
     return <img src={HederaLogo} width={`${size}px`} height={`${size}px`} />;
+  } else if (deepEqual(currency, CAVAX[ChainId.COSTON2])) {
+    return <CflrLogo size={`${size}px`} />;
   }
 
   return <StyledLogo size={`${size}px`} srcs={srcs} alt={`${currency?.symbol ?? 'token'} logo`} style={style} />;

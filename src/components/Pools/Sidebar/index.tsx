@@ -6,12 +6,8 @@ import PoolImportModal from '../PoolImportModal';
 import { Circle, Menu, MenuItem, MenuLink, MenuName, SidebarWrapper } from './styleds';
 
 export enum MenuType {
-  allFarmV1 = 'allFarmV1',
-  allFarmV2 = 'allFarmV2',
   allFarm = 'allFarm',
   yourFarm = 'yourFarm',
-  yourFarmV2 = 'yourFarmV2',
-  yourFarmV3 = 'yourFarmV3',
   superFarm = 'superFarm',
   yourPool = 'your-pool',
 }
