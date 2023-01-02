@@ -22,25 +22,16 @@ body {
   background-repeat: no-repeat;
   background-image: 'unset';
   background-color: #1c1c1c;
+  margin: 0;
 }
 
-
- * {
+* {
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
 }
 
-
 /* Sections
    ========================================================================== */
-
-/**
- * Remove the margin in all browsers.
- */
-
-body {
-  margin: 0;
-}
 
 /**
  * Render the `main` element consistently in IE.
@@ -80,7 +71,7 @@ hr {
  */
 
 pre {
-  font-family: monospace, monospace; /* 1 */
+  font-family: monospace; /* 1 */
   font-size: 1em; /* 2 */
 }
 
@@ -123,7 +114,7 @@ strong {
 code,
 kbd,
 samp {
-  font-family: monospace, monospace; /* 1 */
+  font-family: monospace; /* 1 */
   font-size: 1em; /* 2 */
 }
 
