@@ -37,23 +37,15 @@ export default function App() {
   return (
     <AppWrapper>
       <BodyWrapper>
-        {/* <Header /> */}
-
         <Routes>
           <Route path="/" element={<Layout />}>
+            <Route index element={<Swap />} />
             <Route path="swap" element={<Swap />} />
             <Route path="pool" element={<Pool />} />
             <Route path="bridge" element={<Bridge />} />
-
             <Route path="*" element={<Swap />} />
           </Route>
         </Routes>
-
-        {/* <Switch>
-            <CustomRoute exact path="/swap" component={() => <Swap />} layout={Layout} />
-            <CustomRoute exact path="/pool" component={() => <Pool />} layout={Layout} />
-            <Redirect to="/swap" />
-          </Switch> */}
       </BodyWrapper>
     </AppWrapper>
   );
