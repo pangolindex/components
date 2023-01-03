@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { Contract } from '@ethersproject/contracts';
 import { hethers } from '@hashgraph/hethers';
 import {
   AccountAllowanceApproveTransaction,
@@ -31,6 +32,7 @@ export const TRANSACTION_MAX_FEES = {
   STAKE_LP_TOKEN: 230000,
   COLLECT_REWARDS: 300000,
   WITHDRAW: 300000,
+  COMPOUND: 300000,
   NFT_MINT: 800000,
 };
 export interface HederaTokenMetadata {
@@ -280,6 +282,7 @@ export interface CompoundData {
   methodName: 'compound' | 'compoundToPoolZero';
   account: string;
   chainId: ChainId;
+  contract: Contract;
 }
 
 export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & { positionId: string };
@@ -1044,26 +1047,30 @@ class Hedera {
   }
 
   public async compound(compoundData: CompoundData) {
-    const { account, methodName, poolId, chainId, slippage } = compoundData;
+    const { account, methodName, poolId, chainId, slippage, contract } = compoundData;
 
     const pangoChefId = PANGOCHEF_ADDRESS[chainId];
     const accountId = account ? this.hederaId(account) : '';
     const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
 
-    const maxGas = TRANSACTION_MAX_FEES.NFT_MINT;
+    const maxGas = TRANSACTION_MAX_FEES.COMPOUND;
+
+    // compound transaction is little different than all other transaction
+    // because in compound input we have slippage which is tuple
+    // tuple as input is not supported by hedera sdk as of now
+    // so we are enconding function parameters and passing it as Uint8Array
+    const functionCallAsUint8Array = contract.interface.encodeFunctionData(methodName, [poolId, slippage]);
+    const encodedParametersHex = functionCallAsUint8Array.slice(2);
+
+    const params = Buffer.from(encodedParametersHex, 'hex');
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
       .setContractId(contractId)
       //Set the gas for the contract call
-      .setGas(maxGas);
-    transaction.setPayableAmount(Hbar.fromString(slippage?.maxPairAmount, HbarUnit.Tinybar));
-    transaction.setFunction(
-      methodName,
-      new ContractFunctionParameters()
-        .addUint256(Number(poolId))
-        .addUint256Array([slippage?.minPairAmount as any, slippage?.maxPairAmount as any]),
-    );
+      .setGas(maxGas)
+      .setPayableAmount(Hbar.fromString('0'))
+      .setFunctionParameters(params);
 
     return hashConnect.sendTransaction(transaction, accountId);
   }

@@ -1,4 +1,4 @@
-import { BridgeCurrency, Chain, CurrencyAmount } from '@pangolindex/sdk';
+import { BridgeChain, BridgeCurrency, CurrencyAmount } from '@pangolindex/sdk';
 
 export type BridgeInputsWidgetProps = {
   /**
@@ -10,9 +10,9 @@ export type BridgeInputsWidgetProps = {
    */
   inputDisabled: boolean;
   /**
-   * Chain
+   * BridgeChain
    */
-  chain?: Chain;
+  chain?: BridgeChain;
   /**
    * Currency
    */
@@ -29,6 +29,15 @@ export type BridgeInputsWidgetProps = {
    * Max currency amount
    */
   maxAmountInput?: CurrencyAmount;
+  /**
+   * Recipient address
+   */
+  recipient?: string | null;
+  /**
+   * Callback when recipient input changes
+   * @param recipient
+   */
+  onChangeRecipient?: (recipient: string) => void;
   /**
    * Change amount to MAX
    */
