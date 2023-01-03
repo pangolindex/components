@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { HeaderFrame, MenuLink, Menuwrapper } from './styled';
 import { useWeb3React } from '@web3-react/core';
-import { Button, WalletModal, Box, shortenAddress } from '@components/index';
+import { Button, WalletModal, Box, shortenAddress, NetworkSelection } from '@components/index';
 import { useChainId } from '@components/hooks/index';
 import Logo from '../Logo';
+import { CHAINS } from '@pangolindex/sdk';
 
 export default function Header() {
   const context = useWeb3React();
   const { account } = context;
   const chainId = useChainId();
   const [open, setOpen] = useState<boolean>(false);
+  const [openNetworkSelection, setOpenNetworkSelection] = useState<boolean>(false);
+
+  const chain = CHAINS[chainId];
 
   return (
     <HeaderFrame>
@@ -26,10 +30,14 @@ export default function Header() {
             Bridge
           </MenuLink>
         </Menuwrapper>
-
-        <Button variant="primary" onClick={() => setOpen(true)} width="200px">
-          {account ? `Connected ${shortenAddress(account, chainId)}` : 'Connect Wallet'}
-        </Button>
+        <Box display="grid" style={{gap: "10px", gridAutoFlow: 'column'}}>
+          <Button variant="primary" onClick={() => setOpenNetworkSelection(true)} padding="10px">
+            {chain.name}
+          </Button>
+          <Button variant="primary" onClick={() => setOpen(true)} width="200px">
+            {account ? `Connected ${shortenAddress(account, chainId)}` : 'Connect Wallet'}
+          </Button>
+        </Box>
       </Box>
       <WalletModal
         open={open}
@@ -38,6 +46,12 @@ export default function Header() {
         }}
         onWalletConnect={() => {
           setOpen(false);
+        }}
+      />
+      <NetworkSelection
+        open={openNetworkSelection}
+        closeModal={() => {
+          setOpenNetworkSelection(false);
         }}
       />
     </HeaderFrame>
