@@ -43,4 +43,5 @@ export const StyledLogo = styled(Logo)`
   height: 32px;
   width: 32px;
   border-radius: 50%;
+  margin-bottom: 10px;
 `;
