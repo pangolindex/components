@@ -9,6 +9,7 @@ const venlyClientID = process.env.VENLY_ID ?? 'Testaccount';
 
 export class VenlyConnector extends AbstractConnector {
   private web3Provider!: Web3Provider;
+
   private venlyOptions = {
     clientId: venlyClientID,
     skipAuthentication: process.env.NODE_ENV !== 'production',
@@ -24,6 +25,10 @@ export class VenlyConnector extends AbstractConnector {
     this.handleChainChanged = this.handleChainChanged.bind(this);
     this.handleAccountsChanged = this.handleAccountsChanged.bind(this);
     this.handleClose = this.handleClose.bind(this);
+
+    window.Venly.createProviderEngine(this.venlyOptions).then((provider) => {
+      this.web3Provider = new Web3Provider(this.convertProvider(provider));
+    });
   }
 
   private convertProvider(provider: any): ExternalProvider {
@@ -68,7 +73,7 @@ export class VenlyConnector extends AbstractConnector {
 
   public async activate(): Promise<ConnectorUpdate> {
     if (!this.web3Provider) {
-      const _provider = null;
+      const _provider = await window.Venly.createProviderEngine(this.venlyOptions);
       this.web3Provider = new Web3Provider(this.convertProvider(_provider));
     }
 

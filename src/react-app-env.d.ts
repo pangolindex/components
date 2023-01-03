@@ -28,6 +28,7 @@ interface Window {
   };
   web3?: any;
   pendo?: any;
+  Venly?: any;
   avalanche?: {
     isAvalanche?: boolean;
     once(eventName: string | symbol, listener: (...args: any[]) => void): this;
