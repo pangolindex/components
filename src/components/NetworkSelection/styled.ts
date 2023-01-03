@@ -1,17 +1,16 @@
 import styled from 'styled-components';
 import { Box } from 'src/components/Box';
 import { CloseIcon } from 'src/theme/components';
+import Logo from '../Logo';
 
 export const Frame = styled(Box)`
   width: 40vw;
-  background-color: ${({ theme }) => theme.bg2};
-  padding: 30px;
+  background-color: ${({ theme }) => theme.color2};
+  padding: 15px;
   display: grid;
-  position: relative;
-  grid-template-areas:"text buttons"
-                      "chains chains";
-  grid-template-columns: grid-template-columns: repeat(2, 50%);
-
+  grid-auto-flow: row;
+  gap: 10px;
+  border-radius: 10px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 60vw;
   `};
@@ -19,48 +18,29 @@ export const Frame = styled(Box)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100vw;
   `};
-
 `;
 
-export const ButtonFrame = styled(Box)`
-  grid-area: buttons;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
+export const Inputs = styled(Box)`
+  display: grid;
+  grid-auto-flow: column;
+  gap: 20px;
 `;
 
 export const CloseButton = styled(CloseIcon)`
-  color: ${({ theme }) => theme.text1};
-  position: absolute;
-  right: 3px;
-  top: 3px;
+  color: ${({ theme }) => theme.primary};
+  background-color: ${({ theme }) => theme.color5};
+  border-radius: 50%;
+  padding: 5px;
 `;
 
 export const ChainsList = styled(Box)`
   display: grid;
-  grid-template-columns: repeat(2, auto);
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
 `;
 
-export const ChainButton = styled.button`
-  background-color: ${({ theme }) => theme.bg8};
-  display: flex;
-  align-items: center;
-  border: 0px;
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 10px;
-  height: 48px;
-  font-weight: 500;
-
-  :hover {
-    opacity: 0.5;
-  }
-`;
-
-export const Logo = styled.img`
-  border-radius: 20px;
-  height: 28px;
-  width: 28px;
-  margin-right: 10px;
+export const StyledLogo = styled(Logo)`
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
 `;
