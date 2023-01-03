@@ -48,7 +48,7 @@ export function useSquidChains() {
             cosmosPrefix: chain?.bech32Config?.bech32PrefixAccAddr,
           },
         }),
-        name: chain?.chainName,
+        name: chain?.chainName.charAt(0).toLocaleUpperCase() + chain?.chainName.slice(1),
         chain_id: chain?.chainId,
         mainnet: true,
         evm: chain?.chainType === 'evm',
