@@ -6,7 +6,7 @@ import CompoundV3 from '.';
 
 export default {
   component: CompoundV3,
-  title: 'Components/Pool/CompoundV3',
+  title: 'DeFi Primitives/Pool/CompoundV3',
 };
 
 const TemplateClaimReward: ComponentStory<typeof CompoundV3> = () => {

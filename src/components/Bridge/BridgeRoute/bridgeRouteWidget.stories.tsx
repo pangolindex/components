@@ -7,7 +7,7 @@ import BridgeRoute from '.';
 
 export default {
   component: BridgeRoute,
-  title: 'Components/Bridge/BridgeRoute',
+  title: 'DeFi Primitives/Bridge/BridgeRoute',
   parameters: {
     docs: {
       description: {

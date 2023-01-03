@@ -4,7 +4,7 @@ import SlippageInput, { SlippageInputProps } from '.';
 
 export default {
   component: SlippageInput,
-  title: 'Components/SlippageInput',
+  title: 'DeFi Helpers/SlippageInput',
 };
 
 const TemplateSlippageInput: ComponentStory<typeof SlippageInput> = (args: any) => <SlippageInput {...args} />;

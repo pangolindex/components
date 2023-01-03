@@ -6,7 +6,7 @@ import PoolCardV2 from './PoolCardV2';
 
 export default {
   component: PoolCardV2,
-  title: 'Components/Pool/PoolCard',
+  title: 'DeFi Primitives/Pool/PoolCard',
 };
 
 const TemplatePoolCardV2: ComponentStory<typeof PoolCardV2> = () => {

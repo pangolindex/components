@@ -6,7 +6,7 @@ import EarnedDetail from '.';
 
 export default {
   component: EarnedDetail,
-  title: 'Components/Pool/EarnedDetail',
+  title: 'DeFi Primitives/Pool/EarnedDetail',
 };
 
 const TemplateEarnedDetail: ComponentStory<typeof EarnedDetail> = () => {

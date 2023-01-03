@@ -4,7 +4,7 @@ import { NetworkSelection } from '.';
 
 export default {
   component: NetworkSelection,
-  title: 'Components/NetworkSelection',
+  title: 'DeFi Helpers/NetworkSelection',
 };
 
 const TemplateNetworkSelection: ComponentStory<typeof NetworkSelection> = (args: any) => <NetworkSelection {...args} />;

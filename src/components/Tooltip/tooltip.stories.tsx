@@ -6,7 +6,7 @@ import Tooltip from '.';
 
 export default {
   component: Tooltip,
-  title: 'Components/Tooltip',
+  title: 'Building Blocks/Tooltip',
   parameters: {
     docs: {
       description: {

@@ -7,7 +7,7 @@ import DetailModal from '.';
 
 export default {
   component: DetailModal,
-  title: 'Components/Pool/PoolDetailModal',
+  title: 'DeFi Primitives/Pool/PoolDetailModal',
 };
 
 const SamplePoolDetail: ComponentStory<typeof DetailModal> = () => {

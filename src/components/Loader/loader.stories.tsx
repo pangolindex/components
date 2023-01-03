@@ -4,7 +4,7 @@ import { Loader } from '.';
 
 export default {
   component: Loader,
-  title: 'Components/Loader',
+  title: 'Building Blocks/Loader',
 };
 
 const TemplateBox: ComponentStory<typeof Loader> = (args: any) => <Loader {...args} />;
