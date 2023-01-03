@@ -18,6 +18,10 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
     setSearchQuery(value.trim());
   }, []);
 
+  const handleChangeType = useCallback((value) => {
+    setMainnet(value === NETWORK_TYPE.MAINNET);
+  }, []);
+
   const theme = useContext(ThemeContext);
   const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 250);
 
@@ -48,9 +52,7 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
           <ToggleButtons
             options={[NETWORK_TYPE.MAINNET, NETWORK_TYPE.TESTNET]}
             value={mainnet === true ? NETWORK_TYPE.MAINNET : NETWORK_TYPE.TESTNET}
-            onChange={(value) => {
-              setMainnet(value === NETWORK_TYPE.MAINNET);
-            }}
+            onChange={handleChangeType}
           />
         </Inputs>
         <Box height="250px">

@@ -15,6 +15,9 @@ export default function Header() {
 
   const chain = CHAINS[chainId];
 
+  const closeNetworkSelection = () => setOpenNetworkSelection(true);
+  const closeWalletModal = () => setOpen(true);
+
   return (
     <HeaderFrame>
       <Logo />
@@ -30,11 +33,11 @@ export default function Header() {
             Bridge
           </MenuLink>
         </Menuwrapper>
-        <Box display="grid" style={{gap: "10px", gridAutoFlow: 'column'}}>
-          <Button variant="primary" onClick={() => setOpenNetworkSelection(true)} padding="10px">
+        <Box display="grid" style={{ gap: '10px', gridAutoFlow: 'column' }}>
+          <Button variant="primary" onClick={closeNetworkSelection} padding="10px">
             {chain.name}
           </Button>
-          <Button variant="primary" onClick={() => setOpen(true)} width="200px">
+          <Button variant="primary" onClick={closeWalletModal} width="200px">
             {account ? `Connected ${shortenAddress(account, chainId)}` : 'Connect Wallet'}
           </Button>
         </Box>
