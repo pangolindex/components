@@ -15,8 +15,13 @@ export default function Header() {
 
   const chain = CHAINS[chainId];
 
-  const closeNetworkSelection = () => setOpenNetworkSelection(true);
-  const closeWalletModal = () => setOpen(true);
+  function closeNetworkSelection() {
+    setOpenNetworkSelection(true);
+  }
+
+  function closeWalletModal() {
+    setOpen(true);
+  }
 
   return (
     <HeaderFrame>

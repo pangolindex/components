@@ -37,14 +37,14 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
 
   const { height } = useWindowSize();
 
-  const calcHeightMax = () => {
+  function calcHeightMax() {
     if (height > 600) {
       return 500;
     }
     const maxHeight = height - 250;
 
     return maxHeight <= 0 ? 125 : maxHeight;
-  };
+  }
 
   return (
     <Modal isOpen={open} onDismiss={closeModal}>
