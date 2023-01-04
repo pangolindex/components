@@ -4,7 +4,7 @@ import Steps, { Step } from '.';
 
 export default {
   component: Steps,
-  title: 'Components/Steps',
+  title: 'Building Blocks/Steps',
   args: {
     index: 0,
   },

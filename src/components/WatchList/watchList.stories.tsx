@@ -4,7 +4,7 @@ import { WatchList } from '.';
 
 export default {
   component: WatchList,
-  title: 'Components/WatchList',
+  title: 'DeFi Primitives/WatchList',
 };
 
 const TemplateWatchList: ComponentStory<typeof WatchList> = (args: any) => (

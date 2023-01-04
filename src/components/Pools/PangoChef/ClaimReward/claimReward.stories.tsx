@@ -6,7 +6,7 @@ import ClaimReward from '.';
 
 export default {
   component: ClaimReward,
-  title: 'Components/Pool/ClaimRewardV3',
+  title: 'DeFi Primitives/Pool/ClaimRewardV3',
 };
 
 const TemplateClaimReward: ComponentStory<typeof ClaimReward> = () => {

@@ -4,7 +4,7 @@ import Pagination from '.';
 
 export default {
   component: Pagination,
-  title: 'Components/Pagination',
+  title: 'Building Blocks/Pagination',
 };
 
 const PaginationWidget: ComponentStory<typeof Pagination> = (args: any) => (

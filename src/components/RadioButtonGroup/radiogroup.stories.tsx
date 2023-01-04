@@ -4,7 +4,7 @@ import { RadioButtonGroup } from '.';
 
 export default {
   component: RadioButtonGroup,
-  title: 'Components/RadioButtonGroup',
+  title: 'Building Blocks/RadioButtonGroup',
 };
 
 const TemplateRadioGroup: ComponentStory<typeof RadioButtonGroup> = (args: any) => <RadioButtonGroup {...args} />;

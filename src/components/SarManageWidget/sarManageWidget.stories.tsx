@@ -4,7 +4,7 @@ import SarManageWidget from '.';
 
 export default {
   component: SarManageWidget,
-  title: 'Components/SarManageWidget',
+  title: 'DeFi Primitives/SAR Staking/SarManageWidget',
 };
 
 const TemplateSarManageWidget: ComponentStory<typeof SarManageWidget> = () => (
