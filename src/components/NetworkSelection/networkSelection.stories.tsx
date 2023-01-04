@@ -1,6 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { NetworkSelection } from '.';
+import NetworkSelection from '.';
 
 export default {
   component: NetworkSelection,

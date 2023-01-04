@@ -5,6 +5,7 @@ import Logo from '../Logo';
 
 export const Frame = styled(Box)`
   width: 40vw;
+  max-height: 95vh;
   background-color: ${({ theme }) => theme.color2};
   padding: 15px;
   display: grid;
@@ -44,4 +45,21 @@ export const StyledLogo = styled(Logo)`
   width: 32px;
   border-radius: 50%;
   margin-bottom: 10px;
+`;
+
+export const Wrapper = styled(Box)`
+  max-height: 500px;
+`;
+
+export const Item = styled(Box)`
+  background-color: ${({ theme }) => theme.color10};
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 120px;
+  cursor: pointer;
+  padding: 10px;
 `;

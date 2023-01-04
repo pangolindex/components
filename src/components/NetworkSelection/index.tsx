@@ -2,12 +2,13 @@ import { CHAINS } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
+import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, Modal, Text, TextInput, ToggleButtons } from 'src/components';
 import useDebounce from 'src/hooks/useDebounce';
 import { changeNetwork } from 'src/utils';
 import ChainItem from './ChainItem';
-import { ChainsList, CloseButton, Frame, Inputs } from './styled';
+import { ChainsList, CloseButton, Frame, Inputs, Wrapper } from './styled';
 import { NETWORK_TYPE, NetworkProps } from './types';
 
 export default function NetworkSelection({ open, closeModal }: NetworkProps) {
@@ -34,6 +35,17 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
     return seletectedChainsType.filter((chain) => chain.name.toLowerCase().includes(debouncedSearchQuery));
   }, [mainnet, debouncedSearchQuery]);
 
+  const { height } = useWindowSize();
+
+  const calcHeightMax = () => {
+    if (height > 600) {
+      return 500;
+    }
+    const maxHeight = height - 250;
+
+    return maxHeight <= 0 ? 125 : maxHeight;
+  };
+
   return (
     <Modal isOpen={open} onDismiss={closeModal}>
       <Frame>
@@ -55,8 +67,8 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
             onChange={handleChangeType}
           />
         </Inputs>
-        <Box height="250px">
-          <Scrollbars>
+        <Wrapper>
+          <Scrollbars autoHeight autoHeightMin={125} autoHeightMax={calcHeightMax()}>
             <ChainsList>
               {chains.map((chain) => {
                 return (
@@ -69,7 +81,7 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
               })}
             </ChainsList>
           </Scrollbars>
-        </Box>
+        </Wrapper>
       </Frame>
     </Modal>
   );
