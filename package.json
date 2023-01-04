@@ -46,7 +46,7 @@
     "@gelatonetwork/limit-orders-react": "^2.3.1",
     "@gnosis.pm/safe-apps-web3-react": "^0.6.7",
     "@hashgraph/hethers": "1.2.2",
-    "@hashgraph/sdk": "2.18.1",
+    "@hashgraph/sdk": "2.19.0",
     "@lifi/sdk": "^1.6.0",
     "@pangolindex/exchange-contracts": "2.1.7",
     "@pangolindex/token-lists": "^1.0.2",

@@ -4474,6 +4474,14 @@
     "@grpc/proto-loader" "^0.7.0"
     "@types/node" ">=12.12.47"
 
+"@grpc/grpc-js@^1.7.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.8.0.tgz#ebfbeff2b76e2991f2831e46cad27fa573396555"
+  integrity sha512-ySMTXQuMvvswoobvN+0LsaPf7ITO2JVfJmHxQKI4cGehNrrUms+n81BlHEX7Hl/LExji6XE3fnI9U04GSkRruA==
+  dependencies:
+    "@grpc/proto-loader" "^0.7.0"
+    "@types/node" ">=12.12.47"
+
 "@grpc/proto-loader@^0.7.0":
   version "0.7.2"
   resolved "https://registry.npmjs.org/@grpc/proto-loader/-/proto-loader-0.7.2.tgz"
@@ -4530,6 +4538,14 @@
     "@hethers/units" "1.2.0"
     "@hethers/wallet" "1.2.1"
 
+"@hashgraph/proto@2.11.0":
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/@hashgraph/proto/-/proto-2.11.0.tgz#bd56c734982b2fdc764518eeb64a0b2bdae5f5f3"
+  integrity sha512-JOom5ZIfmgPWfPMaCYg5pYBuNyMGb38F9lNFBxjA7cVbo2dnIOUQx4Zi98yyq0O4CrUSlKBhFaspDKXk+FfAhQ==
+  dependencies:
+    long "^4.0.0"
+    protobufjs "^6.11.3"
+
 "@hashgraph/proto@2.9.0":
   version "2.9.0"
   resolved "https://registry.npmjs.org/@hashgraph/proto/-/proto-2.9.0.tgz"
@@ -4538,17 +4554,17 @@
     long "^4.0.0"
     protobufjs "^6.11.3"
 
-"@hashgraph/sdk@2.18.1", "@hashgraph/sdk@^2.17.1":
-  version "2.18.1"
-  resolved "https://registry.npmjs.org/@hashgraph/sdk/-/sdk-2.18.1.tgz"
-  integrity sha512-9eZ8jLT+fVa9hxGxL+2N5QHbLtTS8Dj3Ed+ls6gu7BHlvBOj1nKKw4v90J3oLDc6aD2tqTX5+NnOfN0F13LkEw==
+"@hashgraph/sdk@2.19.0":
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/@hashgraph/sdk/-/sdk-2.19.0.tgz#62b73fdb635a1c19911054c195b6439e263bc77d"
+  integrity sha512-EXfk8wRHK9KvDHwrxcOA1LcxBFwamGGBPMJWPfQvo23N3XLh4fWXJu8iv87+Ea6YTmE8VGu3C2rBEjSf9ClcSA==
   dependencies:
-    "@ethersproject/rlp" "^5.6.1"
-    "@grpc/grpc-js" "^1.6.7"
+    "@ethersproject/rlp" "^5.7.0"
+    "@grpc/grpc-js" "^1.7.0"
     "@hashgraph/cryptography" "^1.4.1"
-    "@hashgraph/proto" "2.9.0"
+    "@hashgraph/proto" "2.11.0"
     axios "^0.27.2"
-    bignumber.js "^9.0.2"
+    bignumber.js "^9.1.0"
     crypto-js "^4.1.1"
     js-base64 "^3.7.2"
     js-logger "^1.6.1"
@@ -4564,6 +4580,24 @@
     "@ethersproject/rlp" "^5.6.1"
     "@grpc/grpc-js" "^1.6.7"
     "@hashgraph/cryptography" "^1.4.0"
+    "@hashgraph/proto" "2.9.0"
+    axios "^0.27.2"
+    bignumber.js "^9.0.2"
+    crypto-js "^4.1.1"
+    js-base64 "^3.7.2"
+    js-logger "^1.6.1"
+    long "^4.0.0"
+    protobufjs "^6.11.3"
+    utf8 "^3.0.0"
+
+"@hashgraph/sdk@^2.17.1":
+  version "2.18.1"
+  resolved "https://registry.npmjs.org/@hashgraph/sdk/-/sdk-2.18.1.tgz"
+  integrity sha512-9eZ8jLT+fVa9hxGxL+2N5QHbLtTS8Dj3Ed+ls6gu7BHlvBOj1nKKw4v90J3oLDc6aD2tqTX5+NnOfN0F13LkEw==
+  dependencies:
+    "@ethersproject/rlp" "^5.6.1"
+    "@grpc/grpc-js" "^1.6.7"
+    "@hashgraph/cryptography" "^1.4.1"
     "@hashgraph/proto" "2.9.0"
     axios "^0.27.2"
     bignumber.js "^9.0.2"
