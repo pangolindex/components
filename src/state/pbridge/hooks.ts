@@ -321,6 +321,8 @@ export function useBridgeSwapActionHandlers(): {
       const routeOptions: RouteOptions = {
         slippage: parseFloat(slipLimit) / 100,
         allowSwitchChain: false,
+        integrator: 'pangolin',
+        fee: 0.03,
       };
 
       const routesRequest: RoutesRequest = {
