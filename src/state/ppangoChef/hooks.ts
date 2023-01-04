@@ -94,6 +94,9 @@ export function usePangoChefInfos() {
   // get reward rates for each pool
   const poolsRewardsRateState = useSingleContractMultipleData(pangoChefContract, 'poolRewardRate', poolsIds);
 
+  // get the weight fro each pool
+  const poolsRewardInfosState = useSingleContractMultipleData(pangoChefContract, 'poolRewardInfos', poolsIds);
+
   // get the address of the rewarder for each pool
   const rewardsAddresses = useMemo(() => {
     if ((pools || []).length === 0) return [];
@@ -248,6 +251,7 @@ export function usePangoChefInfos() {
     for (let index = 0; index < poolsIds.length; index++) {
       const poolState = poolsState[index];
       const poolRewardRateState = poolsRewardsRateState[index];
+      const poolsRewardInfoState = poolsRewardInfosState[index];
       const userInfoState = userInfosState[index];
       const token0State = tokens0State[index];
       const token1State = tokens1State[index];
@@ -262,6 +266,7 @@ export function usePangoChefInfos() {
       if (
         poolState.loading ||
         poolRewardRateState.loading ||
+        poolsRewardInfoState.loading ||
         userInfoState.loading ||
         token0State.loading ||
         token1State.loading ||
@@ -355,7 +360,7 @@ export function usePangoChefInfos() {
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         totalStakedInWavax: totalStakedInWavax,
-        multiplier: BIG_INT_ZERO,
+        multiplier: JSBI.BigInt(poolsRewardInfoState.result?.weight),
         stakedAmount: userTotalStakedAmount,
         isPeriodFinished: rewardRate.isZero(),
         periodFinish: undefined,
@@ -383,6 +388,7 @@ export function usePangoChefInfos() {
     poolsIds,
     poolsState,
     poolsRewardsRateState,
+    poolsRewardInfosState,
     userInfosState,
     tokens0State,
     tokens1State,
@@ -460,6 +466,9 @@ export function useHederaPangoChefInfos() {
 
   // get reward rates for each pool
   const poolsRewardsRateState = useSingleContractMultipleData(pangoChefContract, 'poolRewardRate', poolsIds);
+
+  // get the weight fro each pool
+  const poolsRewardInfosState = useSingleContractMultipleData(pangoChefContract, 'poolRewardInfos', poolsIds);
 
   // get the address of the rewarder for each pool
   const rewardsAddresses = useMemo(() => {
@@ -629,6 +638,7 @@ export function useHederaPangoChefInfos() {
     for (let index = 0; index < poolsIds.length; index++) {
       const poolState = poolsState[index];
       const poolRewardRateState = poolsRewardsRateState[index];
+      const poolsRewardInfoState = poolsRewardInfosState[index];
       const userInfoState = userInfosState[index];
       const token0State = tokens0State[index];
       const token1State = tokens1State[index];
@@ -651,6 +661,7 @@ export function useHederaPangoChefInfos() {
         userPendingRewardState?.loading ||
         userRewardRateState?.loading ||
         pairTotalSupplyState?.loading ||
+        poolsRewardInfoState?.loading ||
         pairState === PairState.LOADING ||
         avaxPngPairState == PairState.LOADING ||
         !pair ||
@@ -749,7 +760,7 @@ export function useHederaPangoChefInfos() {
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         totalStakedInWavax: totalStakedInWavax,
-        multiplier: BIG_INT_ZERO,
+        multiplier: JSBI.BigInt(poolsRewardInfoState.result?.weight),
         stakedAmount: userTotalStakedAmount,
         isPeriodFinished: rewardRate.isZero(),
         periodFinish: undefined,
@@ -778,6 +789,7 @@ export function useHederaPangoChefInfos() {
     poolsIds,
     poolsState,
     poolsRewardsRateState,
+    poolsRewardInfosState,
     userInfosState,
     tokens0State,
     tokens1State,
