@@ -107,6 +107,7 @@ const txCheckerMapping: { [chainId in ChainId]: (params: TxCheckerProps) => void
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.EVMOS_TESTNET]: txChecker,
 };
 
 const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
@@ -119,6 +120,7 @@ const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
   [ChainId.NEAR_MAINNET]: true,
   [ChainId.NEAR_TESTNET]: true,
   [ChainId.COSTON2]: true,
+  [ChainId.EVMOS_TESTNET]: true,
   //TODO: remove this once we have proper implementation
   [ChainId.ETHEREUM]: false,
   [ChainId.POLYGON]: false,

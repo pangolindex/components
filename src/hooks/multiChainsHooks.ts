@@ -30,6 +30,7 @@ export const useWrapCallbackHook: UseWrapCallbackHookType = {
   [ChainId.NEAR_MAINNET]: useWrapNearCallback,
   [ChainId.NEAR_TESTNET]: useWrapNearCallback,
   [ChainId.COSTON2]: useWrapCallback,
+  [ChainId.EVMOS_TESTNET]: useWrapCallback,
   // TODO: Remove these hooks later on
   [ChainId.ETHEREUM]: useWrapCallback,
   [ChainId.POLYGON]: useWrapCallback,
@@ -62,6 +63,7 @@ export const useTokenHook: UseTokenHookType = {
   [ChainId.NEAR_MAINNET]: useNearToken,
   [ChainId.NEAR_TESTNET]: useNearToken,
   [ChainId.COSTON2]: useToken,
+  [ChainId.EVMOS_TESTNET]: useToken,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -96,6 +98,7 @@ export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookTyp
   [ChainId.NEAR_MAINNET]: useApproveCallbackFromNearTrade,
   [ChainId.NEAR_TESTNET]: useApproveCallbackFromNearTrade,
   [ChainId.COSTON2]: useApproveCallbackFromTrade,
+  [ChainId.EVMOS_TESTNET]: useApproveCallbackFromTrade,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useApproveCallbackFromTrade,
   [ChainId.POLYGON]: useApproveCallbackFromTrade,
@@ -128,6 +131,7 @@ export const useSwapCallbackHook: UseSwapCallbackHookType = {
   [ChainId.NEAR_MAINNET]: useNearSwapCallback,
   [ChainId.NEAR_TESTNET]: useNearSwapCallback,
   [ChainId.COSTON2]: useSwapCallback,
+  [ChainId.EVMOS_TESTNET]: useSwapCallback,
   // TODO: Remove following lines
   [ChainId.ETHEREUM]: useSwapCallback,
   [ChainId.POLYGON]: useSwapCallback,
@@ -160,6 +164,7 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
   [ChainId.NEAR_MAINNET]: useNearApproveCallback,
   [ChainId.NEAR_TESTNET]: useNearApproveCallback,
   [ChainId.COSTON2]: useApproveCallback,
+  [ChainId.EVMOS_TESTNET]: useApproveCallback,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useApproveCallback,
   [ChainId.POLYGON]: useApproveCallback,
@@ -197,6 +202,7 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
   [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
   [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
   [ChainId.COSTON2]: useUSDCPrice,
+  [ChainId.EVMOS_TESTNET]: useUSDCPrice,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -228,6 +234,7 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
   [ChainId.COSTON2]: useTokens,
+  [ChainId.EVMOS_TESTNET]: useTokens,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,

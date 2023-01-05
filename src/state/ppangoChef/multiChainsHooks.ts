@@ -48,6 +48,7 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.EVMOS_TESTNET]: usePangoChefInfos,
 };
 
 export type UsePangoChefStakeCallbackHookType = {
@@ -82,6 +83,7 @@ export const usePangoChefStakeCallbackHook: UsePangoChefStakeCallbackHookType = 
   [ChainId.MOONRIVER]: useDummyPangoChefCallback,
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefStakeCallback,
 };
 
 export type UsePangoChefClaimRewardCallbackHookType = {
@@ -116,6 +118,7 @@ export const usePangoChefClaimRewardCallbackHook: UsePangoChefClaimRewardCallbac
   [ChainId.MOONRIVER]: useDummyPangoChefCallback,
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefClaimRewardCallback,
 };
 
 export type UsePangoChefWithdrawCallbackHookType = {
@@ -150,6 +153,7 @@ export const usePangoChefWithdrawCallbackHook: UsePangoChefWithdrawCallbackHookT
   [ChainId.MOONRIVER]: useDummyPangoChefCallback,
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefWithdrawCallback,
 };
 
 export type UsePangoChefCompoundCallbackHookType = {
@@ -184,4 +188,5 @@ export const usePangoChefCompoundCallbackHook: UsePangoChefCompoundCallbackHookT
   [ChainId.MOONRIVER]: useDummyPangoChefCallback,
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefCompoundCallback,
 };

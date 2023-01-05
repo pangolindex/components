@@ -64,6 +64,7 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].contracts!.router,
 };
 
 export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
@@ -91,6 +92,7 @@ export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: ZERO_ADDRESS,
   [ChainId.MOONBEAM]: ZERO_ADDRESS,
   [ChainId.OP]: ZERO_ADDRESS,
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
 };
 
 // a list of tokens by chain
@@ -148,6 +150,7 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: getMiniChefAddress(ChainId.EVMOS_TESTNET),
 };
 
 const getPangoChefAddress = (chainId: ChainId) => {
@@ -183,6 +186,7 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: getPangoChefAddress(ChainId.EVMOS_TESTNET),
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
@@ -211,6 +215,7 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
   [ChainId.MOONRIVER]: [],
   [ChainId.MOONBEAM]: [],
   [ChainId.OP]: [],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET].address, PNG[ChainId.EVMOS_TESTNET].address],
 };
 
 export const SWAP_DEFAULT_CURRENCY = {
@@ -250,6 +255,10 @@ export const SWAP_DEFAULT_CURRENCY = {
     inputCurrency: 'C2FLR',
     outputCurrency: PNG[ChainId.COSTON2].address,
   },
+  [ChainId.EVMOS_TESTNET]: {
+    inputCurrency: 'tEVMOS',
+    outputCurrency: PNG[ChainId.EVMOS_TESTNET].address,
+  },
 };
 
 // used to construct intermediary pairs for trading
@@ -287,6 +296,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.MOONRIVER]: [],
   [ChainId.MOONBEAM]: [],
   [ChainId.OP]: [],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
 };
 
 // one basis point
@@ -504,6 +514,7 @@ export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } 
   [ChainId.MOONRIVER]: CommonEVMProvider,
   [ChainId.MOONBEAM]: CommonEVMProvider,
   [ChainId.OP]: CommonEVMProvider,
+  [ChainId.EVMOS_TESTNET]: CommonEVMProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {
@@ -573,6 +584,7 @@ const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.MOONRIVER]: [],
   [ChainId.MOONBEAM]: [],
   [ChainId.OP]: [],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
 };
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -613,6 +625,7 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: getSarAddress(ChainId.EVMOS_TESTNET),
 };
 /* eslint-enable max-lines */
 
@@ -655,6 +668,7 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: undefined,
 };
 
 export const FARM_TYPE: { [x: number]: string | undefined } = {

@@ -38,6 +38,7 @@ export const useMinichefStakingInfosHook: UseMinichefStakingInfosHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.EVMOS_TESTNET]: useDummyMinichefHook,
 };
 
 export type UseGetMinichefStakingInfosViaSubgraphHookType = {
@@ -72,6 +73,7 @@ export const useGetMinichefStakingInfosViaSubgraphHook: UseGetMinichefStakingInf
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.EVMOS_TESTNET]: useGetMinichefStakingInfosViaSubgraph,
 };
 
 export type UseGetAllFarmDataHookType = {
@@ -103,4 +105,5 @@ export const useGetAllFarmDataHook: UseGetAllFarmDataHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.EVMOS_TESTNET]: useGetAllFarmData,
 };
