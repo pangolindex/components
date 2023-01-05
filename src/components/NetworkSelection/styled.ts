@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { Box } from 'src/components/Box';
-import { CloseIcon } from 'src/theme/components';
 import Logo from '../Logo';
 
 export const Frame = styled(Box)`
@@ -25,13 +24,6 @@ export const Inputs = styled(Box)`
   display: grid;
   grid-auto-flow: column;
   gap: 20px;
-`;
-
-export const CloseButton = styled(CloseIcon)`
-  color: ${({ theme }) => theme.primary};
-  background-color: ${({ theme }) => theme.color5};
-  border-radius: 50%;
-  padding: 5px;
 `;
 
 export const ChainsList = styled(Box)`
