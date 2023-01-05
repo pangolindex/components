@@ -85,6 +85,7 @@ const updaterMapping: { [chainId in ChainId]: () => null } = {
   [ChainId.NEAR_MAINNET]: NearApplicationUpdater,
   [ChainId.NEAR_TESTNET]: NearApplicationUpdater,
   [ChainId.COSTON2]: EvmApplicationUpdater,
+  [ChainId.EVMOS_TESTNET]: EvmApplicationUpdater,
   //TODO: remove this once we have proper implementation
   [ChainId.ETHEREUM]: EvmApplicationUpdater,
   [ChainId.POLYGON]: EvmApplicationUpdater,
