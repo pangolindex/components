@@ -21,7 +21,7 @@ const Bridge = () => {
   const { t } = useTranslation();
   const { account } = usePangolinWeb3();
 
-  const { currencies, chains, parsedAmount } = useDerivedBridgeInfo();
+  const { currencies, chains, parsedAmount, recipient } = useDerivedBridgeInfo();
 
   const inputCurrency = currencies[CurrencyField.INPUT];
   const outputCurrency = currencies[CurrencyField.OUTPUT];
@@ -31,9 +31,18 @@ const Bridge = () => {
   const getAllRoutes = useCallback(() => {
     if (parsedAmount) {
       onChangeRouteLoaderStatus();
-      getRoutes(parsedAmount?.toExact(), slippageTolerance, fromChain, toChain, account, inputCurrency, outputCurrency);
+      getRoutes(
+        parsedAmount?.toExact(),
+        slippageTolerance,
+        fromChain,
+        toChain,
+        account,
+        inputCurrency,
+        outputCurrency,
+        recipient,
+      );
     }
-  }, [parsedAmount, slippageTolerance, fromChain, toChain, account, inputCurrency, outputCurrency]);
+  }, [parsedAmount, slippageTolerance, fromChain, toChain, account, inputCurrency, outputCurrency, recipient]);
 
   return (
     <PageWrapper>
@@ -43,6 +52,7 @@ const Bridge = () => {
         fromChain={fromChain}
         inputCurrency={inputCurrency}
         outputCurrency={outputCurrency}
+        recipient={recipient}
         toChain={toChain}
         setSlippageTolerance={setSlippageTolerance}
         getRoutes={getRoutes}

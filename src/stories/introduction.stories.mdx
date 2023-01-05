@@ -65,16 +65,18 @@ In `PangolinProvider` you can pass custom theme. Follow `Guide -> Theme` to cust
 
 If you are using redux in your application then you will need to use custom context https://react-redux.js.org/api/hooks#custom-context with your Provider.
 
+# setup example repo
+1. do `yarn` in example directory.
+2. copy `.env.sample` to `.env`
+3. set `VITE_ARKHIA_API_KEY` accordingly in `.env`
+
 # development flow
 
-1. do `yarn` in components
-2. do `yarn dev` which will watch for any files changes and recompiles files
-3. do `yalc link "@pangolindex/components"` in the project where you want to use components
-
-Incase react hook violation error comes, in that case follow below steps also.
-
-1. do `yarn link` in `<project_root>/node_modules/react`.
-2. do `yarn link react` in components which will symlink react which are being used by project.
+1. do `yarn` in components.
+2. make sure you follow `setup example repo` steps
+3. do `yarn dev:example` which will start app from `example` directory.
+4. as you develop components in `src` folder, you can keep testing it in example app.
+5. once its developed you can use those new changes in interface repo.
 
 # Publish flow
 

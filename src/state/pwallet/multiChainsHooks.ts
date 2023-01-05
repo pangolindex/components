@@ -39,6 +39,7 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.HEDERA_TESTNET]: useTokenBalances,
   [ChainId.NEAR_MAINNET]: useNearTokenBalances,
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
+  [ChainId.COSTON2]: useTokenBalances,
   [ChainId.EVMOS_TESTNET]: useTokenBalances,
   // TODO: We need to check following chains
   [ChainId.ETHEREUM]: useTokenBalances,
@@ -71,6 +72,7 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.HEDERA_TESTNET]: useTokenBalance,
   [ChainId.NEAR_MAINNET]: useNearTokenBalance,
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
+  [ChainId.COSTON2]: useTokenBalance,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -102,6 +104,7 @@ export const usePairBalanceHook: UsePairBalanceHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaPairBalance,
   [ChainId.NEAR_MAINNET]: useNearPairBalance,
   [ChainId.NEAR_TESTNET]: useNearPairBalance,
+  [ChainId.COSTON2]: useEVMPairBalance,
   [ChainId.EVMOS_TESTNET]: useEVMPairBalance,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useEVMPairBalance,
@@ -134,6 +137,7 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaBalance,
   [ChainId.NEAR_MAINNET]: useNearBalance,
   [ChainId.NEAR_TESTNET]: useNearBalance,
+  [ChainId.COSTON2]: useETHBalances,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useETHBalances,
   [ChainId.POLYGON]: useETHBalances,
@@ -166,6 +170,7 @@ export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaAddLiquidity,
   [ChainId.NEAR_MAINNET]: useNearAddLiquidity,
   [ChainId.NEAR_TESTNET]: useNearAddLiquidity,
+  [ChainId.COSTON2]: useAddLiquidity,
   [ChainId.EVMOS_TESTNET]: useAddLiquidity,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useAddLiquidity,
@@ -198,6 +203,7 @@ export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaRemoveLiquidity,
   [ChainId.NEAR_MAINNET]: useNearRemoveLiquidity,
   [ChainId.NEAR_TESTNET]: useNearRemoveLiquidity,
+  [ChainId.COSTON2]: useRemoveLiquidity,
   [ChainId.EVMOS_TESTNET]: useRemoveLiquidity,
   // TODO: Remove these hooks later on
   [ChainId.ETHEREUM]: useRemoveLiquidity,
@@ -234,6 +240,7 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.HEDERA_TESTNET]: useGetHederaUserLP,
   [ChainId.NEAR_MAINNET]: useGetNearUserLP,
   [ChainId.NEAR_TESTNET]: useGetNearUserLP,
+  [ChainId.COSTON2]: useGetUserLP,
   [ChainId.EVMOS_TESTNET]: useGetUserLP,
   // TODO: Remove these hooks later on
   [ChainId.ETHEREUM]: useGetUserLP,
@@ -274,6 +281,7 @@ export const useCreatePairHook: UseCreatePairHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaCreatePair,
   [ChainId.NEAR_MAINNET]: useNearCreatePair,
   [ChainId.NEAR_TESTNET]: useNearCreatePair,
+  [ChainId.COSTON2]: useDummyCreatePair,
   [ChainId.EVMOS_TESTNET]: useDummyCreatePair,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,

@@ -4,7 +4,7 @@ import { RadioButton } from '.';
 
 export default {
   component: RadioButton,
-  title: 'Components/RadioButton',
+  title: 'Building Blocks/RadioButton',
 };
 
 const TemplateRadio: ComponentStory<typeof RadioButton> = (args: any) => <RadioButton {...args} />;

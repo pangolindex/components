@@ -6,7 +6,7 @@ import { ChainInput } from '.';
 
 export default {
   component: ChainInput,
-  title: 'Components/ChainInput',
+  title: 'DeFi Helpers/ChainInput',
   parameters: {
     docs: {
       description: {

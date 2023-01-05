@@ -15,7 +15,7 @@ const currency1 = new Token(
 
 export default {
   component: BridgeTransfer,
-  title: 'Components/Bridge/BridgeTransfer',
+  title: 'DeFi Primitives/Bridge/BridgeTransfer',
   parameters: {
     docs: {
       description: {

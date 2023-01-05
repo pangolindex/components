@@ -700,7 +700,7 @@
   "pangoChef": {
     "claimWarning1": "Khi bạn yêu cầu mà không rút tiền, thanh khoản của bạn vẫn còn trong nhóm khai thác.",
     "claimWarning2": "Yêu cầu phần thưởng của bạn sẽ giảm APR của bạn xuống 0. Thay vào đó, bạn có thể chọn kết hợp.",
-    "compoundWarning": "Tích lũy phần thưởng của bạn cho trang trại {{token0}} - {{token1}} sẽ nhận được phần thưởng của bạn vào trang trại {{currency}} - {{png}}. Bạn cần thêm giá trị tương đương của mã thông báo {{currency}} vào phần thưởng {{png}} đã tích lũy của mình.",
+    "compoundWarning": "Tích lũy phần thưởng của bạn cho trang trại {{token0}} - {{token1}} sẽ nhận được phần thưởng của bạn vào trang trại {{token0}} - {{token1}}. Bạn cần thêm giá trị tương đương của mã thông báo {{currency}} vào phần thưởng {{png}} đã tích lũy của mình.",
     "compoundAmountWarning": "Bạn cần thêm {{amount}} {{symbol}} để kết hợp. Hãy lưu ý rằng Kết hợp có thể làm giảm một chút APR của bạn.",
     "compoundAmountWarning2": "Hãy cẩn thận rằng bạn sẽ khóa nhóm {{ token0 }} {{ token1 }} của mình cho đến khi bạn nhận được phần thưởng của nhóm này.",
     "highVolalityWarning": "Còn quá sớm, hãy thử sau vài giờ",

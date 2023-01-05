@@ -5,7 +5,7 @@ import PoolImportModal from '.';
 
 export default {
   component: PoolImportModal,
-  title: 'Components/Pool/PoolImportModal',
+  title: 'DeFi Primitives/Pool/PoolImportModal',
 };
 
 const SamplePoolImport: ComponentStory<typeof PoolImportModal> = () => {

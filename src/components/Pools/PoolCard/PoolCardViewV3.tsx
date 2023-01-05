@@ -43,15 +43,15 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
 
   const usePairBalance = usePairBalanceHook[chainId];
 
-  const token0 = stakingInfo?.tokens[0];
-  const token1 = stakingInfo?.tokens[1];
+  const token0 = stakingInfo?.tokens?.[0];
+  const token1 = stakingInfo?.tokens?.[1];
 
   const currency0 = unwrappedToken(token0, chainId);
   const currency1 = unwrappedToken(token1, chainId);
 
   const [, stakingTokenPair] = usePair(token0, token1);
 
-  const isStaking = Boolean(stakingInfo?.stakedAmount.greaterThan('0'));
+  const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
 
   const yourStackedInUsd = CHAINS[chainId]?.mainnet
     ? stakingInfo?.totalStakedInUsd.multiply(stakingInfo?.stakedAmount).divide(stakingInfo?.totalStakedAmount)
@@ -81,9 +81,9 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
   const extraAPR = usePangoChefExtraFarmApr(
     rewardTokens,
     rewardRate,
-    stakingInfo.rewardTokensMultiplier,
+    stakingInfo?.rewardTokensMultiplier,
     balance,
-    stakingInfo.pairPrice,
+    stakingInfo?.pairPrice,
   );
   const apr = isStaking ? userApr : farmApr;
 

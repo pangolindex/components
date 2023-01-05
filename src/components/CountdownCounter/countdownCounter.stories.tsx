@@ -5,7 +5,7 @@ import { CountdownCounter } from '.';
 
 export default {
   component: CountdownCounter,
-  title: 'Components/CountdownCounter',
+  title: 'DeFi Helpers/CountdownCounter',
   parameters: {
     docs: {
       description: {

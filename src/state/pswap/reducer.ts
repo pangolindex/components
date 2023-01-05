@@ -64,6 +64,7 @@ const initialState: SwapState = {
   [ChainId.HEDERA_TESTNET]: initialValue,
   [ChainId.NEAR_MAINNET]: initialValue,
   [ChainId.NEAR_TESTNET]: initialValue,
+  [ChainId.COSTON2]: initialValue,
   [ChainId.EVMOS_TESTNET]: initialValue,
   // TODO:
   [ChainId.ETHEREUM]: initialValue,
