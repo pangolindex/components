@@ -1,4 +1,3 @@
-import { TransactionResponse } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { CAVAX, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
@@ -8,20 +7,20 @@ import { AlertTriangle, HelpCircle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Loader, Text, TextInput, Tooltip, TransactionCompleted } from 'src/components';
-import { FARM_TYPE, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE, ZERO_ADDRESS } from 'src/constants';
+import { FARM_TYPE, ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
+import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
+import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
+import { usePangoChefCompoundCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { useTokenBalances } from 'src/state/pwallet/hooks';
-import { useAccountBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { calculateGasMargin, waitForTransaction } from 'src/utils';
+import { useAccountBalanceHook, useTokenBalancesHook } from 'src/state/pwallet/multiChainsHooks';
+import { hederaFn } from 'src/utils/hedera';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root, WarningMessageWrapper } from './styleds';
 
@@ -37,15 +36,16 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
 
   const theme = useContext(ThemeContext);
 
-  // monitor call to help UI loading state
-  const addTransaction = useTransactionAdder();
-
   const [confirm, setConfirm] = useState(false);
   const [hash, setHash] = useState<string | undefined>();
   const [attempting, setAttempting] = useState(false);
   const [compoundError, setCompound] = useState<string | undefined>();
 
   const pangoChefContract = usePangoChefContract();
+
+  const useCompoundCallback = usePangoChefCompoundCallbackHook[chainId];
+  const useApproveCallback = useApproveCallbackHook[chainId];
+  const useTokenBalances = useTokenBalancesHook[chainId];
 
   function wrappedOnDismiss() {
     setHash(undefined);
@@ -57,7 +57,8 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const png = PNG[chainId];
   const wrappedCurrency = WAVAX[chainId];
   const currency = CAVAX[chainId];
-  const [token0, token1] = stakingInfo.tokens;
+
+  const [token0, token1] = stakingInfo?.tokens;
 
   const [, pair] = usePair(token0, token1);
 
@@ -95,7 +96,9 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const pngPrice = tokensPrices[png.address] ?? new Price(png, wrappedCurrency, '1', '0');
   let amountToAdd: CurrencyAmount | TokenAmount = new TokenAmount(wrappedCurrency, '0');
   // if is png pool and not is wrapped token as second token (eg PNG/USDC, PSB/SDOOD)
-  if (isPNGPool && !isWrappedCurrencyPool) {
+  // or for hedera chain we want to consider pbar-whbar pool instead of pbar-hbar pool
+  // so for hedera also we want to go into if condition
+  if ((isPNGPool && !isWrappedCurrencyPool) || hederaFn.isHederaChain(chainId)) {
     // need to calculate the token price in png, for this we using the token price on currency and png price on currency
     const token = token0.equals(png) ? token1 : token0;
     const tokenBalance = tokensBalances[token.address];
@@ -133,6 +136,12 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
 
   const [approval, approveCallback] = useApproveCallback(chainId, amountToAdd, pangoChefContract?.address);
+
+  const { callback: compoundCallback } = useCompoundCallback({
+    isPNGPool,
+    poolId: stakingInfo?.pid,
+    amountToAdd,
+  });
 
   const mixpanel = useMixpanel();
 
@@ -180,40 +189,11 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   }
 
   async function onCompound() {
-    if (pangoChefContract && stakingInfo?.stakedAmount && pair && !_error) {
+    if (pangoChefContract && stakingInfo?.stakedAmount && compoundCallback && pair && !_error) {
       setAttempting(true);
       try {
-        const method = isPNGPool ? 'compound' : 'compoundToPoolZero';
-
-        const minPairAmount = JSBI.BigInt(
-          ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
-        );
-        const maxPairAmount = JSBI.BigInt(
-          ONE_FRACTION.add(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
-        );
-        // the minPairAmount and maxPairAmount is amount of other token/currency to sent to compound with slippage tolerance
-        const slippage = {
-          minPairAmount: JSBI.lessThan(minPairAmount, JSBI.BigInt(0)) ? '0x0' : `0x${minPairAmount.toString(16)}`,
-          maxPairAmount: `0x${maxPairAmount.toString(16)}`,
-        };
-        const estimatedGas = await pangoChefContract.estimateGas[method](
-          Number(stakingInfo.pid).toString(16),
-          slippage,
-          { value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}` },
-        );
-        const response: TransactionResponse = await pangoChefContract[method](
-          Number(stakingInfo.pid).toString(16),
-          slippage,
-          {
-            gasLimit: calculateGasMargin(estimatedGas),
-            value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}`,
-          },
-        );
-        await waitForTransaction(response, 1);
-        addTransaction(response, {
-          summary: t('pangoChef.compoundTransactionSummary'),
-        });
-        setHash(response.hash);
+        const hash = await compoundCallback();
+        setHash(hash);
 
         const tokenA = stakingInfo.tokens[0];
         const tokenB = stakingInfo.tokens[1];
@@ -293,7 +273,6 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
             isDisabled={approval !== ApprovalState.NOT_APPROVED}
             onClick={handleApprove}
-            height="46px"
           >
             {t('earn.approve')}
           </Button>
@@ -325,7 +304,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
                 token0: currency0.symbol,
                 token1: currency1.symbol,
                 currency: isPNGPool ? currency0.symbol : currency.symbol,
-                png: isPNGPool ? currency1.symbol : png.symbol,
+                png: isPNGPool ? tokenOrCurrency?.symbol : png.symbol,
               })}
             </Text>
           </Box>

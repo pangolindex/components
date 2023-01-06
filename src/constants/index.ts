@@ -48,6 +48,7 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET].contracts!.router,
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts!.router,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts!.router,
+  [ChainId.COSTON2]: CHAINS[ChainId.COSTON2].contracts!.router,
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -63,6 +64,7 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].contracts!.router,
 };
 
 export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
@@ -74,6 +76,7 @@ export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.COSTON2]: CHAINS[ChainId.COSTON2]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.ETHEREUM]: ZERO_ADDRESS,
   [ChainId.POLYGON]: ZERO_ADDRESS,
   [ChainId.FANTOM]: ZERO_ADDRESS,
@@ -89,6 +92,7 @@ export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: ZERO_ADDRESS,
   [ChainId.MOONBEAM]: ZERO_ADDRESS,
   [ChainId.OP]: ZERO_ADDRESS,
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
 };
 
 // a list of tokens by chain
@@ -119,6 +123,8 @@ const getMiniChefAddress = (chainId: ChainId) => {
   return undefined;
 };
 
+export const SQUID_API = 'https://api.0xsquid.com';
+
 export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.FUJI]: getMiniChefAddress(ChainId.FUJI),
   [ChainId.AVALANCHE]: getMiniChefAddress(ChainId.AVALANCHE),
@@ -128,6 +134,7 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.HEDERA_TESTNET]: getMiniChefAddress(ChainId.HEDERA_TESTNET),
   [ChainId.NEAR_MAINNET]: getMiniChefAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getMiniChefAddress(ChainId.NEAR_TESTNET),
+  [ChainId.COSTON2]: getMiniChefAddress(ChainId.COSTON2),
   [ChainId.ETHEREUM]: undefined,
   [ChainId.POLYGON]: undefined,
   [ChainId.FANTOM]: undefined,
@@ -143,6 +150,7 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: getMiniChefAddress(ChainId.EVMOS_TESTNET),
 };
 
 const getPangoChefAddress = (chainId: ChainId) => {
@@ -162,6 +170,7 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.HEDERA_TESTNET]: getPangoChefAddress(ChainId.HEDERA_TESTNET),
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
+  [ChainId.COSTON2]: getPangoChefAddress(ChainId.COSTON2),
   [ChainId.ETHEREUM]: undefined,
   [ChainId.POLYGON]: undefined,
   [ChainId.FANTOM]: undefined,
@@ -177,6 +186,7 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: getPangoChefAddress(ChainId.EVMOS_TESTNET),
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
@@ -189,6 +199,7 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
   [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET].address, PNG[ChainId.HEDERA_TESTNET].address],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET].address, PNG[ChainId.NEAR_MAINNET].address],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET].address, PNG[ChainId.NEAR_TESTNET].address],
+  [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2].address, PNG[ChainId.COSTON2].address],
   [ChainId.ETHEREUM]: [],
   [ChainId.POLYGON]: [],
   [ChainId.FANTOM]: [],
@@ -204,6 +215,7 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
   [ChainId.MOONRIVER]: [],
   [ChainId.MOONBEAM]: [],
   [ChainId.OP]: [],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET].address, PNG[ChainId.EVMOS_TESTNET].address],
 };
 
 export const SWAP_DEFAULT_CURRENCY = {
@@ -239,6 +251,14 @@ export const SWAP_DEFAULT_CURRENCY = {
     inputCurrency: WAVAX[ChainId.NEAR_TESTNET].address,
     outputCurrency: PNG[ChainId.NEAR_TESTNET].address,
   },
+  [ChainId.COSTON2]: {
+    inputCurrency: 'C2FLR',
+    outputCurrency: PNG[ChainId.COSTON2].address,
+  },
+  [ChainId.EVMOS_TESTNET]: {
+    inputCurrency: 'tEVMOS',
+    outputCurrency: PNG[ChainId.EVMOS_TESTNET].address,
+  },
 };
 
 // used to construct intermediary pairs for trading
@@ -260,6 +280,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET], PNG[ChainId.HEDERA_TESTNET]],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
+  [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2], PNG[ChainId.COSTON2]],
   [ChainId.ETHEREUM]: [],
   [ChainId.POLYGON]: [],
   [ChainId.FANTOM]: [],
@@ -275,6 +296,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.MOONRIVER]: [],
   [ChainId.MOONBEAM]: [],
   [ChainId.OP]: [],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
 };
 
 // one basis point
@@ -475,6 +497,7 @@ export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } 
   [ChainId.HEDERA_TESTNET]: HederaProvider,
   [ChainId.NEAR_MAINNET]: NearProvider,
   [ChainId.NEAR_TESTNET]: NearProvider,
+  [ChainId.COSTON2]: CommonEVMProvider,
   //TODO: remove this once we have proper implementation
   [ChainId.ETHEREUM]: CommonEVMProvider,
   [ChainId.POLYGON]: CommonEVMProvider,
@@ -491,6 +514,7 @@ export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } 
   [ChainId.MOONRIVER]: CommonEVMProvider,
   [ChainId.MOONBEAM]: CommonEVMProvider,
   [ChainId.OP]: CommonEVMProvider,
+  [ChainId.EVMOS_TESTNET]: CommonEVMProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {
@@ -544,6 +568,7 @@ const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET], PNG[ChainId.HEDERA_TESTNET]],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
+  [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2], PNG[ChainId.COSTON2]],
   [ChainId.POLYGON]: [],
   [ChainId.ETHEREUM]: [],
   [ChainId.FANTOM]: [],
@@ -559,6 +584,7 @@ const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.MOONRIVER]: [],
   [ChainId.MOONBEAM]: [],
   [ChainId.OP]: [],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
 };
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -583,6 +609,7 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
   [ChainId.HEDERA_TESTNET]: getSarAddress(ChainId.HEDERA_TESTNET),
   [ChainId.NEAR_MAINNET]: getSarAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getSarAddress(ChainId.NEAR_TESTNET),
+  [ChainId.COSTON2]: getSarAddress(ChainId.COSTON2),
   [ChainId.ETHEREUM]: undefined,
   [ChainId.POLYGON]: undefined,
   [ChainId.FANTOM]: undefined,
@@ -598,6 +625,7 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: getSarAddress(ChainId.EVMOS_TESTNET),
 };
 /* eslint-enable max-lines */
 
@@ -624,6 +652,7 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.HEDERA_TESTNET]: 'hedera-hashgraph',
   [ChainId.NEAR_MAINNET]: 'near',
   [ChainId.NEAR_TESTNET]: undefined,
+  [ChainId.COSTON2]: undefined,
   [ChainId.ETHEREUM]: undefined,
   [ChainId.POLYGON]: undefined,
   [ChainId.FANTOM]: undefined,
@@ -639,6 +668,7 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: undefined,
 };
 
 export const FARM_TYPE: { [x: number]: string | undefined } = {

@@ -5,7 +5,7 @@ import CurrencyLogo from '.';
 
 export default {
   component: CurrencyLogo,
-  title: 'Components/CurrencyLogo',
+  title: 'DeFi Helpers/CurrencyLogo',
 };
 
 const TemplateBox: ComponentStory<typeof CurrencyLogo> = (args: any) => <CurrencyLogo {...args} />;

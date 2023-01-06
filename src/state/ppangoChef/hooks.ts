@@ -1,11 +1,17 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
-import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { CurrencyAmount, Fraction, JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
+import {
+  BIG_INT_SECONDS_IN_WEEK,
+  BIG_INT_ZERO,
+  ONE_FRACTION,
+  PANGOCHEF_COMPOUND_SLIPPAGE,
+  ZERO_ADDRESS,
+} from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
@@ -19,7 +25,7 @@ import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { getExtraTokensWeeklyRewardRate, useMinichefPools } from 'src/state/pstake/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks';
-import { decimalToFraction, waitForTransaction } from 'src/utils';
+import { calculateGasMargin, decimalToFraction, waitForTransaction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { PangoChefInfo, Pool, PoolType, RewardSummations, UserInfo, ValueVariables } from './types';
@@ -641,7 +647,7 @@ export function useHederaPangoChefInfos() {
         token0State?.loading ||
         token1State?.loading ||
         rewardTokensState?.loading ||
-        rewardMultipliersState.loading ||
+        rewardMultipliersState?.loading ||
         userPendingRewardState?.loading ||
         userRewardRateState?.loading ||
         pairTotalSupplyState?.loading ||
@@ -673,15 +679,22 @@ export function useHederaPangoChefInfos() {
       const pairPrice = pairPrices[pair?.liquidityToken?.address];
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
-      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? 0;
+      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? new Fraction('0', '1');
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
       // calculate the total staked amount in usd
       const totalStakedInUsd = new TokenAmount(
         USDC[chainId],
-        currencyPriceFraction.multiply(_totalStakedInWavax).toFixed(0),
+        currencyPriceFraction
+          .multiply(_totalStakedInWavax)
+          .multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(USDC[chainId]?.decimals)))
+          .toFixed(0),
       );
-      const totalStakedInWavax = new TokenAmount(wavax, _totalStakedInWavax.toFixed(0));
+
+      const totalStakedInWavax = new TokenAmount(
+        wavax,
+        _totalStakedInWavax.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(wavax?.decimals))).toFixed(0),
+      );
 
       const getHypotheticalWeeklyRewardRate = (
         _stakedAmount: TokenAmount,
@@ -704,7 +717,7 @@ export function useHederaPangoChefInfos() {
 
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
-        pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0')
+        pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0') || !pairPrice
           ? 0
           : Number(
               pngPrice?.raw
@@ -731,7 +744,7 @@ export function useHederaPangoChefInfos() {
 
       farms.push({
         pid: pid,
-        tokens: [pair.token0, pair.token1],
+        tokens: [pair?.token0, pair?.token1],
         stakingRewardAddress: pangoChefContract?.address,
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
@@ -788,7 +801,7 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
     if (!stakingInfo) return '0';
 
     const userBalance = stakingInfo?.userValueVariables?.balance || BigNumber.from(0);
-    const userSumOfEntryTimes = stakingInfo?.userValueVariables?.sumOfEntryTimes;
+    const userSumOfEntryTimes = stakingInfo?.userValueVariables?.sumOfEntryTimes || BigNumber.from(0);
 
     const poolBalance = stakingInfo?.valueVariables?.balance;
     const poolSumOfEntryTimes = stakingInfo?.valueVariables?.sumOfEntryTimes;
@@ -803,7 +816,7 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
     const d = blockTimestamp.sub(b);
     return c.lte(0) || d.lte(0)
       ? '0'
-      : BigNumber.from(Math.floor(stakingInfo?.stakingApr ?? 0))
+      : BigNumber.from(Math.floor(stakingInfo?.stakingApr ?? 0)?.toString())
           .mul(c)
           .div(d)
           .toString();
@@ -818,20 +831,20 @@ export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
       return BigNumber.from(0);
     }
 
-    const userBalance = stakingInfo?.userValueVariables.balance;
-    const userSumOfEntryTimes = stakingInfo?.userValueVariables.sumOfEntryTimes;
+    const userBalance = stakingInfo?.userValueVariables?.balance || BigNumber.from(0);
+    const userSumOfEntryTimes = stakingInfo?.userValueVariables?.sumOfEntryTimes || BigNumber.from(0);
 
-    const poolBalance = stakingInfo?.valueVariables.balance;
-    const poolSumOfEntryTimes = stakingInfo?.valueVariables.sumOfEntryTimes;
+    const poolBalance = stakingInfo?.valueVariables?.balance;
+    const poolSumOfEntryTimes = stakingInfo?.valueVariables?.sumOfEntryTimes;
 
-    if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return BigNumber.from(0);
+    if (userBalance?.isZero() || poolBalance.isZero() || !blockTime) return BigNumber.from(0);
 
     const blockTimestamp = BigNumber.from(blockTime.toString());
     const userValue = blockTimestamp.mul(userBalance).sub(userSumOfEntryTimes);
     const poolValue = blockTimestamp.mul(poolBalance).sub(poolSumOfEntryTimes);
     return userValue.lte(0) || poolValue.lte(0)
       ? BigNumber.from(0)
-      : stakingInfo.poolRewardRate.mul(userValue).div(poolValue);
+      : stakingInfo?.poolRewardRate?.mul(userValue).div(poolValue);
   }, [blockTime, stakingInfo]);
 }
 
@@ -1320,5 +1333,158 @@ export function useHederaPangoChefWithdrawCallback(withdrawData: WithdrawData): 
       error: null,
     };
   }, [account, chainId, poolId, stakedAmount, addTransaction]);
+}
+
+interface PangoChefCompoundData {
+  poolId: string | undefined;
+  isPNGPool: boolean;
+  amountToAdd: CurrencyAmount | TokenAmount;
+}
+
+/**
+ * pangochef compound callback function
+ * @param withdrawData
+ * @param version
+ * @returns callback and error
+ */
+export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundData): {
+  callback: null | (() => Promise<string>);
+  error: string | null;
+} {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { t } = useTranslation();
+  const addTransaction = useTransactionAdder();
+
+  const { poolId, isPNGPool, amountToAdd } = compoundData;
+
+  const pangoChefContract = usePangoChefContract();
+
+  return useMemo(() => {
+    return {
+      callback: async function onWithdraw(): Promise<string> {
+        try {
+          if (!pangoChefContract) return '';
+
+          const method = isPNGPool ? 'compound' : 'compoundToPoolZero';
+
+          const minPairAmount = JSBI.BigInt(
+            ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
+          );
+          const maxPairAmount = JSBI.BigInt(
+            ONE_FRACTION.add(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
+          );
+          // the minPairAmount and maxPairAmount is amount of other token/currency to sent to compound with slippage tolerance
+          const slippage = {
+            minPairAmount: JSBI.lessThan(minPairAmount, JSBI.BigInt(0)) ? '0x0' : `0x${minPairAmount.toString(16)}`,
+            maxPairAmount: `0x${maxPairAmount.toString(16)}`,
+          };
+          const estimatedGas = await pangoChefContract.estimateGas[method](Number(poolId).toString(16), slippage, {
+            value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}`,
+          });
+          const response: TransactionResponse = await pangoChefContract[method](Number(poolId).toString(16), slippage, {
+            gasLimit: calculateGasMargin(estimatedGas),
+            value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}`,
+          });
+          await waitForTransaction(response, 1);
+
+          if (response) {
+            addTransaction(response, {
+              summary: t('pangoChef.compoundTransactionSummary'),
+            });
+
+            return response.hash;
+          }
+
+          return '';
+        } catch (error: any) {
+          // if the user rejected the tx, pass this along
+          if (error?.code === 4001) {
+            throw new Error('Transaction rejected.');
+          } else {
+            // otherwise, the error was unexpected and we need to convey that
+            console.error(`Compound failed`, error);
+
+            throw new Error(`Error :${error.message}`);
+          }
+        }
+      },
+      error: null,
+    };
+  }, [account, chainId, poolId, amountToAdd, addTransaction, pangoChefContract]);
+}
+
+/**
+ * hedera pangochef compound callback function
+ * @param compoundData
+ * @returns callback and error
+ */
+export function useHederaPangoChefCompoundCallback(compoundData: PangoChefCompoundData): {
+  callback: null | (() => Promise<string>);
+  error: string | null;
+} {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { t } = useTranslation();
+  const addTransaction = useTransactionAdder();
+  const pangoChefContract = usePangoChefContract();
+
+  const { poolId, isPNGPool, amountToAdd } = compoundData;
+
+  return useMemo(() => {
+    if (!account || !chainId || !poolId || !amountToAdd) {
+      return { callback: null, error: 'Missing dependencies' };
+    }
+
+    return {
+      callback: async function onWithdraw(): Promise<string> {
+        try {
+          if (!pangoChefContract) return '';
+
+          const method = isPNGPool ? 'compound' : 'compoundToPoolZero';
+
+          const minPairAmount = JSBI.BigInt(
+            ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
+          );
+          const maxPairAmount = JSBI.BigInt(
+            ONE_FRACTION.add(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
+          );
+          // the minPairAmount and maxPairAmount is amount of other token/currency to sent to compound with slippage tolerance
+          const slippage = {
+            minPairAmount: JSBI.lessThan(minPairAmount, JSBI.BigInt(0)) ? '0' : minPairAmount.toString(),
+            maxPairAmount: maxPairAmount.toString(),
+          };
+
+          const response = await hederaFn.compound({
+            poolId,
+            account,
+            chainId,
+            slippage,
+            methodName: method,
+            contract: pangoChefContract,
+          });
+
+          if (response) {
+            addTransaction(response, {
+              summary: t('pangoChef.compoundTransactionSummary'),
+            });
+            return response.hash;
+          }
+
+          return '';
+        } catch (error: any) {
+          // if the user rejected the tx, pass this along
+          if (error?.code === 4001) {
+            throw new Error('Transaction rejected.');
+          } else {
+            // otherwise, the error was unexpected and we need to convey that
+            console.error(`Compound failed`, error);
+            throw new Error(`Error :${error.message}`);
+          }
+        }
+      },
+      error: null,
+    };
+  }, [account, chainId, poolId, amountToAdd, addTransaction, pangoChefContract]);
 }
 /* eslint-enable max-lines */

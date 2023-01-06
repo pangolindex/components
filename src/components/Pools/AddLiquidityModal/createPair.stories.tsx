@@ -5,7 +5,7 @@ import AddLiquidityModal from '.';
 
 export default {
   component: AddLiquidityModal,
-  title: 'Components/Pool/AddLiquidityModal',
+  title: 'DeFi Primitives/Pool/AddLiquidityModal',
 };
 
 const SampleAddLiquidity: ComponentStory<typeof AddLiquidityModal> = () => {

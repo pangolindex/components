@@ -4,6 +4,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import Scrollbars from 'react-custom-scrollbars';
 import { isMobile } from 'react-device-detect';
 import { Button } from 'src/components/Button';
 import { avalancheCore, bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
@@ -477,7 +478,11 @@ const WalletModal: React.FC<WalletModalProps> = ({
                   }}
                 />
               </Box>
-              <OptionGrid>{getOptions()}</OptionGrid>
+              <Box height="300px">
+                <Scrollbars>
+                  <OptionGrid>{getOptions()}</OptionGrid>
+                </Scrollbars>
+              </Box>
             </>
           )}
         </ContentWrapper>

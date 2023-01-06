@@ -5,7 +5,7 @@ import Bridge from '.';
 
 export default {
   component: Bridge,
-  title: 'Components/Bridge/Bridge',
+  title: 'DeFi Primitives/Bridge/Bridge',
   parameters: {
     docs: {
       description: {

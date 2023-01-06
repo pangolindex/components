@@ -78,7 +78,7 @@ const Portfolio: React.FC = () => {
         </Text>
         <ToggleBalanceButton showBalances={showBalances} handleShowBalances={handleShowBalances} />
       </PortfolioHeader>
-      <Box display="flex" flexGrow={1} width="100%" alignItems="center" justifyContent="center" flexDirection="column">
+      <Box display="flex" flexGrow={1} width="100%" alignItems="center" flexDirection="column">
         {!account ? (
           <Text fontSize={20} color="text1" textAlign="center">
             Connect a wallet to see your Portfolio
@@ -103,7 +103,7 @@ const Portfolio: React.FC = () => {
               </Text>
               {renderTotalBalance()}
             </Box>
-            <Box width="100%" minHeight="140px">
+            <Box width="100%" height="100%">
               {Object.values(balances.chains).length > 0 ? (
                 <Scrollbars style={{ width: '100%', height: '100%', minHeight: '140px' }}>
                   <Frame>

@@ -8,6 +8,7 @@ import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts
 import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
   ALL_CHAINS,
+  BridgeChain,
   BridgeCurrency,
   CAVAX,
   CHAINS,
@@ -17,6 +18,7 @@ import {
   CurrencyAmount,
   Fraction,
   JSBI,
+  NetworkType,
   Percent,
   Token,
   TokenAmount,
@@ -37,6 +39,22 @@ export function isAddress(value: any): string | false {
   }
 }
 
+export function isCosmosAddress(value: string | undefined, bridgeChain: BridgeChain): string | false {
+  try {
+    if (typeof value !== 'string' || !value) {
+      return false;
+    }
+    const prefix = bridgeChain?.meta_data?.cosmosPrefix;
+    if (prefix) {
+      return value.startsWith(prefix) ? value : false;
+    } else {
+      return false;
+    }
+  } catch {
+    return false;
+  }
+}
+
 export function isDummyAddress(value: any): string | false {
   return value;
 }
@@ -50,6 +68,7 @@ export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) 
   [ChainId.HEDERA_TESTNET]: hederaFn.isAddressValid,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
+  [ChainId.COSTON2]: isAddress,
   [ChainId.ETHEREUM]: isDummyAddress,
   [ChainId.POLYGON]: isDummyAddress,
   [ChainId.FANTOM]: isDummyAddress,
@@ -65,6 +84,14 @@ export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) 
   [ChainId.MOONRIVER]: isDummyAddress,
   [ChainId.MOONBEAM]: isDummyAddress,
   [ChainId.OP]: isDummyAddress,
+  [ChainId.EVMOS_TESTNET]: isAddress,
+};
+
+export const checkAddressNetworkBaseMapping: {
+  [networkType in NetworkType]: (value: any, bridgeChain: BridgeChain) => string | false;
+} = {
+  [NetworkType.EVM]: isDummyAddress,
+  [NetworkType.COSMOS]: isCosmosAddress,
 };
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
@@ -76,6 +103,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET].blockExplorerUrls?.[0] || '',
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls?.[0] || '',
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls?.[0] || '',
+  [ChainId.COSTON2]: CHAINS[ChainId.COSTON2].blockExplorerUrls?.[0] || '',
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -91,6 +119,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].blockExplorerUrls?.[0] || '',
 };
 
 const transactionPath: { [chainId in ChainId]: string } = {
@@ -102,6 +131,7 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'tx',
   [ChainId.NEAR_MAINNET]: 'transactions',
   [ChainId.NEAR_TESTNET]: 'transactions',
+  [ChainId.COSTON2]: 'tx',
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -117,6 +147,7 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'tx',
 };
 
 const addressPath: { [chainId in ChainId]: string } = {
@@ -128,6 +159,7 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'address',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
+  [ChainId.COSTON2]: 'address',
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -143,6 +175,7 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'address',
 };
 
 const blockPath: { [chainId in ChainId]: string } = {
@@ -154,6 +187,7 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'block',
   [ChainId.NEAR_MAINNET]: 'blocks',
   [ChainId.NEAR_TESTNET]: 'blocks',
+  [ChainId.COSTON2]: 'block',
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -169,6 +203,7 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'block',
 };
 
 const tokenPath: { [chainId in ChainId]: string } = {
@@ -180,6 +215,7 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'token',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
+  [ChainId.COSTON2]: 'token',
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -195,6 +231,7 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'token',
 };
 
 export function getEtherscanLink(
@@ -230,7 +267,7 @@ const walletProvider = () => {
   return window.ethereum;
 };
 
-export async function changeNetwork(chain: Chain) {
+export async function changeNetwork(chain: Chain, action?: () => void) {
   const { ethereum } = window;
 
   if (ethereum) {
@@ -239,7 +276,7 @@ export async function changeNetwork(chain: Chain) {
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
       });
-      window.location.reload();
+      action && action();
     } catch (error) {
       // This error code indicates that the chain has not been added to MetaMask.
       const metamask = error as MetamaskError;
@@ -303,9 +340,9 @@ export function getTokenComparator(balances: {
 }
 
 export function filterTokenOrChain(
-  data: (BridgeCurrency | Token | Chain)[],
+  data: (BridgeCurrency | Token | Chain | BridgeChain)[],
   search: string,
-): (BridgeCurrency | Token | Chain)[] {
+): (BridgeCurrency | Token | Chain | BridgeChain)[] {
   if (search.length === 0) return data;
   const searchingAddress = isAddress(search);
 
@@ -353,8 +390,7 @@ export function calculateGasMargin(value: BigNumber): BigNumber {
 }
 
 // it convert seconds to hours/minutes HH:MM
-export function calculateTransactionTime(seconds: number | undefined): string | undefined {
-  if (!seconds) return undefined;
+export function calculateTransactionTime(seconds: number): string {
   if (seconds < 60) {
     return `${seconds} seconds`;
   } else {

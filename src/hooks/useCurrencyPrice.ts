@@ -1,6 +1,6 @@
 import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { ONE_TOKEN, ZERO_ADDRESS } from 'src/constants';
+import { ZERO_ADDRESS } from 'src/constants';
 import { PairState, usePair } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useChainId } from '.';
@@ -112,6 +112,10 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
       const token1 = pair.token1;
       const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
       const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
+
+      //here we need to do for totalSupply token decimal bcoz chain wise need to get ONE_Token
+      const ONE_TOKEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(totalSupply?.token?.decimals));
+
       let token0Amount: TokenAmount = new TokenAmount(token0, '0');
       let token1Amount: TokenAmount = new TokenAmount(token1, '0');
       if (JSBI.greaterThan(totalSupply.raw, ONE_TOKEN) || JSBI.equal(totalSupply.raw, ONE_TOKEN)) {
@@ -155,6 +159,7 @@ export function usePairCurrencyPrice(pair: { pair: Pair | null; totalSupply: Tok
 
     let token0Amount: TokenAmount = new TokenAmount(token0, '0');
     let token1Amount: TokenAmount = new TokenAmount(token1, '0');
+    const ONE_TOKEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(totalSupply?.token?.decimals));
     if (JSBI.greaterThan(totalSupply.raw, ONE_TOKEN) || JSBI.equal(totalSupply?.raw, ONE_TOKEN)) {
       [token0Amount, token1Amount] = _pair.getLiquidityValues(
         totalSupply,

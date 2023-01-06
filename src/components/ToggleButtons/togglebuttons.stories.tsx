@@ -4,7 +4,7 @@ import { ToggleButtons } from '.';
 
 export default {
   component: ToggleButtons,
-  title: 'Components/ToggleButtons',
+  title: 'Building Blocks/ToggleButtons',
 };
 
 const TemplateRadioGroup: ComponentStory<typeof ToggleButtons> = (args: any) => <ToggleButtons {...args} />;

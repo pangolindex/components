@@ -4,7 +4,7 @@ import Drawer from '.';
 
 export default {
   component: Drawer,
-  title: 'Components/Drawer',
+  title: 'Building Blocks/Drawer',
   args: {
     open: false,
   },

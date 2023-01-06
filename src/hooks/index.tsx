@@ -22,12 +22,6 @@ interface Web3ProviderProps {
   chainId: number | undefined;
 }
 
-const initialWeb3State: Web3State = {
-  library: undefined,
-  chainId: undefined,
-  account: undefined,
-};
-
 const Web3Context = createContext<Web3State>({} as Web3State);
 
 export const usePangolinWeb3 = () => {
@@ -44,19 +38,17 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   chainId,
   account,
 }: Web3ProviderProps) => {
-  const [state, setState] = useState<Web3State>(initialWeb3State);
-
-  useEffect(() => {
+  const state = useMemo(() => {
     let normalizedAccount;
     if (chainId) {
       normalizedAccount = CHAINS?.[chainId as ChainId]?.evm ? isAddress(account) : account;
     }
 
-    setState({
+    return {
       library,
       chainId: chainId || ChainId.AVALANCHE,
       account: normalizedAccount,
-    });
+    };
   }, [library, chainId, account]);
 
   return (
