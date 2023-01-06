@@ -2,9 +2,10 @@ import React from 'react';
 
 interface AvaxLogoProps {
   size?: string;
+  className?: string;
 }
 
-const AvaxLogo: React.FC<AvaxLogoProps> = ({ size = '24px' }) => {
+const AvaxLogo: React.FC<AvaxLogoProps> = ({ className, size = '24px' }) => {
   return (
     <svg
       version="1.0"
@@ -13,6 +14,7 @@ const AvaxLogo: React.FC<AvaxLogoProps> = ({ size = '24px' }) => {
       height={size}
       viewBox="0 0 1000.000000 1000.000000"
       preserveAspectRatio="xMidYMid meet"
+      className={className}
     >
       <circle cx="500" cy="500" r="400" fill="white" />
       <g transform="translate(0.000000,1000.000000) scale(0.100000,-0.100000)" fill="#E84142" stroke="none">
