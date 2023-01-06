@@ -46,3 +46,4 @@ export { default as SarNFTPortfolio } from './SarNFTPortfolio';
 export { default as SarStakeWidget } from './SarStakeWidget';
 export { default as Bridge } from './Bridge';
 export { default as CloseButton } from './CloseButton';
+export { default as TokenInfo, TokenInfoModal } from './TokenInfo';
