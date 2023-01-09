@@ -9,6 +9,7 @@ export const Wrapper = styled(Box)`
   display: grid;
   gap: 20px;
   border-radius: 10px;
+  box-sizing: border-box;
 `;
 
 export const Frame = styled(Box)`
