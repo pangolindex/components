@@ -403,9 +403,10 @@ export function useBridgeSwapActionHandlers(): {
           toCurrency?.address
             ?.toString()
             ?.replace('0x0000000000000000000000000000000000000000', '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') || '',
-        toAddress: recipient || fromAddress || '0x0000000000000000000000000000000000000000',
+        ...((recipient || fromAddress) && { toAddress: recipient || fromAddress }),
         slippage: parseFloat(slipLimit),
         enableForecall: true,
+        quoteOnly: recipient || fromAddress ? false : true,
       };
 
       let squidRouteRes: RouteResponse | null;
