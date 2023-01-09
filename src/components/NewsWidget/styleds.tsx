@@ -59,7 +59,7 @@ export const NewsTitle = styled(Box)`
   font-weight: bold;
   font-size: 24px;
   line-height: 48px;
-  padding: 20px;
+  padding: 10px;
   background: linear-gradient(0deg, #ffc800, #ffc800);
   border-radius: 5px 0px 5px 0px;
 `;

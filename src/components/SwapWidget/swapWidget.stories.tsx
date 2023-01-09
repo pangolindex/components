@@ -5,7 +5,7 @@ import SwapWidget, { SwapWidgetProps } from '.';
 
 export default {
   component: SwapWidget,
-  title: 'Components/SwapWidget',
+  title: 'DeFi Primitives/SwapWidget',
 };
 
 const TemplateSwapWidget: ComponentStory<typeof SwapWidget> = (args: any) => {

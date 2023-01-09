@@ -7,7 +7,7 @@ import { TextInput } from '.';
 
 export default {
   component: TextInput,
-  title: 'Components/TextInputs',
+  title: 'Building Blocks/TextInputs',
 };
 
 const TemplateTextInput: ComponentStory<typeof TextInput> = (args: any) => <TextInput {...args} />;

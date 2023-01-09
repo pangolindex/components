@@ -4,7 +4,7 @@ import { Switch } from '.';
 
 export default {
   component: Switch,
-  title: 'Components/Switch',
+  title: 'Building Blocks/Switch',
 };
 
 const TemplateSwitch: ComponentStory<typeof Switch> = (args: any) => <Switch {...args} />;

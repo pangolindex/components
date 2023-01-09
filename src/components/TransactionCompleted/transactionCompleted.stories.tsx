@@ -5,7 +5,7 @@ import TransactionCompleted from '.';
 
 export default {
   component: TransactionCompleted,
-  title: 'Components/TransactionCompleted',
+  title: 'DeFi Helpers/TransactionCompleted',
 };
 
 const TemplateTransactionCompleted: ComponentStory<typeof TransactionCompleted> = (args: any) => (

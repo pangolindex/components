@@ -4,7 +4,7 @@ import SarNFTPortfolio from '.';
 
 export default {
   component: SarNFTPortfolio,
-  title: 'Components/SarPortfolio',
+  title: 'DeFi Primitives/SAR Staking/SarPortfolio',
 };
 
 const TemplateSarPortfilio: ComponentStory<typeof SarNFTPortfolio> = (args: any) => <SarNFTPortfolio {...args} />;

@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "5.1.0-rc.1",
+  "version": "5.1.0",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "engines": {
@@ -46,7 +46,7 @@
     "@gelatonetwork/limit-orders-react": "^2.3.1",
     "@gnosis.pm/safe-apps-web3-react": "^0.6.7",
     "@hashgraph/hethers": "1.2.2",
-    "@hashgraph/sdk": "2.18.1",
+    "@hashgraph/sdk": "2.19.0",
     "@lifi/sdk": "^1.6.0",
     "@pangolindex/exchange-contracts": "2.1.7",
     "@pangolindex/token-lists": "^1.0.2",
@@ -119,7 +119,7 @@
     "@babel/preset-typescript": "^7.18.6",
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
-    "@pangolindex/sdk": "4.2.0-rc.0",
+    "@pangolindex/sdk": "4.2.0",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.5",

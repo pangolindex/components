@@ -7,7 +7,7 @@ import SarStakeWidget from '.';
 
 export default {
   component: SarStakeWidget,
-  title: 'Components/SarStakeWidget',
+  title: 'DeFi Primitives/SAR Staking/SarStakeWidget',
 };
 
 const TemplateSarStakingWidget: ComponentStory<typeof SarStakeWidget> = (args: any) => (
