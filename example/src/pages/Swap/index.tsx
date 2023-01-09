@@ -1,12 +1,16 @@
 import React from 'react';
-import { SwapWidget } from '@components/index';
+import { SwapWidget, WatchList } from '@components/index';
 import { SwapWidgetWrapper } from './styled';
 
 function Swap() {
   return (
-    <SwapWidgetWrapper>
-      <SwapWidget />
-    </SwapWidgetWrapper>
+    <>
+      <SwapWidgetWrapper>
+        <SwapWidget />
+      </SwapWidgetWrapper>
+
+      <WatchList coinChartVisible={false} />
+    </>
   );
 }
 

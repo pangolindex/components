@@ -11,7 +11,7 @@ import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
-import { isAddress } from 'src/utils';
+import { isAddress, checkRecipientAddressMapping } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { NearTokenMetadata, nearFn } from 'src/utils/near';
 import ERC20_INTERFACE, { ERC20_BYTES32_INTERFACE } from '../constants/abis/erc20';
@@ -288,6 +288,7 @@ export function useCoinGeckoTokenPrice(coin: Token) {
 
 export function useCoinGeckoTokenPriceChart(coin: Token, days = '7') {
   const [result, setResult] = useState([] as Array<{ timestamp: string; priceUSD: number }>);
+  console.log('coin', coin);
 
   useEffect(() => {
     const getCoinData = async () => {
@@ -324,6 +325,13 @@ export function useCoinGeckoTokenPriceChart(coin: Token, days = '7') {
   }, [coin, days]);
 
   return result;
+}
+
+export interface CoingeckoTokenData {
+  id: string;
+  symbol: string;
+  name: string;
+  platforms: Array<any>;
 }
 
 export interface CoingeckoData {
@@ -427,6 +435,128 @@ export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
       cacheTime: 60 * 1000, // 1 minute
     },
   );
+}
+
+/**
+ * Get the coingecko all tokens
+ * @returns CoingeckoData of token if exist in coingecko else null
+ * */
+export function useCoinGeckoAllTokens() {
+  return useQuery(
+    ['coingeckoAllTokens'],
+    async () => {
+      let response: AxiosResponse;
+
+      response = await coingeckoAPI.get(`coins/list?include_platform=true`);
+      console.log('response', response);
+      const data = response?.data;
+      return data;
+    },
+    {
+      cacheTime: Infinity,
+      refetchInterval: false,
+    },
+  );
+}
+
+/**
+ * Get the coingecko all tokens
+ * @returns CoingeckoData of token if exist in coingecko else null
+ * */
+export function useCoinGeckoTokensFromChain(): { [address: string]: Token } {
+  const chainId = useChainId();
+  const chain = CHAINS[chainId];
+
+  const { data: toknesData, isLoading } = useCoinGeckoAllTokens();
+
+  const existingTokens = useAllTokens();
+
+  const checkAddress = checkRecipientAddressMapping[chainId];
+
+  console.log('toknesData', toknesData);
+  const coingeckoChainId = chain?.coingecko_id;
+  // if (!coingeckoChainId) {
+  //   return undefined;
+  // }
+
+  const filterChainTokens: Array<CoingeckoTokenData> = (toknesData || []).filter((item) => {
+    const platforms = Object.keys(item.platforms);
+
+    const tokenAddress = coingeckoChainId && item?.platforms[coingeckoChainId];
+
+    const tokens = Object.keys(existingTokens);
+    return (
+      coingeckoChainId &&
+      platforms.includes(coingeckoChainId) &&
+      item?.platforms[coingeckoChainId] &&
+      !tokens.includes(tokenAddress)
+    );
+  });
+
+  var CSVOf_arr = filterChainTokens
+    .map((item) => {
+      return item.id;
+    })
+    .join(',');
+
+  console.log('CSVOf_arr', CSVOf_arr);
+
+  const finalTokens: Array<CoingeckoTokenData> = (toknesData || []).filter((item) => {
+    const platforms = Object.keys(item.platforms);
+    return coingeckoChainId && platforms.includes(coingeckoChainId) && item?.platforms[coingeckoChainId];
+  });
+
+  console.log('filterChainTokens', filterChainTokens);
+
+  const tokens = (filterChainTokens || []).reduce<{ [address: string]: Token }>((tokenMap: any, tokenData) => {
+    let tokenAddress: string;
+
+    console.log('tokenData', tokenData);
+
+    tokenAddress = coingeckoChainId && tokenData?.platforms[coingeckoChainId];
+    if (hederaFn.isHederaChain(chainId)) {
+      tokenAddress = hederaFn.idToAddress[tokenAddress];
+    }
+
+    console.log('tokenAddress', tokenAddress);
+
+    const address = checkAddress(tokenAddress);
+
+    console.log('address', address);
+    if (!!address && tokenData) {
+      // {
+      //   token: '',
+      //   isCoingeko: true,
+      //   price: '',
+      //   imageUrl: ''
+      // }
+      tokenMap[address] = new Token(chainId, address, 0, tokenData?.symbol, tokenData?.name);
+      return tokenMap;
+    }
+  }, {});
+
+  // const tokens = (filterChainTokens || []).map((tokenData) => {
+  //   console.log('tokenData', tokenData);
+  //   console.log('coingeckoChainId', coingeckoChainId);
+  //   let tokenAddress: string;
+
+  //   tokenAddress = tokenData?.platforms[coingeckoChainId];
+
+  //   if (hederaFn.isHederaChain(chainId)) {
+  //     tokenAddress = hederaFn.idToAddress[tokenAddress];
+  //   }
+  //   const address = checkAddress(tokenAddress);
+
+  //   console.log('address', address);
+  //   if (!!address) {
+  //     const container = {} as { [address: string]: Token };
+  //     container[address] = new Token(chainId, address, 0, tokenData?.symbol, tokenData?.name);
+
+  //     return container;
+  //   }
+  // });
+  // console.log('tokens', tokens);
+  return tokens;
 }
 
 export function useHederaTokenAssociated(

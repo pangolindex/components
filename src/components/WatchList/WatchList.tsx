@@ -6,7 +6,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, Button, ShowMore } from 'src/components';
 import { PNG } from 'src/constants/tokens';
 import { usePangolinWeb3 } from 'src/hooks';
-import { useAllTokens } from 'src/hooks/Tokens';
+import { useAllTokens, useCoinGeckoTokensFromChain } from 'src/hooks/Tokens';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import useToggle from 'src/hooks/useToggle';
 import { useSelectedCurrencyLists } from 'src/state/pwatchlists/hooks';
@@ -31,8 +31,12 @@ const WatchList: React.FC<Props> = ({
 }) => {
   const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
   const [showMore, setShowMore] = useState(false as boolean);
-  const allTokens = useAllTokens();
 
+  const allTokens = useCoinGeckoTokensFromChain();
+
+  console.log('==allTokens', allTokens);
+  const allTokens1 = useAllTokens();
+  console.log('==allTokens1', allTokens1);
   const coins = Object.values(allTokens || {});
   const watchListCurrencies = useSelectedCurrencyLists();
   const theme = useContext(ThemeContext);
