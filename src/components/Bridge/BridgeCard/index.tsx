@@ -8,7 +8,9 @@ import {
   CurrencyAmount,
   HASHPORT,
   LIFI as LIFIBridge,
+  NetworkType,
   SQUID,
+  // THORSWAP,
 } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
@@ -179,7 +181,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
         recipient,
       );
     }
-  }, [debouncedAmountValue, slippageTolerance, inputCurrency, outputCurrency]);
+  }, [debouncedAmountValue, slippageTolerance, inputCurrency, outputCurrency, recipient]);
 
   const changeAmount = useCallback(
     (field: CurrencyField, amount: string) => {
@@ -276,9 +278,12 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       />
       <Box display={'flex'} justifyContent={'center'} alignContent={'center'} marginY={20}>
         <ArrowWrapper
+          clickable={toChain?.network_type === NetworkType.EVM}
           onClick={() => {
-            onSwitchTokens();
-            onSwitchChains();
+            if (toChain?.network_type === NetworkType.EVM) {
+              onSwitchTokens();
+              onSwitchChains();
+            }
           }}
         >
           <RefreshCcw size="16" color={theme.bridge?.text} />
@@ -313,7 +318,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
             onClick={() => {
               fromChain && changeNetwork(fromChain as Chain);
             }}
-            isDisabled={!fromChain}
+            isDisabled={!fromChain || (!toChain?.evm && !recipient)}
           >
             {fromChain ? 'Switch Chain' : 'Please Select Chain'}
           </Button>
@@ -374,7 +379,8 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       {isChainDrawerOpen && (
         <SelectChainDrawer
           isOpen={isChainDrawerOpen}
-          chains={chainList}
+          // We can't show non-evm chains here. Because we don't have non-evm chain wallet integration yet. (in Bridge wise.)
+          chains={drawerType === ChainField.FROM ? chainList?.filter((x) => x.evm) : chainList}
           onClose={onChangeChainDrawerStatus}
           onChainSelect={onChainSelect}
           selectedChain={drawerType === ChainField.FROM ? fromChain : toChain}

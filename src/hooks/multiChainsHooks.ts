@@ -9,7 +9,7 @@ import {
   useNearApproveCallback,
 } from './useApproveCallback';
 import { useHederaSwapCallback, useNearSwapCallback, useSwapCallback } from './useSwapCallback';
-import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
+import { useHederaUSDPrice, useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
 import { useWrapCallback, useWrapHbarCallback, useWrapNearCallback } from './useWrapCallback';
 
 export function useDummyHook() {
@@ -29,6 +29,8 @@ export const useWrapCallbackHook: UseWrapCallbackHookType = {
   [ChainId.HEDERA_TESTNET]: useWrapHbarCallback,
   [ChainId.NEAR_MAINNET]: useWrapNearCallback,
   [ChainId.NEAR_TESTNET]: useWrapNearCallback,
+  [ChainId.COSTON2]: useWrapCallback,
+  [ChainId.EVMOS_TESTNET]: useWrapCallback,
   // TODO: Remove these hooks later on
   [ChainId.ETHEREUM]: useWrapCallback,
   [ChainId.POLYGON]: useWrapCallback,
@@ -60,6 +62,8 @@ export const useTokenHook: UseTokenHookType = {
   [ChainId.HEDERA_TESTNET]: useToken,
   [ChainId.NEAR_MAINNET]: useNearToken,
   [ChainId.NEAR_TESTNET]: useNearToken,
+  [ChainId.COSTON2]: useToken,
+  [ChainId.EVMOS_TESTNET]: useToken,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -93,6 +97,8 @@ export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookTyp
   [ChainId.HEDERA_TESTNET]: useApproveCallbackFromHederaTrade,
   [ChainId.NEAR_MAINNET]: useApproveCallbackFromNearTrade,
   [ChainId.NEAR_TESTNET]: useApproveCallbackFromNearTrade,
+  [ChainId.COSTON2]: useApproveCallbackFromTrade,
+  [ChainId.EVMOS_TESTNET]: useApproveCallbackFromTrade,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useApproveCallbackFromTrade,
   [ChainId.POLYGON]: useApproveCallbackFromTrade,
@@ -124,6 +130,8 @@ export const useSwapCallbackHook: UseSwapCallbackHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaSwapCallback,
   [ChainId.NEAR_MAINNET]: useNearSwapCallback,
   [ChainId.NEAR_TESTNET]: useNearSwapCallback,
+  [ChainId.COSTON2]: useSwapCallback,
+  [ChainId.EVMOS_TESTNET]: useSwapCallback,
   // TODO: Remove following lines
   [ChainId.ETHEREUM]: useSwapCallback,
   [ChainId.POLYGON]: useSwapCallback,
@@ -155,6 +163,8 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
   [ChainId.HEDERA_TESTNET]: useHederaApproveCallback,
   [ChainId.NEAR_MAINNET]: useNearApproveCallback,
   [ChainId.NEAR_TESTNET]: useNearApproveCallback,
+  [ChainId.COSTON2]: useApproveCallback,
+  [ChainId.EVMOS_TESTNET]: useApproveCallback,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useApproveCallback,
   [ChainId.POLYGON]: useApproveCallback,
@@ -178,6 +188,7 @@ export type UseUSDCPriceHookType = {
     | typeof useUSDCPrice
     | typeof useNearUSDCPrice
     | typeof useSongBirdUSDPrice
+    | typeof useHederaUSDPrice
     | typeof useDummyHook;
 };
 
@@ -187,9 +198,11 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
   [ChainId.WAGMI]: useUSDCPrice,
   [ChainId.COSTON]: useUSDCPrice,
   [ChainId.SONGBIRD]: useSongBirdUSDPrice,
-  [ChainId.HEDERA_TESTNET]: useUSDCPrice,
+  [ChainId.HEDERA_TESTNET]: useHederaUSDPrice,
   [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
   [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
+  [ChainId.COSTON2]: useUSDCPrice,
+  [ChainId.EVMOS_TESTNET]: useUSDCPrice,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -220,6 +233,8 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.HEDERA_TESTNET]: useTokens,
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
+  [ChainId.COSTON2]: useTokens,
+  [ChainId.EVMOS_TESTNET]: useTokens,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,

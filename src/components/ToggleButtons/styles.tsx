@@ -21,8 +21,11 @@ export const TextButton = styled.div<{
   border-radius: 4px;
   padding: 3px 5px;
   cursor: pointer;
-  text-align: center;
   width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:last-child {
     margin-right: 0px;

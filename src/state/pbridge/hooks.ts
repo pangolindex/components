@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Call, GetRoute, RouteResponse, Route as SquidRoute, RouteData as SquidRouteData } from '@0xsquid/sdk';
+import { Call, GetRoute, RouteResponse, Squid, Route as SquidRoute, RouteData as SquidRouteData } from '@0xsquid/sdk';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { parseUnits } from '@ethersproject/units';
 import LIFI from '@lifi/sdk';
@@ -393,84 +393,6 @@ export function useBridgeSwapActionHandlers(): {
         };
       });
 
-      const params: GetRoute = {
-        fromChain: fromChain?.chain_id || 1,
-        fromToken:
-          fromCurrency?.address
-            ?.toString()
-            ?.replace('0x0000000000000000000000000000000000000000', '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') || '',
-        fromAmount: parsedAmount,
-        toChain: toChain?.chain_id || 1,
-        toToken:
-          toCurrency?.address
-            ?.toString()
-            ?.replace('0x0000000000000000000000000000000000000000', '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') || '',
-        toAddress: recipient || fromAddress || '0x0000000000000000000000000000000000000000', // the recipient's address
-        slippage: parseFloat(slipLimit), // 3 --> 3.00% slippage. SDK supports 2 decimals
-        enableForecall: true, // optional, defaults to true
-      };
-
-      let squidRouteRes: RouteResponse | null;
-      try {
-        const squidRoutes = await axios.get(`${SQUID_API}/route`, {
-          params: params,
-        });
-        squidRouteRes = squidRoutes.data;
-      } catch (error) {
-        squidRouteRes = null;
-      }
-
-      const squidRoute: Route | undefined = squidRouteRes?.route
-        ? {
-            nativeRoute: squidRouteRes.route as SquidRouteData,
-            bridgeType: SQUID,
-            waitingTime: calculateTransactionTime(squidRouteRes.route.estimate.estimatedRouteDuration),
-            toToken: toCurrency?.symbol || '',
-            toAmount: new TokenAmount(toCurrency as Currency as Token, squidRouteRes.route.estimate.toAmount).toFixed(
-              4,
-            ),
-            toAmountNet: new TokenAmount(
-              toCurrency as Currency as Token,
-              squidRouteRes.route.estimate.toAmountMin,
-            ).toFixed(4),
-            toAmountUSD: `${'NULL'} USD`,
-            gasCostUSD: squidRouteRes.route.estimate.gasCosts
-              .reduce((prevValue, currentValue) => {
-                return prevValue + parseFloat(currentValue.amountUSD);
-              }, 0)
-              .toFixed(2),
-            steps: [
-              {
-                bridge: SQUID,
-                type: 'bridge',
-                includedSteps: [
-                  ...squidStepGenerator(
-                    squidRouteRes.route.estimate.route.fromChain,
-                    toCurrency,
-                    squidRouteRes.route.estimate.toAmount,
-                  ),
-                  ...squidStepGenerator(
-                    squidRouteRes.route.estimate.route.toChain,
-                    toCurrency,
-                    squidRouteRes.route.estimate.toAmount,
-                  ),
-                ],
-                action: {
-                  toToken: toCurrency?.symbol || '',
-                },
-                estimate: {
-                  toAmount: new TokenAmount(
-                    toCurrency as Currency as Token,
-                    squidRouteRes.route.estimate.toAmount,
-                  ).toFixed(4),
-                },
-              },
-            ],
-            transactionType: BridgePrioritizations.RECOMMENDED,
-            selected: false,
-          }
-        : undefined;
-
       let hashportRoute: Route | undefined;
       try {
         const assetDetailReq = await axios.get(
@@ -515,6 +437,84 @@ export function useBridgeSwapActionHandlers(): {
       } catch (error) {
         hashportRoute = undefined;
       }
+
+      const params: GetRoute = {
+        fromChain: fromChain?.chain_id || 1,
+        fromToken:
+          fromCurrency?.address
+            ?.toString()
+            ?.replace('0x0000000000000000000000000000000000000000', '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') || '',
+        fromAmount: parsedAmount,
+        toChain: toChain?.chain_id || 1,
+        toToken:
+          toCurrency?.address
+            ?.toString()
+            ?.replace('0x0000000000000000000000000000000000000000', '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') || '',
+        toAddress: recipient || fromAddress || '0x0000000000000000000000000000000000000000',
+        slippage: parseFloat(slipLimit),
+        enableForecall: true,
+      };
+
+      let squidRouteRes: RouteResponse | null;
+      try {
+        const squidRoutes = await axios.get(`${SQUID_API}/v1/route`, {
+          params: params,
+        });
+        squidRouteRes = squidRoutes.data;
+      } catch (error) {
+        squidRouteRes = null;
+      }
+
+      const squidRoute: Route | undefined = squidRouteRes?.route
+        ? {
+            nativeRoute: squidRouteRes.route as SquidRouteData,
+            bridgeType: SQUID,
+            waitingTime: calculateTransactionTime(squidRouteRes.route.estimate.estimatedRouteDuration),
+            toToken: toCurrency?.symbol || '',
+            toAmount: new TokenAmount(toCurrency as Currency as Token, squidRouteRes.route.estimate.toAmount).toFixed(
+              4,
+            ),
+            toAmountNet: new TokenAmount(
+              toCurrency as Currency as Token,
+              squidRouteRes.route.estimate.toAmountMin,
+            ).toFixed(4),
+            toAmountUSD: `${squidRouteRes.route.estimate?.toAmountUSD} USD`,
+            gasCostUSD: squidRouteRes.route.estimate.gasCosts
+              .reduce((prevValue, currentValue) => {
+                return prevValue + parseFloat(currentValue.amountUSD);
+              }, 0)
+              .toFixed(2),
+            steps: [
+              {
+                bridge: SQUID,
+                type: 'bridge',
+                includedSteps: [
+                  ...squidStepGenerator(
+                    squidRouteRes.route.estimate.route.fromChain,
+                    toCurrency,
+                    squidRouteRes.route.estimate.toAmount,
+                  ),
+                  ...squidStepGenerator(
+                    squidRouteRes.route.estimate.route.toChain,
+                    toCurrency,
+                    squidRouteRes.route.estimate.toAmount,
+                  ),
+                ],
+                action: {
+                  toToken: toCurrency?.symbol || '',
+                },
+                estimate: {
+                  toAmount: new TokenAmount(
+                    toCurrency as Currency as Token,
+                    squidRouteRes.route.estimate.toAmount,
+                  ).toFixed(4),
+                },
+              },
+            ],
+            transactionType: BridgePrioritizations.RECOMMENDED,
+            selected: false,
+          }
+        : undefined;
 
       dispatch(
         setRoutes({
@@ -624,23 +624,32 @@ export function useBridgeSwapActionHandlers(): {
     dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
     const signer: JsonRpcSigner = await getSigner(library, account || '');
     const squidRoute = selectedRoute?.nativeRoute as SquidRouteData;
-    console.log(signer, squidRoute);
-    // async () => {
-    //   console.log('test');
-    // const squid = new Squid({
-    //   baseUrl: 'https://api.0xsquid.com',
-    // });
-    //   console.log('test 1');
-    //   await squid.init();
-    //   console.log('test 2');
-    //   const tx = await squid.executeRoute({
-    //     signer: signer as any,
-    //     route: squidRoute,
-    //   });
+    const squid = new Squid({
+      baseUrl: SQUID_API,
+    });
+    await squid.init();
 
-    //   const txReceipt = await tx.wait();
-    //   console.log(txReceipt);
-    // };
+    try {
+      const tx = await squid.executeRoute({
+        signer: signer as any,
+        route: squidRoute,
+      });
+      await tx.wait();
+      dispatch(
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.SUCCESS,
+        }),
+      );
+    } catch (e: Error | unknown) {
+      dispatch(
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.FAILED,
+        }),
+      );
+      dispatch(setTransactionError({ transactionError: e as Error }));
+    }
   };
 
   const sendTransaction: SendTransaction = {

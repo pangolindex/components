@@ -7,7 +7,7 @@ import WalletCard from '.';
 
 export default {
   component: WalletCard,
-  title: 'Components/Pool/WalletCard',
+  title: 'DeFi Primitives/Pool/WalletCard',
 };
 
 const TemplateWalletCard: ComponentStory<typeof WalletCard> = () => {

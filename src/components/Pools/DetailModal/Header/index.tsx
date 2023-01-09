@@ -26,13 +26,13 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
 
   const { t } = useTranslation();
 
-  const token0 = stakingInfo?.tokens[0];
-  const token1 = stakingInfo?.tokens[1];
+  const token0 = stakingInfo?.tokens?.[0];
+  const token1 = stakingInfo?.tokens?.[1];
 
   const currency0 = unwrappedToken(token0, chainId);
   const currency1 = unwrappedToken(token1, chainId);
 
-  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo.rewardTokensAddress);
+  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo?.rewardTokensAddress);
 
   const { swapFeeApr: _swapFeeApr, stakingApr: _stakingApr } = useGetFarmApr(stakingInfo?.pid as string);
 
@@ -43,34 +43,34 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
 
   const _userApr = useUserPangoChefAPR(cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined);
 
-  const isStaking = Boolean(stakingInfo.stakedAmount.greaterThan('0'));
+  const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
 
   const userRewardRate = useUserPangoChefRewardRate(
     cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined,
   );
 
   const pairPrice =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).pairPrice : new Price(token0, token1, '1', '0'); // dummy value, this don't use tokens
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.pairPrice : new Price(token0, token1, '1', '0'); // dummy value, this don't use tokens
 
   const poolBalance =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).valueVariables.balance : BigNumber.from(0);
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.valueVariables?.balance : BigNumber.from(0);
   const poolRewardRate =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).poolRewardRate : BigNumber.from(0);
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.poolRewardRate : BigNumber.from(0);
 
   const userBalance =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo).userValueVariables.balance : BigNumber.from(0);
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.userValueVariables?.balance : BigNumber.from(0);
 
   const extraFarmAPR = usePangoChefExtraFarmApr(
     rewardTokens,
     poolRewardRate,
-    stakingInfo.rewardTokensMultiplier,
+    stakingInfo?.rewardTokensMultiplier,
     poolBalance,
     pairPrice,
   );
   const extraUserAPR = usePangoChefExtraFarmApr(
     rewardTokens,
     userRewardRate,
-    stakingInfo.rewardTokensMultiplier,
+    stakingInfo?.rewardTokensMultiplier,
     userBalance,
     pairPrice,
   );
@@ -87,8 +87,8 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
       };
     }
 
-    const stakingAPR = stakingInfo.stakingApr || 0;
-    const swapFeeAPR = stakingInfo.swapFeeApr || 0;
+    const stakingAPR = stakingInfo?.stakingApr || 0;
+    const swapFeeAPR = stakingInfo?.swapFeeApr || 0;
     // for rest we get the data from contract calls if exist, else put 0 for this data
     if (cheftType === ChefType.PANGO_CHEF) {
       return {

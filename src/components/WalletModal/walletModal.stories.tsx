@@ -6,7 +6,7 @@ import WalletModal from '.';
 
 export default {
   component: WalletModal,
-  title: 'Components/WalletModal',
+  title: 'DeFi Helpers/WalletModal',
 };
 
 const SampleWallet: ComponentStory<typeof WalletModal> = () => {

@@ -115,6 +115,7 @@ export default createReducer<BridgeState>(initialState, (builder) =>
       return {
         ...state,
         [field]: { chainId: chainId },
+        ...(field === ChainField.TO && { recipient: '' }),
       };
     })
     .addCase(typeAmount, (state, { payload: { field, typedValue } }) => {

@@ -10,7 +10,7 @@ export const client = new ApolloClient({
     uri: `${SUBGRAPH_BASE_URL}/exchange`,
   }),
   cache: new InMemoryCache(),
-  shouldBatch: true,
+  // shouldBatch: true,
 });
 
 export const blockClient = new ApolloClient({
@@ -34,6 +34,8 @@ export const mininchefV2Clients = {
   [ChainId.HEDERA_TESTNET]: undefined,
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
+  [ChainId.COSTON2]: undefined,
+  [ChainId.EVMOS_TESTNET]: undefined,
   [ChainId.ETHEREUM]: undefined,
   [ChainId.POLYGON]: undefined,
   [ChainId.FANTOM]: undefined,

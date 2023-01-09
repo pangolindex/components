@@ -27,8 +27,8 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
   const chainId = useChainId();
   const chain = CHAINS[chainId];
 
-  const token0 = stakingInfo?.tokens[0];
-  const token1 = stakingInfo?.tokens[1];
+  const token0 = stakingInfo?.tokens?.[0];
+  const token1 = stakingInfo?.tokens?.[1];
 
   const currency0 = unwrappedToken(token0, chainId);
   const currency1 = unwrappedToken(token1, chainId);
@@ -46,7 +46,7 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
       }
       return <EarnedDetail stakingInfo={stakingInfo} version={version} />;
     }
-    if (userPgl?.greaterThan('0')) {
+    if (userPgl && userPgl?.greaterThan('0')) {
       return <RemoveLiquidityWidget currencyA={currency0} currencyB={currency1} />;
     }
     return null;

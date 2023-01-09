@@ -1,12 +1,12 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { Box } from '../../Box';
-import { useGetMinichefStakingInfos } from '../mock';
+import { useGetMinichefStakingInfos } from '../Pool/mock';
 import ClaimReward from '.';
 
 export default {
   component: ClaimReward,
-  title: 'Components/Pool/ClaimReward',
+  title: 'DeFi Primitives/Pool/ClaimReward',
 };
 
 const TemplateClaimReward: ComponentStory<typeof ClaimReward> = () => {

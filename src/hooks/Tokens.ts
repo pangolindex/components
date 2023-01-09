@@ -189,11 +189,12 @@ export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> 
         symbol?.loading === false &&
         symbolBytes32?.loading === false &&
         decimal?.loading === false &&
-        address
+        address &&
+        decimal?.result?.[0]
       ) {
         const token = new Token(
           chainId,
-          tokenAddress,
+          address,
           decimal?.result?.[0],
           parseStringOrBytes32(symbol?.result?.[0], symbolBytes32?.result?.[0], 'UNKNOWN'),
           parseStringOrBytes32(tokenName?.result?.[0], tokenNameBytes32?.result?.[0], 'Unknown Token'),
@@ -397,6 +398,11 @@ export function useCoinGeckoTokenData(coin: Token | Currency) {
 }
 
 /* eslint-enable max-lines */
+/**
+ * Returns the gas coin price in usd of the chain
+ * @param chainId the id of chain
+ * @returns Returns the useQuery where data is a usd value in number of gas coin price
+ */
 export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
   const currencyId = COINGECKO_CURRENCY_ID[chainId];
 

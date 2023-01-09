@@ -1,4 +1,4 @@
-import { TokenData } from '@0xsquid/sdk';
+import { Squid, TokenData } from '@0xsquid/sdk';
 import LIFI from '@lifi/sdk';
 import { Token } from '@lifi/types';
 import { BridgeCurrency, HASHPORT, LIFI as LIFIBridge, SQUID } from '@pangolindex/sdk';
@@ -31,8 +31,11 @@ export function useLiFiSwapCurrencies() {
 
 export function useSquidCurrencies() {
   return useQuery(['squidCurrencies'], async () => {
-    const response = await fetch(`${SQUID_API}/tokens`);
-    const tokens = response && response.status === 200 ? ((await response.json())?.tokens as TokenData[]) : [];
+    const squid = new Squid({
+      baseUrl: SQUID_API,
+    });
+    await squid.init();
+    const tokens = squid.tokens as TokenData[];
     const formattedTokens: BridgeCurrency[] = tokens.map((token: TokenData) => {
       return {
         chainId: token?.chainId.toString(),

@@ -4,7 +4,7 @@ import { Portfolio } from '.';
 
 export default {
   component: Portfolio,
-  title: 'Components/Portfolio',
+  title: 'DeFi Primitives/Portfolio',
 };
 
 const TemplatePortfolio: ComponentStory<typeof Portfolio> = () => (

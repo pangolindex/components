@@ -78,7 +78,7 @@ export function useGetChainsBalances() {
           amount: number;
           chain: string;
           price: number;
-        }[] = response.data.data;
+        }[] = response?.data?.data;
 
         const chains: { [x: string]: number | undefined } = {};
         let total = 0;
@@ -91,9 +91,40 @@ export function useGetChainsBalances() {
           }
         });
 
+        const projectResponse = await openApi.get(`/portfolio/project_list?${query}`);
+
+        const projectData: {
+          chain: string;
+          portfolio_item_list: Array<{
+            stats: {
+              asset_usd_value: number;
+              debt_usd_value: number;
+              net_usd_value: number;
+            };
+          }>;
+        }[] = projectResponse?.data?.data;
+
+        projectData?.forEach((d) => {
+          d?.portfolio_item_list.forEach((item) => {
+            const usdBalance = item?.stats?.net_usd_value;
+
+            total += usdBalance;
+
+            const chainBalance = chains[d.chain] ?? 0;
+            chains[d.chain] = chainBalance + usdBalance;
+          });
+        });
+
+        // amount wise sorting desc order
+        const sortedData = Object.fromEntries(
+          Object.entries(chains).sort(([, a], [, b]) =>
+            a && b && parseInt(a?.toString()) > parseInt(b?.toString()) ? -1 : 1,
+          ),
+        );
+
         return {
           total: total,
-          chains: chains,
+          chains: sortedData,
         } as Balances;
       }
 
