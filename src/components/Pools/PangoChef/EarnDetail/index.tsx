@@ -62,7 +62,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
 
   const png = PNG[chainId];
   const lockingPoolZeroPairs = useIsLockingPoolZero(); // TODO
-  const isLockingToPool = lockingPoolZeroPairs.length > 0 && !!stakingInfo?.lockCount && stakingInfo?.lockCount > 0;
+  const isFarmLocked = lockingPoolZeroPairs.length > 0 && !!stakingInfo?.lockCount && stakingInfo?.lockCount > 0;
 
   return (
     <Wrapper>
@@ -77,7 +77,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           width="100px"
           height="30px"
           onClick={() => setShowRemoveDrawer(true)}
-          isDisabled={isLockingToPool}
+          isDisabled={isFarmLocked}
         >
           {t('removeLiquidity.remove')}
         </Button>
@@ -147,7 +147,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           display="flex"
         >
           <Text fontSize="12px" color="text1" textAlign="center">
-            {isLockingToPool
+            {isFarmLocked
               ? `${t('pangoChef.lockingPoolZeroWarning')}${lockingPoolZeroPairs
                   .map(
                     (pair) => `${unwrappedToken(pair[0], chainId).symbol}-${unwrappedToken(pair[1], chainId).symbol}`,
@@ -162,9 +162,9 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         <Button
           padding="10px"
           variant="outline"
-          isDisabled={isDisabledButtons || isLockingToPool}
+          isDisabled={isDisabledButtons || isFarmLocked}
           onClick={() => setShowClaimDrawer(true)}
-          color={!isDisabledButtons && !isLockingToPool ? theme.text10 : undefined}
+          color={!isDisabledButtons && !isFarmLocked ? theme.text10 : undefined}
         >
           {t('earnPage.claim')}
         </Button>
