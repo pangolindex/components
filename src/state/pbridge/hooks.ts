@@ -391,7 +391,7 @@ export function useBridgeSwapActionHandlers(): {
         };
       });
 
-      const params: GetRoute = {
+      const params: Omit<GetRoute, 'toAddress'> & Partial<Pick<GetRoute, 'toAddress'>> = {
         fromChain: fromChain?.chain_id || 1,
         fromToken:
           fromCurrency?.address
@@ -403,9 +403,10 @@ export function useBridgeSwapActionHandlers(): {
           toCurrency?.address
             ?.toString()
             ?.replace('0x0000000000000000000000000000000000000000', '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') || '',
-        toAddress: recipient || fromAddress || '0x0000000000000000000000000000000000000000',
+        ...((recipient || fromAddress) && { toAddress: recipient || fromAddress || '' }),
         slippage: parseFloat(slipLimit),
         enableForecall: true,
+        quoteOnly: recipient || fromAddress ? false : true,
       };
 
       let squidRouteRes: RouteResponse | null;

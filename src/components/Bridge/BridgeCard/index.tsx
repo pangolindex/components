@@ -37,7 +37,7 @@ import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { ChainField, CurrencyField, TransactionStatus } from 'src/state/pbridge/actions';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
-import { changeNetwork } from 'src/utils';
+import { changeNetwork, checkAddressNetworkBaseMapping } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import BridgeInputsWidget from '../BridgeInputsWidget';
 import {
@@ -92,6 +92,8 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
   const { library } = useLibrary();
 
   const { sendTransaction } = useBridgeSwapActionHandlers();
+
+  const isToAddress = checkAddressNetworkBaseMapping[toChain?.network_type || NetworkType.EVM];
 
   const onSendTransaction = useCallback(() => {
     selectedRoute?.bridgeType?.id && sendTransaction[selectedRoute?.bridgeType?.id](library, selectedRoute, account);
@@ -164,7 +166,13 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
   }, [activeBridges, chainHook?.[LIFIBridge.id], chainHook?.[SQUID.id]]);
 
   useEffect(() => {
-    if (debouncedAmountValue) {
+    if (
+      debouncedAmountValue &&
+      inputCurrency &&
+      outputCurrency &&
+      toChain &&
+      (toChain?.evm || (!toChain?.evm && isToAddress(recipient, toChain)))
+    ) {
       onChangeRouteLoaderStatus();
       getRoutes(
         debouncedAmountValue,
@@ -177,7 +185,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
         recipient,
       );
     }
-  }, [debouncedAmountValue, slippageTolerance, inputCurrency, outputCurrency, recipient]);
+  }, [debouncedAmountValue, slippageTolerance, inputCurrency, outputCurrency, recipient, account]);
 
   const changeAmount = useCallback(
     (field: CurrencyField, amount: string) => {
