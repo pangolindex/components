@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
-import { CurrencyAmount, Fraction, JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, CurrencyAmount, Fraction, JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
@@ -130,11 +130,11 @@ export function usePangoChefInfos() {
   const tokens1State = useMultipleContractSingleData(lpTokens, PANGOLIN_PAIR_INTERFACE, 'token1', []);
 
   const tokens0Adrr = useMemo(() => {
-    return tokens0State.map((result) => (result.result && result.result.length > 0 ? result.result[0] : null));
+    return tokens0State.map((result) => (result?.result && result?.result?.length > 0 ? result?.result[0] : null));
   }, [tokens0State]);
 
   const tokens1Adrr = useMemo(() => {
-    return tokens1State.map((result) => (result.result && result.result.length > 0 ? result.result[0] : null));
+    return tokens1State.map((result) => (result?.result && result?.result?.length > 0 ? result?.result[0] : null));
   }, [tokens1State]);
 
   const tokens0 = useTokens(tokens0Adrr);
@@ -180,14 +180,13 @@ export function usePangoChefInfos() {
             balance: BigNumber.from(0),
             sumOfEntryTimes: BigNumber.from(0),
           },
-          isLockingPoolZero: false,
+          lockCount: undefined,
         } as UserInfo;
       }
 
       const valueVariables = result.valueVariables as ValueVariables;
       const rewardSummations = result.rewardSummationsPaid as RewardSummations;
       const previousValues = result.previousValues;
-      const isLockingPoolZero = result.isLockingPoolZero ?? false;
 
       if (!valueVariables || !rewardSummations || !previousValues) {
         return {
@@ -195,7 +194,7 @@ export function usePangoChefInfos() {
             balance: BigNumber.from(0),
             sumOfEntryTimes: BigNumber.from(0),
           },
-          isLockingPoolZero: false,
+          lockCount: undefined,
         } as UserInfo;
       }
 
@@ -206,7 +205,7 @@ export function usePangoChefInfos() {
         } as ValueVariables,
         rewardSummations: rewardSummations,
         previousValues: previousValues,
-        isLockingPoolZero: isLockingPoolZero,
+        lockCount: result.lockCount,
       } as UserInfo;
     });
   }, [userInfosState]);
@@ -230,7 +229,7 @@ export function usePangoChefInfos() {
       if (pair && pairTotalSupplyState.result) {
         _pairs.push({
           pair: pair,
-          totalSupply: new TokenAmount(pair.liquidityToken, JSBI.BigInt(pairTotalSupplyState?.result?.[0])),
+          totalSupply: new TokenAmount(pair?.liquidityToken, JSBI.BigInt(pairTotalSupplyState?.result?.[0] ?? 0)),
         });
       }
     });
@@ -282,29 +281,36 @@ export function usePangoChefInfos() {
       const pool = pools[index];
       const rewardRate: BigNumber = poolRewardRateState.result?.[0] ?? BigNumber.from(0);
       const totalStakedAmount = new TokenAmount(
-        pair.liquidityToken,
-        JSBI.BigInt(pool.valueVariables.balance.toString()),
+        pair?.liquidityToken,
+        JSBI.BigInt(pool?.valueVariables?.balance?.toString() ?? 0),
       );
 
       const userInfo = userInfos[index];
       const userTotalStakedAmount = new TokenAmount(
-        pair.liquidityToken,
-        JSBI.BigInt(userInfo?.valueVariables.balance ?? 0),
+        pair?.liquidityToken,
+        JSBI.BigInt(userInfo?.valueVariables?.balance ?? 0),
       );
 
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
       const pairPrice = pairPrices[pair.liquidityToken.address];
       const pngPrice = avaxPngPair.priceOf(png, wavax);
-      const _totalStakedInWavax = pairPrice.raw.multiply(totalStakedAmount.raw);
+
+      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? new Fraction('0', '1');
+
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
-      // calculate the total staked amount in usd
-      const totalStakedInUsd = new TokenAmount(
-        USDC[chainId],
-        currencyPriceFraction.multiply(_totalStakedInWavax).toFixed(0),
-      );
-      const totalStakedInWavax = new TokenAmount(wavax, _totalStakedInWavax.toFixed(0));
+      // calculate the total staked amount in usd // TODO
+      // const totalStakedInUsd = new TokenAmount(
+      //   USDC[chainId],
+      //   currencyPriceFraction.multiply(_totalStakedInWavax).toFixed(0) ,
+      // );
+
+      const totalStakedInUsd = new TokenAmount(USDC[chainId], JSBI.BigInt(0));
+
+      // const totalStakedInWavax = new TokenAmount(wavax, _totalStakedInWavax.toFixed(0)); // TODO
+
+      const totalStakedInWavax = new TokenAmount(wavax, JSBI.BigInt(0));
 
       const getHypotheticalWeeklyRewardRate = (
         _stakedAmount: TokenAmount,
@@ -313,29 +319,32 @@ export function usePangoChefInfos() {
       ): TokenAmount => {
         return new TokenAmount(
           png,
-          JSBI.greaterThan(_totalStakedAmount.raw, JSBI.BigInt(0))
+          JSBI.greaterThan(_totalStakedAmount?.raw, JSBI.BigInt(0))
             ? JSBI.divide(
-                JSBI.multiply(JSBI.multiply(_totalRewardRatePerSecond.raw, _stakedAmount.raw), BIG_INT_SECONDS_IN_WEEK),
-                _totalStakedAmount.raw,
+                JSBI.multiply(
+                  JSBI.multiply(_totalRewardRatePerSecond?.raw, _stakedAmount?.raw),
+                  BIG_INT_SECONDS_IN_WEEK,
+                ),
+                _totalStakedAmount?.raw,
               )
             : JSBI.BigInt(0),
         );
       };
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
-        pool.valueVariables.balance.isZero() || pairPrice.equalTo('0')
+        pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0')
           ? 0
           : Number(
-              pngPrice.raw
+              pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
-                .divide(pairPrice.raw.multiply(pool.valueVariables.balance.toString()))
+                .divide(pairPrice?.raw?.multiply(pool?.valueVariables?.balance?.toString()))
                 .toSignificant(2),
             );
 
       const totalRewardRatePerSecond = new TokenAmount(png, rewardRate.toString());
       const totalRewardRatePerWeek = new TokenAmount(
         png,
-        JSBI.multiply(totalRewardRatePerSecond.raw, BIG_INT_SECONDS_IN_WEEK),
+        JSBI.multiply(totalRewardRatePerSecond?.raw, BIG_INT_SECONDS_IN_WEEK),
       );
 
       const userRewardRatePerWeek = getHypotheticalWeeklyRewardRate(
@@ -370,7 +379,7 @@ export function usePangoChefInfos() {
         earnedAmount: pendingRewards,
         valueVariables: pool.valueVariables,
         userValueVariables: userInfo?.valueVariables,
-        isLockingPoolZero: userInfo.isLockingPoolZero,
+        lockCount: userInfo.lockCount,
         userRewardRate: userRewardRateState.result?.[0] ?? BigNumber.from(0),
         stakingApr: apr,
         pairPrice: pairPrice,
@@ -557,14 +566,13 @@ export function useHederaPangoChefInfos() {
             balance: BigNumber.from(0),
             sumOfEntryTimes: BigNumber.from(0),
           },
-          isLockingPoolZero: false,
+          lockCount: undefined,
         } as UserInfo;
       }
 
       const valueVariables = result.valueVariables as ValueVariables;
       const rewardSummations = result.rewardSummationsPaid as RewardSummations;
       const previousValues = result.previousValues;
-      const isLockingPoolZero = result.isLockingPoolZero ?? false;
 
       if (!valueVariables || !rewardSummations || !previousValues) {
         return {
@@ -572,7 +580,7 @@ export function useHederaPangoChefInfos() {
             balance: BigNumber.from(0),
             sumOfEntryTimes: BigNumber.from(0),
           },
-          isLockingPoolZero: false,
+          lockCount: undefined,
         } as UserInfo;
       }
 
@@ -583,7 +591,7 @@ export function useHederaPangoChefInfos() {
         } as ValueVariables,
         rewardSummations: rewardSummations,
         previousValues: previousValues,
-        isLockingPoolZero: isLockingPoolZero,
+        lockCount: result.lockCount,
       } as UserInfo;
     });
   }, [userInfosState]);
@@ -764,7 +772,7 @@ export function useHederaPangoChefInfos() {
         earnedAmount: pendingRewards,
         valueVariables: pool.valueVariables,
         userValueVariables: userInfo?.valueVariables,
-        isLockingPoolZero: userInfo?.isLockingPoolZero,
+        lockCount: userInfo?.lockCount,
         userRewardRate: userRewardRateState?.result?.[0] ?? BigNumber.from(0),
         stakingApr: apr,
         pairPrice: pairPrice,
@@ -857,7 +865,7 @@ export function useIsLockingPoolZero() {
   const pairs: [Token, Token][] = useMemo(() => {
     const _pairs: [Token, Token][] = [];
     stakingInfos?.forEach((stakingInfo) => {
-      if (stakingInfo.isLockingPoolZero) {
+      if (stakingInfo?.lockCount && stakingInfo?.lockCount > 0) {
         const [token0, token1] = stakingInfo.tokens;
         _pairs.push([token0, token1]);
       }
@@ -1366,7 +1374,10 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
         try {
           if (!pangoChefContract) return '';
 
-          const method = isPNGPool ? 'compound' : 'compoundToPoolZero';
+          const minichef = CHAINS[chainId].contracts?.mini_chef;
+          const compoundPoolId = minichef?.compoundPoolIdForNonPngFarm ?? 0;
+
+          const method = isPNGPool ? 'compound' : 'compoundTo';
 
           const minPairAmount = JSBI.BigInt(
             ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
@@ -1379,10 +1390,15 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
             minPairAmount: JSBI.lessThan(minPairAmount, JSBI.BigInt(0)) ? '0x0' : `0x${minPairAmount.toString(16)}`,
             maxPairAmount: `0x${maxPairAmount.toString(16)}`,
           };
-          const estimatedGas = await pangoChefContract.estimateGas[method](Number(poolId).toString(16), slippage, {
+
+          const args = isPNGPool
+            ? [Number(poolId).toString(16), slippage]
+            : [Number(poolId).toString(16), Number(compoundPoolId).toString(16), slippage];
+
+          const estimatedGas = await pangoChefContract.estimateGas[method](...args, {
             value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}`,
           });
-          const response: TransactionResponse = await pangoChefContract[method](Number(poolId).toString(16), slippage, {
+          const response: TransactionResponse = await pangoChefContract[method](...args, {
             gasLimit: calculateGasMargin(estimatedGas),
             value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}`,
           });
@@ -1441,7 +1457,7 @@ export function useHederaPangoChefCompoundCallback(compoundData: PangoChefCompou
         try {
           if (!pangoChefContract) return '';
 
-          const method = isPNGPool ? 'compound' : 'compoundToPoolZero';
+          const method = isPNGPool ? 'compound' : 'compoundTo';
 
           const minPairAmount = JSBI.BigInt(
             ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),

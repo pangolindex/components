@@ -428,6 +428,11 @@
           "type": "uint256"
         },
         {
+          "internalType": "uint256",
+          "name": "compoundPoolId",
+          "type": "uint256"
+        },
+        {
           "components": [
             {
               "internalType": "uint256",
@@ -445,7 +450,7 @@
           "type": "tuple"
         }
       ],
-      "name": "compoundToPoolZero",
+      "name": "compoundTo",
       "outputs": [],
       "stateMutability": "payable",
       "type": "function"
@@ -620,9 +625,9 @@
               "type": "uint48"
             },
             {
-              "internalType": "bool",
-              "name": "isLockingPoolZero",
-              "type": "bool"
+              "internalType": "uint56",
+              "name": "lockCount",
+              "type": "uint56"
             },
             {
               "internalType": "uint96",
