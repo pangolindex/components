@@ -27,7 +27,7 @@ const PoolV3: React.FC<Props> = ({ type, setMenu, activeMenu, menuItems, pangoCh
           return Boolean(stakingInfo.stakedAmount.greaterThan('0'));
         });
       case PoolType.superFarms:
-        // return all farms with reward tokens address greater than 1 and the with weight (multipler) greater than 0
+        // return all farms with reward tokens address greater than 1 and with weight (multipler) greater than 0
         return (pangoChefStakingInfos || []).filter(
           (item) => (item?.rewardTokensAddress?.length || 0) > 1 && JSBI.greaterThan(item.multiplier, BIG_INT_ZERO),
         );
