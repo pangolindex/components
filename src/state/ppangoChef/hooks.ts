@@ -300,17 +300,13 @@ export function usePangoChefInfos() {
 
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
-      // calculate the total staked amount in usd // TODO
-      // const totalStakedInUsd = new TokenAmount(
-      //   USDC[chainId],
-      //   currencyPriceFraction.multiply(_totalStakedInWavax).toFixed(0) ,
-      // );
+      // calculate the total staked amount in usd
+      const totalStakedInUsd = new TokenAmount(
+        USDC[chainId],
+        currencyPriceFraction.multiply(_totalStakedInWavax).toFixed(0),
+      );
 
-      const totalStakedInUsd = new TokenAmount(USDC[chainId], JSBI.BigInt(0));
-
-      // const totalStakedInWavax = new TokenAmount(wavax, _totalStakedInWavax.toFixed(0)); // TODO
-
-      const totalStakedInWavax = new TokenAmount(wavax, JSBI.BigInt(0));
+      const totalStakedInWavax = new TokenAmount(wavax, _totalStakedInWavax.toFixed(0));
 
       const getHypotheticalWeeklyRewardRate = (
         _stakedAmount: TokenAmount,
