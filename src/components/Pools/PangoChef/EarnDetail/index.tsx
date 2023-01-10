@@ -63,8 +63,8 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
   const isDisabledButtons = !earnedAmount?.greaterThan(BIG_INT_ZERO);
 
   const png = PNG[chainId];
-  const lockingPoolZeroPairs = useGetLockingPoolsForPoolId(stakingInfo?.pid);
-  const isFarmLocked = lockingPoolZeroPairs.length > 0 && !!stakingInfo?.lockCount && stakingInfo?.lockCount > 0;
+  const lockingPairs = useGetLockingPoolsForPoolId(stakingInfo?.pid);
+  const isFarmLocked = lockingPairs.length > 0 && !!stakingInfo?.lockCount && stakingInfo?.lockCount > 0;
 
   return (
     <Wrapper>
@@ -150,7 +150,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         >
           <Text fontSize="12px" color="text1" textAlign="center">
             {isFarmLocked
-              ? `${t('pangoChef.lockingPoolZeroWarning')}${lockingPoolZeroPairs
+              ? `${t('pangoChef.lockingPoolZeroWarning')}${lockingPairs
                   .map(
                     (pair) => `${unwrappedToken(pair[0], chainId).symbol}-${unwrappedToken(pair[1], chainId).symbol}`,
                   )

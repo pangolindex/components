@@ -216,7 +216,9 @@ export function usePangoChefInfos() {
         } as ValueVariables,
         rewardSummations: rewardSummations,
         previousValues: previousValues,
-        lockCount: result?.isLockingPoolZero ? 1 : result?.lockCount, // this is for SONGBIRD CHAIN Specifically
+        // `isLockingPoolZero` is for Songbird Chain Specifically as isLockingPoolZero only exist in Old PangoChef V1
+        // all new chain uses new pangochef i.e. using `lockCount`
+        lockCount: result?.isLockingPoolZero ? 1 : result?.lockCount,
       } as UserInfo;
     });
   }, [userInfosState]);
@@ -1375,7 +1377,8 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
             minPairAmount: JSBI.lessThan(minPairAmount, JSBI.BigInt(0)) ? '0x0' : `0x${minPairAmount.toString(16)}`,
             maxPairAmount: `0x${maxPairAmount.toString(16)}`,
           };
-          // this is for SONGBIRD CHAIN Specifically
+          // `compoundToPoolZero` is for Songbird Chain Specifically as compoundToPoolZero only exist in Old PangoChef V1
+          // all new chain uses new pangochef method i.e. `compoundTo`
           const nonPNGPoolMethod = chainId === ChainId.SONGBIRD ? 'compoundToPoolZero' : 'compoundTo';
           const method = isPNGPool ? 'compound' : nonPNGPoolMethod;
 
@@ -1496,6 +1499,11 @@ export function useHederaPangoChefCompoundCallback(compoundData: PangoChefCompou
   }, [account, chainId, poolId, amountToAdd, addTransaction, pangoChefContract]);
 }
 
+/**
+ * this hook is basically for PangoChef v1, which is only used by Songbird right now
+ * this hook returns pairs which are locking Pool Zero
+ * @returns [Token, Token][] pairs array
+ */
 export function useGetLockingPoolsForPoolZero() {
   const chainId = useChainId();
   const usePangoChefInfos = usePangoChefInfosHook[chainId];
@@ -1564,20 +1572,20 @@ export function useGetLockingPoolsForPoolId(poolId: string) {
     return container;
   }, [stakingInfos]);
 
-  const lockedPools = [] as Array<string>;
+  const lockingPools = [] as Array<string>;
 
   Object.entries(_lockpools).map(([pid, pidsLocked]) => {
     if (pidsLocked.includes(poolId?.toString())) {
-      lockedPools.push(pid);
+      lockingPools.push(pid);
     }
   });
 
   const pairs: [Token, Token][] = useMemo(() => {
     const _pairs: [Token, Token][] = [];
 
-    if (lockedPools?.length > 0) {
+    if (lockingPools?.length > 0) {
       stakingInfos?.forEach((stakingInfo) => {
-        if (lockedPools.includes(stakingInfo?.pid)) {
+        if (lockingPools.includes(stakingInfo?.pid)) {
           const [token0, token1] = stakingInfo.tokens;
           _pairs.push([token0, token1]);
         }
@@ -1585,7 +1593,7 @@ export function useGetLockingPoolsForPoolId(poolId: string) {
     }
 
     return _pairs;
-  }, [stakingInfos, lockedPools]);
+  }, [stakingInfos, lockingPools]);
 
   return pairs;
 }
