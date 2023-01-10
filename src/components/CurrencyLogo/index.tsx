@@ -1,8 +1,8 @@
 import { CAVAX, ChainId, Currency, Token } from '@pangolindex/sdk';
 import deepEqual from 'deep-equal';
 import React, { useMemo } from 'react';
-import FlareLogo from 'src/assets/images/flare.svg';
 import EvmosLogo from 'src/assets/images/evmos.svg';
+import FlareLogo from 'src/assets/images/flare.svg';
 import HederaLogo from 'src/assets/images/hedera.svg';
 import NearLogo from 'src/assets/images/near.svg';
 import SongBirdLogo from 'src/assets/images/songbird.png';
