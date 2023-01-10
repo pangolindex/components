@@ -147,22 +147,35 @@ export function useSongBirdUSDPrice(currency?: Currency): Price | undefined {
     return new Price(currency, usd, tokenUSDPrice.denominator, tokenUSDPrice.numerator);
   }, [wrapped, currencyPrice, tokenPrice]);
 }
-
-export function useFlareUSDPrice(currency?: Currency): Price | undefined {
-  const chainId = ChainId.FLARE_MAINNET;
+/**
+ * this hook which is used to fetch token price in usd
+ * first we get token price in native token i.e. hbar
+ * then we get hbar price in usd using coingecko
+ * denominatorAmount in baseCurrency
+ * numeratorAmount in quoteCurrency
+ * finally we get token price in usd with
+ * @param currency
+ * @returns
+ */
+export function useHederaUSDPrice(currency?: Currency): Price | undefined {
+  const chainId = useChainId();
 
   const wrapped = wrappedCurrency(currency, chainId);
-  const tokenPrice = useTokenCurrencyPrice(wrapped); // token price in flr
+
+  const tokenPrice = useTokenCurrencyPrice(wrapped); // token price in hbar
 
   const usd = USDC[chainId];
 
-  const { data: currencyPrice, isLoading } = useCoinGeckoCurrencyPrice(chainId); // flr price in usd
+  const { data: currencyPrice, isLoading } = useCoinGeckoCurrencyPrice(chainId); // hbar price in usd
 
   return useMemo(() => {
     if (!wrapped || !currencyPrice || !tokenPrice || isLoading || !currency) return undefined;
 
     const tokenUSDPrice = tokenPrice.raw.multiply(decimalToFraction(currencyPrice));
 
-    return new Price(currency, usd, tokenUSDPrice.denominator, tokenUSDPrice.numerator);
+    const denominatorAmount = new TokenAmount(wrapped, tokenUSDPrice.denominator);
+    const numeratorAmount = new TokenAmount(usd, tokenUSDPrice.numerator);
+    //here if both currency decimal different  then we need to pass like this
+    return new Price(currency, usd, denominatorAmount.raw, numeratorAmount.raw);
   }, [wrapped, currencyPrice, tokenPrice]);
 }

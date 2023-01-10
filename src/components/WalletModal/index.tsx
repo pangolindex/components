@@ -4,17 +4,16 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import Scrollbars from 'react-custom-scrollbars';
 import { isMobile } from 'react-device-detect';
-import ReactGA from 'react-ga';
 import { Button } from 'src/components/Button';
-import { bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
-import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, LANDING_PAGE, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
-import { ExternalLink } from 'src/theme';
+import { avalancheCore, bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
+import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
 import {
-  Blurb,
   CloseButton,
   ContentWrapper,
   HeaderRow,
@@ -25,8 +24,6 @@ import {
   Wrapper,
 } from './styles';
 import { WalletModalProps } from './types';
-
-const WALLET_TUTORIAL = `${LANDING_PAGE}/tutorials/getting-started/#set-up-metamask`;
 
 enum CHAIN_TYPE {
   EVM_CHAINS = 'EVM CHAINS',
@@ -120,12 +117,15 @@ const WalletModal: React.FC<WalletModalProps> = ({
     }
   }, [walletModalOpen]);
 
+  const mixpanel = useMixpanel();
+
   const isMetamask = window.ethereum && window.ethereum.isMetaMask;
   const isTalisman = window.ethereum && window.ethereum.isTalisman;
   const isRabby = window.ethereum && window.ethereum.isRabby;
   const isCbWalletDappBrowser = window?.ethereum?.isCoinbaseWallet;
   const isWalletlink = !!window?.WalletLinkProvider || !!window?.walletLinkExtension;
   const isCbWallet = isCbWalletDappBrowser || isWalletlink;
+  const isAvalancheCore = window.avalanche && window.avalanche.isAvalanche;
   const isBitKeep = window.isBitKeep && !!window.bitkeep.ethereum;
 
   const tryActivation = async (
@@ -133,13 +133,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
     option: WalletInfo | undefined,
   ) => {
     const name = Object.keys(walletOptions).find((key) => walletOptions[key].connector === activationConnector);
+
     // log selected wallet
-    // eslint-disable-next-line import/no-named-as-default-member
-    ReactGA.event({
-      category: 'Wallet',
-      action: 'Change Wallet',
-      label: name,
-    });
     setPendingWallet(connector); // set wallet for pending view
     setSelectedOption(option);
     setWalletView(WALLET_VIEWS.PENDING);
@@ -155,6 +150,10 @@ const WalletModal: React.FC<WalletModalProps> = ({
           activate(activationConnector, undefined, true)
             .then(() => {
               onWalletConnect(getConnectorKey(activationConnector));
+              mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
+                wallet_name: option?.name?.toLowerCase() ?? name?.toLowerCase(),
+                source: 'pangolin-components',
+              });
             })
             .catch(() => {
               setTriedSafe(true);
@@ -170,6 +169,9 @@ const WalletModal: React.FC<WalletModalProps> = ({
           } else {
             onWalletConnect(getConnectorKey(activationConnector));
           }
+          mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
+            wallet_name: option?.name ?? name?.toLowerCase(),
+          });
         })
         .catch((error) => {
           if (error instanceof UnsupportedChainIdError) {
@@ -191,6 +193,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
         return SUPPORTED_WALLETS.BITKEEP;
       } else if (isMetamask) {
         return SUPPORTED_WALLETS.METAMASK;
+      } else if (isAvalancheCore) {
+        return SUPPORTED_WALLETS.AVALANCHECORE;
       }
       return SUPPORTED_WALLETS.INJECTED;
     }
@@ -341,12 +345,35 @@ const WalletModal: React.FC<WalletModalProps> = ({
               id={`connect-${key}`}
               key={key}
               color={option.color}
-              header={'Install Haspack'}
+              header={'Install Hashpack'}
               subheader={null}
               link={'https://www.hashpack.app/download'}
               icon={option.iconName}
             />
           );
+        }
+      }
+
+      // overwrite avalanche when needed
+      else if (option.connector === avalancheCore) {
+        // don't show avalanche if there's no avalanche provider
+
+        if (!window.avalanche) {
+          if (option.name === 'Avalanche Core Wallet') {
+            return (
+              <Option
+                id={`connect-${key}`}
+                key={key}
+                color={'#E8831D'}
+                header={'Install Avalanche Core Wallet'}
+                subheader={null}
+                link={'https://chrome.google.com/webstore/detail/core/agoakfejjabomempkjlepdflaleeobhb'}
+                icon={option.iconName}
+              />
+            );
+          } else {
+            return null; //dont want to return install twice
+          }
         }
       }
 
@@ -451,14 +478,12 @@ const WalletModal: React.FC<WalletModalProps> = ({
                   }}
                 />
               </Box>
-              <OptionGrid>{getOptions()}</OptionGrid>
+              <Box height="300px">
+                <Scrollbars>
+                  <OptionGrid>{getOptions()}</OptionGrid>
+                </Scrollbars>
+              </Box>
             </>
-          )}
-          {walletView !== WALLET_VIEWS.PENDING && (
-            <Blurb>
-              <span>New to Avalanche? &nbsp;</span>{' '}
-              <ExternalLink href={WALLET_TUTORIAL}>Learn more about setting up a wallet</ExternalLink>
-            </Blurb>
           )}
         </ContentWrapper>
       );

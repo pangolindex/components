@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { getAddress } from '@ethersproject/address';
 import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
@@ -7,6 +8,8 @@ import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts
 import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
   ALL_CHAINS,
+  BridgeChain,
+  BridgeCurrency,
   CAVAX,
   CHAINS,
   Chain,
@@ -15,12 +18,15 @@ import {
   CurrencyAmount,
   Fraction,
   JSBI,
+  NetworkType,
   Percent,
   Token,
+  TokenAmount,
   Trade,
   currencyEquals,
 } from '@pangolindex/sdk';
-import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
+import { hederaFn } from 'src/utils/hedera';
+import { MetamaskError, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { wait } from './retry';
 
@@ -33,6 +39,61 @@ export function isAddress(value: any): string | false {
   }
 }
 
+export function isCosmosAddress(value: string | undefined, bridgeChain: BridgeChain): string | false {
+  try {
+    if (typeof value !== 'string' || !value) {
+      return false;
+    }
+    const prefix = bridgeChain?.meta_data?.cosmosPrefix;
+    if (prefix) {
+      return value.startsWith(prefix) ? value : false;
+    } else {
+      return false;
+    }
+  } catch {
+    return false;
+  }
+}
+
+export function isDummyAddress(value: any): string | false {
+  return value;
+}
+
+export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+  [ChainId.FUJI]: isAddress,
+  [ChainId.AVALANCHE]: isAddress,
+  [ChainId.WAGMI]: isAddress,
+  [ChainId.COSTON]: isAddress,
+  [ChainId.SONGBIRD]: isAddress,
+  [ChainId.HEDERA_TESTNET]: hederaFn.isAddressValid,
+  [ChainId.NEAR_MAINNET]: isDummyAddress,
+  [ChainId.NEAR_TESTNET]: isDummyAddress,
+  [ChainId.COSTON2]: isAddress,
+  [ChainId.ETHEREUM]: isDummyAddress,
+  [ChainId.POLYGON]: isDummyAddress,
+  [ChainId.FANTOM]: isDummyAddress,
+  [ChainId.XDAI]: isDummyAddress,
+  [ChainId.BSC]: isDummyAddress,
+  [ChainId.ARBITRUM]: isDummyAddress,
+  [ChainId.CELO]: isDummyAddress,
+  [ChainId.OKXCHAIN]: isDummyAddress,
+  [ChainId.VELAS]: isDummyAddress,
+  [ChainId.AURORA]: isDummyAddress,
+  [ChainId.CRONOS]: isDummyAddress,
+  [ChainId.FUSE]: isDummyAddress,
+  [ChainId.MOONRIVER]: isDummyAddress,
+  [ChainId.MOONBEAM]: isDummyAddress,
+  [ChainId.OP]: isDummyAddress,
+  [ChainId.EVMOS_TESTNET]: isAddress,
+};
+
+export const checkAddressNetworkBaseMapping: {
+  [networkType in NetworkType]: (value: any, bridgeChain: BridgeChain) => string | false;
+} = {
+  [NetworkType.EVM]: isDummyAddress,
+  [NetworkType.COSMOS]: isCosmosAddress,
+};
+
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: CHAINS[ChainId.FUJI].blockExplorerUrls?.[0] || '',
   [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].blockExplorerUrls?.[0] || '',
@@ -43,6 +104,23 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET].blockExplorerUrls?.[0] || '',
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls?.[0] || '',
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls?.[0] || '',
+  [ChainId.COSTON2]: CHAINS[ChainId.COSTON2].blockExplorerUrls?.[0] || '',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].blockExplorerUrls?.[0] || '',
 };
 
 const transactionPath: { [chainId in ChainId]: string } = {
@@ -55,6 +133,23 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'tx',
   [ChainId.NEAR_MAINNET]: 'transactions',
   [ChainId.NEAR_TESTNET]: 'transactions',
+  [ChainId.COSTON2]: 'tx',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'tx',
 };
 
 const addressPath: { [chainId in ChainId]: string } = {
@@ -67,6 +162,23 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'address',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
+  [ChainId.COSTON2]: 'address',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'address',
 };
 
 const blockPath: { [chainId in ChainId]: string } = {
@@ -79,6 +191,23 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'block',
   [ChainId.NEAR_MAINNET]: 'blocks',
   [ChainId.NEAR_TESTNET]: 'blocks',
+  [ChainId.COSTON2]: 'block',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'block',
 };
 
 const tokenPath: { [chainId in ChainId]: string } = {
@@ -91,6 +220,23 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: 'token',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
+  [ChainId.COSTON2]: 'token',
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'token',
 };
 
 export function getEtherscanLink(
@@ -117,6 +263,123 @@ export function getEtherscanLink(
   }
 }
 
+const walletProvider = () => {
+  if (window.xfi && window.xfi.ethereum) {
+    return window.xfi.ethereum;
+  } else if (window.bitkeep && window.isBitKeep) {
+    return window.bitkeep.ethereum;
+  }
+  return window.ethereum;
+};
+
+export async function changeNetwork(chain: Chain, action?: () => void) {
+  const { ethereum } = window;
+
+  if (ethereum) {
+    try {
+      await walletProvider().request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
+      });
+      action && action();
+    } catch (error) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      const metamask = error as MetamaskError;
+      if (metamask.code === 4902) {
+        try {
+          await walletProvider().request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainName: chain.name,
+                chainId: `0x${chain?.chain_id?.toString(16)}`,
+                //nativeCurrency: chain.nativeCurrency,
+                rpcUrls: [chain.rpc_uri],
+                blockExplorerUrls: chain.blockExplorerUrls,
+                iconUrls: chain.logo,
+                nativeCurrency: chain.nativeCurrency,
+              },
+            ],
+          });
+        } catch (_error) {
+          return;
+        }
+      }
+    }
+  }
+}
+
+// compare two token amounts with highest one coming first
+export function balanceComparator(balanceA?: TokenAmount, balanceB?: TokenAmount) {
+  if (balanceA && balanceB) {
+    return balanceA.greaterThan(balanceB) ? -1 : balanceA.equalTo(balanceB) ? 0 : 1;
+  } else if (balanceA && balanceA.greaterThan('0')) {
+    return -1;
+  } else if (balanceB && balanceB.greaterThan('0')) {
+    return 1;
+  }
+  return 0;
+}
+
+export function getTokenComparator(balances: {
+  [tokenAddress: string]: TokenAmount | undefined;
+}): (tokenA: BridgeCurrency | Token, tokenB: BridgeCurrency | Token) => number {
+  return function sortTokens(tokenA: BridgeCurrency | Token, tokenB: BridgeCurrency | Token): number {
+    // -1 = a is first
+    // 1 = b is first
+
+    // sort by balances
+    const balanceA = balances[tokenA.address];
+    const balanceB = balances[tokenB.address];
+
+    const balanceComp = balanceComparator(balanceA, balanceB);
+    if (balanceComp !== 0) return balanceComp;
+
+    if (tokenA.symbol && tokenB.symbol) {
+      // sort by symbol
+      return tokenA.symbol.toLowerCase() < tokenB.symbol.toLowerCase() ? -1 : 1;
+    } else {
+      return tokenA.symbol ? -1 : tokenB.symbol ? -1 : 0;
+    }
+  };
+}
+
+export function filterTokenOrChain(
+  data: (BridgeCurrency | Token | Chain | BridgeChain)[],
+  search: string,
+): (BridgeCurrency | Token | Chain | BridgeChain)[] {
+  if (search.length === 0) return data;
+  const searchingAddress = isAddress(search);
+
+  if (searchingAddress) {
+    return (data as (BridgeCurrency | Token)[]).filter((element) => element?.address === searchingAddress);
+  }
+
+  const lowerSearchParts = search
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((s) => s.length > 0);
+
+  if (lowerSearchParts.length === 0) {
+    return data;
+  }
+
+  const matchesSearch = (s: string): boolean => {
+    const sParts = s
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((s) => s.length > 0);
+
+    return lowerSearchParts.every((p) => p.length === 0 || sParts.some((sp) => sp.startsWith(p) || sp.endsWith(p)));
+  };
+
+  return data.filter((element) => {
+    const { symbol, name } = element;
+
+    return (symbol && matchesSearch(symbol)) || (name && matchesSearch(name));
+  });
+}
+
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALANCHE, chars = 4): string {
   const parsed = isEvmChain(chainId) ? isAddress(address) : address;
@@ -131,6 +394,15 @@ export function calculateGasMargin(value: BigNumber): BigNumber {
   return value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000));
 }
 
+// it convert seconds to hours/minutes HH:MM
+export function calculateTransactionTime(seconds: number): string {
+  if (seconds < 60) {
+    return `${seconds} seconds`;
+  } else {
+    return `${new Date(seconds * 1000).toISOString().substring(11, 16)} min`;
+  }
+}
+
 // converts a basis points value to a sdk percent
 export function basisPointsToPercent(num: number): Percent {
   return new Percent(JSBI.BigInt(num), JSBI.BigInt(10000));
@@ -143,7 +415,7 @@ export function getSigner(library: Web3Provider, account: string): JsonRpcSigner
 
 // account is optional
 export function getProviderOrSigner(library: Web3Provider, account?: string): Web3Provider | JsonRpcSigner {
-  return account ? getSigner(library, account) : library; // TODO check direct return library
+  return account ? getSigner(library, account) : library;
 }
 
 // account is optional
@@ -265,4 +537,8 @@ export function decimalToFraction(number: number): Fraction {
   numerator /= divisor;
   denominator /= divisor;
   return new Fraction(Math.floor(numerator).toString(), Math.floor(denominator).toString());
+}
+
+export function capitalizeWord(word = '') {
+  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }

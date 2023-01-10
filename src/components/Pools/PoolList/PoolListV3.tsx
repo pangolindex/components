@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { BIG_INT_ZERO } from 'src/constants';
 import useDebounce from 'src/hooks/useDebounce';
-import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
+import { useGetSelectedPoolId, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/hooks';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
@@ -28,25 +28,28 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
   const [stakingInfoData, setStakingInfoData] = useState<PangoChefInfo[]>([]);
   const [stakingInfoByPid, setStakingInfoByPid] = useState<StakingInfoByPid>({});
 
-  const [selectedPoolIndex, setSelectedPoolIndex] = useState('');
-
   const togglePoolDetailModal = usePoolDetailnModalToggle();
+  // we store selected Pool Id because when we create pangochef storage ( in hedera )
+  // its reloading detail modal for a second so at that time we are loosing state if we have it in useState
+  // so instead we are storing it in redux to make it persist
+  const selectedPoolIndex = useGetSelectedPoolId();
+  const updateSelectedPoolId = useUpdateSelectedPoolId();
 
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());
   }, []);
 
-  useEffect(() => {
+  const sort = (farms: PangoChefInfo[]) => {
     if (sortBy === SortingType.totalStakedInUsd) {
-      const sortedFarms = [...stakingInfoData].sort(function (info_a, info_b) {
+      const sortedFarms = [...farms].sort(function (info_a, info_b) {
         return info_a.totalStakedInUsd?.greaterThan(info_b.totalStakedInUsd ?? BIG_INT_ZERO) ? -1 : 1;
       });
       setStakingInfoData(sortedFarms);
     } else if (sortBy === SortingType.totalApr) {
-      const sortedFarms = [...stakingInfoData].sort((a, b) => (b?.stakingApr ?? 0) - (a?.stakingApr ?? 0));
+      const sortedFarms = [...farms].sort((a, b) => (b?.stakingApr ?? 0) - (a?.stakingApr ?? 0));
       setStakingInfoData(sortedFarms);
     }
-  }, [sortBy]);
+  };
 
   useEffect(() => {
     if (stakingInfos?.length > 0) {
@@ -76,10 +79,10 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
 
       setStakingInfoByPid(finalArrByPid);
       setStakingInfoData(finalArr);
+      sort(finalArr);
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stakingInfos, debouncedSearchQuery]);
+  }, [stakingInfos, debouncedSearchQuery, sortBy]);
 
   const selectedPool = !!selectedPoolIndex ? stakingInfoByPid[selectedPoolIndex] : ({} as MinichefStakingInfo);
 
@@ -102,7 +105,7 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
           key={stakingInfo?.pid}
           stakingInfo={stakingInfo}
           onClickViewDetail={() => {
-            setSelectedPoolIndex(stakingInfo?.pid);
+            updateSelectedPoolId(stakingInfo?.pid);
             togglePoolDetailModal();
           }}
           version={Number(version)}

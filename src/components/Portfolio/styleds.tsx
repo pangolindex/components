@@ -7,12 +7,9 @@ export const PortfolioRoot = styled(Box)`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 15px;
-
   padding: 20px;
-
   border-radius: 10px;
   background-color: ${({ theme }) => theme.color2};
 `;
@@ -27,15 +24,12 @@ export const PortfolioHeader = styled(Box)`
 export const HideButton = styled.button`
   background-color: ${({ theme }) => theme.bg6};
   color: ${({ theme }) => theme.text15};
-
   min-width: 20px;
   min-height: 20px;
-
   font-size: 12px;
   border-radius: 5px;
   border: 0px;
   padding: 5px;
-
   display: flex;
   align-items: center;
 
@@ -62,12 +56,9 @@ export const ChainCard = styled(Box)`
   border-radius: 4px;
   display: flex;
   flex-direction: row;
-
   justify-content: center;
   align-items: center;
-
   gap: 10px;
-
   font-weight: 500;
 `;
 
@@ -76,5 +67,6 @@ export const Frame = styled(Box)`
   height: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-auto-rows: max-content;
   gap: 20px;
 `;

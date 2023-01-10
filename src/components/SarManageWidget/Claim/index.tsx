@@ -1,11 +1,14 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { formatEther } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import { Text } from 'src/components/Text';
-import { Position, useDerivativeSarClaim } from 'src/state/psarstake/hooks';
+import { PNG } from 'src/constants/tokens';
+import { useChainId } from 'src/hooks';
+import { useDerivativeSarClaimHook } from 'src/state/psarstake/multiChainsHooks';
+import { Position } from 'src/state/psarstake/types';
 import RewardsInfo from '../Compound/RewardsInfo';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Options } from '../types';
@@ -20,7 +23,12 @@ interface Props {
 export default function Claim({ selectedOption, selectedPosition, onChange }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
 
+  const chainId = useChainId();
+
+  const useDerivativeSarClaim = useDerivativeSarClaimHook[chainId];
   const { attempting, hash, claimError, wrappedOnDismiss, onClaim } = useDerivativeSarClaim(selectedPosition);
+
+  const png = PNG[chainId];
 
   const { t } = useTranslation();
 
@@ -71,7 +79,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
         <RewardsInfo
           selectedOption={selectedOption}
           onChange={onChange}
-          pendingRewards={formatEther(pendingRewards)}
+          pendingRewards={formatUnits(pendingRewards, png.decimals)}
           selectedPosition={selectedPosition}
         />
         <Box display="grid" bgColor="color3" borderRadius="4px" padding="20px" style={{ gridGap: '20px' }}>

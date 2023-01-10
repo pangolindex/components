@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { ChevronDown } from 'react-feather';
-import ReactGA from 'react-ga';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { removeList, selectList } from 'src/state/plists/actions';
@@ -33,33 +32,13 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
   useOnClickOutside(node, open ? handleClose : undefined);
 
   const selectThisList = useCallback(() => {
-    // eslint-disable-next-line import/no-named-as-default-member
-    ReactGA.event({
-      category: 'Lists',
-      action: 'Select List',
-      label: listUrl,
-    });
-
     dispatch(selectList({ url: listUrl, shouldSelect: !isSelected }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, isSelected, listUrl]);
 
   const handleRemoveList = useCallback(() => {
-    // eslint-disable-next-line import/no-named-as-default-member
-    ReactGA.event({
-      category: 'Lists',
-      action: 'Start Remove List',
-      label: listUrl,
-    });
-
     const answer = window.prompt('Please confirm you would like to remove this list by typing "remove"');
     if (answer?.toLocaleLowerCase() === 'remove') {
-      // eslint-disable-next-line import/no-named-as-default-member
-      ReactGA.event({
-        category: 'Lists',
-        action: 'Confirm Remove List',
-        label: listUrl,
-      });
       dispatch(removeList(listUrl));
     }
   }, [dispatch, listUrl]);

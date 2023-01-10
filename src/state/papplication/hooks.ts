@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { useChainId } from '../../hooks';
-import { ApplicationModal, PopupContent, addPopup, removePopup, setOpenModal } from './actions';
+import { ApplicationModal, PopupContent, addPopup, removePopup, setOpenModal, updateSelectedPoolId } from './actions';
 
 export function useBlockNumber(): number | undefined {
   const chainId = useChainId();
@@ -55,4 +55,13 @@ export function useRemovePopup(): (key: string) => void {
 export function useActivePopups(): AppState['papplication']['popupList'] {
   const list = useSelector((state: AppState) => state.papplication.popupList);
   return useMemo(() => list.filter((item) => item.show), [list]);
+}
+
+export function useGetSelectedPoolId(): string | undefined {
+  return useSelector((state: AppState) => state?.papplication?.selectedPoolId);
+}
+
+export function useUpdateSelectedPoolId(): (poolId: string | undefined) => void {
+  const dispatch = useDispatch();
+  return useCallback((poolId: string | undefined) => dispatch(updateSelectedPoolId(poolId)), [dispatch]);
 }

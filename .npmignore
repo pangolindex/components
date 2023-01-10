@@ -5,3 +5,6 @@ __mocks__
 *.test.js
 storybook-static
 .idea
+.env
+e2e/
+e2e/node_modules

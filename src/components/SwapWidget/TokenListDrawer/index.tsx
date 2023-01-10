@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import ReactGA from 'react-ga';
 import Drawer from 'src/components/Drawer';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';
 import { AppState, useDispatch, useSelector } from 'src/state';
@@ -31,20 +30,8 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
     fetchList(listUrlInput)
       .then(() => {
         setListUrlInput('');
-        // eslint-disable-next-line import/no-named-as-default-member
-        ReactGA.event({
-          category: 'Lists',
-          action: 'Add List',
-          label: listUrlInput,
-        });
       })
       .catch((error) => {
-        // eslint-disable-next-line import/no-named-as-default-member
-        ReactGA.event({
-          category: 'Lists',
-          action: 'Add List Failed',
-          label: listUrlInput,
-        });
         setAddError(error.message);
         dispatch(removeList(listUrlInput));
       });

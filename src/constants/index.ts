@@ -2,7 +2,9 @@
 import { CHAINS, ChainId, ChefType, Fraction, JSBI, Percent, StakingType, Token, WAVAX } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import BN from 'bn.js';
+import { BigNumber } from 'ethers';
 import arrowRightIcon from 'src/assets/images/arrow-right.svg';
+import avalancheCoreIcon from 'src/assets/images/avalancheCore.svg';
 import bitKeepIcon from 'src/assets/images/bitkeep.svg';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
@@ -11,15 +13,18 @@ import metamaskIcon from 'src/assets/images/metamask.png';
 import nearIcon from 'src/assets/images/near.svg';
 import rabbyIcon from 'src/assets/images/rabby.svg';
 import talismanIcon from 'src/assets/images/talisman.svg';
+// import venlyIcon from 'src/assets/images/venly.png';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
 import {
+  avalancheCore,
   bitKeep,
   gnosisSafe,
   hashConnect,
   injected,
   near,
   talisman,
+  // venly,
   walletconnect,
   walletlink,
   xDefi,
@@ -44,6 +49,23 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET].contracts!.router,
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts!.router,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts!.router,
+  [ChainId.COSTON2]: CHAINS[ChainId.COSTON2].contracts!.router,
+  [ChainId.ETHEREUM]: '',
+  [ChainId.POLYGON]: '',
+  [ChainId.FANTOM]: '',
+  [ChainId.XDAI]: '',
+  [ChainId.BSC]: '',
+  [ChainId.ARBITRUM]: '',
+  [ChainId.CELO]: '',
+  [ChainId.OKXCHAIN]: '',
+  [ChainId.VELAS]: '',
+  [ChainId.AURORA]: '',
+  [ChainId.CRONOS]: '',
+  [ChainId.FUSE]: '',
+  [ChainId.MOONRIVER]: '',
+  [ChainId.MOONBEAM]: '',
+  [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].contracts!.router,
 };
 
 export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
@@ -56,6 +78,23 @@ export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.COSTON2]: CHAINS[ChainId.COSTON2]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.ETHEREUM]: ZERO_ADDRESS,
+  [ChainId.POLYGON]: ZERO_ADDRESS,
+  [ChainId.FANTOM]: ZERO_ADDRESS,
+  [ChainId.XDAI]: ZERO_ADDRESS,
+  [ChainId.BSC]: ZERO_ADDRESS,
+  [ChainId.ARBITRUM]: ZERO_ADDRESS,
+  [ChainId.CELO]: ZERO_ADDRESS,
+  [ChainId.OKXCHAIN]: ZERO_ADDRESS,
+  [ChainId.VELAS]: ZERO_ADDRESS,
+  [ChainId.AURORA]: ZERO_ADDRESS,
+  [ChainId.CRONOS]: ZERO_ADDRESS,
+  [ChainId.FUSE]: ZERO_ADDRESS,
+  [ChainId.MOONRIVER]: ZERO_ADDRESS,
+  [ChainId.MOONBEAM]: ZERO_ADDRESS,
+  [ChainId.OP]: ZERO_ADDRESS,
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
 };
 
 // a list of tokens by chain
@@ -86,6 +125,8 @@ const getMiniChefAddress = (chainId: ChainId) => {
   return undefined;
 };
 
+export const SQUID_API = 'https://api.0xsquid.com';
+
 export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.FUJI]: getMiniChefAddress(ChainId.FUJI),
   [ChainId.AVALANCHE]: getMiniChefAddress(ChainId.AVALANCHE),
@@ -96,6 +137,23 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.HEDERA_TESTNET]: getMiniChefAddress(ChainId.HEDERA_TESTNET),
   [ChainId.NEAR_MAINNET]: getMiniChefAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getMiniChefAddress(ChainId.NEAR_TESTNET),
+  [ChainId.COSTON2]: getMiniChefAddress(ChainId.COSTON2),
+  [ChainId.ETHEREUM]: undefined,
+  [ChainId.POLYGON]: undefined,
+  [ChainId.FANTOM]: undefined,
+  [ChainId.XDAI]: undefined,
+  [ChainId.BSC]: undefined,
+  [ChainId.ARBITRUM]: undefined,
+  [ChainId.CELO]: undefined,
+  [ChainId.OKXCHAIN]: undefined,
+  [ChainId.VELAS]: undefined,
+  [ChainId.AURORA]: undefined,
+  [ChainId.CRONOS]: undefined,
+  [ChainId.FUSE]: undefined,
+  [ChainId.MOONRIVER]: undefined,
+  [ChainId.MOONBEAM]: undefined,
+  [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: getMiniChefAddress(ChainId.EVMOS_TESTNET),
 };
 
 const getPangoChefAddress = (chainId: ChainId) => {
@@ -113,9 +171,26 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.COSTON]: getPangoChefAddress(ChainId.COSTON),
   [ChainId.SONGBIRD]: getPangoChefAddress(ChainId.SONGBIRD),
   [ChainId.FLARE_MAINNET]: getPangoChefAddress(ChainId.FLARE_MAINNET),
-  [ChainId.HEDERA_TESTNET]: undefined,
+  [ChainId.HEDERA_TESTNET]: getPangoChefAddress(ChainId.HEDERA_TESTNET),
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
+  [ChainId.COSTON2]: getPangoChefAddress(ChainId.COSTON2),
+  [ChainId.ETHEREUM]: undefined,
+  [ChainId.POLYGON]: undefined,
+  [ChainId.FANTOM]: undefined,
+  [ChainId.XDAI]: undefined,
+  [ChainId.BSC]: undefined,
+  [ChainId.ARBITRUM]: undefined,
+  [ChainId.CELO]: undefined,
+  [ChainId.OKXCHAIN]: undefined,
+  [ChainId.VELAS]: undefined,
+  [ChainId.AURORA]: undefined,
+  [ChainId.CRONOS]: undefined,
+  [ChainId.FUSE]: undefined,
+  [ChainId.MOONRIVER]: undefined,
+  [ChainId.MOONBEAM]: undefined,
+  [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: getPangoChefAddress(ChainId.EVMOS_TESTNET),
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
@@ -129,6 +204,23 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
   [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET].address, PNG[ChainId.HEDERA_TESTNET].address],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET].address, PNG[ChainId.NEAR_MAINNET].address],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET].address, PNG[ChainId.NEAR_TESTNET].address],
+  [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2].address, PNG[ChainId.COSTON2].address],
+  [ChainId.ETHEREUM]: [],
+  [ChainId.POLYGON]: [],
+  [ChainId.FANTOM]: [],
+  [ChainId.XDAI]: [],
+  [ChainId.BSC]: [],
+  [ChainId.ARBITRUM]: [],
+  [ChainId.CELO]: [],
+  [ChainId.OKXCHAIN]: [],
+  [ChainId.VELAS]: [],
+  [ChainId.AURORA]: [],
+  [ChainId.CRONOS]: [],
+  [ChainId.FUSE]: [],
+  [ChainId.MOONRIVER]: [],
+  [ChainId.MOONBEAM]: [],
+  [ChainId.OP]: [],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET].address, PNG[ChainId.EVMOS_TESTNET].address],
 };
 
 export const SWAP_DEFAULT_CURRENCY = {
@@ -157,8 +249,8 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: '',
   },
   [ChainId.HEDERA_TESTNET]: {
-    inputCurrency: '',
-    outputCurrency: '',
+    inputCurrency: 'HBAR',
+    outputCurrency: WAVAX[ChainId.HEDERA_TESTNET].address,
   },
   [ChainId.NEAR_MAINNET]: {
     inputCurrency: WAVAX[ChainId.NEAR_MAINNET].address,
@@ -167,6 +259,14 @@ export const SWAP_DEFAULT_CURRENCY = {
   [ChainId.NEAR_TESTNET]: {
     inputCurrency: WAVAX[ChainId.NEAR_TESTNET].address,
     outputCurrency: PNG[ChainId.NEAR_TESTNET].address,
+  },
+  [ChainId.COSTON2]: {
+    inputCurrency: 'C2FLR',
+    outputCurrency: PNG[ChainId.COSTON2].address,
+  },
+  [ChainId.EVMOS_TESTNET]: {
+    inputCurrency: 'tEVMOS',
+    outputCurrency: PNG[ChainId.EVMOS_TESTNET].address,
   },
 };
 
@@ -190,6 +290,23 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET], PNG[ChainId.HEDERA_TESTNET]],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
+  [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2], PNG[ChainId.COSTON2]],
+  [ChainId.ETHEREUM]: [],
+  [ChainId.POLYGON]: [],
+  [ChainId.FANTOM]: [],
+  [ChainId.XDAI]: [],
+  [ChainId.BSC]: [],
+  [ChainId.ARBITRUM]: [],
+  [ChainId.CELO]: [],
+  [ChainId.OKXCHAIN]: [],
+  [ChainId.VELAS]: [],
+  [ChainId.AURORA]: [],
+  [ChainId.CRONOS]: [],
+  [ChainId.FUSE]: [],
+  [ChainId.MOONRIVER]: [],
+  [ChainId.MOONBEAM]: [],
+  [ChainId.OP]: [],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
 };
 
 // one basis point
@@ -359,6 +476,26 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     primary: true,
     isEVM: true,
   },
+  // VENLY: {
+  //   connector: venly,
+  //   name: 'Venly Wallet',
+  //   iconName: venlyIcon,
+  //   description: 'Venly Wallet Connect',
+  //   href: null,
+  //   color: '#7735ea',
+  //   primary: true,
+  //   isEVM: true,
+  // },
+  AVALANCHECORE: {
+    connector: avalancheCore,
+    name: 'Avalanche Core Wallet',
+    iconName: avalancheCoreIcon,
+    description: 'Easy-to-use browser extension.',
+    href: null,
+    color: '#E8831D',
+    primary: true,
+    isEVM: true,
+  },
 };
 
 export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } = {
@@ -371,6 +508,24 @@ export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } 
   [ChainId.HEDERA_TESTNET]: HederaProvider,
   [ChainId.NEAR_MAINNET]: NearProvider,
   [ChainId.NEAR_TESTNET]: NearProvider,
+  [ChainId.COSTON2]: CommonEVMProvider,
+  //TODO: remove this once we have proper implementation
+  [ChainId.ETHEREUM]: CommonEVMProvider,
+  [ChainId.POLYGON]: CommonEVMProvider,
+  [ChainId.FANTOM]: CommonEVMProvider,
+  [ChainId.XDAI]: CommonEVMProvider,
+  [ChainId.BSC]: CommonEVMProvider,
+  [ChainId.ARBITRUM]: CommonEVMProvider,
+  [ChainId.CELO]: CommonEVMProvider,
+  [ChainId.OKXCHAIN]: CommonEVMProvider,
+  [ChainId.VELAS]: CommonEVMProvider,
+  [ChainId.AURORA]: CommonEVMProvider,
+  [ChainId.CRONOS]: CommonEVMProvider,
+  [ChainId.FUSE]: CommonEVMProvider,
+  [ChainId.MOONRIVER]: CommonEVMProvider,
+  [ChainId.MOONBEAM]: CommonEVMProvider,
+  [ChainId.OP]: CommonEVMProvider,
+  [ChainId.EVMOS_TESTNET]: CommonEVMProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {
@@ -405,8 +560,7 @@ export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
 // TODO: this needs to be based on chain id
 export const HEDERA_API_BASE_URL = `https://testnet.mirrornode.hedera.com`;
 
-export const OPEN_API_DEBANK = 'https://openapi.debank.com/v1/user';
-export const COINGECKO_API = 'https://api.coingecko.com/api/v3';
+export const OPEN_API_DEBANK = 'https://api.debank.com/';
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
 export const NEAR_STORAGE_PER_TOKEN = '0.005';
 export const NEAR_STORAGE_TO_REGISTER_WITH_FT = '0.1';
@@ -426,6 +580,23 @@ const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET], PNG[ChainId.HEDERA_TESTNET]],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
+  [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2], PNG[ChainId.COSTON2]],
+  [ChainId.POLYGON]: [],
+  [ChainId.ETHEREUM]: [],
+  [ChainId.FANTOM]: [],
+  [ChainId.XDAI]: [],
+  [ChainId.BSC]: [],
+  [ChainId.ARBITRUM]: [],
+  [ChainId.CELO]: [],
+  [ChainId.OKXCHAIN]: [],
+  [ChainId.VELAS]: [],
+  [ChainId.AURORA]: [],
+  [ChainId.CRONOS]: [],
+  [ChainId.FUSE]: [],
+  [ChainId.MOONRIVER]: [],
+  [ChainId.MOONBEAM]: [],
+  [ChainId.OP]: [],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
 };
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -451,6 +622,23 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
   [ChainId.HEDERA_TESTNET]: getSarAddress(ChainId.HEDERA_TESTNET),
   [ChainId.NEAR_MAINNET]: getSarAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getSarAddress(ChainId.NEAR_TESTNET),
+  [ChainId.COSTON2]: getSarAddress(ChainId.COSTON2),
+  [ChainId.ETHEREUM]: undefined,
+  [ChainId.POLYGON]: undefined,
+  [ChainId.FANTOM]: undefined,
+  [ChainId.XDAI]: undefined,
+  [ChainId.BSC]: undefined,
+  [ChainId.ARBITRUM]: undefined,
+  [ChainId.CELO]: undefined,
+  [ChainId.OKXCHAIN]: undefined,
+  [ChainId.VELAS]: undefined,
+  [ChainId.AURORA]: undefined,
+  [ChainId.CRONOS]: undefined,
+  [ChainId.FUSE]: undefined,
+  [ChainId.MOONRIVER]: undefined,
+  [ChainId.MOONBEAM]: undefined,
+  [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: getSarAddress(ChainId.EVMOS_TESTNET),
 };
 /* eslint-enable max-lines */
 
@@ -458,6 +646,12 @@ export enum SwapTypes {
   MARKET = 'MARKET',
   LIMIT = 'LIMIT',
 }
+
+export interface MetamaskError {
+  code: number;
+  message: string;
+}
+export const BIGNUMBER_ZERO = BigNumber.from('0');
 
 export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '50'); // 2% of slippage tolerange
 export const ONE_FRACTION = new Fraction('1');
@@ -472,4 +666,27 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.HEDERA_TESTNET]: 'hedera-hashgraph',
   [ChainId.NEAR_MAINNET]: 'near',
   [ChainId.NEAR_TESTNET]: undefined,
+  [ChainId.COSTON2]: undefined,
+  [ChainId.ETHEREUM]: undefined,
+  [ChainId.POLYGON]: undefined,
+  [ChainId.FANTOM]: undefined,
+  [ChainId.XDAI]: undefined,
+  [ChainId.BSC]: undefined,
+  [ChainId.ARBITRUM]: undefined,
+  [ChainId.CELO]: undefined,
+  [ChainId.OKXCHAIN]: undefined,
+  [ChainId.VELAS]: undefined,
+  [ChainId.AURORA]: undefined,
+  [ChainId.CRONOS]: undefined,
+  [ChainId.FUSE]: undefined,
+  [ChainId.MOONRIVER]: undefined,
+  [ChainId.MOONBEAM]: undefined,
+  [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: undefined,
+};
+
+export const FARM_TYPE: { [x: number]: string | undefined } = {
+  1: ChefType.MINI_CHEF,
+  2: ChefType.MINI_CHEF_V2,
+  3: ChefType.PANGO_CHEF,
 };

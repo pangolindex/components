@@ -5,7 +5,7 @@ import Bridge from '.';
 
 export default {
   component: Bridge,
-  title: 'Components/Bridge/Bridge',
+  title: 'DeFi Primitives/Bridge/Bridge',
   parameters: {
     docs: {
       description: {
@@ -17,7 +17,7 @@ export default {
 
 const TemplateBridge: ComponentStory<typeof Bridge> = (args: any) => {
   return (
-    <Box maxWidth={'1000px'}>
+    <Box maxWidth={'1250px'}>
       <Bridge {...args} />
     </Box>
   );

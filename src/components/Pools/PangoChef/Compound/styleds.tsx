@@ -38,3 +38,14 @@ export const Buttons = styled(Box)`
   grid-gap: 10px;
   align-self: end;
 `;
+
+export const WarningMessageWrapper = styled(Box)`
+  display: grid;
+  grid-template-columns: auto 16px;
+  grid-gap: 10px;
+  padding: 10px;
+  background-color: ${({ theme }) => theme.color3};
+  border-radius: 8px;
+  width: 100%;
+  align-items: center;
+`;

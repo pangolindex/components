@@ -1,13 +1,10 @@
-import { hethers } from '@hashgraph/hethers';
-
 import React from 'react';
+import { hederaFn } from 'src/utils/hedera';
 
 export const HederaProvider = (provider) => {
   if (provider) {
-    provider.getTransactionReceipt = async (transactionId: string) => {
+    const getTransactionReceipt = async (transactionId: string) => {
       try {
-        const hethersProvider = hethers.providers.getDefaultProvider('testnet', undefined);
-
         //getting this string as transactionId     "0.0.29562194@1645089473.013219243"
         //we need to convert into                  "0.0.29562194-1645089473-013219243"
         const replaceText = transactionId.replace('@', '-');
@@ -24,25 +21,27 @@ export const HederaProvider = (provider) => {
 
         const newTransactionId = before + '-' + after;
 
-        //Transaction id. Please use "shard.realm.num-sss-nnn" format where sss are seconds and nnn are nanoseconds
-        const receipt = await hethersProvider.getTransaction(newTransactionId);
+        const transaction = await hederaFn.getTransactionById(newTransactionId);
 
-        if (!receipt?.hash) {
+        if (!transaction) {
           return undefined;
         }
 
+        const block = await hederaFn.getTransactionBlock(transaction?.consensusTimestamp);
+
         return {
-          blockHash: '',
-          blockNumber: '',
+          blockHash: block?.hash,
+          blockNumber: block?.number,
           contractAddress: '',
-          from: receipt?.from,
-          status: receipt?.customData?.result === 'SUCCESS' ? 1 : 0,
-          to: receipt?.to,
-          hash: receipt?.hash,
-          transactionHash: receipt?.hash,
+          from: transaction?.from,
+          status: transaction?.status,
+          to: '',
+          hash: transaction?.transactionHash,
+          transactionHash: transaction?.transactionHash,
           transactionIndex: 1,
         };
       } catch (error) {
+        console.log('receipt error', error);
         return {
           blockHash: '',
           blockNumber: '',
@@ -57,13 +56,36 @@ export const HederaProvider = (provider) => {
       }
     };
 
-    provider.getBlockNumber = async () => {
-      return 0;
+    const getBlockNumber = async () => {
+      const blockNumber = await hederaFn.getTransactionLatestBlock();
+
+      return blockNumber ? blockNumber : 0;
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    provider.execute = async (_method, _params) => {
+    const execute = async (_method, _params) => {
       //  implement it
+    };
+
+    const getBlockTimestamp = async (blockNumber: number) => {
+      if (provider.send) {
+        const result: { timestamp: string } | null = await provider.send('eth_getBlockByNumber', [
+          `0x${blockNumber.toString(16)}`,
+          false,
+        ]);
+        if (!result) {
+          return 0;
+        }
+        return parseInt(result?.timestamp, 16).toString() ?? 0;
+      }
+      return 0;
+    };
+
+    return {
+      getTransactionReceipt,
+      getBlockNumber,
+      execute,
+      getBlockTimestamp,
     };
   }
   return provider;

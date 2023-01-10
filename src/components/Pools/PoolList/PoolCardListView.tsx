@@ -114,6 +114,7 @@ const PoolCardListView = ({
                 onSelect={(value) => {
                   onChangeSortBy(value as string);
                 }}
+                isSearchable={false}
               />
             </MobileGridContainer>
           </Box>

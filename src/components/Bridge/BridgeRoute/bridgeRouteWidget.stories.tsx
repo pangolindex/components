@@ -1,12 +1,13 @@
+import { LIFI } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { BridgePrioritizations } from '..';
+import { BridgePrioritizations, Step } from 'src/state/pbridge/types';
 import { BridgeRouteProps } from './types';
 import BridgeRoute from '.';
 
 export default {
   component: BridgeRoute,
-  title: 'Components/Bridge/BridgeRoute',
+  title: 'DeFi Primitives/Bridge/BridgeRoute',
   parameters: {
     docs: {
       description: {
@@ -26,28 +27,40 @@ export default {
           2: 'Normal',
         },
       },
-      options: [BridgePrioritizations.fast, BridgePrioritizations.normal, BridgePrioritizations.recommended],
+      options: [
+        BridgePrioritizations.FASTEST,
+        BridgePrioritizations.NORMAL,
+        BridgePrioritizations.RECOMMENDED,
+        BridgePrioritizations.CHEAPEST,
+        BridgePrioritizations.SAFEST,
+      ],
       description: 'Transaction type',
     },
-    estimatedToken: {
-      name: 'Estimated Token',
+    toToken: {
+      name: 'To Token',
       control: 'text',
       type: { name: 'string', required: true },
       description: 'Estimated token',
     },
-    estimatedResult: {
-      name: 'Estimated Result',
+    toAmount: {
+      name: 'To Amount',
       control: 'text',
       type: { name: 'string', required: true },
-      description: 'Estimated result',
+      description: 'Estimated Amount',
     },
-    min: {
-      name: 'Min',
+    toAmountUSD: {
+      name: 'To Amount USD',
+      control: 'text',
+      type: { name: 'string', required: true },
+      description: 'Estimated Amount USD',
+    },
+    waitingTime: {
+      name: 'Waiting Time',
       control: 'text',
       type: { name: 'string', required: true },
       description: 'Estimated Transfer time',
     },
-    gasCost: {
+    gasCostUSD: {
       name: 'Gas Cost',
       control: 'text',
       type: { name: 'string', required: true },
@@ -69,14 +82,38 @@ export default {
   },
 };
 
-const steps: any[] = [
+const steps: Step[] = [
   {
-    contractType: 'LI.FI Contract',
-    subSteps: ['1. Swap to 0.0538 USDT via PANGOLIN', '2. Transfer to 0.0522 USDT via PANGOLIN'],
-  },
-  {
-    contractType: 'LI.FI Contract',
-    subSteps: ['1. Swap to 0.0538 USDT via DODO'],
+    bridge: LIFI,
+    type: 'lifi',
+    includedSteps: [
+      {
+        type: 'swap',
+        integrator: 'paraswap',
+        action: {
+          toToken: 'USDT.e',
+        },
+        estimate: {
+          toAmount: '366.4005',
+        },
+      },
+      {
+        type: 'cross',
+        integrator: 'multichain',
+        action: {
+          toToken: 'USDT',
+        },
+        estimate: {
+          toAmount: '365.9000',
+        },
+      },
+    ],
+    action: {
+      toToken: 'USDT',
+    },
+    estimate: {
+      toAmount: '365.9000',
+    },
   },
 ];
 
@@ -87,10 +124,11 @@ const TemplateBridgeRoute: ComponentStory<typeof BridgeRoute> = (args: any) => {
 export const Default = TemplateBridgeRoute.bind({});
 Default.args = {
   steps: steps,
-  transactionType: BridgePrioritizations.recommended,
-  estimatedToken: '0.0522 FRAX',
-  estimatedResult: '$0.05 USD',
-  min: '9:00',
-  gasCost: '95.30 USD',
+  transactionType: BridgePrioritizations.RECOMMENDED,
   selected: true,
+  toAmount: '365.9000',
+  toAmountUSD: '365.90 USD',
+  waitingTime: '00:30 min',
+  gasCostUSD: '0.36',
+  toToken: 'USDT',
 } as Partial<BridgeRouteProps>;

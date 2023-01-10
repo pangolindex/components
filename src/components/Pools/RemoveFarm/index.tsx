@@ -1,15 +1,14 @@
-import { TransactionResponse } from '@ethersproject/providers';
 import { CHAINS, ChefType } from '@pangolindex/sdk';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
+import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
-import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
-import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { useGetEarnedAmount, useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { waitForTransaction } from 'src/utils';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
@@ -23,31 +22,34 @@ interface RemoveFarmProps {
 }
 const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redirectToCompound }: RemoveFarmProps) => {
   const { account } = usePangolinWeb3();
+  const chainId = useChainId();
   const [isRemoveLiquidityDrawerVisible, setShowRemoveLiquidityDrawer] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState(false);
   const { t } = useTranslation();
 
   // monitor call to help UI loading state
-  const addTransaction = useTransactionAdder();
+
   const [hash, setHash] = useState<string | undefined>();
   const [attempting, setAttempting] = useState(false);
 
-  const poolMap = useMinichefPools();
-  const stakingContract = useStakingContract(stakingInfo.stakingRewardAddress);
-  const pangoChefContract = usePangoChefContract();
+  const useWithdrawCallback = usePangoChefWithdrawCallbackHook[chainId];
 
-  const chainId = useChainId();
   const png = PNG[chainId];
 
-  const contract = version <= 2 ? stakingContract : pangoChefContract;
-
   const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
-
-  const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
   const chefType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
+
+  const mixpanel = useMixpanel();
+
+  const { callback: withdrawCallback, error: withdrawCallbackError } = useWithdrawCallback({
+    version,
+    poolId: stakingInfo?.pid,
+    stakedAmount: stakingInfo?.stakedAmount,
+    stakingRewardAddress: stakingInfo?.stakingRewardAddress,
+  });
 
   useEffect(() => {
     if (onLoadingOrComplete) {
@@ -68,30 +70,21 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
   }
 
   async function onWithdraw() {
-    if (!contract || (version === 2 && !poolMap)) return;
-    if (stakingInfo?.stakedAmount) {
+    if (stakingInfo?.stakedAmount && withdrawCallback) {
       setAttempting(true);
-      const method = version === 1 ? 'exit' : version === 2 ? 'withdrawAndHarvest' : 'withdraw';
-      const args =
-        version === 1
-          ? []
-          : version === 2
-          ? [
-              poolMap[stakingInfo.stakedAmount.token.address],
-              `0x${stakingInfo.stakedAmount?.raw.toString(16)}`,
-              account,
-            ]
-          : [stakingInfo.pid, `0x${stakingInfo.stakedAmount?.raw.toString(16)}`];
 
       try {
-        const response: TransactionResponse = await contract[method](...args);
+        const hash = await withdrawCallback();
+        setHash(hash);
 
-        await waitForTransaction(response, 5);
-        addTransaction(response, {
-          summary: t('earn.withdrawDepositedLiquidity'),
+        mixpanel.track(MixPanelEvents.REMOVE_FARM, {
+          chainId: chainId,
+          tokenA: token0,
+          tokenB: token1,
+          tokenA_Address: token0.address,
+          tokenB_Address: token1.address,
+          farmType: FARM_TYPE[version]?.toLowerCase(),
         });
-        await refetchMinichefSubgraph();
-        setHash(response.hash);
       } catch (err) {
         setAttempting(false);
         const _err = err as any;
@@ -109,6 +102,10 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
   }
   if (!stakingInfo?.stakedAmount) {
     error = error ?? t('earn.enterAmount');
+  }
+
+  if (withdrawCallbackError) {
+    error = withdrawCallbackError;
   }
 
   const { earnedAmount } = useGetEarnedAmount(stakingInfo?.pid as string);

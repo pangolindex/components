@@ -13,6 +13,7 @@ import {
   removeSerializedToken,
   updateUserDeadline,
   updateUserExpertMode,
+  updateUserShowBalances,
   updateUserSlippageTolerance,
 } from './actions';
 
@@ -112,6 +113,25 @@ export function useUserDeadline(): [string, (deadline: string) => void] {
   );
 
   return [userDeadline, setUserDeadline];
+}
+
+export function useIsShowingBalances(): boolean {
+  return useSelector<AppState['puser']['userShowBalances']>((state) => state.puser.userShowBalances);
+}
+
+export function useShowBalancesManager(): [boolean, (value: boolean) => void] {
+  const dispatch = useDispatch();
+
+  const showBalances = useIsShowingBalances();
+
+  const setShowBalances = useCallback(
+    (value: boolean) => {
+      dispatch(updateUserShowBalances({ userShowBalances: value }));
+    },
+    [dispatch],
+  );
+
+  return [showBalances, setShowBalances];
 }
 
 /**

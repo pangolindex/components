@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { useEffect, useMemo } from 'react';
 import { AppState, useDispatch, useSelector } from 'src/state';
-import { usePangolinWeb3 } from '../../hooks';
+import { useChainId } from '../../hooks';
 import { useBlockNumber } from '../papplication/hooks';
 import {
   Call,
@@ -49,7 +49,7 @@ export const NEVER_RELOAD: ListenerOptions = {
 
 // the lowest level call for subscribing to contract data
 function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): CallResult[] {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   const callResults = useSelector<AppState['pmulticall']['callResults']>((state) => state.pmulticall.callResults);
   const dispatch = useDispatch();
 
@@ -105,7 +105,7 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): C
   );
 }
 
-interface CallState {
+export interface CallState {
   readonly valid: boolean;
   // the result, or undefined if loading or errored/no data
   readonly result: Result | undefined;
@@ -138,7 +138,6 @@ function toCallState(
     try {
       result = contractInterface.decodeFunctionResult(fragment, data);
     } catch (error) {
-      console.debug('Result data parsing failed', fragment, data);
       return {
         valid: true,
         loading: false,

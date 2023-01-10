@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Drawer, Stat, Text } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
+import { usePangoChefExtraFarmApr, useUserPangoChefAPR, useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import FarmDrawer from '../FarmDrawer';
@@ -41,21 +41,23 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
-  const token0 = stakingInfo.tokens[0];
-  const token1 = stakingInfo.tokens[1];
+  const usePairBalance = usePairBalanceHook[chainId];
+
+  const token0 = stakingInfo?.tokens?.[0];
+  const token1 = stakingInfo?.tokens?.[1];
 
   const currency0 = unwrappedToken(token0, chainId);
   const currency1 = unwrappedToken(token1, chainId);
 
   const [, stakingTokenPair] = usePair(token0, token1);
 
-  const isStaking = Boolean(stakingInfo.stakedAmount.greaterThan('0'));
+  const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
 
   const yourStackedInUsd = CHAINS[chainId]?.mainnet
     ? stakingInfo?.totalStakedInUsd.multiply(stakingInfo?.stakedAmount).divide(stakingInfo?.totalStakedAmount)
     : undefined;
 
-  const userPgl = useTokenBalance(account ?? undefined, stakingTokenPair?.liquidityToken);
+  const userPgl = usePairBalance(account ?? undefined, stakingTokenPair ?? undefined);
 
   const isLiquidity = Boolean(userPgl?.greaterThan('0'));
 
@@ -67,12 +69,25 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
     setShowAddLiquidityDrawer(false);
   };
 
-  const farmApr = stakingInfo.stakingApr;
-  const earnedAmount = stakingInfo.earnedAmount;
+  const farmApr = stakingInfo?.stakingApr;
+  const earnedAmount = stakingInfo?.earnedAmount;
 
   const userApr = useUserPangoChefAPR(stakingInfo);
 
+  const userRewardRate = useUserPangoChefRewardRate(stakingInfo);
+  const rewardRate = isStaking ? userRewardRate : stakingInfo?.poolRewardRate;
+  const balance = isStaking ? stakingInfo?.userValueVariables?.balance : stakingInfo?.valueVariables?.balance;
+
+  const extraAPR = usePangoChefExtraFarmApr(
+    rewardTokens,
+    rewardRate,
+    stakingInfo?.rewardTokensMultiplier,
+    balance,
+    stakingInfo?.pairPrice,
+  );
   const apr = isStaking ? userApr : farmApr;
+
+  const totalApr = Number(apr ?? 0) + extraAPR;
 
   const renderButton = () => {
     if (isStaking && Boolean(earnedAmount.greaterThan('0')))
@@ -155,7 +170,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
 
           <Stat
             title={isStaking ? 'Your APR' : 'Average APR'}
-            stat={apr ? `${numeral(apr).format('0a')}%` : '-'}
+            stat={apr ? `${numeral(totalApr).format('0a')}%` : '-'}
             titlePosition="top"
             titleFontSize={[16, 14]}
             statFontSize={[24, 18]}

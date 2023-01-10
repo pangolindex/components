@@ -1,9 +1,10 @@
-import { Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
+import { ExternalProvider, Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
+import { network } from 'src/connectors';
 import { PROVIDER_MAPPING } from 'src/constants';
 import { useBlockNumber } from 'src/state/papplication/hooks';
 import { isAddress } from 'src/utils';
@@ -21,12 +22,6 @@ interface Web3ProviderProps {
   chainId: number | undefined;
 }
 
-const initialWeb3State: Web3State = {
-  library: undefined,
-  chainId: undefined,
-  account: undefined,
-};
-
 const Web3Context = createContext<Web3State>({} as Web3State);
 
 export const usePangolinWeb3 = () => {
@@ -43,19 +38,17 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   chainId,
   account,
 }: Web3ProviderProps) => {
-  const [state, setState] = useState<Web3State>(initialWeb3State);
-
-  useEffect(() => {
+  const state = useMemo(() => {
     let normalizedAccount;
     if (chainId) {
       normalizedAccount = CHAINS?.[chainId as ChainId]?.evm ? isAddress(account) : account;
     }
 
-    setState({
+    return {
       library,
       chainId: chainId || ChainId.AVALANCHE,
       account: normalizedAccount,
-    });
+    };
   }, [library, chainId, account]);
 
   return (
@@ -76,10 +69,14 @@ export const useChainId = () => {
   return (chainId || ChainId.AVALANCHE) as ChainId;
 };
 
-// library -> web3.js
+// library -> web3.js/eip-1993/ethers provider
 // provider -> ethers.js
 // extendedProvider -> extended library
 
+/**
+ *
+ * @returns { library: ethers.js provider, provider: extended provider }
+ */
 export function useLibrary(): { library: any; provider: any } {
   const [result, setResult] = useState({} as { library: any; provider: any });
 
@@ -93,26 +90,41 @@ export function useLibrary(): { library: any; provider: any } {
       //   (key) => SUPPORTED_WALLETS[key].connector === connector,
       // ) as string;
 
-      const web3jsProvider = (await connector?.getProvider()) || userProvidedLibrary || window.ethereum;
-      const finalWeb3jsProvider = web3jsProvider || window.ethereum;
-      const extendedWeb3Provider = finalWeb3jsProvider && (PROVIDER_MAPPING as any)[chainId]?.(finalWeb3jsProvider);
-
-      let finalEthersLibrary;
-
-      try {
-        if (chainId === ChainId.HEDERA_TESTNET) {
-          finalEthersLibrary = finalWeb3jsProvider;
-        } else {
-          finalEthersLibrary = new Web3ProviderEthers(finalWeb3jsProvider, 'any');
+      // convert window.ethereum to ethers
+      const ethersDefaultProvider = new Web3ProviderEthers((window.ethereum as ExternalProvider) || network.provider);
+      // try to wrap connector provider
+      const providerFromConnector = await connector?.getProvider();
+      let ethersConnectorProvider;
+      if (providerFromConnector && !providerFromConnector._isProvider) {
+        try {
+          ethersConnectorProvider = new Web3ProviderEthers(providerFromConnector as ExternalProvider);
+        } catch (error) {
+          console.log('==== error ethersConnectorProvider', ethersConnectorProvider, error);
+          // error will come incase of Near, Hedera provider
+          ethersConnectorProvider = providerFromConnector;
         }
-      } catch (error) {
-        finalEthersLibrary = finalWeb3jsProvider;
+      } else {
+        ethersConnectorProvider = providerFromConnector;
       }
+      // try to wrap user provided library
+      let ethersUserProvidedLibrary = userProvidedLibrary?._isProvider ? userProvidedLibrary : undefined;
+
+      if (userProvidedLibrary && !userProvidedLibrary?._isProvider) {
+        try {
+          ethersUserProvidedLibrary = new Web3ProviderEthers(userProvidedLibrary as any);
+        } catch (error) {
+          console.log('==== error ethersUserProvidedLibrary', error);
+          ethersUserProvidedLibrary = userProvidedLibrary;
+        }
+      }
+
+      const finalEthersLibrary = ethersConnectorProvider || ethersUserProvidedLibrary || ethersDefaultProvider;
+      const extendedWeb3Provider = finalEthersLibrary && (PROVIDER_MAPPING as any)[chainId]?.(finalEthersLibrary);
 
       setResult({ library: finalEthersLibrary, provider: extendedWeb3Provider });
     }
     load();
-  }, [connector, chainId]);
+  }, [connector, userProvidedLibrary, chainId]);
 
   return result;
 }

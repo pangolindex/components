@@ -31,7 +31,7 @@ export const FilterInputHeader = styled(Text)`
   margin-bottom: 10px;
 `;
 
-export const LoaderWrapper = styled(Box)`
+export const CardWrapper = styled(Box)`
   flex: 1;
   width: 100%;
   height: 100%;
@@ -68,7 +68,15 @@ export const BottomText = styled(Text)`
   text-align: center;
 `;
 
-export const ArrowWrapper = styled.div`
+export const TransactionText = styled(Text)`
+  font-size: 16px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.bridge?.text};
+  padding: 30px;
+  text-align: center;
+`;
+
+export const ArrowWrapper = styled.div<{ clickable: boolean }>`
   background-color: ${({ theme }) => theme.bridge?.primaryBgColor};
   width: 30px;
   height: 30px;
@@ -79,7 +87,6 @@ export const ArrowWrapper = styled.div`
   justify-content: center;
 
   &:hover {
-    cursor: pointer;
-    opacity: 0.8;
+    ${({ clickable }) => (clickable ? `cursor: pointer; opacity: 0.8;` : `cursor: not-allowed;`)}
   }
 `;

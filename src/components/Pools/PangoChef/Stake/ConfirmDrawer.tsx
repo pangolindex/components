@@ -1,3 +1,4 @@
+import { formatUnits } from '@ethersproject/units';
 import { Currency, CurrencyAmount, Token } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
@@ -85,7 +86,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
     <ContentWrapper>
       <Box display="flex" justifyContent="space-between" width="100%">
         <Text fontSize={'28px'} fontWeight={500} color="text1">
-          {amount?.toFixed(8)} PGL
+          {amount ? formatUnits(amount?.raw?.toString(), amount?.currency?.decimals) : 0}PGL
         </Text>
         <DoubleCurrencyLogo size={24} currency0={token0} currency1={token1} />
       </Box>

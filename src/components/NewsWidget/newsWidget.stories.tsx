@@ -4,7 +4,7 @@ import { NewsWidget } from '.';
 
 export default {
   component: NewsWidget,
-  title: 'Components/NewsWidget',
+  title: 'DeFi Primitives/NewsWidget',
 };
 
 const TemplateNewsWidget: ComponentStory<typeof NewsWidget> = (args: any) => <NewsWidget {...args} />;

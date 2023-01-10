@@ -65,6 +65,24 @@ const initialState: SwapState = {
   [ChainId.HEDERA_TESTNET]: initialValue,
   [ChainId.NEAR_MAINNET]: initialValue,
   [ChainId.NEAR_TESTNET]: initialValue,
+  [ChainId.COSTON2]: initialValue,
+  [ChainId.EVMOS_TESTNET]: initialValue,
+  // TODO:
+  [ChainId.ETHEREUM]: initialValue,
+  [ChainId.POLYGON]: initialValue,
+  [ChainId.FANTOM]: initialValue,
+  [ChainId.XDAI]: initialValue,
+  [ChainId.BSC]: initialValue,
+  [ChainId.ARBITRUM]: initialValue,
+  [ChainId.CELO]: initialValue,
+  [ChainId.OKXCHAIN]: initialValue,
+  [ChainId.VELAS]: initialValue,
+  [ChainId.AURORA]: initialValue,
+  [ChainId.CRONOS]: initialValue,
+  [ChainId.FUSE]: initialValue,
+  [ChainId.MOONRIVER]: initialValue,
+  [ChainId.MOONBEAM]: initialValue,
+  [ChainId.OP]: initialValue,
 };
 
 export default createReducer<SwapState>(initialState, (builder) =>
@@ -96,7 +114,7 @@ export default createReducer<SwapState>(initialState, (builder) =>
           ...state[chainId],
           independentField: state[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
           [field]: { currencyId: currencyId },
-          [otherField]: { currencyId: state[field].currencyId },
+          [otherField]: { currencyId: state[chainId]?.[field].currencyId },
         };
       } else {
         // the normal case
@@ -112,8 +130,8 @@ export default createReducer<SwapState>(initialState, (builder) =>
       state[chainId] = {
         ...state[chainId],
         independentField: state[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
-        [Field.INPUT]: { currencyId: state[Field.OUTPUT].currencyId },
-        [Field.OUTPUT]: { currencyId: state[Field.INPUT].currencyId },
+        [Field.INPUT]: { currencyId: state[chainId]?.[Field.OUTPUT].currencyId },
+        [Field.OUTPUT]: { currencyId: state[chainId]?.[Field.INPUT].currencyId },
       };
 
       return state;

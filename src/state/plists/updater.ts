@@ -1,6 +1,5 @@
 import { VersionUpgrade, getVersionUpgrade, minVersionBump } from '@pangolindex/token-lists';
 import { useCallback, useEffect } from 'react';
-import ReactGA from 'react-ga';
 import { DEFAULT_TOKEN_LISTS } from 'src/constants/lists';
 import { useLibrary } from 'src/hooks';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';
@@ -56,12 +55,6 @@ export default function Updater(): null {
             if (bump >= min) {
               if (isDefaultList) {
                 //if its pangolin hosted token list then we will autoupdate it
-                // eslint-disable-next-line import/no-named-as-default-member
-                ReactGA.event({
-                  category: 'Lists',
-                  action: 'Update List from Popup',
-                  label: listUrl,
-                });
                 dispatch(acceptListUpdate(listUrl));
               } else {
                 //show prompts for user added token list
@@ -89,12 +82,6 @@ export default function Updater(): null {
           case VersionUpgrade.MAJOR:
             if (isDefaultList) {
               // if its pangolin hosted token list then we will autoupdate it
-              // eslint-disable-next-line import/no-named-as-default-member
-              ReactGA.event({
-                category: 'Lists',
-                action: 'Update List from Popup',
-                label: listUrl,
-              });
               dispatch(acceptListUpdate(listUrl));
             } else {
               // show prompts for user added token list

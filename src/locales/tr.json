@@ -383,7 +383,11 @@
     "yourFarms": "senin çiftliklerin",
     "yourPools": "Havuzlarınız",
     "noFarms": "Çiftlik bulunamadı.",
-    "successWithdraw": "Likiditeniz çiftlikten kaldırıldı ve tahakkuk eden ödüller talep edildi!"
+    "successWithdraw": "Likiditeniz çiftlikten kaldırıldı ve tahakkuk eden ödüller talep edildi!",
+    "importDescription1": "İçe aktarma işleviyle 'Havuzlarınız' bölümünde görünmeyen havuzları arayabilirsiniz.",
+    "importDescription2": "Havuzunuzda bulunan temel madeni paraları seçin.",
+    "createPairDescription": "Oluşturma işleviyle yeni bir çift oluşturabilirsiniz. Sadece bir çift oluşturmak istediğiniz paraları arayın ve sistem ya Pangolin'de varsa havuzu bulur ya da yoksa yepyeni bir tane oluşturur.",
+    "addLiquidityDescription": "Likidite ekle işlevi ile bir çifte likidite eklersiniz. Sadece likidite eklemek istediğiniz paraları arayın ve sistem Pangolin'de varsa havuzu bulsun veya yoksa yeni bir tane oluşturun."
   },
   "poolFinder": {
     "connectToFind": "Havuzları bulmak için bir cüzdan bağlayın",
@@ -465,7 +469,8 @@
     "cancelLimitOrder": "{{ inputCurrency }} ile {{ outputCurrency }} swap yapma",
     "executionPrice": "Emrin Gerçekleştiği Fiyat",
     "seeMore": "Daha Fazlasını Gör",
-    "seeLess": "Daha Azını Gör"
+    "seeLess": "Daha Azını Gör",
+    "orderPlaced": "{{ orderType }} sipariş verildi."
   },
   "buyPage": {
     "buyAvaxInfo": "Partnerimiz Wyre aracılığıyla AVAX satın alın.",
@@ -524,20 +529,19 @@
     "selectToken": "Bir token seçin",
     "enterRecipient": "Bir alıcı girin",
     "invalidRecipient": "Geçersiz alıcı",
-    "insufficient": "Yetersiz ",
-    "balance": " bakiyesi"
+    "insufficientBalance": "Yetersiz {{ symbol }} bakiyesi"
   },
   "mintHooks": {
     "connectWallet": "Cüzdanı Bağla",
     "insufficientInputAmount": "Yetersiz bakiye",
     "invalidPair": "Geçersiz işlem çifti",
     "enterAmount": "Bir tutar girin",
-    "insufficient": "Yetersiz",
-    "balance": " bakiyesi"
+    "insufficientBalance": "Yetersiz {{ symbol }} bakiyesi"
   },
   "stakeHooks": {
     "connectWallet": "Cüzdanı Bağla",
-    "enterAmount": "Bir tutar girin"
+    "enterAmount": "Bir tutar girin",
+    "insufficientBalance": "Yetersiz {{ symbol }} bakiyesi"
   },
   "burnHooks": {
     "connectWallet": "Cüzdanı Bağla",
@@ -695,23 +699,27 @@
   "pangoChef": {
     "claimWarning1": "Likiditenizi çekmeden talep ettiğinizde madencilik havuzunda kalır.",
     "claimWarning2": "Ödüllerinizi talep etmek, APR'nizi 0'a düşürür. Bunun yerine birleştirmeyi seçebilirsiniz.",
-    "compoundWarning": "{{ token0 }}-{{ token1 }} çiftliği için ödüllerinizi birleştirmek, ödüllerinizi {{ para birimi }}-{{ png }} çiftliğine yatırır. {{ currency }} 'a eşit değer eklemeniz gerekir. jeton, tahakkuk eden {{ png }} ödüllerinize.",
-    "compoundAmountWarning": "Bileşik için {{ amount }} {{ symbol }} eklemeniz gerekiyor.",
-    "compoundAmountWarning2": "Bu havuzun ödüllerini alana kadar {{ symbol }} {{ png }} havuzunuzu kilitleyeceğinize dikkat edin.",
+    "compoundWarning": "{{ token0 }}-{{ token1 }} çiftliği için ödüllerinizi birleştirmek, ödüllerinizi {{ token0 }}-{{ token1 }} çiftliğine yatırır. {{ currency }} 'a eşit değer eklemeniz gerekir. jeton, tahakkuk eden {{ png }} ödüllerinize.",
+    "compoundAmountWarning": "Bileşik için {{ amount }} {{ symbol }} eklemeniz gerekiyor. Lütfen Bileşik oluşturmanın APR'nizi biraz azaltabileceğini unutmayın.",
+    "compoundAmountWarning2": "Bu havuzun ödüllerini alana kadar {{ token0 }} {{ token1 }} havuzunuzu kilitleyeceğinize dikkat edin.",
     "highVolalityWarning": "Çok erken, birkaç saat sonra deneyin",
     "compoundSuccess": "Çiftliğinizi başarıyla oluşturdunuz.",
     "compoundTransactionSummary": "Birleşik çiftlik.",
     "removeWarning": "Çiftlikten herhangi bir miktarı çıkarmak, APR'nizi 0'a getirecektir. Bunun yerine ödüllerinizi, APR'nizi kaybetmeden birleştirebilirsiniz.",
-    "lockingPoolZeroWarning": "Bu çiftlikten likiditenizi kaldıramaz veya ödüllerinizi talep edemezsiniz. Bunu yapmak için önce bu çiftliklerden hissenizi talep etmeniz gerekir: "
+    "lockingPoolZeroWarning": "Bu çiftlikten likiditenizi kaldıramaz veya ödüllerinizi talep edemezsiniz. Bunu yapmak için önce bu çiftliklerden hissenizi talep etmeniz veya kaldırmanız gerekir: ",
+    "decreaseWarning": "Yeni bileşik kısım 0 nisan ile başladığı için apr'ınız düşecek ve eski ile yeni kısım arasında bir ortalama alınacaktır."
   },
   "bridge": {
+    "selectChain": "Select Chain",
     "availableRoutes": "Mevcut Rotalar ({{ number }})",
+    "noRoute": "Bu çift için geçerli bir rota bulunamadı.",
     "activeTransfers": "Aktif Transferler ({{ number }})",
     "historicalTransfers": "Geçmiş Transferler ({{ number }})",
     "bridgeCard": {
-      "advanceOptions": "Gelişmiş Seçenekler",
+      "advancedOptions": "Gelişmiş Seçenekler",
       "title": "Cross Chain",
       "swap": "Swap",
+      "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
           "waitingReceivingChain": "Waiting for receiving chain..."
@@ -729,7 +737,9 @@
     },
     "bridgeInputsWidget": {
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
-      "max": "MAX"
+      "max": "MAX",
+      "recipient": "Recipient",
+      "walletAddress": "Wallet Address"
     },
     "bridgeRoute": {
       "selected": "Seçildi",
@@ -738,7 +748,7 @@
       "estimatedToken": "Tahmini Token: {{ token }}",
       "estimatedResult": "Tahmini Result: {{ result }}",
       "min": "{{ minute }} dk",
-      "gasCost": "{{ gasCost }} Gas Cost"
+      "gasCost": "{{ gasCost }} USD Gas Cost"
     },
     "bridgeTransfer": {
       "date": "Tarih",
@@ -750,8 +760,10 @@
     },
     "bridgePrioritizations": {
       "recommended": "Önerilen",
-      "fast": "Hızlı",
-      "normal": "Normal"
+      "fastest": "Hızlı",
+      "normal": "Normal",
+      "safest": "Güvenli",
+      "cheapest": "Ucuz"
     }
   },
   "dropdown": {

@@ -1,24 +1,47 @@
-import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
-import React, { useContext } from 'react';
+import { Chain, Currency, NetworkType } from '@pangolindex/sdk';
+import React, { useCallback, useContext } from 'react';
 import { Info } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, CurrencyInput, Text, TextInput, Tooltip } from 'src/components';
+import { Box, Button, ChainInput, CurrencyInput, Text, TextInput, Tooltip } from 'src/components';
+import { checkAddressNetworkBaseMapping } from 'src/utils';
 import { Currencies } from './styles';
 import { BridgeInputsWidgetProps } from './types';
 
 const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
-  const { onChangeTokenDrawerStatus, title, inputDisabled } = props;
+  const {
+    onChangeTokenDrawerStatus,
+    onChangeChainDrawerStatus,
+    onChangeRecipient,
+    onChangeAmount,
+    handleMaxInput,
+    recipient,
+    title,
+    maxAmountInput,
+    amount,
+    amountNet,
+    chain,
+    currency,
+    inputDisabled,
+  } = props;
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
 
-  const currency = new Token(
-    ChainId.AVALANCHE,
-    CHAINS[ChainId.AVALANCHE].contracts!.png,
-    18,
-    CHAINS[ChainId.AVALANCHE].png_symbol!,
-    'Pangolin',
+  const handleInput = useCallback(
+    (amount: string) => {
+      onChangeAmount && onChangeAmount(amount);
+    },
+    [onChangeAmount],
   );
+
+  const handleChangeRecipient = useCallback(
+    (recipient: string) => {
+      onChangeRecipient && onChangeRecipient(recipient);
+    },
+    [onChangeRecipient],
+  );
+
+  const isAddress = checkAddressNetworkBaseMapping[chain?.network_type || NetworkType.EVM];
 
   return (
     <Box>
@@ -26,70 +49,86 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
         {title}
       </Text>
       <Currencies>
-        <CurrencyInput
-          // value={formattedAmounts[LimitField.INPUT]}
-          onChange={(value: any) => {
-            console.log('onChange', value);
-          }}
+        <ChainInput
           buttonStyle={{
             backgroundColor: theme.bridge?.primaryBgColor,
+            color: theme.bridge?.text,
             padding: '1rem 1.1rem',
             width: '100%',
           }}
-          onTokenClick={onChangeTokenDrawerStatus}
-          isShowTextInput={false}
-          currency={currency}
-          fontSize={24}
-          id="swap-currency-input"
+          onChainClick={onChangeChainDrawerStatus}
+          chain={chain as Chain}
         />
         <CurrencyInput
-          // value={formattedAmounts[LimitField.INPUT]}
-          onChange={(value: any) => {
-            console.log('onChange', value);
-          }}
           buttonStyle={{
             backgroundColor: theme.bridge?.primaryBgColor,
+            color: theme.bridge?.text,
             padding: '1rem 1.1rem',
             width: '100%',
           }}
+          alternativeLogoSrc={currency?.logo}
           onTokenClick={onChangeTokenDrawerStatus}
           isShowTextInput={false}
-          currency={currency}
           fontSize={24}
+          currency={currency as Currency}
           id="swap-currency-input"
         />
       </Currencies>
-      <Tooltip effect="solid" />
+      <Tooltip id="minEarnedAmount" effect="solid">
+        {t('bridge.bridgeInputsWidget.tooltip', {
+          amount: amountNet,
+          currency: currency?.symbol,
+        })}
+      </Tooltip>
       <TextInput
-        value={''}
         isNumeric={true}
-        disabled={inputDisabled}
+        value={amount?.toExact()}
+        onChange={(value: any) => {
+          handleInput(value);
+        }}
+        disabled={inputDisabled || !currency}
         placeholder="0.00"
         addonAfter={
           inputDisabled ? (
-            <Info
-              size={16}
-              color={theme.bridge?.infoIconColor}
-              data-tip={t('bridge.bridgeInputsWidget.tooltip', { amount: 10.3, currency: 'USDC' })}
-            />
+            <Info size={amount ? 16 : 0} color={theme.bridge?.infoIconColor} data-tip data-for="minEarnedAmount" />
           ) : (
-            <Button
-              variant="plain"
-              backgroundColor="bridge.secondaryBgColor"
-              padding="6px"
-              height="auto"
-              onClick={() => {
-                console.log('onclick');
-              }}
-            >
-              <Text color={'bridge.text'}>{t('bridge.bridgeInputsWidget.max')}</Text>
-            </Button>
+            currency &&
+            maxAmountInput &&
+            maxAmountInput?.toExact() !== amount?.toExact() && (
+              <Button
+                variant="plain"
+                backgroundColor="bridge.secondaryBgColor"
+                padding="6px"
+                height="auto"
+                onClick={handleMaxInput}
+              >
+                <Text color={'bridge.text'}>{t('bridge.bridgeInputsWidget.max')}</Text>
+              </Button>
+            )
           )
         }
-        onChange={(value: any) => {
-          console.log(value);
-        }}
       />
+      {chain?.evm === false && (
+        <Box pt={20}>
+          <TextInput
+            label={t('bridge.bridgeInputsWidget.recipient')}
+            placeholder={t('bridge.bridgeInputsWidget.walletAddress')}
+            value={recipient as string}
+            required={true}
+            onChange={(value) => {
+              const withoutSpaces: string = value.replace(/\s+/g, '');
+              handleChangeRecipient(withoutSpaces);
+            }}
+            addonLabel={
+              recipient ? (
+                !isAddress(recipient, chain) && <Text color="warning">Invalid Address</Text>
+              ) : (
+                <Text color="error">Required</Text>
+              )
+            }
+          />
+        </Box>
+      )}
     </Box>
   );
 };

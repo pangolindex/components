@@ -1,41 +1,17 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
-import { JSBI, Token, TokenAmount } from '@pangolindex/sdk';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ZERO_ADDRESS } from 'src/constants';
+import { TokenAmount } from '@pangolindex/sdk';
+import { useEffect, useMemo, useState } from 'react';
+import { BIGNUMBER_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useApproveCallback } from 'src/hooks/useApproveCallback';
+import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useSarStakingContract } from 'src/hooks/useContract';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
-import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { useDerivedStakeInfo } from '../pstake/hooks';
-import { tryParseAmount } from '../pswap/hooks';
-import { useTransactionAdder } from '../ptransactions/hooks';
-import { useTokenBalance } from '../pwallet/hooks';
-
-const ZERO = BigNumber.from('0');
-export interface URI {
-  name: string;
-  description: string;
-  external_url: string;
-  attributes: any[];
-  image: string;
-}
-
-export interface Position {
-  id: BigNumber;
-  balance: BigNumber;
-  sumOfEntryTimes: BigNumber;
-  apr: BigNumber;
-  rewardRate: BigNumber;
-  pendingRewards: BigNumber;
-  uri: URI;
-}
+import { Position, URI } from './types';
+import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from './utils';
 
 // Return the info of the sar stake
 export function useSarStakeInfo() {
@@ -53,78 +29,47 @@ export function useSarStakeInfo() {
         : null;
     const totalStaked = new TokenAmount(png, totalValueVariables ? totalValueVariables?.balance.toString() : '0');
 
-    const weeklyPNG = !!rewardRate ? rewardRate.mul(86400).mul(7) : ZERO;
+    const weeklyPNG = !!rewardRate ? rewardRate.mul(86400).mul(7) : BIGNUMBER_ZERO;
 
-    const sumOfEntryTimes: BigNumber = totalValueVariables ? totalValueVariables?.sumOfEntryTimes : ZERO;
+    const sumOfEntryTimes: BigNumber = totalValueVariables ? totalValueVariables?.sumOfEntryTimes : BIGNUMBER_ZERO;
 
-    return { apr, totalStaked, sumOfEntryTimes, rewardRate: rewardRate ?? ZERO, weeklyPNG };
+    return { apr, totalStaked, sumOfEntryTimes, rewardRate: rewardRate ?? BIGNUMBER_ZERO, weeklyPNG };
   }, [rewardRate, totalValueVariables]);
 }
 
-// Return some utils functions for stake more or create a new Position
+/**
+ *
+ * @param positionId Id of a Position
+ * @returns Return some utils functions for stake more or create a new Position
+ */
 export function useDerivativeSarStake(positionId?: BigNumber) {
-  const [attempting, setAttempting] = useState(false);
-  const [hash, setHash] = useState<string | null>(null);
-  const [typedValue, setTypedValue] = useState('');
-  const [stepIndex, setStepIndex] = useState(4);
-  const [stakeError, setStakeError] = useState<string | null>(null);
-
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-
-  const sarStakingContract = useSarStakingContract();
-
-  const addTransaction = useTransactionAdder();
-  const { t } = useTranslation();
-
-  const png = PNG[chainId];
-
-  const userPngBalance = useTokenBalance(account ?? ZERO_ADDRESS, png);
-
-  // used for max input button
-  const maxAmountInput = maxAmountSpend(chainId, userPngBalance);
-
-  const usdcPrice = useUSDCPrice(png);
-  const dollerWorth =
-    userPngBalance?.greaterThan('0') && usdcPrice ? Number(typedValue) * Number(usdcPrice.toFixed()) : undefined;
-
-  const wrappedOnDismiss = useCallback(() => {
-    setStakeError(null);
-    setTypedValue('');
-    setStepIndex(0);
-    setHash(null);
-    setAttempting(false);
-  }, []);
-
-  const { parsedAmount, error } = useDerivedStakeInfo(typedValue, png, userPngBalance);
-  const [approval, approveCallback] = useApproveCallback(chainId, parsedAmount, sarStakingContract?.address);
-
-  const onUserInput = useCallback((_typedValue: string) => {
-    setTypedValue(_typedValue);
-  }, []);
-
-  const handleMax = useCallback(() => {
-    maxAmountInput && onUserInput(maxAmountInput.toExact());
-    setStepIndex(4);
-  }, [maxAmountInput, onUserInput]);
-
-  const onChangePercentage = (value: number) => {
-    if (!userPngBalance) {
-      setTypedValue('0');
-      return;
-    }
-    if (value === 100) {
-      setTypedValue((userPngBalance as TokenAmount).toExact());
-    } else if (value === 0) {
-      setTypedValue('0');
-    } else {
-      const newAmount = (userPngBalance as TokenAmount)
-        .multiply(JSBI.BigInt(value))
-        .divide(JSBI.BigInt(100)) as TokenAmount;
-
-      setTypedValue(newAmount.toSignificant(6));
-    }
-  };
+  const {
+    account,
+    addTransaction,
+    approval,
+    approveCallback,
+    attempting,
+    chainId,
+    dollerWorth,
+    error,
+    handleMax,
+    hash,
+    mixpanel,
+    onChangePercentage,
+    onUserInput,
+    parsedAmount,
+    png,
+    sarStakingContract,
+    setAttempting,
+    setHash,
+    setStakeError,
+    setStepIndex,
+    stakeError,
+    stepIndex,
+    t,
+    typedValue,
+    wrappedOnDismiss,
+  } = useDefaultSarStake();
 
   const onStake = async () => {
     if (!sarStakingContract || !parsedAmount) {
@@ -140,7 +85,10 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
           gasLimit: calculateGasMargin(estimatedGas),
         });
       } else {
-        const estimatedGas = await sarStakingContract.estimateGas.mint(`0x${parsedAmount.raw.toString(16)}`);
+        const estimatedGas = await sarStakingContract.estimateGas.stake(
+          positionId.toHexString(),
+          `0x${parsedAmount.raw.toString(16)}`,
+        );
         // adding more png to an existing position
         response = await sarStakingContract.stake(positionId.toHexString(), `0x${parsedAmount.raw.toString(16)}`, {
           gasLimit: calculateGasMargin(estimatedGas),
@@ -151,9 +99,13 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
         summary: t('sarStake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
       });
       setHash(response.hash);
+      mixpanel.track(MixPanelEvents.SAR_STAKE, {
+        chainId: chainId,
+        isNewPosition: !positionId,
+      });
     } catch (err) {
       // we only care if the error is something _other_ than the user rejected the tx
-      const _err = error as any;
+      const _err = err as any;
       if (_err?.code !== 4001) {
         console.error(_err);
         setStakeError(_err?.message);
@@ -202,92 +154,34 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
   );
 }
 
-function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiquidityStaked?: TokenAmount) {
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-
-  const { t } = useTranslation();
-
-  const parsedInput = tryParseAmount(typedValue, stakingToken, chainId);
-  const parsedAmount =
-    parsedInput && userLiquidityStaked && JSBI.lessThanOrEqual(parsedInput.raw, userLiquidityStaked.raw)
-      ? parsedInput
-      : undefined;
-
-  let error: string | undefined;
-  if (!account) {
-    error = t('stakeHooks.connectWallet');
-  }
-  if (parsedInput && !parsedAmount) {
-    error = error ?? t('stakeHooks.insufficientBalance', { symbol: stakingToken.symbol });
-  }
-  if (!parsedAmount) {
-    error = error ?? t('stakeHooks.enterAmount');
-  }
-
-  return {
-    parsedAmount,
-    error,
-  };
-}
-// Return some utils functions for unstake
+/**
+ *
+ * @param position Id of a Posttion
+ * @returns Return some utils functions for unstake
+ */
 export function useDerivativeSarUnstake(position: Position | null) {
-  const [typedValue, setTypedValue] = useState('');
-  const [stepIndex, setStepIndex] = useState(0);
-  const [unstakeError, setUnstakeError] = useState<string | null>(null);
-
-  const [attempting, setAttempting] = useState(false);
-  const [hash, setHash] = useState<string | null>(null);
-
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-
-  const { t } = useTranslation();
-  const addTransaction = useTransactionAdder();
-
-  const png = PNG[chainId];
-
-  const sarStakingContract = useSarStakingContract();
-
-  const stakedAmount = new TokenAmount(png, (position?.balance ?? 0).toString());
-
-  const { parsedAmount, error } = useUnstakeParseAmount(typedValue, png, stakedAmount);
-
-  // used for max input button
-  const maxAmountInput = maxAmountSpend(chainId, stakedAmount);
-
-  const wrappedOnDismiss = useCallback(() => {
-    setUnstakeError(null);
-    setTypedValue('');
-    setStepIndex(0);
-    setHash(null);
-    setAttempting(false);
-  }, []);
-
-  const onUserInput = useCallback((_typedValue: string) => {
-    setTypedValue(_typedValue);
-  }, []);
-
-  const handleMax = useCallback(() => {
-    maxAmountInput && onUserInput(maxAmountInput.toExact());
-    setStepIndex(4);
-  }, [maxAmountInput, onUserInput]);
-
-  const onChangePercentage = (value: number) => {
-    if (stakedAmount.lessThan('0')) {
-      setTypedValue('0');
-      return;
-    }
-    if (value === 100) {
-      setTypedValue(stakedAmount.toExact());
-    } else if (value === 0) {
-      setTypedValue('0');
-    } else {
-      const newAmount = stakedAmount.multiply(JSBI.BigInt(value)).divide(JSBI.BigInt(100)) as TokenAmount;
-
-      setTypedValue(newAmount.toSignificant(6));
-    }
-  };
+  const {
+    account,
+    addTransaction,
+    attempting,
+    error,
+    handleMax,
+    hash,
+    onChangePercentage,
+    onUserInput,
+    parsedAmount,
+    png,
+    sarStakingContract,
+    setAttempting,
+    setHash,
+    setStepIndex,
+    setUnstakeError,
+    stepIndex,
+    t,
+    typedValue,
+    unstakeError,
+    wrappedOnDismiss,
+  } = useDefaultSarUnstake(position);
 
   const onUnstake = async () => {
     if (!sarStakingContract || !parsedAmount || !position) {
@@ -355,22 +249,19 @@ export function useDerivativeSarUnstake(position: Position | null) {
 }
 
 export function useDerivativeSarCompound(position: Position | null) {
-  const [attempting, setAttempting] = useState(false);
-  const [hash, setHash] = useState<string | null>(null);
-  const [compoundError, setCompoundError] = useState<string | null>(null);
-
-  const { account } = usePangolinWeb3();
-
-  const sarStakingContract = useSarStakingContract();
-
-  const { t } = useTranslation();
-  const addTransaction = useTransactionAdder();
-
-  const wrappedOnDismiss = useCallback(() => {
-    setCompoundError(null);
-    setHash(null);
-    setAttempting(false);
-  }, []);
+  const {
+    account,
+    addTransaction,
+    attempting,
+    functionError: compoundError,
+    hash,
+    sarStakingContract,
+    setAttempting,
+    setFunctionError: setCompoundError,
+    setHash,
+    t,
+    wrappedOnDismiss,
+  } = useDefaultSarClaimOrCompound();
 
   const onCompound = async () => {
     if (!sarStakingContract || !position) {
@@ -411,22 +302,19 @@ export function useDerivativeSarCompound(position: Position | null) {
 }
 
 export function useDerivativeSarClaim(position: Position | null) {
-  const [attempting, setAttempting] = useState(false);
-  const [hash, setHash] = useState<string | null>(null);
-  const [claimError, setClaimError] = useState<string | null>(null);
-
-  const { account } = usePangolinWeb3();
-
-  const sarStakingContract = useSarStakingContract();
-
-  const { t } = useTranslation();
-  const addTransaction = useTransactionAdder();
-
-  const wrappedOnDismiss = useCallback(() => {
-    setClaimError(null);
-    setHash(null);
-    setAttempting(false);
-  }, []);
+  const {
+    account,
+    addTransaction,
+    attempting,
+    functionError: claimError,
+    hash,
+    sarStakingContract,
+    setAttempting,
+    setFunctionError: setClaimError,
+    setHash,
+    t,
+    wrappedOnDismiss,
+  } = useDefaultSarClaimOrCompound();
 
   const onClaim = async () => {
     if (!sarStakingContract || !position) {
@@ -489,7 +377,7 @@ export function useSarPositions() {
       // get all positions ids
       const indexes: BigNumber[] = await sarStakingContract.tokensOfOwnerByIndex(
         account,
-        ZERO.toHexString(),
+        BIGNUMBER_ZERO.toHexString(),
         balance.sub(1).toHexString(),
       );
 
@@ -563,34 +451,12 @@ export function useSarPositions() {
       }
       return {} as URI;
     });
-    const positions: Position[] = nftsURIs.map((uri, index) => {
-      const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
-        positionsAmountState[index].result?.valueVariables;
-      const rewardRate = positionsRewardRateState[index].result?.[0];
-      const pendingRewards = positionsPedingRewardsState[index].result?.[0];
-      const id = nftsIndexes[index][0];
-      const balance = valueVariables?.balance ?? BigNumber.from(0);
-      const apr = rewardRate
-        ?.mul(86400)
-        .mul(365)
-        .mul(100)
-        .div(balance.isZero() ? 1 : balance);
-
-      if (!valueVariables || !rewardRate || !pendingRewards || !uri) {
-        return {} as Position;
-      }
-
-      return {
-        id: BigNumber.from(id),
-        balance: valueVariables?.balance,
-        sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
-        apr: apr,
-        rewardRate: rewardRate,
-        uri: uri,
-        pendingRewards: pendingRewards,
-      } as Position;
-    });
-    // remove the empty positions
-    return { positions: positions.filter((position) => !!position), isLoading: false };
+    return formatPosition(
+      nftsURIs,
+      nftsIndexes,
+      positionsAmountState,
+      positionsRewardRateState,
+      positionsPedingRewardsState,
+    );
   }, [account, positionsAmountState, positionsRewardRateState, nftsURIsState, nftsIndexes]);
 }

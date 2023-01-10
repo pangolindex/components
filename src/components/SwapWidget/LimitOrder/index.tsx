@@ -4,16 +4,20 @@ import { CAVAX, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { NATIVE, SwapTypes } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useTokenHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
 import { LimitField, LimitNewField } from 'src/state/pswap/actions';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
+import { capitalizeWord } from 'src/utils';
 import { galetoMaxAmountSpend } from 'src/utils/maxAmountSpend';
 import { unwrappedToken, wrappedGelatoCurrency } from 'src/utils/wrappedCurrency';
 import { Box, Button, Text, ToggleButtons } from '../../';
@@ -54,6 +58,8 @@ const LimitOrder: React.FC<Props> = ({
   const theme = useContext(ThemeContext);
 
   const percentageValue = [25, 50, 75, 100];
+
+  const { t } = useTranslation();
 
   const {
     handlers: {
@@ -151,6 +157,7 @@ const LimitOrder: React.FC<Props> = ({
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
 
+  const addTransaction = useTransactionAdder();
   const handleTypeInput = useCallback(
     (value: string) => {
       onUserInput(LimitNewField.INPUT as any, value);
@@ -223,6 +230,8 @@ const LimitOrder: React.FC<Props> = ({
     currencyBalances[LimitField.INPUT],
   );
 
+  const mixpanel = useMixpanel();
+
   // for limit swap
   const handleSwap = useCallback(() => {
     if (!handleLimitOrderSubmission) {
@@ -258,6 +267,8 @@ const LimitOrder: React.FC<Props> = ({
         throw new Error('No account');
       }
 
+      const orderType = activeTab === 'SELL' ? t('swapPage.sell') : t('swapPage.buy');
+
       handleLimitOrderSubmission({
         inputToken: currencies.input?.isNative ? NATIVE : currencies.input?.wrapped.address,
         outputToken: currencies.output?.isNative ? NATIVE : currencies.output?.wrapped.address,
@@ -265,14 +276,28 @@ const LimitOrder: React.FC<Props> = ({
         outputAmount: rawAmounts.output,
         owner: account,
       })
-        .then(({ hash }) => {
+        .then((response) => {
           setSwapState({
             attemptingTxn: false,
             tradeToConfirm,
             showConfirm,
             swapErrorMessage: undefined,
-            txHash: hash,
+            txHash: response.hash,
           });
+          addTransaction(response, { summary: t('swapPage.orderPlaced', { orderType: capitalizeWord(orderType) }) });
+          if (trade) {
+            const path = trade.route.path;
+            const tokenA = path[0];
+            const tokenB = path[path.length - 1];
+            mixpanel.track(MixPanelEvents.LIMIT_ORDER, {
+              chainId: chainId,
+              tokenA: inputCurrency?.symbol,
+              tokenB: outputCurrency?.symbol,
+              tokenA_Address: tokenA.address,
+              tokenB_Address: tokenB.address,
+              orderType: activeTab.toLowerCase(),
+            });
+          }
         })
         .catch((error) => {
           setSwapState({
@@ -377,8 +402,8 @@ const LimitOrder: React.FC<Props> = ({
   const renderButton = () => {
     if (!account) {
       return (
-        <Button isDisabled={!account} variant="primary" onClick={toggleWalletModal}>
-          Connect Wallet
+        <Button variant="primary" onClick={toggleWalletModal}>
+          {t('swapPage.connectWallet')}
         </Button>
       );
     }
@@ -392,11 +417,11 @@ const LimitOrder: React.FC<Props> = ({
               onClick={handleApprove}
               isDisabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
               loading={approval === ApprovalState.PENDING}
-              loadingText="Approving"
+              loadingText={t('swapPage.approving')}
             >
               {approvalSubmitted && approval === ApprovalState.APPROVED
-                ? 'Approved'
-                : 'Approve' + currencies[LimitField.INPUT]?.symbol}
+                ? t('swapPage.approved')
+                : `${t('swapPage.approve')} ${currencies[LimitField.INPUT]?.symbol}`}
             </Button>
           </Box>
 
@@ -407,7 +432,7 @@ const LimitOrder: React.FC<Props> = ({
             isDisabled={!isValid || approval !== ApprovalState.APPROVED}
             //error={isValid}
           >
-            Place Order
+            {t('swapPage.placeOrder')}
           </Button>
         </Box>
       );
@@ -421,7 +446,7 @@ const LimitOrder: React.FC<Props> = ({
         isDisabled={!isValid || !!swapInputError}
         backgroundColor={isValid ? 'primary' : undefined}
       >
-        {swapInputError ? swapInputError : 'Place Order'}
+        {swapInputError ? swapInputError : t('swapPage.placeOrder')}
       </Button>
     );
   };
@@ -477,7 +502,11 @@ const LimitOrder: React.FC<Props> = ({
           {isAEBToken && <DeprecatedWarning />}
 
           <CurrencyInputTextBox
-            label={independentField === (LimitNewField.OUTPUT as any) && trade ? 'From (estimated)' : 'From'}
+            label={
+              independentField === (LimitNewField.OUTPUT as any) && trade
+                ? t('swapPage.fromEstimated')
+                : t('swapPage.from')
+            }
             value={formattedAmounts[LimitField.INPUT]}
             onChange={(value: any) => {
               setSelectedPercentage(0);
@@ -512,7 +541,7 @@ const LimitOrder: React.FC<Props> = ({
               fontSize={24}
               isNumeric={true}
               placeholder="0.00"
-              label="Price"
+              label={t('swapPage.price')}
             />
           </Box>
           <Box width="100%" textAlign="center" alignItems="center" display="flex" justifyContent={'center'} mt={10}>
@@ -526,7 +555,9 @@ const LimitOrder: React.FC<Props> = ({
             </ArrowWrapper>
           </Box>
           <CurrencyInputTextBox
-            label={independentField === (LimitNewField.INPUT as any) && trade ? 'To (estimated)' : 'To'}
+            label={
+              independentField === (LimitNewField.INPUT as any) && trade ? t('swapPage.toEstimated') : t('swapPage.to')
+            }
             value={formattedAmounts[LimitField.OUTPUT]}
             onChange={(value: any) => {
               setSelectedPercentage(0);
@@ -544,7 +575,7 @@ const LimitOrder: React.FC<Props> = ({
             addonLabel={
               tradePrice && (
                 <Text color="swapWidget.secondary" fontSize={16}>
-                  Price: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
+                  {t('swapPage.price')}: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )
             }

@@ -1,4 +1,4 @@
-import { ALL_CHAINS, AVALANCHE_MAINNET, CAVAX, ChainId, Currency, Pair, Token, TokenAmount } from '@pangolindex/sdk';
+import { AVALANCHE_MAINNET, CAVAX, ChainId, Currency, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import axios from 'axios';
 import qs from 'qs';
 import { useQuery } from 'react-query';
@@ -14,9 +14,8 @@ const openApi = axios.create({
 export interface Balances {
   total: number;
   chains: {
-    chainID: number;
-    balance: number;
-  }[];
+    [x: string]: number | undefined;
+  };
 }
 
 export interface Protocol {
@@ -63,7 +62,7 @@ export function useGetChainsBalances() {
   const { account } = usePangolinWeb3();
   const query = qs.stringify(
     {
-      id: account,
+      user_addr: account,
     },
     {
       encodeValuesOnly: true,
@@ -74,23 +73,59 @@ export function useGetChainsBalances() {
     ['getChainsBalances', account],
     async () => {
       if (account) {
-        const response = await openApi.get(`/total_balance?${query}`);
-        const data = response.data;
-        const chainbalances: Balances = {
-          total: data?.total_usd_value,
-          chains: [],
-        };
-        data?.chain_list?.forEach((chain: any) => {
-          const _chain = ALL_CHAINS.filter((value) => value.chain_id === chain?.community_id)[0];
-          if (_chain && chain?.usd_value >= 0.01) {
-            chainbalances.chains.push({
-              chainID: chain?.community_id,
-              balance: chain?.usd_value,
-            });
+        const response = await openApi.get(`/token/cache_balance_list?${query}`);
+        const data: {
+          amount: number;
+          chain: string;
+          price: number;
+        }[] = response?.data?.data;
+
+        const chains: { [x: string]: number | undefined } = {};
+        let total = 0;
+        data?.forEach((token) => {
+          const usdBalance = token.price * token.amount;
+          if (usdBalance >= 0.01) {
+            total += usdBalance;
+            const chainBalance = chains[token.chain] ?? 0;
+            chains[token.chain] = chainBalance + usdBalance;
           }
         });
-        chainbalances.chains.sort((a, b) => b.balance - a.balance);
-        return chainbalances;
+
+        const projectResponse = await openApi.get(`/portfolio/project_list?${query}`);
+
+        const projectData: {
+          chain: string;
+          portfolio_item_list: Array<{
+            stats: {
+              asset_usd_value: number;
+              debt_usd_value: number;
+              net_usd_value: number;
+            };
+          }>;
+        }[] = projectResponse?.data?.data;
+
+        projectData?.forEach((d) => {
+          d?.portfolio_item_list.forEach((item) => {
+            const usdBalance = item?.stats?.net_usd_value;
+
+            total += usdBalance;
+
+            const chainBalance = chains[d.chain] ?? 0;
+            chains[d.chain] = chainBalance + usdBalance;
+          });
+        });
+
+        // amount wise sorting desc order
+        const sortedData = Object.fromEntries(
+          Object.entries(chains).sort(([, a], [, b]) =>
+            a && b && parseInt(a?.toString()) > parseInt(b?.toString()) ? -1 : 1,
+          ),
+        );
+
+        return {
+          total: total,
+          chains: sortedData,
+        } as Balances;
       }
 
       return null;
@@ -106,45 +141,48 @@ export function useGetWalletChainTokens(chainId: number) {
   const getPangolinPairs = async () => {
     const query = qs.stringify(
       {
-        id: account,
-        protocol_id: 'avax_pangolin',
+        user_addr: account,
+        project_id: 'avax_pangolin',
       },
       {
         encodeValuesOnly: true,
       },
     );
     if (account) {
-      const response = await openApi.get(`/protocol?${query}`);
-      const data = response.data;
+      try {
+        const response = await openApi.get(`/portfolio/list?${query}`);
+        const data = response.data.data;
+        const requestPairs: (TokenDataUser | PairDataUser)[] = data?.portfolio_item_list.map((pair: any) => {
+          const token1 = pair?.detail?.supply_token_list[0];
+          const token2 = pair?.detail?.supply_token_list[1];
+          // If token2 does not exist its because this pair is not a pair but a single staking
+          if (!token2) {
+            return new TokenDataUser(
+              new Token(chainId, token1?.id, token1?.decimals, `${token1?.symbol} - Staked`, token1?.name),
+              token1?.price,
+              token1?.amount,
+            );
+          }
 
-      const requestPairs: (TokenDataUser | PairDataUser)[] = data?.portfolio_item_list.map((pair: any) => {
-        const token1 = pair?.detail?.supply_token_list[0];
-        const token2 = pair?.detail?.supply_token_list[1];
-        // If token2 does not exist its because this pair is not a pair but a single staking
-        if (!token2) {
-          return new TokenDataUser(
-            new Token(chainId, token1?.id, token1?.decimals, `${token1?.symbol} - Staked`, token1?.name),
-            token1?.price,
-            token1?.amount,
+          const tokenA = new TokenAmount(
+            new Token(chainId, token1?.id, token1?.decimals, token1?.symbol, token1?.name),
+            token1?.amount.toString().replace('.', ''),
           );
-        }
 
-        const tokenA = new TokenAmount(
-          new Token(chainId, token1?.id, token1?.decimals, token1?.symbol, token1?.name),
-          token1?.amount.toString().replace('.', ''),
-        );
+          const tokenB = new TokenAmount(
+            new Token(chainId, token2?.id, token2?.decimals, token2?.symbol, token2?.name),
+            token2?.amount.toString().replace('.', ''),
+          );
 
-        const tokenB = new TokenAmount(
-          new Token(chainId, token2?.id, token2?.decimals, token2?.symbol, token2?.name),
-          token2?.amount.toString().replace('.', ''),
-        );
-
-        return new PairDataUser(new Pair(tokenA, tokenB, chainId), pair?.stats?.net_usd_value, undefined, [
-          token1?.logo_url,
-          token2?.logo_url,
-        ]);
-      });
-      return requestPairs;
+          return new PairDataUser(new Pair(tokenA, tokenB, chainId), pair?.stats?.net_usd_value, undefined, [
+            token1?.logo_url,
+            token2?.logo_url,
+          ]);
+        });
+        return requestPairs;
+      } catch (error) {
+        return [];
+      }
     }
     return [];
   };
@@ -157,48 +195,64 @@ export function useGetWalletChainTokens(chainId: number) {
 
       const query = qs.stringify(
         {
-          id: account,
-          chain_id: chain.symbol.toLowerCase(),
+          user_addr: account,
+          is_all: false,
+          chain: chain.symbol.toLowerCase(),
         },
         {
           encodeValuesOnly: true,
         },
       );
 
-      const response = await openApi.get(`/token_list?${query}`);
-      const data = response.data;
-      let requestTokens: (TokenDataUser | PairDataUser)[] = data
-        .filter((token: any) => token?.is_wallet && token?.is_verified)
-        .map((token: any) => {
-          if (token?.id?.toLowerCase() === (CAVAX[chainId]?.symbol).toLowerCase()) {
-            return new TokenDataUser(CAVAX[chainId], token?.price, token?.amount);
-          }
+      try {
+        const response = await openApi.get(`/token/cache_balance_list?${query}`);
+        const data: {
+          amount: number;
+          price: number;
+          is_verified: boolean;
+          is_wallet: boolean;
+          id: string;
+          name: string;
+          symbol: string;
+          decimals: number;
+          logo_url: string;
+        }[] = response.data?.data;
 
-          if (!isAddress(token?.id)) {
+        let requestTokens: (TokenDataUser | PairDataUser)[] = data
+          .filter((token) => token?.is_wallet && token?.is_verified)
+          .map((token) => {
+            if (token?.id?.toLowerCase() === (CAVAX[chainId]?.symbol).toLowerCase()) {
+              return new TokenDataUser(CAVAX[chainId], token?.price, token?.amount);
+            }
+
+            if (!isAddress(token?.id)) {
+              return new TokenDataUser(
+                new Token(chainId, ZERO_ADDRESS, token?.decimals, token?.symbol, token?.name),
+                token?.price,
+                token?.amount,
+                undefined,
+                token?.logo_url, // work around now for other coins of other chains
+              );
+            }
+
             return new TokenDataUser(
-              new Token(chainId, ZERO_ADDRESS, token?.decimals, token?.symbol, token?.name),
+              new Token(chainId, token?.id, token?.decimals, token?.symbol, token?.name),
               token?.price,
               token?.amount,
               undefined,
-              token?.logo_url, // work around now for other coins of other chains
+              token?.logo_url,
             );
-          }
+          });
 
-          return new TokenDataUser(
-            new Token(chainId, token?.id, token?.decimals, token?.symbol, token?.name),
-            token?.price,
-            token?.amount,
-            undefined,
-            token?.logo_url,
-          );
-        });
+        if (chainId === ChainId.AVALANCHE) {
+          const pairs = await getPangolinPairs();
+          requestTokens = [...requestTokens, ...pairs];
+        }
 
-      if (chainId === ChainId.AVALANCHE) {
-        const pairs = await getPangolinPairs();
-        requestTokens = [...requestTokens, ...pairs];
+        return requestTokens.sort((a, b) => b.usdValue - a.usdValue).filter((token) => token.usdValue >= 0.01);
+      } catch (error) {
+        return null;
       }
-
-      return requestTokens.sort((a, b) => b.usdValue - a.usdValue).filter((token) => token.usdValue >= 0.01);
     }
     return null;
   };

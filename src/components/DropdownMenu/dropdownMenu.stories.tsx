@@ -1,12 +1,12 @@
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
-import { MultiValue, SingleValue } from 'react-select';
+import { MultiValue } from 'react-select';
 import { Box } from '../Box';
 import DropdownMenu, { DropdownMenuProps } from '.';
 
 export default {
   component: DropdownMenu,
-  title: 'Components/Dropdownmenu',
+  title: 'Building Blocks/Dropdownmenu',
   args: {
     activeMenu: 'open',
   },
@@ -70,7 +70,7 @@ export default {
 };
 
 const TemplateSimpleDropdown: ComponentStory<typeof DropdownMenu> = (args: any) => {
-  const [activeMenu, setMenu] = useState<MultiValue<string> | SingleValue<string>>('');
+  const [activeMenu, setMenu] = useState<MultiValue<string> | string>('');
 
   return (
     <Box width="100%">
@@ -78,7 +78,7 @@ const TemplateSimpleDropdown: ComponentStory<typeof DropdownMenu> = (args: any) 
         <DropdownMenu
           {...args}
           defaultValue={activeMenu}
-          onSelect={(value) => {
+          onSelect={(value: string | MultiValue<string>) => {
             setMenu(value);
           }}
         />
