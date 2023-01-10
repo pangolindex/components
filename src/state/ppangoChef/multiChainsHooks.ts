@@ -212,6 +212,7 @@ export const useGetLockingPoolsForPoolIdHook: UseGetLockingPoolsForPoolIdHookTyp
   [ChainId.WAGMI]: useGetLockingPoolsForPoolId,
   [ChainId.COSTON]: useGetLockingPoolsForPoolZero,
   [ChainId.SONGBIRD]: useGetLockingPoolsForPoolZero,
+  [ChainId.FLARE_MAINNET]: useGetLockingPoolsForPoolId,
   [ChainId.HEDERA_TESTNET]: useGetLockingPoolsForPoolId,
   [ChainId.NEAR_MAINNET]: useDummyIsLockingPoolZero,
   [ChainId.NEAR_TESTNET]: useDummyIsLockingPoolZero,
