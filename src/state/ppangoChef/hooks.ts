@@ -1555,7 +1555,7 @@ export function useGetLockingPoolsForPoolId(poolId: string) {
   const lockPoolState = useSingleContractMultipleData(pangoChefContract, 'getLockedPools', allPoolsIds);
 
   const _lockpools = useMemo(() => {
-    const container = {} as { poolId: Array<string> };
+    const container = {} as { [poolId: string]: Array<string> };
 
     for (let i = 0; i < (stakingInfos || [])?.length; i++) {
       const result = lockPoolState[i]?.result;
@@ -1574,7 +1574,7 @@ export function useGetLockingPoolsForPoolId(poolId: string) {
 
   const lockingPools = [] as Array<string>;
 
-  Object.entries(_lockpools).map(([pid, pidsLocked]) => {
+  Object.entries(_lockpools).forEach(([pid, pidsLocked]) => {
     if (pidsLocked.includes(poolId?.toString())) {
       lockingPools.push(pid);
     }
