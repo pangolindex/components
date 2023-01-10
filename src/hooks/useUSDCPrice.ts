@@ -147,17 +147,18 @@ export function useSongBirdUSDPrice(currency?: Currency): Price | undefined {
     return new Price(currency, usd, tokenUSDPrice.denominator, tokenUSDPrice.numerator);
   }, [wrapped, currencyPrice, tokenPrice]);
 }
+
 /**
  * this hook which is used to fetch token price in usd
- * first we get token price in native token i.e. hbar
- * then we get hbar price in usd using coingecko
+ * first we get given token price in native token i.e. hbar/flare/sgb
+ * then we get hbar/flare/sgb price in usd using coingecko
  * denominatorAmount in baseCurrency
  * numeratorAmount in quoteCurrency
- * finally we get token price in usd with
+ * finally we get token price in usd
  * @param currency
  * @returns
  */
-export function useHederaUSDPrice(currency?: Currency): Price | undefined {
+export function useUsdPriceCoingecko(currency?: Currency): Price | undefined {
   const chainId = useChainId();
 
   const wrapped = wrappedCurrency(currency, chainId);
