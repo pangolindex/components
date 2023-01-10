@@ -205,7 +205,7 @@ export function usePangoChefInfos() {
         } as ValueVariables,
         rewardSummations: rewardSummations,
         previousValues: previousValues,
-        lockCount: result.lockCount,
+        lockCount: result?.lockCount,
       } as UserInfo;
     });
   }, [userInfosState]);
@@ -1498,5 +1498,73 @@ export function useHederaPangoChefCompoundCallback(compoundData: PangoChefCompou
       error: null,
     };
   }, [account, chainId, poolId, amountToAdd, addTransaction, pangoChefContract]);
+}
+
+/**
+ * To get how many pools locked to given pool
+ * @param poolId
+ * @returns  [Token, Token][] pairs array
+ */
+export function useGetLockingPoolsForPoolId(poolId: string) {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const pangoChefContract = usePangoChefContract();
+
+  const usePangoChefInfos = usePangoChefInfosHook[chainId];
+
+  const stakingInfos = usePangoChefInfos();
+
+  const allPoolsIds = (stakingInfos || []).map((stakingInfo) => {
+    if (!account || !chainId) {
+      return undefined;
+    }
+
+    return [stakingInfo?.pid?.toString(), account];
+  });
+
+  const lockPoolState = useSingleContractMultipleData(pangoChefContract, 'getLockedPools', allPoolsIds);
+
+  const _lockpools = useMemo(() => {
+    const container = {} as { poolId: Array<string> };
+
+    for (let i = 0; i < (stakingInfos || [])?.length; i++) {
+      const result = lockPoolState[i]?.result;
+
+      if (!result) {
+        continue;
+      }
+
+      if (result?.[0]?.[0]?.toString()) {
+        container[`${i}`] = result?.[0]?.map((item: BigNumber) => item.toString());
+      }
+    }
+
+    return container;
+  }, [stakingInfos]);
+
+  const lockedPools = [] as Array<string>;
+
+  Object.entries(_lockpools).map(([pid, pidsLocked]) => {
+    if (pidsLocked.includes(poolId?.toString())) {
+      lockedPools.push(pid);
+    }
+  });
+
+  const pairs: [Token, Token][] = useMemo(() => {
+    const _pairs: [Token, Token][] = [];
+
+    if (lockedPools?.length > 0) {
+      stakingInfos?.forEach((stakingInfo) => {
+        if (lockedPools.includes(stakingInfo?.pid)) {
+          const [token0, token1] = stakingInfo.tokens;
+          _pairs.push([token0, token1]);
+        }
+      });
+    }
+
+    return _pairs;
+  }, [stakingInfos, lockedPools]);
+
+  return pairs;
 }
 /* eslint-enable max-lines */
