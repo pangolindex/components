@@ -80,6 +80,7 @@ const updaterMapping: { [chainId in ChainId]: () => null } = {
   [ChainId.FUJI]: EvmApplicationUpdater,
   [ChainId.COSTON]: EvmApplicationUpdater,
   [ChainId.SONGBIRD]: EvmApplicationUpdater,
+  [ChainId.FLARE_MAINNET]: EvmApplicationUpdater,
   [ChainId.HEDERA_TESTNET]: EvmApplicationUpdater,
   [ChainId.WAGMI]: EvmApplicationUpdater,
   [ChainId.NEAR_MAINNET]: NearApplicationUpdater,
