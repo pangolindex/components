@@ -319,12 +319,16 @@ export function usePangoChefInfos() {
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
       // calculate the total staked amount in usd
+      const usdcStaked = currencyPriceFraction.multiply(_totalStakedInWavax);
       const totalStakedInUsd = new TokenAmount(
         USDC[chainId],
-        currencyPriceFraction.multiply(_totalStakedInWavax).toFixed(0),
+        currencyPrice === 0 || usdcStaked.equalTo('0') ? '0' : usdcStaked.toFixed(0),
       );
 
-      const totalStakedInWavax = new TokenAmount(wavax, _totalStakedInWavax.toFixed(0));
+      const totalStakedInWavax = new TokenAmount(
+        wavax,
+        _totalStakedInWavax.equalTo('0') ? '0' : _totalStakedInWavax.toFixed(0),
+      );
 
       const getHypotheticalWeeklyRewardRate = (
         _stakedAmount: TokenAmount,
