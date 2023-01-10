@@ -1,12 +1,15 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import {
+  useDummyIsLockingPoolZero,
   useDummyPangoChefCallback,
   useDummyPangoChefInfos,
   useEVMPangoChefClaimRewardCallback,
   useEVMPangoChefCompoundCallback,
   useEVMPangoChefStakeCallback,
   useEVMPangoChefWithdrawCallback,
+  useGetLockingPoolsForPoolId,
+  useGetLockingPoolsForPoolZero,
   useHederaPangoChefClaimRewardCallback,
   useHederaPangoChefCompoundCallback,
   useHederaPangoChefInfos,
@@ -189,4 +192,39 @@ export const usePangoChefCompoundCallbackHook: UsePangoChefCompoundCallbackHookT
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
   [ChainId.EVMOS_TESTNET]: useEVMPangoChefCompoundCallback,
+};
+
+export type UseGetLockingPoolsForPoolIdHookType = {
+  [chainId in ChainId]:
+    | typeof useGetLockingPoolsForPoolZero
+    | typeof useGetLockingPoolsForPoolId
+    | typeof useDummyIsLockingPoolZero;
+};
+
+export const useGetLockingPoolsForPoolIdHook: UseGetLockingPoolsForPoolIdHookType = {
+  [ChainId.FUJI]: useDummyIsLockingPoolZero,
+  [ChainId.AVALANCHE]: useDummyIsLockingPoolZero,
+  [ChainId.WAGMI]: useGetLockingPoolsForPoolId,
+  [ChainId.COSTON]: useGetLockingPoolsForPoolZero,
+  [ChainId.SONGBIRD]: useGetLockingPoolsForPoolZero,
+  [ChainId.HEDERA_TESTNET]: useGetLockingPoolsForPoolId,
+  [ChainId.NEAR_MAINNET]: useDummyIsLockingPoolZero,
+  [ChainId.NEAR_TESTNET]: useDummyIsLockingPoolZero,
+  [ChainId.COSTON2]: useGetLockingPoolsForPoolId,
+  [ChainId.ETHEREUM]: useDummyIsLockingPoolZero,
+  [ChainId.POLYGON]: useDummyIsLockingPoolZero,
+  [ChainId.FANTOM]: useDummyIsLockingPoolZero,
+  [ChainId.XDAI]: useDummyIsLockingPoolZero,
+  [ChainId.BSC]: useDummyIsLockingPoolZero,
+  [ChainId.ARBITRUM]: useDummyIsLockingPoolZero,
+  [ChainId.CELO]: useDummyIsLockingPoolZero,
+  [ChainId.OKXCHAIN]: useDummyIsLockingPoolZero,
+  [ChainId.VELAS]: useDummyIsLockingPoolZero,
+  [ChainId.AURORA]: useDummyIsLockingPoolZero,
+  [ChainId.CRONOS]: useDummyIsLockingPoolZero,
+  [ChainId.FUSE]: useDummyIsLockingPoolZero,
+  [ChainId.MOONRIVER]: useDummyIsLockingPoolZero,
+  [ChainId.MOONBEAM]: useDummyIsLockingPoolZero,
+  [ChainId.OP]: useDummyIsLockingPoolZero,
+  [ChainId.EVMOS_TESTNET]: useDummyIsLockingPoolZero,
 };

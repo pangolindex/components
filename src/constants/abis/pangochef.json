@@ -461,6 +461,36 @@
           "internalType": "uint256",
           "name": "poolId",
           "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "minPairAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPairAmount",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct PangoChef.Slippage",
+          "name": "slippage",
+          "type": "tuple"
+        }
+      ],
+      "name": "compoundToPoolZero",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "poolId",
+          "type": "uint256"
         }
       ],
       "name": "emergencyExitLevel1",
@@ -652,6 +682,11 @@
               "internalType": "uint48",
               "name": "lastUpdate",
               "type": "uint48"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLockingPoolZero",
+              "type": "bool"
             },
             {
               "internalType": "uint56",

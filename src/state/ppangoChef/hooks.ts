@@ -1,7 +1,18 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
-import { CHAINS, CurrencyAmount, Fraction, JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import {
+  CHAINS,
+  ChainId,
+  CurrencyAmount,
+  Fraction,
+  JSBI,
+  Pair,
+  Price,
+  Token,
+  TokenAmount,
+  WAVAX,
+} from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
@@ -205,7 +216,7 @@ export function usePangoChefInfos() {
         } as ValueVariables,
         rewardSummations: rewardSummations,
         previousValues: previousValues,
-        lockCount: result?.lockCount,
+        lockCount: result?.isLockingPoolZero ? 1 : result?.lockCount, // this is for SONGBIRD CHAIN Specifically
       } as UserInfo;
     });
   }, [userInfosState]);
@@ -852,26 +863,6 @@ export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
   }, [blockTime, stakingInfo]);
 }
 
-export function useIsLockingPoolZero() {
-  const chainId = useChainId();
-  const usePangoChefInfos = usePangoChefInfosHook[chainId];
-
-  const stakingInfos = usePangoChefInfos();
-
-  const pairs: [Token, Token][] = useMemo(() => {
-    const _pairs: [Token, Token][] = [];
-    stakingInfos?.forEach((stakingInfo) => {
-      if (stakingInfo?.lockCount && stakingInfo?.lockCount > 0) {
-        const [token0, token1] = stakingInfo.tokens;
-        _pairs.push([token0, token1]);
-      }
-    });
-    return _pairs;
-  }, [stakingInfos]);
-
-  return pairs;
-}
-
 /**
  * this hook is useful to check whether user has created pangochef storage contract or not
  * if not then using this hook we can create user's storage contract
@@ -1373,8 +1364,6 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
           const minichef = CHAINS[chainId].contracts?.mini_chef;
           const compoundPoolId = minichef?.compoundPoolIdForNonPngFarm ?? 0;
 
-          const method = isPNGPool ? 'compound' : 'compoundTo';
-
           const minPairAmount = JSBI.BigInt(
             ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
           );
@@ -1386,10 +1375,17 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
             minPairAmount: JSBI.lessThan(minPairAmount, JSBI.BigInt(0)) ? '0x0' : `0x${minPairAmount.toString(16)}`,
             maxPairAmount: `0x${maxPairAmount.toString(16)}`,
           };
+          // this is for SONGBIRD CHAIN Specifically
+          const nonPNGPoolMethod = chainId === ChainId.SONGBIRD ? 'compoundToPoolZero' : 'compoundTo';
+          const method = isPNGPool ? 'compound' : nonPNGPoolMethod;
 
-          const args = isPNGPool
-            ? [Number(poolId).toString(16), slippage]
-            : [Number(poolId).toString(16), Number(compoundPoolId).toString(16), slippage];
+          const pngPoolArg = [Number(poolId).toString(16), slippage];
+          const nonPNGPoolArg =
+            chainId === ChainId.SONGBIRD
+              ? pngPoolArg
+              : [Number(poolId).toString(16), Number(compoundPoolId).toString(16), slippage];
+
+          const args = isPNGPool ? pngPoolArg : nonPNGPoolArg;
 
           const estimatedGas = await pangoChefContract.estimateGas[method](...args, {
             value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}`,
@@ -1498,6 +1494,32 @@ export function useHederaPangoChefCompoundCallback(compoundData: PangoChefCompou
       error: null,
     };
   }, [account, chainId, poolId, amountToAdd, addTransaction, pangoChefContract]);
+}
+
+export function useGetLockingPoolsForPoolZero() {
+  const chainId = useChainId();
+  const usePangoChefInfos = usePangoChefInfosHook[chainId];
+
+  const stakingInfos = usePangoChefInfos();
+
+  const pairs: [Token, Token][] = useMemo(() => {
+    const _pairs: [Token, Token][] = [];
+    stakingInfos?.forEach((stakingInfo) => {
+      if (stakingInfo?.lockCount && stakingInfo?.lockCount > 0) {
+        const [token0, token1] = stakingInfo.tokens;
+        _pairs.push([token0, token1]);
+      }
+    });
+    return _pairs;
+  }, [stakingInfos]);
+
+  return pairs;
+}
+
+export function useDummyIsLockingPoolZero() {
+  const _pairs: [Token, Token][] = [];
+
+  return _pairs;
 }
 
 /**

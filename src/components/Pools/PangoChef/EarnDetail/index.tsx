@@ -6,7 +6,7 @@ import { Box, Button, Drawer, Stat, Text, Tooltip } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useIsLockingPoolZero } from 'src/state/ppangoChef/hooks';
+import { useGetLockingPoolsForPoolIdHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -29,6 +29,8 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
   const [isRemoveDrawerVisible, setShowRemoveDrawer] = useState(false);
 
   const { rewardTokensAmount, rewardTokensMultiplier } = useMinichefPendingRewards(stakingInfo);
+
+  const useGetLockingPoolsForPoolId = useGetLockingPoolsForPoolIdHook[chainId];
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
@@ -61,7 +63,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
   const isDisabledButtons = !earnedAmount?.greaterThan(BIG_INT_ZERO);
 
   const png = PNG[chainId];
-  const lockingPoolZeroPairs = useIsLockingPoolZero(); // TODO
+  const lockingPoolZeroPairs = useGetLockingPoolsForPoolId(stakingInfo?.pid);
   const isFarmLocked = lockingPoolZeroPairs.length > 0 && !!stakingInfo?.lockCount && stakingInfo?.lockCount > 0;
 
   return (
