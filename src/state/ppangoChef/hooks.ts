@@ -212,6 +212,15 @@ export function usePangoChefInfos() {
         } as UserInfo;
       }
 
+      // `isLockingPoolZero` is for Songbird Chain Specifically as isLockingPoolZero only exist in Old PangoChef V1
+      let lockCount = 0;
+      if (chainId === ChainId.SONGBIRD || chainId === ChainId.COSTON) {
+        lockCount = result?.isLockingPoolZero && 1;
+      } else {
+        // all new chain uses new pangochef i.e. using `lockCount`
+        lockCount = result?.lockCount ?? 0;
+      }
+
       return {
         valueVariables: {
           balance: valueVariables?.balance,
@@ -219,9 +228,7 @@ export function usePangoChefInfos() {
         } as ValueVariables,
         rewardSummations: rewardSummations,
         previousValues: previousValues,
-        // `isLockingPoolZero` is for Songbird Chain Specifically as isLockingPoolZero only exist in Old PangoChef V1
-        // all new chain uses new pangochef i.e. using `lockCount`
-        lockCount: result?.isLockingPoolZero ? 1 : result?.lockCount,
+        lockCount: lockCount,
       } as UserInfo;
     });
   }, [userInfosState]);

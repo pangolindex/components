@@ -1,4 +1,4 @@
-import { TokenAmount } from '@pangolindex/sdk';
+import { ChainId, TokenAmount } from '@pangolindex/sdk';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
@@ -64,7 +64,19 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
 
   const png = PNG[chainId];
   const lockingPairs = useGetLockingPoolsForPoolId(stakingInfo?.pid);
-  const isFarmLocked = lockingPairs.length > 0 || (!!stakingInfo?.lockCount && stakingInfo?.lockCount > 0);
+
+  function getIfFarmLocked() {
+    // we check if this pool has a locked pair greater than 0
+    // in songbird and coston the only locked pool is pool 0 (pid === 0)
+    // so we check if the pid equal to 0
+    if (chainId === ChainId.SONGBIRD || chainId === ChainId.COSTON) {
+      return stakingInfo?.pid === '0' && lockingPairs.length > 0;
+    }
+    // for rest of chains, we need check the lockCount too
+    return lockingPairs.length > 0 && !!stakingInfo?.lockCount && stakingInfo?.lockCount > 0;
+  }
+
+  const isFarmLocked = getIfFarmLocked();
 
   return (
     <Wrapper>
