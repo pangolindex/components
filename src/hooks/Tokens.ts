@@ -459,11 +459,32 @@ export function useCoinGeckoAllTokens() {
   );
 }
 
+export const fetchCoinData = (ids: string | undefined) => async () => {
+  try {
+    if (!ids) {
+      return undefined;
+    }
+
+    let response: AxiosResponse;
+
+    response =
+      await coingeckoAPI.get(`coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=250&page=1&sparkline=false
+    `);
+    console.log('response', response);
+    const data = response?.data;
+    return data;
+  } catch {
+    return undefined;
+  }
+};
+
 /**
  * Get the coingecko all tokens
  * @returns CoingeckoData of token if exist in coingecko else null
  * */
-export function useCoinGeckoTokensFromChain(): { [address: string]: Token } {
+export function useCoinGeckoTokensFromChain(): {
+  [address: string]: { token: Token; isCoingeko: boolean; price: string; imageUrl: string };
+} {
   const chainId = useChainId();
   const chain = CHAINS[chainId];
 
@@ -493,13 +514,60 @@ export function useCoinGeckoTokensFromChain(): { [address: string]: Token } {
     );
   });
 
-  var CSVOf_arr = filterChainTokens
-    .map((item) => {
-      return item.id;
-    })
-    .join(',');
+  // var CSVOf_arr = filterChainTokens
+  //   .map((item) => {
+  //     return item.id;
+  //   })
+  //   .join(',');
 
-  console.log('CSVOf_arr', CSVOf_arr);
+  var coinIds = filterChainTokens.map((item) => {
+    return item.id;
+  });
+  console.log('coinIds', coinIds);
+  const coinIdsArray = [] as Array<string[]>;
+  const chunkSize = 250;
+  for (let i = 0; i < coinIds.length; i += chunkSize) {
+    const chunk = coinIds.slice(i, i + chunkSize);
+
+    console.log('==chunk', i, chunk);
+
+    coinIdsArray.push(chunk);
+    // do whatever
+  }
+
+  const queryParameter = useMemo(() => {
+    return (
+      coinIdsArray?.map((coinIds) => {
+        console.log('length', coinIds.length);
+
+        return {
+          queryKey: ['get-coingecko-token-data', coinIds.join(',')],
+          queryFn: fetchCoinData(coinIds.join(',')),
+        };
+      }) ?? []
+    );
+  }, [coinIdsArray]);
+
+  const results = useQueries(queryParameter);
+
+  console.log('==results', results);
+
+  const mergeArray = useMemo(() => {
+    return results.reduce((acc, result, i) => {
+      const data = result?.data;
+      console.log('==data', data);
+      if (data && result?.isLoading === false) {
+        console.log('test', data);
+        return acc.concat(data);
+      }
+      console.log('==acc', acc);
+      return acc;
+    }, []);
+  }, [results]);
+
+  console.log('==mergeArray', mergeArray);
+
+  // https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=hbarx%2C%20hsuite%2C%20hedera-hashgraph&order=market_cap_desc&per_page=250&page=1&sparkline=false
 
   const finalTokens: Array<CoingeckoTokenData> = (toknesData || []).filter((item) => {
     const platforms = Object.keys(item.platforms);
@@ -508,10 +576,16 @@ export function useCoinGeckoTokensFromChain(): { [address: string]: Token } {
 
   console.log('filterChainTokens', filterChainTokens);
 
-  const tokens = (filterChainTokens || []).reduce<{ [address: string]: Token }>((tokenMap: any, tokenData) => {
+  const tokens = (filterChainTokens || []).reduce<{
+    [address: string]: { token: Token; isCoingeko: boolean; price: string; imageUrl: string };
+  }>((tokenMap: any, tokenData) => {
     let tokenAddress: string;
 
     console.log('tokenData', tokenData);
+
+    const coinData: any = mergeArray.find((item: any) => item?.id === tokenData?.id);
+
+    console.log('coinData', coinData);
 
     tokenAddress = coingeckoChainId && tokenData?.platforms[coingeckoChainId];
     if (hederaFn.isHederaChain(chainId)) {
@@ -530,7 +604,12 @@ export function useCoinGeckoTokensFromChain(): { [address: string]: Token } {
       //   price: '',
       //   imageUrl: ''
       // }
-      tokenMap[address] = new Token(chainId, address, 0, tokenData?.symbol, tokenData?.name);
+      tokenMap[address] = {
+        token: new Token(chainId, address, 0, tokenData?.symbol, tokenData?.name),
+        isCoingeko: true,
+        price: coinData?.current_price,
+        imageUrl: coinData?.image,
+      };
       return tokenMap;
     }
   }, {});
@@ -555,7 +634,7 @@ export function useCoinGeckoTokensFromChain(): { [address: string]: Token } {
   //     return container;
   //   }
   // });
-  // console.log('tokens', tokens);
+  console.log('tokens', tokens);
   return tokens;
 }
 

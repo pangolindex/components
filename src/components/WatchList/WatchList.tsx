@@ -32,11 +32,11 @@ const WatchList: React.FC<Props> = ({
   const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
   const [showMore, setShowMore] = useState(false as boolean);
 
-  const allTokens = useCoinGeckoTokensFromChain();
+  const allTokens1 = useCoinGeckoTokensFromChain();
 
-  console.log('==allTokens', allTokens);
-  const allTokens1 = useAllTokens();
   console.log('==allTokens1', allTokens1);
+  const allTokens = useAllTokens();
+  console.log('==allTokens', allTokens);
   const coins = Object.values(allTokens || {});
   const watchListCurrencies = useSelectedCurrencyLists();
   const theme = useContext(ThemeContext);
