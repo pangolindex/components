@@ -65,6 +65,7 @@ export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) 
   [ChainId.WAGMI]: isAddress,
   [ChainId.COSTON]: isAddress,
   [ChainId.SONGBIRD]: isAddress,
+  [ChainId.FLARE_MAINNET]: isAddress,
   [ChainId.HEDERA_TESTNET]: hederaFn.isAddressValid,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
@@ -100,6 +101,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].blockExplorerUrls?.[0] || '',
   [ChainId.COSTON]: CHAINS[ChainId.COSTON].blockExplorerUrls?.[0] || '',
   [ChainId.SONGBIRD]: CHAINS[ChainId.SONGBIRD].blockExplorerUrls?.[0] || '',
+  [ChainId.FLARE_MAINNET]: CHAINS[ChainId.FLARE_MAINNET].blockExplorerUrls?.[0] || '',
   [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET].blockExplorerUrls?.[0] || '',
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls?.[0] || '',
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls?.[0] || '',
@@ -128,6 +130,7 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'tx',
   [ChainId.COSTON]: 'tx',
   [ChainId.SONGBIRD]: 'tx',
+  [ChainId.FLARE_MAINNET]: 'tx',
   [ChainId.HEDERA_TESTNET]: 'tx',
   [ChainId.NEAR_MAINNET]: 'transactions',
   [ChainId.NEAR_TESTNET]: 'transactions',
@@ -156,6 +159,7 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'address',
   [ChainId.COSTON]: 'address',
   [ChainId.SONGBIRD]: 'address',
+  [ChainId.FLARE_MAINNET]: 'address',
   [ChainId.HEDERA_TESTNET]: 'address',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
@@ -184,6 +188,7 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'block',
   [ChainId.COSTON]: 'block',
   [ChainId.SONGBIRD]: 'block',
+  [ChainId.FLARE_MAINNET]: 'block',
   [ChainId.HEDERA_TESTNET]: 'block',
   [ChainId.NEAR_MAINNET]: 'blocks',
   [ChainId.NEAR_TESTNET]: 'blocks',
@@ -212,6 +217,7 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'token',
   [ChainId.COSTON]: 'token',
   [ChainId.SONGBIRD]: 'token',
+  [ChainId.FLARE_MAINNET]: 'token',
   [ChainId.HEDERA_TESTNET]: 'token',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
@@ -239,7 +245,7 @@ export function getEtherscanLink(
   data: string,
   type: 'transaction' | 'token' | 'address' | 'block',
 ): string {
-  const prefix = `${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[43114]}`;
+  const prefix = `${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[ChainId.AVALANCHE]}`;
 
   switch (type) {
     case 'transaction': {
@@ -507,7 +513,7 @@ export function scrollElementIntoView(element: HTMLElement | null, behavior?: 's
   }
 }
 
-export function isEvmChain(chainId: ChainId = 43114): boolean {
+export function isEvmChain(chainId: ChainId = ChainId.AVALANCHE): boolean {
   if (CHAINS[chainId]?.evm) {
     return true;
   }

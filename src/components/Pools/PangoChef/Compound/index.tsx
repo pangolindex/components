@@ -1,5 +1,5 @@
 import { formatUnits } from '@ethersproject/units';
-import { CAVAX, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { CAVAX, ChainId, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -261,7 +261,10 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
         <Tooltip id="help" effect="solid" backgroundColor={theme.primary} place="left">
           <Box maxWidth="200px">
             <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
-              {t('pangoChef.decreaseWarning')}
+              {/* this condition is just for few days till flare pangochef contracts gets audited. make sure to remove after that */}
+              {chainId === ChainId.FLARE_MAINNET
+                ? 'This function has not yet been audited. Use at your own discretion.'
+                : t('pangoChef.decreaseWarning')}
             </Text>
           </Box>
         </Tooltip>

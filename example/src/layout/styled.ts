@@ -20,7 +20,7 @@ export const AppContent = styled.div`
   flex-direction: column;
   width: 100%;
   padding-top: 100px;
-  padding: 0px 50px;
+  padding: 0px 1rem;
   height: 100%;
   flex: 1;
   overflow-y: auto;
