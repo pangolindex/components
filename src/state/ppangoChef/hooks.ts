@@ -1410,7 +1410,7 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
           const nonPNGPoolArg =
             chainId === ChainId.SONGBIRD || chainId === ChainId.COSTON
               ? pngPoolArg
-              : [`0x${Number(poolId).toString(16)}`, Number(compoundPoolId).toString(16), slippage];
+              : [`0x${Number(poolId).toString(16)}`, `0x${Number(compoundPoolId).toString(16)}`, slippage];
 
           const args = isPNGPool ? pngPoolArg : nonPNGPoolArg;
           const estimatedGas = await pangoChefContract.estimateGas[method](...args, {
