@@ -64,7 +64,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
 
   const png = PNG[chainId];
   const lockingPairs = useGetLockingPoolsForPoolId(stakingInfo?.pid);
-  const isFarmLocked = lockingPairs.length > 0 && !!stakingInfo?.lockCount && stakingInfo?.lockCount > 0;
+  const isFarmLocked = lockingPairs.length > 0 || (!!stakingInfo?.lockCount && stakingInfo?.lockCount > 0);
 
   return (
     <Wrapper>
