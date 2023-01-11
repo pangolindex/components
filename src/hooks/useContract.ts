@@ -100,6 +100,11 @@ export function usePangoChefContract(): Contract | null {
   const chainId = useChainId();
   // for Songbird Chain Specifically we are using Old PangoChef V1 due to historical reasons
   // all new chain we are using new pangochef v2
-  const abi = chainId === ChainId.SONGBIRD ? PANGOCHEF_V1_ABI.abi : PANGOCHEF_ABI.abi;
+  let abi: any;
+  if (chainId === ChainId.SONGBIRD || chainId === ChainId.COSTON) {
+    abi = PANGOCHEF_V1_ABI.abi;
+  } else {
+    abi = PANGOCHEF_ABI.abi;
+  }
   return useContract(PANGOCHEF_ADDRESS[chainId], abi, true);
 }
