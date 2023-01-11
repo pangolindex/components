@@ -662,7 +662,7 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.WAGMI]: undefined,
   [ChainId.COSTON]: undefined,
   [ChainId.SONGBIRD]: 'songbird',
-  [ChainId.FLARE_MAINNET]: 'flare-token',
+  [ChainId.FLARE_MAINNET]: 'flare-networks',
   [ChainId.HEDERA_TESTNET]: 'hedera-hashgraph',
   [ChainId.NEAR_MAINNET]: 'near',
   [ChainId.NEAR_TESTNET]: undefined,
