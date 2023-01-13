@@ -392,7 +392,7 @@ const MarketOrder: React.FC<Props> = ({
     if (showWrap) {
       return (
         <Button variant="primary" isDisabled={Boolean(wrapInputError)} onClick={onWrap}>
-          {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'unwrap' : null)}
+          {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
         </Button>
       );
     }
