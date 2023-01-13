@@ -1,12 +1,13 @@
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
-import React, { useContext, useMemo, useRef, useState } from 'react';
+import React, { useContext, useMemo, useRef, useState, useEffect } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Plus } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, ShowMore } from 'src/components';
 import { PNG } from 'src/constants/tokens';
 import { usePangolinWeb3 } from 'src/hooks';
-import { useAllTokens, useCoinGeckoTokensFromChain } from 'src/hooks/Tokens';
+import { useAllTokens } from 'src/hooks/Tokens';
+import { useCoinGeckoTokens, CoingeckoWatchListToken } from 'src/hooks/Coingecko';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import useToggle from 'src/hooks/useToggle';
 import { useSelectedCurrencyLists } from 'src/state/pwatchlists/hooks';
@@ -32,16 +33,20 @@ const WatchList: React.FC<Props> = ({
   const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
   const [showMore, setShowMore] = useState(false as boolean);
 
-  const allTokens1 = useCoinGeckoTokensFromChain();
+  const allTokens = useCoinGeckoTokens();
 
-  console.log('==allTokens1', allTokens1);
-  const allTokens = useAllTokens();
   console.log('==allTokens', allTokens);
+  // const allTokens1 = useAllTokens();
+  // console.log('==allTokens1', allTokens1);
   const coins = Object.values(allTokens || {});
   const watchListCurrencies = useSelectedCurrencyLists();
   const theme = useContext(ThemeContext);
-  const [selectedToken, setSelectedToken] = useState(watchListCurrencies?.[0] || ({} as Token));
 
+  console.log('==1watchListCurrencies', watchListCurrencies);
+
+  console.log('==1watchListCurrencies1', watchListCurrencies?.[0]);
+  const [selectedToken, setSelectedToken] = useState(watchListCurrencies?.[0] || ({} as CoingeckoWatchListToken));
+  console.log('==1selectedToken', selectedToken);
   const [open, toggle] = useToggle(false);
   const node = useRef<HTMLDivElement>();
 
@@ -49,20 +54,32 @@ const WatchList: React.FC<Props> = ({
   const referenceElement = useRef<HTMLInputElement>(null);
 
   const currencies = useMemo(
-    () => ((watchListCurrencies || []).length === 0 ? ([PNG[chainId]] as Token[]) : (watchListCurrencies as Token[])),
+    () =>
+      (watchListCurrencies || []).length === 0
+        ? ([coins?.[0]] as CoingeckoWatchListToken[])
+        : (watchListCurrencies as CoingeckoWatchListToken[]),
 
     [chainId, watchListCurrencies],
   );
   useOnClickOutside(node, open ? toggle : undefined);
 
+  useEffect(() => {
+    if (Object.keys(selectedToken)?.length === 0 && watchListCurrencies && (watchListCurrencies || []).length > 0) {
+      console.log('===2');
+      setSelectedToken(watchListCurrencies?.[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchListCurrencies]);
+
   const renderWatchlistRow = (coin) => {
     return (
       <WatchlistRow
         coin={coin}
-        key={coin.address}
+        key={coin?.id}
         onClick={() => setSelectedToken(coin)}
-        onRemove={() => setSelectedToken(PNG[chainId])}
-        isSelected={coin?.address === selectedToken?.address}
+        onRemove={() => setSelectedToken(coins?.[0])}
+        isSelected={coin?.id === selectedToken?.id}
+        firstCoin={coins?.[0]}
       />
     );
   };
@@ -103,7 +120,7 @@ const WatchList: React.FC<Props> = ({
               getRef={(ref: HTMLInputElement) => ((popoverRef as any).current = ref)}
               coins={coins}
               isOpen={open}
-              onSelectCurrency={(currency: Token) => {
+              onSelectCurrency={(currency: CoingeckoWatchListToken) => {
                 setSelectedToken(currency);
                 toggle();
               }}

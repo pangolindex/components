@@ -2,23 +2,24 @@ import { ChainId, Token } from '@pangolindex/sdk';
 import { PNG } from 'src/constants/tokens';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
+import { useCoinGeckoTokens, CoingeckoWatchListToken } from 'src/hooks/Coingecko';
 import { AppState, useSelector } from '../index';
 
-export function useSelectedCurrencyLists(): Token[] | undefined {
+export function useSelectedCurrencyLists(): CoingeckoWatchListToken[] | undefined {
   const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
-  const allTokens = useAllTokens();
+  const allTokens = useCoinGeckoTokens();
   const coins = Object.values(allTokens || {});
 
-  let addresses = useSelector<AppState['pwatchlists']['currencies']>((state) =>
+  let ids = useSelector<AppState['pwatchlists']['currencies']>((state) =>
     ([] as string[]).concat(state?.pwatchlists?.currencies || []),
   );
 
-  addresses = [PNG[chainId]?.address, ...addresses];
+  ids = [coins?.[0]?.id, ...ids];
 
-  let allSelectedToken = [] as Token[];
+  let allSelectedToken = [] as CoingeckoWatchListToken[];
 
-  addresses.forEach((address) => {
-    const filterTokens = coins.filter((coin) => address.toLowerCase() === coin.address.toLowerCase());
+  ids.forEach((id) => {
+    const filterTokens = coins.filter((coin) => id.toLowerCase() === coin?.id?.toLowerCase());
 
     allSelectedToken = [...allSelectedToken, ...filterTokens];
   });
@@ -26,14 +27,15 @@ export function useSelectedCurrencyLists(): Token[] | undefined {
   return allSelectedToken;
 }
 
-export function useIsSelectedCurrency(address: string): boolean {
-  const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
+export function useIsSelectedCurrency(id: string): boolean {
 
-  let addresses = useSelector<AppState['pwatchlists']['currencies']>((state) =>
+  const allTokens = useCoinGeckoTokens();
+  const coins = Object.values(allTokens || {});
+  let ids = useSelector<AppState['pwatchlists']['currencies']>((state) =>
     ([] as string[]).concat(state?.pwatchlists?.currencies || []),
   );
 
-  addresses = [PNG[chainId]?.address, ...addresses];
+  ids = [coins?.[0]?.id, ...ids];
 
-  return (addresses || []).includes(address);
+  return (ids || []).includes(id);
 }

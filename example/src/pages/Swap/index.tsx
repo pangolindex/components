@@ -9,7 +9,7 @@ function Swap() {
         <SwapWidget />
       </SwapWidgetWrapper>
 
-      <WatchList coinChartVisible={false} />
+      <WatchList coinChartVisible={true} />
     </>
   );
 }

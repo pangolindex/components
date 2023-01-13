@@ -29,7 +29,8 @@ import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderVi
 import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useGetBlockTimestamp, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useCoinGeckoCurrencyPrice, useTokens } from 'src/hooks/Tokens';
+import { useTokens } from 'src/hooks/Tokens';
+import { useCoinGeckoCurrencyPrice } from 'src/hooks/Coingecko';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice, useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';

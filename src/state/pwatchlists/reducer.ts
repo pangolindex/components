@@ -11,15 +11,15 @@ const initialState: WatchlistState = {
 
 export default createReducer(initialState, (builder) =>
   builder
-    .addCase(addCurrency, (state, { payload: address }) => {
+    .addCase(addCurrency, (state, { payload: id }) => {
       const existingSelectedListUrl = ([] as string[]).concat(state.currencies || []);
 
-      existingSelectedListUrl.push(address);
+      existingSelectedListUrl.push(id);
       state.currencies = existingSelectedListUrl;
     })
-    .addCase(removeCurrency, (state, { payload: address }) => {
+    .addCase(removeCurrency, (state, { payload: id }) => {
       const existingList = ([] as string[]).concat(state.currencies || []);
-      const index = existingList.indexOf(address);
+      const index = existingList.indexOf(id);
 
       if (index !== -1) {
         if (existingList?.length === 1) {

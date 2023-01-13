@@ -13,21 +13,22 @@ import { addCurrency } from 'src/state/pwatchlists/actions';
 import { filterTokenOrChain, isAddress } from 'src/utils';
 import CurrencyRow from './CurrencyRow';
 import { AddInputWrapper, CurrencyList, PopoverContainer } from './styled';
+import { CoingeckoWatchListToken, useCoinGeckoSearchTokens } from 'src/hooks/Coingecko';
 
 interface Props {
   getRef?: (ref: any) => void;
-  coins: Array<Token>;
+  coins: Array<CoingeckoWatchListToken>;
   isOpen: boolean;
-  onSelectCurrency: (currency: Token) => void;
+  onSelectCurrency: (currency: CoingeckoWatchListToken) => void;
 }
 
-const currencyKey = (currency: Currency, chainId: ChainId): string => {
-  return currency instanceof Token
-    ? currency.address
-    : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
-    ? (CAVAX[chainId]?.symbol as string)
-    : '';
-};
+// const currencyKey = (currency: Currency, chainId: ChainId): string => {
+//   return currency instanceof Token
+//     ? currency.address
+//     : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
+//     ? (CAVAX[chainId]?.symbol as string)
+//     : '';
+// };
 
 const CurrencyPopover: React.FC<Props> = ({
   getRef = () => {
@@ -60,37 +61,39 @@ const CurrencyPopover: React.FC<Props> = ({
   }, [isOpen]);
 
   const isAddressSearch = isAddress(searchQuery);
-  const searchToken = useToken(searchQuery);
+  // const searchToken = useToken(searchQuery);
 
   const tokenComparator = useTokenComparator(invertSearchOrder, [WAVAX[chainId]]);
 
-  const filteredTokens: Token[] = useMemo(() => {
-    if (isAddressSearch) return searchToken ? [searchToken] : [];
-    return filterTokenOrChain(Object.values(coins), searchQuery) as Token[];
-  }, [isAddressSearch, searchToken, coins, searchQuery]);
+  // const filteredTokens: Token[] = useMemo(() => {
+  //   if (isAddressSearch) return searchToken ? [searchToken] : [];
+  //   return filterTokenOrChain(Object.values(coins), searchQuery) as Token[];
+  //   return [];
+  // }, [isAddressSearch, searchToken, coins, searchQuery]);
 
+  const filteredTokens = useCoinGeckoSearchTokens(searchQuery);
   console.log('==filteredTokens', filteredTokens);
 
-  const filteredSortedTokens: Token[] = useMemo(() => {
-    if (searchToken) return [searchToken];
-    const sorted = filteredTokens.sort(tokenComparator);
+  // const filteredSortedTokens: Token[] = useMemo(() => {
+  //   if (searchToken) return [searchToken];
+  //   const sorted = filteredTokens.sort(tokenComparator);
 
-    const symbolMatch = searchQuery
-      .toLowerCase()
-      .split(/\s+/)
-      .filter((s) => s.length > 0);
-    if (symbolMatch.length > 1) return sorted;
+  //   const symbolMatch = searchQuery
+  //     .toLowerCase()
+  //     .split(/\s+/)
+  //     .filter((s) => s.length > 0);
+  //   if (symbolMatch.length > 1) return sorted;
 
-    return [
-      ...(searchToken ? [searchToken] : []),
-      // sort any exact symbol matches first
-      ...sorted.filter((token) => token?.symbol?.toLowerCase() === symbolMatch[0]),
-      ...sorted.filter((token) => token?.symbol?.toLowerCase() !== symbolMatch[0]),
-    ];
-  }, [filteredTokens, searchQuery, searchToken, tokenComparator]);
+  //   return [
+  //     ...(searchToken ? [searchToken] : []),
+  //     // sort any exact symbol matches first
+  //     ...sorted.filter((token) => token?.symbol?.toLowerCase() === symbolMatch[0]),
+  //     ...sorted.filter((token) => token?.symbol?.toLowerCase() !== symbolMatch[0]),
+  //   ];
+  // }, [filteredTokens, searchQuery, searchToken, tokenComparator]);
 
-  const currencies = filteredSortedTokens;
-
+  // const currencies = filteredSortedTokens;
+  const currencies = Object.values(filteredTokens || {}).length > 0 ? Object.values(filteredTokens || {}) : coins;
   const dispatch = useDispatch();
 
   const mixpanel = useMixpanel();
@@ -104,7 +107,7 @@ const CurrencyPopover: React.FC<Props> = ({
 
   const Row = useCallback(
     ({ data, index, style }) => {
-      const currency: Token = data?.[index];
+      const currency: CoingeckoWatchListToken = data?.[index];
 
       return currency ? (
         <CurrencyRow
@@ -152,7 +155,7 @@ const CurrencyPopover: React.FC<Props> = ({
               itemCount={currencies.length}
               itemSize={45}
               itemData={currencies}
-              itemKey={(index, data) => currencyKey(data[index], chainId)}
+              itemKey={(index, data) => data[index]?.id}
             >
               {Row}
             </FixedSizeList>
