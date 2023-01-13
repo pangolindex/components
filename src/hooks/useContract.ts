@@ -3,12 +3,13 @@ import MiniChefV2 from '@pangolindex/exchange-contracts/artifacts/contracts/mini
 import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
 import Png from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-token/Png.sol/Png.json';
 import StakingRewards from '@pangolindex/exchange-contracts/artifacts/contracts/staking-rewards/StakingRewards.sol/StakingRewards.json';
-import { WAVAX } from '@pangolindex/sdk';
+import { ChainId, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { MINICHEF_ADDRESS, PANGOCHEF_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from 'src/constants';
 import { ERC20_BYTES32_ABI } from 'src/constants/abis/erc20';
 import ERC20_ABI from 'src/constants/abis/erc20.json';
 import PANGOCHEF_ABI from 'src/constants/abis/pangochef.json';
+import PANGOCHEF_V1_ABI from 'src/constants/abis/pangochefV1.json';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import SarStaking from 'src/constants/abis/sar.json';
 import WETH_ABI from 'src/constants/abis/weth.json';
@@ -97,5 +98,13 @@ export function useHederaSarNFTContract() {
 
 export function usePangoChefContract(): Contract | null {
   const chainId = useChainId();
-  return useContract(PANGOCHEF_ADDRESS[chainId], PANGOCHEF_ABI.abi, true);
+  // for Songbird Chain Specifically we are using Old PangoChef V1 due to historical reasons
+  // all new chain we are using new pangochef v2
+  let abi: any;
+  if (chainId === ChainId.SONGBIRD || chainId === ChainId.COSTON) {
+    abi = PANGOCHEF_V1_ABI.abi;
+  } else {
+    abi = PANGOCHEF_ABI.abi;
+  }
+  return useContract(PANGOCHEF_ADDRESS[chainId], abi, true);
 }
