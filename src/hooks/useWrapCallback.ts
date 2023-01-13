@@ -2,9 +2,10 @@ import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Field } from 'src/state/pswap/actions';
+import { tryParseAmount, useSwapActionHandlers } from 'src/state/pswap/hooks';
 import { hederaFn } from 'src/utils/hedera';
 import { Transaction, nearFn } from 'src/utils/near';
-import { tryParseAmount } from '../state/pswap/hooks';
 import { useTransactionAdder } from '../state/ptransactions/hooks';
 import { useCurrencyBalance } from '../state/pwallet/hooks';
 import { useWETHContract } from './useContract';
@@ -34,6 +35,8 @@ export function useWrapCallback(
 
   const { t } = useTranslation();
 
+  const { onUserInput } = useSwapActionHandlers(chainId);
+
   const wethContract = useWETHContract();
   const balance = useCurrencyBalance(chainId, account ?? undefined, inputCurrency);
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
@@ -59,6 +62,7 @@ export function useWrapCallback(
             ? async () => {
                 try {
                   const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` });
+                  onUserInput(Field.INPUT, '');
                   addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} AVAX to WAVAX` });
                 } catch (error) {
                   console.error('Could not deposit', error);
@@ -79,6 +83,7 @@ export function useWrapCallback(
             ? async () => {
                 try {
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`);
+                  onUserInput(Field.INPUT, '');
                   addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WAVAX to AVAX` });
                 } catch (error) {
                   console.error('Could not withdraw', error);
@@ -90,7 +95,7 @@ export function useWrapCallback(
     } else {
       return NOT_APPLICABLE;
     }
-  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction]);
+  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction, onUserInput]);
 }
 
 /**
@@ -189,7 +194,7 @@ export function useWrapHbarCallback(
   const { account } = usePangolinWeb3();
   const { t } = useTranslation();
   const chainId = useChainId();
-
+  const { onUserInput } = useSwapActionHandlers(chainId);
   const balance = useCurrencyBalance(chainId, account ?? undefined, inputCurrency);
 
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
@@ -221,6 +226,7 @@ export function useWrapHbarCallback(
                   const txReceipt = await hederaFn.depositAction(inputAmount, account, chainId);
 
                   if (txReceipt) {
+                    onUserInput(Field.INPUT, '');
                     addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} HBAR to WHBAR` });
                   }
                 } catch (error) {
@@ -243,6 +249,7 @@ export function useWrapHbarCallback(
                   const txReceipt = await hederaFn.withdrawAction(inputAmount, account, chainId);
 
                   if (txReceipt) {
+                    onUserInput(Field.INPUT, '');
                     addTransaction(txReceipt, {
                       summary: `Unwrap ${inputAmount.toSignificant(6)} WHBAR to HBAR`,
                     });
@@ -257,5 +264,5 @@ export function useWrapHbarCallback(
     } else {
       return NOT_APPLICABLE;
     }
-  }, [chainId, inputCurrency, outputCurrency, inputAmount, balance, account, addTransaction]);
+  }, [chainId, inputCurrency, outputCurrency, inputAmount, balance, account, addTransaction, onUserInput]);
 }
