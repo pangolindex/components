@@ -187,7 +187,7 @@ export function useWrapHbarCallback(
   typedValue: string | undefined,
 ): { wrapType: WrapType; execute?: () => Promise<void>; inputError?: string } {
   const { account } = usePangolinWeb3();
-
+  const { t } = useTranslation();
   const chainId = useChainId();
 
   const balance = useCurrencyBalance(chainId, account ?? undefined, inputCurrency);
@@ -203,9 +203,15 @@ export function useWrapHbarCallback(
   return useMemo(() => {
     if (!chainId || !inputCurrency || !outputCurrency || !account) return NOT_APPLICABLE;
 
+    let inputError = !typedValue ? t('swapHooks.enterAmount') : undefined;
+
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount);
 
     if (inputCurrency === CAVAX[chainId] && currencyEquals(WAVAX[chainId], outputCurrency)) {
+      inputError =
+        inputError ??
+        (sufficientBalance ? undefined : t('swapHooks.insufficientBalance', { symbol: CAVAX[chainId].symbol }));
+
       return {
         wrapType: WrapType.WRAP,
         execute:
@@ -222,9 +228,12 @@ export function useWrapHbarCallback(
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient HBAR balance',
+        inputError: inputError,
       };
     } else if (currencyEquals(WAVAX[chainId], inputCurrency) && outputCurrency === CAVAX[chainId]) {
+      inputError =
+        inputError ??
+        (sufficientBalance ? undefined : t('swapHooks.insufficientBalance', { symbol: WAVAX[chainId].symbol }));
       return {
         wrapType: WrapType.UNWRAP,
         execute:
@@ -243,7 +252,7 @@ export function useWrapHbarCallback(
                 }
               }
             : undefined,
-        inputError: sufficientBalance ? undefined : 'Insufficient WHBAR balance',
+        inputError: inputError,
       };
     } else {
       return NOT_APPLICABLE;
