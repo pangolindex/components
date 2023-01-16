@@ -1,3 +1,5 @@
+import { SUPPORTED_WALLETS } from "src/wallet";
+
 export type WalletModalProps = {
   open: boolean;
   closeModal: () => void;
@@ -5,4 +7,5 @@ export type WalletModalProps = {
   shouldShowBackButton?: boolean;
   onWalletConnect: (wallet: string | null) => void;
   onClickBack?: () => void;
+  additionalWallets?: typeof SUPPORTED_WALLETS;
 };

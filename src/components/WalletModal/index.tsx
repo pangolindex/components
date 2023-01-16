@@ -11,14 +11,23 @@ import useDebounce from 'src/hooks/useDebounce';
 import { ThemeContext } from 'styled-components';
 import { CloseButton } from '../NetworkSelection/styled';
 import { NETWORK_TYPE } from '../NetworkSelection/types';
-import { ChainFrame, Header, Inputs, Separator, StyledLogo, WalletFrame, Wrapper } from './styleds';
+import {
+  ChainFrame,
+  GreenCircle,
+  Header,
+  Inputs,
+  Separator,
+  WalletButton,
+  StyledLogo,
+  WalletFrame,
+  Wrapper,
+  ChainButton,
+  Bookmark,
+} from './styleds';
 import { WalletModalProps } from './types';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { SUPPORTED_WALLETS } from 'src/wallet';
 import { Wallet } from 'src/wallet/classes/wallet';
-
-const getConnectorKey = () =>
-  Object.keys(SUPPORTED_WALLETS).find((key) => SUPPORTED_WALLETS[key].isActive) ?? null;
 
 export default function WalletModal({
   open,
@@ -27,6 +36,7 @@ export default function WalletModal({
   background,
   onClickBack,
   shouldShowBackButton,
+  additionalWallets,
 }: WalletModalProps) {
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,23 +61,39 @@ export default function WalletModal({
 
   const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 250);
 
-  const chains = useMemo(() => Object.values(CHAINS).filter((chain) => chain.mainnet === mainnet), [mainnet]);
-
-  const wallets = useMemo(
-    () => Object.values(SUPPORTED_WALLETS).filter((wallet) => wallet.name.includes(debouncedSearchQuery)),
-    [SUPPORTED_WALLETS, debouncedSearchQuery],
+  const chains = useMemo(
+    () =>
+      Object.values(CHAINS)
+        .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
+        .filter((chain) => chain.mainnet === mainnet),
+    [mainnet],
   );
+
+  const wallets = useMemo(() => {
+    // adding additional wallets in wallets mapping
+    const _wallets = { ...SUPPORTED_WALLETS, ...additionalWallets };
+    return Object.values(_wallets).filter((wallet) => wallet.name.includes(debouncedSearchQuery));
+  }, [SUPPORTED_WALLETS, additionalWallets, debouncedSearchQuery]);
+
+  function getWalletKey(wallet: Wallet): string | null {
+    const result = Object.entries(wallets).find(([_, value]) => value === wallet);
+
+    if (result) {
+      return result[0];
+    }
+    return null;
+  }
 
   async function onConnect(wallet: Wallet) {
     setPendingWallet(wallet.connector); // set wallet for pending view
     //setSelectedOption(wallet);
 
-    function onError() {
-      alert('error');
+    function onError(error: unknown) {
+      console.error(error);
     }
 
     function onSuccess() {
-      onWalletConnect(getConnectorKey(wallet.connector));
+      onWalletConnect(getWalletKey(wallet));
       mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
         wallet_name: wallet?.name?.toLowerCase(),
         source: 'pangolin-components',
@@ -102,14 +128,16 @@ export default function WalletModal({
           <Box>
             <Scrollbars autoHeight autoHeightMin={48} autoHeightMax={358}>
               <ChainFrame>
-                {chains.map((chain) => (
-                  <Button
+                {chains.map((chain, index) => (
+                  <ChainButton
                     variant="plain"
                     width="68px"
                     onClick={() => setSelectedChain(chain.chain_id ?? ChainId.AVALANCHE)}
+                    key={index}
                   >
+                    {selectedChain === chain.chain_id ? <Bookmark /> : null}
                     <StyledLogo srcs={[chain.logo ?? '']} alt={`${chain.name} Logo`} />
-                  </Button>
+                  </ChainButton>
                 ))}
               </ChainFrame>
             </Scrollbars>
@@ -121,12 +149,16 @@ export default function WalletModal({
               renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
             >
               <WalletFrame>
-                {wallets.map((wallet) => {
+                {wallets.map((wallet, index) => {
                   if (!wallet.showWallet()) return null;
                   return (
-                    <Button variant="plain" onClick={() => onConnect(wallet)}>
+                    <WalletButton variant="plain" onClick={() => onConnect(wallet)} key={index}>
                       <StyledLogo srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
-                    </Button>
+                      <Text color="text1" fontSize="12px" fontWeight={600}>
+                        {wallet.name}
+                      </Text>
+                      {wallet.isActive ? <GreenCircle /> : null}
+                    </WalletButton>
                   );
                 })}
               </WalletFrame>

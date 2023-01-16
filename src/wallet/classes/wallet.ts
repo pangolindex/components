@@ -34,13 +34,13 @@ export abstract class Wallet {
    * @param onSuccess function to execute on success
    * @param onError function to exeute on error
    */
-  async tryActivation(activate: Web3ReactManagerFunctions['activate'], onSuccess: () => void, onError: () => void) {
+  async tryActivation(activate: Web3ReactManagerFunctions['activate'], onSuccess: () => void, onError: (error: unknown) => void) {
     try {
       await activate(this.connector);
       onSuccess();
       this.isActive = true;
     } catch (error) {
-      onError();
+      onError(error);
     }
   }
 
