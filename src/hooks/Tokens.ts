@@ -468,11 +468,10 @@ export function useHederaTokenAssociated(
                 setLoading(true);
                 const txReceipt = await hederaFn.tokenAssociate(address, account);
                 if (txReceipt) {
-                  setLoading(false);
                   refetch();
-
                   addTransaction(txReceipt, { summary: `${symbol} successfully  associated` });
                 }
+                setLoading(false);
               } catch (error) {
                 setLoading(false);
                 console.error('Could not deposit', error);
