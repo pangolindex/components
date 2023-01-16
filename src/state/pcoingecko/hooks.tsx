@@ -6,30 +6,29 @@ import { useQueries, useQuery } from 'react-query';
 import { COINGECKO_CURRENCY_ID, COINGEKO_BASE_URL } from 'src/constants';
 import { COINGECKO_TOKENS_MAPPING } from 'src/constants/coingeckoTokens';
 import { useChainId } from 'src/hooks';
-import { checkRecipientAddressMapping } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
-
-export type TokenReturnType = Token | undefined | null;
+import { AppState, useDispatch, useSelector } from 'src/state';
+import { addCoingeckoTokens } from './actions';
+import { CoingeckoWatchListState } from './reducer';
 
 export interface CoingeckoTokenData {
   id: string;
   symbol: string;
   name: string;
-  platforms: Array<any>;
+}
+
+export interface CoingeckoWatchListToken extends CoingeckoTokenData {
+  price: string | null;
+  imageUrl: string | null;
+  weeklyChartData: Array<{
+    timestamp: string;
+    priceUSD: number;
+  }>;
 }
 
 export interface CoingeckoData {
   coinId: string;
   homePage: string;
   description: string;
-}
-
-export interface CoingeckoWatchListToken {
-  id: string;
-  name: string;
-  symbol: string;
-  price: string | null;
-  imageUrl: string | null;
 }
 
 const coingeckoAPI = axios.create({
@@ -68,21 +67,10 @@ export function useCoinGeckoTokenPrice(coin: Token) {
 
 export function useCoinGeckoTokenPriceChart(coin: CoingeckoWatchListToken, days = '7') {
   const [result, setResult] = useState([] as Array<{ timestamp: string; priceUSD: number }>);
-  console.log('coin', coin);
 
   useEffect(() => {
     const getCoinData = async () => {
       try {
-        // const chain = coin.chainId === 43113 ? CHAINS[ChainId.AVALANCHE] : CHAINS[coin.chainId];
-
-        // if (!chain) return null;
-
-        // const url = `${COINGEKO_BASE_URL}/coins/${
-        //   coin?.coingecko_id
-        // }/contract/${coin.address.toLowerCase()}/market_chart/?vs_currency=usd&days=${days}`;
-
-        //api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=14
-
         const url = `${COINGEKO_BASE_URL}/coins/${coin?.id}/market_chart/?vs_currency=usd&days=${days}`;
 
         const response = await fetch(url);
@@ -172,7 +160,6 @@ export function useCoinGeckoTokenData(coin: Token | Currency) {
   );
 }
 
-/* eslint-enable max-lines */
 /**
  * Returns the gas coin price in usd of the chain
  * @param chainId the id of chain
@@ -203,36 +190,11 @@ export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
     },
   );
 }
-
-/**
- * Get the coingecko all tokens
- * @returns CoingeckoData of token if exist in coingecko else null
- * */
-export function useCoinGeckoAllTokens() {
-  return useQuery(
-    ['coingeckoAllTokens'],
-    async () => {
-      let response: AxiosResponse;
-
-      response = await coingeckoAPI.get(`coins/list?include_platform=true`);
-      console.log('response', response);
-      const data = response?.data;
-      return data;
-    },
-    {
-      cacheTime: Infinity,
-      refetchInterval: false,
-    },
-  );
-}
-
 export const fetchCoinMarketData =
   (page: number, ids: string | undefined = '') =>
   async () => {
     try {
-      let response: AxiosResponse;
-
-      response = await coingeckoAPI.get(
+      const response: AxiosResponse = await coingeckoAPI.get(
         `coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=true&ids=${ids}`,
       );
 
@@ -243,13 +205,59 @@ export const fetchCoinMarketData =
     }
   };
 
+export const makeCoingeckoTokenData = (results: any) => {
+  const toknesData = results.reduce((acc: any, result) => {
+    const data = result?.data;
+
+    if (data && result?.isLoading === false) {
+      return acc.concat(data);
+    }
+
+    return acc;
+  }, []);
+
+  const sevenDaysAgo: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  const apiTokens = ((toknesData as Array<any>) || []).reduce<{
+    [address: string]: CoingeckoWatchListToken;
+  }>((tokenMap: any, tokenData) => {
+    if (tokenData) {
+      const formattedHistory = [] as Array<{ timestamp: string; priceUSD: number }>;
+
+      const priceData = tokenData?.sparkline_in_7d?.price || [];
+
+      // for each hour, construct the open and close price
+      for (let i = 0; i < priceData.length - 1; i++) {
+        formattedHistory.push({
+          timestamp: ((sevenDaysAgo.getTime() + 60 * 60) / 1000).toFixed(0),
+          priceUSD: parseFloat(priceData[i]),
+        });
+      }
+
+      tokenMap[tokenData?.id] = {
+        id: tokenData?.id,
+        name: tokenData?.name,
+        symbol: tokenData?.symbol?.toUpperCase(),
+        price: tokenData?.current_price,
+        imageUrl: tokenData?.image,
+        weeklyChartData: formattedHistory,
+      };
+      return tokenMap;
+    }
+    return tokenMap;
+  }, {});
+
+  return apiTokens;
+};
+
 /**
  * Get the coingecko all tokens
  * @returns CoingeckoData of token if exist in coingecko else null
  * */
-export function useCoinGeckoTokens(): {
-  [id: string]: CoingeckoWatchListToken;
-} {
+export function useCoinGeckoTokens(): CoingeckoWatchListState {
+  const dispatch = useDispatch();
+  const tokens = useSelector<AppState['pcoingecko']>((state) => state.pcoingecko);
+
   const queryParameter = [] as any;
   const totalPages = 2;
   for (let page = 1; page <= totalPages; page++) {
@@ -261,40 +269,15 @@ export function useCoinGeckoTokens(): {
 
   const results = useQueries(queryParameter);
 
-  console.log('==results', results);
-
-  const toknesData = useMemo(() => {
-    return results.reduce((acc: any, result, i) => {
-      const data = result?.data;
-
-      if (data && result?.isLoading === false) {
-        return acc.concat(data);
-      }
-
-      return acc;
-    }, []);
+  const apiTokens = useMemo(() => {
+    return makeCoingeckoTokenData(results);
   }, [results]);
 
-  console.log('==toknesData', toknesData);
+  useEffect(() => {
+    dispatch(addCoingeckoTokens(apiTokens));
+  }, [dispatch, Object.values(apiTokens || []).length]);
 
-  const finalTokens = ((toknesData as Array<any>) || []).reduce<{
-    [address: string]: CoingeckoWatchListToken;
-  }>((tokenMap: any, tokenData) => {
-    if (tokenData) {
-      tokenMap[tokenData?.id] = {
-        id: tokenData?.id,
-        name: tokenData?.name,
-        symbol: tokenData?.symbol?.toUpperCase(),
-        price: tokenData?.current_price,
-        imageUrl: tokenData?.image,
-      };
-      return tokenMap;
-    }
-    return tokenMap;
-  }, {});
-
-  console.log('==finalTokens', finalTokens);
-  return finalTokens;
+  return tokens?.currencies;
 }
 
 export function useCoinGeckoSearchTokens(coinText: string): {
@@ -303,10 +286,8 @@ export function useCoinGeckoSearchTokens(coinText: string): {
   const { data: searchTokens, isLoading } = useQuery(
     ['coingeckoSearchTokens', coinText],
     async () => {
-      let response: AxiosResponse;
+      const response: AxiosResponse = await coingeckoAPI.get(`search?query=${coinText}`);
 
-      response = await coingeckoAPI.get(`search?query=${coinText}`);
-      console.log('response', response);
       const data = response?.data?.coins;
       return data;
     },
@@ -315,7 +296,7 @@ export function useCoinGeckoSearchTokens(coinText: string): {
     },
   );
 
-  var coinIds = ((!isLoading && (searchTokens as Array<CoingeckoTokenData>)) || []).map((item) => {
+  const coinIds = ((!isLoading && (searchTokens as Array<CoingeckoTokenData>)) || []).map((item) => {
     return item.id;
   });
 
@@ -330,38 +311,10 @@ export function useCoinGeckoSearchTokens(coinText: string): {
 
   const results = useQueries(queryParameter);
 
-  console.log('==results', results);
-
-  const toknesData = useMemo(() => {
-    return results.reduce((acc: any, result, i) => {
-      const data = result?.data;
-
-      if (data && result?.isLoading === false) {
-        return acc.concat(data);
-      }
-
-      return acc;
-    }, []);
+  const apiTokens = useMemo(() => {
+    return makeCoingeckoTokenData(results);
   }, [results]);
 
-  console.log('==toknesData', toknesData);
-
-  const finalTokens = ((toknesData as Array<any>) || []).reduce<{
-    [address: string]: CoingeckoWatchListToken;
-  }>((tokenMap: any, tokenData) => {
-    if (tokenData) {
-      tokenMap[tokenData?.id] = {
-        id: tokenData?.id,
-        name: tokenData?.name,
-        symbol: tokenData?.symbol?.toUpperCase(),
-        price: tokenData?.current_price,
-        imageUrl: tokenData?.image,
-      };
-      return tokenMap;
-    }
-    return tokenMap;
-  }, {});
-
-  console.log('==finalTokens', finalTokens);
-  return finalTokens;
+  return apiTokens;
 }
+/* eslint-enable max-lines */

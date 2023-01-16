@@ -1,41 +1,37 @@
-import { ChainId, Token } from '@pangolindex/sdk';
-import { PNG } from 'src/constants/tokens';
-import { usePangolinWeb3 } from 'src/hooks';
-import { useAllTokens } from 'src/hooks/Tokens';
-import { useCoinGeckoTokens, CoingeckoWatchListToken } from 'src/hooks/Coingecko';
+import { CoingeckoWatchListToken, useCoinGeckoTokens } from 'src/state/pcoingecko/hooks';
 import { AppState, useSelector } from '../index';
 
 export function useSelectedCurrencyLists(): CoingeckoWatchListToken[] | undefined {
-  const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
   const allTokens = useCoinGeckoTokens();
   const coins = Object.values(allTokens || {});
 
-  let ids = useSelector<AppState['pwatchlists']['currencies']>((state) =>
-    ([] as string[]).concat(state?.pwatchlists?.currencies || []),
+  let allcurrencies = useSelector<AppState['pwatchlists']['currencies']>((state) =>
+    ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.currencies || []),
   );
 
-  ids = [coins?.[0]?.id, ...ids];
+  allcurrencies = coins?.[0] ? [coins?.[0], ...allcurrencies] : ([] as CoingeckoWatchListToken[]);
 
-  let allSelectedToken = [] as CoingeckoWatchListToken[];
+  //let allSelectedToken = [] as CoingeckoWatchListToken[];
 
-  ids.forEach((id) => {
-    const filterTokens = coins.filter((coin) => id.toLowerCase() === coin?.id?.toLowerCase());
+  // allcurrencies.forEach((c) => {
+  //   const filterTokens = coins.filter((coin) => c?.id?.toLowerCase() === coin?.id?.toLowerCase());
 
-    allSelectedToken = [...allSelectedToken, ...filterTokens];
-  });
+  //   allSelectedToken = [...allSelectedToken, ...filterTokens];
+  // });
 
-  return allSelectedToken;
+  return allcurrencies;
 }
 
 export function useIsSelectedCurrency(id: string): boolean {
-
   const allTokens = useCoinGeckoTokens();
   const coins = Object.values(allTokens || {});
-  let ids = useSelector<AppState['pwatchlists']['currencies']>((state) =>
-    ([] as string[]).concat(state?.pwatchlists?.currencies || []),
+  let allSelectedToken = useSelector<AppState['pwatchlists']['currencies']>((state) =>
+    ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.currencies || []),
   );
 
-  ids = [coins?.[0]?.id, ...ids];
+  allSelectedToken = [coins?.[0], ...allSelectedToken];
 
-  return (ids || []).includes(id);
+  const index = allSelectedToken.findIndex((x) => x?.id === id);
+
+  return index !== -1 ? true : false;
 }

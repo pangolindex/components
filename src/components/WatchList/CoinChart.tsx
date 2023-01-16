@@ -1,18 +1,13 @@
-import { Token } from '@pangolindex/sdk';
 import React, { useCallback, useState } from 'react';
-import { Link } from 'react-feather';
 import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
-import { Box, Button, CurrencyLogo, Text } from 'src/components';
-import { ANALYTICS_PAGE, TIMEFRAME } from 'src/constants';
+import { Box, Button, Text } from 'src/components';
+import { TIMEFRAME } from 'src/constants';
 import { useChainId } from 'src/hooks';
-import { useCoinGeckoTokenPrice, useCoinGeckoTokenPriceChart, CoingeckoWatchListToken } from 'src/hooks/Coingecko';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import { CoingeckoWatchListToken, useCoinGeckoTokenPriceChart } from 'src/state/pcoingecko/hooks';
 import { Field } from 'src/state/pswap/actions';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks';
-import { useTokenPriceData } from 'src/state/ptoken/hooks';
 import { formattedNum, toNiceDateYear } from 'src/utils/charts';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
-import { DurationBtns, SelectedCoinInfo, TrackIcons } from './styleds';
+import { DurationBtns, SelectedCoinInfo } from './styleds';
 
 type Props = {
   coin: CoingeckoWatchListToken;
@@ -25,8 +20,6 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
   const chainId = useChainId();
   const weekFrame = TIMEFRAME.find((value) => value.label === '1W');
 
-  // const { tokenUsdPrice } = useCoinGeckoTokenPrice(coin);
-
   const [timeWindow, setTimeWindow] = useState(
     weekFrame ||
       ({} as {
@@ -37,9 +30,7 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
         days: string;
       }),
   );
-  // const tokenPrice = useUSDCPrice(coin);
 
-  // const usdcPrice = tokenUsdPrice || tokenPrice?.toSignificant(4);
   const usdcPrice = coin?.price;
   const { onCurrencySelection } = useSwapActionHandlers(chainId);
   const onCurrencySelect = useCallback(
@@ -49,17 +40,7 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
     [onCurrencySelection],
   );
 
-  // const pangolinData =
-  //   useTokenPriceData(
-  //     (coin?.address || '').toLowerCase(),
-  //     timeWindow?.momentIdentifier,
-  //     timeWindow?.interval,
-  //     timeWindow?.label,
-  //   ) || [];
-
   const coinGekoData = useCoinGeckoTokenPriceChart(coin, timeWindow?.days) || [];
-
-  // const token = unwrappedToken(coin, chainId);
 
   const priceChart = coinGekoData.length > 0 ? [...coinGekoData] : [];
   // add current price in chart
@@ -78,7 +59,7 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
         {/* <CurrencyLogo currency={token} size={48} /> */}
         <Box>
           <Text color="text1" fontSize="24px" fontWeight={500}>
-            {coin.symbol}
+            {coin?.symbol}
           </Text>
           <Text color="green1" fontSize="16px">
             ${usdcPrice ? usdcPrice : '-'}

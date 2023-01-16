@@ -1,12 +1,8 @@
-import { Token } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
-import { Box, Button, CurrencyLogo, Logo, Text } from 'src/components';
-import { useChainId } from 'src/hooks';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import { Box, Button, Text } from 'src/components';
+import { CoingeckoWatchListToken } from 'src/state/pcoingecko/hooks';
 import { useIsSelectedCurrency } from 'src/state/pwatchlists/hooks';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { RowWrapper } from './styled';
-import { CoingeckoWatchListToken } from 'src/hooks/Coingecko';
 
 type Props = {
   currency: CoingeckoWatchListToken;
@@ -15,16 +11,11 @@ type Props = {
 };
 
 const WatchlistCurrencyRow: React.FC<Props> = ({ currency, onSelect, style }) => {
-  // const usdcPrice = useUSDCPrice(currency);
   const isSelected = useIsSelectedCurrency(currency?.id);
-
-  const chainId = useChainId();
 
   const handleSelect = useCallback(() => {
     onSelect(currency?.id);
   }, [onSelect, currency]);
-
-  // const token = unwrappedToken(currency, chainId);
 
   return (
     <RowWrapper disabled={isSelected} style={style}>
@@ -37,8 +28,7 @@ const WatchlistCurrencyRow: React.FC<Props> = ({ currency, onSelect, style }) =>
 
       <Box ml={'10px'} textAlign="right">
         <Text color="text1" fontSize={14} fontWeight={400}>
-          {/* ${currency?. ? usdcPrice?.toSignificant(4, { groupSeparator: ',' }) : '-'} */}$
-          {currency?.price ? currency?.price : '-'}
+          ${currency?.price ? currency?.price : '-'}
         </Text>
       </Box>
       <Box ml={'10px'} textAlign="right">

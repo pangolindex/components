@@ -2,7 +2,7 @@ import { Currency, Token } from '@pangolindex/sdk';
 import React from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import { Box, Text } from 'src/components';
-import { useCoinGeckoTokenData } from 'src/hooks/Coingecko';
+import { useCoinGeckoTokenData } from 'src/state/pcoingecko/hooks';
 import { ExternalLink } from 'src/theme';
 
 interface Props {

@@ -1,19 +1,14 @@
-import { CAVAX, ChainId, Currency, Token, WAVAX } from '@pangolindex/sdk';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import { Box, TextInput } from 'src/components';
-import { useTokenComparator } from 'src/components/SearchModal/sorting';
-import { useChainId } from 'src/hooks';
-import { useToken } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import usePrevious from 'src/hooks/usePrevious';
 import { useDispatch } from 'src/state';
+import { CoingeckoWatchListToken, useCoinGeckoSearchTokens } from 'src/state/pcoingecko/hooks';
 import { addCurrency } from 'src/state/pwatchlists/actions';
-import { filterTokenOrChain, isAddress } from 'src/utils';
 import CurrencyRow from './CurrencyRow';
 import { AddInputWrapper, CurrencyList, PopoverContainer } from './styled';
-import { CoingeckoWatchListToken, useCoinGeckoSearchTokens } from 'src/hooks/Coingecko';
 
 interface Props {
   getRef?: (ref: any) => void;
@@ -21,14 +16,6 @@ interface Props {
   isOpen: boolean;
   onSelectCurrency: (currency: CoingeckoWatchListToken) => void;
 }
-
-// const currencyKey = (currency: Currency, chainId: ChainId): string => {
-//   return currency instanceof Token
-//     ? currency.address
-//     : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
-//     ? (CAVAX[chainId]?.symbol as string)
-//     : '';
-// };
 
 const CurrencyPopover: React.FC<Props> = ({
   getRef = () => {
@@ -39,8 +26,7 @@ const CurrencyPopover: React.FC<Props> = ({
   onSelectCurrency,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [invertSearchOrder] = useState<boolean>(false);
-  const chainId = useChainId();
+
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
 
@@ -60,47 +46,17 @@ const CurrencyPopover: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const isAddressSearch = isAddress(searchQuery);
-  // const searchToken = useToken(searchQuery);
-
-  const tokenComparator = useTokenComparator(invertSearchOrder, [WAVAX[chainId]]);
-
-  // const filteredTokens: Token[] = useMemo(() => {
-  //   if (isAddressSearch) return searchToken ? [searchToken] : [];
-  //   return filterTokenOrChain(Object.values(coins), searchQuery) as Token[];
-  //   return [];
-  // }, [isAddressSearch, searchToken, coins, searchQuery]);
-
   const filteredTokens = useCoinGeckoSearchTokens(searchQuery);
-  console.log('==filteredTokens', filteredTokens);
 
-  // const filteredSortedTokens: Token[] = useMemo(() => {
-  //   if (searchToken) return [searchToken];
-  //   const sorted = filteredTokens.sort(tokenComparator);
-
-  //   const symbolMatch = searchQuery
-  //     .toLowerCase()
-  //     .split(/\s+/)
-  //     .filter((s) => s.length > 0);
-  //   if (symbolMatch.length > 1) return sorted;
-
-  //   return [
-  //     ...(searchToken ? [searchToken] : []),
-  //     // sort any exact symbol matches first
-  //     ...sorted.filter((token) => token?.symbol?.toLowerCase() === symbolMatch[0]),
-  //     ...sorted.filter((token) => token?.symbol?.toLowerCase() !== symbolMatch[0]),
-  //   ];
-  // }, [filteredTokens, searchQuery, searchToken, tokenComparator]);
-
-  // const currencies = filteredSortedTokens;
   const currencies = Object.values(filteredTokens || {}).length > 0 ? Object.values(filteredTokens || {}) : coins;
+
   const dispatch = useDispatch();
 
   const mixpanel = useMixpanel();
 
   const onCurrencySelection = useCallback(
-    (address: string) => {
-      dispatch(addCurrency(address));
+    (currency: CoingeckoWatchListToken) => {
+      dispatch(addCurrency(currency));
     },
     [dispatch],
   );
@@ -116,9 +72,8 @@ const CurrencyPopover: React.FC<Props> = ({
           currency={currency}
           onSelect={(address) => {
             onSelectCurrency(currency);
-            onCurrencySelection(address);
+            onCurrencySelection(currency);
             mixpanel.track(MixPanelEvents.ADD_WATCHLIST, {
-              chainId: chainId,
               token: currency.symbol,
               tokenAddress: address,
             });

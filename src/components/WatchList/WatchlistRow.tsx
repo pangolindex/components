@@ -1,18 +1,12 @@
-import { Token } from '@pangolindex/sdk';
 import React, { useContext, useEffect, useState } from 'react';
 import { X } from 'react-feather';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
 import { ThemeContext } from 'styled-components';
-import { Box, CurrencyLogo, Text } from 'src/components';
-import { PNG } from 'src/constants/tokens';
-import { useChainId } from 'src/hooks';
-import { useCoinGeckoTokenPrice, useCoinGeckoTokenPriceChart, CoingeckoWatchListToken } from 'src/hooks/Coingecko';
+import { Box, Text } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
 import { useDispatch } from 'src/state';
-import { useTokenWeeklyChartData } from 'src/state/ptoken/hooks';
+import { CoingeckoWatchListToken } from 'src/state/pcoingecko/hooks';
 import { removeCurrency } from 'src/state/pwatchlists/actions';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { DeleteButton, RowWrapper } from './styleds';
 
 type Props = {
@@ -24,20 +18,13 @@ type Props = {
 };
 
 const WatchlistRow: React.FC<Props> = ({ coin, onClick, onRemove, isSelected, firstCoin }) => {
-  const chainId = useChainId();
   const [showChart, setShowChart] = useState(false);
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const theme = useContext(ThemeContext);
-  // const { tokenUsdPrice } = useCoinGeckoTokenPrice(coin);
-  // const tokenPrice = useUSDCPrice(coin);
-
-  // const usdcPrice = tokenUsdPrice || tokenPrice?.toSignificant(4);
 
   const usdcPrice = coin?.price;
-  const coinGekoData = useCoinGeckoTokenPriceChart(coin) || [];
-  // const pangolinData = useTokenWeeklyChartData(coin?.address?.toLowerCase());
 
-  const chartData = coinGekoData.length > 0 ? coinGekoData : [];
+  const chartData = coin?.weeklyChartData?.length > 0 ? coin?.weeklyChartData : [];
 
   const currentUSDPrice = chartData?.[(chartData || []).length - 1]?.priceUSD || 0;
   const previousUSDPrice = chartData?.[0]?.priceUSD || 0;
@@ -45,7 +32,6 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, onRemove, isSelected, fi
   const decreaseValue = currentUSDPrice - previousUSDPrice;
   const perc = (decreaseValue / previousUSDPrice) * 100;
 
-  // const token = unwrappedToken(coin, chainId);
   const dispatch = useDispatch();
   const mixpanel = useMixpanel();
   const removeToken = () => {
@@ -74,7 +60,7 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, onRemove, isSelected, fi
     >
       <Box display="flex" alignItems="center" height={'100%'} onClick={onClick}>
         <img src={coin?.imageUrl ? coin?.imageUrl : ''} height={24} width={24} />
-        {/* <CurrencyLogo size={24} currency={token} imageSize={48} /> */}
+
         <Text color="text1" fontSize={20} fontWeight={500} marginLeft={'6px'}>
           {coin?.symbol}
         </Text>

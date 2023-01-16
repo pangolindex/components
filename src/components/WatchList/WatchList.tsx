@@ -1,15 +1,13 @@
-import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
-import React, { useContext, useMemo, useRef, useState, useEffect } from 'react';
+import { CHAINS, ChainId } from '@pangolindex/sdk';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Plus } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, ShowMore } from 'src/components';
-import { PNG } from 'src/constants/tokens';
 import { usePangolinWeb3 } from 'src/hooks';
-import { useAllTokens } from 'src/hooks/Tokens';
-import { useCoinGeckoTokens, CoingeckoWatchListToken } from 'src/hooks/Coingecko';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import useToggle from 'src/hooks/useToggle';
+import { CoingeckoWatchListToken, useCoinGeckoTokens } from 'src/state/pcoingecko/hooks';
 import { useSelectedCurrencyLists } from 'src/state/pwatchlists/hooks';
 import { Hidden } from 'src/theme/components';
 import CoinChart from './CoinChart';
@@ -35,18 +33,12 @@ const WatchList: React.FC<Props> = ({
 
   const allTokens = useCoinGeckoTokens();
 
-  console.log('==allTokens', allTokens);
-  // const allTokens1 = useAllTokens();
-  // console.log('==allTokens1', allTokens1);
   const coins = Object.values(allTokens || {});
   const watchListCurrencies = useSelectedCurrencyLists();
   const theme = useContext(ThemeContext);
 
-  console.log('==1watchListCurrencies', watchListCurrencies);
-
-  console.log('==1watchListCurrencies1', watchListCurrencies?.[0]);
   const [selectedToken, setSelectedToken] = useState(watchListCurrencies?.[0] || ({} as CoingeckoWatchListToken));
-  console.log('==1selectedToken', selectedToken);
+
   const [open, toggle] = useToggle(false);
   const node = useRef<HTMLDivElement>();
 
@@ -65,7 +57,6 @@ const WatchList: React.FC<Props> = ({
 
   useEffect(() => {
     if (Object.keys(selectedToken)?.length === 0 && watchListCurrencies && (watchListCurrencies || []).length > 0) {
-      console.log('===2');
       setSelectedToken(watchListCurrencies?.[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
