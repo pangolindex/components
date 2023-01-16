@@ -1,7 +1,7 @@
 import { ChainId, CHAINS } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -12,13 +12,13 @@ import { ThemeContext } from 'styled-components';
 import { CloseButton } from '../NetworkSelection/styled';
 import { NETWORK_TYPE } from '../NetworkSelection/types';
 import { ChainFrame, Header, Inputs, Separator, StyledLogo, WalletFrame, Wrapper } from './styleds';
-import { SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { WalletModalProps } from './types';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
+import { SUPPORTED_WALLETS } from 'src/wallet';
+import { Wallet } from 'src/wallet/classes/wallet';
 
-
-const getConnectorKey = (connector: AbstractConnector) =>
-  Object.keys(SUPPORTED_WALLETS).find((key) => SUPPORTED_WALLETS[key].connector === connector) ?? null;
+const getConnectorKey = () =>
+  Object.keys(SUPPORTED_WALLETS).find((key) => SUPPORTED_WALLETS[key].isActive) ?? null;
 
 export default function WalletModal({
   open,
@@ -32,10 +32,10 @@ export default function WalletModal({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedChain, setSelectedChain] = useState(ChainId.AVALANCHE);
   const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>();
-  const [selectedOption, setSelectedOption] = useState<WalletInfo | undefined>();
+  const [selectedWallet, setSelectedWallet] = useState<string | undefined>();
   const [pendingError, setPendingError] = useState<boolean>();
 
-  const {activate} = useWeb3React();
+  const { activate } = useWeb3React();
 
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);
@@ -58,9 +58,9 @@ export default function WalletModal({
     [SUPPORTED_WALLETS, debouncedSearchQuery],
   );
 
-  async function onConnect(wallet: WalletInfo) {
+  async function onConnect(wallet: Wallet) {
     setPendingWallet(wallet.connector); // set wallet for pending view
-    setSelectedOption(wallet);
+    //setSelectedOption(wallet);
 
     function onError() {
       alert('error');
@@ -74,7 +74,7 @@ export default function WalletModal({
       });
     }
 
-    await wallet.tryActivation?.(activate, wallet.connector, onSuccess, onError);
+    await wallet.tryActivation(activate, onSuccess, onError);
   }
 
   return (
@@ -103,7 +103,11 @@ export default function WalletModal({
             <Scrollbars autoHeight autoHeightMin={48} autoHeightMax={358}>
               <ChainFrame>
                 {chains.map((chain) => (
-                  <Button variant="plain" width="68px">
+                  <Button
+                    variant="plain"
+                    width="68px"
+                    onClick={() => setSelectedChain(chain.chain_id ?? ChainId.AVALANCHE)}
+                  >
                     <StyledLogo srcs={[chain.logo ?? '']} alt={`${chain.name} Logo`} />
                   </Button>
                 ))}
@@ -118,10 +122,10 @@ export default function WalletModal({
             >
               <WalletFrame>
                 {wallets.map((wallet) => {
-                  if (!wallet.isShowing) return null;
+                  if (!wallet.showWallet()) return null;
                   return (
                     <Button variant="plain" onClick={() => onConnect(wallet)}>
-                      <StyledLogo srcs={[wallet.iconName]} alt={`${wallet.name} Logo`} />
+                      <StyledLogo srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
                     </Button>
                   );
                 })}
