@@ -1,5 +1,5 @@
 import { CHAINS, ChainId } from '@pangolindex/sdk';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Plus } from 'react-feather';
 import { ThemeContext } from 'styled-components';
@@ -34,10 +34,10 @@ const WatchList: React.FC<Props> = ({
   const allTokens = useCoinGeckoTokens();
 
   const coins = Object.values(allTokens || {});
-  const watchListCurrencies = useSelectedCurrencyLists();
+  const currencies = useSelectedCurrencyLists();
   const theme = useContext(ThemeContext);
 
-  const [selectedToken, setSelectedToken] = useState(watchListCurrencies?.[0] || ({} as CoingeckoWatchListToken));
+  const [selectedToken, setSelectedToken] = useState({} as CoingeckoWatchListToken);
 
   const [open, toggle] = useToggle(false);
   const node = useRef<HTMLDivElement>();
@@ -45,32 +45,23 @@ const WatchList: React.FC<Props> = ({
   const popoverRef = useRef<HTMLInputElement>(null);
   const referenceElement = useRef<HTMLInputElement>(null);
 
-  const currencies = useMemo(
-    () =>
-      (watchListCurrencies || []).length === 0
-        ? ([coins?.[0]] as CoingeckoWatchListToken[])
-        : (watchListCurrencies as CoingeckoWatchListToken[]),
-
-    [chainId, watchListCurrencies],
-  );
   useOnClickOutside(node, open ? toggle : undefined);
 
   useEffect(() => {
-    if (Object.keys(selectedToken)?.length === 0 && watchListCurrencies && (watchListCurrencies || []).length > 0) {
-      setSelectedToken(watchListCurrencies?.[0]);
+    if (currencies && Object.keys(selectedToken)?.length === 0 && (currencies || []).length > 0) {
+      setSelectedToken(currencies?.[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watchListCurrencies]);
+  }, [currencies]);
 
   const renderWatchlistRow = (coin) => {
     return (
       <WatchlistRow
         coin={coin}
-        key={coin?.id}
+        key={`${coin?.id}-${coin?.symbol}`}
         onClick={() => setSelectedToken(coin)}
-        onRemove={() => setSelectedToken(coins?.[0])}
         isSelected={coin?.id === selectedToken?.id}
-        firstCoin={coins?.[0]}
+        totalLength={(currencies || []).length}
       />
     );
   };
@@ -133,7 +124,7 @@ const WatchList: React.FC<Props> = ({
           {/* if user click on more, then render other tokens */}
           {showMore && (currencies || []).slice(3).map(renderWatchlistRow)}
           {/* render show more */}
-          {currencies.length > 3 && <ShowMore showMore={showMore} onToggle={() => setShowMore(!showMore)} />}
+          {(currencies || []).length > 3 && <ShowMore showMore={showMore} onToggle={() => setShowMore(!showMore)} />}
         </MobileWatchList>
       </GridContainer>
     </WatchListRoot>

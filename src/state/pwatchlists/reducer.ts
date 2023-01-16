@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { CoingeckoWatchListToken } from 'src/state/pcoingecko/hooks';
-import { addCurrency, removeCurrency } from './actions';
+import { addCurrency, removeCurrency, updateCurrencies } from './actions';
 
 export interface WatchlistState {
   readonly currencies: CoingeckoWatchListToken[];
@@ -32,5 +32,20 @@ export default createReducer(initialState, (builder) =>
           state.currencies = existingList;
         }
       }
+    })
+    .addCase(updateCurrencies, (state, { payload: data }) => {
+      const res = data.reduce((acc: CoingeckoWatchListToken[], curr) => {
+        const stored = state.currencies.find(({ id }) => id === curr?.id);
+        if (stored) {
+          stored.price = curr?.price;
+          stored.weeklyChartData = curr?.weeklyChartData;
+          acc.push(stored);
+        } else {
+          acc.push(curr);
+        }
+        return acc;
+      }, []);
+
+      state.currencies = res;
     }),
 );

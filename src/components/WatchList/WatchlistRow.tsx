@@ -12,12 +12,11 @@ import { DeleteButton, RowWrapper } from './styleds';
 type Props = {
   coin: CoingeckoWatchListToken;
   onClick: () => void;
-  onRemove: () => void;
   isSelected: boolean;
-  firstCoin: CoingeckoWatchListToken;
+  totalLength: number;
 };
 
-const WatchlistRow: React.FC<Props> = ({ coin, onClick, onRemove, isSelected, firstCoin }) => {
+const WatchlistRow: React.FC<Props> = ({ coin, onClick, isSelected, totalLength }) => {
   const [showChart, setShowChart] = useState(false);
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const theme = useContext(ThemeContext);
@@ -35,7 +34,6 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, onRemove, isSelected, fi
   const dispatch = useDispatch();
   const mixpanel = useMixpanel();
   const removeToken = () => {
-    onRemove();
     dispatch(removeCurrency(coin?.id));
     mixpanel.track(MixPanelEvents.REMOVE_WATCHLIST, {
       token: coin?.symbol,
@@ -86,7 +84,7 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, onRemove, isSelected, fi
         )}
       </Box>
       <Box textAlign="right" minWidth={30} height={'100%'}>
-        {showDeleteButton && coin?.id !== firstCoin?.id && (
+        {!isSelected && showDeleteButton && totalLength > 1 && (
           <Box zIndex={2} position="relative">
             <DeleteButton onClick={removeToken}>
               <X fontSize={16} fontWeight={600} style={{ float: 'right' }} />

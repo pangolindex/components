@@ -1,37 +1,76 @@
-import { CoingeckoWatchListToken, useCoinGeckoTokens } from 'src/state/pcoingecko/hooks';
-import { AppState, useSelector } from '../index';
+import { useEffect, useMemo } from 'react';
+import { useQuery } from 'react-query';
+import {
+  CoingeckoWatchListToken,
+  fetchCoinMarketData,
+  makeCoingeckoTokenData,
+  useCoinGeckoTokens,
+} from 'src/state/pcoingecko/hooks';
+import { AppState, useDispatch, useSelector } from '../index';
+import { updateCurrencies } from './actions';
 
 export function useSelectedCurrencyLists(): CoingeckoWatchListToken[] | undefined {
+  const dispatch = useDispatch();
   const allTokens = useCoinGeckoTokens();
   const coins = Object.values(allTokens || {});
 
-  let allcurrencies = useSelector<AppState['pwatchlists']['currencies']>((state) =>
+  const allWatchlistCurrencies = useSelector<AppState['pwatchlists']['currencies']>((state) =>
     ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.currencies || []),
   );
 
-  allcurrencies = coins?.[0] ? [coins?.[0], ...allcurrencies] : ([] as CoingeckoWatchListToken[]);
+  const allCurrencies =
+    allWatchlistCurrencies.length > 0
+      ? allWatchlistCurrencies
+      : coins?.[0]
+      ? [coins?.[0], ...allWatchlistCurrencies]
+      : ([] as CoingeckoWatchListToken[]);
 
-  //let allSelectedToken = [] as CoingeckoWatchListToken[];
+  const coinIds = ((allWatchlistCurrencies as Array<CoingeckoWatchListToken>) || []).map((item) => {
+    return item.id;
+  });
 
-  // allcurrencies.forEach((c) => {
-  //   const filterTokens = coins.filter((coin) => c?.id?.toLowerCase() === coin?.id?.toLowerCase());
+  const page = 1;
 
-  //   allSelectedToken = [...allSelectedToken, ...filterTokens];
-  // });
+  const results = useQuery(
+    ['get-coingecko-token-data', page, coinIds.join(',')],
+    async () => {
+      const res = await fetchCoinMarketData(page, coinIds.join(','))();
+      console.log('res', res);
+      return res;
+    },
+    {
+      enabled: coinIds?.length > 0,
+    },
+  );
 
-  return allcurrencies;
+  const apiTokens = useMemo(() => {
+    return makeCoingeckoTokenData([results]);
+  }, [results]);
+
+  useEffect(() => {
+    if (Object.values(apiTokens || []).length > 0) {
+      dispatch(updateCurrencies(Object.values(apiTokens)));
+    }
+  }, [dispatch, Object.values(apiTokens || []).length]);
+
+  return allCurrencies;
 }
 
 export function useIsSelectedCurrency(id: string): boolean {
   const allTokens = useCoinGeckoTokens();
   const coins = Object.values(allTokens || {});
-  let allSelectedToken = useSelector<AppState['pwatchlists']['currencies']>((state) =>
+  const allWatchlistCurrencies = useSelector<AppState['pwatchlists']['currencies']>((state) =>
     ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.currencies || []),
   );
 
-  allSelectedToken = [coins?.[0], ...allSelectedToken];
+  const allCurrencies =
+    allWatchlistCurrencies.length > 0
+      ? allWatchlistCurrencies
+      : coins?.[0]
+      ? [coins?.[0], ...allWatchlistCurrencies]
+      : ([] as CoingeckoWatchListToken[]);
 
-  const index = allSelectedToken.findIndex((x) => x?.id === id);
+  const index = allCurrencies.findIndex((x) => x?.id === id);
 
   return index !== -1 ? true : false;
 }

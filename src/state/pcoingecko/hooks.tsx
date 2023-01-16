@@ -205,7 +205,7 @@ export const fetchCoinMarketData =
     }
   };
 
-export const makeCoingeckoTokenData = (results: any) => {
+export const makeCoingeckoTokenData = (results: any): CoingeckoWatchListState => {
   const toknesData = results.reduce((acc: any, result) => {
     const data = result?.data;
 
@@ -219,7 +219,7 @@ export const makeCoingeckoTokenData = (results: any) => {
   const sevenDaysAgo: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   const apiTokens = ((toknesData as Array<any>) || []).reduce<{
-    [address: string]: CoingeckoWatchListToken;
+    [id: string]: CoingeckoWatchListToken;
   }>((tokenMap: any, tokenData) => {
     if (tokenData) {
       const formattedHistory = [] as Array<{ timestamp: string; priceUSD: number }>;
@@ -299,20 +299,21 @@ export function useCoinGeckoSearchTokens(coinText: string): {
   const coinIds = ((!isLoading && (searchTokens as Array<CoingeckoTokenData>)) || []).map((item) => {
     return item.id;
   });
+  const page = 1;
 
-  const queryParameter = [] as any;
-  const totalPages = 1;
-  for (let page = 1; page <= totalPages; page++) {
-    queryParameter.push({
-      queryKey: ['get-coingecko-token-data', page, coinIds.join(',')],
-      queryFn: fetchCoinMarketData(page, coinIds.join(',')),
-    });
-  }
-
-  const results = useQueries(queryParameter);
+  const results = useQuery(
+    ['get-coingecko-token-data', page, coinIds.join(',')],
+    async () => {
+      const res = await fetchCoinMarketData(page, coinIds.join(','))();
+      return res;
+    },
+    {
+      enabled: coinIds?.length > 0,
+    },
+  );
 
   const apiTokens = useMemo(() => {
-    return makeCoingeckoTokenData(results);
+    return makeCoingeckoTokenData([results]);
   }, [results]);
 
   return apiTokens;
