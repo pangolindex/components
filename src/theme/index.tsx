@@ -196,6 +196,7 @@ export const defaultColors: Colors = {
     primaryBgColor: white,
     secondaryBgColor: ghostWhite,
     text: black,
+    errorColor: venetianRed,
     infoIconColor: black,
     routeInfoColor: platinum,
     transferKeyColor: quickSilver,

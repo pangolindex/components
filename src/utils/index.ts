@@ -55,6 +55,17 @@ export function isCosmosAddress(value: string | undefined, bridgeChain: BridgeCh
   }
 }
 
+export function isHederaAddress(value: string | undefined): string | false {
+  try {
+    if (typeof value !== 'string' || !value) {
+      return false;
+    }
+    return hederaFn.isHederaIdValid(value) ? value : false;
+  } catch {
+    return false;
+  }
+}
+
 export function isDummyAddress(value: any): string | false {
   return value;
 }
@@ -93,6 +104,7 @@ export const checkAddressNetworkBaseMapping: {
 } = {
   [NetworkType.EVM]: isDummyAddress,
   [NetworkType.COSMOS]: isCosmosAddress,
+  [NetworkType.HEDERA]: isHederaAddress,
 };
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
@@ -393,6 +405,18 @@ export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALA
 // add 10%
 export function calculateGasMargin(value: BigNumber): BigNumber {
   return value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000));
+}
+
+function padTo2Digits(num: number) {
+  return num.toString().padStart(2, '0');
+}
+
+export function formatDate(date: Date) {
+  return (
+    [date.getFullYear(), padTo2Digits(date.getMonth() + 1), padTo2Digits(date.getDate())].join('-') +
+    ' ' +
+    [padTo2Digits(date.getHours()), padTo2Digits(date.getMinutes()), padTo2Digits(date.getSeconds())].join(':')
+  );
 }
 
 // it convert seconds to hours/minutes HH:MM

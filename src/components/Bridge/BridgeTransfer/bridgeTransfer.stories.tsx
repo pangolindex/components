@@ -1,17 +1,8 @@
-import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { BridgeState, BridgeTransferProps } from './types';
+import { BridgeTransferStatus } from 'src/state/pbridge/types';
+import { BridgeTransferProps } from './types';
 import BridgeTransfer from '.';
-
-const currency0 = new Token(ChainId.AVALANCHE, '0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15', 18, 'ETH', 'Ether');
-const currency1 = new Token(
-  ChainId.AVALANCHE,
-  CHAINS[ChainId.AVALANCHE].contracts!.png,
-  18,
-  CHAINS[ChainId.AVALANCHE].png_symbol!,
-  'Pangolin',
-);
 
 export default {
   component: BridgeTransfer,
@@ -27,8 +18,12 @@ export default {
     state: {
       name: 'State',
       control: 'select',
-      options: [BridgeState[BridgeState.PENDING], BridgeState[BridgeState.FAILED], BridgeState[BridgeState.SUCCESS]],
-      type: { name: BridgeState, required: true },
+      options: [
+        BridgeTransferStatus[BridgeTransferStatus.PENDING],
+        BridgeTransferStatus[BridgeTransferStatus.FAILED],
+        BridgeTransferStatus[BridgeTransferStatus.SUCCESS],
+      ],
+      type: { name: BridgeTransferStatus, required: true },
       description: 'State of the transaction',
     },
     from: {
@@ -61,23 +56,23 @@ export default {
       type: { name: 'object', required: true },
       description: 'The chain of the token to be arrived',
     },
-    fromCoin: {
-      name: 'From Coin',
+    fromCurrency: {
+      name: 'From Currency',
       control: 'object',
       type: { name: 'object', required: true },
-      description: 'The coin to be transferred',
+      description: 'The currency to be transferred',
     },
-    toCoin: {
-      name: 'To Coin',
+    toCurrency: {
+      name: 'To Currency',
       control: 'object',
       type: { name: 'object', required: true },
-      description: 'The coin to be arrived',
+      description: 'The currency to be arrived',
     },
     via: {
       name: 'Via',
       control: 'text',
       type: { name: 'string', required: true },
-      description: 'The platforms used to transfer the token',
+      description: 'The bridge used to transfer the token',
     },
     onDelete: {
       name: 'OnDelete',
@@ -106,11 +101,7 @@ Default.args = {
   onResume: () => {},
   date: '9/10/2022, 7:53:00 AM',
   from: '1.0000',
-  fromChain: currency0,
-  fromCoin: currency1,
   to: '22.3615',
-  toChain: currency0,
-  toCoin: currency1,
-  via: 'PANGOLIN > DODO',
-  state: BridgeState.PENDING,
+  via: 'Hedera',
+  state: BridgeTransferStatus.PENDING,
 } as Partial<BridgeTransferProps>;

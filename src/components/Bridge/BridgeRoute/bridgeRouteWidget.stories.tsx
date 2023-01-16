@@ -48,16 +48,22 @@ export default {
       type: { name: 'string', required: true },
       description: 'Estimated Amount',
     },
+    fromAmount: {
+      name: 'From Amount',
+      control: 'text',
+      type: { name: 'string', required: true },
+      description: 'From Amount',
+    },
     toAmountUSD: {
       name: 'To Amount USD',
       control: 'text',
-      type: { name: 'string', required: true },
+      type: { name: 'string', required: false },
       description: 'Estimated Amount USD',
     },
     waitingTime: {
       name: 'Waiting Time',
       control: 'text',
-      type: { name: 'string', required: true },
+      type: { name: 'string', required: false },
       description: 'Estimated Transfer time',
     },
     gasCostUSD: {
@@ -78,6 +84,12 @@ export default {
       control: 'array',
       type: { name: 'array', required: true },
       description: 'Transaction Steps',
+    },
+    minAmount: {
+      name: 'Min Amount',
+      control: 'text',
+      type: { name: 'string', required: false },
+      description: 'Minimum Amount',
     },
   },
 };
@@ -131,4 +143,6 @@ Default.args = {
   waitingTime: '00:30 min',
   gasCostUSD: '0.36',
   toToken: 'USDT',
+  fromAmount: '365.9000',
+  minAmount: '15',
 } as Partial<BridgeRouteProps>;

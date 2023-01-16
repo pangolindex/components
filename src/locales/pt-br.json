@@ -747,6 +747,7 @@
       "singleTransaction": "Single transaction including",
       "estimatedToken": "Estimated Token: {{ token }}",
       "estimatedResult": "Estimated Result: {{ result }}",
+      "minAmount": "Minimum Amount: {{ minAmount }}",
       "min": "{{ minute }} min",
       "gasCost": "{{ gasCost }} USD Gas Cost"
     },
@@ -755,7 +756,7 @@
       "from": "From",
       "to": "To",
       "via": "Via",
-      "state": "State",
+      "status": "Status",
       "resumeSwap": "Resume Swap"
     },
     "bridgePrioritizations": {

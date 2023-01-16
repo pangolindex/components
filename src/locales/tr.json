@@ -755,7 +755,7 @@
       "from": "From",
       "to": "To",
       "via": "Üzerinden",
-      "state": "State",
+      "status": "Status",
       "resumeSwap": "Resume Swap"
     },
     "bridgePrioritizations": {

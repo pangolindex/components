@@ -3,8 +3,10 @@ import {
   ChainField,
   CurrencyField,
   TransactionStatus,
+  addBridgeTransfer,
   changeRouteLoaderStatus,
   changeTransactionLoaderStatus,
+  changeTransferStatus,
   clearTransactionData,
   replaceBridgeState,
   selectChain,
@@ -16,8 +18,9 @@ import {
   switchChains,
   switchCurrencies,
   typeAmount,
+  updateBridgeTransferIfExist,
 } from './actions';
-import { Route } from './types';
+import { BridgeTransfer, Route } from './types';
 
 export interface BridgeState {
   readonly typedValue: string;
@@ -40,6 +43,7 @@ export interface BridgeState {
   readonly transactionLoaderStatus: boolean;
   readonly transactionError: Error | undefined;
   readonly transactionStatus: TransactionStatus | undefined;
+  readonly transfers: BridgeTransfer[];
 }
 
 const initialState: BridgeState = {
@@ -63,6 +67,7 @@ const initialState: BridgeState = {
   transactionLoaderStatus: false,
   transactionError: undefined,
   transactionStatus: undefined,
+  transfers: [],
 };
 
 export default createReducer<BridgeState>(initialState, (builder) =>
@@ -172,6 +177,37 @@ export default createReducer<BridgeState>(initialState, (builder) =>
       return {
         ...state,
         transactionError,
+      };
+    })
+    .addCase(addBridgeTransfer, (state, { payload: { transfer } }) => {
+      return {
+        ...state,
+        transfers: [...state.transfers, transfer],
+      };
+    })
+    .addCase(updateBridgeTransferIfExist, (state, { payload: { transfer, id } }) => {
+      return {
+        ...state,
+        transfers: state.transfers.map((t) => {
+          if (t?.id === id) {
+            return transfer;
+          }
+          return t;
+        }),
+      };
+    })
+    .addCase(changeTransferStatus, (state, { payload: { status, id } }) => {
+      return {
+        ...state,
+        transfers: state.transfers.map((t) => {
+          if (t?.id === id) {
+            return {
+              ...t,
+              status,
+            };
+          }
+          return t;
+        }),
       };
     }),
 );

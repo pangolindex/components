@@ -19,7 +19,11 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
     toAmountUSD,
     waitingTime,
     gasCostUSD,
+    fromAmount,
+    minAmount,
   } = props;
+
+  const lessThanMinAmount: boolean = minAmount ? parseFloat(fromAmount) < parseFloat(minAmount) : false;
 
   return (
     <Route selected={selected}>
@@ -35,7 +39,7 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
           width={'fit-content'}
           padding={'8px'}
           height="30px"
-          isDisabled={selected || transactionLoaderStatus}
+          isDisabled={selected || transactionLoaderStatus || lessThanMinAmount}
           onClick={() => {
             onSelectRoute();
           }}
@@ -74,16 +78,25 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
         <Text color={'bridge.text'} fontSize={[16, 14]} fontWeight={600} pb={'0.2rem'}>
           {t('bridge.bridgeRoute.estimatedToken', { token: `${toAmount} ${toToken}` })}
         </Text>
-        <Text color={'bridge.text'} fontSize={[16, 14]} fontWeight={600}>
-          {t('bridge.bridgeRoute.estimatedResult', { result: toAmountUSD })}
-        </Text>
+        {toAmountUSD && (
+          <Text color={'bridge.text'} fontSize={[16, 14]} fontWeight={600} pb={'0.2rem'}>
+            {t('bridge.bridgeRoute.estimatedResult', { result: toAmountUSD })}
+          </Text>
+        )}
+        {lessThanMinAmount && (
+          <Text color={'bridge.errorColor'} fontSize={[16, 14]} fontWeight={600}>
+            {t('bridge.bridgeRoute.minAmount', { minAmount: `${minAmount} ${toToken}` })}
+          </Text>
+        )}
       </Box>
       <Informations>
-        <Information>
-          <Text color="bridge.routeInfoColor" fontSize={[16, 14]} fontWeight={400}>
-            {waitingTime}
-          </Text>
-        </Information>
+        {waitingTime && (
+          <Information>
+            <Text color="bridge.routeInfoColor" fontSize={[16, 14]} fontWeight={400}>
+              {waitingTime}
+            </Text>
+          </Information>
+        )}
         {gasCostUSD && (
           <Information>
             <Text color="bridge.routeInfoColor" fontSize={[16, 14]} fontWeight={400}>

@@ -1,19 +1,20 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, CountdownCounter, Loader, Text } from 'src/components';
 import { usePangolinWeb3 } from 'src/hooks';
 import { ChainField, CurrencyField } from 'src/state/pbridge/actions';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
-import { Route } from 'src/state/pbridge/types';
+import { BridgeTransferStatus, BridgeTransfer as BridgeTransferType, Route } from 'src/state/pbridge/types';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { Tab, TabList, Tabs } from '../Tabs';
 import BridgeCard from './BridgeCard';
 import BridgeRoute from './BridgeRoute';
-import { CustomTabPanel, LoaderWrapper, PageWrapper, Routes, Transactions } from './styles';
+import BridgeTransfer from './BridgeTransfer';
+import { CustomTabPanel, LoaderWrapper, PageWrapper, Routes, Transactions, Transfers } from './styles';
 
 const Bridge = () => {
   const { routes, routesLoaderStatus } = useDerivedBridgeInfo();
-  const { getRoutes } = useBridgeSwapActionHandlers();
+  const { getRoutes, resumeTransaction } = useBridgeSwapActionHandlers();
   const { onSelectRoute, onChangeRouteLoaderStatus } = useBridgeActionHandlers();
   const [userSlippage] = useUserSlippageTolerance();
   const [slippageTolerance, setSlippageTolerance] = useState((userSlippage / 100).toString());
@@ -21,12 +22,27 @@ const Bridge = () => {
   const { t } = useTranslation();
   const { account } = usePangolinWeb3();
 
-  const { currencies, chains, parsedAmount, recipient } = useDerivedBridgeInfo();
+  const { currencies, chains, parsedAmount, recipient, transfers } = useDerivedBridgeInfo();
 
   const inputCurrency = currencies[CurrencyField.INPUT];
   const outputCurrency = currencies[CurrencyField.OUTPUT];
   const fromChain = chains[ChainField.FROM];
   const toChain = chains[ChainField.TO];
+
+  const onResumeTransaction = useCallback(
+    (transfer: BridgeTransferType) => {
+      transfer?.bridgeProvider?.id && resumeTransaction[transfer?.bridgeProvider?.id](transfer, account);
+    },
+    [resumeTransaction],
+  );
+
+  const activeTransfers = useMemo(() => {
+    return transfers?.filter((x) => x.status === BridgeTransferStatus.PENDING);
+  }, [transfers]);
+
+  const historicalTransfers = useMemo(() => {
+    return transfers?.filter((x) => x.status !== BridgeTransferStatus.PENDING);
+  }, [transfers]);
 
   const getAllRoutes = useCallback(() => {
     if (parsedAmount) {
@@ -61,8 +77,14 @@ const Bridge = () => {
         <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
           <TabList>
             <Tab>{t('bridge.availableRoutes', { number: routes?.length || 0 })}</Tab>
-            {routes && routes.length > 0 && !routesLoaderStatus && (
-              <div style={{ width: '25px' }}>
+            <Tab disabled={activeTransfers && activeTransfers?.length === 0}>
+              {t('bridge.activeTransfers', { number: activeTransfers?.length || 0 })}
+            </Tab>
+            <Tab disabled={historicalTransfers && historicalTransfers?.length === 0}>
+              {t('bridge.historicalTransfers', { number: historicalTransfers?.length || 0 })}
+            </Tab>
+            <div style={{ width: '25px' }}>
+              {routes && routes.length > 0 && !routesLoaderStatus && (
                 <CountdownCounter
                   value={60}
                   maxValue={60}
@@ -70,8 +92,8 @@ const Bridge = () => {
                   counterClockwise={false}
                   onFinish={getAllRoutes}
                 />
-              </div>
-            )}
+              )}
+            </div>
           </TabList>
           <CustomTabPanel>
             {routesLoaderStatus && (
@@ -93,10 +115,12 @@ const Bridge = () => {
                       transactionType={route.transactionType}
                       selected={route.selected}
                       toAmount={route.toAmount}
-                      toAmountUSD={route.toAmountUSD}
-                      waitingTime={route.waitingTime}
+                      toAmountUSD={route?.toAmountUSD}
+                      waitingTime={route?.waitingTime}
                       gasCostUSD={route?.gasCostUSD}
                       toToken={route.toToken}
+                      fromAmount={route.fromAmount}
+                      minAmount={route?.minAmount}
                     />
                   );
                 })}
@@ -108,6 +132,52 @@ const Bridge = () => {
                 </Text>
               </Box>
             )}
+          </CustomTabPanel>
+          <CustomTabPanel>
+            <Transfers>
+              {activeTransfers &&
+                activeTransfers.length > 0 &&
+                activeTransfers.map((transfer, index) => (
+                  <BridgeTransfer
+                    key={index}
+                    index={index}
+                    date={transfer.date}
+                    from={transfer.fromAmount}
+                    fromChain={transfer.fromChain}
+                    fromCurrency={transfer.fromCurrency}
+                    to={transfer.toAmount}
+                    toChain={transfer.toChain}
+                    toCurrency={transfer.toCurrency}
+                    via={transfer.bridgeProvider.name}
+                    status={transfer.status}
+                    onResume={() => {
+                      onResumeTransaction(transfer);
+                    }}
+                  />
+                ))}
+            </Transfers>
+          </CustomTabPanel>
+          <CustomTabPanel>
+            <Transfers>
+              {historicalTransfers &&
+                historicalTransfers.length > 0 &&
+                historicalTransfers.map((transfer, index) => (
+                  <BridgeTransfer
+                    key={index}
+                    index={index}
+                    date={transfer.date}
+                    from={transfer.fromAmount}
+                    fromChain={transfer.fromChain}
+                    fromCurrency={transfer.fromCurrency}
+                    to={transfer.toAmount}
+                    toChain={transfer.toChain}
+                    toCurrency={transfer.toCurrency}
+                    via={transfer.bridgeProvider.name}
+                    status={transfer.status}
+                    errorMessage={transfer?.errorMessage}
+                  />
+                ))}
+            </Transfers>
           </CustomTabPanel>
         </Tabs>
       </Transactions>

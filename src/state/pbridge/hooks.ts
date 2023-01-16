@@ -21,19 +21,21 @@ import {
 } from '@pangolindex/sdk';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { HASHPORT_API, SQUID_API } from 'src/constants';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { COINGEKO_BASE_URL, HASHPORT_API, SQUID_API } from 'src/constants';
+import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
 import { AppState, useDispatch, useSelector } from 'src/state';
-import { calculateTransactionTime, changeNetwork, getSigner } from 'src/utils';
+import { calculateTransactionTime, changeNetwork, formatDate, getSigner } from 'src/utils';
 import { useCurrencyBalances } from '../pwallet/hooks';
 import {
   ChainField,
   CurrencyField,
   TransactionStatus,
+  addBridgeTransfer,
   changeRouteLoaderStatus,
   changeTransactionLoaderStatus,
+  changeTransferStatus,
   clearTransactionData,
   selectChain,
   selectCurrency,
@@ -44,8 +46,18 @@ import {
   switchChains,
   switchCurrencies,
   typeAmount,
+  updateBridgeTransferIfExist,
 } from './actions';
-import { BridgePrioritizations, GetRoutes, Route, SendTransaction, Step } from './types';
+import {
+  BridgePrioritizations,
+  BridgeTransfer,
+  BridgeTransferStatus,
+  GetRoutes,
+  ResumeTransaction,
+  Route,
+  SendTransaction,
+  Step,
+} from './types';
 
 export function useBridgeState(): AppState['pbridge'] {
   return useSelector<AppState['pbridge']>((state) => state.pbridge);
@@ -175,6 +187,7 @@ export function useDerivedBridgeInfo(): {
   transactionLoaderStatus: boolean;
   transactionStatus?: TransactionStatus;
   transactionError?: Error;
+  transfers?: BridgeTransfer[]; // TODO: Transfer
 } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -224,6 +237,7 @@ export function useDerivedBridgeInfo(): {
     transactionLoaderStatus,
     transactionStatus,
     transactionError,
+    transfers,
   } = useBridgeState();
 
   const fromChain = fromChainId ? chainList?.find((x) => x.id === fromChainId) : undefined;
@@ -296,14 +310,17 @@ export function useDerivedBridgeInfo(): {
     transactionLoaderStatus,
     transactionStatus,
     transactionError,
+    transfers,
   };
 }
 
 export function useBridgeSwapActionHandlers(): {
   getRoutes: GetRoutes;
   sendTransaction: SendTransaction;
+  resumeTransaction: ResumeTransaction;
 } {
   const dispatch = useDispatch();
+  const { library } = useLibrary();
   const getRoutes = async (
     amount: string,
     slipLimit: string,
@@ -345,6 +362,7 @@ export function useBridgeSwapActionHandlers(): {
       const routes = routesResponse?.routes || [];
       const lifiRoutes: Route[] = routes?.map((route) => {
         return {
+          id: route.id,
           nativeRoute: route,
           bridgeType: LIFIBridge,
           waitingTime: calculateTransactionTime(
@@ -390,53 +408,13 @@ export function useBridgeSwapActionHandlers(): {
               ? BridgePrioritizations[route?.tags?.[0].toUpperCase()]
               : BridgePrioritizations.NORMAL,
           selected: false,
+          fromAmount: amount,
+          fromChain: fromChain as BridgeChain,
+          fromCurrency: fromCurrency as BridgeCurrency,
+          toChain: toChain as BridgeChain,
+          toCurrency: toCurrency as BridgeCurrency,
         };
       });
-
-      let hashportRoute: Route | undefined;
-      try {
-        const assetDetailReq = await axios.get(
-          `${HASHPORT_API}/networks/${fromChain?.chain_id}/assets/${fromCurrency?.address?.toString()}`,
-        );
-        const assetDetail = assetDetailReq.data;
-        if (assetDetail) {
-          const toAmountFee =
-            parseFloat(parsedAmount) * (assetDetail.feePercentage.amount / assetDetail.feePercentage.maxPercentage);
-          const toAmount = new TokenAmount(
-            fromCurrency as Currency as Token, // TODO:
-            (parseFloat(parsedAmount) - toAmountFee).toString(),
-          ).toFixed(4);
-          hashportRoute = {
-            nativeRoute: assetDetail, // TODO: Need to add HashportRoute type
-            bridgeType: HASHPORT,
-            waitingTime: calculateTransactionTime(60), // TODO:
-            toToken: toCurrency?.symbol || '',
-            toAmount: toAmount,
-            toAmountNet: toAmount,
-            toAmountUSD: `${'NULL'} USD`, // TODO:
-            gasCostUSD: 'NULL', // TODO:
-            steps: [
-              {
-                bridge: HASHPORT,
-                type: 'bridge',
-                includedSteps: [], // TODO:
-                action: {
-                  toToken: toCurrency?.symbol || '',
-                },
-                estimate: {
-                  toAmount: toAmount,
-                },
-              },
-            ],
-            transactionType: BridgePrioritizations.RECOMMENDED,
-            selected: false,
-          };
-        } else {
-          hashportRoute = undefined;
-        }
-      } catch (error) {
-        hashportRoute = undefined;
-      }
 
       const params: Omit<GetRoute, 'toAddress'> & Partial<Pick<GetRoute, 'toAddress'>> = {
         fromChain: fromChain?.chain_id || 1,
@@ -514,8 +492,82 @@ export function useBridgeSwapActionHandlers(): {
             ],
             transactionType: BridgePrioritizations.RECOMMENDED,
             selected: false,
+            fromAmount: amount,
+            fromChain: fromChain as BridgeChain,
+            fromCurrency: fromCurrency as BridgeCurrency,
+            toChain: toChain as BridgeChain,
+            toCurrency: toCurrency as BridgeCurrency,
           }
         : undefined;
+
+      let hashportRoute: Route | undefined;
+      try {
+        const assetDetailReq = await axios.get(
+          `${HASHPORT_API}/networks/${fromChain?.chain_id}/assets/${fromCurrency?.address?.toString()}`,
+        );
+        const assetDetail = assetDetailReq.data;
+        if (assetDetail) {
+          const hederaGasFeeUSD = 0.0001; // https://docs.hedera.com/hedera/mainnet/fees
+          const toAmountFee =
+            (parseFloat(parsedAmount) * (assetDetail.feePercentage.amount / assetDetail.feePercentage.maxPercentage)) /
+            10 ** assetDetail.decimals;
+          const toAmount = (parseFloat(amount) - toAmountFee).toFixed(4);
+
+          const url = `${COINGEKO_BASE_URL}/simple/token_price/${
+            toChain?.coingecko_id
+          }?contract_addresses=${toCurrency?.address.toLowerCase()}&vs_currencies=usd`;
+          const response = await fetch(url);
+          const data = await response.json();
+          const toCurrencyUSD = toCurrency && data[toCurrency?.address.toLowerCase()]?.usd;
+          const toAmountUSD = toCurrencyUSD && (toCurrencyUSD * parseFloat(toAmount)).toFixed(4);
+
+          hashportRoute = {
+            bridgeType: HASHPORT,
+            toToken: toCurrency?.symbol || '',
+            toAmount: toAmount,
+            toAmountNet: toAmount,
+            recipient: recipient,
+            ...(toAmountUSD && { toAmountUSD: `${toAmountUSD} USD` }),
+            gasCostUSD: hederaGasFeeUSD.toString(), // TODO: Add target chain gas cost
+            steps: [
+              {
+                bridge: HASHPORT,
+                type: 'bridge',
+                includedSteps: [
+                  {
+                    type: 'cross',
+                    integrator: HASHPORT.name,
+                    action: {
+                      toToken: toCurrency?.symbol || '',
+                    },
+                    estimate: {
+                      toAmount: toAmount,
+                    },
+                  },
+                ],
+                action: {
+                  toToken: toCurrency?.symbol || '',
+                },
+                estimate: {
+                  toAmount: toAmount,
+                },
+              },
+            ],
+            transactionType: BridgePrioritizations.RECOMMENDED,
+            selected: false,
+            minAmount: (assetDetail.minAmount / 10 ** assetDetail.decimals).toString(),
+            fromAmount: amount,
+            fromChain: fromChain as BridgeChain,
+            fromCurrency: fromCurrency as BridgeCurrency,
+            toChain: toChain as BridgeChain,
+            toCurrency: toCurrency as BridgeCurrency,
+          };
+        } else {
+          hashportRoute = undefined;
+        }
+      } catch (error) {
+        hashportRoute = undefined;
+      }
 
       dispatch(
         setRoutes({
@@ -570,39 +622,274 @@ export function useBridgeSwapActionHandlers(): {
     });
   };
 
-  const sendTransactionLifi = async (library: any, selectedRoute?: Route, account?: string | null) => {
+  const switchNetwork = async (toChain: Chain, account?: string | null) => {
+    // TODO: Li.Fi throws an error when it tries to switch the network.
+    await changeNetwork(toChain);
+    const signer = getSigner(library, account || '') as any;
+    return signer;
+  };
+
+  const sendTransactionLifi = async (selectedRoute: Route, account?: string | null) => {
     dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
     const lifi = new LIFI();
     const toChain: Chain = ALL_CHAINS.filter(
       (chain) => chain.chain_id === (selectedRoute?.nativeRoute as LifiRoute)?.toChainId,
     )[0];
 
-    const switchNetwork = async () => {
-      await changeNetwork(toChain);
-      return getSigner(library, account || '') as any;
+    const transfer: BridgeTransfer = {
+      id: selectedRoute?.id,
+      date: formatDate(new Date()),
+      fromAmount: selectedRoute.fromAmount,
+      fromChain: selectedRoute.fromChain,
+      fromCurrency: selectedRoute.fromCurrency,
+      toAmount: selectedRoute.toAmount || '',
+      toChain: selectedRoute.toChain,
+      toCurrency: selectedRoute.toCurrency,
+      bridgeProvider: selectedRoute?.bridgeType,
+      status: BridgeTransferStatus.PENDING,
+      nativeRoute: selectedRoute?.nativeRoute,
     };
 
     const signer: JsonRpcSigner = await getSigner(library, account || '');
-    // executing a route
+    const containsSwitchChain = selectedRoute?.steps?.length > 1;
     try {
-      const executedRoute = await lifi.executeRoute(signer as any, selectedRoute?.nativeRoute as LifiRoute, {
-        // TODO:
-        updateCallback: (updatedRoute) => {
-          console.log(updatedRoute);
+      if (containsSwitchChain) {
+        dispatch(
+          addBridgeTransfer({
+            transfer,
+          }),
+        );
+      }
+      await lifi.executeRoute(signer as any, selectedRoute?.nativeRoute as LifiRoute, {
+        updateCallback: async (updatedRoute: LifiRoute) => {
+          const clonedTransfer = JSON.parse(JSON.stringify(transfer));
+          const clonedNativeRoute = JSON.parse(JSON.stringify(updatedRoute));
+          clonedTransfer.nativeRoute = clonedNativeRoute;
+          dispatch(
+            updateBridgeTransferIfExist({
+              transfer: clonedTransfer,
+              id: updatedRoute.id,
+            }),
+          );
         },
-        switchChainHook: switchNetwork,
+        switchChainHook: () => switchNetwork(toChain, account),
       });
-      console.log(executedRoute);
       dispatch(
         changeTransactionLoaderStatus({
           transactionLoaderStatus: false,
           transactionStatus: TransactionStatus.SUCCESS,
         }),
       );
+      transfer.status = BridgeTransferStatus.SUCCESS;
+      if (containsSwitchChain) {
+        dispatch(updateBridgeTransferIfExist({ transfer, id: transfer.id as string }));
+      } else {
+        dispatch(
+          addBridgeTransfer({
+            transfer,
+          }),
+        );
+      }
     } catch (e: Error | unknown) {
       if (e) {
-        // TODO:
-        // containsSwitchChain=true -> Send to directus.app with related data
+        dispatch(
+          changeTransactionLoaderStatus({
+            transactionLoaderStatus: false,
+            transactionStatus: TransactionStatus.FAILED,
+          }),
+        );
+        dispatch(setTransactionError({ transactionError: e as Error }));
+        if (!containsSwitchChain) {
+          transfer.status = BridgeTransferStatus.FAILED;
+          transfer.errorMessage = (e as Error).message;
+          dispatch(
+            addBridgeTransfer({
+              transfer,
+            }),
+          );
+        }
+      } else {
+        dispatch(
+          changeTransactionLoaderStatus({
+            transactionLoaderStatus: false,
+            transactionStatus: TransactionStatus.SUCCESS,
+          }),
+        );
+        transfer.status = BridgeTransferStatus.SUCCESS;
+        if (containsSwitchChain) {
+          dispatch(updateBridgeTransferIfExist({ transfer, id: transfer.id as string }));
+        } else {
+          dispatch(
+            addBridgeTransfer({
+              transfer,
+            }),
+          );
+        }
+      }
+    }
+  };
+
+  const sendTransactionSquid = async (selectedRoute: Route, account?: string | null) => {
+    dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
+    const signer: JsonRpcSigner = await getSigner(library, account || '');
+    const squidRoute = selectedRoute?.nativeRoute as SquidRouteData;
+    const squid = new Squid({
+      baseUrl: SQUID_API,
+    });
+    await squid.init();
+
+    const transfer: BridgeTransfer = {
+      date: formatDate(new Date()),
+      fromAmount: selectedRoute.fromAmount,
+      fromChain: selectedRoute.fromChain,
+      fromCurrency: selectedRoute.fromCurrency,
+      toAmount: selectedRoute.toAmount || '',
+      toChain: selectedRoute.toChain,
+      toCurrency: selectedRoute.toCurrency,
+      bridgeProvider: selectedRoute?.bridgeType,
+      status: BridgeTransferStatus.PENDING,
+      nativeRoute: selectedRoute?.nativeRoute,
+    };
+
+    try {
+      const tx = await squid.executeRoute({
+        signer: signer as any,
+        route: squidRoute,
+      });
+      await tx.wait();
+      dispatch(
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.SUCCESS,
+        }),
+      );
+      transfer.status = BridgeTransferStatus.SUCCESS;
+      dispatch(
+        addBridgeTransfer({
+          transfer,
+        }),
+      );
+    } catch (e: Error | unknown) {
+      dispatch(
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.FAILED,
+        }),
+      );
+      dispatch(setTransactionError({ transactionError: e as Error }));
+      transfer.status = BridgeTransferStatus.FAILED;
+      transfer.errorMessage = (e as Error).message;
+      dispatch(
+        addBridgeTransfer({
+          transfer,
+        }),
+      );
+    }
+  };
+
+  const sendTransactionHashport = async (selectedRoute: Route, account?: string | null) => {
+    dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
+    const transfer: BridgeTransfer = {
+      date: formatDate(new Date()),
+      fromAmount: selectedRoute.fromAmount,
+      fromChain: selectedRoute.fromChain,
+      fromCurrency: selectedRoute.fromCurrency,
+      toAmount: selectedRoute.toAmount || '',
+      toChain: selectedRoute.toChain,
+      toCurrency: selectedRoute.toCurrency,
+      bridgeProvider: selectedRoute?.bridgeType,
+      status: BridgeTransferStatus.PENDING,
+      nativeRoute: selectedRoute?.nativeRoute,
+    };
+    try {
+      // TODO:
+      console.log(account);
+      // const signer: JsonRpcSigner = await getSigner(library, account || '');
+
+      // Step 1 - Validate Porting Steps
+
+      const params = {
+        sourceNetworkId: selectedRoute.fromChain?.chain_id,
+        sourceAssetId: selectedRoute.fromCurrency?.address,
+        targetNetworkId: selectedRoute.toChain?.chain_id,
+        recipient: selectedRoute.recipient,
+        amount: parseFloat(selectedRoute.fromAmount) * 10 ** selectedRoute.fromCurrency?.decimals,
+      };
+      const validationReq = await axios.get(`${HASHPORT_API}/bridge/validate`, {
+        params,
+      });
+      const validationRes = validationReq.data;
+      if (!validationRes.valid) {
+        dispatch(
+          changeTransactionLoaderStatus({
+            transactionLoaderStatus: false,
+            transactionStatus: TransactionStatus.FAILED,
+          }),
+        );
+        dispatch(setTransactionError({ transactionError: new Error('Route is not valid') }));
+        transfer.status = BridgeTransferStatus.FAILED;
+        transfer.errorMessage = 'Route is not valid';
+        dispatch(
+          addBridgeTransfer({
+            transfer,
+          }),
+        );
+        return;
+      }
+      // Step 2 - Get bridge steps
+      // Step 3 - Run each step
+      // Step 4 - Switch Chain
+      // Step 5 - Continue to next step
+    } catch (error: Error | unknown) {
+      dispatch(
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.FAILED,
+        }),
+      );
+      dispatch(setTransactionError({ transactionError: error as Error }));
+      transfer.status = BridgeTransferStatus.FAILED;
+      transfer.errorMessage = (error as Error).message;
+      dispatch(
+        addBridgeTransfer({
+          transfer,
+        }),
+      );
+    }
+  };
+
+  const resumeTransactionLifi = async (transfer: BridgeTransfer, account?: string | null) => {
+    dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
+    const lifi = new LIFI();
+    const toChain: Chain = ALL_CHAINS.filter(
+      (chain) => chain.chain_id === (transfer?.nativeRoute as LifiRoute)?.toChainId,
+    )[0];
+    const signer: JsonRpcSigner = await getSigner(library, account || '');
+
+    try {
+      await lifi.resumeRoute(signer as any, transfer?.nativeRoute as LifiRoute, {
+        updateCallback: async (updatedRoute: LifiRoute) => {
+          const clonedTransfer = JSON.parse(JSON.stringify(transfer));
+          const clonedNativeRoute = JSON.parse(JSON.stringify(updatedRoute));
+          clonedTransfer.nativeRoute = clonedNativeRoute;
+          dispatch(
+            updateBridgeTransferIfExist({
+              transfer: clonedTransfer,
+              id: updatedRoute.id,
+            }),
+          );
+        },
+        switchChainHook: () => switchNetwork(toChain, account),
+      });
+      dispatch(
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.SUCCESS,
+        }),
+      );
+      dispatch(changeTransferStatus({ status: BridgeTransferStatus.SUCCESS, id: transfer.id as string }));
+    } catch (e: Error | unknown) {
+      if (e) {
         dispatch(
           changeTransactionLoaderStatus({
             transactionLoaderStatus: false,
@@ -617,49 +904,24 @@ export function useBridgeSwapActionHandlers(): {
             transactionStatus: TransactionStatus.SUCCESS,
           }),
         );
+        dispatch(changeTransferStatus({ status: BridgeTransferStatus.SUCCESS, id: transfer.id as string }));
       }
-    }
-  };
-
-  const sendTransactionSquid = async (library: any, selectedRoute?: Route, account?: string | null) => {
-    dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
-    const signer: JsonRpcSigner = await getSigner(library, account || '');
-    const squidRoute = selectedRoute?.nativeRoute as SquidRouteData;
-    const squid = new Squid({
-      baseUrl: SQUID_API,
-    });
-    await squid.init();
-
-    try {
-      const tx = await squid.executeRoute({
-        signer: signer as any,
-        route: squidRoute,
-      });
-      await tx.wait();
-      dispatch(
-        changeTransactionLoaderStatus({
-          transactionLoaderStatus: false,
-          transactionStatus: TransactionStatus.SUCCESS,
-        }),
-      );
-    } catch (e: Error | unknown) {
-      dispatch(
-        changeTransactionLoaderStatus({
-          transactionLoaderStatus: false,
-          transactionStatus: TransactionStatus.FAILED,
-        }),
-      );
-      dispatch(setTransactionError({ transactionError: e as Error }));
     }
   };
 
   const sendTransaction: SendTransaction = {
     lifi: sendTransactionLifi,
     squid: sendTransactionSquid,
+    hashport: sendTransactionHashport,
+  };
+
+  const resumeTransaction: ResumeTransaction = {
+    lifi: resumeTransactionLifi,
   };
 
   return {
     getRoutes,
     sendTransaction,
+    resumeTransaction,
   };
 }

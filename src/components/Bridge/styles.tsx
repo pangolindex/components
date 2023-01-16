@@ -2,6 +2,17 @@ import styled from 'styled-components';
 import { Box } from '../Box';
 import { TabPanel } from '../Tabs';
 
+export const Transfers = styled.table`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding-top: 50px;
+  padding-bottom: 30px;
+  overflow-y: auto;
+  white-space: nowrap;
+  width: 100%;
+`;
+
 export const PageWrapper = styled(Box)`
   width: 100%;
   display: flex;

@@ -108,7 +108,8 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           )
         }
       />
-      {chain?.evm === false && (
+      {chain && chain?.network_type !== NetworkType.EVM && (
+        // TODO: only show this part in "From Side"
         <Box pt={20}>
           <TextInput
             label={t('bridge.bridgeInputsWidget.recipient')}

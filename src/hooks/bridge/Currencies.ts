@@ -63,7 +63,7 @@ export function useHashportCurrencies() {
           decimals: value?.decimals,
           symbol: value?.symbol,
           name: value?.name,
-          logo: 'https://app.hashport.network/assets/HBAR_DARK.311aac1e.svg',
+          logo: 'https://app.hashport.network/assets/HBAR_DARK.311aac1e.svg', // TODO: get logo from hashport when they add it
           address: value?.id,
           ...(value?.bridgeableNetworks && {
             bridgeableNetworks: Object.values(value.bridgeableNetworks).map((val: any) => {
@@ -73,7 +73,7 @@ export function useHashportCurrencies() {
                 decimals: asset.decimals,
                 symbol: asset.symbol,
                 name: asset.name,
-                logo: 'https://app.hashport.network/assets/HBAR_DARK.311aac1e.svg',
+                logo: 'https://app.hashport.network/assets/HBAR_DARK.311aac1e.svg', // TODO: get logo from hashport when they add it
                 address: asset.id,
               };
               return data;
@@ -109,7 +109,6 @@ export function useHashportCurrencies() {
         });
       }
     });
-
     return updatedFormattedCurrencies;
   });
 }

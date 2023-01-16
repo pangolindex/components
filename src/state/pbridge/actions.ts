@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { Route } from './types';
+import { BridgeTransfer, BridgeTransferStatus, Route } from './types';
 
 export enum ChainField {
   FROM = 'FROM',
@@ -48,3 +48,10 @@ export const changeTransactionLoaderStatus = createAction<{
 }>('pbridge/changeTransactionStatus');
 export const setTransactionError = createAction<{ transactionError: Error }>('pbridge/setTransactionError');
 export const clearTransactionData = createAction<void>('pbridge/clearTransactionData');
+export const addBridgeTransfer = createAction<{ transfer: BridgeTransfer }>('pbridgeTransfer/addBridgeTransfer');
+export const updateBridgeTransferIfExist = createAction<{ transfer: BridgeTransfer; id: string }>(
+  'pbridgeTransfer/updateBridgeTransferIfExist',
+);
+export const changeTransferStatus = createAction<{ status: BridgeTransferStatus; id: string }>(
+  'pbridgeTransfer/changeTransferState',
+);

@@ -2,6 +2,27 @@ import { CallType, RouteData as SquidRoute } from '@0xsquid/sdk';
 import { Route as LifiRoute } from '@lifi/sdk';
 import { Bridge, BridgeChain, BridgeCurrency } from '@pangolindex/sdk';
 
+export type BridgeTransfer = {
+  id?: string;
+  date: string;
+  fromAmount: string;
+  fromChain: BridgeChain;
+  fromCurrency: BridgeCurrency;
+  toAmount: string;
+  toChain: BridgeChain;
+  toCurrency: BridgeCurrency;
+  bridgeProvider: Bridge;
+  status: BridgeTransferStatus;
+  errorMessage?: string;
+  nativeRoute?: LifiRoute | SquidRoute;
+};
+
+export enum BridgeTransferStatus {
+  PENDING = 'PENDING',
+  FAILED = 'FAILED',
+  SUCCESS = 'SUCCESS',
+}
+
 export enum BridgePrioritizations {
   RECOMMENDED,
   NORMAL,
@@ -11,17 +32,25 @@ export enum BridgePrioritizations {
 }
 
 export type Route = {
+  id?: string;
   bridgeType: Bridge;
-  waitingTime: string;
+  waitingTime?: string;
   toAmount: string;
   toAmountNet: string;
-  toAmountUSD: string;
+  toAmountUSD?: string;
   toToken: string;
   gasCostUSD?: string;
   steps: Step[];
   transactionType: BridgePrioritizations;
   selected: boolean;
-  nativeRoute: LifiRoute | SquidRoute;
+  nativeRoute?: LifiRoute | SquidRoute;
+  recipient?: string;
+  minAmount?: string;
+  fromChain: BridgeChain;
+  toChain: BridgeChain;
+  fromCurrency: BridgeCurrency;
+  toCurrency: BridgeCurrency;
+  fromAmount: string;
 };
 
 export declare type Step = SwapStep | BridgeStep | LifiStep | CrossStep | CustomStep | SquidStep;
@@ -87,11 +116,18 @@ export interface Estimate {
   toAmount: string;
 }
 
-export type SendTransactionFunc = (library: any, selectedRoute?: Route, account?: string | null) => Promise<void>;
+export type SendTransactionFunc = (selectedRoute: Route, account?: string | null) => Promise<void>;
+
+export type ResumeTransactionFunc = (transfer: BridgeTransfer, account?: string | null) => Promise<void>;
 
 export type SendTransaction = {
   lifi: SendTransactionFunc;
   squid: SendTransactionFunc;
+  hashport: SendTransactionFunc;
+};
+
+export type ResumeTransaction = {
+  lifi: ResumeTransactionFunc;
 };
 
 export type GetRoutes = (

@@ -7,8 +7,18 @@ export const Transfer = styled.tr`
   padding: 30px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  width: max-content;
+  width: 100%;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    justify-content: space-between;
+    width: max-content;
+  `};
+`;
+
+export const Row = styled(Box)`
+  display: flex;
+  flex-direction: row;
+  width: 100%
+  justify-content: space-around;
 `;
 
 export const Data = styled.div`

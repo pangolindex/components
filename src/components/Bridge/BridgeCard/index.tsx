@@ -31,7 +31,7 @@ import {
   Text,
 } from 'src/components';
 import { Option } from 'src/components/DropdownMenu/types';
-import { useChainId, useLibrary } from 'src/hooks';
+import { useChainId } from 'src/hooks';
 import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
 import useDebounce from 'src/hooks/useDebounce';
@@ -90,14 +90,12 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
   const sdkChainId = useChainId();
   const [drawerType, setDrawerType] = useState(ChainField.FROM);
 
-  const { library } = useLibrary();
-
   const { sendTransaction } = useBridgeSwapActionHandlers();
 
   const isToAddress = checkAddressNetworkBaseMapping[toChain?.network_type || NetworkType.EVM];
 
   const onSendTransaction = useCallback(() => {
-    selectedRoute?.bridgeType?.id && sendTransaction[selectedRoute?.bridgeType?.id](library, selectedRoute, account);
+    selectedRoute?.bridgeType?.id && sendTransaction[selectedRoute?.bridgeType?.id](selectedRoute, account);
   }, [selectedRoute]);
 
   const onChangeTokenDrawerStatus = useCallback(() => {
@@ -175,7 +173,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       inputCurrency &&
       outputCurrency &&
       toChain &&
-      (toChain?.evm || (!toChain?.evm && isToAddress(recipient, toChain)))
+      (toChain?.network_type === NetworkType.EVM || isToAddress(recipient, toChain))
     ) {
       onChangeRouteLoaderStatus();
       getRoutes(
@@ -286,9 +284,9 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       />
       <Box display={'flex'} justifyContent={'center'} alignContent={'center'} marginY={20}>
         <ArrowWrapper
-          clickable={toChain?.network_type === NetworkType.EVM}
+          clickable={toChain?.network_type !== NetworkType.COSMOS}
           onClick={() => {
-            if (toChain?.network_type === NetworkType.EVM) {
+            if (toChain?.network_type !== NetworkType.COSMOS) {
               onSwitchTokens();
               onSwitchChains();
             }
@@ -324,11 +322,17 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           <Button
             variant="primary"
             onClick={() => {
-              fromChain && changeNetwork(fromChain as Chain);
+              fromChain && fromChain?.network_type === NetworkType.EVM
+                ? changeNetwork(fromChain as Chain)
+                : toggleWalletModal();
             }}
             isDisabled={!fromChain || (!toChain?.evm && !recipient)}
           >
-            {fromChain ? 'Switch Chain' : 'Please Select Chain'}
+            {fromChain
+              ? fromChain?.network_type === NetworkType.EVM
+                ? 'Switch Chain'
+                : 'Switch Wallet'
+              : 'Please Select Chain'}
           </Button>
         ) : (
           <Button

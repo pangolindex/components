@@ -1,21 +1,18 @@
-import { Token } from '@pangolindex/sdk';
-
-export enum BridgeState {
-  PENDING = 'PENDING',
-  FAILED = 'FAILED',
-  SUCCESS = 'SUCCESS',
-}
+import { BridgeChain, BridgeCurrency } from '@pangolindex/sdk';
+import { BridgeTransferStatus } from 'src/state/pbridge/types';
 
 export type BridgeTransferProps = {
   onDelete?: () => void;
   onResume?: () => void;
   date: string;
   from: string;
-  fromChain: Token;
-  fromCoin: Token;
+  fromChain: BridgeChain;
+  fromCurrency: BridgeCurrency;
   to: string;
-  toChain: Token;
-  toCoin: Token;
+  toChain: BridgeChain;
+  toCurrency: BridgeCurrency;
   via: string;
-  state: BridgeState;
+  errorMessage?: string;
+  status: BridgeTransferStatus;
+  index: number;
 };
