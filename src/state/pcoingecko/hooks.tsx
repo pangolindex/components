@@ -220,7 +220,7 @@ export const makeCoingeckoTokenData = (results: any): CoingeckoWatchListState =>
 
   const apiTokens = ((toknesData as Array<any>) || []).reduce<{
     [id: string]: CoingeckoWatchListToken;
-  }>((tokenMap: any, tokenData) => {
+  }>((tokenMap: CoingeckoWatchListState, tokenData) => {
     if (tokenData) {
       const formattedHistory = [] as Array<{ timestamp: string; priceUSD: number }>;
 
@@ -242,7 +242,6 @@ export const makeCoingeckoTokenData = (results: any): CoingeckoWatchListState =>
         imageUrl: tokenData?.image,
         weeklyChartData: formattedHistory,
       };
-      return tokenMap;
     }
     return tokenMap;
   }, {});

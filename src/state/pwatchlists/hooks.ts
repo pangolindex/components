@@ -18,12 +18,13 @@ export function useSelectedCurrencyLists(): CoingeckoWatchListToken[] | undefine
     ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.currencies || []),
   );
 
-  const allCurrencies =
-    allWatchlistCurrencies.length > 0
-      ? allWatchlistCurrencies
-      : coins?.[0]
-      ? [coins?.[0], ...allWatchlistCurrencies]
-      : ([] as CoingeckoWatchListToken[]);
+  let allCurrencies = [] as CoingeckoWatchListToken[];
+
+  if (allWatchlistCurrencies.length > 0) {
+    allCurrencies = allWatchlistCurrencies;
+  } else if (coins?.[0]) {
+    allCurrencies = [coins?.[0], ...allWatchlistCurrencies];
+  }
 
   const coinIds = ((allWatchlistCurrencies as Array<CoingeckoWatchListToken>) || []).map((item) => {
     return item.id;
@@ -35,7 +36,6 @@ export function useSelectedCurrencyLists(): CoingeckoWatchListToken[] | undefine
     ['get-coingecko-token-data', page, coinIds.join(',')],
     async () => {
       const res = await fetchCoinMarketData(page, coinIds.join(','))();
-      console.log('res', res);
       return res;
     },
     {
@@ -63,12 +63,13 @@ export function useIsSelectedCurrency(id: string): boolean {
     ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.currencies || []),
   );
 
-  const allCurrencies =
-    allWatchlistCurrencies.length > 0
-      ? allWatchlistCurrencies
-      : coins?.[0]
-      ? [coins?.[0], ...allWatchlistCurrencies]
-      : ([] as CoingeckoWatchListToken[]);
+  let allCurrencies = [] as CoingeckoWatchListToken[];
+
+  if (allWatchlistCurrencies.length > 0) {
+    allCurrencies = allWatchlistCurrencies;
+  } else if (coins?.[0]) {
+    allCurrencies = [coins?.[0], ...allWatchlistCurrencies];
+  }
 
   const index = allCurrencies.findIndex((x) => x?.id === id);
 
