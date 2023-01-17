@@ -116,6 +116,7 @@ export const NoDataWrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-align: center;
   flex: 1;
   min-width: 280px;
   max-width: 400px;

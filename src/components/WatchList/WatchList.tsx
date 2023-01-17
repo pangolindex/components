@@ -87,7 +87,7 @@ const WatchList: React.FC<Props> = ({ coinChartVisible = true }) => {
         </GridContainer>
       );
     } else {
-      return <NoDataWrapper>No data avaialble! please add your watchlist</NoDataWrapper>;
+      return <NoDataWrapper>No data available!  <br/><br/>Add tokens to watchlist using "+" button!</NoDataWrapper>;
     }
   };
 
