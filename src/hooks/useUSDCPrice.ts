@@ -3,11 +3,11 @@ import { ChainId, Currency, JSBI, Price, TokenAmount, WAVAX, currencyEquals } fr
 import { useEffect, useMemo, useState } from 'react';
 import { NEAR_API_BASE_URL } from 'src/constants';
 import { USDC, USDCe } from 'src/constants/tokens';
+import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
 import { decimalToFraction } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { PairState, usePairs } from '../data/Reserves';
 import { useChainId } from '../hooks';
-import { useCoinGeckoCurrencyPrice } from './Tokens';
 import { useTokenCurrencyPrice } from './useCurrencyPrice';
 
 /**
