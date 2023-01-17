@@ -5,12 +5,11 @@ import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Modal, Text, TextInput, ToggleButtons } from 'src/components';
+import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
 import { SUPPORTED_WALLETS } from 'src/wallet';
 import { Wallet } from 'src/wallet/classes/wallet';
-import { CloseButton } from '../NetworkSelection/styled';
 import { NETWORK_TYPE } from '../NetworkSelection/types';
 import WalletView from './WalletView';
 import {
@@ -114,7 +113,7 @@ export default function WalletModal({ open, closeModal, onWalletConnect, additio
           <Text color="text1" fontSize="24px" fontWeight={700}>
             {t('walletModal.connectToWallet')}
           </Text>
-          <CloseButton onClick={closeModal} />
+          <CloseButton onClick={closeModal} size="24px" />
         </Header>
         <Inputs>
           <TextInput
