@@ -135,6 +135,7 @@ const MarketOrder: React.FC<Props> = ({
     wrapType,
     execute: onWrap,
     inputError: wrapInputError,
+    executing,
   } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue);
 
   const {
@@ -372,6 +373,18 @@ const MarketOrder: React.FC<Props> = ({
     );
   }
 
+  const renderWrapButtonText = () => {
+    if (wrapInputError) {
+      return wrapInputError;
+    } else if (executing) {
+      return 'Loading';
+    } else if (wrapType === WrapType.WRAP) {
+      return 'Wrap';
+    } else if (wrapType === WrapType.UNWRAP) {
+      return 'Unwrap';
+    }
+  };
+
   const renderButton = () => {
     if (!account) {
       return (
@@ -391,8 +404,8 @@ const MarketOrder: React.FC<Props> = ({
 
     if (showWrap) {
       return (
-        <Button variant="primary" isDisabled={Boolean(wrapInputError)} onClick={onWrap}>
-          {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'Unwrap' : null)}
+        <Button variant="primary" isDisabled={Boolean(wrapInputError) || Boolean(executing)} onClick={onWrap}>
+          {renderWrapButtonText()}
         </Button>
       );
     }
