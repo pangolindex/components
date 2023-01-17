@@ -1,49 +1,39 @@
-import { ChainId, CHAINS } from '@pangolindex/sdk';
-import { AbstractConnector } from '@web3-react/abstract-connector';
+import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Modal, Text, TextInput, ToggleButtons } from 'src/components';
-import { useMixpanel } from 'src/hooks/mixpanel';
-import useDebounce from 'src/hooks/useDebounce';
 import { ThemeContext } from 'styled-components';
+import { Box, Modal, Text, TextInput, ToggleButtons } from 'src/components';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import useDebounce from 'src/hooks/useDebounce';
+import { SUPPORTED_WALLETS } from 'src/wallet';
+import { Wallet } from 'src/wallet/classes/wallet';
 import { CloseButton } from '../NetworkSelection/styled';
 import { NETWORK_TYPE } from '../NetworkSelection/types';
+import WalletView from './WalletView';
 import {
+  Bookmark,
+  ChainButton,
   ChainFrame,
   GreenCircle,
   Header,
   Inputs,
   Separator,
-  WalletButton,
   StyledLogo,
+  WalletButton,
   WalletFrame,
   Wrapper,
-  ChainButton,
-  Bookmark,
 } from './styleds';
 import { WalletModalProps } from './types';
-import { MixPanelEvents } from 'src/hooks/mixpanel';
-import { SUPPORTED_WALLETS } from 'src/wallet';
-import { Wallet } from 'src/wallet/classes/wallet';
 
-export default function WalletModal({
-  open,
-  closeModal,
-  onWalletConnect,
-  background,
-  onClickBack,
-  shouldShowBackButton,
-  additionalWallets,
-}: WalletModalProps) {
+export default function WalletModal({ open, closeModal, onWalletConnect, additionalWallets }: WalletModalProps) {
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedChain, setSelectedChain] = useState(ChainId.AVALANCHE);
-  const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>();
-  const [selectedWallet, setSelectedWallet] = useState<string | undefined>();
-  const [pendingError, setPendingError] = useState<boolean>();
+  const [pendingWallet, setPendingWallet] = useState<string | null>(null);
+  const [pendingError, setPendingError] = useState<boolean>(false);
 
   const { activate } = useWeb3React();
 
@@ -69,14 +59,17 @@ export default function WalletModal({
     [mainnet],
   );
 
+  const allWallets = { ...SUPPORTED_WALLETS, ...additionalWallets };
+
   const wallets = useMemo(() => {
     // adding additional wallets in wallets mapping
-    const _wallets = { ...SUPPORTED_WALLETS, ...additionalWallets };
-    return Object.values(_wallets).filter((wallet) => wallet.name.includes(debouncedSearchQuery));
-  }, [SUPPORTED_WALLETS, additionalWallets, debouncedSearchQuery]);
+    return Object.values(allWallets).filter((wallet) => wallet.name.toLowerCase().includes(debouncedSearchQuery));
+  }, [allWallets, debouncedSearchQuery]);
 
   function getWalletKey(wallet: Wallet): string | null {
-    const result = Object.entries(wallets).find(([_, value]) => value === wallet);
+    const result = Object.entries(allWallets).find(
+      ([, value]) => value === wallet && value.name.toLowerCase() === wallet.name.toLowerCase(),
+    );
 
     if (result) {
       return result[0];
@@ -84,23 +77,34 @@ export default function WalletModal({
     return null;
   }
 
+  function onBack() {
+    setPendingWallet(null);
+  }
+
   async function onConnect(wallet: Wallet) {
-    setPendingWallet(wallet.connector); // set wallet for pending view
-    //setSelectedOption(wallet);
+    const walletKey = getWalletKey(wallet);
+    setPendingError(false);
+    setPendingWallet(walletKey); // set for wallet view
 
     function onError(error: unknown) {
+      setPendingError(true);
       console.error(error);
     }
 
     function onSuccess() {
-      onWalletConnect(getWalletKey(wallet));
+      onWalletConnect(walletKey);
       mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
         wallet_name: wallet?.name?.toLowerCase(),
         source: 'pangolin-components',
       });
+      setPendingError(false);
+      setPendingWallet(null);
+      closeModal();
     }
 
-    await wallet.tryActivation(activate, onSuccess, onError);
+    if (wallet.installed()) {
+      await wallet.tryActivation(activate, onSuccess, onError);
+    }
   }
 
   return (
@@ -144,25 +148,34 @@ export default function WalletModal({
           </Box>
           <Separator />
           <Box flexGrow={1} overflowX="hidden">
-            <Scrollbars
-              height="100%"
-              renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
-            >
-              <WalletFrame>
-                {wallets.map((wallet, index) => {
-                  if (!wallet.showWallet()) return null;
-                  return (
-                    <WalletButton variant="plain" onClick={() => onConnect(wallet)} key={index}>
-                      <StyledLogo srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
-                      <Text color="text1" fontSize="12px" fontWeight={600}>
-                        {wallet.name}
-                      </Text>
-                      {wallet.isActive ? <GreenCircle /> : null}
-                    </WalletButton>
-                  );
-                })}
-              </WalletFrame>
-            </Scrollbars>
+            {pendingWallet ? (
+              <WalletView
+                wallet={allWallets[pendingWallet]}
+                error={pendingError}
+                onBack={onBack}
+                onConnect={onConnect}
+              />
+            ) : (
+              <Scrollbars
+                height="100%"
+                renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
+              >
+                <WalletFrame>
+                  {wallets.map((wallet, index) => {
+                    if (!wallet.showWallet()) return null;
+                    return (
+                      <WalletButton variant="plain" onClick={() => onConnect(wallet)} key={index}>
+                        <StyledLogo srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
+                        <Text color="text1" fontSize="12px" fontWeight={600}>
+                          {wallet.name}
+                        </Text>
+                        {wallet.isActive ? <GreenCircle /> : null}
+                      </WalletButton>
+                    );
+                  })}
+                </WalletFrame>
+              </Scrollbars>
+            )}
           </Box>
         </Box>
       </Wrapper>
