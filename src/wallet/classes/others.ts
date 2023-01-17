@@ -1,12 +1,11 @@
-import { SafeAppConnector } from "@gnosis.pm/safe-apps-web3-react";
-import { Web3ReactManagerFunctions } from "@web3-react/core/dist/types";
-import { isMobile } from "react-device-detect";
-import { gnosisSafe, walletconnect, walletlink } from "src/connectors";
-import { IS_IN_IFRAME } from "src/constants";
-import { Wallet } from "./wallet";
-import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
+import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
+import { isMobile } from 'react-device-detect';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
+import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
+import { gnosisSafe, walletconnect, walletlink } from 'src/connectors';
+import { IS_IN_IFRAME } from 'src/constants';
+import { Wallet, activeFunctionType } from './wallet';
 
 export class GnosisSafeWallet extends Wallet {
   private isInSafe =
@@ -28,7 +27,7 @@ export class GnosisSafeWallet extends Wallet {
     return this.isInSafe;
   }
 
-  async tryActivation(activate: Web3ReactManagerFunctions['activate'], onSuccess: () => void, onError: (error: unknown) => void) {
+  async tryActivation(activate: activeFunctionType, onSuccess: () => void, onError: (error: unknown) => void) {
     if (!this.triedSafe) {
       const loadedSafe = await (this.connector as SafeAppConnector).isSafeApp();
       if (loadedSafe) {
@@ -45,7 +44,13 @@ export class CoinbaseWallet extends Wallet {
   private isCbWallet = this.isCbWalletDappBrowser || this.isWalletlink;
 
   constructor() {
-    super(walletlink, "Coinbase Wallet", "https://www.coinbase.com/pt/wallet", coinbaseWalletIcon, "Use Coinbase Wallet app on mobile device");
+    super(
+      walletlink,
+      'Coinbase Wallet',
+      'https://www.coinbase.com/pt/wallet',
+      coinbaseWalletIcon,
+      'Use Coinbase Wallet app on mobile device',
+    );
   }
 
   showWallet(): boolean {
@@ -59,7 +64,7 @@ export class CoinbaseWallet extends Wallet {
 
 export class WalletConnect extends Wallet {
   constructor() {
-    super(walletconnect, "Wallet Connect", "https://walletconnect.com/", walletConnectIcon, "Use Wallet Connect");
+    super(walletconnect, 'Wallet Connect', 'https://walletconnect.com/', walletConnectIcon, 'Use Wallet Connect');
   }
 
   showWallet(): boolean {

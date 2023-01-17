@@ -1,6 +1,11 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { Web3ReactManagerFunctions } from '@web3-react/core/dist/types';
 import { isMobile } from 'react-device-detect';
+
+export type activeFunctionType = (
+  connector: AbstractConnector,
+  onError?: (error: Error) => void,
+  throwErrors?: boolean,
+) => Promise<void>;
 
 export abstract class Wallet {
   readonly connector: AbstractConnector;
@@ -8,7 +13,7 @@ export abstract class Wallet {
   readonly href: string | null;
   readonly icon: string;
   readonly description: string;
-  isActive: boolean = false;
+  isActive = false;
 
   /**
    * @param connector The connector in AbstractConnector object
@@ -34,7 +39,7 @@ export abstract class Wallet {
    * @param onSuccess function to execute on success
    * @param onError function to exeute on error
    */
-  async tryActivation(activate: Web3ReactManagerFunctions['activate'], onSuccess: () => void, onError: (error: unknown) => void) {
+  async tryActivation(activate: activeFunctionType, onSuccess: () => void, onError: (error: unknown) => void) {
     try {
       await activate(this.connector);
       onSuccess();
@@ -44,9 +49,9 @@ export abstract class Wallet {
     }
   }
 
-  showWallet(){
+  showWallet() {
     return !isMobile;
-  };
+  }
 
   abstract installed(): boolean;
 }

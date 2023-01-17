@@ -1,8 +1,8 @@
-import { avalancheCore, bitKeep, injected, talisman } from "src/connectors";
-import { Wallet } from "./wallet";
-import talismanIcon from 'src/assets/images/talisman.svg';
-import bitKeepIcon from 'src/assets/images/bitkeep.svg';
 import avalancheCoreIcon from 'src/assets/images/avalancheCore.svg';
+import bitKeepIcon from 'src/assets/images/bitkeep.svg';
+import talismanIcon from 'src/assets/images/talisman.svg';
+import { avalancheCore, bitKeep, injected, talisman } from 'src/connectors';
+import { Wallet } from './wallet';
 
 export class InjectedWallet extends Wallet {
   isWallet?: boolean;
@@ -27,24 +27,23 @@ export class InjectedWallet extends Wallet {
   }
 
   installed(): boolean {
-    return this.isWallet || true;
+    return this.isWallet ?? true;
   }
 }
 
 export class TalismanWallet extends Wallet {
   constructor() {
-    super(talisman, "Talisman", "https://www.talisman.xyz/", talismanIcon, "Enter the Paraverse.");
+    super(talisman, 'Talisman', 'https://www.talisman.xyz/', talismanIcon, 'Enter the Paraverse.');
   }
 
   installed(): boolean {
     return Boolean(window.ethereum && window.ethereum.isTalisman);
   }
-
 }
 
 export class BitKeepWallet extends Wallet {
   constructor() {
-    super(bitKeep, "BitKeep", "https://bitkeep.com/", bitKeepIcon, 'Easy-to-use browser extension.');
+    super(bitKeep, 'BitKeep', 'https://bitkeep.com/', bitKeepIcon, 'Easy-to-use browser extension.');
   }
 
   installed(): boolean {
@@ -54,7 +53,7 @@ export class BitKeepWallet extends Wallet {
 
 export class AvalancheCoreWallet extends Wallet {
   constructor() {
-    super(avalancheCore, "Avalanche Core", "https://core.app/", avalancheCoreIcon, 'Easy-to-use browser extension.');
+    super(avalancheCore, 'Avalanche Core', 'https://core.app/', avalancheCoreIcon, 'Easy-to-use browser extension.');
   }
 
   installed(): boolean {
