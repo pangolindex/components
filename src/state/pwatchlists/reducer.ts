@@ -3,39 +3,39 @@ import { CoingeckoWatchListToken } from 'src/state/pcoingecko/hooks';
 import { addCurrency, removeCurrency, updateCurrencies } from './actions';
 
 export interface WatchlistState {
-  readonly currencies: CoingeckoWatchListToken[];
+  readonly selectedCurrencies: CoingeckoWatchListToken[];
 }
 
 const initialState: WatchlistState = {
-  currencies: [],
+  selectedCurrencies: [],
 };
 
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(addCurrency, (state, { payload: currency }) => {
-      const existingSelectedListUrl = ([] as CoingeckoWatchListToken[]).concat(state.currencies || []);
+      const existingSelectedListUrl = ([] as CoingeckoWatchListToken[]).concat(state.selectedCurrencies || []);
 
       existingSelectedListUrl.push(currency);
-      state.currencies = existingSelectedListUrl;
+      state.selectedCurrencies = existingSelectedListUrl;
     })
     .addCase(removeCurrency, (state, { payload: id }) => {
-      const existingList = ([] as CoingeckoWatchListToken[]).concat(state.currencies || []);
+      const existingList = ([] as CoingeckoWatchListToken[]).concat(state.selectedCurrencies || []);
 
       const index = existingList.findIndex((x) => x.id === id);
 
       if (index !== -1) {
         if (existingList?.length === 1) {
           // if user want to remove the list and if there is only one item in the selected list
-          state.currencies = [] as CoingeckoWatchListToken[];
+          state.selectedCurrencies = [] as CoingeckoWatchListToken[];
         } else {
           existingList.splice(index, 1);
-          state.currencies = existingList;
+          state.selectedCurrencies = existingList;
         }
       }
     })
     .addCase(updateCurrencies, (state, { payload: data }) => {
       const res = data.reduce((acc: CoingeckoWatchListToken[], curr) => {
-        const stored = state.currencies.find(({ id }) => id === curr?.id);
+        const stored = state.selectedCurrencies.find(({ id }) => id === curr?.id);
         if (stored) {
           stored.price = curr?.price;
           stored.weeklyChartData = curr?.weeklyChartData;
@@ -46,6 +46,6 @@ export default createReducer(initialState, (builder) =>
         return acc;
       }, []);
 
-      state.currencies = res;
+      state.selectedCurrencies = res;
     }),
 );

@@ -30,8 +30,8 @@ const CurrencyPopover: React.FC<Props> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
 
-  const allWatchlistCurrencies = useSelector<AppState['pwatchlists']['currencies']>((state) =>
-    ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.currencies || []),
+  const allWatchlistCurrencies = useSelector<AppState['pwatchlists']['selectedCurrencies']>((state: AppState) =>
+    ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.selectedCurrencies || []),
   );
 
   useEffect(() => {

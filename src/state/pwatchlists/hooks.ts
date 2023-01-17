@@ -12,8 +12,8 @@ import { updateCurrencies } from './actions';
 export function useSelectedCurrencyLists(): CoingeckoWatchListToken[] | undefined {
   const dispatch = useDispatch();
 
-  const allWatchlistCurrencies = useSelector<AppState['pwatchlists']['currencies']>((state) =>
-    ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.currencies || []),
+  const allWatchlistCurrencies = useSelector<AppState['pwatchlists']['selectedCurrencies']>((state: AppState) =>
+    ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.selectedCurrencies || []),
   );
 
   const coinIds = ((allWatchlistCurrencies as Array<CoingeckoWatchListToken>) || []).map((item) => {
