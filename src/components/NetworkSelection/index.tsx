@@ -4,11 +4,11 @@ import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
-import { Box, Modal, Text, TextInput, ToggleButtons } from 'src/components';
+import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
 import useDebounce from 'src/hooks/useDebounce';
 import { changeNetwork } from 'src/utils';
 import ChainItem from './ChainItem';
-import { ChainsList, CloseButton, Frame, Inputs, Wrapper } from './styled';
+import { ChainsList, Frame, Inputs, Wrapper } from './styled';
 import { NETWORK_TYPE, NetworkProps } from './types';
 
 export default function NetworkSelection({ open, closeModal }: NetworkProps) {
