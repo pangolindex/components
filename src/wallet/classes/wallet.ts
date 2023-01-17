@@ -28,6 +28,10 @@ export abstract class Wallet {
     this.href = href;
     this.icon = icon;
     this.description = description;
+
+    // On disconnect the wallet we need to set the `isActive` to false
+    // To do this, when disconnect the connector, this emits the Web3ReactDeactivate event by default
+    this.connector.on('Web3ReactDeactivate', () => (this.isActive = false));
   }
 
   /**
@@ -41,7 +45,7 @@ export abstract class Wallet {
    */
   async tryActivation(activate: activeFunctionType, onSuccess: () => void, onError: (error: unknown) => void) {
     try {
-      await activate(this.connector);
+      await activate(this.connector, undefined, true);
       onSuccess();
       this.isActive = true;
     } catch (error) {
