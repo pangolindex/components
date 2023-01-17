@@ -43,6 +43,12 @@ const WatchList: React.FC<Props> = ({ coinChartVisible = true }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrencies]);
 
+  const PlusButton = (
+    <Button variant="primary" backgroundColor="primary" color="white" width={'32px'} height={'32px'} padding="0px">
+      <Plus size={12} color={'black'} />
+    </Button>
+  );
+
   const renderWatchlistRow = (coin) => {
     return (
       <WatchlistRow
@@ -87,7 +93,15 @@ const WatchList: React.FC<Props> = ({ coinChartVisible = true }) => {
         </GridContainer>
       );
     } else {
-      return <NoDataWrapper>No data available!  <br/><br/>Add tokens to watchlist using "+" button!</NoDataWrapper>;
+      return (
+        <NoDataWrapper>
+          No data available!
+          <Box display="flex" alignItems="center" color="white" justifyContent="center" mt={2}>
+            Add tokens to watchlist using <Box mx={2}>{PlusButton}</Box>
+            button!
+          </Box>
+        </NoDataWrapper>
+      );
     }
   };
 
@@ -97,16 +111,7 @@ const WatchList: React.FC<Props> = ({ coinChartVisible = true }) => {
         <Title>Watchlist</Title>
         <Box bgColor={theme.bg5 as any} position="relative" p={'5px'} ref={node as any}>
           <Box ref={referenceElement} onClick={toggle}>
-            <Button
-              variant="primary"
-              backgroundColor="primary"
-              color="white"
-              width={'32px'}
-              height={'32px'}
-              padding="0px"
-            >
-              <Plus size={12} color={'black'} />
-            </Button>
+            {PlusButton}
           </Box>
 
           {open && (

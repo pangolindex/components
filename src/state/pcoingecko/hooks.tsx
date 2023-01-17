@@ -107,6 +107,7 @@ export function useCoinGeckoTokenPriceChart(coin: CoingeckoWatchListToken, days 
   useEffect(() => {
     const getCoinData = async () => {
       try {
+        if (!coin?.id) return;
         const url = `${COINGEKO_BASE_URL}/coins/${coin?.id}/market_chart/?vs_currency=usd&days=${days}`;
 
         const response = await fetch(url);
@@ -256,7 +257,7 @@ export const fetchCoinMarketData =
 export const makeCoingeckoTokenData = (toknesData: MarketCoinsAPIResponse[]): CoingeckoWatchListState => {
   const sevenDaysAgo: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-  const apiTokens = ((toknesData as Array<any>) || []).reduce<{
+  const apiTokens = (toknesData || []).reduce<{
     [id: string]: CoingeckoWatchListToken;
   }>((tokenMap: CoingeckoWatchListState, tokenData) => {
     if (tokenData) {
@@ -268,7 +269,7 @@ export const makeCoingeckoTokenData = (toknesData: MarketCoinsAPIResponse[]): Co
       for (let i = 0; i < priceData.length - 1; i++) {
         formattedHistory.push({
           timestamp: ((sevenDaysAgo.getTime() + 60 * 60) / 1000).toFixed(0),
-          priceUSD: parseFloat(priceData[i]),
+          priceUSD: parseFloat(String(priceData[i] || 0)),
         });
       }
 
@@ -276,7 +277,7 @@ export const makeCoingeckoTokenData = (toknesData: MarketCoinsAPIResponse[]): Co
         id: tokenData?.id,
         name: tokenData?.name,
         symbol: tokenData?.symbol?.toUpperCase(),
-        price: tokenData?.current_price,
+        price: String(tokenData?.current_price || '-'),
         imageUrl: tokenData?.image,
         weeklyChartData: formattedHistory,
       };
@@ -334,16 +335,18 @@ export function useCoinGeckoTokens(): CoingeckoWatchListState {
 export function useCoinGeckoSearchTokens(coinText: string): {
   [id: string]: CoingeckoWatchListToken;
 } {
-  const { data: searchTokens, isLoading } = useQuery(['coingeckoSearchTokens', coinText], async () => {
-    const response: AxiosResponse = await coingeckoAPI.get(`search?query=${coinText}`);
+  const { data: searchTokens, isLoading } = useQuery<Array<CoingeckoTokenData>>(
+    ['coingeckoSearchTokens', coinText],
+    async () => {
+      const response: AxiosResponse = await coingeckoAPI.get(`search?query=${coinText}`);
+      return response?.data?.coins || [];
+    },
+    {
+      enabled: coinText.length > 0,
+    },
+  );
 
-    const data = response?.data?.coins;
-    return data;
-  });
-
-  const coinIds = ((!isLoading && (searchTokens as Array<CoingeckoTokenData>)) || []).map((item) => {
-    return item.id;
-  });
+  const coinIds = ((!isLoading && searchTokens) || []).map((item) => item.id);
   const page = 1;
 
   const results: UseQueryResult = useQuery(

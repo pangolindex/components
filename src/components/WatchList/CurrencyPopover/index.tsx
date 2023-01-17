@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, TextInput } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import useDebounce from 'src/hooks/useDebounce';
 import usePrevious from 'src/hooks/usePrevious';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { CoingeckoWatchListToken, useCoinGeckoSearchTokens } from 'src/state/pcoingecko/hooks';
@@ -24,6 +25,7 @@ const CurrencyPopover: React.FC<Props> = ({
   onSelectCurrency,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
@@ -48,7 +50,7 @@ const CurrencyPopover: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const filteredTokens = useCoinGeckoSearchTokens(searchQuery);
+  const filteredTokens = useCoinGeckoSearchTokens(debouncedSearchQuery);
 
   const currencies = Object.values(filteredTokens || {}).length > 0 ? Object.values(filteredTokens || {}) : coins;
 
