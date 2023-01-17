@@ -1,23 +1,23 @@
-import { AvalancheCoreWallet, BitKeepWallet, InjectedWallet, TalismanWallet } from "./classes/injected";
-import { Wallet } from "./classes/wallet";
+import { isMobile } from 'react-device-detect';
 import injectWalletIcon from 'src/assets/images/inject-wallet.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
 import rabbyIcon from 'src/assets/images/rabby.svg';
-import { HashPackWallet, NearWallet, XDefiWallet } from "./classes/nonInjected";
-import { GnosisSafeWallet, CoinbaseWallet, WalletConnect } from "./classes/others";
-import { isMobile } from "react-device-detect";
+import { AvalancheCoreWallet, BitKeepWallet, InjectedWallet, TalismanWallet } from './classes/injected';
+import { HashPackWallet, NearWallet, XDefiWallet } from './classes/nonInjected';
+import { CoinbaseWallet, GnosisSafeWallet, WalletConnect } from './classes/others';
+import { Wallet } from './classes/wallet';
 
-const injectWallet = new InjectedWallet("Inject", null, injectWalletIcon, "Inject Wallet", true, () => isMobile);
+const injectWallet = new InjectedWallet('Inject', null, injectWalletIcon, 'Inject Wallet', true, () => isMobile);
 const metamask = new InjectedWallet(
-  "Metamask",
-  "https://metamask.io/",
+  'Metamask',
+  'https://metamask.io/',
   metamaskIcon,
   'Easy-to-use browser extension.',
   Boolean(window.ethereum && window.ethereum.isMetaMask),
 );
 const rabbyWallet = new InjectedWallet(
-  "Rabby Wallet",
-  "https://rabby.io/",
+  'Rabby Wallet',
+  'https://rabby.io/',
   rabbyIcon,
   'Easy-to-use browser extension.',
   Boolean(window.ethereum && window.ethereum.isRabby),

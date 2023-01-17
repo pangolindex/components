@@ -1,12 +1,12 @@
-import { hashConnect, near, xDefi } from "src/connectors"
-import { Wallet } from "./wallet"
-import xDefiIcon from 'src/assets/images/xDefi.png';
-import nearIcon from 'src/assets/images/near.svg';
 import hashIcon from 'src/assets/images/hashConnect.png';
+import nearIcon from 'src/assets/images/near.svg';
+import xDefiIcon from 'src/assets/images/xDefi.png';
+import { hashConnect, near, xDefi } from 'src/connectors';
+import { Wallet } from './wallet';
 
 export class XDefiWallet extends Wallet {
   constructor() {
-    super(xDefi, "XDEFI Wallet", "https://www.xdefi.io", xDefiIcon, "One wallet for all your Crypto")
+    super(xDefi, 'XDEFI Wallet', 'https://www.xdefi.io', xDefiIcon, 'One wallet for all your Crypto');
   }
 
   installed(): boolean {
@@ -16,7 +16,7 @@ export class XDefiWallet extends Wallet {
 
 export class NearWallet extends Wallet {
   constructor() {
-    super(near, "Near", "https://wallet.near.org/", nearIcon, "Near Web")
+    super(near, 'Near', 'https://wallet.near.org/', nearIcon, 'Near Web');
   }
 
   installed(): boolean {
@@ -24,12 +24,12 @@ export class NearWallet extends Wallet {
   }
 }
 
-export class HashPackWallet extends Wallet{
-  constructor(){
-    super(hashConnect, "HashPack Wallet", "https://www.hashpack.app/", hashIcon, 'HashPack Wallet Connect');
+export class HashPackWallet extends Wallet {
+  constructor() {
+    super(hashConnect, 'HashPack Wallet', 'https://www.hashpack.app/', hashIcon, 'HashPack Wallet Connect');
   }
 
   installed(): boolean {
-    return !hashConnect.availableExtension
+    return !hashConnect.availableExtension;
   }
 }
