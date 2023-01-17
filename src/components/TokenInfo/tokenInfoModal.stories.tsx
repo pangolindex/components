@@ -3,12 +3,12 @@ import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
 import { PNG } from 'src/constants/tokens';
 import { Button } from '../Button';
-import { argTypes, circulationSupply, customToken, totalSupply, unclaimedAmount } from './storiesContants';
-import { TokenInfoModal } from '.';
+import TokenInfoModal from './TokenInfoModal';
+import { argTypes, circulationSupply, customToken, totalSupply, unclaimedAmount } from './storiesConstants';
 
 export default {
   component: TokenInfoModal,
-  title: 'Defi Helpers/TokenInfo',
+  title: 'Defi Helpers/TokenInfoModal',
   argTypes: {
     ...argTypes,
     open: {

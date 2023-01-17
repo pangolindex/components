@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { Box } from 'src/components/index';
 
 export const Wrapper = styled(Box)`
@@ -27,4 +27,25 @@ export const rotateImg = keyframes`
   100% {
     transform: perspective(1000px) rotateY(360deg);
   }
+`;
+
+const animated = css`
+  @keyframes rotateImage {
+    0% {
+      transform: perspective(1000px) rotateY(0deg);
+    }
+
+    100% {
+      transform: perspective(1000px) rotateY(360deg);
+    }
+  }
+
+  .Animated {
+    animation: rotateImage 5s cubic-bezier(0.83, 0, 0.17, 1) infinite !important;
+    filter: drop-shadow(rgba(0, 0, 0, 0.15) 0px 2px 4px) !important;
+  }
+`;
+
+export const Container = styled(Box)`
+  ${() => animated}
 `;

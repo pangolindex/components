@@ -24,7 +24,7 @@ export const TextInfo: React.FC<Props> = ({ text, value, tooltipText }) => {
       </Text>
       {tooltipText && (
         <Tooltip id={id} effect="solid" backgroundColor={theme.primary}>
-          <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+          <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
             {tooltipText}
           </Text>
         </Tooltip>

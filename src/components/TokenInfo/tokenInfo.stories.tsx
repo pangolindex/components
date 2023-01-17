@@ -2,8 +2,8 @@ import { ChainId } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { PNG } from 'src/constants/tokens';
-import { argTypes, circulationSupply, customToken, totalSupply, unclaimedAmount } from './storiesContants';
-import TokenInfo from '.';
+import TokenInfo from './TokenInfo';
+import { argTypes, circulationSupply, customToken, totalSupply, unclaimedAmount } from './storiesConstants';
 
 export default {
   component: TokenInfo,

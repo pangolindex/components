@@ -17,7 +17,7 @@
     "pngBreakDown": "{{ symbol }} của bạn gặp sự cố",
     "balance": "Số dư: ",
     "unclaimed": "Chưa được nhận: ",
-    "pngPrice": "Giá {{ symbol }}:",
+    "tokenPrice": "Giá {{ symbol }}:",
     "pngCirculation": "Tổng {{ symbol }} đang lưu thông:",
     "totalSupply": "Tổng cung",
     "makeSureURLWarning": "Đảm bảo rằng URL là:",

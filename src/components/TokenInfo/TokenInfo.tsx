@@ -3,16 +3,15 @@ import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, CloseButton, CurrencyLogo, Modal, Text, Tooltip } from 'src/components';
+import { CurrencyLogo, Text, Tooltip } from 'src/components';
 import { useTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { StyledLogo } from '../CurrencyLogo/styles';
 import { TextInfo } from './TextInfo';
-import { Frame, Wrapper } from './styled';
-import { TokenInfoModalProps, TokenInfoProps } from './types';
-import './Animated.css';
+import { Container, Frame, Wrapper } from './styled';
+import { TokenInfoProps } from './types';
 
 export default function TokenInfo({
   token,
@@ -48,23 +47,25 @@ export default function TokenInfo({
         {t('header.pngBreakDown', { symbol: token?.symbol })}
       </Text>
       <Frame>
-        {logo ? (
-          <StyledLogo
-            size="48px"
-            srcs={[logo]}
-            alt={`${token.symbol} Logo`}
-            className={animatedLogo ? 'Animated' : undefined}
-          />
-        ) : (
-          <CurrencyLogo currency={token} size={48} className={animatedLogo ? 'Animated' : undefined} />
-        )}
+        <Container>
+          {logo ? (
+            <StyledLogo
+              size="48px"
+              srcs={[logo]}
+              alt={`${token.symbol} Logo`}
+              className={animatedLogo ? 'Animated' : undefined}
+            />
+          ) : (
+            <CurrencyLogo currency={token} size={48} className={animatedLogo ? 'Animated' : undefined} />
+          )}
+        </Container>
         {account && (
           <Text color="text1" fontSize={32} fontWeight={600} data-tip data-for="totalAccountBalance-tip">
             {`${numeral(totalAccountBalance?.toFixed(2) ?? '0').format('0.00a')}`}
           </Text>
         )}
         <Tooltip id="totalAccountBalance-tip" effect="solid" backgroundColor={theme.primary}>
-          <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+          <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
             {totalAccountBalance.toFixed(token.decimals)} {token?.symbol}
           </Text>
         </Tooltip>
@@ -96,18 +97,5 @@ export default function TokenInfo({
         />
       </Frame>
     </Wrapper>
-  );
-}
-
-export function TokenInfoModal({ open, closeModal, ...rest }: TokenInfoModalProps) {
-  return (
-    <Modal isOpen={open} onDismiss={closeModal}>
-      <Box width="420px" position="relative">
-        <TokenInfo {...rest} />
-        <Box position="absolute" right="20px" top="15px">
-          <CloseButton onClick={closeModal} size={16} />
-        </Box>
-      </Box>
-    </Modal>
   );
 }
