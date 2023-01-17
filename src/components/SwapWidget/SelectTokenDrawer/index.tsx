@@ -170,7 +170,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
               columnWidth={(width - 10) / 4}
               rowHeight={120}
               columnCount={4}
-              rowCount={currencies.length / 4}
+              rowCount={Math.ceil(currencies.length / 4)}
               width={width}
               itemData={currencies}
               itemKey={({ columnIndex, rowIndex, data }) => currencyKey(columnIndex, rowIndex, data, chainId)}

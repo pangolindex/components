@@ -78,3 +78,15 @@ export const Circle = styled.div`
   left: -5px;
   overflow: hidden;
 `;
+
+export const ExternalLink = styled.a`
+  background-color: ${({ theme }) => theme.bg2};
+  color: ${({ theme }) => theme.text1};
+  display: flex;
+  text-decoration: none;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  margin-bottom: 15px;
+`;

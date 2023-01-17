@@ -572,10 +572,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@pangolindex/sdk@4.2.0-rc.0":
-  version "4.2.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-4.2.0-rc.0.tgz#1e9a900daa9197bbe2f0bc0dfdb263fae2ad9e0b"
-  integrity sha512-KctStbL37MDcas4pULSAUlhOikc1Ef0Dc4LaMztmH1H6LXIFznjg/akZdZUxRfEHB1Xr1I5KkNwgvvzC00RgjA==
+"@pangolindex/sdk@4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-4.3.0.tgz#38a8da0f3beca072eb5af73eb48d4f21f4ddb24c"
+  integrity sha512-qXYepC/YVezAaFrRFZ4cHn4zPWAmEJhUzpfN6bTqUec9aHY2o86azvI9ye6usIm+hJOsSlkLKPuaisudyylM9Q==
   dependencies:
     big.js "^5.2.2"
     decimal.js-light "^2.5.0"
@@ -1576,6 +1576,13 @@ randomfill@^1.0.3:
     randombytes "^2.0.5"
     safe-buffer "^5.1.0"
 
+react-device-detect@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/react-device-detect/-/react-device-detect-2.2.2.tgz#dbabbce798ec359c83f574c3edb24cf1cca641a5"
+  integrity sha512-zSN1gIAztUekp5qUT/ybHwQ9fmOqVT1psxpSlTn1pe0CO+fnJHKRLOWWac5nKxOxvOpD/w84hk1I+EydrJp7SA==
+  dependencies:
+    ua-parser-js "^1.0.2"
+
 react-dom@17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
@@ -1765,6 +1772,11 @@ typescript@^4.9.3:
   version "4.9.4"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.4.tgz#a2a3d2756c079abda241d75f149df9d561091e78"
   integrity sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==
+
+ua-parser-js@^1.0.2:
+  version "1.0.32"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-1.0.32.tgz#786bf17df97de159d5b1c9d5e8e9e89806f8a030"
+  integrity sha512-dXVsz3M4j+5tTiovFVyVqssXBu5HM47//YSOeZ9fQkdDKkfzv2v3PP1jmH6FUyPW+yCSn7aBVK1fGGKNhowdDA==
 
 update-browserslist-db@^1.0.9:
   version "1.0.10"

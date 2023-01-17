@@ -279,7 +279,7 @@ export interface CompoundData {
     maxPairAmount: string;
   };
   poolId: string;
-  methodName: 'compound' | 'compoundToPoolZero';
+  methodName: 'compound' | 'compoundTo';
   account: string;
   chainId: ChainId;
   contract: Contract;
@@ -1053,13 +1053,18 @@ class Hedera {
     const accountId = account ? this.hederaId(account) : '';
     const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
 
+    const minichef = CHAINS[chainId].contracts?.mini_chef;
+    const compoundPoolId = minichef?.compoundPoolIdForNonPngFarm ?? 0;
+
     const maxGas = TRANSACTION_MAX_FEES.COMPOUND;
+
+    const arg = methodName === 'compound' ? [poolId, slippage] : [poolId, compoundPoolId, slippage];
 
     // compound transaction is little different than all other transaction
     // because in compound input we have slippage which is tuple
     // tuple as input is not supported by hedera sdk as of now
     // so we are enconding function parameters and passing it as Uint8Array
-    const functionCallAsUint8Array = contract.interface.encodeFunctionData(methodName, [poolId, slippage]);
+    const functionCallAsUint8Array = contract.interface.encodeFunctionData(methodName, arg);
     const encodedParametersHex = functionCallAsUint8Array.slice(2);
 
     const params = Buffer.from(encodedParametersHex, 'hex');
