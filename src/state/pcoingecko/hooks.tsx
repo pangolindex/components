@@ -2,7 +2,7 @@
 import { CHAINS, ChainId, Currency, Token } from '@pangolindex/sdk';
 import axios, { AxiosResponse } from 'axios';
 import { useEffect, useMemo, useState } from 'react';
-import { useQueries, useQuery } from 'react-query';
+import { UseQueryResult, useQueries, useQuery } from 'react-query';
 import { COINGECKO_CURRENCY_ID, COINGEKO_BASE_URL } from 'src/constants';
 import { COINGECKO_TOKENS_MAPPING } from 'src/constants/coingeckoTokens';
 import { useChainId } from 'src/hooks';
@@ -29,6 +29,42 @@ export interface CoingeckoData {
   coinId: string;
   homePage: string;
   description: string;
+}
+
+export interface MarketCoinsAPIResponse {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  market_cap: number;
+  market_cap_rank: number;
+  fully_diluted_valuation?: number;
+  total_volume: number;
+  high_24h?: number;
+  low_24h?: number;
+  price_change_24h?: number;
+  price_change_percentage_24h?: number;
+  market_cap_change_24h?: number;
+  market_cap_change_percentage_24h?: number;
+  circulating_supply: number;
+  total_supply?: number;
+  max_supply?: number;
+  ath: number;
+  ath_change_percentage: number;
+  ath_date: string;
+  atl: number;
+  atl_change_percentage: number;
+  atl_date: string;
+  roi?: {
+    times: number;
+    currency: string;
+    percentage: number;
+  };
+  last_updated: string;
+  sparkline_in_7d: {
+    price: Array<number>;
+  };
 }
 
 const coingeckoAPI = axios.create({
@@ -190,6 +226,13 @@ export function useCoinGeckoCurrencyPrice(chainId: ChainId) {
     },
   );
 }
+
+/**
+ * to fetch coingecko market data
+ * @param page
+ * @param ids
+ * @returns coinmarket data
+ */
 export const fetchCoinMarketData =
   (page: number, ids: string | undefined = '') =>
   async () => {
@@ -205,17 +248,12 @@ export const fetchCoinMarketData =
     }
   };
 
-export const makeCoingeckoTokenData = (results: any): CoingeckoWatchListState => {
-  const toknesData = results.reduce((acc: any, result) => {
-    const data = result?.data;
-
-    if (data && result?.isLoading === false) {
-      return acc.concat(data);
-    }
-
-    return acc;
-  }, []);
-
+/**
+ * to make coingecko token data which is used in show token list
+ * @param results
+ * @returns CoingeckoWatchListState
+ */
+export const makeCoingeckoTokenData = (toknesData: MarketCoinsAPIResponse[]): CoingeckoWatchListState => {
   const sevenDaysAgo: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   const apiTokens = ((toknesData as Array<any>) || []).reduce<{
@@ -255,7 +293,7 @@ export const makeCoingeckoTokenData = (results: any): CoingeckoWatchListState =>
  * */
 export function useCoinGeckoTokens(): CoingeckoWatchListState {
   const dispatch = useDispatch();
-  const tokens = useSelector<AppState['pcoingecko']>((state) => state.pcoingecko);
+  const currencies = useSelector<AppState['pcoingecko']['currencies']>((state) => state?.pcoingecko?.currencies);
 
   const queryParameter = [] as any;
   const totalPages = 2;
@@ -269,50 +307,57 @@ export function useCoinGeckoTokens(): CoingeckoWatchListState {
   const results = useQueries(queryParameter);
 
   const apiTokens = useMemo(() => {
-    return makeCoingeckoTokenData(results);
+    const toknesData = results.reduce((acc: MarketCoinsAPIResponse[], result) => {
+      const data = result?.data as MarketCoinsAPIResponse[];
+
+      if (data && result?.isLoading === false) {
+        return acc.concat(data);
+      }
+
+      return acc;
+    }, []);
+
+    return makeCoingeckoTokenData(toknesData);
   }, [results]);
 
   useEffect(() => {
     dispatch(addCoingeckoTokens(apiTokens));
   }, [dispatch, Object.values(apiTokens || []).length]);
 
-  return tokens?.currencies;
+  return currencies;
 }
-
+/**
+ * its use for search token based on text
+ * @param coinText
+ * @returns [id: string]: CoingeckoWatchListToken
+ */
 export function useCoinGeckoSearchTokens(coinText: string): {
   [id: string]: CoingeckoWatchListToken;
 } {
-  const { data: searchTokens, isLoading } = useQuery(
-    ['coingeckoSearchTokens', coinText],
-    async () => {
-      const response: AxiosResponse = await coingeckoAPI.get(`search?query=${coinText}`);
+  const { data: searchTokens, isLoading } = useQuery(['coingeckoSearchTokens', coinText], async () => {
+    const response: AxiosResponse = await coingeckoAPI.get(`search?query=${coinText}`);
 
-      const data = response?.data?.coins;
-      return data;
-    },
-    {
-      refetchInterval: false,
-    },
-  );
+    const data = response?.data?.coins;
+    return data;
+  });
 
   const coinIds = ((!isLoading && (searchTokens as Array<CoingeckoTokenData>)) || []).map((item) => {
     return item.id;
   });
   const page = 1;
 
-  const results = useQuery(
+  const results: UseQueryResult = useQuery(
     ['get-coingecko-token-data', page, coinIds.join(',')],
-    async () => {
-      const res = await fetchCoinMarketData(page, coinIds.join(','))();
-      return res;
-    },
+    fetchCoinMarketData(page, coinIds.join(',')),
     {
       enabled: coinIds?.length > 0,
     },
   );
 
   const apiTokens = useMemo(() => {
-    return makeCoingeckoTokenData([results]);
+    const toknesData = results?.data as MarketCoinsAPIResponse[];
+
+    return makeCoingeckoTokenData(toknesData);
   }, [results]);
 
   return apiTokens;

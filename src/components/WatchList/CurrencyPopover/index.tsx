@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { FixedSizeList } from 'react-window';
 import { Box, TextInput } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import usePrevious from 'src/hooks/usePrevious';
-import { useDispatch } from 'src/state';
+import { AppState, useDispatch, useSelector } from 'src/state';
 import { CoingeckoWatchListToken, useCoinGeckoSearchTokens } from 'src/state/pcoingecko/hooks';
 import { addCurrency } from 'src/state/pwatchlists/actions';
 import CurrencyRow from './CurrencyRow';
@@ -29,6 +27,10 @@ const CurrencyPopover: React.FC<Props> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
+
+  const allWatchlistCurrencies = useSelector<AppState['pwatchlists']['currencies']>((state) =>
+    ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.currencies || []),
+  );
 
   useEffect(() => {
     if (isOpen && !lastOpen) {
@@ -61,30 +63,6 @@ const CurrencyPopover: React.FC<Props> = ({
     [dispatch],
   );
 
-  const Row = useCallback(
-    ({ data, index, style }) => {
-      const currency: CoingeckoWatchListToken = data?.[index];
-
-      return currency ? (
-        <CurrencyRow
-          key={index}
-          style={style}
-          currency={currency}
-          onSelect={(address) => {
-            onSelectCurrency(currency);
-            onCurrencySelection(currency);
-            mixpanel.track(MixPanelEvents.ADD_WATCHLIST, {
-              token: currency.symbol,
-              tokenAddress: address,
-            });
-          }}
-        />
-      ) : null;
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-
   return (
     <PopoverContainer ref={(ref: any) => getRef(ref)}>
       {/* Render Search Token Input */}
@@ -102,20 +80,24 @@ const CurrencyPopover: React.FC<Props> = ({
       </Box>
 
       <CurrencyList>
-        <AutoSizer disableWidth>
-          {({ height }) => (
-            <FixedSizeList
-              height={height}
-              width="100%"
-              itemCount={currencies.length}
-              itemSize={45}
-              itemData={currencies}
-              itemKey={(index, data) => data[index]?.id}
-            >
-              {Row}
-            </FixedSizeList>
-          )}
-        </AutoSizer>
+        {currencies.map((item) => (
+          <div style={{ height: 45 }} key={item.id}>
+            <CurrencyRow
+              key={item?.id}
+              style={{}}
+              currency={item}
+              isSelected={allWatchlistCurrencies.find(({ id }) => id === item?.id) ? true : false}
+              onSelect={(address) => {
+                onSelectCurrency(item);
+                onCurrencySelection(item);
+                mixpanel.track(MixPanelEvents.ADD_WATCHLIST, {
+                  token: item.symbol,
+                  tokenAddress: address,
+                });
+              }}
+            />
+          </div>
+        ))}
       </CurrencyList>
     </PopoverContainer>
   );

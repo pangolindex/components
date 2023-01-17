@@ -1,18 +1,16 @@
 import React, { useCallback } from 'react';
 import { Box, Button, Text } from 'src/components';
 import { CoingeckoWatchListToken } from 'src/state/pcoingecko/hooks';
-import { useIsSelectedCurrency } from 'src/state/pwatchlists/hooks';
 import { RowWrapper } from './styled';
 
 type Props = {
   currency: CoingeckoWatchListToken;
   onSelect: (address: string) => void;
   style: any;
+  isSelected: boolean;
 };
 
-const WatchlistCurrencyRow: React.FC<Props> = ({ currency, onSelect, style }) => {
-  const isSelected = useIsSelectedCurrency(currency?.id);
-
+const WatchlistCurrencyRow: React.FC<Props> = ({ currency, onSelect, style, isSelected }) => {
   const handleSelect = useCallback(() => {
     onSelect(currency?.id);
   }, [onSelect, currency]);
