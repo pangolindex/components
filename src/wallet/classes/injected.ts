@@ -57,6 +57,6 @@ export class AvalancheCoreWallet extends Wallet {
   }
 
   installed(): boolean {
-    return !window.avalanche;
+    return !!window.avalanche;
   }
 }
