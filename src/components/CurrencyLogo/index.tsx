@@ -60,7 +60,7 @@ export default function CurrencyLogo({
   } else if (deepEqual(currency, CAVAX[ChainId.NEAR_TESTNET]) || deepEqual(currency, CAVAX[ChainId.NEAR_MAINNET])) {
     return <img src={NearLogo} width={`${size}px`} height={`${size}px`} className={className} />;
   } else if (deepEqual(currency, CAVAX[ChainId.SONGBIRD])) {
-    return <img src={SongBirdLogo} width={`${size}px`} height={`${size}px`} />;
+    return <img src={SongBirdLogo} width={`${size}px`} height={`${size}px`} className={className} />;
   } else if (deepEqual(currency, CAVAX[ChainId.FLARE_MAINNET])) {
     return <img src={FlareLogo} width={`${size}px`} height={`${size}px`} className={className} />;
   } else if (deepEqual(currency, CAVAX[ChainId.HEDERA_TESTNET])) {
