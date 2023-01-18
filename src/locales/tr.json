@@ -387,7 +387,8 @@
     "importDescription1": "İçe aktarma işleviyle 'Havuzlarınız' bölümünde görünmeyen havuzları arayabilirsiniz.",
     "importDescription2": "Havuzunuzda bulunan temel madeni paraları seçin.",
     "createPairDescription": "Oluşturma işleviyle yeni bir çift oluşturabilirsiniz. Sadece bir çift oluşturmak istediğiniz paraları arayın ve sistem ya Pangolin'de varsa havuzu bulur ya da yoksa yepyeni bir tane oluşturur.",
-    "addLiquidityDescription": "Likidite ekle işlevi ile bir çifte likidite eklersiniz. Sadece likidite eklemek istediğiniz paraları arayın ve sistem Pangolin'de varsa havuzu bulsun veya yoksa yeni bir tane oluşturun."
+    "addLiquidityDescription": "Likidite ekle işlevi ile bir çifte likidite eklersiniz. Sadece likidite eklemek istediğiniz paraları arayın ve sistem Pangolin'de varsa havuzu bulsun veya yoksa yeni bir tane oluşturun.",
+    "createStorageContract": "Hedera'da, tüm akıllı sözleşmelerin defterdeki alanı kullanmak için ücret ödemesi gerekir. Bunlar depolama ücretleri ve otomatik yenileme ücretleri. Farm yapmak için bir Depolama sözleşmesi oluşturmanız gerekecek. depolama olacak ücretsiz, ancak gelecekte otomatik yenileme ücreti ödemeniz gerekecek. Bunlar yaklaşık 2 sent. yani biz Herhangi bir sorun yaşamadığınızdan emin olmak için HBAR'da her zaman cüzdanınızda 1 ABD doları bulundurmanızı öneririz."
   },
   "poolFinder": {
     "connectToFind": "Havuzları bulmak için bir cüzdan bağlayın",
