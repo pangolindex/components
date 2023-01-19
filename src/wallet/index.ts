@@ -1,3 +1,4 @@
+import { NetworkType } from '@pangolindex/sdk';
 import { isMobile } from 'react-device-detect';
 import injectWalletIcon from 'src/assets/images/inject-wallet.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
@@ -7,12 +8,21 @@ import { HashPackWallet, NearWallet, XDefiWallet } from './classes/nonInjected';
 import { CoinbaseWallet, GnosisSafeWallet, WalletConnect } from './classes/others';
 import { Wallet } from './classes/wallet';
 
-const injectWallet = new InjectedWallet('Inject', null, injectWalletIcon, 'Inject Wallet', true, () => isMobile);
+const injectWallet = new InjectedWallet(
+  'Inject',
+  null,
+  injectWalletIcon,
+  'Inject Wallet',
+  [NetworkType.EVM],
+  true,
+  () => isMobile,
+);
 const metamask = new InjectedWallet(
   'Metamask',
   'https://metamask.io/',
   metamaskIcon,
   'Easy-to-use browser extension.',
+  [NetworkType.EVM],
   Boolean(window.ethereum && window.ethereum.isMetaMask),
 );
 const rabbyWallet = new InjectedWallet(
@@ -20,6 +30,7 @@ const rabbyWallet = new InjectedWallet(
   'https://rabby.io/',
   rabbyIcon,
   'Easy-to-use browser extension.',
+  [NetworkType.EVM],
   Boolean(window.ethereum && window.ethereum.isRabby),
 );
 

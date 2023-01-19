@@ -1,3 +1,4 @@
+import { NetworkType } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { isMobile } from 'react-device-detect';
 
@@ -13,6 +14,7 @@ export abstract class Wallet {
   readonly href: string | null;
   readonly icon: string;
   readonly description: string;
+  readonly supportedChains: NetworkType[];
   isActive = false;
 
   /**
@@ -22,12 +24,20 @@ export abstract class Wallet {
    * @param icon Link of the wallet icon
    * @param description Breef description of wallet
    */
-  constructor(connector: AbstractConnector, name: string, href: string | null, icon: string, description: string) {
+  constructor(
+    connector: AbstractConnector,
+    name: string,
+    href: string | null,
+    icon: string,
+    description: string,
+    supportedChains: NetworkType[],
+  ) {
     this.connector = connector;
     this.name = name;
     this.href = href;
     this.icon = icon;
     this.description = description;
+    this.supportedChains = supportedChains;
 
     // On disconnect the wallet we need to set the `isActive` to false
     // To do this, when disconnect the connector, this emits the Web3ReactDeactivate event by default

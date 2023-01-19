@@ -1,3 +1,4 @@
+import { NetworkType } from '@pangolindex/sdk';
 import hashIcon from 'src/assets/images/hashConnect.png';
 import nearIcon from 'src/assets/images/near.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
@@ -6,7 +7,9 @@ import { Wallet } from './wallet';
 
 export class XDefiWallet extends Wallet {
   constructor() {
-    super(xDefi, 'XDEFI Wallet', 'https://www.xdefi.io', xDefiIcon, 'One wallet for all your Crypto');
+    super(xDefi, 'XDEFI Wallet', 'https://www.xdefi.io', xDefiIcon, 'One wallet for all your Crypto', [
+      NetworkType.EVM,
+    ]);
   }
 
   installed(): boolean {
@@ -16,7 +19,7 @@ export class XDefiWallet extends Wallet {
 
 export class NearWallet extends Wallet {
   constructor() {
-    super(near, 'Near', 'https://wallet.near.org/', nearIcon, 'Near Web');
+    super(near, 'Near', 'https://wallet.near.org/', nearIcon, 'Near Web', [NetworkType.NEAR]);
   }
 
   installed(): boolean {
@@ -26,7 +29,9 @@ export class NearWallet extends Wallet {
 
 export class HashPackWallet extends Wallet {
   constructor() {
-    super(hashConnect, 'HashPack Wallet', 'https://www.hashpack.app/', hashIcon, 'HashPack Wallet Connect');
+    super(hashConnect, 'HashPack Wallet', 'https://www.hashpack.app/', hashIcon, 'HashPack Wallet Connect', [
+      NetworkType.HEDERA,
+    ]);
   }
 
   installed(): boolean {

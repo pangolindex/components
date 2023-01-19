@@ -61,8 +61,15 @@ export default function WalletModal({ open, closeModal, onWalletConnect, additio
   const allWallets = { ...SUPPORTED_WALLETS, ...additionalWallets };
 
   const wallets = useMemo(() => {
+    const _selectedChains = CHAINS[selectedChain];
     // adding additional wallets in wallets mapping
-    return Object.values(allWallets).filter((wallet) => wallet.name.toLowerCase().includes(debouncedSearchQuery));
+    return Object.values(allWallets).filter((wallet) => {
+      console.log({ wallet, _selectedChains });
+      return (
+        wallet.supportedChains.includes(_selectedChains.network_type) &&
+        wallet.name.toLowerCase().includes(debouncedSearchQuery)
+      );
+    });
   }, [allWallets, debouncedSearchQuery]);
 
   function getWalletKey(wallet: Wallet): string | null {

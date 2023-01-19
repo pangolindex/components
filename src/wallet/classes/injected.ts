@@ -1,3 +1,4 @@
+import { NetworkType } from '@pangolindex/sdk';
 import avalancheCoreIcon from 'src/assets/images/avalancheCore.svg';
 import bitKeepIcon from 'src/assets/images/bitkeep.svg';
 import talismanIcon from 'src/assets/images/talisman.svg';
@@ -13,10 +14,11 @@ export class InjectedWallet extends Wallet {
     href: string | null,
     icon: string,
     description: string,
+    supprotedChains: NetworkType[],
     isWallet?: boolean,
     conditionToShowWallet?: () => boolean,
   ) {
-    super(injected, name, href, icon, description);
+    super(injected, name, href, icon, description, supprotedChains);
     this.isWallet = isWallet;
     this.conditionToShowWallet = conditionToShowWallet;
   }
@@ -33,7 +35,7 @@ export class InjectedWallet extends Wallet {
 
 export class TalismanWallet extends Wallet {
   constructor() {
-    super(talisman, 'Talisman', 'https://www.talisman.xyz/', talismanIcon, 'Enter the Paraverse.');
+    super(talisman, 'Talisman', 'https://www.talisman.xyz/', talismanIcon, 'Enter the Paraverse.', [NetworkType.EVM]);
   }
 
   installed(): boolean {
@@ -43,7 +45,7 @@ export class TalismanWallet extends Wallet {
 
 export class BitKeepWallet extends Wallet {
   constructor() {
-    super(bitKeep, 'BitKeep', 'https://bitkeep.com/', bitKeepIcon, 'Easy-to-use browser extension.');
+    super(bitKeep, 'BitKeep', 'https://bitkeep.com/', bitKeepIcon, 'Easy-to-use browser extension.', [NetworkType.EVM]);
   }
 
   installed(): boolean {
@@ -53,7 +55,9 @@ export class BitKeepWallet extends Wallet {
 
 export class AvalancheCoreWallet extends Wallet {
   constructor() {
-    super(avalancheCore, 'Avalanche Core', 'https://core.app/', avalancheCoreIcon, 'Easy-to-use browser extension.');
+    super(avalancheCore, 'Avalanche Core', 'https://core.app/', avalancheCoreIcon, 'Easy-to-use browser extension.', [
+      NetworkType.EVM,
+    ]);
   }
 
   installed(): boolean {

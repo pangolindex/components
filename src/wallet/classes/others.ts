@@ -1,4 +1,5 @@
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
+import { NetworkType } from '@pangolindex/sdk';
 import { isMobile } from 'react-device-detect';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
@@ -16,7 +17,9 @@ export class GnosisSafeWallet extends Wallet {
   private triedSafe = false;
 
   constructor() {
-    super(gnosisSafe, 'Gnosis Safe', 'https://app.safe.global/', gnosisSafeIcon, 'Gnosis Safe Multisig Wallet');
+    super(gnosisSafe, 'Gnosis Safe', 'https://app.safe.global/', gnosisSafeIcon, 'Gnosis Safe Multisig Wallet', [
+      NetworkType.EVM,
+    ]);
   }
 
   showWallet(): boolean {
@@ -50,6 +53,7 @@ export class CoinbaseWallet extends Wallet {
       'https://www.coinbase.com/pt/wallet',
       coinbaseWalletIcon,
       'Use Coinbase Wallet app on mobile device',
+      [NetworkType.EVM],
     );
   }
 
@@ -64,7 +68,9 @@ export class CoinbaseWallet extends Wallet {
 
 export class WalletConnect extends Wallet {
   constructor() {
-    super(walletconnect, 'Wallet Connect', 'https://walletconnect.com/', walletConnectIcon, 'Use Wallet Connect');
+    super(walletconnect, 'Wallet Connect', 'https://walletconnect.com/', walletConnectIcon, 'Use Wallet Connect', [
+      NetworkType.EVM,
+    ]);
   }
 
   showWallet(): boolean {
