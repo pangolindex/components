@@ -108,7 +108,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           )
         }
       />
-      {chain?.evm === false && (
+      {!!chain && chain?.network_type !== NetworkType.EVM && (
         <Box pt={20}>
           <TextInput
             label={t('bridge.bridgeInputsWidget.recipient')}

@@ -92,8 +92,11 @@ export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) 
 export const checkAddressNetworkBaseMapping: {
   [networkType in NetworkType]: (value: any, bridgeChain: BridgeChain) => string | false;
 } = {
-  [NetworkType.EVM]: isDummyAddress,
+  [NetworkType.EVM]: isAddress,
   [NetworkType.COSMOS]: isCosmosAddress,
+  [NetworkType.HEDERA]: isDummyAddress,
+  [NetworkType.NEAR]: isDummyAddress,
+  [NetworkType.SUBNET]: isAddress,
 };
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
@@ -519,11 +522,10 @@ export function scrollElementIntoView(element: HTMLElement | null, behavior?: 's
   }
 }
 
-export function isEvmChain(chainId: ChainId = ChainId.AVALANCHE): boolean {
-  if (CHAINS[chainId]?.evm) {
-    return true;
-  }
-  return false;
+export function isEvmChain(chainId: ChainId | undefined): boolean {
+  if (!chainId) return false;
+
+  return CHAINS[chainId]?.network_type === NetworkType.EVM;
 }
 
 // http://jsfiddle.net/5QrhQ/5/

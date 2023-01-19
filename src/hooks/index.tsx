@@ -1,5 +1,5 @@
 import { ExternalProvider, Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
-import { CHAINS, ChainId } from '@pangolindex/sdk';
+import { ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
@@ -7,7 +7,7 @@ import { useQueryClient } from 'react-query';
 import { network } from 'src/connectors';
 import { PROVIDER_MAPPING } from 'src/constants';
 import { useBlockNumber } from 'src/state/papplication/hooks';
-import { isAddress } from 'src/utils';
+import { isAddress, isEvmChain } from 'src/utils';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -41,7 +41,7 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   const state = useMemo(() => {
     let normalizedAccount;
     if (chainId) {
-      normalizedAccount = CHAINS?.[chainId as ChainId]?.evm ? isAddress(account) : account;
+      normalizedAccount = isEvmChain(chainId) ? isAddress(account) : account;
     }
 
     return {

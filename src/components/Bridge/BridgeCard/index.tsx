@@ -171,7 +171,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       inputCurrency &&
       outputCurrency &&
       toChain &&
-      (toChain?.evm || (!toChain?.evm && isToAddress(recipient, toChain)))
+      (toChain?.network_type === NetworkType.EVM || isToAddress(recipient, toChain))
     ) {
       onChangeRouteLoaderStatus();
       getRoutes(
@@ -322,7 +322,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
             onClick={() => {
               fromChain && changeNetwork(fromChain as Chain);
             }}
-            isDisabled={!fromChain || (!toChain?.evm && !recipient)}
+            isDisabled={!fromChain || (toChain?.network_type === NetworkType.EVM && !recipient)}
           >
             {fromChain ? 'Switch Chain' : 'Please Select Chain'}
           </Button>
@@ -384,7 +384,9 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
         <SelectChainDrawer
           isOpen={isChainDrawerOpen}
           // We can't show non-evm chains here. Because we don't have non-evm chain wallet integration yet. (in Bridge wise.)
-          chains={drawerType === ChainField.FROM ? chainList?.filter((x) => x.evm) : chainList}
+          chains={
+            drawerType === ChainField.FROM ? chainList?.filter((x) => x.network_type === NetworkType.EVM) : chainList
+          }
           onClose={onChangeChainDrawerStatus}
           onChainSelect={onChainSelect}
           selectedChain={drawerType === ChainField.FROM ? fromChain : toChain}

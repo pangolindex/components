@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
-import { ALL_CHAINS, ChainId } from '@pangolindex/sdk';
+import { ALL_CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { InjectedConnector } from '@pangolindex/web3-react-injected-connector';
 import { TalismanConnector } from '@talismn/web3react-v6-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
@@ -13,9 +13,9 @@ import { NearConnector } from './NearConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
 
-export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter((chain) => chain.pangolin_is_live && chain.evm).map(
-  (chain) => chain.chain_id ?? 43114,
-);
+export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter(
+  (chain) => (chain.pangolin_is_live || chain.supported_by_bridge) && chain?.network_type === NetworkType.EVM,
+).map((chain) => chain.chain_id ?? 43114);
 
 const NETWORK_URL = 'https://api.avax.network/ext/bc/C/rpc';
 
