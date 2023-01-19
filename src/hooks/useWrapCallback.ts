@@ -103,7 +103,18 @@ export function useWrapCallback(
     } else {
       return NOT_APPLICABLE;
     }
-  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction, onUserInput]);
+  }, [
+    wethContract,
+    chainId,
+    inputCurrency,
+    outputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    onUserInput,
+    executing,
+    setExecuting,
+  ]);
 }
 
 /**
@@ -281,5 +292,16 @@ export function useWrapHbarCallback(
     } else {
       return NOT_APPLICABLE;
     }
-  }, [chainId, inputCurrency, outputCurrency, inputAmount, balance, account, addTransaction, onUserInput]);
+  }, [
+    chainId,
+    inputCurrency,
+    outputCurrency,
+    inputAmount,
+    balance,
+    account,
+    addTransaction,
+    onUserInput,
+    executing,
+    setExecuting,
+  ]);
 }
