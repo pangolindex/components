@@ -388,7 +388,8 @@
     "importDescription1": "Với chức năng nhập, bạn có thể tìm kiếm các nhóm không xuất hiện trong phần 'Bể bơi của bạn'.",
     "importDescription2": "Chỉ cần chọn các đồng tiền cơ bản trong nhóm của bạn.",
     "createPairDescription": "Với chức năng tạo, bạn có thể tạo một cặp mới. Chỉ cần tìm kiếm các đồng tiền mà bạn muốn tạo một cặp và hệ thống sẽ tìm thấy đồng tiền nếu tồn tại trên Pangolin hoặc tạo một đồng mới nếu không có.",
-    "addLiquidityDescription": "Với chức năng thêm thanh khoản, bạn thêm thanh khoản cho một cặp. Chỉ cần tìm kiếm những đồng tiền mà bạn muốn thêm thanh khoản và hệ thống sẽ tìm đồng tiền nếu nó tồn tại ở Pangolin hoặc tạo một đồng mới nếu nó không có."
+    "addLiquidityDescription": "Với chức năng thêm thanh khoản, bạn thêm thanh khoản cho một cặp. Chỉ cần tìm kiếm những đồng tiền mà bạn muốn thêm thanh khoản và hệ thống sẽ tìm đồng tiền nếu nó tồn tại ở Pangolin hoặc tạo một đồng mới nếu nó không có.",
+    "createStorageContract": "Trên Hedera, tất cả các hợp đồng thông minh cần phải trả phí để sử dụng không gian trên sổ cái. Đây là phí lưu trữ và phí gia hạn tự động. Bạn sẽ cần tạo hợp đồng Lưu trữ để trang trại. Kho lưu trữ sẽ miễn phí, nhưng trong tương lai bạn sẽ phải trả phí gia hạn tự động. Đây là khoảng 2 xu. Vì vậy, chúng tôi khuyên bạn nên giữ $1 trên HBAR trong ví của mình mọi lúc để đảm bảo bạn không gặp phải bất kỳ sự cố nào."
   },
   "poolFinder": {
     "connectToFind": "Kêt nối với một ví để nhìn thấy bể",

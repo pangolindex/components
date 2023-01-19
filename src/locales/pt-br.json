@@ -387,7 +387,8 @@
     "importDescription1": "Com a função de importação você pode procurar por pools que não aparecem na seção 'Suas Pools'.",
     "importDescription2": "Basta escolher as moedas subjacentes que estavam na sua pool.",
     "createPairDescription": "Com a função de criação você pode criar um novo par. Basta pesquisar as moedas para as quais você deseja criar um par e o sistema encontrará a pool, se existir no Pangolin, ou criará um novo, se não houver.",
-    "addLiquidityDescription": "Com a função de adicionar liquidez voce adiciona liquidez ao um par. Basta pesquisar as moedas para as quais você deseja adiciona liquidez e o sistema encontrará o pool, se existir no Pangolin, ou criará um novo, se não houver."
+    "addLiquidityDescription": "Com a função de adicionar liquidez voce adiciona liquidez ao um par. Basta pesquisar as moedas para as quais você deseja adiciona liquidez e o sistema encontrará o pool, se existir no Pangolin, ou criará um novo, se não houver.",
+    "createStorageContract": "No Hedera, todos os contratos inteligentes precisam pagar taxas pela utilização de espaço no registro. Estas são taxas de armazenamento e taxas de renovação automática. Você precisará criar um contrato de armazenamento para cultivar. O armazenamento será gratuitamente, mas no futuro você será obrigado a pagar taxas de renovação automática. Estes são cerca de 2 centavos. Então nós recomendamos manter $ 1 em HBAR em sua carteira o tempo todo para garantir que você não tenha problemas."
   },
   "poolFinder": {
     "connectToFind": "Conecte-se a uma carteira para encontrar suas pools",
