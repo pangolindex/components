@@ -10,8 +10,11 @@ export const Wrapper = styled(Box)`
   border-radius: 10px;
   position: relative;
 
+  max-width: 40dvw;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 100dvh;
+    max-width: 100dvw;
   `}
 `;
 
