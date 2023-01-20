@@ -23,6 +23,7 @@ export abstract class Wallet {
    * @param href Link of the wallet website
    * @param icon Link of the wallet icon
    * @param description Breef description of wallet
+   * @param supportedChains Array of NetworkType that this chain supports
    */
   constructor(
     connector: AbstractConnector,

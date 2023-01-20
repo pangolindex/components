@@ -11,7 +11,7 @@ import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/com
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
 import { MEDIA_WIDTHS } from 'src/theme';
-import { SUPPORTED_WALLETS } from 'src/wallet';
+import { SUPPORTED_CHAINS, SUPPORTED_WALLETS } from 'src/wallet';
 import { Wallet } from 'src/wallet/classes/wallet';
 import { NETWORK_TYPE } from '../NetworkSelection/types';
 import WalletView from './WalletView';
@@ -30,7 +30,13 @@ import {
 } from './styleds';
 import { WalletModalProps } from './types';
 
-export default function WalletModal({ open, closeModal, onWalletConnect, additionalWallets }: WalletModalProps) {
+export default function WalletModal({
+  open,
+  closeModal,
+  onWalletConnect,
+  supportedWallets,
+  supportedChains,
+}: WalletModalProps) {
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedChain, setSelectedChain] = useState(ChainId.AVALANCHE);
@@ -55,30 +61,29 @@ export default function WalletModal({ open, closeModal, onWalletConnect, additio
 
   const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 250);
 
-  const chains = useMemo(
-    () =>
-      Object.values(CHAINS)
-        .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
-        .filter((chain) => chain.mainnet === mainnet),
-    [mainnet],
-  );
+  const chains = useMemo(() => {
+    const _chains = supportedChains || SUPPORTED_CHAINS;
+    return _chains
+      .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
+      .filter((chain) => chain.mainnet === mainnet);
+  }, [supportedChains, mainnet]);
 
-  const allWallets = { ...SUPPORTED_WALLETS, ...additionalWallets };
+  const _wallets = supportedWallets || SUPPORTED_WALLETS;
 
   const wallets = useMemo(() => {
     const _selectedChains = CHAINS[selectedChain];
     // adding additional wallets in wallets mapping
-    return Object.values(allWallets)
+    return Object.values(_wallets)
       .filter(
         (wallet) =>
           wallet.supportedChains.includes(_selectedChains.network_type) &&
           wallet.name.toLowerCase().includes(debouncedSearchQuery),
       )
       .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
-  }, [allWallets, debouncedSearchQuery]);
+  }, [_wallets, debouncedSearchQuery]);
 
   function getWalletKey(wallet: Wallet): string | null {
-    const result = Object.entries(allWallets).find(
+    const result = Object.entries(_wallets).find(
       ([, value]) => value === wallet && value.name.toLowerCase() === wallet.name.toLowerCase(),
     );
 
@@ -163,12 +168,7 @@ export default function WalletModal({ open, closeModal, onWalletConnect, additio
           <Separator />
           <Box flexGrow={1} overflowX="hidden">
             {pendingWallet ? (
-              <WalletView
-                wallet={allWallets[pendingWallet]}
-                error={pendingError}
-                onBack={onBack}
-                onConnect={onConnect}
-              />
+              <WalletView wallet={_wallets[pendingWallet]} error={pendingError} onBack={onBack} onConnect={onConnect} />
             ) : (
               <Scrollbars
                 height="100%"
