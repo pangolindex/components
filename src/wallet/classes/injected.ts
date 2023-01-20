@@ -6,7 +6,7 @@ import { avalancheCore, bitKeep, injected, talisman } from 'src/connectors';
 import { Wallet } from './wallet';
 
 export class InjectedWallet extends Wallet {
-  isWallet?: boolean;
+  isWallet?: string;
   conditionToShowWallet?: () => boolean;
 
   constructor(
@@ -15,7 +15,7 @@ export class InjectedWallet extends Wallet {
     icon: string,
     description: string,
     supportedChains: NetworkType[],
-    isWallet?: boolean,
+    isWallet?: string,
     conditionToShowWallet?: () => boolean,
   ) {
     super(injected, name, href, icon, description, supportedChains);
@@ -29,7 +29,7 @@ export class InjectedWallet extends Wallet {
   }
 
   installed(): boolean {
-    return this.isWallet ?? true;
+    return this.isWallet ? Boolean(window.ethereum && window.ethereum[this.isWallet]) : true;
   }
 }
 

@@ -14,7 +14,7 @@ const injectWallet = new InjectedWallet(
   injectWalletIcon,
   'Injected Wallet.',
   [NetworkType.EVM],
-  true,
+  undefined,
   () => isMobile,
 );
 const metamask = new InjectedWallet(
@@ -23,7 +23,7 @@ const metamask = new InjectedWallet(
   metamaskIcon,
   'A crypto wallet & gateway to blockchain apps.',
   [NetworkType.EVM],
-  Boolean(window.ethereum && window.ethereum.isMetaMask),
+  'isMetaMask',
 );
 const rabbyWallet = new InjectedWallet(
   'Rabby Wallet',
@@ -31,7 +31,7 @@ const rabbyWallet = new InjectedWallet(
   rabbyIcon,
   'Easy-to-use browser extension.',
   [NetworkType.EVM],
-  Boolean(window.ethereum && window.ethereum.isRabby),
+  'isRabby',
 );
 
 const talismanWallet = new TalismanWallet();
