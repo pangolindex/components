@@ -49,9 +49,11 @@ export const WalletFrame = styled(Box)`
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: 10px;
   width: inherit;
-  padding: 5px 10px 10px 0px;
+  padding: 5px 0px;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    padding: 5px 10px 10px 0px;
   `}
 `;
 
