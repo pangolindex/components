@@ -56,8 +56,12 @@ export default function WalletView({
       </BackButton>
       <Frame>
         <StyledLogo srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
-        <Text color="text1">{wallet.name}</Text>
-        <Text color="text1">{wallet.description}</Text>
+        <Text color="text1" textAlign="center">
+          {wallet.name}
+        </Text>
+        <Text color="text1" textAlign="center">
+          {wallet.description}
+        </Text>
         {getContent()}
       </Frame>
     </Wrapper>

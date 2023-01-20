@@ -17,7 +17,7 @@ export class GnosisSafeWallet extends Wallet {
   private triedSafe = false;
 
   constructor() {
-    super(gnosisSafe, 'Gnosis Safe', 'https://app.safe.global/', gnosisSafeIcon, 'Gnosis Safe Multisig Wallet', [
+    super(gnosisSafe, 'Gnosis Safe', 'https://app.safe.global/', gnosisSafeIcon, 'Gnosis Safe Multisig Wallet.', [
       NetworkType.EVM,
     ]);
   }
@@ -50,9 +50,9 @@ export class CoinbaseWallet extends Wallet {
     super(
       walletlink,
       'Coinbase Wallet',
-      'https://www.coinbase.com/pt/wallet',
+      'https://www.coinbase.com/wallet',
       coinbaseWalletIcon,
-      'Use Coinbase Wallet app on mobile device',
+      'Your key to the world of crypto.',
       [NetworkType.EVM],
     );
   }
@@ -68,9 +68,14 @@ export class CoinbaseWallet extends Wallet {
 
 export class WalletConnect extends Wallet {
   constructor() {
-    super(walletconnect, 'WalletConnect', 'https://walletconnect.com/', walletConnectIcon, 'Use Wallet Connect', [
-      NetworkType.EVM,
-    ]);
+    super(
+      walletconnect,
+      'WalletConnect',
+      'https://walletconnect.com/',
+      walletConnectIcon,
+      'With WalletConnect, you can connect your wallet with hundreds of apps, opening the doors to a new world of web3 experiences.',
+      [NetworkType.EVM],
+    );
   }
 
   showWallet(): boolean {

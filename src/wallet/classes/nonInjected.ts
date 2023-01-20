@@ -7,7 +7,7 @@ import { Wallet } from './wallet';
 
 export class XDefiWallet extends Wallet {
   constructor() {
-    super(xDefi, 'XDEFI Wallet', 'https://www.xdefi.io', xDefiIcon, 'One wallet for all your Crypto', [
+    super(xDefi, 'XDEFI Wallet', 'https://www.xdefi.io', xDefiIcon, 'One wallet for all your Crypto.', [
       NetworkType.EVM,
     ]);
   }
@@ -19,7 +19,7 @@ export class XDefiWallet extends Wallet {
 
 export class NearWallet extends Wallet {
   constructor() {
-    super(near, 'Near', 'https://wallet.near.org/', nearIcon, 'Near Web', [NetworkType.NEAR]);
+    super(near, 'Near', 'https://wallet.near.org/', nearIcon, 'Near Web.', [NetworkType.NEAR]);
   }
 
   installed(): boolean {
@@ -29,7 +29,7 @@ export class NearWallet extends Wallet {
 
 export class HashPackWallet extends Wallet {
   constructor() {
-    super(hashConnect, 'HashPack Wallet', 'https://www.hashpack.app/', hashIcon, 'HashPack Wallet Connect', [
+    super(hashConnect, 'HashPack Wallet', 'https://www.hashpack.app/', hashIcon, 'HashPack Wallet Connect.', [
       NetworkType.HEDERA,
     ]);
   }

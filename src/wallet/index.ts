@@ -12,7 +12,7 @@ const injectWallet = new InjectedWallet(
   'Inject',
   null,
   injectWalletIcon,
-  'Inject Wallet',
+  'Injected Wallet.',
   [NetworkType.EVM],
   true,
   () => isMobile,
@@ -21,7 +21,7 @@ const metamask = new InjectedWallet(
   'Metamask',
   'https://metamask.io/',
   metamaskIcon,
-  'Easy-to-use browser extension.',
+  'A crypto wallet & gateway to blockchain apps.',
   [NetworkType.EVM],
   Boolean(window.ethereum && window.ethereum.isMetaMask),
 );
