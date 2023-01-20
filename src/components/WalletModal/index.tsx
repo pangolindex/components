@@ -4,10 +4,13 @@ import React, { useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
 import { useTranslation } from 'react-i18next';
+import { useMedia } from 'react-use';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
+import { MEDIA_WIDTHS } from 'src/theme';
 import { SUPPORTED_WALLETS } from 'src/wallet';
 import { Wallet } from 'src/wallet/classes/wallet';
 import { NETWORK_TYPE } from '../NetworkSelection/types';
@@ -40,6 +43,8 @@ export default function WalletModal({ open, closeModal, onWalletConnect, additio
   const theme = useContext(ThemeContext);
   const mixpanel = useMixpanel();
 
+  const isMobile = useMedia(`(max-width: ${MEDIA_WIDTHS.upToSmall}px)`);
+
   function handleSearch(value: any) {
     setSearchQuery(value);
   }
@@ -63,11 +68,13 @@ export default function WalletModal({ open, closeModal, onWalletConnect, additio
   const wallets = useMemo(() => {
     const _selectedChains = CHAINS[selectedChain];
     // adding additional wallets in wallets mapping
-    return Object.values(allWallets).filter(
-      (wallet) =>
-        wallet.supportedChains.includes(_selectedChains.network_type) &&
-        wallet.name.toLowerCase().includes(debouncedSearchQuery),
-    );
+    return Object.values(allWallets)
+      .filter(
+        (wallet) =>
+          wallet.supportedChains.includes(_selectedChains.network_type) &&
+          wallet.name.toLowerCase().includes(debouncedSearchQuery),
+      )
+      .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
   }, [allWallets, debouncedSearchQuery]);
 
   function getWalletKey(wallet: Wallet): string | null {
@@ -125,6 +132,7 @@ export default function WalletModal({ open, closeModal, onWalletConnect, additio
             addonAfter={<Search color={theme.text1} size={28} />}
             onChange={handleSearch}
             value={searchQuery}
+            placeholder="Try searching for chains"
           />
           <ToggleButtons
             options={[NETWORK_TYPE.MAINNET, NETWORK_TYPE.TESTNET]}
@@ -132,24 +140,26 @@ export default function WalletModal({ open, closeModal, onWalletConnect, additio
             onChange={handleChainType}
           />
         </Inputs>
-        <Box display="flex">
-          <Box>
-            <Scrollbars autoHeight autoHeightMin={48} autoHeightMax={358}>
-              <ChainFrame>
-                {chains.map((chain, index) => (
-                  <ChainButton
-                    variant="plain"
-                    width="68px"
-                    onClick={() => setSelectedChain(chain.chain_id ?? ChainId.AVALANCHE)}
-                    key={index}
-                  >
-                    {selectedChain === chain.chain_id ? <Bookmark /> : null}
-                    <StyledLogo srcs={[chain.logo ?? '']} alt={`${chain.name} Logo`} />
-                  </ChainButton>
-                ))}
-              </ChainFrame>
-            </Scrollbars>
-          </Box>
+        <Box display="flex" flexGrow={1}>
+          <AutoSizer disableWidth style={{ height: 'max-content' }}>
+            {({ height }) => (
+              <Scrollbars autoHeight autoHeightMin={48} autoHeightMax={isMobile ? height : 358}>
+                <ChainFrame>
+                  {chains.map((chain, index) => (
+                    <ChainButton
+                      variant="plain"
+                      width="68px"
+                      onClick={() => setSelectedChain(chain.chain_id ?? ChainId.AVALANCHE)}
+                      key={index}
+                    >
+                      {selectedChain === chain.chain_id ? <Bookmark /> : null}
+                      <StyledLogo srcs={[chain.logo ?? '']} alt={`${chain.name} Logo`} />
+                    </ChainButton>
+                  ))}
+                </ChainFrame>
+              </Scrollbars>
+            )}
+          </AutoSizer>
           <Separator />
           <Box flexGrow={1} overflowX="hidden">
             {pendingWallet ? (

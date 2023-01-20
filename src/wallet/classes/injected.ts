@@ -55,7 +55,7 @@ export class BitKeepWallet extends Wallet {
 
 export class AvalancheCoreWallet extends Wallet {
   constructor() {
-    super(avalancheCore, 'Avalanche Core', 'https://core.app/', avalancheCoreIcon, 'Easy-to-use browser extension.', [
+    super(avalancheCore, 'Core', 'https://core.app/', avalancheCoreIcon, 'Easy-to-use browser extension.', [
       NetworkType.EVM,
     ]);
   }

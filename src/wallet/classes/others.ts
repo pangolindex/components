@@ -68,7 +68,7 @@ export class CoinbaseWallet extends Wallet {
 
 export class WalletConnect extends Wallet {
   constructor() {
-    super(walletconnect, 'Wallet Connect', 'https://walletconnect.com/', walletConnectIcon, 'Use Wallet Connect', [
+    super(walletconnect, 'WalletConnect', 'https://walletconnect.com/', walletConnectIcon, 'Use Wallet Connect', [
       NetworkType.EVM,
     ]);
   }

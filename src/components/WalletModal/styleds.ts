@@ -2,40 +2,59 @@ import styled from 'styled-components';
 import { Box, Button, Logo } from 'src/components';
 
 export const Wrapper = styled(Box)`
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
   padding: 20px;
   background-color: ${({ theme }) => theme.color2};
   border-radius: 10px;
   position: relative;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    height: 100dvh;
+  `}
 `;
 
 export const Header = styled(Box)`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: fit-content;
 `;
 
 export const Inputs = styled(Box)`
   display: grid;
   grid-auto-flow: column;
   gap: 20px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-auto-flow: row;
+    height: max-content;
+    &>:nth-child(2) {
+      height: 40px;
+    }
+  `}
 `;
 
 export const ChainFrame = styled(Box)`
   display: grid;
   gap: 10px;
 `;
+
 export const WalletFrame = styled(Box)`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: 10px;
-  width: 100%;
+  width: inherit;
+  padding: 5px 10px 10px 0px;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  `}
 `;
 
 export const Separator = styled.hr`
   width: 0px;
-  height: 100%;
+  height: inherit;
   border: 1px solid #393939;
   border-radius: 2px;
   margin-left: 10px;
@@ -70,6 +89,16 @@ export const WalletButton = styled(Button)`
   border-radius: 8px;
   padding: 10px;
   position: relative;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-auto-flow: column;
+    align-content: center;
+    justify-content: flex-start;
+    padding-left: 20px;
+    padding-right: 20px;
+    min-height: 60px;
+    gap: 10px;
+  `}
 `;
 
 export const GreenCircle = styled.div`
