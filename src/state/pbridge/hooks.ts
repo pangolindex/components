@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
-import { Call, GetRoute, RouteResponse, Squid, Route as SquidRoute, RouteData as SquidRouteData } from '@0xsquid/sdk';
+import { Squid, RouteData as SquidRouteData } from '@0xsquid/sdk';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { parseUnits } from '@ethersproject/units';
 import LIFI from '@lifi/sdk';
-import { Route as LifiRoute, Step as LifiStep, RouteOptions, RoutesRequest, isLifiStep } from '@lifi/types';
+import { Route as LifiRoute } from '@lifi/types';
 import {
   BRIDGES,
   Bridge,
@@ -13,18 +13,19 @@ import {
   Currency,
   CurrencyAmount,
   LIFI as LIFIBridge,
+  RANGO,
   SQUID,
   Token,
   TokenAmount,
 } from '@pangolindex/sdk';
-import axios from 'axios';
+import { RangoClient, SwapResponse as RangoRoute } from 'rango-sdk-basic';
 import React, { useCallback, useEffect, useState } from 'react';
-import { SQUID_API } from 'src/constants';
+import { RANGO_API_KEY, SQUID_API } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
 import { AppState, useDispatch, useSelector } from 'src/state';
-import { calculateTransactionTime, getSigner } from 'src/utils';
+import { getSigner } from 'src/utils';
 import { useCurrencyBalances } from '../pwallet/hooks';
 import {
   ChainField,
@@ -43,7 +44,8 @@ import {
   switchCurrencies,
   typeAmount,
 } from './actions';
-import { BridgePrioritizations, GetRoutes, Route, SendTransaction, Step } from './types';
+import { getRoutesProviders } from './providers';
+import { BridgePrioritizations, GetRoutesProps, Route, SendTransaction } from './types';
 
 export function useBridgeState(): AppState['pbridge'] {
   return useSelector<AppState['pbridge']>((state) => state.pbridge);
@@ -195,7 +197,7 @@ export function useDerivedBridgeInfo(): {
         setCurrencyList(data || []);
       }
     });
-  }, [currencyHook?.[LIFIBridge.id], currencyHook?.[SQUID.id]]);
+  }, [currencyHook?.[LIFIBridge.id], currencyHook?.[SQUID.id], currencyHook?.[RANGO.id]]);
 
   useEffect(() => {
     let data: BridgeChain[] = [];
@@ -208,7 +210,7 @@ export function useDerivedBridgeInfo(): {
         setChainList(data || []);
       }
     });
-  }, [chainHook?.[LIFIBridge.id], chainHook?.[SQUID.id]]);
+  }, [chainHook?.[LIFIBridge.id], chainHook?.[SQUID.id], chainHook?.[RANGO.id]]);
 
   const {
     typedValue,
@@ -298,227 +300,33 @@ export function useDerivedBridgeInfo(): {
 }
 
 export function useBridgeSwapActionHandlers(): {
-  getRoutes: GetRoutes;
+  getRoutes: (props: GetRoutesProps) => void;
   sendTransaction: SendTransaction;
 } {
   const dispatch = useDispatch();
-  const getRoutes = async (
-    amount: string,
-    slipLimit: string,
-    fromChain?: BridgeChain,
-    toChain?: BridgeChain,
-    fromAddress?: string | null,
-    fromCurrency?: BridgeCurrency,
-    toCurrency?: BridgeCurrency,
-    recipient?: string | null | undefined,
-  ) => {
-    if (parseFloat(amount) <= 0) {
+  const getRoutes = async (routesProps: GetRoutesProps) => {
+    if (parseFloat(routesProps.amount) <= 0) {
       dispatch(setRoutes({ routes: [], routesLoaderStatus: false }));
     } else {
-      const parsedAmount = parseUnits(amount, fromCurrency?.decimals).toString();
-      const lifi = new LIFI();
+      const promises = Object.values(getRoutesProviders).map((getRoutes) => getRoutes(routesProps));
+      const routes = (await Promise.allSettled(promises)).flatMap((p) => (p.status === 'fulfilled' ? p.value : []));
 
-      const routeOptions: RouteOptions = {
-        slippage: parseFloat(slipLimit) / 100,
-        allowSwitchChain: false,
+      // Show all providers recommended routes first and then sort based on the output amount
+      const recommended = BridgePrioritizations.RECOMMENDED;
+      const compareRoutes = (a: Route, b: Route) => {
+        if (a.transactionType === recommended && b.transactionType !== recommended) return -1;
+        else if (a.transactionType !== recommended && b.transactionType === recommended) return 1;
+        else if (parseFloat(a.toAmount || '0') > parseFloat(b.toAmount || '0')) return -1;
+        return 0;
       };
-
-      const routesRequest: RoutesRequest = {
-        fromChainId: (fromChain?.chain_id as number) || 1,
-        fromAmount: parsedAmount,
-        fromAddress: fromAddress || undefined,
-        toAddress: fromAddress || undefined,
-        fromTokenAddress: fromCurrency?.address || '',
-        toChainId: (toChain?.chain_id as number) || 1,
-        toTokenAddress: toCurrency?.address || '',
-        options: routeOptions,
-      };
-
-      let routesResponse;
-      try {
-        routesResponse = await lifi.getRoutes(routesRequest);
-      } catch (error) {
-        routesResponse = {};
-      }
-      const routes = routesResponse?.routes || [];
-      const lifiRoutes: Route[] = routes?.map((route) => {
-        return {
-          nativeRoute: route,
-          bridgeType: LIFIBridge,
-          waitingTime: calculateTransactionTime(
-            route?.steps?.reduce((prevValue, currenctValue) => {
-              return prevValue + currenctValue?.estimate?.executionDuration;
-            }, 0),
-          ),
-          toToken: toCurrency?.symbol || '',
-          toAmount: new TokenAmount(toCurrency as Currency as Token, route?.toAmount).toFixed(4),
-          toAmountNet: new TokenAmount(toCurrency as Currency as Token, route?.toAmountMin).toFixed(4),
-          toAmountUSD: `${route?.toAmountUSD} USD`,
-          gasCostUSD: route?.gasCostUSD,
-          steps: route?.steps?.map((step: LifiStep) => {
-            return {
-              bridge: LIFIBridge,
-              type: step?.type,
-              ...(isLifiStep(step) && {
-                includedSteps: step?.includedSteps.map((subStep: LifiStep) => {
-                  return {
-                    type: subStep?.type,
-                    integrator: subStep.tool,
-                    action: {
-                      toToken: subStep?.action?.toToken?.symbol,
-                    },
-                    estimate: {
-                      toAmount: new TokenAmount(subStep?.action?.toToken as Token, subStep?.estimate?.toAmount).toFixed(
-                        4,
-                      ),
-                    },
-                  };
-                }),
-              }),
-              action: {
-                toToken: step?.action?.toToken?.symbol,
-              },
-              estimate: {
-                toAmount: new TokenAmount(step?.action?.toToken as Token, step?.estimate?.toAmount).toFixed(4),
-              },
-            };
-          }),
-          transactionType:
-            route?.tags && route?.tags.length > 0
-              ? BridgePrioritizations[route?.tags?.[0].toUpperCase()]
-              : BridgePrioritizations.NORMAL,
-          selected: false,
-        };
-      });
-
-      const params: Omit<GetRoute, 'toAddress'> & Partial<Pick<GetRoute, 'toAddress'>> = {
-        fromChain: fromChain?.chain_id || 1,
-        fromToken:
-          fromCurrency?.address
-            ?.toString()
-            ?.replace('0x0000000000000000000000000000000000000000', '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') || '',
-        fromAmount: parsedAmount,
-        toChain: toChain?.chain_id || 1,
-        toToken:
-          toCurrency?.address
-            ?.toString()
-            ?.replace('0x0000000000000000000000000000000000000000', '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') || '',
-        ...((recipient || fromAddress) && { toAddress: recipient || fromAddress || '' }),
-        slippage: parseFloat(slipLimit),
-        enableForecall: true,
-        quoteOnly: recipient || fromAddress ? false : true,
-      };
-
-      let squidRouteRes: RouteResponse | null;
-      try {
-        const squidRoutes = await axios.get(`${SQUID_API}/v1/route`, {
-          params: params,
-        });
-        squidRouteRes = squidRoutes.data;
-      } catch (error) {
-        squidRouteRes = null;
-      }
-
-      const squidRoute: Route | undefined = squidRouteRes?.route
-        ? {
-            nativeRoute: squidRouteRes.route as SquidRouteData,
-            bridgeType: SQUID,
-            waitingTime: calculateTransactionTime(squidRouteRes.route.estimate.estimatedRouteDuration),
-            toToken: toCurrency?.symbol || '',
-            toAmount: new TokenAmount(toCurrency as Currency as Token, squidRouteRes.route.estimate.toAmount).toFixed(
-              4,
-            ),
-            toAmountNet: new TokenAmount(
-              toCurrency as Currency as Token,
-              squidRouteRes.route.estimate.toAmountMin,
-            ).toFixed(4),
-            toAmountUSD: `${squidRouteRes.route.estimate?.toAmountUSD} USD`,
-            gasCostUSD: squidRouteRes.route.estimate.gasCosts
-              .reduce((prevValue, currentValue) => {
-                return prevValue + parseFloat(currentValue.amountUSD);
-              }, 0)
-              .toFixed(2),
-            steps: [
-              {
-                bridge: SQUID,
-                type: 'bridge',
-                includedSteps: [
-                  ...squidStepGenerator(
-                    squidRouteRes.route.estimate.route.fromChain,
-                    toCurrency,
-                    squidRouteRes.route.estimate.toAmount,
-                  ),
-                  ...squidStepGenerator(
-                    squidRouteRes.route.estimate.route.toChain,
-                    toCurrency,
-                    squidRouteRes.route.estimate.toAmount,
-                  ),
-                ],
-                action: {
-                  toToken: toCurrency?.symbol || '',
-                },
-                estimate: {
-                  toAmount: new TokenAmount(
-                    toCurrency as Currency as Token,
-                    squidRouteRes.route.estimate.toAmount,
-                  ).toFixed(4),
-                },
-              },
-            ],
-            transactionType: BridgePrioritizations.RECOMMENDED,
-            selected: false,
-          }
-        : undefined;
 
       dispatch(
         setRoutes({
-          routes: [...lifiRoutes, squidRoute].filter((x: Route | undefined) => !!x) as Route[],
+          routes: (routes.filter((x: Route | undefined) => !!x) as Route[]).sort(compareRoutes),
           routesLoaderStatus: false,
         }),
       );
     }
-  };
-
-  const squidStepGenerator = (route: SquidRoute, toCurrency, toAmount): Step[] => {
-    return route.map((step: Call) => {
-      if ('dex' in step) {
-        // SWAP
-        return {
-          type: step.type,
-          integrator: step.dex.dexName,
-          action: {
-            toToken: step.toToken.symbol,
-          },
-          estimate: {
-            toAmount: new TokenAmount(step?.toToken as unknown as Token, step?.toAmount).toFixed(4),
-          },
-        };
-      } else if ('callType' in step) {
-        //CUSTOMCALL
-        return {
-          type: step.type,
-          integrator: 'Squid',
-          action: {
-            toToken: toCurrency?.symbol || '',
-          },
-          estimate: {
-            toAmount: new TokenAmount(toCurrency as Currency as Token, toAmount).toFixed(4),
-          },
-        };
-      } else {
-        // BRIDGE
-        return {
-          type: step.type,
-          integrator: 'Squid',
-          action: {
-            toToken: step.toToken.symbol,
-          },
-          estimate: {
-            toAmount: new TokenAmount(step.toToken as unknown as Token, step.toAmount).toFixed(4),
-          },
-        };
-      }
-    });
   };
 
   const sendTransactionLifi = async (library: any, selectedRoute?: Route, account?: string | null) => {
@@ -587,9 +395,43 @@ export function useBridgeSwapActionHandlers(): {
     }
   };
 
+  const sendTransactionRango = async (library: any, selectedRoute?: Route, account?: string | null) => {
+    dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
+    const signer: JsonRpcSigner = await getSigner(library, account || '');
+    const rangoRoute = selectedRoute?.nativeRoute as RangoRoute;
+    const rango = new RangoClient(RANGO_API_KEY);
+    try {
+      await rango.executeEvmRoute(signer as any, rangoRoute);
+      dispatch(
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.SUCCESS,
+        }),
+      );
+    } catch (e: Error | unknown) {
+      if (e) {
+        dispatch(
+          changeTransactionLoaderStatus({
+            transactionLoaderStatus: false,
+            transactionStatus: TransactionStatus.FAILED,
+          }),
+        );
+        dispatch(setTransactionError({ transactionError: e as Error }));
+      } else {
+        dispatch(
+          changeTransactionLoaderStatus({
+            transactionLoaderStatus: false,
+            transactionStatus: TransactionStatus.SUCCESS,
+          }),
+        );
+      }
+    }
+  };
+
   const sendTransaction: SendTransaction = {
     lifi: sendTransactionLifi,
     squid: sendTransactionSquid,
+    rango: sendTransactionRango,
   };
 
   return {

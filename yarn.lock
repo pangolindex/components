@@ -12790,7 +12790,7 @@ ethers@^5.5.0:
     "@ethersproject/web" "5.6.0"
     "@ethersproject/wordlists" "5.6.0"
 
-ethers@^5.6.9, ethers@^5.7.1:
+ethers@^5.6.9, ethers@^5.7.1, ethers@^5.7.2:
   version "5.7.2"
   resolved "https://registry.npmjs.org/ethers/-/ethers-5.7.2.tgz"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
@@ -19500,6 +19500,17 @@ range-parser@^1.2.1, range-parser@~1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/range-parser/-/range-parser-1.2.1.tgz"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
+
+rango-sdk-basic@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/rango-sdk-basic/-/rango-sdk-basic-0.0.14.tgz#4ae155a5285b6f328b8652b81cfb17268cac0bc3"
+  integrity sha512-IDNSavm/BxWde9f54rAHsjdi3w9HLMkEz8eeavngxwfjeydWLUhb8nSXW0gi/RVAJeyxvCNeH0wQFZt7TsL/0Q==
+  dependencies:
+    axios "^0.24.0"
+    bignumber.js "^9.0.2"
+    eth-rpc-errors "^4.0.3"
+    ethers "^5.7.2"
+    uuid "^8.3.2"
 
 raw-body@2.4.0:
   version "2.4.0"
