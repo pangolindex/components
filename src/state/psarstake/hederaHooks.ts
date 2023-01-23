@@ -21,7 +21,7 @@ export function useHederaExchangeRate() {
       return rate;
     },
     {
-      cacheTime: 60 * 1000, // 1 minute
+      cacheTime: 10 * 1000, // 10 seconds
     },
   );
 }
