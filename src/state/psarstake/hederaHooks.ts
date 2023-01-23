@@ -442,9 +442,17 @@ export function useHederaSarPositions() {
   const sarStakingContract = useSarStakingContract();
   const sarNFTcontract = useHederaSarNFTContract();
 
-  const { data, isLoading: isLoadingIndexes } = useQuery(
-    ['hedera-nft-index', account, sarNFTcontract?.address],
+  const balanceState = useSingleCallResult(sarNFTcontract, 'balanceOf', [account ?? undefined]);
+
+  const {
+    data,
+    isLoading: isLoadingIndexes,
+    isRefetching: isRefetchingIndexes,
+  } = useQuery(
+    ['hedera-nft-index', account, sarNFTcontract?.address, balanceState?.result?.[0]?.toString()],
     async () => {
+      if (!sarNFTcontract) return { nftsIndexes: [], nftsURIs: [] };
+
       const nfts = await hederaFn.getNftInfo(sarNFTcontract?.address, account);
       const _nftsIndexes: string[][] = [];
       const _nftURIs: (string | undefined)[] = [];
@@ -456,6 +464,9 @@ export function useHederaSarPositions() {
       });
 
       return { nftsIndexes: _nftsIndexes, nftsURIs: _nftURIs };
+    },
+    {
+      cacheTime: 60 * 1 * 1000, // 1 minute
     },
   );
 
@@ -490,7 +501,12 @@ export function useHederaSarPositions() {
     const existErrorPendingReward = positionsPedingRewardsState.some((result) => result.error);
     const isValidPendingRewards = positionsPedingRewardsState.every((result) => result.valid);
 
-    const isLoading = !isAllFetchedAmount || !isAllFetchedRewardRate || !isAllFetchedPendingReward || isLoadingIndexes;
+    const isLoading =
+      !isAllFetchedAmount ||
+      !isAllFetchedRewardRate ||
+      !isAllFetchedPendingReward ||
+      isLoadingIndexes ||
+      isRefetchingIndexes;
     // first moments loading is false and valid is false then is loading the query is true
     const isValid = isValidAmounts && isValidRewardRates && isValidPendingRewards;
 
@@ -521,5 +537,13 @@ export function useHederaSarPositions() {
       positionsRewardRateState,
       positionsPedingRewardsState,
     );
-  }, [account, positionsAmountState, positionsRewardRateState, nftsURIs, nftsIndexes, isLoadingIndexes]);
+  }, [
+    account,
+    positionsAmountState,
+    positionsRewardRateState,
+    nftsURIs,
+    nftsIndexes,
+    isLoadingIndexes,
+    isRefetchingIndexes,
+  ]);
 }
