@@ -137,6 +137,11 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
     }
   };
 
+  // if changed the position and the drawer is open, close
+  useEffect(() => {
+    if (openDrawer) setOpenDrawer(false);
+  }, [selectedPosition]);
+
   const ConfirmContent = (
     <Wrapper paddingX="20px" paddingBottom="20px">
       <Header>
