@@ -52,6 +52,11 @@ export default function Claim({ selectedOption, selectedPosition, onChange }: Pr
     }
   }, [attempting]);
 
+  // if changed the position and the drawer is open, close
+  useEffect(() => {
+    if (openDrawer) setOpenDrawer(false);
+  }, [selectedPosition]);
+
   const pendingRewards = selectedPosition?.pendingRewards ?? BigNumber.from('0');
 
   const renderButton = () => {

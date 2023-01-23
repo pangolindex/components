@@ -55,6 +55,11 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
     }
   }, [attempting]);
 
+  // if changed the position and the drawer is open, close
+  useEffect(() => {
+    if (openDrawer) setOpenDrawer(false);
+  }, [selectedPosition]);
+
   const renderButton = () => {
     let error: string | undefined;
     if (!selectedPosition) {
@@ -83,7 +88,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
           <Box display="flex" justifyContent="space-between">
             <Box>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">${dollarValue}</Text>
+              <Text color="text1">${(dollarValue ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>
