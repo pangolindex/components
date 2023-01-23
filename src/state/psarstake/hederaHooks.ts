@@ -2,7 +2,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Fraction, JSBI } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
 import { useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
@@ -116,6 +116,8 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
     isLoading: isLoading,
   } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
+  const queryClient = useQueryClient();
+
   const onStake = async () => {
     if (!sarStakingContract || !parsedAmount || !account || isLoading || !exchangeRate) {
       return;
@@ -152,6 +154,7 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
           chainId: chainId,
           isNewPosition: !positionId,
         });
+        queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
       }
     } catch (err) {
       // we only care if the error is something _other_ than the user rejected the tx
@@ -243,6 +246,9 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
 
   const tinyRent = useHederaSarRent(position?.id?.toHexString());
 
+  const sarNftContract = useHederaSarNFTContract();
+  const queryClient = useQueryClient();
+
   const onUnstake = async () => {
     if (!sarStakingContract || !parsedAmount || !position || !account || !tinyRent) {
       return;
@@ -262,6 +268,7 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
           summary: t('sarUnstake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
         });
         setHash(response.hash);
+        queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
       }
     } catch (err) {
       const _err = err as any;
@@ -327,6 +334,9 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
 
   const rent = useHederaSarRent(position?.id?.toHexString());
 
+  const sarNftContract = useHederaSarNFTContract();
+  const queryClient = useQueryClient();
+
   const onCompound = async () => {
     if (!sarStakingContract || !position || !account || !rent) {
       return;
@@ -347,6 +357,7 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
           summary: t('sarCompound.transactionSummary'),
         });
         setHash(response.hash);
+        queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
       }
     } catch (error) {
       const err = error as any;
@@ -390,6 +401,9 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
 
   const rent = useHederaSarRent(position?.id?.toHexString());
 
+  const sarNftContract = useHederaSarNFTContract();
+  const queryClient = useQueryClient();
+
   const onClaim = async () => {
     if (!sarStakingContract || !position || !account || !rent) {
       return;
@@ -410,6 +424,7 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
           summary: t('sarClaim.transactionSummary'),
         });
         setHash(response.hash);
+        queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
       }
     } catch (error) {
       const err = error as any;
