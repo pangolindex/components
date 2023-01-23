@@ -1,33 +1,20 @@
-import { CAVAX, ChainId, Currency, Token, WAVAX } from '@pangolindex/sdk';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { FixedSizeList } from 'react-window';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, TextInput } from 'src/components';
-import { useTokenComparator } from 'src/components/SearchModal/sorting';
-import { useChainId } from 'src/hooks';
-import { useToken } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import useDebounce from 'src/hooks/useDebounce';
 import usePrevious from 'src/hooks/usePrevious';
-import { useDispatch } from 'src/state';
+import { AppState, useDispatch, useSelector } from 'src/state';
+import { CoingeckoWatchListToken, useCoinGeckoSearchTokens } from 'src/state/pcoingecko/hooks';
 import { addCurrency } from 'src/state/pwatchlists/actions';
-import { filterTokenOrChain, isAddress } from 'src/utils';
 import CurrencyRow from './CurrencyRow';
 import { AddInputWrapper, CurrencyList, PopoverContainer } from './styled';
 
 interface Props {
   getRef?: (ref: any) => void;
-  coins: Array<Token>;
+  coins: Array<CoingeckoWatchListToken>;
   isOpen: boolean;
-  onSelectCurrency: (currency: Token) => void;
+  onSelectCurrency: (currency: CoingeckoWatchListToken) => void;
 }
-
-const currencyKey = (currency: Currency, chainId: ChainId): string => {
-  return currency instanceof Token
-    ? currency.address
-    : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
-    ? (CAVAX[chainId]?.symbol as string)
-    : '';
-};
 
 const CurrencyPopover: React.FC<Props> = ({
   getRef = () => {
@@ -38,10 +25,14 @@ const CurrencyPopover: React.FC<Props> = ({
   onSelectCurrency,
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [invertSearchOrder] = useState<boolean>(false);
-  const chainId = useChainId();
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
+
+  const allWatchlistCurrencies = useSelector<AppState['pwatchlists']['selectedCurrencies']>((state: AppState) =>
+    ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.selectedCurrencies || []),
+  );
 
   useEffect(() => {
     if (isOpen && !lastOpen) {
@@ -59,70 +50,19 @@ const CurrencyPopover: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const isAddressSearch = isAddress(searchQuery);
-  const searchToken = useToken(searchQuery);
+  const filteredTokens = useCoinGeckoSearchTokens(debouncedSearchQuery);
 
-  const tokenComparator = useTokenComparator(invertSearchOrder, [WAVAX[chainId]]);
-
-  const filteredTokens: Token[] = useMemo(() => {
-    if (isAddressSearch) return searchToken ? [searchToken] : [];
-    return filterTokenOrChain(Object.values(coins), searchQuery) as Token[];
-  }, [isAddressSearch, searchToken, coins, searchQuery]);
-
-  const filteredSortedTokens: Token[] = useMemo(() => {
-    if (searchToken) return [searchToken];
-    const sorted = filteredTokens.sort(tokenComparator);
-
-    const symbolMatch = searchQuery
-      .toLowerCase()
-      .split(/\s+/)
-      .filter((s) => s.length > 0);
-    if (symbolMatch.length > 1) return sorted;
-
-    return [
-      ...(searchToken ? [searchToken] : []),
-      // sort any exact symbol matches first
-      ...sorted.filter((token) => token.symbol?.toLowerCase() === symbolMatch[0]),
-      ...sorted.filter((token) => token.symbol?.toLowerCase() !== symbolMatch[0]),
-    ];
-  }, [filteredTokens, searchQuery, searchToken, tokenComparator]);
-
-  const currencies = filteredSortedTokens;
+  const currencies = Object.values(filteredTokens || {}).length > 0 ? Object.values(filteredTokens || {}) : coins;
 
   const dispatch = useDispatch();
 
   const mixpanel = useMixpanel();
 
   const onCurrencySelection = useCallback(
-    (address: string) => {
-      dispatch(addCurrency(address));
+    (currency: CoingeckoWatchListToken) => {
+      dispatch(addCurrency(currency));
     },
     [dispatch],
-  );
-
-  const Row = useCallback(
-    ({ data, index, style }) => {
-      const currency: Token = data?.[index];
-
-      return currency ? (
-        <CurrencyRow
-          key={index}
-          style={style}
-          currency={currency}
-          onSelect={(address) => {
-            onSelectCurrency(currency);
-            onCurrencySelection(address);
-            mixpanel.track(MixPanelEvents.ADD_WATCHLIST, {
-              chainId: chainId,
-              token: currency.symbol,
-              tokenAddress: address,
-            });
-          }}
-        />
-      ) : null;
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
   );
 
   return (
@@ -142,20 +82,24 @@ const CurrencyPopover: React.FC<Props> = ({
       </Box>
 
       <CurrencyList>
-        <AutoSizer disableWidth>
-          {({ height }) => (
-            <FixedSizeList
-              height={height}
-              width="100%"
-              itemCount={currencies.length}
-              itemSize={45}
-              itemData={currencies}
-              itemKey={(index, data) => currencyKey(data[index], chainId)}
-            >
-              {Row}
-            </FixedSizeList>
-          )}
-        </AutoSizer>
+        {currencies.map((item) => (
+          <div style={{ height: 45 }} key={item.id}>
+            <CurrencyRow
+              key={item?.id}
+              style={{}}
+              currency={item}
+              isSelected={allWatchlistCurrencies.find(({ id }) => id === item?.id) ? true : false}
+              onSelect={(address) => {
+                onSelectCurrency(item);
+                onCurrencySelection(item);
+                mixpanel.track(MixPanelEvents.ADD_WATCHLIST, {
+                  token: item.symbol,
+                  tokenAddress: address,
+                });
+              }}
+            />
+          </div>
+        ))}
       </CurrencyList>
     </PopoverContainer>
   );

@@ -1,34 +1,51 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { addCurrency, removeCurrency } from './actions';
+import { CoingeckoWatchListToken } from 'src/state/pcoingecko/hooks';
+import { addCurrency, removeCurrency, updateCurrencies } from './actions';
 
 export interface WatchlistState {
-  readonly currencies: string[];
+  readonly selectedCurrencies: CoingeckoWatchListToken[];
 }
 
 const initialState: WatchlistState = {
-  currencies: [],
+  selectedCurrencies: [],
 };
 
 export default createReducer(initialState, (builder) =>
   builder
-    .addCase(addCurrency, (state, { payload: address }) => {
-      const existingSelectedListUrl = ([] as string[]).concat(state.currencies || []);
+    .addCase(addCurrency, (state, { payload: currency }) => {
+      const existingSelectedListUrl = ([] as CoingeckoWatchListToken[]).concat(state.selectedCurrencies || []);
 
-      existingSelectedListUrl.push(address);
-      state.currencies = existingSelectedListUrl;
+      existingSelectedListUrl.push(currency);
+      state.selectedCurrencies = existingSelectedListUrl;
     })
-    .addCase(removeCurrency, (state, { payload: address }) => {
-      const existingList = ([] as string[]).concat(state.currencies || []);
-      const index = existingList.indexOf(address);
+    .addCase(removeCurrency, (state, { payload: id }) => {
+      const existingList = ([] as CoingeckoWatchListToken[]).concat(state.selectedCurrencies || []);
+
+      const index = existingList.findIndex((x) => x.id === id);
 
       if (index !== -1) {
         if (existingList?.length === 1) {
           // if user want to remove the list and if there is only one item in the selected list
-          state.currencies = [] as string[];
+          state.selectedCurrencies = [] as CoingeckoWatchListToken[];
         } else {
           existingList.splice(index, 1);
-          state.currencies = existingList;
+          state.selectedCurrencies = existingList;
         }
       }
+    })
+    .addCase(updateCurrencies, (state, { payload: data }) => {
+      const res = data.reduce((acc: CoingeckoWatchListToken[], curr) => {
+        const stored = state.selectedCurrencies.find(({ id }) => id === curr?.id);
+        if (stored) {
+          stored.price = curr?.price;
+          stored.weeklyChartData = curr?.weeklyChartData;
+          acc.push(stored);
+        } else {
+          acc.push(curr);
+        }
+        return acc;
+      }, []);
+
+      state.selectedCurrencies = res;
     }),
 );

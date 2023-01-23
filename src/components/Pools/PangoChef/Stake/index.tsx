@@ -1,9 +1,10 @@
 /* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
 import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput } from 'src/components';
+import { ThemeContext } from 'styled-components';
+import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput, Tooltip } from 'src/components';
 import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
@@ -42,6 +43,7 @@ interface StakeProps {
 const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
+  const theme = useContext(ThemeContext);
   const useApproveCallback = useApproveCallbackHook[chainId];
   const usePairBalance = usePairBalanceHook[chainId];
   const useStakeCallback = usePangoChefStakeCallbackHook[chainId];
@@ -263,11 +265,20 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
   const renderButton = () => {
     if (shouldCreateStorage) {
       return (
-        <Buttons>
-          <Button variant="primary" onClick={create} height="45px">
-            Create Storage Contract
-          </Button>
-        </Buttons>
+        <>
+          <Tooltip id="storageContract" effect="solid" backgroundColor={theme.primary}>
+            <Box maxWidth="250px">
+              <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+                {t('pool.createStorageContract')}
+              </Text>
+            </Box>
+          </Tooltip>
+          <Buttons>
+            <Button variant="primary" onClick={create} height="45px" data-tip data-for="storageContract">
+              Create Storage Contract
+            </Button>
+          </Buttons>
+        </>
       );
     } else {
       return (
@@ -285,7 +296,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
           <Button
             variant="primary"
             isDisabled={!!error || approval !== ApprovalState.APPROVED || !!stakeCallbackError}
-            onClick={type === SpaceType.detail ? onConfirm : onStake}
+            onClick={onConfirm}
             loading={attempting && !hash}
             loadingText={t('migratePage.loading')}
           >

@@ -6,6 +6,7 @@ import { load, save } from 'redux-localstorage-simple';
 import papplication from './papplication/reducer';
 import pbridge from './pbridge/reducer';
 import pburn from './pburn/reducer';
+import pcoingecko from './pcoingecko/reducer';
 import plists from './plists/reducer';
 import pmint from './pmint/reducer';
 import pmulticall from './pmulticall/reducer';
@@ -38,6 +39,7 @@ export const pangolinReducers = {
   pmint,
   pburn,
   pbridge,
+  pcoingecko,
 };
 
 const store = configureStore({

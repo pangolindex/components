@@ -156,6 +156,11 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
     return t('removeLiquidity.approve');
   }
 
+  function wrappedOnDismiss() {
+    setHash(undefined);
+    setAttempting(false);
+  }
+
   return (
     <RemoveWrapper>
       {!attempting && !hash && (
@@ -268,7 +273,14 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
       )}
 
       {attempting && !hash && <Loader size={100} label={`Removing Liquidity...`} />}
-      {hash && <TransactionCompleted submitText={`Removed Liquidity`} />}
+      {hash && (
+        <TransactionCompleted
+          onButtonClick={wrappedOnDismiss}
+          buttonText="Close"
+          submitText={`Removed Liquidity`}
+          isShowButtton={true}
+        />
+      )}
     </RemoveWrapper>
   );
 };

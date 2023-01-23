@@ -7,7 +7,7 @@ import StatDetail from 'src/components/Pools/DetailModal/StatDetail';
 import { ANALYTICS_PAGE } from 'src/constants';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { convertCoingeckoTokens } from 'src/hooks/Tokens';
+import { convertCoingeckoTokens } from 'src/state/pcoingecko/hooks';
 import { useGetPoolDollerWorth } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';

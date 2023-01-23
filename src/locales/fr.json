@@ -388,7 +388,8 @@
     "importDescription1": "Avec la fonction d'importation, vous pouvez rechercher des pools qui n'apparaissent pas dans la section 'Vos pools'.",
     "importDescription2": "Choisissez simplement les pièces sous-jacentes qui se trouvaient dans votre pool.",
     "createPairDescription": "Avec la fonction de création, vous pouvez créer une nouvelle paire. Il vous suffit de rechercher les pièces pour lesquelles vous souhaitez créer une paire et le système trouvera le pool s'il existe sur Pangolin ou en créera un tout nouveau si ce n'est pas le cas.",
-    "addLiquidityDescription": "Avec la fonction d'ajout de liquidité, vous ajoutez de la liquidité à une paire. Recherchez simplement les pièces auxquelles vous souhaitez ajouter de la liquidité et le système trouvera le pool s'il existe dans Pangolin ou en créera un nouveau s'il n'existe pas."
+    "addLiquidityDescription": "Avec la fonction d'ajout de liquidité, vous ajoutez de la liquidité à une paire. Recherchez simplement les pièces auxquelles vous souhaitez ajouter de la liquidité et le système trouvera le pool s'il existe dans Pangolin ou en créera un nouveau s'il n'existe pas.",
+    "createStorageContract": "Sur Hedera, tous les contrats intelligents doivent payer des frais pour l'utilisation de l'espace sur le grand livre. Ce sont des frais de stockage et les frais de renouvellement automatique. Vous devrez créer un contrat de stockage pour cultiver. Le stockage sera gratuit, mais à l'avenir, vous devrez payer des frais de renouvellement automatique. Ce sont environ 2 centimes. Alors on recommande de conserver 1 $ sur HBAR dans votre portefeuille à tout moment pour vous assurer de ne rencontrer aucun problème."
   },
   "poolFinder": {
     "connectToFind": "Se connecter à un portefeuille pour trouver des pools",

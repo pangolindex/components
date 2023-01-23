@@ -1,6 +1,6 @@
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Field } from 'src/state/pswap/actions';
 import { tryParseAmount, useSwapActionHandlers } from 'src/state/pswap/hooks';
@@ -17,7 +17,7 @@ export enum WrapType {
   UNWRAP,
 }
 
-const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE };
+const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE, executing: false };
 /**
  * Given the selected input and output currency, return a wrap callback
  * @param inputCurrency the selected input currency
@@ -28,13 +28,13 @@ export function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined,
-): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string } {
+): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string; executing?: boolean } {
   const { account } = usePangolinWeb3();
 
   const chainId = useChainId();
 
   const { t } = useTranslation();
-
+  const [executing, setExecuting] = useState(false);
   const { onUserInput } = useSwapActionHandlers(chainId);
 
   const wethContract = useWETHContract();
@@ -61,15 +61,19 @@ export function useWrapCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
+                  setExecuting(true);
                   const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` });
                   onUserInput(Field.INPUT, '');
                   addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} AVAX to WAVAX` });
                 } catch (error) {
                   console.error('Could not deposit', error);
+                } finally {
+                  setExecuting(false);
                 }
               }
             : undefined,
         inputError: inputError,
+        executing: executing,
       };
     } else if (currencyEquals(WAVAX[chainId], inputCurrency) && outputCurrency === CAVAX[chainId]) {
       inputError =
@@ -82,20 +86,35 @@ export function useWrapCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
+                  setExecuting(true);
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`);
                   onUserInput(Field.INPUT, '');
                   addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WAVAX to AVAX` });
                 } catch (error) {
                   console.error('Could not withdraw', error);
+                } finally {
+                  setExecuting(false);
                 }
               }
             : undefined,
         inputError: inputError,
+        executing: executing,
       };
     } else {
       return NOT_APPLICABLE;
     }
-  }, [wethContract, chainId, inputCurrency, outputCurrency, inputAmount, balance, addTransaction, onUserInput]);
+  }, [
+    wethContract,
+    chainId,
+    inputCurrency,
+    outputCurrency,
+    inputAmount,
+    balance,
+    addTransaction,
+    onUserInput,
+    executing,
+    setExecuting,
+  ]);
 }
 
 /**
@@ -108,7 +127,7 @@ export function useWrapNearCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined,
-): { wrapType: WrapType; execute?: () => Promise<void>; inputError?: string } {
+): { wrapType: WrapType; execute?: () => Promise<void>; inputError?: string; executing?: boolean } {
   const { account } = usePangolinWeb3();
 
   const chainId = useChainId();
@@ -190,10 +209,11 @@ export function useWrapHbarCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined,
-): { wrapType: WrapType; execute?: () => Promise<void>; inputError?: string } {
+): { wrapType: WrapType; execute?: () => Promise<void>; inputError?: string; executing?: boolean } {
   const { account } = usePangolinWeb3();
   const { t } = useTranslation();
   const chainId = useChainId();
+  const [executing, setExecuting] = useState(false);
   const { onUserInput } = useSwapActionHandlers(chainId);
   const balance = useCurrencyBalance(chainId, account ?? undefined, inputCurrency);
 
@@ -223,6 +243,7 @@ export function useWrapHbarCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
+                  setExecuting(true);
                   const txReceipt = await hederaFn.depositAction(inputAmount, account, chainId);
 
                   if (txReceipt) {
@@ -231,10 +252,13 @@ export function useWrapHbarCallback(
                   }
                 } catch (error) {
                   console.error('Could not deposit', error);
+                } finally {
+                  setExecuting(false);
                 }
               }
             : undefined,
         inputError: inputError,
+        executing: executing,
       };
     } else if (currencyEquals(WAVAX[chainId], inputCurrency) && outputCurrency === CAVAX[chainId]) {
       inputError =
@@ -246,6 +270,7 @@ export function useWrapHbarCallback(
           sufficientBalance && inputAmount
             ? async () => {
                 try {
+                  setExecuting(true);
                   const txReceipt = await hederaFn.withdrawAction(inputAmount, account, chainId);
 
                   if (txReceipt) {
@@ -256,13 +281,27 @@ export function useWrapHbarCallback(
                   }
                 } catch (error) {
                   console.error('Could not withdraw', error);
+                } finally {
+                  setExecuting(false);
                 }
               }
             : undefined,
         inputError: inputError,
+        executing: executing,
       };
     } else {
       return NOT_APPLICABLE;
     }
-  }, [chainId, inputCurrency, outputCurrency, inputAmount, balance, account, addTransaction, onUserInput]);
+  }, [
+    chainId,
+    inputCurrency,
+    outputCurrency,
+    inputAmount,
+    balance,
+    account,
+    addTransaction,
+    onUserInput,
+    executing,
+    setExecuting,
+  ]);
 }
