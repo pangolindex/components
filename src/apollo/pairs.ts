@@ -68,6 +68,11 @@ export const GET_PAIRS = gql`
   }
 `;
 
+/**
+ * this hook is useful to find information of given pair addresses from subgraph
+ * @param pairAddresses array of pair address
+ * @returns list of pairs
+ */
 export const useSubgraphPairs = (pairAddresses: (string | undefined)[]) => {
   const pairsToFind = pairAddresses.filter((item) => !!item) as string[];
   const chainId = useChainId();
