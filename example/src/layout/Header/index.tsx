@@ -37,6 +37,9 @@ export default function Header() {
           <MenuLink id="bridge" to="/bridge">
             Bridge
           </MenuLink>
+          <MenuLink id="bridge" to="/sar">
+            Single Stake
+          </MenuLink>
         </Menuwrapper>
         <Box display="grid" style={{ gap: '10px', gridAutoFlow: 'column' }}>
           <Button variant="primary" onClick={closeNetworkSelection} padding="10px">
