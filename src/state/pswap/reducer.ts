@@ -63,6 +63,7 @@ const initialState: SwapState = {
   [ChainId.SONGBIRD]: initialValue,
   [ChainId.FLARE_MAINNET]: initialValue,
   [ChainId.HEDERA_TESTNET]: initialValue,
+  [ChainId.HEDERA_MAINNET]: initialValue,
   [ChainId.NEAR_MAINNET]: initialValue,
   [ChainId.NEAR_TESTNET]: initialValue,
   [ChainId.COSTON2]: initialValue,

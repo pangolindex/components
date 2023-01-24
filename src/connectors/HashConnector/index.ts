@@ -88,6 +88,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handlePairingEvent(data) {
+    console.log('==data', data);
     this.pairingData = data.pairingData!;
     const accountId = this.pairingData?.accountIds?.[0];
     if (accountId) {
@@ -141,6 +142,8 @@ export class HashConnector extends AbstractConnector {
       this.provider = await this.getProvider();
       const accountId = await this.getAccount();
 
+      console.log('accountiD', accountId);
+
       return { chainId: this.chainId, provider: this.provider, account: accountId };
     }
   }
@@ -150,6 +153,8 @@ export class HashConnector extends AbstractConnector {
   };
 
   public async getAccount(): Promise<null | string> {
+    console.log('this.pairingData', this.pairingData);
+
     if (this.pairingData) {
       try {
         const newAccountId = this.pairingData?.accountIds?.[0];

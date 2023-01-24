@@ -315,7 +315,7 @@ class Hedera {
   }
 
   isHederaChain = (chainId: ChainId) => {
-    return chainId === ChainId.HEDERA_TESTNET;
+    return chainId === ChainId.HEDERA_TESTNET || chainId === ChainId.HEDERA_MAINNET;
   };
 
   isHederaIdValid = (hederaId: string): string | false => {
