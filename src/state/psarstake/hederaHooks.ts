@@ -110,27 +110,19 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
   const { data: exchangeRate, isLoading: isloadingExchangeRate } = useHederaExchangeRate();
   const tinyRentAddMore = useHederaSarRent(positionId?.toString());
 
-  const {
-    associate: associate,
-    hederaAssociated: isAssociated,
-    isLoading: isLoading,
-  } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
+  const { hederaAssociated: isAssociated } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
   const queryClient = useQueryClient();
 
   const onStake = async () => {
-    if (!sarStakingContract || !parsedAmount || !account || isLoading || !exchangeRate) {
+    if (!sarStakingContract || !parsedAmount || !account || !exchangeRate || !isAssociated) {
+      return;
+    }
+    if (!!positionId && !tinyRentAddMore) {
       return;
     }
     setAttempting(true);
     try {
-      if (!isAssociated && !!associate) {
-        await associate();
-      }
-
-      // double check
-      if (!isAssociated) return;
-
       // we need to send 0.1$ in hbar amount to mint
       const tinyCents = hederaFn.convertHBarToTinyBars('10'); // 10 cents = 0.1$
       const tinyRent = hederaFn.tinyCentsToTinyBars(tinyCents, exchangeRate.current_rate);
@@ -191,6 +183,7 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
       setStepIndex,
     }),
     [
+      positionId,
       attempting,
       typedValue,
       parsedAmount,
@@ -201,12 +194,10 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
       approval,
       account,
       sarStakingContract,
-      isLoading,
       isAssociated,
       exchangeRate,
       isloadingExchangeRate,
       tinyRentAddMore,
-      associate,
       approveCallback,
       onUserInput,
       handleMax,
@@ -358,6 +349,8 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
         });
         setHash(response.hash);
         queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+      } else {
+        throw new Error('Error to send the transaction');
       }
     } catch (error) {
       const err = error as any;

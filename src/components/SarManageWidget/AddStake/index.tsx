@@ -31,10 +31,11 @@ interface Props {
   selectedOption: Options;
   selectedPosition: Position | null;
   onChange: (value: Options) => void;
+  onSelectPosition: (position: Position | null) => void;
 }
 
 // Add more png on existing position
-export default function AddStake({ selectedOption, selectedPosition, onChange }: Props) {
+export default function AddStake({ selectedOption, selectedPosition, onChange, onSelectPosition }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const chainId = useChainId();
@@ -91,9 +92,10 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
     // if there was a tx hash, we want to clear the input
     if (hash) {
       onUserInput('');
+      onSelectPosition(null);
     }
     wrappedOnDismiss();
-  }, [onUserInput]);
+  }, [hash, onUserInput]);
 
   const showApproveFlow =
     !error &&
@@ -154,11 +156,6 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
       );
     }
   };
-
-  // if changed the position and the drawer is open, close
-  useEffect(() => {
-    if (openDrawer) setOpenDrawer(false);
-  }, [selectedPosition]);
 
   const ConfirmContent = (
     <Wrapper paddingX="20px" paddingBottom="20px">

@@ -24,9 +24,10 @@ interface Props {
   selectedOption: Options;
   selectedPosition: Position | null;
   onChange: (value: Options) => void;
+  onSelectPosition: (position: Position | null) => void;
 }
 
-export default function Unstake({ selectedOption, selectedPosition, onChange }: Props) {
+export default function Unstake({ selectedOption, selectedPosition, onChange, onSelectPosition }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const { account } = usePangolinWeb3();
@@ -60,9 +61,10 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
     // if there was a tx hash, we want to clear the input
     if (hash) {
       onUserInput('');
+      onSelectPosition(null);
     }
     wrappedOnDismiss();
-  }, [onUserInput]);
+  }, [hash, onUserInput]);
 
   // if changed the position and the drawer is open, close
   useEffect(() => {
