@@ -1,5 +1,4 @@
 import { formatEther } from '@ethersproject/units';
-import { ChainId } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +20,7 @@ import { useDerivativeSarStakeHook } from 'src/state/psarstake/multiChainsHooks'
 import { Position } from 'src/state/psarstake/types';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import Title from '../Title';
@@ -103,7 +103,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
       approval === ApprovalState.PENDING ||
       (approvalSubmitted && approval === ApprovalState.APPROVED));
 
-  const isHedera = [ChainId.HEDERA_TESTNET].includes(chainId);
+  const isHedera = hederaFn.isHederaChain(chainId);
   const sarNftContract = useHederaSarNFTContract();
 
   const {

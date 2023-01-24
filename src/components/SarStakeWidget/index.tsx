@@ -1,5 +1,4 @@
 import { formatUnits } from '@ethersproject/units';
-import { ChainId } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +19,7 @@ import { useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/state/psarstake/multiChainsHooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../SarManageWidget/ConfirmDrawer/styled';
 import { Buttons, Root, Wrapper } from './styleds';
@@ -88,7 +88,7 @@ export default function SarManageWidget() {
     }
   };
 
-  const isHedera = [ChainId.HEDERA_TESTNET].includes(chainId);
+  const isHedera = hederaFn.isHederaChain(chainId);
   const sarNftContract = useHederaSarNFTContract();
 
   const {
