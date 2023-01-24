@@ -5,7 +5,7 @@ import { TokenAmount } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { BIGNUMBER_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useSarStakingContract } from 'src/hooks/useContract';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
@@ -409,6 +409,8 @@ export function useSarPositions() {
   //get all NFTs URIs from the positions
   const nftsURIsState = useSingleContractMultipleData(sarStakingContract, 'tokenURI', nftsIndexes ?? []);
 
+  const blockTimestamp = useGetBlockTimestamp();
+
   return useMemo(() => {
     const isAllFetchedURI = nftsURIsState.every((result) => !result.loading);
     const existErrorURI = nftsURIsState.some((result) => result.error);
@@ -449,14 +451,17 @@ export function useSarPositions() {
         const nftUri = Buffer.from(base64.replace('data:application/json;base64,', ''), 'base64').toString();
         return JSON.parse(nftUri) as URI;
       }
-      return {} as URI;
+      return undefined;
     });
+
     return formatPosition(
       nftsURIs,
       nftsIndexes,
       positionsAmountState,
       positionsRewardRateState,
       positionsPedingRewardsState,
+      Number(blockTimestamp ?? 0),
+      chainId,
     );
   }, [account, positionsAmountState, positionsRewardRateState, nftsURIsState, nftsIndexes]);
 }
