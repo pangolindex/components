@@ -147,6 +147,8 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
           isNewPosition: !positionId,
         });
         queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+      } else {
+        throw new Error('Error sending transaction');
       }
     } catch (err) {
       // we only care if the error is something _other_ than the user rejected the tx
@@ -260,6 +262,8 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
         });
         setHash(response.hash);
         queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+      } else {
+        throw new Error('Error sending transaction');
       }
     } catch (err) {
       const _err = err as any;
@@ -327,7 +331,6 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
 
   const sarNftContract = useHederaSarNFTContract();
   const queryClient = useQueryClient();
-
   const onCompound = async () => {
     if (!sarStakingContract || !position || !account || !rent) {
       return;
@@ -350,7 +353,7 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
         setHash(response.hash);
         queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
       } else {
-        throw new Error('Error to send the transaction');
+        throw new Error('Error sending transaction');
       }
     } catch (error) {
       const err = error as any;
@@ -418,6 +421,8 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
         });
         setHash(response.hash);
         queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+      } else {
+        throw new Error('Error sending transaction');
       }
     } catch (error) {
       const err = error as any;
