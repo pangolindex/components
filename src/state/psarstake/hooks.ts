@@ -451,7 +451,7 @@ export function useSarPositions() {
         const nftUri = Buffer.from(base64.replace('data:application/json;base64,', ''), 'base64').toString();
         return JSON.parse(nftUri) as URI;
       }
-      return {} as URI;
+      return undefined;
     });
 
     return formatPosition(
