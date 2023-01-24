@@ -29,7 +29,12 @@ import {
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useAllTokens, useHederaTokenAssociated, useNearTokens } from 'src/hooks/Tokens';
+import {
+  useAllTokens,
+  useHederaTokenAssociated,
+  useNearTokens,
+  useGetAllHederaAssociatedTokens,
+} from 'src/hooks/Tokens';
 import { useTokensHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
@@ -1275,12 +1280,13 @@ export function useGetHederaUserLP() {
   const pglTokenAddresses = useHederaPGLTokenAddresses(lpTokenAddresses);
 
   // get all associated token data based on given account
-  const { isLoading, data } = useQuery(['check-hedera-token-associated', account], async () => {
-    if (!account || chainId !== ChainId.HEDERA_TESTNET) return;
-    const tokens = await hederaFn.getAccountAssociatedTokens(account);
-    return tokens;
-  });
+  // const { isLoading, data } = useQuery(['check-hedera-token-associated', account], async () => {
+  //   if (!account || chainId !== ChainId.HEDERA_TESTNET) return;
+  //   const tokens = await hederaFn.getAccountAssociatedTokens(account);
+  //   return tokens;
+  // });
 
+  const { data, isLoading } = useGetAllHederaAssociatedTokens();
   // make pgltokenwise balance array
   const tokenBalances = useMemo(() => {
     return (data || []).reduce<{ [pglTokenAddress: string]: string }>((memo, token) => {
