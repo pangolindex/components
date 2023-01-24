@@ -17,6 +17,7 @@ import { useRemoveLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
 import { isEvmChain } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { ButtonWrapper, RemoveWrapper } from './styleds';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 
 interface RemoveLiquidityProps {
   currencyA?: Currency;
@@ -41,6 +42,17 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
     currencyB ?? undefined,
   );
 
+  console.log('pair', pair);
+
+  const associateTokens = useGetHederaTokenNotAssociated(pair?.tokens);
+
+  const {
+    associate: onAssociate,
+    isLoading: isLoadingAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+  } = useHederaTokenAssociated(associateTokens?.[0]?.address, associateTokens?.[0]?.symbol);
+
+  console.log('associateTokens', associateTokens);
   const { removeLiquidity, onAttemptToApprove, signatureData, setSignatureData } = useRemoveLiquidity(pair as Pair);
   const { onUserInput: _onUserInput } = useBurnActionHandlers();
   const isValid = !error;
@@ -161,6 +173,58 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
     setAttempting(false);
   }
 
+  const renderButton = () => {
+    if (!account) {
+      return (
+        <Button variant="primary" onClick={toggleWalletModal} height="46px">
+          Connect Wallet
+        </Button>
+      );
+    }
+
+    if (!isHederaTokenAssociated && associateTokens?.length > 0) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate ' + associateTokens?.[0]?.symbol}
+        </Button>
+      );
+    } else {
+      return (
+        <ButtonWrapper>
+          {isEvmChain(chainId) && (
+            <Box mr="5px" width="100%">
+              <Button
+                variant={getApproveButtonVariant()}
+                onClick={() => {
+                  onAttemptToApprove({ parsedAmounts, deadline, approveCallback });
+                }}
+                isDisabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
+                loading={attempting && !hash}
+                loadingText={t('removeLiquidity.approving')}
+                height="46px"
+              >
+                {getApproveButtonText()}
+              </Button>
+            </Box>
+          )}
+
+          <Box width="100%">
+            <Button
+              variant="primary"
+              isDisabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
+              onClick={onRemove}
+              loading={attempting && !hash}
+              loadingText={t('migratePage.loading')}
+              height="46px"
+            >
+              {error || t('removeLiquidity.remove')}
+            </Button>
+          </Box>
+        </ButtonWrapper>
+      );
+    }
+  };
+
   return (
     <RemoveWrapper>
       {!attempting && !hash && (
@@ -231,7 +295,8 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
             </Box> */}
           </Box>
           <Box mt={0}>
-            {!account ? (
+            {renderButton()}
+            {/* {!account ? (
               <Button variant="primary" onClick={toggleWalletModal} height="46px">
                 {t('earn.deposit')}
               </Button>
@@ -267,7 +332,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
                   </Button>
                 </Box>
               </ButtonWrapper>
-            )}
+            )} */}
           </Box>
         </>
       )}

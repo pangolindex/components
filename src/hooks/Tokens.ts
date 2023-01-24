@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { parseBytes32String } from '@ethersproject/strings';
-import { CAVAX, Currency, Token } from '@pangolindex/sdk';
+import { CAVAX, Currency, Token, ChainId } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
@@ -307,4 +307,37 @@ export function useHederaTokenAssociated(
     };
   }, [chainId, address, symbol, account, loading, isLoading, isAssociated]);
 }
+
+export function useGetHederaTokenNotAssociated(tokens: Array<Token> | undefined): Array<Token> {
+  const chainId = useChainId();
+  const { account } = usePangolinWeb3();
+  console.log('tokens', tokens);
+  // get all associated token data based on given account
+  const { isLoading, data } = useQuery(['check-hedera-token-associated', account], async () => {
+    if (!account || chainId !== ChainId.HEDERA_TESTNET) return;
+    const tokens = await hederaFn.getAccountAssociatedTokens(account);
+    return tokens;
+  });
+
+  console.log('data', data);
+
+  // make pgltokenwise balance array
+  return useMemo(() => {
+    return (tokens || []).reduce<Array<Token>>((memo, token) => {
+      if (token?.address) {
+        const currencyId = account ? hederaFn.hederaId(token?.address) : '';
+
+        const check = (data || []).find((item) => item.tokenId === currencyId);
+
+        console.log('check', check);
+        if (!check) {
+          memo.push(token);
+        }
+      }
+
+      return memo;
+    }, []);
+  }, [data, isLoading, tokens]);
+}
+
 /* eslint-enable max-lines */
