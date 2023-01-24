@@ -36,6 +36,7 @@ export default function CurrencyLogo({
       currency === CAVAX[ChainId.SONGBIRD] ||
       currency === CAVAX[ChainId.FLARE_MAINNET] ||
       currency === CAVAX[ChainId.HEDERA_TESTNET] ||
+      currency === CAVAX[ChainId.HEDERA_MAINNET] ||
       currency === CAVAX[ChainId.NEAR_TESTNET] ||
       currency === CAVAX[ChainId.NEAR_MAINNET] ||
       currency === CAVAX[ChainId.COSTON2] ||
@@ -63,7 +64,7 @@ export default function CurrencyLogo({
     return <img src={SongBirdLogo} width={`${size}px`} height={`${size}px`} className={className} />;
   } else if (deepEqual(currency, CAVAX[ChainId.FLARE_MAINNET])) {
     return <img src={FlareLogo} width={`${size}px`} height={`${size}px`} className={className} />;
-  } else if (deepEqual(currency, CAVAX[ChainId.HEDERA_TESTNET])) {
+  } else if (deepEqual(currency, CAVAX[ChainId.HEDERA_TESTNET]) || deepEqual(currency, CAVAX[ChainId.HEDERA_MAINNET])) {
     return <img src={HederaLogo} width={`${size}px`} height={`${size}px`} className={className} />;
   } else if (deepEqual(currency, CAVAX[ChainId.COSTON2])) {
     return <CflrLogo size={`${size}px`} className={className} />;

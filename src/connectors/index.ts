@@ -122,14 +122,36 @@ export const near = new NearConnector({
   config: getNearConfig('testnet'),
 });
 
+function getHederaMainnetConfig() {
+  return {
+    networkId: 'mainnet',
+    chainId: ChainId.HEDERA_MAINNET,
+    contractId: 'contract -id',
+  };
+}
+
+// TODO: set configuration dynemically as per env
+function getHederaConfig(env = 'testnet') {
+  switch (env) {
+    case 'production':
+    case 'mainnet':
+      return getHederaMainnetConfig();
+
+    case 'testnet':
+      return {
+        networkId: 'testnet',
+        chainId: ChainId.HEDERA_TESTNET,
+        contractId: 'contract -id',
+      };
+    default:
+      return getHederaMainnetConfig();
+  }
+}
+
 export const hashConnect = new HashConnector({
   normalizeChainId: false,
   normalizeAccount: false,
-  config: {
-    networkId: 'testnet',
-    chainId: ChainId.HEDERA_TESTNET,
-    contractId: 'contract -id',
-  },
+  config: getHederaConfig('mainnet'),
 });
 
 export const avalancheCore = new AvalancheCoreConnector({

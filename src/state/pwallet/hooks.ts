@@ -1276,7 +1276,7 @@ export function useGetHederaUserLP() {
 
   // get all associated token data based on given account
   const { isLoading, data } = useQuery(['check-hedera-token-associated', account], async () => {
-    if (!account || chainId !== ChainId.HEDERA_TESTNET) return;
+    if (!account || (chainId !== ChainId.HEDERA_TESTNET && chainId !== ChainId.HEDERA_MAINNET)) return;
     const tokens = await hederaFn.getAccountAssociatedTokens(account);
     return tokens;
   });
