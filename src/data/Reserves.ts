@@ -1,8 +1,10 @@
 import { Interface } from '@ethersproject/abi';
+import { parseUnits } from '@ethersproject/units';
 import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
 import { ChainId, Currency, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
+import { useSubgraphPairs } from 'src/apollo/pairs';
 import { useChainId } from 'src/hooks';
 import { nearFn } from 'src/utils/near';
 import { useMultipleContractSingleData } from '../state/pmulticall/hooks';
@@ -170,4 +172,65 @@ export function useGetNearPoolId(tokenA?: Token, tokenB?: Token): number | null 
     }
     return null;
   }, [allPools?.data, allPools?.isLoading, tokenA, tokenB]);
+}
+
+export function useHederaPairs(currencies: [Currency | undefined, Currency | undefined][]): [PairState, Pair | null][] {
+  const chainId = useChainId();
+
+  const tokens = useMemo(
+    () =>
+      currencies.map(([currencyA, currencyB]) => [
+        wrappedCurrency(currencyA, chainId),
+        wrappedCurrency(currencyB, chainId),
+      ]),
+    [chainId, currencies],
+  );
+
+  // prepare pair addresses for given tokens using sdk
+  const pairAddresses = useMemo(
+    () =>
+      tokens.map(([tokenA, tokenB]) => {
+        return tokenA && tokenB && !tokenA.equals(tokenB)
+          ? Pair.getAddress(tokenA, tokenB, chainId ? chainId : ChainId.AVALANCHE)?.toLowerCase()
+          : undefined;
+      }),
+    [tokens, chainId],
+  );
+
+  // get pairs from subgraph
+  const results = useSubgraphPairs(pairAddresses);
+
+  // create pair reserve mapping
+  // pair_address => { reserve0, reserve1 }
+  const pairReserves = useMemo(() => {
+    return (results?.data || []).reduce((memo, result) => {
+      memo[result?.id] = {
+        reserve0: parseUnits(result?.reserve0, result?.token0?.decimals).toString(),
+        reserve1: parseUnits(result?.reserve1, result?.token1?.decimals).toString(),
+      };
+
+      return memo;
+    }, {} as { [id: string]: { reserve0: string; reserve1: string } });
+  }, [results?.data, results?.isLoading]);
+
+  return useMemo(() => {
+    return pairAddresses.map((result, i) => {
+      const tokenA = tokens[i][0];
+      const tokenB = tokens[i][1];
+
+      if (results?.isLoading) return [PairState.LOADING, null];
+      if (!tokenA || !tokenB || tokenA.equals(tokenB)) return [PairState.INVALID, null];
+      if (!pairReserves || !result || !pairReserves[result]) return [PairState.NOT_EXISTS, null];
+      const { reserve0, reserve1 } = pairReserves[result];
+      const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA];
+      return [
+        PairState.EXISTS,
+        new Pair(
+          new TokenAmount(token0, reserve0.toString()),
+          new TokenAmount(token1, reserve1.toString()),
+          chainId ? chainId : ChainId.AVALANCHE,
+        ),
+      ];
+    });
+  }, [results, tokens, chainId, results?.data, results?.isLoading, pairReserves]);
 }
