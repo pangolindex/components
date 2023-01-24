@@ -503,6 +503,8 @@ export function useHederaSarPositions() {
     nftsIndexes ?? [],
   );
 
+  const blockTimestamp = useGetBlockTimestamp();
+
   return useMemo(() => {
     const isAllFetchedAmount = positionsAmountState.every((result) => !result.loading);
     const existErrorAmount = positionsAmountState.some((result) => result.error);
@@ -539,18 +541,21 @@ export function useHederaSarPositions() {
     // we need to decode the base64 uri to get the real uri
     const _nftsURIs = nftsURIs.map((uri) => {
       if (!uri || uri.length === 0) {
-        return {} as URI;
+        return undefined;
       }
       //need to remove the data:application/json;base64, to decode the base64
       const nftUri = Buffer.from(uri.replace('data:application/json;base64,', ''), 'base64').toString();
       return JSON.parse(nftUri) as URI;
     });
+
     return formatPosition(
       _nftsURIs,
       nftsIndexes,
       positionsAmountState,
       positionsRewardRateState,
       positionsPedingRewardsState,
+      Number(blockTimestamp ?? 0),
+      chainId,
     );
   }, [
     account,
