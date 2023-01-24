@@ -1,4 +1,5 @@
 import { formatEther } from '@ethersproject/units';
+import { ChainId } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +12,9 @@ import { TextInput } from 'src/components/TextInput';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useHederaSarNFTContract } from 'src/hooks/useContract';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useDerivativeSarStakeHook } from 'src/state/psarstake/multiChainsHooks';
@@ -98,6 +101,15 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
       approval === ApprovalState.PENDING ||
       (approvalSubmitted && approval === ApprovalState.APPROVED));
 
+  const isHedera = [ChainId.HEDERA_TESTNET].includes(chainId);
+  const sarNftContract = useHederaSarNFTContract();
+
+  const {
+    associate: onAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+    isLoading: isLoadingAssociate,
+  } = useHederaTokenAssociated(isHedera ? sarNftContract?.address : undefined, 'Pangolin Sar NFT');
+
   const renderButtons = () => {
     if (!account) {
       return (
@@ -109,6 +121,12 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
       return (
         <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png, chainId)}>
           {t('sarStake.buy', { symbol: png.symbol })}
+        </Button>
+      );
+    } else if (!isHederaTokenAssociated && isHedera) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate '}
         </Button>
       );
     } else {
