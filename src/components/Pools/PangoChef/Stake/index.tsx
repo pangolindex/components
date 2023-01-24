@@ -296,7 +296,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
           <Button
             variant="primary"
             isDisabled={!!error || approval !== ApprovalState.APPROVED || !!stakeCallbackError}
-            onClick={type === SpaceType.detail ? onConfirm : onStake}
+            onClick={onConfirm}
             loading={attempting && !hash}
             loadingText={t('migratePage.loading')}
           >

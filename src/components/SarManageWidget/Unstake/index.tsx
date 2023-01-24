@@ -1,6 +1,6 @@
 import { formatUnits } from '@ethersproject/units';
 import numeral from 'numeral';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
@@ -63,6 +63,11 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
     }
     wrappedOnDismiss();
   }, [onUserInput]);
+
+  // if changed the position and the drawer is open, close
+  useEffect(() => {
+    if (openDrawer) setOpenDrawer(false);
+  }, [selectedPosition]);
 
   const renderButton = () => {
     if (!account) {

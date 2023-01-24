@@ -137,6 +137,11 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
     }
   };
 
+  // if changed the position and the drawer is open, close
+  useEffect(() => {
+    if (openDrawer) setOpenDrawer(false);
+  }, [selectedPosition]);
+
   const ConfirmContent = (
     <Wrapper paddingX="20px" paddingBottom="20px">
       <Header>
@@ -150,7 +155,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
           <Stat
             title={t('sarStake.dollarValue')}
             titlePosition="top"
-            stat={`$${dollerWorth ?? 0}`}
+            stat={`$${(dollerWorth ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}`}
             titleColor="text2"
           />
           <Stat title={t('sarStakeMore.newAPR')} titlePosition="top" stat={`${newAPR}%`} titleColor="text2" />
@@ -207,7 +212,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
           <Box display="flex" justifyContent="space-between">
             <Box>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">${dollerWorth ?? '0'}</Text>
+              <Text color="text1">${(dollerWorth ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>
@@ -215,9 +220,6 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
             </Box>
           </Box>
           <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-            {t('sarStake.confirmDescription', { symbol: png.symbol })}
-            <br />
-            <br />
             {t('sarStakeMore.confirmDescription', { symbol: png.symbol })}
           </Text>
         </Box>

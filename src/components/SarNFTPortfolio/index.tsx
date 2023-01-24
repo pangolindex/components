@@ -56,6 +56,11 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
     hideOverlay();
   }, [account]);
 
+  // remove selected postion when positions length change
+  useEffect(() => {
+    onSelectPosition(null);
+  }, [filteredPositions.length]);
+
   const renderBody = () => {
     if (isLoading || !filteredPositions) {
       return (
