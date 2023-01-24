@@ -25,12 +25,9 @@ export const avalancheMininchefV2Client = new GraphQLClient(
   { headers: {} },
 );
 
-export const hederaPangoChefClient = new GraphQLClient(
-  'https://hedera-test.pangolin.network/subgraphs/name/pangolin',
-  {
-    headers: {},
-  },
-);
+export const hederaPangoChefClient = new GraphQLClient('https://hedera-test.pangolin.network/subgraphs/name/pangolin', {
+  headers: {},
+});
 
 export const mininchefV2Clients = {
   [ChainId.AVALANCHE]: avalancheMininchefV2Client,
