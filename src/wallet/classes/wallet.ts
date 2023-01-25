@@ -15,6 +15,7 @@ export abstract class Wallet {
   readonly icon: string;
   readonly description: string;
   readonly supportedChains: NetworkType[];
+  readonly supportedChainsId: number[] | undefined;
   isActive = false;
 
   /**
@@ -32,6 +33,7 @@ export abstract class Wallet {
     icon: string,
     description: string,
     supportedChains: NetworkType[],
+    supportedChainsId?: number[],
   ) {
     this.connector = connector;
     this.name = name;
@@ -39,6 +41,7 @@ export abstract class Wallet {
     this.icon = icon;
     this.description = description;
     this.supportedChains = supportedChains;
+    this.supportedChainsId = supportedChainsId;
 
     // On disconnect the wallet we need to set the `isActive` to false
     // To do this, when disconnect the connector, this emits the Web3ReactDeactivate event by default

@@ -15,6 +15,7 @@ const injectWallet = new InjectedWallet(
   'Injected Wallet.',
   [NetworkType.EVM],
   undefined,
+  undefined,
   () => isMobile,
 );
 const metamask = new InjectedWallet(
@@ -23,6 +24,7 @@ const metamask = new InjectedWallet(
   metamaskIcon,
   'A crypto wallet & gateway to blockchain apps.',
   [NetworkType.EVM],
+  undefined,
   'isMetaMask',
 );
 const rabbyWallet = new InjectedWallet(
@@ -31,6 +33,7 @@ const rabbyWallet = new InjectedWallet(
   rabbyIcon,
   'Easy-to-use browser extension.',
   [NetworkType.EVM],
+  undefined,
   'isRabby',
 );
 

@@ -15,10 +15,11 @@ export class InjectedWallet extends Wallet {
     icon: string,
     description: string,
     supportedChains: NetworkType[],
+    supportedChainsId?: number[],
     isWallet?: string,
     conditionToShowWallet?: () => boolean,
   ) {
-    super(injected, name, href, icon, description, supportedChains);
+    super(injected, name, href, icon, description, supportedChains, supportedChainsId);
     this.isWallet = isWallet;
     this.conditionToShowWallet = conditionToShowWallet;
   }
