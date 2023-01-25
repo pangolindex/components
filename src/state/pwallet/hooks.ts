@@ -134,14 +134,12 @@ export function useHederaBalance(
       if (accounts?.[0]) {
         const balance = await hederaFn.getAccountBalance(accounts?.[0]);
 
-        if (balance) {
-          const hderaTokenBalance = new TokenAmount(hederaToken, balance);
+        const hderaTokenBalance = new TokenAmount(hederaToken, balance);
 
-          const container = {} as { [address: string]: any | undefined };
-          container[accounts?.[0]] = hderaTokenBalance;
+        const container = {} as { [address: string]: any | undefined };
+        container[accounts?.[0]] = hderaTokenBalance;
 
-          setHederaBalance(container);
-        }
+        setHederaBalance(container);
       }
     }
 
