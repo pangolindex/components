@@ -129,8 +129,8 @@ export function useNearBalance(
 export function useHederaBalance(
   chainId: ChainId,
   accounts?: (string | undefined)[],
-): { [address: string]: any } | undefined {
-  const [hederaBalance, setHederaBalance] = useState<{ [address: string]: any }>();
+): { [address: string]: TokenAmount | undefined } | undefined {
+  const [hederaBalance, setHederaBalance] = useState<{ [address: string]: TokenAmount | undefined }>();
 
   const hederaToken = WAVAX[chainId];
 
@@ -139,14 +139,12 @@ export function useHederaBalance(
       if (accounts?.[0]) {
         const balance = await hederaFn.getAccountBalance(accounts?.[0]);
 
-        if (balance) {
-          const hderaTokenBalance = new TokenAmount(hederaToken, balance);
+        const hederaTokenBalance = new TokenAmount(hederaToken, balance);
 
-          const container = {} as { [address: string]: any | undefined };
-          container[accounts?.[0]] = hderaTokenBalance;
+        const container = {} as { [address: string]: TokenAmount | undefined };
+        container[accounts?.[0]] = hederaTokenBalance;
 
-          setHederaBalance(container);
-        }
+        setHederaBalance(container);
       }
     }
 
