@@ -260,7 +260,7 @@ export function useGetAllHederaAssociatedTokens() {
   const { account } = usePangolinWeb3();
 
   const response = useQuery(['check-hedera-token-associated', account], async () => {
-    if (!account || chainId !== ChainId.HEDERA_TESTNET) return;
+    if (!account || !hederaFn.isHederaChain(chainId)) return;
     const tokens = await hederaFn.getAccountAssociatedTokens(account);
     return tokens;
   });
