@@ -293,7 +293,7 @@ class Hedera {
 
   constructor() {
     this.axios = BaseAxios.create({ timeout: 60000 });
-    this.client = Client.forTestnet(); // TODO check here for testnet and mainnet
+    this.client = Client.forMainnet(); // TODO check here for testnet and mainnet
   }
 
   async call<T>(config: AxiosRequestConfig) {
