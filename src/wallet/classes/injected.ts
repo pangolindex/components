@@ -40,7 +40,7 @@ export class TalismanWallet extends Wallet {
   }
 
   installed(): boolean {
-    return Boolean(window.ethereum && window.ethereum.isTalisman);
+    return Boolean(window.talismanEth);
   }
 }
 
