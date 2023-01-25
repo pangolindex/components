@@ -31,9 +31,9 @@ import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Res
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import {
   useAllTokens,
+  useGetAllHederaAssociatedTokens,
   useHederaTokenAssociated,
   useNearTokens,
-  useGetAllHederaAssociatedTokens,
 } from 'src/hooks/Tokens';
 import { useTokensHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
@@ -1252,7 +1252,6 @@ export function useGetUserLP() {
 
 export function useGetHederaUserLP() {
   const chainId = useChainId();
-  const { account } = usePangolinWeb3();
 
   const useTokens = useTokensHook[chainId];
   // get all pairs
@@ -1276,13 +1275,6 @@ export function useGetHederaUserLP() {
 
   // get liquidityTokenWise PGL(Fungible Token Address) mapping
   const pglTokenAddresses = useHederaPGLTokenAddresses(lpTokenAddresses);
-
-  // get all associated token data based on given account
-  // const { isLoading, data } = useQuery(['check-hedera-token-associated', account], async () => {
-  //   if (!account || chainId !== ChainId.HEDERA_TESTNET) return;
-  //   const tokens = await hederaFn.getAccountAssociatedTokens(account);
-  //   return tokens;
-  // });
 
   const { data, isLoading } = useGetAllHederaAssociatedTokens();
   // make pgltokenwise balance array

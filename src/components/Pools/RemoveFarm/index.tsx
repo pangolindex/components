@@ -5,6 +5,7 @@ import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/compo
 import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { useGetEarnedAmount, useMinichefPendingRewards } from 'src/state/pstake/hooks';
@@ -36,13 +37,21 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
 
   const png = PNG[chainId];
 
-  const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
+  const { rewardTokens, rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
   const chefType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
   const mixpanel = useMixpanel();
+
+  const notAssociateTokens = useGetHederaTokenNotAssociated(rewardTokens || []);
+  //  here get all not associated tokens and user can associate at a time one token so get 0 index token
+  const {
+    associate: onAssociate,
+    isLoading: isLoadingAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+  } = useHederaTokenAssociated(notAssociateTokens?.[0]?.address, notAssociateTokens?.[0]?.symbol);
 
   const { callback: withdrawCallback, error: withdrawCallbackError } = useWithdrawCallback({
     version,
@@ -117,6 +126,22 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
   const token1 = stakingInfo.tokens[1];
 
   const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
+
+  const renderButton = () => {
+    if (!isHederaTokenAssociated && notAssociateTokens?.length > 0) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate ' + notAssociateTokens?.[0]?.symbol}
+        </Button>
+      );
+    } else {
+      return (
+        <Button variant="primary" onClick={onWithdraw}>
+          {error ?? t('earn.withdrawAndClaim')}
+        </Button>
+      );
+    }
+  };
 
   return (
     <FarmRemoveWrapper>
@@ -203,9 +228,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
                     </Text>
                   </Button>
                 )}
-                <Button variant="primary" onClick={onWithdraw}>
-                  {error ?? t('earn.withdrawAndClaim')}
-                </Button>
+                {renderButton()}
               </Buttons>
             </Box>
           )}

@@ -238,6 +238,7 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const useTokens = useTokensHook[chainId];
   const rewardData = useRef(
     {} as {
+      rewardTokens: Token[];
       rewardTokensAmount: TokenAmount[];
       rewardTokensMultiplier: any;
     },
@@ -291,13 +292,14 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   useEffect(() => {
     if (!isLoading) {
       rewardData.current = {
+        rewardTokens: ((rewardTokens || []).length > 0 ? rewardTokens : []) as Token[],
         rewardTokensAmount,
         rewardTokensMultiplier,
       };
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rewardTokensAmount, rewardTokensMultiplier, isLoading]);
+  }, [rewardTokens, rewardTokensAmount, rewardTokensMultiplier, isLoading]);
 
   return rewardData.current;
 }

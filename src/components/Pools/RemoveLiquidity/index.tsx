@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
 import { ROUTER_ADDRESS } from 'src/constants';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
@@ -17,7 +18,6 @@ import { useRemoveLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
 import { isEvmChain } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { ButtonWrapper, RemoveWrapper } from './styleds';
-import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 
 interface RemoveLiquidityProps {
   currencyA?: Currency;
@@ -42,17 +42,14 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
     currencyB ?? undefined,
   );
 
-  console.log('pair', pair);
-
-  const associateTokens = useGetHederaTokenNotAssociated(pair?.tokens);
-
+  const notAssociateTokens = useGetHederaTokenNotAssociated(pair?.tokens);
+  // here get all not associated tokens and user can associate at a time one token so get 0 index token
   const {
     associate: onAssociate,
     isLoading: isLoadingAssociate,
     hederaAssociated: isHederaTokenAssociated,
-  } = useHederaTokenAssociated(associateTokens?.[0]?.address, associateTokens?.[0]?.symbol);
+  } = useHederaTokenAssociated(notAssociateTokens?.[0]?.address, notAssociateTokens?.[0]?.symbol);
 
-  console.log('associateTokens', associateTokens);
   const { removeLiquidity, onAttemptToApprove, signatureData, setSignatureData } = useRemoveLiquidity(pair as Pair);
   const { onUserInput: _onUserInput } = useBurnActionHandlers();
   const isValid = !error;
@@ -182,10 +179,10 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
       );
     }
 
-    if (!isHederaTokenAssociated && associateTokens?.length > 0) {
+    if (!isHederaTokenAssociated && notAssociateTokens?.length > 0) {
       return (
         <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-          {isLoadingAssociate ? 'Associating' : 'Associate ' + associateTokens?.[0]?.symbol}
+          {isLoadingAssociate ? 'Associating' : 'Associate ' + notAssociateTokens?.[0]?.symbol}
         </Button>
       );
     } else {

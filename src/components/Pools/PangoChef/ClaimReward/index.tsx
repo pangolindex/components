@@ -6,10 +6,12 @@ import { Box, Button, Loader, Text, TransactionCompleted } from 'src/components'
 import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePangoChefClaimRewardCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
+import { useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { Buttons, ClaimWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';
 
 export interface ClaimProps {
@@ -33,8 +35,16 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
   const [claimError, setClaimError] = useState<string | undefined>();
 
   const pangoChefContract = usePangoChefContract();
-
+  const { rewardTokens } = useMinichefPendingRewards(stakingInfo);
   const mixpanel = useMixpanel();
+
+  const notAssociateTokens = useGetHederaTokenNotAssociated(rewardTokens);
+  // here get all not associated tokens and user can associate at a time one token so get 0 index token
+  const {
+    associate: onAssociate,
+    isLoading: isLoadingAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+  } = useHederaTokenAssociated(notAssociateTokens?.[0]?.address, notAssociateTokens?.[0]?.symbol);
 
   const { callback: claimRewardCallback } = useClaimRewardCallback(stakingInfo.pid, stakingInfo.poolType);
 
@@ -84,6 +94,22 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
     _error = _error ?? t('earn.enterAmount');
   }
 
+  const renderButton = () => {
+    if (!isHederaTokenAssociated && notAssociateTokens?.length > 0) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate ' + notAssociateTokens?.[0]?.symbol}
+        </Button>
+      );
+    } else {
+      return (
+        <Button variant="outline" onClick={onClaimReward} color={theme.text10}>
+          {_error ?? t('earn.claimReward', { symbol: png.symbol })}
+        </Button>
+      );
+    }
+  };
+
   return (
     <ClaimWrapper>
       {!attempting && !hash && !claimError && (
@@ -104,9 +130,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
           </Box>
 
           <Buttons>
-            <Button variant="outline" onClick={onClaimReward} color={theme.text10}>
-              {_error ?? t('earn.claimReward', { symbol: png.symbol })}
-            </Button>
+            {renderButton()}
             <Button variant="primary" onClick={redirectToCompound}>
               {t('sarCompound.compound')}
             </Button>
