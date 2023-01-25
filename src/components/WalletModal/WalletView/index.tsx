@@ -1,7 +1,8 @@
+import { useWeb3React } from '@web3-react/core';
 import React, { useContext } from 'react';
-import { AlertCircle, ArrowLeft, Download } from 'react-feather';
+import { AlertCircle, ArrowLeft, Download, LogOut } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import { Box, Text } from 'src/components';
+import { Box, Button, Text } from 'src/components';
 import { Wallet } from 'src/wallet/classes/wallet';
 import { BackButton, ErrorButton, Frame, Link, Loader, StyledLogo, Wrapper } from './styles';
 
@@ -16,7 +17,13 @@ export default function WalletView({
   onBack: () => void;
   onConnect: (wallet: Wallet) => Promise<void>;
 }) {
+  const { deactivate } = useWeb3React();
   const theme = useContext(ThemeContext);
+
+  function onDisconnect() {
+    wallet.disconnect(deactivate);
+    onBack();
+  }
 
   function getContent() {
     if (!wallet.installed()) {
@@ -38,6 +45,15 @@ export default function WalletView({
             Error Try Again
           </Text>
         </ErrorButton>
+      );
+    }
+
+    if (wallet.isActive) {
+      return (
+        <Button variant="primary" onClick={onDisconnect} width="max-content" padding="10px">
+          <LogOut />
+          <Text marginLeft="5px">Disconnect</Text>
+        </Button>
       );
     }
 

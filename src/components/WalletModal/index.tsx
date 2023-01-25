@@ -115,10 +115,16 @@ export default function WalletModal({
       });
       setPendingError(false);
       setPendingWallet(null);
+      //if wallet is active deactivate it
+      wallets.forEach((wallet) => {
+        if (wallet.isActive) {
+          wallet.isActive = false;
+        }
+      });
       closeModal();
     }
 
-    if (wallet.installed()) {
+    if (wallet.installed() && !wallet.isActive) {
       await wallet.tryActivation(activate, onSuccess, onError);
     }
   }

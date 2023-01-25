@@ -71,5 +71,17 @@ export abstract class Wallet {
     return !isMobile;
   }
 
+  /**
+   * Return if this wallet is installed
+   */
   abstract installed(): boolean;
+
+  /**
+   * Function to disconnect the wallet
+   * @param deactivate useWeb3React function that deactivate the connector and the wallet
+   */
+  disconnect(deactivate: () => void) {
+    deactivate();
+    this.isActive = false;
+  }
 }
