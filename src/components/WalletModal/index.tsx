@@ -80,7 +80,7 @@ export default function WalletModal({
           wallet.name.toLowerCase().includes(debouncedSearchQuery),
       )
       .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
-  }, [_wallets, debouncedSearchQuery]);
+  }, [_wallets, selectedChain, debouncedSearchQuery]);
 
   function getWalletKey(wallet: Wallet): string | null {
     const result = Object.entries(_wallets).find(
