@@ -14,7 +14,7 @@ import {
 import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
-import { HEDERA_API_BASE_URL, PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
+import { PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
@@ -289,11 +289,21 @@ export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & {
 
 class Hedera {
   axios: AxiosInstance;
-  client: Client;
 
   constructor() {
     this.axios = BaseAxios.create({ timeout: 60000 });
-    this.client = Client.forMainnet(); // TODO check here for testnet and mainnet
+  }
+
+  get client(): Client {
+    const chainId = hashConnect.getChainId();
+    return chainId === ChainId.HEDERA_MAINNET ? Client.forMainnet() : Client.forTestnet();
+  }
+
+  get HEDERA_API_BASE_URL(): string {
+    const chainId = hashConnect.getChainId();
+    return chainId === ChainId.HEDERA_MAINNET
+      ? `https://mainnet-public.mirrornode.hedera.com`
+      : `https://testnet.mirrornode.hedera.com`;
   }
 
   async call<T>(config: AxiosRequestConfig) {
@@ -303,7 +313,7 @@ class Hedera {
         'Content-Type': 'application/json',
       };
       const res = await this.axios.request<T>({
-        baseURL: HEDERA_API_BASE_URL,
+        baseURL: this.HEDERA_API_BASE_URL,
         headers,
         ...config,
       });
@@ -387,7 +397,6 @@ class Hedera {
         url: `/api/v1/balances?account.id=${accountId}`,
         method: 'GET',
       });
-
       const balance = response?.balances?.[0]?.balance || 0;
       return balance;
     } catch (error) {
@@ -561,7 +570,6 @@ class Hedera {
   public async getTransactionById(transactionId: string) {
     try {
       const response = await this.call<APITransactionResponse>({
-        baseURL: HEDERA_API_BASE_URL,
         url: `/api/v1/transactions/${transactionId}`,
         method: 'GET',
       });
@@ -584,7 +592,6 @@ class Hedera {
   public async getTransactionBlock(timestamp: string) {
     //https://testnet.mirrornode.hedera.com/api/v1/blocks?timestamp=gte:1666177911.828565483&limit=1&order=asc
     const response = await this.call<APIBlockResponse>({
-      baseURL: HEDERA_API_BASE_URL,
       url: `/api/v1/blocks?timestamp=gte:${timestamp}&limit=1&order=asc`,
       method: 'GET',
     });
@@ -597,7 +604,6 @@ class Hedera {
   public async getTransactionLatestBlock() {
     //https://testnet.mirrornode.hedera.com/api/v1/blocks?order=desc&limit=1
     const response = await this.call<APIBlockResponse>({
-      baseURL: HEDERA_API_BASE_URL,
       url: `/api/v1/blocks?limit=1&order=desc`,
       method: 'GET',
     });
