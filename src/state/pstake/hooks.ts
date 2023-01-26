@@ -238,7 +238,6 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const useTokens = useTokensHook[chainId];
   const rewardData = useRef(
     {} as {
-      rewardTokens: Token[];
       rewardTokensAmount: TokenAmount[];
       rewardTokensMultiplier: any;
     },
@@ -269,6 +268,9 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const earnedAmount = getEarnedAmount();
 
   const rewardTokensAddress = getRewardTokensRes?.result?.[0];
+
+  console.log('rewardTokensAddress', rewardTokensAddress);
+
   const rewardTokensMultiplier = getRewardMultipliersRes?.result?.[0];
   const earnedAmountStr = earnedAmount ? JSBI.BigInt(earnedAmount?.raw).toString() : JSBI.BigInt(0).toString();
 
@@ -292,7 +294,6 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   useEffect(() => {
     if (!isLoading) {
       rewardData.current = {
-        rewardTokens: ((rewardTokens || []).length > 0 ? rewardTokens : []) as Token[],
         rewardTokensAmount,
         rewardTokensMultiplier,
       };

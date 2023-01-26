@@ -8,7 +8,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
-import { useGetEarnedAmount, useMinichefPendingRewards } from 'src/state/pstake/hooks';
+import { useGetEarnedAmount, useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
@@ -37,8 +37,8 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
 
   const png = PNG[chainId];
 
-  const { rewardTokens, rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
-
+  const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
+  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo?.rewardTokensAddress);
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
   const chefType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;

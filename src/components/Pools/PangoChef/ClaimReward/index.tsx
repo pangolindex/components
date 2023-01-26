@@ -11,7 +11,7 @@ import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePangoChefClaimRewardCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useMinichefPendingRewards } from 'src/state/pstake/hooks';
+import { useGetRewardTokens } from 'src/state/pstake/hooks';
 import { Buttons, ClaimWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';
 
 export interface ClaimProps {
@@ -35,10 +35,11 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
   const [claimError, setClaimError] = useState<string | undefined>();
 
   const pangoChefContract = usePangoChefContract();
-  const { rewardTokens } = useMinichefPendingRewards(stakingInfo);
+  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo?.rewardTokensAddress);
   const mixpanel = useMixpanel();
 
-  const notAssociateTokens = useGetHederaTokenNotAssociated(rewardTokens);
+  const notAssociateTokens = useGetHederaTokenNotAssociated(rewardTokens || []);
+
   // here get all not associated tokens and user can associate at a time one token so get 0 index token
   const {
     associate: onAssociate,
