@@ -4,7 +4,6 @@ import { ALL_CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { InjectedConnector } from '@pangolindex/web3-react-injected-connector';
 import { TalismanConnector } from '@talismn/web3react-v6-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { AvalancheCoreConnector } from './AvalancheCoreConnector';
 import { BitKeepConnector } from './BitKeepConnector';
 import { DefiConnector } from './DefiConnector';
@@ -12,6 +11,7 @@ import { HashConnector } from './HashConnector';
 import { NearConnector } from './NearConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
+import { WalletLinkConnector } from './WalletLinkConnector';
 
 export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter(
   (chain) => (chain.pangolin_is_live || chain.supported_by_bridge) && chain?.network_type === NetworkType.EVM,
