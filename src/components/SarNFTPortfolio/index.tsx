@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
@@ -24,9 +24,13 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
   const { positions, isLoading } = useSarPositions();
 
   // sort by balance
-  const filteredPositions = positions
-    ?.filter((position) => !position.balance.isZero())
-    .sort((a, b) => Number(b.balance.sub(a.balance).toString())); // remove zero balances and sort by balance
+  const filteredPositions = useMemo(
+    () =>
+      positions
+        ?.filter((position) => !position.balance.isZero())
+        .sort((a, b) => Number(b.balance.sub(a.balance).toString())), // remove zero balances and sort by balance
+    [positions],
+  );
 
   const toggleWalletModal = useWalletModalToggle();
 
@@ -55,11 +59,6 @@ export default function SarNFTPortfolio({ onSelectPosition }: Props) {
   useEffect(() => {
     hideOverlay();
   }, [account]);
-
-  // remove selected postion when positions length change
-  useEffect(() => {
-    onSelectPosition(null);
-  }, [filteredPositions.length]);
 
   const renderBody = () => {
     if (isLoading || !filteredPositions) {

@@ -9,9 +9,10 @@ import { Options } from './types';
 
 interface Props {
   selectedPosition: Position | null;
+  onSelectPosition: (position: Position | null) => void;
 }
 
-export default function SarMangePortfolio({ selectedPosition }: Props) {
+export default function SarMangePortfolio({ selectedPosition, onSelectPosition }: Props) {
   const [type, setType] = useState(Options.ADD);
 
   const handleChange = (value: Options) => {
@@ -21,15 +22,50 @@ export default function SarMangePortfolio({ selectedPosition }: Props) {
   const renderBody = () => {
     switch (type) {
       case Options.ADD:
-        return <AddStake selectedPosition={selectedPosition} selectedOption={type} onChange={handleChange} />;
+        return (
+          <AddStake
+            selectedPosition={selectedPosition}
+            selectedOption={type}
+            onChange={handleChange}
+            onSelectPosition={onSelectPosition}
+          />
+        );
       case Options.UNSTAKE:
-        return <Unstake selectedPosition={selectedPosition} selectedOption={type} onChange={handleChange} />;
+        return (
+          <Unstake
+            selectedPosition={selectedPosition}
+            selectedOption={type}
+            onChange={handleChange}
+            onSelectPosition={onSelectPosition}
+          />
+        );
       case Options.CLAIM:
-        return <Claim selectedPosition={selectedPosition} selectedOption={type} onChange={handleChange} />;
+        return (
+          <Claim
+            selectedPosition={selectedPosition}
+            selectedOption={type}
+            onChange={handleChange}
+            onSelectPosition={onSelectPosition}
+          />
+        );
       case Options.COMPOUND:
-        return <Compound selectedPosition={selectedPosition} selectedOption={type} onChange={handleChange} />;
+        return (
+          <Compound
+            selectedPosition={selectedPosition}
+            selectedOption={type}
+            onChange={handleChange}
+            onSelectPosition={onSelectPosition}
+          />
+        );
       default:
-        return <AddStake selectedPosition={selectedPosition} selectedOption={type} onChange={handleChange} />;
+        return (
+          <AddStake
+            selectedPosition={selectedPosition}
+            selectedOption={type}
+            onChange={handleChange}
+            onSelectPosition={onSelectPosition}
+          />
+        );
     }
   };
 
