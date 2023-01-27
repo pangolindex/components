@@ -256,14 +256,15 @@ export function useCurrency(currencyId: string | undefined): Currency | null | u
 
 /**
  * to get all hedera associated tokens
+ * @params dependancies on which use query should refetch data
  * @returns all associated tokens
  */
-export function useGetAllHederaAssociatedTokens() {
+export function useGetAllHederaAssociatedTokens(dependancies = [] as any[]) {
   const chainId = useChainId();
 
   const { account } = usePangolinWeb3();
 
-  const response = useQuery(['check-hedera-token-associated', account], async () => {
+  const response = useQuery(['check-hedera-token-associated', account, ...dependancies], async () => {
     if (!account || !hederaFn.isHederaChain(chainId)) return;
     const tokens = await hederaFn.getAccountAssociatedTokens(account);
     return tokens;

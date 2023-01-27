@@ -68,7 +68,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const useETHBalances = useAccountBalanceHook[chainId];
   const currencyBalance = useETHBalances(chainId, [account ?? ZERO_ADDRESS]);
 
-  const tokensBalances = useTokenBalances(account ?? ZERO_ADDRESS, [token0, token1]);
+  const [tokensBalances] = useTokenBalances(account ?? ZERO_ADDRESS, [token0, token1]);
 
   const isPNGPool = token0.equals(png) || token1.equals(png);
   const isWrappedCurrencyPool = token0.equals(wrappedCurrency) || token1.equals(wrappedCurrency);

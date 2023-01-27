@@ -39,6 +39,7 @@ import { useTokensHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
+import { useBlockNumber } from 'src/state/papplication/hooks';
 import { Field } from 'src/state/pburn/actions';
 import { Field as AddField } from 'src/state/pmint/actions';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
@@ -172,10 +173,7 @@ const fetchNearPoolShare = (chainId: number, pair: Pair) => async () => {
   return undefined;
 };
 
-/**
- * Returns a map of token addresses to their eventually consistent token balances for a single account.
- */
-export function useTokenBalancesWithLoadingIndicator(
+export function useTokenBalances(
   address?: string,
   tokens?: (Token | undefined)[],
 ): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
@@ -190,36 +188,67 @@ export function useTokenBalancesWithLoadingIndicator(
 
   const anyLoading: boolean = useMemo(() => balances.some((callState) => callState.loading), [balances]);
 
-  return [
-    useMemo(
-      () =>
-        address && validatedTokens.length > 0
-          ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
-              const value = balances?.[i]?.result?.[0];
-              const amount = value ? JSBI.BigInt(value.toString()) : undefined;
-              if (amount) {
-                memo[token.address] = new TokenAmount(token, amount);
-              }
-              return memo;
-            }, {})
-          : {},
-      [address, validatedTokens, balances],
-    ),
-    anyLoading,
-  ];
+  const tokenBalances = useMemo(
+    () =>
+      address && validatedTokens.length > 0
+        ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
+            const value = balances?.[i]?.result?.[0];
+            const amount = value ? JSBI.BigInt(value.toString()) : undefined;
+            if (amount) {
+              memo[token.address] = new TokenAmount(token, amount);
+            }
+            return memo;
+          }, {})
+        : {},
+    [address, validatedTokens, balances],
+  );
+  return [tokenBalances, anyLoading];
 }
 
-export function useTokenBalances(
+export function useHederaTokenBalances(
   address?: string,
   tokens?: (Token | undefined)[],
-): { [tokenAddress: string]: TokenAmount | undefined } {
-  return useTokenBalancesWithLoadingIndicator(address, tokens)[0];
+): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
+  const latestBlockNumber = useBlockNumber();
+
+  const validatedTokens: Token[] = useMemo(
+    () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
+    [tokens],
+  );
+
+  const { data, isLoading } = useGetAllHederaAssociatedTokens([latestBlockNumber]);
+
+  const balances = useMemo(() => {
+    return (data || []).reduce<{ [tokenAddress: string]: string }>((memo, token) => {
+      const address = hederaFn.idToAddress(token?.tokenId);
+
+      if (address) {
+        memo[address] = token.balance;
+      }
+      return memo;
+    }, {});
+  }, [data]);
+
+  const tokenBalances = useMemo(
+    () =>
+      address && validatedTokens.length > 0
+        ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token) => {
+            const value = token?.address ? balances[token.address] : 0;
+            const amount = value ? JSBI.BigInt(value.toString()) : JSBI.BigInt(0);
+            memo[token.address] = new TokenAmount(token, amount);
+            return memo;
+          }, {})
+        : {},
+    [address, validatedTokens, balances],
+  );
+
+  return [tokenBalances, isLoading];
 }
 
 export function useNearTokenBalances(
   address?: string,
   tokensOrPairs?: (Token | Pair | undefined)[],
-): { [tokenAddress: string]: TokenAmount | undefined } {
+): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
   const chainId = useChainId();
 
   const queryParameter = useMemo(() => {
@@ -241,7 +270,8 @@ export function useNearTokenBalances(
 
   const results = useQueries(queryParameter);
 
-  return useMemo(
+  const anyLoading = useMemo(() => results?.some((t) => t?.isLoading), [results]);
+  const tokenBalances = useMemo(
     () =>
       results.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, result, i) => {
         const value = result?.data;
@@ -256,11 +286,13 @@ export function useNearTokenBalances(
       }, {}),
     [tokensOrPairs, address, results],
   );
+
+  return [tokenBalances, anyLoading];
 }
 
 // get the balance for a single token/account combo
 export function useTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
-  const tokenBalances = useTokenBalances(account, [token]);
+  const [tokenBalances] = useTokenBalances(account, [token]);
   if (!token) return undefined;
   return tokenBalances[token.address];
 }
@@ -268,7 +300,7 @@ export function useTokenBalance(account?: string, token?: Token): TokenAmount | 
 // get the balance for a single token/account combo
 export function useNearTokenBalance(account?: string, tokenOrPair?: Token | Pair): TokenAmount | undefined {
   const tokensOrPairs = useMemo(() => [tokenOrPair], [tokenOrPair]);
-  const tokenBalances = useNearTokenBalances(account, tokensOrPairs);
+  const [tokenBalances] = useNearTokenBalances(account, tokensOrPairs);
   if (!tokenOrPair) return undefined;
 
   if (tokenOrPair && tokenOrPair instanceof Token) {
@@ -278,10 +310,16 @@ export function useNearTokenBalance(account?: string, tokenOrPair?: Token | Pair
   }
 }
 
+export function useHederaTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
+  const [tokenBalances] = useHederaTokenBalances(account, [token]);
+  if (!token) return undefined;
+  return tokenBalances[token.address];
+}
+
 // get the balance for a single token/account combo
 export function useNearPairBalance(account?: string, pair?: Pair): TokenAmount | undefined {
   const tokensOrPairs = useMemo(() => [pair], [pair]);
-  const tokenBalances = useNearTokenBalances(account, tokensOrPairs);
+  const [tokenBalances] = useNearTokenBalances(account, tokensOrPairs);
   if (!pair) return undefined;
 
   if (pair && pair instanceof Pair) {
@@ -297,7 +335,7 @@ export function useNearPairBalance(account?: string, pair?: Pair): TokenAmount |
 export function useEVMPairBalance(account?: string, pair?: Pair): TokenAmount | undefined {
   const token = pair?.liquidityToken;
 
-  const tokenBalances = useTokenBalances(account, [token]);
+  const [tokenBalances] = useTokenBalances(account, [token]);
   if (!token) return undefined;
   return tokenBalances[token.address];
 }
@@ -320,10 +358,7 @@ export function useHederaPairBalances(account?: string, pairs?: (Pair | undefine
     [pglTokens],
   );
 
-  const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
-    account ?? undefined,
-    liquidityTokens,
-  );
+  const [v2PairsBalances, fetchingV2PairBalances] = useHederaTokenBalances(account ?? undefined, liquidityTokens);
 
   const newV2PairsBalances = useMemo(
     () =>
@@ -377,7 +412,7 @@ export function useCurrencyBalances(
   const useTokenBalances_ = useTokenBalancesHook[chainId];
   const useETHBalances_ = useAccountBalanceHook[chainId];
 
-  const tokenBalances = useTokenBalances_(account, tokens);
+  const [tokenBalances] = useTokenBalances_(account, tokens);
   const containsETH: boolean = useMemo(
     () => currencies?.some((currency) => chainId && currency === CAVAX[chainId]) ?? false,
     [chainId, currencies],
@@ -419,7 +454,7 @@ export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | u
   const allTokens = useAllTokens();
 
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens]);
-  const balances = useTokenBalances_(account ?? undefined, allTokensArray);
+  const [balances] = useTokenBalances_(account ?? undefined, allTokensArray);
   return balances ?? {};
 }
 
@@ -1201,10 +1236,7 @@ export function useGetUserLP() {
     [tokenPairsWithLiquidityTokens],
   );
 
-  const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
-    account ?? undefined,
-    liquidityTokens,
-  );
+  const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalances(account ?? undefined, liquidityTokens);
 
   //fetch the reserves for all V2 pools in which the user has a balance
   const liquidityTokensWithBalances = useMemo(
@@ -1403,7 +1435,7 @@ export function useGetNearUserLP() {
     [v2AllPairs],
   );
 
-  const v2PairsBalances = useNearTokenBalances(account ?? undefined, allV2Pairs);
+  const [v2PairsBalances] = useNearTokenBalances(account ?? undefined, allV2Pairs);
 
   //fetch the reserves for all V2 pools in which the user has a balance
   const allV2PairsWithLiquidity = useMemo(
