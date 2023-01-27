@@ -64,7 +64,7 @@ export default function Unstake({ selectedOption, selectedPosition, onChange, on
       onSelectPosition(null);
     }
     wrappedOnDismiss();
-  }, [hash, onUserInput]);
+  }, [hash, onSelectPosition, onUserInput]);
 
   // if changed the position and the drawer is open, close
   useEffect(() => {
