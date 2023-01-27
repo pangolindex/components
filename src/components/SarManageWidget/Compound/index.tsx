@@ -19,9 +19,10 @@ interface Props {
   selectedOption: Options;
   selectedPosition: Position | null;
   onChange: (value: Options) => void;
+  onSelectPosition: (position: Position | null) => void;
 }
 
-export default function Compound({ selectedOption, selectedPosition, onChange }: Props) {
+export default function Compound({ selectedOption, selectedPosition, onChange, onSelectPosition }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
   const chainId = useChainId();
 
@@ -43,8 +44,11 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
 
   const handleConfirmDismiss = useCallback(() => {
     setOpenDrawer(false);
+    if (hash) {
+      onSelectPosition(null);
+    }
     wrappedOnDismiss();
-  }, []);
+  }, [hash, onSelectPosition]);
 
   useEffect(() => {
     if (openDrawer && !attempting && !hash && !compoundError) {
@@ -54,11 +58,6 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
       setOpenDrawer(true);
     }
   }, [attempting]);
-
-  // if changed the position and the drawer is open, close
-  useEffect(() => {
-    if (openDrawer) setOpenDrawer(false);
-  }, [selectedPosition]);
 
   const renderButton = () => {
     let error: string | undefined;
