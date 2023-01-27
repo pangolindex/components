@@ -48,12 +48,11 @@ export default function Compound({ selectedOption, selectedPosition, onChange, o
       onSelectPosition(null);
     }
     wrappedOnDismiss();
-  }, [hash]);
+  }, [hash, onSelectPosition]);
 
   useEffect(() => {
     if (openDrawer && !attempting && !hash && !compoundError) {
       handleConfirmDismiss();
-      console.log('aqui handleConfirmDismiss');
     }
     if (!openDrawer && attempting) {
       setOpenDrawer(true);

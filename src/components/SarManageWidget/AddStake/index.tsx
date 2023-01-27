@@ -110,7 +110,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
     associate: onAssociate,
     hederaAssociated: isHederaTokenAssociated,
     isLoading: isLoadingAssociate,
-  } = useHederaTokenAssociated(isHedera ? sarNftContract?.address : undefined, 'Pangolin Sar NFT');
+  } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
   const renderButtons = () => {
     if (!account) {

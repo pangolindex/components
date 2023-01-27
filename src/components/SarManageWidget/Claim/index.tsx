@@ -41,7 +41,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
       onSelectPosition(null);
     }
     wrappedOnDismiss();
-  }, [hash]);
+  }, [hash, onSelectPosition]);
 
   const handleConfirm = useCallback(() => {
     onClaim();
