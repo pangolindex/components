@@ -216,7 +216,7 @@ export function useHederaTokenBalances(
     [tokens],
   );
 
-  const { data, isLoading } = useGetAllHederaAssociatedTokens([latestBlockNumber] as any);
+  const { data, isLoading } = useGetAllHederaAssociatedTokens([latestBlockNumber]);
 
   const balances = useMemo(() => {
     return (data || []).reduce<{ [tokenAddress: string]: string }>((memo, token) => {
