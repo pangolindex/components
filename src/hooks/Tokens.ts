@@ -256,14 +256,15 @@ export function useCurrency(currencyId: string | undefined): Currency | null | u
 
 /**
  * to get all hedera associated tokens
- * @returns
+ * @params dependancies on which use query should refetch data
+ * @returns all associated tokens
  */
-export function useGetAllHederaAssociatedTokens(dependancy = []) {
+export function useGetAllHederaAssociatedTokens(dependancies = []) {
   const chainId = useChainId();
 
   const { account } = usePangolinWeb3();
 
-  const response = useQuery(['check-hedera-token-associated', account, ...dependancy], async () => {
+  const response = useQuery(['check-hedera-token-associated', account, ...dependancies], async () => {
     if (!account || !hederaFn.isHederaChain(chainId)) return;
     const tokens = await hederaFn.getAccountAssociatedTokens(account);
     return tokens;
@@ -273,7 +274,7 @@ export function useGetAllHederaAssociatedTokens(dependancy = []) {
 }
 
 /**
- * to get token is associated or not and method to make that token associated
+ * this hook is useful to get token is associated or not and method to make that token associated
  * @param address
  * @param symbol
  * @returns  associate function, isLoading, hederaAssociated
@@ -324,24 +325,23 @@ export function useHederaTokenAssociated(
 }
 
 /**
- *  To filter tokens which is not associated
+ * this hook is useful to filter filter tokens which is not associated
  * @param tokens
- * @returns Token Array
+ * @returns not associated tokens array
  */
 export function useGetHederaTokenNotAssociated(tokens: Array<Token> | undefined): Array<Token> {
   const { account } = usePangolinWeb3();
 
   const { data, isLoading } = useGetAllHederaAssociatedTokens();
 
-  // make pgltokenwise balance array
   return useMemo(() => {
     return (tokens || []).reduce<Array<Token>>((memo, token) => {
       if (token?.address) {
         const currencyId = account ? hederaFn.hederaId(token?.address) : '';
 
-        const check = (data || []).find((item) => item.tokenId === currencyId);
+        const isAssociated = (data || []).find((item) => item.tokenId === currencyId);
 
-        if (!check) {
+        if (!isAssociated) {
           memo.push(token);
         }
       }

@@ -43,7 +43,11 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   );
 
   const notAssociateTokens = useGetHederaTokenNotAssociated(pair?.tokens);
-  // here get all not associated tokens and user can associate at a time one token so get 0 index token
+  // here we get all not associated pair tokens
+  // but we associate one token at a time
+  // so we get first token from array and ask user to associate
+  // once user associate the token, that token will be removed from `notAssociateTokens`
+  // and second token will become first and it goes on till that array gets empty
   const {
     associate: onAssociate,
     isLoading: isLoadingAssociate,
@@ -291,46 +295,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
               </ContentBox>
             </Box> */}
           </Box>
-          <Box mt={0}>
-            {renderButton()}
-            {/* {!account ? (
-              <Button variant="primary" onClick={toggleWalletModal} height="46px">
-                {t('earn.deposit')}
-              </Button>
-            ) : (
-              <ButtonWrapper>
-                {isEvmChain(chainId) && (
-                  <Box mr="5px" width="100%">
-                    <Button
-                      variant={getApproveButtonVariant()}
-                      onClick={() => {
-                        onAttemptToApprove({ parsedAmounts, deadline, approveCallback });
-                      }}
-                      isDisabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
-                      loading={attempting && !hash}
-                      loadingText={t('removeLiquidity.approving')}
-                      height="46px"
-                    >
-                      {getApproveButtonText()}
-                    </Button>
-                  </Box>
-                )}
-
-                <Box width="100%">
-                  <Button
-                    variant="primary"
-                    isDisabled={!isValid || (signatureData === null && approval !== ApprovalState.APPROVED)}
-                    onClick={onRemove}
-                    loading={attempting && !hash}
-                    loadingText={t('migratePage.loading')}
-                    height="46px"
-                  >
-                    {error || t('removeLiquidity.remove')}
-                  </Button>
-                </Box>
-              </ButtonWrapper>
-            )} */}
-          </Box>
+          <Box mt={0}>{renderButton()}</Box>
         </>
       )}
 

@@ -40,7 +40,11 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
 
   const notAssociateTokens = useGetHederaTokenNotAssociated(rewardTokens || []);
 
-  // here get all not associated tokens and user can associate at a time one token so get 0 index token
+  // here we get all not associated rewards tokens
+  // but we associate one token at a time
+  // so we get first token from array and ask user to associate
+  // once user associate the token, that token will be removed from `notAssociateTokens`
+  // and second token will become first and it goes on till that array gets empty
   const {
     associate: onAssociate,
     isLoading: isLoadingAssociate,

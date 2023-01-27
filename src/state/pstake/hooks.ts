@@ -269,8 +269,6 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
 
   const rewardTokensAddress = getRewardTokensRes?.result?.[0];
 
-  console.log('rewardTokensAddress', rewardTokensAddress);
-
   const rewardTokensMultiplier = getRewardMultipliersRes?.result?.[0];
   const earnedAmountStr = earnedAmount ? JSBI.BigInt(earnedAmount?.raw).toString() : JSBI.BigInt(0).toString();
 

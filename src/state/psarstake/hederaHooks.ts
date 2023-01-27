@@ -110,27 +110,19 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
   const { data: exchangeRate, isLoading: isloadingExchangeRate } = useHederaExchangeRate();
   const tinyRentAddMore = useHederaSarRent(positionId?.toString());
 
-  const {
-    associate: associate,
-    hederaAssociated: isAssociated,
-    isLoading: isLoading,
-  } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
+  const { hederaAssociated: isAssociated } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
   const queryClient = useQueryClient();
 
   const onStake = async () => {
-    if (!sarStakingContract || !parsedAmount || !account || isLoading || !exchangeRate) {
+    if (!sarStakingContract || !parsedAmount || !account || !exchangeRate || !isAssociated) {
+      return;
+    }
+    if (!!positionId && !tinyRentAddMore) {
       return;
     }
     setAttempting(true);
     try {
-      if (!isAssociated && !!associate) {
-        await associate();
-      }
-
-      // double check
-      if (!isAssociated) return;
-
       // we need to send 0.1$ in hbar amount to mint
       const tinyCents = hederaFn.convertHBarToTinyBars('10'); // 10 cents = 0.1$
       const tinyRent = hederaFn.tinyCentsToTinyBars(tinyCents, exchangeRate.current_rate);
@@ -154,7 +146,9 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
           chainId: chainId,
           isNewPosition: !positionId,
         });
-        queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+        await queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+      } else {
+        throw new Error('Error sending transaction');
       }
     } catch (err) {
       // we only care if the error is something _other_ than the user rejected the tx
@@ -191,6 +185,7 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
       setStepIndex,
     }),
     [
+      positionId,
       attempting,
       typedValue,
       parsedAmount,
@@ -201,12 +196,10 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
       approval,
       account,
       sarStakingContract,
-      isLoading,
       isAssociated,
       exchangeRate,
       isloadingExchangeRate,
       tinyRentAddMore,
-      associate,
       approveCallback,
       onUserInput,
       handleMax,
@@ -268,7 +261,9 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
           summary: t('sarUnstake.transactionSummary', { symbol: png.symbol, balance: parsedAmount.toSignificant(2) }),
         });
         setHash(response.hash);
-        queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+        await queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+      } else {
+        throw new Error('Error sending transaction');
       }
     } catch (err) {
       const _err = err as any;
@@ -336,7 +331,6 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
 
   const sarNftContract = useHederaSarNFTContract();
   const queryClient = useQueryClient();
-
   const onCompound = async () => {
     if (!sarStakingContract || !position || !account || !rent) {
       return;
@@ -357,7 +351,9 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
           summary: t('sarCompound.transactionSummary'),
         });
         setHash(response.hash);
-        queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+        await queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+      } else {
+        throw new Error('Error sending transaction');
       }
     } catch (error) {
       const err = error as any;
@@ -424,7 +420,9 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
           summary: t('sarClaim.transactionSummary'),
         });
         setHash(response.hash);
-        queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+        await queryClient.refetchQueries(['hedera-nft-index', account, sarNftContract?.address]);
+      } else {
+        throw new Error('Error sending transaction');
       }
     } catch (error) {
       const err = error as any;

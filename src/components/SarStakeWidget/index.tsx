@@ -11,12 +11,15 @@ import { TextInput } from 'src/components/TextInput';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useHederaSarNFTContract } from 'src/hooks/useContract';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/state/psarstake/multiChainsHooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../SarManageWidget/ConfirmDrawer/styled';
 import { Buttons, Root, Wrapper } from './styleds';
@@ -85,6 +88,15 @@ export default function SarManageWidget() {
     }
   };
 
+  const isHedera = hederaFn.isHederaChain(chainId);
+  const sarNftContract = useHederaSarNFTContract();
+
+  const {
+    associate: onAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+    isLoading: isLoadingAssociate,
+  } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
+
   const showApproveFlow =
     !error &&
     (approval === ApprovalState.NOT_APPROVED ||
@@ -102,6 +114,12 @@ export default function SarManageWidget() {
       return (
         <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png, chainId)} onClick={deactivateOverlay}>
           {t('sarStake.buy', { symbol: png.symbol })}
+        </Button>
+      );
+    } else if (!isHederaTokenAssociated && isHedera) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate '}
         </Button>
       );
     } else {
