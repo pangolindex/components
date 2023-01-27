@@ -5,6 +5,7 @@ import Layout from './layout';
 import Swap from './pages/Swap';
 import Pool from './pages/Pool';
 import Bridge from './pages/Bridge';
+import SarStake from './pages/SarSingleStake';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -43,6 +44,7 @@ export default function App() {
             <Route path="swap" element={<Swap />} />
             <Route path="pool" element={<Pool />} />
             <Route path="bridge" element={<Bridge />} />
+            <Route path="sar" element={<SarStake />} />
             <Route path="*" element={<Swap />} />
           </Route>
         </Routes>

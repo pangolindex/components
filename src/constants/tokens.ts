@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -49,6 +50,13 @@ export const PNG: { [chainId in ChainId]: Token } = {
     CHAINS[ChainId.HEDERA_TESTNET].contracts!.png,
     8,
     CHAINS[ChainId.HEDERA_TESTNET].png_symbol,
+    'Pangolin Hedera',
+  ),
+  [ChainId.HEDERA_MAINNET]: new Token(
+    ChainId.HEDERA_MAINNET,
+    CHAINS[ChainId.HEDERA_MAINNET].contracts!.png,
+    8,
+    CHAINS[ChainId.HEDERA_MAINNET].png_symbol,
     'Pangolin Hedera',
   ),
   [ChainId.NEAR_MAINNET]: new Token(
@@ -110,6 +118,7 @@ export const DAIe: { [chainId in ChainId]: Token } = {
   [ChainId.SONGBIRD]: new Token(ChainId.SONGBIRD, ZERO_ADDRESS, 18, '', ''),
   [ChainId.FLARE_MAINNET]: new Token(ChainId.FLARE_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.HEDERA_MAINNET]: new Token(ChainId.HEDERA_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.COSTON2]: new Token(ChainId.COSTON2, ZERO_ADDRESS, 18, '', ''),
@@ -145,6 +154,7 @@ export const USDCe: { [chainId in ChainId]: Token } = {
   [ChainId.SONGBIRD]: new Token(ChainId.SONGBIRD, ZERO_ADDRESS, 18, '', ''),
   [ChainId.FLARE_MAINNET]: new Token(ChainId.FLARE_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.HEDERA_MAINNET]: new Token(ChainId.HEDERA_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.COSTON2]: new Token(ChainId.COSTON2, ZERO_ADDRESS, 18, '', ''),
@@ -180,6 +190,7 @@ export const USDC: { [chainId in ChainId]: Token } = {
   [ChainId.SONGBIRD]: new Token(ChainId.SONGBIRD, ZERO_ADDRESS, 18, 'USDC', 'USD Coin'),
   [ChainId.FLARE_MAINNET]: new Token(ChainId.FLARE_MAINNET, ZERO_ADDRESS, 18, 'USDC', 'USD Coin'),
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 8, '', ''),
+  [ChainId.HEDERA_MAINNET]: new Token(ChainId.HEDERA_MAINNET, ZERO_ADDRESS, 8, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, 'usdc.fakes.testnet', 18, 'USDC', 'USDC'),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, 'usdc.fakes.testnet', 18, 'USDC', 'USDC'),
   [ChainId.COSTON2]: new Token(ChainId.COSTON2, ZERO_ADDRESS, 18, '', ''),
@@ -215,6 +226,7 @@ export const USDTe: { [chainId in ChainId]: Token } = {
   [ChainId.SONGBIRD]: new Token(ChainId.SONGBIRD, ZERO_ADDRESS, 6, '', ''),
   [ChainId.FLARE_MAINNET]: new Token(ChainId.FLARE_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 6, '', ''),
+  [ChainId.HEDERA_MAINNET]: new Token(ChainId.HEDERA_MAINNET, ZERO_ADDRESS, 6, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.COSTON2]: new Token(ChainId.COSTON2, ZERO_ADDRESS, 6, '', ''),
@@ -250,6 +262,7 @@ export const axlUST: { [chainId in ChainId]: Token } = {
   [ChainId.SONGBIRD]: new Token(ChainId.SONGBIRD, ZERO_ADDRESS, 18, '', ''),
   [ChainId.FLARE_MAINNET]: new Token(ChainId.FLARE_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.HEDERA_MAINNET]: new Token(ChainId.HEDERA_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.COSTON2]: new Token(ChainId.COSTON2, ZERO_ADDRESS, 18, '', ''),
@@ -285,6 +298,7 @@ export const UST: { [chainId in ChainId]: Token } = {
   [ChainId.SONGBIRD]: new Token(ChainId.SONGBIRD, ZERO_ADDRESS, 18, '', ''),
   [ChainId.FLARE_MAINNET]: new Token(ChainId.FLARE_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.HEDERA_MAINNET]: new Token(ChainId.HEDERA_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_MAINNET]: new Token(ChainId.NEAR_MAINNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.NEAR_TESTNET]: new Token(ChainId.NEAR_TESTNET, ZERO_ADDRESS, 18, '', ''),
   [ChainId.COSTON2]: new Token(ChainId.COSTON2, ZERO_ADDRESS, 18, '', ''),
@@ -305,3 +319,4 @@ export const UST: { [chainId in ChainId]: Token } = {
   [ChainId.MOONBEAM]: new Token(ChainId.MOONBEAM, ZERO_ADDRESS, 18, '', ''),
   [ChainId.OP]: new Token(ChainId.OP, ZERO_ADDRESS, 18, '', ''),
 };
+/* eslint-enable max-lines */

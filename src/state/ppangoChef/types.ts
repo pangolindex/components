@@ -43,3 +43,48 @@ export interface PangoChefInfo extends MinichefStakingInfo {
   poolRewardRate: BigNumber;
   lockCount: number | undefined;
 }
+
+/* Pangochef Subgraph */
+
+export interface PangoChefSubgraphInfo {
+  id: string;
+  farms: PangoChefFarm[];
+}
+
+export interface PangoChefFarm {
+  id: string;
+  pid: string;
+  tvl: string;
+  tokenOrRecipientAddress: string;
+  rewarder: PangochefFarmRewarder;
+  pair: PangochefPair;
+}
+
+export interface PangochefFarmRewarder {
+  id: string;
+  rewards: PangochefFarmReward[];
+}
+
+export interface PangochefFarmReward {
+  id: string;
+  token: PangochefToken;
+  multiplier: string;
+}
+
+export interface PangochefToken {
+  id: string;
+  symbol: string;
+  derivedUSD: string;
+  derivedETH: string;
+  name: string;
+  decimals: string;
+}
+
+export interface PangochefPair {
+  id: string;
+  reserve0: string;
+  reserve1: string;
+  totalSupply: string;
+  token0: PangochefToken;
+  token1: PangochefToken;
+}

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { useGetPangoChefInfosViaSubgraph } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import {
   useGetAllFarmDataHook,
@@ -27,9 +28,14 @@ const PoolsUI = () => {
   const { t } = useTranslation();
 
   const useGetAllFarmData = useGetAllFarmDataHook[chainId];
+  const pangoChefStakingInfos1 = useGetPangoChefInfosViaSubgraph();
 
+  console.log('pangoChefStakingInfos1', pangoChefStakingInfos1);
   useGetAllFarmData();
   const pangoChefStakingInfos = usePangoChefInfosHook[chainId]() || [];
+
+  console.log('pangoChefStakingInfos', pangoChefStakingInfos);
+
   const subgraphMiniChefStakingInfo = useGetMinichefStakingInfosViaSubgraphHook[chainId]() || [];
   const onChainMiniChefStakingInfo = useMinichefStakingInfosHook[chainId]() || [];
 

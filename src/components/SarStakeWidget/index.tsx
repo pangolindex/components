@@ -223,7 +223,7 @@ export default function SarManageWidget() {
           <Box display="flex" justifyContent="space-between">
             <Box>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">${dollerWorth ?? '0'}</Text>
+              <Text color="text1">${(dollerWorth ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>

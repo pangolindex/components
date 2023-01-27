@@ -1,10 +1,10 @@
 import { Interface } from '@ethersproject/abi';
+import { parseUnits } from '@ethersproject/units';
 import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
 import { ChainId, Currency, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { mininchefV2Clients } from 'src/apollo/client';
-import { GET_PAIRS_RESERVES } from 'src/apollo/hederaPairs';
+import { useSubgraphPairs } from 'src/apollo/pairs';
 import { useChainId } from 'src/hooks';
 import { nearFn } from 'src/utils/near';
 import { useMultipleContractSingleData } from '../state/pmulticall/hooks';
@@ -174,15 +174,6 @@ export function useGetNearPoolId(tokenA?: Token, tokenB?: Token): number | null 
   }, [allPools?.data, allPools?.isLoading, tokenA, tokenB]);
 }
 
-export const fetchHederaPairsSubgraphData = (pairAddresses: (string | undefined)[], chainId: ChainId) => async () => {
-  const mininchefV2Client = mininchefV2Clients[chainId];
-  if (!mininchefV2Client) {
-    return null;
-  }
-  const { pairs } = await mininchefV2Client.request(GET_PAIRS_RESERVES, { pairAddresses: pairAddresses });
-  return pairs;
-};
-
 export function useHederaPairs(currencies: [Currency | undefined, Currency | undefined][]): [PairState, Pair | null][] {
   const chainId = useChainId();
 
@@ -195,6 +186,7 @@ export function useHederaPairs(currencies: [Currency | undefined, Currency | und
     [chainId, currencies],
   );
 
+  // prepare pair addresses for given tokens using sdk
   const pairAddresses = useMemo(
     () =>
       tokens.map(([tokenA, tokenB]) => {
@@ -205,22 +197,20 @@ export function useHederaPairs(currencies: [Currency | undefined, Currency | und
     [tokens, chainId],
   );
 
-  const results = useQuery(
-    ['get-pangochef-sibgraph-farms', pairAddresses.join()],
-    fetchHederaPairsSubgraphData(pairAddresses, chainId),
-  );
+  // get pairs from subgraph
+  const results = useSubgraphPairs(pairAddresses);
 
+  // create pair reserve mapping
+  // pair_address => { reserve0, reserve1 }
   const pairReserves = useMemo(() => {
-    return ((results?.data as Array<any>) || []).reduce<{
-      [pairAddress: string]: { reserve0: string; reserve1: string };
-    }>((memo, result: any) => {
+    return (results?.data || []).reduce((memo, result) => {
       memo[result?.id] = {
-        reserve0: result?.reserve0,
-        reserve1: result?.reserve1,
+        reserve0: parseUnits(result?.reserve0, result?.token0?.decimals).toString(),
+        reserve1: parseUnits(result?.reserve1, result?.token1?.decimals).toString(),
       };
 
       return memo;
-    }, {});
+    }, {} as { [id: string]: { reserve0: string; reserve1: string } });
   }, [results?.data, results?.isLoading]);
 
   return useMemo(() => {
