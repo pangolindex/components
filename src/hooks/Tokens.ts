@@ -253,6 +253,31 @@ export function useCurrency(currencyId: string | undefined): Currency | null | u
   const token = useToken_(isAVAX ? undefined : currencyId);
   return isAVAX ? chainId && CAVAX[chainId] : token;
 }
+
+/**
+ * to get all hedera associated tokens
+ * @returns all associated tokens
+ */
+export function useGetAllHederaAssociatedTokens() {
+  const chainId = useChainId();
+
+  const { account } = usePangolinWeb3();
+
+  const response = useQuery(['check-hedera-token-associated', account], async () => {
+    if (!account || !hederaFn.isHederaChain(chainId)) return;
+    const tokens = await hederaFn.getAccountAssociatedTokens(account);
+    return tokens;
+  });
+
+  return response;
+}
+
+/**
+ * this hook is useful to get token is associated or not and method to make that token associated
+ * @param address
+ * @param symbol
+ * @returns  associate function, isLoading, hederaAssociated
+ */
 export function useHederaTokenAssociated(
   address: string | undefined,
   symbol: string | undefined,
@@ -267,21 +292,11 @@ export function useHederaTokenAssociated(
 
   const [loading, setLoading] = useState(false);
 
-  const {
-    isLoading,
-    data: isAssociated = true,
-    refetch,
-  } = useQuery(['check-hedera-token-associated', address, account], async () => {
-    if (!address || !account || !hederaFn.isHederaChain(chainId)) return;
+  const { data: tokens, isLoading, refetch } = useGetAllHederaAssociatedTokens();
 
-    const tokens = await hederaFn.getAccountAssociatedTokens(account);
+  const currencyId = address ? hederaFn.hederaId(address) : '';
 
-    const currencyId = account ? hederaFn.hederaId(address) : '';
-
-    const token = (tokens || []).find((token) => token.tokenId === currencyId);
-
-    return !!token;
-  });
+  const isAssociated = !!(tokens || []).find((token) => token.tokenId === currencyId);
 
   return useMemo(() => {
     return {
@@ -307,4 +322,32 @@ export function useHederaTokenAssociated(
     };
   }, [chainId, address, symbol, account, loading, isLoading, isAssociated]);
 }
+
+/**
+ * this hook is useful to filter filter tokens which is not associated
+ * @param tokens
+ * @returns not associated tokens array
+ */
+export function useGetHederaTokenNotAssociated(tokens: Array<Token> | undefined): Array<Token> {
+  const { account } = usePangolinWeb3();
+
+  const { data, isLoading } = useGetAllHederaAssociatedTokens();
+
+  return useMemo(() => {
+    return (tokens || []).reduce<Array<Token>>((memo, token) => {
+      if (token?.address) {
+        const currencyId = account ? hederaFn.hederaId(token?.address) : '';
+
+        const isAssociated = (data || []).find((item) => item.tokenId === currencyId);
+
+        if (!isAssociated) {
+          memo.push(token);
+        }
+      }
+
+      return memo;
+    }, []);
+  }, [data, isLoading, tokens]);
+}
+
 /* eslint-enable max-lines */
