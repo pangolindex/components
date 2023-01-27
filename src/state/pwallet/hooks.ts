@@ -188,23 +188,21 @@ export function useTokenBalances(
 
   const anyLoading: boolean = useMemo(() => balances.some((callState) => callState.loading), [balances]);
 
-  return [
-    useMemo(
-      () =>
-        address && validatedTokens.length > 0
-          ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
-              const value = balances?.[i]?.result?.[0];
-              const amount = value ? JSBI.BigInt(value.toString()) : undefined;
-              if (amount) {
-                memo[token.address] = new TokenAmount(token, amount);
-              }
-              return memo;
-            }, {})
-          : {},
-      [address, validatedTokens, balances],
-    ),
-    anyLoading,
-  ];
+  const tokenBalances = useMemo(
+    () =>
+      address && validatedTokens.length > 0
+        ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
+            const value = balances?.[i]?.result?.[0];
+            const amount = value ? JSBI.BigInt(value.toString()) : undefined;
+            if (amount) {
+              memo[token.address] = new TokenAmount(token, amount);
+            }
+            return memo;
+          }, {})
+        : {},
+    [address, validatedTokens, balances],
+  );
+  return [tokenBalances, anyLoading];
 }
 
 export function useHederaTokenBalances(
@@ -231,26 +229,20 @@ export function useHederaTokenBalances(
     }, {});
   }, [data]);
 
-  const anyLoading: boolean = isLoading;
+  const tokenBalances = useMemo(
+    () =>
+      address && validatedTokens.length > 0
+        ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token) => {
+            const value = token?.address ? balances[token.address] : 0;
+            const amount = value ? JSBI.BigInt(value.toString()) : JSBI.BigInt(0);
+            memo[token.address] = new TokenAmount(token, amount);
+            return memo;
+          }, {})
+        : {},
+    [address, validatedTokens, balances],
+  );
 
-  return [
-    useMemo(
-      () =>
-        address && validatedTokens.length > 0
-          ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token) => {
-              const value = token?.address ? balances[token.address] : 0;
-
-              const amount = value ? JSBI.BigInt(value.toString()) : undefined;
-              if (amount) {
-                memo[token.address] = new TokenAmount(token, amount);
-              }
-              return memo;
-            }, {})
-          : {},
-      [address, validatedTokens, balances],
-    ),
-    anyLoading,
-  ];
+  return [tokenBalances, isLoading];
 }
 
 export function useNearTokenBalances(
@@ -279,25 +271,23 @@ export function useNearTokenBalances(
   const results = useQueries(queryParameter);
 
   const anyLoading = useMemo(() => results?.some((t) => t?.isLoading), [results]);
+  const tokenBalances = useMemo(
+    () =>
+      results.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, result, i) => {
+        const value = result?.data;
+        const token = tokensOrPairs?.[i];
 
-  return [
-    useMemo(
-      () =>
-        results.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, result, i) => {
-          const value = result?.data;
-          const token = tokensOrPairs?.[i];
+        if (token && token instanceof Token) {
+          memo[token?.address] = value;
+        } else if (token && token instanceof Pair) {
+          memo[token?.liquidityToken?.address] = value;
+        }
+        return memo;
+      }, {}),
+    [tokensOrPairs, address, results],
+  );
 
-          if (token && token instanceof Token) {
-            memo[token?.address] = value;
-          } else if (token && token instanceof Pair) {
-            memo[token?.liquidityToken?.address] = value;
-          }
-          return memo;
-        }, {}),
-      [tokensOrPairs, address, results],
-    ),
-    anyLoading,
-  ];
+  return [tokenBalances, anyLoading];
 }
 
 // get the balance for a single token/account combo

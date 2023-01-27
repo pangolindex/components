@@ -259,7 +259,7 @@ export function useCurrency(currencyId: string | undefined): Currency | null | u
  * @params dependancies on which use query should refetch data
  * @returns all associated tokens
  */
-export function useGetAllHederaAssociatedTokens(dependancies = []) {
+export function useGetAllHederaAssociatedTokens(dependancies = [] as any[]) {
   const chainId = useChainId();
 
   const { account } = usePangolinWeb3();
