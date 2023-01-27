@@ -75,7 +75,7 @@ export default function TokenInfo({
           <TextInfo
             text={t('header.balance')}
             value={`${numeral(balance?.toFixed(2) ?? '0').format('0.00a')}`}
-            tooltipText={balance?.toFixed(token.decimals) ?? '0.00'}
+            tooltipText={balance?.toFixed(token?.decimals) ?? '0.00'}
           />
         )}
         {unclaimedAmount && <TextInfo text={t('header.unclaimed')} value={unclaimedAmount.toFixed(2)} />}
@@ -83,7 +83,7 @@ export default function TokenInfo({
       <Frame>
         <TextInfo
           text={t('header.tokenPrice', { symbol: token?.symbol })}
-          value={`$ ${numeral(tokenPrice?.toFixed(2) ?? '0').format('0.00a')}`}
+          value={`$ ${numeral(tokenPrice?.equalTo('0') ? '0' : tokenPrice?.toFixed(2)).format('0.00a')}`}
         />
         {circulationSupply && (
           <TextInfo

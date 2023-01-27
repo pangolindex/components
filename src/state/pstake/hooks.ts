@@ -268,6 +268,9 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const earnedAmount = getEarnedAmount();
 
   const rewardTokensAddress = getRewardTokensRes?.result?.[0];
+
+  console.log('rewardTokensAddress', rewardTokensAddress);
+
   const rewardTokensMultiplier = getRewardMultipliersRes?.result?.[0];
   const earnedAmountStr = earnedAmount ? JSBI.BigInt(earnedAmount?.raw).toString() : JSBI.BigInt(0).toString();
 
@@ -297,7 +300,7 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rewardTokensAmount, rewardTokensMultiplier, isLoading]);
+  }, [rewardTokens, rewardTokensAmount, rewardTokensMultiplier, isLoading]);
 
   return rewardData.current;
 }
