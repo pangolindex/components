@@ -64,7 +64,7 @@ function useHederaSarRent(positionId: string | undefined) {
         JSBI.BigInt(days.toString()),
       );
       const finalValue = new Fraction('12', '10').multiply(rentAmount);
-      return finalValue.equalTo('0') ? undefined : finalValue.toFixed(0);
+      return finalValue.equalTo('0') ? '0' : finalValue.toFixed(0);
     } catch (error) {
       console.log(error);
       return undefined;
