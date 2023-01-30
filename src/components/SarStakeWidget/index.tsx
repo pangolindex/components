@@ -17,7 +17,7 @@ import { useHederaSarNFTContract } from 'src/hooks/useContract';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/state/psarstake/multiChainsHooks';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { getBuyUrl } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
@@ -31,6 +31,7 @@ export default function SarManageWidget() {
   const { account } = usePangolinWeb3();
 
   const png = PNG[chainId];
+  const useTokenBalance = useTokenBalanceHook[chainId];
   const userPngBalance = useTokenBalance(account ?? ZERO_ADDRESS, png);
   const { t } = useTranslation();
 
