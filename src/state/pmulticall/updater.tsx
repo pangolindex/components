@@ -2,6 +2,7 @@ import { Contract } from '@ethersproject/contracts';
 import { useEffect, useMemo, useRef } from 'react';
 import { useChainId } from 'src/hooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
+import { hederaFn } from 'src/utils/hedera';
 import { useMulticallContract } from '../../hooks/useContract';
 import useDebounce from '../../hooks/useDebounce';
 import chunkArray from '../../utils/chunkArray';
@@ -17,6 +18,8 @@ import {
 
 // chunk calls so we do not exceed the gas limit
 const CALL_CHUNK_SIZE = 500;
+//for Hedera chain multicall not working bcoz of chunk size increase  so reduce  that
+const HEDERA_CALL_CHUNK_SIZE = 30;
 
 /**
  * Fetches a chunk of calls, enforcing a minimum block number constraint
@@ -141,7 +144,9 @@ export default function Updater(): null {
     if (outdatedCallKeys.length === 0) return;
     const calls = outdatedCallKeys.map((key) => parseCallKey(key));
 
-    const chunkedCalls = chunkArray(calls, CALL_CHUNK_SIZE);
+    const chunkSize = hederaFn.isHederaChain(chainId) ? HEDERA_CALL_CHUNK_SIZE : CALL_CHUNK_SIZE;
+
+    const chunkedCalls = chunkArray(calls, chunkSize);
 
     if (cancellations.current?.blockNumber !== latestBlockNumber) {
       cancellations.current?.cancellations?.forEach((c) => c());
