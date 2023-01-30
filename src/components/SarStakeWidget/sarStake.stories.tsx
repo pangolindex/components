@@ -32,7 +32,7 @@ const CompleteTemplateSarStakingWidget: ComponentStory<any> = () => {
       </div>
       <div style={{ width: '25%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
         <div style={{ marginBottom: '10px' }}>
-          <SarManageWidget selectedPosition={selectedPosition} />
+          <SarManageWidget selectedPosition={selectedPosition} onSelectPosition={onSelectPosition} />
         </div>
         <div>
           <SarStakeWidget />

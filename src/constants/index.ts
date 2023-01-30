@@ -405,8 +405,6 @@ export const DIRECTUS_URL_NEWS = `https://pangolin.directus.app`;
 
 export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3`;
 export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
-// TODO: this needs to be based on chain id
-export const HEDERA_API_BASE_URL = `https://mainnet-public.mirrornode.hedera.com`; // `https://testnet.mirrornode.hedera.com`;
 
 export const OPEN_API_DEBANK = 'https://api.debank.com/';
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';

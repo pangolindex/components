@@ -14,6 +14,8 @@ import {
   useHederaCreatePair,
   useHederaPairBalance,
   useHederaRemoveLiquidity,
+  useHederaTokenBalance,
+  useHederaTokenBalances,
   useNearAddLiquidity,
   useNearBalance,
   useNearCreatePair,
@@ -27,7 +29,7 @@ import {
 } from './hooks';
 
 export type UseTokenBalancesHookType = {
-  [chainId in ChainId]: typeof useTokenBalances | typeof useNearTokenBalances;
+  [chainId in ChainId]: typeof useTokenBalances | typeof useNearTokenBalances | typeof useHederaTokenBalances;
 };
 
 export const useTokenBalancesHook: UseTokenBalancesHookType = {
@@ -37,8 +39,8 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.COSTON]: useTokenBalances,
   [ChainId.SONGBIRD]: useTokenBalances,
   [ChainId.FLARE_MAINNET]: useTokenBalances,
-  [ChainId.HEDERA_TESTNET]: useTokenBalances,
-  [ChainId.HEDERA_MAINNET]: useTokenBalances,
+  [ChainId.HEDERA_TESTNET]: useHederaTokenBalances,
+  [ChainId.HEDERA_MAINNET]: useHederaTokenBalances,
   [ChainId.NEAR_MAINNET]: useNearTokenBalances,
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
   [ChainId.COSTON2]: useTokenBalances,
@@ -62,7 +64,11 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
 };
 
 export type UseTokenBalanceHookType = {
-  [chainId in ChainId]: typeof useTokenBalance | typeof useNearTokenBalance | typeof useDummyHook;
+  [chainId in ChainId]:
+    | typeof useTokenBalance
+    | typeof useNearTokenBalance
+    | typeof useHederaTokenBalance
+    | typeof useDummyHook;
 };
 
 export const useTokenBalanceHook: UseTokenBalanceHookType = {
@@ -72,8 +78,8 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.COSTON]: useTokenBalance,
   [ChainId.SONGBIRD]: useTokenBalance,
   [ChainId.FLARE_MAINNET]: useTokenBalance,
-  [ChainId.HEDERA_TESTNET]: useTokenBalance,
-  [ChainId.HEDERA_MAINNET]: useTokenBalance,
+  [ChainId.HEDERA_TESTNET]: useHederaTokenBalance,
+  [ChainId.HEDERA_MAINNET]: useHederaTokenBalance,
   [ChainId.NEAR_MAINNET]: useNearTokenBalance,
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
   [ChainId.COSTON2]: useTokenBalance,

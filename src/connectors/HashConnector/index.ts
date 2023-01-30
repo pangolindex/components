@@ -109,7 +109,7 @@ export class HashConnector extends AbstractConnector {
     this.instance.connectionStatusChangeEvent.off(this.handleConnectionStatusChangeEvent.bind(this));
   }
 
-  public async getChainId(): Promise<number | string | any> {
+  public getChainId(): number | string | any {
     if (this.pairingData) {
       return this.chainId;
     }

@@ -4402,22 +4402,22 @@
   resolved "https://registry.npmjs.org/@gar/promisify/-/promisify-1.1.2.tgz"
   integrity sha512-82cpyJyKRoQoRi+14ibCeGPu0CwypgtBAdBhq1WfvagpCZNKqwXbKwXllYSMG91DhmG4jt9gN8eP6lGOtozuaw==
 
-"@gelatonetwork/limit-orders-lib@^4.2.0":
-  version "4.2.0"
-  resolved "https://registry.npmjs.org/@gelatonetwork/limit-orders-lib/-/limit-orders-lib-4.2.0.tgz"
-  integrity sha512-o/bngI6BgVVo46NEpIy8SZPAzK6sIq4YkGNT3a5WGbtxJBvtzm6g3YdHwCZ79PY9QlGXak3q+FLNziu65cJGMg==
+"@gelatonetwork/limit-orders-lib@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@gelatonetwork/limit-orders-lib/-/limit-orders-lib-4.5.0.tgz#4fae642cc979690ebd32526d56dc6c7749897d31"
+  integrity sha512-XXlRWxZSpWaoOvdqEiKwAvB4Vg85+q1NmIKfnryNnLt9jrBRw0OcOJ8VTU71e4X7XJ0xkKuiVSWUAnTOnGiJ2w==
   dependencies:
     ethers "^5.4.6"
     graphql "^15.5.3"
     graphql-request "^3.5.0"
     tslib "^2.3.1"
 
-"@gelatonetwork/limit-orders-react@^2.3.1":
-  version "2.5.0"
-  resolved "https://registry.npmjs.org/@gelatonetwork/limit-orders-react/-/limit-orders-react-2.5.0.tgz"
-  integrity sha512-m1LtxWp7Cffp/97PFz17NalizoCEZQg0Xwazwdi3CDvGz89qfRwPeR2h/AA0f1C/h2Qzu/WRvUoEM3NzlhakKg==
+"@gelatonetwork/limit-orders-react@2.8.1":
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/@gelatonetwork/limit-orders-react/-/limit-orders-react-2.8.1.tgz#7606719ca19f7fc835d65e91d2feba7e8cede77b"
+  integrity sha512-rK6LgVnRs6HSyI3NgFolndbc7y9554UWPY3TcU+t0SUpAuF8MNB+r7LKF9oF/7zOuFvu4bHKlGGtASM+u2ggTQ==
   dependencies:
-    "@gelatonetwork/limit-orders-lib" "^4.2.0"
+    "@gelatonetwork/limit-orders-lib" "^4.5.0"
     "@popperjs/core" "^2.9.2"
     "@reach/dialog" "^0.15.0"
     "@uniswap/default-token-list" "^2.0.0"
@@ -5576,10 +5576,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@pangolindex/sdk@4.3.0-internal.0531f72":
-  version "4.3.0-internal.0531f72"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-4.3.0-internal.0531f72.tgz#61a240300d41d24fecdadb2b836f79366de3d006"
-  integrity sha512-mWX/EK7/gXoD4WwaUWQPqQo/OciSflzJnWW8Gf6XpDvnuNhOD1jGg3zdruUg8vklK4fYeZFojkOy31tL440jvw==
+"@pangolindex/sdk@4.4.0-rc.1":
+  version "4.4.0-rc.1"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-4.4.0-rc.1.tgz#e102d1813e46bf1d57aa998e00889227bdcf26d7"
+  integrity sha512-JY6OxH0ysj38SPcrBKbSUpkZacbLnYAFwF8q17droTRKPoqXac7w+aWY8DiUZ27KGYzQhu/QK1Ea0y7l5VDuLQ==
   dependencies:
     big.js "^5.2.2"
     decimal.js-light "^2.5.0"

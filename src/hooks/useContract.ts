@@ -90,9 +90,14 @@ export function useHederaSarNFTContract() {
   const chainId = useChainId();
   const sarContractAddress = SAR_STAKING_ADDRESS[chainId];
 
-  const sarContractId = hederaFn.hederaId(sarContractAddress ?? '');
-  const nftTokenId = hederaFn.contractToTokenId(sarContractId);
-  const nftTokenAddress = hederaFn.idToAddress(nftTokenId);
+  let nftTokenAddress: string | undefined = undefined;
+
+  if (sarContractAddress) {
+    const sarContractId = hederaFn.hederaId(sarContractAddress ?? '');
+    const nftTokenId = hederaFn.contractToTokenId(sarContractId);
+    nftTokenAddress = hederaFn.idToAddress(nftTokenId);
+  }
+
   return useContract(nftTokenAddress, SarStaking, true);
 }
 
