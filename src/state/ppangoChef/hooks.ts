@@ -1389,7 +1389,7 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
 
   return useMemo(() => {
     return {
-      callback: async function onWithdraw(): Promise<string> {
+      callback: async function onCompound(): Promise<string> {
         try {
           if (!pangoChefContract) return '';
 
@@ -1409,17 +1409,17 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
           };
           // `compoundToPoolZero` is for Songbird Chain Specifically as compoundToPoolZero only exist in Old PangoChef V1
           // all new chain uses new pangochef method i.e. `compoundTo`
-          const nonPNGPoolMethod = chainId === ChainId.SONGBIRD ? 'compoundToPoolZero' : 'compoundTo';
+          const nonPNGPoolMethod =
+            chainId === ChainId.SONGBIRD || chainId === ChainId.COSTON ? 'compoundToPoolZero' : 'compoundTo';
           const method = isPNGPool ? 'compound' : nonPNGPoolMethod;
 
-          const pngPoolArg = [Number(poolId).toString(16), slippage];
+          const pngPoolArg = [`0x${Number(poolId).toString(16)}`, slippage];
           const nonPNGPoolArg =
-            chainId === ChainId.SONGBIRD
+            chainId === ChainId.SONGBIRD || chainId === ChainId.COSTON
               ? pngPoolArg
-              : [Number(poolId).toString(16), Number(compoundPoolId).toString(16), slippage];
+              : [`0x${Number(poolId).toString(16)}`, `0x${Number(compoundPoolId).toString(16)}`, slippage];
 
           const args = isPNGPool ? pngPoolArg : nonPNGPoolArg;
-
           const estimatedGas = await pangoChefContract.estimateGas[method](...args, {
             value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}`,
           });
