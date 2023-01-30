@@ -297,7 +297,10 @@ export function useHederaTokenAssociated(
 
   const currencyId = address ? hederaFn.hederaId(address) : '';
 
-  const isAssociated = !!(tokens || []).find((token) => token.tokenId === currencyId);
+  let isAssociated = true; // if its not hedera chain then by default its true
+  if (hederaFn.isHederaChain(chainId)) {
+    isAssociated = !!(tokens || []).find((token) => token.tokenId === currencyId);
+  }
 
   return useMemo(() => {
     return {
