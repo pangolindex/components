@@ -17,9 +17,9 @@
     "pngBreakDown": "Desglose de tu {{ symbol }}",
     "balance": "Balance: ",
     "unclaimed": "Sin reclamar: ",
-    "pngPrice": "Precio {{ symbol }}:",
+    "tokenPrice": "Precio {{ symbol }}:",
     "pngCirculation": "{{ symbol }} en circulación:",
-    "totalSupply": "Suministro total",
+    "totalSupply": "Suministro total:",
     "makeSureURLWarning": "Asegúrese de que el URL es",
     "alwaysMakeSureWarning": "Asegúrese siempre de que la URL sea",
     "bookmarkIt": "marcarla para estar seguro.",
@@ -388,7 +388,8 @@
     "importDescription1": "Con la función de importación puedes buscar grupos que no aparecen en la sección 'Tus grupos'.",
     "importDescription2": "Simplemente elija las monedas subyacentes que estaban en su grupo.",
     "createPairDescription": "Con la función de creación puede crear un nuevo par. Simplemente busque las monedas para las que desea crear un par y el sistema encontrará el grupo si existe en Pangolin o creará uno nuevo si no lo es.",
-    "addLiquidityDescription": "Con la función de agregar liquidez, agrega liquidez a un par. Simplemente busque las monedas a las que desea agregar liquidez y el sistema encontrará el grupo si existe en Pangolin o creará uno nuevo si no existe."
+    "addLiquidityDescription": "Con la función de agregar liquidez, agrega liquidez a un par. Simplemente busque las monedas a las que desea agregar liquidez y el sistema encontrará el grupo si existe en Pangolin o creará uno nuevo si no existe.",
+    "createStorageContract": "En Hedera, todos los contratos inteligentes deben pagar tarifas por utilizar espacio en el libro mayor. Estas son las tarifas de almacenamiento. y tarifas de renovación automática. Deberá crear un contrato de almacenamiento para poder cultivar. El almacenamiento será gratis, pero en el futuro deberá pagar tarifas de renovación automática. Estos son alrededor de 2 centavos. Así que nosotros recomendamos mantener $1 en HBAR en su billetera en todo momento para asegurarse de que no experimente ningún problema."
   },
   "poolFinder": {
     "connectToFind": "Conecte la cartera para encontrar pools",

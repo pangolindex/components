@@ -29,9 +29,10 @@ import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderVi
 import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useGetBlockTimestamp, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useCoinGeckoCurrencyPrice, useTokens } from 'src/hooks/Tokens';
+import { useTokens } from 'src/hooks/Tokens';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice, useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
+import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { getExtraTokensWeeklyRewardRate, useMinichefPools } from 'src/state/pstake/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
@@ -675,7 +676,7 @@ export function useHederaPangoChefInfos() {
       const userPendingRewardState = userPendingRewardsState[index];
       const pairTotalSupplyState = pairTotalSuppliesState[index];
       const userRewardRateState = userRewardRatesState[index];
-      const [pairState, pair] = pairs[index];
+      const [pairState, pair] = pairs?.[index] || [];
 
       // if is loading or not exist pair continue
       if (
@@ -724,15 +725,21 @@ export function useHederaPangoChefInfos() {
       // calculate the total staked amount in usd
       const totalStakedInUsd = new TokenAmount(
         USDC[chainId],
-        currencyPriceFraction
-          .multiply(_totalStakedInWavax)
-          .multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(USDC[chainId]?.decimals)))
-          .toFixed(0),
+
+        _totalStakedInWavax.equalTo('0')
+          ? '0'
+          : currencyPriceFraction
+              .multiply(_totalStakedInWavax)
+              .multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(USDC[chainId]?.decimals)))
+              .toFixed(0),
       );
 
       const totalStakedInWavax = new TokenAmount(
         wavax,
-        _totalStakedInWavax.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(wavax?.decimals))).toFixed(0),
+
+        _totalStakedInWavax.equalTo('0')
+          ? '0'
+          : _totalStakedInWavax.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(wavax?.decimals))).toFixed(0),
       );
 
       const getHypotheticalWeeklyRewardRate = (

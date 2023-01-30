@@ -47,6 +47,7 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.SONGBIRD]: CHAINS[ChainId.SONGBIRD].contracts!.router,
   [ChainId.FLARE_MAINNET]: CHAINS[ChainId.FLARE_MAINNET].contracts!.router,
   [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET].contracts!.router,
+  [ChainId.HEDERA_MAINNET]: CHAINS[ChainId.HEDERA_MAINNET].contracts!.router,
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts!.router,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts!.router,
   [ChainId.COSTON2]: CHAINS[ChainId.COSTON2].contracts!.router,
@@ -76,6 +77,7 @@ export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.SONGBIRD]: CHAINS[ChainId.SONGBIRD]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.FLARE_MAINNET]: CHAINS[ChainId.FLARE_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.HEDERA_MAINNET]: CHAINS[ChainId.HEDERA_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.COSTON2]: CHAINS[ChainId.COSTON2]?.contracts?.router_daas ?? ZERO_ADDRESS,
@@ -135,6 +137,7 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.SONGBIRD]: getMiniChefAddress(ChainId.SONGBIRD),
   [ChainId.FLARE_MAINNET]: getMiniChefAddress(ChainId.FLARE_MAINNET),
   [ChainId.HEDERA_TESTNET]: getMiniChefAddress(ChainId.HEDERA_TESTNET),
+  [ChainId.HEDERA_MAINNET]: getMiniChefAddress(ChainId.HEDERA_MAINNET),
   [ChainId.NEAR_MAINNET]: getMiniChefAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getMiniChefAddress(ChainId.NEAR_TESTNET),
   [ChainId.COSTON2]: getMiniChefAddress(ChainId.COSTON2),
@@ -172,6 +175,7 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.SONGBIRD]: getPangoChefAddress(ChainId.SONGBIRD),
   [ChainId.FLARE_MAINNET]: getPangoChefAddress(ChainId.FLARE_MAINNET),
   [ChainId.HEDERA_TESTNET]: getPangoChefAddress(ChainId.HEDERA_TESTNET),
+  [ChainId.HEDERA_MAINNET]: getPangoChefAddress(ChainId.HEDERA_MAINNET),
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
   [ChainId.COSTON2]: getPangoChefAddress(ChainId.COSTON2),
@@ -202,6 +206,7 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
   [ChainId.SONGBIRD]: [WAVAX[ChainId.SONGBIRD].address, PNG[ChainId.SONGBIRD].address],
   [ChainId.FLARE_MAINNET]: [WAVAX[ChainId.FLARE_MAINNET].address, PNG[ChainId.FLARE_MAINNET].address],
   [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET].address, PNG[ChainId.HEDERA_TESTNET].address],
+  [ChainId.HEDERA_MAINNET]: [WAVAX[ChainId.HEDERA_MAINNET].address, PNG[ChainId.HEDERA_MAINNET].address],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET].address, PNG[ChainId.NEAR_MAINNET].address],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET].address, PNG[ChainId.NEAR_TESTNET].address],
   [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2].address, PNG[ChainId.COSTON2].address],
@@ -252,6 +257,10 @@ export const SWAP_DEFAULT_CURRENCY = {
     inputCurrency: 'HBAR',
     outputCurrency: WAVAX[ChainId.HEDERA_TESTNET].address,
   },
+  [ChainId.HEDERA_MAINNET]: {
+    inputCurrency: 'HBAR',
+    outputCurrency: WAVAX[ChainId.HEDERA_MAINNET].address,
+  },
   [ChainId.NEAR_MAINNET]: {
     inputCurrency: WAVAX[ChainId.NEAR_MAINNET].address,
     outputCurrency: PNG[ChainId.NEAR_MAINNET].address,
@@ -288,6 +297,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.SONGBIRD]: [WAVAX[ChainId.SONGBIRD], PNG[ChainId.SONGBIRD]],
   [ChainId.FLARE_MAINNET]: [WAVAX[ChainId.FLARE_MAINNET], PNG[ChainId.FLARE_MAINNET]],
   [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET], PNG[ChainId.HEDERA_TESTNET]],
+  [ChainId.HEDERA_MAINNET]: [WAVAX[ChainId.HEDERA_MAINNET], PNG[ChainId.HEDERA_MAINNET]],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
   [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2], PNG[ChainId.COSTON2]],
@@ -506,6 +516,7 @@ export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } 
   [ChainId.SONGBIRD]: CommonEVMProvider,
   [ChainId.FLARE_MAINNET]: CommonEVMProvider,
   [ChainId.HEDERA_TESTNET]: HederaProvider,
+  [ChainId.HEDERA_MAINNET]: HederaProvider,
   [ChainId.NEAR_MAINNET]: NearProvider,
   [ChainId.NEAR_TESTNET]: NearProvider,
   [ChainId.COSTON2]: CommonEVMProvider,
@@ -557,8 +568,6 @@ export const DIRECTUS_URL_NEWS = `https://pangolin.directus.app`;
 
 export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3`;
 export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
-// TODO: this needs to be based on chain id
-export const HEDERA_API_BASE_URL = `https://testnet.mirrornode.hedera.com`;
 
 export const OPEN_API_DEBANK = 'https://api.debank.com/';
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
@@ -578,6 +587,7 @@ const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.SONGBIRD]: [WAVAX[ChainId.SONGBIRD], PNG[ChainId.SONGBIRD]],
   [ChainId.FLARE_MAINNET]: [WAVAX[ChainId.FLARE_MAINNET], PNG[ChainId.FLARE_MAINNET]],
   [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET], PNG[ChainId.HEDERA_TESTNET]],
+  [ChainId.HEDERA_MAINNET]: [WAVAX[ChainId.HEDERA_MAINNET], PNG[ChainId.HEDERA_MAINNET]],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
   [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2], PNG[ChainId.COSTON2]],
@@ -620,6 +630,7 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
   [ChainId.SONGBIRD]: getSarAddress(ChainId.SONGBIRD),
   [ChainId.FLARE_MAINNET]: getSarAddress(ChainId.FLARE_MAINNET),
   [ChainId.HEDERA_TESTNET]: getSarAddress(ChainId.HEDERA_TESTNET),
+  [ChainId.HEDERA_MAINNET]: getSarAddress(ChainId.HEDERA_MAINNET),
   [ChainId.NEAR_MAINNET]: getSarAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getSarAddress(ChainId.NEAR_TESTNET),
   [ChainId.COSTON2]: getSarAddress(ChainId.COSTON2),
@@ -664,6 +675,7 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.SONGBIRD]: 'songbird',
   [ChainId.FLARE_MAINNET]: 'flare-networks',
   [ChainId.HEDERA_TESTNET]: 'hedera-hashgraph',
+  [ChainId.HEDERA_MAINNET]: 'hedera-hashgraph',
   [ChainId.NEAR_MAINNET]: 'near',
   [ChainId.NEAR_TESTNET]: undefined,
   [ChainId.COSTON2]: undefined,

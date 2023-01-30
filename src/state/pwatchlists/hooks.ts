@@ -1,39 +1,45 @@
-import { ChainId, Token } from '@pangolindex/sdk';
-import { PNG } from 'src/constants/tokens';
-import { usePangolinWeb3 } from 'src/hooks';
-import { useAllTokens } from 'src/hooks/Tokens';
-import { AppState, useSelector } from '../index';
+import { useEffect, useMemo } from 'react';
+import { useQuery } from 'react-query';
+import {
+  CoingeckoWatchListToken,
+  MarketCoinsAPIResponse,
+  fetchCoinMarketData,
+  makeCoingeckoTokenData,
+} from 'src/state/pcoingecko/hooks';
+import { AppState, useDispatch, useSelector } from '../index';
+import { updateCurrencies } from './actions';
 
-export function useSelectedCurrencyLists(): Token[] | undefined {
-  const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
-  const allTokens = useAllTokens();
-  const coins = Object.values(allTokens || {});
+export function useSelectedCurrencyLists(): CoingeckoWatchListToken[] | undefined {
+  const dispatch = useDispatch();
 
-  let addresses = useSelector<AppState['pwatchlists']['currencies']>((state) =>
-    ([] as string[]).concat(state?.pwatchlists?.currencies || []),
+  const allWatchlistCurrencies = useSelector<AppState['pwatchlists']['selectedCurrencies']>((state: AppState) =>
+    ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.selectedCurrencies || []),
   );
 
-  addresses = [PNG[chainId]?.address, ...addresses];
-
-  let allSelectedToken = [] as Token[];
-
-  addresses.forEach((address) => {
-    const filterTokens = coins.filter((coin) => address.toLowerCase() === coin.address.toLowerCase());
-
-    allSelectedToken = [...allSelectedToken, ...filterTokens];
+  const coinIds = ((allWatchlistCurrencies as Array<CoingeckoWatchListToken>) || []).map((item) => {
+    return item.id;
   });
 
-  return allSelectedToken;
-}
+  const page = 1;
 
-export function useIsSelectedCurrency(address: string): boolean {
-  const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
-
-  let addresses = useSelector<AppState['pwatchlists']['currencies']>((state) =>
-    ([] as string[]).concat(state?.pwatchlists?.currencies || []),
+  const results = useQuery(
+    ['get-coingecko-token-data', page, coinIds.join(',')],
+    fetchCoinMarketData(page, coinIds.join(',')),
+    {
+      enabled: coinIds?.length > 0,
+    },
   );
 
-  addresses = [PNG[chainId]?.address, ...addresses];
+  const apiTokens = useMemo(() => {
+    const toknesData = results?.data as MarketCoinsAPIResponse[];
+    return makeCoingeckoTokenData(toknesData);
+  }, [results]);
 
-  return (addresses || []).includes(address);
+  useEffect(() => {
+    if (Object.values(apiTokens || []).length > 0) {
+      dispatch(updateCurrencies(Object.values(apiTokens)));
+    }
+  }, [dispatch, Object.values(apiTokens || []).length]);
+
+  return allWatchlistCurrencies;
 }

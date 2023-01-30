@@ -19,9 +19,10 @@ interface Props {
   selectedOption: Options;
   selectedPosition: Position | null;
   onChange: (value: Options) => void;
+  onSelectPosition: (position: Position | null) => void;
 }
 
-export default function Compound({ selectedOption, selectedPosition, onChange }: Props) {
+export default function Compound({ selectedOption, selectedPosition, onChange, onSelectPosition }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
   const chainId = useChainId();
 
@@ -36,15 +37,19 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
   const useUSDPrice = useUSDCPriceHook[chainId];
   const pngPrice = useUSDPrice(png);
 
-  const dollarValue =
-    parseFloat(formatUnits(oldBalance.add(pendingRewards), png.decimals)) * Number(pngPrice?.toFixed() ?? 0);
+  const dollarValue = pngPrice?.equalTo('0')
+    ? 0
+    : parseFloat(formatUnits(oldBalance.add(pendingRewards), png.decimals)) * Number(pngPrice?.toFixed() ?? 0);
 
   const { t } = useTranslation();
 
   const handleConfirmDismiss = useCallback(() => {
     setOpenDrawer(false);
+    if (hash) {
+      onSelectPosition(null);
+    }
     wrappedOnDismiss();
-  }, []);
+  }, [hash, onSelectPosition]);
 
   useEffect(() => {
     if (openDrawer && !attempting && !hash && !compoundError) {
@@ -83,7 +88,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
           <Box display="flex" justifyContent="space-between">
             <Box>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">${dollarValue}</Text>
+              <Text color="text1">${dollarValue.toLocaleString(undefined, { maximumFractionDigits: 4 })}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>

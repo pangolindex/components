@@ -17,9 +17,9 @@
     "pngBreakDown": "Deine {{ symbol }}-Übersicht",
     "balance": "Kontostand: ",
     "unclaimed": "Nicht beansprucht: ",
-    "pngPrice": "{{ symbol }}-Preis:",
+    "tokenPrice": "{{ symbol }}-Preis:",
     "pngCirculation": "{{ symbol }} im Umlauf:",
-    "totalSupply": "Gesamtmenge",
+    "totalSupply": "Gesamtmenge:",
     "makeSureURLWarning": "Gehe sicher, dass die URL folgende ist:",
     "alwaysMakeSureWarning": "Gehe immer sicher, dass die URL folgende ist:",
     "bookmarkIt": "Füge sie deinen Favoriten hinzu, um dich abzusichern.",
@@ -388,7 +388,8 @@
     "importDescription1": "Mit der Importfunktion können Sie nach Pools suchen, die nicht im Abschnitt 'Ihre Pools' erscheinen.",
     "importDescription2": "Wählen Sie einfach die zugrunde liegenden Münzen aus, die sich in Ihrem Pool befanden.",
     "createPairDescription": "Mit der Erstellungsfunktion können Sie ein neues Paar erstellen. Suchen Sie einfach nach den Münzen, für die Sie ein Paar erstellen möchten, und das System findet entweder den Pool, falls er auf Pangolin existiert, oder erstellt einen brandneuen, falls dies nicht der Fall ist.",
-    "addLiquidityDescription": "Mit der Funktion „Liquidität hinzufügen“ fügen Sie einem Paar Liquidität hinzu. Suchen Sie einfach nach den Münzen, denen Sie Liquidität hinzufügen möchten, und das System findet den Pool, falls er in Pangolin existiert, oder erstellt einen neuen, falls dies nicht der Fall ist."
+    "addLiquidityDescription": "Mit der Funktion „Liquidität hinzufügen“ fügen Sie einem Paar Liquidität hinzu. Suchen Sie einfach nach den Münzen, denen Sie Liquidität hinzufügen möchten, und das System findet den Pool, falls er in Pangolin existiert, oder erstellt einen neuen, falls dies nicht der Fall ist.",
+    "createStorageContract": "Auf Hedera müssen alle Smart Contracts Gebühren für die Nutzung des Speicherplatzes im Hauptbuch zahlen. Dies sind Lagergebühren und Gebühren für die automatische Verlängerung. Sie müssen einen Speichervertrag erstellen, um zu farmen. Die Lagerung wird kostenlos, aber in Zukunft müssen Sie Gebühren für die automatische Verlängerung zahlen. Das sind etwa 2 Cent. Also wir empfehlen, immer 1 $ auf HBAR in Ihrer Brieftasche zu haben, um sicherzustellen, dass Sie keine Probleme haben."
   },
   "poolFinder": {
     "connectToFind": "Verbinde mit einer Wallet, um Pools zu finden",

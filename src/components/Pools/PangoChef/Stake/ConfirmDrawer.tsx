@@ -1,4 +1,3 @@
-import { formatUnits } from '@ethersproject/units';
 import { Currency, CurrencyAmount, Token } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
@@ -85,17 +84,26 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
   const confirmContent = (
     <ContentWrapper>
       <Box display="flex" justifyContent="space-between" width="100%">
-        <Text fontSize={'28px'} fontWeight={500} color="text1">
-          {amount ? formatUnits(amount?.raw?.toString(), amount?.currency?.decimals) : 0}PGL
+        <Text fontSize={type === SpaceType.card ? '20px' : '28px'} fontWeight={500} color="text1">
+          {amount ? amount?.toSignificant(6) : 0}PGL
         </Text>
         <DoubleCurrencyLogo size={24} currency0={token0} currency1={token1} />
       </Box>
-      <Box display="flex" justifyContent="space-between" width="100%">
-        <Stat title="USD Deposited" stat={dollarValue} titlePosition="top" titleFontSize={16} statFontSize={[28, 20]} />
-        <Stat title="Average APR" stat={apr} titlePosition="top" titleFontSize={16} statFontSize={[28, 20]} />
-      </Box>
+      {type === SpaceType.detail && (
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <Stat
+            title="USD Deposited"
+            stat={dollarValue}
+            titlePosition="top"
+            titleFontSize={16}
+            statFontSize={[28, 20]}
+          />
+          <Stat title="Average APR" stat={apr} titlePosition="top" titleFontSize={16} statFontSize={[28, 20]} />
+        </Box>
+      )}
+
       <Box padding="20px" bgColor="color3" borderRadius="8px">
-        <Text color="text1" textAlign="center">
+        <Text color="text1" textAlign="center" fontSize={type === SpaceType.card ? 14 : 16}>
           You are now adding liquidity into {token0?.symbol}-{token1?.symbol} Farm. Longer you stake in the pool better
           share of the rewards you’ll get.
         </Text>

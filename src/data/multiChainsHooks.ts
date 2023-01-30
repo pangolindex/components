@@ -1,7 +1,7 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { useTokenAllowance } from './Allowances';
-import { useNearPairs, usePairs } from './Reserves';
+import { useHederaPairs, useNearPairs, usePairs } from './Reserves';
 import {
   useEvmPairTotalSupply,
   useHederaPairTotalSupply,
@@ -11,7 +11,7 @@ import {
 } from './TotalSupply';
 
 export type UsePairsHookType = {
-  [chainId in ChainId]: typeof usePairs | typeof useNearPairs;
+  [chainId in ChainId]: typeof usePairs | typeof useNearPairs | typeof useHederaPairs;
 };
 
 export const usePairsHook: UsePairsHookType = {
@@ -21,7 +21,8 @@ export const usePairsHook: UsePairsHookType = {
   [ChainId.COSTON]: usePairs,
   [ChainId.SONGBIRD]: usePairs,
   [ChainId.FLARE_MAINNET]: usePairs,
-  [ChainId.HEDERA_TESTNET]: usePairs,
+  [ChainId.HEDERA_TESTNET]: useHederaPairs,
+  [ChainId.HEDERA_MAINNET]: useHederaPairs,
   [ChainId.NEAR_MAINNET]: useNearPairs,
   [ChainId.NEAR_TESTNET]: useNearPairs,
   [ChainId.COSTON2]: usePairs,
@@ -56,6 +57,7 @@ export const useTokenAllowanceHook: UseTokenAllowanceHookType = {
   [ChainId.SONGBIRD]: useTokenAllowance,
   [ChainId.FLARE_MAINNET]: useTokenAllowance,
   [ChainId.HEDERA_TESTNET]: useTokenAllowance,
+  [ChainId.HEDERA_MAINNET]: useTokenAllowance,
   [ChainId.NEAR_MAINNET]: useTokenAllowance,
   [ChainId.NEAR_TESTNET]: useTokenAllowance,
   [ChainId.COSTON2]: useTokenAllowance,
@@ -94,6 +96,7 @@ export const useTotalSupplyHook: UseTotalSupplyHookType = {
   [ChainId.SONGBIRD]: useTotalSupply,
   [ChainId.FLARE_MAINNET]: useTotalSupply,
   [ChainId.HEDERA_TESTNET]: useTotalSupply,
+  [ChainId.HEDERA_MAINNET]: useTotalSupply,
   [ChainId.NEAR_MAINNET]: useNearTotalSupply,
   [ChainId.NEAR_TESTNET]: useNearTotalSupply,
   [ChainId.COSTON2]: useTotalSupply,
@@ -136,6 +139,7 @@ export const usePairTotalSupplyHook: UsePairTotalSupplyHookType = {
   [ChainId.SONGBIRD]: useEvmPairTotalSupply,
   [ChainId.FLARE_MAINNET]: useEvmPairTotalSupply,
   [ChainId.HEDERA_TESTNET]: useHederaPairTotalSupply,
+  [ChainId.HEDERA_MAINNET]: useHederaPairTotalSupply,
   [ChainId.NEAR_MAINNET]: useNearPairTotalSupply,
   [ChainId.NEAR_TESTNET]: useNearPairTotalSupply,
   [ChainId.COSTON2]: useEvmPairTotalSupply,

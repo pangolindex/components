@@ -1,31 +1,17 @@
-import { Token } from '@pangolindex/sdk';
-import React, { useCallback, useState } from 'react';
-import { Link } from 'react-feather';
+import React, { useState } from 'react';
 import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
-import { Box, Button, CurrencyLogo, Text } from 'src/components';
-import { ANALYTICS_PAGE, TIMEFRAME } from 'src/constants';
-import { useChainId } from 'src/hooks';
-import { useCoinGeckoTokenPrice, useCoinGeckoTokenPriceChart } from 'src/hooks/Tokens';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
-import { Field } from 'src/state/pswap/actions';
-import { useSwapActionHandlers } from 'src/state/pswap/hooks';
-import { useTokenPriceData } from 'src/state/ptoken/hooks';
+import { Box, Button, Text } from 'src/components';
+import { TIMEFRAME } from 'src/constants';
+import { CoingeckoWatchListToken, useCoinGeckoTokenPriceChart } from 'src/state/pcoingecko/hooks';
 import { formattedNum, toNiceDateYear } from 'src/utils/charts';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
-import { DurationBtns, SelectedCoinInfo, TrackIcons } from './styleds';
+import { DurationBtns, SelectedCoinInfo } from './styleds';
 
 type Props = {
-  coin: Token;
-  visibleTradeButton?: boolean | undefined;
-  tradeLinkUrl?: string | undefined;
-  redirect?: boolean | undefined;
+  coin: CoingeckoWatchListToken;
 };
 
-const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, redirect }) => {
-  const chainId = useChainId();
+const CoinChart: React.FC<Props> = ({ coin }) => {
   const weekFrame = TIMEFRAME.find((value) => value.label === '1W');
-
-  const { tokenUsdPrice } = useCoinGeckoTokenPrice(coin);
 
   const [timeWindow, setTimeWindow] = useState(
     weekFrame ||
@@ -37,31 +23,12 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
         days: string;
       }),
   );
-  const tokenPrice = useUSDCPrice(coin);
 
-  const usdcPrice = tokenUsdPrice || tokenPrice?.toSignificant(4);
-
-  const { onCurrencySelection } = useSwapActionHandlers(chainId);
-  const onCurrencySelect = useCallback(
-    (currency) => {
-      onCurrencySelection(Field.INPUT, currency);
-    },
-    [onCurrencySelection],
-  );
-
-  const pangolinData =
-    useTokenPriceData(
-      (coin?.address || '').toLowerCase(),
-      timeWindow?.momentIdentifier,
-      timeWindow?.interval,
-      timeWindow?.label,
-    ) || [];
+  const usdcPrice = coin?.price;
 
   const coinGekoData = useCoinGeckoTokenPriceChart(coin, timeWindow?.days) || [];
 
-  const token = unwrappedToken(coin, chainId);
-
-  const priceChart = coinGekoData.length > 0 ? [...coinGekoData] : [...pangolinData];
+  const priceChart = coinGekoData.length > 0 ? [...coinGekoData] : [];
   // add current price in chart
   if (priceChart.length > 0 && usdcPrice) {
     const timestampnow = Math.floor(Date.now() / 1000);
@@ -74,58 +41,16 @@ const CoinChart: React.FC<Props> = ({ coin, visibleTradeButton, tradeLinkUrl, re
   return (
     <Box>
       <SelectedCoinInfo>
-        <CurrencyLogo currency={token} size={48} />
+        <img src={coin?.imageUrl ? coin?.imageUrl : ''} height={48} width={48} />
+
         <Box>
           <Text color="text1" fontSize="24px" fontWeight={500}>
-            {token.symbol}
+            {coin?.symbol}
           </Text>
           <Text color="green1" fontSize="16px">
             ${usdcPrice ? usdcPrice : '-'}
           </Text>
         </Box>
-        <TrackIcons>
-          <Button
-            variant="primary"
-            backgroundColor="primary"
-            color="black"
-            width={'32px'}
-            height={'32px'}
-            padding="0px"
-            href={`${ANALYTICS_PAGE}/#/token/${coin?.address}`}
-            target="_blank"
-            as="a"
-          >
-            <Link size={12} />
-          </Button>
-          {visibleTradeButton &&
-            (redirect ? (
-              <Button
-                variant="plain"
-                backgroundColor="oceanBlue"
-                color="white"
-                padding="0px 10px"
-                height="32px"
-                href={`/#${tradeLinkUrl}?inputCurrency=${coin?.address}`}
-                target=""
-                as="a"
-              >
-                Trade
-              </Button>
-            ) : (
-              <Button
-                variant="plain"
-                backgroundColor="oceanBlue"
-                color="white"
-                padding="0px 10px"
-                height="32px"
-                onClick={() => {
-                  onCurrencySelect(coin);
-                }}
-              >
-                Trade
-              </Button>
-            ))}
-        </TrackIcons>
       </SelectedCoinInfo>
       <ResponsiveContainer height={150} width={'100%'}>
         <LineChart data={priceChart}>

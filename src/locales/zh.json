@@ -17,9 +17,9 @@
     "pngBreakDown": "你的 {{ symbol }} 細項",
     "balance": "资产: ",
     "unclaimed": "未领取: ",
-    "pngPrice": "{{ symbol }} 价格:",
+    "tokenPrice": "{{ symbol }} 价格:",
     "pngCirculation": "流通中的{{ symbol }} :",
-    "totalSupply": "总供应量",
+    "totalSupply": "总供应量:",
     "makeSureURLWarning": "确保 URL 是",
     "alwaysMakeSureWarning": "总是确保 URL 是",
     "bookmarkIt": "将其加入书签以确保安全。",
@@ -388,7 +388,8 @@
     "importDescription1": "使用导入功能，您可以查找未出现在“您的池”部分中的池。",
     "importDescription2": "只需选择您池中的基础代币。",
     "createPairDescription": "使用 create 函数，您可以创建一个新对。 只需搜索您要为其创建一对的硬币，如果 Pangolin 上存在该池，系统将找到该池，如果不存在则创建一个全新的池。",
-    "addLiquidityDescription": "使用添加流动性功能，您可以为货币对添加流动性。 只需搜索您想要增加流动性的代币，如果 Pangolin 中存在该池，系统将找到该池，如果不存在则创建一个新池。"
+    "addLiquidityDescription": "使用添加流动性功能，您可以为货币对添加流动性。 只需搜索您想要增加流动性的代币，如果 Pangolin 中存在该池，系统将找到该池，如果不存在则创建一个新池。",
+    "createStorageContract": "在 Hedera 上，所有智能合约都需要为使用账本上的空间支付费用。这些是仓储费 和自动续订费用。您需要创建一个存储合同才能耕种。存储将是 免费，但将来您将需要支付自动续订费用。这些大约是 2 美分。所以我们 建议始终在您的钱包中保留 1 美元的 HBAR，以确保您不会遇到任何问题。"
   },
   "poolFinder": {
     "connectToFind": "连接到钱包以查找矿池",

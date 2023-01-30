@@ -1,6 +1,7 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { hethers } from '@hashgraph/hethers';
 import { AccountId, Transaction, TransactionId } from '@hashgraph/sdk';
+import { ChainId } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
@@ -108,7 +109,7 @@ export class HashConnector extends AbstractConnector {
     this.instance.connectionStatusChangeEvent.off(this.handleConnectionStatusChangeEvent.bind(this));
   }
 
-  public async getChainId(): Promise<number | string | any> {
+  public getChainId(): number | string | any {
     if (this.pairingData) {
       return this.chainId;
     }
@@ -116,7 +117,11 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async getProvider() {
-    return new JsonRpcProvider(`https://hedera.testnet.arkhia.io/json-rpc/v1?x_api_key=${process.env.ARKHIA_API_KEY}`);
+    let url = `https://hedera.mainnet.arkhia.io/json-rpc/v1`;
+    if (this.chainId === ChainId.HEDERA_TESTNET) {
+      url = `https://hedera.testnet.arkhia.io/json-rpc/v1`;
+    }
+    return new JsonRpcProvider(`${url}?x_api_key=${process.env.ARKHIA_API_KEY}`);
   }
 
   public async activate(): Promise<any> {
