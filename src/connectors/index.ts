@@ -148,10 +148,12 @@ function getHederaConfig(env = 'testnet') {
   }
 }
 
+// TODO: this approach is only for short term, review this later
+const hederaNetwork = localStorage.getItem('hedera_network') ?? 'mainnet';
 export const hashConnect = new HashConnector({
   normalizeChainId: false,
   normalizeAccount: false,
-  config: getHederaConfig('testnet'),
+  config: getHederaConfig(hederaNetwork),
 });
 
 export const avalancheCore = new AvalancheCoreConnector({
