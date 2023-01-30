@@ -37,8 +37,9 @@ export default function Compound({ selectedOption, selectedPosition, onChange, o
   const useUSDPrice = useUSDCPriceHook[chainId];
   const pngPrice = useUSDPrice(png);
 
-  const dollarValue =
-    parseFloat(formatUnits(oldBalance.add(pendingRewards), png.decimals)) * Number(pngPrice?.toFixed() ?? 0);
+  const dollarValue = pngPrice?.equalTo('0')
+    ? 0
+    : parseFloat(formatUnits(oldBalance.add(pendingRewards), png.decimals)) * Number(pngPrice?.toFixed() ?? 0);
 
   const { t } = useTranslation();
 
@@ -87,7 +88,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange, o
           <Box display="flex" justifyContent="space-between">
             <Box>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">${(dollarValue ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</Text>
+              <Text color="text1">${dollarValue.toLocaleString(undefined, { maximumFractionDigits: 4 })}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>
