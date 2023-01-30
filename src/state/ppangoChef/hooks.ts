@@ -676,7 +676,7 @@ export function useHederaPangoChefInfos() {
       const userPendingRewardState = userPendingRewardsState[index];
       const pairTotalSupplyState = pairTotalSuppliesState[index];
       const userRewardRateState = userRewardRatesState[index];
-      const [pairState, pair] = pairs[index];
+      const [pairState, pair] = pairs?.[index] || [];
 
       // if is loading or not exist pair continue
       if (
