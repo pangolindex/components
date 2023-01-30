@@ -4,6 +4,11 @@ export const GET_PANGOCHEF = gql`
   query pangoChefs($where: PangoChef_filter, $userAddress: String) {
     pangoChefs(where: $where) {
       id
+      totalWeight
+      rewardRate
+      periodFinish
+      periodDuration
+      totalRewardAdded
       farms {
         id
         pid

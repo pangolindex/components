@@ -151,7 +151,7 @@ function getHederaConfig(env = 'testnet') {
 export const hashConnect = new HashConnector({
   normalizeChainId: false,
   normalizeAccount: false,
-  config: getHederaConfig('mainnet'),
+  config: getHederaConfig('testnet'),
 });
 
 export const avalancheCore = new AvalancheCoreConnector({

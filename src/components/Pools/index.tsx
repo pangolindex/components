@@ -28,13 +28,13 @@ const PoolsUI = () => {
   const { t } = useTranslation();
 
   const useGetAllFarmData = useGetAllFarmDataHook[chainId];
-  const pangoChefStakingInfos1 = useGetPangoChefInfosViaSubgraph();
-
-  console.log('pangoChefStakingInfos1', pangoChefStakingInfos1);
-  useGetAllFarmData();
-  const pangoChefStakingInfos = usePangoChefInfosHook[chainId]() || [];
+  const pangoChefStakingInfos = useGetPangoChefInfosViaSubgraph();
 
   console.log('pangoChefStakingInfos', pangoChefStakingInfos);
+  useGetAllFarmData();
+  const pangoChefStakingInfos1 = usePangoChefInfosHook[chainId]() || [];
+
+  console.log('pangoChefStakingInfos1', pangoChefStakingInfos1);
 
   const subgraphMiniChefStakingInfo = useGetMinichefStakingInfosViaSubgraphHook[chainId]() || [];
   const onChainMiniChefStakingInfo = useMinichefStakingInfosHook[chainId]() || [];

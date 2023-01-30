@@ -48,6 +48,11 @@ export interface PangoChefInfo extends MinichefStakingInfo {
 
 export interface PangoChefSubgraphInfo {
   id: string;
+  totalWeight: string;
+  rewardRate: string;
+  periodFinish: string;
+  periodDuration: string;
+  totalRewardAdded: string;
   farms: PangoChefFarm[];
 }
 
