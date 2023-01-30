@@ -18,6 +18,8 @@ import {
 
 // chunk calls so we do not exceed the gas limit
 const CALL_CHUNK_SIZE = 500;
+//for Hedera chain multicall not working bcoz of chunk size increase  so reduce  that
+const HEDERA_CALL_CHUNK_SIZE = 30;
 
 /**
  * Fetches a chunk of calls, enforcing a minimum block number constraint
@@ -142,7 +144,7 @@ export default function Updater(): null {
     if (outdatedCallKeys.length === 0) return;
     const calls = outdatedCallKeys.map((key) => parseCallKey(key));
 
-    const chunkSize = hederaFn.isHederaChain(chainId) ? 30 : CALL_CHUNK_SIZE;
+    const chunkSize = hederaFn.isHederaChain(chainId) ? HEDERA_CALL_CHUNK_SIZE : CALL_CHUNK_SIZE;
 
     const chunkedCalls = chunkArray(calls, chunkSize);
 
