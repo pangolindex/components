@@ -103,8 +103,7 @@ export default function SarManageWidget() {
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
       (approvalSubmitted && approval === ApprovalState.APPROVED));
-  console.log({ error, approval, isLoading, positions });
-  console.log(approval === ApprovalState.UNKNOWN);
+
   const renderButtons = () => {
     if (!account) {
       return (
