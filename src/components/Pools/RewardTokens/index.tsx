@@ -17,9 +17,8 @@ interface RewardTokensLogoProps {
   rewardTokens?: Array<Token | null | undefined> | null;
 }
 
-const CoveredLogo = styled(CurrencyLogo)<{ sizeraw: number }>`
+const CoveredLogo = styled(CurrencyLogo)`
   position: absolute;
-  left: ${({ sizeraw }) => '-' + (sizeraw / 2).toString() + 'px'} !important;
 `;
 
 export default function RewardTokens({ rewardTokens = [], size = 24, margin = false }: RewardTokensLogoProps) {
@@ -28,7 +27,7 @@ export default function RewardTokens({ rewardTokens = [], size = 24, margin = fa
   return (
     <Wrapper sizeraw={size} margin={margin}>
       {(tokens || []).map((token, i) => {
-        return <CoveredLogo key={i} currency={token as Token} size={size} sizeraw={size} imageSize={48} />;
+        return <CoveredLogo key={i} currency={token as Token} size={size} imageSize={48} />;
       })}
     </Wrapper>
   );
