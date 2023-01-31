@@ -383,6 +383,8 @@ export function usePangoChefInfos() {
         return JSBI.BigInt(value.toString());
       });
 
+      const weight = poolsRewardInfoState.result?.weight;
+
       farms.push({
         pid: pid,
         tokens: [pair.token0, pair.token1],
@@ -390,7 +392,7 @@ export function usePangoChefInfos() {
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         totalStakedInWavax: totalStakedInWavax,
-        multiplier: JSBI.BigInt(poolsRewardInfoState.result?.weight),
+        multiplier: weight ?? BIG_INT_ZERO,
         stakedAmount: userTotalStakedAmount,
         isPeriodFinished: rewardRate.isZero(),
         periodFinish: undefined,
@@ -788,6 +790,8 @@ export function useHederaPangoChefInfos() {
         return JSBI.BigInt(value.toString());
       });
 
+      const weight = poolsRewardInfoState.result?.weight;
+
       farms.push({
         pid: pid,
         tokens: [pair?.token0, pair?.token1],
@@ -795,7 +799,7 @@ export function useHederaPangoChefInfos() {
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         totalStakedInWavax: totalStakedInWavax,
-        multiplier: JSBI.BigInt(poolsRewardInfoState.result?.weight),
+        multiplier: weight ?? BIG_INT_ZERO,
         stakedAmount: userTotalStakedAmount,
         isPeriodFinished: rewardRate.isZero(),
         periodFinish: undefined,
