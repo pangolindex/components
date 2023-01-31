@@ -282,11 +282,7 @@ export function usePangoChefInfos() {
 
     const farms: PangoChefInfo[] = [];
 
-    console.log('==34poolsIds', poolsIds);
-
     for (let index = 0; index < poolsIds.length; index++) {
-      console.log('==34vindex', index);
-
       const poolState = poolsState[index];
       const poolRewardRateState = poolsRewardsRateState[index];
       const poolsRewardInfoState = poolsRewardInfosState[index];
@@ -324,11 +320,6 @@ export function usePangoChefInfos() {
       const pid = poolsIds[index][0];
       const pool = pools[index];
       const rewardRate: BigNumber = poolRewardRateState.result?.[0] ?? BigNumber.from(0);
-
-      console.log('=34pool', pool);
-
-      console.log('==34valuevariable', pool?.valueVariables?.balance?.toString());
-      console.log('==34poolRewardRateState', poolRewardRateState);
 
       const totalStakedAmount = new TokenAmount(
         pair?.liquidityToken,
@@ -481,7 +472,6 @@ export function useHederaPangoChefInfos() {
     for (let i = 0; i < poolsState.length; i++) {
       const result = poolsState[i]?.result;
 
-      console.log('===34result', result);
       if (!result) {
         continue;
       }
@@ -519,8 +509,6 @@ export function useHederaPangoChefInfos() {
 
     return [_pools, _poolsIds];
   }, [poolsState]);
-
-  console.log('poolsIds', poolsIds);
 
   // get reward rates for each pool
   const poolsRewardsRateState = useSingleContractMultipleData(pangoChefContract, 'poolRewardRate', poolsIds);
@@ -729,8 +717,7 @@ export function useHederaPangoChefInfos() {
 
       const pid = poolsIds[index][0];
       const pool = pools[index];
-      console.log('==34valuevariable', pool?.valueVariables?.balance?.toString());
-      console.log('==34poolRewardRateState', poolRewardRateState);
+
       const rewardRate: BigNumber = poolRewardRateState?.result?.[0] ?? BigNumber.from(0);
       const totalStakedAmount = new TokenAmount(
         pair?.liquidityToken,
@@ -746,6 +733,9 @@ export function useHederaPangoChefInfos() {
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
       const pairPrice = pairPrices[pair?.liquidityToken?.address];
+
+      console.log('==1pairPrice', pairPrice);
+
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
       const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? new Fraction('0', '1');
@@ -889,7 +879,8 @@ export function useGetPangoChefInfosViaSubgraph() {
     },
   );
 
-  console.log('results===', results);
+  const wavax = WAVAX[chainId];
+  const [avaxPngPairState, avaxPngPair] = usePair(wavax, png);
 
   const allFarms = useMemo(() => {
     if (!chainId || !png || !results?.data?.[0]?.farms?.length) return [];
@@ -899,14 +890,63 @@ export function useGetPangoChefInfosViaSubgraph() {
     return farms;
   }, [chainId, png, results?.data, results?.isLoading, results?.isError]);
 
-  console.log('allFarms===', allFarms);
+  const allPoolsIds = useMemo(() => {
+    if ((allFarms || []).length === 0) return [];
+    return allFarms.map((item) => [item?.pid]);
+  }, [allFarms]);
+
+  const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', allPoolsIds);
+
+  // format the data to Pool type
+  const [pools, poolsIds] = useMemo(() => {
+    const _pools: Pool[] = [];
+    const _poolsIds: string[][] = [];
+
+    for (let i = 0; i < poolsState.length; i++) {
+      const result = poolsState[i]?.result;
+
+      if (!result) {
+        continue;
+      }
+
+      const tokenOrRecipient = result.tokenOrRecipient;
+      const poolType = result.poolType as PoolType;
+      const rewarder = result.rewarder;
+      const rewardPair = result.rewardPair;
+      const valueVariables = result.valueVariables as ValueVariables;
+      const rewardSummations = result.rewardSummationsStored as RewardSummations;
+
+      if (!tokenOrRecipient || !poolType || !rewarder || !rewardPair || !valueVariables || !rewardSummations) {
+        continue;
+      }
+
+      // remove not erc20 pool and remove this pool from poolsIds
+      if (poolType !== PoolType.ERC20_POOL) {
+        continue;
+      }
+
+      _pools.push({
+        tokenOrRecipient: tokenOrRecipient,
+        poolType: poolType,
+        rewarder: rewarder,
+        rewardPair: rewardPair,
+        valueVariables: {
+          balance: valueVariables?.balance,
+          sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
+        } as ValueVariables,
+        rewardSummations: rewardSummations,
+      } as Pool);
+
+      _poolsIds.push([i.toString()]);
+    }
+
+    return [_pools, _poolsIds];
+  }, [poolsState]);
 
   const userInfoInput = useMemo(() => {
-    if ((allFarms?.farms || []).length === 0 || !account) return [];
-    return allFarms?.farms.map((item) => [item?.pid, account]);
-  }, [allFarms?.farms, account]); // [[pid, account], ...] [[0, account], [1, account], [2, account] ...]
-
-  console.log('userInfoInput===', userInfoInput);
+    if ((allPoolsIds || []).length === 0 || !account) return [];
+    return allPoolsIds.map((pid) => [pid, account]);
+  }, [allPoolsIds, account]); // [[pid, account], ...] [[0, account], [1, account], [2, account] ...]
 
   const userInfosState = useSingleContractMultipleData(
     pangoChefContract,
@@ -967,25 +1007,40 @@ export function useGetPangoChefInfosViaSubgraph() {
     !shouldCreateStorage && userInfoInput ? userInfoInput : [],
   );
 
-  console.log('userInfosState', userInfosState);
-
   return useMemo(() => {
     if (!chainId || !png || !allFarms?.length) return [];
 
-    return (allFarms || []).reduce(function (memo: any, farm: any, index) {
+    const farms: PangoChefInfo[] = [];
+    for (let index = 0; index < poolsIds.length; index++) {
+      const farm = allFarms[index];
       console.log('farm', farm);
-
+      const poolState = poolsState[index];
       const userInfoState = userInfosState[index];
 
       const userPendingRewardState = userPendingRewardsState[index];
       const userRewardRateState = userRewardRatesState[index];
       const userInfo = userInfos[index];
-      console.log('userInfoState', userInfoState);
+
+      // if is loading or not exist pair continue
+      if (
+        poolState?.loading ||
+        userInfoState?.loading ||
+        userPendingRewardState?.loading ||
+        userRewardRateState?.loading ||
+        avaxPngPairState == PairState.LOADING ||
+        !avaxPngPair
+      ) {
+        continue;
+      }
+
       const rewardsAddresses = farm.rewarder.rewards;
+
+      const pool = pools[index];
+
       const pid = farm?.pid;
       const pair = farm?.pair;
       const multiplier = JSBI.BigInt(farm?.weight);
-      console.log('pair', pair);
+
       const rewardTokens = rewardsAddresses.map((rewardToken: PangochefFarmReward) => {
         const tokenObj = rewardToken.token;
         return new Token(chainId, getAddress(tokenObj.id), Number(tokenObj.decimals), tokenObj.symbol, tokenObj.name);
@@ -1047,11 +1102,31 @@ export function useGetPangoChefInfosViaSubgraph() {
 
       const token0derivedETH = BigNumber.from(farm?.pair?.token0?.derivedETH);
       const pairSupplyInETH = token0derivedETH.mul(totalSupplyReserve0).mul(parseUnits('2'));
-      const totalStakedInWavax = farmTvl.mul(pairSupplyInETH).div(totalSupply);
+      console.log('pairSupplyInETH', pairSupplyInETH);
+      const pairSupplyAmount = new TokenAmount(lpToken, pairSupplyInETH.toString() || JSBI.BigInt(0));
+      console.log('pairSupplyAmount', pairSupplyAmount);
+      const _totalStakedInWavax = farmTvl.mul(pairSupplyInETH).div(totalSupply);
 
-      console.log('==9totalStakedInWavax', totalStakedInWavax?.toString());
+      const totalStakedInWavax = new TokenAmount(
+        wavax,
+        _totalStakedInWavax.isZero() ? '0' : _totalStakedInWavax.toString(),
+      );
 
       const rewardRate = BigNumber.from(farm?.rewardRate ?? '0');
+      const pngPrice = avaxPngPair.priceOf(png, wavax);
+      const pairPrice = new Price(lpToken, wavax, pairSupplyAmount?.denominator, pairSupplyAmount?.numerator);
+
+      console.log('pairPrice', pairPrice);
+      // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
+      const apr =
+        pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0') || !pairPrice
+          ? 0
+          : Number(
+              pngPrice?.raw
+                .multiply(rewardRate.mul(365 * 86400 * 100).toString())
+                .divide(pairPrice?.raw?.multiply(pool.valueVariables.balance.toString()))
+                .toSignificant(2),
+            );
 
       const totalRewardRatePerSecond = new TokenAmount(png, rewardRate.toString());
       const totalRewardRatePerWeek = new TokenAmount(
@@ -1081,7 +1156,7 @@ export function useGetPangoChefInfosViaSubgraph() {
         totalRewardRatePerSecond,
       );
 
-      memo.push({
+      farms.push({
         pid: pid,
         tokens,
         stakingRewardAddress: pangoChefContract?.address,
@@ -1094,26 +1169,26 @@ export function useGetPangoChefInfosViaSubgraph() {
         rewardTokensMultiplier: rewardMultipliers,
         totalStakedInWavax: totalStakedInWavax,
         isPeriodFinished: rewardRate.isZero(),
-        // rewardsAddress: pool.rewarder,
+        rewardsAddress: pool.rewarder,
         totalRewardRatePerSecond: totalRewardRatePerSecond,
         totalRewardRatePerWeek: totalRewardRatePerWeek,
         rewardRatePerWeek: userRewardRatePerWeek,
         getHypotheticalWeeklyRewardRate: getHypotheticalWeeklyRewardRate,
         getExtraTokensWeeklyRewardRate: getExtraTokensWeeklyRewardRate,
         earnedAmount: pendingRewards,
-        // valueVariables: pool.valueVariables,
+        valueVariables: pool.valueVariables,
         userValueVariables: userInfo?.valueVariables,
         lockCount: userInfo?.lockCount,
         userRewardRate: userRewardRateState?.result?.[0] ?? BigNumber.from(0),
-        // stakingApr: apr,
-        // pairPrice: pairPrice,
-        // poolType: pool.poolType,
+        stakingApr: apr,
+        pairPrice: pairPrice,
+        poolType: pool.poolType,
         poolRewardRate: rewardRate,
-      });
-      console.log('memo', memo);
-      return memo;
-    }, []);
-  }, [chainId, png, allFarms, userInfosState]);
+      } as PangoChefInfo);
+    }
+
+    return farms;
+  }, [chainId, png, allFarms, userInfosState, poolsIds, poolsState]);
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
