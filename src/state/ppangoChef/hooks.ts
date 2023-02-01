@@ -1591,23 +1591,20 @@ export function useGetLockingPoolsForPoolId(poolId: string) {
   const _lockpools = useMemo(() => {
     const container = {} as { [poolId: string]: Array<string> };
 
-    for (let i = 0; i < (stakingInfos || [])?.length; i++) {
-      const result = lockPoolState[i]?.result;
+    allPoolsIds.forEach((value, index) => {
+      const result = lockPoolState[index]?.result;
+      const pid = value?.[0];
 
-      if (!result) {
-        continue;
+      if (result?.[0]?.[0]?.toString() && pid) {
+        container[`${pid}`] = result?.[0]?.map((item: BigNumber) => item.toString());
       }
-
-      if (result?.[0]?.[0]?.toString()) {
-        container[`${i}`] = result?.[0]?.map((item: BigNumber) => item.toString());
-      }
-    }
+    });
 
     return container;
-  }, [stakingInfos]);
+  }, [allPoolsIds]);
 
   const lockingPools = [] as Array<string>;
-
+  console.log({ _lockpools, allPoolsIds, lockPoolState });
   Object.entries(_lockpools).forEach(([pid, pidsLocked]) => {
     if (pidsLocked.includes(poolId?.toString())) {
       lockingPools.push(pid);
