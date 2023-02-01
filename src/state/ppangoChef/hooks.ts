@@ -1604,7 +1604,6 @@ export function useGetLockingPoolsForPoolId(poolId: string) {
   }, [allPoolsIds]);
 
   const lockingPools = [] as Array<string>;
-  console.log({ _lockpools, allPoolsIds, lockPoolState });
   Object.entries(_lockpools).forEach(([pid, pidsLocked]) => {
     if (pidsLocked.includes(poolId?.toString())) {
       lockingPools.push(pid);
