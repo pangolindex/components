@@ -1,16 +1,8 @@
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
 import { useChainId } from 'src/hooks';
-import { mininchefV2Clients } from './client';
-
-type SubgraphToken = {
-  id: string;
-  name: string;
-  symbol: string;
-  derivedUSD: string;
-  decimals: string;
-  derivedETH: string;
-};
+import { subgraphClient } from './client';
+import { SubgraphToken } from './tokens';
 
 type SubgraphPair = {
   id: string;
@@ -78,7 +70,7 @@ export const useSubgraphPairs = (pairAddresses: (string | undefined)[]) => {
   const chainId = useChainId();
   // get pairs from subgraph
   return useQuery<SubgraphPair[]>(['get-subgraph-pairs', chainId, ...pairsToFind], async () => {
-    const gqlClient = mininchefV2Clients[chainId];
+    const gqlClient = subgraphClient[chainId];
     if (!gqlClient) {
       return null;
     }

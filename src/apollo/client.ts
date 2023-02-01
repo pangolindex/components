@@ -39,7 +39,7 @@ export const hederaMainnetSubgraphGql = new GraphQLClient(
   },
 );
 
-export const mininchefV2Clients = {
+export const subgraphClient = {
   [ChainId.AVALANCHE]: avalancheMininchefV2Client,
   [ChainId.FUJI]: undefined,
   [ChainId.WAGMI]: undefined,
