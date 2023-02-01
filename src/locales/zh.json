@@ -700,7 +700,7 @@
   "pangoChef": {
     "claimWarning1": "当您在未提取流动性的情况下申领时，您的流动性仍保留在矿池中。",
     "claimWarning2": "领取您的奖励将使您的 APR 降至 0。相反，您可以选择复合。",
-    "compoundWarning": "将您对 {{ token0 }}-{{ token1 }} 农场的奖励组合起来，您的奖励将投入 {{ token0 }}-{{ token1 }} 农场。 您需要在累积的 {{ png }} 奖励中添加等值的 {{ currency }} 代币。",
+    "compoundWarning": "将您对 {{ token0 }}-{{ token1 }} 农场的奖励组合起来，您的奖励将投入 {{ stakeToken0 }}-{{ stakeToken1 }} 农场。 您需要在累积的 {{ png }} 奖励中添加等值的 {{ compoundToken }} 代币。",
     "compoundAmountWarning": "您需要添加 {{ amount }} {{ symbol }} 来复合。请注意，复利可能会略微降低您的 APR。",
     "compoundAmountWarning2": "请注意，您将锁定您的 {{ token0 }} {{ token1 }} 池，直到您获得该池的奖励。",
     "highVolalityWarning": "太早了，过几个小时试试",

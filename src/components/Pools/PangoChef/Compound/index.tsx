@@ -328,8 +328,10 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
               {t('pangoChef.compoundWarning', {
                 token0: currency0.symbol,
                 token1: currency1.symbol,
-                currency: isPNGPool ? currency0.symbol : currency.symbol,
-                png: isPNGPool ? tokenOrCurrency?.symbol : png.symbol,
+                stakeToken0: isPNGPool ? currency0.symbol : png.symbol,
+                stakeToken1: isPNGPool ? currency1.symbol : wrappedCurrency.symbol,
+                compoundToken: tokenOrCurrency.symbol,
+                png: png.symbol,
               })}
             </Text>
           </Box>
