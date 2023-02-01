@@ -19,6 +19,7 @@ import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
 import { usePangoChefCompoundCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
+import { calculateCompoundSlippage } from 'src/state/ppangoChef/utils';
 import { useAccountBalanceHook, useTokenBalancesHook } from 'src/state/pwallet/multiChainsHooks';
 import { hederaFn } from 'src/utils/hedera';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -160,7 +161,12 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
 
-  const [approval, approveCallback] = useApproveCallback(chainId, amountToAdd, pangoChefContract?.address);
+  const slippage = calculateCompoundSlippage(amountToAdd);
+  // if it approve exact value, we need to approve the max slippage value so as not to revert due to missing approval
+  const approvalAmount =
+    amountToAdd instanceof TokenAmount ? new TokenAmount(amountToAdd.token, slippage.maxPairAmount) : amountToAdd;
+
+  const [approval, approveCallback] = useApproveCallback(chainId, approvalAmount, pangoChefContract?.address);
 
   const { callback: compoundCallback } = useCompoundCallback({
     isPNGPool,
