@@ -32,7 +32,7 @@ export const TRANSACTION_MAX_FEES = {
   STAKE_LP_TOKEN: 230000,
   COLLECT_REWARDS: 300000,
   WITHDRAW: 300000,
-  COMPOUND: 300000,
+  COMPOUND: 550000,
   NFT_MINT: 800000,
 };
 export interface HederaTokenMetadata {
@@ -1064,7 +1064,7 @@ class Hedera {
 
     const maxGas = TRANSACTION_MAX_FEES.COMPOUND;
 
-    const arg = methodName === 'compound' ? [poolId, slippage] : [poolId, compoundPoolId, slippage];
+    const arg = methodName === 'compound' ? [poolId, slippage] : [poolId, compoundPoolId.toString(), slippage];
 
     // compound transaction is little different than all other transaction
     // because in compound input we have slippage which is tuple

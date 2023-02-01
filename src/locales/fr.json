@@ -701,7 +701,7 @@
   "pangoChef": {
     "claimWarning1": "Lorsque vous réclamez sans retirer votre liquidité reste dans le pool de minage.",
     "claimWarning2": "Réclamer vos récompenses fera tomber votre APR à 0. À la place, vous pouvez choisir de composer.",
-    "compoundWarning": "En combinant vos récompenses pour la ferme {{ token0 }}-{{ token1 }}, vos récompenses seront mises en jeu dans la ferme {{ token0 }}-{{ token1 }}. Vous devez ajouter une valeur égale de {{ currency }}token à vos récompenses {{ png }} accumulées.",
+    "compoundWarning": "En combinant vos récompenses pour la ferme {{ token0 }}-{{ token1 }}, vos récompenses seront mises en jeu dans la ferme {{ stakeToken0 }}-{{ stakeToken1 }}. Vous devez ajouter une valeur égale de {{ compoundToken }} token à vos récompenses {{ png }} accumulées.",
     "compoundAmountWarning": "Vous devez ajouter {{ amount }} {{ symbol }} au composé. Veuillez noter que la capitalisation peut légèrement diminuer votre APR.",
     "compoundAmountWarning2": "Faites attention que vous verrouillerez votre pool de {{ token0 }} {{ token1 }} jusqu'à ce que vous réclamiez les récompenses de ce pool.",
     "highVolalityWarning": "Trop tôt, essayez dans quelques heures",
