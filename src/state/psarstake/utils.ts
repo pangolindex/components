@@ -49,7 +49,9 @@ export function useDefaultSarStake() {
   const useUSDCPrice = useUSDCPriceHook[chainId];
   const usdcPrice = useUSDCPrice(png);
   const dollerWorth =
-    userPngBalance?.greaterThan('0') && usdcPrice ? Number(typedValue) * Number(usdcPrice.toFixed()) : undefined;
+    userPngBalance?.greaterThan('0') && usdcPrice && usdcPrice?.greaterThan('0')
+      ? Number(typedValue) * Number(usdcPrice.toFixed())
+      : undefined;
 
   const wrappedOnDismiss = useCallback(() => {
     setStakeError(null);

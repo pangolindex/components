@@ -117,11 +117,11 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async getProvider() {
-    let url = `https://hedera.mainnet.arkhia.io/json-rpc/v1`;
+    let url = `https://mainnet.hashio.io/api`;
     if (this.chainId === ChainId.HEDERA_TESTNET) {
-      url = `https://hedera.testnet.arkhia.io/json-rpc/v1`;
+      url = `https://testnet.hashio.io/api`;
     }
-    return new JsonRpcProvider(`${url}?x_api_key=${process.env.ARKHIA_API_KEY}`);
+    return new JsonRpcProvider(`${url}`);
   }
 
   public async activate(): Promise<any> {
