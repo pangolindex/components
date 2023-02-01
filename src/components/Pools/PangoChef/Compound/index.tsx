@@ -69,12 +69,19 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
 
   const currencyBalance = useETHBalances(chainId, [account ?? ZERO_ADDRESS]);
 
-  const [tokensBalances] = useTokenBalances(account ?? ZERO_ADDRESS, [token0, token1]);
+  const tokensToGetBalances = stakingInfo?.tokens;
+  const tokensToGetPrice = stakingInfo?.tokens;
 
   const isPNGPool = token0.equals(png) || token1.equals(png);
   const isWrappedCurrencyPool = token0.equals(wrappedCurrency) || token1.equals(wrappedCurrency);
 
-  const tokensToGetPrice = [token0, token1];
+  // we need to add wrappedCurrency to get the balance, because it is used in parts of the code
+  //and if not have in these two tokens in pair it will disable the compound button forever
+  if (!isWrappedCurrencyPool) {
+    tokensToGetBalances.push(wrappedCurrency);
+  }
+
+  const [tokensBalances] = useTokenBalances(account ?? ZERO_ADDRESS, tokensToGetBalances);
 
   if (!isPNGPool) {
     tokensToGetPrice.push(png);
