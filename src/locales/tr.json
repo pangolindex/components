@@ -700,7 +700,7 @@
   "pangoChef": {
     "claimWarning1": "Likiditenizi çekmeden talep ettiğinizde madencilik havuzunda kalır.",
     "claimWarning2": "Ödüllerinizi talep etmek, APR'nizi 0'a düşürür. Bunun yerine birleştirmeyi seçebilirsiniz.",
-    "compoundWarning": "{{ token0 }}-{{ token1 }} çiftliği için ödüllerinizi birleştirmek, ödüllerinizi {{ token0 }}-{{ token1 }} çiftliğine yatırır. {{ currency }} 'a eşit değer eklemeniz gerekir. jeton, tahakkuk eden {{ png }} ödüllerinize.",
+    "compoundWarning": "{{ token0 }}-{{ token1 }} çiftliği için ödüllerinizi birleştirmek, ödüllerinizi {{ stakeToken0 }}-{{ stakeToken1 }} çiftliğine yatırır. {{ compoundToken }} 'a eşit değer eklemeniz gerekir. jeton, tahakkuk eden {{ png }} ödüllerinize.",
     "compoundAmountWarning": "Bileşik için {{ amount }} {{ symbol }} eklemeniz gerekiyor. Lütfen Bileşik oluşturmanın APR'nizi biraz azaltabileceğini unutmayın.",
     "compoundAmountWarning2": "Bu havuzun ödüllerini alana kadar {{ token0 }} {{ token1 }} havuzunuzu kilitleyeceğinize dikkat edin.",
     "highVolalityWarning": "Çok erken, birkaç saat sonra deneyin",

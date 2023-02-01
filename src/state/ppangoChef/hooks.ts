@@ -383,6 +383,8 @@ export function usePangoChefInfos() {
         return JSBI.BigInt(value.toString());
       });
 
+      const weight = poolsRewardInfoState.result?.weight;
+
       farms.push({
         pid: pid,
         tokens: [pair.token0, pair.token1],
@@ -390,7 +392,7 @@ export function usePangoChefInfos() {
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         totalStakedInWavax: totalStakedInWavax,
-        multiplier: JSBI.BigInt(poolsRewardInfoState?.result?.weight),
+        multiplier: weight ? JSBI.BigInt(weight.toString()) : BIG_INT_ZERO,
         stakedAmount: userTotalStakedAmount,
         isPeriodFinished: rewardRate.isZero(),
         periodFinish: undefined,
@@ -788,6 +790,8 @@ export function useHederaPangoChefInfos() {
         return JSBI.BigInt(value.toString());
       });
 
+      const weight = poolsRewardInfoState.result?.weight;
+
       farms.push({
         pid: pid,
         tokens: [pair?.token0, pair?.token1],
@@ -795,9 +799,7 @@ export function useHederaPangoChefInfos() {
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         totalStakedInWavax: totalStakedInWavax,
-        multiplier: poolsRewardInfoState?.result?.weight
-          ? JSBI.BigInt(poolsRewardInfoState?.result?.weight)
-          : JSBI.BigInt(0),
+        multiplier: weight ? JSBI.BigInt(weight.toString()) : BIG_INT_ZERO,
         stakedAmount: userTotalStakedAmount,
         isPeriodFinished: rewardRate.isZero(),
         periodFinish: undefined,
@@ -1589,23 +1591,19 @@ export function useGetLockingPoolsForPoolId(poolId: string) {
   const _lockpools = useMemo(() => {
     const container = {} as { [poolId: string]: Array<string> };
 
-    for (let i = 0; i < (stakingInfos || [])?.length; i++) {
-      const result = lockPoolState[i]?.result;
+    allPoolsIds.forEach((value, index) => {
+      const result = lockPoolState[index]?.result;
+      const pid = value?.[0];
 
-      if (!result) {
-        continue;
+      if (result?.[0]?.[0]?.toString() && pid) {
+        container[`${pid}`] = result?.[0]?.map((item: BigNumber) => item.toString());
       }
-
-      if (result?.[0]?.[0]?.toString()) {
-        container[`${i}`] = result?.[0]?.map((item: BigNumber) => item.toString());
-      }
-    }
+    });
 
     return container;
-  }, [stakingInfos]);
+  }, [allPoolsIds]);
 
   const lockingPools = [] as Array<string>;
-
   Object.entries(_lockpools).forEach(([pid, pidsLocked]) => {
     if (pidsLocked.includes(poolId?.toString())) {
       lockingPools.push(pid);
