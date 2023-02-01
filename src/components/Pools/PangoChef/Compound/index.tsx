@@ -134,12 +134,11 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       });
     }
   } else {
-    // we compound to PNG/WRAPPER GAS COIN (PNG/wAVAX, PFL/wFLR, PSB/wSGB  etc) farm
+    // we compound to PNG/WRAPPED GAS COIN (PNG/WAVAX, PFL/WFLR, PSB/WSGB  etc) farm
     // so for hedera we need to send WHBAR instead HBAR
     const wrappedTokenBalance = tokensBalances[wrappedCurrency.address];
-    const tokenPrice = new Price(wrappedCurrency, wrappedCurrency, '1', '1');
-    const tokenPngPrice = pngPrice.equalTo('0') ? new Fraction('0') : pngPrice.divide(tokenPrice);
-    amountToAdd = new TokenAmount(wrappedCurrency, tokenPngPrice.multiply(earnedAmount.raw).toFixed(0));
+    // the png price is in relation (wrapped) gas coin, so just multiply by the earned amount of png
+    amountToAdd = new TokenAmount(wrappedCurrency, pngPrice.raw.multiply(earnedAmount.raw).toFixed(0));
 
     if (amountToAdd.greaterThan(wrappedTokenBalance ?? '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: wrappedCurrency.symbol });
