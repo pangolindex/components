@@ -283,7 +283,6 @@ export interface CompoundData {
   account: string;
   chainId: ChainId;
   contract: Contract;
-  payableAmount?: string;
 }
 
 export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & { positionId: string };
