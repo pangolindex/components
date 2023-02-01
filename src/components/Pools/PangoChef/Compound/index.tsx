@@ -98,7 +98,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   // if is png pool and not is wrapped token as second token (eg PNG/USDC, PSB/SDOOD)
   // or for hedera chain we want to consider pbar-whbar pool instead of pbar-hbar pool
   // so for hedera also we want to go into if condition
-  if ((isPNGPool && !isWrappedCurrencyPool) || hederaFn.isHederaChain(chainId)) {
+  if ((isPNGPool && !isWrappedCurrencyPool) || (isPNGPool && hederaFn.isHederaChain(chainId))) {
     // need to calculate the token price in png, for this we using the token price on currency and png price on currency
     const token = token0.equals(png) ? token1 : token0;
     const tokenBalance = tokensBalances[token.address];
@@ -113,7 +113,8 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
       symbol: token.symbol,
     });
-  } else {
+  } else if (!hederaFn.isHederaChain(chainId)) {
+    // for anothers chains we can send gas coin
     amountToAdd = CurrencyAmount.ether(pngPrice.raw.multiply(earnedAmount.raw).toFixed(0), chainId);
     if (amountToAdd.greaterThan(currencyBalance ? currencyBalance[account ?? ZERO_ADDRESS] ?? '0' : '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: currency.symbol });
@@ -123,12 +124,33 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       symbol: currency.symbol,
     });
     if (!isPNGPool) {
-      message +=
-        ' ' +
-        t('pangoChef.compoundAmountWarning2', {
-          token0: png.symbol,
-          token1: currency.symbol,
-        });
+      message += t('pangoChef.compoundAmountWarning2', {
+        token0: png.symbol,
+        token1: currency.symbol,
+      });
+    }
+  } else {
+    // we compound to PNG/WRAPPER GAS COIN (PNG/wAVAX, PFL/wFLR, PSB/wSGB  etc) farm
+    // so for hedera we need to send WHBAR instead HBAR
+    const wrappedTokenBalance = tokensBalances[wrappedCurrency.address];
+    const tokenPrice = new Price(wrappedCurrency, wrappedCurrency, '1', '1');
+    const tokenPngPrice = pngPrice.equalTo('0') ? new Fraction('0') : pngPrice.divide(tokenPrice);
+    amountToAdd = new TokenAmount(wrappedCurrency, tokenPngPrice.multiply(earnedAmount.raw).toFixed(0));
+
+    if (amountToAdd.greaterThan(wrappedTokenBalance ?? '0')) {
+      _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: wrappedCurrency.symbol });
+    }
+
+    message += t('pangoChef.compoundAmountWarning', {
+      amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
+      symbol: wrappedCurrency.symbol,
+    });
+
+    if (!isPNGPool) {
+      message += t('pangoChef.compoundAmountWarning2', {
+        token0: png.symbol,
+        token1: currency.symbol,
+      });
     }
   }
 
