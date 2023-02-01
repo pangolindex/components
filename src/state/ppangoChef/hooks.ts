@@ -24,8 +24,9 @@ import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useGetBlockTimestamp, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { useTokens } from 'src/hooks/Tokens';
+import { useTokensCurrencyPriceHook } from 'src/hooks/multiChainsHooks';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
-import { usePairsCurrencyPrice, useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
+import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { getExtraTokensWeeklyRewardRate, useMinichefPools } from 'src/state/pstake/hooks';
@@ -766,6 +767,8 @@ export function useHederaPangoChefInfos() {
               pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
                 .divide(pairPrice?.raw?.multiply(pool.valueVariables.balance.toString()))
+                // here apr is in 10^8 so we needed to divide by 10^8 to keep it in simple form
+                .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(8)))
                 .toSignificant(2),
             );
 
@@ -968,6 +971,7 @@ export function usePangoChefExtraFarmApr(
   pairPrice: Price,
 ) {
   const chainId = useChainId();
+  const useTokensCurrencyPrice = useTokensCurrencyPriceHook[chainId];
   // remove png and null
   const _rewardTokens = (rewardTokens?.filter((token) => !!token && !PNG[chainId].equals(token)) || []) as (
     | Token

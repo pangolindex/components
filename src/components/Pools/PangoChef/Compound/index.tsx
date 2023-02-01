@@ -12,10 +12,9 @@ import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
+import { useApproveCallbackHook, useTokensCurrencyPriceHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { usePangoChefContract } from 'src/hooks/useContract';
-import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
 import { usePangoChefCompoundCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
@@ -47,6 +46,8 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const useCompoundCallback = usePangoChefCompoundCallbackHook[chainId];
   const useApproveCallback = useApproveCallbackHook[chainId];
   const useTokenBalances = useTokenBalancesHook[chainId];
+  const useTokensCurrencyPrice = useTokensCurrencyPriceHook[chainId];
+  const useETHBalances = useAccountBalanceHook[chainId];
 
   function wrappedOnDismiss() {
     setHash(undefined);
@@ -66,7 +67,6 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const currency0 = unwrappedToken(token0, chainId);
   const currency1 = unwrappedToken(token1, chainId);
 
-  const useETHBalances = useAccountBalanceHook[chainId];
   const currencyBalance = useETHBalances(chainId, [account ?? ZERO_ADDRESS]);
 
   const [tokensBalances] = useTokenBalances(account ?? ZERO_ADDRESS, [token0, token1]);
