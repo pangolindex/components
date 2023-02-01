@@ -16,13 +16,7 @@ import {
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import {
-  BIG_INT_SECONDS_IN_WEEK,
-  BIG_INT_ZERO,
-  ONE_FRACTION,
-  PANGOCHEF_COMPOUND_SLIPPAGE,
-  ZERO_ADDRESS,
-} from 'src/constants';
+import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
@@ -41,6 +35,7 @@ import { calculateGasMargin, decimalToFraction, waitForTransaction } from 'src/u
 import { hederaFn } from 'src/utils/hedera';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { PangoChefInfo, Pool, PoolType, RewardSummations, UserInfo, ValueVariables } from './types';
+import { calculateCompoundSlippage } from './utils';
 
 export function usePangoChefInfos() {
   const { account } = usePangolinWeb3();
@@ -1400,17 +1395,7 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
           const minichef = CHAINS[chainId].contracts?.mini_chef;
           const compoundPoolId = minichef?.compoundPoolIdForNonPngFarm ?? 0;
 
-          const minPairAmount = JSBI.BigInt(
-            ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
-          );
-          const maxPairAmount = JSBI.BigInt(
-            ONE_FRACTION.add(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
-          );
-          // the minPairAmount and maxPairAmount is amount of other token/currency to sent to compound with slippage tolerance
-          const slippage = {
-            minPairAmount: JSBI.lessThan(minPairAmount, JSBI.BigInt(0)) ? '0x0' : `0x${minPairAmount.toString(16)}`,
-            maxPairAmount: `0x${maxPairAmount.toString(16)}`,
-          };
+          const slippage = calculateCompoundSlippage(amountToAdd);
           // `compoundToPoolZero` is for Songbird Chain Specifically as compoundToPoolZero only exist in Old PangoChef V1
           // all new chain uses new pangochef method i.e. `compoundTo`
           const nonPNGPoolMethod =
@@ -1425,11 +1410,11 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
 
           const args = isPNGPool ? pngPoolArg : nonPNGPoolArg;
           const estimatedGas = await pangoChefContract.estimateGas[method](...args, {
-            value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}`,
+            value: amountToAdd instanceof TokenAmount ? '0x0' : slippage.maxPairAmount,
           });
           const response: TransactionResponse = await pangoChefContract[method](...args, {
             gasLimit: calculateGasMargin(estimatedGas),
-            value: amountToAdd instanceof TokenAmount ? '0x0' : `0x${maxPairAmount.toString(16)}`,
+            value: amountToAdd instanceof TokenAmount ? '0x0' : slippage.maxPairAmount,
           });
           await waitForTransaction(response, 1);
 
@@ -1488,17 +1473,7 @@ export function useHederaPangoChefCompoundCallback(compoundData: PangoChefCompou
 
           const method = isPNGPool ? 'compound' : 'compoundTo';
 
-          const minPairAmount = JSBI.BigInt(
-            ONE_FRACTION.subtract(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
-          );
-          const maxPairAmount = JSBI.BigInt(
-            ONE_FRACTION.add(PANGOCHEF_COMPOUND_SLIPPAGE).multiply(amountToAdd.raw).toFixed(0),
-          );
-          // the minPairAmount and maxPairAmount is amount of other token/currency to sent to compound with slippage tolerance
-          const slippage = {
-            minPairAmount: JSBI.lessThan(minPairAmount, JSBI.BigInt(0)) ? '0' : minPairAmount.toString(),
-            maxPairAmount: maxPairAmount.toString(),
-          };
+          const slippage = calculateCompoundSlippage(amountToAdd);
 
           const response = await hederaFn.compound({
             poolId,

@@ -109,6 +109,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     if (amountToAdd.greaterThan(tokenBalance ?? '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: token.symbol });
     }
+
     message += t('pangoChef.compoundAmountWarning', {
       amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
       symbol: token.symbol,
@@ -119,10 +120,12 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     if (amountToAdd.greaterThan(currencyBalance ? currencyBalance[account ?? ZERO_ADDRESS] ?? '0' : '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: currency.symbol });
     }
+
     message += t('pangoChef.compoundAmountWarning', {
       amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
       symbol: currency.symbol,
     });
+
     if (!isPNGPool) {
       message += t('pangoChef.compoundAmountWarning2', {
         token0: png.symbol,
