@@ -80,7 +80,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handleFoundExtensionEvent(data) {
-    console.log('hashpack avaialble extension', data);
+    console.log('pangolin hashconnect avaialble extension', data);
     this.availableExtension = true;
   }
 
@@ -91,6 +91,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handlePairingEvent(data) {
+    console.log('pangolin hashconnect handlePairingEvent', data);
     this.pairingData = data.pairingData!;
     const accountId = this.pairingData?.accountIds?.[0];
     if (accountId) {
@@ -100,6 +101,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   setUpEvents() {
+    console.log('pangolin hashconnect setting up events');
     this.instance.foundExtensionEvent.on(this.handleFoundExtensionEvent.bind(this));
     this.instance.pairingEvent.on(this.handlePairingEvent.bind(this));
     this.instance.connectionStatusChangeEvent.on(this.handleConnectionStatusChangeEvent.bind(this));
