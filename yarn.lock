@@ -4493,10 +4493,10 @@
     protobufjs "^7.0.0"
     yargs "^16.2.0"
 
-"@hashgraph/cryptography@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npmjs.org/@hashgraph/cryptography/-/cryptography-1.4.0.tgz"
-  integrity sha512-NtDmeuwaWJKBDYZd+g/etAD56p/RPUuZGdT9jhXxiFW0YrKCaU1k4ramICbRaJg7E+RDSFJXJLarh0G72z5YDA==
+"@hashgraph/cryptography@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.npmjs.org/@hashgraph/cryptography/-/cryptography-1.4.1.tgz"
+  integrity sha512-Qx7fl58Upyf1C4Xdqo2DdMaELYAni3RpAr6fVux3tpGUwp0Wo+zaWseW7k2Klg+FPlmjOjL8XBCXkOr1AbHYWQ==
   dependencies:
     bignumber.js "^9.0.2"
     crypto-js "^4.1.1"
@@ -4505,12 +4505,12 @@
     tweetnacl "^1.0.3"
     utf8 "^3.0.0"
 
-"@hashgraph/cryptography@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.npmjs.org/@hashgraph/cryptography/-/cryptography-1.4.1.tgz"
-  integrity sha512-Qx7fl58Upyf1C4Xdqo2DdMaELYAni3RpAr6fVux3tpGUwp0Wo+zaWseW7k2Klg+FPlmjOjL8XBCXkOr1AbHYWQ==
+"@hashgraph/cryptography@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@hashgraph/cryptography/-/cryptography-1.4.2.tgz#adb3be1bf13b65247e8aa50b8134fc11a9897ae1"
+  integrity sha512-9p9wZvB7JQ7sgcllVHOQb8qxVvkYVfH4TjDsNiy/V38WOXNdf9L8CMd/A3zFP+eXm9jtrybqxmtLZHVO2XZ2lA==
   dependencies:
-    bignumber.js "^9.0.2"
+    bignumber.js "^9.1.0"
     crypto-js "^4.1.1"
     elliptic "^6.5.4"
     js-base64 "^3.7.2"
@@ -4572,24 +4572,6 @@
     protobufjs "^6.11.3"
     utf8 "^3.0.0"
 
-"@hashgraph/sdk@^2.14.2":
-  version "2.18.0"
-  resolved "https://registry.npmjs.org/@hashgraph/sdk/-/sdk-2.18.0.tgz"
-  integrity sha512-+ycMaHKk9HWdhMSuw5BCo450FT9CCpjIwbWpw2lpJ+QKeifORzM1wc70nAm27FkING8/azC4/FL7CLf1DelgTA==
-  dependencies:
-    "@ethersproject/rlp" "^5.6.1"
-    "@grpc/grpc-js" "^1.6.7"
-    "@hashgraph/cryptography" "^1.4.0"
-    "@hashgraph/proto" "2.9.0"
-    axios "^0.27.2"
-    bignumber.js "^9.0.2"
-    crypto-js "^4.1.1"
-    js-base64 "^3.7.2"
-    js-logger "^1.6.1"
-    long "^4.0.0"
-    protobufjs "^6.11.3"
-    utf8 "^3.0.0"
-
 "@hashgraph/sdk@^2.17.1":
   version "2.18.1"
   resolved "https://registry.npmjs.org/@hashgraph/sdk/-/sdk-2.18.1.tgz"
@@ -4601,6 +4583,24 @@
     "@hashgraph/proto" "2.9.0"
     axios "^0.27.2"
     bignumber.js "^9.0.2"
+    crypto-js "^4.1.1"
+    js-base64 "^3.7.2"
+    js-logger "^1.6.1"
+    long "^4.0.0"
+    protobufjs "^6.11.3"
+    utf8 "^3.0.0"
+
+"@hashgraph/sdk@^2.19.2":
+  version "2.19.2"
+  resolved "https://registry.yarnpkg.com/@hashgraph/sdk/-/sdk-2.19.2.tgz#4333386f8924648c0fc729c26ecf463e99a5fba4"
+  integrity sha512-cFS+kCukk2Y8ZyjX5XZBLMylXRyWbghkpIGDKNHQdpU3JJ7Xbp/r23hOxn4aQnz6jbO1GSH5447gCQHkfIENoQ==
+  dependencies:
+    "@ethersproject/rlp" "^5.7.0"
+    "@grpc/grpc-js" "^1.7.0"
+    "@hashgraph/cryptography" "^1.4.2"
+    "@hashgraph/proto" "2.11.0"
+    axios "^0.27.2"
+    bignumber.js "^9.1.0"
     crypto-js "^4.1.1"
     js-base64 "^3.7.2"
     js-logger "^1.6.1"
@@ -14253,21 +14253,22 @@ hash.js@1.1.7, hash.js@^1.0.0, hash.js@^1.0.3, hash.js@^1.1.7:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
 
-hashconnect@^0.2.2:
-  version "0.2.2"
-  resolved "https://registry.npmjs.org/hashconnect/-/hashconnect-0.2.2.tgz"
-  integrity sha512-1h4VClayyJR3XdqCUGDXfz2TecIMNFXIv1bRx1QT705BONKafRh6S2amoauvS9LF72gLi2ox/abK8TM9Xybcbg==
+hashconnect@0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/hashconnect/-/hashconnect-0.2.4.tgz#b15d2c8d2808a6770dd00dd372ac43faa6d4e089"
+  integrity sha512-LPz+gu/8rQT/OEn1Gdcrqb0Mgbbw6cKjRH12Q0AkjJPAE8ks0pTpOi6Rdp6TZ6gzO7xgm8POSAABa13ITD9bLw==
   dependencies:
-    "@hashgraph/sdk" "^2.14.2"
+    "@hashgraph/sdk" "^2.19.2"
     buffer "^6.0.3"
     crypto-es "^1.2.7"
     crypto-js "^4.1.1"
     i "^0.3.7"
+    isomorphic-ws "^5.0.0"
     protons "^2.0.3"
     simple-crypto-js "^3.0.1"
     ts-typed-events "3.0.0"
     uuid "^8.3.2"
-    ws "^8.5.0"
+    ws "^8.8.1"
 
 hast-to-hyperscript@^9.0.0:
   version "9.0.1"
@@ -15458,6 +15459,11 @@ isomorphic-unfetch@^3.1.0:
   dependencies:
     node-fetch "^2.6.1"
     unfetch "^4.2.0"
+
+isomorphic-ws@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/isomorphic-ws/-/isomorphic-ws-5.0.0.tgz#e5529148912ecb9b451b46ed44d53dae1ce04bbf"
+  integrity sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==
 
 isstream@~0.1.2:
   version "0.1.2"
@@ -23992,10 +23998,10 @@ ws@^8.2.3:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.11.0.tgz#6a0d36b8edfd9f96d8b25683db2f8d7de6e8e143"
   integrity sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==
 
-ws@^8.5.0:
-  version "8.8.1"
-  resolved "https://registry.npmjs.org/ws/-/ws-8.8.1.tgz"
-  integrity sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==
+ws@^8.8.1:
+  version "8.12.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.12.0.tgz#485074cc392689da78e1828a9ff23585e06cddd8"
+  integrity sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==
 
 x-default-browser@^0.4.0:
   version "0.4.0"
