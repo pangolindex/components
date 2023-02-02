@@ -38,7 +38,8 @@ export class HashConnector extends AbstractConnector {
   private topic: string;
   private pairingString: string;
   private pairingData: HashConnectTypes.SavedPairingData | null = null;
-  public availableExtension: HashConnectTypes.WalletMetadata | undefined;
+
+  public availableExtension: boolean;
   private initData: HashConnectTypes.InitilizationData | null = null;
 
   public constructor(
@@ -57,7 +58,7 @@ export class HashConnector extends AbstractConnector {
     this.normalizeChainId = args?.normalizeChainId;
     this.normalizeAccount = args?.normalizeAccount;
     this.network = args?.config?.networkId;
-    this.availableExtension = undefined;
+    this.availableExtension = false;
     this.topic = '';
     this.pairingString = '';
     this.pairingData = null;
@@ -79,7 +80,8 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handleFoundExtensionEvent(data) {
-    this.availableExtension = data;
+    console.log('hashpack avaialble extension', data);
+    this.availableExtension = true;
   }
 
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
