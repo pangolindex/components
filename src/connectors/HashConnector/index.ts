@@ -87,6 +87,7 @@ export class HashConnector extends AbstractConnector {
   private handleFoundExtensionEvent(data) {
     console.log('pangolin hashconnect avaialble extension', data);
     this.availableExtension = true;
+    console.log('pangolin hashconnect emitting event CHECK_EXTENSION');
     this.emit(HashConnectEvents.CHECK_EXTENSION, true);
   }
 

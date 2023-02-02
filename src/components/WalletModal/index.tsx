@@ -69,10 +69,12 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   useEffect(() => {
     const emitterFn = (isHashpackAvailable: boolean) => {
+      console.log('received hashpack emit event CHECK_EXTENSION', isHashpackAvailable);
       setAvaialableHashpack(isHashpackAvailable);
     };
     hashConnect.on(HashConnectEvents.CHECK_EXTENSION, emitterFn);
     return () => {
+      console.log('removing hashpack CHECK_EXTENSION event listener');
       hashConnect.off(HashConnectEvents.CHECK_EXTENSION, emitterFn);
     };
   }, []);
