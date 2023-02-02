@@ -87,6 +87,7 @@ export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) 
   [ChainId.MOONBEAM]: isDummyAddress,
   [ChainId.OP]: isDummyAddress,
   [ChainId.EVMOS_TESTNET]: isAddress,
+  [ChainId.EVMOS_MAINNET]: isAddress,
 };
 
 export const checkAddressNetworkBaseMapping: {
@@ -124,6 +125,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].blockExplorerUrls?.[0] || '',
+  [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET].blockExplorerUrls?.[0] || '',
 };
 
 const transactionPath: { [chainId in ChainId]: string } = {
@@ -154,6 +156,7 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'tx',
+  [ChainId.EVMOS_MAINNET]: 'tx',
 };
 
 const addressPath: { [chainId in ChainId]: string } = {
@@ -184,6 +187,7 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'address',
+  [ChainId.EVMOS_MAINNET]: 'address',
 };
 
 const blockPath: { [chainId in ChainId]: string } = {
@@ -214,6 +218,7 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'block',
+  [ChainId.EVMOS_MAINNET]: 'block',
 };
 
 const tokenPath: { [chainId in ChainId]: string } = {
@@ -244,6 +249,7 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'token',
+  [ChainId.EVMOS_MAINNET]: 'token',
 };
 
 export function getEtherscanLink(

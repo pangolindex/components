@@ -54,6 +54,7 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
   [ChainId.EVMOS_TESTNET]: usePangoChefInfos,
+  [ChainId.EVMOS_MAINNET]: useDummyHook,
 };
 
 export type UsePangoChefStakeCallbackHookType = {
@@ -91,6 +92,7 @@ export const usePangoChefStakeCallbackHook: UsePangoChefStakeCallbackHookType = 
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
   [ChainId.EVMOS_TESTNET]: useEVMPangoChefStakeCallback,
+  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
 };
 
 export type UsePangoChefClaimRewardCallbackHookType = {
@@ -128,6 +130,7 @@ export const usePangoChefClaimRewardCallbackHook: UsePangoChefClaimRewardCallbac
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
   [ChainId.EVMOS_TESTNET]: useEVMPangoChefClaimRewardCallback,
+  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
 };
 
 export type UsePangoChefWithdrawCallbackHookType = {
@@ -165,6 +168,7 @@ export const usePangoChefWithdrawCallbackHook: UsePangoChefWithdrawCallbackHookT
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
   [ChainId.EVMOS_TESTNET]: useEVMPangoChefWithdrawCallback,
+  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
 };
 
 export type UsePangoChefCompoundCallbackHookType = {
@@ -202,6 +206,7 @@ export const usePangoChefCompoundCallbackHook: UsePangoChefCompoundCallbackHookT
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
   [ChainId.EVMOS_TESTNET]: useEVMPangoChefCompoundCallback,
+  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
 };
 
 export type UseGetLockingPoolsForPoolIdHookType = {
@@ -239,4 +244,5 @@ export const useGetLockingPoolsForPoolIdHook: UseGetLockingPoolsForPoolIdHookTyp
   [ChainId.MOONBEAM]: useDummyIsLockingPoolZero,
   [ChainId.OP]: useDummyIsLockingPoolZero,
   [ChainId.EVMOS_TESTNET]: useDummyIsLockingPoolZero,
+  [ChainId.EVMOS_MAINNET]: useDummyIsLockingPoolZero,
 };
