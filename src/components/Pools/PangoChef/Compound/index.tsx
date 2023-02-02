@@ -179,7 +179,6 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
 
   const slippage = calculateCompoundSlippage(amountToAdd);
-  //console.log(slippage);
   // if it approve exact value, we need to approve the max slippage value so as not to revert due to missing approval
   const approvalAmount =
     amountToAdd instanceof TokenAmount ? new TokenAmount(amountToAdd.token, slippage.maxPairAmount) : amountToAdd;
