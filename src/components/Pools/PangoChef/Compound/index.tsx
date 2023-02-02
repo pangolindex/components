@@ -113,9 +113,15 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     const tokenBalance = tokensBalances[token.address];
     const tokenPrice = tokensPrices[token.address] ?? new Price(token, wrappedCurrency, '1', '0');
     const tokenPngPrice = tokenPrice.equalTo('0') ? new Fraction('0') : pngPrice.divide(tokenPrice);
-    const _amount = tokenPngPrice.multiply(earnedAmount.raw);
-    amountToAdd = new TokenAmount(token, _amount.equalTo('0') ? '0' : _amount.toFixed(0));
+    let _amount = tokenPngPrice.multiply(earnedAmount.raw);
 
+    // if the tokens have diffent decimals we need to divide this by 1e (png.decimals - token.decimals)
+    if (png.decimals !== token.decimals) {
+      const exponent = 10 ** (png.decimals - token.decimals);
+      _amount = _amount.divide(exponent.toString());
+    }
+
+    amountToAdd = new TokenAmount(token, _amount.equalTo('0') ? '0' : _amount.toFixed(0));
     if (amountToAdd.greaterThan(tokenBalance ?? '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: token.symbol });
     }
@@ -173,6 +179,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
 
   const slippage = calculateCompoundSlippage(amountToAdd);
+  //console.log(slippage);
   // if it approve exact value, we need to approve the max slippage value so as not to revert due to missing approval
   const approvalAmount =
     amountToAdd instanceof TokenAmount ? new TokenAmount(amountToAdd.token, slippage.maxPairAmount) : amountToAdd;
