@@ -341,7 +341,7 @@ class Hedera {
 
   isAddressValid = (address: string): string | false => {
     if (address && hethers.utils.isAddress(address.toLowerCase())) {
-      return address;
+      return hethers.utils.getChecksumAddress(address);
     } else {
       return false;
     }

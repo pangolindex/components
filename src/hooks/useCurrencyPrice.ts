@@ -105,15 +105,12 @@ export function useTokensCurrencyPriceSubgraph(tokens: (Token | undefined)[]): {
   const currency = WAVAX[chainId];
 
   const filteredTokens = useMemo(() => tokens.filter((token) => !!token) as Token[], [tokens]);
-  const tokenAddresses = useMemo(
-    () => filteredTokens.map((token) => token?.address?.toLowerCase()),
-    [filteredTokens, chainId],
-  );
+  const tokenAddresses = useMemo(() => filteredTokens.map((token) => token?.address), [filteredTokens, chainId]);
   // get tokens from subgraph
   const results = useSubgraphTokens(tokenAddresses);
   const tokenPrices = useMemo(() => {
     return (results?.data || []).reduce((memo, result) => {
-      const token = filteredTokens.find((token) => token?.address?.toLowerCase() === result?.id);
+      const token = filteredTokens.find((token) => token?.address === result?.id);
       if (token) {
         const fractionPrice = decimalToFraction(Number(result?.derivedETH));
         const denominatorAmount = new TokenAmount(token, fractionPrice?.denominator);
@@ -143,7 +140,6 @@ export function useTokenCurrencyPriceSubgraph(token: Token | undefined): Price {
 
   return useMemo(() => {
     if (!token) return new Price(currency, currency, '1', '0');
-
     return tokenPrice[token?.address];
   }, [tokenPrice, token]);
 }
