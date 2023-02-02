@@ -59,7 +59,7 @@ export function isDummyAddress(value: any): string | false {
   return value;
 }
 
-export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+export const validateAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
   [ChainId.FUJI]: isAddress,
   [ChainId.AVALANCHE]: isAddress,
   [ChainId.WAGMI]: isAddress,
