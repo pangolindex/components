@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { formatUnits } from '@ethersproject/units';
 import { CAVAX, ChainId, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
@@ -111,8 +112,9 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     const token = token0.equals(png) ? token1 : token0;
     const tokenBalance = tokensBalances[token.address];
     const tokenPrice = tokensPrices[token.address] ?? new Price(token, wrappedCurrency, '1', '0');
-    const tokenPngPrice = pngPrice.equalTo('0') ? new Fraction('0') : pngPrice.divide(tokenPrice);
-    amountToAdd = new TokenAmount(token, tokenPngPrice.multiply(earnedAmount.raw).toFixed(0));
+    const tokenPngPrice = tokenPrice.equalTo('0') ? new Fraction('0') : pngPrice.divide(tokenPrice);
+    const _amount = tokenPngPrice.multiply(earnedAmount.raw);
+    amountToAdd = new TokenAmount(token, _amount.equalTo('0') ? '0' : _amount.toFixed(0));
 
     if (amountToAdd.greaterThan(tokenBalance ?? '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: token.symbol });
@@ -124,7 +126,10 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     });
   } else if (!hederaFn.isHederaChain(chainId)) {
     // for anothers chains we can send gas coin
-    amountToAdd = CurrencyAmount.ether(pngPrice.raw.multiply(earnedAmount.raw).toFixed(0), chainId);
+    amountToAdd = CurrencyAmount.ether(
+      pngPrice.equalTo('0') || earnedAmount.equalTo('0') ? '0' : pngPrice.raw.multiply(earnedAmount.raw).toFixed(0),
+      chainId,
+    );
     if (amountToAdd.greaterThan(currencyBalance ? currencyBalance[account ?? ZERO_ADDRESS] ?? '0' : '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: currency.symbol });
     }
@@ -366,3 +371,4 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   );
 };
 export default CompoundV3;
+/* eslint-enable max-lines */
