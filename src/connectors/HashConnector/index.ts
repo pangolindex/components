@@ -4,6 +4,7 @@ import { AccountId, Transaction, TransactionId } from '@hashgraph/sdk';
 import { ChainId } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
+import EventEmitter from 'event-emitter';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
 import { TransactionResponse } from 'src/utils/hedera';
@@ -82,6 +83,7 @@ export class HashConnector extends AbstractConnector {
   private handleFoundExtensionEvent(data) {
     console.log('pangolin hashconnect avaialble extension', data);
     this.availableExtension = true;
+    this.emit('checkExtension', true);
   }
 
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
@@ -268,3 +270,7 @@ export class HashConnector extends AbstractConnector {
     return null;
   }
 }
+// All instances of HashConnector will expose event-emitter interface
+// With this we can handle any event  to outside class
+// now we use event to check Hashpack Extension avaialble or not
+EventEmitter(HashConnector.prototype);

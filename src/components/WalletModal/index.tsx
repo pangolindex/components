@@ -62,6 +62,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   const [triedSafe, setTriedSafe] = useState<boolean>(!IS_IN_IFRAME);
 
+  const [availableHashpack, setAvaialableHashpack] = useState<boolean>(false);
+
   const walletModalOpen = open;
 
   const walletOptions = useMemo(() => {
@@ -127,6 +129,16 @@ const WalletModal: React.FC<WalletModalProps> = ({
   const isCbWallet = isCbWalletDappBrowser || isWalletlink;
   const isAvalancheCore = window.avalanche && window.avalanche.isAvalanche;
   const isBitKeep = window.isBitKeep && !!window.bitkeep.ethereum;
+
+  useEffect(() => {
+    const emitterFn = (args) => {
+      setAvaialableHashpack(args);
+    };
+    hashConnect.on('checkExtension', emitterFn);
+    return () => {
+      hashConnect.off('checkExtension', emitterFn);
+    };
+  }, []);
 
   const tryActivation = async (
     activationConnector: AbstractConnector | SafeAppConnector | undefined,
@@ -339,7 +351,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
       } else if (option.connector === hashConnect) {
         // provide hashpack install link if not installed
 
-        if (!hashConnect.availableExtension) {
+        if (!availableHashpack) {
           return (
             <Option
               id={`connect-${key}`}
