@@ -4,10 +4,16 @@ import { AccountId, Transaction, TransactionId } from '@hashgraph/sdk';
 import { ChainId } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
-import EventEmitter from 'event-emitter';
+import EventEmitter from 'eventemitter3';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
 import { TransactionResponse } from 'src/utils/hedera';
+
+// hashconnectEvent will expose event-emitter interface
+// with this we can handle/emit any event to outside class
+// for now this is specifically used for checking hashpack available or now
+// see HashConnectEvents.CHECK_EXTENSION
+export const hashconnectEvent = new EventEmitter();
 
 export interface HashConfigType {
   networkId: string;
@@ -57,7 +63,7 @@ export class HashConnector extends AbstractConnector {
     super(args);
 
     //create the hashconnect instance
-    this.instance = new HashConnect(false);
+    this.instance = new HashConnect(true);
 
     this.chainId = args?.config?.chainId;
     this.normalizeChainId = args?.normalizeChainId;
@@ -87,7 +93,8 @@ export class HashConnector extends AbstractConnector {
   private handleFoundExtensionEvent(data) {
     console.log('pangolin hashconnect avaialble extension', data);
     this.availableExtension = true;
-    this.emit(HashConnectEvents.CHECK_EXTENSION, true);
+    console.log('pangolin hashconnect emitting event CHECK_EXTENSION');
+    hashconnectEvent.emit(HashConnectEvents.CHECK_EXTENSION, true);
   }
 
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
@@ -274,9 +281,3 @@ export class HashConnector extends AbstractConnector {
     return null;
   }
 }
-
-// All instances of HashConnector will expose event-emitter interface
-// with this we can handle/emit any event to outside class
-// for now this is specifically used for checking hashpack available or now
-// see HashConnectEvents.CHECK_EXTENSION
-EventEmitter(HashConnector.prototype);
