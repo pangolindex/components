@@ -15,6 +15,10 @@ export interface HashConfigType {
   contractId: string;
 }
 
+export enum HashConnectEvents {
+  CHECK_EXTENSION = 'checkExtension',
+}
+
 const LocalStorageKey = 'pangolinHashPackData';
 //Intial App config
 const APP_METADATA: HashConnectTypes.AppMetadata = {
@@ -83,7 +87,7 @@ export class HashConnector extends AbstractConnector {
   private handleFoundExtensionEvent(data) {
     console.log('pangolin hashconnect avaialble extension', data);
     this.availableExtension = true;
-    this.emit('checkExtension', true);
+    this.emit(HashConnectEvents.CHECK_EXTENSION, true);
   }
 
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
@@ -270,7 +274,9 @@ export class HashConnector extends AbstractConnector {
     return null;
   }
 }
+
 // All instances of HashConnector will expose event-emitter interface
-// With this we can handle any event  to outside class
-// now we use event to check Hashpack Extension avaialble or not
+// with this we can handle/emit any event to outside class
+// for now this is specifically used for checking hashpack available or now
+// see HashConnectEvents.CHECK_EXTENSION
 EventEmitter(HashConnector.prototype);

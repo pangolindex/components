@@ -8,6 +8,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { isMobile } from 'react-device-detect';
 import { Button } from 'src/components/Button';
 import { avalancheCore, bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
+import { HashConnectEvents } from 'src/connectors/HashConnector';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { Box, Modal, ToggleButtons } from '../../';
@@ -65,6 +66,16 @@ const WalletModal: React.FC<WalletModalProps> = ({
   const [availableHashpack, setAvaialableHashpack] = useState<boolean>(false);
 
   const walletModalOpen = open;
+
+  useEffect(() => {
+    const emitterFn = (isHashpackAvailable: boolean) => {
+      setAvaialableHashpack(isHashpackAvailable);
+    };
+    hashConnect.on(HashConnectEvents.CHECK_EXTENSION, emitterFn);
+    return () => {
+      hashConnect.off(HashConnectEvents.CHECK_EXTENSION, emitterFn);
+    };
+  }, []);
 
   const walletOptions = useMemo(() => {
     if (walletType === CHAIN_TYPE.EVM_CHAINS) {
@@ -129,16 +140,6 @@ const WalletModal: React.FC<WalletModalProps> = ({
   const isCbWallet = isCbWalletDappBrowser || isWalletlink;
   const isAvalancheCore = window.avalanche && window.avalanche.isAvalanche;
   const isBitKeep = window.isBitKeep && !!window.bitkeep.ethereum;
-
-  useEffect(() => {
-    const emitterFn = (args) => {
-      setAvaialableHashpack(args);
-    };
-    hashConnect.on('checkExtension', emitterFn);
-    return () => {
-      hashConnect.off('checkExtension', emitterFn);
-    };
-  }, []);
 
   const tryActivation = async (
     activationConnector: AbstractConnector | SafeAppConnector | undefined,
