@@ -69,7 +69,7 @@ export function useRangoCurrencies() {
           symbol: token?.symbol,
           name: token?.name,
           logo: token?.image,
-          address: token?.address || ZERO_ADDRESS, // TODO double check 0 address
+          address: token?.address || ZERO_ADDRESS,
         };
       });
     return formattedTokens;

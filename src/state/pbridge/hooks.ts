@@ -409,22 +409,13 @@ export function useBridgeSwapActionHandlers(): {
         }),
       );
     } catch (e: Error | unknown) {
-      if (e) {
-        dispatch(
-          changeTransactionLoaderStatus({
-            transactionLoaderStatus: false,
-            transactionStatus: TransactionStatus.FAILED,
-          }),
-        );
-        dispatch(setTransactionError({ transactionError: e as Error }));
-      } else {
-        dispatch(
-          changeTransactionLoaderStatus({
-            transactionLoaderStatus: false,
-            transactionStatus: TransactionStatus.SUCCESS,
-          }),
-        );
-      }
+      dispatch(
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.FAILED,
+        }),
+      );
+      dispatch(setTransactionError({ transactionError: e as Error }));
     }
   };
 
