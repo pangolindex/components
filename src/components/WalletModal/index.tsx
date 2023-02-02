@@ -8,9 +8,9 @@ import Scrollbars from 'react-custom-scrollbars';
 import { isMobile } from 'react-device-detect';
 import { Button } from 'src/components/Button';
 import { avalancheCore, bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
-import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import { AppState, useSelector } from 'src/state';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
@@ -63,21 +63,9 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   const [triedSafe, setTriedSafe] = useState<boolean>(!IS_IN_IFRAME);
 
-  const [availableHashpack, setAvaialableHashpack] = useState<boolean>(false);
+  const availableHashpack = useSelector((state: AppState) => state?.papplication?.isAvailableHashpack);
 
   const walletModalOpen = open;
-
-  useEffect(() => {
-    const emitterFn = (isHashpackAvailable: boolean) => {
-      console.log('received hashpack emit event CHECK_EXTENSION', isHashpackAvailable);
-      setAvaialableHashpack(isHashpackAvailable);
-    };
-    hashconnectEvent.on(HashConnectEvents.CHECK_EXTENSION, emitterFn);
-    return () => {
-      console.log('removing hashpack CHECK_EXTENSION event listener');
-      hashconnectEvent.off(HashConnectEvents.CHECK_EXTENSION, emitterFn);
-    };
-  }, []);
 
   const walletOptions = useMemo(() => {
     if (walletType === CHAIN_TYPE.EVM_CHAINS) {
