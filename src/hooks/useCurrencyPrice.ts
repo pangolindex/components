@@ -116,7 +116,7 @@ export function useTokensCurrencyPriceSubgraph(tokens: (Token | undefined)[]): {
         const denominatorAmount = new TokenAmount(token, fractionPrice?.denominator);
         const numeratorAmount = new TokenAmount(currency, fractionPrice.numerator);
         const price = new Price(token, currency, denominatorAmount.raw, numeratorAmount.raw);
-        memo[token.address] = price;
+        memo[result?.id] = price;
       }
 
       return memo;
@@ -140,7 +140,8 @@ export function useTokenCurrencyPriceSubgraph(token: Token | undefined): Price {
 
   return useMemo(() => {
     if (!token) return new Price(currency, currency, '1', '0');
-    return tokenPrice[token?.address];
+
+    return tokenPrice[token?.address?.toLowerCase()];
   }, [tokenPrice, token]);
 }
 
@@ -201,8 +202,8 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
       // here specifically for hedera we are checking 1 PGL price little different
       // this is mainly due to hedera PGL has 0 decimals and its creating weird edge cases
       if (hederaFn.isHederaChain(chainId)) {
-        const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
-        const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
+        const token0Price = tokensPrices[token0.address?.toLowerCase()] ?? new Price(token0, currency, '1', '0');
+        const token1Price = tokensPrices[token1.address?.toLowerCase()] ?? new Price(token1, currency, '1', '0');
         const reserve0 = pair?.reserve0;
         const reserve1 = pair?.reserve1;
         // reserve0 * token0PriceInEth + reserve1 * token1PriceInEth => tvlInEth
