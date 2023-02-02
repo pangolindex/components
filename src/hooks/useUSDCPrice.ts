@@ -8,6 +8,7 @@ import { decimalToFraction } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { PairState, usePairs } from '../data/Reserves';
 import { useChainId } from '../hooks';
+import { useTokenCurrencyPriceHook } from './multiChainsHooks';
 import { useTokenCurrencyPrice } from './useCurrencyPrice';
 
 /**
@@ -160,6 +161,8 @@ export function useSongBirdUSDPrice(currency?: Currency): Price | undefined {
  */
 export function useUsdPriceCoingecko(currency?: Currency): Price | undefined {
   const chainId = useChainId();
+
+  const useTokenCurrencyPrice = useTokenCurrencyPriceHook[chainId];
 
   const wrapped = wrappedCurrency(currency, chainId);
 
