@@ -4,6 +4,7 @@ import { AccountId, Transaction, TransactionId } from '@hashgraph/sdk';
 import { ChainId } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
+import EventEmitter from 'event-emitter';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
 import { TransactionResponse } from 'src/utils/hedera';
@@ -12,6 +13,10 @@ export interface HashConfigType {
   networkId: string;
   chainId: number;
   contractId: string;
+}
+
+export enum HashConnectEvents {
+  CHECK_EXTENSION = 'checkExtension',
 }
 
 const LocalStorageKey = 'pangolinHashPackData';
@@ -38,7 +43,8 @@ export class HashConnector extends AbstractConnector {
   private topic: string;
   private pairingString: string;
   private pairingData: HashConnectTypes.SavedPairingData | null = null;
-  public availableExtension: HashConnectTypes.WalletMetadata | undefined;
+
+  public availableExtension: boolean;
   private initData: HashConnectTypes.InitilizationData | null = null;
 
   public constructor(
@@ -57,7 +63,7 @@ export class HashConnector extends AbstractConnector {
     this.normalizeChainId = args?.normalizeChainId;
     this.normalizeAccount = args?.normalizeAccount;
     this.network = args?.config?.networkId;
-    this.availableExtension = undefined;
+    this.availableExtension = false;
     this.topic = '';
     this.pairingString = '';
     this.pairingData = null;
@@ -79,7 +85,9 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handleFoundExtensionEvent(data) {
-    this.availableExtension = data;
+    console.log('pangolin hashconnect avaialble extension', data);
+    this.availableExtension = true;
+    this.emit(HashConnectEvents.CHECK_EXTENSION, true);
   }
 
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
@@ -89,6 +97,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handlePairingEvent(data) {
+    console.log('pangolin hashconnect handlePairingEvent', data);
     this.pairingData = data.pairingData!;
     const accountId = this.pairingData?.accountIds?.[0];
     if (accountId) {
@@ -98,6 +107,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   setUpEvents() {
+    console.log('pangolin hashconnect setting up events');
     this.instance.foundExtensionEvent.on(this.handleFoundExtensionEvent.bind(this));
     this.instance.pairingEvent.on(this.handlePairingEvent.bind(this));
     this.instance.connectionStatusChangeEvent.on(this.handleConnectionStatusChangeEvent.bind(this));
@@ -264,3 +274,9 @@ export class HashConnector extends AbstractConnector {
     return null;
   }
 }
+
+// All instances of HashConnector will expose event-emitter interface
+// with this we can handle/emit any event to outside class
+// for now this is specifically used for checking hashpack available or now
+// see HashConnectEvents.CHECK_EXTENSION
+EventEmitter(HashConnector.prototype);
