@@ -259,7 +259,7 @@ export const SWAP_DEFAULT_CURRENCY = {
   },
   [ChainId.HEDERA_MAINNET]: {
     inputCurrency: 'HBAR',
-    outputCurrency: WAVAX[ChainId.HEDERA_MAINNET].address,
+    outputCurrency: USDC[ChainId.HEDERA_MAINNET].address,
   },
   [ChainId.NEAR_MAINNET]: {
     inputCurrency: WAVAX[ChainId.NEAR_MAINNET].address,
