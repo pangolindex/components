@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 
 export const GET_PANGOCHEF = gql`
-  query pangoChefs($where: PangoChef_filter, $userAddress: String) {
+  query pangoChefs($where: PangoChef_filter) {
     pangoChefs(where: $where) {
       id
       totalWeight
@@ -53,10 +53,6 @@ export const GET_PANGOCHEF = gql`
             decimals
           }
         }
-        # farmingPositions(where: { userAddress: $userAddress }) {
-        #   id
-        #   stakedTokenBalance
-        # }
       }
     }
   }
