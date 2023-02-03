@@ -355,7 +355,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
                 token0: currency0.symbol,
                 token1: currency1.symbol,
                 stakeToken0: isPNGPool ? currency0.symbol : png.symbol,
-                stakeToken1: isPNGPool ? currency1.symbol : wrappedCurrency.symbol,
+                stakeToken1: isPNGPool ? currency1.symbol : currency.symbol,
                 compoundToken: tokenOrCurrency.symbol,
                 png: png.symbol,
               })}
