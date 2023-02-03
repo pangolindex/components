@@ -52,9 +52,10 @@ import {
   PangochefFarmReward,
   PangochefFarmRewarder,
 } from './types';
-import { mininchefV2Clients } from 'src/apollo/client';
+import { subgraphClient } from 'src/apollo/client';
 import { GET_PANGOCHEF } from 'src/apollo/pangochef';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
+import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 
 export function usePangoChefInfos() {
   const { account } = usePangolinWeb3();
@@ -737,8 +738,6 @@ export function useHederaPangoChefInfos() {
 
       const pairPrice = pairPrices[pair?.liquidityToken?.address];
 
-      console.log('==1pairPrice', pairPrice);
-
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
       const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? new Fraction('0', '1');
@@ -782,6 +781,11 @@ export function useHederaPangoChefInfos() {
             : JSBI.BigInt(0),
         );
       };
+      console.log('==5 pair', pair);
+      console.log('==5 rewardRate', rewardRate?.toString());
+      console.log('==5 pngPrice', pngPrice?.raw?.toFixed(2));
+      console.log('==5 pairPrice', pairPrice?.raw?.toFixed(10));
+      console.log('==5 pool.valueVariables.balance.toString()', pool.valueVariables.balance.toString());
 
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
@@ -863,7 +867,7 @@ export function useHederaPangoChefInfos() {
 }
 
 export const fetchPangoChefSubgraphData = (account: string, chainId: ChainId) => async () => {
-  const mininchefV2Client = mininchefV2Clients[chainId];
+  const mininchefV2Client = subgraphClient[chainId];
   if (!mininchefV2Client) {
     return null;
   }
@@ -877,6 +881,11 @@ export function useGetPangoChefInfosViaSubgraph() {
   const png = PNG[chainId];
   const [shouldCreateStorage] = useHederaPangochefContractCreateCallback();
   const pangoChefContract = usePangoChefContract();
+
+  const useUSDPrice = useUSDCPriceHook[chainId];
+  const pngPrice = useUSDPrice(png);
+
+  console.log('pngPrice1', pngPrice?.toFixed(), pngPrice?.toSignificant(2), pngPrice?.adjusted);
 
   const results = useQuery(
     ['get-pangochef-subgraph-farms', account],
@@ -949,6 +958,8 @@ export function useGetPangoChefInfosViaSubgraph() {
 
     return [_pools, _poolsIds];
   }, [poolsState]);
+
+  const poolsRewardsRateState = useSingleContractMultipleData(pangoChefContract, 'poolRewardRate', poolsIds);
 
   const userInfoInput = useMemo(() => {
     if ((allPoolsIds || []).length === 0 || !account) return [];
@@ -1027,6 +1038,7 @@ export function useGetPangoChefInfosViaSubgraph() {
       const userPendingRewardState = userPendingRewardsState[index];
       const userRewardRateState = userRewardRatesState[index];
       const userInfo = userInfos[index];
+      const poolRewardRateState = poolsRewardsRateState[index];
 
       // if is loading or not exist pair continue
       if (
@@ -1034,13 +1046,14 @@ export function useGetPangoChefInfosViaSubgraph() {
         userInfoState?.loading ||
         userPendingRewardState?.loading ||
         userRewardRateState?.loading ||
+        poolRewardRateState?.loading ||
         avaxPngPairState == PairState.LOADING ||
         !avaxPngPair
       ) {
         continue;
       }
 
-      const rewardsAddresses = farm.rewarder.rewards;
+      const rewards = farm.rewarder.rewards;
 
       const pool = pools[index];
 
@@ -1048,17 +1061,17 @@ export function useGetPangoChefInfosViaSubgraph() {
       const pair = farm?.pair;
       const multiplier = JSBI.BigInt(farm?.weight);
 
-      const rewardTokens = rewardsAddresses.map((rewardToken: PangochefFarmReward) => {
+      const rewardTokens = rewards.map((rewardToken: PangochefFarmReward) => {
         const tokenObj = rewardToken.token;
         return new Token(chainId, getAddress(tokenObj.id), Number(tokenObj.decimals), tokenObj.symbol, tokenObj.name);
       });
 
-      const rewardTokensAddress = rewardsAddresses.map((rewardToken: PangochefFarmReward) => {
+      const rewardTokensAddress = rewards.map((rewardToken: PangochefFarmReward) => {
         const tokenObj = rewardToken.token;
         return getAddress(tokenObj.id);
       });
 
-      const rewardMultipliers: JSBI[] = rewardsAddresses.map((rewardToken: PangochefFarmReward) => {
+      const rewardMultipliers: JSBI[] = rewards.map((rewardToken: PangochefFarmReward) => {
         return JSBI.BigInt(rewardToken?.multiplier.toString());
       });
 
@@ -1084,56 +1097,169 @@ export function useGetPangoChefInfosViaSubgraph() {
       const dummyPair = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0'), chainId);
       const lpToken = dummyPair.liquidityToken;
 
-      const farmTvl = parseUnits(farm?.tvl?.toString());
-      const totalSupplyReserve0 = parseUnits(farm?.pair?.reserve0, farm?.pair?.token0.decimals);
-      const totalSupply = parseUnits(
-        farm?.pair?.totalSupply.toString() === '0' ? '1' : farm?.pair?.totalSupply.toString(),
+      console.log('lptoken', lpToken);
+      console.log('token0', token0);
+      console.log('token1', token1);
+
+      const farmTvl = farm?.tvl;
+
+      console.log('farmTvl', farmTvl);
+
+      const farmTvlAmount = new TokenAmount(lpToken, farmTvl?.toString() || JSBI.BigInt(0));
+
+      console.log('farmTvlAmount', farmTvlAmount?.toExact());
+
+      const reserve0 = parseUnits(pair?.reserve0?.toString(), pair?.token0.decimals);
+
+      console.log('reserve0', reserve0?.toString());
+
+      const reserve0Amount = new TokenAmount(token0, reserve0?.toString() || JSBI.BigInt(0));
+
+      console.log('reserve0Amount', reserve0Amount?.toFixed());
+
+      const reserve1 = parseUnits(pair?.reserve1?.toString(), pair?.token1.decimals);
+
+      console.log('reserve1', reserve1?.toString());
+
+      const reserve1Amount = new TokenAmount(token1, reserve1?.toString() || JSBI.BigInt(0));
+
+      console.log('reserve1Amount', reserve1Amount?.toFixed());
+
+      const token0derivedUSD = parseUnits(Number(pair?.token0?.derivedUSD)?.toFixed(4), pair?.token0.decimals);
+
+      console.log('token0derivedUSD', token0derivedUSD?.toString());
+
+      const token1derivedUSD = parseUnits(Number(pair?.token1?.derivedUSD)?.toFixed(4), pair?.token1.decimals);
+
+      console.log('token1derivedUSD', token1derivedUSD?.toString());
+
+      const token0derivedUSDAmount = new TokenAmount(token0, token0derivedUSD?.toString() || JSBI.BigInt(0));
+
+      console.log('token0derivedUSDAmount', token0derivedUSDAmount?.toFixed());
+
+      const token1derivedUSDAmount = new TokenAmount(token1, token1derivedUSD?.toString() || JSBI.BigInt(0));
+
+      console.log('token1derivedUSDAmount', token1derivedUSDAmount?.toFixed());
+
+      const totalSupply = pair?.totalSupply;
+
+      console.log('totalSupply', totalSupply);
+
+      const totalSupplyAmount = new TokenAmount(lpToken, totalSupply?.toString() || JSBI.BigInt(0));
+
+      console.log('totalSupplyAmount', totalSupplyAmount?.toExact());
+
+      const totalSupplyInUsd = reserve0Amount
+        .multiply(token0derivedUSDAmount)
+        .add(reserve1Amount.multiply(token1derivedUSDAmount));
+
+      console.log('totalSupplyInUsd', totalSupplyInUsd?.toFixed(2));
+
+      const finalStakedValueInUSD = farmTvlAmount.multiply(totalSupplyInUsd).divide(totalSupplyAmount);
+
+      console.log('finalStakedValueInUSD', finalStakedValueInUSD?.toFixed(2));
+
+      const totalStakedInUsd = new TokenAmount(
+        USDC[chainId],
+
+        parseUnits(
+          finalStakedValueInUSD.equalTo('0') ? '0' : finalStakedValueInUSD.toFixed(0),
+          USDC[chainId].decimals,
+        )?.toString(),
       );
-      const token0derivedUSD = parseUnits(Number(farm?.pair?.token0?.derivedUSD)?.toFixed(10));
+      const totalStakedAmount = new TokenAmount(lpToken, farmTvl?.toString() || JSBI.BigInt(0));
 
-      const pairTokenValueInUSD = token0derivedUSD.mul(parseUnits('2'));
-
-      const calculatedStakedUsdValue = farmTvl.mul(totalSupplyReserve0).div(totalSupply);
-
-      const finalStakedValueInUSD = pairTokenValueInUSD
-        .mul(calculatedStakedUsdValue)
-        .div(ONE_TOKEN.toString())
-        .div(ONE_TOKEN.toString());
-
-      const totalStakedAmount = new TokenAmount(lpToken, farmTvl.toString() || JSBI.BigInt(0));
-      const totalStakedInUsd = new TokenAmount(lpToken, finalStakedValueInUSD.toString() || JSBI.BigInt(0));
+      console.log('totalStakedAmount', totalStakedAmount?.toExact());
+      console.log('totalStakedInUsd', totalStakedInUsd?.toExact());
 
       const userTotalStakedAmount = new TokenAmount(lpToken, JSBI.BigInt(0));
 
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
-      const token0derivedETH = BigNumber.from(farm?.pair?.token0?.derivedETH);
-      const pairSupplyInETH = token0derivedETH.mul(totalSupplyReserve0).mul(parseUnits('2'));
-      console.log('pairSupplyInETH', pairSupplyInETH);
-      const pairSupplyAmount = new TokenAmount(lpToken, pairSupplyInETH.toString() || JSBI.BigInt(0));
-      console.log('pairSupplyAmount', pairSupplyAmount);
-      const _totalStakedInWavax = farmTvl.mul(pairSupplyInETH).div(totalSupply);
+      const token0derivedETH = parseUnits(Number(pair?.token0?.derivedETH)?.toFixed(4), pair?.token0.decimals);
+
+      console.log('token0derivedETH', token0derivedETH?.toString());
+
+      const token1derivedETH = parseUnits(Number(pair?.token1?.derivedETH)?.toFixed(4), pair?.token1.decimals);
+
+      console.log('token1derivedETH', token1derivedETH?.toString());
+
+      const token0derivedETHAmount = new TokenAmount(token0, token0derivedETH?.toString() || JSBI.BigInt(0));
+
+      console.log('token0derivedETHAmount', token0derivedETHAmount?.toFixed());
+
+      const token1derivedETHAmount = new TokenAmount(token1, token1derivedETH?.toString() || JSBI.BigInt(0));
+
+      console.log('token1derivedETHAmount', token1derivedETHAmount?.toFixed());
+
+      const totalSupplyInETH = reserve0Amount
+        .multiply(token0derivedETHAmount)
+        .add(reserve1Amount.multiply(token1derivedETHAmount));
+
+      const _totalStakedInWavax = farmTvlAmount.multiply(totalSupplyInETH).divide(totalSupplyAmount);
 
       const totalStakedInWavax = new TokenAmount(
         wavax,
-        _totalStakedInWavax.isZero() ? '0' : _totalStakedInWavax.toString(),
+        parseUnits(_totalStakedInWavax.equalTo('0') ? '0' : _totalStakedInWavax.toFixed(0), wavax.decimals)?.toString(),
       );
 
-      const rewardRate = BigNumber.from(farm?.rewardRate ?? '0');
-      const pngPrice = avaxPngPair.priceOf(png, wavax);
-      const pairPrice = new Price(lpToken, wavax, pairSupplyAmount?.denominator, pairSupplyAmount?.numerator);
+      // const token0derivedETH = parseUnits(Number(farm?.pair?.token0?.derivedETH)?.toFixed(10));
 
-      console.log('pairPrice', pairPrice);
+      // const pairSupplyInETH = token0derivedETH.mul(reserve0).mul(parseUnits('2'));
+      //const farmTvlUnits = parseUnits(farm?.tvl?.toString());
+      //const pairSupplyInETH = token0derivedETH.mul(reserve0).mul(parseUnits('2'));
+      // console.log('pairSupplyInETH', pairSupplyInETH);
+      // const pairSupplyAmount = new TokenAmount(lpToken, pairSupplyInETH.toString() || JSBI.BigInt(0));
+      // console.log('pairSupplyAmount', pairSupplyAmount);
+      //const _totalStakedInWavax = farmTvlUnits.mul(pairSupplyInETH).div(totalSupply);
+
+      // const totalStakedInWavax = new TokenAmount(
+      //   wavax,
+      //   _totalStakedInWavax.isZero() ? '0' : _totalStakedInWavax.toString(),
+      // );
+
+      console.log('totalStakedInWavax', totalStakedInWavax?.toFixed());
+
+      console.log('poolRewardRateState', poolRewardRateState);
+
+      const rewardRate: BigNumber = poolRewardRateState?.result?.[0] ?? BigNumber.from(0);
+      //const pngPrice = avaxPngPair.priceOf(png, wavax);
+
+      //console.log('pngPrice', pngPrice?.toFixed());
+
+      // const pairPrice = new Price(lpToken, wavax, pairSupplyAmount?.denominator, pairSupplyAmount?.numerator);
+      const pairPriceInUsd = totalSupplyInUsd.divide(totalSupplyAmount);
+
+      console.log('pairPrice', pairPriceInUsd?.toFixed(16));
+      console.log('rewardRate', rewardRate?.toString());
+      console.log('rewardRate.mul(365 * 86400 * 100).toString()', rewardRate.mul(365 * 86400 * 100).toString());
+
+      // console.log('pairPrice', pairPrice);
+      // // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
+      // const apr1 =
+      //   pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0') || !pairPrice
+      //     ? 0
+      //     : Number(
+      //         pngPrice?.raw
+      //           .multiply(rewardRate.mul(365 * 86400 * 100).toString())
+      //           .divide(pairPrice?.raw?.multiply(pool.valueVariables.balance.toString()))
+      //           .toSignificant(2),
+      //       );
+
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
-        pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0') || !pairPrice
+        pool?.valueVariables?.balance.isZero() || pairPriceInUsd?.equalTo('0') || !pairPriceInUsd
           ? 0
           : Number(
               pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
-                .divide(pairPrice?.raw?.multiply(pool.valueVariables.balance.toString()))
+                .divide(pairPriceInUsd?.multiply(pool.valueVariables.balance.toString()))
+                // here apr is in 10^8 so we needed to divide by 10^8 to keep it in simple form
+                .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(8)))
                 .toSignificant(2),
             );
+
+      console.log('apr', apr);
 
       const totalRewardRatePerSecond = new TokenAmount(png, rewardRate.toString());
       const totalRewardRatePerWeek = new TokenAmount(
@@ -1174,7 +1300,7 @@ export function useGetPangoChefInfosViaSubgraph() {
         multiplier,
         rewardTokensAddress,
         rewardTokensMultiplier: rewardMultipliers,
-        totalStakedInWavax: totalStakedInWavax,
+        totalStakedInWavax: totalStakedInWavax, // todo
         isPeriodFinished: rewardRate.isZero(),
         rewardsAddress: pool.rewarder,
         totalRewardRatePerSecond: totalRewardRatePerSecond,
@@ -1188,14 +1314,14 @@ export function useGetPangoChefInfosViaSubgraph() {
         lockCount: userInfo?.lockCount,
         userRewardRate: userRewardRateState?.result?.[0] ?? BigNumber.from(0),
         stakingApr: apr,
-        pairPrice: pairPrice,
+        pairPrice: pairPriceInUsd,
         poolType: pool.poolType,
         poolRewardRate: rewardRate,
       } as PangoChefInfo);
     }
 
     return farms;
-  }, [chainId, png, allFarms, userInfosState, poolsIds, poolsState]);
+  }, [chainId, png, allFarms, userInfosState, poolsIds, poolsState, pngPrice]);
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */

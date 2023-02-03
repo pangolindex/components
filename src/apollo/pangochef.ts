@@ -19,6 +19,7 @@ export const GET_PANGOCHEF = gql`
           id
           rewards {
             id
+            multiplier
             token {
               id
               symbol
