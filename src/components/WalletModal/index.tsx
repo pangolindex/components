@@ -10,7 +10,7 @@ import { Button } from 'src/components/Button';
 import { avalancheCore, bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { AppState, useSelector } from 'src/state';
+// import { AppState, useSelector } from 'src/state';
 import { Box, Modal, ToggleButtons } from '../../';
 import Option from './Option';
 import PendingView from './PendingView';
@@ -63,7 +63,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   const [triedSafe, setTriedSafe] = useState<boolean>(!IS_IN_IFRAME);
 
-  const availableHashpack = useSelector((state: AppState) => state?.papplication?.isAvailableHashpack);
+  // const availableHashpack = useSelector((state: AppState) => state?.papplication?.isAvailableHashpack);
 
   const walletModalOpen = open;
 
@@ -341,20 +341,22 @@ const WalletModal: React.FC<WalletModalProps> = ({
         }
       } else if (option.connector === hashConnect) {
         // provide hashpack install link if not installed
-
-        if (!availableHashpack) {
-          return (
-            <Option
-              id={`connect-${key}`}
-              key={key}
-              color={option.color}
-              header={'Install Hashpack'}
-              subheader={null}
-              link={'https://www.hashpack.app/download'}
-              icon={option.iconName}
-            />
-          );
-        }
+        // TODO: for now hide "Install Hashpack" option and always allow user to connect to
+        // "Hashpack". this is workaround for users who has hashpack install but couldn't connect
+        // to install as they are always seeing "Install Hashpack" button
+        // if (!availableHashpack) {
+        //   return (
+        //     <Option
+        //       id={`connect-${key}`}
+        //       key={key}
+        //       color={option.color}
+        //       header={'Install Hashpack'}
+        //       subheader={null}
+        //       link={'https://www.hashpack.app/download'}
+        //       icon={option.iconName}
+        //     />
+        //   );
+        // }
       }
 
       // overwrite avalanche when needed
