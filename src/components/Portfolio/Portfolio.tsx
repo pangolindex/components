@@ -120,7 +120,7 @@ const Portfolio: React.FC = () => {
                 </Scrollbars>
               ) : (
                 <Text fontSize={18} color="text1" textAlign="center">
-                  Not found balances
+                  No found balances
                 </Text>
               )}
             </Box>
