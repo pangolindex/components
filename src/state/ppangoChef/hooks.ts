@@ -987,8 +987,8 @@ export function useGetPangoChefInfosViaSubgraph() {
     for (let index = 0; index < allPoolsIds.length; index++) {
       const farm = allFarms[index];
 
-      const poolState = poolsState[index];
-      const userInfoState = userInfosState[index];
+      // const poolState = poolsState[index];
+      // const userInfoState = userInfosState[index];
 
       const userPendingRewardState = userPendingRewardsState[index];
       const userRewardRateState = userRewardRatesState[index];
@@ -997,18 +997,17 @@ export function useGetPangoChefInfosViaSubgraph() {
 
       // if is loading or not exist pair continue
       if (
-        poolState?.loading ||
-        userInfoState?.loading ||
-        userPendingRewardState?.loading ||
-        userRewardRateState?.loading ||
-        poolRewardRateState?.loading ||
+        // poolState?.loading ||
+        // userInfoState?.loading ||
+        // userPendingRewardState?.loading ||
+        // userRewardRateState?.loading ||
+        // poolRewardRateState?.loading ||
         avaxPngPairState == PairState.LOADING ||
         !avaxPngPair
       ) {
         continue;
       }
 
-      console.log('pools', pools);
       const rewards = farm.rewarder.rewards;
 
       const pool = pools?.[index];
@@ -1113,11 +1112,9 @@ export function useGetPangoChefInfosViaSubgraph() {
 
       const rewardRate: BigNumber = poolRewardRateState?.result?.[0] ?? BigNumber.from(0);
       const pngPrice = avaxPngPair.priceOf(png, wavax);
-      const pairPriceInUsd = totalSupplyInUsd.divide(totalSupplyAmount);
+
       const pairPriceInEth = totalSupplyInETH.divide(totalSupplyAmount);
       const pairPrice = new Price(lpToken, wavax, pairPriceInEth?.denominator, pairPriceInEth?.numerator);
-
-      console.log('pool', pool);
 
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
