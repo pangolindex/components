@@ -43,5 +43,3 @@ export interface PangoChefInfo extends MinichefStakingInfo {
   poolRewardRate: BigNumber;
   lockCount: number | undefined;
 }
-
-/* Pangochef Subgraph */
