@@ -13,16 +13,17 @@ import {
   TokenAmount,
   WAVAX,
 } from '@pangolindex/sdk';
+import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
+import { PangochefFarmReward, useSubgraphFarms } from 'src/apollo/pangochef';
 import {
   BIG_INT_SECONDS_IN_WEEK,
   BIG_INT_ZERO,
   ONE_FRACTION,
   PANGOCHEF_COMPOUND_SLIPPAGE,
   ZERO_ADDRESS,
-  ONE_TOKEN,
 } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
@@ -42,20 +43,7 @@ import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 's
 import { calculateGasMargin, decimalToFraction, waitForTransaction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import {
-  PangoChefInfo,
-  Pool,
-  PoolType,
-  RewardSummations,
-  UserInfo,
-  ValueVariables,
-  PangochefFarmReward,
-  PangochefFarmRewarder,
-} from './types';
-import { subgraphClient } from 'src/apollo/client';
-import { GET_PANGOCHEF } from 'src/apollo/pangochef';
-import { getAddress, parseUnits } from 'ethers/lib/utils';
-import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import { PangoChefInfo, Pool, PoolType, RewardSummations, UserInfo, ValueVariables } from './types';
 
 export function usePangoChefInfos() {
   const { account } = usePangolinWeb3();
@@ -861,15 +849,6 @@ export function useHederaPangoChefInfos() {
   // return [] as PangoChefInfo[];
 }
 
-export const fetchPangoChefSubgraphData = (account: string, chainId: ChainId) => async () => {
-  const mininchefV2Client = subgraphClient[chainId];
-  if (!mininchefV2Client) {
-    return null;
-  }
-  const { pangoChefs } = await mininchefV2Client.request(GET_PANGOCHEF, { userAddress: account });
-  return pangoChefs;
-};
-
 export function useGetPangoChefInfosViaSubgraph() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -877,13 +856,7 @@ export function useGetPangoChefInfosViaSubgraph() {
   const [shouldCreateStorage] = useHederaPangochefContractCreateCallback();
   const pangoChefContract = usePangoChefContract();
 
-  const results = useQuery(
-    ['get-pangochef-subgraph-farms', account],
-    fetchPangoChefSubgraphData(account || '', chainId),
-    {
-      refetchInterval: 1000 * 60 * 5, // 5 minutes
-    },
-  );
+  const results = useSubgraphFarms();
 
   const wavax = WAVAX[chainId];
   const [avaxPngPairState, avaxPngPair] = usePair(wavax, png);
@@ -950,7 +923,7 @@ export function useGetPangoChefInfosViaSubgraph() {
 
   const userInfoInput = useMemo(() => {
     if ((allPoolsIds || []).length === 0 || !account) return [];
-    return allPoolsIds.map((pid) => [pid, account]);
+    return allPoolsIds.map((pid) => [pid[0], account]);
   }, [allPoolsIds, account]); // [[pid, account], ...] [[0, account], [1, account], [2, account] ...]
 
   const userInfosState = useSingleContractMultipleData(
@@ -1040,9 +1013,10 @@ export function useGetPangoChefInfosViaSubgraph() {
         continue;
       }
 
+      console.log('pools', pools);
       const rewards = farm.rewarder.rewards;
 
-      const pool = pools[index];
+      const pool = pools?.[index];
 
       const pid = farm?.pid;
       const pair = farm?.pair;
@@ -1119,7 +1093,7 @@ export function useGetPangoChefInfosViaSubgraph() {
       );
       const totalStakedAmount = new TokenAmount(lpToken, farmTvl?.toString() || JSBI.BigInt(0));
 
-      const userTotalStakedAmount = new TokenAmount(lpToken, JSBI.BigInt(0));
+      const userTotalStakedAmount = new TokenAmount(lpToken, JSBI.BigInt(userInfo?.valueVariables?.balance ?? 0));
 
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
@@ -1148,9 +1122,11 @@ export function useGetPangoChefInfosViaSubgraph() {
       const pairPriceInEth = totalSupplyInETH.divide(totalSupplyAmount);
       const pairPrice = new Price(lpToken, wavax, pairPriceInEth?.denominator, pairPriceInEth?.numerator);
 
+      console.log('pool', pool);
+
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
-        pool?.valueVariables?.balance?.isZero() || pairPriceInEth?.equalTo('0') || !pairPriceInEth
+        !pool || pool?.valueVariables?.balance?.isZero() || pairPriceInEth?.equalTo('0') || !pairPriceInEth
           ? 0
           : Number(
               pngPrice?.raw
@@ -1202,20 +1178,20 @@ export function useGetPangoChefInfosViaSubgraph() {
         rewardTokensMultiplier: rewardMultipliers,
         totalStakedInWavax: totalStakedInWavax,
         isPeriodFinished: rewardRate.isZero(),
-        rewardsAddress: pool.rewarder,
+        rewardsAddress: pool?.rewarder,
         totalRewardRatePerSecond: totalRewardRatePerSecond,
         totalRewardRatePerWeek: totalRewardRatePerWeek,
         rewardRatePerWeek: userRewardRatePerWeek,
         getHypotheticalWeeklyRewardRate: getHypotheticalWeeklyRewardRate,
         getExtraTokensWeeklyRewardRate: getExtraTokensWeeklyRewardRate,
         earnedAmount: pendingRewards,
-        valueVariables: pool.valueVariables,
+        valueVariables: pool?.valueVariables,
         userValueVariables: userInfo?.valueVariables,
         lockCount: userInfo?.lockCount,
         userRewardRate: userRewardRateState?.result?.[0] ?? BigNumber.from(0),
         stakingApr: apr,
         pairPrice,
-        poolType: pool.poolType,
+        poolType: pool?.poolType,
         poolRewardRate: rewardRate,
       } as PangoChefInfo);
     }
@@ -1238,10 +1214,10 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
     const userBalance = stakingInfo?.userValueVariables?.balance || BigNumber.from(0);
     const userSumOfEntryTimes = stakingInfo?.userValueVariables?.sumOfEntryTimes || BigNumber.from(0);
 
-    const poolBalance = stakingInfo?.valueVariables?.balance;
-    const poolSumOfEntryTimes = stakingInfo?.valueVariables?.sumOfEntryTimes;
+    const poolBalance = stakingInfo?.valueVariables?.balance || BigNumber.from(0);
+    const poolSumOfEntryTimes = stakingInfo?.valueVariables?.sumOfEntryTimes || BigNumber.from(0);
 
-    if (userBalance.isZero() || poolBalance.isZero() || !blockTime) return '0';
+    if (!userBalance || userBalance.isZero() || !poolBalance || poolBalance.isZero() || !blockTime) return '0';
     const blockTimestamp = BigNumber.from(blockTime.toString());
 
     //userAPR = poolAPR * (blockTime - (userValueVariables.sumOfEntryTimes / userValueVariables.balance)) / (blockTime - (poolValueVariables.sumOfEntryTimes / poolValueVariables.balance))

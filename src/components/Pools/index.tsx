@@ -3,8 +3,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId } from 'src/hooks';
-import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { useGetPangoChefInfosViaSubgraph } from 'src/state/ppangoChef/hooks';
+import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import {
   useGetAllFarmDataHook,
