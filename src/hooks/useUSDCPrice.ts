@@ -177,9 +177,10 @@ export function useUsdPriceCoingecko(currency?: Currency): Price | undefined {
 
     const tokenUSDPrice = tokenPrice.raw.multiply(decimalToFraction(currencyPrice));
 
-    const denominatorAmount = new TokenAmount(wrapped, tokenUSDPrice.denominator);
-    const numeratorAmount = new TokenAmount(usd, tokenUSDPrice.numerator);
-    //here if both currency decimal different  then we need to pass like this
-    return new Price(currency, usd, denominatorAmount.raw, numeratorAmount.raw);
+    // we need to consider denominator & numerator values in terms of their
+    // base & quote currency decimals
+    const denominator = parseUnits(tokenUSDPrice.denominator.toString(), wrapped.decimals).toString();
+    const numerator = parseUnits(tokenUSDPrice.numerator.toString(), usd.decimals).toString();
+    return new Price(wrapped, usd, denominator, numerator);
   }, [wrapped, currencyPrice, tokenPrice]);
 }
