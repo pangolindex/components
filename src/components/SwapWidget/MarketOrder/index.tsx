@@ -437,7 +437,7 @@ const MarketOrder: React.FC<Props> = ({
             >
               {approvalSubmitted && approval === ApprovalState.APPROVED
                 ? 'Approved'
-                : 'Approve' + currencies[Field.INPUT]?.symbol}
+                : 'Approve ' + currencies[Field.INPUT]?.symbol}
             </Button>
           </Box>
 
