@@ -1,5 +1,8 @@
+/* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
-import { JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import { formatUnits } from '@ethersproject/units';
+import { ChainId, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import numeral from 'numeral';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ZERO_ADDRESS } from 'src/constants';
@@ -46,7 +49,9 @@ export function useDefaultSarStake() {
   const useUSDCPrice = useUSDCPriceHook[chainId];
   const usdcPrice = useUSDCPrice(png);
   const dollerWorth =
-    userPngBalance?.greaterThan('0') && usdcPrice ? Number(typedValue) * Number(usdcPrice.toFixed()) : undefined;
+    userPngBalance?.greaterThan('0') && usdcPrice && usdcPrice?.greaterThan('0')
+      ? Number(typedValue) * Number(usdcPrice.toFixed())
+      : undefined;
 
   const wrappedOnDismiss = useCallback(() => {
     setStakeError(null);
@@ -129,13 +134,15 @@ export function useDefaultSarStake() {
  * @returns Returns the Array of Positions
  */
 export function formatPosition(
-  nftsURIs: URI[],
+  nftsURIs: (URI | undefined)[],
   nftsIndexes: string[][],
   positionsAmountState: CallState[],
   positionsRewardRateState: CallState[],
   positionsPedingRewardsState: CallState[],
+  blockTimestamp: number,
+  chainId: ChainId,
 ) {
-  const positions: Position[] = nftsURIs.map((uri, index) => {
+  const positions: (Position | undefined)[] = nftsURIs.map((uri, index) => {
     const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
       positionsAmountState[index].result?.valueVariables;
     const rewardRate = positionsRewardRateState[index].result?.[0];
@@ -148,9 +155,12 @@ export function formatPosition(
       .mul(100)
       .div(balance.isZero() ? 1 : balance);
 
-    if (!valueVariables || !rewardRate || !pendingRewards || !uri) {
+    if (!valueVariables || !rewardRate || !pendingRewards) {
       return {} as Position;
     }
+
+    const _uri =
+      uri ?? createURI(balance, valueVariables.sumOfEntryTimes, apr, pendingRewards, id, blockTimestamp, chainId);
 
     return {
       id: BigNumber.from(id),
@@ -158,12 +168,12 @@ export function formatPosition(
       sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
       apr: apr,
       rewardRate: rewardRate,
-      uri: uri,
+      uri: _uri,
       pendingRewards: pendingRewards,
     } as Position;
   });
   // remove the empty positions
-  return { positions: positions.filter((position) => !!position), isLoading: false };
+  return { positions: positions.filter((position) => !!position) as Position[], isLoading: false };
 }
 
 export function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiquidityStaked?: TokenAmount) {
@@ -318,4 +328,80 @@ export function useDefaultSarClaimOrCompound() {
     addTransaction,
     wrappedOnDismiss,
   };
+}
+
+/**
+ * This function replicate the on chain code to create the nft image, some chains need to do this
+ *
+ * source code: https://github.com/pangolindex/exchange-contracts/blob/1433538839858c4ab222bed1691e90861d90b46b/contracts/staking-positions/TokenMetadata.sol#L89-L162
+ * @param balance Amount of PNG/PSB/PFL/PBAR... staked in this position
+ * @param sumOfEntryTimes This is provide by the smart contract
+ * @param apr The position apr
+ * @param pendingRewards Amount of rewards to claim in position
+ * @param blockTimestamp The last block timestamp in seconds
+ * @param chainId Chain id
+ * @returns the nft URI similar to on chain
+ */
+export function createURI(
+  balance: BigNumber,
+  sumOfEntryTimes: BigNumber,
+  apr: BigNumber,
+  pendingRewards: BigNumber,
+  positionId: string,
+  blockTimestamp: number,
+  chainId: ChainId,
+) {
+  const exponents = [0, 2_718, 7_389, 20_086, 54_598, 148_413, 403_429, 1096_633, 2980_958, 8103_084];
+  const DENOMINATOR = 1_00;
+
+  const entryTime = balance.isZero() ? BigNumber.from(blockTimestamp) : sumOfEntryTimes.div(balance);
+
+  function getExponent(value: number, multiplier: number) {
+    if (value * DENOMINATOR >= exponents[9] * multiplier) return 9;
+    if (value * DENOMINATOR >= exponents[8] * multiplier) return 8;
+    if (value * DENOMINATOR >= exponents[7] * multiplier) return 7;
+    if (value * DENOMINATOR >= exponents[6] * multiplier) return 6;
+    if (value * DENOMINATOR >= exponents[5] * multiplier) return 5;
+    if (value * DENOMINATOR >= exponents[4] * multiplier) return 4;
+    if (value * DENOMINATOR >= exponents[3] * multiplier) return 3;
+    if (value * DENOMINATOR >= exponents[2] * multiplier) return 2;
+    if (value * DENOMINATOR >= exponents[1] * multiplier) return 1;
+    return 0;
+  }
+
+  const png = PNG[chainId];
+  const balanceLevel = getExponent(balance.toNumber(), 404);
+  const durationLevel = getExponent(BigNumber.from(blockTimestamp).sub(entryTime).toNumber(), 9600); // 2 hours and 40 minutes
+
+  const imageUrl = `https://static.pangolin.exchange/panguardian/${balanceLevel}${durationLevel}.png`;
+
+  const imageStr = `<svg width="663" height="1080" viewbox="0 0 663 1080" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"> 
+<style type="text/css"> @font-face { font-family: "Poppins"; src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecg.woff2) 
+format("woff2"); } @font-face { font-family: "Poppins"; font-weight: bold; src: url(https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff2) 
+format("woff2"); } text { color:#1a1a1a; font-family:Poppins, sans-serif; font-size:24.73px; } .data_span { font-weight:bold; font-size:37.09px } .text_bottom .info_span { font-size: 28.81px } .text_bottom .data_span { font-size: 43.21px } </style> 
+<image preserveAspectRatio="xMidYMid slice" width="100%" height="100%" xlink:href="${imageUrl}"S></image>
+<text x="27.3" y="54.9" text-anchor="start" class="text_top"><tspan class="info_span">&#36;${
+    png.symbol
+  }</tspan><tspan class="data_span">
+${numeral(formatUnits(balance, png.decimals)).format('0.00a')}
+</tspan></text> <text x="635.7" y="54.9" text-anchor="end" class="text_top"><tspan class="info_span">APR: </tspan><tspan class="data_span">
+${apr.toNumber().toLocaleString(undefined, { maximumFractionDigits: 2 })}
+%</tspan></text> <text x="331.5" y="1001.97" text-anchor="middle" class="text_bottom"><tspan class="info_span">EARNED: </tspan><tspan class="data_span" x="331.5" dy="51.85">&#36;
+${png.symbol} ${formatUnits(pendingRewards, png.decimals)}
+</tspan></text> </svg>`;
+
+  const encodedImage = Buffer.from(imageStr).toString('base64');
+
+  return {
+    name: `Pangolin Staking Position #${positionId}`,
+    description:
+      'This NFT perpetually receives share from the revenue generated by Pangolin. The share of the position is positively correlated to its staked balance and staking duration.',
+    external_url: 'https://app.pangolin.exchange/#/stakev2',
+    attributes: [
+      { trait_type: 'Balance', value: balance.toString() },
+      { display_type: 'date', trait_type: 'Entry Time', value: entryTime.toString() },
+      { display_type: 'number', max_value: '9', trait_type: 'Duration Level', value: durationLevel },
+    ],
+    image: encodedImage,
+  } as URI;
 }

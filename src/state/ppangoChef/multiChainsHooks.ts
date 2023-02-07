@@ -10,9 +10,9 @@ import {
   useEVMPangoChefWithdrawCallback,
   useGetLockingPoolsForPoolId,
   useGetLockingPoolsForPoolZero,
+  useGetPangoChefInfosViaSubgraph,
   useHederaPangoChefClaimRewardCallback,
   useHederaPangoChefCompoundCallback,
-  useHederaPangoChefInfos,
   useHederaPangoChefStakeCallback,
   useHederaPangoChefWithdrawCallback,
   usePangoChefInfos,
@@ -21,7 +21,7 @@ import {
 export type UsePangoChefInfosHookType = {
   [chainId in ChainId]:
     | typeof usePangoChefInfos
-    | typeof useHederaPangoChefInfos
+    | typeof useGetPangoChefInfosViaSubgraph
     | typeof useDummyPangoChefInfos
     | typeof useDummyHook;
 };
@@ -33,7 +33,8 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.COSTON]: usePangoChefInfos,
   [ChainId.SONGBIRD]: usePangoChefInfos,
   [ChainId.FLARE_MAINNET]: usePangoChefInfos,
-  [ChainId.HEDERA_TESTNET]: useHederaPangoChefInfos,
+  [ChainId.HEDERA_TESTNET]: useGetPangoChefInfosViaSubgraph,
+  [ChainId.HEDERA_MAINNET]: useGetPangoChefInfosViaSubgraph,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefInfos,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefInfos,
   [ChainId.COSTON2]: usePangoChefInfos,
@@ -70,6 +71,7 @@ export const usePangoChefStakeCallbackHook: UsePangoChefStakeCallbackHookType = 
   [ChainId.SONGBIRD]: useEVMPangoChefStakeCallback,
   [ChainId.FLARE_MAINNET]: useEVMPangoChefStakeCallback,
   [ChainId.HEDERA_TESTNET]: useHederaPangoChefStakeCallback,
+  [ChainId.HEDERA_MAINNET]: useHederaPangoChefStakeCallback,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
   [ChainId.COSTON2]: useEVMPangoChefStakeCallback,
@@ -106,6 +108,7 @@ export const usePangoChefClaimRewardCallbackHook: UsePangoChefClaimRewardCallbac
   [ChainId.SONGBIRD]: useEVMPangoChefClaimRewardCallback,
   [ChainId.FLARE_MAINNET]: useEVMPangoChefClaimRewardCallback,
   [ChainId.HEDERA_TESTNET]: useHederaPangoChefClaimRewardCallback,
+  [ChainId.HEDERA_MAINNET]: useHederaPangoChefClaimRewardCallback,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
   [ChainId.COSTON2]: useEVMPangoChefClaimRewardCallback,
@@ -142,6 +145,7 @@ export const usePangoChefWithdrawCallbackHook: UsePangoChefWithdrawCallbackHookT
   [ChainId.SONGBIRD]: useEVMPangoChefWithdrawCallback,
   [ChainId.FLARE_MAINNET]: useEVMPangoChefWithdrawCallback,
   [ChainId.HEDERA_TESTNET]: useHederaPangoChefWithdrawCallback,
+  [ChainId.HEDERA_MAINNET]: useHederaPangoChefWithdrawCallback,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
   [ChainId.COSTON2]: useEVMPangoChefWithdrawCallback,
@@ -178,6 +182,7 @@ export const usePangoChefCompoundCallbackHook: UsePangoChefCompoundCallbackHookT
   [ChainId.SONGBIRD]: useEVMPangoChefCompoundCallback,
   [ChainId.FLARE_MAINNET]: useEVMPangoChefCompoundCallback,
   [ChainId.HEDERA_TESTNET]: useHederaPangoChefCompoundCallback,
+  [ChainId.HEDERA_MAINNET]: useHederaPangoChefCompoundCallback,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
   [ChainId.COSTON2]: useEVMPangoChefCompoundCallback,
@@ -214,6 +219,7 @@ export const useGetLockingPoolsForPoolIdHook: UseGetLockingPoolsForPoolIdHookTyp
   [ChainId.SONGBIRD]: useGetLockingPoolsForPoolZero,
   [ChainId.FLARE_MAINNET]: useGetLockingPoolsForPoolId,
   [ChainId.HEDERA_TESTNET]: useGetLockingPoolsForPoolId,
+  [ChainId.HEDERA_MAINNET]: useGetLockingPoolsForPoolId,
   [ChainId.NEAR_MAINNET]: useDummyIsLockingPoolZero,
   [ChainId.NEAR_TESTNET]: useDummyIsLockingPoolZero,
   [ChainId.COSTON2]: useGetLockingPoolsForPoolId,

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
 import { useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
 import {
@@ -8,6 +9,14 @@ import {
   useHederaApproveCallback,
   useNearApproveCallback,
 } from './useApproveCallback';
+import {
+  useDummyTokenCurrencyPrice,
+  useDummyTokensCurrencyPrice,
+  useTokenCurrencyPrice,
+  useTokenCurrencyPriceSubgraph,
+  useTokensCurrencyPrice,
+  useTokensCurrencyPriceSubgraph,
+} from './useCurrencyPrice';
 import { useHederaSwapCallback, useNearSwapCallback, useSwapCallback } from './useSwapCallback';
 import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice, useUsdPriceCoingecko } from './useUSDCPrice';
 import { useWrapCallback, useWrapHbarCallback, useWrapNearCallback } from './useWrapCallback';
@@ -28,6 +37,7 @@ export const useWrapCallbackHook: UseWrapCallbackHookType = {
   [ChainId.SONGBIRD]: useWrapCallback,
   [ChainId.FLARE_MAINNET]: useWrapCallback,
   [ChainId.HEDERA_TESTNET]: useWrapHbarCallback,
+  [ChainId.HEDERA_MAINNET]: useWrapHbarCallback,
   [ChainId.NEAR_MAINNET]: useWrapNearCallback,
   [ChainId.NEAR_TESTNET]: useWrapNearCallback,
   [ChainId.COSTON2]: useWrapCallback,
@@ -62,6 +72,7 @@ export const useTokenHook: UseTokenHookType = {
   [ChainId.SONGBIRD]: useToken,
   [ChainId.FLARE_MAINNET]: useToken,
   [ChainId.HEDERA_TESTNET]: useToken,
+  [ChainId.HEDERA_MAINNET]: useToken,
   [ChainId.NEAR_MAINNET]: useNearToken,
   [ChainId.NEAR_TESTNET]: useNearToken,
   [ChainId.COSTON2]: useToken,
@@ -98,6 +109,7 @@ export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookTyp
   [ChainId.SONGBIRD]: useApproveCallbackFromTrade,
   [ChainId.FLARE_MAINNET]: useApproveCallbackFromTrade,
   [ChainId.HEDERA_TESTNET]: useApproveCallbackFromHederaTrade,
+  [ChainId.HEDERA_MAINNET]: useApproveCallbackFromHederaTrade,
   [ChainId.NEAR_MAINNET]: useApproveCallbackFromNearTrade,
   [ChainId.NEAR_TESTNET]: useApproveCallbackFromNearTrade,
   [ChainId.COSTON2]: useApproveCallbackFromTrade,
@@ -132,6 +144,7 @@ export const useSwapCallbackHook: UseSwapCallbackHookType = {
   [ChainId.SONGBIRD]: useSwapCallback,
   [ChainId.FLARE_MAINNET]: useSwapCallback,
   [ChainId.HEDERA_TESTNET]: useHederaSwapCallback,
+  [ChainId.HEDERA_MAINNET]: useHederaSwapCallback,
   [ChainId.NEAR_MAINNET]: useNearSwapCallback,
   [ChainId.NEAR_TESTNET]: useNearSwapCallback,
   [ChainId.COSTON2]: useSwapCallback,
@@ -166,6 +179,7 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
   [ChainId.SONGBIRD]: useApproveCallback,
   [ChainId.FLARE_MAINNET]: useApproveCallback,
   [ChainId.HEDERA_TESTNET]: useHederaApproveCallback,
+  [ChainId.HEDERA_MAINNET]: useHederaApproveCallback,
   [ChainId.NEAR_MAINNET]: useNearApproveCallback,
   [ChainId.NEAR_TESTNET]: useNearApproveCallback,
   [ChainId.COSTON2]: useApproveCallback,
@@ -205,6 +219,7 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
   [ChainId.SONGBIRD]: useSongBirdUSDPrice,
   [ChainId.FLARE_MAINNET]: useUsdPriceCoingecko,
   [ChainId.HEDERA_TESTNET]: useUsdPriceCoingecko,
+  [ChainId.HEDERA_MAINNET]: useUsdPriceCoingecko,
   [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
   [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
   [ChainId.COSTON2]: useUSDCPrice,
@@ -238,6 +253,7 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.SONGBIRD]: useTokens,
   [ChainId.FLARE_MAINNET]: useTokens,
   [ChainId.HEDERA_TESTNET]: useTokens,
+  [ChainId.HEDERA_MAINNET]: useTokens,
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
   [ChainId.COSTON2]: useTokens,
@@ -258,3 +274,78 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
 };
+
+export type UseTokensCurrencyPriceHookType = {
+  [chainId in ChainId]:
+    | typeof useTokensCurrencyPrice
+    | typeof useTokensCurrencyPriceSubgraph
+    | typeof useDummyTokensCurrencyPrice;
+};
+
+export const useTokensCurrencyPriceHook: UseTokensCurrencyPriceHookType = {
+  [ChainId.FUJI]: useDummyTokensCurrencyPrice,
+  [ChainId.AVALANCHE]: useDummyTokensCurrencyPrice,
+  [ChainId.WAGMI]: useDummyTokensCurrencyPrice,
+  [ChainId.COSTON]: useTokensCurrencyPrice,
+  [ChainId.SONGBIRD]: useTokensCurrencyPrice,
+  [ChainId.FLARE_MAINNET]: useTokensCurrencyPrice,
+  [ChainId.HEDERA_TESTNET]: useTokensCurrencyPriceSubgraph,
+  [ChainId.HEDERA_MAINNET]: useTokensCurrencyPriceSubgraph,
+  [ChainId.NEAR_MAINNET]: useDummyTokensCurrencyPrice,
+  [ChainId.NEAR_TESTNET]: useDummyTokensCurrencyPrice,
+  [ChainId.COSTON2]: useTokensCurrencyPrice,
+  [ChainId.EVMOS_TESTNET]: useDummyTokensCurrencyPrice,
+  [ChainId.ETHEREUM]: useDummyTokensCurrencyPrice,
+  [ChainId.POLYGON]: useDummyTokensCurrencyPrice,
+  [ChainId.FANTOM]: useDummyTokensCurrencyPrice,
+  [ChainId.XDAI]: useDummyTokensCurrencyPrice,
+  [ChainId.BSC]: useDummyTokensCurrencyPrice,
+  [ChainId.ARBITRUM]: useDummyTokensCurrencyPrice,
+  [ChainId.CELO]: useDummyTokensCurrencyPrice,
+  [ChainId.OKXCHAIN]: useDummyTokensCurrencyPrice,
+  [ChainId.VELAS]: useDummyTokensCurrencyPrice,
+  [ChainId.AURORA]: useDummyTokensCurrencyPrice,
+  [ChainId.CRONOS]: useDummyTokensCurrencyPrice,
+  [ChainId.FUSE]: useDummyTokensCurrencyPrice,
+  [ChainId.MOONRIVER]: useDummyTokensCurrencyPrice,
+  [ChainId.MOONBEAM]: useDummyTokensCurrencyPrice,
+  [ChainId.OP]: useDummyTokensCurrencyPrice,
+};
+
+export type UseTokenCurrencyPriceType = {
+  [chainId in ChainId]:
+    | typeof useTokenCurrencyPrice
+    | typeof useTokenCurrencyPriceSubgraph
+    | typeof useDummyTokenCurrencyPrice;
+};
+
+export const useTokenCurrencyPriceHook: UseTokenCurrencyPriceType = {
+  [ChainId.FUJI]: useDummyTokenCurrencyPrice,
+  [ChainId.AVALANCHE]: useDummyTokenCurrencyPrice,
+  [ChainId.WAGMI]: useDummyTokenCurrencyPrice,
+  [ChainId.COSTON]: useTokenCurrencyPrice,
+  [ChainId.SONGBIRD]: useTokenCurrencyPrice,
+  [ChainId.FLARE_MAINNET]: useTokenCurrencyPrice,
+  [ChainId.HEDERA_TESTNET]: useTokenCurrencyPriceSubgraph,
+  [ChainId.HEDERA_MAINNET]: useTokenCurrencyPriceSubgraph,
+  [ChainId.NEAR_MAINNET]: useDummyTokenCurrencyPrice,
+  [ChainId.NEAR_TESTNET]: useDummyTokenCurrencyPrice,
+  [ChainId.COSTON2]: useTokenCurrencyPrice,
+  [ChainId.EVMOS_TESTNET]: useDummyTokenCurrencyPrice,
+  [ChainId.ETHEREUM]: useDummyTokenCurrencyPrice,
+  [ChainId.POLYGON]: useDummyTokenCurrencyPrice,
+  [ChainId.FANTOM]: useDummyTokenCurrencyPrice,
+  [ChainId.XDAI]: useDummyTokenCurrencyPrice,
+  [ChainId.BSC]: useDummyTokenCurrencyPrice,
+  [ChainId.ARBITRUM]: useDummyTokenCurrencyPrice,
+  [ChainId.CELO]: useDummyTokenCurrencyPrice,
+  [ChainId.OKXCHAIN]: useDummyTokenCurrencyPrice,
+  [ChainId.VELAS]: useDummyTokenCurrencyPrice,
+  [ChainId.AURORA]: useDummyTokenCurrencyPrice,
+  [ChainId.CRONOS]: useDummyTokenCurrencyPrice,
+  [ChainId.FUSE]: useDummyTokenCurrencyPrice,
+  [ChainId.MOONRIVER]: useDummyTokenCurrencyPrice,
+  [ChainId.MOONBEAM]: useDummyTokenCurrencyPrice,
+  [ChainId.OP]: useDummyTokenCurrencyPrice,
+};
+/* eslint-enable max-lines */

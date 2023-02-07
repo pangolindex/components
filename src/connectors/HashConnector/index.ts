@@ -1,16 +1,28 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { hethers } from '@hashgraph/hethers';
 import { AccountId, Transaction, TransactionId } from '@hashgraph/sdk';
+import { ChainId } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
+import EventEmitter from 'eventemitter3';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
 import { TransactionResponse } from 'src/utils/hedera';
+
+// hashconnectEvent will expose event-emitter interface
+// with this we can handle/emit any event to outside class
+// for now this is specifically used for checking hashpack available or now
+// see HashConnectEvents.CHECK_EXTENSION
+export const hashconnectEvent = new EventEmitter();
 
 export interface HashConfigType {
   networkId: string;
   chainId: number;
   contractId: string;
+}
+
+export enum HashConnectEvents {
+  CHECK_EXTENSION = 'checkExtension',
 }
 
 const LocalStorageKey = 'pangolinHashPackData';
@@ -37,7 +49,8 @@ export class HashConnector extends AbstractConnector {
   private topic: string;
   private pairingString: string;
   private pairingData: HashConnectTypes.SavedPairingData | null = null;
-  public availableExtension: HashConnectTypes.WalletMetadata | undefined;
+
+  public availableExtension: boolean;
   private initData: HashConnectTypes.InitilizationData | null = null;
 
   public constructor(
@@ -50,13 +63,13 @@ export class HashConnector extends AbstractConnector {
     super(args);
 
     //create the hashconnect instance
-    this.instance = new HashConnect(false);
+    this.instance = new HashConnect(true);
 
     this.chainId = args?.config?.chainId;
     this.normalizeChainId = args?.normalizeChainId;
     this.normalizeAccount = args?.normalizeAccount;
     this.network = args?.config?.networkId;
-    this.availableExtension = undefined;
+    this.availableExtension = false;
     this.topic = '';
     this.pairingString = '';
     this.pairingData = null;
@@ -78,7 +91,10 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handleFoundExtensionEvent(data) {
-    this.availableExtension = data;
+    console.log('pangolin hashconnect avaialble extension', data);
+    this.availableExtension = true;
+    console.log('pangolin hashconnect emitting event CHECK_EXTENSION');
+    hashconnectEvent.emit(HashConnectEvents.CHECK_EXTENSION, true);
   }
 
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
@@ -88,6 +104,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handlePairingEvent(data) {
+    console.log('pangolin hashconnect handlePairingEvent', data);
     this.pairingData = data.pairingData!;
     const accountId = this.pairingData?.accountIds?.[0];
     if (accountId) {
@@ -97,6 +114,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   setUpEvents() {
+    console.log('pangolin hashconnect setting up events');
     this.instance.foundExtensionEvent.on(this.handleFoundExtensionEvent.bind(this));
     this.instance.pairingEvent.on(this.handlePairingEvent.bind(this));
     this.instance.connectionStatusChangeEvent.on(this.handleConnectionStatusChangeEvent.bind(this));
@@ -108,7 +126,7 @@ export class HashConnector extends AbstractConnector {
     this.instance.connectionStatusChangeEvent.off(this.handleConnectionStatusChangeEvent.bind(this));
   }
 
-  public async getChainId(): Promise<number | string | any> {
+  public getChainId(): number | string | any {
     if (this.pairingData) {
       return this.chainId;
     }
@@ -116,7 +134,11 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async getProvider() {
-    return new JsonRpcProvider(`https://hedera.testnet.arkhia.io/json-rpc/v1?x_api_key=${process.env.ARKHIA_API_KEY}`);
+    let url = `https://mainnet.hashio.io/api`;
+    if (this.chainId === ChainId.HEDERA_TESTNET) {
+      url = `https://testnet.hashio.io/api`;
+    }
+    return new JsonRpcProvider(`${url}`);
   }
 
   public async activate(): Promise<any> {

@@ -1,8 +1,12 @@
 import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
+import { useSubgraphTokens } from 'src/apollo/tokens';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PairState, usePair } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
+import { decimalToFraction } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
+import { useTokensCurrencyPriceHook } from './multiChainsHooks';
 import { useChainId } from '.';
 
 /**
@@ -49,6 +53,20 @@ export function useTokensCurrencyPrice(tokens: (Token | undefined)[]): { [x: str
 }
 
 /**
+ * this is dummy hook for mapping purpose only
+ * Returns the tokens price in relation to gas coin (avax, wagmi, flare, etc)
+ *
+ * @param tokens array of tokens to get the price in wrapped gas coin
+ * @returns object where the key is the address of the token and the value is the Price
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function useDummyTokensCurrencyPrice(_tokens: (Token | undefined)[]): { [x: string]: Price } {
+  const prices: { [x: string]: Price } = {};
+
+  return prices;
+}
+
+/**
  * Returns the token price in relation to gas coin (avax, wagmi, flare, etc)
  *
  * @param token token to get the price
@@ -75,6 +93,71 @@ export function useTokenCurrencyPrice(token: Token | undefined): Price {
 }
 
 /**
+ * Returns the tokens price in relation to gas coin (hbar)
+ * this hook uses subgraph to get the token information based on given token addresses
+ *
+ * @param tokens array of tokens to get the price in wrapped gas coin
+ * @returns object where the key is the address of the token and the value is the Price
+ */
+export function useTokensCurrencyPriceSubgraph(tokens: (Token | undefined)[]): { [x: string]: Price } {
+  const chainId = useChainId();
+
+  const currency = WAVAX[chainId];
+
+  const filteredTokens = useMemo(() => tokens.filter((token) => !!token) as Token[], [tokens]);
+  const tokenAddresses = useMemo(() => filteredTokens.map((token) => token?.address), [filteredTokens, chainId]);
+  // get tokens from subgraph
+  const results = useSubgraphTokens(tokenAddresses);
+  const tokenPrices = useMemo(() => {
+    return (results?.data || []).reduce((memo, result) => {
+      const token = filteredTokens.find((token) => token?.address === result?.id);
+      if (token) {
+        const fractionPrice = decimalToFraction(Number(result?.derivedETH));
+        const denominatorAmount = new TokenAmount(token, fractionPrice?.denominator);
+        const numeratorAmount = new TokenAmount(currency, fractionPrice.numerator);
+        const price = new Price(token, currency, denominatorAmount.raw, numeratorAmount.raw);
+        memo[result?.id] = price;
+      }
+
+      return memo;
+    }, {} as { [id: string]: Price });
+  }, [results?.data, results?.isLoading]);
+  return tokenPrices;
+}
+
+/**
+ * Returns the token price in relation to gas coin (hbar, etc)
+ * this subgraph internally uses useTokensCurrencyPriceSubgraph to get price in native token
+ *
+ * @param token token to get the price
+ * @returns the price of token in relation to gas coin
+ */
+export function useTokenCurrencyPriceSubgraph(token: Token | undefined): Price {
+  const chainId = useChainId();
+  const currency = WAVAX[chainId];
+
+  const tokenPrice = useTokensCurrencyPriceSubgraph([token]);
+
+  return useMemo(() => {
+    if (!token) return new Price(currency, currency, '1', '0');
+    return tokenPrice[token?.address];
+  }, [tokenPrice, token]);
+}
+
+/**
+ * Returns the tokens price in relation to gas coin hbar
+ *
+ * @param tokens array of tokens to get the price in wrapped gas coin
+ * @returns the price of token in relation to gas coin
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function useDummyTokenCurrencyPrice(_token: Token | undefined): Price {
+  const chainId = useChainId();
+  const currency = WAVAX[chainId];
+  return new Price(currency, currency, '1', '0');
+}
+
+/**
  * Returns the price of pairs in relation to gas coin
  *
  * @param pairs array of pair and total supply of pair
@@ -82,6 +165,8 @@ export function useTokenCurrencyPrice(token: Token | undefined): Price {
  */
 export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmount }[]) {
   const chainId = useChainId();
+
+  const useTokensCurrencyPrice = useTokensCurrencyPriceHook[chainId];
   const currency = WAVAX[chainId];
 
   // Have the same size
@@ -107,9 +192,30 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
 
   return useMemo(() => {
     const pairsPrices: { [key: string]: Price } = {};
-    pairs.forEach(({ pair, totalSupply }) => {
+    for (let index = 0; index < pairs.length; index++) {
+      const { pair, totalSupply } = pairs[index];
       const token0 = pair.token0;
       const token1 = pair.token1;
+      // TODO: this is really for short term, ugly code
+      // make sure to fix it asap
+      // here specifically for hedera we are checking 1 PGL price little different
+      // this is mainly due to hedera PGL has 0 decimals and its creating weird edge cases
+      if (hederaFn.isHederaChain(chainId)) {
+        const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
+        const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
+        const reserve0 = pair?.reserve0;
+        const reserve1 = pair?.reserve1;
+        // reserve0 * token0PriceInEth + reserve1 * token1PriceInEth => tvlInEth
+        const tvlInEth = reserve0.multiply(token0Price).add(reserve1.multiply(token1Price));
+        // tvlInEth / totalSupply => 1 PGL price in ETH
+        const pairPriceFraction = tvlInEth.divide(totalSupply.raw);
+        const pairPrice = new Price(currency, currency, pairPriceFraction.denominator, pairPriceFraction.numerator);
+        pairsPrices[pair.liquidityToken.address] = pairPrice;
+        continue;
+      }
+
+      // for all other chains except hedera
+      // continue with below logic
       const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
       const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
 
@@ -129,7 +235,7 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
       const _pairPrice = token0PairPrice.add(token1PairPrice);
       const pairPrice = new Price(pair.liquidityToken, currency, _pairPrice.denominator, _pairPrice.numerator);
       pairsPrices[pair.liquidityToken.address] = pairPrice;
-    });
+    }
     return pairsPrices;
   }, [pairs, tokensPrices]);
 }
@@ -142,6 +248,9 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
  */
 export function usePairCurrencyPrice(pair: { pair: Pair | null; totalSupply: TokenAmount | undefined }): Price {
   const chainId = useChainId();
+
+  const useTokensCurrencyPrice = useTokensCurrencyPriceHook[chainId];
+
   const currency = WAVAX[chainId];
 
   const _pair = pair.pair;

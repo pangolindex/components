@@ -11,13 +11,16 @@ import { TextInput } from 'src/components/TextInput';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useHederaSarNFTContract } from 'src/hooks/useContract';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useDerivativeSarStakeHook } from 'src/state/psarstake/multiChainsHooks';
 import { Position } from 'src/state/psarstake/types';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { getBuyUrl } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import Title from '../Title';
@@ -28,16 +31,18 @@ interface Props {
   selectedOption: Options;
   selectedPosition: Position | null;
   onChange: (value: Options) => void;
+  onSelectPosition: (position: Position | null) => void;
 }
 
 // Add more png on existing position
-export default function AddStake({ selectedOption, selectedPosition, onChange }: Props) {
+export default function AddStake({ selectedOption, selectedPosition, onChange, onSelectPosition }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
 
   const png = PNG[chainId];
+  const useTokenBalance = useTokenBalanceHook[chainId];
   const userPngBalance = useTokenBalance(account ?? ZERO_ADDRESS, png);
   const { t } = useTranslation();
 
@@ -88,15 +93,25 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
     // if there was a tx hash, we want to clear the input
     if (hash) {
       onUserInput('');
+      onSelectPosition(null);
     }
     wrappedOnDismiss();
-  }, [onUserInput]);
+  }, [hash, onUserInput]);
 
   const showApproveFlow =
     !error &&
     (approval === ApprovalState.NOT_APPROVED ||
       approval === ApprovalState.PENDING ||
       (approvalSubmitted && approval === ApprovalState.APPROVED));
+
+  const isHedera = hederaFn.isHederaChain(chainId);
+  const sarNftContract = useHederaSarNFTContract();
+
+  const {
+    associate: onAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+    isLoading: isLoadingAssociate,
+  } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
   const renderButtons = () => {
     if (!account) {
@@ -109,6 +124,12 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
       return (
         <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png, chainId)}>
           {t('sarStake.buy', { symbol: png.symbol })}
+        </Button>
+      );
+    } else if (!isHederaTokenAssociated && isHedera) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate '}
         </Button>
       );
     } else {
@@ -150,7 +171,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
           <Stat
             title={t('sarStake.dollarValue')}
             titlePosition="top"
-            stat={`$${dollerWorth ?? 0}`}
+            stat={`$${(dollerWorth ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}`}
             titleColor="text2"
           />
           <Stat title={t('sarStakeMore.newAPR')} titlePosition="top" stat={`${newAPR}%`} titleColor="text2" />
@@ -207,7 +228,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
           <Box display="flex" justifyContent="space-between">
             <Box>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">${dollerWorth ?? '0'}</Text>
+              <Text color="text1">${(dollerWorth ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>
@@ -215,9 +236,6 @@ export default function AddStake({ selectedOption, selectedPosition, onChange }:
             </Box>
           </Box>
           <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-            {t('sarStake.confirmDescription', { symbol: png.symbol })}
-            <br />
-            <br />
             {t('sarStakeMore.confirmDescription', { symbol: png.symbol })}
           </Text>
         </Box>

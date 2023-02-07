@@ -6,7 +6,7 @@ import isEqual from 'lodash.isequal';
 import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { mininchefV2Clients } from 'src/apollo/client';
+import { subgraphClient } from 'src/apollo/client';
 import { GET_MINICHEF } from 'src/apollo/minichef';
 import {
   BIG_INT_SECONDS_IN_WEEK,
@@ -268,6 +268,7 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const earnedAmount = getEarnedAmount();
 
   const rewardTokensAddress = getRewardTokensRes?.result?.[0];
+
   const rewardTokensMultiplier = getRewardMultipliersRes?.result?.[0];
   const earnedAmountStr = earnedAmount ? JSBI.BigInt(earnedAmount?.raw).toString() : JSBI.BigInt(0).toString();
 
@@ -297,7 +298,7 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rewardTokensAmount, rewardTokensMultiplier, isLoading]);
+  }, [rewardTokens, rewardTokensAmount, rewardTokensMultiplier, isLoading]);
 
   return rewardData.current;
 }
@@ -836,7 +837,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
 };
 
 export const fetchMinichefData = (account: string, chainId: ChainId) => async () => {
-  const mininchefV2Client = mininchefV2Clients[chainId];
+  const mininchefV2Client = subgraphClient[chainId];
   if (!mininchefV2Client) {
     return null;
   }

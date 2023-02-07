@@ -14,6 +14,8 @@ import {
   useHederaCreatePair,
   useHederaPairBalance,
   useHederaRemoveLiquidity,
+  useHederaTokenBalance,
+  useHederaTokenBalances,
   useNearAddLiquidity,
   useNearBalance,
   useNearCreatePair,
@@ -27,7 +29,7 @@ import {
 } from './hooks';
 
 export type UseTokenBalancesHookType = {
-  [chainId in ChainId]: typeof useTokenBalances | typeof useNearTokenBalances;
+  [chainId in ChainId]: typeof useTokenBalances | typeof useNearTokenBalances | typeof useHederaTokenBalances;
 };
 
 export const useTokenBalancesHook: UseTokenBalancesHookType = {
@@ -37,7 +39,8 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.COSTON]: useTokenBalances,
   [ChainId.SONGBIRD]: useTokenBalances,
   [ChainId.FLARE_MAINNET]: useTokenBalances,
-  [ChainId.HEDERA_TESTNET]: useTokenBalances,
+  [ChainId.HEDERA_TESTNET]: useHederaTokenBalances,
+  [ChainId.HEDERA_MAINNET]: useHederaTokenBalances,
   [ChainId.NEAR_MAINNET]: useNearTokenBalances,
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
   [ChainId.COSTON2]: useTokenBalances,
@@ -61,7 +64,11 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
 };
 
 export type UseTokenBalanceHookType = {
-  [chainId in ChainId]: typeof useTokenBalance | typeof useNearTokenBalance | typeof useDummyHook;
+  [chainId in ChainId]:
+    | typeof useTokenBalance
+    | typeof useNearTokenBalance
+    | typeof useHederaTokenBalance
+    | typeof useDummyHook;
 };
 
 export const useTokenBalanceHook: UseTokenBalanceHookType = {
@@ -71,7 +78,8 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.COSTON]: useTokenBalance,
   [ChainId.SONGBIRD]: useTokenBalance,
   [ChainId.FLARE_MAINNET]: useTokenBalance,
-  [ChainId.HEDERA_TESTNET]: useTokenBalance,
+  [ChainId.HEDERA_TESTNET]: useHederaTokenBalance,
+  [ChainId.HEDERA_MAINNET]: useHederaTokenBalance,
   [ChainId.NEAR_MAINNET]: useNearTokenBalance,
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
   [ChainId.COSTON2]: useTokenBalance,
@@ -105,6 +113,7 @@ export const usePairBalanceHook: UsePairBalanceHookType = {
   [ChainId.SONGBIRD]: useEVMPairBalance,
   [ChainId.FLARE_MAINNET]: useEVMPairBalance,
   [ChainId.HEDERA_TESTNET]: useHederaPairBalance,
+  [ChainId.HEDERA_MAINNET]: useHederaPairBalance,
   [ChainId.NEAR_MAINNET]: useNearPairBalance,
   [ChainId.NEAR_TESTNET]: useNearPairBalance,
   [ChainId.COSTON2]: useEVMPairBalance,
@@ -139,6 +148,7 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.SONGBIRD]: useETHBalances,
   [ChainId.FLARE_MAINNET]: useETHBalances,
   [ChainId.HEDERA_TESTNET]: useHederaBalance,
+  [ChainId.HEDERA_MAINNET]: useHederaBalance,
   [ChainId.NEAR_MAINNET]: useNearBalance,
   [ChainId.NEAR_TESTNET]: useNearBalance,
   [ChainId.COSTON2]: useETHBalances,
@@ -173,6 +183,7 @@ export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.SONGBIRD]: useAddLiquidity,
   [ChainId.FLARE_MAINNET]: useAddLiquidity,
   [ChainId.HEDERA_TESTNET]: useHederaAddLiquidity,
+  [ChainId.HEDERA_MAINNET]: useHederaAddLiquidity,
   [ChainId.NEAR_MAINNET]: useNearAddLiquidity,
   [ChainId.NEAR_TESTNET]: useNearAddLiquidity,
   [ChainId.COSTON2]: useAddLiquidity,
@@ -207,6 +218,7 @@ export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
   [ChainId.SONGBIRD]: useRemoveLiquidity,
   [ChainId.FLARE_MAINNET]: useRemoveLiquidity,
   [ChainId.HEDERA_TESTNET]: useHederaRemoveLiquidity,
+  [ChainId.HEDERA_MAINNET]: useHederaRemoveLiquidity,
   [ChainId.NEAR_MAINNET]: useNearRemoveLiquidity,
   [ChainId.NEAR_TESTNET]: useNearRemoveLiquidity,
   [ChainId.COSTON2]: useRemoveLiquidity,
@@ -245,6 +257,7 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.SONGBIRD]: useGetUserLP,
   [ChainId.FLARE_MAINNET]: useGetUserLP,
   [ChainId.HEDERA_TESTNET]: useGetHederaUserLP,
+  [ChainId.HEDERA_MAINNET]: useGetHederaUserLP,
   [ChainId.NEAR_MAINNET]: useGetNearUserLP,
   [ChainId.NEAR_TESTNET]: useGetNearUserLP,
   [ChainId.COSTON2]: useGetUserLP,
@@ -287,6 +300,7 @@ export const useCreatePairHook: UseCreatePairHookType = {
   [ChainId.SONGBIRD]: useDummyCreatePair,
   [ChainId.FLARE_MAINNET]: useDummyCreatePair,
   [ChainId.HEDERA_TESTNET]: useHederaCreatePair,
+  [ChainId.HEDERA_MAINNET]: useHederaCreatePair,
   [ChainId.NEAR_MAINNET]: useNearCreatePair,
   [ChainId.NEAR_TESTNET]: useNearCreatePair,
   [ChainId.COSTON2]: useDummyCreatePair,

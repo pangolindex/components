@@ -22,7 +22,7 @@ import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { AppState, useDispatch, useSelector } from 'src/state';
-import { checkRecipientAddressMapping, isAddress, isEvmChain } from 'src/utils';
+import { isAddress, isEvmChain, validateAddressMapping } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useUserSlippageTolerance } from '../puser/hooks';
@@ -161,7 +161,7 @@ export function useDerivedSwapInfo(): {
 
   const toggledVersion = useToggledVersion();
 
-  const checkRecipientAddress = checkRecipientAddressMapping[chainId];
+  const checkRecipientAddress = validateAddressMapping[chainId];
 
   const {
     independentField,
