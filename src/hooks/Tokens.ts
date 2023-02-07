@@ -187,7 +187,7 @@ export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> 
         symbolBytes32?.loading === false &&
         decimal?.loading === false &&
         address &&
-        decimal?.result?.[0]
+        (decimal?.result?.[0] || decimal?.result?.[0] === 0)
       ) {
         const token = new Token(
           chainId,
