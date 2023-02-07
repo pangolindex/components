@@ -458,7 +458,7 @@ const MarketOrder: React.FC<Props> = ({
           >
             {priceImpactSeverity > 3 && !isExpertMode
               ? 'Price Impact High'
-              : 'Swap' + `${priceImpactSeverity > 2 ? 'Anyway' : ''}`}
+              : 'Swap' + `${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
           </Button>
         </Box>
       );
@@ -477,7 +477,13 @@ const MarketOrder: React.FC<Props> = ({
           });
         }}
         id="swap-button"
-        isDisabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError || !!swapInputError}
+        isDisabled={
+          !isValid ||
+          approval !== ApprovalState.APPROVED ||
+          (priceImpactSeverity > 3 && !isExpertMode) ||
+          !!swapCallbackError ||
+          !!swapInputError
+        }
         backgroundColor={isValid && priceImpactSeverity > 2 ? 'primary' : undefined}
         color={isValid && priceImpactSeverity <= 2 ? 'black' : undefined}
       >
@@ -485,7 +491,7 @@ const MarketOrder: React.FC<Props> = ({
           ? swapInputError
           : priceImpactSeverity > 3 && !isExpertMode
           ? 'Price Impact High'
-          : 'Swap' + `${priceImpactSeverity > 2 ? 'Anyway' : ''}`}
+          : 'Swap' + `${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
       </Button>
     );
   };
