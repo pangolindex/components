@@ -128,6 +128,7 @@ const getMiniChefAddress = (chainId: ChainId) => {
 };
 
 export const SQUID_API = 'https://api.0xsquid.com';
+export const RANGO_API_KEY = '6165008b-282e-446f-acf8-13c2b06d0775';
 
 export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.FUJI]: getMiniChefAddress(ChainId.FUJI),
