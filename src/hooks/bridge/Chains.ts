@@ -48,28 +48,27 @@ export function useSquidChains() {
 
     const formattedChains: (BridgeChain | undefined)[] = chains.map((chain: ChainData): BridgeChain | undefined => {
       // We have to make sure that we don't include EVMOS as it is already included in the RangoSwap chains
-      if (chain?.chainName.toLocaleUpperCase() !== 'EVMOS') {
-        return {
-          id: `${chain?.chainName.toLowerCase()}_mainnet`,
-          network_type: chain?.chainType === 'evm' ? NetworkType.EVM : NetworkType.COSMOS,
-          ...('bech32Config' in chain && {
-            meta_data: {
-              cosmosPrefix: chain?.bech32Config?.bech32PrefixAccAddr,
-            },
-          }),
-          name: chain?.chainName.charAt(0).toLocaleUpperCase() + chain?.chainName.slice(1),
-          chain_id: chain?.chainId,
-          mainnet: true,
-          evm: chain?.chainType === 'evm',
-          pangolin_is_live: false,
-          tracked_by_debank: false,
-          supported_by_gelato: false,
-          rpc_uri: chain.rpc,
-          symbol: chain?.nativeCurrency?.symbol,
-          nativeCurrency: chain?.nativeCurrency,
-          logo: chain?.nativeCurrency?.icon,
-        };
-      }
+      if (chain?.chainName.toLocaleUpperCase() === 'EVMOS') return;
+      return {
+        id: `${chain?.chainName.toLowerCase()}_mainnet`,
+        network_type: chain?.chainType === 'evm' ? NetworkType.EVM : NetworkType.COSMOS,
+        ...('bech32Config' in chain && {
+          meta_data: {
+            cosmosPrefix: chain?.bech32Config?.bech32PrefixAccAddr,
+          },
+        }),
+        name: chain?.chainName.charAt(0).toLocaleUpperCase() + chain?.chainName.slice(1),
+        chain_id: chain?.chainId,
+        mainnet: true,
+        evm: chain?.chainType === 'evm',
+        pangolin_is_live: false,
+        tracked_by_debank: false,
+        supported_by_gelato: false,
+        rpc_uri: chain.rpc,
+        symbol: chain?.nativeCurrency?.symbol,
+        nativeCurrency: chain?.nativeCurrency,
+        logo: chain?.nativeCurrency?.icon,
+      };
     });
     return formattedChains.filter((chain) => chain !== undefined) as BridgeChain[];
   });
