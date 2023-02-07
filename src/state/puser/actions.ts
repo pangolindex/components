@@ -20,6 +20,7 @@ export const updateUserSlippageTolerance = createAction<{ userSlippageTolerance:
 export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('puser/updateUserExpertMode');
 export const updateUserDeadline = createAction<{ userDeadline: string }>('puser/updateUserDeadline');
 export const updateUserShowBalances = createAction<{ userShowBalances: boolean }>('puser/updateUserShowBalances');
+export const updateUserApproveInfinite = createAction<{ userApproveInfinite: boolean }>('puser/updateApproveInfinite');
 
 export const addSerializedToken = createAction<{ serializedToken: SerializedToken }>('puser/addSerializedToken');
 export const removeSerializedToken = createAction<{ chainId: number; address: string }>('puser/removeSerializedToken');
