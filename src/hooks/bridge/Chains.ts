@@ -71,7 +71,7 @@ export function useSquidChains() {
         };
       }
     });
-    return formattedChains.filter((chain) => chain !== undefined);
+    return formattedChains.filter((chain) => chain !== undefined) as BridgeChain[];
   });
 }
 
