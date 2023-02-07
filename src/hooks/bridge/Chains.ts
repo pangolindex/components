@@ -46,7 +46,9 @@ export function useSquidChains() {
     await squid.init();
     const chains = squid.chains as ChainData[];
 
-    const formattedChains: BridgeChain[] = chains.map((chain: ChainData): BridgeChain => {
+    const formattedChains: (BridgeChain | undefined)[] = chains.map((chain: ChainData): BridgeChain | undefined => {
+      // We have to make sure that we don't include EVMOS as it is already included in the RangoSwap chains
+      if (chain?.chainName.toLocaleUpperCase() === 'EVMOS') return;
       return {
         id: `${chain?.chainName.toLowerCase()}_mainnet`,
         network_type: chain?.chainType === 'evm' ? NetworkType.EVM : NetworkType.COSMOS,
@@ -68,7 +70,7 @@ export function useSquidChains() {
         logo: chain?.nativeCurrency?.icon,
       };
     });
-    return formattedChains;
+    return formattedChains.filter((chain) => chain !== undefined) as BridgeChain[];
   });
 }
 
@@ -103,8 +105,8 @@ export function useRangoChains() {
 
 export function useBridgeChains() {
   const lifiChains = useLiFiSwapChains();
-  const squidChains = useSquidChains();
   const rangoChains = useRangoChains();
+  const squidChains = useSquidChains();
   return useMemo(() => {
     return {
       [LIFIBridge.id]: lifiChains.status === 'success' ? lifiChains?.data ?? [] : [],
