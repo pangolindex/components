@@ -25,18 +25,11 @@ export enum HashConnectEvents {
   CHECK_EXTENSION = 'checkExtension',
 }
 
-const LocalStorageKey = 'pangolinHashPackData';
 //Intial App config
 const APP_METADATA: HashConnectTypes.AppMetadata = {
   name: 'Pangolin Exchange',
   description: '',
   icon: 'https://raw.githubusercontent.com/pangolindex/tokens/main/assets/43114/0x60781C2586D68229fde47564546784ab3fACA982/logo_48.png',
-};
-
-type HashPackLocalDataType = {
-  topic?: string;
-  pairingData?: HashConnectTypes.SavedPairingData | null;
-  pairingString?: string;
 };
 
 export class HashConnector extends AbstractConnector {
@@ -79,19 +72,19 @@ export class HashConnector extends AbstractConnector {
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
 
     this.setUpEvents();
-
-    this.instance
-      .init(APP_METADATA, this.network as any)
-      .then((data) => {
-        this.initData = data;
-      })
-      .catch((error) => {
-        console.log('hash connect err', error);
-      });
+    this.init();
   }
 
-  private handleFoundExtensionEvent(data) {
-    console.log('pangolin hashconnect avaialble extension', data);
+  public async init() {
+    const data = await this.instance.init(APP_METADATA, this.network as any);
+    this.initData = data;
+    this.topic = data.topic;
+    this.pairingString = data.pairingString;
+    this.pairingData = data.savedPairings[0];
+  }
+
+  private handleFoundExtensionEvent() {
+    console.log('pangolin hashconnect available extension');
     this.availableExtension = true;
     console.log('pangolin hashconnect emitting event CHECK_EXTENSION');
     hashconnectEvent.emit(HashConnectEvents.CHECK_EXTENSION, true);
@@ -108,14 +101,13 @@ export class HashConnector extends AbstractConnector {
     this.pairingData = data.pairingData!;
     const accountId = this.pairingData?.accountIds?.[0];
     if (accountId) {
-      this.saveDataInLocalstorage({ pairingData: this.pairingData });
       this.emitUpdate({ account: this.toAddress(accountId) });
     }
   }
 
   setUpEvents() {
     console.log('pangolin hashconnect setting up events');
-    this.instance.foundExtensionEvent.on(this.handleFoundExtensionEvent.bind(this));
+    this.instance.foundExtensionEvent.on(this.handleFoundExtensionEvent);
     this.instance.pairingEvent.on(this.handlePairingEvent.bind(this));
     this.instance.connectionStatusChangeEvent.on(this.handleConnectionStatusChangeEvent.bind(this));
   }
@@ -155,7 +147,6 @@ export class HashConnector extends AbstractConnector {
       this.pairingString = this.initData.pairingString;
 
       this.provider = await this.getProvider();
-      this.saveDataInLocalstorage();
 
       return { chainId: this.chainId, provider: this.provider };
     } else {
@@ -183,52 +174,36 @@ export class HashConnector extends AbstractConnector {
     return null;
   }
 
-  public async deactivate() {
+  private _close() {
     if (this.pairingData) {
       this.instance.disconnect(this.pairingData?.topic);
       this.instance.clearConnectionsAndData();
-      localStorage.removeItem(LocalStorageKey);
+      localStorage.removeItem('hashconnectData');
       this.emitDeactivate();
     }
+  }
+
+  public async deactivate() {
+    this._close();
   }
 
   public async close() {
-    if (this.pairingData) {
-      this.instance.disconnect(this.pairingData?.topic);
-      this.instance.clearConnectionsAndData();
-      localStorage.removeItem(LocalStorageKey);
-      this.emitDeactivate();
-    }
+    this._close();
   }
 
   public async isAuthorized(): Promise<boolean> {
-    return this.loadLocalData();
-  }
-
-  saveDataInLocalstorage(params: HashPackLocalDataType = {}) {
-    const saveData = {
-      topic: params.topic || this.topic,
-      pairingData: params.pairingData || this.pairingData,
-      pairingString: params.pairingString || this.pairingString,
-    };
-    const data = JSON.stringify(saveData);
-
-    localStorage.setItem(LocalStorageKey, data);
-  }
-
-  loadLocalData(): boolean {
-    const foundData = localStorage.getItem(LocalStorageKey);
-
+    const foundData = localStorage.getItem('hashconnectData');
     if (foundData) {
-      const saveData: HashPackLocalDataType = JSON.parse(foundData);
-      this.topic = saveData.topic || '';
-      this.pairingString = saveData.pairingString || '';
-      if (saveData.pairingData) {
-        this.pairingData = saveData.pairingData;
+      const data = JSON.parse(foundData);
+      // is authorized if the data is valid or pairingData length is greater than 0
+      if (!data.pairingData || !data.encryptionKey || data.pairingData.length === 0) {
+        return false;
       }
       return true;
+    } else {
+      // if not found data in local storage return false
+      return false;
     }
-    return false;
   }
 
   private makeBytes(transaction: Transaction, accountId: string) {
