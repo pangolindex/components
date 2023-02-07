@@ -20,7 +20,7 @@ export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
   APPROVE_ERC20: 60000,
   PROVIDE_LIQUIDITY: 250000,
-  CREATE_POOL: 2300000,
+  CREATE_POOL: 3000000,
   REMOVE_NATIVE_LIQUIDITY: 250000,
   REMOVE_LIQUIDITY: 250000,
   BASE_SWAP: 200000,
@@ -341,7 +341,7 @@ class Hedera {
 
   isAddressValid = (address: string): string | false => {
     if (address && hethers.utils.isAddress(address.toLowerCase())) {
-      return address;
+      return hethers.utils.getChecksumAddress(address);
     } else {
       return false;
     }
