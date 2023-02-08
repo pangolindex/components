@@ -30,7 +30,7 @@ import {
   useSwapState,
 } from 'src/state/pswap/hooks';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { checkRecipientAddressMapping, isTokenOnList } from 'src/utils';
+import { isTokenOnList, validateAddressMapping } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -98,7 +98,7 @@ const MarketOrder: React.FC<Props> = ({
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
   const useSwapCallback = useSwapCallbackHook[chainId];
 
-  const checkRecipientAddress = checkRecipientAddressMapping[chainId];
+  const checkRecipientAddress = validateAddressMapping[chainId];
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
@@ -437,7 +437,7 @@ const MarketOrder: React.FC<Props> = ({
             >
               {approvalSubmitted && approval === ApprovalState.APPROVED
                 ? 'Approved'
-                : 'Approve' + currencies[Field.INPUT]?.symbol}
+                : 'Approve ' + currencies[Field.INPUT]?.symbol}
             </Button>
           </Box>
 
@@ -458,7 +458,7 @@ const MarketOrder: React.FC<Props> = ({
           >
             {priceImpactSeverity > 3 && !isExpertMode
               ? 'Price Impact High'
-              : 'Swap' + `${priceImpactSeverity > 2 ? 'Anyway' : ''}`}
+              : 'Swap' + `${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
           </Button>
         </Box>
       );
@@ -477,7 +477,13 @@ const MarketOrder: React.FC<Props> = ({
           });
         }}
         id="swap-button"
-        isDisabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError || !!swapInputError}
+        isDisabled={
+          !isValid ||
+          approval !== ApprovalState.APPROVED ||
+          (priceImpactSeverity > 3 && !isExpertMode) ||
+          !!swapCallbackError ||
+          !!swapInputError
+        }
         backgroundColor={isValid && priceImpactSeverity > 2 ? 'primary' : undefined}
         color={isValid && priceImpactSeverity <= 2 ? 'black' : undefined}
       >
@@ -485,7 +491,7 @@ const MarketOrder: React.FC<Props> = ({
           ? swapInputError
           : priceImpactSeverity > 3 && !isExpertMode
           ? 'Price Impact High'
-          : 'Swap' + `${priceImpactSeverity > 2 ? 'Anyway' : ''}`}
+          : 'Swap' + `${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
       </Button>
     );
   };

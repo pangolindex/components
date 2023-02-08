@@ -1,5 +1,5 @@
 import { BridgeChain, BridgeCurrency } from '@pangolindex/sdk';
-import { GetRoutes } from 'src/state/pbridge/types';
+import { GetRoutesProps } from 'src/state/pbridge/types';
 
 export type BridgeCardProps = {
   slippageTolerance: string;
@@ -10,5 +10,5 @@ export type BridgeCardProps = {
   recipient?: string | null;
   toChain?: BridgeChain;
   setSlippageTolerance: React.Dispatch<React.SetStateAction<string>>;
-  getRoutes: GetRoutes;
+  getRoutes: (props: GetRoutesProps) => void;
 };

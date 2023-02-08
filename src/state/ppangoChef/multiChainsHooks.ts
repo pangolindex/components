@@ -10,9 +10,9 @@ import {
   useEVMPangoChefWithdrawCallback,
   useGetLockingPoolsForPoolId,
   useGetLockingPoolsForPoolZero,
+  useGetPangoChefInfosViaSubgraph,
   useHederaPangoChefClaimRewardCallback,
   useHederaPangoChefCompoundCallback,
-  useHederaPangoChefInfos,
   useHederaPangoChefStakeCallback,
   useHederaPangoChefWithdrawCallback,
   usePangoChefInfos,
@@ -21,7 +21,7 @@ import {
 export type UsePangoChefInfosHookType = {
   [chainId in ChainId]:
     | typeof usePangoChefInfos
-    | typeof useHederaPangoChefInfos
+    | typeof useGetPangoChefInfosViaSubgraph
     | typeof useDummyPangoChefInfos
     | typeof useDummyHook;
 };
@@ -33,8 +33,8 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.COSTON]: usePangoChefInfos,
   [ChainId.SONGBIRD]: usePangoChefInfos,
   [ChainId.FLARE_MAINNET]: usePangoChefInfos,
-  [ChainId.HEDERA_TESTNET]: useHederaPangoChefInfos,
-  [ChainId.HEDERA_MAINNET]: useHederaPangoChefInfos,
+  [ChainId.HEDERA_TESTNET]: useGetPangoChefInfosViaSubgraph,
+  [ChainId.HEDERA_MAINNET]: useGetPangoChefInfosViaSubgraph,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefInfos,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefInfos,
   [ChainId.COSTON2]: usePangoChefInfos,

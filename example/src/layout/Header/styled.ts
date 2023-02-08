@@ -22,16 +22,15 @@ export const MenuLink = styled(Link)`
   text-decoration: none;
   color: ${({ theme }) => theme.color4};
   font-size: 1rem;
-  width: fit-content;
   padding: 0 16px;
   margin: 0px;
   align-items: center;
   font-weight: 500;
-  width: 100%;
 `;
 
 export const Menuwrapper = styled.div`
   display: flex;
-  width: fit-content;
   padding: 0 16px;
+  flex: 1;
+  justify-content: flex-end;
 `;

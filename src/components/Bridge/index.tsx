@@ -32,16 +32,16 @@ const Bridge = () => {
   const getAllRoutes = useCallback(() => {
     if (parsedAmount) {
       onChangeRouteLoaderStatus();
-      getRoutes(
-        parsedAmount?.toExact(),
-        slippageTolerance,
+      getRoutes({
+        amount: parsedAmount?.toExact(),
+        slipLimit: slippageTolerance,
         fromChain,
         toChain,
-        account,
-        inputCurrency,
-        outputCurrency,
+        fromAddress: account,
+        fromCurrency: inputCurrency,
+        toCurrency: outputCurrency,
         recipient,
-      );
+      });
     }
   }, [parsedAmount, slippageTolerance, fromChain, toChain, account, inputCurrency, outputCurrency, recipient]);
 
