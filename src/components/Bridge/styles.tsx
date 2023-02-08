@@ -14,6 +14,23 @@ export const PageWrapper = styled(Box)`
   `};
 `;
 
+export const Partners = styled(Box)`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 30px;
+`;
+
+export const PartnerLogos = styled(Box)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  padding: 30px;
+`;
+
 export const Transactions = styled(Box)`
   background-color: ${({ theme }) => theme.bridge?.secondaryBgColor};
   min-width: 70%;
