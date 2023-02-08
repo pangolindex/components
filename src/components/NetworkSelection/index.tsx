@@ -1,17 +1,24 @@
-import { CHAINS } from '@pangolindex/sdk';
+import { CHAINS, Chain, ChainId } from '@pangolindex/sdk';
+import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
+import { hashConnect } from 'src/connectors';
+import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
 import { changeNetwork } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import ChainItem from './ChainItem';
 import { ChainsList, Frame, Inputs, Wrapper } from './styled';
 import { NETWORK_TYPE, NetworkProps } from './types';
 
 export default function NetworkSelection({ open, closeModal }: NetworkProps) {
+  const { activate } = useWeb3React();
+  const mixpanel = useMixpanel();
+
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -46,6 +53,23 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
     return maxHeight <= 0 ? 125 : maxHeight;
   }
 
+  const onChainClick = async (chain: Chain) => {
+    try {
+      const isHedera = hederaFn.isHederaChain(chain?.chain_id as ChainId);
+
+      if (isHedera) {
+        await activate(hashConnect, undefined, true);
+
+        mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
+          wallet_name: 'HashPack Wallet',
+          source: 'pangolin-components',
+        });
+      } else {
+        await changeNetwork(chain, closeModal);
+      }
+    } catch (e) {}
+  };
+
   return (
     <Modal isOpen={open} onDismiss={closeModal}>
       <Frame>
@@ -71,13 +95,7 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
           <Scrollbars autoHeight autoHeightMin={125} autoHeightMax={calcHeightMax()}>
             <ChainsList>
               {chains.map((chain) => {
-                return (
-                  <ChainItem
-                    key={chain.chain_id ?? 43114}
-                    chain={chain}
-                    onClick={() => changeNetwork(chain, closeModal)}
-                  />
-                );
+                return <ChainItem key={chain.chain_id ?? 43114} chain={chain} onClick={() => onChainClick(chain)} />;
               })}
             </ChainsList>
           </Scrollbars>

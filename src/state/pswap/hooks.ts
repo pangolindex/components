@@ -287,6 +287,14 @@ export function useHederaSwapTokenAssociated(): {
   const token = outputCurrency ? wrappedCurrency(outputCurrency, chainId) : undefined;
   const { associate, isLoading, hederaAssociated } = useHederaTokenAssociated(token?.address, token?.symbol);
 
+  if (outputCurrency === CAVAX[chainId]) {
+    return {
+      associate: undefined,
+      isLoading: false,
+      hederaAssociated: true,
+    };
+  }
+
   return {
     associate,
     isLoading,
