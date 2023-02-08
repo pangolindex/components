@@ -1237,8 +1237,8 @@ export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
     const userBalance = stakingInfo?.userValueVariables?.balance || BigNumber.from(0);
     const userSumOfEntryTimes = stakingInfo?.userValueVariables?.sumOfEntryTimes || BigNumber.from(0);
 
-    const poolBalance = stakingInfo?.valueVariables?.balance;
-    const poolSumOfEntryTimes = stakingInfo?.valueVariables?.sumOfEntryTimes;
+    const poolBalance = stakingInfo?.valueVariables?.balance || BigNumber.from(0);
+    const poolSumOfEntryTimes = stakingInfo?.valueVariables?.sumOfEntryTimes || BigNumber.from(0);
 
     if (userBalance?.isZero() || poolBalance.isZero() || !blockTime) return BigNumber.from(0);
 
@@ -1355,7 +1355,7 @@ export function usePangoChefExtraFarmApr(
       }
       //extraAPR = poolRewardRate(POOL_ID) * rewardMultiplier / (10** token.decimals) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       extraAPR +=
-        balance.isZero() || pairPrice.equalTo('0')
+        !pairPrice || !balance || balance.isZero() || pairPrice.equalTo('0')
           ? 0
           : Number(
               tokenPrice.raw

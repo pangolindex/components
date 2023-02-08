@@ -458,7 +458,7 @@ const MarketOrder: React.FC<Props> = ({
           >
             {priceImpactSeverity > 3 && !isExpertMode
               ? 'Price Impact High'
-              : 'Swap' + `${priceImpactSeverity > 2 ? 'Anyway' : ''}`}
+              : 'Swap' + `${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
           </Button>
         </Box>
       );
@@ -485,7 +485,7 @@ const MarketOrder: React.FC<Props> = ({
           ? swapInputError
           : priceImpactSeverity > 3 && !isExpertMode
           ? 'Price Impact High'
-          : 'Swap' + `${priceImpactSeverity > 2 ? 'Anyway' : ''}`}
+          : 'Swap' + `${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
       </Button>
     );
   };

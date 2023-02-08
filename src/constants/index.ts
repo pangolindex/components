@@ -128,6 +128,7 @@ const getMiniChefAddress = (chainId: ChainId) => {
 };
 
 export const SQUID_API = 'https://api.0xsquid.com';
+export const RANGO_API_KEY = '6165008b-282e-446f-acf8-13c2b06d0775';
 
 export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.FUJI]: getMiniChefAddress(ChainId.FUJI),
@@ -297,7 +298,12 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.SONGBIRD]: [WAVAX[ChainId.SONGBIRD], PNG[ChainId.SONGBIRD]],
   [ChainId.FLARE_MAINNET]: [WAVAX[ChainId.FLARE_MAINNET], PNG[ChainId.FLARE_MAINNET]],
   [ChainId.HEDERA_TESTNET]: [WAVAX[ChainId.HEDERA_TESTNET], PNG[ChainId.HEDERA_TESTNET]],
-  [ChainId.HEDERA_MAINNET]: [WAVAX[ChainId.HEDERA_MAINNET], PNG[ChainId.HEDERA_MAINNET]],
+  [ChainId.HEDERA_MAINNET]: [
+    WAVAX[ChainId.HEDERA_MAINNET],
+    PNG[ChainId.HEDERA_MAINNET],
+    USDTe[ChainId.HEDERA_MAINNET],
+    USDC[ChainId.HEDERA_MAINNET],
+  ],
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
   [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2], PNG[ChainId.COSTON2]],

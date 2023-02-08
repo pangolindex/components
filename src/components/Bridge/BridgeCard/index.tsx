@@ -8,6 +8,7 @@ import {
   CurrencyAmount,
   LIFI as LIFIBridge,
   NetworkType,
+  RANGO,
   SQUID,
   // THORSWAP,
 } from '@pangolindex/sdk';
@@ -163,7 +164,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       }
       return data;
     }
-  }, [activeBridges, chainHook?.[LIFIBridge.id], chainHook?.[SQUID.id]]);
+  }, [activeBridges, chainHook?.[LIFIBridge.id], chainHook?.[SQUID.id], chainHook?.[RANGO.id]]);
 
   useEffect(() => {
     if (
@@ -174,16 +175,16 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       (toChain?.evm || (!toChain?.evm && isToAddress(recipient, toChain)))
     ) {
       onChangeRouteLoaderStatus();
-      getRoutes(
-        debouncedAmountValue,
-        slippageTolerance,
+      getRoutes({
+        amount: debouncedAmountValue,
+        slipLimit: slippageTolerance,
         fromChain,
         toChain,
-        account,
-        inputCurrency,
-        outputCurrency,
+        fromAddress: account,
+        fromCurrency: inputCurrency,
+        toCurrency: outputCurrency,
         recipient,
-      );
+      });
     }
   }, [debouncedAmountValue, slippageTolerance, inputCurrency, outputCurrency, recipient, account]);
 
