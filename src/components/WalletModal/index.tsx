@@ -169,9 +169,8 @@ const WalletModal: React.FC<WalletModalProps> = ({
         .then(() => {
           if (isCbWallet) {
             addAvalancheNetwork();
-          } else {
-            onWalletConnect(getConnectorKey(activationConnector));
           }
+          onWalletConnect(getConnectorKey(activationConnector));
           mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
             wallet_name: option?.name ?? name?.toLowerCase(),
           });
