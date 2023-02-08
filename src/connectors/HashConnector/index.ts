@@ -72,7 +72,6 @@ export class HashConnector extends AbstractConnector {
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
 
     this.setUpEvents();
-    this.init();
   }
 
   public async init() {
@@ -91,7 +90,9 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
-    if (state === HashConnectConnectionState.Disconnected) {
+    // we need to check this.initData too, because it call deactivate and deactivate call clearConnectionsAndData
+    // clearConnectionsAndData emit the HashConnectConnectionState.Disconnected and it cause a infinite loop
+    if (state === HashConnectConnectionState.Disconnected && this.initData) {
       this.deactivate();
     }
   }
@@ -136,26 +137,29 @@ export class HashConnector extends AbstractConnector {
   public async activate(): Promise<any> {
     const isAuthorized = await this.isAuthorized();
 
-    if (!isAuthorized && this.initData) {
+    if (!isAuthorized) {
+      // we always need to init with new data if we are not authorized
+      await this.init();
       this.instance.connectToLocalWallet();
+    }
 
-      await this.instance.init(APP_METADATA, this.network as any);
+    // workaround, it has not been initialized, we need to initialize it so we can
+    // activate this connector without appearing the popup to connect the wallet
+    if (!this.initData) {
+      await this.init();
+    }
+
+    if (this.initData) {
       // generate a pairing string, which you can display and generate a QR code from
       this.pairingString = this.instance.generatePairingString(this.initData.topic, this.network, false);
 
       this.topic = this.initData.topic;
       this.pairingString = this.initData.pairingString;
-
-      this.provider = await this.getProvider();
-
-      return { chainId: this.chainId, provider: this.provider };
-    } else {
-      await this.instance.init(APP_METADATA, this.network as any);
-      this.provider = await this.getProvider();
-      const accountId = await this.getAccount();
-
-      return { chainId: this.chainId, provider: this.provider, account: accountId };
     }
+
+    this.provider = await this.getProvider();
+    const accountId = await this.getAccount();
+    return { chainId: this.chainId, provider: this.provider, account: accountId };
   }
 
   toAddress = (accountId: string) => {
@@ -179,6 +183,10 @@ export class HashConnector extends AbstractConnector {
       this.instance.disconnect(this.pairingData?.topic);
       this.instance.clearConnectionsAndData();
       localStorage.removeItem('hashconnectData');
+      this.initData = null;
+      this.pairingData = null;
+      this.topic = '';
+      this.pairingString = '';
       this.emitDeactivate();
     }
   }
@@ -192,10 +200,11 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async isAuthorized(): Promise<boolean> {
+    // we query the localStorage to check the hashconnect data exist, if exist, we need to check this data
     const foundData = localStorage.getItem('hashconnectData');
     if (foundData) {
       const data = JSON.parse(foundData);
-      // is authorized if the data is valid or pairingData length is greater than 0
+      // is authorized if the data is valid or data.pairingData length is greater than 0
       if (!data.pairingData || !data.encryptionKey || data.pairingData.length === 0) {
         return false;
       }
