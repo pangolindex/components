@@ -68,7 +68,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange, o
     let error: string | undefined;
     if (!selectedPosition) {
       error = t('sarStakeMore.choosePosition');
-    } else if (oldBalance?.isZero()) {
+    } else if (oldBalance?.isZero() || pendingRewards.isZero()) {
       error = t('sarCompound.noRewards');
     }
     return (
