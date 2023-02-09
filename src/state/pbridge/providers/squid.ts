@@ -57,11 +57,14 @@ export const getSquidRoutes: GetRoutes = async ({
           4,
         ),
         toAmountUSD: `${squidRouteRes.route.estimate?.toAmountUSD} USD`,
-        gasCostUSD: squidRouteRes.route.estimate.gasCosts
-          .reduce((prevValue, currentValue) => {
+        gasCostUSD: (
+          squidRouteRes.route.estimate.gasCosts.reduce((prevValue, currentValue) => {
+            return prevValue + parseFloat(currentValue.amountUSD);
+          }, 0) +
+          squidRouteRes.route.estimate.feeCosts.reduce((prevValue, currentValue) => {
             return prevValue + parseFloat(currentValue.amountUSD);
           }, 0)
-          .toFixed(2),
+        ).toFixed(2),
         steps: [
           {
             bridge: SQUID,
