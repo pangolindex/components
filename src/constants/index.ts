@@ -662,6 +662,7 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
 export enum SwapTypes {
   MARKET = 'MARKET',
   LIMIT = 'LIMIT',
+  TWAP = 'TWAP',
 }
 
 export interface MetamaskError {

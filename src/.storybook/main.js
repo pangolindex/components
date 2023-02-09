@@ -16,7 +16,10 @@ module.exports = {
 
     // allow absolute import
     updatedConfig.resolve.modules = [...(updatedConfig.resolve.modules || []), path.resolve(__dirname, '../../')];
-
+    updatedConfig.resolve.alias = {
+      ...updatedConfig.resolve.alias,
+      '@emotion/core': path.join(process.cwd(), 'node_modules/@emotion/react'),
+    };
     return {
       ...updatedConfig,
       // we are using NodePolyfillPlugin to support node polyfill in webpack 5
