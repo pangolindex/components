@@ -387,6 +387,7 @@ export function filterTokenOrChain(
   });
 }
 
+// For Hedera Chain we need to show their original accountId for we use this mapping 
 export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
   [ChainId.FUJI]: shortenAddress,
   [ChainId.AVALANCHE]: shortenAddress,
