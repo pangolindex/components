@@ -32,7 +32,7 @@ export function useLiFiSwapChains() {
         symbol: chain?.metamask?.nativeCurrency?.symbol,
         nativeCurrency: chain?.metamask?.nativeCurrency,
         logo: chain?.logoURI,
-      };
+      } as BridgeChain;
     });
     return formattedChains;
   });
@@ -69,7 +69,7 @@ export function useSquidChains() {
         symbol: chain?.nativeCurrency?.symbol,
         nativeCurrency: chain?.nativeCurrency,
         logo: chain?.nativeCurrency?.icon,
-      };
+      } as BridgeChain;
     });
     return formattedChains.filter((chain) => chain !== undefined) as BridgeChain[];
   });
@@ -100,7 +100,7 @@ export function useRangoChains() {
         symbol: chain.info.nativeCurrency.symbol,
         nativeCurrency: chain.info.nativeCurrency,
         logo: chain.logo,
-      };
+      } as BridgeChain;
     });
     return formattedChains;
   });
