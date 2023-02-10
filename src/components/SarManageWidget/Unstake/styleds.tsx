@@ -15,4 +15,5 @@ export const Wrapper = styled(Box)`
   display: grid;
   grid-template-rows: auto max-content;
   height: 100%;
+  padding: 0px 20px 20px 20px;
 `;
