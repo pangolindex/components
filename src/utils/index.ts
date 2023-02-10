@@ -387,7 +387,9 @@ export function filterTokenOrChain(
   });
 }
 
-// For Hedera Chain we need to show their original accountId for we use this mapping 
+// this mapping is useful for transforming address before displaying it on UI
+// for EVM chain this is shortening the address to fit it in UI
+// for Hedera chain this is converting address to Hedera Account Id
 export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
   [ChainId.FUJI]: shortenAddress,
   [ChainId.AVALANCHE]: shortenAddress,
