@@ -1275,7 +1275,7 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
     { enabled: Boolean(pangoChefContract) && Boolean(account) && hederaFn.isHederaChain(chainId) },
   );
 
-  const shouldCreateStorage = userStorageAddress ? false : true;
+  const shouldCreateStorage = userStorageAddress === ZERO_ADDRESS || !userStorageAddress ? true : false;
 
   const create = useCallback(async (): Promise<void> => {
     if (!account) {
