@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { HeaderFrame, MenuLink, Menuwrapper } from './styled';
 import { useWeb3React } from '@web3-react/core';
-import { Button, WalletModal, Box, shortenAddress, NetworkSelection, TokenInfoModal, Tokens } from '@components/index';
+import {
+  Button,
+  WalletModal,
+  Box,
+  NetworkSelection,
+  TokenInfoModal,
+  Tokens,
+  shortenAddressMapping,
+} from '@components/index';
 import { useChainId } from '@components/hooks/index';
 import Logo from '../Logo';
 import { CHAINS, TokenAmount } from '@pangolindex/sdk';
@@ -13,7 +21,7 @@ export default function Header() {
   const [open, setOpen] = useState<boolean>(false);
   const [openNetworkSelection, setOpenNetworkSelection] = useState<boolean>(false);
   const [showTokenInfoModal, setShowTokenInfoModal] = useState<boolean>(false);
-
+  const shortenAddress = shortenAddressMapping[chainId];
   const chain = CHAINS[chainId];
   const png = Tokens.PNG[chainId];
 
@@ -55,7 +63,7 @@ export default function Header() {
             {chain.name}
           </Button>
           <Button variant="primary" onClick={closeWalletModal} width="200px" height="40px">
-            {account ? `Connected ${shortenAddress(account, chainId)}` : 'Connect Wallet'}
+            {account ? `Connected ${shortenAddress(account)}` : 'Connect Wallet'}
           </Button>
         </Box>
       </Box>
