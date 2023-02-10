@@ -5,7 +5,10 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
 import { network } from 'src/connectors';
+import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { PROVIDER_MAPPING } from 'src/constants';
+import { useDispatch } from 'src/state';
+import { setAvailableHashpack } from 'src/state/papplication/actions';
 import { useBlockNumber } from 'src/state/papplication/hooks';
 import { isAddress, isEvmChain } from 'src/utils';
 
@@ -38,6 +41,24 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   chainId,
   account,
 }: Web3ProviderProps) => {
+  const dispatch = useDispatch();
+
+  // this is special cash for hashpack wallet
+  // we need to listen for hashpack wallet installed or not event
+  // and we are storing this boolean to redux so that
+  // in walletModal we can re-render as value updates
+  useEffect(() => {
+    const emitterFn = (isHashpackAvailable: boolean) => {
+      console.log('received hashpack emit event CHECK_EXTENSION in provider', isHashpackAvailable);
+      dispatch(setAvailableHashpack(true));
+    };
+    hashconnectEvent.on(HashConnectEvents.CHECK_EXTENSION, emitterFn);
+    return () => {
+      console.log('removing hashpack CHECK_EXTENSION event listener');
+      hashconnectEvent.off(HashConnectEvents.CHECK_EXTENSION, emitterFn);
+    };
+  }, []);
+
   const state = useMemo(() => {
     let normalizedAccount;
     if (chainId) {

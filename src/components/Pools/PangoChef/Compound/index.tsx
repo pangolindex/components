@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { formatUnits } from '@ethersproject/units';
 import { CAVAX, ChainId, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
@@ -12,13 +13,13 @@ import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
+import { useApproveCallbackHook, useTokensCurrencyPriceHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { usePangoChefContract } from 'src/hooks/useContract';
-import { useTokensCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
 import { usePangoChefCompoundCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
+import { calculateCompoundSlippage } from 'src/state/ppangoChef/utils';
 import { useAccountBalanceHook, useTokenBalancesHook } from 'src/state/pwallet/multiChainsHooks';
 import { hederaFn } from 'src/utils/hedera';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -46,6 +47,8 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const useCompoundCallback = usePangoChefCompoundCallbackHook[chainId];
   const useApproveCallback = useApproveCallbackHook[chainId];
   const useTokenBalances = useTokenBalancesHook[chainId];
+  const useTokensCurrencyPrice = useTokensCurrencyPriceHook[chainId];
+  const useETHBalances = useAccountBalanceHook[chainId];
 
   function wrappedOnDismiss() {
     setHash(undefined);
@@ -65,15 +68,21 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   const currency0 = unwrappedToken(token0, chainId);
   const currency1 = unwrappedToken(token1, chainId);
 
-  const useETHBalances = useAccountBalanceHook[chainId];
   const currencyBalance = useETHBalances(chainId, [account ?? ZERO_ADDRESS]);
 
-  const [tokensBalances] = useTokenBalances(account ?? ZERO_ADDRESS, [token0, token1]);
+  const tokensToGetBalances = stakingInfo?.tokens;
+  const tokensToGetPrice = stakingInfo?.tokens;
 
   const isPNGPool = token0.equals(png) || token1.equals(png);
   const isWrappedCurrencyPool = token0.equals(wrappedCurrency) || token1.equals(wrappedCurrency);
 
-  const tokensToGetPrice = [token0, token1];
+  // we need to add wrappedCurrency to get the balance, because it is used in parts of the code
+  //and if not have in these two tokens in pair it will disable the compound button forever
+  if (!isWrappedCurrencyPool) {
+    tokensToGetBalances.push(wrappedCurrency);
+  }
+
+  const [tokensBalances] = useTokenBalances(account ?? ZERO_ADDRESS, tokensToGetBalances);
 
   if (!isPNGPool) {
     tokensToGetPrice.push(png);
@@ -98,44 +107,83 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   // if is png pool and not is wrapped token as second token (eg PNG/USDC, PSB/SDOOD)
   // or for hedera chain we want to consider pbar-whbar pool instead of pbar-hbar pool
   // so for hedera also we want to go into if condition
-  if ((isPNGPool && !isWrappedCurrencyPool) || hederaFn.isHederaChain(chainId)) {
+  if ((isPNGPool && !isWrappedCurrencyPool) || (isPNGPool && hederaFn.isHederaChain(chainId))) {
     // need to calculate the token price in png, for this we using the token price on currency and png price on currency
     const token = token0.equals(png) ? token1 : token0;
     const tokenBalance = tokensBalances[token.address];
     const tokenPrice = tokensPrices[token.address] ?? new Price(token, wrappedCurrency, '1', '0');
-    const tokenPngPrice = pngPrice.equalTo('0') ? new Fraction('0') : pngPrice.divide(tokenPrice);
-    amountToAdd = new TokenAmount(token, tokenPngPrice.multiply(earnedAmount.raw).toFixed(0));
+    const tokenPngPrice = tokenPrice.equalTo('0') ? new Fraction('0') : pngPrice.divide(tokenPrice);
+    let _amount = tokenPngPrice.multiply(earnedAmount.raw);
 
+    // if the tokens have diffent decimals we need to divide this by 1e (png.decimals - token.decimals)
+    if (png.decimals !== token.decimals) {
+      const exponent = 10 ** (png.decimals - token.decimals);
+      _amount = _amount.divide(exponent.toString());
+    }
+
+    amountToAdd = new TokenAmount(token, _amount.equalTo('0') ? '0' : _amount.toFixed(0));
     if (amountToAdd.greaterThan(tokenBalance ?? '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: token.symbol });
     }
+
     message += t('pangoChef.compoundAmountWarning', {
       amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
       symbol: token.symbol,
     });
-  } else {
-    amountToAdd = CurrencyAmount.ether(pngPrice.raw.multiply(earnedAmount.raw).toFixed(0), chainId);
+  } else if (!hederaFn.isHederaChain(chainId)) {
+    // for anothers chains we can send gas coin
+    amountToAdd = CurrencyAmount.ether(
+      pngPrice.equalTo('0') || earnedAmount.equalTo('0') ? '0' : pngPrice.raw.multiply(earnedAmount.raw).toFixed(0),
+      chainId,
+    );
     if (amountToAdd.greaterThan(currencyBalance ? currencyBalance[account ?? ZERO_ADDRESS] ?? '0' : '0')) {
       _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: currency.symbol });
     }
+
     message += t('pangoChef.compoundAmountWarning', {
       amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
       symbol: currency.symbol,
     });
+
     if (!isPNGPool) {
-      message +=
-        ' ' +
-        t('pangoChef.compoundAmountWarning2', {
-          token0: png.symbol,
-          token1: currency.symbol,
-        });
+      message += t('pangoChef.compoundAmountWarning2', {
+        token0: png.symbol,
+        token1: currency.symbol,
+      });
+    }
+  } else {
+    // we compound to PNG/WRAPPED GAS COIN (PNG/WAVAX, PFL/WFLR, PSB/WSGB  etc) farm
+    // so for hedera we need to send WHBAR instead HBAR
+    const wrappedTokenBalance = tokensBalances[wrappedCurrency.address];
+    // the png price is in relation (wrapped) gas coin, so just multiply by the earned amount of png
+    amountToAdd = new TokenAmount(wrappedCurrency, pngPrice.raw.multiply(earnedAmount.raw).toFixed(0));
+
+    if (amountToAdd.greaterThan(wrappedTokenBalance ?? '0')) {
+      _error = _error ?? t('stakeHooks.insufficientBalance', { symbol: wrappedCurrency.symbol });
+    }
+
+    message += t('pangoChef.compoundAmountWarning', {
+      amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
+      symbol: wrappedCurrency.symbol,
+    });
+
+    if (!isPNGPool) {
+      message += t('pangoChef.compoundAmountWarning2', {
+        token0: png.symbol,
+        token1: currency.symbol,
+      });
     }
   }
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
 
-  const [approval, approveCallback] = useApproveCallback(chainId, amountToAdd, pangoChefContract?.address);
+  const slippage = calculateCompoundSlippage(amountToAdd);
+  // if it approve exact value, we need to approve the max slippage value so as not to revert due to missing approval
+  const approvalAmount =
+    amountToAdd instanceof TokenAmount ? new TokenAmount(amountToAdd.token, slippage.maxPairAmount) : amountToAdd;
+
+  const [approval, approveCallback] = useApproveCallback(chainId, approvalAmount, pangoChefContract?.address);
 
   const { callback: compoundCallback } = useCompoundCallback({
     isPNGPool,
@@ -306,8 +354,10 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
               {t('pangoChef.compoundWarning', {
                 token0: currency0.symbol,
                 token1: currency1.symbol,
-                currency: isPNGPool ? currency0.symbol : currency.symbol,
-                png: isPNGPool ? tokenOrCurrency?.symbol : png.symbol,
+                stakeToken0: isPNGPool ? currency0.symbol : png.symbol,
+                stakeToken1: isPNGPool ? currency1.symbol : currency.symbol,
+                compoundToken: tokenOrCurrency.symbol,
+                png: png.symbol,
               })}
             </Text>
           </Box>
@@ -327,3 +377,4 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   );
 };
 export default CompoundV3;
+/* eslint-enable max-lines */

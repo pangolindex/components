@@ -8,6 +8,7 @@ import { decimalToFraction } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { PairState, usePairs } from '../data/Reserves';
 import { useChainId } from '../hooks';
+import { useTokenCurrencyPriceHook } from './multiChainsHooks';
 import { useTokenCurrencyPrice } from './useCurrencyPrice';
 
 /**
@@ -161,6 +162,8 @@ export function useSongBirdUSDPrice(currency?: Currency): Price | undefined {
 export function useUsdPriceCoingecko(currency?: Currency): Price | undefined {
   const chainId = useChainId();
 
+  const useTokenCurrencyPrice = useTokenCurrencyPriceHook[chainId];
+
   const wrapped = wrappedCurrency(currency, chainId);
 
   const tokenPrice = useTokenCurrencyPrice(wrapped); // token price in hbar
@@ -174,9 +177,10 @@ export function useUsdPriceCoingecko(currency?: Currency): Price | undefined {
 
     const tokenUSDPrice = tokenPrice.raw.multiply(decimalToFraction(currencyPrice));
 
-    const denominatorAmount = new TokenAmount(wrapped, tokenUSDPrice.denominator);
-    const numeratorAmount = new TokenAmount(usd, tokenUSDPrice.numerator);
-    //here if both currency decimal different  then we need to pass like this
-    return new Price(currency, usd, denominatorAmount.raw, numeratorAmount.raw);
+    // we need to consider denominator & numerator values in terms of their
+    // base & quote currency decimals
+    const denominator = parseUnits(tokenUSDPrice.denominator.toString(), wrapped.decimals).toString();
+    const numerator = parseUnits(tokenUSDPrice.numerator.toString(), usd.decimals).toString();
+    return new Price(wrapped, usd, denominator, numerator);
   }, [wrapped, currencyPrice, tokenPrice]);
 }

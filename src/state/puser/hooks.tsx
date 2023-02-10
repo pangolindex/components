@@ -11,6 +11,7 @@ import {
   addSerializedPair,
   addSerializedToken,
   removeSerializedToken,
+  updateUserApproveInfinite,
   updateUserDeadline,
   updateUserExpertMode,
   updateUserShowBalances,
@@ -132,6 +133,25 @@ export function useShowBalancesManager(): [boolean, (value: boolean) => void] {
   );
 
   return [showBalances, setShowBalances];
+}
+
+export function useIsApprovingInfinite(): boolean {
+  return useSelector<AppState['puser']['userApproveInfinite']>((state) => state.puser.userApproveInfinite);
+}
+
+export function useApproveManager(): [boolean, (value: boolean) => void] {
+  const dispatch = useDispatch();
+
+  const isApprovingInfinity = useIsApprovingInfinite();
+
+  const setApprove = useCallback(
+    (value: boolean) => {
+      dispatch(updateUserApproveInfinite({ userApproveInfinite: value }));
+    },
+    [dispatch],
+  );
+
+  return [isApprovingInfinity, setApprove];
 }
 
 /**

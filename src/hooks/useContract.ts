@@ -92,7 +92,7 @@ export function useHederaSarNFTContract() {
 
   let nftTokenAddress: string | undefined = undefined;
 
-  if (sarContractAddress) {
+  if (sarContractAddress && hederaFn.isHederaChain(chainId)) {
     const sarContractId = hederaFn.hederaId(sarContractAddress ?? '');
     const nftTokenId = hederaFn.contractToTokenId(sarContractId);
     nftTokenAddress = hederaFn.idToAddress(nftTokenId);

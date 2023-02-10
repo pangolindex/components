@@ -21,7 +21,6 @@ export const StatsWrapper = styled(Box)<{ cheftType: ChefType }>`
   display: grid;
   grid-template-columns: repeat(${({ cheftType }) => (cheftType === ChefType.PANGO_CHEF ? 6 : 5)}, auto);
   grid-gap: 20px;
-  align-items: center;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
     grid-gap: 10px;

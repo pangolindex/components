@@ -701,7 +701,7 @@
   "pangoChef": {
     "claimWarning1": "When you claim without withdrawing, your liquidity remains in the farm.",
     "claimWarning2": "Claiming rewards restarts your APR from 0%. Instead you may choose to compound.",
-    "compoundWarning": "Compounding your rewards for {{ token0 }}-{{ token1 }} farm will get your rewards staked into {{ token0 }}-{{ token1 }} farm. You need to add equal value of {{ currency }} token to your accrued {{ png }} rewards.",
+    "compoundWarning": "Compounding your rewards for {{ token0 }}-{{ token1 }} farm will get your rewards staked into {{ stakeToken0 }}-{{ stakeToken1 }} farm. You need to add equal value of {{ compoundToken }} token to your accrued {{ png }} rewards.",
     "compoundAmountWarning": "You need to add {{ amount }} {{ symbol }} to compound. Please beware that Compounding may slightly decrease your APR.",
     "compoundAmountWarning2": "Be careful that you will be locking your {{ token0 }} {{ token1 }} pool till you claim the rewards of this pool.",
     "highVolalityWarning": "Too early, try in few hours",
@@ -717,6 +717,7 @@
     "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
+    "poweredBy": "Powered by",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",

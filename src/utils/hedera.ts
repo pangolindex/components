@@ -20,7 +20,7 @@ export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
   APPROVE_ERC20: 60000,
   PROVIDE_LIQUIDITY: 250000,
-  CREATE_POOL: 2300000,
+  CREATE_POOL: 3000000,
   REMOVE_NATIVE_LIQUIDITY: 250000,
   REMOVE_LIQUIDITY: 250000,
   BASE_SWAP: 200000,
@@ -32,7 +32,7 @@ export const TRANSACTION_MAX_FEES = {
   STAKE_LP_TOKEN: 230000,
   COLLECT_REWARDS: 300000,
   WITHDRAW: 300000,
-  COMPOUND: 300000,
+  COMPOUND: 550000,
   NFT_MINT: 800000,
 };
 export interface HederaTokenMetadata {
@@ -341,7 +341,7 @@ class Hedera {
 
   isAddressValid = (address: string): string | false => {
     if (address && hethers.utils.isAddress(address.toLowerCase())) {
-      return address;
+      return hethers.utils.getChecksumAddress(address);
     } else {
       return false;
     }
@@ -1064,7 +1064,7 @@ class Hedera {
 
     const maxGas = TRANSACTION_MAX_FEES.COMPOUND;
 
-    const arg = methodName === 'compound' ? [poolId, slippage] : [poolId, compoundPoolId, slippage];
+    const arg = methodName === 'compound' ? [poolId, slippage] : [poolId, compoundPoolId.toString(), slippage];
 
     // compound transaction is little different than all other transaction
     // because in compound input we have slippage which is tuple

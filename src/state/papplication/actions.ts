@@ -34,3 +34,5 @@ export const addPopup =
 export const removePopup = createAction<{ key: string }>('papplication/removePopup');
 
 export const updateSelectedPoolId = createAction<string | undefined>('papplication/updateSelectedPoolId');
+
+export const setAvailableHashpack = createAction<boolean>('papplication/setAvailableHashpack');

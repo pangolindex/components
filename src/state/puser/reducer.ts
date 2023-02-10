@@ -6,6 +6,7 @@ import {
   addSerializedPair,
   addSerializedToken,
   removeSerializedToken,
+  updateUserApproveInfinite,
   updateUserDeadline,
   updateUserExpertMode,
   updateUserShowBalances,
@@ -22,6 +23,8 @@ export interface UserState {
   // deadline set by user in minutes, used in all txns
   userDeadline: string;
   userShowBalances: boolean;
+  // true if you are going to use approve as much as you can
+  userApproveInfinite: boolean;
   tokens: {
     [chainId: number]: {
       [address: string]: SerializedToken;
@@ -46,6 +49,7 @@ export const initialState: UserState = {
   userExpertMode: false,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   userShowBalances: true,
+  userApproveInfinite: true,
   pairs: {},
 };
 
@@ -65,6 +69,9 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateUserShowBalances, (state, action) => {
       state.userShowBalances = action.payload.userShowBalances;
+    })
+    .addCase(updateUserApproveInfinite, (state, action) => {
+      state.userApproveInfinite = action.payload.userApproveInfinite;
     })
     .addCase(addSerializedToken, (state, { payload: { serializedToken } }) => {
       state.tokens[serializedToken.chainId] = state.tokens[serializedToken.chainId] || {};
