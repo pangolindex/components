@@ -51,7 +51,7 @@ import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransa
 import TransactionUpdater from 'src/state/ptransactions/updater';
 import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks';
 import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { existSarContract, getEtherscanLink, isEvmChain, shortenAddress } from 'src/utils';
+import { existSarContract, getEtherscanLink, isEvmChain, shortenAddress, shortenAddressMapping } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { MixPanelEvents, MixPanelProvider, useMixpanel } from './hooks/mixpanel';
@@ -196,5 +196,6 @@ export {
   existSarContract,
   getEtherscanLink,
   shortenAddress,
+  shortenAddressMapping,
   MixPanelEvents,
 };

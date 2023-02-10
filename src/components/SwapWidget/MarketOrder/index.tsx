@@ -260,7 +260,7 @@ const MarketOrder: React.FC<Props> = ({
     swapCallback()
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash });
-
+        setSelectedPercentage(0);
         if (trade) {
           const path = trade.route.path;
           const tokenA = path[0];
@@ -560,6 +560,7 @@ const MarketOrder: React.FC<Props> = ({
             <ArrowWrapper
               onClick={() => {
                 setApprovalSubmitted(false); // reset 2 step UI for approvals
+                setSelectedPercentage(0); // reset selected percentage
                 onSwitchTokens();
               }}
             >
