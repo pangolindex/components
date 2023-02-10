@@ -113,15 +113,6 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
     isLoading: isLoadingAssociate,
   } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
-  const fiatNumberFormmater = new Intl.NumberFormat(undefined, {
-    notation: 'compact',
-    style: 'currency',
-    currency: 'USD',
-    currencySign: 'accounting',
-    currencyDisplay: 'narrowSymbol',
-    maximumFractionDigits: 2,
-  });
-
   const renderButtons = () => {
     if (!account) {
       return (
@@ -237,7 +228,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
           <Box display="flex" justifyContent="space-between">
             <Box maxWidth="150px" style={{ overflow: 'hidden' }}>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">{dollerWorth ? fiatNumberFormmater.format(dollerWorth) : '-'}</Text>
+              <Text color="text1">{dollerWorth ? `$ ${numeral(dollerWorth).format('0.00a')}` : '-'}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>
