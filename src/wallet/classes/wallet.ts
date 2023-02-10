@@ -8,8 +8,10 @@ export type activeFunctionType = (
   throwErrors?: boolean,
 ) => Promise<void>;
 
+export type PangolinConnector = AbstractConnector & { isAuthorized?: () => Promise<boolean> };
+
 export abstract class Wallet {
-  readonly connector: AbstractConnector;
+  readonly connector: PangolinConnector;
   readonly name: string;
   readonly href: string | null;
   readonly icon: string;
@@ -27,7 +29,7 @@ export abstract class Wallet {
    * @param supportedChains Array of NetworkType that this chain supports
    */
   constructor(
-    connector: AbstractConnector,
+    connector: PangolinConnector,
     name: string,
     href: string | null,
     icon: string,
