@@ -50,6 +50,7 @@ interface Props {
   swapType: string;
   setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
+  isTWAPOrderVisible: boolean;
   showSettings: boolean;
   partnerDaaS?: string;
   defaultInputAddress?: string;
@@ -60,6 +61,7 @@ const MarketOrder: React.FC<Props> = ({
   swapType,
   setSwapType,
   isLimitOrderVisible,
+  isTWAPOrderVisible,
   showSettings,
   partnerDaaS = ZERO_ADDRESS,
   defaultInputAddress,
@@ -523,6 +525,7 @@ const MarketOrder: React.FC<Props> = ({
         swapType={swapType}
         setSwapType={setSwapType}
         isLimitOrderVisible={isLimitOrderVisible}
+        isTWAPOrderVisible={isTWAPOrderVisible}
         showSettings={showSettings}
         openSwapSettings={openSwapSettings}
       />

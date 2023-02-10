@@ -37,6 +37,7 @@ interface Props {
   swapType: string;
   setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
+  isTWAPOrderVisible: boolean;
   defaultInputAddress?: string;
   defaultOutputAddress?: string;
 }
@@ -45,6 +46,7 @@ const LimitOrder: React.FC<Props> = ({
   swapType,
   setSwapType,
   isLimitOrderVisible,
+  isTWAPOrderVisible,
   defaultInputAddress,
   defaultOutputAddress,
 }) => {
@@ -483,7 +485,12 @@ const LimitOrder: React.FC<Props> = ({
 
   return (
     <Root>
-      <TradeOption swapType={swapType} setSwapType={setSwapType} isLimitOrderVisible={isLimitOrderVisible} />
+      <TradeOption
+        isTWAPOrderVisible={isTWAPOrderVisible}
+        swapType={swapType}
+        setSwapType={setSwapType}
+        isLimitOrderVisible={isLimitOrderVisible}
+      />
 
       <SwapWrapper>
         <Box width="100%" display="flex" justifyContent="center">

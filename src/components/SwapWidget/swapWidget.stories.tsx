@@ -21,14 +21,17 @@ const TemplateSwapWidget: ComponentStory<typeof SwapWidget> = (args: any) => {
 export const Default = TemplateSwapWidget.bind({});
 Default.args = {
   isLimitOrderVisible: false,
+  isTWAPOrderVisible: false,
   showSettings: true,
   defaultInputToken: '',
   defaultOutputToken: '',
+  partnerDaaS: '',
 };
 
 export const WithDefaultTokenValues = TemplateSwapWidget.bind({});
 WithDefaultTokenValues.args = {
   isLimitOrderVisible: false,
+  isTWAPOrderVisible: false,
   showSettings: true,
   defaultInputToken: '0x5947bb275c521040051d82396192181b413227a3',
   defaultOutputToken: '0x60781c2586d68229fde47564546784ab3faca982',
@@ -37,9 +40,11 @@ WithDefaultTokenValues.args = {
 export const Theme = TemplateSwapWidget.bind({});
 Theme.args = {
   isLimitOrderVisible: false,
+  isTWAPOrderVisible: false,
   showSettings: true,
   defaultInputToken: '',
   defaultOutputToken: '',
+  partnerDaaS: '',
   theme: {
     swapWidget: {
       backgroundColor: '#88a4b3',

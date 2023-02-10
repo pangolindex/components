@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Settings } from 'react-feather';
 import { SwapTypes } from 'src/constants';
 import { Box, Text, ToggleButtons } from '../../';
@@ -9,17 +9,25 @@ interface Props {
   swapType: string;
   setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
+  isTWAPOrderVisible: boolean;
   showSettings?: boolean;
   openSwapSettings?: () => void;
 }
-
 const TradeOption: React.FC<Props> = ({
   swapType,
   setSwapType,
   isLimitOrderVisible,
+  isTWAPOrderVisible,
   showSettings = false,
   openSwapSettings = () => {},
 }) => {
+  const options = useMemo(() => {
+    const options = [SwapTypes.MARKET];
+    if (isLimitOrderVisible) options.push(SwapTypes.LIMIT);
+    if (isTWAPOrderVisible) options.push(SwapTypes.TWAP);
+    return options;
+  }, [isLimitOrderVisible, isTWAPOrderVisible]);
+
   return (
     <SwapWrapper>
       <Box p={10}>
@@ -32,10 +40,10 @@ const TradeOption: React.FC<Props> = ({
               <Settings size={20} />
             </SettingsButton>
           )}
-          {isLimitOrderVisible && (
-            <Box width="130px">
+          {options.length > 1 && (
+            <Box>
               <ToggleButtons
-                options={Object.values(SwapTypes)}
+                options={options}
                 value={swapType}
                 onChange={(value) => {
                   setSwapType(value);
