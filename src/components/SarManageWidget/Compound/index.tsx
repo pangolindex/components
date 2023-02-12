@@ -104,12 +104,24 @@ export default function Compound({ selectedOption, selectedPosition, onChange, o
               </Text>
               {selectedPosition && (
                 <Tooltip id="total-dollar-value-sar-compound" effect="solid" backgroundColor={theme.primary}>
-                  <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
-                    {t('stakePage.totalStaked')}: ${numeral(positionDollarValue).format('0.00a')}
-                  </Text>
-                  <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
-                    {t('stakePage.total')}: ${numeral(positionDollarValue + rewardsDollarValue).format('0.00a')}
-                  </Text>
+                  <Box width="max-content">
+                    <Box display="flex" justifyContent="space-between" style={{ gap: '5px' }}>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        {t('stakePage.totalStaked')}:
+                      </Text>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        ${numeral(positionDollarValue).format('0.00a')}
+                      </Text>
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" style={{ gap: '5px' }}>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        {t('stakePage.total')}:
+                      </Text>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        ${numeral(positionDollarValue + rewardsDollarValue).format('0.00a')}
+                      </Text>
+                    </Box>
+                  </Box>
                 </Tooltip>
               )}
             </Box>
