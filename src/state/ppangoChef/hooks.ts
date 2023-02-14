@@ -1048,8 +1048,8 @@ export function useGetPangoChefInfosViaSubgraph() {
       const lpToken = dummyPair.liquidityToken;
 
       const farmTvl = farm?.tvl;
-
-      const farmTvlAmount = new TokenAmount(lpToken, farmTvl?.toString() || JSBI.BigInt(0));
+      const _farmTvl = Number(farmTvl) < 0 ? '0' : farmTvl;
+      const farmTvlAmount = new TokenAmount(lpToken, _farmTvl?.toString() || JSBI.BigInt(0));
 
       const reserve0 = parseUnits(pair?.reserve0?.toString(), pair?.token0.decimals);
 
@@ -1085,7 +1085,7 @@ export function useGetPangoChefInfosViaSubgraph() {
           USDC[chainId].decimals,
         )?.toString(),
       );
-      const totalStakedAmount = new TokenAmount(lpToken, farmTvl?.toString() || JSBI.BigInt(0));
+      const totalStakedAmount = new TokenAmount(lpToken, _farmTvl?.toString() || JSBI.BigInt(0));
 
       const userTotalStakedAmount = new TokenAmount(lpToken, JSBI.BigInt(userInfo?.valueVariables?.balance ?? 0));
 
