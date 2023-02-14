@@ -292,6 +292,15 @@ const MarketOrder: React.FC<Props> = ({
       });
   }, [tradeToConfirm, account, priceImpactWithoutFee, recipient, recipientAddress, showConfirm, swapCallback, trade]);
 
+  const handleWrap = useCallback(() => {
+    try {
+      onWrap?.();
+      setSelectedPercentage(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [onWrap, setSelectedPercentage]);
+
   const handleSelectTokenDrawerClose = useCallback(() => {
     setIsTokenDrawerOpen(false);
   }, [setIsTokenDrawerOpen]);
@@ -406,7 +415,7 @@ const MarketOrder: React.FC<Props> = ({
 
     if (showWrap) {
       return (
-        <Button variant="primary" isDisabled={Boolean(wrapInputError) || Boolean(executing)} onClick={onWrap}>
+        <Button variant="primary" isDisabled={Boolean(wrapInputError) || Boolean(executing)} onClick={handleWrap}>
           {renderWrapButtonText()}
         </Button>
       );
