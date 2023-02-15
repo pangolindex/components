@@ -226,7 +226,13 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
               </Box>
               <Buttons chefType={chefType}>
                 {chefType === ChefType.PANGO_CHEF && (
-                  <Button variant="outline" onClick={redirectToCompound}>
+                  <Button
+                    variant="outline"
+                    onClick={redirectToCompound}
+                    isDisabled={Boolean(
+                      stakingInfo.earnedAmount.equalTo('0') || stakingInfo.earnedAmount.lessThan('0'),
+                    )}
+                  >
                     <Text color="text1">
                       <Text color="text1">{t('sarCompound.compound')}</Text>
                     </Text>

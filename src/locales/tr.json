@@ -611,7 +611,8 @@
     "seeDetails": "DETAYLARI GÖR",
     "stake": "STAKE ET",
     "earn": "{{symbol}} Kazan",
-    "stakeAndEarn": "{{ pngSymbol }}'lerinizi stake edin ve ödüller kazanın!"
+    "stakeAndEarn": "{{ pngSymbol }}'lerinizi stake edin ve ödüller kazanın!",
+    "total": "Toplam (stake edilen + ödüller)"
   },
   "error": {
     "missingCurrencyAmounts": "Eksik para birimi tutarları",
