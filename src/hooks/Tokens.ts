@@ -264,11 +264,17 @@ export function useGetAllHederaAssociatedTokens(dependancies = [] as any[]) {
 
   const { account } = usePangolinWeb3();
 
-  const response = useQuery(['check-hedera-token-associated', account, ...dependancies], async () => {
-    if (!account || !hederaFn.isHederaChain(chainId)) return;
-    const tokens = await hederaFn.getAccountAssociatedTokens(account);
-    return tokens;
-  });
+  const response = useQuery(
+    ['check-hedera-token-associated', account, ...dependancies],
+    async () => {
+      if (!account || !hederaFn.isHederaChain(chainId)) return;
+      const tokens = await hederaFn.getAccountAssociatedTokens(account);
+      return tokens;
+    },
+    {
+      keepPreviousData: true,
+    },
+  );
 
   return response;
 }
