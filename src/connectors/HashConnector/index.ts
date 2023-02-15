@@ -45,6 +45,7 @@ export class HashConnector extends AbstractConnector {
   private pairingData: HashConnectTypes.SavedPairingData | null = null;
 
   public availableExtension: boolean;
+  public emitActivateConnector: boolean;
   private initData: HashConnectTypes.InitilizationData | null = null;
 
   public constructor(
@@ -67,6 +68,7 @@ export class HashConnector extends AbstractConnector {
     this.topic = '';
     this.pairingString = '';
     this.pairingData = null;
+    this.emitActivateConnector = false;
 
     this.handlePairingEvent = this.handlePairingEvent.bind(this);
     this.handleFoundExtensionEvent = this.handleFoundExtensionEvent.bind(this);
@@ -104,7 +106,10 @@ export class HashConnector extends AbstractConnector {
   private handleFoundIframeEvent(data) {
     console.log('pangolin hashconnect handleFoundIframeEvent', data);
     console.log('pangolin hashconnect emitting event ACTIVATE_CONNECTOR');
-    hashconnectEvent.emit(HashConnectEvents.ACTIVATE_CONNECTOR, true);
+    if (!this.emitActivateConnector) {
+      this.emitActivateConnector = true;
+      hashconnectEvent.emit(HashConnectEvents.ACTIVATE_CONNECTOR, true);
+    }
   }
 
   private handlePairingEvent(data) {
@@ -148,7 +153,7 @@ export class HashConnector extends AbstractConnector {
 
   public async activate(): Promise<any> {
     const isAuthorized = await this.isAuthorized();
-
+    
     if (!isAuthorized) {
       // we always need to init with new data if we are not authorized
       await this.init();
