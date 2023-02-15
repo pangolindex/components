@@ -153,7 +153,7 @@ export class HashConnector extends AbstractConnector {
 
   public async activate(): Promise<any> {
     const isAuthorized = await this.isAuthorized();
-    
+
     if (!isAuthorized) {
       // we always need to init with new data if we are not authorized
       await this.init();
