@@ -23,6 +23,7 @@ export interface HashConfigType {
 
 export enum HashConnectEvents {
   CHECK_EXTENSION = 'checkExtension',
+  ACTIVATE_CONNECTOR = 'activateConnector',
 }
 
 //Intial App config
@@ -44,6 +45,7 @@ export class HashConnector extends AbstractConnector {
   private pairingData: HashConnectTypes.SavedPairingData | null = null;
 
   public availableExtension: boolean;
+  public emitActivateConnector: boolean;
   private initData: HashConnectTypes.InitilizationData | null = null;
 
   public constructor(
@@ -56,7 +58,7 @@ export class HashConnector extends AbstractConnector {
     super(args);
 
     //create the hashconnect instance
-    this.instance = new HashConnect(true);
+    this.instance = new HashConnect();
 
     this.chainId = args?.config?.chainId;
     this.normalizeChainId = args?.normalizeChainId;
@@ -66,15 +68,18 @@ export class HashConnector extends AbstractConnector {
     this.topic = '';
     this.pairingString = '';
     this.pairingData = null;
+    this.emitActivateConnector = false;
 
     this.handlePairingEvent = this.handlePairingEvent.bind(this);
     this.handleFoundExtensionEvent = this.handleFoundExtensionEvent.bind(this);
+    this.handleFoundIframeEvent = this.handleFoundIframeEvent.bind(this);
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
-
-    this.setUpEvents();
+    this.init();
   }
 
   public async init() {
+    this.instance = new HashConnect(true);
+    this.setUpEvents();
     const data = await this.instance.init(APP_METADATA, this.network as any);
     this.initData = data;
     this.topic = data.topic;
@@ -90,10 +95,20 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
+    console.log('pangolin hashconnect ConnectionStatusChange');
     // we need to check this.initData too, because it call deactivate and deactivate call clearConnectionsAndData
     // clearConnectionsAndData emit the HashConnectConnectionState.Disconnected and it cause a infinite loop
     if (state === HashConnectConnectionState.Disconnected && this.initData) {
       this.deactivate();
+    }
+  }
+
+  private handleFoundIframeEvent(data) {
+    console.log('pangolin hashconnect handleFoundIframeEvent', data);
+    console.log('pangolin hashconnect emitting event ACTIVATE_CONNECTOR');
+    if (!this.emitActivateConnector) {
+      this.emitActivateConnector = true;
+      hashconnectEvent.emit(HashConnectEvents.ACTIVATE_CONNECTOR, true);
     }
   }
 
@@ -109,12 +124,14 @@ export class HashConnector extends AbstractConnector {
   setUpEvents() {
     console.log('pangolin hashconnect setting up events');
     this.instance.foundExtensionEvent.on(this.handleFoundExtensionEvent);
+    this.instance.foundIframeEvent.on(this.handleFoundIframeEvent);
     this.instance.pairingEvent.on(this.handlePairingEvent.bind(this));
     this.instance.connectionStatusChangeEvent.on(this.handleConnectionStatusChangeEvent.bind(this));
   }
 
   destroyEvents() {
     this.instance.foundExtensionEvent.off(this.handleFoundExtensionEvent.bind(this));
+    this.instance.foundIframeEvent.off(this.handleFoundIframeEvent.bind(this));
     this.instance.pairingEvent.off(this.handlePairingEvent.bind(this));
     this.instance.connectionStatusChangeEvent.off(this.handleConnectionStatusChangeEvent.bind(this));
   }

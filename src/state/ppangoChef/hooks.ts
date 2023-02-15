@@ -873,7 +873,7 @@ export function useGetPangoChefInfosViaSubgraph() {
 
   // format the data to Pool type
   const pools = useMemo(() => {
-    const _pools: Pool[] = [];
+    const _pools: { [pid: string]: Pool } = {};
 
     for (let i = 0; i < poolsState.length; i++) {
       const result = poolsState[i]?.result;
@@ -882,6 +882,7 @@ export function useGetPangoChefInfosViaSubgraph() {
         continue;
       }
 
+      const pid = allPoolsIds[i];
       const tokenOrRecipient = result.tokenOrRecipient;
       const poolType = result.poolType as PoolType;
       const rewarder = result.rewarder;
@@ -897,8 +898,7 @@ export function useGetPangoChefInfosViaSubgraph() {
       if (poolType !== PoolType.ERC20_POOL) {
         continue;
       }
-
-      _pools.push({
+      _pools[pid] = {
         tokenOrRecipient: tokenOrRecipient,
         poolType: poolType,
         rewarder: rewarder,
@@ -908,7 +908,7 @@ export function useGetPangoChefInfosViaSubgraph() {
           sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
         } as ValueVariables,
         rewardSummations: rewardSummations,
-      } as Pool);
+      };
     }
 
     return _pools;
@@ -1010,9 +1010,8 @@ export function useGetPangoChefInfosViaSubgraph() {
 
       const rewards = farm.rewarder.rewards;
 
-      const pool = pools?.[index];
-
       const pid = farm?.pid;
+      const pool = pools?.[pid];
       const pair = farm?.pair;
       const multiplier = JSBI.BigInt(farm?.weight);
 
@@ -1048,8 +1047,8 @@ export function useGetPangoChefInfosViaSubgraph() {
       const lpToken = dummyPair.liquidityToken;
 
       const farmTvl = farm?.tvl;
-
-      const farmTvlAmount = new TokenAmount(lpToken, farmTvl?.toString() || JSBI.BigInt(0));
+      const _farmTvl = Number(farmTvl) <= 0 ? '0' : farmTvl;
+      const farmTvlAmount = new TokenAmount(lpToken, _farmTvl?.toString() || JSBI.BigInt(0));
 
       const reserve0 = parseUnits(pair?.reserve0?.toString(), pair?.token0.decimals);
 
@@ -1085,7 +1084,7 @@ export function useGetPangoChefInfosViaSubgraph() {
           USDC[chainId].decimals,
         )?.toString(),
       );
-      const totalStakedAmount = new TokenAmount(lpToken, farmTvl?.toString() || JSBI.BigInt(0));
+      const totalStakedAmount = new TokenAmount(lpToken, _farmTvl?.toString() || JSBI.BigInt(0));
 
       const userTotalStakedAmount = new TokenAmount(lpToken, JSBI.BigInt(userInfo?.valueVariables?.balance ?? 0));
 

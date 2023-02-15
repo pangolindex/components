@@ -612,7 +612,8 @@
     "seeDetails": "SEE DETAILS",
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
-    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!"
+    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
+    "total": "Total (stake + récompenses)"
   },
   "error": {
     "missingCurrencyAmounts": "Montants en devise manquants",

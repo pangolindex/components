@@ -612,7 +612,8 @@
     "seeDetails": "SEE DETAILS",
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
-    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!"
+    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
+    "total": "Total (apostado + recompensas)"
   },
   "error": {
     "missingCurrencyAmounts": "Cantidades de moneda faltantes",
