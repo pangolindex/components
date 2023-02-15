@@ -102,6 +102,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   private handleFoundIframeEvent(data) {
+    console.log('pangolin hashconnect handleFoundIframeEvent', data);
     console.log('pangolin hashconnect emitting event ACTIVATE_CONNECTOR');
     hashconnectEvent.emit(HashConnectEvents.ACTIVATE_CONNECTOR, true);
   }

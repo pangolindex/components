@@ -4,14 +4,13 @@ import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
-import { network } from 'src/connectors';
+import { hashConnect, network } from 'src/connectors';
 import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { PROVIDER_MAPPING } from 'src/constants';
 import { useDispatch } from 'src/state';
 import { setAvailableHashpack } from 'src/state/papplication/actions';
 import { useBlockNumber } from 'src/state/papplication/hooks';
 import { isAddress } from 'src/utils';
-import { hashConnect } from 'src/connectors';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
