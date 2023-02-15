@@ -1016,7 +1016,10 @@ class Hedera {
     const accountId = account ? this.hederaId(account) : '';
     const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
 
-    const maxGas = methodName === 'stake' ? TRANSACTION_MAX_FEES.STAKE_LP_TOKEN : TRANSACTION_MAX_FEES.WITHDRAW;
+    const maxGas =
+      methodName === 'stake'
+        ? TRANSACTION_MAX_FEES.STAKE_LP_TOKEN + TRANSACTION_MAX_FEES.TRANSFER_ERC20
+        : TRANSACTION_MAX_FEES.WITHDRAW;
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
