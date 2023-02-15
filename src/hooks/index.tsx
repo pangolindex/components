@@ -11,6 +11,7 @@ import { useDispatch } from 'src/state';
 import { setAvailableHashpack } from 'src/state/papplication/actions';
 import { useBlockNumber } from 'src/state/papplication/hooks';
 import { isAddress } from 'src/utils';
+import { hashConnect } from 'src/connectors';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -43,7 +44,9 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
 }: Web3ProviderProps) => {
   const dispatch = useDispatch();
 
-  // this is special cash for hashpack wallet
+  const { activate } = useWeb3React();
+
+  // this is special case for hashpack wallet
   // we need to listen for hashpack wallet installed or not event
   // and we are storing this boolean to redux so that
   // in walletModal we can re-render as value updates
@@ -53,9 +56,19 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
       dispatch(setAvailableHashpack(true));
     };
     hashconnectEvent.on(HashConnectEvents.CHECK_EXTENSION, emitterFn);
+
+    // Here when load in iframe  we need to internally activate connector to connect account
+    const emitterFnForActivateConnector = (isIframeEventFound: boolean) => {
+      console.log('received hashpack emit event ACTIVATE_CONNECTOR in provider', isIframeEventFound);
+      activate(hashConnect);
+    };
+    hashconnectEvent.on(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
+
     return () => {
       console.log('removing hashpack CHECK_EXTENSION event listener');
       hashconnectEvent.off(HashConnectEvents.CHECK_EXTENSION, emitterFn);
+      console.log('removing hashpack ACTIVATE_CONNECTOR event listener');
+      hashconnectEvent.off(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
     };
   }, []);
 
