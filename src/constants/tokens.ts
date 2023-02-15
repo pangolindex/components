@@ -189,13 +189,7 @@ export const USDC: { [chainId in ChainId]: Token } = {
   [ChainId.COSTON]: new Token(ChainId.COSTON, ZERO_ADDRESS, 18, '', ''),
   [ChainId.SONGBIRD]: new Token(ChainId.SONGBIRD, ZERO_ADDRESS, 18, 'USDC', 'USD Coin'),
   [ChainId.FLARE_MAINNET]: new Token(ChainId.FLARE_MAINNET, ZERO_ADDRESS, 18, 'USDC', 'USD Coin'),
-  [ChainId.HEDERA_TESTNET]: new Token(
-    ChainId.HEDERA_TESTNET,
-    '0x0000000000000000000000000000000000101Ae3',
-    6,
-    'USDC.hts',
-    'USD Coin',
-  ),
+  [ChainId.HEDERA_TESTNET]: new Token(ChainId.HEDERA_TESTNET, ZERO_ADDRESS, 6, '', ''),
   [ChainId.HEDERA_MAINNET]: new Token(
     ChainId.HEDERA_MAINNET,
     '0x0000000000000000000000000000000000101Ae3',
