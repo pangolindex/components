@@ -50,7 +50,7 @@ import {
   isAddress,
   waitForTransaction,
 } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { HederaTokenMetadata, hederaFn } from 'src/utils/hedera';
 import { FunctionCallOptions, Transaction as NearTransaction, nearFn } from 'src/utils/near';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../pmulticall/hooks';
@@ -1321,8 +1321,19 @@ export function useGetHederaUserLP() {
     }, {});
   }, [data]);
 
-  //get fungibleToken address based on Token Id
-  const allTokensAddress = useMemo(() => (data || []).map((token) => hederaFn.idToAddress(token?.tokenId)), [data]);
+  //get the token metadata
+  const tokensMetadata = useHederaTokensMetaData(Object.keys(tokenBalances));
+
+  // filter to only fungible tokens
+  const allTokensAddress: string[] = useMemo(() => {
+    const _allTokensAddress: string[] = [];
+    Object.entries(tokensMetadata).forEach(([address, metadata]) => {
+      if (metadata && metadata.type.startsWith('FUNGIBLE')) {
+        return _allTokensAddress.push(address);
+      }
+    });
+    return _allTokensAddress;
+  }, [tokensMetadata]);
 
   // here we need to get token data to do filter based on PGL Symbol
   const tokens = useTokens(allTokensAddress);
@@ -1567,7 +1578,7 @@ export const fetchHederaPGLTokenAddress = (pairTokenAddress: string | undefined)
       return undefined;
     }
 
-    const tokenAddress = pairTokenAddress;
+    const tokenAddress = pairTokenAddress.toLowerCase();
     // get pair contract id using api call because `asAccountString` is not working for pair address
     const { contractId } = await hederaFn.getContractData(tokenAddress);
     // get pair tokenId from pair contract id
@@ -1600,6 +1611,49 @@ export const fetchHederaPGLToken = (pairToken: Token | undefined, chainId: Chain
     return undefined;
   }
 };
+
+export function fetchHederaTokenMetaData(tokenAddress: string | undefined) {
+  async function fetch() {
+    try {
+      if (!tokenAddress) {
+        return undefined;
+      }
+
+      const result = await hederaFn.getMetadata(tokenAddress.toLowerCase());
+
+      return result;
+    } catch {
+      return undefined;
+    }
+  }
+  return fetch;
+}
+
+/**
+ * This hook get all hedera token metadata from rest api
+ * @param addresses address array of tokens to be queried
+ * @returns object with key is the address and the value is the metadata
+ */
+export function useHederaTokensMetaData(addresses: (string | undefined)[]) {
+  const queries = useMemo(() => {
+    return addresses.map((address) => ({
+      queryKey: ['get-hedera-token-metadata', address],
+      queryFn: fetchHederaTokenMetaData(address),
+    }));
+  }, [addresses]);
+
+  const results = useQueries(queries);
+
+  return useMemo(() => {
+    const result: { [x: string]: HederaTokenMetadata | undefined } = {};
+    addresses.forEach((address, index) => {
+      if (address) {
+        result[address] = results[index].data;
+      }
+    });
+    return result;
+  }, [results]);
+}
 
 /**
  * This hook used to get pgl token specifically for given Hedera pair
