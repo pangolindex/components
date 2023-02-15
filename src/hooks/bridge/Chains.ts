@@ -82,7 +82,9 @@ export function useRangoChains() {
     const chains = await rango.chains();
     const isEvmBlockchain = (blockchainMeta: RangoChainMeta): blockchainMeta is RangoEvmChainMeta =>
       blockchainMeta.type === TransactionType.EVM;
-    const evmChains: RangoEvmChainMeta[] = chains.filter(isEvmBlockchain);
+    const evmChains: RangoEvmChainMeta[] = chains
+      .filter(isEvmBlockchain)
+      .filter((blockchainMeta: RangoChainMeta) => !!blockchainMeta.enabled);
 
     const formattedChains: BridgeChain[] = evmChains?.map((chain: RangoEvmChainMeta) => {
       return {
