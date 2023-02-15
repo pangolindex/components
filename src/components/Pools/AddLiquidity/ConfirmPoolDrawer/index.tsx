@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { Currency, CurrencyAmount, Fraction, Percent, TokenAmount } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
@@ -310,9 +311,21 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
     return CardConfirmContent;
   };
 
+  function getTitle() {
+    if (noLiquidity) {
+      return t('addLiquidity.creatingPool');
+    }
+
+    if (txHash) {
+      return undefined;
+    }
+
+    return t('addLiquidity.willReceive');
+  }
+
   return (
     <Drawer
-      title={noLiquidity ? t('addLiquidity.creatingPool') : t('addLiquidity.willReceive')}
+      title={getTitle()}
       isOpen={isOpen}
       onClose={() => {
         type === SpaceType.card ? onComplete() : onClose();
@@ -324,3 +337,4 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
   );
 };
 export default ConfirmSwapDrawer;
+/* eslint-enable max-lines */

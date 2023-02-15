@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
+import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
@@ -41,9 +42,15 @@ export default function Compound({ selectedOption, selectedPosition, onChange, o
   const useUSDPrice = useUSDCPriceHook[chainId];
   const pngPrice = useUSDPrice(png);
 
-  const rewardsDollarValue = pngPrice?.equalTo('0')
-    ? 0
-    : parseFloat(formatUnits(pendingRewards, png.decimals)) * Number(pngPrice?.toFixed() ?? 0);
+  const positionDollarValue =
+    pngPrice?.equalTo('0') || !pngPrice
+      ? 0
+      : parseFloat(formatUnits(oldBalance, png.decimals)) * Number(pngPrice.toFixed());
+
+  const rewardsDollarValue =
+    pngPrice?.equalTo('0') || !pngPrice
+      ? 0
+      : parseFloat(formatUnits(pendingRewards, png.decimals)) * Number(pngPrice?.toFixed());
 
   const { t } = useTranslation();
 
@@ -93,13 +100,28 @@ export default function Compound({ selectedOption, selectedPosition, onChange, o
             <Box>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
               <Text color="text1" data-tip={Boolean(selectedPosition)} data-for="total-dollar-value-sar-compound">
-                ${rewardsDollarValue.toLocaleString(undefined, { maximumFractionDigits: 4 })}
+                ${numeral(rewardsDollarValue).format('0.00a')}
               </Text>
               {selectedPosition && (
                 <Tooltip id="total-dollar-value-sar-compound" effect="solid" backgroundColor={theme.primary}>
-                  <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
-                    ${rewardsDollarValue.toLocaleString(undefined, { maximumFractionDigits: png.decimals })}
-                  </Text>
+                  <Box width="max-content">
+                    <Box display="flex" justifyContent="space-between" style={{ gap: '5px' }}>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        {t('stakePage.totalStaked')}:
+                      </Text>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        ${numeral(positionDollarValue).format('0.00a')}
+                      </Text>
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" style={{ gap: '5px' }}>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        {t('stakePage.total')}:
+                      </Text>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        ${numeral(positionDollarValue + rewardsDollarValue).format('0.00a')}
+                      </Text>
+                    </Box>
+                  </Box>
                 </Tooltip>
               )}
             </Box>
