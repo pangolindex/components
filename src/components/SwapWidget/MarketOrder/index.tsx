@@ -340,6 +340,7 @@ const MarketOrder: React.FC<Props> = ({
     (currency) => {
       if (tokenDrawerType === Field.INPUT) {
         setApprovalSubmitted(false); // reset 2 step UI for approvals
+        setSelectedPercentage(0);
       }
       onCurrencySelection(tokenDrawerType, currency);
     },
