@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
-import { useChainId } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { subgraphClient } from './client';
 import { SubgraphToken } from './tokens';
 
@@ -22,6 +22,9 @@ export interface PangoChefFarm {
   tokenOrRecipientAddress: string;
   rewarder: PangochefFarmRewarder;
   pair: PangochefPair;
+  farmingPositions: {
+    stakedTokenBalance: string;
+  }[];
 }
 
 export interface PangochefFarmRewarder {
@@ -45,7 +48,7 @@ export interface PangochefPair {
 }
 
 export const GET_PANGOCHEF = gql`
-  query pangoChefs($where: PangoChef_filter) {
+  query pangoChefs($where: PangoChef_filter, $userAddress: String!) {
     pangoChefs(where: $where) {
       id
       totalWeight
@@ -97,6 +100,9 @@ export const GET_PANGOCHEF = gql`
             decimals
           }
         }
+        farmingPositions(where: { user: $userAddress }) {
+          stakedTokenBalance
+        }
       }
     }
   }
@@ -109,15 +115,18 @@ export const GET_PANGOCHEF = gql`
  */
 export const useSubgraphFarms = () => {
   const chainId = useChainId();
+  const { account } = usePangolinWeb3();
 
   return useQuery<PangoChefSubgraphInfo[]>(
-    ['get-pangochef-subgraph-farms', chainId],
+    ['get-pangochef-subgraph-farms', chainId, account],
     async () => {
       const gqlClient = subgraphClient[chainId];
       if (!gqlClient) {
         return null;
       }
-      const data = await gqlClient.request(GET_PANGOCHEF);
+      const data = await gqlClient.request(GET_PANGOCHEF, {
+        userAddress: account?.toLowerCase() ?? '',
+      });
       return data?.pangoChefs;
     },
     {
