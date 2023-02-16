@@ -1046,9 +1046,9 @@ export function useGetPangoChefInfosViaSubgraph() {
       const dummyPair = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0'), chainId);
       const lpToken = dummyPair.liquidityToken;
 
-      const farmTvl = farm?.tvl;
+      const farmTvl = farm?.tvl ?? '0';
       const _farmTvl = Number(farmTvl) <= 0 ? '0' : farmTvl;
-      const farmTvlAmount = new TokenAmount(lpToken, _farmTvl?.toString() || JSBI.BigInt(0));
+      const farmTvlAmount = new TokenAmount(lpToken, _farmTvl || JSBI.BigInt(0));
 
       const reserve0 = parseUnits(pair?.reserve0?.toString(), pair?.token0.decimals);
 
@@ -1122,12 +1122,12 @@ export function useGetPangoChefInfosViaSubgraph() {
 
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
-        !pool || pool?.valueVariables?.balance?.isZero() || pairPriceInEth?.equalTo('0') || !pairPriceInEth
+        _farmTvl === '0' || pairPriceInEth?.equalTo('0') || !pairPriceInEth
           ? 0
           : Number(
               pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
-                .divide(pairPriceInEth?.multiply(pool?.valueVariables?.balance?.toString()))
+                .divide(pairPriceInEth?.multiply(_farmTvl))
                 // here apr is in 10^8 so we needed to divide by 10^8 to keep it in simple form
                 .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(8)))
                 .toSignificant(2),
