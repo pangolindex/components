@@ -1241,11 +1241,16 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
 }
 
 export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
+  const chainId = useChainId();
   const blockTime = useGetBlockTimestamp();
 
   return useMemo(() => {
     if (!stakingInfo) {
       return BigNumber.from(0);
+    }
+
+    if (chainId !== ChainId.SONGBIRD && chainId !== ChainId.COSTON) {
+      return stakingInfo.userRewardRate;
     }
 
     const userBalance = stakingInfo?.userValueVariables?.balance || BigNumber.from(0);
@@ -1262,7 +1267,7 @@ export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
     return userValue.lte(0) || poolValue.lte(0)
       ? BigNumber.from(0)
       : stakingInfo?.poolRewardRate?.mul(userValue).div(poolValue);
-  }, [blockTime, stakingInfo]);
+  }, [blockTime, stakingInfo, chainId]);
 }
 
 /**
@@ -1358,8 +1363,9 @@ export function usePangoChefExtraFarmApr(
 
   return useMemo(() => {
     let extraAPR = 0;
-
+    console.log({ multipliers, rewardTokens, _rewardTokens });
     if (!rewardTokens || !multipliers || _rewardTokens.length === 0) {
+      console.log('error');
       return extraAPR;
     }
 
@@ -1367,12 +1373,14 @@ export function usePangoChefExtraFarmApr(
       const token = _rewardTokens[index];
 
       if (!token) {
+        console.log('error1');
         continue;
       }
 
       const tokenPrice = tokensPrices[token.address];
       const multiplier = multipliers[index];
       if (!tokenPrice || !multiplier) {
+        console.log('error2', { tokenPrice, multiplier });
         continue;
       }
       //extraAPR = poolRewardRate(POOL_ID) * rewardMultiplier / (10** token.decimals) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
