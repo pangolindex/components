@@ -153,9 +153,12 @@ export class HashConnector extends AbstractConnector {
 
   public async activate(): Promise<any> {
     const isAuthorized = await this.isAuthorized();
-
-    if (!isAuthorized) {
+    // here we need to check emitActivateConnector to stop multiple alert modal
+    // for case1 : if its load in iframe its already call init from constrcutor  it will not  call init
+    // for case2 : if its load in generally   its  call init here  bcox emitActivateConnector its a;ways false
+    if (!isAuthorized && !this.emitActivateConnector) {
       // we always need to init with new data if we are not authorized
+      console.log('call init');
       await this.init();
       this.instance.connectToLocalWallet();
     }
@@ -163,6 +166,7 @@ export class HashConnector extends AbstractConnector {
     // workaround, it has not been initialized, we need to initialize it so we can
     // activate this connector without appearing the popup to connect the wallet
     if (!this.initData) {
+      console.log('call init1');
       await this.init();
     }
 
