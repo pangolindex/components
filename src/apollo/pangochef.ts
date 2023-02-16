@@ -18,6 +18,7 @@ export interface PangoChefFarm {
   id: string;
   pid: string;
   tvl: string;
+  weight: string;
   tokenOrRecipientAddress: string;
   rewarder: PangochefFarmRewarder;
   pair: PangochefPair;
@@ -109,7 +110,7 @@ export const GET_PANGOCHEF = gql`
 export const useSubgraphFarms = () => {
   const chainId = useChainId();
 
-  return useQuery<PangoChefSubgraphInfo>(
+  return useQuery<PangoChefSubgraphInfo[]>(
     ['get-pangochef-subgraph-farms', chainId],
     async () => {
       const gqlClient = subgraphClient[chainId];
