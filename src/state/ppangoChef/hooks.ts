@@ -1333,6 +1333,14 @@ export function usePangoChefExtraFarmApr(
 
   const tokensPrices = useTokensCurrencyPrice(_rewardTokens);
 
+  // as of now this is needed specifically for hedera
+  // in Hedera we need to divide final apr with 10^8 to make sure it shows in proper format
+  // for all other chains its just 10^0 = 1
+  let aprDenominator = 10 ** 0;
+  if (hederaFn.isHederaChain(chainId)) {
+    aprDenominator = 10 ** 8;
+  }
+
   return useMemo(() => {
     let extraAPR = 0;
 
@@ -1362,6 +1370,7 @@ export function usePangoChefExtraFarmApr(
                 .multiply(multiplier)
                 .divide(pairPrice.raw.multiply(balance.toString()))
                 .divide((10 ** token.decimals).toString())
+                .divide(aprDenominator.toString())
                 .toSignificant(2),
             );
     }
