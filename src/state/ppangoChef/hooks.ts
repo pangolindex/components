@@ -871,6 +871,9 @@ export function useGetPangoChefInfosViaSubgraph() {
 
   const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', allPoolsIds);
 
+  const totalPangochefRewardRate = results?.data?.[0]?.rewardRate;
+  const totalPangochefWeight = results?.data?.[0].totalWeight;
+
   // format the data to Pool type
   const pools = useMemo(() => {
     const _pools: { [pid: string]: Pool } = {};
@@ -882,7 +885,7 @@ export function useGetPangoChefInfosViaSubgraph() {
         continue;
       }
 
-      const pid = allPoolsIds[i];
+      const pid = allPoolsIds[i][0];
       const tokenOrRecipient = result.tokenOrRecipient;
       const poolType = result.poolType as PoolType;
       const rewarder = result.rewarder;
@@ -913,8 +916,6 @@ export function useGetPangoChefInfosViaSubgraph() {
 
     return _pools;
   }, [poolsState]);
-
-  const poolsRewardsRateState = useSingleContractMultipleData(pangoChefContract, 'poolRewardRate', allPoolsIds);
 
   const userInfoInput = useMemo(() => {
     if ((allPoolsIds || []).length === 0 || !account) return [];
@@ -993,7 +994,6 @@ export function useGetPangoChefInfosViaSubgraph() {
       const userPendingRewardState = userPendingRewardsState[index];
       const userRewardRateState = userRewardRatesState[index];
       const userInfo = userInfos[index];
-      const poolRewardRateState = poolsRewardsRateState[index];
 
       // if is loading or not exist pair continue
       if (
@@ -1109,7 +1109,12 @@ export function useGetPangoChefInfosViaSubgraph() {
         parseUnits(_totalStakedInWavax.equalTo('0') ? '0' : _totalStakedInWavax.toFixed(0), wavax.decimals)?.toString(),
       );
 
-      const rewardRate: BigNumber = poolRewardRateState?.result?.[0] ?? BigNumber.from(0);
+      const rewardRate: BigNumber =
+        farm?.weight === '0' || !totalPangochefWeight
+          ? BigNumber.from(0)
+          : BigNumber.from(totalPangochefRewardRate ?? 0)
+              .mul(farm?.weight)
+              .div(totalPangochefWeight);
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
       const pairPriceInEth = totalSupplyInETH.divide(totalSupplyAmount);
@@ -1188,7 +1193,17 @@ export function useGetPangoChefInfosViaSubgraph() {
     }
 
     return farms;
-  }, [chainId, png, poolsRewardsRateState, userPendingRewardsState, allFarms, userInfosState, allPoolsIds, poolsState]);
+  }, [
+    chainId,
+    png,
+    totalPangochefRewardRate,
+    totalPangochefWeight,
+    userPendingRewardsState,
+    allFarms,
+    userInfosState,
+    allPoolsIds,
+    poolsState,
+  ]);
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
