@@ -46,8 +46,9 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   const { activate } = useWeb3React();
 
   // this is special case for hashpack wallet
-  // we need to listen for hashpack wallet installed or not event
-  // and we are storing this boolean to redux so that
+  // we need to listen for
+  // 1. hashpack wallet installed or not event and we are storing this boolean to redux so that
+  // 2. if user open pangolin in dApp browser then we need to manually calls ACTIVATE_CONNECTOR
   // in walletModal we can re-render as value updates
   useEffect(() => {
     const emitterFn = (isHashpackAvailable: boolean) => {
@@ -61,7 +62,7 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
       console.log('received hashpack emit event ACTIVATE_CONNECTOR in provider', isIframeEventFound);
       activate(hashConnect);
     };
-    hashconnectEvent.on(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
+    hashconnectEvent.once(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
 
     return () => {
       console.log('removing hashpack CHECK_EXTENSION event listener');
