@@ -1211,7 +1211,13 @@ export function useDummyPangoChefInfos() {
   return [] as PangoChefInfo[];
 }
 
-export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
+/**
+ * This hook return a user's user for songbird and coston
+ * For these chains we need to use this because the function that returns the user's reward rate is broken
+ * @param stakingInfo Staking info provided by usePangoChefInfos
+ * @returns return the apr of user
+ */
+export function useLegacyUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
   const blockTime = useGetBlockTimestamp();
 
   return useMemo(() => {
@@ -1238,6 +1244,42 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
           .div(d)
           .toString();
   }, [blockTime, stakingInfo]);
+}
+
+/**
+ * This hook return the apr of a user
+ *
+ * @param stakingInfo Staking info provided by usePangoChefInfos
+ * @returns return the apr of user
+ */
+export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
+  const chainId = useChainId();
+
+  const png = PNG[chainId];
+  const wavax = WAVAX[chainId];
+
+  const [, pair] = usePair(png, wavax);
+
+  return useMemo(() => {
+    if (!stakingInfo || !pair) return '0';
+
+    const userRewardRate = stakingInfo.userRewardRate;
+    const pngPrice = pair.priceOf(png, wavax);
+
+    const pairPrice = stakingInfo.pairPrice;
+    const balance = stakingInfo.stakedAmount;
+
+    //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
+    return pairPrice.equalTo('0') || balance.equalTo('0')
+      ? '0'
+      : userRewardRate
+          .mul(86400)
+          .mul(365)
+          .mul(100)
+          .mul(pngPrice.raw.toFixed(0))
+          .div(pairPrice.raw.multiply(balance).toFixed(0))
+          .toString();
+  }, [stakingInfo, pair]);
 }
 
 export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
@@ -1363,9 +1405,8 @@ export function usePangoChefExtraFarmApr(
 
   return useMemo(() => {
     let extraAPR = 0;
-    console.log({ multipliers, rewardTokens, _rewardTokens });
+
     if (!rewardTokens || !multipliers || _rewardTokens.length === 0) {
-      console.log('error');
       return extraAPR;
     }
 
@@ -1380,9 +1421,9 @@ export function usePangoChefExtraFarmApr(
       const tokenPrice = tokensPrices[token.address];
       const multiplier = multipliers[index];
       if (!tokenPrice || !multiplier) {
-        console.log('error2', { tokenPrice, multiplier });
         continue;
       }
+
       //extraAPR = poolRewardRate(POOL_ID) * rewardMultiplier / (10** token.decimals) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       extraAPR +=
         !pairPrice || !balance || balance.isZero() || pairPrice.equalTo('0')
