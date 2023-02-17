@@ -1,6 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { ChainId, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
+import { useSubgraphPairs } from 'src/apollo/pairs';
 import { useChainId } from 'src/hooks';
 import { useHederaPGLToken, useHederaTokensMetaData } from 'src/state/pwallet/hooks';
 import { nearFn } from 'src/utils/near';
@@ -93,6 +94,26 @@ export function useNearPairTotalSupply(pair?: Pair): TokenAmount | undefined {
   }, [pair, chainId]);
 
   return useMemo(() => totalSupply, [totalSupply]);
+}
+
+/**
+ * this hook is used to fetch total supply of given pair via subgraph
+ * @param pair pair object
+ * @returns total supply in form of TokenAmount or undefined
+ */
+export function usePairTotalSupplyViaSubgraph(pair?: Pair): TokenAmount | undefined {
+  const token = pair?.liquidityToken;
+  // get pair from subgraph
+  const { data, isLoading } = useSubgraphPairs([token?.address?.toLowerCase()]);
+
+  return useMemo(() => {
+    if (!token || isLoading || !data || data.length === 0) return undefined;
+
+    const pairInfo = data[0];
+    if (pairInfo.id.toLowerCase() !== token.address.toLowerCase()) return undefined;
+
+    return new TokenAmount(token, pairInfo.totalSupply);
+  }, [token, data, isLoading]);
 }
 
 /**
