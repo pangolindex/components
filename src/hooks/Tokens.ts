@@ -9,7 +9,7 @@ import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
-import { isAddress } from 'src/utils';
+import { isAddress, validateAddressMapping } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { NearTokenMetadata, nearFn } from 'src/utils/near';
 import ERC20_INTERFACE, { ERC20_BYTES32_INTERFACE } from '../constants/abis/erc20';
@@ -215,6 +215,7 @@ export function useTokensViaSubGraph(tokensAddress: string[] = []): Array<TokenR
   const chainId = useChainId();
   const tokens = useAllTokens();
 
+  const isAddressFn = validateAddressMapping[chainId];
   const { data: subgraphTokens, isLoading } = useSubgraphTokens(tokensAddress);
 
   return useMemo(() => {
@@ -223,7 +224,7 @@ export function useTokensViaSubGraph(tokensAddress: string[] = []): Array<TokenR
 
     return tokensAddress.reduce<TokenReturnType[]>((acc, tokenAddress) => {
       const tokenInfo = subgraphTokens?.find((subgraphToken) => tokenAddress === subgraphToken.id);
-      const address = isAddress(tokenAddress);
+      const address = isAddressFn(tokenAddress);
 
       if (!!address && tokens[address]) {
         // if we have user tokens already

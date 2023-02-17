@@ -16,6 +16,7 @@ import {
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from 'react-query';
 import { PangochefFarmReward, useSubgraphFarms, useSubgraphFarmsStakedAmount } from 'src/apollo/pangochef';
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
@@ -851,14 +852,15 @@ export function useGetPangoChefInfosViaSubgraph() {
   const pangoChefContract = usePangoChefContract();
 
   const results = useSubgraphFarms();
+  const pangoChefData = results?.data?.[0];
 
   const wavax = WAVAX[chainId];
   const [avaxPngPairState, avaxPngPair] = usePair(wavax, png);
 
   const allFarms = useMemo(() => {
-    if (!chainId || !png || !results?.data?.[0]?.farms?.length) return [];
+    if (!chainId || !png || !pangoChefData?.farms?.length) return [];
 
-    const farms = results?.data?.[0]?.farms?.filter((farm) => !!farm?.pair);
+    const farms = pangoChefData?.farms?.filter((farm) => !!farm?.pair);
 
     return farms;
   }, [chainId, png, results?.data, results?.isLoading, results?.isError]);
@@ -870,8 +872,8 @@ export function useGetPangoChefInfosViaSubgraph() {
 
   const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', allPoolsIds);
 
-  const totalPangochefRewardRate = results?.data?.[0]?.rewardRate;
-  const totalPangochefWeight = results?.data?.[0].totalWeight;
+  const totalPangochefRewardRate = pangoChefData?.rewardRate;
+  const totalPangochefWeight = pangoChefData?.totalWeight;
 
   // format the data to Pool type
   const pools = useMemo(() => {
@@ -1096,9 +1098,9 @@ export function useGetPangoChefInfosViaSubgraph() {
       const onchainStakedAmount: BigNumber | undefined = userInfo?.valueVariables?.balance;
 
       //let's prioritize the onchain data but if you don't have it, let's use the subgraph if you have it
-      const _userStakedAmoubnt =
+      const _userStakedAmount =
         !!onchainStakedAmount && onchainStakedAmount.gt(0) ? onchainStakedAmount.toString() : subgraphStakedAmount;
-      const userTotalStakedAmount = new TokenAmount(lpToken, JSBI.BigInt(_userStakedAmoubnt));
+      const userTotalStakedAmount = new TokenAmount(lpToken, JSBI.BigInt(_userStakedAmount));
 
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
@@ -1121,6 +1123,9 @@ export function useGetPangoChefInfosViaSubgraph() {
         parseUnits(_totalStakedInWavax.equalTo('0') ? '0' : _totalStakedInWavax.toFixed(0), wavax.decimals)?.toString(),
       );
 
+      // totalPangochefWeight -> totalPangochefRewardRate
+      // farm?.weight -> ?
+      // rewardRate = (farm?.weight * totalPangochefRewardRate) / totalPangochefWeight
       const rewardRate: BigNumber =
         farm?.weight === '0' || !totalPangochefWeight
           ? BigNumber.from(0)
@@ -1281,16 +1286,12 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
     const pairPrice = stakingInfo.pairPrice;
     const balance = stakingInfo.stakedAmount;
 
+    const pairBalance = pairPrice.raw.multiply(balance).toFixed(0);
+
     //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
-    return pairPrice.equalTo('0') || balance.equalTo('0')
+    return pairPrice.equalTo('0') || balance.equalTo('0') || pairBalance === '0'
       ? '0'
-      : userRewardRate
-          .mul(86400)
-          .mul(365)
-          .mul(100)
-          .mul(pngPrice.raw.toFixed(0))
-          .div(pairPrice.raw.multiply(balance).toFixed(0))
-          .toString();
+      : userRewardRate.mul(86400).mul(365).mul(100).mul(pngPrice.raw.toFixed(0)).div(pairBalance).toString();
   }, [stakingInfo, pair]);
 }
 
@@ -1332,29 +1333,32 @@ export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
 export function useHederaPangochefContractCreateCallback(): [boolean, () => Promise<void>] {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  //const pangoChefContract = usePangoChefContract();
+  const pangoChefContract = usePangoChefContract();
   const addTransaction = useTransactionAdder();
 
-  // const { data: userStorageAddress, refetch } = useQuery(
-  //   ['hedera-pangochef-user-storage', account],
-  //   async (): Promise<string> => {
-  //     try {
-  //       const response = await pangoChefContract?.getUserStorageContract(account);
-  //       return response as string;
-  //     } catch (error) {
-  //       return '';
-  //     }
-  //   },
-  //   { enabled: Boolean(pangoChefContract) && Boolean(account) && hederaFn.isHederaChain(chainId) },
-  // );
+  // get on chain data
+  const { data: userStorageAddress, refetch } = useQuery(
+    ['hedera-pangochef-user-storage', account],
+    async (): Promise<string | undefined> => {
+      try {
+        const response = await pangoChefContract?.getUserStorageContract(account);
+        return response as string;
+      } catch (error) {
+        return undefined;
+      }
+    },
+    { enabled: Boolean(pangoChefContract) && Boolean(account) && hederaFn.isHederaChain(chainId) },
+  );
 
-  //const shouldCreateStorage = userStorageAddress === ZERO_ADDRESS || !userStorageAddress ? true : false;
+  const hasOnChainData = typeof userStorageAddress !== 'undefined';
+  const onChainShouldCreateStorage = userStorageAddress === ZERO_ADDRESS || !userStorageAddress ? true : false;
 
-  const { data, refetch } = useSubgraphFarmsStakedAmount();
+  // get off chain data using subgraph
+  // we also get data from subgraph just to make sure user doesn't stuck anywhere in flow
+  const { data, refetch: refetchSubgraph } = useSubgraphFarmsStakedAmount();
+  const offChainShouldCreateStorage = Boolean(!data || data.length === 0);
 
-  // to cut costs let's check if the total staked via subgraph is greater than zero,
-  //if not it means that the user does not interact with pangochef and has not created a storage contract
-  const shouldCreateStorage = Boolean(!data || data.length === 0);
+  const shouldCreateStorage = hasOnChainData ? onChainShouldCreateStorage : offChainShouldCreateStorage;
 
   const create = useCallback(async (): Promise<void> => {
     if (!account) {
@@ -1367,6 +1371,7 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
 
       if (response) {
         refetch();
+        refetchSubgraph();
         addTransaction(response, {
           summary: 'Created Pangochef User Storage Contract',
         });

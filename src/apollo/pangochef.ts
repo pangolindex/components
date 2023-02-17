@@ -144,7 +144,7 @@ export const useSubgraphFarms = () => {
         return null;
       }
       const data = await gqlClient.request(GET_PANGOCHEF, {
-        userAddress: account?.toLowerCase() ?? '',
+        userAddress: account ? account.toLowerCase() : '',
       });
       return data?.pangoChefs;
     },
