@@ -45,7 +45,7 @@ export class HashConnector extends AbstractConnector {
   private pairingData: HashConnectTypes.SavedPairingData | null = null;
 
   public availableExtension: boolean;
-  public emitActivateConnector: boolean;
+  public emittedActivateConnector: boolean;
   private initData: HashConnectTypes.InitilizationData | null = null;
 
   public constructor(
@@ -68,7 +68,7 @@ export class HashConnector extends AbstractConnector {
     this.topic = '';
     this.pairingString = '';
     this.pairingData = null;
-    this.emitActivateConnector = false;
+    this.emittedActivateConnector = false;
 
     this.handlePairingEvent = this.handlePairingEvent.bind(this);
     this.handleFoundExtensionEvent = this.handleFoundExtensionEvent.bind(this);
@@ -78,7 +78,8 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async init() {
-    this.instance = new HashConnect(true);
+    // keep debugging logs off by passing false
+    this.instance = new HashConnect(false);
     this.setUpEvents();
     const data = await this.instance.init(APP_METADATA, this.network as any);
     this.initData = data;
@@ -106,8 +107,8 @@ export class HashConnector extends AbstractConnector {
   private handleFoundIframeEvent(data) {
     console.log('pangolin hashconnect handleFoundIframeEvent', data);
     console.log('pangolin hashconnect emitting event ACTIVATE_CONNECTOR');
-    if (!this.emitActivateConnector) {
-      this.emitActivateConnector = true;
+    if (!this.emittedActivateConnector) {
+      this.emittedActivateConnector = true;
       hashconnectEvent.emit(HashConnectEvents.ACTIVATE_CONNECTOR, true);
     }
   }
@@ -153,8 +154,10 @@ export class HashConnector extends AbstractConnector {
 
   public async activate(): Promise<any> {
     const isAuthorized = await this.isAuthorized();
-
-    if (!isAuthorized) {
+    // here we need to check emittedActivateConnector to stop multiple alert modal
+    // for case1 : if its load in iframe it has already call init from constrcutor so it should not call init here
+    // for case2 : if its load normally it should call init here because emittedActivateConnector is always false
+    if (!isAuthorized && !this.emittedActivateConnector) {
       // we always need to init with new data if we are not authorized
       await this.init();
       this.instance.connectToLocalWallet();
@@ -163,6 +166,7 @@ export class HashConnector extends AbstractConnector {
     // workaround, it has not been initialized, we need to initialize it so we can
     // activate this connector without appearing the popup to connect the wallet
     if (!this.initData) {
+      console.log('call init1');
       await this.init();
     }
 
