@@ -16,8 +16,7 @@ import {
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
-import { PangochefFarmReward, useSubgraphFarms } from 'src/apollo/pangochef';
+import { PangochefFarmReward, useSubgraphFarms, useSubgraphFarmsStakedAmount } from 'src/apollo/pangochef';
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
@@ -1333,23 +1332,29 @@ export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
 export function useHederaPangochefContractCreateCallback(): [boolean, () => Promise<void>] {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const pangoChefContract = usePangoChefContract();
+  //const pangoChefContract = usePangoChefContract();
   const addTransaction = useTransactionAdder();
 
-  const { data: userStorageAddress, refetch } = useQuery(
-    ['hedera-pangochef-user-storage', account],
-    async (): Promise<string> => {
-      try {
-        const response = await pangoChefContract?.getUserStorageContract(account);
-        return response as string;
-      } catch (error) {
-        return '';
-      }
-    },
-    { enabled: Boolean(pangoChefContract) && Boolean(account) && hederaFn.isHederaChain(chainId) },
-  );
+  // const { data: userStorageAddress, refetch } = useQuery(
+  //   ['hedera-pangochef-user-storage', account],
+  //   async (): Promise<string> => {
+  //     try {
+  //       const response = await pangoChefContract?.getUserStorageContract(account);
+  //       return response as string;
+  //     } catch (error) {
+  //       return '';
+  //     }
+  //   },
+  //   { enabled: Boolean(pangoChefContract) && Boolean(account) && hederaFn.isHederaChain(chainId) },
+  // );
 
-  const shouldCreateStorage = userStorageAddress === ZERO_ADDRESS || !userStorageAddress ? true : false;
+  //const shouldCreateStorage = userStorageAddress === ZERO_ADDRESS || !userStorageAddress ? true : false;
+
+  const { data, refetch } = useSubgraphFarmsStakedAmount();
+
+  // to cut costs let's check if the total staked via subgraph is greater than zero,
+  //if not it means that the user does not interact with pangochef and has not created a storage contract
+  const shouldCreateStorage = Boolean(!data || data.length === 0);
 
   const create = useCallback(async (): Promise<void> => {
     if (!account) {

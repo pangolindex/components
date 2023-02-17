@@ -1,6 +1,7 @@
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { hederaFn } from 'src/utils/hedera';
 import { subgraphClient } from './client';
 import { SubgraphToken } from './tokens';
 
@@ -45,6 +46,13 @@ export interface PangochefPair {
   totalSupply: string;
   token0: SubgraphToken;
   token1: SubgraphToken;
+}
+
+export interface FarmPosition {
+  stakedAmount: string;
+  farm: {
+    pid: string;
+  };
 }
 
 export const GET_PANGOCHEF = gql`
@@ -108,6 +116,17 @@ export const GET_PANGOCHEF = gql`
   }
 `;
 
+export const GET_FARMS_STAKED = gql`
+  query farmPositions($where: PangoChef_filter, $userAddress: String!) {
+    farmingPositions(where: { user: $userAddress }) {
+      stakedTokenBalance
+      farm {
+        pid
+      }
+    }
+  }
+`;
+
 /**
  * this hook is useful to get information for pangochef famrs  from subgraph
  * @param
@@ -134,3 +153,28 @@ export const useSubgraphFarms = () => {
     },
   );
 };
+
+export function useSubgraphFarmsStakedAmount() {
+  const chainId = useChainId();
+  const { account } = usePangolinWeb3();
+
+  return useQuery<FarmPosition[]>(
+    ['get-pangochef-subgraph-farms-staked-amount', chainId, account],
+    async () => {
+      const gqlClient = subgraphClient[chainId];
+      if (!gqlClient) {
+        return undefined;
+      }
+
+      const data = await gqlClient.request(GET_FARMS_STAKED, {
+        userAddress: account?.toLowerCase() ?? '',
+      });
+
+      return data?.farmingPositions;
+    },
+    {
+      refetchInterval: 1000 * 60 * 1, // 1 minutes
+      enabled: hederaFn.isHederaChain(chainId) && Boolean(account),
+    },
+  );
+}
