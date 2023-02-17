@@ -1,4 +1,4 @@
-import { CHAINS, ChefType, Price } from '@pangolindex/sdk';
+import { CHAINS, ChefType } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
@@ -50,30 +50,23 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
     cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined,
   );
 
-  const pairPrice =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.pairPrice : new Price(token0, token1, '1', '0'); // dummy value, this don't use tokens
-
-  const poolBalance =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.valueVariables?.balance : BigNumber.from(0);
+  const poolBalance = BigNumber.from(stakingInfo.totalStakedAmount.raw.toString());
   const poolRewardRate =
     cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.poolRewardRate : BigNumber.from(0);
 
-  const userBalance =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.userValueVariables?.balance : BigNumber.from(0);
+  const userBalance = BigNumber.from(stakingInfo.stakedAmount.raw.toString());
 
   const extraFarmAPR = usePangoChefExtraFarmApr(
     rewardTokens,
     poolRewardRate,
-    stakingInfo?.rewardTokensMultiplier,
     poolBalance,
-    pairPrice,
+    stakingInfo as PangoChefInfo,
   );
   const extraUserAPR = usePangoChefExtraFarmApr(
     rewardTokens,
     userRewardRate,
-    stakingInfo?.rewardTokensMultiplier,
     userBalance,
-    pairPrice,
+    stakingInfo as PangoChefInfo,
   );
 
   const getAPRs = () => {
@@ -110,7 +103,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
   };
 
   const { totalApr, stakingApr, swapFeeApr, userApr } = getAPRs();
-
+  console.log({ totalApr, stakingApr, extraFarmAPR, swapFeeApr, userApr, _userApr, extraUserAPR });
   return (
     <HeaderRoot>
       <HeaderWrapper>

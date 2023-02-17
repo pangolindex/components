@@ -84,13 +84,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
     isStaking ? userStakedAmount.raw.toString() : stakingInfo?.totalStakedAmount.raw.toString(),
   );
 
-  const extraAPR = usePangoChefExtraFarmApr(
-    rewardTokens,
-    rewardRate,
-    stakingInfo?.rewardTokensMultiplier,
-    balance,
-    stakingInfo?.pairPrice,
-  );
+  const extraAPR = usePangoChefExtraFarmApr(rewardTokens, rewardRate, balance, stakingInfo);
   const apr = isStaking ? userApr : farmApr;
 
   const totalApr = Number(apr ?? 0) + extraAPR;
