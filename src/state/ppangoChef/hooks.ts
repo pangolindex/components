@@ -2015,13 +2015,15 @@ export function useGetLockingPoolsForPoolId(poolId: string) {
 
   const stakingInfos = usePangoChefInfos();
 
-  const allPoolsIds = (stakingInfos || []).map((stakingInfo) => {
-    if (!account || !chainId) {
-      return undefined;
-    }
+  const allPoolsIds = useMemo(() => {
+    return (stakingInfos || []).map((stakingInfo) => {
+      if (!account || !chainId) {
+        return undefined;
+      }
 
-    return [stakingInfo?.pid?.toString(), account];
-  });
+      return [stakingInfo?.pid?.toString(), account];
+    });
+  }, [stakingInfos, account, chainId]);
 
   const lockPoolState = useSingleContractMultipleData(pangoChefContract, 'getLockedPools', allPoolsIds);
 
@@ -2040,12 +2042,15 @@ export function useGetLockingPoolsForPoolId(poolId: string) {
     return container;
   }, [allPoolsIds]);
 
-  const lockingPools = [] as Array<string>;
-  Object.entries(_lockpools).forEach(([pid, pidsLocked]) => {
-    if (pidsLocked.includes(poolId?.toString())) {
-      lockingPools.push(pid);
-    }
-  });
+  const lockingPools = useMemo(() => {
+    const internalLockingPools = [] as Array<string>;
+    Object.entries(_lockpools).forEach(([pid, pidsLocked]) => {
+      if (pidsLocked.includes(poolId?.toString())) {
+        internalLockingPools.push(pid);
+      }
+    });
+    return internalLockingPools;
+  }, [_lockpools]);
 
   const pairs: [Token, Token][] = useMemo(() => {
     const _pairs: [Token, Token][] = [];

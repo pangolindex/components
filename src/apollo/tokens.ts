@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
+import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { useChainId } from 'src/hooks';
 import { validateAddressMapping } from 'src/utils';
@@ -34,7 +35,10 @@ export const GET_TOKENS = gql`
 export const useSubgraphTokens = (tokenAddresses: (string | undefined)[]) => {
   // always send lowercase ids to subgraph as
   // subgraph has only lowercase ids
-  const tokensToFind = tokenAddresses.filter((item) => !!item).map((address) => address?.toLowerCase()) as string[];
+  const tokensToFind = useMemo(
+    () => (tokenAddresses || []).filter((item) => !!item).map((address) => address?.toLowerCase()) as string[],
+    [tokenAddresses],
+  );
   const chainId = useChainId();
   const validateAddress = validateAddressMapping[chainId];
   const gqlClient = subgraphClient[chainId];
