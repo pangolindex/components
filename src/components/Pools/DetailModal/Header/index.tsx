@@ -103,7 +103,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
   };
 
   const { totalApr, stakingApr, swapFeeApr, userApr } = getAPRs();
-  console.log({ totalApr, stakingApr, extraFarmAPR, swapFeeApr, userApr, _userApr, extraUserAPR });
+
   return (
     <HeaderRoot>
       <HeaderWrapper>
