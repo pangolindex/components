@@ -356,6 +356,9 @@ export function usePangoChefInfos() {
             : JSBI.BigInt(0),
         );
       };
+
+      const expoent = png.decimals - pair?.liquidityToken.decimals;
+
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
         pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0')
@@ -363,7 +366,11 @@ export function usePangoChefInfos() {
           : Number(
               pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
-                .divide(pairPrice?.raw?.multiply(pool?.valueVariables?.balance?.toString()))
+                .divide(
+                  pairPrice?.raw
+                    ?.multiply(pool?.valueVariables?.balance?.toString())
+                    .multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent))),
+                )
                 .toSignificant(2),
             );
 
@@ -1131,7 +1138,7 @@ export function useGetPangoChefInfosViaSubgraph() {
       // farm?.weight -> ?
       // rewardRate = (farm?.weight * totalPangochefRewardRate) / totalPangochefWeight
       const rewardRate: BigNumber =
-        farm?.weight === '0' || !totalPangochefWeight
+        farm?.weight === '0' || !totalPangochefWeight || totalPangochefWeight === '0'
           ? BigNumber.from(0)
           : BigNumber.from(totalPangochefRewardRate ?? 0)
               .mul(farm?.weight)
@@ -1141,7 +1148,9 @@ export function useGetPangoChefInfosViaSubgraph() {
       const pairPriceInEth = totalSupplyInETH.divide(totalSupplyAmount);
       const pairPrice = new Price(lpToken, wavax, pairPriceInEth?.denominator, pairPriceInEth?.numerator);
 
-      // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
+      const expoent = png.decimals - lpToken.decimals;
+
+      // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / ((pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE) * 1e(png.decimals-lptoken.decimals))
       const apr =
         _farmTvl === '0' || pairPriceInEth?.equalTo('0') || !pairPriceInEth
           ? 0
@@ -1149,8 +1158,8 @@ export function useGetPangoChefInfosViaSubgraph() {
               pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
                 .divide(pairPriceInEth?.multiply(_farmTvl))
-                // here apr is in 10^8 so we needed to divide by 10^8 to keep it in simple form
-                .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(8)))
+                // here apr is in 10^(png.decimals - lpToken.decimals) so we needed to divide by 10^(png.decimals - lpToken.decimals) to keep it in simple form
+                .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent)))
                 .toSignificant(2),
             );
 
@@ -1290,13 +1299,18 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
     const pairPrice = stakingInfo.pairPrice;
     const balance = stakingInfo.stakedAmount;
 
-    const pairBalance = pairPrice.raw.multiply(balance).toFixed(0);
+    const pairBalance = pairPrice.raw.multiply(balance);
 
-    //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
-    return pairPrice.equalTo('0') || balance.equalTo('0') || pairBalance === '0'
+    const expoent = png.decimals - balance.token.decimals;
+
+    //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / ((getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE) * 1e(png.decimals-lptoken.decimals))
+    return pairPrice.equalTo('0') || balance.equalTo('0')
       ? '0'
-      : userRewardRate.mul(86400).mul(365).mul(100).mul(pngPrice.raw.toFixed(0)).div(pairBalance).toString();
-  }, [stakingInfo, pair]);
+      : pngPrice.raw
+          .multiply(userRewardRate.mul(86400).mul(365).mul(100).toString())
+          .divide(pairBalance.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent))))
+          .toFixed(0);
+  }, [stakingInfo, pair, png, wavax]);
 }
 
 export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
@@ -1413,9 +1427,8 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
 export function usePangoChefExtraFarmApr(
   rewardTokens: Array<Token | null | undefined> | null | undefined,
   rewardRate: BigNumber,
-  multipliers: JSBI[] | undefined,
   balance: BigNumber,
-  pairPrice: Price,
+  stakingInfo: PangoChefInfo,
 ) {
   const chainId = useChainId();
   const useTokensCurrencyPrice = useTokensCurrencyPriceHook[chainId];
@@ -1425,15 +1438,18 @@ export function usePangoChefExtraFarmApr(
     | undefined
   )[];
 
+  const multipliers = stakingInfo.rewardTokensMultiplier;
+  const pairPrice: Price | undefined = stakingInfo.pairPrice;
+
   const tokensPrices = useTokensCurrencyPrice(_rewardTokens);
 
-  // as of now this is needed specifically for hedera
-  // in Hedera we need to divide final apr with 10^8 to make sure it shows in proper format
-  // for all other chains its just 10^0 = 1
-  let aprDenominator = 10 ** 0;
-  if (hederaFn.isHederaChain(chainId)) {
-    aprDenominator = 10 ** 8;
-  }
+  const png = PNG[chainId];
+  const lpToken = stakingInfo.stakedAmount.token;
+
+  const expoent = png.decimals - lpToken.decimals;
+
+  // we need to divide by the diference between png.decimals and lpToken.decimals
+  const aprDenominator = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent));
 
   return useMemo(() => {
     let extraAPR = 0;
@@ -1446,7 +1462,6 @@ export function usePangoChefExtraFarmApr(
       const token = _rewardTokens[index];
 
       if (!token) {
-        console.log('error1');
         continue;
       }
 
