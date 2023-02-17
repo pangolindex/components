@@ -3,12 +3,13 @@ import { parseBytes32String } from '@ethersproject/strings';
 import { CAVAX, Currency, Token } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery } from 'react-query';
+import { useSubgraphTokens } from 'src/apollo/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useSelectedTokenList } from 'src/state/plists/hooks';
 import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserAddedTokens } from 'src/state/puser/hooks';
-import { isAddress } from 'src/utils';
+import { isAddress, validateAddressMapping } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { NearTokenMetadata, nearFn } from 'src/utils/near';
 import ERC20_INTERFACE, { ERC20_BYTES32_INTERFACE } from '../constants/abis/erc20';
@@ -203,6 +204,46 @@ export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> 
       return acc;
     }, []);
   }, [chainId, decimals, symbols, symbolsBytes32, tokensName, tokensNameBytes32, tokens, tokensAddress]);
+}
+
+/**
+ * This hook format the tokens address to token object from sdk
+ * @param tokensAddress token address array
+ * @returns array of token object from sdk for valid tokens, null or undefined for invalid
+ */
+export function useTokensViaSubGraph(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
+  const chainId = useChainId();
+  const tokens = useAllTokens();
+
+  const isAddressFn = validateAddressMapping[chainId];
+  const { data: subgraphTokens, isLoading } = useSubgraphTokens(tokensAddress);
+
+  return useMemo(() => {
+    if (!tokensAddress || tokensAddress?.length === 0) return [];
+    if (!subgraphTokens || isLoading) return [];
+
+    return tokensAddress.reduce<TokenReturnType[]>((acc, tokenAddress) => {
+      const tokenInfo = subgraphTokens?.find((subgraphToken) => tokenAddress === subgraphToken.id);
+      const address = isAddressFn(tokenAddress);
+
+      if (!!address && tokens[address]) {
+        // if we have user tokens already
+        acc.push(tokens[address]);
+      } else if (tokenInfo && address) {
+        try {
+          const decimal = Number(tokenInfo.decimals);
+          const token = new Token(chainId, address, decimal, tokenInfo.symbol, tokenInfo.name);
+          acc.push(token);
+        } catch {
+          acc.push(null);
+        }
+      } else {
+        acc.push(undefined);
+      }
+
+      return acc;
+    }, []);
+  }, [chainId, isLoading, subgraphTokens, tokens, tokensAddress]);
 }
 
 const fetchNearTokenMetadata = (address) => () => {

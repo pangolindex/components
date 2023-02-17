@@ -78,7 +78,8 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async init() {
-    this.instance = new HashConnect(true);
+    // keep debugging logs off by passing false
+    this.instance = new HashConnect(false);
     this.setUpEvents();
     const data = await this.instance.init(APP_METADATA, this.network as any);
     this.initData = data;
