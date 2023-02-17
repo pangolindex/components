@@ -870,7 +870,11 @@ export function useGetPangoChefInfosViaSubgraph() {
     return allFarms.map((item) => [item?.pid]);
   }, [allFarms]);
 
-  const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', allPoolsIds);
+  const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', allPoolsIds, {
+    // avoid unnecessary calls by
+    // only fetching pools info on page load, as pools info doesnt change much
+    blocksPerFetch: 0,
+  });
 
   const totalPangochefRewardRate = pangoChefData?.rewardRate;
   const totalPangochefWeight = pangoChefData?.totalWeight;
@@ -1350,6 +1354,11 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
     { enabled: Boolean(pangoChefContract) && Boolean(account) && hederaFn.isHederaChain(chainId) },
   );
 
+  // we need on chain fallback
+  // because user might have created a storage contract but haven't staked into anything yet
+  // if we replace subgraph logic without fallback then user will be stuck forever in
+  // "create storage contract" flow because subgraph thinking that there is no farmingPositions
+  // but actually user has created storage contract
   const hasOnChainData = typeof userStorageAddress !== 'undefined';
   const onChainShouldCreateStorage = userStorageAddress === ZERO_ADDRESS || !userStorageAddress ? true : false;
 
