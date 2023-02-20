@@ -147,10 +147,6 @@ export const useSubgraphFarms = () => {
       const data = await gqlClient.request(GET_PANGOCHEF, {
         userAddress: account ? account.toLowerCase() : '',
       });
-      console.log(
-        'pairs',
-        data?.pangoChefs?.[0]?.farms?.map((farm) => farm.pair),
-      );
       return data?.pangoChefs;
     },
     {
