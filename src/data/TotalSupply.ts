@@ -100,23 +100,6 @@ export function useNearPairTotalSupply(pair?: Pair): TokenAmount | undefined {
  * @param pair pair object
  * @returns total supply in form of TokenAmount or undefined
  */
-export function useHederaPairTotalSupplyContractCall(pair?: Pair): TokenAmount | undefined {
-  const [pglToken, liqToken] = useHederaPGLToken(pair?.token0, pair?.token1);
-  const contract = useTokenContract(pglToken?.address, false);
-
-  const totalSupply: BigNumber = useSingleCallResult(contract, 'totalSupply')?.result?.[0];
-
-  // here we create TokenAmount with liqToken so that we can use sdk methods like `pair.getLiquidityMinted` etc
-  // we need to do this because in sdk its checking token equality
-  // @link https://github.com/pangolindex/sdk/blob/dev/src/entities/pools/pair.ts#L146
-  return pglToken && liqToken && pair && totalSupply ? new TokenAmount(liqToken, totalSupply.toString()) : undefined;
-}
-
-/**
- * this hook is used to fetch total supply of given Hedera pair
- * @param pair pair object
- * @returns total supply in form of TokenAmount or undefined
- */
 export function useHederaPairTotalSupply(pair?: Pair): TokenAmount | undefined {
   const [pglToken, liqToken] = useHederaPGLToken(pair?.token0, pair?.token1);
 
