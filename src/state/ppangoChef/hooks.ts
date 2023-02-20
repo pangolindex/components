@@ -934,10 +934,23 @@ export function useGetPangoChefInfosViaSubgraph() {
     return allPoolsIds.map((pid) => [pid[0], account]);
   }, [allPoolsIds, account]); // [[pid, account], ...] [[0, account], [1, account], [2, account] ...]
 
+  // let's just call getUser only when the user has a staked value so
+  // that we can access the lockCount of the user's pool
+  const isUserStaked = useMemo(
+    () =>
+      allFarms.some(
+        (farm) => farm.farmingPositions.length > 0 && Number(farm.farmingPositions[0].stakedTokenBalance) > 0,
+      ),
+    [allFarms],
+  );
+
   const userInfosState = useSingleContractMultipleData(
     pangoChefContract,
     'getUser',
-    !shouldCreateStorage && userInfoInput ? userInfoInput : [],
+    !shouldCreateStorage && isUserStaked ? userInfoInput : [],
+    {
+      blocksPerFetch: 20,
+    },
   );
 
   // format the data to UserInfo type
