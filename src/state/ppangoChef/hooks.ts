@@ -934,12 +934,8 @@ export function useGetPangoChefInfosViaSubgraph() {
     return allPoolsIds.map((pid) => [pid[0], account]);
   }, [allPoolsIds, account]); // [[pid, account], ...] [[0, account], [1, account], [2, account] ...]
 
-  // for hedera by cutting costs let's eliminate this call
-  // and just use the balance of the subgraph and sumOfEntryTimes as 0
-  // since we are not going to use that because hedera has the correct values
-  // for reward rate and with that is not to use sumOfEntryTimes
   const userInfosState = useSingleContractMultipleData(
-    hederaFn.isHederaChain(chainId) ? null : pangoChefContract,
+    pangoChefContract,
     'getUser',
     !shouldCreateStorage && userInfoInput ? userInfoInput : [],
   );
