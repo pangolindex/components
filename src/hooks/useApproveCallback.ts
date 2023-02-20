@@ -95,7 +95,7 @@ export function useApproveCallback(
       });
       await waitForTransaction(response, 1);
       addTransaction(response, {
-        summary: 'Approve ' + amountToApprove.currency.symbol,
+        summary: 'Approved ' + amountToApprove.currency.symbol,
         approval: { tokenAddress: token.address, spender: spender },
       });
     } catch (error) {
@@ -194,7 +194,7 @@ export function useHederaApproveCallback(
 
       if (response) {
         addTransaction(response, {
-          summary: 'Approve ' + amountToApprove.currency.symbol,
+          summary: 'Approved ' + amountToApprove.currency.symbol,
           approval: { tokenAddress: token.address, spender: spender },
         });
       }

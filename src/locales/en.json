@@ -76,7 +76,7 @@
     "yourRate": "Your rate",
     "totalDeposited": "Total deposited",
     "totalStaked": "Total staked",
-    "depositLiquidity": "Deposit liquidity",
+    "depositLiquidity": "Deposited liquidity",
     "attemptingToStakeError": "Attempting to stake without approval or a signature. Please contact support.",
     "transactionSubmitted": "Transaction Submitted",
     "depositingLiquidity": "Depositing Liquidity",
