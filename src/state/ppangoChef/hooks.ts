@@ -37,7 +37,7 @@ import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 's
 import { calculateGasMargin, decimalToFraction, waitForTransaction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { PangoChefInfo, Pool, PoolType, RewardSummations, UserInfo, ValueVariables } from './types';
+import { PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables } from './types';
 import { calculateCompoundSlippage } from './utils';
 
 export function usePangoChefInfos() {
@@ -72,9 +72,8 @@ export function usePangoChefInfos() {
       const rewarder = result.rewarder;
       const rewardPair = result.rewardPair;
       const valueVariables = result.valueVariables as ValueVariables;
-      const rewardSummations = result.rewardSummationsStored as RewardSummations;
 
-      if (!tokenOrRecipient || !poolType || !rewarder || !rewardPair || !valueVariables || !rewardSummations) {
+      if (!tokenOrRecipient || !poolType || !rewarder || !rewardPair || !valueVariables) {
         continue;
       }
 
@@ -92,7 +91,6 @@ export function usePangoChefInfos() {
           balance: valueVariables?.balance,
           sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
         } as ValueVariables,
-        rewardSummations: rewardSummations,
       } as Pool);
 
       _poolsIds.push([i.toString()]);
@@ -198,10 +196,9 @@ export function usePangoChefInfos() {
       }
 
       const valueVariables = result.valueVariables as ValueVariables;
-      const rewardSummations = result.rewardSummationsPaid as RewardSummations;
       const previousValues = result.previousValues;
 
-      if (!valueVariables || !rewardSummations || !previousValues) {
+      if (!valueVariables || !previousValues) {
         return {
           valueVariables: {
             balance: BigNumber.from(0),
@@ -225,7 +222,6 @@ export function usePangoChefInfos() {
           balance: valueVariables?.balance,
           sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
         } as ValueVariables,
-        rewardSummations: rewardSummations,
         previousValues: previousValues,
         lockCount: lockCount,
       } as UserInfo;
@@ -475,9 +471,8 @@ export function useHederaPangoChefInfos() {
       const rewarder = result.rewarder;
       const rewardPair = result.rewardPair;
       const valueVariables = result.valueVariables as ValueVariables;
-      const rewardSummations = result.rewardSummationsStored as RewardSummations;
 
-      if (!tokenOrRecipient || !poolType || !rewarder || !rewardPair || !valueVariables || !rewardSummations) {
+      if (!tokenOrRecipient || !poolType || !rewarder || !rewardPair || !valueVariables) {
         continue;
       }
 
@@ -495,7 +490,6 @@ export function useHederaPangoChefInfos() {
           balance: valueVariables?.balance,
           sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
         } as ValueVariables,
-        rewardSummations: rewardSummations,
       } as Pool);
 
       _poolsIds.push([i.toString()]);
@@ -611,10 +605,9 @@ export function useHederaPangoChefInfos() {
       }
 
       const valueVariables = result.valueVariables as ValueVariables;
-      const rewardSummations = result.rewardSummationsPaid as RewardSummations;
       const previousValues = result.previousValues;
 
-      if (!valueVariables || !rewardSummations || !previousValues) {
+      if (!valueVariables || !previousValues) {
         return {
           valueVariables: {
             balance: BigNumber.from(0),
@@ -629,7 +622,6 @@ export function useHederaPangoChefInfos() {
           balance: valueVariables?.balance,
           sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
         } as ValueVariables,
-        rewardSummations: rewardSummations,
         previousValues: previousValues,
         lockCount: result.lockCount,
       } as UserInfo;
@@ -903,9 +895,8 @@ export function useGetPangoChefInfosViaSubgraph() {
       const rewarder = result.rewarder;
       const rewardPair = result.rewardPair;
       const valueVariables = result.valueVariables as ValueVariables;
-      const rewardSummations = result.rewardSummationsStored as RewardSummations;
 
-      if (!tokenOrRecipient || !poolType || !rewarder || !rewardPair || !valueVariables || !rewardSummations) {
+      if (!tokenOrRecipient || !poolType || !rewarder || !rewardPair || !valueVariables) {
         continue;
       }
 
@@ -922,7 +913,6 @@ export function useGetPangoChefInfosViaSubgraph() {
           balance: valueVariables?.balance,
           sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
         } as ValueVariables,
-        rewardSummations: rewardSummations,
       };
     }
 
@@ -968,10 +958,9 @@ export function useGetPangoChefInfosViaSubgraph() {
       }
 
       const valueVariables = result.valueVariables as ValueVariables;
-      const rewardSummations = result.rewardSummationsPaid as RewardSummations;
       const previousValues = result.previousValues;
 
-      if (!valueVariables || !rewardSummations || !previousValues) {
+      if (!valueVariables || !previousValues) {
         return {
           valueVariables: {
             balance: BigNumber.from(0),
@@ -986,7 +975,6 @@ export function useGetPangoChefInfosViaSubgraph() {
           balance: valueVariables?.balance,
           sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
         } as ValueVariables,
-        rewardSummations: rewardSummations,
         previousValues: previousValues,
         lockCount: result.lockCount,
       } as UserInfo;
