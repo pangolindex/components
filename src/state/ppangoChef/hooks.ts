@@ -18,7 +18,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { PangochefFarmReward, useSubgraphFarms, useSubgraphFarmsStakedAmount } from 'src/apollo/pangochef';
-import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
+import { BIGNUMBER_ZERO, BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
@@ -869,55 +869,8 @@ export function useGetPangoChefInfosViaSubgraph() {
     return allFarms.map((item) => [item?.pid]);
   }, [allFarms]);
 
-  const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', allPoolsIds, {
-    // avoid unnecessary calls by
-    // only fetching pools info on page load, as pools info doesnt change much
-    blocksPerFetch: 0,
-  });
-
   const totalPangochefRewardRate = pangoChefData?.rewardRate;
   const totalPangochefWeight = pangoChefData?.totalWeight;
-
-  // format the data to Pool type
-  const pools = useMemo(() => {
-    const _pools: { [pid: string]: Pool } = {};
-
-    for (let i = 0; i < poolsState.length; i++) {
-      const result = poolsState[i]?.result;
-
-      if (!result) {
-        continue;
-      }
-
-      const pid = allPoolsIds[i][0];
-      const tokenOrRecipient = result.tokenOrRecipient;
-      const poolType = result.poolType as PoolType;
-      const rewarder = result.rewarder;
-      const rewardPair = result.rewardPair;
-      const valueVariables = result.valueVariables as ValueVariables;
-
-      if (!tokenOrRecipient || !poolType || !rewarder || !rewardPair || !valueVariables) {
-        continue;
-      }
-
-      // remove not erc20 pool and remove this pool from poolsIds
-      if (poolType !== PoolType.ERC20_POOL) {
-        continue;
-      }
-      _pools[pid] = {
-        tokenOrRecipient: tokenOrRecipient,
-        poolType: poolType,
-        rewarder: rewarder,
-        rewardPair: rewardPair,
-        valueVariables: {
-          balance: valueVariables?.balance,
-          sumOfEntryTimes: valueVariables?.sumOfEntryTimes,
-        } as ValueVariables,
-      };
-    }
-
-    return _pools;
-  }, [poolsState]);
 
   const userInfoInput = useMemo(() => {
     if ((allPoolsIds || []).length === 0 || !account) return [];
@@ -1001,20 +954,13 @@ export function useGetPangoChefInfosViaSubgraph() {
     for (let index = 0; index < allPoolsIds.length; index++) {
       const farm = allFarms[index];
 
-      // const poolState = poolsState[index];
-      // const userInfoState = userInfosState[index];
-
       const userPendingRewardState = userPendingRewardsState[index];
       const userRewardRateState = userRewardRatesState[index];
       const userInfo = userInfos[index];
 
       // if is loading or not exist pair continue
       if (
-        // poolState?.loading ||
-        // userInfoState?.loading ||
-        // userPendingRewardState?.loading ||
-        // userRewardRateState?.loading ||
-        // poolRewardRateState?.loading ||
+        !farm.pair || // skip pull with pair null because it is relayer
         avaxPngPairState == PairState.LOADING ||
         !avaxPngPair
       ) {
@@ -1024,7 +970,6 @@ export function useGetPangoChefInfosViaSubgraph() {
       const rewards = farm.rewarder.rewards;
 
       const pid = farm?.pid;
-      const pool = pools?.[pid];
       const pair = farm?.pair;
       const multiplier = JSBI.BigInt(farm?.weight);
 
@@ -1063,11 +1008,11 @@ export function useGetPangoChefInfosViaSubgraph() {
       const _farmTvl = Number(farmTvl) <= 0 ? '0' : farmTvl;
       const farmTvlAmount = new TokenAmount(lpToken, _farmTvl || JSBI.BigInt(0));
 
-      const reserve0 = parseUnits(pair?.reserve0?.toString(), pair?.token0.decimals);
+      const reserve0 = parseUnits(pair?.reserve0 ?? '0', pair?.token0.decimals);
 
       const reserve0Amount = new TokenAmount(token0, reserve0?.toString() || JSBI.BigInt(0));
 
-      const reserve1 = parseUnits(pair?.reserve1?.toString(), pair?.token1.decimals);
+      const reserve1 = parseUnits(pair?.reserve1 ?? '0', pair?.token1.decimals);
 
       const reserve1Amount = new TokenAmount(token1, reserve1?.toString() || JSBI.BigInt(0));
 
@@ -1201,20 +1146,23 @@ export function useGetPangoChefInfosViaSubgraph() {
         rewardTokensMultiplier: rewardMultipliers,
         totalStakedInWavax: totalStakedInWavax,
         isPeriodFinished: rewardRate.isZero(),
-        rewardsAddress: pool?.rewarder,
+        rewardsAddress: farm.rewarder.id.split('-')[0],
         totalRewardRatePerSecond: totalRewardRatePerSecond,
         totalRewardRatePerWeek: totalRewardRatePerWeek,
         rewardRatePerWeek: userRewardRatePerWeek,
         getHypotheticalWeeklyRewardRate: getHypotheticalWeeklyRewardRate,
         getExtraTokensWeeklyRewardRate: getExtraTokensWeeklyRewardRate,
         earnedAmount: pendingRewards,
-        valueVariables: pool?.valueVariables,
+        valueVariables: {
+          balance: BigNumber.from(_farmTvl),
+          sumOfEntryTimes: BIGNUMBER_ZERO,
+        },
         userValueVariables: userInfo?.valueVariables,
         lockCount: userInfo?.lockCount,
         userRewardRate: userRewardRateState?.result?.[0] ?? BigNumber.from(0),
         stakingApr: apr,
         pairPrice,
-        poolType: pool?.poolType,
+        poolType: PoolType.ERC20_POOL,
         poolRewardRate: rewardRate,
       } as PangoChefInfo);
     }
@@ -1229,7 +1177,6 @@ export function useGetPangoChefInfosViaSubgraph() {
     allFarms,
     userInfosState,
     allPoolsIds,
-    poolsState,
   ]);
 }
 

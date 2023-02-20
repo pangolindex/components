@@ -22,7 +22,8 @@ export interface PangoChefFarm {
   weight: string;
   tokenOrRecipientAddress: string;
   rewarder: PangochefFarmRewarder;
-  pair: PangochefPair;
+  // pair can be null in relayer pool case
+  pair: PangochefPair | null;
   farmingPositions: {
     stakedTokenBalance: string;
   }[];
@@ -146,6 +147,10 @@ export const useSubgraphFarms = () => {
       const data = await gqlClient.request(GET_PANGOCHEF, {
         userAddress: account ? account.toLowerCase() : '',
       });
+      console.log(
+        'pairs',
+        data?.pangoChefs?.[0]?.farms?.map((farm) => farm.pair),
+      );
       return data?.pangoChefs;
     },
     {
