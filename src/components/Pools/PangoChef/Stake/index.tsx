@@ -348,6 +348,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
                   )
                 }
                 label={type === SpaceType.card ? balanceLabel : undefined}
+                disabled={userLiquidityUnstaked?.equalTo('0')}
               />
 
               <Box mt={type === 'card' ? '25px' : '0px'}>
