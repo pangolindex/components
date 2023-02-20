@@ -978,6 +978,11 @@ export function useGetPangoChefInfosViaSubgraph() {
         return getAddress(tokenObj.id);
       });
 
+      const rewardTokens = rewards.map((rewardToken: PangochefFarmReward) => {
+        const tokenObj = rewardToken.token;
+        return new Token(chainId, getAddress(tokenObj.id), Number(tokenObj.decimals), tokenObj.symbol, tokenObj.name);
+      });
+
       const rewardMultipliers: JSBI[] = rewards.map((rewardToken: PangochefFarmReward) => {
         return JSBI.BigInt(rewardToken?.multiplier.toString());
       });
@@ -1142,6 +1147,7 @@ export function useGetPangoChefInfosViaSubgraph() {
         stakedAmount: userTotalStakedAmount,
         periodFinish: undefined,
         multiplier,
+        rewardTokens,
         rewardTokensAddress,
         rewardTokensMultiplier: rewardMultipliers,
         totalStakedInWavax: totalStakedInWavax,
