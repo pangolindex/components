@@ -1184,7 +1184,7 @@ export function useHederaRemoveLiquidity(pair?: Pair | null | undefined) {
       if (response) {
         addTransaction(response, {
           summary:
-          'Removed' +
+            'Removed' +
             ' ' +
             parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
             ' ' +
