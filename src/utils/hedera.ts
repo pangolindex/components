@@ -42,6 +42,7 @@ export interface HederaTokenMetadata {
   decimals: number;
   icon: string;
   type: string;
+  totalSupply: string;
 }
 
 export interface HederaAssociateTokensData {
@@ -422,6 +423,7 @@ class Hedera {
         decimals: Number(tokenInfo?.decimals),
         icon: '',
         type: tokenInfo?.type,
+        totalSupply: tokenInfo?.total_supply,
       };
       return token;
     } catch (error) {

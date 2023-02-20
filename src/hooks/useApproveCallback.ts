@@ -7,7 +7,7 @@ import { useCallback, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, ZERO_ADDRESS } from 'src/constants';
 import { useTokenAllowance } from 'src/data/Allowances';
-import { useTotalSupply } from 'src/data/TotalSupply';
+import { useHederaTotalSupply } from 'src/data/TotalSupply';
 import { Field } from 'src/state/pswap/actions';
 import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useIsApprovingInfinite } from 'src/state/puser/hooks';
@@ -131,7 +131,7 @@ export function useHederaApproveCallback(
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender);
   const pendingApproval = useHasPendingApproval(token?.address, spender);
 
-  const tokenSupply = useTotalSupply(token);
+  const tokenSupply = useHederaTotalSupply(token);
 
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
