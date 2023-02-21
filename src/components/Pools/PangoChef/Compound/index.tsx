@@ -16,7 +16,6 @@ import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useApproveCallbackHook, useTokensCurrencyPriceHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { usePangoChefContract } from 'src/hooks/useContract';
-import { useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
 import { usePangoChefCompoundCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { calculateCompoundSlippage } from 'src/state/ppangoChef/utils';
@@ -210,7 +209,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
     await approveCallback();
   }, [approveCallback]);
 
-  const userRewardRate = useUserPangoChefRewardRate(stakingInfo);
+  const userRewardRate = stakingInfo?.userRewardRate;
   /*
   Let's say you get 1 png per sec, and 1 png equals 1 avax.
   In 10 secs you have 10 png rewards. you make a tx to send 10 avax.
