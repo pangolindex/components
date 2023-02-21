@@ -3,7 +3,7 @@ import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
-import { useQueryClient } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { hashConnect, network } from 'src/connectors';
 import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { PROVIDER_MAPPING } from 'src/constants';
@@ -174,24 +174,22 @@ export function useGetBlockTimestamp(blockNumber?: number) {
   const latestBlockNumber = useBlockNumber();
   const _blockNumber = blockNumber ?? latestBlockNumber;
 
+  const chainId = useChainId();
+
   const { provider } = useLibrary();
 
-  const [timestamp, setTimestamp] = useState<string | undefined>(undefined);
-
-  const getTimestamp = useMemo(async () => {
-    if (!_blockNumber || !provider) return;
-
-    const result = await (provider as any)?.getBlockTimestamp(_blockNumber);
-    return result;
-  }, [_blockNumber, provider]);
-
-  useEffect(() => {
-    const getResult = async () => {
-      const result = await getTimestamp;
-      setTimestamp(result);
-    };
-    getResult();
-  }, [_blockNumber, getTimestamp]);
+  const { data: timestamp } = useQuery(
+    ['get-block-timestamp', chainId, _blockNumber],
+    async () => {
+      if (!provider || !_blockNumber) return undefined;
+      const result = await provider.getBlockTimestamp(_blockNumber);
+      return result as string;
+    },
+    {
+      refetchInterval: 1000 * 60, // 1 minute
+      staleTime: 1000 * 60, // 1 minute
+    },
+  );
 
   return timestamp;
 }
