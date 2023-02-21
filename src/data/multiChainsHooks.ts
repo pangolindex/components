@@ -4,7 +4,6 @@ import { useTokenAllowance } from './Allowances';
 import { useHederaPairs, useNearPairs, usePairs } from './Reserves';
 import {
   useEvmPairTotalSupply,
-  useHederaPairTotalSupply,
   useHederaTotalSupply,
   useNearPairTotalSupply,
   useNearTotalSupply,
@@ -128,7 +127,6 @@ export type UsePairTotalSupplyHookType = {
   [chainId in ChainId]:
     | typeof useEvmPairTotalSupply
     | typeof useNearPairTotalSupply
-    | typeof useHederaPairTotalSupply
     | typeof usePairTotalSupplyViaSubgraph
     | typeof useDummyHook;
 };

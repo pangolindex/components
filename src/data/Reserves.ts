@@ -191,7 +191,7 @@ export function useHederaPairs(currencies: [Currency | undefined, Currency | und
     () =>
       tokens.map(([tokenA, tokenB]) => {
         return tokenA && tokenB && !tokenA.equals(tokenB)
-          ? Pair.getAddress(tokenA, tokenB, chainId ? chainId : ChainId.AVALANCHE)?.toLowerCase()
+          ? Pair.getAddress(tokenA, tokenB, chainId ? chainId : ChainId.AVALANCHE)
           : undefined;
       }),
     [tokens, chainId],
