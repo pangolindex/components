@@ -4,10 +4,10 @@ import { useTokenAllowance } from './Allowances';
 import { useHederaPairs, useNearPairs, usePairs } from './Reserves';
 import {
   useEvmPairTotalSupply,
-  useHederaPairTotalSupply,
   useHederaTotalSupply,
   useNearPairTotalSupply,
   useNearTotalSupply,
+  usePairTotalSupplyViaSubgraph,
   useTotalSupply,
 } from './TotalSupply';
 
@@ -127,7 +127,7 @@ export type UsePairTotalSupplyHookType = {
   [chainId in ChainId]:
     | typeof useEvmPairTotalSupply
     | typeof useNearPairTotalSupply
-    | typeof useHederaPairTotalSupply
+    | typeof usePairTotalSupplyViaSubgraph
     | typeof useDummyHook;
 };
 
@@ -143,8 +143,8 @@ export const usePairTotalSupplyHook: UsePairTotalSupplyHookType = {
   [ChainId.COSTON]: useEvmPairTotalSupply,
   [ChainId.SONGBIRD]: useEvmPairTotalSupply,
   [ChainId.FLARE_MAINNET]: useEvmPairTotalSupply,
-  [ChainId.HEDERA_TESTNET]: useHederaPairTotalSupply,
-  [ChainId.HEDERA_MAINNET]: useHederaPairTotalSupply,
+  [ChainId.HEDERA_TESTNET]: usePairTotalSupplyViaSubgraph,
+  [ChainId.HEDERA_MAINNET]: usePairTotalSupplyViaSubgraph,
   [ChainId.NEAR_MAINNET]: useNearPairTotalSupply,
   [ChainId.NEAR_TESTNET]: useNearPairTotalSupply,
   [ChainId.COSTON2]: useEvmPairTotalSupply,

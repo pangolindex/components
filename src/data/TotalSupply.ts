@@ -1,8 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { ChainId, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
+import { useSubgraphPairs } from 'src/apollo/pairs';
 import { useChainId } from 'src/hooks';
-import { useHederaPGLToken, useHederaTokensMetaData } from 'src/state/pwallet/hooks';
+import { useHederaTokensMetaData } from 'src/state/pwallet/hooks';
 import { nearFn } from 'src/utils/near';
 import { PNG } from '../constants/tokens';
 import { useTokenContract } from '../hooks/useContract';
@@ -96,19 +97,21 @@ export function useNearPairTotalSupply(pair?: Pair): TokenAmount | undefined {
 }
 
 /**
- * this hook is used to fetch total supply of given Hedera pair
+ * this hook is used to fetch total supply of given pair via subgraph
  * @param pair pair object
  * @returns total supply in form of TokenAmount or undefined
  */
-export function useHederaPairTotalSupply(pair?: Pair): TokenAmount | undefined {
-  const [pglToken, liqToken] = useHederaPGLToken(pair?.token0, pair?.token1);
+export function usePairTotalSupplyViaSubgraph(pair?: Pair): TokenAmount | undefined {
+  const token = pair?.liquidityToken;
+  // get pair from subgraph
+  const { data, isLoading } = useSubgraphPairs([token?.address]);
 
-  const tokensMetadata = useHederaTokensMetaData([pglToken?.address]);
+  return useMemo(() => {
+    if (!token || isLoading || !data || data.length === 0) return undefined;
 
-  const totalSupply = pglToken?.address ? tokensMetadata[pglToken?.address]?.totalSupply : '0';
+    const pairInfo = data[0];
+    if (pairInfo.id !== token.address) return undefined;
 
-  // here we create TokenAmount with liqToken so that we can use sdk methods like `pair.getLiquidityMinted` etc
-  // we need to do this because in sdk its checking token equality
-  // @link https://github.com/pangolindex/sdk/blob/dev/src/entities/pools/pair.ts#L146
-  return pglToken && liqToken && pair && totalSupply ? new TokenAmount(liqToken, totalSupply.toString()) : undefined;
+    return new TokenAmount(token, pairInfo.totalSupply);
+  }, [token, data, isLoading]);
 }

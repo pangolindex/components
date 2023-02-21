@@ -1,6 +1,7 @@
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
 import { useChainId } from 'src/hooks';
+import { validateAddressMapping } from 'src/utils';
 import { subgraphClient } from './client';
 import { SubgraphToken } from './tokens';
 
@@ -66,15 +67,26 @@ export const GET_PAIRS = gql`
  * @returns list of pairs
  */
 export const useSubgraphPairs = (pairAddresses: (string | undefined)[]) => {
-  const pairsToFind = pairAddresses.filter((item) => !!item) as string[];
+  // we need to convert addresses to lowercase as subgraph has lowercase addresses
+  const pairsToFind = pairAddresses?.map((item) => item?.toLowerCase())?.filter((item) => !!item) as string[];
   const chainId = useChainId();
+  const validateAddress = validateAddressMapping[chainId];
   // get pairs from subgraph
-  return useQuery<SubgraphPair[]>(['get-subgraph-pairs', chainId, ...pairsToFind], async () => {
+  return useQuery<SubgraphPair[] | null>(['get-subgraph-pairs', chainId, ...pairsToFind], async () => {
     const gqlClient = subgraphClient[chainId];
     if (!gqlClient) {
       return null;
     }
     const data = await gqlClient.request(GET_PAIRS, { pairAddresses: pairsToFind });
-    return data?.pairs;
+
+    return (
+      (data?.pairs as SubgraphPair[])
+        // convert addresses to checksum address
+        ?.map((item) => ({ ...item, id: validateAddress(item.id) as string }))
+        // only keep pairs that has id as string
+        // because validateAddress returns string if valid address
+        // and return false if invalid address, so we want to remove those invalid address tokens
+        ?.filter((item) => typeof item.id === 'string')
+    );
   });
 };
