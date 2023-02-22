@@ -24,8 +24,9 @@ import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
-import { useChainId, useGetBlockTimestamp, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
+import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { useTokens } from 'src/hooks/Tokens';
+import { useGetLastBlockTimestampHook } from 'src/hooks/block';
 import { useTokensCurrencyPriceHook } from 'src/hooks/multiChainsHooks';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
@@ -45,6 +46,7 @@ export function usePangoChefInfos() {
   const chainId = useChainId();
   const pangoChefContract = usePangoChefContract();
 
+  const useGetBlockTimestamp = useGetLastBlockTimestampHook[chainId];
   const blockTime = useGetBlockTimestamp();
 
   const png = PNG[chainId];
@@ -446,6 +448,7 @@ export function useHederaPangoChefInfos() {
   const chainId = useChainId();
   const pangoChefContract = usePangoChefContract();
 
+  const useGetBlockTimestamp = useGetLastBlockTimestampHook[chainId];
   const blockTime = useGetBlockTimestamp();
 
   const png = PNG[chainId];
@@ -858,10 +861,11 @@ export function useGetPangoChefInfosViaSubgraph() {
   const [shouldCreateStorage] = useHederaPangochefContractCreateCallback();
   const pangoChefContract = usePangoChefContract();
 
+  const useGetBlockTimestamp = useGetLastBlockTimestampHook[chainId];
+  const blockTime = useGetBlockTimestamp();
+
   const results = useSubgraphFarms();
   const pangoChefData = results?.data?.[0];
-
-  const blockTime = useGetBlockTimestamp();
 
   const wavax = WAVAX[chainId];
   const [avaxPngPairState, avaxPngPair] = usePair(wavax, png);

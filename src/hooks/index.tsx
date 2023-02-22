@@ -3,13 +3,12 @@ import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQueryClient } from 'react-query';
 import { hashConnect, network } from 'src/connectors';
 import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { PROVIDER_MAPPING } from 'src/constants';
 import { useDispatch } from 'src/state';
 import { setAvailableHashpack } from 'src/state/papplication/actions';
-import { useBlockNumber } from 'src/state/papplication/hooks';
 import { isAddress } from 'src/utils';
 
 interface Web3State {
@@ -169,27 +168,3 @@ export const useRefetchMinichefSubgraph = () => {
 
   return async () => await queryClient.refetchQueries(['get-minichef-farms-v2', account]);
 };
-
-export function useGetBlockTimestamp(blockNumber?: number) {
-  const latestBlockNumber = useBlockNumber();
-  const _blockNumber = blockNumber ?? latestBlockNumber;
-
-  const chainId = useChainId();
-
-  const { provider } = useLibrary();
-
-  const { data: timestamp } = useQuery(
-    ['get-block-timestamp', chainId, _blockNumber],
-    async () => {
-      if (!provider || !_blockNumber) return undefined;
-      const result = await provider.getBlockTimestamp(_blockNumber);
-      return result as string;
-    },
-    {
-      refetchInterval: 1000 * 60, // 1 minute
-      staleTime: 1000 * 60, // 1 minute
-    },
-  );
-
-  return timestamp;
-}

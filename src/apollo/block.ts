@@ -34,3 +34,15 @@ export const PRICES_BY_BLOCK = (tokenAddress, blocks) => {
   queryString += '}';
   return gql(queryString);
 };
+
+export const GET_LAST_BLOCK_TIMESTAMP = gql`
+  query block {
+    _meta {
+      block {
+        number
+        hash
+        timestamp
+      }
+    }
+  }
+`;

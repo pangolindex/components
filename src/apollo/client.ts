@@ -39,6 +39,24 @@ export const hederaMainnetSubgraphGql = new GraphQLClient(
   },
 );
 
+export const avalancheBlockSubgraph = new GraphQLClient(
+  'https://api.thegraph.com/subgraphs/name/dasconnor/avalanche-blocks',
+  {
+    headers: {},
+  },
+);
+
+export const hederaTestnetBlockSubgraph = new GraphQLClient(
+  'https://hedera-test.pangolin.network/subgraphs/name/blocks',
+  {
+    headers: {},
+  },
+);
+
+export const hederaBlockSubgraph = new GraphQLClient('https://hedera-graph.pangolin.network/subgraphs/name/blocks', {
+  headers: {},
+});
+
 export const subgraphClient = {
   [ChainId.AVALANCHE]: avalancheMininchefV2Client,
   [ChainId.FUJI]: undefined,
@@ -48,6 +66,36 @@ export const subgraphClient = {
   [ChainId.FLARE_MAINNET]: undefined,
   [ChainId.HEDERA_TESTNET]: hederaTestnetSubgraphGql,
   [ChainId.HEDERA_MAINNET]: hederaMainnetSubgraphGql,
+  [ChainId.NEAR_MAINNET]: undefined,
+  [ChainId.NEAR_TESTNET]: undefined,
+  [ChainId.COSTON2]: undefined,
+  [ChainId.EVMOS_TESTNET]: undefined,
+  [ChainId.ETHEREUM]: undefined,
+  [ChainId.POLYGON]: undefined,
+  [ChainId.FANTOM]: undefined,
+  [ChainId.XDAI]: undefined,
+  [ChainId.BSC]: undefined,
+  [ChainId.ARBITRUM]: undefined,
+  [ChainId.CELO]: undefined,
+  [ChainId.OKXCHAIN]: undefined,
+  [ChainId.VELAS]: undefined,
+  [ChainId.AURORA]: undefined,
+  [ChainId.CRONOS]: undefined,
+  [ChainId.FUSE]: undefined,
+  [ChainId.MOONRIVER]: undefined,
+  [ChainId.MOONBEAM]: undefined,
+  [ChainId.OP]: undefined,
+};
+
+export const blockClientsMapping = {
+  [ChainId.AVALANCHE]: avalancheBlockSubgraph,
+  [ChainId.FUJI]: undefined,
+  [ChainId.WAGMI]: undefined,
+  [ChainId.COSTON]: undefined,
+  [ChainId.SONGBIRD]: undefined,
+  [ChainId.FLARE_MAINNET]: undefined,
+  [ChainId.HEDERA_TESTNET]: hederaTestnetBlockSubgraph,
+  [ChainId.HEDERA_MAINNET]: hederaBlockSubgraph,
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
   [ChainId.COSTON2]: undefined,

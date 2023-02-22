@@ -39,24 +39,9 @@ export const CommonEVMProvider = (provider: Web3Provider) => {
       return res;
     };
 
-    const getBlockTimestamp = async (blockNumber: number) => {
-      if (provider.send) {
-        const result: { timestamp: string } | null = await provider.send('eth_getBlockByNumber', [
-          `0x${blockNumber.toString(16)}`,
-          false,
-        ]);
-        if (!result) {
-          return 0;
-        }
-        return parseInt(result?.timestamp, 16).toString() ?? 0;
-      }
-      return 0;
-    };
-
     return {
       getTransactionReceipt,
       getBlockNumber,
-      getBlockTimestamp,
       execute,
     };
   }

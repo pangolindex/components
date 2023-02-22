@@ -29,7 +29,7 @@ export function calculateUserRewardRate(
   userValueVariables: ValueVariables,
   poolValueVariables: ValueVariables,
   poolRewardRate: BigNumber,
-  blockTime?: string,
+  blockTime?: number,
 ): BigNumber {
   if (!blockTime) {
     return BIGNUMBER_ZERO;
