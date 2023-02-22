@@ -22,7 +22,8 @@ export interface PangoChefFarm {
   weight: string;
   tokenOrRecipientAddress: string;
   rewarder: PangochefFarmRewarder;
-  pair: PangochefPair;
+  // pair can be null in relayer pool case
+  pair: PangochefPair | null;
   farmingPositions: {
     stakedTokenBalance: string;
   }[];

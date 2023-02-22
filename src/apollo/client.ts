@@ -52,6 +52,7 @@ export const subgraphClient = {
   [ChainId.NEAR_TESTNET]: undefined,
   [ChainId.COSTON2]: undefined,
   [ChainId.EVMOS_TESTNET]: undefined,
+  [ChainId.EVMOS_MAINNET]: undefined,
   [ChainId.ETHEREUM]: undefined,
   [ChainId.POLYGON]: undefined,
   [ChainId.FANTOM]: undefined,

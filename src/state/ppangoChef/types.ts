@@ -13,14 +13,8 @@ export interface ValueVariables {
   sumOfEntryTimes: BigNumber;
 }
 
-export interface RewardSummations {
-  idealPosition: BigNumber;
-  rewardPerValue: BigNumber;
-}
-
 export interface UserInfo {
   valueVariables: ValueVariables;
-  rewardSummations: RewardSummations;
   previousValues: BigNumber;
   lockCount: number | undefined;
 }
@@ -31,7 +25,6 @@ export interface Pool {
   rewarder: string;
   rewardPair: string;
   valueVariables: ValueVariables;
-  rewardSummations: RewardSummations;
 }
 
 export interface PangoChefInfo extends MinichefStakingInfo {

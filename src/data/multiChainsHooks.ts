@@ -4,9 +4,10 @@ import { useTokenAllowance } from './Allowances';
 import { useHederaPairs, useNearPairs, usePairs } from './Reserves';
 import {
   useEvmPairTotalSupply,
-  useHederaPairTotalSupply,
+  useHederaTotalSupply,
   useNearPairTotalSupply,
   useNearTotalSupply,
+  usePairTotalSupplyViaSubgraph,
   useTotalSupply,
 } from './TotalSupply';
 
@@ -27,6 +28,7 @@ export const usePairsHook: UsePairsHookType = {
   [ChainId.NEAR_TESTNET]: useNearPairs,
   [ChainId.COSTON2]: usePairs,
   [ChainId.EVMOS_TESTNET]: usePairs,
+  [ChainId.EVMOS_MAINNET]: usePairs,
   //TODO: We used usePairs for now, but we need to check following chains
   [ChainId.ETHEREUM]: usePairs,
   [ChainId.POLYGON]: usePairs,
@@ -62,6 +64,7 @@ export const useTokenAllowanceHook: UseTokenAllowanceHookType = {
   [ChainId.NEAR_TESTNET]: useTokenAllowance,
   [ChainId.COSTON2]: useTokenAllowance,
   [ChainId.EVMOS_TESTNET]: useTokenAllowance,
+  [ChainId.EVMOS_MAINNET]: useTokenAllowance,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -80,7 +83,11 @@ export const useTokenAllowanceHook: UseTokenAllowanceHookType = {
 };
 
 export type UseTotalSupplyHookType = {
-  [chainId in ChainId]: typeof useTotalSupply | typeof useNearTotalSupply | typeof useDummyHook;
+  [chainId in ChainId]:
+    | typeof useTotalSupply
+    | typeof useNearTotalSupply
+    | typeof useDummyHook
+    | typeof useHederaTotalSupply;
 };
 
 /**
@@ -95,12 +102,13 @@ export const useTotalSupplyHook: UseTotalSupplyHookType = {
   [ChainId.COSTON]: useTotalSupply,
   [ChainId.SONGBIRD]: useTotalSupply,
   [ChainId.FLARE_MAINNET]: useTotalSupply,
-  [ChainId.HEDERA_TESTNET]: useTotalSupply,
-  [ChainId.HEDERA_MAINNET]: useTotalSupply,
+  [ChainId.HEDERA_TESTNET]: useHederaTotalSupply,
+  [ChainId.HEDERA_MAINNET]: useHederaTotalSupply,
   [ChainId.NEAR_MAINNET]: useNearTotalSupply,
   [ChainId.NEAR_TESTNET]: useNearTotalSupply,
   [ChainId.COSTON2]: useTotalSupply,
   [ChainId.EVMOS_TESTNET]: useTotalSupply,
+  [ChainId.EVMOS_MAINNET]: useTotalSupply,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -122,7 +130,7 @@ export type UsePairTotalSupplyHookType = {
   [chainId in ChainId]:
     | typeof useEvmPairTotalSupply
     | typeof useNearPairTotalSupply
-    | typeof useHederaPairTotalSupply
+    | typeof usePairTotalSupplyViaSubgraph
     | typeof useDummyHook;
 };
 
@@ -138,12 +146,13 @@ export const usePairTotalSupplyHook: UsePairTotalSupplyHookType = {
   [ChainId.COSTON]: useEvmPairTotalSupply,
   [ChainId.SONGBIRD]: useEvmPairTotalSupply,
   [ChainId.FLARE_MAINNET]: useEvmPairTotalSupply,
-  [ChainId.HEDERA_TESTNET]: useHederaPairTotalSupply,
-  [ChainId.HEDERA_MAINNET]: useHederaPairTotalSupply,
+  [ChainId.HEDERA_TESTNET]: usePairTotalSupplyViaSubgraph,
+  [ChainId.HEDERA_MAINNET]: usePairTotalSupplyViaSubgraph,
   [ChainId.NEAR_MAINNET]: useNearPairTotalSupply,
   [ChainId.NEAR_TESTNET]: useNearPairTotalSupply,
   [ChainId.COSTON2]: useEvmPairTotalSupply,
   [ChainId.EVMOS_TESTNET]: useEvmPairTotalSupply,
+  [ChainId.EVMOS_MAINNET]: useEvmPairTotalSupply,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
