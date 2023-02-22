@@ -102,7 +102,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
     if (isHederaTokenAssociated) {
       return (
         <Button variant="primary" onClick={onAdd} height="46px">
-          {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.giveOrder')}
+          {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.confirmSupply')}
         </Button>
       );
     }
