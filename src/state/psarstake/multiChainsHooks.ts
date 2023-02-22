@@ -81,6 +81,7 @@ export const useSarPositionsHook: useSarPositionsType = {
   [ChainId.MOONBEAM]: useDummySarPositions,
   [ChainId.OP]: useDummySarPositions,
   [ChainId.EVMOS_TESTNET]: useSarPositions,
+  [ChainId.EVMOS_MAINNET]: useDummySarPositions,
 };
 
 export const useDerivativeSarStakeHook: useDerivativeSarStakeType = {
@@ -111,6 +112,7 @@ export const useDerivativeSarStakeHook: useDerivativeSarStakeType = {
   [ChainId.MOONBEAM]: useDummyDerivativeSarStake,
   [ChainId.OP]: useDummyDerivativeSarStake,
   [ChainId.EVMOS_TESTNET]: useDerivativeSarStake,
+  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarStake,
 };
 
 export const useDerivativeSarUnstakeHook: useDerivativeSarUnstakeType = {
@@ -141,6 +143,7 @@ export const useDerivativeSarUnstakeHook: useDerivativeSarUnstakeType = {
   [ChainId.MOONBEAM]: useDummyDerivativeSarUnstake,
   [ChainId.OP]: useDummyDerivativeSarUnstake,
   [ChainId.EVMOS_TESTNET]: useDerivativeSarUnstake,
+  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarUnstake,
 };
 
 export const useDerivativeSarClaimHook: useDerivativeSarClaimType = {
@@ -171,6 +174,7 @@ export const useDerivativeSarClaimHook: useDerivativeSarClaimType = {
   [ChainId.MOONBEAM]: useDummyDerivativeSarClaim,
   [ChainId.OP]: useDummyDerivativeSarClaim,
   [ChainId.EVMOS_TESTNET]: useDerivativeSarClaim,
+  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarClaim,
 };
 
 export const useDerivativeSarCompoundHook: useDerivativeSarCompoundType = {
@@ -201,4 +205,5 @@ export const useDerivativeSarCompoundHook: useDerivativeSarCompoundType = {
   [ChainId.MOONBEAM]: useDummyDerivativeSarCompound,
   [ChainId.OP]: useDummyDerivativeSarCompound,
   [ChainId.EVMOS_TESTNET]: useDerivativeSarCompound,
+  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarCompound,
 };
