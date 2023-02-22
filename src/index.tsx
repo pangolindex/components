@@ -51,7 +51,7 @@ import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransa
 import TransactionUpdater from 'src/state/ptransactions/updater';
 import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks';
 import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { existSarContract, getEtherscanLink, isEvmChain, shortenAddress } from 'src/utils';
+import { existSarContract, getEtherscanLink, isEvmChain, shortenAddress, shortenAddressMapping } from 'src/utils';
 import { nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { MixPanelEvents, MixPanelProvider, useMixpanel } from './hooks/mixpanel';
@@ -128,6 +128,7 @@ export * from './connectors';
 export * from './components';
 export * from './state/papplication/hooks';
 export * from './state/papplication/actions';
+export * as Tokens from './constants/tokens';
 
 export * from '@gelatonetwork/limit-orders-react';
 export type {
@@ -195,5 +196,6 @@ export {
   existSarContract,
   getEtherscanLink,
   shortenAddress,
+  shortenAddressMapping,
   MixPanelEvents,
 };

@@ -611,7 +611,8 @@
     "seeDetails": "DETAYLARI GÖR",
     "stake": "STAKE ET",
     "earn": "{{symbol}} Kazan",
-    "stakeAndEarn": "{{ pngSymbol }}'lerinizi stake edin ve ödüller kazanın!"
+    "stakeAndEarn": "{{ pngSymbol }}'lerinizi stake edin ve ödüller kazanın!",
+    "total": "Toplam (stake edilen + ödüller)"
   },
   "error": {
     "missingCurrencyAmounts": "Eksik para birimi tutarları",
@@ -716,6 +717,7 @@
     "noRoute": "Bu çift için geçerli bir rota bulunamadı.",
     "activeTransfers": "Aktif Transferler ({{ number }})",
     "historicalTransfers": "Geçmiş Transferler ({{ number }})",
+    "poweredBy": "Powered by",
     "bridgeCard": {
       "advancedOptions": "Gelişmiş Seçenekler",
       "title": "Cross Chain",

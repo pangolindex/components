@@ -59,7 +59,7 @@ export function isDummyAddress(value: any): string | false {
   return value;
 }
 
-export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+export const validateAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
   [ChainId.FUJI]: isAddress,
   [ChainId.AVALANCHE]: isAddress,
   [ChainId.WAGMI]: isAddress,
@@ -392,6 +392,40 @@ export function filterTokenOrChain(
     return (symbol && matchesSearch(symbol)) || (name && matchesSearch(name));
   });
 }
+
+// this mapping is useful for transforming address before displaying it on UI
+// for EVM chain this is shortening the address to fit it in UI
+// for Hedera chain this is converting address to Hedera Account Id
+export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+  [ChainId.FUJI]: shortenAddress,
+  [ChainId.AVALANCHE]: shortenAddress,
+  [ChainId.WAGMI]: shortenAddress,
+  [ChainId.COSTON]: shortenAddress,
+  [ChainId.SONGBIRD]: shortenAddress,
+  [ChainId.FLARE_MAINNET]: shortenAddress,
+  [ChainId.HEDERA_TESTNET]: hederaFn.hederaId,
+  [ChainId.HEDERA_MAINNET]: hederaFn.hederaId,
+  [ChainId.NEAR_MAINNET]: shortenAddress,
+  [ChainId.NEAR_TESTNET]: shortenAddress,
+  [ChainId.COSTON2]: shortenAddress,
+  [ChainId.ETHEREUM]: shortenAddress,
+  [ChainId.POLYGON]: shortenAddress,
+  [ChainId.FANTOM]: shortenAddress,
+  [ChainId.XDAI]: shortenAddress,
+  [ChainId.BSC]: shortenAddress,
+  [ChainId.ARBITRUM]: shortenAddress,
+  [ChainId.CELO]: shortenAddress,
+  [ChainId.OKXCHAIN]: shortenAddress,
+  [ChainId.VELAS]: shortenAddress,
+  [ChainId.AURORA]: shortenAddress,
+  [ChainId.CRONOS]: shortenAddress,
+  [ChainId.FUSE]: shortenAddress,
+  [ChainId.MOONRIVER]: shortenAddress,
+  [ChainId.MOONBEAM]: shortenAddress,
+  [ChainId.OP]: shortenAddress,
+  [ChainId.EVMOS_TESTNET]: shortenAddress,
+  [ChainId.EVMOS_MAINNET]: shortenAddress,
+};
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALANCHE, chars = 4): string {

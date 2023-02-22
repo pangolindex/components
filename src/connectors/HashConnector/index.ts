@@ -4,9 +4,16 @@ import { AccountId, Transaction, TransactionId } from '@hashgraph/sdk';
 import { ChainId } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
+import EventEmitter from 'eventemitter3';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
 import { TransactionResponse } from 'src/utils/hedera';
+
+// hashconnectEvent will expose event-emitter interface
+// with this we can handle/emit any event to outside class
+// for now this is specifically used for checking hashpack available or now
+// see HashConnectEvents.CHECK_EXTENSION
+export const hashconnectEvent = new EventEmitter();
 
 export interface HashConfigType {
   networkId: string;
@@ -14,18 +21,16 @@ export interface HashConfigType {
   contractId: string;
 }
 
-const LocalStorageKey = 'pangolinHashPackData';
+export enum HashConnectEvents {
+  CHECK_EXTENSION = 'checkExtension',
+  ACTIVATE_CONNECTOR = 'activateConnector',
+}
+
 //Intial App config
 const APP_METADATA: HashConnectTypes.AppMetadata = {
   name: 'Pangolin Exchange',
   description: '',
   icon: 'https://raw.githubusercontent.com/pangolindex/tokens/main/assets/43114/0x60781C2586D68229fde47564546784ab3fACA982/logo_48.png',
-};
-
-type HashPackLocalDataType = {
-  topic?: string;
-  pairingData?: HashConnectTypes.SavedPairingData | null;
-  pairingString?: string;
 };
 
 export class HashConnector extends AbstractConnector {
@@ -38,7 +43,9 @@ export class HashConnector extends AbstractConnector {
   private topic: string;
   private pairingString: string;
   private pairingData: HashConnectTypes.SavedPairingData | null = null;
-  public availableExtension: HashConnectTypes.WalletMetadata | undefined;
+
+  public availableExtension: boolean;
+  public emittedActivateConnector: boolean;
   private initData: HashConnectTypes.InitilizationData | null = null;
 
   public constructor(
@@ -51,60 +58,81 @@ export class HashConnector extends AbstractConnector {
     super(args);
 
     //create the hashconnect instance
-    this.instance = new HashConnect(false);
+    this.instance = new HashConnect();
 
     this.chainId = args?.config?.chainId;
     this.normalizeChainId = args?.normalizeChainId;
     this.normalizeAccount = args?.normalizeAccount;
     this.network = args?.config?.networkId;
-    this.availableExtension = undefined;
+    this.availableExtension = false;
     this.topic = '';
     this.pairingString = '';
     this.pairingData = null;
+    this.emittedActivateConnector = false;
 
     this.handlePairingEvent = this.handlePairingEvent.bind(this);
     this.handleFoundExtensionEvent = this.handleFoundExtensionEvent.bind(this);
+    this.handleFoundIframeEvent = this.handleFoundIframeEvent.bind(this);
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
-
-    this.setUpEvents();
-
-    this.instance
-      .init(APP_METADATA, this.network as any)
-      .then((data) => {
-        this.initData = data;
-      })
-      .catch((error) => {
-        console.log('hash connect err', error);
-      });
+    this.init();
   }
 
-  private handleFoundExtensionEvent(data) {
-    this.availableExtension = data;
+  public async init() {
+    // keep debugging logs off by passing false
+    this.instance = new HashConnect(false);
+    this.setUpEvents();
+    const data = await this.instance.init(APP_METADATA, this.network as any);
+    this.initData = data;
+    this.topic = data.topic;
+    this.pairingString = data.pairingString;
+    this.pairingData = data.savedPairings[0];
+  }
+
+  private handleFoundExtensionEvent() {
+    console.log('pangolin hashconnect available extension');
+    this.availableExtension = true;
+    console.log('pangolin hashconnect emitting event CHECK_EXTENSION');
+    hashconnectEvent.emit(HashConnectEvents.CHECK_EXTENSION, true);
   }
 
   private handleConnectionStatusChangeEvent(state: HashConnectConnectionState) {
-    if (state === HashConnectConnectionState.Disconnected) {
+    console.log('pangolin hashconnect ConnectionStatusChange');
+    // we need to check this.initData too, because it call deactivate and deactivate call clearConnectionsAndData
+    // clearConnectionsAndData emit the HashConnectConnectionState.Disconnected and it cause a infinite loop
+    if (state === HashConnectConnectionState.Disconnected && this.initData) {
       this.deactivate();
     }
   }
 
+  private handleFoundIframeEvent(data) {
+    console.log('pangolin hashconnect handleFoundIframeEvent', data);
+    console.log('pangolin hashconnect emitting event ACTIVATE_CONNECTOR');
+    if (!this.emittedActivateConnector) {
+      this.emittedActivateConnector = true;
+      hashconnectEvent.emit(HashConnectEvents.ACTIVATE_CONNECTOR, true);
+    }
+  }
+
   private handlePairingEvent(data) {
+    console.log('pangolin hashconnect handlePairingEvent', data);
     this.pairingData = data.pairingData!;
     const accountId = this.pairingData?.accountIds?.[0];
     if (accountId) {
-      this.saveDataInLocalstorage({ pairingData: this.pairingData });
       this.emitUpdate({ account: this.toAddress(accountId) });
     }
   }
 
   setUpEvents() {
-    this.instance.foundExtensionEvent.on(this.handleFoundExtensionEvent.bind(this));
+    console.log('pangolin hashconnect setting up events');
+    this.instance.foundExtensionEvent.on(this.handleFoundExtensionEvent);
+    this.instance.foundIframeEvent.on(this.handleFoundIframeEvent);
     this.instance.pairingEvent.on(this.handlePairingEvent.bind(this));
     this.instance.connectionStatusChangeEvent.on(this.handleConnectionStatusChangeEvent.bind(this));
   }
 
   destroyEvents() {
     this.instance.foundExtensionEvent.off(this.handleFoundExtensionEvent.bind(this));
+    this.instance.foundIframeEvent.off(this.handleFoundIframeEvent.bind(this));
     this.instance.pairingEvent.off(this.handlePairingEvent.bind(this));
     this.instance.connectionStatusChangeEvent.off(this.handleConnectionStatusChangeEvent.bind(this));
   }
@@ -126,28 +154,33 @@ export class HashConnector extends AbstractConnector {
 
   public async activate(): Promise<any> {
     const isAuthorized = await this.isAuthorized();
-
-    if (!isAuthorized && this.initData) {
+    // here we need to check emittedActivateConnector to stop multiple alert modal
+    // for case1 : if its load in iframe it has already call init from constrcutor so it should not call init here
+    // for case2 : if its load normally it should call init here because emittedActivateConnector is always false
+    if (!isAuthorized && !this.emittedActivateConnector) {
+      // we always need to init with new data if we are not authorized
+      await this.init();
       this.instance.connectToLocalWallet();
+    }
 
-      await this.instance.init(APP_METADATA, this.network as any);
+    // workaround, it has not been initialized, we need to initialize it so we can
+    // activate this connector without appearing the popup to connect the wallet
+    if (!this.initData) {
+      console.log('call init1');
+      await this.init();
+    }
+
+    if (this.initData) {
       // generate a pairing string, which you can display and generate a QR code from
       this.pairingString = this.instance.generatePairingString(this.initData.topic, this.network, false);
 
       this.topic = this.initData.topic;
       this.pairingString = this.initData.pairingString;
-
-      this.provider = await this.getProvider();
-      this.saveDataInLocalstorage();
-
-      return { chainId: this.chainId, provider: this.provider };
-    } else {
-      await this.instance.init(APP_METADATA, this.network as any);
-      this.provider = await this.getProvider();
-      const accountId = await this.getAccount();
-
-      return { chainId: this.chainId, provider: this.provider, account: accountId };
     }
+
+    this.provider = await this.getProvider();
+    const accountId = await this.getAccount();
+    return { chainId: this.chainId, provider: this.provider, account: accountId };
   }
 
   toAddress = (accountId: string) => {
@@ -166,52 +199,41 @@ export class HashConnector extends AbstractConnector {
     return null;
   }
 
-  public async deactivate() {
+  private _close() {
     if (this.pairingData) {
       this.instance.disconnect(this.pairingData?.topic);
       this.instance.clearConnectionsAndData();
-      localStorage.removeItem(LocalStorageKey);
+      localStorage.removeItem('hashconnectData');
+      this.initData = null;
+      this.pairingData = null;
+      this.topic = '';
+      this.pairingString = '';
       this.emitDeactivate();
     }
+  }
+
+  public async deactivate() {
+    this._close();
   }
 
   public async close() {
-    if (this.pairingData) {
-      this.instance.disconnect(this.pairingData?.topic);
-      this.instance.clearConnectionsAndData();
-      localStorage.removeItem(LocalStorageKey);
-      this.emitDeactivate();
-    }
+    this._close();
   }
 
   public async isAuthorized(): Promise<boolean> {
-    return this.loadLocalData();
-  }
-
-  saveDataInLocalstorage(params: HashPackLocalDataType = {}) {
-    const saveData = {
-      topic: params.topic || this.topic,
-      pairingData: params.pairingData || this.pairingData,
-      pairingString: params.pairingString || this.pairingString,
-    };
-    const data = JSON.stringify(saveData);
-
-    localStorage.setItem(LocalStorageKey, data);
-  }
-
-  loadLocalData(): boolean {
-    const foundData = localStorage.getItem(LocalStorageKey);
-
+    // we query the localStorage to check the hashconnect data exist, if exist, we need to check this data
+    const foundData = localStorage.getItem('hashconnectData');
     if (foundData) {
-      const saveData: HashPackLocalDataType = JSON.parse(foundData);
-      this.topic = saveData.topic || '';
-      this.pairingString = saveData.pairingString || '';
-      if (saveData.pairingData) {
-        this.pairingData = saveData.pairingData;
+      const data = JSON.parse(foundData);
+      // is authorized if the data is valid or data.pairingData length is greater than 0
+      if (!data.pairingData || !data.encryptionKey || data.pairingData.length === 0) {
+        return false;
       }
       return true;
+    } else {
+      // if not found data in local storage return false
+      return false;
     }
-    return false;
   }
 
   private makeBytes(transaction: Transaction, accountId: string) {

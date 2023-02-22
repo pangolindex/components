@@ -20,7 +20,7 @@ export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
   APPROVE_ERC20: 60000,
   PROVIDE_LIQUIDITY: 250000,
-  CREATE_POOL: 2300000,
+  CREATE_POOL: 3000000,
   REMOVE_NATIVE_LIQUIDITY: 250000,
   REMOVE_LIQUIDITY: 250000,
   BASE_SWAP: 200000,
@@ -41,6 +41,8 @@ export interface HederaTokenMetadata {
   symbol: string;
   decimals: number;
   icon: string;
+  type: string;
+  totalSupply: string;
 }
 
 export interface HederaAssociateTokensData {
@@ -341,7 +343,7 @@ class Hedera {
 
   isAddressValid = (address: string): string | false => {
     if (address && hethers.utils.isAddress(address.toLowerCase())) {
-      return address;
+      return hethers.utils.getChecksumAddress(address);
     } else {
       return false;
     }
@@ -420,6 +422,8 @@ class Hedera {
         symbol: tokenInfo?.symbol,
         decimals: Number(tokenInfo?.decimals),
         icon: '',
+        type: tokenInfo?.type,
+        totalSupply: tokenInfo?.total_supply,
       };
       return token;
     } catch (error) {
@@ -1016,7 +1020,10 @@ class Hedera {
     const accountId = account ? this.hederaId(account) : '';
     const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
 
-    const maxGas = methodName === 'stake' ? TRANSACTION_MAX_FEES.STAKE_LP_TOKEN : TRANSACTION_MAX_FEES.WITHDRAW;
+    const maxGas =
+      methodName === 'stake'
+        ? TRANSACTION_MAX_FEES.STAKE_LP_TOKEN + TRANSACTION_MAX_FEES.TRANSFER_ERC20
+        : TRANSACTION_MAX_FEES.WITHDRAW;
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract

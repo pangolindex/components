@@ -226,9 +226,9 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
         </Box>
         <Box display="grid" bgColor="color3" borderRadius="4px" padding="20px" style={{ gridGap: '20px' }}>
           <Box display="flex" justifyContent="space-between">
-            <Box>
+            <Box maxWidth="150px" style={{ overflow: 'hidden' }}>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">${(dollerWorth ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</Text>
+              <Text color="text1">{dollerWorth ? `$ ${numeral(dollerWorth).format('0.00a')}` : '-'}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>

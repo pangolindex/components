@@ -33,7 +33,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const PendingContent = <Loader size={100} />;
+  const PendingContent = <Loader size={100} label={t('sarStake.staking')} />;
 
   const token0 = tokens[0];
   const token1 = tokens[1];

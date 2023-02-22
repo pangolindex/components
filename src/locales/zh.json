@@ -611,7 +611,8 @@
     "seeDetails": "SEE DETAILS",
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
-    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!"
+    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
+    "total": "总计（质押 + 奖励）"
   },
   "error": {
     "missingCurrencyAmounts": "缺少货币金额",
@@ -716,6 +717,7 @@
     "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
+    "poweredBy": "Powered by",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",

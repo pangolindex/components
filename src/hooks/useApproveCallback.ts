@@ -7,8 +7,10 @@ import { useCallback, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, ZERO_ADDRESS } from 'src/constants';
 import { useTokenAllowance } from 'src/data/Allowances';
+import { useHederaTotalSupply } from 'src/data/TotalSupply';
 import { Field } from 'src/state/pswap/actions';
 import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransactions/hooks';
+import { useIsApprovingInfinite } from 'src/state/puser/hooks';
 import { fetchHederaPGLToken } from 'src/state/pwallet/hooks';
 import { calculateGasMargin, waitForTransaction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
@@ -53,6 +55,8 @@ export function useApproveCallback(
   const tokenContract = useTokenContract(token?.address);
   const addTransaction = useTransactionAdder();
 
+  const approvingInfinite = useIsApprovingInfinite();
+
   const approve = useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
       console.error('approve was called unnecessarily');
@@ -78,21 +82,17 @@ export function useApproveCallback(
       return;
     }
 
-    let useExact = false;
-    const estimatedGas = await tokenContract.estimateGas.approve(spender, MaxUint256).catch(() => {
+    let approveAmount = approvingInfinite ? MaxUint256.toString() : amountToApprove.raw.toString();
+    const estimatedGas = await tokenContract.estimateGas.approve(spender, approveAmount).catch(() => {
       // general fallback for tokens who restrict approval amounts
-      useExact = true;
+      approveAmount = amountToApprove.raw.toString();
       return tokenContract.estimateGas.approve(spender, amountToApprove.raw.toString());
     });
 
     try {
-      const response: TransactionResponse = await tokenContract.approve(
-        spender,
-        useExact ? amountToApprove.raw.toString() : MaxUint256,
-        {
-          gasLimit: calculateGasMargin(estimatedGas),
-        },
-      );
+      const response: TransactionResponse = await tokenContract.approve(spender, approveAmount, {
+        gasLimit: calculateGasMargin(estimatedGas),
+      });
       await waitForTransaction(response, 1);
       addTransaction(response, {
         summary: 'Approve ' + amountToApprove.currency.symbol,
@@ -102,7 +102,7 @@ export function useApproveCallback(
       console.debug('Failed to approve token', error);
       throw error;
     }
-  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction]);
+  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction, approvingInfinite]);
 
   return [approvalState, approve];
 }
@@ -131,6 +131,8 @@ export function useHederaApproveCallback(
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender);
   const pendingApproval = useHasPendingApproval(token?.address, spender);
 
+  const tokenSupply = useHederaTotalSupply(token);
+
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN;
@@ -152,12 +154,14 @@ export function useHederaApproveCallback(
 
   const addTransaction = useTransactionAdder();
 
+  const approvingInfinite = useIsApprovingInfinite();
+
   const approve = useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
       console.error('approve was called unnecessarily');
       return;
     }
-    if (!token) {
+    if (!token || !tokenSupply) {
       console.error('no token');
       return;
     }
@@ -174,13 +178,17 @@ export function useHederaApproveCallback(
 
     const ONE_TOKEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(amountToApprove?.currency?.decimals));
 
+    // here we add ONE_TOKEN because amountToApprove constantly increasing every second
+    // so by adding more amount, approved amount will be valid for transaction
+    const _amount = BigNumber.from(ONE_TOKEN?.toString()).add(amountToApprove?.raw?.toString()).toString();
+
+    const approveAmount = approvingInfinite ? tokenSupply?.raw.toString() : _amount;
+
     try {
       const response = await hederaFn.spendingApproval({
         tokenAddress: token.address,
         spender: spender,
-        // here we add ONE_TOKEN because amountToApprove constantly increasing every second
-        // so by adding more amount, approved amount will be valid for transaction
-        amount: BigNumber.from(ONE_TOKEN?.toString()).add(amountToApprove?.raw?.toString()).toString(),
+        amount: approveAmount,
         account,
       });
 
@@ -194,7 +202,7 @@ export function useHederaApproveCallback(
       console.debug('Failed to approve token', error);
       throw error;
     }
-  }, [approvalState, token, amountToApprove, spender, addTransaction]);
+  }, [approvalState, token, amountToApprove, spender, addTransaction, approvingInfinite, tokenSupply]);
 
   return [approvalState, approve];
 }

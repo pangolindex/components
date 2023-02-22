@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
-import { useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
+import { useNearToken, useNearTokens, useToken, useTokens, useTokensViaSubGraph } from './Tokens';
 import {
   useApproveCallback,
   useApproveCallbackFromHederaTrade,
@@ -248,7 +248,7 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
 };
 
 export type UseTokensHookType = {
-  [chainId in ChainId]: typeof useTokens | typeof useNearTokens | typeof useDummyHook;
+  [chainId in ChainId]: typeof useTokens | typeof useNearTokens | typeof useTokensViaSubGraph | typeof useDummyHook;
 };
 
 export const useTokensHook: UseTokensHookType = {
@@ -258,8 +258,8 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.COSTON]: useTokens,
   [ChainId.SONGBIRD]: useTokens,
   [ChainId.FLARE_MAINNET]: useTokens,
-  [ChainId.HEDERA_TESTNET]: useTokens,
-  [ChainId.HEDERA_MAINNET]: useTokens,
+  [ChainId.HEDERA_TESTNET]: useTokensViaSubGraph,
+  [ChainId.HEDERA_MAINNET]: useTokensViaSubGraph,
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
   [ChainId.COSTON2]: useTokens,

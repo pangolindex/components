@@ -1,4 +1,4 @@
-import { CHAINS, ChefType, Price } from '@pangolindex/sdk';
+import { CHAINS, ChefType } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
-import { usePangoChefExtraFarmApr, useUserPangoChefAPR, useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
+import { usePangoChefExtraFarmApr, useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
+import { useUserPangoChefAPRHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetFarmApr, useGetRewardTokens } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -40,7 +41,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
 
   // old calculation, it's using if the userRewardRate is not broken
   //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
-
+  const useUserPangoChefAPR = useUserPangoChefAPRHook[chainId];
   const _userApr = useUserPangoChefAPR(cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined);
 
   const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
@@ -49,30 +50,23 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
     cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined,
   );
 
-  const pairPrice =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.pairPrice : new Price(token0, token1, '1', '0'); // dummy value, this don't use tokens
-
-  const poolBalance =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.valueVariables?.balance : BigNumber.from(0);
+  const poolBalance = BigNumber.from(stakingInfo.totalStakedAmount.raw.toString());
   const poolRewardRate =
     cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.poolRewardRate : BigNumber.from(0);
 
-  const userBalance =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.userValueVariables?.balance : BigNumber.from(0);
+  const userBalance = BigNumber.from(stakingInfo.stakedAmount.raw.toString());
 
   const extraFarmAPR = usePangoChefExtraFarmApr(
     rewardTokens,
     poolRewardRate,
-    stakingInfo?.rewardTokensMultiplier,
     poolBalance,
-    pairPrice,
+    stakingInfo as PangoChefInfo,
   );
   const extraUserAPR = usePangoChefExtraFarmApr(
     rewardTokens,
     userRewardRate,
-    stakingInfo?.rewardTokensMultiplier,
     userBalance,
-    pairPrice,
+    stakingInfo as PangoChefInfo,
   );
 
   const getAPRs = () => {
