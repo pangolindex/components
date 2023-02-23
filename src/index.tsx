@@ -6,13 +6,13 @@ import { Trans, useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
-import { useTokenAllowance } from 'src/data/Allowances';
 import { usePair } from 'src/data/Reserves';
 import { useTotalSupply } from 'src/data/TotalSupply';
 import { useTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
-import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import { useApproveCallbackHook, useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import { ApprovalState } from 'src/hooks/useApproveCallback';
 import {
   useContract,
   useMulticallContract,
@@ -59,9 +59,11 @@ import {
   LimitOrderInfo,
   useDerivedSwapInfo,
   useGelatoLimitOrderDetail,
-  useGelatoLimitOrderList,
   useSwapActionHandlers,
 } from 'src/state/pswap/hooks';
+
+import { useGelatoLimitOrdersListHook } from 'src/state/pswap/multiChainsHooks';
+
 import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransactions/hooks';
 import TransactionUpdater from 'src/state/ptransactions/updater';
 import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks';
@@ -145,7 +147,6 @@ export function PangolinProvider({
 }
 
 export * from './constants';
-export * from './constants/lists';
 export * from './connectors';
 export * from './components';
 export * from './state/papplication/hooks';
@@ -167,7 +168,7 @@ export type {
 export { SelectTokenDrawer };
 
 // galeto hooks
-export { useGelatoLimitOrderDetail, useGelatoLimitOrderList };
+export { useGelatoLimitOrderDetail, useGelatoLimitOrdersListHook };
 
 // hooks
 export {
@@ -199,7 +200,6 @@ export {
   useUSDCPriceHook,
   useParsedQueryString,
   useMixpanel,
-  useTokenAllowance,
   useCoinGeckoTokenData,
   useDebounce,
   useOnClickOutside,
@@ -212,6 +212,7 @@ export {
   usePairContract,
   useTokenContract,
   useContract,
+  useApproveCallbackHook,
 };
 
 // misc
@@ -240,4 +241,5 @@ export {
   parseENSAddress,
   listVersionLabel,
   splitQuery,
+  ApprovalState as TransactionApprovalState,
 };
