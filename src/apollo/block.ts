@@ -50,15 +50,15 @@ export const GET_LAST_BLOCK = gql`
   }
 `;
 
-export interface subgraphBlock {
+export interface SubgraphBlock {
   number: number;
   hash: string;
   timestamp: number;
 }
 
-export interface subgraphLastBlockResponse {
+export interface SubgraphLastBlockResponse {
   _meta: {
-    block: subgraphBlock;
+    block: SubgraphBlock;
   };
 }
 
@@ -72,7 +72,7 @@ export function useLastSubgraphBlock() {
 
       if (!client) return undefined;
 
-      const data = await client.request<subgraphLastBlockResponse>(GET_LAST_BLOCK);
+      const data = await client.request<SubgraphLastBlockResponse>(GET_LAST_BLOCK);
       return data._meta.block;
     },
     {
