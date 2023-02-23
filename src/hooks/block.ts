@@ -1,8 +1,7 @@
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { GET_LAST_BLOCK } from 'src/apollo/block';
-import { blockClientsMapping } from 'src/apollo/client';
+import { useLastSubgraphBlock } from 'src/apollo/block';
 import { useChainId } from '.';
 
 /**
@@ -39,33 +38,9 @@ export function useGetLastBlockTimestamp() {
  * @returns timestamp of last block
  */
 export function useGetLastBlockTimestampViaSubgraph() {
-  const chainId = useChainId();
+  const block = useLastSubgraphBlock();
 
-  const { data: timestamp } = useQuery(
-    ['get-block-timestamp-subgraph-lastest', chainId],
-    async () => {
-      const client = blockClientsMapping[chainId];
-
-      if (!client) return undefined;
-
-      const data: {
-        _meta: {
-          block: {
-            number: number;
-            hash: string;
-            timestamp: number;
-          };
-        };
-      } = await client.request(GET_LAST_BLOCK);
-      return data._meta.block.timestamp;
-    },
-    {
-      refetchInterval: 1000 * 60, //1 minute
-      staleTime: 1000 * 60, //1 minute
-    },
-  );
-
-  return timestamp;
+  return block?.timestamp;
 }
 
 export type useGetLastBlockTimestampType = {
