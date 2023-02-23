@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { BIGNUMBER_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useGetLastBlockTimestampHook } from 'src/hooks/block';
+import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useSarStakingContract } from 'src/hooks/useContract';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
@@ -410,7 +410,7 @@ export function useSarPositions() {
   //get all NFTs URIs from the positions
   const nftsURIsState = useSingleContractMultipleData(sarStakingContract, 'tokenURI', nftsIndexes ?? []);
 
-  const useGetBlockTimestamp = useGetLastBlockTimestampHook[chainId];
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
   const blockTimestamp = useGetBlockTimestamp();
 
   return useMemo(() => {

@@ -62,6 +62,10 @@ export interface SubgraphLastBlockResponse {
   };
 }
 
+/**
+ * This hook get the block number, hash and timestamp of the last block via subgraph
+ * @returns return simple data of the block
+ */
 export function useLastSubgraphBlock() {
   const chainId = useChainId();
 

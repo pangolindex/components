@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useHederaTokenAssociated } from 'src/hooks/Tokens';
-import { useGetLastBlockTimestampHook } from 'src/hooks/block';
+import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useHederaSarNFTContract, useSarStakingContract } from 'src/hooks/useContract';
 import { existSarContract } from 'src/utils';
@@ -37,7 +37,7 @@ function useHederaSarRent(positionId: string | undefined) {
 
   const chainId = useChainId();
 
-  const useGetBlockTimestamp = useGetLastBlockTimestampHook[chainId];
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
   const blockTimestamp = useGetBlockTimestamp();
 
   const positionState = useSingleCallResult(
@@ -507,7 +507,7 @@ export function useHederaSarPositions() {
     nftsIndexes ?? [],
   );
 
-  const useGetBlockTimestamp = useGetLastBlockTimestampHook[chainId];
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
   const blockTimestamp = useGetBlockTimestamp();
 
   return useMemo(() => {

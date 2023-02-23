@@ -26,7 +26,7 @@ import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { useTokens } from 'src/hooks/Tokens';
-import { useGetLastBlockTimestampHook } from 'src/hooks/block';
+import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { useTokensCurrencyPriceHook } from 'src/hooks/multiChainsHooks';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
@@ -46,7 +46,7 @@ export function usePangoChefInfos() {
   const chainId = useChainId();
   const pangoChefContract = usePangoChefContract();
 
-  const useGetBlockTimestamp = useGetLastBlockTimestampHook[chainId];
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
   const blockTime = useGetBlockTimestamp();
 
   const png = PNG[chainId];
@@ -448,7 +448,7 @@ export function useHederaPangoChefInfos() {
   const chainId = useChainId();
   const pangoChefContract = usePangoChefContract();
 
-  const useGetBlockTimestamp = useGetLastBlockTimestampHook[chainId];
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
   const blockTime = useGetBlockTimestamp();
 
   const png = PNG[chainId];
@@ -861,7 +861,7 @@ export function useGetPangoChefInfosViaSubgraph() {
   const [shouldCreateStorage] = useHederaPangochefContractCreateCallback();
   const pangoChefContract = usePangoChefContract();
 
-  const useGetBlockTimestamp = useGetLastBlockTimestampHook[chainId];
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
   const blockTime = useGetBlockTimestamp();
 
   const results = useSubgraphFarms();
