@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import {
@@ -45,6 +46,7 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
   [ChainId.COSTON2]: useTokenBalances,
   [ChainId.EVMOS_TESTNET]: useTokenBalances,
+  [ChainId.EVMOS_MAINNET]: useTokenBalances,
   // TODO: We need to check following chains
   [ChainId.ETHEREUM]: useTokenBalances,
   [ChainId.POLYGON]: useTokenBalances,
@@ -99,6 +101,7 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
   [ChainId.EVMOS_TESTNET]: useTokenBalance,
+  [ChainId.EVMOS_MAINNET]: useTokenBalance,
 };
 
 export type UsePairBalanceHookType = {
@@ -118,6 +121,7 @@ export const usePairBalanceHook: UsePairBalanceHookType = {
   [ChainId.NEAR_TESTNET]: useNearPairBalance,
   [ChainId.COSTON2]: useEVMPairBalance,
   [ChainId.EVMOS_TESTNET]: useEVMPairBalance,
+  [ChainId.EVMOS_MAINNET]: useEVMPairBalance,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useEVMPairBalance,
   [ChainId.POLYGON]: useEVMPairBalance,
@@ -169,6 +173,7 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.MOONBEAM]: useETHBalances,
   [ChainId.OP]: useETHBalances,
   [ChainId.EVMOS_TESTNET]: useETHBalances,
+  [ChainId.EVMOS_MAINNET]: useETHBalances,
 };
 
 export type UseAddLiquidityHookType = {
@@ -188,6 +193,7 @@ export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.NEAR_TESTNET]: useNearAddLiquidity,
   [ChainId.COSTON2]: useAddLiquidity,
   [ChainId.EVMOS_TESTNET]: useAddLiquidity,
+  [ChainId.EVMOS_MAINNET]: useAddLiquidity,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useAddLiquidity,
   [ChainId.POLYGON]: useAddLiquidity,
@@ -223,6 +229,7 @@ export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
   [ChainId.NEAR_TESTNET]: useNearRemoveLiquidity,
   [ChainId.COSTON2]: useRemoveLiquidity,
   [ChainId.EVMOS_TESTNET]: useRemoveLiquidity,
+  [ChainId.EVMOS_MAINNET]: useRemoveLiquidity,
   // TODO: Remove these hooks later on
   [ChainId.ETHEREUM]: useRemoveLiquidity,
   [ChainId.POLYGON]: useRemoveLiquidity,
@@ -262,6 +269,7 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.NEAR_TESTNET]: useGetNearUserLP,
   [ChainId.COSTON2]: useGetUserLP,
   [ChainId.EVMOS_TESTNET]: useGetUserLP,
+  [ChainId.EVMOS_MAINNET]: useGetUserLP,
   // TODO: Remove these hooks later on
   [ChainId.ETHEREUM]: useGetUserLP,
   [ChainId.POLYGON]: useGetUserLP,
@@ -305,6 +313,7 @@ export const useCreatePairHook: UseCreatePairHookType = {
   [ChainId.NEAR_TESTNET]: useNearCreatePair,
   [ChainId.COSTON2]: useDummyCreatePair,
   [ChainId.EVMOS_TESTNET]: useDummyCreatePair,
+  [ChainId.EVMOS_MAINNET]: useDummyCreatePair,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -321,3 +330,4 @@ export const useCreatePairHook: UseCreatePairHookType = {
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
 };
+/* eslint-enable max-lines */

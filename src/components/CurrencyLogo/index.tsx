@@ -40,7 +40,7 @@ export default function CurrencyLogo({
       currency === CAVAX[ChainId.NEAR_TESTNET] ||
       currency === CAVAX[ChainId.NEAR_MAINNET] ||
       currency === CAVAX[ChainId.COSTON2] ||
-      currency === CAVAX[ChainId.EVMOS_TESTNET]
+      currency === CAVAX[ChainId.EVMOS_TESTNET || currency === CAVAX[ChainId.EVMOS_MAINNET]]
     )
       return [];
     if (currency instanceof Token || !!(currency as Token).address) {
@@ -68,7 +68,7 @@ export default function CurrencyLogo({
     return <img src={HederaLogo} width={`${size}px`} height={`${size}px`} className={className} />;
   } else if (deepEqual(currency, CAVAX[ChainId.COSTON2])) {
     return <CflrLogo size={`${size}px`} className={className} />;
-  } else if (deepEqual(currency, CAVAX[ChainId.EVMOS_TESTNET])) {
+  } else if (deepEqual(currency, CAVAX[ChainId.EVMOS_TESTNET]) || deepEqual(currency, CAVAX[ChainId.EVMOS_MAINNET])) {
     return <img src={EvmosLogo} width={`${size}px`} height={`${size}px`} className={className} />;
   }
   return (

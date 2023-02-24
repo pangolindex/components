@@ -1,11 +1,11 @@
-import { Currency } from '@pangolindex/sdk';
+import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
 import { ChevronDown, Plus } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, CurrencyLogo, Text } from 'src/components';
 import { PairState, usePair } from 'src/data/Reserves';
-import { usePangolinWeb3 } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { CurrencySelectWrapper, LightCard } from '../PoolImportModal/PoolImport/styleds';
 import { ConfirmButton } from './styleds';
 
@@ -28,6 +28,7 @@ interface Props {
 }
 
 const SearchTokenSection = ({ currency0, currency1, onTokenClick, onClick }: Props) => {
+  const chainId = useChainId();
   const { account } = usePangolinWeb3();
   const theme = useContext(ThemeContext);
 
@@ -51,6 +52,19 @@ const SearchTokenSection = ({ currency0, currency1, onTokenClick, onClick }: Pro
         <LightCard>
           <Text textAlign="center" color="text1" fontSize={[14, 12]}>
             {t('poolFinder.selectToken')}
+          </Text>
+        </LightCard>
+      );
+    }
+
+    if (
+      (currency0 === CAVAX[chainId] && currencyEquals(WAVAX[chainId], currency1)) ||
+      (currencyEquals(WAVAX[chainId], currency0) && currency1 === CAVAX[chainId])
+    ) {
+      return (
+        <LightCard>
+          <Text textAlign="center" color="text1" fontSize={[14, 12]}>
+            {t('poolFinder.invalidPair')}
           </Text>
         </LightCard>
       );

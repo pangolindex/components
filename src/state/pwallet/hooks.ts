@@ -540,7 +540,7 @@ export function useAddLiquidity() {
 
       addTransaction(response, {
         summary:
-          'Add ' +
+          'Added ' +
           parsedAmounts[AddField.CURRENCY_A]?.toSignificant(3) +
           ' ' +
           currencies[AddField.CURRENCY_A]?.symbol +
@@ -756,7 +756,7 @@ export function useHederaAddLiquidity() {
 
       addTransaction(response, {
         summary:
-          'Add ' +
+          'Added ' +
           parsedAmounts[AddField.CURRENCY_A]?.toSignificant(3) +
           ' ' +
           currencies[AddField.CURRENCY_A]?.symbol +
@@ -945,7 +945,7 @@ export function useRemoveLiquidity(pair?: Pair | null | undefined) {
         await waitForTransaction(response, 5);
         addTransaction(response, {
           summary:
-            t('removeLiquidity.remove') +
+            'Removed' +
             ' ' +
             parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
             ' ' +
@@ -1184,7 +1184,7 @@ export function useHederaRemoveLiquidity(pair?: Pair | null | undefined) {
       if (response) {
         addTransaction(response, {
           summary:
-            t('removeLiquidity.remove') +
+            'Removed' +
             ' ' +
             parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
             ' ' +

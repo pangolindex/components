@@ -327,7 +327,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
             {t('earn.approve')}
           </Button>
         )}
-        <Button variant="primary" isDisabled={!!_error} onClick={onCompound}>
+        <Button variant="primary" isDisabled={!!_error || approval !== ApprovalState.APPROVED} onClick={onCompound}>
           {_error ?? `${t('sarStakeMore.add')} & ${t('sarCompound.compound')}`}
         </Button>
       </Buttons>
