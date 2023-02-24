@@ -44,7 +44,7 @@ export const EvmApplicationUpdater = () => {
   const lastBlock = useLastBlock();
 
   const { data: providerBlockNumber } = useQuery(
-    ['get-block-number-provider', provider, chainId],
+    ['get-block-number-provider', chainId],
     async () => {
       try {
         if (provider) {

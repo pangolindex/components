@@ -34,6 +34,8 @@ interface RpcBlock extends Omit<Block, 'number' | 'difficulty' | 'timestamp'> {
   timestamp: string;
 }
 
+type BlockReponse = RPCResponse<RpcBlock>;
+
 /**
  * This hook return the block data from json rpc
  * @returns The block data
@@ -45,8 +47,6 @@ export function useLastBlock() {
   const { data: block } = useQuery(
     ['get-last-block-rpc', chainId],
     async () => {
-      type BlockReponse = RPCResponse<RpcBlock>;
-
       const response = await axios.post<BlockReponse>(chain.rpc_uri, {
         jsonrpc: '2.0',
         method: 'eth_getBlockByNumber',
@@ -114,7 +114,6 @@ export const useLastBlockHook: useLastBlockType = {
  */
 export function useLastBlockTimestamp() {
   const block = useLastBlock();
-
   return block?.timestamp;
 }
 
@@ -124,7 +123,6 @@ export function useLastBlockTimestamp() {
  */
 export function useLastBlockTimestampViaSubgraph() {
   const block = useLastSubgraphBlock();
-
   return block?.timestamp;
 }
 
