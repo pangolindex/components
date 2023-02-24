@@ -8,6 +8,7 @@ import { useChainId } from 'src/hooks';
 import { useAllTokens, useToken } from 'src/hooks/Tokens';
 import usePrevious from 'src/hooks/usePrevious';
 import { useSelectedListInfo } from 'src/state/plists/hooks';
+import { useAddUserToken } from 'src/state/puser/hooks';
 import { filterTokenOrChain, isAddress } from 'src/utils';
 import { Box, Text, TextInput } from '../../';
 import { useTokenComparator } from '../SearchModal/sorting';
@@ -42,6 +43,8 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
+
+  const addToken = useAddUserToken();
 
   useEffect(() => {
     if (isOpen && !lastOpen) {
@@ -108,6 +111,10 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   const onSelect = useCallback(
     (currency) => {
       onCurrencySelect(currency);
+      // workaround for now, if it's a custom token we will force add it
+      if (currency && !allTokens[currency?.address || '']) {
+        addToken(currency);
+      }
       onClose();
     },
     [onCurrencySelect, onClose],
