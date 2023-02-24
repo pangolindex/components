@@ -15,9 +15,7 @@ import {
   useHederaPangoChefCompoundCallback,
   useHederaPangoChefStakeCallback,
   useHederaPangoChefWithdrawCallback,
-  useLegacyUserPangoChefAPR,
   usePangoChefInfos,
-  useUserPangoChefAPR,
 } from './hooks';
 
 export type UsePangoChefInfosHookType = {
@@ -247,39 +245,4 @@ export const useGetLockingPoolsForPoolIdHook: UseGetLockingPoolsForPoolIdHookTyp
   [ChainId.OP]: useDummyIsLockingPoolZero,
   [ChainId.EVMOS_TESTNET]: useDummyIsLockingPoolZero,
   [ChainId.EVMOS_MAINNET]: useDummyIsLockingPoolZero,
-};
-
-export type UseUserPangoChefAPRType = {
-  [chainId in ChainId]: typeof useUserPangoChefAPR | typeof useLegacyUserPangoChefAPR;
-};
-
-export const useUserPangoChefAPRHook: UseUserPangoChefAPRType = {
-  [ChainId.FUJI]: useUserPangoChefAPR,
-  [ChainId.AVALANCHE]: useUserPangoChefAPR,
-  [ChainId.WAGMI]: useUserPangoChefAPR,
-  [ChainId.COSTON]: useLegacyUserPangoChefAPR,
-  [ChainId.SONGBIRD]: useLegacyUserPangoChefAPR,
-  [ChainId.FLARE_MAINNET]: useUserPangoChefAPR,
-  [ChainId.HEDERA_TESTNET]: useUserPangoChefAPR,
-  [ChainId.HEDERA_MAINNET]: useUserPangoChefAPR,
-  [ChainId.NEAR_MAINNET]: useUserPangoChefAPR,
-  [ChainId.NEAR_TESTNET]: useUserPangoChefAPR,
-  [ChainId.COSTON2]: useUserPangoChefAPR,
-  [ChainId.ETHEREUM]: useUserPangoChefAPR,
-  [ChainId.POLYGON]: useUserPangoChefAPR,
-  [ChainId.FANTOM]: useUserPangoChefAPR,
-  [ChainId.XDAI]: useUserPangoChefAPR,
-  [ChainId.BSC]: useUserPangoChefAPR,
-  [ChainId.ARBITRUM]: useUserPangoChefAPR,
-  [ChainId.CELO]: useUserPangoChefAPR,
-  [ChainId.OKXCHAIN]: useUserPangoChefAPR,
-  [ChainId.VELAS]: useUserPangoChefAPR,
-  [ChainId.AURORA]: useUserPangoChefAPR,
-  [ChainId.CRONOS]: useUserPangoChefAPR,
-  [ChainId.FUSE]: useUserPangoChefAPR,
-  [ChainId.MOONRIVER]: useUserPangoChefAPR,
-  [ChainId.MOONBEAM]: useUserPangoChefAPR,
-  [ChainId.OP]: useUserPangoChefAPR,
-  [ChainId.EVMOS_TESTNET]: useUserPangoChefAPR,
-  [ChainId.EVMOS_MAINNET]: useUserPangoChefAPR,
 };

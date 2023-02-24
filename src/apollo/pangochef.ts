@@ -21,11 +21,13 @@ export interface PangoChefFarm {
   tvl: string;
   weight: string;
   tokenOrRecipientAddress: string;
+  sumOfEntryTimes: string;
   rewarder: PangochefFarmRewarder;
   // pair can be null in relayer pool case
   pair: PangochefPair | null;
   farmingPositions: {
     stakedTokenBalance: string;
+    sumOfEntryTimes: string;
   }[];
 }
 
@@ -71,6 +73,7 @@ export const GET_PANGOCHEF = gql`
         tvl
         weight
         tokenOrRecipientAddress
+        sumOfEntryTimes
         rewarder {
           id
           rewards {
@@ -111,6 +114,7 @@ export const GET_PANGOCHEF = gql`
         }
         farmingPositions(where: { user: $userAddress }) {
           stakedTokenBalance
+          sumOfEntryTimes
         }
       }
     }

@@ -6,8 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
-import { usePangoChefExtraFarmApr, useUserPangoChefRewardRate } from 'src/state/ppangoChef/hooks';
-import { useUserPangoChefAPRHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetFarmApr, useGetRewardTokens } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -39,16 +38,12 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
 
   const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
-  // old calculation, it's using if the userRewardRate is not broken
-  //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / (getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE)
-  const useUserPangoChefAPR = useUserPangoChefAPRHook[chainId];
   const _userApr = useUserPangoChefAPR(cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined);
 
   const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
 
-  const userRewardRate = useUserPangoChefRewardRate(
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined,
-  );
+  const userRewardRate =
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.userRewardRate : BigNumber.from(0);
 
   const poolBalance = BigNumber.from(stakingInfo.totalStakedAmount.raw.toString());
   const poolRewardRate =
