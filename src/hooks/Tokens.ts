@@ -314,6 +314,7 @@ export function useGetAllHederaAssociatedTokens(dependancies = [] as any[]) {
     },
     {
       keepPreviousData: true,
+      refetchInterval: 1000 * 60, // 1 minute
     },
   );
 
