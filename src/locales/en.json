@@ -384,6 +384,7 @@
     "yourFarms": "Your Farms",
     "yourPools": "Your Pools",
     "noFarms": "No farms found.",
+    "visitWebsite": "Visit Website",
     "successWithdraw": "Your liquidity removed from farm, And accrued rewards claimed!",
     "importDescription1": "With import function you can look for pools that doesn’t appear in 'Your Pools' section.",
     "importDescription2": "Just choose the underlying coins that was in your pool.",
@@ -472,7 +473,10 @@
     "executionPrice": "Execution Price",
     "seeMore": "See More",
     "seeLess": "See Less",
-    "orderPlaced": "{{ orderType }} order placed."
+    "orderPlaced": "{{ orderType }} order placed.",
+    "selectToken" : "Select Token",
+    "notFoundBalances" : "Not found balances",
+    "notFoundToken" : "Not found tokens on this chain"
   },
   "buyPage": {
     "buyAvaxInfo": "Buy AVAX with fiat from our partner Wyre.",
@@ -723,6 +727,8 @@
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "switchChain": "Switch Chain",
+      "selectChain": "Please Select Chain",
       "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
@@ -743,7 +749,9 @@
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
       "max": "MAX",
       "recipient": "Recipient",
-      "walletAddress": "Wallet Address"
+      "walletAddress": "Wallet Address",
+      "required": "Required",
+      "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
       "selected": "Selected",

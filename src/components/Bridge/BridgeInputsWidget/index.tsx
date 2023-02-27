@@ -121,9 +121,11 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
             }}
             addonLabel={
               recipient ? (
-                !isAddress(recipient, chain) && <Text color="warning">Invalid Address</Text>
+                !isAddress(recipient, chain) && (
+                  <Text color="warning">{t('bridge.bridgeInputsWidget.invalidAddress')}</Text>
+                )
               ) : (
-                <Text color="error">Required</Text>
+                <Text color="error">{t('bridge.bridgeInputsWidget.required')}</Text>
               )
             }
           />
