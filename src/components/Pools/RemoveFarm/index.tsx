@@ -1,4 +1,4 @@
-import { CHAINS, ChefType } from '@pangolindex/sdk';
+import { CHAINS, ChefType, Pair, TokenAmount } from '@pangolindex/sdk';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
@@ -45,7 +45,18 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
 
   const mixpanel = useMixpanel();
 
-  const notAssociateTokens = useGetHederaTokenNotAssociated(rewardTokens || []);
+  const dummyPair = new Pair(
+    new TokenAmount(stakingInfo?.tokens?.[0], '0'),
+    new TokenAmount(stakingInfo?.tokens?.[1], '0'),
+    chainId,
+  );
+  const lpToken = dummyPair.liquidityToken;
+
+  const associatedTokens = rewardTokens || [];
+  // we need to check the lp token too
+  // because case a user farm in non Pangolin token/Wrapped token farm and compound to this farm
+  // in compoundTo
+  const notAssociateTokens = useGetHederaTokenNotAssociated([...associatedTokens, lpToken]);
   // here we get all not associated rewards tokens
   // but we associate one token at a time
   // so we get first token from array and ask user to associate
