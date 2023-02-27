@@ -1,3 +1,4 @@
+import { Pair } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { Modal } from 'src/components';
@@ -21,8 +22,13 @@ const DetailModal = ({ stakingInfo, version }: DetailModalProps) => {
 
   const dispatch = useDispatch();
 
+  const pairAddress =
+    stakingInfo?.tokens?.[0] && stakingInfo?.tokens?.[1]
+      ? Pair.getAddress(stakingInfo.tokens[0], stakingInfo.tokens[1])
+      : '';
+
   useEffect(() => {
-    dispatch(resetMintState());
+    dispatch(resetMintState({ pairAddress: pairAddress }));
   }, [detailModalOpen, dispatch]);
 
   const handleOnDismiss = useCallback(() => {
