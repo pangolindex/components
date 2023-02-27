@@ -25,16 +25,34 @@ export const avalancheMininchefV2Client = new GraphQLClient(
   { headers: {} },
 );
 
-export const mininchefV2Clients = {
+export const hederaTestnetSubgraphGql = new GraphQLClient(
+  'https://hedera-test.pangolin.network/subgraphs/name/pangolin',
+  {
+    headers: {},
+  },
+);
+
+export const hederaMainnetSubgraphGql = new GraphQLClient(
+  'https://hedera-graph.pangolin.network/subgraphs/name/pangolin',
+  {
+    headers: {},
+  },
+);
+
+export const subgraphClient = {
   [ChainId.AVALANCHE]: avalancheMininchefV2Client,
   [ChainId.FUJI]: undefined,
   [ChainId.WAGMI]: undefined,
   [ChainId.COSTON]: undefined,
   [ChainId.SONGBIRD]: undefined,
-  [ChainId.HEDERA_TESTNET]: undefined,
+  [ChainId.FLARE_MAINNET]: undefined,
+  [ChainId.HEDERA_TESTNET]: hederaTestnetSubgraphGql,
+  [ChainId.HEDERA_MAINNET]: hederaMainnetSubgraphGql,
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
   [ChainId.COSTON2]: undefined,
+  [ChainId.EVMOS_TESTNET]: undefined,
+  [ChainId.EVMOS_MAINNET]: undefined,
   [ChainId.ETHEREUM]: undefined,
   [ChainId.POLYGON]: undefined,
   [ChainId.FANTOM]: undefined,

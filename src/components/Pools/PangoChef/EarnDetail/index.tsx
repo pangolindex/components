@@ -1,4 +1,4 @@
-import { TokenAmount } from '@pangolindex/sdk';
+import { ChainId, TokenAmount } from '@pangolindex/sdk';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
@@ -6,7 +6,7 @@ import { Box, Button, Drawer, Stat, Text, Tooltip } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useIsLockingPoolZero } from 'src/state/ppangoChef/hooks';
+import { useGetLockingPoolsForPoolIdHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -29,6 +29,8 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
   const [isRemoveDrawerVisible, setShowRemoveDrawer] = useState(false);
 
   const { rewardTokensAmount, rewardTokensMultiplier } = useMinichefPendingRewards(stakingInfo);
+
+  const useGetLockingPoolsForPoolId = useGetLockingPoolsForPoolIdHook[chainId];
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
@@ -61,9 +63,20 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
   const isDisabledButtons = !earnedAmount?.greaterThan(BIG_INT_ZERO);
 
   const png = PNG[chainId];
+  const lockingPairs = useGetLockingPoolsForPoolId(stakingInfo?.pid);
 
-  const lockingPoolZeroPairs = useIsLockingPoolZero();
-  const isLockingToPoolZero = lockingPoolZeroPairs.length > 0 && stakingInfo.pid === '0';
+  function getIfFarmLocked() {
+    // we check if this pool has a locked pair greater than 0
+    // in songbird and coston the only locked pool is pool 0 (pid === 0)
+    // so we check if the pid equal to 0
+    if (chainId === ChainId.SONGBIRD || chainId === ChainId.COSTON) {
+      return stakingInfo?.pid === '0' && lockingPairs.length > 0;
+    }
+    // for rest of chains, we need check the lockCount too
+    return lockingPairs.length > 0 && !!stakingInfo?.lockCount && stakingInfo?.lockCount > 0;
+  }
+
+  const isFarmLocked = getIfFarmLocked();
 
   return (
     <Wrapper>
@@ -78,7 +91,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           width="100px"
           height="30px"
           onClick={() => setShowRemoveDrawer(true)}
-          isDisabled={isLockingToPoolZero}
+          isDisabled={isFarmLocked}
         >
           {t('removeLiquidity.remove')}
         </Button>
@@ -148,8 +161,8 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           display="flex"
         >
           <Text fontSize="12px" color="text1" textAlign="center">
-            {isLockingToPoolZero
-              ? `${t('pangoChef.lockingPoolZeroWarning')}${lockingPoolZeroPairs
+            {isFarmLocked
+              ? `${t('pangoChef.lockingPoolZeroWarning')}${lockingPairs
                   .map(
                     (pair) => `${unwrappedToken(pair[0], chainId).symbol}-${unwrappedToken(pair[1], chainId).symbol}`,
                   )
@@ -163,9 +176,9 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
         <Button
           padding="10px"
           variant="outline"
-          isDisabled={isDisabledButtons || isLockingToPoolZero}
+          isDisabled={isDisabledButtons || isFarmLocked}
           onClick={() => setShowClaimDrawer(true)}
-          color={!isDisabledButtons && !isLockingToPoolZero ? theme.text10 : undefined}
+          color={!isDisabledButtons && !isFarmLocked ? theme.text10 : undefined}
         >
           {t('earnPage.claim')}
         </Button>

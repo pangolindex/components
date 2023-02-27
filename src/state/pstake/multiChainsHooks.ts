@@ -19,7 +19,9 @@ export const useMinichefStakingInfosHook: UseMinichefStakingInfosHookType = {
   [ChainId.WAGMI]: useMinichefStakingInfos,
   [ChainId.COSTON]: useDummyMinichefHook,
   [ChainId.SONGBIRD]: useDummyMinichefHook,
+  [ChainId.FLARE_MAINNET]: useDummyMinichefHook,
   [ChainId.HEDERA_TESTNET]: useDummyMinichefHook,
+  [ChainId.HEDERA_MAINNET]: useDummyMinichefHook,
   [ChainId.NEAR_MAINNET]: useDummyMinichefHook,
   [ChainId.NEAR_TESTNET]: useDummyMinichefHook,
   [ChainId.COSTON2]: useDummyMinichefHook,
@@ -38,6 +40,8 @@ export const useMinichefStakingInfosHook: UseMinichefStakingInfosHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.EVMOS_TESTNET]: useDummyMinichefHook,
+  [ChainId.EVMOS_MAINNET]: useDummyMinichefHook,
 };
 
 export type UseGetMinichefStakingInfosViaSubgraphHookType = {
@@ -53,7 +57,9 @@ export const useGetMinichefStakingInfosViaSubgraphHook: UseGetMinichefStakingInf
   [ChainId.WAGMI]: useGetMinichefStakingInfosViaSubgraph,
   [ChainId.COSTON]: useGetMinichefStakingInfosViaSubgraph,
   [ChainId.SONGBIRD]: useGetMinichefStakingInfosViaSubgraph,
+  [ChainId.FLARE_MAINNET]: useGetMinichefStakingInfosViaSubgraph,
   [ChainId.HEDERA_TESTNET]: useDummyMinichefStakingInfosViaSubgraph,
+  [ChainId.HEDERA_MAINNET]: useDummyMinichefStakingInfosViaSubgraph,
   [ChainId.NEAR_MAINNET]: useDummyMinichefStakingInfosViaSubgraph,
   [ChainId.NEAR_TESTNET]: useDummyMinichefStakingInfosViaSubgraph,
   [ChainId.COSTON2]: useGetMinichefStakingInfosViaSubgraph,
@@ -72,6 +78,8 @@ export const useGetMinichefStakingInfosViaSubgraphHook: UseGetMinichefStakingInf
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.EVMOS_TESTNET]: useGetMinichefStakingInfosViaSubgraph,
+  [ChainId.EVMOS_MAINNET]: useGetMinichefStakingInfosViaSubgraph,
 };
 
 export type UseGetAllFarmDataHookType = {
@@ -84,7 +92,9 @@ export const useGetAllFarmDataHook: UseGetAllFarmDataHookType = {
   [ChainId.WAGMI]: useGetAllFarmData,
   [ChainId.COSTON]: useGetDummyAllFarmData,
   [ChainId.SONGBIRD]: useGetDummyAllFarmData,
+  [ChainId.FLARE_MAINNET]: useGetDummyAllFarmData,
   [ChainId.HEDERA_TESTNET]: useGetDummyAllFarmData,
+  [ChainId.HEDERA_MAINNET]: useGetDummyAllFarmData,
   [ChainId.NEAR_MAINNET]: useGetDummyAllFarmData,
   [ChainId.NEAR_TESTNET]: useGetDummyAllFarmData,
   [ChainId.COSTON2]: useGetDummyAllFarmData,
@@ -103,4 +113,6 @@ export const useGetAllFarmDataHook: UseGetAllFarmDataHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.EVMOS_TESTNET]: useGetAllFarmData,
+  [ChainId.EVMOS_MAINNET]: useGetDummyAllFarmData,
 };

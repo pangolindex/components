@@ -1,42 +1,32 @@
-import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
-import React, { useContext, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Plus } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, ShowMore } from 'src/components';
-import { PNG } from 'src/constants/tokens';
-import { usePangolinWeb3 } from 'src/hooks';
-import { useAllTokens } from 'src/hooks/Tokens';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import useToggle from 'src/hooks/useToggle';
+import { CoingeckoWatchListToken, useCoinGeckoTokens } from 'src/state/pcoingecko/hooks';
 import { useSelectedCurrencyLists } from 'src/state/pwatchlists/hooks';
 import { Hidden } from 'src/theme/components';
 import CoinChart from './CoinChart';
 import CurrencyPopover from './CurrencyPopover';
 import WatchlistRow from './WatchlistRow';
-import { DesktopWatchList, GridContainer, MobileWatchList, Title, WatchListRoot } from './styleds';
+import { DesktopWatchList, GridContainer, MobileWatchList, NoDataWrapper, Title, WatchListRoot } from './styleds';
 
 export type Props = {
   coinChartVisible?: boolean;
-  visibleTradeButton?: boolean;
-  tradeLinkUrl?: string;
-  redirect?: boolean;
 };
 
-const WatchList: React.FC<Props> = ({
-  coinChartVisible = true,
-  visibleTradeButton = true,
-  tradeLinkUrl,
-  redirect = false,
-}) => {
-  const { chainId = ChainId.AVALANCHE } = usePangolinWeb3();
+const WatchList: React.FC<Props> = ({ coinChartVisible = true }) => {
   const [showMore, setShowMore] = useState(false as boolean);
-  const allTokens = useAllTokens();
+
+  const allTokens = useCoinGeckoTokens();
 
   const coins = Object.values(allTokens || {});
-  const watchListCurrencies = useSelectedCurrencyLists();
+  const selectedCurrencies = useSelectedCurrencyLists();
   const theme = useContext(ThemeContext);
-  const [selectedToken, setSelectedToken] = useState(watchListCurrencies?.[0] || ({} as Token));
+
+  const [selectedToken, setSelectedToken] = useState({} as CoingeckoWatchListToken);
 
   const [open, toggle] = useToggle(false);
   const node = useRef<HTMLDivElement>();
@@ -44,21 +34,23 @@ const WatchList: React.FC<Props> = ({
   const popoverRef = useRef<HTMLInputElement>(null);
   const referenceElement = useRef<HTMLInputElement>(null);
 
-  const currencies = useMemo(
-    () => ((watchListCurrencies || []).length === 0 ? ([PNG[chainId]] as Token[]) : (watchListCurrencies as Token[])),
-
-    [chainId, watchListCurrencies],
-  );
   useOnClickOutside(node, open ? toggle : undefined);
+
+  useEffect(() => {
+    if (selectedCurrencies && Object.keys(selectedToken)?.length === 0 && (selectedCurrencies || []).length > 0) {
+      setSelectedToken(selectedCurrencies?.[0]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrencies]);
 
   const renderWatchlistRow = (coin) => {
     return (
       <WatchlistRow
         coin={coin}
-        key={coin.address}
+        key={`${coin?.id}-${coin?.symbol}`}
         onClick={() => setSelectedToken(coin)}
-        onRemove={() => setSelectedToken(PNG[chainId])}
-        isSelected={coin?.address === selectedToken?.address}
+        isSelected={coin?.id === selectedToken?.id}
+        totalLength={(selectedCurrencies || []).length}
       />
     );
   };
@@ -66,14 +58,58 @@ const WatchList: React.FC<Props> = ({
   const renderCoinChart = () => {
     return (
       <Hidden upToSmall={true}>
-        <CoinChart
-          coin={selectedToken}
-          visibleTradeButton={visibleTradeButton}
-          tradeLinkUrl={tradeLinkUrl}
-          redirect={redirect}
-        />
+        <CoinChart coin={selectedToken} />
       </Hidden>
     );
+  };
+
+  const renderWatchListData = () => {
+    if ((selectedCurrencies || []).length > 0) {
+      return (
+        <GridContainer coinChartVisible={coinChartVisible}>
+          {/* render coin chart */}
+          {coinChartVisible && renderCoinChart()}
+          {/* render watchlist in desktop */}
+          <DesktopWatchList>
+            <Scrollbars>{(selectedCurrencies || []).map(renderWatchlistRow)}</Scrollbars>
+          </DesktopWatchList>
+          {/* render watchlist in mobile */}
+          <MobileWatchList>
+            {/* initially render only 3 tokens */}
+            {(selectedCurrencies || []).slice(0, 3).map(renderWatchlistRow)}
+            {/* if user click on more, then render other tokens */}
+            {showMore && (selectedCurrencies || []).slice(3).map(renderWatchlistRow)}
+            {/* render show more */}
+            {(selectedCurrencies || []).length > 3 && (
+              <ShowMore showMore={showMore} onToggle={() => setShowMore(!showMore)} />
+            )}
+          </MobileWatchList>
+        </GridContainer>
+      );
+    } else {
+      return (
+        <NoDataWrapper>
+          No data available!
+          <Box display="flex" alignItems="center" color="text1" justifyContent="center" mt={2}>
+            Add tokens to watchlist using{' '}
+            <Box mx={2}>
+              <Button
+                variant="primary"
+                backgroundColor="primary"
+                color="white"
+                width={'32px'}
+                height={'32px'}
+                padding="0px"
+                isDisabled
+              >
+                <Plus size={12} color={'black'} />
+              </Button>
+            </Box>
+            button!
+          </Box>
+        </NoDataWrapper>
+      );
+    }
   };
 
   return (
@@ -99,7 +135,7 @@ const WatchList: React.FC<Props> = ({
               getRef={(ref: HTMLInputElement) => ((popoverRef as any).current = ref)}
               coins={coins}
               isOpen={open}
-              onSelectCurrency={(currency: Token) => {
+              onSelectCurrency={(currency: CoingeckoWatchListToken) => {
                 setSelectedToken(currency);
                 toggle();
               }}
@@ -107,23 +143,7 @@ const WatchList: React.FC<Props> = ({
           )}
         </Box>
       </Box>
-      <GridContainer coinChartVisible={coinChartVisible}>
-        {/* render coin chart */}
-        {CHAINS[chainId]?.mainnet && coinChartVisible && renderCoinChart()}
-        {/* render watchlist in desktop */}
-        <DesktopWatchList>
-          <Scrollbars>{(currencies || []).map(renderWatchlistRow)}</Scrollbars>
-        </DesktopWatchList>
-        {/* render watchlist in mobile */}
-        <MobileWatchList>
-          {/* initially render only 3 tokens */}
-          {(currencies || []).slice(0, 3).map(renderWatchlistRow)}
-          {/* if user click on more, then render other tokens */}
-          {showMore && (currencies || []).slice(3).map(renderWatchlistRow)}
-          {/* render show more */}
-          {currencies.length > 3 && <ShowMore showMore={showMore} onToggle={() => setShowMore(!showMore)} />}
-        </MobileWatchList>
-      </GridContainer>
+      {renderWatchListData()}
     </WatchListRoot>
   );
 };

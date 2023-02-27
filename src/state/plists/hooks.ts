@@ -39,10 +39,14 @@ const EMPTY_LIST: TokenAddressMap = {
   [ChainId.WAGMI]: {},
   [ChainId.COSTON]: {},
   [ChainId.SONGBIRD]: {},
+  [ChainId.FLARE_MAINNET]: {},
   [ChainId.HEDERA_TESTNET]: {},
+  [ChainId.HEDERA_MAINNET]: {},
   [ChainId.NEAR_MAINNET]: {},
   [ChainId.NEAR_TESTNET]: {},
   [ChainId.COSTON2]: {},
+  [ChainId.EVMOS_TESTNET]: {},
+  [ChainId.EVMOS_MAINNET]: {},
   [ChainId.ETHEREUM]: {},
   [ChainId.POLYGON]: {},
   [ChainId.FANTOM]: {},
@@ -100,7 +104,7 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
 export function useTokenList(urls: string[] | undefined): TokenAddressMap {
   const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
 
-  const tokenList = {} as { [chainId: string]: { [tokenAddress: string]: WrappedTokenInfo } };
+  const tokenList = useMemo(() => ({} as { [chainId: string]: { [tokenAddress: string]: WrappedTokenInfo } }), []);
   return useMemo(() => {
     ([] as string[]).concat(urls || []).forEach((url) => {
       const current = lists[url]?.current;
@@ -125,9 +129,8 @@ export function useTokenList(urls: string[] | undefined): TokenAddressMap {
 }
 
 export function useSelectedListUrl(): string[] | undefined {
-  return useSelector<AppState['plists']['selectedListUrl']>((state) =>
-    ([] as string[]).concat(state?.plists?.selectedListUrl || []),
-  );
+  const selectedUrls = useSelector<AppState['plists']['selectedListUrl']>((state) => state?.plists?.selectedListUrl);
+  return useMemo(() => ([] as string[]).concat(selectedUrls || []), [selectedUrls]);
 }
 
 export function useSelectedTokenList(): TokenAddressMap {

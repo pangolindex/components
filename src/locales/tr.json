@@ -17,9 +17,9 @@
     "pngBreakDown": "{{ symbol }} dağılımınız",
     "balance": "Bakiye: ",
     "unclaimed": "Talep edilmemiş: ",
-    "pngPrice": "{{ symbol }} Fiyatı:",
+    "tokenPrice": "{{ symbol }} Fiyatı:",
     "pngCirculation": "Dolaşan {{ symbol }} Arz:",
-    "totalSupply": "Toplam Arz",
+    "totalSupply": "Toplam Arz:",
     "makeSureURLWarning": "URL'nin bu olduğundan emin olun:",
     "alwaysMakeSureWarning": "Her zaman URL'nin bu olduğundan emin olun:",
     "bookmarkIt": "güvenliğiniz için yer imlerine ekleyin.",
@@ -387,7 +387,8 @@
     "importDescription1": "İçe aktarma işleviyle 'Havuzlarınız' bölümünde görünmeyen havuzları arayabilirsiniz.",
     "importDescription2": "Havuzunuzda bulunan temel madeni paraları seçin.",
     "createPairDescription": "Oluşturma işleviyle yeni bir çift oluşturabilirsiniz. Sadece bir çift oluşturmak istediğiniz paraları arayın ve sistem ya Pangolin'de varsa havuzu bulur ya da yoksa yepyeni bir tane oluşturur.",
-    "addLiquidityDescription": "Likidite ekle işlevi ile bir çifte likidite eklersiniz. Sadece likidite eklemek istediğiniz paraları arayın ve sistem Pangolin'de varsa havuzu bulsun veya yoksa yeni bir tane oluşturun."
+    "addLiquidityDescription": "Likidite ekle işlevi ile bir çifte likidite eklersiniz. Sadece likidite eklemek istediğiniz paraları arayın ve sistem Pangolin'de varsa havuzu bulsun veya yoksa yeni bir tane oluşturun.",
+    "createStorageContract": "Hedera'da, tüm akıllı sözleşmelerin defterdeki alanı kullanmak için ücret ödemesi gerekir. Bunlar depolama ücretleri ve otomatik yenileme ücretleri. Farm yapmak için bir Depolama sözleşmesi oluşturmanız gerekecek. depolama olacak ücretsiz, ancak gelecekte otomatik yenileme ücreti ödemeniz gerekecek. Bunlar yaklaşık 2 sent. yani biz Herhangi bir sorun yaşamadığınızdan emin olmak için HBAR'da her zaman cüzdanınızda 1 ABD doları bulundurmanızı öneririz."
   },
   "poolFinder": {
     "connectToFind": "Havuzları bulmak için bir cüzdan bağlayın",
@@ -610,7 +611,8 @@
     "seeDetails": "DETAYLARI GÖR",
     "stake": "STAKE ET",
     "earn": "{{symbol}} Kazan",
-    "stakeAndEarn": "{{ pngSymbol }}'lerinizi stake edin ve ödüller kazanın!"
+    "stakeAndEarn": "{{ pngSymbol }}'lerinizi stake edin ve ödüller kazanın!",
+    "total": "Toplam (stake edilen + ödüller)"
   },
   "error": {
     "missingCurrencyAmounts": "Eksik para birimi tutarları",
@@ -699,7 +701,7 @@
   "pangoChef": {
     "claimWarning1": "Likiditenizi çekmeden talep ettiğinizde madencilik havuzunda kalır.",
     "claimWarning2": "Ödüllerinizi talep etmek, APR'nizi 0'a düşürür. Bunun yerine birleştirmeyi seçebilirsiniz.",
-    "compoundWarning": "{{ token0 }}-{{ token1 }} çiftliği için ödüllerinizi birleştirmek, ödüllerinizi {{ token0 }}-{{ token1 }} çiftliğine yatırır. {{ currency }} 'a eşit değer eklemeniz gerekir. jeton, tahakkuk eden {{ png }} ödüllerinize.",
+    "compoundWarning": "{{ token0 }}-{{ token1 }} çiftliği için ödüllerinizi birleştirmek, ödüllerinizi {{ stakeToken0 }}-{{ stakeToken1 }} çiftliğine yatırır. {{ compoundToken }} 'a eşit değer eklemeniz gerekir. jeton, tahakkuk eden {{ png }} ödüllerinize.",
     "compoundAmountWarning": "Bileşik için {{ amount }} {{ symbol }} eklemeniz gerekiyor. Lütfen Bileşik oluşturmanın APR'nizi biraz azaltabileceğini unutmayın.",
     "compoundAmountWarning2": "Bu havuzun ödüllerini alana kadar {{ token0 }} {{ token1 }} havuzunuzu kilitleyeceğinize dikkat edin.",
     "highVolalityWarning": "Çok erken, birkaç saat sonra deneyin",
@@ -715,6 +717,7 @@
     "noRoute": "Bu çift için geçerli bir rota bulunamadı.",
     "activeTransfers": "Aktif Transferler ({{ number }})",
     "historicalTransfers": "Geçmiş Transferler ({{ number }})",
+    "poweredBy": "Powered by",
     "bridgeCard": {
       "advancedOptions": "Gelişmiş Seçenekler",
       "title": "Cross Chain",

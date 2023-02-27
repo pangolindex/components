@@ -6,7 +6,7 @@ import BridgeInputsWidget from '.';
 
 export default {
   component: BridgeInputsWidget,
-  title: 'Components/Bridge/BridgeInputsWidget',
+  title: 'DeFi Primitives/Bridge/BridgeInputsWidget',
   parameters: {
     docs: {
       description: {

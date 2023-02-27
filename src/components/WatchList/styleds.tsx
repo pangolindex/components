@@ -73,7 +73,7 @@ export const DeleteButton = styled.button`
   color: ${({ theme }) => theme.text1};
   cursor: pointer;
   display: block;
-  height: 64px;
+  height: 45px;
   width: 100%;
   position: absolute;
 `;
@@ -107,5 +107,25 @@ export const Title = styled(Text)`
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     font-size: 24px
+  `};
+`;
+
+export const NoDataWrapper = styled(Box)`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  flex: 1;
+  min-width: 280px;
+  max-width: 400px;
+  color: ${({ theme }) => theme.text1};
+  margin: auto;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: initial;
+    margin-right: auto;
+    margin-left: auto;
+    flex:0;
   `};
 `;

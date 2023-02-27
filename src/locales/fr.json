@@ -17,9 +17,9 @@
     "pngBreakDown": "Votre répartition {{ symbol }}",
     "balance": "Balance: ",
     "unclaimed": "Non réclamé: ",
-    "pngPrice": "Prix {{ symbol }}",
+    "tokenPrice": "Prix {{ symbol }}",
     "pngCirculation": "{{ symbol }} en circulation:",
-    "totalSupply": "Offre Totale",
+    "totalSupply": "Offre Totale:",
     "makeSureURLWarning": "Assurez-vous que l'URL est",
     "alwaysMakeSureWarning": "Assurez-vous toujours que l'URL est",
     "bookmarkIt": "mettez-le en favori pour être sûr.",
@@ -388,7 +388,8 @@
     "importDescription1": "Avec la fonction d'importation, vous pouvez rechercher des pools qui n'apparaissent pas dans la section 'Vos pools'.",
     "importDescription2": "Choisissez simplement les pièces sous-jacentes qui se trouvaient dans votre pool.",
     "createPairDescription": "Avec la fonction de création, vous pouvez créer une nouvelle paire. Il vous suffit de rechercher les pièces pour lesquelles vous souhaitez créer une paire et le système trouvera le pool s'il existe sur Pangolin ou en créera un tout nouveau si ce n'est pas le cas.",
-    "addLiquidityDescription": "Avec la fonction d'ajout de liquidité, vous ajoutez de la liquidité à une paire. Recherchez simplement les pièces auxquelles vous souhaitez ajouter de la liquidité et le système trouvera le pool s'il existe dans Pangolin ou en créera un nouveau s'il n'existe pas."
+    "addLiquidityDescription": "Avec la fonction d'ajout de liquidité, vous ajoutez de la liquidité à une paire. Recherchez simplement les pièces auxquelles vous souhaitez ajouter de la liquidité et le système trouvera le pool s'il existe dans Pangolin ou en créera un nouveau s'il n'existe pas.",
+    "createStorageContract": "Sur Hedera, tous les contrats intelligents doivent payer des frais pour l'utilisation de l'espace sur le grand livre. Ce sont des frais de stockage et les frais de renouvellement automatique. Vous devrez créer un contrat de stockage pour cultiver. Le stockage sera gratuit, mais à l'avenir, vous devrez payer des frais de renouvellement automatique. Ce sont environ 2 centimes. Alors on recommande de conserver 1 $ sur HBAR dans votre portefeuille à tout moment pour vous assurer de ne rencontrer aucun problème."
   },
   "poolFinder": {
     "connectToFind": "Se connecter à un portefeuille pour trouver des pools",
@@ -611,7 +612,8 @@
     "seeDetails": "SEE DETAILS",
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
-    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!"
+    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
+    "total": "Total (stake + récompenses)"
   },
   "error": {
     "missingCurrencyAmounts": "Montants en devise manquants",
@@ -700,7 +702,7 @@
   "pangoChef": {
     "claimWarning1": "Lorsque vous réclamez sans retirer votre liquidité reste dans le pool de minage.",
     "claimWarning2": "Réclamer vos récompenses fera tomber votre APR à 0. À la place, vous pouvez choisir de composer.",
-    "compoundWarning": "En combinant vos récompenses pour la ferme {{ token0 }}-{{ token1 }}, vos récompenses seront mises en jeu dans la ferme {{ token0 }}-{{ token1 }}. Vous devez ajouter une valeur égale de {{ currency }}token à vos récompenses {{ png }} accumulées.",
+    "compoundWarning": "En combinant vos récompenses pour la ferme {{ token0 }}-{{ token1 }}, vos récompenses seront mises en jeu dans la ferme {{ stakeToken0 }}-{{ stakeToken1 }}. Vous devez ajouter une valeur égale de {{ compoundToken }} token à vos récompenses {{ png }} accumulées.",
     "compoundAmountWarning": "Vous devez ajouter {{ amount }} {{ symbol }} au composé. Veuillez noter que la capitalisation peut légèrement diminuer votre APR.",
     "compoundAmountWarning2": "Faites attention que vous verrouillerez votre pool de {{ token0 }} {{ token1 }} jusqu'à ce que vous réclamiez les récompenses de ce pool.",
     "highVolalityWarning": "Trop tôt, essayez dans quelques heures",
@@ -716,6 +718,7 @@
     "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
+    "poweredBy": "Powered by",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",

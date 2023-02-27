@@ -3,10 +3,10 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { CHAINS, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import isEqual from 'lodash.isequal';
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { mininchefV2Clients } from 'src/apollo/client';
+import { subgraphClient } from 'src/apollo/client';
 import { GET_MINICHEF } from 'src/apollo/minichef';
 import {
   BIG_INT_SECONDS_IN_WEEK,
@@ -250,7 +250,7 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const { earnedAmount: _earnedAmount } = useGetEarnedAmount(miniChefStaking?.pid as string);
 
   // this function will always return the maximum value earnedAmount
-  const getEarnedAmount = () => {
+  const getEarnedAmount = useCallback(() => {
     // if _earnedAmount is greater than 0 or miniChefStaking.earnedAmount use this
     if (
       _earnedAmount?.greaterThan('0') ||
@@ -263,27 +263,31 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
       return miniChefStaking.earnedAmount;
     }
     return new TokenAmount(PNG[chainId], '0');
-  };
+  }, [_earnedAmount, miniChefStaking?.earnedAmount, chainId]);
 
   const earnedAmount = getEarnedAmount();
 
   const rewardTokensAddress = getRewardTokensRes?.result?.[0];
+
   const rewardTokensMultiplier = getRewardMultipliersRes?.result?.[0];
   const earnedAmountStr = earnedAmount ? JSBI.BigInt(earnedAmount?.raw).toString() : JSBI.BigInt(0).toString();
 
+  const emptyArr = useMemo(() => [], []);
+
+  const pendingTokensParams = useMemo(() => [[0, account as string, earnedAmountStr]], [account, earnedAmountStr]);
   const pendingTokensRes = useSingleContractMultipleData(
     rewardContract,
     'pendingTokens',
-    account ? [[0, account as string, earnedAmountStr]] : [],
+    account ? pendingTokensParams : emptyArr,
   );
 
   const isLoading = pendingTokensRes?.[0]?.loading;
   const rewardTokens = useTokens(rewardTokensAddress);
 
-  const rewardAmounts = pendingTokensRes?.[0]?.result?.amounts || []; // eslint-disable-line react-hooks/exhaustive-deps
+  const rewardAmounts = pendingTokensRes?.[0]?.result?.amounts || emptyArr; // eslint-disable-line react-hooks/exhaustive-deps
 
   const rewardTokensAmount = useMemo(() => {
-    if (!rewardTokens) return [];
+    if (!rewardTokens) return emptyArr;
 
     return rewardTokens.map((rewardToken, index) => new TokenAmount(rewardToken as Token, rewardAmounts[index] || 0));
   }, [rewardAmounts, rewardTokens]);
@@ -297,7 +301,7 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rewardTokensAmount, rewardTokensMultiplier, isLoading]);
+  }, [rewardTokens, rewardTokensAmount, rewardTokensMultiplier, isLoading]);
 
   return rewardData.current;
 }
@@ -836,7 +840,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
 };
 
 export const fetchMinichefData = (account: string, chainId: ChainId) => async () => {
-  const mininchefV2Client = mininchefV2Clients[chainId];
+  const mininchefV2Client = subgraphClient[chainId];
   if (!mininchefV2Client) {
     return null;
   }

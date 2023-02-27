@@ -1,5 +1,6 @@
+/* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
-import { useNearToken, useNearTokens, useToken, useTokens } from './Tokens';
+import { useNearToken, useNearTokens, useToken, useTokens, useTokensViaSubGraph } from './Tokens';
 import {
   useApproveCallback,
   useApproveCallbackFromHederaTrade,
@@ -8,8 +9,16 @@ import {
   useHederaApproveCallback,
   useNearApproveCallback,
 } from './useApproveCallback';
+import {
+  useDummyTokenCurrencyPrice,
+  useDummyTokensCurrencyPrice,
+  useTokenCurrencyPrice,
+  useTokenCurrencyPriceSubgraph,
+  useTokensCurrencyPrice,
+  useTokensCurrencyPriceSubgraph,
+} from './useCurrencyPrice';
 import { useHederaSwapCallback, useNearSwapCallback, useSwapCallback } from './useSwapCallback';
-import { useHederaUSDPrice, useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice } from './useUSDCPrice';
+import { useNearUSDCPrice, useSongBirdUSDPrice, useUSDCPrice, useUsdPriceCoingecko } from './useUSDCPrice';
 import { useWrapCallback, useWrapHbarCallback, useWrapNearCallback } from './useWrapCallback';
 
 export function useDummyHook() {
@@ -26,10 +35,14 @@ export const useWrapCallbackHook: UseWrapCallbackHookType = {
   [ChainId.WAGMI]: useWrapCallback,
   [ChainId.COSTON]: useWrapCallback,
   [ChainId.SONGBIRD]: useWrapCallback,
+  [ChainId.FLARE_MAINNET]: useWrapCallback,
   [ChainId.HEDERA_TESTNET]: useWrapHbarCallback,
+  [ChainId.HEDERA_MAINNET]: useWrapHbarCallback,
   [ChainId.NEAR_MAINNET]: useWrapNearCallback,
   [ChainId.NEAR_TESTNET]: useWrapNearCallback,
   [ChainId.COSTON2]: useWrapCallback,
+  [ChainId.EVMOS_TESTNET]: useWrapCallback,
+  [ChainId.EVMOS_MAINNET]: useWrapCallback,
   // TODO: Remove these hooks later on
   [ChainId.ETHEREUM]: useWrapCallback,
   [ChainId.POLYGON]: useWrapCallback,
@@ -58,10 +71,14 @@ export const useTokenHook: UseTokenHookType = {
   [ChainId.WAGMI]: useToken,
   [ChainId.COSTON]: useToken,
   [ChainId.SONGBIRD]: useToken,
+  [ChainId.FLARE_MAINNET]: useToken,
   [ChainId.HEDERA_TESTNET]: useToken,
+  [ChainId.HEDERA_MAINNET]: useToken,
   [ChainId.NEAR_MAINNET]: useNearToken,
   [ChainId.NEAR_TESTNET]: useNearToken,
   [ChainId.COSTON2]: useToken,
+  [ChainId.EVMOS_TESTNET]: useToken,
+  [ChainId.EVMOS_MAINNET]: useToken,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -92,10 +109,14 @@ export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookTyp
   [ChainId.WAGMI]: useApproveCallbackFromTrade,
   [ChainId.COSTON]: useApproveCallbackFromTrade,
   [ChainId.SONGBIRD]: useApproveCallbackFromTrade,
+  [ChainId.FLARE_MAINNET]: useApproveCallbackFromTrade,
   [ChainId.HEDERA_TESTNET]: useApproveCallbackFromHederaTrade,
+  [ChainId.HEDERA_MAINNET]: useApproveCallbackFromHederaTrade,
   [ChainId.NEAR_MAINNET]: useApproveCallbackFromNearTrade,
   [ChainId.NEAR_TESTNET]: useApproveCallbackFromNearTrade,
   [ChainId.COSTON2]: useApproveCallbackFromTrade,
+  [ChainId.EVMOS_TESTNET]: useApproveCallbackFromTrade,
+  [ChainId.EVMOS_MAINNET]: useApproveCallbackFromTrade,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useApproveCallbackFromTrade,
   [ChainId.POLYGON]: useApproveCallbackFromTrade,
@@ -124,10 +145,14 @@ export const useSwapCallbackHook: UseSwapCallbackHookType = {
   [ChainId.WAGMI]: useSwapCallback,
   [ChainId.COSTON]: useSwapCallback,
   [ChainId.SONGBIRD]: useSwapCallback,
+  [ChainId.FLARE_MAINNET]: useSwapCallback,
   [ChainId.HEDERA_TESTNET]: useHederaSwapCallback,
+  [ChainId.HEDERA_MAINNET]: useHederaSwapCallback,
   [ChainId.NEAR_MAINNET]: useNearSwapCallback,
   [ChainId.NEAR_TESTNET]: useNearSwapCallback,
   [ChainId.COSTON2]: useSwapCallback,
+  [ChainId.EVMOS_TESTNET]: useSwapCallback,
+  [ChainId.EVMOS_MAINNET]: useSwapCallback,
   // TODO: Remove following lines
   [ChainId.ETHEREUM]: useSwapCallback,
   [ChainId.POLYGON]: useSwapCallback,
@@ -156,10 +181,14 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
   [ChainId.WAGMI]: useApproveCallback,
   [ChainId.COSTON]: useApproveCallback,
   [ChainId.SONGBIRD]: useApproveCallback,
+  [ChainId.FLARE_MAINNET]: useApproveCallback,
   [ChainId.HEDERA_TESTNET]: useHederaApproveCallback,
+  [ChainId.HEDERA_MAINNET]: useHederaApproveCallback,
   [ChainId.NEAR_MAINNET]: useNearApproveCallback,
   [ChainId.NEAR_TESTNET]: useNearApproveCallback,
   [ChainId.COSTON2]: useApproveCallback,
+  [ChainId.EVMOS_TESTNET]: useApproveCallback,
+  [ChainId.EVMOS_MAINNET]: useApproveCallback,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useApproveCallback,
   [ChainId.POLYGON]: useApproveCallback,
@@ -183,7 +212,7 @@ export type UseUSDCPriceHookType = {
     | typeof useUSDCPrice
     | typeof useNearUSDCPrice
     | typeof useSongBirdUSDPrice
-    | typeof useHederaUSDPrice
+    | typeof useUsdPriceCoingecko
     | typeof useDummyHook;
 };
 
@@ -193,10 +222,14 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
   [ChainId.WAGMI]: useUSDCPrice,
   [ChainId.COSTON]: useUSDCPrice,
   [ChainId.SONGBIRD]: useSongBirdUSDPrice,
-  [ChainId.HEDERA_TESTNET]: useHederaUSDPrice,
+  [ChainId.FLARE_MAINNET]: useUsdPriceCoingecko,
+  [ChainId.HEDERA_TESTNET]: useUsdPriceCoingecko,
+  [ChainId.HEDERA_MAINNET]: useUsdPriceCoingecko,
   [ChainId.NEAR_MAINNET]: useNearUSDCPrice,
   [ChainId.NEAR_TESTNET]: useNearUSDCPrice,
   [ChainId.COSTON2]: useUSDCPrice,
+  [ChainId.EVMOS_TESTNET]: useUSDCPrice,
+  [ChainId.EVMOS_MAINNET]: useUSDCPrice,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -215,7 +248,7 @@ export const useUSDCPriceHook: UseUSDCPriceHookType = {
 };
 
 export type UseTokensHookType = {
-  [chainId in ChainId]: typeof useTokens | typeof useNearTokens | typeof useDummyHook;
+  [chainId in ChainId]: typeof useTokens | typeof useNearTokens | typeof useTokensViaSubGraph | typeof useDummyHook;
 };
 
 export const useTokensHook: UseTokensHookType = {
@@ -224,10 +257,14 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.WAGMI]: useTokens,
   [ChainId.COSTON]: useTokens,
   [ChainId.SONGBIRD]: useTokens,
-  [ChainId.HEDERA_TESTNET]: useTokens,
+  [ChainId.FLARE_MAINNET]: useTokens,
+  [ChainId.HEDERA_TESTNET]: useTokensViaSubGraph,
+  [ChainId.HEDERA_MAINNET]: useTokensViaSubGraph,
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
   [ChainId.COSTON2]: useTokens,
+  [ChainId.EVMOS_TESTNET]: useTokens,
+  [ChainId.EVMOS_MAINNET]: useTokens,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -244,3 +281,80 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
 };
+
+export type UseTokensCurrencyPriceHookType = {
+  [chainId in ChainId]:
+    | typeof useTokensCurrencyPrice
+    | typeof useTokensCurrencyPriceSubgraph
+    | typeof useDummyTokensCurrencyPrice;
+};
+
+export const useTokensCurrencyPriceHook: UseTokensCurrencyPriceHookType = {
+  [ChainId.FUJI]: useDummyTokensCurrencyPrice,
+  [ChainId.AVALANCHE]: useDummyTokensCurrencyPrice,
+  [ChainId.WAGMI]: useDummyTokensCurrencyPrice,
+  [ChainId.COSTON]: useTokensCurrencyPrice,
+  [ChainId.SONGBIRD]: useTokensCurrencyPrice,
+  [ChainId.FLARE_MAINNET]: useTokensCurrencyPrice,
+  [ChainId.HEDERA_TESTNET]: useTokensCurrencyPriceSubgraph,
+  [ChainId.HEDERA_MAINNET]: useTokensCurrencyPriceSubgraph,
+  [ChainId.NEAR_MAINNET]: useDummyTokensCurrencyPrice,
+  [ChainId.NEAR_TESTNET]: useDummyTokensCurrencyPrice,
+  [ChainId.COSTON2]: useTokensCurrencyPrice,
+  [ChainId.EVMOS_TESTNET]: useDummyTokensCurrencyPrice,
+  [ChainId.EVMOS_MAINNET]: useDummyTokensCurrencyPrice,
+  [ChainId.ETHEREUM]: useDummyTokensCurrencyPrice,
+  [ChainId.POLYGON]: useDummyTokensCurrencyPrice,
+  [ChainId.FANTOM]: useDummyTokensCurrencyPrice,
+  [ChainId.XDAI]: useDummyTokensCurrencyPrice,
+  [ChainId.BSC]: useDummyTokensCurrencyPrice,
+  [ChainId.ARBITRUM]: useDummyTokensCurrencyPrice,
+  [ChainId.CELO]: useDummyTokensCurrencyPrice,
+  [ChainId.OKXCHAIN]: useDummyTokensCurrencyPrice,
+  [ChainId.VELAS]: useDummyTokensCurrencyPrice,
+  [ChainId.AURORA]: useDummyTokensCurrencyPrice,
+  [ChainId.CRONOS]: useDummyTokensCurrencyPrice,
+  [ChainId.FUSE]: useDummyTokensCurrencyPrice,
+  [ChainId.MOONRIVER]: useDummyTokensCurrencyPrice,
+  [ChainId.MOONBEAM]: useDummyTokensCurrencyPrice,
+  [ChainId.OP]: useDummyTokensCurrencyPrice,
+};
+
+export type UseTokenCurrencyPriceType = {
+  [chainId in ChainId]:
+    | typeof useTokenCurrencyPrice
+    | typeof useTokenCurrencyPriceSubgraph
+    | typeof useDummyTokenCurrencyPrice;
+};
+
+export const useTokenCurrencyPriceHook: UseTokenCurrencyPriceType = {
+  [ChainId.FUJI]: useDummyTokenCurrencyPrice,
+  [ChainId.AVALANCHE]: useDummyTokenCurrencyPrice,
+  [ChainId.WAGMI]: useDummyTokenCurrencyPrice,
+  [ChainId.COSTON]: useTokenCurrencyPrice,
+  [ChainId.SONGBIRD]: useTokenCurrencyPrice,
+  [ChainId.FLARE_MAINNET]: useTokenCurrencyPrice,
+  [ChainId.HEDERA_TESTNET]: useTokenCurrencyPriceSubgraph,
+  [ChainId.HEDERA_MAINNET]: useTokenCurrencyPriceSubgraph,
+  [ChainId.NEAR_MAINNET]: useDummyTokenCurrencyPrice,
+  [ChainId.NEAR_TESTNET]: useDummyTokenCurrencyPrice,
+  [ChainId.COSTON2]: useTokenCurrencyPrice,
+  [ChainId.EVMOS_TESTNET]: useDummyTokenCurrencyPrice,
+  [ChainId.EVMOS_MAINNET]: useDummyTokenCurrencyPrice,
+  [ChainId.ETHEREUM]: useDummyTokenCurrencyPrice,
+  [ChainId.POLYGON]: useDummyTokenCurrencyPrice,
+  [ChainId.FANTOM]: useDummyTokenCurrencyPrice,
+  [ChainId.XDAI]: useDummyTokenCurrencyPrice,
+  [ChainId.BSC]: useDummyTokenCurrencyPrice,
+  [ChainId.ARBITRUM]: useDummyTokenCurrencyPrice,
+  [ChainId.CELO]: useDummyTokenCurrencyPrice,
+  [ChainId.OKXCHAIN]: useDummyTokenCurrencyPrice,
+  [ChainId.VELAS]: useDummyTokenCurrencyPrice,
+  [ChainId.AURORA]: useDummyTokenCurrencyPrice,
+  [ChainId.CRONOS]: useDummyTokenCurrencyPrice,
+  [ChainId.FUSE]: useDummyTokenCurrencyPrice,
+  [ChainId.MOONRIVER]: useDummyTokenCurrencyPrice,
+  [ChainId.MOONBEAM]: useDummyTokenCurrencyPrice,
+  [ChainId.OP]: useDummyTokenCurrencyPrice,
+};
+/* eslint-enable max-lines */

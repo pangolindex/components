@@ -30,7 +30,7 @@ import {
   useSwapState,
 } from 'src/state/pswap/hooks';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { checkRecipientAddressMapping, isTokenOnList } from 'src/utils';
+import { isTokenOnList, validateAddressMapping } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -50,6 +50,7 @@ interface Props {
   swapType: string;
   setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
+  isTWAPOrderVisible: boolean;
   showSettings: boolean;
   partnerDaaS?: string;
   defaultInputAddress?: string;
@@ -60,6 +61,7 @@ const MarketOrder: React.FC<Props> = ({
   swapType,
   setSwapType,
   isLimitOrderVisible,
+  isTWAPOrderVisible,
   showSettings,
   partnerDaaS = ZERO_ADDRESS,
   defaultInputAddress,
@@ -98,7 +100,7 @@ const MarketOrder: React.FC<Props> = ({
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
   const useSwapCallback = useSwapCallbackHook[chainId];
 
-  const checkRecipientAddress = checkRecipientAddressMapping[chainId];
+  const checkRecipientAddress = validateAddressMapping[chainId];
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
@@ -135,6 +137,7 @@ const MarketOrder: React.FC<Props> = ({
     wrapType,
     execute: onWrap,
     inputError: wrapInputError,
+    executing,
   } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue);
 
   const {
@@ -259,7 +262,7 @@ const MarketOrder: React.FC<Props> = ({
     swapCallback()
       .then((hash) => {
         setSwapState({ attemptingTxn: false, tradeToConfirm, showConfirm, swapErrorMessage: undefined, txHash: hash });
-
+        setSelectedPercentage(0);
         if (trade) {
           const path = trade.route.path;
           const tokenA = path[0];
@@ -288,6 +291,15 @@ const MarketOrder: React.FC<Props> = ({
         }
       });
   }, [tradeToConfirm, account, priceImpactWithoutFee, recipient, recipientAddress, showConfirm, swapCallback, trade]);
+
+  const handleWrap = useCallback(() => {
+    try {
+      onWrap?.();
+      setSelectedPercentage(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [onWrap, setSelectedPercentage]);
 
   const handleSelectTokenDrawerClose = useCallback(() => {
     setIsTokenDrawerOpen(false);
@@ -328,6 +340,7 @@ const MarketOrder: React.FC<Props> = ({
     (currency) => {
       if (tokenDrawerType === Field.INPUT) {
         setApprovalSubmitted(false); // reset 2 step UI for approvals
+        setSelectedPercentage(0);
       }
       onCurrencySelection(tokenDrawerType, currency);
     },
@@ -372,6 +385,18 @@ const MarketOrder: React.FC<Props> = ({
     );
   }
 
+  const renderWrapButtonText = () => {
+    if (wrapInputError) {
+      return wrapInputError;
+    } else if (executing) {
+      return 'Loading';
+    } else if (wrapType === WrapType.WRAP) {
+      return 'Wrap';
+    } else if (wrapType === WrapType.UNWRAP) {
+      return 'Unwrap';
+    }
+  };
+
   const renderButton = () => {
     if (!account) {
       return (
@@ -391,8 +416,8 @@ const MarketOrder: React.FC<Props> = ({
 
     if (showWrap) {
       return (
-        <Button variant="primary" isDisabled={Boolean(wrapInputError)} onClick={onWrap}>
-          {wrapInputError ?? (wrapType === WrapType.WRAP ? 'Wrap' : wrapType === WrapType.UNWRAP ? 'unwrap' : null)}
+        <Button variant="primary" isDisabled={Boolean(wrapInputError) || Boolean(executing)} onClick={handleWrap}>
+          {renderWrapButtonText()}
         </Button>
       );
     }
@@ -424,7 +449,7 @@ const MarketOrder: React.FC<Props> = ({
             >
               {approvalSubmitted && approval === ApprovalState.APPROVED
                 ? 'Approved'
-                : 'Approve' + currencies[Field.INPUT]?.symbol}
+                : 'Approve ' + currencies[Field.INPUT]?.symbol}
             </Button>
           </Box>
 
@@ -445,7 +470,7 @@ const MarketOrder: React.FC<Props> = ({
           >
             {priceImpactSeverity > 3 && !isExpertMode
               ? 'Price Impact High'
-              : 'Swap' + `${priceImpactSeverity > 2 ? 'Anyway' : ''}`}
+              : 'Swap' + `${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
           </Button>
         </Box>
       );
@@ -472,7 +497,7 @@ const MarketOrder: React.FC<Props> = ({
           ? swapInputError
           : priceImpactSeverity > 3 && !isExpertMode
           ? 'Price Impact High'
-          : 'Swap' + `${priceImpactSeverity > 2 ? 'Anyway' : ''}`}
+          : 'Swap' + `${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
       </Button>
     );
   };
@@ -510,6 +535,7 @@ const MarketOrder: React.FC<Props> = ({
         swapType={swapType}
         setSwapType={setSwapType}
         isLimitOrderVisible={isLimitOrderVisible}
+        isTWAPOrderVisible={isTWAPOrderVisible}
         showSettings={showSettings}
         openSwapSettings={openSwapSettings}
       />
@@ -547,6 +573,7 @@ const MarketOrder: React.FC<Props> = ({
             <ArrowWrapper
               onClick={() => {
                 setApprovalSubmitted(false); // reset 2 step UI for approvals
+                setSelectedPercentage(0); // reset selected percentage
                 onSwitchTokens();
               }}
             >

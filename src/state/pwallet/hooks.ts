@@ -29,11 +29,17 @@ import {
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useAllTokens, useHederaTokenAssociated, useNearTokens } from 'src/hooks/Tokens';
+import {
+  useAllTokens,
+  useGetAllHederaAssociatedTokens,
+  useHederaTokenAssociated,
+  useNearTokens,
+} from 'src/hooks/Tokens';
 import { useTokensHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
+import { useBlockNumber } from 'src/state/papplication/hooks';
 import { Field } from 'src/state/pburn/actions';
 import { Field as AddField } from 'src/state/pmint/actions';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
@@ -44,7 +50,7 @@ import {
   isAddress,
   waitForTransaction,
 } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { HederaTokenMetadata, hederaFn } from 'src/utils/hedera';
 import { FunctionCallOptions, Transaction as NearTransaction, nearFn } from 'src/utils/near';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useMultipleContractSingleData, useSingleContractMultipleData } from '../pmulticall/hooks';
@@ -124,8 +130,8 @@ export function useNearBalance(
 export function useHederaBalance(
   chainId: ChainId,
   accounts?: (string | undefined)[],
-): { [address: string]: any } | undefined {
-  const [hederaBalance, setHederaBalance] = useState<{ [address: string]: any }>();
+): { [address: string]: TokenAmount | undefined } | undefined {
+  const [hederaBalance, setHederaBalance] = useState<{ [address: string]: TokenAmount | undefined }>();
 
   const hederaToken = WAVAX[chainId];
 
@@ -134,14 +140,12 @@ export function useHederaBalance(
       if (accounts?.[0]) {
         const balance = await hederaFn.getAccountBalance(accounts?.[0]);
 
-        if (balance) {
-          const hderaTokenBalance = new TokenAmount(hederaToken, balance);
+        const hederaTokenBalance = new TokenAmount(hederaToken, balance);
 
-          const container = {} as { [address: string]: any | undefined };
-          container[accounts?.[0]] = hderaTokenBalance;
+        const container = {} as { [address: string]: TokenAmount | undefined };
+        container[accounts?.[0]] = hederaTokenBalance;
 
-          setHederaBalance(container);
-        }
+        setHederaBalance(container);
       }
     }
 
@@ -169,10 +173,7 @@ const fetchNearPoolShare = (chainId: number, pair: Pair) => async () => {
   return undefined;
 };
 
-/**
- * Returns a map of token addresses to their eventually consistent token balances for a single account.
- */
-export function useTokenBalancesWithLoadingIndicator(
+export function useTokenBalances(
   address?: string,
   tokens?: (Token | undefined)[],
 ): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
@@ -187,36 +188,67 @@ export function useTokenBalancesWithLoadingIndicator(
 
   const anyLoading: boolean = useMemo(() => balances.some((callState) => callState.loading), [balances]);
 
-  return [
-    useMemo(
-      () =>
-        address && validatedTokens.length > 0
-          ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
-              const value = balances?.[i]?.result?.[0];
-              const amount = value ? JSBI.BigInt(value.toString()) : undefined;
-              if (amount) {
-                memo[token.address] = new TokenAmount(token, amount);
-              }
-              return memo;
-            }, {})
-          : {},
-      [address, validatedTokens, balances],
-    ),
-    anyLoading,
-  ];
+  const tokenBalances = useMemo(
+    () =>
+      address && validatedTokens.length > 0
+        ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
+            const value = balances?.[i]?.result?.[0];
+            const amount = value ? JSBI.BigInt(value.toString()) : undefined;
+            if (amount) {
+              memo[token.address] = new TokenAmount(token, amount);
+            }
+            return memo;
+          }, {})
+        : {},
+    [address, validatedTokens, balances],
+  );
+  return [tokenBalances, anyLoading];
 }
 
-export function useTokenBalances(
+export function useHederaTokenBalances(
   address?: string,
   tokens?: (Token | undefined)[],
-): { [tokenAddress: string]: TokenAmount | undefined } {
-  return useTokenBalancesWithLoadingIndicator(address, tokens)[0];
+): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
+  const latestBlockNumber = useBlockNumber();
+
+  const validatedTokens: Token[] = useMemo(
+    () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
+    [tokens],
+  );
+
+  const { data, isLoading } = useGetAllHederaAssociatedTokens([latestBlockNumber]);
+
+  const balances = useMemo(() => {
+    return (data || []).reduce<{ [tokenAddress: string]: string }>((memo, token) => {
+      const address = hederaFn.idToAddress(token?.tokenId);
+
+      if (address) {
+        memo[address] = token.balance;
+      }
+      return memo;
+    }, {});
+  }, [data]);
+
+  const tokenBalances = useMemo(
+    () =>
+      address && validatedTokens.length > 0
+        ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token) => {
+            const value = token?.address ? balances[token.address] : 0;
+            const amount = value ? JSBI.BigInt(value.toString()) : JSBI.BigInt(0);
+            memo[token.address] = new TokenAmount(token, amount);
+            return memo;
+          }, {})
+        : {},
+    [address, validatedTokens, balances],
+  );
+
+  return [tokenBalances, isLoading];
 }
 
 export function useNearTokenBalances(
   address?: string,
   tokensOrPairs?: (Token | Pair | undefined)[],
-): { [tokenAddress: string]: TokenAmount | undefined } {
+): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
   const chainId = useChainId();
 
   const queryParameter = useMemo(() => {
@@ -238,7 +270,8 @@ export function useNearTokenBalances(
 
   const results = useQueries(queryParameter);
 
-  return useMemo(
+  const anyLoading = useMemo(() => results?.some((t) => t?.isLoading), [results]);
+  const tokenBalances = useMemo(
     () =>
       results.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, result, i) => {
         const value = result?.data;
@@ -253,11 +286,13 @@ export function useNearTokenBalances(
       }, {}),
     [tokensOrPairs, address, results],
   );
+
+  return [tokenBalances, anyLoading];
 }
 
 // get the balance for a single token/account combo
 export function useTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
-  const tokenBalances = useTokenBalances(account, [token]);
+  const [tokenBalances] = useTokenBalances(account, [token]);
   if (!token) return undefined;
   return tokenBalances[token.address];
 }
@@ -265,7 +300,7 @@ export function useTokenBalance(account?: string, token?: Token): TokenAmount | 
 // get the balance for a single token/account combo
 export function useNearTokenBalance(account?: string, tokenOrPair?: Token | Pair): TokenAmount | undefined {
   const tokensOrPairs = useMemo(() => [tokenOrPair], [tokenOrPair]);
-  const tokenBalances = useNearTokenBalances(account, tokensOrPairs);
+  const [tokenBalances] = useNearTokenBalances(account, tokensOrPairs);
   if (!tokenOrPair) return undefined;
 
   if (tokenOrPair && tokenOrPair instanceof Token) {
@@ -275,10 +310,16 @@ export function useNearTokenBalance(account?: string, tokenOrPair?: Token | Pair
   }
 }
 
+export function useHederaTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
+  const [tokenBalances] = useHederaTokenBalances(account, [token]);
+  if (!token) return undefined;
+  return tokenBalances[token.address];
+}
+
 // get the balance for a single token/account combo
 export function useNearPairBalance(account?: string, pair?: Pair): TokenAmount | undefined {
   const tokensOrPairs = useMemo(() => [pair], [pair]);
-  const tokenBalances = useNearTokenBalances(account, tokensOrPairs);
+  const [tokenBalances] = useNearTokenBalances(account, tokensOrPairs);
   if (!pair) return undefined;
 
   if (pair && pair instanceof Pair) {
@@ -294,7 +335,7 @@ export function useNearPairBalance(account?: string, pair?: Pair): TokenAmount |
 export function useEVMPairBalance(account?: string, pair?: Pair): TokenAmount | undefined {
   const token = pair?.liquidityToken;
 
-  const tokenBalances = useTokenBalances(account, [token]);
+  const [tokenBalances] = useTokenBalances(account, [token]);
   if (!token) return undefined;
   return tokenBalances[token.address];
 }
@@ -317,10 +358,7 @@ export function useHederaPairBalances(account?: string, pairs?: (Pair | undefine
     [pglTokens],
   );
 
-  const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
-    account ?? undefined,
-    liquidityTokens,
-  );
+  const [v2PairsBalances, fetchingV2PairBalances] = useHederaTokenBalances(account ?? undefined, liquidityTokens);
 
   const newV2PairsBalances = useMemo(
     () =>
@@ -374,7 +412,7 @@ export function useCurrencyBalances(
   const useTokenBalances_ = useTokenBalancesHook[chainId];
   const useETHBalances_ = useAccountBalanceHook[chainId];
 
-  const tokenBalances = useTokenBalances_(account, tokens);
+  const [tokenBalances] = useTokenBalances_(account, tokens);
   const containsETH: boolean = useMemo(
     () => currencies?.some((currency) => chainId && currency === CAVAX[chainId]) ?? false,
     [chainId, currencies],
@@ -416,7 +454,7 @@ export function useAllTokenBalances(): { [tokenAddress: string]: TokenAmount | u
   const allTokens = useAllTokens();
 
   const allTokensArray = useMemo(() => Object.values(allTokens ?? {}), [allTokens]);
-  const balances = useTokenBalances_(account ?? undefined, allTokensArray);
+  const [balances] = useTokenBalances_(account ?? undefined, allTokensArray);
   return balances ?? {};
 }
 
@@ -502,7 +540,7 @@ export function useAddLiquidity() {
 
       addTransaction(response, {
         summary:
-          'Add ' +
+          'Added ' +
           parsedAmounts[AddField.CURRENCY_A]?.toSignificant(3) +
           ' ' +
           currencies[AddField.CURRENCY_A]?.symbol +
@@ -718,7 +756,7 @@ export function useHederaAddLiquidity() {
 
       addTransaction(response, {
         summary:
-          'Add ' +
+          'Added ' +
           parsedAmounts[AddField.CURRENCY_A]?.toSignificant(3) +
           ' ' +
           currencies[AddField.CURRENCY_A]?.symbol +
@@ -907,7 +945,7 @@ export function useRemoveLiquidity(pair?: Pair | null | undefined) {
         await waitForTransaction(response, 5);
         addTransaction(response, {
           summary:
-            t('removeLiquidity.remove') +
+            'Removed' +
             ' ' +
             parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
             ' ' +
@@ -1146,7 +1184,7 @@ export function useHederaRemoveLiquidity(pair?: Pair | null | undefined) {
       if (response) {
         addTransaction(response, {
           summary:
-            t('removeLiquidity.remove') +
+            'Removed' +
             ' ' +
             parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
             ' ' +
@@ -1198,10 +1236,7 @@ export function useGetUserLP() {
     [tokenPairsWithLiquidityTokens],
   );
 
-  const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalancesWithLoadingIndicator(
-    account ?? undefined,
-    liquidityTokens,
-  );
+  const [v2PairsBalances, fetchingV2PairBalances] = useTokenBalances(account ?? undefined, liquidityTokens);
 
   //fetch the reserves for all V2 pools in which the user has a balance
   const liquidityTokensWithBalances = useMemo(
@@ -1249,7 +1284,6 @@ export function useGetUserLP() {
 
 export function useGetHederaUserLP() {
   const chainId = useChainId();
-  const { account } = usePangolinWeb3();
 
   const useTokens = useTokensHook[chainId];
   // get all pairs
@@ -1274,13 +1308,7 @@ export function useGetHederaUserLP() {
   // get liquidityTokenWise PGL(Fungible Token Address) mapping
   const pglTokenAddresses = useHederaPGLTokenAddresses(lpTokenAddresses);
 
-  // get all associated token data based on given account
-  const { isLoading, data } = useQuery(['check-hedera-token-associated', account], async () => {
-    if (!account || chainId !== ChainId.HEDERA_TESTNET) return;
-    const tokens = await hederaFn.getAccountAssociatedTokens(account);
-    return tokens;
-  });
-
+  const { data, isLoading } = useGetAllHederaAssociatedTokens();
   // make pgltokenwise balance array
   const tokenBalances = useMemo(() => {
     return (data || []).reduce<{ [pglTokenAddress: string]: string }>((memo, token) => {
@@ -1293,8 +1321,19 @@ export function useGetHederaUserLP() {
     }, {});
   }, [data]);
 
-  //get fungibleToken address based on Token Id
-  const allTokensAddress = useMemo(() => (data || []).map((token) => hederaFn.idToAddress(token?.tokenId)), [data]);
+  //get the token metadata
+  const tokensMetadata = useHederaTokensMetaData(Object.keys(tokenBalances));
+
+  // filter to only fungible tokens
+  const allTokensAddress: string[] = useMemo(() => {
+    const _allTokensAddress: string[] = [];
+    Object.entries(tokensMetadata).forEach(([address, metadata]) => {
+      if (metadata && metadata.type.startsWith('FUNGIBLE')) {
+        return _allTokensAddress.push(address);
+      }
+    });
+    return _allTokensAddress;
+  }, [tokensMetadata]);
 
   // here we need to get token data to do filter based on PGL Symbol
   const tokens = useTokens(allTokensAddress);
@@ -1407,7 +1446,7 @@ export function useGetNearUserLP() {
     [v2AllPairs],
   );
 
-  const v2PairsBalances = useNearTokenBalances(account ?? undefined, allV2Pairs);
+  const [v2PairsBalances] = useNearTokenBalances(account ?? undefined, allV2Pairs);
 
   //fetch the reserves for all V2 pools in which the user has a balance
   const allV2PairsWithLiquidity = useMemo(
@@ -1539,7 +1578,7 @@ export const fetchHederaPGLTokenAddress = (pairTokenAddress: string | undefined)
       return undefined;
     }
 
-    const tokenAddress = pairTokenAddress;
+    const tokenAddress = pairTokenAddress.toLowerCase();
     // get pair contract id using api call because `asAccountString` is not working for pair address
     const { contractId } = await hederaFn.getContractData(tokenAddress);
     // get pair tokenId from pair contract id
@@ -1572,6 +1611,49 @@ export const fetchHederaPGLToken = (pairToken: Token | undefined, chainId: Chain
     return undefined;
   }
 };
+
+export function fetchHederaTokenMetaData(tokenAddress: string | undefined) {
+  async function fetch() {
+    try {
+      if (!tokenAddress) {
+        return undefined;
+      }
+
+      const result = await hederaFn.getMetadata(tokenAddress.toLowerCase());
+
+      return result;
+    } catch {
+      return undefined;
+    }
+  }
+  return fetch;
+}
+
+/**
+ * This hook get all hedera token metadata from rest api
+ * @param addresses address array of tokens to be queried
+ * @returns object with key is the address and the value is the metadata
+ */
+export function useHederaTokensMetaData(addresses: (string | undefined)[]) {
+  const queries = useMemo(() => {
+    return addresses.map((address) => ({
+      queryKey: ['get-hedera-token-metadata', address],
+      queryFn: fetchHederaTokenMetaData(address),
+    }));
+  }, [addresses]);
+
+  const results = useQueries(queries);
+
+  return useMemo(() => {
+    const result: { [x: string]: HederaTokenMetadata | undefined } = {};
+    addresses.forEach((address, index) => {
+      if (address) {
+        result[address] = results[index].data;
+      }
+    });
+    return result;
+  }, [results]);
+}
 
 /**
  * This hook used to get pgl token specifically for given Hedera pair

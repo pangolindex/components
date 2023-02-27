@@ -4,7 +4,7 @@ import { Tab, TabList, TabPanel, Tabs } from './';
 
 export default {
   component: Tabs,
-  title: 'Components/Tabs',
+  title: 'Building Blocks/Tabs',
 };
 
 const TemplateTabs: ComponentStory<typeof Tabs> = (args: any) => {

@@ -14,13 +14,13 @@ import {
 import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
-import { HEDERA_API_BASE_URL, PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
+import { PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
   APPROVE_ERC20: 60000,
   PROVIDE_LIQUIDITY: 250000,
-  CREATE_POOL: 2300000,
+  CREATE_POOL: 3000000,
   REMOVE_NATIVE_LIQUIDITY: 250000,
   REMOVE_LIQUIDITY: 250000,
   BASE_SWAP: 200000,
@@ -32,7 +32,7 @@ export const TRANSACTION_MAX_FEES = {
   STAKE_LP_TOKEN: 230000,
   COLLECT_REWARDS: 300000,
   WITHDRAW: 300000,
-  COMPOUND: 300000,
+  COMPOUND: 550000,
   NFT_MINT: 800000,
 };
 export interface HederaTokenMetadata {
@@ -41,6 +41,8 @@ export interface HederaTokenMetadata {
   symbol: string;
   decimals: number;
   icon: string;
+  type: string;
+  totalSupply: string;
 }
 
 export interface HederaAssociateTokensData {
@@ -279,7 +281,7 @@ export interface CompoundData {
     maxPairAmount: string;
   };
   poolId: string;
-  methodName: 'compound' | 'compoundToPoolZero';
+  methodName: 'compound' | 'compoundTo';
   account: string;
   chainId: ChainId;
   contract: Contract;
@@ -289,11 +291,21 @@ export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & {
 
 class Hedera {
   axios: AxiosInstance;
-  client: Client;
 
   constructor() {
     this.axios = BaseAxios.create({ timeout: 60000 });
-    this.client = Client.forTestnet(); // TODO check here for testnet and mainnet
+  }
+
+  get client(): Client {
+    const chainId = hashConnect.getChainId();
+    return chainId === ChainId.HEDERA_MAINNET ? Client.forMainnet() : Client.forTestnet();
+  }
+
+  get HEDERA_API_BASE_URL(): string {
+    const chainId = hashConnect.getChainId();
+    return chainId === ChainId.HEDERA_MAINNET
+      ? `https://mainnet-public.mirrornode.hedera.com`
+      : `https://testnet.mirrornode.hedera.com`;
   }
 
   async call<T>(config: AxiosRequestConfig) {
@@ -303,7 +315,7 @@ class Hedera {
         'Content-Type': 'application/json',
       };
       const res = await this.axios.request<T>({
-        baseURL: HEDERA_API_BASE_URL,
+        baseURL: this.HEDERA_API_BASE_URL,
         headers,
         ...config,
       });
@@ -315,7 +327,7 @@ class Hedera {
   }
 
   isHederaChain = (chainId: ChainId) => {
-    return chainId === ChainId.HEDERA_TESTNET;
+    return chainId === ChainId.HEDERA_TESTNET || chainId === ChainId.HEDERA_MAINNET;
   };
 
   isHederaIdValid = (hederaId: string): string | false => {
@@ -331,7 +343,7 @@ class Hedera {
 
   isAddressValid = (address: string): string | false => {
     if (address && hethers.utils.isAddress(address.toLowerCase())) {
-      return address;
+      return hethers.utils.getChecksumAddress(address);
     } else {
       return false;
     }
@@ -387,7 +399,6 @@ class Hedera {
         url: `/api/v1/balances?account.id=${accountId}`,
         method: 'GET',
       });
-
       const balance = response?.balances?.[0]?.balance || 0;
       return balance;
     } catch (error) {
@@ -411,6 +422,8 @@ class Hedera {
         symbol: tokenInfo?.symbol,
         decimals: Number(tokenInfo?.decimals),
         icon: '',
+        type: tokenInfo?.type,
+        totalSupply: tokenInfo?.total_supply,
       };
       return token;
     } catch (error) {
@@ -561,7 +574,6 @@ class Hedera {
   public async getTransactionById(transactionId: string) {
     try {
       const response = await this.call<APITransactionResponse>({
-        baseURL: HEDERA_API_BASE_URL,
         url: `/api/v1/transactions/${transactionId}`,
         method: 'GET',
       });
@@ -584,7 +596,6 @@ class Hedera {
   public async getTransactionBlock(timestamp: string) {
     //https://testnet.mirrornode.hedera.com/api/v1/blocks?timestamp=gte:1666177911.828565483&limit=1&order=asc
     const response = await this.call<APIBlockResponse>({
-      baseURL: HEDERA_API_BASE_URL,
       url: `/api/v1/blocks?timestamp=gte:${timestamp}&limit=1&order=asc`,
       method: 'GET',
     });
@@ -597,7 +608,6 @@ class Hedera {
   public async getTransactionLatestBlock() {
     //https://testnet.mirrornode.hedera.com/api/v1/blocks?order=desc&limit=1
     const response = await this.call<APIBlockResponse>({
-      baseURL: HEDERA_API_BASE_URL,
       url: `/api/v1/blocks?limit=1&order=desc`,
       method: 'GET',
     });
@@ -1010,7 +1020,10 @@ class Hedera {
     const accountId = account ? this.hederaId(account) : '';
     const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
 
-    const maxGas = methodName === 'stake' ? TRANSACTION_MAX_FEES.STAKE_LP_TOKEN : TRANSACTION_MAX_FEES.WITHDRAW;
+    const maxGas =
+      methodName === 'stake'
+        ? TRANSACTION_MAX_FEES.STAKE_LP_TOKEN + TRANSACTION_MAX_FEES.TRANSFER_ERC20
+        : TRANSACTION_MAX_FEES.WITHDRAW;
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract
@@ -1053,13 +1066,18 @@ class Hedera {
     const accountId = account ? this.hederaId(account) : '';
     const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
 
+    const minichef = CHAINS[chainId].contracts?.mini_chef;
+    const compoundPoolId = minichef?.compoundPoolIdForNonPngFarm ?? 0;
+
     const maxGas = TRANSACTION_MAX_FEES.COMPOUND;
+
+    const arg = methodName === 'compound' ? [poolId, slippage] : [poolId, compoundPoolId.toString(), slippage];
 
     // compound transaction is little different than all other transaction
     // because in compound input we have slippage which is tuple
     // tuple as input is not supported by hedera sdk as of now
     // so we are enconding function parameters and passing it as Uint8Array
-    const functionCallAsUint8Array = contract.interface.encodeFunctionData(methodName, [poolId, slippage]);
+    const functionCallAsUint8Array = contract.interface.encodeFunctionData(methodName, arg);
     const encodedParametersHex = functionCallAsUint8Array.slice(2);
 
     const params = Buffer.from(encodedParametersHex, 'hex');

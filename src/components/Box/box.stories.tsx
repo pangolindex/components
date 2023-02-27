@@ -4,7 +4,7 @@ import { Box } from '.';
 
 export default {
   component: Box,
-  title: 'Components/Box',
+  title: 'Building Blocks/Box',
 };
 
 const TemplateBox: ComponentStory<typeof Box> = (args: any) => <Box {...args} width={200} height={200} />;

@@ -1,9 +1,8 @@
 import { CHAINS, ChefType } from '@pangolindex/sdk';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId } from 'src/hooks';
-import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import {
@@ -12,44 +11,28 @@ import {
   useMinichefStakingInfosHook,
 } from 'src/state/pstake/multiChainsHooks';
 import { MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
-import { Hidden } from 'src/theme/components';
 import { isEvmChain } from 'src/utils';
 import { Box } from '../Box';
-import AddLiquidityModal from './AddLiquidityModal';
 import Pool from './Pool';
 import Sidebar, { MenuType } from './Sidebar';
 import Wallet from './Wallet';
-import { ExternalLink, GridContainer, PageWrapper } from './styleds';
+import { GridContainer, PageWrapper } from './styleds';
 
 const PoolsUI = () => {
   const chainId = useChainId();
   const minichef = CHAINS[chainId].contracts?.mini_chef;
 
-  const [activeMenu, setMenu] = useState<string>(MenuType.yourPool);
-  const [isAddLiquidityModalOpen, setAddLiquidityModalOpen] = useState<boolean>(false);
+  const [activeMenu, setMenu] = useState<string>(MenuType.allFarm);
+
   const { t } = useTranslation();
-
-  const parsedQs = useParsedQueryString();
-
-  const currency0 = parsedQs?.currency0;
-  const currency1 = parsedQs?.currency1;
-
-  useEffect(() => {
-    if (currency0 && currency1) {
-      setAddLiquidityModalOpen(true);
-    }
-  }, [currency0, currency1]);
 
   const useGetAllFarmData = useGetAllFarmDataHook[chainId];
 
   useGetAllFarmData();
   const pangoChefStakingInfos = usePangoChefInfosHook[chainId]() || [];
+
   const subgraphMiniChefStakingInfo = useGetMinichefStakingInfosViaSubgraphHook[chainId]() || [];
   const onChainMiniChefStakingInfo = useMinichefStakingInfosHook[chainId]() || [];
-
-  const handleAddLiquidityModalClose = useCallback(() => {
-    setAddLiquidityModalOpen(false);
-  }, [setAddLiquidityModalOpen]);
 
   // filter only live or needs migration pools
   const miniChefStakingInfo = useMemo(() => {
@@ -79,7 +62,6 @@ const PoolsUI = () => {
     [pangoChefStakingInfos],
   );
 
-  const minichefLength = (miniChefStakingInfo || []).length;
   const pangoChefStakingLength = (pangoChefStakingInfos || []).length;
   const superFarms = useMemo(() => {
     if (pangoChefStakingLength > 0) {
@@ -90,32 +72,12 @@ const PoolsUI = () => {
     );
   }, [miniChefStakingInfo, onChainMiniChefStakingInfo, pangoChefStakingInfos, pangoChefStakingLength]);
 
-  // here if farm is not avaialble your pool menu default active
-  useEffect(() => {
-    if (minichefLength === 0 && pangoChefStakingLength === 0) {
-      setMenu(MenuType.yourPool);
-    } else if (pangoChefStakingLength > 0) {
-      setMenu(MenuType.allFarm);
-    } else {
-      setMenu(MenuType.allFarm);
-    }
-  }, [minichefLength, pangoChefStakingLength]);
-
-  const menuItems: Array<{ label: string; value: string }> = [];
-
-  // add v2
-  if (miniChefStakingInfo.length > 0) {
-    menuItems.push({
+  const menuItems: Array<{ label: string; value: string }> = [
+    {
       label: `${t('pool.allFarms')}`,
       value: MenuType.allFarm,
-    });
-  }
-  if (pangoChefStakingInfos?.length > 0) {
-    menuItems.push({
-      label: `${t('pool.allFarms')}`,
-      value: MenuType.allFarm,
-    });
-  }
+    },
+  ];
 
   // add own v2
   if (ownminiChefStakingInfo.length > 0) {
@@ -138,14 +100,11 @@ const PoolsUI = () => {
       value: MenuType.superFarm,
     });
   }
-  // TODO remove comment
-  // if (menuItems.length > 0) {
-  // add wallet
+
   menuItems.push({
     label: `${t('pool.yourPools')}`,
     value: MenuType.yourPool,
   });
-  //}
 
   const handleSetMenu = useCallback(
     (value: string) => {
@@ -206,15 +165,7 @@ const PoolsUI = () => {
             <Wallet activeMenu={activeMenu} setMenu={handleSetMenu} menuItems={menuItems} />
           )}
         </Box>
-        <Hidden upToSmall={true}>
-          <Box>
-            <ExternalLink onClick={() => setAddLiquidityModalOpen(true)} style={{ cursor: 'pointer' }}>
-              {t('navigationTabs.createPair')}
-            </ExternalLink>
-          </Box>
-        </Hidden>
       </GridContainer>
-      <AddLiquidityModal isOpen={isAddLiquidityModalOpen} onClose={handleAddLiquidityModalClose} />
     </PageWrapper>
   );
 };

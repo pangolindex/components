@@ -87,7 +87,9 @@ const txCheckerMapping: { [chainId in ChainId]: (params: TxCheckerProps) => void
   [ChainId.FUJI]: txChecker,
   [ChainId.COSTON]: txChecker,
   [ChainId.SONGBIRD]: txChecker,
+  [ChainId.FLARE_MAINNET]: txChecker,
   [ChainId.HEDERA_TESTNET]: txChecker,
+  [ChainId.HEDERA_MAINNET]: txChecker,
   [ChainId.WAGMI]: txChecker,
   [ChainId.NEAR_MAINNET]: nearTxChecker,
   [ChainId.NEAR_TESTNET]: nearTxChecker,
@@ -107,6 +109,8 @@ const txCheckerMapping: { [chainId in ChainId]: (params: TxCheckerProps) => void
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.EVMOS_TESTNET]: txChecker,
+  [ChainId.EVMOS_MAINNET]: txChecker,
 };
 
 const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
@@ -114,11 +118,15 @@ const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
   [ChainId.FUJI]: true,
   [ChainId.COSTON]: true,
   [ChainId.SONGBIRD]: true,
+  [ChainId.FLARE_MAINNET]: true,
   [ChainId.HEDERA_TESTNET]: false,
+  [ChainId.HEDERA_MAINNET]: false,
   [ChainId.WAGMI]: true,
   [ChainId.NEAR_MAINNET]: true,
   [ChainId.NEAR_TESTNET]: true,
   [ChainId.COSTON2]: true,
+  [ChainId.EVMOS_TESTNET]: true,
+  [ChainId.EVMOS_MAINNET]: true,
   //TODO: remove this once we have proper implementation
   [ChainId.ETHEREUM]: false,
   [ChainId.POLYGON]: false,

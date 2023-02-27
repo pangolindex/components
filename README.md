@@ -8,7 +8,6 @@ For getting started please follow this [guide](src/stories/introduction.stories.
 # setup example repo
 1. do `yarn` in example directory.
 2. copy `.env.sample` to `.env`
-3. set `VITE_ARKHIA_API_KEY` accordingly in `.env`
 
 # development flow
 

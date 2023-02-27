@@ -4,7 +4,7 @@ import { Text } from '.';
 
 export default {
   component: Text,
-  title: 'Components/Text',
+  title: 'Building Blocks/Text',
 };
 
 const TemplateText: ComponentStory<typeof Text> = (args: any) => <Text {...args}>Sample Text</Text>;

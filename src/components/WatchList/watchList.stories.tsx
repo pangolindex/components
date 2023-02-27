@@ -4,7 +4,7 @@ import { WatchList } from '.';
 
 export default {
   component: WatchList,
-  title: 'Components/WatchList',
+  title: 'DeFi Primitives/WatchList',
 };
 
 const TemplateWatchList: ComponentStory<typeof WatchList> = (args: any) => (
@@ -16,5 +16,4 @@ const TemplateWatchList: ComponentStory<typeof WatchList> = (args: any) => (
 export const Default = TemplateWatchList.bind({});
 Default.args = {
   coinChartVisible: false,
-  visibleTradeButton: true,
 };

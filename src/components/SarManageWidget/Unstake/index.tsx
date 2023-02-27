@@ -1,6 +1,6 @@
 import { formatUnits } from '@ethersproject/units';
 import numeral from 'numeral';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
@@ -16,17 +16,17 @@ import { Position } from 'src/state/psarstake/types';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import Title from '../Title';
-import { Wrapper } from '../styleds';
 import { Options } from '../types';
-import { Root } from './styleds';
+import { Root, Wrapper } from './styleds';
 
 interface Props {
   selectedOption: Options;
   selectedPosition: Position | null;
   onChange: (value: Options) => void;
+  onSelectPosition: (position: Position | null) => void;
 }
 
-export default function Unstake({ selectedOption, selectedPosition, onChange }: Props) {
+export default function Unstake({ selectedOption, selectedPosition, onChange, onSelectPosition }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const { account } = usePangolinWeb3();
@@ -60,9 +60,15 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
     // if there was a tx hash, we want to clear the input
     if (hash) {
       onUserInput('');
+      onSelectPosition(null);
     }
     wrappedOnDismiss();
-  }, [onUserInput]);
+  }, [hash, onSelectPosition, onUserInput]);
+
+  // if changed the position and the drawer is open, close
+  useEffect(() => {
+    if (openDrawer) setOpenDrawer(false);
+  }, [selectedPosition]);
 
   const renderButton = () => {
     if (!account) {
@@ -86,7 +92,7 @@ export default function Unstake({ selectedOption, selectedPosition, onChange }: 
   };
 
   const ConfirmContent = (
-    <Wrapper paddingX="20px" paddingBottom="20px">
+    <Wrapper>
       <Header>
         <TokenRow>
           <Text fontSize={24} fontWeight={500} color="text1" style={{ marginRight: '12px' }}>

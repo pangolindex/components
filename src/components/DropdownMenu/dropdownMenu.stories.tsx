@@ -6,7 +6,7 @@ import DropdownMenu, { DropdownMenuProps } from '.';
 
 export default {
   component: DropdownMenu,
-  title: 'Components/Dropdownmenu',
+  title: 'Building Blocks/Dropdownmenu',
   args: {
     activeMenu: 'open',
   },

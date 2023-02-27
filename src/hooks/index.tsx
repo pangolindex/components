@@ -4,9 +4,11 @@ import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
-import { network } from 'src/connectors';
+import { hashConnect, network } from 'src/connectors';
+import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { PROVIDER_MAPPING } from 'src/constants';
-import { useBlockNumber } from 'src/state/papplication/hooks';
+import { useDispatch } from 'src/state';
+import { setAvailableHashpack } from 'src/state/papplication/actions';
 import { isAddress } from 'src/utils';
 
 interface Web3State {
@@ -38,6 +40,37 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   chainId,
   account,
 }: Web3ProviderProps) => {
+  const dispatch = useDispatch();
+
+  const { activate } = useWeb3React();
+
+  // this is special case for hashpack wallet
+  // we need to listen for
+  // 1. hashpack wallet installed or not event and we are storing this boolean to redux so that
+  // 2. if user open pangolin in dApp browser then we need to manually calls ACTIVATE_CONNECTOR
+  // in walletModal we can re-render as value updates
+  useEffect(() => {
+    const emitterFn = (isHashpackAvailable: boolean) => {
+      console.log('received hashpack emit event CHECK_EXTENSION in provider', isHashpackAvailable);
+      dispatch(setAvailableHashpack(true));
+    };
+    hashconnectEvent.on(HashConnectEvents.CHECK_EXTENSION, emitterFn);
+
+    // Here when load in iframe  we need to internally activate connector to connect account
+    const emitterFnForActivateConnector = (isIframeEventFound: boolean) => {
+      console.log('received hashpack emit event ACTIVATE_CONNECTOR in provider', isIframeEventFound);
+      activate(hashConnect);
+    };
+    hashconnectEvent.once(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
+
+    return () => {
+      console.log('removing hashpack CHECK_EXTENSION event listener');
+      hashconnectEvent.off(HashConnectEvents.CHECK_EXTENSION, emitterFn);
+      console.log('removing hashpack ACTIVATE_CONNECTOR event listener');
+      hashconnectEvent.off(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
+    };
+  }, []);
+
   const state = useMemo(() => {
     let normalizedAccount;
     if (chainId) {
@@ -135,29 +168,3 @@ export const useRefetchMinichefSubgraph = () => {
 
   return async () => await queryClient.refetchQueries(['get-minichef-farms-v2', account]);
 };
-
-export function useGetBlockTimestamp(blockNumber?: number) {
-  const latestBlockNumber = useBlockNumber();
-  const _blockNumber = blockNumber ?? latestBlockNumber;
-
-  const { provider } = useLibrary();
-
-  const [timestamp, setTimestamp] = useState<string | undefined>(undefined);
-
-  const getTimestamp = useMemo(async () => {
-    if (!_blockNumber || !provider) return;
-
-    const result = await (provider as any)?.getBlockTimestamp(_blockNumber);
-    return result;
-  }, [_blockNumber, provider]);
-
-  useEffect(() => {
-    const getResult = async () => {
-      const result = await getTimestamp;
-      setTimestamp(result);
-    };
-    getResult();
-  }, [_blockNumber, getTimestamp]);
-
-  return timestamp;
-}

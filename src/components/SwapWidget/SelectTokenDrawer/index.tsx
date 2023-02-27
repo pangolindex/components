@@ -123,7 +123,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
       // add gap
       const styles = {
         ...style,
-        left: Number(style.left) + 10,
+        right: Number(style.left) + 10,
         top: Number(style.top) + 10,
         width: Number(style.width) - 10,
         height: Number(style.height) - 10,
@@ -168,12 +168,13 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
             <FixedSizeGrid
               height={height}
               columnWidth={(width - 10) / 4}
-              rowHeight={120}
+              rowHeight={110}
               columnCount={4}
-              rowCount={currencies.length / 4}
+              rowCount={Math.ceil(currencies.length / 4)}
               width={width}
               itemData={currencies}
               itemKey={({ columnIndex, rowIndex, data }) => currencyKey(columnIndex, rowIndex, data, chainId)}
+              style={{ overflowX: 'hidden' }}
             >
               {Item}
             </FixedSizeGrid>

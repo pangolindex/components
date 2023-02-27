@@ -6,7 +6,7 @@ import { Stat } from '.';
 
 export default {
   component: Stat,
-  title: 'Components/Stat',
+  title: 'DeFi Helpers/Stat',
 };
 
 const TemplateButton: ComponentStory<typeof Stat> = (args: any) => <Stat {...args} />;

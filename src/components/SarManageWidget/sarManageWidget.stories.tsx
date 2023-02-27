@@ -4,12 +4,17 @@ import SarManageWidget from '.';
 
 export default {
   component: SarManageWidget,
-  title: 'Components/SarManageWidget',
+  title: 'DeFi Primitives/SAR Staking/SarManageWidget',
 };
 
 const TemplateSarManageWidget: ComponentStory<typeof SarManageWidget> = () => (
   <div style={{ width: '500px' }}>
-    <SarManageWidget selectedPosition={null} />
+    <SarManageWidget
+      selectedPosition={null}
+      onSelectPosition={(position) => {
+        console.log(position);
+      }}
+    />
   </div>
 );
 

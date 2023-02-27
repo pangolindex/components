@@ -25,7 +25,7 @@ export const NEAR_EXCHANGE_CONTRACT_ADDRESS = {
   [ChainId.NEAR_TESTNET]: 'png-exchange-v1.testnet',
 };
 
-export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '43114');
+export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? ChainId.AVALANCHE.toString());
 
 if (typeof NETWORK_URL === 'undefined') {
   throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`);
@@ -63,14 +63,14 @@ export const walletlink = new WalletLinkConnector({
 
 export const walletconnect = new WalletConnectConnector({
   rpc: {
-    43114: NETWORK_URL,
+    [ChainId.AVALANCHE]: NETWORK_URL,
   },
   qrcode: true,
   bridge: 'https://bridge.walletconnect.org',
 });
 
 export const xDefi = new DefiConnector({
-  supportedChainIds: [1, 43114, 11111, 16, 19],
+  supportedChainIds: [1, ChainId.AVALANCHE, ChainId.WAGMI, ChainId.COSTON, ChainId.SONGBIRD, ChainId.FLARE_MAINNET],
 });
 
 export const bitKeep = new BitKeepConnector({
@@ -122,14 +122,38 @@ export const near = new NearConnector({
   config: getNearConfig('testnet'),
 });
 
+function getHederaMainnetConfig() {
+  return {
+    networkId: 'mainnet',
+    chainId: ChainId.HEDERA_MAINNET,
+    contractId: 'contract -id',
+  };
+}
+
+// TODO: set configuration dynemically as per env
+function getHederaConfig(env = 'testnet') {
+  switch (env) {
+    case 'production':
+    case 'mainnet':
+      return getHederaMainnetConfig();
+
+    case 'testnet':
+      return {
+        networkId: 'testnet',
+        chainId: ChainId.HEDERA_TESTNET,
+        contractId: 'contract -id',
+      };
+    default:
+      return getHederaMainnetConfig();
+  }
+}
+
+// TODO: this approach is only for short term, review this later
+const hederaNetwork = localStorage.getItem('hedera_network') ?? 'mainnet';
 export const hashConnect = new HashConnector({
   normalizeChainId: false,
   normalizeAccount: false,
-  config: {
-    networkId: 'testnet',
-    chainId: ChainId.HEDERA_TESTNET,
-    contractId: 'contract -id',
-  },
+  config: getHederaConfig(hederaNetwork),
 });
 
 export const avalancheCore = new AvalancheCoreConnector({

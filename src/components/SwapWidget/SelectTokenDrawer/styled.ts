@@ -7,6 +7,7 @@ export const CurrencyList = styled.div`
   flex: 1;
   flex-direction: column;
   overflow-y: auto;
+  padding: 0px 10px;
   &::-webkit-scrollbar {
     display: none !important;
   }

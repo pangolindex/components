@@ -1,10 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
-import React, { useCallback, useEffect, useState } from 'react';
+import numeral from 'numeral';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import { Text } from 'src/components/Text';
+import Tooltip from 'src/components/Tooltip';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
@@ -19,15 +22,18 @@ interface Props {
   selectedOption: Options;
   selectedPosition: Position | null;
   onChange: (value: Options) => void;
+  onSelectPosition: (position: Position | null) => void;
 }
 
-export default function Compound({ selectedOption, selectedPosition, onChange }: Props) {
+export default function Compound({ selectedOption, selectedPosition, onChange, onSelectPosition }: Props) {
   const [openDrawer, setOpenDrawer] = useState(false);
   const chainId = useChainId();
 
   const useDerivativeSarCompound = useDerivativeSarCompoundHook[chainId];
   const { attempting, hash, compoundError, wrappedOnDismiss, onCompound } = useDerivativeSarCompound(selectedPosition);
   const { apr } = useSarStakeInfo();
+
+  const theme = useContext(ThemeContext);
 
   const oldBalance = selectedPosition?.balance ?? BigNumber.from('0');
   const pendingRewards = selectedPosition?.pendingRewards ?? BigNumber.from('0');
@@ -36,15 +42,25 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
   const useUSDPrice = useUSDCPriceHook[chainId];
   const pngPrice = useUSDPrice(png);
 
-  const dollarValue =
-    parseFloat(formatUnits(oldBalance.add(pendingRewards), png.decimals)) * Number(pngPrice?.toFixed() ?? 0);
+  const positionDollarValue =
+    pngPrice?.equalTo('0') || !pngPrice
+      ? 0
+      : parseFloat(formatUnits(oldBalance, png.decimals)) * Number(pngPrice.toFixed());
+
+  const rewardsDollarValue =
+    pngPrice?.equalTo('0') || !pngPrice
+      ? 0
+      : parseFloat(formatUnits(pendingRewards, png.decimals)) * Number(pngPrice?.toFixed());
 
   const { t } = useTranslation();
 
   const handleConfirmDismiss = useCallback(() => {
     setOpenDrawer(false);
+    if (hash) {
+      onSelectPosition(null);
+    }
     wrappedOnDismiss();
-  }, []);
+  }, [hash, onSelectPosition]);
 
   useEffect(() => {
     if (openDrawer && !attempting && !hash && !compoundError) {
@@ -59,7 +75,7 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
     let error: string | undefined;
     if (!selectedPosition) {
       error = t('sarStakeMore.choosePosition');
-    } else if (oldBalance?.isZero()) {
+    } else if (oldBalance?.isZero() || pendingRewards.isZero()) {
       error = t('sarCompound.noRewards');
     }
     return (
@@ -83,7 +99,31 @@ export default function Compound({ selectedOption, selectedPosition, onChange }:
           <Box display="flex" justifyContent="space-between">
             <Box>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">${dollarValue}</Text>
+              <Text color="text1" data-tip={Boolean(selectedPosition)} data-for="total-dollar-value-sar-compound">
+                ${numeral(rewardsDollarValue).format('0.00a')}
+              </Text>
+              {selectedPosition && (
+                <Tooltip id="total-dollar-value-sar-compound" effect="solid" backgroundColor={theme.primary}>
+                  <Box width="max-content">
+                    <Box display="flex" justifyContent="space-between" style={{ gap: '5px' }}>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        {t('stakePage.totalStaked')}:
+                      </Text>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        ${numeral(positionDollarValue).format('0.00a')}
+                      </Text>
+                    </Box>
+                    <Box display="flex" justifyContent="space-between" style={{ gap: '5px' }}>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        {t('stakePage.total')}:
+                      </Text>
+                      <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+                        ${numeral(positionDollarValue + rewardsDollarValue).format('0.00a')}
+                      </Text>
+                    </Box>
+                  </Box>
+                </Tooltip>
+              )}
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>

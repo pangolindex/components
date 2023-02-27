@@ -5,7 +5,7 @@ import BridgeCard from '.';
 
 export default {
   component: BridgeCard,
-  title: 'Components/Bridge/BridgeCard',
+  title: 'DeFi Primitives/Bridge/BridgeCard',
   parameters: {
     docs: {
       description: {

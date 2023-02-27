@@ -1,35 +1,33 @@
 import { Token } from '@pangolindex/sdk';
-import React from 'react';
-import styled from 'styled-components';
-import { CurrencyLogo } from 'src/components';
+import React, { useMemo } from 'react';
+import { Box, CurrencyLogo } from 'src/components';
 import { LogoSize } from 'src/constants';
-
-const Wrapper = styled.div<{ margin: boolean; sizeraw: number }>`
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  margin-right: ${({ sizeraw, margin }) => margin && (sizeraw / 3 + 8).toString() + 'px'};
-`;
+import { PNG } from 'src/constants/tokens';
+import { useChainId } from 'src/hooks';
 
 interface RewardTokensLogoProps {
-  margin?: boolean;
   size?: LogoSize;
   rewardTokens?: Array<Token | null | undefined> | null;
 }
 
-const CoveredLogo = styled(CurrencyLogo)<{ sizeraw: number }>`
-  position: absolute;
-  left: ${({ sizeraw }) => '-' + (sizeraw / 2).toString() + 'px'} !important;
-`;
+export default function RewardTokens({ rewardTokens = [], size = 24 }: RewardTokensLogoProps) {
+  const chainId = useChainId();
+  const png = PNG[chainId];
 
-export default function RewardTokens({ rewardTokens = [], size = 24, margin = false }: RewardTokensLogoProps) {
-  const tokens = rewardTokens || []; // add PNG as default reward
+  const tokens = useMemo(() => {
+    if (!rewardTokens) {
+      return [];
+    }
+    // add png in first position
+    const filteredTokens = rewardTokens.filter((token) => !!token && !token.equals(png));
+    return [png, ...filteredTokens];
+  }, [rewardTokens]);
 
   return (
-    <Wrapper sizeraw={size} margin={margin}>
+    <Box display="flex" width="100%" style={{ gap: '5px' }}>
       {(tokens || []).map((token, i) => {
-        return <CoveredLogo key={i} currency={token as Token} size={size} sizeraw={size} imageSize={48} />;
+        return <CurrencyLogo key={i} currency={token as Token} size={size} imageSize={48} />;
       })}
-    </Wrapper>
+    </Box>
   );
 }

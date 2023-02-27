@@ -59,13 +59,15 @@ export function isDummyAddress(value: any): string | false {
   return value;
 }
 
-export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+export const validateAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
   [ChainId.FUJI]: isAddress,
   [ChainId.AVALANCHE]: isAddress,
   [ChainId.WAGMI]: isAddress,
   [ChainId.COSTON]: isAddress,
   [ChainId.SONGBIRD]: isAddress,
+  [ChainId.FLARE_MAINNET]: isAddress,
   [ChainId.HEDERA_TESTNET]: hederaFn.isAddressValid,
+  [ChainId.HEDERA_MAINNET]: hederaFn.isAddressValid,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
   [ChainId.COSTON2]: isAddress,
@@ -84,6 +86,8 @@ export const checkRecipientAddressMapping: { [chainId in ChainId]: (value: any) 
   [ChainId.MOONRIVER]: isDummyAddress,
   [ChainId.MOONBEAM]: isDummyAddress,
   [ChainId.OP]: isDummyAddress,
+  [ChainId.EVMOS_TESTNET]: isAddress,
+  [ChainId.EVMOS_MAINNET]: isAddress,
 };
 
 export const checkAddressNetworkBaseMapping: {
@@ -99,7 +103,9 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: CHAINS[ChainId.WAGMI].blockExplorerUrls?.[0] || '',
   [ChainId.COSTON]: CHAINS[ChainId.COSTON].blockExplorerUrls?.[0] || '',
   [ChainId.SONGBIRD]: CHAINS[ChainId.SONGBIRD].blockExplorerUrls?.[0] || '',
+  [ChainId.FLARE_MAINNET]: CHAINS[ChainId.FLARE_MAINNET].blockExplorerUrls?.[0] || '',
   [ChainId.HEDERA_TESTNET]: CHAINS[ChainId.HEDERA_TESTNET].blockExplorerUrls?.[0] || '',
+  [ChainId.HEDERA_MAINNET]: CHAINS[ChainId.HEDERA_MAINNET].blockExplorerUrls?.[0] || '',
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls?.[0] || '',
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls?.[0] || '',
   [ChainId.COSTON2]: CHAINS[ChainId.COSTON2].blockExplorerUrls?.[0] || '',
@@ -118,6 +124,8 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].blockExplorerUrls?.[0] || '',
+  [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET].blockExplorerUrls?.[0] || '',
 };
 
 const transactionPath: { [chainId in ChainId]: string } = {
@@ -126,7 +134,9 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'tx',
   [ChainId.COSTON]: 'tx',
   [ChainId.SONGBIRD]: 'tx',
+  [ChainId.FLARE_MAINNET]: 'tx',
   [ChainId.HEDERA_TESTNET]: 'tx',
+  [ChainId.HEDERA_MAINNET]: 'tx',
   [ChainId.NEAR_MAINNET]: 'transactions',
   [ChainId.NEAR_TESTNET]: 'transactions',
   [ChainId.COSTON2]: 'tx',
@@ -145,6 +155,8 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'tx',
+  [ChainId.EVMOS_MAINNET]: 'tx',
 };
 
 const addressPath: { [chainId in ChainId]: string } = {
@@ -153,7 +165,9 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'address',
   [ChainId.COSTON]: 'address',
   [ChainId.SONGBIRD]: 'address',
+  [ChainId.FLARE_MAINNET]: 'address',
   [ChainId.HEDERA_TESTNET]: 'address',
+  [ChainId.HEDERA_MAINNET]: 'address',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
   [ChainId.COSTON2]: 'address',
@@ -172,6 +186,8 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'address',
+  [ChainId.EVMOS_MAINNET]: 'address',
 };
 
 const blockPath: { [chainId in ChainId]: string } = {
@@ -180,7 +196,9 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'block',
   [ChainId.COSTON]: 'block',
   [ChainId.SONGBIRD]: 'block',
+  [ChainId.FLARE_MAINNET]: 'block',
   [ChainId.HEDERA_TESTNET]: 'block',
+  [ChainId.HEDERA_MAINNET]: 'block',
   [ChainId.NEAR_MAINNET]: 'blocks',
   [ChainId.NEAR_TESTNET]: 'blocks',
   [ChainId.COSTON2]: 'block',
@@ -199,6 +217,8 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'block',
+  [ChainId.EVMOS_MAINNET]: 'block',
 };
 
 const tokenPath: { [chainId in ChainId]: string } = {
@@ -207,7 +227,9 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.WAGMI]: 'token',
   [ChainId.COSTON]: 'token',
   [ChainId.SONGBIRD]: 'token',
+  [ChainId.FLARE_MAINNET]: 'token',
   [ChainId.HEDERA_TESTNET]: 'token',
+  [ChainId.HEDERA_MAINNET]: 'token',
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
   [ChainId.COSTON2]: 'token',
@@ -226,6 +248,8 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.EVMOS_TESTNET]: 'token',
+  [ChainId.EVMOS_MAINNET]: 'token',
 };
 
 export function getEtherscanLink(
@@ -233,7 +257,7 @@ export function getEtherscanLink(
   data: string,
   type: 'transaction' | 'token' | 'address' | 'block',
 ): string {
-  const prefix = `${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[43114]}`;
+  const prefix = `${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[ChainId.AVALANCHE]}`;
 
   switch (type) {
     case 'transaction': {
@@ -369,6 +393,40 @@ export function filterTokenOrChain(
   });
 }
 
+// this mapping is useful for transforming address before displaying it on UI
+// for EVM chain this is shortening the address to fit it in UI
+// for Hedera chain this is converting address to Hedera Account Id
+export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+  [ChainId.FUJI]: shortenAddress,
+  [ChainId.AVALANCHE]: shortenAddress,
+  [ChainId.WAGMI]: shortenAddress,
+  [ChainId.COSTON]: shortenAddress,
+  [ChainId.SONGBIRD]: shortenAddress,
+  [ChainId.FLARE_MAINNET]: shortenAddress,
+  [ChainId.HEDERA_TESTNET]: hederaFn.hederaId,
+  [ChainId.HEDERA_MAINNET]: hederaFn.hederaId,
+  [ChainId.NEAR_MAINNET]: shortenAddress,
+  [ChainId.NEAR_TESTNET]: shortenAddress,
+  [ChainId.COSTON2]: shortenAddress,
+  [ChainId.ETHEREUM]: shortenAddress,
+  [ChainId.POLYGON]: shortenAddress,
+  [ChainId.FANTOM]: shortenAddress,
+  [ChainId.XDAI]: shortenAddress,
+  [ChainId.BSC]: shortenAddress,
+  [ChainId.ARBITRUM]: shortenAddress,
+  [ChainId.CELO]: shortenAddress,
+  [ChainId.OKXCHAIN]: shortenAddress,
+  [ChainId.VELAS]: shortenAddress,
+  [ChainId.AURORA]: shortenAddress,
+  [ChainId.CRONOS]: shortenAddress,
+  [ChainId.FUSE]: shortenAddress,
+  [ChainId.MOONRIVER]: shortenAddress,
+  [ChainId.MOONBEAM]: shortenAddress,
+  [ChainId.OP]: shortenAddress,
+  [ChainId.EVMOS_TESTNET]: shortenAddress,
+  [ChainId.EVMOS_MAINNET]: shortenAddress,
+};
+
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALANCHE, chars = 4): string {
   const parsed = isEvmChain(chainId) ? isAddress(address) : address;
@@ -501,7 +559,7 @@ export function scrollElementIntoView(element: HTMLElement | null, behavior?: 's
   }
 }
 
-export function isEvmChain(chainId: ChainId = 43114): boolean {
+export function isEvmChain(chainId: ChainId = ChainId.AVALANCHE): boolean {
   if (CHAINS[chainId]?.evm) {
     return true;
   }

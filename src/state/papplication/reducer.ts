@@ -4,6 +4,7 @@ import {
   PopupContent,
   addPopup,
   removePopup,
+  setAvailableHashpack,
   setOpenModal,
   updateBlockNumber,
   updateSelectedPoolId,
@@ -16,6 +17,7 @@ export interface ApplicationState {
   readonly popupList: PopupList;
   readonly openModal: ApplicationModal | null;
   readonly selectedPoolId: string | undefined; // used for detail modal in pool page to get stakingInfo Data
+  readonly isAvailableHashpack: boolean;
 }
 
 const initialState: ApplicationState = {
@@ -23,6 +25,7 @@ const initialState: ApplicationState = {
   popupList: [],
   openModal: null,
   selectedPoolId: undefined,
+  isAvailableHashpack: false,
 };
 
 export default createReducer(initialState, (builder) =>
@@ -58,5 +61,9 @@ export default createReducer(initialState, (builder) =>
 
     .addCase(updateSelectedPoolId, (state, action) => {
       state.selectedPoolId = action.payload;
+    })
+
+    .addCase(setAvailableHashpack, (state, action) => {
+      state.isAvailableHashpack = action.payload;
     }),
 );

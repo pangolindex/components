@@ -11,12 +11,15 @@ import { TextInput } from 'src/components/TextInput';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useHederaSarNFTContract } from 'src/hooks/useContract';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/state/psarstake/multiChainsHooks';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { getBuyUrl } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../SarManageWidget/ConfirmDrawer/styled';
 import { Buttons, Root, Wrapper } from './styleds';
@@ -28,6 +31,7 @@ export default function SarManageWidget() {
   const { account } = usePangolinWeb3();
 
   const png = PNG[chainId];
+  const useTokenBalance = useTokenBalanceHook[chainId];
   const userPngBalance = useTokenBalance(account ?? ZERO_ADDRESS, png);
   const { t } = useTranslation();
 
@@ -85,6 +89,15 @@ export default function SarManageWidget() {
     }
   };
 
+  const isHedera = hederaFn.isHederaChain(chainId);
+  const sarNftContract = useHederaSarNFTContract();
+
+  const {
+    associate: onAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+    isLoading: isLoadingAssociate,
+  } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
+
   const showApproveFlow =
     !error &&
     (approval === ApprovalState.NOT_APPROVED ||
@@ -102,6 +115,12 @@ export default function SarManageWidget() {
       return (
         <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png, chainId)} onClick={deactivateOverlay}>
           {t('sarStake.buy', { symbol: png.symbol })}
+        </Button>
+      );
+    } else if (!isHederaTokenAssociated && isHedera) {
+      return (
+        <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
+          {isLoadingAssociate ? 'Associating' : 'Associate'}
         </Button>
       );
     } else {
@@ -221,9 +240,9 @@ export default function SarManageWidget() {
         </Box>
         <Box display="grid" bgColor="color3" borderRadius="4px" padding="20px" style={{ gridGap: '20px' }}>
           <Box display="flex" justifyContent="space-between">
-            <Box>
+            <Box maxWidth="150px" style={{ overflow: 'hidden' }}>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">${dollerWorth ?? '0'}</Text>
+              <Text color="text1">{dollerWorth ? `$ ${numeral(dollerWorth).format('0.00a')}` : '-'}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>

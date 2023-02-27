@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import {
@@ -14,6 +15,8 @@ import {
   useHederaCreatePair,
   useHederaPairBalance,
   useHederaRemoveLiquidity,
+  useHederaTokenBalance,
+  useHederaTokenBalances,
   useNearAddLiquidity,
   useNearBalance,
   useNearCreatePair,
@@ -27,7 +30,7 @@ import {
 } from './hooks';
 
 export type UseTokenBalancesHookType = {
-  [chainId in ChainId]: typeof useTokenBalances | typeof useNearTokenBalances;
+  [chainId in ChainId]: typeof useTokenBalances | typeof useNearTokenBalances | typeof useHederaTokenBalances;
 };
 
 export const useTokenBalancesHook: UseTokenBalancesHookType = {
@@ -36,10 +39,14 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.WAGMI]: useTokenBalances,
   [ChainId.COSTON]: useTokenBalances,
   [ChainId.SONGBIRD]: useTokenBalances,
-  [ChainId.HEDERA_TESTNET]: useTokenBalances,
+  [ChainId.FLARE_MAINNET]: useTokenBalances,
+  [ChainId.HEDERA_TESTNET]: useHederaTokenBalances,
+  [ChainId.HEDERA_MAINNET]: useHederaTokenBalances,
   [ChainId.NEAR_MAINNET]: useNearTokenBalances,
   [ChainId.NEAR_TESTNET]: useNearTokenBalances,
   [ChainId.COSTON2]: useTokenBalances,
+  [ChainId.EVMOS_TESTNET]: useTokenBalances,
+  [ChainId.EVMOS_MAINNET]: useTokenBalances,
   // TODO: We need to check following chains
   [ChainId.ETHEREUM]: useTokenBalances,
   [ChainId.POLYGON]: useTokenBalances,
@@ -59,7 +66,11 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
 };
 
 export type UseTokenBalanceHookType = {
-  [chainId in ChainId]: typeof useTokenBalance | typeof useNearTokenBalance | typeof useDummyHook;
+  [chainId in ChainId]:
+    | typeof useTokenBalance
+    | typeof useNearTokenBalance
+    | typeof useHederaTokenBalance
+    | typeof useDummyHook;
 };
 
 export const useTokenBalanceHook: UseTokenBalanceHookType = {
@@ -68,7 +79,9 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.WAGMI]: useTokenBalance,
   [ChainId.COSTON]: useTokenBalance,
   [ChainId.SONGBIRD]: useTokenBalance,
-  [ChainId.HEDERA_TESTNET]: useTokenBalance,
+  [ChainId.FLARE_MAINNET]: useTokenBalance,
+  [ChainId.HEDERA_TESTNET]: useHederaTokenBalance,
+  [ChainId.HEDERA_MAINNET]: useHederaTokenBalance,
   [ChainId.NEAR_MAINNET]: useNearTokenBalance,
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
   [ChainId.COSTON2]: useTokenBalance,
@@ -87,6 +100,8 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.EVMOS_TESTNET]: useTokenBalance,
+  [ChainId.EVMOS_MAINNET]: useTokenBalance,
 };
 
 export type UsePairBalanceHookType = {
@@ -99,10 +114,14 @@ export const usePairBalanceHook: UsePairBalanceHookType = {
   [ChainId.WAGMI]: useEVMPairBalance,
   [ChainId.COSTON]: useEVMPairBalance,
   [ChainId.SONGBIRD]: useEVMPairBalance,
+  [ChainId.FLARE_MAINNET]: useEVMPairBalance,
   [ChainId.HEDERA_TESTNET]: useHederaPairBalance,
+  [ChainId.HEDERA_MAINNET]: useHederaPairBalance,
   [ChainId.NEAR_MAINNET]: useNearPairBalance,
   [ChainId.NEAR_TESTNET]: useNearPairBalance,
   [ChainId.COSTON2]: useEVMPairBalance,
+  [ChainId.EVMOS_TESTNET]: useEVMPairBalance,
+  [ChainId.EVMOS_MAINNET]: useEVMPairBalance,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useEVMPairBalance,
   [ChainId.POLYGON]: useEVMPairBalance,
@@ -131,7 +150,9 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.WAGMI]: useETHBalances,
   [ChainId.COSTON]: useETHBalances,
   [ChainId.SONGBIRD]: useETHBalances,
+  [ChainId.FLARE_MAINNET]: useETHBalances,
   [ChainId.HEDERA_TESTNET]: useHederaBalance,
+  [ChainId.HEDERA_MAINNET]: useHederaBalance,
   [ChainId.NEAR_MAINNET]: useNearBalance,
   [ChainId.NEAR_TESTNET]: useNearBalance,
   [ChainId.COSTON2]: useETHBalances,
@@ -151,6 +172,8 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.MOONRIVER]: useETHBalances,
   [ChainId.MOONBEAM]: useETHBalances,
   [ChainId.OP]: useETHBalances,
+  [ChainId.EVMOS_TESTNET]: useETHBalances,
+  [ChainId.EVMOS_MAINNET]: useETHBalances,
 };
 
 export type UseAddLiquidityHookType = {
@@ -163,10 +186,14 @@ export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.WAGMI]: useAddLiquidity,
   [ChainId.COSTON]: useAddLiquidity,
   [ChainId.SONGBIRD]: useAddLiquidity,
+  [ChainId.FLARE_MAINNET]: useAddLiquidity,
   [ChainId.HEDERA_TESTNET]: useHederaAddLiquidity,
+  [ChainId.HEDERA_MAINNET]: useHederaAddLiquidity,
   [ChainId.NEAR_MAINNET]: useNearAddLiquidity,
   [ChainId.NEAR_TESTNET]: useNearAddLiquidity,
   [ChainId.COSTON2]: useAddLiquidity,
+  [ChainId.EVMOS_TESTNET]: useAddLiquidity,
+  [ChainId.EVMOS_MAINNET]: useAddLiquidity,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useAddLiquidity,
   [ChainId.POLYGON]: useAddLiquidity,
@@ -195,10 +222,14 @@ export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
   [ChainId.WAGMI]: useRemoveLiquidity,
   [ChainId.COSTON]: useRemoveLiquidity,
   [ChainId.SONGBIRD]: useRemoveLiquidity,
+  [ChainId.FLARE_MAINNET]: useRemoveLiquidity,
   [ChainId.HEDERA_TESTNET]: useHederaRemoveLiquidity,
+  [ChainId.HEDERA_MAINNET]: useHederaRemoveLiquidity,
   [ChainId.NEAR_MAINNET]: useNearRemoveLiquidity,
   [ChainId.NEAR_TESTNET]: useNearRemoveLiquidity,
   [ChainId.COSTON2]: useRemoveLiquidity,
+  [ChainId.EVMOS_TESTNET]: useRemoveLiquidity,
+  [ChainId.EVMOS_MAINNET]: useRemoveLiquidity,
   // TODO: Remove these hooks later on
   [ChainId.ETHEREUM]: useRemoveLiquidity,
   [ChainId.POLYGON]: useRemoveLiquidity,
@@ -231,10 +262,14 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.WAGMI]: useGetUserLP,
   [ChainId.COSTON]: useGetUserLP,
   [ChainId.SONGBIRD]: useGetUserLP,
+  [ChainId.FLARE_MAINNET]: useGetUserLP,
   [ChainId.HEDERA_TESTNET]: useGetHederaUserLP,
+  [ChainId.HEDERA_MAINNET]: useGetHederaUserLP,
   [ChainId.NEAR_MAINNET]: useGetNearUserLP,
   [ChainId.NEAR_TESTNET]: useGetNearUserLP,
   [ChainId.COSTON2]: useGetUserLP,
+  [ChainId.EVMOS_TESTNET]: useGetUserLP,
+  [ChainId.EVMOS_MAINNET]: useGetUserLP,
   // TODO: Remove these hooks later on
   [ChainId.ETHEREUM]: useGetUserLP,
   [ChainId.POLYGON]: useGetUserLP,
@@ -271,10 +306,14 @@ export const useCreatePairHook: UseCreatePairHookType = {
   [ChainId.WAGMI]: useDummyCreatePair,
   [ChainId.COSTON]: useDummyCreatePair,
   [ChainId.SONGBIRD]: useDummyCreatePair,
+  [ChainId.FLARE_MAINNET]: useDummyCreatePair,
   [ChainId.HEDERA_TESTNET]: useHederaCreatePair,
+  [ChainId.HEDERA_MAINNET]: useHederaCreatePair,
   [ChainId.NEAR_MAINNET]: useNearCreatePair,
   [ChainId.NEAR_TESTNET]: useNearCreatePair,
   [ChainId.COSTON2]: useDummyCreatePair,
+  [ChainId.EVMOS_TESTNET]: useDummyCreatePair,
+  [ChainId.EVMOS_MAINNET]: useDummyCreatePair,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -291,3 +330,4 @@ export const useCreatePairHook: UseCreatePairHookType = {
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
 };
+/* eslint-enable max-lines */

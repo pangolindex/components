@@ -17,9 +17,9 @@
     "pngBreakDown": "Deine {{ symbol }}-Übersicht",
     "balance": "Kontostand: ",
     "unclaimed": "Nicht beansprucht: ",
-    "pngPrice": "{{ symbol }}-Preis:",
+    "tokenPrice": "{{ symbol }}-Preis:",
     "pngCirculation": "{{ symbol }} im Umlauf:",
-    "totalSupply": "Gesamtmenge",
+    "totalSupply": "Gesamtmenge:",
     "makeSureURLWarning": "Gehe sicher, dass die URL folgende ist:",
     "alwaysMakeSureWarning": "Gehe immer sicher, dass die URL folgende ist:",
     "bookmarkIt": "Füge sie deinen Favoriten hinzu, um dich abzusichern.",
@@ -388,7 +388,8 @@
     "importDescription1": "Mit der Importfunktion können Sie nach Pools suchen, die nicht im Abschnitt 'Ihre Pools' erscheinen.",
     "importDescription2": "Wählen Sie einfach die zugrunde liegenden Münzen aus, die sich in Ihrem Pool befanden.",
     "createPairDescription": "Mit der Erstellungsfunktion können Sie ein neues Paar erstellen. Suchen Sie einfach nach den Münzen, für die Sie ein Paar erstellen möchten, und das System findet entweder den Pool, falls er auf Pangolin existiert, oder erstellt einen brandneuen, falls dies nicht der Fall ist.",
-    "addLiquidityDescription": "Mit der Funktion „Liquidität hinzufügen“ fügen Sie einem Paar Liquidität hinzu. Suchen Sie einfach nach den Münzen, denen Sie Liquidität hinzufügen möchten, und das System findet den Pool, falls er in Pangolin existiert, oder erstellt einen neuen, falls dies nicht der Fall ist."
+    "addLiquidityDescription": "Mit der Funktion „Liquidität hinzufügen“ fügen Sie einem Paar Liquidität hinzu. Suchen Sie einfach nach den Münzen, denen Sie Liquidität hinzufügen möchten, und das System findet den Pool, falls er in Pangolin existiert, oder erstellt einen neuen, falls dies nicht der Fall ist.",
+    "createStorageContract": "Auf Hedera müssen alle Smart Contracts Gebühren für die Nutzung des Speicherplatzes im Hauptbuch zahlen. Dies sind Lagergebühren und Gebühren für die automatische Verlängerung. Sie müssen einen Speichervertrag erstellen, um zu farmen. Die Lagerung wird kostenlos, aber in Zukunft müssen Sie Gebühren für die automatische Verlängerung zahlen. Das sind etwa 2 Cent. Also wir empfehlen, immer 1 $ auf HBAR in Ihrer Brieftasche zu haben, um sicherzustellen, dass Sie keine Probleme haben."
   },
   "poolFinder": {
     "connectToFind": "Verbinde mit einer Wallet, um Pools zu finden",
@@ -611,7 +612,8 @@
     "seeDetails": "SEE DETAILS",
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
-    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!"
+    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
+    "total": "Gesamt (Stakes + Prämien)"
   },
   "error": {
     "missingCurrencyAmounts": "Fehlende Währungsbeträge",
@@ -700,7 +702,7 @@
   "pangoChef": {
     "claimWarning1": "Wenn Sie einen Anspruch geltend machen, ohne abzuheben, bleibt Ihre Liquidität im Mining-Pool.",
     "claimWarning2": "Wenn Sie Ihre Prämien beanspruchen, sinkt Ihr effektiver Jahreszins auf 0. Stattdessen können Sie sich für eine Aufzinsung entscheiden.",
-    "compoundWarning": "Wenn Sie Ihre Belohnungen für die {{ token0 }}-{{ token1 }}-Farm zusammensetzen, werden Ihre Belohnungen in die {{ token0 }}-{{ token1 }} farm eingesetzt. Sie müssen den gleichen Wert von {{ currency }}Token für Ihre angesammelten {{ png }} Prämien.",
+    "compoundWarning": "Wenn Sie Ihre Belohnungen für die {{ token0 }}-{{ token1 }}-Farm zusammensetzen, werden Ihre Belohnungen in die {{ stakeToken0 }}-{{ stakeToken1 }} farm eingesetzt. Sie müssen den gleichen Wert von {{ compoundToken }}Token für Ihre angesammelten {{ png }} Prämien.",
     "compoundAmountWarning": "Sie müssen {{ amount }} {{ symbol }} zur Verbindung hinzufügen. Bitte beachten Sie, dass die Aufzinsung Ihren effektiven Jahreszins leicht verringern kann.",
     "compoundAmountWarning2": "Zum Zusammensetzen. Seien Sie vorsichtig, dass Sie Ihren {{ token0 }} {{ token1 }} pool sperren, bis Sie die Belohnungen dieses Pools beanspruchen.",
     "highVolalityWarning": "Zu früh, versuchen Sie es in ein paar Stunden",
@@ -716,6 +718,7 @@
     "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
+    "poweredBy": "Powered by",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",

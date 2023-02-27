@@ -17,7 +17,7 @@
     "pngBreakDown": "{{ symbol }} của bạn gặp sự cố",
     "balance": "Số dư: ",
     "unclaimed": "Chưa được nhận: ",
-    "pngPrice": "Giá {{ symbol }}:",
+    "tokenPrice": "Giá {{ symbol }}:",
     "pngCirculation": "Tổng {{ symbol }} đang lưu thông:",
     "totalSupply": "Tổng cung",
     "makeSureURLWarning": "Đảm bảo rằng URL là:",
@@ -388,7 +388,8 @@
     "importDescription1": "Với chức năng nhập, bạn có thể tìm kiếm các nhóm không xuất hiện trong phần 'Bể bơi của bạn'.",
     "importDescription2": "Chỉ cần chọn các đồng tiền cơ bản trong nhóm của bạn.",
     "createPairDescription": "Với chức năng tạo, bạn có thể tạo một cặp mới. Chỉ cần tìm kiếm các đồng tiền mà bạn muốn tạo một cặp và hệ thống sẽ tìm thấy đồng tiền nếu tồn tại trên Pangolin hoặc tạo một đồng mới nếu không có.",
-    "addLiquidityDescription": "Với chức năng thêm thanh khoản, bạn thêm thanh khoản cho một cặp. Chỉ cần tìm kiếm những đồng tiền mà bạn muốn thêm thanh khoản và hệ thống sẽ tìm đồng tiền nếu nó tồn tại ở Pangolin hoặc tạo một đồng mới nếu nó không có."
+    "addLiquidityDescription": "Với chức năng thêm thanh khoản, bạn thêm thanh khoản cho một cặp. Chỉ cần tìm kiếm những đồng tiền mà bạn muốn thêm thanh khoản và hệ thống sẽ tìm đồng tiền nếu nó tồn tại ở Pangolin hoặc tạo một đồng mới nếu nó không có.",
+    "createStorageContract": "Trên Hedera, tất cả các hợp đồng thông minh cần phải trả phí để sử dụng không gian trên sổ cái. Đây là phí lưu trữ và phí gia hạn tự động. Bạn sẽ cần tạo hợp đồng Lưu trữ để trang trại. Kho lưu trữ sẽ miễn phí, nhưng trong tương lai bạn sẽ phải trả phí gia hạn tự động. Đây là khoảng 2 xu. Vì vậy, chúng tôi khuyên bạn nên giữ $1 trên HBAR trong ví của mình mọi lúc để đảm bảo bạn không gặp phải bất kỳ sự cố nào."
   },
   "poolFinder": {
     "connectToFind": "Kêt nối với một ví để nhìn thấy bể",
@@ -611,7 +612,8 @@
     "seeDetails": "SEE DETAILS",
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
-    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!"
+    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
+    "total": "Tổng số (đặt cược + phần thưởng)"
   },
   "error": {
     "missCurrencyAmounts": "Thiếu số tiền",
@@ -700,7 +702,7 @@
   "pangoChef": {
     "claimWarning1": "Khi bạn yêu cầu mà không rút tiền, thanh khoản của bạn vẫn còn trong nhóm khai thác.",
     "claimWarning2": "Yêu cầu phần thưởng của bạn sẽ giảm APR của bạn xuống 0. Thay vào đó, bạn có thể chọn kết hợp.",
-    "compoundWarning": "Tích lũy phần thưởng của bạn cho trang trại {{token0}} - {{token1}} sẽ nhận được phần thưởng của bạn vào trang trại {{token0}} - {{token1}}. Bạn cần thêm giá trị tương đương của mã thông báo {{currency}} vào phần thưởng {{png}} đã tích lũy của mình.",
+    "compoundWarning": "Tích lũy phần thưởng của bạn cho trang trại {{ token0 }} - {{ token1 }} sẽ nhận được phần thưởng của bạn vào trang trại {{ stakeToken0 }} - {{ stakeToken1 }}. Bạn cần thêm giá trị tương đương của mã thông báo {{ compoundToken }} vào phần thưởng {{ png }} đã tích lũy của mình.",
     "compoundAmountWarning": "Bạn cần thêm {{amount}} {{symbol}} để kết hợp. Hãy lưu ý rằng Kết hợp có thể làm giảm một chút APR của bạn.",
     "compoundAmountWarning2": "Hãy cẩn thận rằng bạn sẽ khóa nhóm {{ token0 }} {{ token1 }} của mình cho đến khi bạn nhận được phần thưởng của nhóm này.",
     "highVolalityWarning": "Còn quá sớm, hãy thử sau vài giờ",
@@ -716,6 +718,7 @@
     "noRoute": "No route found",
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
+    "poweredBy": "Powered by",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
