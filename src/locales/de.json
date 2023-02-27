@@ -712,6 +712,33 @@
     "lockingPoolZeroWarning": "Sie können Ihre Liquidität nicht entfernen oder Ihre Belohnungen von dieser Farm einfordern. Um dies zu tun, müssen Sie zuerst Ihren Anteil von diesen Farmen entweder beanspruchen oder entfernen: ",
     "decreaseWarning": "Ihr APR wird sinken, da der neue zusammengesetzte Teil mit APR 0 beginnt und ein Durchschnitt zwischen dem alten und dem neuen Teil genommen wird."
   },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "sortBy": "Sort By",
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    },
+    "positionCard": {
+      "max": "Max",
+      "min": "Min",
+      "open": "Open",
+      "closed": "Closed"
+    }
+  },
   "bridge": {
     "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",

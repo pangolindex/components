@@ -711,6 +711,33 @@
     "lockingPoolZeroWarning": "您无法从该农场移除您的流动性或索取您的奖励。 为此，您首先需要从该农场中认领或移除您的股份： ",
     "decreaseWarning": "你的 apr 会减少，因为新的复合部分从 apr 0 开始，并且将在新旧部分之间取平均值。"
   },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "sortBy": "Sort By",
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    },
+    "positionCard": {
+      "max": "Max",
+      "min": "Min",
+      "open": "Open",
+      "closed": "Closed"
+    }
+  },
   "bridge": {
     "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",

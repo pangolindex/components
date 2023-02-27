@@ -712,6 +712,33 @@
     "lockingPoolZeroWarning": "Bạn không thể xóa thanh khoản của mình hoặc yêu cầu phần thưởng của mình từ trang trại này. Để làm điều này, trước tiên bạn cần xác nhận quyền sở hữu hoặc loại bỏ cổ phần của bạn khỏi các trang trại này: ",
     "decreaseWarning": "Apr của bạn sẽ giảm vì phần phức hợp mới bắt đầu bằng apr 0 và trung bình sẽ được lấy giữa phần cũ và mới."
   },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "sortBy": "Sort By",
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    },
+    "positionCard": {
+      "max": "Max",
+      "min": "Min",
+      "open": "Open",
+      "closed": "Closed"
+    }
+  },
   "bridge": {
     "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",

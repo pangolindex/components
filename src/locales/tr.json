@@ -622,7 +622,7 @@
     "couldNotWrap": "Kaydırılamadı",
     "attemptingToConfirmApproval": "Onay veya imza olmadan onaylamaya çalışılıyor. Lütfen destek ile iletişime geçin."
   },
-  "sarTitle":{
+  "sarTitle": {
     "addMore": "DAHA EKLE",
     "unstake": "BİR POZİSYONU KALDIR",
     "compound": "BİLEŞİK ÖDÜLLER",
@@ -710,6 +710,33 @@
     "removeWarning": "Çiftlikten herhangi bir miktarı çıkarmak, APR'nizi 0'a getirecektir. Bunun yerine ödüllerinizi, APR'nizi kaybetmeden birleştirebilirsiniz.",
     "lockingPoolZeroWarning": "Bu çiftlikten likiditenizi kaldıramaz veya ödüllerinizi talep edemezsiniz. Bunu yapmak için önce bu çiftliklerden hissenizi talep etmeniz veya kaldırmanız gerekir: ",
     "decreaseWarning": "Yeni bileşik kısım 0 nisan ile başladığı için apr'ınız düşecek ve eski ile yeni kısım arasında bir ortalama alınacaktır."
+  },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "Tüm Pozisyonlar",
+      "openPositions": "Açık Pozisyonlar",
+      "closedPositions": "Kapalı Pozisyonlar"
+    },
+    "sortTypes": {
+      "liquidity": "Likidite",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Havuzlar V3",
+      "seeMore": "Klasik havuzları görmek mi istiyorsunuz",
+      "goToFarm": "Çiftlik sayfasına git"
+    },
+    "positionList": {
+      "sortBy": "Sıralama Ölçütü",
+      "searchContent": "Token adını aramayı deneyin…",
+      "poolNotExist": "Gösterilecek açık veya kapalı pozisyonunuz yok."
+    },
+    "positionCard": {
+      "max": "Maks",
+      "min": "Min",
+      "open": "Açık",
+      "closed": "Kapalı"
+    }
   },
   "bridge": {
     "selectChain": "Select Chain",

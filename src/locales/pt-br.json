@@ -711,6 +711,33 @@
     "lockingPoolZeroWarning": "Você não pode remover sua liquidez ou reivindicar suas recompensas neste farm. Para fazer isso, primeiro você precisa reivindicar ou remover sua participação nestas fazendas: ",
     "decreaseWarning": "Seu APR diminuirá porque a nova parte composta começa com APR 0 e uma média será feita entre a parte antiga e a nova."
   },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "sortBy": "Sort By",
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    },
+    "positionCard": {
+      "max": "Max",
+      "min": "Min",
+      "open": "Open",
+      "closed": "Closed"
+    }
+  },
   "bridge": {
     "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",

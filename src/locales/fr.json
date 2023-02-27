@@ -712,6 +712,33 @@
     "lockingPoolZeroWarning": "Vous ne pouvez pas retirer vos liquidités ou réclamer vos récompenses de cette ferme. Pour ce faire, vous devez d'abord réclamer ou retirer votre mise de ces fermes : ",
     "decreaseWarning": "Votre apr diminuera car la nouvelle partie composée commence par apr 0 et une moyenne sera prise entre l'ancienne et la nouvelle partie."
   },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "sortBy": "Sort By",
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    },
+    "positionCard": {
+      "max": "Max",
+      "min": "Min",
+      "open": "Open",
+      "closed": "Closed"
+    }
+  },
   "bridge": {
     "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
