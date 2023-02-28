@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
@@ -18,7 +19,7 @@ import { NETWORK_TYPE, NetworkProps } from './types';
 export default function NetworkSelection({ open, closeModal }: NetworkProps) {
   const { activate } = useWeb3React();
   const mixpanel = useMixpanel();
-
+  const { t } = useTranslation();
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -75,7 +76,7 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
       <Frame>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Text color="text1" fontSize="24px">
-            Select Chain
+            {t('bridge.selectChain')}
           </Text>
           <CloseButton onClick={closeModal} size={24} />
         </Box>

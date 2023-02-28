@@ -1,6 +1,7 @@
 import { BridgeChain, Chain, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
+import { useTranslation } from 'react-i18next';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import Drawer from 'src/components/Drawer';
@@ -25,7 +26,7 @@ const SelectChainDrawer: React.FC<Props> = (props) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
-
+  const { t } = useTranslation();
   useEffect(() => {
     if (isOpen && !lastOpen) {
       setSearchQuery('');
@@ -93,11 +94,11 @@ const SelectChainDrawer: React.FC<Props> = (props) => {
   );
 
   return (
-    <Drawer px={30} pb={30} pt={30} title="Select a chain" isOpen={isOpen} onClose={onClose}>
+    <Drawer px={30} pb={30} pt={30} title={t('bridge.selectChain')} isOpen={isOpen} onClose={onClose}>
       {/* Render Search Chain Input */}
       <Box padding="0px 30px">
         <TextInput
-          placeholder="Search"
+          placeholder={t('bridge.search')}
           onChange={(value: any) => {
             setSearchQuery(value as string);
           }}

@@ -99,7 +99,8 @@
     "extraReward": "Zusätzliche Belohnung",
     "poolRewards": "Pool-Belohnungen",
     "rewardsIn": "Belohnungen ein",
-    "removeWarning": "Sie entfernen Liquidität aus diesem Pool. Diese Aktion gibt Ihnen Ihre Token zurück. Alternativ können Sie sich dafür entscheiden, Ihre Token zu farmen, um Belohnungen zu verdienen."
+    "removeWarning": "Sie entfernen Liquidität aus diesem Pool. Diese Aktion gibt Ihnen Ihre Token zurück. Alternativ können Sie sich dafür entscheiden, Ihre Token zu farmen, um Belohnungen zu verdienen.",
+    "rewardClaimed" : "Your rewards claimed"
   },
   "menu": {
     "code": "Code",
@@ -384,12 +385,25 @@
     "yourFarms": "Ihre Höfe",
     "yourPools": "Ihre Pools",
     "noFarms": "Keine Höfe gefunden.",
+    "visitWebsite": "Visit Website",
     "successWithdraw": "Ihre Liquidität wurde aus der Farm entfernt und aufgelaufene Prämien eingefordert!",
     "importDescription1": "Mit der Importfunktion können Sie nach Pools suchen, die nicht im Abschnitt 'Ihre Pools' erscheinen.",
     "importDescription2": "Wählen Sie einfach die zugrunde liegenden Münzen aus, die sich in Ihrem Pool befanden.",
     "createPairDescription": "Mit der Erstellungsfunktion können Sie ein neues Paar erstellen. Suchen Sie einfach nach den Münzen, für die Sie ein Paar erstellen möchten, und das System findet entweder den Pool, falls er auf Pangolin existiert, oder erstellt einen brandneuen, falls dies nicht der Fall ist.",
     "addLiquidityDescription": "Mit der Funktion „Liquidität hinzufügen“ fügen Sie einem Paar Liquidität hinzu. Suchen Sie einfach nach den Münzen, denen Sie Liquidität hinzufügen möchten, und das System findet den Pool, falls er in Pangolin existiert, oder erstellt einen neuen, falls dies nicht der Fall ist.",
-    "createStorageContract": "Auf Hedera müssen alle Smart Contracts Gebühren für die Nutzung des Speicherplatzes im Hauptbuch zahlen. Dies sind Lagergebühren und Gebühren für die automatische Verlängerung. Sie müssen einen Speichervertrag erstellen, um zu farmen. Die Lagerung wird kostenlos, aber in Zukunft müssen Sie Gebühren für die automatische Verlängerung zahlen. Das sind etwa 2 Cent. Also wir empfehlen, immer 1 $ auf HBAR in Ihrer Brieftasche zu haben, um sicherzustellen, dass Sie keine Probleme haben."
+    "createStorageContract": "Auf Hedera müssen alle Smart Contracts Gebühren für die Nutzung des Speicherplatzes im Hauptbuch zahlen. Dies sind Lagergebühren und Gebühren für die automatische Verlängerung. Sie müssen einen Speichervertrag erstellen, um zu farmen. Die Lagerung wird kostenlos, aber in Zukunft müssen Sie Gebühren für die automatische Verlängerung zahlen. Das sind etwa 2 Cent. Also wir empfehlen, immer 1 $ auf HBAR in Ihrer Brieftasche zu haben, um sicherzustellen, dass Sie keine Probleme haben.",
+    "supplying": "Supplying",
+    "associating": "Associating",
+    "associate": "Associate",
+    "liquidityAdded": "Liquidity Added",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
+    "yourAPR": "Your APR",
+    "swapFeeAPR": "Swap fee APR",
+    "rewardAPR": "Reward APR",
+    "totalAPR": "Total APR",
+    "averageAPR": "Average APR",
+    "yourTVL": "Your TVL"
   },
   "poolFinder": {
     "connectToFind": "Verbinde mit einer Wallet, um Pools zu finden",
@@ -417,7 +431,9 @@
     "approved": "Bestätigt",
     "remove": "Entferne",
     "output": "Auszahlung",
-    "amount": "Anzahl"
+    "amount": "Anzahl",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity"
   },
   "swapPage": {
     "addSend": "+ Empfängerwallet hinzufügen (optional)",
@@ -472,7 +488,10 @@
     "executionPrice": "Ausführungspreis",
     "seeMore": "Mehr sehen",
     "seeLess": "Siehe Weniger",
-    "orderPlaced": "{{ orderType }} auftrag erteilt."
+    "orderPlaced": "{{ orderType }} auftrag erteilt.",
+    "selectToken" : "Select Token",
+    "notFoundBalances" : "Not found balances",
+    "notFoundToken" : "Not found tokens on this chain"
   },
   "buyPage": {
     "buyAvaxInfo": "Kaufen Sie AVAX mit Fiatgeld von unserem Partner Wyre.",
@@ -604,7 +623,8 @@
     "earned_customizePools": "Customize Pools",
     "followed_address": "Address",
     "followed_worth": "Worth",
-    "followed_interact": "Interact"
+    "followed_interact": "Interact",
+    "news": "News"
   },
   "stakePage": {
     "totalStaked": "Total Staked",
@@ -687,7 +707,8 @@
     "pending": "Fordernd",
     "transactionSummary": "Beanspruchte Positionsprämien",
     "aprAfter": "effektiver Jahreszins nach der Reklamation",
-    "noRewards": "Keine Prämien zu beanspruchen"
+    "noRewards": "Keine Prämien zu beanspruchen",
+    "claimWarning": "Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead compound your rewards without losing your APR."
   },
   "sarPortfolio": {
     "noPositions": "Sie haben kein PANGUARDIAN NFT.\nLASS UNS DIR EINEN BESORGEN",
@@ -710,7 +731,8 @@
     "compoundTransactionSummary": "Zusammengesetzte Farm.",
     "removeWarning": "Wenn Sie einen beliebigen Betrag von der Farm entfernen, wird Ihr effektiver Jahreszins auf 0 gesetzt. Sie können stattdessen Ihre Belohnungen aufstocken, ohne Ihren effektiven Jahreszins zu verlieren.",
     "lockingPoolZeroWarning": "Sie können Ihre Liquidität nicht entfernen oder Ihre Belohnungen von dieser Farm einfordern. Um dies zu tun, müssen Sie zuerst Ihren Anteil von diesen Farmen entweder beanspruchen oder entfernen: ",
-    "decreaseWarning": "Ihr APR wird sinken, da der neue zusammengesetzte Teil mit APR 0 beginnt und ein Durchschnitt zwischen dem alten und dem neuen Teil genommen wird."
+    "decreaseWarning": "Ihr APR wird sinken, da der neue zusammengesetzte Teil mit APR 0 beginnt und ein Durchschnitt zwischen dem alten und dem neuen Teil genommen wird.",
+    "createStorageContract": "Create Storage Contract"
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -719,10 +741,14 @@
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "poweredBy": "Powered by",
+    "selectCurrency": "Select a Currency",
+    "search": "Search",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "switchChain": "Switch Chain",
+      "selectChain": "Please Select Chain",
       "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
@@ -743,7 +769,9 @@
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
       "max": "MAX",
       "recipient": "Recipient",
-      "walletAddress": "Wallet Address"
+      "walletAddress": "Wallet Address",
+      "required": "Required",
+      "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -772,5 +800,13 @@
   },
   "dropdown": {
     "select": "Select"
+  },
+  "portfolio": {
+    "portfolioAllChain": "Portfolio Value in All Chains",
+    "connectToseePortfolio": "Connect a wallet to see your Portfolio",
+    "totalAmountInvested": "Total Amount Invested",
+    "balanceNotFound": "Total Amount Invested",
+    "hideYourBalance": "Hide Your Balance",
+    "showYourBalance": "Show Your Balance"
   }
 }

@@ -125,7 +125,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
         </Box>
         {cheftType === ChefType.PANGO_CHEF && isStaking && (
           <Stat
-            title={`Your APR:`}
+            title={`${t('pool.yourAPR')}:`}
             stat={`${numeral(userApr).format('0.00a')}%`}
             titlePosition="top"
             titleFontSize={14}
@@ -134,7 +134,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
           />
         )}
         <Stat
-          title={`Swap fee APR:`}
+          title={`${t('pool.swapFeeAPR')}:`}
           stat={swapFeeApr && !stakingInfo?.isPeriodFinished ? `${numeral(swapFeeApr).format('0a')}%` : '-'}
           titlePosition="top"
           titleFontSize={14}
@@ -142,7 +142,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
           titleColor="text2"
         />
         <Stat
-          title={`Reward APR:`}
+          title={`${t('pool.rewardAPR')}:`}
           stat={!stakingInfo?.isPeriodFinished ? `${numeral(stakingApr).format('0a')}%` : '-'}
           titlePosition="top"
           titleFontSize={14}
@@ -150,7 +150,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
           titleColor="text2"
         />
         <Stat
-          title={`Total APR:`}
+          title={`${t('pool.totalAPR')}:`}
           stat={!stakingInfo?.isPeriodFinished ? `${numeral(totalApr).format('0a')}%` : '-'}
           titlePosition="top"
           titleFontSize={14}

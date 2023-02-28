@@ -99,7 +99,8 @@
     "extraReward": "Ekstra Ödül",
     "poolRewards": "Havuz Ödülleri",
     "rewardsIn": "Ödüller: ",
-    "removeWarning": "Bu havuzdan likiditeyi kaldırıyorsunuz. Bu işlem size jetonlarınızı geri verecektir. Alternatif olarak, ödül kazanmak için jetonlarınızı çiftliğe yatırmayı seçebilirsiniz."
+    "removeWarning": "Bu havuzdan likiditeyi kaldırıyorsunuz. Bu işlem size jetonlarınızı geri verecektir. Alternatif olarak, ödül kazanmak için jetonlarınızı çiftliğe yatırmayı seçebilirsiniz.",
+    "rewardClaimed" : "Your rewards claimed"
   },
   "menu": {
     "code": "Kaynak Kodu",
@@ -371,6 +372,7 @@
     "createPair": "Bir işlem çifti oluştur",
     "addLiquidity": "Likidite ekle",
     "connectWalletToView": "Likiditenizi görüntülemek için bir cüzdan bağlayın.",
+    "loading": "Loading",
     "noLiquidity": "Likidite bulunamadı.",
     "uniswapV1Found": "Uniswap V1 likiditesi bulundu!",
     "noSeePoolJoined": "Likidite sağladığınız bir havuzu görmüyor musunuz?",
@@ -383,12 +385,25 @@
     "yourFarms": "senin çiftliklerin",
     "yourPools": "Havuzlarınız",
     "noFarms": "Çiftlik bulunamadı.",
+    "visitWebsite": "Visit Website",
     "successWithdraw": "Likiditeniz çiftlikten kaldırıldı ve tahakkuk eden ödüller talep edildi!",
     "importDescription1": "İçe aktarma işleviyle 'Havuzlarınız' bölümünde görünmeyen havuzları arayabilirsiniz.",
     "importDescription2": "Havuzunuzda bulunan temel madeni paraları seçin.",
     "createPairDescription": "Oluşturma işleviyle yeni bir çift oluşturabilirsiniz. Sadece bir çift oluşturmak istediğiniz paraları arayın ve sistem ya Pangolin'de varsa havuzu bulur ya da yoksa yepyeni bir tane oluşturur.",
     "addLiquidityDescription": "Likidite ekle işlevi ile bir çifte likidite eklersiniz. Sadece likidite eklemek istediğiniz paraları arayın ve sistem Pangolin'de varsa havuzu bulsun veya yoksa yeni bir tane oluşturun.",
-    "createStorageContract": "Hedera'da, tüm akıllı sözleşmelerin defterdeki alanı kullanmak için ücret ödemesi gerekir. Bunlar depolama ücretleri ve otomatik yenileme ücretleri. Farm yapmak için bir Depolama sözleşmesi oluşturmanız gerekecek. depolama olacak ücretsiz, ancak gelecekte otomatik yenileme ücreti ödemeniz gerekecek. Bunlar yaklaşık 2 sent. yani biz Herhangi bir sorun yaşamadığınızdan emin olmak için HBAR'da her zaman cüzdanınızda 1 ABD doları bulundurmanızı öneririz."
+    "createStorageContract": "Hedera'da, tüm akıllı sözleşmelerin defterdeki alanı kullanmak için ücret ödemesi gerekir. Bunlar depolama ücretleri ve otomatik yenileme ücretleri. Farm yapmak için bir Depolama sözleşmesi oluşturmanız gerekecek. depolama olacak ücretsiz, ancak gelecekte otomatik yenileme ücreti ödemeniz gerekecek. Bunlar yaklaşık 2 sent. yani biz Herhangi bir sorun yaşamadığınızdan emin olmak için HBAR'da her zaman cüzdanınızda 1 ABD doları bulundurmanızı öneririz.",
+    "supplying": "Supplying",
+    "associating": "Associating",
+    "associate": "Associate",
+    "liquidityAdded": "Liquidity Added",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
+    "yourAPR": "Your APR",
+    "swapFeeAPR": "Swap fee APR",
+    "rewardAPR": "Reward APR",
+    "totalAPR": "Total APR",
+    "averageAPR": "Average APR",
+    "yourTVL": "Your TVL"
   },
   "poolFinder": {
     "connectToFind": "Havuzları bulmak için bir cüzdan bağlayın",
@@ -416,7 +431,9 @@
     "approved": "Onaylandı",
     "remove": "Çıkar",
     "output": "Hasıla",
-    "amount": "Miktar"
+    "amount": "Miktar",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity"
   },
   "swapPage": {
     "addSend": "+ Bir alıcı ekleyin (opsiyonel)",
@@ -471,7 +488,10 @@
     "executionPrice": "Emrin Gerçekleştiği Fiyat",
     "seeMore": "Daha Fazlasını Gör",
     "seeLess": "Daha Azını Gör",
-    "orderPlaced": "{{ orderType }} sipariş verildi."
+    "orderPlaced": "{{ orderType }} sipariş verildi.",
+    "selectToken" : "Select Token",
+    "notFoundBalances" : "Not found balances",
+    "notFoundToken" : "Not found tokens on this chain"
   },
   "buyPage": {
     "buyAvaxInfo": "Partnerimiz Wyre aracılığıyla AVAX satın alın.",
@@ -603,7 +623,8 @@
     "earned_customizePools": "Havuzları Özelleştir",
     "followed_address": "Adres",
     "followed_worth": "Değer",
-    "followed_interact": "İncele"
+    "followed_interact": "İncele",
+    "news": "News"
   },
   "stakePage": {
     "totalStaked": "Toplam Stake Edilen Miktar",
@@ -686,7 +707,8 @@
     "pending": "Iddia",
     "transactionSummary": "Talep edilen pozisyon ödülleri",
     "aprAfter": "Talep Sonrası APR",
-    "noRewards": "Talep edilecek ödül yok"
+    "noRewards": "Talep edilecek ödül yok",
+    "claimWarning": "Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead compound your rewards without losing your APR."
   },
   "sarPortfolio": {
     "noPositions": "Herhangi bir PANGUARDIAN NFT'niz yok.\nSİZE BİR TANE ALABİLİR",
@@ -709,7 +731,8 @@
     "compoundTransactionSummary": "Birleşik çiftlik.",
     "removeWarning": "Çiftlikten herhangi bir miktarı çıkarmak, APR'nizi 0'a getirecektir. Bunun yerine ödüllerinizi, APR'nizi kaybetmeden birleştirebilirsiniz.",
     "lockingPoolZeroWarning": "Bu çiftlikten likiditenizi kaldıramaz veya ödüllerinizi talep edemezsiniz. Bunu yapmak için önce bu çiftliklerden hissenizi talep etmeniz veya kaldırmanız gerekir: ",
-    "decreaseWarning": "Yeni bileşik kısım 0 nisan ile başladığı için apr'ınız düşecek ve eski ile yeni kısım arasında bir ortalama alınacaktır."
+    "decreaseWarning": "Yeni bileşik kısım 0 nisan ile başladığı için apr'ınız düşecek ve eski ile yeni kısım arasında bir ortalama alınacaktır.",
+    "createStorageContract": "Create Storage Contract"
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -718,10 +741,14 @@
     "activeTransfers": "Aktif Transferler ({{ number }})",
     "historicalTransfers": "Geçmiş Transferler ({{ number }})",
     "poweredBy": "Powered by",
+    "selectCurrency": "Select a Currency",
+    "search": "Search",
     "bridgeCard": {
       "advancedOptions": "Gelişmiş Seçenekler",
       "title": "Cross Chain",
       "swap": "Swap",
+      "switchChain": "Switch Chain",
+      "selectChain": "Please Select Chain",
       "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
@@ -742,7 +769,9 @@
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
       "max": "MAX",
       "recipient": "Recipient",
-      "walletAddress": "Wallet Address"
+      "walletAddress": "Wallet Address",
+      "required": "Required",
+      "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
       "selected": "Seçildi",
@@ -771,5 +800,13 @@
   },
   "dropdown": {
     "select": "Seç"
+  },
+  "portfolio": {
+    "portfolioAllChain": "Portfolio Value in All Chains",
+    "connectToseePortfolio": "Connect a wallet to see your Portfolio",
+    "totalAmountInvested": "Total Amount Invested",
+    "balanceNotFound": "Total Amount Invested",
+    "hideYourBalance": "Hide Your Balance",
+    "showYourBalance": "Show Your Balance"
   }
 }

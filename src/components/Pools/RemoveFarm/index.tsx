@@ -135,7 +135,9 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
     if (!isHederaTokenAssociated && notAssociateTokens?.length > 0) {
       return (
         <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-          {isLoadingAssociate ? 'Associating' : 'Associate ' + notAssociateTokens?.[0]?.symbol}
+          {isLoadingAssociate
+            ? `${t('pool.associating')}`
+            : `${t('pool.associate')} ` + notAssociateTokens?.[0]?.symbol}
         </Button>
       );
     } else {

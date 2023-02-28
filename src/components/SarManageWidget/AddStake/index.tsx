@@ -129,7 +129,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
     } else if (!isHederaTokenAssociated && isHedera) {
       return (
         <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-          {isLoadingAssociate ? 'Associating' : 'Associate '}
+          {isLoadingAssociate ? `${t('pool.associating')}` : `${t('pool.associate')} `}
         </Button>
       );
     } else {

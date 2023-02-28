@@ -99,7 +99,8 @@
     "extraReward": "Phần thưởng bổ sung",
     "poolRewards": "Phần thưởng hồ bơi",
     "rewardsIn": "Phần thưởng trong",
-    "removeWarning": "Bạn đang xóa thanh khoản khỏi nhóm này. Hành động này sẽ trả lại cho bạn các mã thông báo của bạn. Ngoài ra, bạn có thể chọn đặt cược mã thông báo của mình vào trang trại để kiếm phần thưởng."
+    "removeWarning": "Bạn đang xóa thanh khoản khỏi nhóm này. Hành động này sẽ trả lại cho bạn các mã thông báo của bạn. Ngoài ra, bạn có thể chọn đặt cược mã thông báo của mình vào trang trại để kiếm phần thưởng.",
+    "rewardClaimed" : "Your rewards claimed"
   },
   "menu": {
     "code": "Mã",
@@ -384,12 +385,25 @@
     "yourFarms": "trang trại của bạn",
     "yourPools": "Hồ bơi của bạn",
     "noFarms": "Không tìm thấy trang trại nào.",
+    "visitWebsite": "Visit Website",
     "successWithdraw": "Thanh khoản của bạn đã bị xóa khỏi trang trại và đã nhận được phần thưởng tích lũy!",
     "importDescription1": "Với chức năng nhập, bạn có thể tìm kiếm các nhóm không xuất hiện trong phần 'Bể bơi của bạn'.",
     "importDescription2": "Chỉ cần chọn các đồng tiền cơ bản trong nhóm của bạn.",
     "createPairDescription": "Với chức năng tạo, bạn có thể tạo một cặp mới. Chỉ cần tìm kiếm các đồng tiền mà bạn muốn tạo một cặp và hệ thống sẽ tìm thấy đồng tiền nếu tồn tại trên Pangolin hoặc tạo một đồng mới nếu không có.",
     "addLiquidityDescription": "Với chức năng thêm thanh khoản, bạn thêm thanh khoản cho một cặp. Chỉ cần tìm kiếm những đồng tiền mà bạn muốn thêm thanh khoản và hệ thống sẽ tìm đồng tiền nếu nó tồn tại ở Pangolin hoặc tạo một đồng mới nếu nó không có.",
-    "createStorageContract": "Trên Hedera, tất cả các hợp đồng thông minh cần phải trả phí để sử dụng không gian trên sổ cái. Đây là phí lưu trữ và phí gia hạn tự động. Bạn sẽ cần tạo hợp đồng Lưu trữ để trang trại. Kho lưu trữ sẽ miễn phí, nhưng trong tương lai bạn sẽ phải trả phí gia hạn tự động. Đây là khoảng 2 xu. Vì vậy, chúng tôi khuyên bạn nên giữ $1 trên HBAR trong ví của mình mọi lúc để đảm bảo bạn không gặp phải bất kỳ sự cố nào."
+    "createStorageContract": "Trên Hedera, tất cả các hợp đồng thông minh cần phải trả phí để sử dụng không gian trên sổ cái. Đây là phí lưu trữ và phí gia hạn tự động. Bạn sẽ cần tạo hợp đồng Lưu trữ để trang trại. Kho lưu trữ sẽ miễn phí, nhưng trong tương lai bạn sẽ phải trả phí gia hạn tự động. Đây là khoảng 2 xu. Vì vậy, chúng tôi khuyên bạn nên giữ $1 trên HBAR trong ví của mình mọi lúc để đảm bảo bạn không gặp phải bất kỳ sự cố nào.",
+    "supplying": "Supplying",
+    "associating": "Associating",
+    "associate": "Associate",
+    "liquidityAdded": "Liquidity Added",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
+    "yourAPR": "Your APR",
+    "swapFeeAPR": "Swap fee APR",
+    "rewardAPR": "Reward APR",
+    "totalAPR": "Total APR",
+    "averageAPR": "Average APR",
+    "yourTVL": "Your TVL"
   },
   "poolFinder": {
     "connectToFind": "Kêt nối với một ví để nhìn thấy bể",
@@ -417,7 +431,9 @@
     "approved": "Đã chấp nhận",
     "remove": "Loại bỏ",
     "output": "Đầu ra",
-    "amount": "Số lượng"
+    "amount": "Số lượng",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity"
   },
   "swapPage": {
     "addSend": "+ Thêm lần gửi (tùy chọn) ",
@@ -472,7 +488,10 @@
     "executionPrice": "Giá thực hiện",
     "seeMore": "Xem thêm",
     "seeLess": "Thấy ít",
-    "orderPlaced": "{{ orderType }} order placed"
+    "orderPlaced": "{{ orderType }} order placed",
+    "selectToken" : "Select Token",
+    "notFoundBalances" : "Not found balances",
+    "notFoundToken" : "Not found tokens on this chain"
   },
   "buyPage": {
     "buyAvaxInfo": "Mua AVAX bằng fiat từ đối tác Wyre của chúng tôi.",
@@ -604,7 +623,8 @@
     "earned_customizePools": "Customize Pools",
     "followed_address": "Address",
     "followed_worth": "Worth",
-    "followed_interact": "Interact"
+    "followed_interact": "Interact",
+    "news": "News"
   },
   "stakePage": {
     "totalStaked": "Total Staked",
@@ -687,7 +707,8 @@
     "pending": "Tuyên bố",
     "transactionSummary": "Phần thưởng vị trí đã nhận",
     "aprAfter": "APR sau khi yêu cầu bồi thường",
-    "noRewards": "Không có phần thưởng để yêu cầu"
+    "noRewards": "Không có phần thưởng để yêu cầu",
+    "claimWarning": "Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead compound your rewards without losing your APR."
   },
   "sarPortfolio": {
     "noPositions": "Bạn không có bất kỳ PANGUARDIAN NFT nào.\nHÃY GIÚP BẠN CÓ ĐƯỢC MỘT",
@@ -710,7 +731,8 @@
     "compoundTransactionSummary": "Trang trại tổng hợp.",
     "removeWarning": "Loại bỏ bất kỳ số tiền nào khỏi trang trại sẽ nhận được APR của bạn thành 0. Thay vào đó, bạn có thể gộp phần thưởng của mình mà không bị mất APR.",
     "lockingPoolZeroWarning": "Bạn không thể xóa thanh khoản của mình hoặc yêu cầu phần thưởng của mình từ trang trại này. Để làm điều này, trước tiên bạn cần xác nhận quyền sở hữu hoặc loại bỏ cổ phần của bạn khỏi các trang trại này: ",
-    "decreaseWarning": "Apr của bạn sẽ giảm vì phần phức hợp mới bắt đầu bằng apr 0 và trung bình sẽ được lấy giữa phần cũ và mới."
+    "decreaseWarning": "Apr của bạn sẽ giảm vì phần phức hợp mới bắt đầu bằng apr 0 và trung bình sẽ được lấy giữa phần cũ và mới.",
+    "createStorageContract": "Create Storage Contract"
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -719,10 +741,14 @@
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "poweredBy": "Powered by",
+    "selectCurrency": "Select a Currency",
+    "search": "Search",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "switchChain": "Switch Chain",
+      "selectChain": "Please Select Chain",
       "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
@@ -743,7 +769,9 @@
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
       "max": "MAX",
       "recipient": "Recipient",
-      "walletAddress": "Wallet Address"
+      "walletAddress": "Wallet Address",
+      "required": "Required",
+      "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -772,5 +800,13 @@
   },
   "dropdown": {
     "select": "Select"
+  },
+  "portfolio": {
+    "portfolioAllChain": "Portfolio Value in All Chains",
+    "connectToseePortfolio": "Connect a wallet to see your Portfolio",
+    "totalAmountInvested": "Total Amount Invested",
+    "balanceNotFound": "Total Amount Invested",
+    "hideYourBalance": "Hide Your Balance",
+    "showYourBalance": "Show Your Balance"
   }
 }

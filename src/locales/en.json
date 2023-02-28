@@ -99,7 +99,8 @@
     "extraReward": "Extra Reward",
     "poolRewards": "Pool Rewards",
     "rewardsIn": "Rewards in",
-    "removeWarning": "You are removing liquidity from this pool. This action will give you back your tokens. Alternatively you can choose to stake your tokens to farm to earn rewards."
+    "removeWarning": "You are removing liquidity from this pool. This action will give you back your tokens. Alternatively you can choose to stake your tokens to farm to earn rewards.",
+    "rewardClaimed" : "Your rewards claimed"
   },
   "menu": {
     "code": "Code",
@@ -390,7 +391,19 @@
     "importDescription2": "Just choose the underlying coins that was in your pool.",
     "createPairDescription": "With create function you can create a new pair. Just search the coins that you want to create a pair for and system will either finds the pool if exists on Pangolin or creates a brand new one if its not.",
     "addLiquidityDescription": "With the add liquidity function you add liquidity to a pair. Just search for the coins you want to add liquidity to and the system will find the pool if it exists in Pangolin or create a new one if it doesn't.",
-    "createStorageContract": "On Hedera, all smart contracts need to pay fees for utilising space on the ledger. These are storage fees and auto renewal fees. You'll need to create a Storage contract in order to farm. The storage will be free, but in future you will be required to pay auto renewal fees. These are about 2 cents. So we recommend keeping $1 on HBAR in your wallet at all times to ensure you don't experience any issues."
+    "createStorageContract": "On Hedera, all smart contracts need to pay fees for utilising space on the ledger. These are storage fees and auto renewal fees. You'll need to create a Storage contract in order to farm. The storage will be free, but in future you will be required to pay auto renewal fees. These are about 2 cents. So we recommend keeping $1 on HBAR in your wallet at all times to ensure you don't experience any issues.",
+    "supplying": "Supplying",
+    "associating": "Associating",
+    "associate": "Associate",
+    "liquidityAdded": "Liquidity Added",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
+    "yourAPR": "Your APR",
+    "swapFeeAPR": "Swap fee APR",
+    "rewardAPR": "Reward APR",
+    "totalAPR": "Total APR",
+    "averageAPR": "Average APR",
+    "yourTVL": "Your TVL"
   },
   "poolFinder": {
     "connectToFind": "Connect to a wallet to find pools",
@@ -418,7 +431,9 @@
     "approved": "Approved",
     "remove": "Remove",
     "output": "Output",
-    "amount": "Amount"
+    "amount": "Amount",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity"
   },
   "swapPage": {
     "addSend": "+ Add a send (optional)",
@@ -608,7 +623,8 @@
     "earned_customizePools": "Customize Pools",
     "followed_address": "Address",
     "followed_worth": "Worth",
-    "followed_interact": "Interact"
+    "followed_interact": "Interact",
+    "news": "News"
   },
   "stakePage": {
     "totalStaked": "Total Staked",
@@ -691,7 +707,8 @@
     "pending": "Claiming",
     "transactionSummary": "Claimed position rewards",
     "aprAfter": "APR After Claim",
-    "noRewards": "No rewards to claim"
+    "noRewards": "No rewards to claim",
+    "claimWarning": "Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead compound your rewards without losing your APR."
   },
   "sarPortfolio": {
     "noPositions": "You don't have a staking position NFT.\nLET'S GET YOU ONE!",
@@ -714,7 +731,8 @@
     "compoundTransactionSummary": "Compounded farm",
     "removeWarning": "Removing any amount from farm will get your APR to 0. You can instead compound your rewards without losing your APR.",
     "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim or remove your stake from this farms: ",
-    "decreaseWarning": "Your apr will decrease because the new compounded part starts with apr 0 and an average will be taken between the old and new part."
+    "decreaseWarning": "Your apr will decrease because the new compounded part starts with apr 0 and an average will be taken between the old and new part.",
+    "createStorageContract": "Create Storage Contract"
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -723,6 +741,8 @@
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "poweredBy": "Powered by",
+    "selectCurrency": "Select a Currency",
+    "search": "Search",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
@@ -780,5 +800,13 @@
   },
   "dropdown": {
     "select": "Select"
+  },
+  "portfolio": {
+    "portfolioAllChain": "Portfolio Value in All Chains",
+    "connectToseePortfolio": "Connect a wallet to see your Portfolio",
+    "totalAmountInvested": "Total Amount Invested",
+    "balanceNotFound": "Total Amount Invested",
+    "hideYourBalance": "Hide Your Balance",
+    "showYourBalance": "Show Your Balance"
   }
 }
