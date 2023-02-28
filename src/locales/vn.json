@@ -562,7 +562,8 @@
     "selectToken": "Chọn một token",
     "enterRecipient": "Nhập một người nhận",
     "invalidRecipient": "Người nhận không hợp lệ",
-    "insufficientBalance": "Insufficient {{ symbol }} balance"
+    "insufficientBalance": "Insufficient {{ symbol }} balance",
+    "selectChain": "Select a Chain"
   },
   "mintHooks": {
     "connectWallet": "Kết nối ví",

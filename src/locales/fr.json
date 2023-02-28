@@ -562,7 +562,8 @@
     "selectToken": "Selectionner un jeton",
     "enterRecipient": "Saisir un destinataire",
     "invalidRecipient": "Destinataire non valide",
-    "insufficientBalance": "Solde en {{ symbol }} insuffisant"
+    "insufficientBalance": "Solde en {{ symbol }} insuffisant",
+    "selectChain": "Select a Chain"
   },
   "mintHooks": {
     "connectWallet": "Connecter un Portefeuille",

@@ -555,7 +555,8 @@
     "selectToken": "选择一个代币",
     "enterRecipient": "输入收件人",
     "invalidRecipient": "收件人无效",
-    "insufficientBalance": "{{ symbol }}余额不足"
+    "insufficientBalance": "{{ symbol }}余额不足",
+    "selectChain": "Select a Chain"
   },
   "mintHooks": {
     "connectWallet": "连接钱包",

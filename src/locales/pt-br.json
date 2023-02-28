@@ -562,7 +562,8 @@
     "selectToken": "Selecione um token",
     "enterRecipient": "Digite um destinatário",
     "invalidRecipient": "Destinatário inválido",
-    "insufficientBalance": "Saldo de {{ symbol }} insuficiente"
+    "insufficientBalance": "Saldo de {{ symbol }} insuficiente",
+    "selectChain": "Select a Chain"
   },
   "mintHooks": {
     "connectWallet": "Conectar a uma carteira",

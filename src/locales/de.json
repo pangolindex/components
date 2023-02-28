@@ -562,7 +562,8 @@
     "selectToken": "Wähle einen Token aus",
     "enterRecipient": "Gib einen Empfänger ein",
     "invalidRecipient": "Ungültiger Empfänger",
-    "insufficientBalance": "Unzureichendes {{ symbol }}-Guthaben"
+    "insufficientBalance": "Unzureichendes {{ symbol }}-Guthaben",
+    "selectChain": "Select a Chain"
   },
   "mintHooks": {
     "connectWallet": "Mit Wallet verbinden",

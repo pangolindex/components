@@ -562,7 +562,8 @@
     "selectToken": "Bir token seçin",
     "enterRecipient": "Bir alıcı girin",
     "invalidRecipient": "Geçersiz alıcı",
-    "insufficientBalance": "Yetersiz {{ symbol }} bakiyesi"
+    "insufficientBalance": "Yetersiz {{ symbol }} bakiyesi",
+    "selectChain": "Select a Chain"
   },
   "mintHooks": {
     "connectWallet": "Cüzdanı Bağla",
