@@ -171,7 +171,8 @@
     "removeList": "Borrar lista",
     "selected": "Seleccionado",
     "select": "Seleccionar",
-    "manageTokenLists": "Administrar listas de tokens"
+    "manageTokenLists": "Administrar listas de tokens",
+    "listsSelected" :"lists selected"
   },
   "settings": {
     "areYouSure": "Estas seguro?",
@@ -186,7 +187,9 @@
     "expertModeHelper": "Sobrepasa los avisos de confirmación y permite intercambios con altos deslizamientos. Úselo bajo su propio riesgo.",
     "toggleDarkMode": "Activar modo oscuro",
     "slippage": "Slippage",
-    "percent": "Percent"
+    "percent": "Percent",
+    "timeLimit": "Time Limit",
+    "seconds": "Seconds"
   },
   "swap": {
     "priceImpact": "Impacto en el precio",
@@ -208,7 +211,11 @@
     "inputEstimated": "El resultado es estimado. Venderá como mucho <strong>{{amount}} {{currencySymbol}}</strong> o la transacción se revertirá.",
     "outputSentTo": "La salida se mandará a ",
     "priceImpactMinPrompt": "Este intercambio tiene un impacto en el precio de por lo menos {{ priceImpact }}%. Por favor, escriba la palabra \"confirmar\" para continuar con este intercambio.",
-    "priceImpactHighPrompt": "Este intercambio tiene un impacto en el precio de por lo menos {{ priceImpact }}%. Por favor, confirme que quiere continuar con este intercambio."
+    "priceImpactHighPrompt": "Este intercambio tiene un impacto en el precio de por lo menos {{ priceImpact }}%. Por favor, confirme que quiere continuar con este intercambio.",
+    "realExecutionPrice": "Real Execution Price",
+    "gasPrice": "Gas Price",
+    "gelatoFee": "Gelato Fee",
+    "totalFee": "Total Fee"
   },
   "toggle": {
     "on": "Encendido",
@@ -491,7 +498,12 @@
     "orderPlaced": "pedido de {{ orderType }} realizado.",
     "selectToken" : "Select Token",
     "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain"
+    "notFoundToken" : "Not found tokens on this chain",
+    "sendingTo" : "Sending to",
+    "invalidAddress": "Invalid Address",
+    "addRecipient": "Add Recipient",
+    "removeRecipient": "Remove Recipient",
+    "addTokenWatchlist": "Add tokens to watchlist using"
   },
   "buyPage": {
     "buyAvaxInfo": "Compre AVAX con fiat de nuestro socio Wyre.",
@@ -770,7 +782,6 @@
       "max": "MAX",
       "recipient": "Recipient",
       "walletAddress": "Wallet Address",
-      "required": "Required",
       "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
@@ -808,5 +819,14 @@
     "balanceNotFound": "Total Amount Invested",
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
+  },
+  "common": {
+    "loading": "Loading",
+    "search": "Search",
+    "required": "Required",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "noDataAvailable": "No data available!"
   }
 }

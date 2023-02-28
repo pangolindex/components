@@ -171,7 +171,8 @@
     "removeList": "Supprimer la liste",
     "selected": "Sélectionné",
     "select": "Sélectionner",
-    "manageTokenLists": "Gérer les listes de jetons"
+    "manageTokenLists": "Gérer les listes de jetons",
+    "listsSelected" :"lists selected"
   },
   "settings": {
     "areYouSure": "Vous êtes sûr ?",
@@ -186,7 +187,9 @@
     "expertModeHelper": "Contourne les modales de confirmation et permet des transactions à fort slippage. À utiliser à vos risques et périls.",
     "toggleDarkMode": "Basculer en mode sombre",
     "slippage": "Slippage",
-    "percent": "Percent"
+    "percent": "Percent",
+    "timeLimit": "Time Limit",
+    "seconds": "Seconds"
   },
   "swap": {
     "priceImpact": "Impact du prix",
@@ -208,7 +211,11 @@
     "inputEstimated": "La quantité produite est estimée. Vous vendrez au maximum <strong>{{amount}} {{currencySymbol}}</strong> ou la transaction sera annulée.",
     "outputSentTo": "La production sera envoyée à ",
     "priceImpactMinPrompt": "Cet échange a un impact sur les prix d'au moins {{ priceImpact }}%. Veuillez taper le mot \"confirmer\" pour poursuivre cet échange.",
-    "priceImpactHighPrompt": "Cet échange a un impact sur les prix d'au moins {{ priceImpact }}%. Veuillez confirmer que vous souhaitez poursuivre cet échange."
+    "priceImpactHighPrompt": "Cet échange a un impact sur les prix d'au moins {{ priceImpact }}%. Veuillez confirmer que vous souhaitez poursuivre cet échange.",
+    "realExecutionPrice": "Real Execution Price",
+    "gasPrice": "Gas Price",
+    "gelatoFee": "Gelato Fee",
+    "totalFee": "Total Fee"
   },
   "toggle": {
     "on": "On",
@@ -491,7 +498,12 @@
     "orderPlaced": "ordre de {{ orderType }} passé.",
     "selectToken" : "Select Token",
     "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain"
+    "notFoundToken" : "Not found tokens on this chain",
+    "sendingTo" : "Sending to",
+    "invalidAddress": "Invalid Address",
+    "addRecipient": "Add Recipient",
+    "removeRecipient": "Remove Recipient",
+    "addTokenWatchlist": "Add tokens to watchlist using"
   },
   "buyPage": {
     "buyAvaxInfo": "Achetez AVAX avec monnaie fiat chez notre partenaire Wyre.",
@@ -770,7 +782,6 @@
       "max": "MAX",
       "recipient": "Recipient",
       "walletAddress": "Wallet Address",
-      "required": "Required",
       "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
@@ -808,5 +819,14 @@
     "balanceNotFound": "Total Amount Invested",
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
+  },
+  "common": {
+    "loading": "Loading",
+    "search": "Search",
+    "required": "Required",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "noDataAvailable": "No data available!"
   }
 }

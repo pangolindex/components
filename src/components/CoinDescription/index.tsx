@@ -12,11 +12,10 @@ interface Props {
 
 export default function CoinDescription({ coin }: Props) {
   const { data } = useCoinGeckoTokenData(coin);
-
+  const { t } = useTranslation();
   if (!data || !data?.description || !data.homePage) {
     return null;
   }
-  const { t } = useTranslation();
 
   return (
     <Box>

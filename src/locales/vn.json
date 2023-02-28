@@ -171,7 +171,8 @@
     "removeList": "Loại bỏ danh sách",
     "selected": "Đã chọn",
     "select": "Chọn",
-    "manageTokenLists": "Quản lý danh sách token"
+    "manageTokenLists": "Quản lý danh sách token",
+    "listsSelected" :"lists selected"
   },
   "settings": {
     "areYouSure": "Bạn chắc chắn chứ?",
@@ -186,7 +187,9 @@
     "expertModeHelper": "Bỏ qua các phương thức xác nhận và cho phép các giao dịch có độ trượt cao. Sẽ sử dụng với nguy cơ của riêng bạn .",
     "toggleDarkMode": "Chuyển đổi chế độ ban đêm",
     "slippage": "Slippage",
-    "percent": "Percent"
+    "percent": "Percent",
+    "timeLimit": "Time Limit",
+    "seconds": "Seconds"
   },
   "swap": {
     "priceImpact": "Tác động giá",
@@ -208,7 +211,11 @@
     "inputEstimated": "Đầu vào được ước tính. Bạn sẽ bán được nhiều nhất <strong>{{amount}} {{currencySymbol}}</strong> hoặc giao dịch sẽ hoàn lại.",
     "outputSentTo": "Đầu ra sẽ được gửi tới ",
     "priceImpactMinPrompt": "Sự hoán đổi này có tác động về giá ít nhất là  {{ priceImpact }}%. Vui lòng gõ từ \"confirm\" để tiếp tục thao tác hoán đổi này.",
-    "priceImpactHighPrompt": "Sự hoán đổi này có tác động về giá ít nhất là  {{ priceImpact }}%. Vui lòng xác nhận rằng bạn muốn tiếp tục thao tác hoán đổi này."
+    "priceImpactHighPrompt": "Sự hoán đổi này có tác động về giá ít nhất là  {{ priceImpact }}%. Vui lòng xác nhận rằng bạn muốn tiếp tục thao tác hoán đổi này.",
+    "realExecutionPrice": "Real Execution Price",
+    "gasPrice": "Gas Price",
+    "gelatoFee": "Gelato Fee",
+    "totalFee": "Total Fee"
   },
   "toggle": {
     "on": "Mở",
@@ -491,7 +498,12 @@
     "orderPlaced": "{{ orderType }} order placed",
     "selectToken" : "Select Token",
     "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain"
+    "notFoundToken" : "Not found tokens on this chain",
+    "sendingTo" : "Sending to",
+    "invalidAddress": "Invalid Address",
+    "addRecipient": "Add Recipient",
+    "removeRecipient": "Remove Recipient",
+    "addTokenWatchlist": "Add tokens to watchlist using"
   },
   "buyPage": {
     "buyAvaxInfo": "Mua AVAX bằng fiat từ đối tác Wyre của chúng tôi.",
@@ -770,7 +782,6 @@
       "max": "MAX",
       "recipient": "Recipient",
       "walletAddress": "Wallet Address",
-      "required": "Required",
       "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
@@ -808,5 +819,14 @@
     "balanceNotFound": "Total Amount Invested",
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
+  },
+  "common": {
+    "loading": "Loading",
+    "search": "Search",
+    "required": "Required",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "noDataAvailable": "No data available!"
   }
 }

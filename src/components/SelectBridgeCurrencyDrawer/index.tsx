@@ -120,7 +120,7 @@ const SelectBridgeCurrencyDrawer: React.FC<Props> = (props) => {
       {/* Render Search BridgeCurrency Input */}
       <Box padding="0px 20px">
         <TextInput
-          placeholder={t('bridge.search')}
+          placeholder={t('common.search')}
           onChange={(value: any) => {
             setSearchQuery(value as string);
           }}

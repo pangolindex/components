@@ -125,7 +125,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
                   <Text color="warning">{t('bridge.bridgeInputsWidget.invalidAddress')}</Text>
                 )
               ) : (
-                <Text color="error">{t('bridge.bridgeInputsWidget.required')}</Text>
+                <Text color="error">{t('common.required')}</Text>
               )
             }
           />

@@ -171,7 +171,8 @@
     "removeList": "Listeyi çıkar",
     "selected": "Seçildi",
     "select": "Seç",
-    "manageTokenLists": "Token Listelerini Yönet"
+    "manageTokenLists": "Token Listelerini Yönet",
+    "listsSelected" :"lists selected"
   },
   "settings": {
     "areYouSure": "Emin misiniz?",
@@ -186,7 +187,9 @@
     "expertModeHelper": "İşlem onayları atlar ve yüksek slipajlı işlemlere izin verir. Kendi sorumluluğunuzda kullanın.",
     "toggleDarkMode": "Karanlık Mod",
     "slippage": "Slippage",
-    "percent": "Percent"
+    "percent": "Percent",
+    "timeLimit": "Time Limit",
+    "seconds": "Seconds"
   },
   "swap": {
     "priceImpact": "Fiyat Etkisi",
@@ -208,7 +211,11 @@
     "inputEstimated": "Girdi yaklaşıktır. En fazla şu kadar satacaksınız: <strong>{{amount}} {{currencySymbol}}</strong> veya işleminiz gerçekleşmeyecektir.",
     "outputSentTo": "Çıktı(hasıla) şuraya gönderilecektir: ",
     "priceImpactMinPrompt": "Bu takas işleminin fiyata etkisi en az %{{ priceImpact }}'dır. Bu işleme devam etmek için lütfen \"onayla\" yazın.",
-    "priceImpactHighPrompt": "Bu takas işleminin fiyata etkisi en az %{{ priceImpact }}'dır. Lütfen işleme devam etmek istediğinizi onaylayın."
+    "priceImpactHighPrompt": "Bu takas işleminin fiyata etkisi en az %{{ priceImpact }}'dır. Lütfen işleme devam etmek istediğinizi onaylayın.",
+    "realExecutionPrice": "Real Execution Price",
+    "gasPrice": "Gas Price",
+    "gelatoFee": "Gelato Fee",
+    "totalFee": "Total Fee"
   },
   "toggle": {
     "on": "Aç",
@@ -491,7 +498,12 @@
     "orderPlaced": "{{ orderType }} sipariş verildi.",
     "selectToken" : "Select Token",
     "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain"
+    "notFoundToken" : "Not found tokens on this chain",
+    "sendingTo" : "Sending to",
+    "invalidAddress": "Invalid Address",
+    "addRecipient": "Add Recipient",
+    "removeRecipient": "Remove Recipient",
+    "addTokenWatchlist": "Add tokens to watchlist using"
   },
   "buyPage": {
     "buyAvaxInfo": "Partnerimiz Wyre aracılığıyla AVAX satın alın.",
@@ -770,7 +782,6 @@
       "max": "MAX",
       "recipient": "Recipient",
       "walletAddress": "Wallet Address",
-      "required": "Required",
       "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
@@ -808,5 +819,14 @@
     "balanceNotFound": "Total Amount Invested",
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
+  },
+  "common": {
+    "loading": "Loading",
+    "search": "Search",
+    "required": "Required",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "noDataAvailable": "No data available!"
   }
 }

@@ -171,7 +171,8 @@
     "removeList": "Remove list",
     "selected": "Selected",
     "select": "Select",
-    "manageTokenLists": "Manage Token Lists"
+    "manageTokenLists": "Manage Token Lists",
+    "listsSelected" :"lists selected"
   },
   "settings": {
     "areYouSure": "Are you sure?",
@@ -186,7 +187,9 @@
     "expertModeHelper": "Bypasses confirmation modals and allows high slippage trades. Use at your own risk.",
     "toggleDarkMode": "Toggle Dark Mode",
     "slippage": "Slippage",
-    "percent": "Percent"
+    "percent": "Percent",
+    "timeLimit": "Time Limit",
+    "seconds": "Seconds"
   },
   "swap": {
     "priceImpact": "Price Impact",
@@ -208,7 +211,11 @@
     "inputEstimated": "Input is estimated. You will sell at most <strong>{{amount}} {{currencySymbol}}</strong> or the transaction will revert.",
     "outputSentTo": "Output will be sent to ",
     "priceImpactMinPrompt": "This swap has a price impact of at least {{ priceImpact }}%. Please type the word \"confirm\" to continue with this swap.",
-    "priceImpactHighPrompt": "This swap has a price impact of at least {{ priceImpact }}%. Please confirm that you would like to continue with this swap."
+    "priceImpactHighPrompt": "This swap has a price impact of at least {{ priceImpact }}%. Please confirm that you would like to continue with this swap.",
+    "realExecutionPrice": "Real Execution Price",
+    "gasPrice": "Gas Price",
+    "gelatoFee": "Gelato Fee",
+    "totalFee": "Total Fee"
   },
   "toggle": {
     "on": "On",
@@ -491,7 +498,12 @@
     "orderPlaced": "{{ orderType }} order placed.",
     "selectToken" : "Select Token",
     "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain"
+    "notFoundToken" : "Not found tokens on this chain",
+    "sendingTo" : "Sending to",
+    "invalidAddress": "Invalid Address",
+    "addRecipient": "Add Recipient",
+    "removeRecipient": "Remove Recipient",
+    "addTokenWatchlist": "Add tokens to watchlist using"
   },
   "buyPage": {
     "buyAvaxInfo": "Buy AVAX with fiat from our partner Wyre.",
@@ -770,7 +782,6 @@
       "max": "MAX",
       "recipient": "Recipient",
       "walletAddress": "Wallet Address",
-      "required": "Required",
       "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
@@ -808,5 +819,14 @@
     "balanceNotFound": "Total Amount Invested",
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
+  },
+  "common": {
+    "loading": "Loading",
+    "search": "Search",
+    "required": "Required",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "noDataAvailable": "No data available!"
   }
 }

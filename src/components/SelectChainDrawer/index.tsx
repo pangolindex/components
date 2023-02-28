@@ -98,7 +98,7 @@ const SelectChainDrawer: React.FC<Props> = (props) => {
       {/* Render Search Chain Input */}
       <Box padding="0px 30px">
         <TextInput
-          placeholder={t('bridge.search')}
+          placeholder={t('common.search')}
           onChange={(value: any) => {
             setSearchQuery(value as string);
           }}

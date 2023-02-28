@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
 import Drawer from 'src/components/Drawer';
@@ -9,7 +10,6 @@ import { TextInput } from 'src/components/TextInput';
 import { ToggleButtons } from 'src/components/ToggleButtons';
 import { DEFAULT_DEADLINE_FROM_NOW } from 'src/constants';
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'src/state/puser/hooks';
-
 import WarningModal from './WarningModal';
 import { Frame, InputOptions } from './styled';
 
@@ -30,6 +30,7 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
   const [isValidValues, setValidValues] = useState(true);
 
   const [modalOpen, setModalOpen] = useState(false);
+  const { t } = useTranslation();
 
   const save = useCallback(() => {
     if (deadline.length == 0) {
@@ -80,13 +81,13 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
         />
         {/*DEADLINE INPUT */}
         <Box height="90px">
-          <Text color="swapWidget.secondary">Time Limit</Text>
+          <Text color="swapWidget.secondary">{t('settings.timeLimit')}</Text>
           <InputOptions>
             <TextInput
               value={deadline}
               addonAfter={
                 <Box bgColor="swapWidget.detailsBackground" paddingX="8px" paddingY="4px" borderRadius={4}>
-                  <Text color="swapWidget.secondary">Seconds</Text>
+                  <Text color="swapWidget.secondary">{t('settings.seconds')}</Text>
                 </Box>
               }
               isNumeric={true}
@@ -104,13 +105,13 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
           {Number(deadline) <= 1 && (
             <Text color="swapWidget.secondary" fontSize={12} marginBottom={10}>
               {' '}
-              Your transaction may fail
+              {t('transactionSettings.transactionMayFail')}
             </Text>
           )}
         </Box>
         {/*EXPERT MODE INPUT */}
         <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" style={{ gap: '15px' }}>
-          <Text color="swapWidget.secondary">Toggle Expert Mode</Text>
+          <Text color="swapWidget.secondary">{t('settings.toggleExpertMode')}</Text>
           <Box width="120px">
             <ToggleButtons
               options={['ON', 'OFF']}
@@ -127,10 +128,10 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
         </Box>
         <Box display="flex" flexDirection="column" alignContent="center" style={{ gap: '10px' }}>
           <Button variant="primary" onClick={save} isDisabled={!isValidValues}>
-            Save &amp; Close
+            {t('common.save')} &amp; {t('common.close')}
           </Button>
           <Button variant="plain" onClick={close} color="swapWidget.secondary">
-            Close
+            {t('common.close')}
           </Button>
         </Box>
       </Frame>
