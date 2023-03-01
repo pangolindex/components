@@ -1,5 +1,6 @@
 import { CHAINS, ChefType } from '@pangolindex/sdk';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { Box } from 'src/components';
 import { usePair } from 'src/data/Reserves';
@@ -25,6 +26,7 @@ export interface PoolDetailProps {
 const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
   const { height } = useWindowSize();
   const chainId = useChainId();
+  const { t } = useTranslation();
   const chain = CHAINS[chainId];
 
   const token0 = stakingInfo?.tokens?.[0];
@@ -64,7 +66,7 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
 
           <Box mt={25}>
             <Tabs>
-              <Tab>Details</Tab>
+              <Tab>{t('votePage.details')}</Tab>
             </Tabs>
             <Details stakingInfo={stakingInfo} />
           </Box>
@@ -75,7 +77,7 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
         <DetailsWrapper>
           <LeftSection>
             <Tabs>
-              <Tab>Details</Tab>
+              <Tab>{t('votePage.details')}</Tab>
             </Tabs>
             <Details stakingInfo={stakingInfo} />
           </LeftSection>

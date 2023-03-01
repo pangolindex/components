@@ -103,8 +103,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
             </Box>
           </Box>
           <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-            Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead
-            compound your rewards without losing your APR.
+            {t('sarClaim.claimWarning')}
           </Text>
         </Box>
         {renderButton()}

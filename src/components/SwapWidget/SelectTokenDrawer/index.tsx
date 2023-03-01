@@ -1,6 +1,7 @@
 import { CAVAX, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
+import { useTranslation } from 'react-i18next';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
 import Drawer from 'src/components/Drawer';
@@ -40,6 +41,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isTokenListOpen, setIsTokenListOpen] = useState<boolean>(false);
   const [invertSearchOrder] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
@@ -151,11 +153,11 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   );
 
   return (
-    <Drawer title="Select a token" isOpen={isOpen} onClose={onClose}>
+    <Drawer title={t('currencyInputPanel.selectToken')} isOpen={isOpen} onClose={onClose}>
       {/* Render Search Token Input */}
       <Box padding="0px 10px">
         <TextInput
-          placeholder="Search"
+          placeholder={t('common.search')}
           onChange={(value: any) => {
             setSearchQuery(value as string);
           }}
@@ -193,10 +195,10 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
         {selectedListInfo.multipleSelected ? (
           <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
             <Text fontSize={14} color="swapWidget.primary">
-              {selectedListInfo.selectedCount} lists selected
+              {selectedListInfo.selectedCount} {t('searchModal.listsSelected')}
             </Text>
             <Text fontSize={12} color="swapWidget.primary">
-              Change
+              {t('searchModal.change')}
             </Text>
           </Box>
         ) : (
@@ -212,7 +214,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
               </Text>
             </Box>
             <Text fontSize={12} color="swapWidget.primary">
-              Change
+              {t('searchModal.change')}
             </Text>
           </Box>
         )}

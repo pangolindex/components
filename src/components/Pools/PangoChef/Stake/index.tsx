@@ -275,7 +275,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
           </Tooltip>
           <Buttons>
             <Button variant="primary" onClick={create} height="45px" data-tip data-for="storageContract">
-              Create Storage Contract
+              {t('pangoChef.createStorageContract')}
             </Button>
           </Buttons>
         </>
