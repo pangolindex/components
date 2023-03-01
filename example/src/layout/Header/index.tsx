@@ -13,6 +13,8 @@ import {
 import { useChainId } from '@components/hooks/index';
 import Logo from '../Logo';
 import { CHAINS, TokenAmount } from '@pangolindex/sdk';
+import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { usePangolinWeb3 } from 'src/hooks';
 
 export default function Header() {
   const context = useWeb3React();
@@ -24,6 +26,10 @@ export default function Header() {
   const shortenAddress = shortenAddressMapping[chainId];
   const chain = CHAINS[chainId];
   const png = Tokens.PNG[chainId];
+
+  const useTokenBalance = useTokenBalanceHook[chainId];
+  const userPngBalance = useTokenBalance('0x0a417DDB75Dc491C90F044Ea725E8329A1592d00', png);
+  console.log(userPngBalance);
 
   function closeNetworkSelection() {
     setOpenNetworkSelection(true);

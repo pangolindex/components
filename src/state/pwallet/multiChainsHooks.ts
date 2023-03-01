@@ -47,6 +47,7 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.COSTON2]: useTokenBalances,
   [ChainId.EVMOS_TESTNET]: useTokenBalances,
   [ChainId.EVMOS_MAINNET]: useTokenBalances,
+  [ChainId.ZKSYNC_TESTNET]: useTokenBalances,
   // TODO: We need to check following chains
   [ChainId.ETHEREUM]: useTokenBalances,
   [ChainId.POLYGON]: useTokenBalances,
@@ -85,6 +86,9 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.NEAR_MAINNET]: useNearTokenBalance,
   [ChainId.NEAR_TESTNET]: useNearTokenBalance,
   [ChainId.COSTON2]: useTokenBalance,
+  [ChainId.EVMOS_TESTNET]: useTokenBalance,
+  [ChainId.EVMOS_MAINNET]: useTokenBalance,
+  [ChainId.ZKSYNC_TESTNET]: useTokenBalance,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -100,8 +104,6 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
-  [ChainId.EVMOS_TESTNET]: useTokenBalance,
-  [ChainId.EVMOS_MAINNET]: useTokenBalance,
 };
 
 export type UsePairBalanceHookType = {
@@ -122,6 +124,7 @@ export const usePairBalanceHook: UsePairBalanceHookType = {
   [ChainId.COSTON2]: useEVMPairBalance,
   [ChainId.EVMOS_TESTNET]: useEVMPairBalance,
   [ChainId.EVMOS_MAINNET]: useEVMPairBalance,
+  [ChainId.ZKSYNC_TESTNET]: useEVMPairBalance,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useEVMPairBalance,
   [ChainId.POLYGON]: useEVMPairBalance,
@@ -156,6 +159,9 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.NEAR_MAINNET]: useNearBalance,
   [ChainId.NEAR_TESTNET]: useNearBalance,
   [ChainId.COSTON2]: useETHBalances,
+  [ChainId.EVMOS_TESTNET]: useETHBalances,
+  [ChainId.EVMOS_MAINNET]: useETHBalances,
+  [ChainId.ZKSYNC_TESTNET]: useETHBalances,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useETHBalances,
   [ChainId.POLYGON]: useETHBalances,
@@ -172,8 +178,6 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.MOONRIVER]: useETHBalances,
   [ChainId.MOONBEAM]: useETHBalances,
   [ChainId.OP]: useETHBalances,
-  [ChainId.EVMOS_TESTNET]: useETHBalances,
-  [ChainId.EVMOS_MAINNET]: useETHBalances,
 };
 
 export type UseAddLiquidityHookType = {
@@ -194,6 +198,7 @@ export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.COSTON2]: useAddLiquidity,
   [ChainId.EVMOS_TESTNET]: useAddLiquidity,
   [ChainId.EVMOS_MAINNET]: useAddLiquidity,
+  [ChainId.ZKSYNC_TESTNET]: useAddLiquidity,
   // TODO: Need to implement following chains
   [ChainId.ETHEREUM]: useAddLiquidity,
   [ChainId.POLYGON]: useAddLiquidity,
@@ -230,6 +235,7 @@ export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
   [ChainId.COSTON2]: useRemoveLiquidity,
   [ChainId.EVMOS_TESTNET]: useRemoveLiquidity,
   [ChainId.EVMOS_MAINNET]: useRemoveLiquidity,
+  [ChainId.ZKSYNC_TESTNET]: useRemoveLiquidity,
   // TODO: Remove these hooks later on
   [ChainId.ETHEREUM]: useRemoveLiquidity,
   [ChainId.POLYGON]: useRemoveLiquidity,
@@ -270,6 +276,7 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.COSTON2]: useGetUserLP,
   [ChainId.EVMOS_TESTNET]: useGetUserLP,
   [ChainId.EVMOS_MAINNET]: useGetUserLP,
+  [ChainId.ZKSYNC_TESTNET]: useGetUserLP,
   // TODO: Remove these hooks later on
   [ChainId.ETHEREUM]: useGetUserLP,
   [ChainId.POLYGON]: useGetUserLP,
@@ -314,6 +321,7 @@ export const useCreatePairHook: UseCreatePairHookType = {
   [ChainId.COSTON2]: useDummyCreatePair,
   [ChainId.EVMOS_TESTNET]: useDummyCreatePair,
   [ChainId.EVMOS_MAINNET]: useDummyCreatePair,
+  [ChainId.ZKSYNC_TESTNET]: useDummyCreatePair,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,

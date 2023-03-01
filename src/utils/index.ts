@@ -71,6 +71,9 @@ export const validateAddressMapping: { [chainId in ChainId]: (value: any) => str
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
   [ChainId.COSTON2]: isAddress,
+  [ChainId.EVMOS_TESTNET]: isAddress,
+  [ChainId.EVMOS_MAINNET]: isAddress,
+  [ChainId.ZKSYNC_TESTNET]: isAddress,
   [ChainId.ETHEREUM]: isDummyAddress,
   [ChainId.POLYGON]: isDummyAddress,
   [ChainId.FANTOM]: isDummyAddress,
@@ -86,8 +89,6 @@ export const validateAddressMapping: { [chainId in ChainId]: (value: any) => str
   [ChainId.MOONRIVER]: isDummyAddress,
   [ChainId.MOONBEAM]: isDummyAddress,
   [ChainId.OP]: isDummyAddress,
-  [ChainId.EVMOS_TESTNET]: isAddress,
-  [ChainId.EVMOS_MAINNET]: isAddress,
 };
 
 export const checkAddressNetworkBaseMapping: {
@@ -109,6 +110,9 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET].blockExplorerUrls?.[0] || '',
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET].blockExplorerUrls?.[0] || '',
   [ChainId.COSTON2]: CHAINS[ChainId.COSTON2].blockExplorerUrls?.[0] || '',
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].blockExplorerUrls?.[0] || '',
+  [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET].blockExplorerUrls?.[0] || '',
+  [ChainId.ZKSYNC_TESTNET]: CHAINS[ChainId.ZKSYNC_TESTNET].blockExplorerUrls?.[0] || '',
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -124,8 +128,6 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
-  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].blockExplorerUrls?.[0] || '',
-  [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET].blockExplorerUrls?.[0] || '',
 };
 
 const transactionPath: { [chainId in ChainId]: string } = {
@@ -140,6 +142,9 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.NEAR_MAINNET]: 'transactions',
   [ChainId.NEAR_TESTNET]: 'transactions',
   [ChainId.COSTON2]: 'tx',
+  [ChainId.EVMOS_TESTNET]: 'tx',
+  [ChainId.EVMOS_MAINNET]: 'tx',
+  [ChainId.ZKSYNC_TESTNET]: 'tx',
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -155,8 +160,6 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
-  [ChainId.EVMOS_TESTNET]: 'tx',
-  [ChainId.EVMOS_MAINNET]: 'tx',
 };
 
 const addressPath: { [chainId in ChainId]: string } = {
@@ -171,6 +174,9 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
   [ChainId.COSTON2]: 'address',
+  [ChainId.EVMOS_TESTNET]: 'address',
+  [ChainId.EVMOS_MAINNET]: 'address',
+  [ChainId.ZKSYNC_TESTNET]: 'address',
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -186,8 +192,6 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
-  [ChainId.EVMOS_TESTNET]: 'address',
-  [ChainId.EVMOS_MAINNET]: 'address',
 };
 
 const blockPath: { [chainId in ChainId]: string } = {
@@ -202,6 +206,9 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.NEAR_MAINNET]: 'blocks',
   [ChainId.NEAR_TESTNET]: 'blocks',
   [ChainId.COSTON2]: 'block',
+  [ChainId.EVMOS_TESTNET]: 'block',
+  [ChainId.EVMOS_MAINNET]: 'block',
+  [ChainId.ZKSYNC_TESTNET]: 'block',
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -217,8 +224,6 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
-  [ChainId.EVMOS_TESTNET]: 'block',
-  [ChainId.EVMOS_MAINNET]: 'block',
 };
 
 const tokenPath: { [chainId in ChainId]: string } = {
@@ -233,6 +238,9 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.NEAR_MAINNET]: 'accounts',
   [ChainId.NEAR_TESTNET]: 'accounts',
   [ChainId.COSTON2]: 'token',
+  [ChainId.EVMOS_TESTNET]: 'token',
+  [ChainId.EVMOS_MAINNET]: 'token',
+  [ChainId.ZKSYNC_TESTNET]: 'token',
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -248,8 +256,6 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
-  [ChainId.EVMOS_TESTNET]: 'token',
-  [ChainId.EVMOS_MAINNET]: 'token',
 };
 
 export function getEtherscanLink(
@@ -408,6 +414,9 @@ export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => stri
   [ChainId.NEAR_MAINNET]: shortenAddress,
   [ChainId.NEAR_TESTNET]: shortenAddress,
   [ChainId.COSTON2]: shortenAddress,
+  [ChainId.EVMOS_TESTNET]: shortenAddress,
+  [ChainId.EVMOS_MAINNET]: shortenAddress,
+  [ChainId.ZKSYNC_TESTNET]: shortenAddress,
   [ChainId.ETHEREUM]: shortenAddress,
   [ChainId.POLYGON]: shortenAddress,
   [ChainId.FANTOM]: shortenAddress,
@@ -423,8 +432,6 @@ export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => stri
   [ChainId.MOONRIVER]: shortenAddress,
   [ChainId.MOONBEAM]: shortenAddress,
   [ChainId.OP]: shortenAddress,
-  [ChainId.EVMOS_TESTNET]: shortenAddress,
-  [ChainId.EVMOS_MAINNET]: shortenAddress,
 };
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end

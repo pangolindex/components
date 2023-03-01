@@ -38,6 +38,9 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.NEAR_MAINNET]: useDummyPangoChefInfos,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefInfos,
   [ChainId.COSTON2]: usePangoChefInfos,
+  [ChainId.EVMOS_TESTNET]: usePangoChefInfos,
+  [ChainId.EVMOS_MAINNET]: useDummyHook,
+  [ChainId.ZKSYNC_TESTNET]: usePangoChefInfos,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -53,8 +56,6 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
-  [ChainId.EVMOS_TESTNET]: usePangoChefInfos,
-  [ChainId.EVMOS_MAINNET]: useDummyHook,
 };
 
 export type UsePangoChefStakeCallbackHookType = {
@@ -76,6 +77,9 @@ export const usePangoChefStakeCallbackHook: UsePangoChefStakeCallbackHookType = 
   [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
   [ChainId.COSTON2]: useEVMPangoChefStakeCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefStakeCallback,
+  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.ZKSYNC_TESTNET]: useEVMPangoChefStakeCallback,
   [ChainId.ETHEREUM]: useDummyPangoChefCallback,
   [ChainId.POLYGON]: useDummyPangoChefCallback,
   [ChainId.FANTOM]: useDummyPangoChefCallback,
@@ -91,8 +95,6 @@ export const usePangoChefStakeCallbackHook: UsePangoChefStakeCallbackHookType = 
   [ChainId.MOONRIVER]: useDummyPangoChefCallback,
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
-  [ChainId.EVMOS_TESTNET]: useEVMPangoChefStakeCallback,
-  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
 };
 
 export type UsePangoChefClaimRewardCallbackHookType = {
@@ -114,6 +116,9 @@ export const usePangoChefClaimRewardCallbackHook: UsePangoChefClaimRewardCallbac
   [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
   [ChainId.COSTON2]: useEVMPangoChefClaimRewardCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefClaimRewardCallback,
+  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.ZKSYNC_TESTNET]: useEVMPangoChefClaimRewardCallback,
   [ChainId.ETHEREUM]: useDummyPangoChefCallback,
   [ChainId.POLYGON]: useDummyPangoChefCallback,
   [ChainId.FANTOM]: useDummyPangoChefCallback,
@@ -129,8 +134,6 @@ export const usePangoChefClaimRewardCallbackHook: UsePangoChefClaimRewardCallbac
   [ChainId.MOONRIVER]: useDummyPangoChefCallback,
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
-  [ChainId.EVMOS_TESTNET]: useEVMPangoChefClaimRewardCallback,
-  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
 };
 
 export type UsePangoChefWithdrawCallbackHookType = {
@@ -152,6 +155,9 @@ export const usePangoChefWithdrawCallbackHook: UsePangoChefWithdrawCallbackHookT
   [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
   [ChainId.COSTON2]: useEVMPangoChefWithdrawCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefWithdrawCallback,
+  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.ZKSYNC_TESTNET]: useEVMPangoChefWithdrawCallback,
   [ChainId.ETHEREUM]: useDummyPangoChefCallback,
   [ChainId.POLYGON]: useDummyPangoChefCallback,
   [ChainId.FANTOM]: useDummyPangoChefCallback,
@@ -167,8 +173,6 @@ export const usePangoChefWithdrawCallbackHook: UsePangoChefWithdrawCallbackHookT
   [ChainId.MOONRIVER]: useDummyPangoChefCallback,
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
-  [ChainId.EVMOS_TESTNET]: useEVMPangoChefWithdrawCallback,
-  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
 };
 
 export type UsePangoChefCompoundCallbackHookType = {
@@ -190,6 +194,9 @@ export const usePangoChefCompoundCallbackHook: UsePangoChefCompoundCallbackHookT
   [ChainId.NEAR_MAINNET]: useDummyPangoChefCallback,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefCallback,
   [ChainId.COSTON2]: useEVMPangoChefCompoundCallback,
+  [ChainId.EVMOS_TESTNET]: useEVMPangoChefCompoundCallback,
+  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.ZKSYNC_TESTNET]: useEVMPangoChefCompoundCallback,
   [ChainId.ETHEREUM]: useDummyPangoChefCallback,
   [ChainId.POLYGON]: useDummyPangoChefCallback,
   [ChainId.FANTOM]: useDummyPangoChefCallback,
@@ -205,8 +212,6 @@ export const usePangoChefCompoundCallbackHook: UsePangoChefCompoundCallbackHookT
   [ChainId.MOONRIVER]: useDummyPangoChefCallback,
   [ChainId.MOONBEAM]: useDummyPangoChefCallback,
   [ChainId.OP]: useDummyPangoChefCallback,
-  [ChainId.EVMOS_TESTNET]: useEVMPangoChefCompoundCallback,
-  [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
 };
 
 export type UseGetLockingPoolsForPoolIdHookType = {
@@ -228,6 +233,9 @@ export const useGetLockingPoolsForPoolIdHook: UseGetLockingPoolsForPoolIdHookTyp
   [ChainId.NEAR_MAINNET]: useDummyIsLockingPoolZero,
   [ChainId.NEAR_TESTNET]: useDummyIsLockingPoolZero,
   [ChainId.COSTON2]: useGetLockingPoolsForPoolId,
+  [ChainId.EVMOS_TESTNET]: useDummyIsLockingPoolZero,
+  [ChainId.EVMOS_MAINNET]: useDummyIsLockingPoolZero,
+  [ChainId.ZKSYNC_TESTNET]: useGetLockingPoolsForPoolId,
   [ChainId.ETHEREUM]: useDummyIsLockingPoolZero,
   [ChainId.POLYGON]: useDummyIsLockingPoolZero,
   [ChainId.FANTOM]: useDummyIsLockingPoolZero,
@@ -243,6 +251,4 @@ export const useGetLockingPoolsForPoolIdHook: UseGetLockingPoolsForPoolIdHookTyp
   [ChainId.MOONRIVER]: useDummyIsLockingPoolZero,
   [ChainId.MOONBEAM]: useDummyIsLockingPoolZero,
   [ChainId.OP]: useDummyIsLockingPoolZero,
-  [ChainId.EVMOS_TESTNET]: useDummyIsLockingPoolZero,
-  [ChainId.EVMOS_MAINNET]: useDummyIsLockingPoolZero,
 };

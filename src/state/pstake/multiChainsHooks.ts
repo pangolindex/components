@@ -25,6 +25,9 @@ export const useMinichefStakingInfosHook: UseMinichefStakingInfosHookType = {
   [ChainId.NEAR_MAINNET]: useDummyMinichefHook,
   [ChainId.NEAR_TESTNET]: useDummyMinichefHook,
   [ChainId.COSTON2]: useDummyMinichefHook,
+  [ChainId.EVMOS_TESTNET]: useDummyMinichefHook,
+  [ChainId.EVMOS_MAINNET]: useDummyMinichefHook,
+  [ChainId.ZKSYNC_TESTNET]: useDummyMinichefHook,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -40,8 +43,6 @@ export const useMinichefStakingInfosHook: UseMinichefStakingInfosHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
-  [ChainId.EVMOS_TESTNET]: useDummyMinichefHook,
-  [ChainId.EVMOS_MAINNET]: useDummyMinichefHook,
 };
 
 export type UseGetMinichefStakingInfosViaSubgraphHookType = {
@@ -63,6 +64,9 @@ export const useGetMinichefStakingInfosViaSubgraphHook: UseGetMinichefStakingInf
   [ChainId.NEAR_MAINNET]: useDummyMinichefStakingInfosViaSubgraph,
   [ChainId.NEAR_TESTNET]: useDummyMinichefStakingInfosViaSubgraph,
   [ChainId.COSTON2]: useGetMinichefStakingInfosViaSubgraph,
+  [ChainId.EVMOS_TESTNET]: useGetMinichefStakingInfosViaSubgraph,
+  [ChainId.EVMOS_MAINNET]: useGetMinichefStakingInfosViaSubgraph,
+  [ChainId.ZKSYNC_TESTNET]: useGetMinichefStakingInfosViaSubgraph,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -78,8 +82,6 @@ export const useGetMinichefStakingInfosViaSubgraphHook: UseGetMinichefStakingInf
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
-  [ChainId.EVMOS_TESTNET]: useGetMinichefStakingInfosViaSubgraph,
-  [ChainId.EVMOS_MAINNET]: useGetMinichefStakingInfosViaSubgraph,
 };
 
 export type UseGetAllFarmDataHookType = {
@@ -98,6 +100,9 @@ export const useGetAllFarmDataHook: UseGetAllFarmDataHookType = {
   [ChainId.NEAR_MAINNET]: useGetDummyAllFarmData,
   [ChainId.NEAR_TESTNET]: useGetDummyAllFarmData,
   [ChainId.COSTON2]: useGetDummyAllFarmData,
+  [ChainId.EVMOS_TESTNET]: useGetDummyAllFarmData,
+  [ChainId.EVMOS_MAINNET]: useGetDummyAllFarmData,
+  [ChainId.ZKSYNC_TESTNET]: useGetDummyAllFarmData,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,
@@ -113,6 +118,4 @@ export const useGetAllFarmDataHook: UseGetAllFarmDataHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
-  [ChainId.EVMOS_TESTNET]: useGetAllFarmData,
-  [ChainId.EVMOS_MAINNET]: useGetDummyAllFarmData,
 };

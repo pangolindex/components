@@ -69,6 +69,7 @@ const initialState: SwapState = {
   [ChainId.COSTON2]: initialValue,
   [ChainId.EVMOS_TESTNET]: initialValue,
   [ChainId.EVMOS_MAINNET]: initialValue,
+  [ChainId.ZKSYNC_TESTNET]: initialValue,
   // TODO:
   [ChainId.ETHEREUM]: initialValue,
   [ChainId.POLYGON]: initialValue,

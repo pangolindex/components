@@ -51,6 +51,9 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts!.router,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts!.router,
   [ChainId.COSTON2]: CHAINS[ChainId.COSTON2].contracts!.router,
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].contracts!.router,
+  [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET].contracts!.router,
+  [ChainId.ZKSYNC_TESTNET]: CHAINS[ChainId.ZKSYNC_TESTNET].contracts!.router,
   [ChainId.ETHEREUM]: '',
   [ChainId.POLYGON]: '',
   [ChainId.FANTOM]: '',
@@ -66,8 +69,6 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
-  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].contracts!.router,
-  [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET].contracts!.router,
 };
 
 export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
@@ -82,6 +83,9 @@ export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.NEAR_MAINNET]: CHAINS[ChainId.NEAR_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.NEAR_TESTNET]: CHAINS[ChainId.NEAR_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.COSTON2]: CHAINS[ChainId.COSTON2]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.ZKSYNC_TESTNET]: CHAINS[ChainId.ZKSYNC_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.ETHEREUM]: ZERO_ADDRESS,
   [ChainId.POLYGON]: ZERO_ADDRESS,
   [ChainId.FANTOM]: ZERO_ADDRESS,
@@ -97,8 +101,6 @@ export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: ZERO_ADDRESS,
   [ChainId.MOONBEAM]: ZERO_ADDRESS,
   [ChainId.OP]: ZERO_ADDRESS,
-  [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
-  [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
 };
 
 // a list of tokens by chain
@@ -144,6 +146,9 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.NEAR_MAINNET]: getMiniChefAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getMiniChefAddress(ChainId.NEAR_TESTNET),
   [ChainId.COSTON2]: getMiniChefAddress(ChainId.COSTON2),
+  [ChainId.EVMOS_TESTNET]: getMiniChefAddress(ChainId.EVMOS_TESTNET),
+  [ChainId.EVMOS_MAINNET]: undefined,
+  [ChainId.ZKSYNC_TESTNET]: getMiniChefAddress(ChainId.ZKSYNC_TESTNET),
   [ChainId.ETHEREUM]: undefined,
   [ChainId.POLYGON]: undefined,
   [ChainId.FANTOM]: undefined,
@@ -159,8 +164,6 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
-  [ChainId.EVMOS_TESTNET]: getMiniChefAddress(ChainId.EVMOS_TESTNET),
-  [ChainId.EVMOS_MAINNET]: undefined,
 };
 
 const getPangoChefAddress = (chainId: ChainId) => {
@@ -183,6 +186,9 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.NEAR_MAINNET]: undefined,
   [ChainId.NEAR_TESTNET]: undefined,
   [ChainId.COSTON2]: getPangoChefAddress(ChainId.COSTON2),
+  [ChainId.EVMOS_TESTNET]: getPangoChefAddress(ChainId.EVMOS_TESTNET),
+  [ChainId.EVMOS_MAINNET]: undefined,
+  [ChainId.ZKSYNC_TESTNET]: getPangoChefAddress(ChainId.ZKSYNC_TESTNET),
   [ChainId.ETHEREUM]: undefined,
   [ChainId.POLYGON]: undefined,
   [ChainId.FANTOM]: undefined,
@@ -198,8 +204,6 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
-  [ChainId.EVMOS_TESTNET]: getPangoChefAddress(ChainId.EVMOS_TESTNET),
-  [ChainId.EVMOS_MAINNET]: undefined,
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
@@ -215,6 +219,9 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET].address, PNG[ChainId.NEAR_MAINNET].address],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET].address, PNG[ChainId.NEAR_TESTNET].address],
   [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2].address, PNG[ChainId.COSTON2].address],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET].address, PNG[ChainId.EVMOS_TESTNET].address],
+  [ChainId.EVMOS_MAINNET]: [WAVAX[ChainId.EVMOS_MAINNET].address],
+  [ChainId.ZKSYNC_TESTNET]: [WAVAX[ChainId.ZKSYNC_TESTNET].address, PNG[ChainId.ZKSYNC_TESTNET].address],
   [ChainId.ETHEREUM]: [],
   [ChainId.POLYGON]: [],
   [ChainId.FANTOM]: [],
@@ -230,8 +237,6 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
   [ChainId.MOONRIVER]: [],
   [ChainId.MOONBEAM]: [],
   [ChainId.OP]: [],
-  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET].address, PNG[ChainId.EVMOS_TESTNET].address],
-  [ChainId.EVMOS_MAINNET]: [WAVAX[ChainId.EVMOS_MAINNET].address],
 };
 
 export const SWAP_DEFAULT_CURRENCY = {
@@ -287,6 +292,10 @@ export const SWAP_DEFAULT_CURRENCY = {
     inputCurrency: 'EVMOS',
     outputCurrency: '',
   },
+  [ChainId.ZKSYNC_TESTNET]: {
+    inputCurrency: 'ETH',
+    outputCurrency: PNG[ChainId.ZKSYNC_TESTNET].address,
+  },
 };
 
 // used to construct intermediary pairs for trading
@@ -316,6 +325,9 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
   [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2], PNG[ChainId.COSTON2]],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
+  [ChainId.EVMOS_MAINNET]: [WAVAX[ChainId.EVMOS_MAINNET]],
+  [ChainId.ZKSYNC_TESTNET]: [WAVAX[ChainId.ZKSYNC_TESTNET], PNG[ChainId.ZKSYNC_TESTNET]],
   [ChainId.ETHEREUM]: [],
   [ChainId.POLYGON]: [],
   [ChainId.FANTOM]: [],
@@ -331,8 +343,6 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.MOONRIVER]: [],
   [ChainId.MOONBEAM]: [],
   [ChainId.OP]: [],
-  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
-  [ChainId.EVMOS_MAINNET]: [WAVAX[ChainId.EVMOS_MAINNET]],
 };
 
 // one basis point
@@ -536,6 +546,9 @@ export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } 
   [ChainId.NEAR_MAINNET]: NearProvider,
   [ChainId.NEAR_TESTNET]: NearProvider,
   [ChainId.COSTON2]: CommonEVMProvider,
+  [ChainId.EVMOS_TESTNET]: CommonEVMProvider,
+  [ChainId.EVMOS_MAINNET]: CommonEVMProvider,
+  [ChainId.ZKSYNC_TESTNET]: CommonEVMProvider,
   //TODO: remove this once we have proper implementation
   [ChainId.ETHEREUM]: CommonEVMProvider,
   [ChainId.POLYGON]: CommonEVMProvider,
@@ -552,8 +565,6 @@ export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } 
   [ChainId.MOONRIVER]: CommonEVMProvider,
   [ChainId.MOONBEAM]: CommonEVMProvider,
   [ChainId.OP]: CommonEVMProvider,
-  [ChainId.EVMOS_TESTNET]: CommonEVMProvider,
-  [ChainId.EVMOS_MAINNET]: CommonEVMProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {
@@ -608,6 +619,9 @@ const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.NEAR_MAINNET]: [WAVAX[ChainId.NEAR_MAINNET], PNG[ChainId.NEAR_MAINNET]],
   [ChainId.NEAR_TESTNET]: [WAVAX[ChainId.NEAR_TESTNET], PNG[ChainId.NEAR_TESTNET]],
   [ChainId.COSTON2]: [WAVAX[ChainId.COSTON2], PNG[ChainId.COSTON2]],
+  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
+  [ChainId.EVMOS_MAINNET]: [WAVAX[ChainId.EVMOS_MAINNET]],
+  [ChainId.ZKSYNC_TESTNET]: [WAVAX[ChainId.ZKSYNC_TESTNET], PNG[ChainId.ZKSYNC_TESTNET]],
   [ChainId.POLYGON]: [],
   [ChainId.ETHEREUM]: [],
   [ChainId.FANTOM]: [],
@@ -623,8 +637,6 @@ const WAVAX_AND_PNG_ONLY: ChainTokenList = {
   [ChainId.MOONRIVER]: [],
   [ChainId.MOONBEAM]: [],
   [ChainId.OP]: [],
-  [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
-  [ChainId.EVMOS_MAINNET]: [WAVAX[ChainId.EVMOS_MAINNET]],
 };
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -652,6 +664,9 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
   [ChainId.NEAR_MAINNET]: getSarAddress(ChainId.NEAR_MAINNET),
   [ChainId.NEAR_TESTNET]: getSarAddress(ChainId.NEAR_TESTNET),
   [ChainId.COSTON2]: getSarAddress(ChainId.COSTON2),
+  [ChainId.EVMOS_TESTNET]: getSarAddress(ChainId.EVMOS_TESTNET),
+  [ChainId.EVMOS_MAINNET]: undefined,
+  [ChainId.ZKSYNC_TESTNET]: getSarAddress(ChainId.ZKSYNC_TESTNET),
   [ChainId.ETHEREUM]: undefined,
   [ChainId.POLYGON]: undefined,
   [ChainId.FANTOM]: undefined,
@@ -667,8 +682,6 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
-  [ChainId.EVMOS_TESTNET]: getSarAddress(ChainId.EVMOS_TESTNET),
-  [ChainId.EVMOS_MAINNET]: undefined,
 };
 /* eslint-enable max-lines */
 
@@ -699,6 +712,9 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.NEAR_MAINNET]: 'near',
   [ChainId.NEAR_TESTNET]: undefined,
   [ChainId.COSTON2]: undefined,
+  [ChainId.EVMOS_TESTNET]: undefined,
+  [ChainId.EVMOS_MAINNET]: undefined,
+  [ChainId.ZKSYNC_TESTNET]: undefined,
   [ChainId.ETHEREUM]: undefined,
   [ChainId.POLYGON]: undefined,
   [ChainId.FANTOM]: undefined,
@@ -714,8 +730,6 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.MOONRIVER]: undefined,
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
-  [ChainId.EVMOS_TESTNET]: undefined,
-  [ChainId.EVMOS_MAINNET]: undefined,
 };
 
 export const FARM_TYPE: { [x: number]: string | undefined } = {

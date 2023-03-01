@@ -65,6 +65,9 @@ export const useSarPositionsHook: useSarPositionsType = {
   [ChainId.NEAR_MAINNET]: useDummySarPositions,
   [ChainId.NEAR_TESTNET]: useDummySarPositions,
   [ChainId.COSTON2]: useSarPositions,
+  [ChainId.EVMOS_TESTNET]: useSarPositions,
+  [ChainId.EVMOS_MAINNET]: useDummySarPositions,
+  [ChainId.ZKSYNC_TESTNET]: useSarPositions,
   [ChainId.ETHEREUM]: useDummySarPositions,
   [ChainId.POLYGON]: useDummySarPositions,
   [ChainId.FANTOM]: useDummySarPositions,
@@ -80,8 +83,6 @@ export const useSarPositionsHook: useSarPositionsType = {
   [ChainId.MOONRIVER]: useDummySarPositions,
   [ChainId.MOONBEAM]: useDummySarPositions,
   [ChainId.OP]: useDummySarPositions,
-  [ChainId.EVMOS_TESTNET]: useSarPositions,
-  [ChainId.EVMOS_MAINNET]: useDummySarPositions,
 };
 
 export const useDerivativeSarStakeHook: useDerivativeSarStakeType = {
@@ -96,6 +97,9 @@ export const useDerivativeSarStakeHook: useDerivativeSarStakeType = {
   [ChainId.NEAR_MAINNET]: useDummyDerivativeSarStake,
   [ChainId.NEAR_TESTNET]: useDummyDerivativeSarStake,
   [ChainId.COSTON2]: useDerivativeSarStake,
+  [ChainId.EVMOS_TESTNET]: useDerivativeSarStake,
+  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarStake,
+  [ChainId.ZKSYNC_TESTNET]: useDerivativeSarStake,
   [ChainId.ETHEREUM]: useDummyDerivativeSarStake,
   [ChainId.POLYGON]: useDummyDerivativeSarStake,
   [ChainId.FANTOM]: useDummyDerivativeSarStake,
@@ -111,8 +115,6 @@ export const useDerivativeSarStakeHook: useDerivativeSarStakeType = {
   [ChainId.MOONRIVER]: useDummyDerivativeSarStake,
   [ChainId.MOONBEAM]: useDummyDerivativeSarStake,
   [ChainId.OP]: useDummyDerivativeSarStake,
-  [ChainId.EVMOS_TESTNET]: useDerivativeSarStake,
-  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarStake,
 };
 
 export const useDerivativeSarUnstakeHook: useDerivativeSarUnstakeType = {
@@ -127,6 +129,9 @@ export const useDerivativeSarUnstakeHook: useDerivativeSarUnstakeType = {
   [ChainId.NEAR_MAINNET]: useDummyDerivativeSarUnstake,
   [ChainId.NEAR_TESTNET]: useDummyDerivativeSarUnstake,
   [ChainId.COSTON2]: useDerivativeSarUnstake,
+  [ChainId.EVMOS_TESTNET]: useDerivativeSarUnstake,
+  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarUnstake,
+  [ChainId.ZKSYNC_TESTNET]: useDerivativeSarUnstake,
   [ChainId.ETHEREUM]: useDummyDerivativeSarUnstake,
   [ChainId.POLYGON]: useDummyDerivativeSarUnstake,
   [ChainId.FANTOM]: useDummyDerivativeSarUnstake,
@@ -142,8 +147,6 @@ export const useDerivativeSarUnstakeHook: useDerivativeSarUnstakeType = {
   [ChainId.MOONRIVER]: useDummyDerivativeSarUnstake,
   [ChainId.MOONBEAM]: useDummyDerivativeSarUnstake,
   [ChainId.OP]: useDummyDerivativeSarUnstake,
-  [ChainId.EVMOS_TESTNET]: useDerivativeSarUnstake,
-  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarUnstake,
 };
 
 export const useDerivativeSarClaimHook: useDerivativeSarClaimType = {
@@ -158,6 +161,9 @@ export const useDerivativeSarClaimHook: useDerivativeSarClaimType = {
   [ChainId.NEAR_MAINNET]: useDummyDerivativeSarClaim,
   [ChainId.NEAR_TESTNET]: useDummyDerivativeSarClaim,
   [ChainId.COSTON2]: useDerivativeSarClaim,
+  [ChainId.EVMOS_TESTNET]: useDerivativeSarClaim,
+  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarClaim,
+  [ChainId.ZKSYNC_TESTNET]: useDerivativeSarClaim,
   [ChainId.ETHEREUM]: useDummyDerivativeSarClaim,
   [ChainId.POLYGON]: useDummyDerivativeSarClaim,
   [ChainId.FANTOM]: useDummyDerivativeSarClaim,
@@ -173,8 +179,6 @@ export const useDerivativeSarClaimHook: useDerivativeSarClaimType = {
   [ChainId.MOONRIVER]: useDummyDerivativeSarClaim,
   [ChainId.MOONBEAM]: useDummyDerivativeSarClaim,
   [ChainId.OP]: useDummyDerivativeSarClaim,
-  [ChainId.EVMOS_TESTNET]: useDerivativeSarClaim,
-  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarClaim,
 };
 
 export const useDerivativeSarCompoundHook: useDerivativeSarCompoundType = {
@@ -189,6 +193,9 @@ export const useDerivativeSarCompoundHook: useDerivativeSarCompoundType = {
   [ChainId.NEAR_MAINNET]: useDummyDerivativeSarCompound,
   [ChainId.NEAR_TESTNET]: useDummyDerivativeSarCompound,
   [ChainId.COSTON2]: useDerivativeSarCompound,
+  [ChainId.EVMOS_TESTNET]: useDerivativeSarCompound,
+  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarCompound,
+  [ChainId.ZKSYNC_TESTNET]: useDerivativeSarCompound,
   [ChainId.ETHEREUM]: useDummyDerivativeSarCompound,
   [ChainId.POLYGON]: useDummyDerivativeSarCompound,
   [ChainId.FANTOM]: useDummyDerivativeSarCompound,
@@ -204,6 +211,4 @@ export const useDerivativeSarCompoundHook: useDerivativeSarCompoundType = {
   [ChainId.MOONRIVER]: useDummyDerivativeSarCompound,
   [ChainId.MOONBEAM]: useDummyDerivativeSarCompound,
   [ChainId.OP]: useDummyDerivativeSarCompound,
-  [ChainId.EVMOS_TESTNET]: useDerivativeSarCompound,
-  [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarCompound,
 };

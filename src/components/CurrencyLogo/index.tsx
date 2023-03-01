@@ -7,6 +7,7 @@ import HederaLogo from 'src/assets/images/hedera.svg';
 import NearLogo from 'src/assets/images/near.svg';
 import SongBirdLogo from 'src/assets/images/songbird.png';
 import WgmiLogo from 'src/assets/images/wagmi.png';
+import ZksyncLogo from 'src/assets/images/zksync.svg';
 import { AvaxLogo, CflrLogo } from 'src/components/Icons';
 import { LogoSize } from 'src/constants';
 import { useChainId } from 'src/hooks';
@@ -40,7 +41,9 @@ export default function CurrencyLogo({
       currency === CAVAX[ChainId.NEAR_TESTNET] ||
       currency === CAVAX[ChainId.NEAR_MAINNET] ||
       currency === CAVAX[ChainId.COSTON2] ||
-      currency === CAVAX[ChainId.EVMOS_TESTNET || currency === CAVAX[ChainId.EVMOS_MAINNET]]
+      currency === CAVAX[ChainId.EVMOS_TESTNET] ||
+      currency === CAVAX[ChainId.EVMOS_MAINNET] ||
+      currency === CAVAX[ChainId.ZKSYNC_TESTNET]
     )
       return [];
     if (currency instanceof Token || !!(currency as Token).address) {
@@ -70,6 +73,8 @@ export default function CurrencyLogo({
     return <CflrLogo size={`${size}px`} className={className} />;
   } else if (deepEqual(currency, CAVAX[ChainId.EVMOS_TESTNET]) || deepEqual(currency, CAVAX[ChainId.EVMOS_MAINNET])) {
     return <img src={EvmosLogo} width={`${size}px`} height={`${size}px`} className={className} />;
+  } else if (deepEqual(currency, CAVAX[ChainId.ZKSYNC_TESTNET])) {
+    return <img src={ZksyncLogo} width={`${size}px`} height={`${size}px`} className={className} />;
   }
   return (
     <StyledLogo
