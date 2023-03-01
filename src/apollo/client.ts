@@ -1,9 +1,10 @@
-import { ChainId } from '@pangolindex/sdk';
+import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { GraphQLClient } from 'graphql-request';
 import { SUBGRAPH_BASE_URL } from 'src/constants';
+import { useChainId } from 'src/hooks';
 
 export const client = new ApolloClient({
   link: new HttpLink({
@@ -38,6 +39,17 @@ export const hederaMainnetSubgraphGql = new GraphQLClient(
     headers: {},
   },
 );
+
+export function useSubgraphClient(): GraphQLClient | undefined {
+  const chainId = useChainId();
+
+  const url = CHAINS[chainId]?.subgraph?.exchange;
+
+  if (url) {
+    return new GraphQLClient(url);
+  }
+  return undefined;
+}
 
 export const subgraphClient = {
   [ChainId.AVALANCHE]: avalancheMininchefV2Client,

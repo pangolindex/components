@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { useChainId } from 'src/hooks';
 import { validateAddressMapping } from 'src/utils';
-import { subgraphClient } from './client';
+import { useSubgraphClient } from './client';
 
 export type SubgraphToken = {
   id: string;
@@ -41,7 +41,7 @@ export const useSubgraphTokens = (tokenAddresses: (string | undefined)[]) => {
   );
   const chainId = useChainId();
   const validateAddress = validateAddressMapping[chainId];
-  const gqlClient = subgraphClient[chainId];
+  const gqlClient = useSubgraphClient();
   // get tokens from subgraph
   return useQuery<SubgraphToken[]>(
     ['get-subgraph-tokens', chainId, ...tokensToFind],

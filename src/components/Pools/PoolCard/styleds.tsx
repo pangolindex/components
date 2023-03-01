@@ -61,6 +61,7 @@ export const OptionButton = styled.div`
   border-radius: 6px;
   background-color: ${({ theme }) => theme.primary};
   font-size: 13px;
+  color: ${({ theme }) => theme.black};
 `;
 
 export const OptionsWrapper = styled.div`
