@@ -1,5 +1,6 @@
 import { CHAINS, ChefType } from '@pangolindex/sdk';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { Box } from 'src/components';
 import { usePair } from 'src/data/Reserves';
@@ -15,7 +16,6 @@ import Details from '../Details';
 import EarnedDetail from '../EarnedDetail';
 import Header from '../Header';
 import { DesktopWrapper, DetailsWrapper, LeftSection, MobileWrapper, RightSection, Tab, Tabs } from './styleds';
-import { useTranslation } from 'react-i18next';
 
 export interface PoolDetailProps {
   onDismiss: () => void;
