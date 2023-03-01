@@ -62,6 +62,7 @@
     "unclaimedReward": "Unbeanspruchte {{ symbol }}",
     "claim": "Beanspruchen",
     "claimReward": "{{ symbol }} Beanspruchen",
+    "claimRewards": "Belohnung entgegennehmen",
     "liquidityRemainsPool": "Wenn du deine Vergütung ohne abzubuchen beanspruchst, wird deine Liquidität im Pool verbleiben.",
     "withdrawingLiquidity": "{{ amount }} {{ symbol }} opnemen",
     "claimingReward": "Wird beansprucht {{ amount }} {{ symbol }}",
@@ -701,7 +702,7 @@
   },
   "pangoChef": {
     "claimWarning1": "Wenn Sie einen Anspruch geltend machen, ohne abzuheben, bleibt Ihre Liquidität im Mining-Pool.",
-    "claimWarning2": "Wenn Sie Ihre Prämien beanspruchen, sinkt Ihr effektiver Jahreszins auf 0. Stattdessen können Sie sich für eine Aufzinsung entscheiden.",
+    "claimWarning2": "Wenn Sie Ihre Belohnungen einfordern, werden alle ausstehenden Token beansprucht, einschließlich der Super Farm-Belohnungen, und Ihr effektiver Jahreszins wird auf 0 % zurückgesetzt. Stattdessen können Sie sich für eine Aufzinsung entscheiden.",
     "compoundWarning": "Wenn Sie Ihre Belohnungen für die {{ token0 }}-{{ token1 }}-Farm zusammensetzen, werden Ihre Belohnungen in die {{ stakeToken0 }}-{{ stakeToken1 }} farm eingesetzt. Sie müssen den gleichen Wert von {{ compoundToken }}Token für Ihre angesammelten {{ png }} Prämien.",
     "compoundAmountWarning": "Sie müssen {{ amount }} {{ symbol }} zur Verbindung hinzufügen. Bitte beachten Sie, dass die Aufzinsung Ihren effektiven Jahreszins leicht verringern kann.",
     "compoundAmountWarning2": "Zum Zusammensetzen. Seien Sie vorsichtig, dass Sie Ihren {{ token0 }} {{ token1 }} pool sperren, bis Sie die Belohnungen dieses Pools beanspruchen.",

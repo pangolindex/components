@@ -62,6 +62,7 @@
     "unclaimedReward": "Talep edilmemiş {{ symbol }}",
     "claim": "Talep Et",
     "claimReward": "{{ symbol }} Ödüllerini Talep Et",
+    "claimRewards": "Ödül Talebi",
     "liquidityRemainsPool": "Ödülleri, likiditenizi çekmeden talep ettiğinizde sağladığınız likidite farmda kalır.",
     "withdrawingLiquidity": "{{ amount }} {{ symbol }} Çekiliyor",
     "claimingReward": "{{ amount }} {{ symbol }} Talep Ediliyor",
@@ -700,7 +701,7 @@
   },
   "pangoChef": {
     "claimWarning1": "Likiditenizi çekmeden talep ettiğinizde madencilik havuzunda kalır.",
-    "claimWarning2": "Ödüllerinizi talep etmek, APR'nizi 0'a düşürür. Bunun yerine birleştirmeyi seçebilirsiniz.",
+    "claimWarning2": "Ödüllerinizi talep ettiğinizde, Super Farm ödülleri dahil olmak üzere tüm ödenmemiş jetonlar talep edilir ve APR'niz %0'a sıfırlanır. Bunun yerine bileşik yapmayı seçebilirsiniz.",
     "compoundWarning": "{{ token0 }}-{{ token1 }} çiftliği için ödüllerinizi birleştirmek, ödüllerinizi {{ stakeToken0 }}-{{ stakeToken1 }} çiftliğine yatırır. {{ compoundToken }} 'a eşit değer eklemeniz gerekir. jeton, tahakkuk eden {{ png }} ödüllerinize.",
     "compoundAmountWarning": "Bileşik için {{ amount }} {{ symbol }} eklemeniz gerekiyor. Lütfen Bileşik oluşturmanın APR'nizi biraz azaltabileceğini unutmayın.",
     "compoundAmountWarning2": "Bu havuzun ödüllerini alana kadar {{ token0 }} {{ token1 }} havuzunuzu kilitleyeceğinize dikkat edin.",

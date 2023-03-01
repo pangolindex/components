@@ -62,6 +62,7 @@
     "unclaimedReward": " Phần thưởng chưa được nhận{{ symbol }}",
     "claim": "nhận",
     "claimReward": "{{ symbol }} Nhận phần thưởng",
+    "claimRewards": "Yêu cầu phần thưởng",
     "liquidityRemainsPool": "Nếu bạn yêu cầu khoản thanh khoản của mình mà không rút tiền, tiền của bạn sẽ vẫn ở trong bể khai thác.",
     "withdrawingLiquidity": "Rút {{ amount }} {{ symbol }}",
     "claimingReward": "Đang nhận phần thưởng {{ amount }} {{ symbol }}",
@@ -701,7 +702,7 @@
   },
   "pangoChef": {
     "claimWarning1": "Khi bạn yêu cầu mà không rút tiền, thanh khoản của bạn vẫn còn trong nhóm khai thác.",
-    "claimWarning2": "Yêu cầu phần thưởng của bạn sẽ giảm APR của bạn xuống 0. Thay vào đó, bạn có thể chọn kết hợp.",
+    "claimWarning2": "Yêu cầu phần thưởng của bạn sẽ yêu cầu tất cả các mã thông báo chưa thanh toán, bao gồm cả phần thưởng Super Farm và khởi động lại APR của bạn thành 0%. Thay vào đó, bạn có thể chọn ghép.",
     "compoundWarning": "Tích lũy phần thưởng của bạn cho trang trại {{ token0 }} - {{ token1 }} sẽ nhận được phần thưởng của bạn vào trang trại {{ stakeToken0 }} - {{ stakeToken1 }}. Bạn cần thêm giá trị tương đương của mã thông báo {{ compoundToken }} vào phần thưởng {{ png }} đã tích lũy của mình.",
     "compoundAmountWarning": "Bạn cần thêm {{amount}} {{symbol}} để kết hợp. Hãy lưu ý rằng Kết hợp có thể làm giảm một chút APR của bạn.",
     "compoundAmountWarning2": "Hãy cẩn thận rằng bạn sẽ khóa nhóm {{ token0 }} {{ token1 }} của mình cho đến khi bạn nhận được phần thưởng của nhóm này.",
