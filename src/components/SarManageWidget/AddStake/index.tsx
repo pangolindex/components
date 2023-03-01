@@ -88,6 +88,11 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
     }
   }, [approval, approvalSubmitted]);
 
+  // if changed the position and the drawer is open, close
+  useEffect(() => {
+    if (openDrawer) setOpenDrawer(false);
+  }, [selectedPosition]);
+
   const handleConfirmDismiss = useCallback(() => {
     setOpenDrawer(false);
     // if there was a tx hash, we want to clear the input

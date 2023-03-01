@@ -263,7 +263,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
       : '-';
 
   const renderButton = () => {
-    if (shouldCreateStorage) {
+    if (shouldCreateStorage && !error) {
       return (
         <>
           <Tooltip id="storageContract" effect="solid" backgroundColor={theme.primary}>
@@ -295,7 +295,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
 
           <Button
             variant="primary"
-            isDisabled={!!error || approval !== ApprovalState.APPROVED || !!stakeCallbackError}
+            isDisabled={!!error || approval !== ApprovalState.APPROVED || !!stakeCallbackError || shouldCreateStorage}
             onClick={onConfirm}
             loading={attempting && !hash}
             loadingText={t('migratePage.loading')}

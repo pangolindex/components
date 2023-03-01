@@ -35,7 +35,6 @@ import {
   useHederaTokenAssociated,
   useNearTokens,
 } from 'src/hooks/Tokens';
-import { useTokensHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -1285,7 +1284,6 @@ export function useGetUserLP() {
 export function useGetHederaUserLP() {
   const chainId = useChainId();
 
-  const useTokens = useTokensHook[chainId];
   // get all pairs
   const trackedTokenPairs = useTrackedTokenPairs();
 
@@ -1325,40 +1323,27 @@ export function useGetHederaUserLP() {
   const tokensMetadata = useHederaTokensMetaData(Object.keys(tokenBalances));
 
   // filter to only fungible tokens
+  // and we need to get token data to do filter based on PGL Symbol
   const allTokensAddress: string[] = useMemo(() => {
     const _allTokensAddress: string[] = [];
     Object.entries(tokensMetadata).forEach(([address, metadata]) => {
-      if (metadata && metadata.type.startsWith('FUNGIBLE')) {
+      if (metadata && metadata.type.startsWith('FUNGIBLE') && metadata.symbol === 'PGL') {
         return _allTokensAddress.push(address);
       }
     });
     return _allTokensAddress;
   }, [tokensMetadata]);
 
-  // here we need to get token data to do filter based on PGL Symbol
-  const tokens = useTokens(allTokensAddress);
-
-  //here we need to filter hedera pair with check of associated
-  const associatedPglAddress = (tokens || [])
-    .map((token) => {
-      if (token?.symbol === 'PGL') {
-        return token.address;
-      }
-    })
-    .filter((element) => {
-      return !!element;
-    });
-
   // here we will filter pairTokens based on associated pgl Address has pgl address
   const filterPairTokens = useMemo(
     () =>
       Object.keys(pglTokenAddresses).reduce<[Token, Token][]>((memo, lpAddress) => {
-        if (associatedPglAddress.includes(pglTokenAddresses[lpAddress])) {
+        if (allTokensAddress.includes(pglTokenAddresses[lpAddress] ?? '')) {
           memo.push(pairTokens[lpAddress]);
         }
         return memo;
       }, []),
-    [pglTokenAddresses, associatedPglAddress, pairTokens],
+    [pglTokenAddresses, allTokensAddress, pairTokens],
   );
 
   const allPairs = usePairs(filterPairTokens);

@@ -19,11 +19,18 @@ import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurre
 import { tryParseAmount } from '../pswap/hooks';
 import { useCurrencyBalances } from '../pwallet/hooks';
 import { Field, typeInput } from './actions';
+import { initialKeyState } from './reducer';
 
 const ZERO = JSBI.BigInt(0);
 
-export function useMintState(): AppState['pmint'] {
-  return useSelector<AppState['pmint']>((state) => state.pmint);
+export function useMintState(pairAddress: string) {
+  return useSelector<AppState['pmint']['any']>((state) => {
+    const pairState = state.pmint[pairAddress];
+    if (pairState) {
+      return pairState;
+    }
+    return initialKeyState;
+  });
 }
 
 export function useDerivedMintInfo(
@@ -48,7 +55,12 @@ export function useDerivedMintInfo(
 
   const { t } = useTranslation();
 
-  const { independentField, typedValue, otherTypedValue } = useMintState();
+  const wrappedCurrencyA = wrappedCurrency(currencyA, chainId);
+  const wrappedCurrencyB = wrappedCurrency(currencyB, chainId);
+
+  const pairAddress = wrappedCurrencyA && wrappedCurrencyB ? Pair.getAddress(wrappedCurrencyA, wrappedCurrencyB) : '';
+
+  const { independentField, typedValue, otherTypedValue } = useMintState(pairAddress);
 
   const dependentField = independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A;
 
@@ -98,7 +110,7 @@ export function useDerivedMintInfo(
     } else if (independentAmount) {
       // we wrap the currencies just to get the price in terms of the other token
       const wrappedIndependentAmount = wrappedCurrencyAmount(independentAmount, chainId);
-      const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)];
+      const [tokenA, tokenB] = [wrappedCurrencyA, wrappedCurrencyB];
       if (tokenA && tokenB && wrappedIndependentAmount && pair && chainId) {
         const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA;
         const dependentTokenAmount =
@@ -143,13 +155,11 @@ export function useDerivedMintInfo(
       }
       return undefined;
     } else {
-      const wrappedCurrencyA = wrappedCurrency(currencyA, chainId);
-      const wrappedCurrencyB = wrappedCurrency(currencyB, chainId);
       return pair && wrappedCurrencyA && wrappedCurrencyB
         ? pair.priceOf(wrappedCurrencyA, wrappedCurrencyB)
         : undefined;
     }
-  }, [chainId, currencyA, currencyB, noLiquidity, pair, parsedAmounts]);
+  }, [chainId, currencyA, currencyB, noLiquidity, pair, parsedAmounts, wrappedCurrencyA, wrappedCurrencyB]);
 
   // liquidity minted
   const liquidityMinted = useMemo(() => {
@@ -226,20 +236,24 @@ export function useDerivedMintInfo(
 }
 
 export function useMintActionHandlers(noLiquidity: boolean | undefined): {
-  onFieldAInput: (typedValue: string) => void;
-  onFieldBInput: (typedValue: string) => void;
+  onFieldAInput: (typedValue: string, pairAddress: string) => void;
+  onFieldBInput: (typedValue: string, pairAddress: string) => void;
 } {
   const dispatch = useDispatch();
 
   const onFieldAInput = useCallback(
-    (typedValue: string) => {
-      dispatch(typeInput({ field: Field.CURRENCY_A, typedValue, noLiquidity: noLiquidity === true }));
+    (typedValue: string, pairAddress: string) => {
+      dispatch(
+        typeInput({ pairAddress: pairAddress, field: Field.CURRENCY_A, typedValue, noLiquidity: noLiquidity === true }),
+      );
     },
     [dispatch, noLiquidity],
   );
   const onFieldBInput = useCallback(
-    (typedValue: string) => {
-      dispatch(typeInput({ field: Field.CURRENCY_B, typedValue, noLiquidity: noLiquidity === true }));
+    (typedValue: string, pairAddress: string) => {
+      dispatch(
+        typeInput({ pairAddress: pairAddress, field: Field.CURRENCY_B, typedValue, noLiquidity: noLiquidity === true }),
+      );
     },
     [dispatch, noLiquidity],
   );
