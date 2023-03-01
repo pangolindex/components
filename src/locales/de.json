@@ -410,7 +410,8 @@
     "rewardAPR": "Reward APR",
     "totalAPR": "Total APR",
     "averageAPR": "Average APR",
-    "yourTVL": "Your TVL"
+    "yourTVL": "Your TVL",
+    "yourAverageAPR": "Your Average APR"
   },
   "poolFinder": {
     "connectToFind": "Verbinde mit einer Wallet, um Pools zu finden",
@@ -646,7 +647,18 @@
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
     "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
-    "total": "Gesamt (Stakes + Prämien)"
+    "total": "Gesamt (Stakes + Prämien)",
+    "yourWeeklyRate": "Your Weekly Rate",
+    "weeklyPoolRate": "Weekly Pool Rate",
+    "rewardStaking": "Reward Staking",
+    "staked": "Staked",
+    "stakeSuccessMsg": "Your rewards have been staked.",
+    "stakeYourReward": "Stake your rewards",
+    "stakePng" : "Stake your PNG token to share platform fees",
+    "unstaking": "Unstaking",
+    "unstaked": "Unstaked",
+    "unstakeYourReward": "You can unstake your rewards.",
+    "stakeReward": "Stake Reward"
   },
   "error": {
     "missingCurrencyAmounts": "Fehlende Währungsbeträge",
@@ -756,6 +768,8 @@
     "poweredBy": "Powered by",
     "selectCurrency": "Select a Currency",
     "search": "Search",
+    "tableOfContent": "Table of Content",
+    "haveQuestion" :"Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
@@ -817,9 +831,13 @@
     "portfolioAllChain": "Portfolio Value in All Chains",
     "connectToseePortfolio": "Connect a wallet to see your Portfolio",
     "totalAmountInvested": "Total Amount Invested",
-    "balanceNotFound": "Total Amount Invested",
+    "balanceNotFound": "Balances not found",
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
+  },
+  "buy":{
+    "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
+    "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
   "common": {
     "loading": "Loading",

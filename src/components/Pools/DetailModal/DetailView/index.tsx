@@ -15,6 +15,7 @@ import Details from '../Details';
 import EarnedDetail from '../EarnedDetail';
 import Header from '../Header';
 import { DesktopWrapper, DetailsWrapper, LeftSection, MobileWrapper, RightSection, Tab, Tabs } from './styleds';
+import { useTranslation } from 'react-i18next';
 
 export interface PoolDetailProps {
   onDismiss: () => void;
@@ -25,6 +26,7 @@ export interface PoolDetailProps {
 const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
   const { height } = useWindowSize();
   const chainId = useChainId();
+  const { t } = useTranslation();
   const chain = CHAINS[chainId];
 
   const token0 = stakingInfo?.tokens?.[0];
@@ -64,7 +66,7 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
 
           <Box mt={25}>
             <Tabs>
-              <Tab>Details</Tab>
+              <Tab>{t('votePage.details')}</Tab>
             </Tabs>
             <Details stakingInfo={stakingInfo} />
           </Box>
@@ -75,7 +77,7 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
         <DetailsWrapper>
           <LeftSection>
             <Tabs>
-              <Tab>Details</Tab>
+              <Tab>{t('votePage.details')}</Tab>
             </Tabs>
             <Details stakingInfo={stakingInfo} />
           </LeftSection>

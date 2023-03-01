@@ -125,7 +125,7 @@ const MyPortfolio: React.FC = () => {
         ) : balances && balances.chains.length == 0 ? (
           <Box height="100%" display="flex" alignItems="center" flexWrap="wrap">
             <Text fontSize={18} color="text1" textAlign="center">
-              {t('swapPage.notFoundBalances')}
+              {t('portfolio.balanceNotFound')}
             </Text>
           </Box>
         ) : (
