@@ -1,5 +1,5 @@
-import { CHAINS, ChefType, Pair, TokenAmount } from '@pangolindex/sdk';
-import React, { useEffect, useState } from 'react';
+import { CHAINS, ChefType, Token } from '@pangolindex/sdk';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
 import { FARM_TYPE } from 'src/constants';
@@ -10,6 +10,8 @@ import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { useGetEarnedAmount, useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
+import { useHederaPGLToken } from 'src/state/pwallet/hooks';
+import { hederaFn } from 'src/utils/hedera';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
@@ -45,18 +47,25 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
 
   const mixpanel = useMixpanel();
 
-  const dummyPair = new Pair(
-    new TokenAmount(stakingInfo?.tokens?.[0], '0'),
-    new TokenAmount(stakingInfo?.tokens?.[1], '0'),
-    chainId,
+  const args: [Token | undefined, Token | undefined] = useMemo(
+    () =>
+      hederaFn.isHederaChain(chainId) ? [stakingInfo?.tokens?.[0], stakingInfo?.tokens?.[1]] : [undefined, undefined],
+    [chainId, hederaFn],
   );
-  const lpToken = dummyPair.liquidityToken;
 
-  const associatedTokens = rewardTokens || [];
+  const [pglToken] = useHederaPGLToken(...args);
+
   // we need to check the lp token too
   // because case a user farm in non Pangolin token/Wrapped token farm and compound to this farm
   // in compoundTo
-  const notAssociateTokens = useGetHederaTokenNotAssociated([...associatedTokens, lpToken]);
+  const tokensToCheck = useMemo(() => {
+    if (hederaFn.isHederaChain(chainId)) {
+      return [...(rewardTokens || []), pglToken].filter((item) => !!item) as Token[];
+    }
+    return undefined;
+  }, [rewardTokens, pglToken, hederaFn, chainId]);
+
+  const notAssociateTokens = useGetHederaTokenNotAssociated(tokensToCheck);
   // here we get all not associated rewards tokens
   // but we associate one token at a time
   // so we get first token from array and ask user to associate
