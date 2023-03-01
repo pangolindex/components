@@ -58,16 +58,17 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
 
   useEffect(() => {
     const slippageToleranceNumber = parseFloat(slippageTolerance);
-    if (slippageTolerance.length == 0) {
+    const deadlineNumber = parseFloat(deadline);
+    if (slippageTolerance.length === 0 || deadline.length === 0) {
       setValidValues(false);
     } else if (!expertMode && slippageToleranceNumber > 50) {
       setValidValues(false);
-    } else if (slippageToleranceNumber > 100 || slippageToleranceNumber <= 0) {
+    } else if (slippageToleranceNumber > 100 || slippageToleranceNumber <= 0 || deadlineNumber <= 0) {
       setValidValues(false);
     } else {
       setValidValues(true);
     }
-  }, [expertMode, slippageTolerance]);
+  }, [expertMode, slippageTolerance, deadline]);
 
   return (
     <Drawer title="Settings" isOpen={isOpen} onClose={close}>
