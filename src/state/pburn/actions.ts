@@ -8,3 +8,4 @@ export enum Field {
 }
 
 export const typeInput = createAction<{ pairAddress: string; field: Field; typedValue: string }>('burn/typeInputBurn');
+export const resetBurnState = createAction<{ pairAddress: string }>('burn/resetBurnState');

@@ -10,8 +10,9 @@ import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
+import { useDispatch } from 'src/state';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Field } from 'src/state/pburn/actions';
+import { Field, resetBurnState } from 'src/state/pburn/actions';
 import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/state/pburn/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { useRemoveLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
@@ -30,6 +31,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { library } = useLibrary();
+  const dispatch = useDispatch();
 
   const useApproveCallback = useApproveCallbackHook[chainId];
   const useRemoveLiquidity = useRemoveLiquidityHook[chainId];
@@ -149,6 +151,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
         tokenA_Address: wrappedCurrencyA?.address,
         tokenB_Address: wrappedCurrencyB?.address,
       });
+      dispatch(resetBurnState({ pairAddress }));
     } catch (err) {
       const _err = err as any;
 
