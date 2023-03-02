@@ -1,9 +1,11 @@
+import { ChainId } from '@pangolindex/sdk';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useEffect } from 'react';
 import { GET_BLOCKS, PRICES_BY_BLOCK } from 'src/apollo/block';
-import { blockClient, client } from 'src/apollo/client';
+import { getBlockSubgraphApolloClient, getExchangeSubgraphApolloClient } from 'src/apollo/client';
 import { GET_TOKEN_DAY_DATAS } from 'src/apollo/tokenDayDatas';
+import { useChainId } from 'src/hooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { updateTokenPriceChartData, updateTokenWeeklyPriceChartData } from 'src/state/ptoken/actions';
 import { splitQuery } from 'src/utils/query';
@@ -20,6 +22,8 @@ export function useAllTokenPricesChartData(): ChartState | undefined {
 }
 
 export function useTokenWeeklyChartData(tokenAddress: string) {
+  const chainId = useChainId();
+
   const data1 = useAllTokenWeeklyPriceChartData();
 
   const chartData = data1?.[tokenAddress];
@@ -29,7 +33,7 @@ export function useTokenWeeklyChartData(tokenAddress: string) {
   useEffect(() => {
     async function checkForChartData() {
       if (!chartData) {
-        const data = await getTokenWeeklyChartData(tokenAddress);
+        const data = await getTokenWeeklyChartData(tokenAddress, chainId);
 
         dispatch(updateTokenWeeklyPriceChartData({ address: tokenAddress, chartData: data }));
       }
@@ -40,8 +44,13 @@ export function useTokenWeeklyChartData(tokenAddress: string) {
   return chartData;
 }
 
-const getTokenWeeklyChartData = async (tokenAddress: string) => {
+const getTokenWeeklyChartData = async (tokenAddress: string, chainId: ChainId) => {
   let data = [] as Array<{ id: string; priceUSD: number; date: string }>;
+
+  const client = getExchangeSubgraphApolloClient(chainId);
+  if (!client) {
+    return data;
+  }
 
   try {
     const result = await client.query({
@@ -61,6 +70,8 @@ const getTokenWeeklyChartData = async (tokenAddress: string) => {
 };
 
 export function useTokenPriceData(tokenAddress: string, timeWindow: string, interval = 3600, type = 'ALL') {
+  const chainId = useChainId();
+
   const data1 = useAllTokenPricesChartData();
 
   const chartData = data1?.[tokenAddress];
@@ -80,7 +91,7 @@ export function useTokenPriceData(tokenAddress: string, timeWindow: string, inte
             .unix();
 
     async function fetch() {
-      const data = await getIntervalTokenData(tokenAddress, startTime, undefined, interval);
+      const data = await getIntervalTokenData(tokenAddress, startTime, undefined, interval, chainId);
 
       dispatch(updateTokenPriceChartData({ address: tokenAddress, chartData: data }));
     }
@@ -88,7 +99,7 @@ export function useTokenPriceData(tokenAddress: string, timeWindow: string, inte
     fetch();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interval, timeWindow, tokenAddress]);
+  }, [interval, timeWindow, tokenAddress, chainId]);
 
   return chartData;
 }
@@ -98,7 +109,13 @@ export const getIntervalTokenData = async (
   startTime: number,
   to = dayjs.utc().unix(),
   interval = 3600 * 24,
+  chainId: ChainId,
 ) => {
+  const client = getExchangeSubgraphApolloClient(chainId);
+  if (!client) {
+    return [];
+  }
+
   const utcEndTime = to;
   let time = startTime;
 
@@ -119,7 +136,7 @@ export const getIntervalTokenData = async (
   // once you have all the timestamps, get the blocks for each timestamp in a bulk query
   let blocks;
   try {
-    blocks = await getBlocksFromTimestamps(timestamps, 100);
+    blocks = await getBlocksFromTimestamps(timestamps, chainId, 100);
 
     // catch failing case
     if (!blocks || blocks.length === 0) {
@@ -169,10 +186,16 @@ export interface Category {
   number?: any;
 }
 
-export async function getBlocksFromTimestamps(timestamps: Array<number>, skipCount = 500) {
+export async function getBlocksFromTimestamps(timestamps: Array<number>, chainId: ChainId, skipCount = 500) {
   if (timestamps?.length === 0) {
     return [];
   }
+
+  const blockClient = getBlockSubgraphApolloClient(chainId);
+  if (!blockClient) {
+    return [];
+  }
+
   const fetchedData: any = await splitQuery(GET_BLOCKS, blockClient, [], timestamps, skipCount);
   const blocks: Category[] = [];
   if (fetchedData) {

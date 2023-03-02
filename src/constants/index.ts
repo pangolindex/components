@@ -395,8 +395,6 @@ export const TIMEFRAME = [
   },
 ];
 
-export const SUBGRAPH_BASE_URL = `https://api.thegraph.com/subgraphs/name/pangolindex`;
-
 export const LANDING_PAGE = 'https://pangolin.exchange';
 
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {

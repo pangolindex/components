@@ -6,7 +6,7 @@ import isEqual from 'lodash.isequal';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { getExchangeSubgraphClient } from 'src/apollo/client';
+import { getMinichefSubgraphClient } from 'src/apollo/client';
 import { GET_MINICHEF } from 'src/apollo/minichef';
 import {
   BIG_INT_SECONDS_IN_WEEK,
@@ -840,7 +840,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
 };
 
 export const fetchMinichefData = (account: string, chainId: ChainId) => async () => {
-  const mininchefV2Client = getExchangeSubgraphClient(chainId);
+  const mininchefV2Client = getMinichefSubgraphClient(chainId);
   if (!mininchefV2Client) {
     return null;
   }
