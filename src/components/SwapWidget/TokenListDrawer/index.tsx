@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
+import { useTranslation } from 'react-i18next';
 import Drawer from 'src/components/Drawer';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';
 import { AppState, useDispatch, useSelector } from 'src/state';
@@ -18,6 +19,7 @@ interface Props {
 const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
   const [listUrlInput, setListUrlInput] = useState<string>('');
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
   const adding = Boolean(lists[listUrlInput]?.loadingRequestId);
   const [addError, setAddError] = useState<string | null>(null);
@@ -73,7 +75,7 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
   }, [lists]);
 
   return (
-    <Drawer title="Manage Lists" isOpen={isOpen} onClose={onClose}>
+    <Drawer title={t('searchModal.manageLists')} isOpen={isOpen} onClose={onClose}>
       {/* Render Search Token Input */}
       <Box padding="0px 20px">
         <AddInputWrapper>
@@ -87,7 +89,7 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
             value={listUrlInput}
           />
           <Button variant="primary" padding={'0px'} isDisabled={!validUrl} onClick={handleAddList} height="50px">
-            Add
+            {t('searchModal.add')}
           </Button>
         </AddInputWrapper>
 

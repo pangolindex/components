@@ -74,14 +74,14 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
     hederaAssociated: isHederaTokenAssociated,
   } = useHederaPGLAssociated(inputCurrency, outputCurrency);
 
-  const pendingText = `Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
+  const pendingText = `${t('pool.supplying')} ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
     currencies[Field.CURRENCY_A]?.symbol
   } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`;
 
   function renderAssociatButton() {
     return (
       <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-        {isLoadingAssociate ? 'Associating' : 'Associate PGL'}
+        {isLoadingAssociate ? `${t('pool.associating')}` : `${t('pool.associate')} PGL`}
       </Button>
     );
   }
@@ -276,7 +276,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
   const SubmittedContent = (
     <Box padding="10px" height="100%">
       <TransactionCompleted
-        submitText={`Liquidity Added`}
+        submitText={t('pool.liquidityAdded')}
         isShowButtton={Boolean((type === SpaceType.card && onAddToFarm) || type === SpaceType.detail)}
         onButtonClick={() => {
           onClose();

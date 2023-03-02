@@ -97,9 +97,11 @@
     "approve": "Aprovar",
     "poolWeight": "Peso da piscina",
     "withdraw": "Retirar",
+    "extraReward": "Extra Reward",
     "poolRewards": "Recompensas de pool",
     "rewardsIn": "Recompensas em",
-    "removeWarning": "Você está removendo liquidez deste pool. Esta ação devolverá seus tokens. Alternativamente, você pode optar por apostar seus tokens para farmar para ganhar recompensas."
+    "removeWarning": "Você está removendo liquidez deste pool. Esta ação devolverá seus tokens. Alternativamente, você pode optar por apostar seus tokens para farmar para ganhar recompensas.",
+    "rewardClaimed" : "Your rewards claimed"
   },
   "menu": {
     "code": "Código",
@@ -170,7 +172,8 @@
     "removeList": "Remover lista",
     "selected": "Selecionado",
     "select": "Selecionar",
-    "manageTokenLists": "Gerenciar Lista de Tokens"
+    "manageTokenLists": "Gerenciar Lista de Tokens",
+    "listsSelected" :"lists selected"
   },
   "settings": {
     "areYouSure": "Você tem certeza?",
@@ -185,7 +188,9 @@
     "expertModeHelper": "Ignora os modais de confirmação e permite alta variação de preço. Use por sua conta e risco.",
     "toggleDarkMode": "Ativar modo escuro",
     "slippage": "Slippage",
-    "percent": "Percent"
+    "percent": "Percent",
+    "timeLimit": "Time Limit",
+    "seconds": "Seconds"
   },
   "swap": {
     "priceImpact": "Impacto no preço",
@@ -207,7 +212,11 @@
     "inputEstimated": "A entrada é estimada. Você vai vender no máximo <strong>{{amount}} {{currencySymbol}}</strong> ou a transação será revertida.",
     "outputSentTo": "Saída será enviada para ",
     "priceImpactMinPrompt": "Este swap tem um impacto no preço de pelo menos {{ priceImpact }}%. Por favor, digite a palavra \"confirmar\" para continuar com este swap.",
-    "priceImpactHighPrompt": "Este swap tem um impacto no preço de pelo menos {{ priceImpact }}%. . Por favor, confirme que você gostaria de continuar com este swap."
+    "priceImpactHighPrompt": "Este swap tem um impacto no preço de pelo menos {{ priceImpact }}%. . Por favor, confirme que você gostaria de continuar com este swap.",
+    "realExecutionPrice": "Real Execution Price",
+    "gasPrice": "Gas Price",
+    "gelatoFee": "Gelato Fee",
+    "totalFee": "Total Fee"
   },
   "toggle": {
     "on": "On",
@@ -384,12 +393,26 @@
     "yourFarms": "Suas farms",
     "yourPools": "Suas pools",
     "noFarms": "Nenhuma fazenda encontrada.",
+    "visitWebsite": "Visit Website",
     "successWithdraw": "Sua liquidez removida da fazenda e recompensas acumuladas reivindicadas!",
     "importDescription1": "Com a função de importação você pode procurar por pools que não aparecem na seção 'Suas Pools'.",
     "importDescription2": "Basta escolher as moedas subjacentes que estavam na sua pool.",
     "createPairDescription": "Com a função de criação você pode criar um novo par. Basta pesquisar as moedas para as quais você deseja criar um par e o sistema encontrará a pool, se existir no Pangolin, ou criará um novo, se não houver.",
     "addLiquidityDescription": "Com a função de adicionar liquidez voce adiciona liquidez ao um par. Basta pesquisar as moedas para as quais você deseja adiciona liquidez e o sistema encontrará o pool, se existir no Pangolin, ou criará um novo, se não houver.",
-    "createStorageContract": "No Hedera, todos os contratos inteligentes precisam pagar taxas pela utilização de espaço no registro. Estas são taxas de armazenamento e taxas de renovação automática. Você precisará criar um contrato de armazenamento para cultivar. O armazenamento será gratuitamente, mas no futuro você será obrigado a pagar taxas de renovação automática. Estes são cerca de 2 centavos. Então nós recomendamos manter $ 1 em HBAR em sua carteira o tempo todo para garantir que você não tenha problemas."
+    "createStorageContract": "No Hedera, todos os contratos inteligentes precisam pagar taxas pela utilização de espaço no registro. Estas são taxas de armazenamento e taxas de renovação automática. Você precisará criar um contrato de armazenamento para cultivar. O armazenamento será gratuitamente, mas no futuro você será obrigado a pagar taxas de renovação automática. Estes são cerca de 2 centavos. Então nós recomendamos manter $ 1 em HBAR em sua carteira o tempo todo para garantir que você não tenha problemas.",
+    "supplying": "Supplying",
+    "associating": "Associating",
+    "associate": "Associate",
+    "liquidityAdded": "Liquidity Added",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
+    "yourAPR": "Your APR",
+    "swapFeeAPR": "Swap fee APR",
+    "rewardAPR": "Reward APR",
+    "totalAPR": "Total APR",
+    "averageAPR": "Average APR",
+    "yourTVL": "Your TVL",
+    "yourAverageAPR": "Your Average APR"
   },
   "poolFinder": {
     "connectToFind": "Conecte-se a uma carteira para encontrar suas pools",
@@ -417,7 +440,9 @@
     "approved": "Aprovado",
     "remove": "Remover",
     "output": "Saída",
-    "amount": "Quantidade"
+    "amount": "Quantidade",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity"
   },
   "swapPage": {
     "addSend": "+ adicione um envio (opcional)",
@@ -472,7 +497,15 @@
     "executionPrice": "Preço de execução",
     "seeMore": "Ver mais",
     "seeLess": "Ver menos",
-    "orderPlaced": "Ordem de {{ orderType }} colocada"
+    "orderPlaced": "Ordem de {{ orderType }} colocada",
+    "selectToken" : "Select Token",
+    "notFoundBalances" : "Not found balances",
+    "notFoundToken" : "Not found tokens on this chain",
+    "sendingTo" : "Sending to",
+    "invalidAddress": "Invalid Address",
+    "addRecipient": "Add Recipient",
+    "removeRecipient": "Remove Recipient",
+    "addTokenWatchlist": "Add tokens to watchlist using"
   },
   "buyPage": {
     "buyAvaxInfo": "Compre AVAX com moeda fiduciária do nosso parceiro Wyre.",
@@ -531,7 +564,8 @@
     "selectToken": "Selecione um token",
     "enterRecipient": "Digite um destinatário",
     "invalidRecipient": "Destinatário inválido",
-    "insufficientBalance": "Saldo de {{ symbol }} insuficiente"
+    "insufficientBalance": "Saldo de {{ symbol }} insuficiente",
+    "selectChain": "Select a Chain"
   },
   "mintHooks": {
     "connectWallet": "Conectar a uma carteira",
@@ -604,7 +638,8 @@
     "earned_customizePools": "Customize Pools",
     "followed_address": "Address",
     "followed_worth": "Worth",
-    "followed_interact": "Interact"
+    "followed_interact": "Interact",
+    "news": "News"
   },
   "stakePage": {
     "totalStaked": "Total Staked",
@@ -613,7 +648,18 @@
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
     "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
-    "total": "Total (stake + recompensas)"
+    "total": "Total (stake + recompensas)",
+    "yourWeeklyRate": "Your Weekly Rate",
+    "weeklyPoolRate": "Weekly Pool Rate",
+    "rewardStaking": "Reward Staking",
+    "staked": "Staked",
+    "stakeSuccessMsg": "Your rewards have been staked.",
+    "stakeYourReward": "Stake your rewards",
+    "stakePng" : "Stake your PNG token to share platform fees",
+    "unstaking": "Unstaking",
+    "unstaked": "Unstaked",
+    "unstakeYourReward": "You can unstake your rewards.",
+    "stakeReward": "Stake Reward"
   },
   "error": {
     "missingCurrencyAmounts": "Valores de moeda ausentes",
@@ -687,7 +733,8 @@
     "pending": "Reivindicando",
     "transactionSummary": "Recompensas da posição reivindicadas",
     "aprAfter": "APR após reivindicação",
-    "noRewards": "Não há recompensas para reivindicar"
+    "noRewards": "Não há recompensas para reivindicar",
+    "claimWarning": "Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead compound your rewards without losing your APR."
   },
   "sarPortfolio": {
     "noPositions": "Você não tem nenhuma NFT PANGUARDIAN.\nVAMOS TER UMA.",
@@ -710,7 +757,8 @@
     "compoundTransactionSummary": "Farm composta.",
     "removeWarning": "A remoção de qualquer valor da fazenda fará com que seu APR seja 0. Você pode, em vez disso, compor suas recompensas sem perder seu APR.",
     "lockingPoolZeroWarning": "Você não pode remover sua liquidez ou reivindicar suas recompensas neste farm. Para fazer isso, primeiro você precisa reivindicar ou remover sua participação nestas fazendas: ",
-    "decreaseWarning": "Seu APR diminuirá porque a nova parte composta começa com APR 0 e uma média será feita entre a parte antiga e a nova."
+    "decreaseWarning": "Seu APR diminuirá porque a nova parte composta começa com APR 0 e uma média será feita entre a parte antiga e a nova.",
+    "createStorageContract": "Create Storage Contract"
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -719,10 +767,16 @@
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "poweredBy": "Powered by",
+    "selectCurrency": "Select a Currency",
+    "search": "Search",
+    "tableOfContent": "Table of Content",
+    "haveQuestion" :"Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "switchChain": "Switch Chain",
+      "selectChain": "Please Select Chain",
       "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
@@ -743,7 +797,8 @@
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
       "max": "MAX",
       "recipient": "Recipient",
-      "walletAddress": "Wallet Address"
+      "walletAddress": "Wallet Address",
+      "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -772,5 +827,26 @@
   },
   "dropdown": {
     "select": "Select"
+  },
+  "portfolio": {
+    "portfolioAllChain": "Portfolio Value in All Chains",
+    "connectToseePortfolio": "Connect a wallet to see your Portfolio",
+    "totalAmountInvested": "Total Amount Invested",
+    "balanceNotFound": "Balances not found",
+    "hideYourBalance": "Hide Your Balance",
+    "showYourBalance": "Show Your Balance"
+  },
+  "buy":{
+    "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
+    "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
+  },
+  "common": {
+    "loading": "Loading",
+    "search": "Search",
+    "required": "Required",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "noDataAvailable": "No data available!"
   }
 }

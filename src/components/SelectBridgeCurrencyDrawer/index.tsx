@@ -1,6 +1,7 @@
 import { BridgeCurrency, Currency, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
+import { useTranslation } from 'react-i18next';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import Drawer from 'src/components/Drawer';
@@ -26,7 +27,7 @@ const SelectBridgeCurrencyDrawer: React.FC<Props> = (props) => {
   const { isOpen, onClose, onCurrencySelect, otherSelectedCurrency, selectedCurrency, bridgeCurrencies } = props;
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [invertSearchOrder] = useState<boolean>(false);
-
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
 
@@ -115,11 +116,11 @@ const SelectBridgeCurrencyDrawer: React.FC<Props> = (props) => {
   );
 
   return (
-    <Drawer title="Select a Currency" isOpen={isOpen} onClose={onClose}>
+    <Drawer title={t('bridge.selectCurrency')} isOpen={isOpen} onClose={onClose}>
       {/* Render Search BridgeCurrency Input */}
       <Box padding="0px 20px">
         <TextInput
-          placeholder="Search"
+          placeholder={t('common.search')}
           onChange={(value: any) => {
             setSearchQuery(value as string);
           }}

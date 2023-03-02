@@ -105,10 +105,12 @@ export const SlickNext = styled(Box)<{ onClick: () => void }>`
 export const TitleWrapper = styled(Box)`
   display: flex;
   justify-content: space-between;
+  color: ${({ theme }) => theme.black};
 `;
 
 export const ArrowWrapper = styled(Box)`
   display: flex;
   gap: 10px;
   padding: 20px;
+  color: ${({ theme }) => theme.black};
 `;
