@@ -1398,7 +1398,7 @@ export function usePangoChefExtraFarmApr(
   )[];
 
   const multipliers = stakingInfo.rewardTokensMultiplier;
-  console.log({ multipliers });
+
   const pairPrice: Price | undefined = stakingInfo.pairPrice;
 
   const tokensPrices = useTokensCurrencyPrice(_rewardTokens);
@@ -1430,7 +1430,7 @@ export function usePangoChefExtraFarmApr(
       if (!tokenPrice || !multiplier) {
         continue;
       }
-      console.log({ token, index, multiplier });
+
       //extraAPR = poolRewardRate(POOL_ID) * rewardMultiplier / (10** token.decimals) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       extraAPR +=
         !pairPrice || !balance || balance.isZero() || pairPrice.equalTo('0')
