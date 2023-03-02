@@ -21,63 +21,15 @@ export const blockClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-export const avalancheMininchefV2Client = new GraphQLClient(
-  'https://api.thegraph.com/subgraphs/name/sarjuhansaliya/minichefv2-dummy',
-  { headers: {} },
-);
-
-export const hederaTestnetSubgraphGql = new GraphQLClient(
-  'https://hedera-test.pangolin.network/subgraphs/name/pangolin',
-  {
-    headers: {},
-  },
-);
-
-export const hederaMainnetSubgraphGql = new GraphQLClient(
-  'https://hedera-graph.pangolin.network/subgraphs/name/pangolin',
-  {
-    headers: {},
-  },
-);
-
-export function useSubgraphClient(): GraphQLClient | undefined {
-  const chainId = useChainId();
-
+export const getExchangeSubgraphClient = (chainId: ChainId) => {
   const url = CHAINS[chainId]?.subgraph?.exchange;
 
   if (url) {
     return new GraphQLClient(url);
   }
-  return undefined;
-}
-
-export const subgraphClient = {
-  [ChainId.AVALANCHE]: avalancheMininchefV2Client,
-  [ChainId.FUJI]: undefined,
-  [ChainId.WAGMI]: undefined,
-  [ChainId.COSTON]: undefined,
-  [ChainId.SONGBIRD]: undefined,
-  [ChainId.FLARE_MAINNET]: undefined,
-  [ChainId.HEDERA_TESTNET]: hederaTestnetSubgraphGql,
-  [ChainId.HEDERA_MAINNET]: hederaMainnetSubgraphGql,
-  [ChainId.NEAR_MAINNET]: undefined,
-  [ChainId.NEAR_TESTNET]: undefined,
-  [ChainId.COSTON2]: undefined,
-  [ChainId.EVMOS_TESTNET]: undefined,
-  [ChainId.EVMOS_MAINNET]: undefined,
-  [ChainId.ETHEREUM]: undefined,
-  [ChainId.POLYGON]: undefined,
-  [ChainId.FANTOM]: undefined,
-  [ChainId.XDAI]: undefined,
-  [ChainId.BSC]: undefined,
-  [ChainId.ARBITRUM]: undefined,
-  [ChainId.CELO]: undefined,
-  [ChainId.OKXCHAIN]: undefined,
-  [ChainId.VELAS]: undefined,
-  [ChainId.AURORA]: undefined,
-  [ChainId.CRONOS]: undefined,
-  [ChainId.FUSE]: undefined,
-  [ChainId.MOONRIVER]: undefined,
-  [ChainId.MOONBEAM]: undefined,
-  [ChainId.OP]: undefined,
 };
+
+export function useExchangeSubgraphClient(): GraphQLClient | undefined {
+  const chainId = useChainId();
+  return getExchangeSubgraphClient(chainId);
+}

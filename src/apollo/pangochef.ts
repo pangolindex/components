@@ -2,7 +2,7 @@ import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { hederaFn } from 'src/utils/hedera';
-import { useSubgraphClient } from './client';
+import { useExchangeSubgraphClient } from './client';
 import { SubgraphToken } from './tokens';
 
 export interface PangoChefSubgraphInfo {
@@ -140,7 +140,7 @@ export const GET_FARMS_STAKED = gql`
 export const useSubgraphFarms = () => {
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
-  const gqlClient = useSubgraphClient();
+  const gqlClient = useExchangeSubgraphClient();
   return useQuery<PangoChefSubgraphInfo[]>(
     ['get-pangochef-subgraph-farms', chainId, account],
     async () => {
@@ -161,7 +161,7 @@ export const useSubgraphFarms = () => {
 export function useSubgraphFarmsStakedAmount() {
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
-  const gqlClient = useSubgraphClient();
+  const gqlClient = useExchangeSubgraphClient();
   return useQuery<FarmPosition[]>(
     ['get-pangochef-subgraph-farms-staked-amount', chainId, account],
     async () => {
