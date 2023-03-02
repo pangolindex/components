@@ -2,7 +2,7 @@ import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
 import { useChainId } from 'src/hooks';
 import { validateAddressMapping } from 'src/utils';
-import { useExchangeSubgraphClient } from './client';
+import { SubgraphEnum, useSubgraphClient } from './client';
 import { SubgraphToken } from './tokens';
 
 type SubgraphPair = {
@@ -70,7 +70,7 @@ export const useSubgraphPairs = (pairAddresses: (string | undefined)[]) => {
   // we need to convert addresses to lowercase as subgraph has lowercase addresses
   const pairsToFind = pairAddresses?.map((item) => item?.toLowerCase())?.filter((item) => !!item) as string[];
   const chainId = useChainId();
-  const gqlClient = useExchangeSubgraphClient();
+  const gqlClient = useSubgraphClient(SubgraphEnum.Exchange);
   const validateAddress = validateAddressMapping[chainId];
   // get pairs from subgraph
   return useQuery<SubgraphPair[] | null>(['get-subgraph-pairs', chainId, ...pairsToFind], async () => {

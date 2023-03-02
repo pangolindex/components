@@ -31,41 +31,21 @@ export const getBlockSubgraphApolloClient = (chainId: ChainId) => {
   }
 };
 
-export const getPangochefSubgraphClient = (chainId: ChainId) => {
-  const url = CHAINS[chainId]?.subgraph?.pangochef;
-
-  if (url) {
-    return new GraphQLClient(url);
-  }
-};
-
-export function usePangochefSubgraphClient(): GraphQLClient | undefined {
-  const chainId = useChainId();
-  return getPangochefSubgraphClient(chainId);
+export enum SubgraphEnum {
+  Exchange = 'exchange',
+  Pangochef = 'pangochef',
+  Minichef = 'minichef',
 }
 
-export const getMinichefSubgraphClient = (chainId: ChainId) => {
-  const url = CHAINS[chainId]?.subgraph?.minichef;
+export const getSubgraphClient = (chainId: ChainId, subgraph: SubgraphEnum) => {
+  const url = CHAINS[chainId]?.subgraph?.[subgraph];
 
   if (url) {
     return new GraphQLClient(url);
   }
 };
 
-export function useMinichefSubgraphClient(): GraphQLClient | undefined {
+export function useSubgraphClient(subgraph: SubgraphEnum): GraphQLClient | undefined {
   const chainId = useChainId();
-  return getMinichefSubgraphClient(chainId);
-}
-
-export const getExchangeSubgraphClient = (chainId: ChainId) => {
-  const url = CHAINS[chainId]?.subgraph?.exchange;
-
-  if (url) {
-    return new GraphQLClient(url);
-  }
-};
-
-export function useExchangeSubgraphClient(): GraphQLClient | undefined {
-  const chainId = useChainId();
-  return getExchangeSubgraphClient(chainId);
+  return getSubgraphClient(chainId, subgraph);
 }

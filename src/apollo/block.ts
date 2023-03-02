@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
 import { useChainId } from 'src/hooks';
-import { useExchangeSubgraphClient } from './client';
+import { SubgraphEnum, useSubgraphClient } from './client';
 
 export const GET_BLOCKS = (timestamps) => {
   let queryString = 'query blocks {';
@@ -68,7 +68,7 @@ export interface SubgraphLastBlockResponse {
  */
 export function useLastSubgraphBlock() {
   const chainId = useChainId();
-  const client = useExchangeSubgraphClient();
+  const client = useSubgraphClient(SubgraphEnum.Exchange);
   const { data: block } = useQuery(
     ['get-last-block-subgraph', chainId],
     async () => {
