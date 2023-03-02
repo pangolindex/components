@@ -1,5 +1,6 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { WalletInfo } from 'src/constants';
 import Option from '../Option';
 import { ErrorButton, ErrorGroup, LoadingMessage, LoadingWrapper, PendingSection, StyledLoader } from './styles';
@@ -17,26 +18,28 @@ export default function PendingView({
   setPendingError: (error: boolean) => void;
   tryActivation: (connector: AbstractConnector, option: WalletInfo) => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <PendingSection>
       <LoadingMessage error={error}>
         <LoadingWrapper>
           {error ? (
             <ErrorGroup>
-              <div>Error connecting.</div>
+              <div>{t('walletModal.errorConnecting')}</div>
               <ErrorButton
                 onClick={() => {
                   setPendingError(false);
                   connector && option && tryActivation(connector, option);
                 }}
               >
-                Try Again
+                {t('walletModal.tryAgain')}
               </ErrorButton>
             </ErrorGroup>
           ) : (
             <>
               <StyledLoader />
-              Initializing...
+              {t('walletModal.initializing')}
             </>
           )}
         </LoadingWrapper>

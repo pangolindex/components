@@ -15,6 +15,7 @@ import {
 } from '@pangolindex/sdk';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NATIVE, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency, useHederaTokenAssociated } from 'src/hooks/Tokens';
@@ -158,7 +159,7 @@ export function useDerivedSwapInfo(): {
 } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-
+  const { t } = useTranslation();
   const toggledVersion = useToggledVersion();
 
   const checkRecipientAddress = validateAddressMapping[chainId];
@@ -210,28 +211,28 @@ export function useDerivedSwapInfo(): {
 
   let inputError: string | undefined;
   if (!account) {
-    inputError = 'Connect Wallet';
+    inputError = t('swapHooks.connectWallet');
   }
 
   if (!parsedAmount) {
-    inputError = inputError ?? 'Enter an amount';
+    inputError = inputError ?? t('swapHooks.enterAmount');
   }
 
   if (!currencies[Field.INPUT] || !currencies[Field.OUTPUT]) {
-    inputError = inputError ?? 'Select a token';
+    inputError = inputError ?? t('swapHooks.selectToken');
   }
 
   const formattedTo = to;
 
   if (!to || !formattedTo) {
-    inputError = inputError ?? 'Enter a recipient';
+    inputError = inputError ?? t('swapHooks.enterRecipient');
   } else {
     if (
       BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
       (bestTradeExactIn && involvesAddress(bestTradeExactIn, formattedTo)) ||
       (bestTradeExactOut && involvesAddress(bestTradeExactOut, formattedTo))
     ) {
-      inputError = inputError ?? 'Invalid recipient';
+      inputError = inputError ?? t('swapHooks.invalidRecipient');
     }
   }
 

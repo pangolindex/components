@@ -103,8 +103,8 @@ export const SubmittedWrapper = styled(Box)`
 
 export const ContentWrapper = styled(Box)`
   display: grid;
-  grid-gap: 20px;
-  padding: 20px;
+  grid-gap: 10px;
+  padding: 0px 20px 10px 20px;
   height: 100%;
 `;
 

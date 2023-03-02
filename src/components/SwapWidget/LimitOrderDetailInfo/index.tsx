@@ -2,6 +2,7 @@ import { formatUnits } from '@ethersproject/units';
 import { useGasOverhead, useGelatoLimitOrders, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import { TokenAmount } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { INITIAL_ALLOWED_SLIPPAGE } from 'src/constants';
 import { usePangolinWeb3 } from 'src/hooks';
 import { Text } from '../../Text';
@@ -11,7 +12,7 @@ type Props = { trade: any };
 
 const LimitOrderDetailInfo: React.FC<Props> = ({ trade }) => {
   const { chainId } = usePangolinWeb3();
-
+  const { t } = useTranslation();
   const {
     derivedOrderInfo: { parsedAmounts, rawAmounts },
   } = useGelatoLimitOrders();
@@ -69,13 +70,13 @@ const LimitOrderDetailInfo: React.FC<Props> = ({ trade }) => {
 
   return (
     <ContentBox>
-      {renderRow('Gas Price', `${formattedGasPrice}`)}
-      {renderRow('Real Execution Price', `${realExecutionPriceAsString ? `${priceText}` : '-'}`)}
-      {renderRow('Gelato Fee', `${gelatoFeePercentage ? `${gelatoFeePercentage}` : '-'}%`)}
+      {renderRow(`${t('swap.gasPrice')}`, `${formattedGasPrice}`)}
+      {renderRow(`${t('swap.realExecutionPrice')}`, `${realExecutionPriceAsString ? `${priceText}` : '-'}`)}
+      {renderRow(`${t('swap.gelatoFee')}`, `${gelatoFeePercentage ? `${gelatoFeePercentage}` : '-'}%`)}
       {slippagePercentage !== INITIAL_ALLOWED_SLIPPAGE &&
-        renderRow('Slippage Tolerance', `${slippagePercentage ? `${slippagePercentage}` : '-'}%`)}
+        renderRow(`${t('swapPage.slippageTolerance')}`, `${slippagePercentage ? `${slippagePercentage}` : '-'}%`)}
       {renderRow(
-        minReturn ? 'Minimum Received' : 'Maximum Sold',
+        minReturn ? `${t('swap.minimumReceived')}` : `${t('swap.maximumSold')}`,
         minReturn ? `${minReturn.toSignificant(4)} ${outputAmount ? outputAmount.currency.symbol : '-'}` : '-',
       )}
     </ContentBox>

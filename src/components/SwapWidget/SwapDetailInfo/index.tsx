@@ -1,5 +1,6 @@
 import { Percent, Trade, TradeType } from '@pangolindex/sdk';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from 'src/constants';
 import { Field } from 'src/state/pswap/actions';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
@@ -13,6 +14,7 @@ type Props = { trade: Trade };
 const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
   const [allowedSlippage] = useUserSlippageTolerance();
   const [feeInfo] = useDaasFeeInfo();
+  const { t } = useTranslation();
   const { priceImpactWithoutFee, realizedLPFee, realizedLPFeeAmount } = computeTradePriceBreakdown(trade);
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT;
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage);
@@ -50,10 +52,13 @@ const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
 
   return (
     <ContentBox>
-      {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && renderRow('Slippage tolerance', `${allowedSlippage / 100}%`)}
-      {renderRow(isExactIn ? 'Minimum Received' : 'Maximum Sold', amount)}
-      {renderRow('Price Impact', priceImpact, true)}
-      {feeInfo?.feeTotal > 0 ? renderRow('Total Fee', totalFee) : renderRow('Liquidity Provider Fee', lpFeeAmount)}
+      {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE &&
+        renderRow(`${t('swapPage.slippageTolerance')}`, `${allowedSlippage / 100}%`)}
+      {renderRow(isExactIn ? `${t('swap.minimumReceived')}` : `${t('swap.maximumSold')}`, amount)}
+      {renderRow(`${t('swap.priceImpact')}`, priceImpact, true)}
+      {feeInfo?.feeTotal > 0
+        ? renderRow(`${t('swap.totalFee')}`, totalFee)
+        : renderRow(`${t('swap.liquidityProviderFee')}`, lpFeeAmount)}
     </ContentBox>
   );
 };

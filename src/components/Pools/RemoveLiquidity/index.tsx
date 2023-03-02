@@ -178,7 +178,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
     if (!account) {
       return (
         <Button variant="primary" onClick={toggleWalletModal} height="46px">
-          Connect Wallet
+          {t('removeLiquidity.connectWallet')}
         </Button>
       );
     }
@@ -186,7 +186,9 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
     if (!isHederaTokenAssociated && notAssociateTokens?.length > 0) {
       return (
         <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-          {isLoadingAssociate ? 'Associating' : 'Associate ' + notAssociateTokens?.[0]?.symbol}
+          {isLoadingAssociate
+            ? `${t('pool.associating')}`
+            : `${t('pool.associate')} ` + notAssociateTokens?.[0]?.symbol}
         </Button>
       );
     } else {
@@ -299,12 +301,12 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
         </>
       )}
 
-      {attempting && !hash && <Loader size={100} label={`Removing Liquidity...`} />}
+      {attempting && !hash && <Loader size={100} label={`${t('removeLiquidity.removingLiquidity')}...`} />}
       {hash && (
         <TransactionCompleted
           onButtonClick={wrappedOnDismiss}
-          buttonText="Close"
-          submitText={`Removed Liquidity`}
+          buttonText={t('transactionConfirmation.close')}
+          submitText={t('removeLiquidity.removedLiquidity')}
           isShowButtton={true}
         />
       )}

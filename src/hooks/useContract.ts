@@ -20,7 +20,7 @@ import { getContract } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 
 // returns null on errors
-function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
+export function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
   const { account } = usePangolinWeb3();
   const { library } = useLibrary();
 

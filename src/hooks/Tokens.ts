@@ -314,6 +314,8 @@ export function useGetAllHederaAssociatedTokens(dependancies = [] as any[]) {
     },
     {
       keepPreviousData: true,
+      refetchInterval: 1000 * 60, // 1 minute
+      enabled: hederaFn.isHederaChain(chainId), // only fetch if the chain id is hedera
     },
   );
 
@@ -385,7 +387,11 @@ export function useGetHederaTokenNotAssociated(tokens: Array<Token> | undefined)
   const { data, isLoading } = useGetAllHederaAssociatedTokens();
 
   return useMemo(() => {
-    return (tokens || []).reduce<Array<Token>>((memo, token) => {
+    if (!tokens) {
+      return [];
+    }
+
+    return tokens.reduce<Array<Token>>((memo, token) => {
       if (token?.address) {
         const currencyId = account ? hederaFn.hederaId(token?.address) : '';
 

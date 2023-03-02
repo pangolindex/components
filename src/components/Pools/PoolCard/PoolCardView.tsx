@@ -138,7 +138,7 @@ const PoolCardView = ({
         <StatWrapper>
           {isStaking ? (
             <Stat
-              title={'Your TVL'}
+              title={t('pool.yourTVL')}
               stat={numeral((yourStackedInUsd as Fraction)?.toFixed(2)).format('$0.00a')}
               titlePosition="top"
               titleFontSize={[16, 14]}
