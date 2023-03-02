@@ -10,9 +10,16 @@ import { usePair } from '../../data/Reserves';
 import { tryParseAmount } from '../../state/pswap/hooks';
 import { wrappedCurrency } from '../../utils/wrappedCurrency';
 import { Field, typeInput } from './actions';
+import { initialKeyState } from './reducer';
 
-export function useBurnState(): AppState['pburn'] {
-  return useSelector<AppState['pburn']>((state) => state.pburn);
+export function useBurnState(pairAddress: string) {
+  return useSelector<AppState['pburn']['any']>((state) => {
+    const pairState = state.pburn[pairAddress];
+    if (pairState) {
+      return pairState;
+    }
+    return initialKeyState;
+  });
 }
 
 export function useDerivedBurnInfo(
@@ -38,7 +45,11 @@ export function useDerivedBurnInfo(
 
   const { t } = useTranslation();
 
-  const { independentField, typedValue } = useBurnState();
+  const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)];
+
+  const pairAddress = tokenA && tokenB ? Pair.getAddress(tokenA, tokenB) : '';
+
+  const { independentField, typedValue } = useBurnState(pairAddress);
 
   // pair + totalsupply
   const [, pair] = usePair(currencyA, currencyB);
@@ -46,7 +57,6 @@ export function useDerivedBurnInfo(
   // balances
   const userLiquidity = usePairBalance(account ?? undefined, pair ?? undefined);
 
-  const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)];
   const tokens = {
     [Field.CURRENCY_A]: tokenA,
     [Field.CURRENCY_B]: tokenB,
@@ -135,13 +145,13 @@ export function useDerivedBurnInfo(
 }
 
 export function useBurnActionHandlers(): {
-  onUserInput: (field: Field, typedValue: string) => void;
+  onUserInput: (field: Field, typedValue: string, pairAddress: string) => void;
 } {
   const dispatch = useDispatch();
 
   const onUserInput = useCallback(
-    (field: Field, typedValue: string) => {
-      dispatch(typeInput({ field, typedValue }));
+    (field: Field, typedValue: string, pairAddress: string) => {
+      dispatch(typeInput({ field, typedValue, pairAddress }));
     },
     [dispatch],
   );

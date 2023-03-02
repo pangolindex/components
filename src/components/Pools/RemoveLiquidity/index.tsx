@@ -36,7 +36,12 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
 
-  const { independentField, typedValue } = useBurnState();
+  const wrappedCurrencyA = wrappedCurrency(currencyA, chainId);
+  const wrappedCurrencyB = wrappedCurrency(currencyB, chainId);
+
+  const pairAddress = wrappedCurrencyA && wrappedCurrencyB ? Pair.getAddress(wrappedCurrencyA, wrappedCurrencyB) : '';
+
+  const { independentField, typedValue } = useBurnState(pairAddress);
   const { pair, parsedAmounts, error, userLiquidity } = useDerivedBurnInfo(
     currencyA ?? undefined,
     currencyB ?? undefined,
@@ -87,7 +92,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   const [percetage, setPercetage] = useState(100);
 
   useEffect(() => {
-    _onUserInput(Field.LIQUIDITY_PERCENT, `100`);
+    _onUserInput(Field.LIQUIDITY_PERCENT, `100`, pairAddress);
   }, [_onUserInput]);
 
   useEffect(() => {
@@ -103,14 +108,14 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   }, [hash, attempting]);
 
   const onChangePercentage = (value: number) => {
-    _onUserInput(Field.LIQUIDITY_PERCENT, `${value}`);
+    _onUserInput(Field.LIQUIDITY_PERCENT, `${value}`, pairAddress);
   };
 
   // wrapped onUserInput to clear signatures
   const onUserInput = useCallback(
     (_typedValue: string) => {
       setSignatureData(null);
-      _onUserInput(Field.LIQUIDITY, _typedValue);
+      _onUserInput(Field.LIQUIDITY, _typedValue, pairAddress);
       setPercetage(0);
     },
     [_onUserInput],
@@ -141,8 +146,8 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
         chainId: chainId,
         tokenA: currencyA?.symbol,
         tokenB: currencyB?.symbol,
-        tokenA_Address: wrappedCurrency(currencyA, chainId)?.address,
-        tokenB_Address: wrappedCurrency(currencyB, chainId)?.address,
+        tokenA_Address: wrappedCurrencyA?.address,
+        tokenB_Address: wrappedCurrencyB?.address,
       });
     } catch (err) {
       const _err = err as any;
