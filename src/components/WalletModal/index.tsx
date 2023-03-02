@@ -6,6 +6,7 @@ import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { isMobile } from 'react-device-detect';
+import { useTranslation } from 'react-i18next';
 import { Button } from 'src/components/Button';
 import { avalancheCore, bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
 import { AVALANCHE_CHAIN_PARAMS, IS_IN_IFRAME, SUPPORTED_WALLETS, WalletInfo } from 'src/constants';
@@ -51,7 +52,7 @@ const WalletModal: React.FC<WalletModalProps> = ({
 }) => {
   // important that these are destructed from the account-specific web3-react context
   const { connector, activate, error: web3Error } = useWeb3React();
-
+  const { t } = useTranslation();
   const [walletType, setWalletType] = useState(CHAIN_TYPE.EVM_CHAINS as string);
 
   const [walletView, setWalletView] = useState('');
@@ -426,14 +427,14 @@ const WalletModal: React.FC<WalletModalProps> = ({
               }
             }}
           >
-            Back
+            {t('common.back')}
           </HoverText>
         </HeaderRow>
       );
     } else {
       return (
         <HeaderRow>
-          <HoverText>Connect to a wallet</HoverText>
+          <HoverText>{t('walletModal.connectToWallet')}</HoverText>
         </HeaderRow>
       );
     }
@@ -448,15 +449,15 @@ const WalletModal: React.FC<WalletModalProps> = ({
         <ContentWrapper>
           {web3Error instanceof UnsupportedChainIdError ? (
             <>
-              <h5>Please connect to the appropriate Avalanche network.</h5>
+              <h5> {t('walletModal.pleaseConnectAvalanche')}</h5>
               {supportsAddNetwork && (
                 <Button variant="primary" onClick={addAvalancheNetwork}>
-                  Switch to Avalanche Chain
+                  {t('walletModal.switchAvalanche')}
                 </Button>
               )}
             </>
           ) : (
-            'Error connecting. Try refreshing the page.'
+            `${t('walletModal.errorConnectingRefresh')}`
           )}
         </ContentWrapper>
       );

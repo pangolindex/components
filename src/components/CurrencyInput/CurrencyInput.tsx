@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ChevronDown } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { Box } from '../Box';
 import CurrencyLogo from '../CurrencyLogo';
 import { DoubleCurrencyLogo } from '../DoubleCurrencyLogo';
@@ -16,6 +17,8 @@ const CurrencyInput = ({
   onTokenClick,
   ...rest
 }: CurrencyInputProps) => {
+  const { t } = useTranslation();
+
   const renderCurrency = () => {
     if (alternativeLogoSrc) {
       return <AlternativeLogo src={alternativeLogoSrc} size={24} />;
@@ -42,7 +45,7 @@ const CurrencyInput = ({
             ? currency.symbol.slice(0, 4) +
               '...' +
               currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-            : currency?.symbol) || 'Select Token'}
+            : currency?.symbol) || `${t('swapPage.selectToken')}`}
         </StyledTokenName>
       );
   };

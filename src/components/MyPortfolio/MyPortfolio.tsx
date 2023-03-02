@@ -1,6 +1,7 @@
 import { ALL_CHAINS, CHAINS, Chain } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
+import { useTranslation } from 'react-i18next';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { PairDataUser, TokenDataUser, useGetChainsBalances, useGetWalletChainTokens } from 'src/state/pportfolio/hooks';
@@ -15,7 +16,7 @@ import { Body, Frame, Header, Root, SelectedCard } from './styleds';
 const MyPortfolio: React.FC = () => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-
+  const { t } = useTranslation();
   const [showBalances, setShowBalances] = useShowBalancesManager();
   const [selectChain, setSelectChain] = useState(43114);
 
@@ -108,7 +109,7 @@ const MyPortfolio: React.FC = () => {
     <Root>
       <Header>
         <Text fontSize={['16px', '16px', '24px']} color="text1" fontWeight={600} style={{ flexGrow: 1 }}>
-          Your Portfolio
+          {t('swapPage.yourPortFolio')}
         </Text>
         <ToggleBalanceButton showBalances={showBalances} handleShowBalances={handleShowBalances} />
       </Header>
@@ -116,7 +117,7 @@ const MyPortfolio: React.FC = () => {
         {!account ? (
           <Box height="100%" display="flex" alignItems="center">
             <Text fontSize={20} color="text1" textAlign="center">
-              Connect a wallet to see your portfolio
+              {t('swapPage.connectWalletViewPortFolio')}
             </Text>
           </Box>
         ) : isLoading || !balances ? (
@@ -124,7 +125,7 @@ const MyPortfolio: React.FC = () => {
         ) : balances && balances.chains.length == 0 ? (
           <Box height="100%" display="flex" alignItems="center" flexWrap="wrap">
             <Text fontSize={18} color="text1" textAlign="center">
-              Not found balances
+              {t('portfolio.balanceNotFound')}
             </Text>
           </Box>
         ) : (
@@ -165,7 +166,7 @@ const MyPortfolio: React.FC = () => {
                 <Loader size={100} />
               ) : !chainTokens || chainTokens.length == 0 ? (
                 <Text fontSize={18} color="text1" textAlign="center">
-                  Not found tokens on this chain
+                  {t('swapPage.notFoundToken')}
                 </Text>
               ) : (
                 <Box height="100%" minHeight="128px">

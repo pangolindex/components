@@ -103,7 +103,9 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
     if (!isHederaTokenAssociated && notAssociateTokens?.length > 0) {
       return (
         <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-          {isLoadingAssociate ? 'Associating' : 'Associate ' + notAssociateTokens?.[0]?.symbol}
+          {isLoadingAssociate
+            ? `${t('pool.associating')}`
+            : `${t('pool.associate')} ` + notAssociateTokens?.[0]?.symbol}
         </Button>
       );
     } else {
@@ -159,7 +161,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
 
       {attempting && !hash && <Loader size={100} label={`${t('sarClaim.pending')}...`} />}
 
-      {hash && <TransactionCompleted onClose={wrappedOnDismiss} submitText="Your rewards claimed" />}
+      {hash && <TransactionCompleted onClose={wrappedOnDismiss} submitText={t('earn.rewardClaimed')} />}
     </ClaimWrapper>
   );
 };

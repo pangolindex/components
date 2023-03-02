@@ -2,6 +2,7 @@ import { CHAINS, Fraction, Token } from '@pangolindex/sdk';
 import deepEqual from 'deep-equal';
 import numeral from 'numeral';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, CoinDescription } from 'src/components';
 import StatDetail from 'src/components/Pools/DetailModal/StatDetail';
 import { ANALYTICS_PAGE } from 'src/constants';
@@ -23,7 +24,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
   const token0 = stakingInfo?.tokens?.[0];
   const token1 = stakingInfo?.tokens?.[1];
   const chainId = useChainId();
-
+  const { t } = useTranslation();
   const totalStakedInUsd = numeral(stakingInfo?.totalStakedInUsd.toSignificant(4)).format('$0.00a');
 
   const yourStakeInUsd = CHAINS[chainId]?.mainnet
@@ -71,7 +72,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
     <>
       <DetailsContainer>
         <StatDetail
-          title={`Total Stake`}
+          title={t('pool.totalStake')}
           currency0={currency0}
           currency1={currency1}
           pair={pair}
@@ -83,7 +84,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
         {userPgl?.greaterThan('0') && (
           <Box mt={25}>
             <StatDetail
-              title={`Your Liquidity`}
+              title={t('pool.yourLiquidity')}
               currency0={currency0}
               currency1={currency1}
               pair={pair}
@@ -97,7 +98,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
         {isStaking && (
           <Box mt={25}>
             <StatDetail
-              title={`Your Stake`}
+              title={t('pool.yourStake')}
               currency0={currency0}
               currency1={currency1}
               pair={pair}

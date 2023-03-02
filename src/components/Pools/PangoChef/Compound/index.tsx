@@ -302,7 +302,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
         value={formatUnits(amountToAdd.raw.toString(), tokenOrCurrency.decimals)}
       />
       <WarningMessageWrapper>
-        <Text color="text1" textAlign="center" fontSize="12px">
+        <Text color="text1" textAlign="center" fontSize="10px">
           {message}
         </Text>
         <Tooltip id="help" effect="solid" backgroundColor={theme.primary} place="left">

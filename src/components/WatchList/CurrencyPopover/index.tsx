@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, TextInput } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
@@ -29,7 +30,7 @@ const CurrencyPopover: React.FC<Props> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
-
+  const { t } = useTranslation();
   const allWatchlistCurrencies = useSelector<AppState['pwatchlists']['selectedCurrencies']>((state: AppState) =>
     ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.selectedCurrencies || []),
   );
@@ -71,7 +72,7 @@ const CurrencyPopover: React.FC<Props> = ({
       <Box padding="0px 10px">
         <AddInputWrapper>
           <TextInput
-            placeholder="Search"
+            placeholder={t('common.search')}
             onChange={(value: any) => {
               setSearchQuery(value as string);
             }}

@@ -140,9 +140,9 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
         </Root>
       )}
 
-      {attempting && !hash && <Loader size={100} label=" Claiming..." />}
+      {attempting && !hash && <Loader size={100} label={` ${t('sarClaim.claiming')}...`} />}
 
-      {hash && <TransactionCompleted onClose={wrappedOnDismiss} submitText="Your rewards claimed" />}
+      {hash && <TransactionCompleted onClose={wrappedOnDismiss} submitText={t('earn.rewardClaimed')} />}
     </ClaimWrapper>
   );
 };
