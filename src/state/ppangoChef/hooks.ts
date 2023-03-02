@@ -18,6 +18,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { useSubgraphFarms, useSubgraphFarmsStakedAmount } from 'src/apollo/pangochef';
+import { useSubgraphFarms, useSubgraphFarmsStakedAmount } from 'src/apollo/pangochef';
 import { BIGNUMBER_ZERO, BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
@@ -992,12 +993,39 @@ export function useGetPangoChefInfosViaSubgraph() {
             tokenObj.name,
           );
           const _multiplier = JSBI.BigInt(rewardToken?.multiplier.toString());
+      const { rewardTokensAddress, rewardTokens, rewardMultipliers } = rewards.reduce(
+        (memo, rewardToken) => {
+          const tokenObj = rewardToken.token;
+          const _address = getAddress(tokenObj.id);
+          const _token = new Token(
+            chainId,
+            getAddress(tokenObj.id),
+            Number(tokenObj.decimals),
+            tokenObj.symbol,
+            tokenObj.name,
+          );
+          const _multiplier = JSBI.BigInt(rewardToken?.multiplier.toString());
 
           // remove png from rewards
           if (_token.equals(png)) {
             return memo;
           }
+          // remove png from rewards
+          if (_token.equals(png)) {
+            return memo;
+          }
 
+          memo.rewardTokensAddress.push(_address);
+          memo.rewardTokens.push(_token);
+          memo.rewardMultipliers.push(_multiplier);
+          return memo;
+        },
+        {
+          rewardTokensAddress: [] as string[],
+          rewardTokens: [] as Token[],
+          rewardMultipliers: [] as JSBI[],
+        },
+      );
           memo.rewardTokensAddress.push(_address);
           memo.rewardTokens.push(_token);
           memo.rewardMultipliers.push(_multiplier);
@@ -1370,7 +1398,7 @@ export function usePangoChefExtraFarmApr(
   )[];
 
   const multipliers = stakingInfo.rewardTokensMultiplier;
-
+  console.log({ multipliers });
   const pairPrice: Price | undefined = stakingInfo.pairPrice;
 
   const tokensPrices = useTokensCurrencyPrice(_rewardTokens);
@@ -1402,7 +1430,7 @@ export function usePangoChefExtraFarmApr(
       if (!tokenPrice || !multiplier) {
         continue;
       }
-
+      console.log({ token, index, multiplier });
       //extraAPR = poolRewardRate(POOL_ID) * rewardMultiplier / (10** token.decimals) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       extraAPR +=
         !pairPrice || !balance || balance.isZero() || pairPrice.equalTo('0')
