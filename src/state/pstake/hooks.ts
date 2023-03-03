@@ -12,7 +12,6 @@ import {
   BIG_INT_SECONDS_IN_WEEK,
   BIG_INT_TWO,
   BIG_INT_ZERO,
-  MINICHEF_ADDRESS,
   ONE_TOKEN,
   PANGOLIN_API_BASE_URL,
   ZERO_ADDRESS,
@@ -20,6 +19,7 @@ import {
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
+import { MINICHEF_ADDRESS } from 'src/constants/address';
 import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';

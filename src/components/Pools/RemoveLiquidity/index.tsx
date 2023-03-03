@@ -3,7 +3,7 @@ import { Currency, Pair, Percent } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
-import { ROUTER_ADDRESS } from 'src/constants';
+import { ROUTER_ADDRESS } from 'src/constants/address';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Settings } from 'react-feather';
-import { SwapTypes } from 'src/constants';
+import { SwapTypes } from 'src/constants/swap';
 import { Box, Text, ToggleButtons } from '../../';
 import { SettingsButton } from '../Settings/styled';
 import { SwapWrapper } from './styled';

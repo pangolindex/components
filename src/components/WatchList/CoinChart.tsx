@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { Box, Button, Text } from 'src/components';
-import { TIMEFRAME } from 'src/constants';
+import { TIMEFRAME } from 'src/constants/swap';
 import { CoingeckoWatchListToken, useCoinGeckoTokenPriceChart } from 'src/state/pcoingecko/hooks';
 import { formattedNum, toNiceDateYear } from 'src/utils/charts';
 import { DurationBtns, SelectedCoinInfo } from './styleds';

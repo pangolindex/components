@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { SwapTypes, ZERO_ADDRESS } from 'src/constants';
+import { ZERO_ADDRESS } from 'src/constants';
+import { SwapTypes } from 'src/constants/swap';
 import LimitOrder from './LimitOrder';
 import MarketOrder from './MarketOrder';
 import TWAP from './TWAP/TWAPPanel';

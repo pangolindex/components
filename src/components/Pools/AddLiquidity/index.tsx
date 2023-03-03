@@ -5,7 +5,7 @@ import { Plus } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Text, TextInput } from 'src/components';
-import { ROUTER_ADDRESS } from 'src/constants';
+import { ROUTER_ADDRESS } from 'src/constants/address';
 import { PairState } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';

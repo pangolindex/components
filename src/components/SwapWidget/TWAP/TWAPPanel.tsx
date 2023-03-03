@@ -1,7 +1,8 @@
 import { TWAP as PangolinTWAP } from '@orbs-network/twap-ui-pangolin';
 import React, { useCallback, useContext } from 'react';
 import { ThemeContext } from 'styled-components';
-import { SwapTypes, ZERO_ADDRESS } from 'src/constants';
+import { ZERO_ADDRESS } from 'src/constants';
+import { SwapTypes } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
