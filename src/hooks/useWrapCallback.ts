@@ -64,7 +64,7 @@ export function useWrapCallback(
                   setExecuting(true);
                   const txReceipt = await wethContract.deposit({ value: `0x${inputAmount.raw.toString(16)}` });
                   onUserInput(Field.INPUT, '');
-                  addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} AVAX to WAVAX` });
+                  addTransaction(txReceipt, { summary: `Wrapped ${inputAmount.toSignificant(6)} AVAX to WAVAX` });
                 } catch (error) {
                   console.error('Could not deposit', error);
                 } finally {
@@ -89,7 +89,7 @@ export function useWrapCallback(
                   setExecuting(true);
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`);
                   onUserInput(Field.INPUT, '');
-                  addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WAVAX to AVAX` });
+                  addTransaction(txReceipt, { summary: `Unwrappped ${inputAmount.toSignificant(6)} WAVAX to AVAX` });
                 } catch (error) {
                   console.error('Could not withdraw', error);
                 } finally {
@@ -248,7 +248,7 @@ export function useWrapHbarCallback(
 
                   if (txReceipt) {
                     onUserInput(Field.INPUT, '');
-                    addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} HBAR to WHBAR` });
+                    addTransaction(txReceipt, { summary: `Wrapped ${inputAmount.toSignificant(6)} HBAR to WHBAR` });
                   }
                 } catch (error) {
                   console.error('Could not deposit', error);
@@ -276,7 +276,7 @@ export function useWrapHbarCallback(
                   if (txReceipt) {
                     onUserInput(Field.INPUT, '');
                     addTransaction(txReceipt, {
-                      summary: `Unwrap ${inputAmount.toSignificant(6)} WHBAR to HBAR`,
+                      summary: `Unwrapped ${inputAmount.toSignificant(6)} WHBAR to HBAR`,
                     });
                   }
                 } catch (error) {
