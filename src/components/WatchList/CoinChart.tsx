@@ -63,7 +63,7 @@ const CoinChart: React.FC<Props> = ({ coin }) => {
             labelFormatter={(_label, data) => {
               return toNiceDateYear(data?.[0]?.payload?.timestamp);
             }}
-            labelStyle={{ paddingTop: 4 }}
+            labelStyle={{ paddingTop: 4, color: 'black' }}
             wrapperStyle={{ top: -70, left: -10, zIndex: 9999 }}
           />
         </LineChart>
