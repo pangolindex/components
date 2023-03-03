@@ -4,7 +4,7 @@ import {
   ALLOWED_PRICE_IMPACT_LOW,
   ALLOWED_PRICE_IMPACT_MEDIUM,
   BLOCKED_PRICE_IMPACT_NON_EXPERT,
-} from '../constants';
+} from 'src/constants/swap';
 import { Field } from '../state/pswap/actions';
 import { basisPointsToPercent } from './index';
 

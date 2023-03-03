@@ -6,7 +6,7 @@ import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
 import { hashConnect, network } from 'src/connectors';
 import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
-import { PROVIDER_MAPPING } from 'src/constants';
+import { PROVIDER_MAPPING } from 'src/constants/wallets';
 import { useDispatch } from 'src/state';
 import { setAvailableHashpack } from 'src/state/papplication/actions';
 import { isAddress } from 'src/utils';

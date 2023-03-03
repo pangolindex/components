@@ -1,7 +1,7 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { WalletInfo } from 'src/constants';
+import { WalletInfo } from 'src/constants/wallets';
 import Option from '../Option';
 import { ErrorButton, ErrorGroup, LoadingMessage, LoadingWrapper, PendingSection, StyledLoader } from './styles';
 
