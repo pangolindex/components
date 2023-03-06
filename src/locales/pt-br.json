@@ -841,12 +841,13 @@
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
   "common": {
-    "loading": "Loading",
-    "search": "Search",
-    "required": "Required",
-    "save": "Save",
-    "close": "Close",
-    "back": "Back",
-    "noDataAvailable": "No data available!"
+    "loading": "Carregando",
+    "search": "Procurar",
+    "required": "Obrigatório",
+    "save": "Salvar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "noDataAvailable": "Nenhum dado disponível!",
+    "notFound": "Não encontrado"
   }
 }
