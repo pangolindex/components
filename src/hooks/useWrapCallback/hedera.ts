@@ -58,7 +58,7 @@ export function useWrapHbarCallback(
 
                   if (txReceipt) {
                     onUserInput(Field.INPUT, '');
-                    addTransaction(txReceipt, { summary: `Wrap ${inputAmount.toSignificant(6)} HBAR to WHBAR` });
+                    addTransaction(txReceipt, { summary: `Wrapped ${inputAmount.toSignificant(6)} HBAR to WHBAR` });
                   }
                 } catch (error) {
                   console.error('Could not deposit', error);
@@ -86,7 +86,7 @@ export function useWrapHbarCallback(
                   if (txReceipt) {
                     onUserInput(Field.INPUT, '');
                     addTransaction(txReceipt, {
-                      summary: `Unwrap ${inputAmount.toSignificant(6)} WHBAR to HBAR`,
+                      summary: `Unwrapped ${inputAmount.toSignificant(6)} WHBAR to HBAR`,
                     });
                   }
                 } catch (error) {
