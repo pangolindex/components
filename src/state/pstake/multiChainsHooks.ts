@@ -14,7 +14,7 @@ export type UseMinichefStakingInfosHookType = {
 };
 
 export const useMinichefStakingInfosHook: UseMinichefStakingInfosHookType = {
-  [ChainId.FUJI]: useMinichefStakingInfos,
+  [ChainId.FUJI]: useDummyMinichefHook,
   [ChainId.AVALANCHE]: useMinichefStakingInfos,
   [ChainId.WAGMI]: useMinichefStakingInfos,
   [ChainId.COSTON]: useDummyMinichefHook,
@@ -87,7 +87,7 @@ export type UseGetAllFarmDataHookType = {
 };
 
 export const useGetAllFarmDataHook: UseGetAllFarmDataHookType = {
-  [ChainId.FUJI]: useGetAllFarmData,
+  [ChainId.FUJI]: useGetDummyAllFarmData,
   [ChainId.AVALANCHE]: useGetAllFarmData,
   [ChainId.WAGMI]: useGetAllFarmData,
   [ChainId.COSTON]: useGetDummyAllFarmData,

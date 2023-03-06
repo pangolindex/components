@@ -204,7 +204,7 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
 export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] } = {
-  [ChainId.FUJI]: [],
+  [ChainId.FUJI]: [WAVAX[ChainId.FUJI].address, PNG[ChainId.FUJI].address],
   [ChainId.AVALANCHE]: [WAVAX[ChainId.AVALANCHE].address, PNG[ChainId.AVALANCHE].address],
   [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI].address, PNG[ChainId.WAGMI].address],
   [ChainId.COSTON]: [WAVAX[ChainId.COSTON].address, PNG[ChainId.COSTON].address],
@@ -240,7 +240,7 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: USDC[ChainId.AVALANCHE].address,
   },
   [ChainId.FUJI]: {
-    inputCurrency: '',
+    inputCurrency: 'AVAX',
     outputCurrency: '',
   },
   [ChainId.WAGMI]: {

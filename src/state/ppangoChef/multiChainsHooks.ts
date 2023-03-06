@@ -27,7 +27,7 @@ export type UsePangoChefInfosHookType = {
 };
 
 export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
-  [ChainId.FUJI]: useDummyPangoChefInfos,
+  [ChainId.FUJI]: usePangoChefInfos,
   [ChainId.AVALANCHE]: useDummyPangoChefInfos,
   [ChainId.WAGMI]: useDummyPangoChefInfos,
   [ChainId.COSTON]: usePangoChefInfos,
