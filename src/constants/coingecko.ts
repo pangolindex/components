@@ -44,5 +44,5 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.MOONBEAM]: undefined,
   [ChainId.OP]: undefined,
   [ChainId.EVMOS_TESTNET]: undefined,
-  [ChainId.EVMOS_MAINNET]: undefined,
+  [ChainId.EVMOS_MAINNET]: 'evmos',
 };
