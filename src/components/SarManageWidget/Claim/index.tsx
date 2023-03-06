@@ -72,7 +72,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
     }
     return (
       <Buttons>
-        <Button variant="primary" onClick={() => onChange(Options.COMPOUND)}>
+        <Button variant="primary" onClick={() => onChange(Options.COMPOUND)} isDisabled={pendingRewards.isZero()}>
           {t('sarCompound.compound')}
         </Button>
         <Button variant="primary" onClick={handleConfirm} isDisabled={!!error}>

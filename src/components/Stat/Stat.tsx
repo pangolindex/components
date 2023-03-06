@@ -1,7 +1,9 @@
 import { Currency, Token, WAVAX } from '@pangolindex/sdk';
-import React from 'react';
+import _uniqueId from 'lodash/uniqueId';
+import React, { useContext, useState } from 'react';
+import { ThemeContext } from 'styled-components';
 import AnalyticsIcon from 'src/assets/images/analytics.svg';
-import { Box, CurrencyLogo, Text } from 'src/components';
+import { Box, CurrencyLogo, Text, Tooltip } from 'src/components';
 import { ANALYTICS_PAGE } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import { ThemeColorsType } from 'src/theme';
@@ -18,6 +20,7 @@ export interface StatProps {
   currency?: Currency;
   statAlign?: 'center' | 'right' | 'left';
   showAnalytics?: boolean;
+  toolTipText?: string;
 }
 
 const Stat = ({
@@ -31,9 +34,14 @@ const Stat = ({
   currency,
   statAlign,
   showAnalytics = false,
+  toolTipText,
 }: StatProps) => {
   const chainId = useChainId();
   const token = currency instanceof Currency && currency instanceof Token ? currency : WAVAX[chainId];
+
+  const [id] = useState(_uniqueId('stat-tip-'));
+
+  const theme = useContext(ThemeContext);
 
   function getAlignment() {
     if (statAlign === 'center') {
@@ -66,13 +74,20 @@ const Stat = ({
         mt={titlePosition === 'top' ? '8px' : '0px'}
         mb={titlePosition === 'bottom' ? '8px' : '0px'}
       >
-        <Text color={statColor || 'text1'} fontSize={statFontSize || 16}>
+        <Text color={statColor || 'text1'} fontSize={statFontSize || 16} data-tip data-for={id}>
           {stat}
         </Text>
         {currency && (
           <Box ml={10} height={24}>
             <CurrencyLogo currency={currency} size={24} imageSize={48} />
           </Box>
+        )}
+        {toolTipText && (
+          <Tooltip id={id} effect="solid" backgroundColor={theme.primary}>
+            <Text color="text6" fontSize="12px" fontWeight={500} textAlign="center">
+              {toolTipText}
+            </Text>
+          </Tooltip>
         )}
       </Box>
 
