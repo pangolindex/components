@@ -425,7 +425,7 @@ const LimitOrder: React.FC<Props> = ({
             >
               {approvalSubmitted && approval === ApprovalState.APPROVED
                 ? t('swapPage.approved')
-                : `${t('swapPage.approve')} ${currencies[LimitField.INPUT]?.symbol}`}
+                : `${t('swapPage.approve')} ` + currencies[LimitField.INPUT]?.symbol}
             </Button>
           </Box>
 
