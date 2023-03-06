@@ -19,7 +19,7 @@ export function useWrapCallback(
   inputCurrency: Currency | undefined,
   outputCurrency: Currency | undefined,
   typedValue: string | undefined,
-): { wrapType: WrapType; execute?: undefined | (() => Promise<void>); inputError?: string; executing?: boolean } {
+): { wrapType: WrapType; execute?: () => Promise<void>; inputError?: string; executing?: boolean } {
   const { account } = usePangolinWeb3();
 
   const chainId = useChainId();
