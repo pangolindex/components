@@ -23,7 +23,7 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
           </BlackBox>
           <BlackBox>
             <BlackBoxContent color="text1" fontSize={18} fontWeight={500}>
-              {t('concentratedLiquidity.positionCard.open')}
+              {t('common.open')}
             </BlackBoxContent>
           </BlackBox>
         </Data>
@@ -31,7 +31,7 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
           <Box display={'flex'} flexDirection="column" alignItems={'flex-end'}>
             <Box display={'flex'}>
               <Text color="primary" fontSize={18} fontWeight={500}>
-                {t('concentratedLiquidity.positionCard.min')}:&nbsp;
+                {t('common.min')}:&nbsp;
               </Text>
               <Text color="text1" fontSize={18} fontWeight={500}>
                 362.00 {currency0.symbol} per {currency1.symbol}
@@ -39,7 +39,7 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
             </Box>
             <Box display={'flex'}>
               <Text color="primary" fontSize={18} fontWeight={500}>
-                {t('concentratedLiquidity.positionCard.max')}:&nbsp;
+                {t('common.max')}:&nbsp;
               </Text>
               <Text color="text1" fontSize={18} fontWeight={500}>
                 1,889.54 {currency0.symbol} per {currency1.symbol}

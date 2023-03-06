@@ -53,7 +53,7 @@ const PositionList: React.FC<PositionListProps> = (props) => {
             <Hidden upToSmall={true}>
               <Box ml={10}>
                 <DropdownMenu
-                  placeHolder={t('concentratedLiquidity.positionList.sortBy')}
+                  placeHolder={t('common.sortBy')}
                   options={sortOptions}
                   defaultValue={sortBy}
                   onSelect={(value) => {
