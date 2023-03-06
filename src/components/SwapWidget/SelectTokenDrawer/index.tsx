@@ -193,7 +193,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
         ) : (
           <Box mt="10px" height="100%">
             <Text color="text1" textAlign="center">
-              Not found
+              {t('common.notFound')}
             </Text>
           </Box>
         )}
