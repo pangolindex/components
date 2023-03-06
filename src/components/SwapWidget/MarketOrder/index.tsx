@@ -11,13 +11,9 @@ import { SwapTypes } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import {
-  useApproveCallbackFromTradeHook,
-  useSwapCallbackHook,
-  useTokenHook,
-  useWrapCallbackHook,
-} from 'src/hooks/multiChainsHooks';
-import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useSwapCallbackHook, useTokenHook, useWrapCallbackHook } from 'src/hooks/multiChainsHooks';
+import { useApproveCallbackFromTradeHook } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import useENS from 'src/hooks/useENS';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { WrapType } from 'src/hooks/useWrapCallback';
