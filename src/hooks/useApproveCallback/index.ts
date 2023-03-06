@@ -1,12 +1,7 @@
-/* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
 import { useApproveCallback, useApproveCallbackFromTrade } from './evm';
 import { useApproveCallbackFromHederaTrade, useHederaApproveCallback } from './hedera';
 import { useApproveCallbackFromNearTrade, useNearApproveCallback } from './near';
-
-export function useDummyHook() {
-  return undefined;
-}
 
 export type UseApproveCallbackFromTradeHookType = {
   [chainId in ChainId]:
@@ -82,5 +77,3 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
   [ChainId.MOONBEAM]: useApproveCallback,
   [ChainId.OP]: useApproveCallback,
 };
-
-/* eslint-enable max-lines */
