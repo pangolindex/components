@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Box, Text } from 'src/components';
 
-export const Card = styled.tr`
+export const Card = styled.div`
   background-color: ${({ theme }) => theme.concentratedLiquidity?.primaryBgColor};
   border-radius: 10px;
   padding: 32px;

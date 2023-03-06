@@ -19,7 +19,7 @@ export const GridContainer = styled(Box)`
   `};
 `;
 
-export const Cards = styled.table`
+export const Cards = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
