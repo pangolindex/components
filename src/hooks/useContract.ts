@@ -5,7 +5,7 @@ import Png from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-to
 import StakingRewards from '@pangolindex/exchange-contracts/artifacts/contracts/staking-rewards/StakingRewards.sol/StakingRewards.json';
 import { ChainId, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { MINICHEF_ADDRESS, PANGOCHEF_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from 'src/constants';
+import { ZERO_ADDRESS } from 'src/constants';
 import { ERC20_BYTES32_ABI } from 'src/constants/abis/erc20';
 import ERC20_ABI from 'src/constants/abis/erc20.json';
 import PANGOCHEF_ABI from 'src/constants/abis/pangochef.json';
@@ -13,6 +13,7 @@ import PANGOCHEF_V1_ABI from 'src/constants/abis/pangochefV1.json';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import SarStaking from 'src/constants/abis/sar.json';
 import WETH_ABI from 'src/constants/abis/weth.json';
+import { MINICHEF_ADDRESS, PANGOCHEF_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from 'src/constants/multicall';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
@@ -20,7 +21,7 @@ import { getContract } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 
 // returns null on errors
-function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
+export function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
   const { account } = usePangolinWeb3();
   const { library } = useLibrary();
 

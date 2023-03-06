@@ -1,6 +1,7 @@
 import { ALL_CHAINS, Chain } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
+import { useTranslation } from 'react-i18next';
 import { usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useGetChainsBalances } from 'src/state/pportfolio/hooks';
@@ -13,6 +14,7 @@ import { ChainCard, Frame, PortfolioHeader, PortfolioRoot } from './styleds';
 
 const Portfolio: React.FC = () => {
   const { account } = usePangolinWeb3();
+  const { t } = useTranslation();
   const { data: balances, isRefetching, isLoading } = useGetChainsBalances();
   const [showBalances, setShowBalances] = useShowBalancesManager();
 
@@ -74,14 +76,14 @@ const Portfolio: React.FC = () => {
     <PortfolioRoot>
       <PortfolioHeader>
         <Text fontSize={['16px', '16px', '24px']} color="text1" fontWeight={600} style={{ flexGrow: 1 }}>
-          Portfolio Value in All Chains
+          {t('portfolio.portfolioAllChain')}
         </Text>
         <ToggleBalanceButton showBalances={showBalances} handleShowBalances={handleShowBalances} />
       </PortfolioHeader>
       <Box display="flex" flexGrow={1} width="100%" alignItems="center" flexDirection="column">
         {!account ? (
           <Text fontSize={20} color="text1" textAlign="center">
-            Connect a wallet to see your Portfolio
+            {t('portfolio.connectToseePortfolio')}
           </Text>
         ) : isRefetching || isLoading || !balances ? (
           <Loader size={100} />
@@ -99,7 +101,7 @@ const Portfolio: React.FC = () => {
               style={{ boxSizing: 'border-box' }}
             >
               <Text fontSize={18} color="text1" style={{ flexGrow: 1, minWidth: '200px' }}>
-                Total Amount Invested
+                {t('portfolio.totalAmountInvested')}
               </Text>
               {renderTotalBalance()}
             </Box>
@@ -120,7 +122,7 @@ const Portfolio: React.FC = () => {
                 </Scrollbars>
               ) : (
                 <Text fontSize={18} color="text1" textAlign="center">
-                  Balances not found
+                  {t('portfolio.balanceNotFound')}
                 </Text>
               )}
             </Box>

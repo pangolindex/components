@@ -2,6 +2,7 @@ import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, Token, Trade, TradeType } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
@@ -43,7 +44,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
   const [showInverted, setShowInverted] = useState<boolean>(false);
   const chainId = useChainId();
   const theme = useContext(ThemeContext);
-
+  const { t } = useTranslation();
   const {
     derivedOrderInfo: { price, parsedAmounts },
   } = useGelatoLimitOrders();
@@ -184,10 +185,10 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
         {showAcceptChanges && (
           <PriceUpdateBlock>
             <Text color="swapWidget.primary" fontSize={14}>
-              Price Updated
+              {t('swap.priceUpdated')}
             </Text>
             <Button onClick={onAcceptChanges} variant="primary" width={150} padding="5px 10px">
-              Accept
+              {t('swap.accept')}
             </Button>
           </PriceUpdateBlock>
         )}
@@ -201,7 +202,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
           style={{ cursor: 'pointer' }}
         >
           <Text color="swapWidget.primary" fontSize={16}>
-            Limit Price
+            {t('swapPage.limitPrice')}
           </Text>
           <Text color="swapWidget.primary" fontSize={16}>
             {text}
@@ -209,7 +210,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
         </Box>
         <Box mt={'15px'}>
           <Text color="swapWidget.primary" fontSize={16}>
-            Output will be sent to{' '}
+            {t('swapPage.outputWillBeSentTo')}{' '}
             <b title={recipient || ''}>
               {isAddress(recipient || '') ? shortenAddress(recipient || '', chainId) : recipient || ''}
             </b>
@@ -220,7 +221,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
         <LimitOrderDetailInfo trade={trade} />
         <Box my={'10px'}>
           <Button variant="primary" onClick={onConfirm} isDisabled={showAcceptChanges}>
-            Confirm Order
+            {t('swapPage.confirmOrder')}
           </Button>
         </Box>
       </Footer>
@@ -238,7 +239,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
         </Text>
       </ErrorBox>
       <Button variant="primary" onClick={onClose}>
-        Dismiss
+        {t('transactionConfirmation.dismiss')}
       </Button>
     </ErrorWrapper>
   );
@@ -250,7 +251,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
           <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary} />
         </Box>
         <Text color="swapWidget.primary" fontWeight={500} fontSize={20}>
-          Transaction Submitted
+          {t('earn.transactionSubmitted')}
         </Text>
         {chainId && txHash && (
           <Link
@@ -261,12 +262,12 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
             href={getEtherscanLink(chainId, txHash, 'transaction')}
             target="_blank"
           >
-            View on explorer
+            {t('transactionConfirmation.viewExplorer')}
           </Link>
         )}
       </Box>
       <Button variant="primary" onClick={onClose}>
-        Close
+        {t('transactionConfirmation.close')}
       </Button>
     </SubmittedWrapper>
   );
@@ -285,7 +286,7 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
 
   return (
     <Drawer
-      title={swapErrorMessage || txHash || attemptingTxn ? '' : 'Confirm Order'}
+      title={swapErrorMessage || txHash || attemptingTxn ? '' : `${t('swapPage.confirmOrder')}`}
       isOpen={isOpen}
       onClose={onClose}
     >

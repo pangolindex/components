@@ -24,8 +24,9 @@ import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
-import { useChainId, useGetBlockTimestamp, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
+import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { useTokens } from 'src/hooks/Tokens';
+import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { useTokensCurrencyPriceHook } from 'src/hooks/multiChainsHooks';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
@@ -38,12 +39,15 @@ import { calculateGasMargin, decimalToFraction, waitForTransaction } from 'src/u
 import { hederaFn } from 'src/utils/hedera';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables } from './types';
-import { calculateCompoundSlippage } from './utils';
+import { calculateCompoundSlippage, calculateUserRewardRate } from './utils';
 
 export function usePangoChefInfos() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const pangoChefContract = usePangoChefContract();
+
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
+  const blockTime = useGetBlockTimestamp();
 
   const png = PNG[chainId];
 
@@ -235,8 +239,6 @@ export function usePangoChefInfos() {
     userInfoInput ?? [],
   );
 
-  const userRewardRatesState = useSingleContractMultipleData(pangoChefContract, 'userRewardRate', userInfoInput ?? []);
-
   const wavax = WAVAX[chainId];
   const [avaxPngPairState, avaxPngPair] = usePair(wavax, png);
 
@@ -274,7 +276,6 @@ export function usePangoChefInfos() {
       const rewardMultipliersState = rewardsMultipliersState[index];
       const userPendingRewardState = userPendingRewardsState[index];
       const pairTotalSupplyState = pairTotalSuppliesState[index];
-      const userRewardRateState = userRewardRatesState[index];
       const [pairState, pair] = pairs[index];
 
       // if is loading or not exist pair continue
@@ -288,7 +289,6 @@ export function usePangoChefInfos() {
         rewardTokensState.loading ||
         rewardMultipliersState.loading ||
         userPendingRewardState.loading ||
-        userRewardRateState.loading ||
         pairTotalSupplyState.loading ||
         pairState === PairState.LOADING ||
         avaxPngPairState == PairState.LOADING ||
@@ -388,6 +388,13 @@ export function usePangoChefInfos() {
 
       const weight = poolsRewardInfoState.result?.weight;
 
+      const userRewardRate = calculateUserRewardRate(
+        userInfo?.valueVariables,
+        pool.valueVariables,
+        rewardRate,
+        blockTime,
+      );
+
       farms.push({
         pid: pid,
         tokens: [pair.token0, pair.token1],
@@ -411,7 +418,7 @@ export function usePangoChefInfos() {
         valueVariables: pool.valueVariables,
         userValueVariables: userInfo?.valueVariables,
         lockCount: userInfo.lockCount,
-        userRewardRate: userRewardRateState.result?.[0] ?? BigNumber.from(0),
+        userRewardRate: userRewardRate,
         stakingApr: apr,
         pairPrice: pairPrice,
         poolType: pool.poolType,
@@ -431,6 +438,7 @@ export function usePangoChefInfos() {
     pairTotalSuppliesState,
     userPendingRewardsState,
     pairs,
+    blockTime,
   ]);
 }
 
@@ -439,6 +447,9 @@ export function useHederaPangoChefInfos() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const pangoChefContract = usePangoChefContract();
+
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
+  const blockTime = useGetBlockTimestamp();
 
   const png = PNG[chainId];
 
@@ -635,12 +646,6 @@ export function useHederaPangoChefInfos() {
     !shouldCreateStorage && userInfoInput ? userInfoInput : [],
   );
 
-  const userRewardRatesState = useSingleContractMultipleData(
-    pangoChefContract,
-    'userRewardRate',
-    !shouldCreateStorage && userInfoInput ? userInfoInput : [],
-  );
-
   const wavax = WAVAX[chainId];
   const [avaxPngPairState, avaxPngPair] = usePair(wavax, png);
 
@@ -677,7 +682,6 @@ export function useHederaPangoChefInfos() {
       const rewardMultipliersState = rewardsMultipliersState[index];
       const userPendingRewardState = userPendingRewardsState[index];
       const pairTotalSupplyState = pairTotalSuppliesState[index];
-      const userRewardRateState = userRewardRatesState[index];
       const [pairState, pair] = pairs?.[index] || [];
 
       // if is loading or not exist pair continue
@@ -690,7 +694,6 @@ export function useHederaPangoChefInfos() {
         rewardTokensState?.loading ||
         rewardMultipliersState?.loading ||
         userPendingRewardState?.loading ||
-        userRewardRateState?.loading ||
         pairTotalSupplyState?.loading ||
         poolsRewardInfoState?.loading ||
         pairState === PairState.LOADING ||
@@ -795,6 +798,13 @@ export function useHederaPangoChefInfos() {
 
       const weight = poolsRewardInfoState.result?.weight;
 
+      const userRewardRate = calculateUserRewardRate(
+        userInfo?.valueVariables,
+        pool.valueVariables,
+        rewardRate,
+        blockTime,
+      );
+
       farms.push({
         pid: pid,
         tokens: [pair?.token0, pair?.token1],
@@ -818,7 +828,7 @@ export function useHederaPangoChefInfos() {
         valueVariables: pool.valueVariables,
         userValueVariables: userInfo?.valueVariables,
         lockCount: userInfo?.lockCount,
-        userRewardRate: userRewardRateState?.result?.[0] ?? BigNumber.from(0),
+        userRewardRate: userRewardRate,
         stakingApr: apr,
         pairPrice: pairPrice,
         poolType: pool.poolType,
@@ -839,6 +849,7 @@ export function useHederaPangoChefInfos() {
     pairTotalSuppliesState,
     userPendingRewardsState,
     pairs,
+    blockTime,
   ]);
   // return [] as PangoChefInfo[];
 }
@@ -849,6 +860,9 @@ export function useGetPangoChefInfosViaSubgraph() {
   const png = PNG[chainId];
   const [shouldCreateStorage] = useHederaPangochefContractCreateCallback();
   const pangoChefContract = usePangoChefContract();
+
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
+  const blockTime = useGetBlockTimestamp();
 
   const results = useSubgraphFarms();
   const pangoChefData = results?.data?.[0];
@@ -941,12 +955,6 @@ export function useGetPangoChefInfosViaSubgraph() {
     !shouldCreateStorage && userInfoInput ? userInfoInput : [],
   );
 
-  const userRewardRatesState = useSingleContractMultipleData(
-    pangoChefContract,
-    'userRewardRate',
-    !shouldCreateStorage && userInfoInput ? userInfoInput : [],
-  );
-
   return useMemo(() => {
     if (!chainId || !png || !allFarms?.length) return [];
 
@@ -955,7 +963,6 @@ export function useGetPangoChefInfosViaSubgraph() {
       const farm = allFarms[index];
 
       const userPendingRewardState = userPendingRewardsState[index];
-      const userRewardRateState = userRewardRatesState[index];
       const userInfo = userInfos[index];
 
       // if is loading or not exist pair continue
@@ -1081,8 +1088,9 @@ export function useGetPangoChefInfosViaSubgraph() {
         parseUnits(_totalStakedInWavax.equalTo('0') ? '0' : _totalStakedInWavax.toFixed(0), wavax.decimals)?.toString(),
       );
 
-      // totalPangochefWeight -> totalPangochefRewardRate
-      // farm?.weight -> ?
+      // totalPangochefRewardRate -> total png reward per second
+      // totalPangochefWeight -> total weight of all farms (ralayer too)
+      // farm?.weight -> weight of this farm
       // rewardRate = (farm?.weight * totalPangochefRewardRate) / totalPangochefWeight
       const rewardRate: BigNumber =
         farm?.weight === '0' || !totalPangochefWeight || totalPangochefWeight === '0'
@@ -1138,6 +1146,30 @@ export function useGetPangoChefInfosViaSubgraph() {
         totalRewardRatePerSecond,
       );
 
+      const farmSumOfEntryTimes =
+        Number(farm.sumOfEntryTimes) < 0 ? BIGNUMBER_ZERO : BigNumber.from(farm.sumOfEntryTimes);
+
+      const poolValueVariables = {
+        balance: BigNumber.from(_farmTvl),
+        sumOfEntryTimes: farmSumOfEntryTimes,
+      };
+
+      const _subgraphUserSumOfEntry: string | undefined = farm?.farmingPositions?.[0]?.sumOfEntryTimes;
+      const subgraphUserSumOfEntry: BigNumber =
+        !!_subgraphUserSumOfEntry && Number(_subgraphUserSumOfEntry) >= 0
+          ? BigNumber.from(_subgraphUserSumOfEntry)
+          : BIGNUMBER_ZERO;
+
+      const onchainSumOfEntry: BigNumber | undefined = userInfo?.valueVariables?.sumOfEntryTimes;
+
+      // let's prioritize the onchain data because they are more accurate, but if not, let's use from subgraph
+      const userValueVariables = {
+        balance: BigNumber.from(_userStakedAmount),
+        sumOfEntryTimes: onchainSumOfEntry && onchainSumOfEntry.gt(0) ? onchainSumOfEntry : subgraphUserSumOfEntry,
+      };
+
+      const userRewardRate = calculateUserRewardRate(userValueVariables, poolValueVariables, rewardRate, blockTime);
+
       farms.push({
         pid: pid,
         tokens,
@@ -1159,13 +1191,10 @@ export function useGetPangoChefInfosViaSubgraph() {
         getHypotheticalWeeklyRewardRate: getHypotheticalWeeklyRewardRate,
         getExtraTokensWeeklyRewardRate: getExtraTokensWeeklyRewardRate,
         earnedAmount: pendingRewards,
-        valueVariables: {
-          balance: BigNumber.from(_farmTvl),
-          sumOfEntryTimes: BIGNUMBER_ZERO,
-        },
-        userValueVariables: userInfo?.valueVariables,
+        valueVariables: poolValueVariables,
+        userValueVariables: userValueVariables,
         lockCount: userInfo?.lockCount,
-        userRewardRate: userRewardRateState?.result?.[0] ?? BigNumber.from(0),
+        userRewardRate: userRewardRate,
         stakingApr: apr,
         pairPrice,
         poolType: PoolType.ERC20_POOL,
@@ -1183,47 +1212,13 @@ export function useGetPangoChefInfosViaSubgraph() {
     allFarms,
     userInfosState,
     allPoolsIds,
+    blockTime,
   ]);
 }
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export function useDummyPangoChefInfos() {
   return [] as PangoChefInfo[];
-}
-
-/**
- * This hook return a user's user for songbird and coston
- * For these chains we need to use this because the function that returns the user's reward rate is broken
- * @param stakingInfo Staking info provided by usePangoChefInfos
- * @returns return the apr of user
- */
-export function useLegacyUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
-  const blockTime = useGetBlockTimestamp();
-
-  return useMemo(() => {
-    if (!stakingInfo) return '0';
-
-    const userBalance = stakingInfo?.userValueVariables?.balance || BigNumber.from(0);
-    const userSumOfEntryTimes = stakingInfo?.userValueVariables?.sumOfEntryTimes || BigNumber.from(0);
-
-    const poolBalance = stakingInfo?.valueVariables?.balance || BigNumber.from(0);
-    const poolSumOfEntryTimes = stakingInfo?.valueVariables?.sumOfEntryTimes || BigNumber.from(0);
-
-    if (!userBalance || userBalance.isZero() || !poolBalance || poolBalance.isZero() || !blockTime) return '0';
-    const blockTimestamp = BigNumber.from(blockTime.toString());
-
-    //userAPR = poolAPR * (blockTime - (userValueVariables.sumOfEntryTimes / userValueVariables.balance)) / (blockTime - (poolValueVariables.sumOfEntryTimes / poolValueVariables.balance))
-    const a = userSumOfEntryTimes.div(userBalance.isZero() ? BigNumber.from(1) : userBalance);
-    const b = poolSumOfEntryTimes.div(poolBalance.isZero() ? BigNumber.from(1) : poolBalance);
-    const c = blockTimestamp.sub(a);
-    const d = blockTimestamp.sub(b);
-    return c.lte(0) || d.lte(0)
-      ? '0'
-      : BigNumber.from(Math.floor(stakingInfo?.stakingApr ?? 0)?.toString())
-          .mul(c)
-          .div(d)
-          .toString();
-  }, [blockTime, stakingInfo]);
 }
 
 /**
@@ -1261,36 +1256,6 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
           .divide(pairBalance.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent))))
           .toFixed(0);
   }, [stakingInfo, pair, png, wavax]);
-}
-
-export function useUserPangoChefRewardRate(stakingInfo?: PangoChefInfo) {
-  const chainId = useChainId();
-  const blockTime = useGetBlockTimestamp();
-
-  return useMemo(() => {
-    if (!stakingInfo) {
-      return BigNumber.from(0);
-    }
-
-    if (chainId !== ChainId.SONGBIRD && chainId !== ChainId.COSTON) {
-      return stakingInfo.userRewardRate;
-    }
-
-    const userBalance = stakingInfo?.userValueVariables?.balance || BigNumber.from(0);
-    const userSumOfEntryTimes = stakingInfo?.userValueVariables?.sumOfEntryTimes || BigNumber.from(0);
-
-    const poolBalance = stakingInfo?.valueVariables?.balance || BigNumber.from(0);
-    const poolSumOfEntryTimes = stakingInfo?.valueVariables?.sumOfEntryTimes || BigNumber.from(0);
-
-    if (userBalance?.isZero() || poolBalance.isZero() || !blockTime) return BigNumber.from(0);
-
-    const blockTimestamp = BigNumber.from(blockTime.toString());
-    const userValue = blockTimestamp.mul(userBalance).sub(userSumOfEntryTimes);
-    const poolValue = blockTimestamp.mul(poolBalance).sub(poolSumOfEntryTimes);
-    return userValue.lte(0) || poolValue.lte(0)
-      ? BigNumber.from(0)
-      : stakingInfo?.poolRewardRate?.mul(userValue).div(poolValue);
-  }, [blockTime, stakingInfo, chainId]);
 }
 
 /**

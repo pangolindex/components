@@ -6,10 +6,9 @@ import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
 import { hashConnect, network } from 'src/connectors';
 import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
-import { PROVIDER_MAPPING } from 'src/constants';
+import { PROVIDER_MAPPING } from 'src/constants/wallets';
 import { useDispatch } from 'src/state';
 import { setAvailableHashpack } from 'src/state/papplication/actions';
-import { useBlockNumber } from 'src/state/papplication/hooks';
 import { isAddress } from 'src/utils';
 
 interface Web3State {
@@ -169,29 +168,3 @@ export const useRefetchMinichefSubgraph = () => {
 
   return async () => await queryClient.refetchQueries(['get-minichef-farms-v2', account]);
 };
-
-export function useGetBlockTimestamp(blockNumber?: number) {
-  const latestBlockNumber = useBlockNumber();
-  const _blockNumber = blockNumber ?? latestBlockNumber;
-
-  const { provider } = useLibrary();
-
-  const [timestamp, setTimestamp] = useState<string | undefined>(undefined);
-
-  const getTimestamp = useMemo(async () => {
-    if (!_blockNumber || !provider) return;
-
-    const result = await (provider as any)?.getBlockTimestamp(_blockNumber);
-    return result;
-  }, [_blockNumber, provider]);
-
-  useEffect(() => {
-    const getResult = async () => {
-      const result = await getTimestamp;
-      setTimestamp(result);
-    };
-    getResult();
-  }, [_blockNumber, getTimestamp]);
-
-  return timestamp;
-}

@@ -2,9 +2,12 @@
 import { CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { SwapTypes, TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from 'src/constants';
+import { ZERO_ADDRESS } from 'src/constants';
+import { TRUSTED_TOKEN_ADDRESSES } from 'src/constants/address';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
+import { SwapTypes } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
@@ -72,7 +75,7 @@ const MarketOrder: React.FC<Props> = ({
   const [openSettings, setOpenSettings] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const [tokenDrawerType, setTokenDrawerType] = useState(Field.INPUT);
-
+  const { t } = useTranslation();
   const percentageValue = [25, 50, 75, 100];
 
   const loadedUrlParams = useDefaultsFromURLSearch();
@@ -389,11 +392,11 @@ const MarketOrder: React.FC<Props> = ({
     if (wrapInputError) {
       return wrapInputError;
     } else if (executing) {
-      return 'Loading';
+      return `${t('common.loading')}`;
     } else if (wrapType === WrapType.WRAP) {
-      return 'Wrap';
+      return `${t('swapPage.wrap')}`;
     } else if (wrapType === WrapType.UNWRAP) {
-      return 'Unwrap';
+      return `${t('swapPage.unwrap')}`;
     }
   };
 
@@ -401,7 +404,7 @@ const MarketOrder: React.FC<Props> = ({
     if (!account) {
       return (
         <Button variant="primary" onClick={toggleWalletModal}>
-          Connect Wallet
+          {t('swapPage.connectWallet')}
         </Button>
       );
     }
@@ -409,7 +412,9 @@ const MarketOrder: React.FC<Props> = ({
     if (!isHederaTokenAssociated) {
       return (
         <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-          {isLoadingAssociate ? 'Associating' : 'Associate ' + currencies[Field.OUTPUT]?.symbol}
+          {isLoadingAssociate
+            ? `${t('pool.associating')}`
+            : `${t('pool.associate')} ` + currencies[Field.OUTPUT]?.symbol}
         </Button>
       );
     }
@@ -424,14 +429,14 @@ const MarketOrder: React.FC<Props> = ({
     if (isLoadingSwap && !swapInputError) {
       return (
         <Button variant="primary" isDisabled>
-          Loading
+          {t('common.loading')}
         </Button>
       );
     }
     if (noRoute && userHasSpecifiedInputOutput) {
       return (
         <Button variant="primary" isDisabled>
-          Insufficient liquidity for this trade.
+          {t('swapPage.insufficientLiquidity')}
         </Button>
       );
     }
@@ -445,11 +450,11 @@ const MarketOrder: React.FC<Props> = ({
               onClick={() => approveCallback()}
               isDisabled={approval !== ApprovalState.NOT_APPROVED || approvalSubmitted}
               loading={approval === ApprovalState.PENDING}
-              loadingText="Approving"
+              loadingText={t('swapPage.approving')}
             >
               {approvalSubmitted && approval === ApprovalState.APPROVED
-                ? 'Approved'
-                : 'Approve ' + currencies[Field.INPUT]?.symbol}
+                ? `${t('swapPage.approved')}`
+                : `${t('swapPage.approve')} ` + currencies[Field.INPUT]?.symbol}
             </Button>
           </Box>
 
@@ -469,8 +474,8 @@ const MarketOrder: React.FC<Props> = ({
             // error={isValid && priceImpactSeverity > 2}
           >
             {priceImpactSeverity > 3 && !isExpertMode
-              ? 'Price Impact High'
-              : 'Swap' + `${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+              ? `${t('swapPage.priceImpactHigh')}`
+              : `${t('swapPage.swap')}` + `${priceImpactSeverity > 2 ? ` ${t('swapPage.anyway')}` : ''}`}
           </Button>
         </Box>
       );
@@ -496,8 +501,8 @@ const MarketOrder: React.FC<Props> = ({
         {swapInputError
           ? swapInputError
           : priceImpactSeverity > 3 && !isExpertMode
-          ? 'Price Impact High'
-          : 'Swap' + `${priceImpactSeverity > 2 ? ' Anyway' : ''}`}
+          ? `${t('swapPage.priceImpactHigh')}`
+          : `${t('swapPage.swap')}` + `${priceImpactSeverity > 2 ? ` ${t('swapPage.anyway')}` : ''}`}
       </Button>
     );
   };
@@ -551,7 +556,11 @@ const MarketOrder: React.FC<Props> = ({
           {isAEBToken && <DeprecatedWarning />}
 
           <CurrencyInputTextBox
-            label={independentField === Field.OUTPUT && !showWrap && trade ? 'From (estimated)' : 'From'}
+            label={
+              independentField === Field.OUTPUT && !showWrap && trade
+                ? `${t('swapPage.fromEstimated')}`
+                : `${t('swapPage.from')}`
+            }
             value={formattedAmounts[Field.INPUT]}
             onChange={(value: any) => {
               setSelectedPercentage(0);
@@ -582,7 +591,11 @@ const MarketOrder: React.FC<Props> = ({
           </Box>
 
           <CurrencyInputTextBox
-            label={independentField === Field.INPUT && !showWrap && trade ? 'To (estimated)' : 'To'}
+            label={
+              independentField === Field.INPUT && !showWrap && trade
+                ? `${t('swapPage.toEstimated')}`
+                : `${t('swapPage.to')}`
+            }
             value={formattedAmounts[Field.OUTPUT]}
             onChange={(value: any) => {
               setSelectedPercentage(0);
@@ -600,7 +613,7 @@ const MarketOrder: React.FC<Props> = ({
             addonLabel={
               tradePrice && (
                 <Text color="swapWidget.secondary" fontSize={16}>
-                  Price: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
+                  {t('swapPage.price')}: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )
             }
@@ -613,7 +626,7 @@ const MarketOrder: React.FC<Props> = ({
                 onClick={() => onChangeRecipient('')}
                 style={{ alignSelf: 'end' }}
               >
-                + Add Recipient
+                + {t('swapPage.addRecipient')}
               </LinkStyledButton>
             </Box>
           ) : null}
@@ -625,7 +638,7 @@ const MarketOrder: React.FC<Props> = ({
                 onClick={() => onChangeRecipient(null)}
                 style={{ alignSelf: 'end' }}
               >
-                - Remove Recipient
+                - {t('swapPage.removeRecipient')}
               </LinkStyledButton>
               <TextInput
                 label="Recipient"
@@ -636,7 +649,8 @@ const MarketOrder: React.FC<Props> = ({
                   onChangeRecipient(withoutSpaces);
                 }}
                 addonLabel={
-                  recipient && !checkRecipientAddress(recipient) && <Text color="warning">Invalid Address</Text>
+                  recipient &&
+                  !checkRecipientAddress(recipient) && <Text color="warning"> {t('swapPage.invalidAddress')}</Text>
                 }
               />
             </Box>

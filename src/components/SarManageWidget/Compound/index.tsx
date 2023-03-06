@@ -71,6 +71,11 @@ export default function Compound({ selectedOption, selectedPosition, onChange, o
     }
   }, [attempting]);
 
+  // if changed the position and the drawer is open, close
+  useEffect(() => {
+    if (openDrawer) setOpenDrawer(false);
+  }, [selectedPosition]);
+
   const renderButton = () => {
     let error: string | undefined;
     if (!selectedPosition) {

@@ -19,14 +19,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueries, useQuery } from 'react-query';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src/connectors';
-import {
-  NEAR_LP_STORAGE_AMOUNT,
-  NEAR_STORAGE_TO_REGISTER_WITH_FT,
-  ONE_YOCTO_NEAR,
-  ONLY_ZEROS,
-  ROUTER_ADDRESS,
-} from 'src/constants';
+import { NEAR_LP_STORAGE_AMOUNT, NEAR_STORAGE_TO_REGISTER_WITH_FT, ONE_YOCTO_NEAR, ONLY_ZEROS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
+import { ROUTER_ADDRESS } from 'src/constants/address';
 import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import {
@@ -35,7 +30,6 @@ import {
   useHederaTokenAssociated,
   useNearTokens,
 } from 'src/hooks/Tokens';
-import { useTokensHook } from 'src/hooks/multiChainsHooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
@@ -540,7 +534,7 @@ export function useAddLiquidity() {
 
       addTransaction(response, {
         summary:
-          'Add ' +
+          'Added ' +
           parsedAmounts[AddField.CURRENCY_A]?.toSignificant(3) +
           ' ' +
           currencies[AddField.CURRENCY_A]?.symbol +
@@ -756,7 +750,7 @@ export function useHederaAddLiquidity() {
 
       addTransaction(response, {
         summary:
-          'Add ' +
+          'Added ' +
           parsedAmounts[AddField.CURRENCY_A]?.toSignificant(3) +
           ' ' +
           currencies[AddField.CURRENCY_A]?.symbol +
@@ -945,7 +939,7 @@ export function useRemoveLiquidity(pair?: Pair | null | undefined) {
         await waitForTransaction(response, 5);
         addTransaction(response, {
           summary:
-            t('removeLiquidity.remove') +
+            'Removed' +
             ' ' +
             parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
             ' ' +
@@ -1184,7 +1178,7 @@ export function useHederaRemoveLiquidity(pair?: Pair | null | undefined) {
       if (response) {
         addTransaction(response, {
           summary:
-            t('removeLiquidity.remove') +
+            'Removed' +
             ' ' +
             parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
             ' ' +
@@ -1285,7 +1279,6 @@ export function useGetUserLP() {
 export function useGetHederaUserLP() {
   const chainId = useChainId();
 
-  const useTokens = useTokensHook[chainId];
   // get all pairs
   const trackedTokenPairs = useTrackedTokenPairs();
 
@@ -1325,40 +1318,27 @@ export function useGetHederaUserLP() {
   const tokensMetadata = useHederaTokensMetaData(Object.keys(tokenBalances));
 
   // filter to only fungible tokens
+  // and we need to get token data to do filter based on PGL Symbol
   const allTokensAddress: string[] = useMemo(() => {
     const _allTokensAddress: string[] = [];
     Object.entries(tokensMetadata).forEach(([address, metadata]) => {
-      if (metadata && metadata.type.startsWith('FUNGIBLE')) {
+      if (metadata && metadata.type.startsWith('FUNGIBLE') && metadata.symbol === 'PGL') {
         return _allTokensAddress.push(address);
       }
     });
     return _allTokensAddress;
   }, [tokensMetadata]);
 
-  // here we need to get token data to do filter based on PGL Symbol
-  const tokens = useTokens(allTokensAddress);
-
-  //here we need to filter hedera pair with check of associated
-  const associatedPglAddress = (tokens || [])
-    .map((token) => {
-      if (token?.symbol === 'PGL') {
-        return token.address;
-      }
-    })
-    .filter((element) => {
-      return !!element;
-    });
-
   // here we will filter pairTokens based on associated pgl Address has pgl address
   const filterPairTokens = useMemo(
     () =>
       Object.keys(pglTokenAddresses).reduce<[Token, Token][]>((memo, lpAddress) => {
-        if (associatedPglAddress.includes(pglTokenAddresses[lpAddress])) {
+        if (allTokensAddress.includes(pglTokenAddresses[lpAddress] ?? '')) {
           memo.push(pairTokens[lpAddress]);
         }
         return memo;
       }, []),
-    [pglTokenAddresses, associatedPglAddress, pairTokens],
+    [pglTokenAddresses, allTokensAddress, pairTokens],
   );
 
   const allPairs = usePairs(filterPairTokens);

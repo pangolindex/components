@@ -5,7 +5,8 @@ import { useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, ChainId, CurrencyAmount, JSBI, TokenAmount, Trade } from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, ZERO_ADDRESS } from 'src/constants';
+import { ZERO_ADDRESS } from 'src/constants';
+import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { useTokenAllowance } from 'src/data/Allowances';
 import { useHederaTotalSupply } from 'src/data/TotalSupply';
 import { Field } from 'src/state/pswap/actions';
@@ -95,7 +96,7 @@ export function useApproveCallback(
       });
       await waitForTransaction(response, 1);
       addTransaction(response, {
-        summary: 'Approve ' + amountToApprove.currency.symbol,
+        summary: 'Approved ' + amountToApprove.currency.symbol,
         approval: { tokenAddress: token.address, spender: spender },
       });
     } catch (error) {
@@ -194,7 +195,7 @@ export function useHederaApproveCallback(
 
       if (response) {
         addTransaction(response, {
-          summary: 'Approve ' + amountToApprove.currency.symbol,
+          summary: 'Approved ' + amountToApprove.currency.symbol,
           approval: { tokenAddress: token.address, spender: spender },
         });
       }

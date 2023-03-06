@@ -88,7 +88,7 @@ const PoolCardListView = ({
               <Hidden upToSmall={true}>
                 <Box ml={10}>
                   <DropdownMenu
-                    placeHolder="Sort by:"
+                    placeHolder={`${t('sarPortfolio.sortBy')}:`}
                     options={SortOptions}
                     defaultValue={sortBy}
                     onSelect={(value) => {
@@ -108,7 +108,7 @@ const PoolCardListView = ({
                 }}
               />
               <DropdownMenu
-                placeHolder="Sort by:"
+                placeHolder={`${t('sarPortfolio.sortBy')}:`}
                 options={SortOptions}
                 defaultValue={sortBy}
                 onSelect={(value) => {

@@ -2,7 +2,7 @@ import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { hederaFn } from 'src/utils/hedera';
-import { subgraphClient } from './client';
+import { SubgraphEnum, useSubgraphClient } from './client';
 import { SubgraphToken } from './tokens';
 
 export interface PangoChefSubgraphInfo {
@@ -21,11 +21,13 @@ export interface PangoChefFarm {
   tvl: string;
   weight: string;
   tokenOrRecipientAddress: string;
+  sumOfEntryTimes: string;
   rewarder: PangochefFarmRewarder;
   // pair can be null in relayer pool case
   pair: PangochefPair | null;
   farmingPositions: {
     stakedTokenBalance: string;
+    sumOfEntryTimes: string;
   }[];
 }
 
@@ -71,6 +73,7 @@ export const GET_PANGOCHEF = gql`
         tvl
         weight
         tokenOrRecipientAddress
+        sumOfEntryTimes
         rewarder {
           id
           rewards {
@@ -111,6 +114,7 @@ export const GET_PANGOCHEF = gql`
         }
         farmingPositions(where: { user: $userAddress }) {
           stakedTokenBalance
+          sumOfEntryTimes
         }
       }
     }
@@ -136,11 +140,10 @@ export const GET_FARMS_STAKED = gql`
 export const useSubgraphFarms = () => {
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
-
+  const gqlClient = useSubgraphClient(SubgraphEnum.Pangochef);
   return useQuery<PangoChefSubgraphInfo[]>(
     ['get-pangochef-subgraph-farms', chainId, account],
     async () => {
-      const gqlClient = subgraphClient[chainId];
       if (!gqlClient) {
         return null;
       }
@@ -158,11 +161,10 @@ export const useSubgraphFarms = () => {
 export function useSubgraphFarmsStakedAmount() {
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
-
+  const gqlClient = useSubgraphClient(SubgraphEnum.Pangochef);
   return useQuery<FarmPosition[]>(
     ['get-pangochef-subgraph-farms-staked-amount', chainId, account],
     async () => {
-      const gqlClient = subgraphClient[chainId];
       if (!gqlClient) {
         return undefined;
       }

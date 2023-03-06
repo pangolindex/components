@@ -6,13 +6,12 @@ import isEqual from 'lodash.isequal';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { subgraphClient } from 'src/apollo/client';
+import { SubgraphEnum, getSubgraphClient } from 'src/apollo/client';
 import { GET_MINICHEF } from 'src/apollo/minichef';
 import {
   BIG_INT_SECONDS_IN_WEEK,
   BIG_INT_TWO,
   BIG_INT_ZERO,
-  MINICHEF_ADDRESS,
   ONE_TOKEN,
   PANGOLIN_API_BASE_URL,
   ZERO_ADDRESS,
@@ -20,6 +19,7 @@ import {
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
+import { MINICHEF_ADDRESS } from 'src/constants/address';
 import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
@@ -840,7 +840,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
 };
 
 export const fetchMinichefData = (account: string, chainId: ChainId) => async () => {
-  const mininchefV2Client = subgraphClient[chainId];
+  const mininchefV2Client = getSubgraphClient(chainId, SubgraphEnum.Minichef);
   if (!mininchefV2Client) {
     return null;
   }
@@ -851,7 +851,6 @@ export const fetchMinichefData = (account: string, chainId: ChainId) => async ()
 export function useGetAllFarmData() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-
   const allFarms = useQuery(['get-minichef-farms-v2', account], fetchMinichefData(account || '', chainId), {
     refetchInterval: 1000 * 60 * 5, // 5 minutes
   });

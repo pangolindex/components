@@ -1,7 +1,7 @@
 import { Trade, TradeType } from '@pangolindex/sdk';
 import React, { useContext, useMemo } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import Drawer from 'src/components/Drawer';
 import { usePangolinWeb3 } from 'src/hooks';
@@ -53,6 +53,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
   } = props;
 
   const { chainId } = usePangolinWeb3();
+  const { t } = useTranslation();
   const theme = useContext(ThemeContext);
   const slippageAdjustedAmounts = useMemo(
     () => computeSlippageAdjustedAmounts(trade, allowedSlippage),
@@ -116,10 +117,10 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
         {showAcceptChanges && (
           <PriceUpdateBlock>
             <Text color="swapWidget.primary" fontSize={14}>
-              Price Updated
+              {t('swap.priceUpdated')}
             </Text>
             <Button onClick={onAcceptChanges} variant="primary" width={150} padding="5px 10px">
-              Accept
+              {t('swap.accept')}
             </Button>
           </PriceUpdateBlock>
         )}
@@ -146,13 +147,17 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
             </OutputText>
           )}
         </Box>
-        {recipient && <OutputText color="swapWidget.primary">Sending to: {recipient}</OutputText>}
+        {recipient && (
+          <OutputText color="swapWidget.primary">
+            {t('swapPage.sendingTo')}: {recipient}
+          </OutputText>
+        )}
       </Header>
       <Footer>
         <SwapDetailInfo trade={trade} />
         <Box my={'10px'}>
           <Button variant="primary" onClick={onConfirm} isDisabled={showAcceptChanges}>
-            {priceImpactSeverity > 2 ? 'Swap Anyway' : 'Confirm Swap'}
+            {priceImpactSeverity > 2 ? `${t('swap.swapAnyway')}` : `${t('swap.confirmSwap')}`}
           </Button>
         </Box>
       </Footer>
@@ -170,7 +175,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
         </Text>
       </ErrorBox>
       <Button variant="primary" onClick={onClose}>
-        Dismiss
+        {t('transactionConfirmation.dismiss')}
       </Button>
     </ErrorWrapper>
   );
@@ -182,7 +187,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
           <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary} />
         </Box>
         <Text color="swapWidget.primary" fontWeight={500} fontSize={20}>
-          Transaction Submitted
+          {t('earn.transactionSubmitted')}
         </Text>
         {chainId && txHash && (
           <Link
@@ -193,18 +198,22 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
             href={getEtherscanLink(chainId, txHash, 'transaction')}
             target="_blank"
           >
-            View on explorer
+            {t('transactionConfirmation.viewExplorer')}
           </Link>
         )}
       </Box>
       <Button variant="primary" onClick={onClose}>
-        Close
+        {t('transactionConfirmation.close')}
       </Button>
     </SubmittedWrapper>
   );
 
   return (
-    <Drawer title={swapErrorMessage || txHash || attemptingTxn ? '' : 'Confirm Swap'} isOpen={isOpen} onClose={onClose}>
+    <Drawer
+      title={swapErrorMessage || txHash || attemptingTxn ? '' : `${t('swap.confirmSwap')}`}
+      isOpen={isOpen}
+      onClose={onClose}
+    >
       {swapErrorMessage ? ErroContent : txHash ? SubmittedContent : attemptingTxn ? PendingContent : ConfirmContent}
     </Drawer>
   );

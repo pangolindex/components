@@ -3,8 +3,9 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Fraction, JSBI } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { useChainId, useGetBlockTimestamp, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useHederaTokenAssociated } from 'src/hooks/Tokens';
+import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useHederaSarNFTContract, useSarStakingContract } from 'src/hooks/useContract';
 import { existSarContract } from 'src/utils';
@@ -33,6 +34,10 @@ export function useHederaExchangeRate() {
  */
 function useHederaSarRent(positionId: string | undefined) {
   const sarStakingContract = useSarStakingContract();
+
+  const chainId = useChainId();
+
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
   const blockTimestamp = useGetBlockTimestamp();
 
   const positionState = useSingleCallResult(
@@ -57,7 +62,7 @@ function useHederaSarRent(positionId: string | undefined) {
     try {
       const tinyBars = hederaFn.tinyCentsToTinyBars('500000000', exchangeRate.current_rate);
       const lastUpdate = positionState.result?.lastUpdate;
-      const rentTime = Number(blockTimestamp) - lastUpdate;
+      const rentTime = blockTimestamp - lastUpdate;
       const days = 90 * 24 * 60 * 60;
       const rentAmount = JSBI.divide(
         JSBI.multiply(JSBI.BigInt(rentTime.toString()), JSBI.BigInt(tinyBars)),
@@ -502,6 +507,7 @@ export function useHederaSarPositions() {
     nftsIndexes ?? [],
   );
 
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
   const blockTimestamp = useGetBlockTimestamp();
 
   return useMemo(() => {
@@ -553,7 +559,7 @@ export function useHederaSarPositions() {
       positionsAmountState,
       positionsRewardRateState,
       positionsPedingRewardsState,
-      Number(blockTimestamp ?? 0),
+      blockTimestamp ?? 0,
       chainId,
     );
   }, [

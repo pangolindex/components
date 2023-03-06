@@ -1,11 +1,11 @@
 /* eslint-disable max-lines */
-import { Currency, TokenAmount } from '@pangolindex/sdk';
+import { Currency, Pair, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import { Plus } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Text, TextInput } from 'src/components';
-import { ROUTER_ADDRESS } from 'src/constants';
+import { ROUTER_ADDRESS } from 'src/constants/address';
 import { PairState } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
@@ -42,8 +42,13 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
 
   const expertMode = useIsExpertMode();
 
+  const wrappedCurrencyA = wrappedCurrency(currencyA, chainId);
+  const wrappedCurrencyB = wrappedCurrency(currencyB, chainId);
+
+  const pairAddress = wrappedCurrencyA && wrappedCurrencyB ? Pair.getAddress(wrappedCurrencyA, wrappedCurrencyB) : '';
+
   // mint state
-  const { independentField, typedValue, otherTypedValue } = useMintState();
+  const { independentField, typedValue, otherTypedValue } = useMintState(pairAddress);
   const {
     dependentField,
     currencies,
@@ -151,7 +156,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
     setShowConfirm(false);
     // if there was a tx hash, we want to clear the input
     if (txHash) {
-      onFieldAInput('');
+      onFieldAInput('', pairAddress);
     }
     setTxHash('');
     setAttemptingTxn(false);
@@ -159,13 +164,13 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
 
   const handleTypeInput = useCallback(
     (value: string) => {
-      onFieldAInput(value);
+      onFieldAInput(value, pairAddress);
     },
     [onFieldAInput],
   );
   const handleTypeOutput = useCallback(
     (value: string) => {
-      onFieldBInput(value);
+      onFieldBInput(value, pairAddress);
     },
     [onFieldBInput],
   );
@@ -245,7 +250,9 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
             addonAfter={
               !atMaxAmounts[Field.CURRENCY_A] ? (
                 <Box display={'flex'} alignItems={'center'} height={'100%'} justifyContent={'center'}>
-                  <StyledBalanceMax onClick={() => onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')}>
+                  <StyledBalanceMax
+                    onClick={() => onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '', pairAddress)}
+                  >
                     {t('currencyInputPanel.max')}
                   </StyledBalanceMax>
                 </Box>
@@ -287,7 +294,9 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
             addonAfter={
               !atMaxAmounts[Field.CURRENCY_B] ? (
                 <Box display={'flex'} alignItems={'center'} height={'100%'} justifyContent={'center'}>
-                  <StyledBalanceMax onClick={() => onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')}>
+                  <StyledBalanceMax
+                    onClick={() => onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '', pairAddress)}
+                  >
                     {t('currencyInputPanel.max')}
                   </StyledBalanceMax>
                 </Box>
