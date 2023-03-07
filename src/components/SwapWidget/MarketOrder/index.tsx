@@ -493,8 +493,7 @@ const MarketOrder: React.FC<Props> = ({
         }}
         id="swap-button"
         isDisabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError || !!swapInputError}
-        backgroundColor={isValid && priceImpactSeverity > 2 ? 'primary' : undefined}
-        color={isValid && priceImpactSeverity <= 2 ? 'black' : undefined}
+        backgroundColor={isValid && priceImpactSeverity > 2 && isExpertMode ? 'primary' : undefined}
       >
         {swapInputError
           ? swapInputError
