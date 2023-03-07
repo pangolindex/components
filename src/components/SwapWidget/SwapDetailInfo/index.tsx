@@ -1,7 +1,8 @@
 import { Percent, Trade, TradeType } from '@pangolindex/sdk';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from 'src/constants';
+import { INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from 'src/constants';
+import { BIPS_BASE } from 'src/constants/swap';
 import { Field } from 'src/state/pswap/actions';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';

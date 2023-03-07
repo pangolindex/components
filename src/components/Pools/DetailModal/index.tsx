@@ -5,6 +5,7 @@ import { Modal } from 'src/components';
 import { useDispatch } from 'src/state';
 import { ApplicationModal } from 'src/state/papplication/actions';
 import { useModalOpen, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
+import { resetBurnState } from 'src/state/pburn/actions';
 import { resetMintState } from 'src/state/pmint/actions';
 import { StakingInfo } from 'src/state/pstake/types';
 import DetailView from './DetailView';
@@ -29,6 +30,7 @@ const DetailModal = ({ stakingInfo, version }: DetailModalProps) => {
 
   useEffect(() => {
     dispatch(resetMintState({ pairAddress: pairAddress }));
+    dispatch(resetBurnState({ pairAddress: pairAddress }));
   }, [detailModalOpen, dispatch]);
 
   const handleOnDismiss = useCallback(() => {

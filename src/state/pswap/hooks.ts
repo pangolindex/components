@@ -16,7 +16,9 @@ import {
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NATIVE, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SWAP_DEFAULT_CURRENCY } from 'src/constants';
+import { NATIVE } from 'src/constants';
+import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
+import { SWAP_DEFAULT_CURRENCY } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';

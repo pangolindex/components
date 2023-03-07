@@ -26,7 +26,7 @@ export const ContentWrapper = styled.div`
 
 export const Divider = styled(Box)`
   height: 1px;
-  background-color: ${({ theme }) => theme.bg7};
+  background-color: ${({ theme }) => theme.text6};
   margin: 10px 0px 10px 0px;
   width: 100%;
 `;
@@ -61,6 +61,7 @@ export const OptionButton = styled.div`
   border-radius: 6px;
   background-color: ${({ theme }) => theme.primary};
   font-size: 13px;
+  color: ${({ theme }) => theme.black};
 `;
 
 export const OptionsWrapper = styled.div`

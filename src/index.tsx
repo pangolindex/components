@@ -11,8 +11,9 @@ import { useTotalSupply } from 'src/data/TotalSupply';
 import { useTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
-import { useApproveCallbackHook, useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
-import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import {
   useContract,
   useMulticallContract,
@@ -147,6 +148,9 @@ export function PangolinProvider({
 }
 
 export * from './constants';
+export { SUPPORTED_WALLETS } from './constants/wallets';
+export { ROUTER_ADDRESS, MINICHEF_ADDRESS } from './constants/address';
+export { TIMEFRAME, SwapTypes } from './constants/swap';
 export * from './connectors';
 export * from './components';
 export * from './state/papplication/hooks';

@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 import { Currency, CurrencyAmount, Fraction, Percent, TokenAmount } from '@pangolindex/sdk';
+import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -233,10 +234,11 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
 
           <Stat
             title={`PGL`}
-            stat={noLiquidity ? '-' : `${liquidityMinted?.toSignificant(6)}`}
+            stat={noLiquidity ? '-' : `${numeral(liquidityMinted?.toSignificant(6)).format('0.00a')}`}
             titlePosition="top"
             titleFontSize={14}
             statFontSize={[16, 20]}
+            toolTipText={`pgl: ${liquidityMinted?.toSignificant(6)}`}
           />
 
           <Stat

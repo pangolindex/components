@@ -19,14 +19,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueries, useQuery } from 'react-query';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src/connectors';
-import {
-  NEAR_LP_STORAGE_AMOUNT,
-  NEAR_STORAGE_TO_REGISTER_WITH_FT,
-  ONE_YOCTO_NEAR,
-  ONLY_ZEROS,
-  ROUTER_ADDRESS,
-} from 'src/constants';
+import { NEAR_LP_STORAGE_AMOUNT, NEAR_STORAGE_TO_REGISTER_WITH_FT, ONE_YOCTO_NEAR, ONLY_ZEROS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
+import { ROUTER_ADDRESS } from 'src/constants/address';
 import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import {
@@ -35,7 +30,7 @@ import {
   useHederaTokenAssociated,
   useNearTokens,
 } from 'src/hooks/Tokens';
-import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
 import { useBlockNumber } from 'src/state/papplication/hooks';

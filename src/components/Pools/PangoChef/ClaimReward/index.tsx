@@ -99,6 +99,11 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
     _error = _error ?? t('earn.enterAmount');
   }
 
+  const buttonMessage =
+    (stakingInfo.rewardTokensAddress || []).length > 0
+      ? t('earn.claimRewards')
+      : t('earn.claimReward', { symbol: png.symbol });
+
   const renderButton = () => {
     if (!isHederaTokenAssociated && notAssociateTokens?.length > 0) {
       return (
@@ -111,7 +116,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
     } else {
       return (
         <Button variant="outline" onClick={onClaimReward} color={theme.text10}>
-          {_error ?? t('earn.claimReward', { symbol: png.symbol })}
+          {_error ?? buttonMessage}
         </Button>
       );
     }

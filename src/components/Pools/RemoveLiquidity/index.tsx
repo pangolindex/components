@@ -3,15 +3,16 @@ import { Currency, Pair, Percent } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
-import { ROUTER_ADDRESS } from 'src/constants';
+import { ROUTER_ADDRESS } from 'src/constants/address';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
-import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
+import { useDispatch } from 'src/state';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Field } from 'src/state/pburn/actions';
+import { Field, resetBurnState } from 'src/state/pburn/actions';
 import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/state/pburn/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { useRemoveLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
@@ -30,13 +31,19 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { library } = useLibrary();
+  const dispatch = useDispatch();
 
   const useApproveCallback = useApproveCallbackHook[chainId];
   const useRemoveLiquidity = useRemoveLiquidityHook[chainId];
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
 
-  const { independentField, typedValue } = useBurnState();
+  const wrappedCurrencyA = wrappedCurrency(currencyA, chainId);
+  const wrappedCurrencyB = wrappedCurrency(currencyB, chainId);
+
+  const pairAddress = wrappedCurrencyA && wrappedCurrencyB ? Pair.getAddress(wrappedCurrencyA, wrappedCurrencyB) : '';
+
+  const { independentField, typedValue } = useBurnState(pairAddress);
   const { pair, parsedAmounts, error, userLiquidity } = useDerivedBurnInfo(
     currencyA ?? undefined,
     currencyB ?? undefined,
@@ -87,7 +94,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   const [percetage, setPercetage] = useState(100);
 
   useEffect(() => {
-    _onUserInput(Field.LIQUIDITY_PERCENT, `100`);
+    _onUserInput(Field.LIQUIDITY_PERCENT, `100`, pairAddress);
   }, [_onUserInput]);
 
   useEffect(() => {
@@ -103,14 +110,14 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   }, [hash, attempting]);
 
   const onChangePercentage = (value: number) => {
-    _onUserInput(Field.LIQUIDITY_PERCENT, `${value}`);
+    _onUserInput(Field.LIQUIDITY_PERCENT, `${value}`, pairAddress);
   };
 
   // wrapped onUserInput to clear signatures
   const onUserInput = useCallback(
     (_typedValue: string) => {
       setSignatureData(null);
-      _onUserInput(Field.LIQUIDITY, _typedValue);
+      _onUserInput(Field.LIQUIDITY, _typedValue, pairAddress);
       setPercetage(0);
     },
     [_onUserInput],
@@ -141,9 +148,10 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
         chainId: chainId,
         tokenA: currencyA?.symbol,
         tokenB: currencyB?.symbol,
-        tokenA_Address: wrappedCurrency(currencyA, chainId)?.address,
-        tokenB_Address: wrappedCurrency(currencyB, chainId)?.address,
+        tokenA_Address: wrappedCurrencyA?.address,
+        tokenB_Address: wrappedCurrencyB?.address,
       });
+      dispatch(resetBurnState({ pairAddress }));
     } catch (err) {
       const _err = err as any;
 

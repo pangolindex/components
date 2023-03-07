@@ -62,6 +62,7 @@
     "unclaimedReward": "{{ symbol }} sin reclamar",
     "claim": "Reclamar",
     "claimReward": "{{ symbol }} Reclamar",
+    "claimRewards": "Reclamar recompensas",
     "liquidityRemainsPool": "Cuando reclamas sin retirar, tu liquidez permanece en la pool de minería.",
     "withdrawingLiquidity": "Retirar {{ amount }} {{ symbol }}",
     "claimingReward": "Reclamando {{ amount }} {{ symbol }}",
@@ -747,7 +748,7 @@
   },
   "pangoChef": {
     "claimWarning1": "Cuando reclamas sin retirar tu liquidez permanece en el pool de minería.",
-    "claimWarning2": "Reclamar sus recompensas reducirá su APR a 0. En su lugar, puede optar por capitalizar.",
+    "claimWarning2": "Reclamar sus recompensas reclamará todos los tokens pendientes, incluidas las recompensas Super Farm y reiniciará su APR al 0%. En su lugar, puede optar por capitalizar.",
     "compoundWarning": "Combinar sus recompensas para {{ token0 }}-{{ token1 }} hará que sus recompensas se apuesten en {{ stakeToken0 }}-{{ stakeToken1 }} granja. Debe agregar el mismo valor de {{ compoundToken }} token a sus {{ png }} recompensas acumuladas.",
     "compoundAmountWarning": "Necesitas agregar {{ amount }} {{ symbol }} al compuesto. Tenga en cuenta que la capitalización puede disminuir ligeramente su APR.",
     "compoundAmountWarning2": "Tenga cuidado de bloquear su fondo de {{ token0 }} {{ token1 }} hasta que reclame las recompensas de este fondo.",

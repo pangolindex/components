@@ -1,7 +1,7 @@
 import { Currency, CurrencyAmount, Pair, Percent, Token, Trade } from '@pangolindex/sdk';
 import flatMap from 'lodash.flatmap';
 import { useMemo } from 'react';
-import { BASES_TO_CHECK_TRADES_AGAINST, BIPS_BASE, CUSTOM_BASES } from 'src/constants';
+import { BASES_TO_CHECK_TRADES_AGAINST, BIPS_BASE, CUSTOM_BASES } from 'src/constants/swap';
 import { PairState } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useChainId } from 'src/hooks';
