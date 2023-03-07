@@ -30,7 +30,7 @@ import {
   useHederaTokenAssociated,
   useNearTokens,
 } from 'src/hooks/Tokens';
-import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
 import { useBlockNumber } from 'src/state/papplication/hooks';

@@ -11,8 +11,9 @@ import { useTotalSupply } from 'src/data/TotalSupply';
 import { useTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
-import { useApproveCallbackHook, useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
-import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import {
   useContract,
   useMulticallContract,

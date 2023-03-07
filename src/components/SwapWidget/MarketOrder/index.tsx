@@ -11,16 +11,14 @@ import { SwapTypes } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useCurrency } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import {
-  useApproveCallbackFromTradeHook,
-  useSwapCallbackHook,
-  useTokenHook,
-  useWrapCallbackHook,
-} from 'src/hooks/multiChainsHooks';
-import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useTokenHook } from 'src/hooks/multiChainsHooks';
+import { useApproveCallbackFromTradeHook } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import useENS from 'src/hooks/useENS';
+import { useSwapCallbackHook } from 'src/hooks/useSwapCallback';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
-import { WrapType } from 'src/hooks/useWrapCallback';
+import { useWrapCallbackHook } from 'src/hooks/useWrapCallback';
+import { WrapType } from 'src/hooks/useWrapCallback/constant';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
 import { Field } from 'src/state/pswap/actions';
