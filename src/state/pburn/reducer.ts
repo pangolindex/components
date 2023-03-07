@@ -24,18 +24,13 @@ const initialState: BurnState = {};
 const initialState: BurnState = {};
 
 export default createReducer<BurnState>(initialState, (builder) =>
-  builder
-    .addCase(typeInput, (state, { payload: { pairAddress, field, typedValue } }) => {
-      const pairState = state[pairAddress] ? { ...state[pairAddress] } : initialKeyState;
-      state[pairAddress] = {
-        ...pairState,
-        independentField: field,
-        typedValue,
-      };
-      return state;
-    })
-    .addCase(resetBurnState, (state, { payload: { pairAddress } }) => {
-      state[pairAddress] = initialKeyState;
-      return state;
-    }),
+  builder.addCase(typeInput, (state, { payload: { pairAddress, field, typedValue } }) => {
+    const pairState = state[pairAddress] ? { ...state[pairAddress] } : initialKeyState;
+    state[pairAddress] = {
+      ...pairState,
+      independentField: field,
+      typedValue,
+    };
+    return state;
+  }),
 );
