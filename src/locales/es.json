@@ -180,7 +180,7 @@
     "expertInfo": "El modo experto deshabilita el aviso de confirmar transacción y permite altos deslizamientos en intercambios que suelen causar malos ratios y fondos perdidos.",
     "expertWarningCAPS": "USA ESTE MODO SOLO SI SABES LO QUE ESTÁS HACIENDO.",
     "confirm": "confirmar",
-    "confirmExpertMode": "Por favor introduce la palabra \"confirmar\" para habilitar el modo experto.",
+    "confirmExpertMode": "Por favor introduce la palabra \"confirm\" para habilitar el modo experto.",
     "turnOnExpertMode": "Habilitar modo experto",
     "transactionSettings": "Ajustes de transacción",
     "interfaceSettings": "Ajustes de la interfaz",

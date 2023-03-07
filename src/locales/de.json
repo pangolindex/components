@@ -180,7 +180,7 @@
     "expertInfo": "Der Expertenmodus deaktiviert die Aufforderung zur Transaktionsbestätigung und erlaubt Trades mit hoher Slippage, welche oft zu schlechten Tauschraten und unwiderruflich verlorenen Mitteln führen.",
     "expertWarningCAPS": "BENUTZE DIESEN MODUS NUR, WENN DU GENAU WEISST, WAS DU TUST.",
     "confirm": "bestätige",
-    "confirmExpertMode": "Bitte gib das Wort \"bestätige\" ein, um den Expertenmodus zu aktivieren.",
+    "confirmExpertMode": "Bitte gib das Wort \"confirm\" ein, um den Expertenmodus zu aktivieren.",
     "turnOnExpertMode": "Aktiviere Expertenmodus",
     "transactionSettings": "Transaktionseinstellungen",
     "interfaceSettings": "Schnittstelleneinstellungen",

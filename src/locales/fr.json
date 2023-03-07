@@ -180,7 +180,7 @@
     "expertInfo": "Le mode expert désactive l'invite de confirmation de la transaction et autorise les transactions à fort slippage qui entraînent souvent de mauvais taux et des pertes de fonds.",
     "expertWarningCAPS": "N'UTILISEZ CE MODE QUE SI VOUS SAVEZ CE QUE VOUS FAITES.",
     "confirm": "confirmer",
-    "confirmExpertMode": "Veuillez taper le mot \"confirmer\" pour activer le mode expert.",
+    "confirmExpertMode": "Veuillez taper le mot \"confirm\" pour activer le mode expert.",
     "turnOnExpertMode": "Activer le mode expert",
     "transactionSettings": "Paramètres de transaction",
     "interfaceSettings": "Paramètres de l'interface",
