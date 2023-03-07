@@ -9,13 +9,12 @@ export const PageWrapper = styled(Box)`
 
 export const GridContainer = styled(Box)`
   display: grid;
-  grid-template-columns: 80% 20%;
+  grid-template-columns: 100%;
   grid-gap: 12px;
   padding: 50px 0px 0px;
   height: 100%;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 10px 0px 0px;
-    grid-template-columns: 100%;
   `};
 `;
 

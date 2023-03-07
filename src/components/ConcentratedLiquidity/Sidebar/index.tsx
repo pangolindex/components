@@ -10,7 +10,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
 
   return (
     <SidebarWrapper>
-      <Text color="text1" fontSize={[32, 28]} fontWeight={500} ml={20} mt={10}>
+      <Text color="color11" fontSize={[32, 28]} fontWeight={500} ml={20} mt={10}>
         {t('concentratedLiquidity.sidebar.title')}
       </Text>
 
@@ -28,7 +28,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
       </Menu>
 
       <Box padding="8px" mb={10} ml="12px">
-        <Text color="color6" fontSize={14} mb="5px">
+        <Text color="color11" fontSize={14} mb="5px">
           {t('concentratedLiquidity.sidebar.seeMore')}
         </Text>
 

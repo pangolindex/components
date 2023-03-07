@@ -7,7 +7,6 @@ export const Card = styled.div`
   padding: 32px;
   display: flex;
   flex-direction: row;
-  width: 100%;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-content: space-between;
     width: max-content;

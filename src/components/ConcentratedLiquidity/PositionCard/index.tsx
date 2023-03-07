@@ -13,16 +13,16 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
       <Row>
         <Data>
           <DoubleCurrencyLogo size={48} currency0={currency0} currency1={currency1} />
-          <Text color="text1" fontSize={28} fontWeight={700}>
+          <Text color="color11" fontSize={28} fontWeight={700}>
             {currency0.symbol}-{currency1.symbol}
           </Text>
           <BlackBox>
-            <BlackBoxContent color="text1" fontSize={18} fontWeight={500}>
+            <BlackBoxContent color="color11" fontSize={18} fontWeight={500}>
               %0.1
             </BlackBoxContent>
           </BlackBox>
           <BlackBox>
-            <BlackBoxContent color="text1" fontSize={18} fontWeight={500}>
+            <BlackBoxContent color="color11" fontSize={18} fontWeight={500}>
               {t('common.open')}
             </BlackBoxContent>
           </BlackBox>
@@ -33,7 +33,7 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
               <Text color="primary" fontSize={18} fontWeight={500}>
                 {t('common.min')}:&nbsp;
               </Text>
-              <Text color="text1" fontSize={18} fontWeight={500}>
+              <Text color="color11" fontSize={18} fontWeight={500}>
                 362.00 {currency0.symbol} per {currency1.symbol}
               </Text>
             </Box>
@@ -41,7 +41,7 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
               <Text color="primary" fontSize={18} fontWeight={500}>
                 {t('common.max')}:&nbsp;
               </Text>
-              <Text color="text1" fontSize={18} fontWeight={500}>
+              <Text color="color11" fontSize={18} fontWeight={500}>
                 1,889.54 {currency0.symbol} per {currency1.symbol}
               </Text>
             </Box>

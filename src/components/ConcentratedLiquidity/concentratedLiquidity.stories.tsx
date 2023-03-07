@@ -1,6 +1,5 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { Box } from 'src/components';
 import ConcentratedLiquidity from '.';
 
 export default {
@@ -16,9 +15,9 @@ export default {
 };
 
 const TemplateConcentratedLiquidity: ComponentStory<typeof ConcentratedLiquidity> = () => (
-  <Box maxWidth={'1250px'}>
+  <div>
     <ConcentratedLiquidity />
-  </Box>
+  </div>
 );
 
 export const Default = TemplateConcentratedLiquidity.bind({});

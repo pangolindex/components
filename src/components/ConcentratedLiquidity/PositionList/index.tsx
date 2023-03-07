@@ -74,7 +74,7 @@ const PositionList: React.FC<PositionListProps> = (props) => {
             />
             <Box display={'flex'} justifyContent={'flex-end'}>
               <DropdownMenu
-                placeHolder={t('concentratedLiquidity.positionList.sortBy')}
+                placeHolder={t('common.sortBy')}
                 options={sortOptions}
                 defaultValue={sortBy}
                 onSelect={(value) => {
