@@ -1,6 +1,6 @@
-import { TWAP as PangolinTWAP } from '@orbs-network/twap-ui-pangolin';
-import React, { useCallback, useContext } from 'react';
+import React, { Suspense, useCallback, useContext } from 'react';
 import { ThemeContext } from 'styled-components';
+import { Loader } from 'src/components/Loader';
 import { ZERO_ADDRESS } from 'src/constants';
 import { SwapTypes } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
@@ -11,6 +11,12 @@ import { useSwapActionHandlers } from '../../../state/pswap/hooks';
 import SelectTokenDrawer from '../SelectTokenDrawer';
 import TradeOption from '../TradeOption';
 import { Root } from '../styled';
+
+const PangolinTWAP = React.lazy(() =>
+  import('@orbs-network/twap-ui-pangolin').then((module) => {
+    return { default: module.TWAP };
+  }),
+);
 
 export interface SwapWidgetProps {
   defaultInputAddress?: string;
@@ -53,28 +59,30 @@ function TWAP({
   );
 
   return (
-    <Root>
-      <TradeOption
-        isTWAPOrderVisible={isTWAPOrderVisible}
-        swapType={swapType}
-        setSwapType={setSwapType}
-        isLimitOrderVisible={isLimitOrderVisible}
-      />
-      <PangolinTWAP
-        connect={toggleWalletModal}
-        connectedChainId={chainId}
-        provider={library?.provider}
-        account={account}
-        dappTokens={allTokens}
-        srcToken={defaultInputAddress}
-        dstToken={defaultOutputAddress}
-        TokenSelectModal={SelectTokenDrawer}
-        theme={theme}
-        partnerDaas={partnerDaaS === ZERO_ADDRESS ? undefined : partnerDaaS}
-        onSrcTokenSelected={onSrcSelect}
-        onDstTokenSelected={onDstSelect}
-      />
-    </Root>
+    <Suspense fallback={<Loader size={40} />}>
+      <Root>
+        <TradeOption
+          isTWAPOrderVisible={isTWAPOrderVisible}
+          swapType={swapType}
+          setSwapType={setSwapType}
+          isLimitOrderVisible={isLimitOrderVisible}
+        />
+        <PangolinTWAP
+          connect={toggleWalletModal}
+          connectedChainId={chainId}
+          provider={library?.provider}
+          account={account}
+          dappTokens={allTokens}
+          srcToken={defaultInputAddress}
+          dstToken={defaultOutputAddress}
+          TokenSelectModal={SelectTokenDrawer}
+          theme={theme}
+          partnerDaas={partnerDaaS === ZERO_ADDRESS ? undefined : partnerDaaS}
+          onSrcTokenSelected={onSrcSelect}
+          onDstTokenSelected={onDstSelect}
+        />
+      </Root>
+    </Suspense>
   );
 }
 
