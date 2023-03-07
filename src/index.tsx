@@ -115,7 +115,7 @@ export function PangolinProvider({
 
   return (
     <Provider store={store} context={StoreContext}>
-      <PangolinWeb3Provider chainId={chainId} library={library} account={account}>
+      <PangolinWeb3Provider chainId={chainId} library={library} account={account} key={chainId}>
         <MixPanelProvider mixpanelToken={mixpanelToken}>
           <ThemeProvider theme={theme}>
             <QueryClientProvider client={queryClient}>
