@@ -109,7 +109,7 @@ const MyPortfolio: React.FC = () => {
     <Root>
       <Header>
         <Text fontSize={['16px', '16px', '24px']} color="text1" fontWeight={600} style={{ flexGrow: 1 }}>
-          {t('swapPage.yourPortFolio')}
+          {t('swapPage.yourPortFolio')}1111
         </Text>
         <ToggleBalanceButton showBalances={showBalances} handleShowBalances={handleShowBalances} />
       </Header>

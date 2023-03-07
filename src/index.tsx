@@ -11,7 +11,6 @@ import { useTotalSupply } from 'src/data/TotalSupply';
 import { useTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/Tokens';
-import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import {
@@ -28,7 +27,8 @@ import useInterval from 'src/hooks/useInterval';
 import useIsWindowVisible from 'src/hooks/useIsWindowVisible';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import ApplicationUpdater from 'src/state/papplication/updater';
 import { useCoinGeckoTokenData } from 'src/state/pcoingecko/hooks';
 import ListsUpdater from 'src/state/plists/updater';

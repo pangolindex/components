@@ -24,9 +24,10 @@ import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTokensHook, useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import { useTokensHook } from 'src/hooks/multiChainsHooks';
 import usePrevious from 'src/hooks/usePrevious';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import {
   updateMinichefStakingAllAprs,
   updateMinichefStakingAllData,

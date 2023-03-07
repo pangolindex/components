@@ -10,7 +10,7 @@ import { Text } from 'src/components/Text';
 import Tooltip from 'src/components/Tooltip';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useSarStakeInfo } from 'src/state/psarstake/hooks';
 import { useDerivativeSarCompoundHook } from 'src/state/psarstake/multiChainsHooks';
 import { Position } from 'src/state/psarstake/types';
