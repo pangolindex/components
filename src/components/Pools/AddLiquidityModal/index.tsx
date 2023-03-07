@@ -5,7 +5,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, Modal, Text } from 'src/components';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { useChainId } from 'src/hooks';
-import { useCurrency } from 'src/hooks/Tokens';
+import { useCurrency } from 'src/hooks/tokens/evm';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { SpaceType } from 'src/state/pstake/types';
 import { useCreatePairHook } from 'src/state/pwallet/multiChainsHooks';

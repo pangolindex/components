@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTokens } from 'src/hooks/Tokens';
+import { useTokens } from 'src/hooks/tokens/evm';
 import { StakingInfo } from 'src/state/pstake/types';
 import PoolCardView from './PoolCardView';
 

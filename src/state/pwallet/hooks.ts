@@ -24,12 +24,9 @@ import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { ROUTER_ADDRESS } from 'src/constants/address';
 import { useGetNearAllPool, useNearPairs, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import {
-  useAllTokens,
-  useGetAllHederaAssociatedTokens,
-  useHederaTokenAssociated,
-  useNearTokens,
-} from 'src/hooks/Tokens';
+import { useGetAllHederaAssociatedTokens, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
+import { useNearTokens } from 'src/hooks/tokens/near';
+import { useAllTokens } from 'src/hooks/useAllTokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';

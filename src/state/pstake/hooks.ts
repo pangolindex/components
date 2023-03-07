@@ -24,7 +24,8 @@ import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTokensHook } from 'src/hooks/multiChainsHooks';
+import { useTokensHook } from 'src/hooks/tokens';
+import { useTokens } from 'src/hooks/tokens/evm';
 import usePrevious from 'src/hooks/usePrevious';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
@@ -35,7 +36,6 @@ import {
 } from 'src/state/pstake/actions';
 import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
-import { useTokens } from '../../hooks/Tokens';
 import { useMiniChefContract, useRewardViaMultiplierContract, useStakingContract } from '../../hooks/useContract';
 import { tryParseAmount } from '../../state/pswap/hooks';
 import { AppState, useDispatch, useSelector } from '../index';
