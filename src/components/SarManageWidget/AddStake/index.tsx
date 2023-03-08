@@ -11,7 +11,7 @@ import { TextInput } from 'src/components/TextInput';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useHederaTokenAssociated } from 'src/hooks/Tokens';
+import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { useHederaSarNFTContract } from 'src/hooks/useContract';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';

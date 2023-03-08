@@ -6,7 +6,8 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
-import { useAllTokens, useToken } from 'src/hooks/Tokens';
+import { useTokenHook } from 'src/hooks/tokens';
+import { useAllTokens } from 'src/hooks/useAllTokens';
 import usePrevious from 'src/hooks/usePrevious';
 import { useSelectedListInfo } from 'src/state/plists/hooks';
 import { useAddUserToken } from 'src/state/puser/hooks';
@@ -38,11 +39,12 @@ const currencyKey = (columnIndex: number, rowIndex: number, data: Currency[], ch
 
 const SelectTokenDrawer: React.FC<Props> = (props) => {
   const { isOpen, onClose, onCurrencySelect, otherSelectedCurrency, selectedCurrency } = props;
+  const chainId = useChainId();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isTokenListOpen, setIsTokenListOpen] = useState<boolean>(false);
   const [invertSearchOrder] = useState<boolean>(false);
   const { t } = useTranslation();
-
+  const useToken = useTokenHook[chainId];
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
 
@@ -66,8 +68,6 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
 
   const allTokens = useAllTokens();
   const selectedListInfo = useSelectedListInfo();
-
-  const chainId = useChainId();
 
   const isAddressSearch = isAddress(searchQuery);
   const searchToken = useToken(searchQuery);

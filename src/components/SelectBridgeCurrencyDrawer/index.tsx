@@ -6,7 +6,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
-import { useToken } from 'src/hooks/Tokens';
+import { useToken } from 'src/hooks/tokens/evm';
 import usePrevious from 'src/hooks/usePrevious';
 import { filterTokenOrChain, isAddress } from 'src/utils';
 import { Box, TextInput } from '../../';
