@@ -1,5 +1,5 @@
 import { parseBytes32String } from '@ethersproject/strings';
-import { CAVAX, Currency, Token } from '@pangolindex/sdk';
+import { Token } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import ERC20_INTERFACE, { ERC20_BYTES32_INTERFACE } from 'src/constants/abis/erc20';
 import { useChainId } from 'src/hooks';
@@ -8,7 +8,6 @@ import { isAddress } from 'src/utils';
 import { useAllTokens } from '../useAllTokens';
 import { useBytes32TokenContract, useTokenContract } from '../useContract';
 import { TokenReturnType } from './constant';
-import { useTokenHook } from './index';
 
 // parse a name or symbol from a token response
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/;
@@ -139,12 +138,4 @@ export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> 
       return acc;
     }, []);
   }, [chainId, decimals, symbols, symbolsBytes32, tokensName, tokensNameBytes32, tokens, tokensAddress]);
-}
-
-export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
-  const chainId = useChainId();
-  const isAVAX = currencyId?.toUpperCase() === CAVAX[chainId].symbol?.toUpperCase();
-  const useToken_ = useTokenHook[chainId];
-  const token = useToken_(isAVAX ? undefined : currencyId);
-  return isAVAX ? chainId && CAVAX[chainId] : token;
 }
