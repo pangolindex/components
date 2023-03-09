@@ -387,6 +387,12 @@ export const useDummyMinichefHook = (_version?: number, _pairToFilterBy?: Pair |
   return [] as MinichefStakingInfo[];
 };
 
+const dummyApr: AprResult = {
+  combinedApr: 0,
+  stakingApr: 0,
+  swapFeeApr: 0,
+};
+
 export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | null): MinichefStakingInfo[] => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -394,6 +400,10 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
   const minichefContract = useMiniChefContract();
   const poolMap = useMinichefPools();
   const lpTokens = Object.keys(poolMap);
+
+  const pids = Object.values(poolMap).map((pid) => pid.toString());
+
+  const { data: farmsAprs } = useMichefFarmsAprs(pids);
 
   // if chain is not avalanche skip the first pool because it's dummyERC20
   if (chainId !== ChainId.AVALANCHE) {
@@ -680,6 +690,8 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
 
         const userRewardRatePerWeek = getHypotheticalWeeklyRewardRate(stakedAmount, totalStakedAmount, poolRewardRate);
 
+        const farmApr = farmsAprs?.[pid] ?? dummyApr;
+
         memo.push({
           pid,
           stakingRewardAddress: MINICHEF_ADDRESS[chainId],
@@ -700,6 +712,9 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
           rewardTokensAddress: [PNG[chainId]?.address, ...(rewardTokensAddress?.result?.[0] || [])],
           rewardTokensMultiplier: [BigNumber.from(1), ...(rewardTokensMultiplier?.result?.[0] || [])],
           rewardsAddress,
+          swapFeeApr: farmApr.swapFeeApr,
+          stakingApr: farmApr.stakingApr,
+          combinedApr: farmApr.combinedApr,
         });
       }
 
@@ -747,12 +762,6 @@ export function useMiniChefSubgraphData() {
     },
   );
 }
-
-const dummyApr: AprResult = {
-  combinedApr: 0,
-  stakingApr: 0,
-  swapFeeApr: 0,
-};
 
 // get data for all farms
 export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] => {
