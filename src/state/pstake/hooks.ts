@@ -704,7 +704,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
           totalStakedAmount,
           totalStakedInWavax,
           totalStakedInUsd,
-          multiplier: JSBI.divide(multiplier, JSBI.BigInt(100)),
+          multiplier,
           periodFinish: periodFinishMs > 0 ? new Date(periodFinishMs) : undefined,
           isPeriodFinished,
           getHypotheticalWeeklyRewardRate,
