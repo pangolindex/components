@@ -91,13 +91,19 @@ export interface MinichefStakingInfo {
   totalStakedInUsd: TokenAmount;
   // has the reward period expired
   isPeriodFinished: boolean;
+  // array of extra reward tokens (super farms)
   rewardTokens?: Array<Token>;
+  // address of the rewarder contract (used to add extra tokens as rewards for farm)
   rewardsAddress?: string;
+  // farm id
   pid: string;
 
   // Extra Fields
+  // total staked in wrapped token
   totalStakedInWavax: TokenAmount;
+  // array of addresses of extra reward tokens
   rewardTokensAddress?: Array<string>;
+  // extra reward tokens multipliers
   rewardTokensMultiplier?: Array<JSBI>;
   getExtraTokensWeeklyRewardRate?: (
     rewardRatePerWeek: TokenAmount,
@@ -131,6 +137,7 @@ export interface MinichefToken {
   id: string;
   symbol: string;
   derivedUSD: number;
+  derivedETH: string;
   name: string;
   decimals: number;
 }

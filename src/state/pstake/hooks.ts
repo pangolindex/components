@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { CHAINS, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import axios from 'axios';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
-import isEqual from 'lodash.isequal';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
@@ -25,21 +25,13 @@ import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTokensHook, useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
-import usePrevious from 'src/hooks/usePrevious';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
-import {
-  updateMinichefStakingAllAprs,
-  updateMinichefStakingAllData,
-  updateMinichefStakingAllFarmsEarnedAmount,
-} from 'src/state/pstake/actions';
 import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { useTokens } from '../../hooks/Tokens';
-import { useMiniChefContract, useRewardViaMultiplierContract, useStakingContract } from '../../hooks/useContract';
+import { useMiniChefContract, useRewardViaMultiplierContract } from '../../hooks/useContract';
 import { tryParseAmount } from '../../state/pswap/hooks';
-import { AppState, useDispatch, useSelector } from '../index';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { Apr } from './reducer';
 import {
   DoubleSideStaking,
   DoubleSideStakingInfo,
@@ -49,46 +41,6 @@ import {
   MinichefV2,
   StakingInfo,
 } from './types';
-
-export const useGetFarmApr = (pid: string) => {
-  const chainId = useChainId();
-  const swapFeeApr = useSelector<number>((state) => state?.pstake?.aprs?.[chainId]?.[pid]?.swapFeeApr);
-  const combinedApr = useSelector<number>((state) => state?.pstake?.aprs?.[chainId]?.[pid]?.combinedApr);
-  const stakingApr = useSelector<number>((state) => state?.pstake?.aprs?.[chainId]?.[pid]?.stakingApr);
-
-  return useMemo(
-    () => ({
-      swapFeeApr,
-      combinedApr,
-      stakingApr,
-    }),
-    [swapFeeApr, combinedApr, stakingApr],
-  );
-};
-
-export const useGetEarnedAmount = (pid: string) => {
-  const chainId = useChainId();
-  const png = PNG[chainId];
-
-  const amount = useSelector<number>((state) => state?.pstake?.earnedAmounts?.[chainId]?.[pid]?.earnedAmount);
-
-  return useMemo(
-    () => ({
-      earnedAmount: new TokenAmount(png, JSBI.BigInt(amount ?? 0)),
-    }),
-    [png, amount],
-  );
-};
-
-export const useSortFarmAprs = (): Array<Apr> => {
-  const chainId = useChainId();
-  const allAprs = useSelector<AppState['pstake']['aprs'][ChainId.AVALANCHE]>((state) => state?.pstake?.aprs?.[chainId]);
-
-  return useMemo(
-    () => (allAprs ? Object.values(allAprs).sort((a, b) => b.combinedApr - a.combinedApr) : []),
-    [allAprs],
-  );
-};
 
 // Each APR request performs an upper bound of (6 + 11n) subrequests where n = pid count
 // API requests cannot exceed 50 subrequests and therefore `chunkSize` is set to 4
@@ -100,6 +52,11 @@ interface AprResult {
   combinedApr: number;
 }
 
+const pangolinApi = axios.create({
+  baseURL: PANGOLIN_API_BASE_URL,
+  timeout: 10000,
+});
+
 export const fetchChunkedAprs = async (pids: string[], chainId: ChainId, chunkSize = 4) => {
   const pidChunks: string[][] = [];
 
@@ -108,96 +65,14 @@ export const fetchChunkedAprs = async (pids: string[], chainId: ChainId, chunkSi
     pidChunks.push(pidChunk);
   }
 
-  const chunkedResults = await Promise.all<AprResult[]>(
-    pidChunks.map((chunk) =>
-      fetch(`${PANGOLIN_API_BASE_URL}/v2/${chainId}/pangolin/aprs/${chunk.join(',')}`).then((res) => res.json()),
-    ),
+  const chunkedResults = await Promise.all(
+    pidChunks.map((chunk) => pangolinApi.get<AprResult[]>(`/v2/${chainId}/pangolin/aprs/${chunk.join(',')}`)),
   );
 
-  return chunkedResults.flat();
+  const datas = chunkedResults.map((response) => response.data);
+
+  return datas.flat();
 };
-
-export const useGetMinichefPids = () => {
-  const chainId = useChainId();
-  const farms = useSelector<AppState['pstake']['minichefStakingData'][ChainId.AVALANCHE]['farms']>(
-    (state) => state?.pstake?.minichefStakingData[chainId]?.farms || [],
-  );
-
-  const pIds1 = farms?.map((farm) => farm?.pid);
-
-  const pIds1String = (pIds1 || []).sort().join();
-
-  const poolMap = useMinichefPools();
-
-  const pIds2 = Object.values(poolMap || {}).map(String);
-
-  const pIds2String = (pIds2 || []).sort().join();
-
-  return useMemo(() => {
-    return pIds1.length > 0 ? pIds1 : pIds2;
-  }, [pIds1String, pIds2String]);
-};
-
-export function useFetchFarmAprs() {
-  const chainId = useChainId();
-  const pids = useGetMinichefPids();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!chainId || !pids || pids.length === 0) return;
-
-    fetchChunkedAprs(pids, chainId).then((res) => {
-      const newResult = res.reduce(
-        (acc, value: any, i) => ({ ...acc, [pids[i] as string]: { ...value, pid: pids[i] } }),
-        {},
-      );
-
-      if (res.length > 0) {
-        dispatch(
-          updateMinichefStakingAllAprs({
-            data: { chainId: chainId, data: newResult },
-          }),
-        );
-      }
-    });
-  }, [pids, chainId, dispatch]);
-}
-
-export function useUpdateAllFarmsEarnAmount() {
-  const poolIdArray = useGetMinichefPids();
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-
-  const minichefContract = useStakingContract(MINICHEF_ADDRESS[chainId]);
-
-  const dispatch = useDispatch();
-
-  const userInfoInput = useMemo(() => {
-    if (!poolIdArray || !account) return [];
-    return poolIdArray.map((pid) => [pid, account]);
-  }, [poolIdArray, account]);
-
-  const pendingRewards = useSingleContractMultipleData(minichefContract, 'pendingReward', userInfoInput ?? []);
-  const prevPendingRewards = usePrevious(pendingRewards);
-
-  useEffect(() => {
-    const isAllFetched = pendingRewards.every((item) => !item.loading);
-    const areValuesSame = isEqual(pendingRewards, prevPendingRewards);
-    if (isAllFetched && !areValuesSame) {
-      const pendingRewardsObj = {} as { [key: string]: { pid: string; earnedAmount: string } };
-      for (let index = 0; index < pendingRewards.length; index++) {
-        const pid = poolIdArray[index];
-        const pendingRewardInfo = pendingRewards[index];
-        pendingRewardsObj[pid] = {
-          pid: pid,
-          earnedAmount: pendingRewardInfo?.result?.['pending'].toString(),
-        };
-      }
-      dispatch(updateMinichefStakingAllFarmsEarnedAmount({ data: { chainId: chainId, data: pendingRewardsObj } }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pendingRewards, prevPendingRewards]);
-}
 
 export const sortingOnAvaxStake = (info_a: DoubleSideStakingInfo, info_b: DoubleSideStakingInfo) => {
   // only first has ended
@@ -215,6 +90,28 @@ export const sortingOnStakedAmount = (info_a: DoubleSideStakingInfo, info_b: Dou
   if (!info_a.stakedAmount.greaterThan(BIG_INT_ZERO) && info_b.stakedAmount.greaterThan(BIG_INT_ZERO)) return 1;
   return 0;
 };
+
+export function useMichefFarmsAprs(pids: string[]) {
+  const chainId = useChainId();
+
+  return useQuery(
+    ['get-minichef-farms-apr', chainId, pids],
+    async () => {
+      const aprs = await fetchChunkedAprs(pids, chainId);
+
+      const results: { [x: string]: AprResult } = {}; // key is the pid
+      aprs.forEach((value, index) => {
+        const pid = pids[index];
+        results[pid] = value;
+      });
+
+      return results;
+    },
+    {
+      cacheTime: 1000 * 60 * 10, // 10 minutes
+    },
+  );
+}
 
 export const useMinichefPools = (): { [key: string]: number } => {
   const minichefContract = useMiniChefContract();
@@ -247,23 +144,15 @@ export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
   const rewardContract = useRewardViaMultiplierContract(rewardAddress !== ZERO_ADDRESS ? rewardAddress : undefined);
   const getRewardTokensRes = useSingleCallResult(rewardContract, 'getRewardTokens');
   const getRewardMultipliersRes = useSingleCallResult(rewardContract, 'getRewardMultipliers');
-  const { earnedAmount: _earnedAmount } = useGetEarnedAmount(miniChefStaking?.pid as string);
 
   // this function will always return the maximum value earnedAmount
   const getEarnedAmount = useCallback(() => {
-    // if _earnedAmount is greater than 0 or miniChefStaking.earnedAmount use this
-    if (
-      _earnedAmount?.greaterThan('0') ||
-      (miniChefStaking?.earnedAmount && _earnedAmount?.greaterThan(miniChefStaking.earnedAmount))
-    ) {
-      return _earnedAmount;
-    }
     // else if exist miniChefStaking.earnedAmount use this
     if (miniChefStaking?.earnedAmount) {
       return miniChefStaking.earnedAmount;
     }
     return new TokenAmount(PNG[chainId], '0');
-  }, [_earnedAmount, miniChefStaking?.earnedAmount, chainId]);
+  }, [miniChefStaking?.earnedAmount, chainId]);
 
   const earnedAmount = getEarnedAmount();
 
@@ -495,10 +384,10 @@ export const tokenComparator = (
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export const useDummyMinichefHook = (_version?: number, _pairToFilterBy?: Pair | null) => {
-  return [] as StakingInfo[];
+  return [] as MinichefStakingInfo[];
 };
 
-export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | null): StakingInfo[] => {
+export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | null): MinichefStakingInfo[] => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
@@ -815,7 +704,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
       }
 
       return memo;
-    }, []);
+    }, [] as MinichefStakingInfo[]);
   }, [
     chainId,
     PNG[chainId],
@@ -839,71 +728,37 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
   ]);
 };
 
-export const fetchMinichefData = (account: string, chainId: ChainId) => async () => {
-  const mininchefV2Client = getSubgraphClient(chainId, SubgraphEnum.Minichef);
-  if (!mininchefV2Client) {
-    return null;
-  }
-  const { minichefs } = await mininchefV2Client.request(GET_MINICHEF, { userAddress: account });
-  return minichefs;
-};
-
-export function useGetAllFarmData() {
+export function useMiniChefSubgraphData() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const allFarms = useQuery(['get-minichef-farms-v2', account], fetchMinichefData(account || '', chainId), {
-    refetchInterval: 1000 * 60 * 5, // 5 minutes
-  });
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (allFarms.isError) {
-      // if there is error then empty the data in redux
-      dispatch(
-        updateMinichefStakingAllData({
-          data: {
-            chainId: chainId,
-            data: {
-              id: '',
-              totalAllocPoint: 0,
-              rewardPerSecond: 0,
-              rewardsExpiration: 0,
-              farms: [],
-            },
-          },
-        }),
-      );
-    } else if (!allFarms?.isLoading && !allFarms?.isError) {
-      dispatch(
-        updateMinichefStakingAllData({
-          data: {
-            chainId: chainId,
-            data: allFarms?.data?.[0],
-          },
-        }),
-      );
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allFarms?.data, allFarms?.isLoading, allFarms?.isError]);
-}
-
-export function useGetDummyAllFarmData() {
-  // This is intentional
-}
-
-export function useAllMinichefStakingInfoData(): MinichefV2 | undefined {
-  const chainId = useChainId();
-  return useSelector<AppState['pstake']['minichefStakingData'][ChainId.AVALANCHE]>(
-    (state) => state?.pstake?.minichefStakingData?.[chainId] || {},
+  return useQuery<MinichefV2[]>(
+    ['get-minichef-farms-v2', account, chainId],
+    async () => {
+      const mininchefV2Client = getSubgraphClient(chainId, SubgraphEnum.Minichef);
+      if (!mininchefV2Client) {
+        return undefined;
+      }
+      const { minichefs } = await mininchefV2Client.request(GET_MINICHEF, { userAddress: account || '' });
+      return minichefs;
+    },
+    {
+      refetchInterval: 1000 * 60 * 5, // 5 minutes
+    },
   );
 }
 
+const dummyApr: AprResult = {
+  combinedApr: 0,
+  stakingApr: 0,
+  swapFeeApr: 0,
+};
+
 // get data for all farms
 export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] => {
-  const minichefData = useAllMinichefStakingInfoData();
+  const results = useMiniChefSubgraphData();
 
+  const minichefData = results?.data?.[0];
   const farms = minichefData?.farms;
 
   const chainId = useChainId();
@@ -913,10 +768,20 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
   const totalAllocPoint = minichefData?.totalAllocPoint;
   const rewardPerSecond = minichefData?.rewardPerSecond;
 
+  const pids = useMemo(() => {
+    if (!farms) return [];
+
+    return farms.map((farm) => farm.pid);
+  }, [farms]); // return farms pids in order
+
+  const { data: farmsAprs } = useMichefFarmsAprs(pids);
+
+  const wavax = WAVAX[chainId];
+
   return useMemo(() => {
     if (!chainId || !png || !farms?.length) return [];
 
-    return farms.reduce(function (memo: any, farm: MinichefFarm) {
+    return farms.reduce(function (memo, farm: MinichefFarm) {
       const rewardsAddress = farm?.rewarderAddress;
 
       const rewardsAddresses = farm.rewarder.rewards;
@@ -945,7 +810,7 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
         pairToken1.name,
       );
 
-      const tokens = [token0, token1].sort(tokenComparator);
+      const tokens = [token0, token1].sort(tokenComparator) as [Token, Token];
 
       const dummyPair = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0'), chainId);
       const lpToken = dummyPair.liquidityToken;
@@ -990,6 +855,33 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
 
       const multiplier = JSBI.BigInt(farm?.allocPoint);
 
+      const reserve0 = parseUnits((pair?.reserve0 ?? 0).toString(), pair?.token0.decimals);
+      const reserve0Amount = new TokenAmount(token0, reserve0?.toString() || JSBI.BigInt(0));
+
+      const reserve1 = parseUnits((pair?.reserve1 ?? 0).toString(), pair?.token1.decimals);
+      const reserve1Amount = new TokenAmount(token1, reserve1?.toString() || JSBI.BigInt(0));
+
+      const derivedETH0 = Number(pair?.token0?.derivedETH ?? '0').toFixed(4);
+      const token0derivedETH = parseUnits(derivedETH0, pair?.token0.decimals);
+      const token0derivedETHAmount = new TokenAmount(token0, token0derivedETH?.toString() || JSBI.BigInt(0));
+
+      const derivedETH1 = Number(pair?.token1?.derivedETH ?? '0').toFixed(4);
+      const token1derivedETH = parseUnits(derivedETH1, pair?.token1.decimals);
+      const token1derivedETHAmount = new TokenAmount(token1, token1derivedETH?.toString() || JSBI.BigInt(0));
+
+      const totalSupplyAmount = new TokenAmount(lpToken, totalSupply?.toString() || JSBI.BigInt(0));
+
+      const totalSupplyInETH = reserve0Amount
+        .multiply(token0derivedETHAmount)
+        .add(reserve1Amount.multiply(token1derivedETHAmount));
+
+      const _totalStakedInWavax = totalStakedAmount.multiply(totalSupplyInETH).divide(totalSupplyAmount);
+
+      const totalStakedInWavax = new TokenAmount(
+        wavax,
+        parseUnits(_totalStakedInWavax.equalTo('0') ? '0' : _totalStakedInWavax.toFixed(0), wavax.decimals)?.toString(),
+      );
+
       const pid = farm?.pid;
 
       const rewardTokens = rewardsAddresses.map((rewardToken: MinichefFarmReward) => {
@@ -1020,14 +912,18 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
 
       const userRewardRatePerWeek = getHypotheticalWeeklyRewardRate(stakedAmount, totalStakedAmount, poolRewardRate);
 
+      const farmApr = farmsAprs?.[pid] ?? dummyApr;
+
       memo.push({
-        stakingRewardAddress: MINICHEF_ADDRESS[chainId],
+        stakingRewardAddress: MINICHEF_ADDRESS[chainId] || '',
         pid,
         tokens,
         multiplier,
         isPeriodFinished,
+        periodFinish: undefined,
         totalStakedAmount,
         totalStakedInUsd,
+        totalStakedInWavax,
         rewardRatePerWeek: userRewardRatePerWeek,
         totalRewardRatePerSecond: poolRewardRate,
         totalRewardRatePerWeek: totalRewardRatePerWeek,
@@ -1036,14 +932,16 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
         stakedAmount,
         earnedAmount,
         rewardsAddress,
-        rewardsAddresses,
         rewardTokens,
         rewardTokensAddress,
+        swapFeeApr: farmApr.swapFeeApr,
+        stakingApr: farmApr.stakingApr,
+        combinedApr: farmApr.combinedApr,
       });
 
       return memo;
-    }, []);
-  }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms]);
+    }, [] as MinichefStakingInfo[]);
+  }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms, farmsAprs]);
 };
 
 /* eslint-disable @typescript-eslint/no-unused-vars */

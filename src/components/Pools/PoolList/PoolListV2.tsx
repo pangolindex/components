@@ -2,13 +2,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { BIG_INT_ZERO } from 'src/constants';
 import useDebounce from 'src/hooks/useDebounce';
 import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
-import {
-  sortingOnAvaxStake,
-  sortingOnStakedAmount,
-  useFetchFarmAprs,
-  useSortFarmAprs,
-  useUpdateAllFarmsEarnAmount,
-} from 'src/state/pstake/hooks';
+import { sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/hooks';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
 import PoolCardV2 from '../PoolCard/PoolCardV2';
 import PoolCardListView, { SortingType } from './PoolCardListView';
@@ -37,13 +31,6 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
 
   const togglePoolDetailModal = usePoolDetailnModalToggle();
 
-  // fetch farms earned amount
-  useUpdateAllFarmsEarnAmount();
-  // fetch farms apr
-  useFetchFarmAprs();
-
-  const sortedFarmsApr = useSortFarmAprs();
-
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());
   }, []);
@@ -55,7 +42,8 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
       });
       setStakingInfoData(sortedFarms);
     } else if (sortBy === SortingType.totalApr) {
-      const sortedFarms = sortedFarmsApr
+      const sortedFarms = farms
+        .sort((a, b) => (b.combinedApr ?? 0) - (a.combinedApr ?? 0))
         .map((item) => farms.find((infoItem) => infoItem?.pid === item.pid) as MinichefStakingInfo)
         .filter((element) => !!element);
       setStakingInfoData(sortedFarms);

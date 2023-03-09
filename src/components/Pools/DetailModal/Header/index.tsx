@@ -8,7 +8,7 @@ import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
 import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useGetFarmApr, useGetRewardTokens } from 'src/state/pstake/hooks';
+import { useGetRewardTokens } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { CloseIcon, Hidden, Visible } from 'src/theme/components';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -33,8 +33,6 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
   const currency1 = unwrappedToken(token1, chainId);
 
   const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo?.rewardTokensAddress);
-
-  const { swapFeeApr: _swapFeeApr, stakingApr: _stakingApr } = useGetFarmApr(stakingInfo?.pid as string);
 
   const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
@@ -65,17 +63,6 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
   );
 
   const getAPRs = () => {
-    if (cheftType === ChefType.MINI_CHEF_V2) {
-      // for minichef v2 we get the data from redux
-      return {
-        totalApr: _stakingApr + _swapFeeApr,
-        stakingApr: _stakingApr,
-        swapFeeApr: _swapFeeApr,
-        extraFarmApr: 0,
-        userApr: _stakingApr + _swapFeeApr,
-      };
-    }
-
     const stakingAPR = stakingInfo?.stakingApr || 0;
     const swapFeeAPR = stakingInfo?.swapFeeApr || 0;
     // for rest we get the data from contract calls if exist, else put 0 for this data

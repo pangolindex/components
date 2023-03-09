@@ -8,7 +8,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
-import { useGetEarnedAmount, useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks';
+import { useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { useHederaPGLToken } from 'src/state/pwallet/hooks';
 import { hederaFn } from 'src/utils/hedera';
@@ -142,9 +142,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
     error = withdrawCallbackError;
   }
 
-  const { earnedAmount } = useGetEarnedAmount(stakingInfo?.pid as string);
-
-  const newEarnedAmount = version !== 2 ? stakingInfo?.earnedAmount : earnedAmount;
+  const { earnedAmount } = stakingInfo;
 
   const token0 = stakingInfo.tokens[0];
   const token1 = stakingInfo.tokens[1];
@@ -190,11 +188,11 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
                       />
                     </StatWrapper>
                   )}
-                  {newEarnedAmount && (
+                  {earnedAmount && (
                     <StatWrapper>
                       <Stat
                         title={t('earn.unclaimedReward', { symbol: png.symbol })}
-                        stat={newEarnedAmount?.toSignificant(4)}
+                        stat={earnedAmount?.toSignificant(4)}
                         titlePosition="top"
                         titleFontSize={12}
                         statFontSize={[20, 18]}

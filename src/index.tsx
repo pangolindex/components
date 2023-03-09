@@ -38,17 +38,11 @@ import {
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
   fetchChunkedAprs,
-  fetchMinichefData,
   useDerivedStakeInfo,
-  useGetAllFarmData,
   useMinichefPools,
   useMinichefStakingInfos,
 } from 'src/state/pstake/hooks';
-import {
-  useGetAllFarmDataHook,
-  useGetMinichefStakingInfosViaSubgraphHook,
-  useMinichefStakingInfosHook,
-} from 'src/state/pstake/multiChainsHooks';
+import { useMinichefStakingInfosHook } from 'src/state/pstake/multiChainsHooks';
 import {
   DoubleSideStaking,
   DoubleSideStakingInfo,
@@ -189,15 +183,12 @@ export {
   useAccountBalanceHook,
   useTranslation,
   useMinichefStakingInfosHook,
-  useGetAllFarmData,
-  useGetMinichefStakingInfosViaSubgraphHook,
   useGetUserLP,
   useMinichefStakingInfos,
   useDerivedStakeInfo,
   useMinichefPools,
   useTotalSupplyHook,
   useTotalSupply,
-  useGetAllFarmDataHook,
   useTokenBalanceHook,
   useTokenBalance,
   usePangoChefInfosHook,
@@ -231,7 +222,6 @@ export {
   availableLanguages,
   Trans,
   PoolType,
-  fetchMinichefData,
   fetchChunkedAprs,
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,

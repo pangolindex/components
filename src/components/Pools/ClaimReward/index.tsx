@@ -7,7 +7,7 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useStakingContract } from 'src/hooks/useContract';
-import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
+import { useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { waitForTransaction } from 'src/utils';
@@ -89,9 +89,7 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
     _error = _error ?? t('earn.enterAmount');
   }
 
-  const { earnedAmount } = useGetEarnedAmount(stakingInfo?.pid as string);
-
-  const newEarnedAmount = version < 2 ? stakingInfo?.earnedAmount : earnedAmount;
+  const { earnedAmount } = stakingInfo;
 
   return (
     <ClaimWrapper>
@@ -102,7 +100,7 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
               <StatWrapper>
                 <Stat
                   title={t('earn.unclaimedReward', { symbol: 'PNG' })}
-                  stat={newEarnedAmount?.toSignificant(4)}
+                  stat={earnedAmount?.toSignificant(4)}
                   titlePosition="top"
                   titleFontSize={12}
                   statFontSize={[24, 18]}

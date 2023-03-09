@@ -10,7 +10,6 @@ import pcoingecko from './pcoingecko/reducer';
 import plists from './plists/reducer';
 import pmint from './pmint/reducer';
 import pmulticall from './pmulticall/reducer';
-import pstake from './pstake/reducer';
 import pswap from './pswap/reducer';
 import ptoken from './ptoken/reducer';
 import ptransactions from './ptransactions/reducer';
@@ -35,7 +34,6 @@ export const pangolinReducers = {
   puser,
   pwatchlists,
   ptoken,
-  pstake,
   pmint,
   pburn,
   pbridge,
