@@ -6,7 +6,7 @@ import { ThemeContext } from 'styled-components';
 import { CurrencyLogo, Text, Tooltip } from 'src/components';
 import { useTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { usePangolinWeb3 } from 'src/hooks';
-import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
 import { StyledLogo } from '../CurrencyLogo/styles';
 import { TextInfo } from './TextInfo';

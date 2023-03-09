@@ -7,4 +7,5 @@ export enum Field {
   CURRENCY_B = 'CURRENCY_B',
 }
 
-export const typeInput = createAction<{ field: Field; typedValue: string }>('burn/typeInputBurn');
+export const typeInput = createAction<{ pairAddress: string; field: Field; typedValue: string }>('burn/typeInputBurn');
+export const resetBurnState = createAction<{ pairAddress: string }>('burn/resetBurnState');

@@ -6,8 +6,8 @@ import { Box, Button, Loader, Text, TransactionCompleted } from 'src/components'
 import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePangoChefClaimRewardCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
@@ -99,6 +99,11 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
     _error = _error ?? t('earn.enterAmount');
   }
 
+  const buttonMessage =
+    (stakingInfo.rewardTokensAddress || []).length > 0
+      ? t('earn.claimRewards')
+      : t('earn.claimReward', { symbol: png.symbol });
+
   const renderButton = () => {
     if (!isHederaTokenAssociated && notAssociateTokens?.length > 0) {
       return (
@@ -111,7 +116,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
     } else {
       return (
         <Button variant="outline" onClick={onClaimReward} color={theme.text10}>
-          {_error ?? t('earn.claimReward', { symbol: png.symbol })}
+          {_error ?? buttonMessage}
         </Button>
       );
     }

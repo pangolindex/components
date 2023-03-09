@@ -25,8 +25,9 @@ import {
   Trade,
   currencyEquals,
 } from '@pangolindex/sdk';
+import { MetamaskError, ZERO_ADDRESS } from 'src/constants';
+import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
 import { hederaFn } from 'src/utils/hedera';
-import { MetamaskError, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { wait } from './retry';
 

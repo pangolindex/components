@@ -17,7 +17,7 @@ import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { PangochefFarmReward, useSubgraphFarms, useSubgraphFarmsStakedAmount } from 'src/apollo/pangochef';
+import { useSubgraphFarms, useSubgraphFarmsStakedAmount } from 'src/apollo/pangochef';
 import { BIGNUMBER_ZERO, BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
@@ -25,9 +25,9 @@ import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderVi
 import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { useTokens } from 'src/hooks/Tokens';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { useTokensCurrencyPriceHook } from 'src/hooks/multiChainsHooks';
+import { useTokens } from 'src/hooks/tokens/evm';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
@@ -980,19 +980,35 @@ export function useGetPangoChefInfosViaSubgraph() {
       const pair = farm?.pair;
       const multiplier = JSBI.BigInt(farm?.weight);
 
-      const rewardTokensAddress = rewards.map((rewardToken: PangochefFarmReward) => {
-        const tokenObj = rewardToken.token;
-        return getAddress(tokenObj.id);
-      });
+      const { rewardTokensAddress, rewardTokens, rewardMultipliers } = rewards.reduce(
+        (memo, rewardToken) => {
+          const tokenObj = rewardToken.token;
+          const _address = getAddress(tokenObj.id);
+          const _token = new Token(
+            chainId,
+            getAddress(tokenObj.id),
+            Number(tokenObj.decimals),
+            tokenObj.symbol,
+            tokenObj.name,
+          );
+          const _multiplier = JSBI.BigInt(rewardToken?.multiplier.toString());
 
-      const rewardTokens = rewards.map((rewardToken: PangochefFarmReward) => {
-        const tokenObj = rewardToken.token;
-        return new Token(chainId, getAddress(tokenObj.id), Number(tokenObj.decimals), tokenObj.symbol, tokenObj.name);
-      });
+          // remove png from rewards
+          if (_token.equals(png)) {
+            return memo;
+          }
 
-      const rewardMultipliers: JSBI[] = rewards.map((rewardToken: PangochefFarmReward) => {
-        return JSBI.BigInt(rewardToken?.multiplier.toString());
-      });
+          memo.rewardTokensAddress.push(_address);
+          memo.rewardTokens.push(_token);
+          memo.rewardMultipliers.push(_multiplier);
+          return memo;
+        },
+        {
+          rewardTokensAddress: [] as string[],
+          rewardTokens: [] as Token[],
+          rewardMultipliers: [] as JSBI[],
+        },
+      );
 
       const pairToken0 = pair?.token0;
       const token0 = new Token(
@@ -1354,6 +1370,7 @@ export function usePangoChefExtraFarmApr(
   )[];
 
   const multipliers = stakingInfo.rewardTokensMultiplier;
+
   const pairPrice: Price | undefined = stakingInfo.pairPrice;
 
   const tokensPrices = useTokensCurrencyPrice(_rewardTokens);

@@ -2,9 +2,9 @@ import { ChainId, Pair, Token } from '@pangolindex/sdk';
 import flatMap from 'lodash.flatmap';
 import { useCallback, useMemo } from 'react';
 import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from 'src/constants';
+import { useAllTokens } from 'src/hooks/useAllTokens';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { usePangolinWeb3 } from '../../hooks';
-import { useAllTokens } from '../../hooks/Tokens';
 import {
   SerializedPair,
   SerializedToken,

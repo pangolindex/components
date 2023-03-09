@@ -62,6 +62,7 @@
     "unclaimedReward": "未領取的 {{ symbol }}",
     "claim": "领取",
     "claimReward": "领取 {{ symbol }}",
+    "claimRewards": "领取奖励",
     "liquidityRemainsPool": "当您在不提取LP的情况下领取奖励，您的流动性仍留在矿池中。",
     "withdrawingLiquidity": "取款 {{ amount }} {{ symbol }}",
     "claimingReward": "领取中 {{ amount }} {{ symbol }}",
@@ -740,7 +741,7 @@
   },
   "pangoChef": {
     "claimWarning1": "当您在未提取流动性的情况下申领时，您的流动性仍保留在矿池中。",
-    "claimWarning2": "领取您的奖励将使您的 APR 降至 0。相反，您可以选择复合。",
+    "claimWarning2": "领取您的奖励将领取所有未偿还的代币，包括 Super Farm 奖励并将您的 APR 重新设为 0%。 相反，您可以选择复合。",
     "compoundWarning": "将您对 {{ token0 }}-{{ token1 }} 农场的奖励组合起来，您的奖励将投入 {{ stakeToken0 }}-{{ stakeToken1 }} 农场。 您需要在累积的 {{ png }} 奖励中添加等值的 {{ compoundToken }} 代币。",
     "compoundAmountWarning": "您需要添加 {{ amount }} {{ symbol }} 来复合。请注意，复利可能会略微降低您的 APR。",
     "compoundAmountWarning2": "请注意，您将锁定您的 {{ token0 }} {{ token1 }} 池，直到您获得该池的奖励。",
@@ -751,6 +752,26 @@
     "lockingPoolZeroWarning": "您无法从该农场移除您的流动性或索取您的奖励。 为此，您首先需要从该农场中认领或移除您的股份： ",
     "decreaseWarning": "你的 apr 会减少，因为新的复合部分从 apr 0 开始，并且将在新旧部分之间取平均值。",
     "createStorageContract": "Create Storage Contract"
+  },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    }
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -839,6 +860,11 @@
     "save": "Save",
     "close": "Close",
     "back": "Back",
-    "noDataAvailable": "No data available!"
+    "noDataAvailable": "No data available!",
+    "sortBy": "Sort By",
+    "max": "Max",
+    "min": "Min",
+    "open": "Open",
+    "closed": "Closed"
   }
 }

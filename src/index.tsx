@@ -10,9 +10,9 @@ import { usePair } from 'src/data/Reserves';
 import { useTotalSupply } from 'src/data/TotalSupply';
 import { useTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { PangolinWeb3Provider, useLibrary } from 'src/hooks';
-import { useAllTokens } from 'src/hooks/Tokens';
-import { useApproveCallbackHook, useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
-import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useAllTokens } from 'src/hooks/useAllTokens';
+import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import {
   useContract,
   useMulticallContract,
@@ -27,7 +27,8 @@ import useInterval from 'src/hooks/useInterval';
 import useIsWindowVisible from 'src/hooks/useIsWindowVisible';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import ApplicationUpdater from 'src/state/papplication/updater';
 import { useCoinGeckoTokenData } from 'src/state/pcoingecko/hooks';
 import ListsUpdater from 'src/state/plists/updater';
@@ -114,7 +115,7 @@ export function PangolinProvider({
 
   return (
     <Provider store={store} context={StoreContext}>
-      <PangolinWeb3Provider chainId={chainId} library={library} account={account}>
+      <PangolinWeb3Provider chainId={chainId} library={library} account={account} key={chainId}>
         <MixPanelProvider mixpanelToken={mixpanelToken}>
           <ThemeProvider theme={theme}>
             <QueryClientProvider client={queryClient}>
@@ -147,6 +148,9 @@ export function PangolinProvider({
 }
 
 export * from './constants';
+export { SUPPORTED_WALLETS } from './constants/wallets';
+export { ROUTER_ADDRESS, MINICHEF_ADDRESS } from './constants/address';
+export { TIMEFRAME, SwapTypes } from './constants/swap';
 export * from './connectors';
 export * from './components';
 export * from './state/papplication/hooks';

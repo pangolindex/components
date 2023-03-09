@@ -1,22 +1,33 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { Field, typeInput } from './actions';
+import { Field, resetBurnState, typeInput } from './actions';
 
 export interface BurnState {
-  readonly independentField: Field;
-  readonly typedValue: string;
+  [x: string]: {
+    readonly independentField: Field;
+    readonly typedValue: string;
+  };
 }
 
-const initialState: BurnState = {
-  independentField: Field.LIQUIDITY_PERCENT,
+export const initialKeyState = {
+  independentField: Field.CURRENCY_A,
   typedValue: '0',
 };
 
+const initialState: BurnState = {};
+
 export default createReducer<BurnState>(initialState, (builder) =>
-  builder.addCase(typeInput, (state, { payload: { field, typedValue } }) => {
-    return {
-      ...state,
-      independentField: field,
-      typedValue,
-    };
-  }),
+  builder
+    .addCase(typeInput, (state, { payload: { pairAddress, field, typedValue } }) => {
+      const pairState = state[pairAddress] ? { ...state[pairAddress] } : initialKeyState;
+      state[pairAddress] = {
+        ...pairState,
+        independentField: field,
+        typedValue,
+      };
+      return state;
+    })
+    .addCase(resetBurnState, (state, { payload: { pairAddress } }) => {
+      state[pairAddress] = initialKeyState;
+      return state;
+    }),
 );

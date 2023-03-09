@@ -62,6 +62,7 @@
     "unclaimedReward": "{{ symbol }} não resgatado",
     "claim": "Reivindicar",
     "claimReward": "Reivindicar {{ symbol }}",
+    "claimRewards": "Reivindicar recompensas",
     "liquidityRemainsPool": "Quando você resgata sem retirar sua liquidez ela permanece na pool de mineração.",
     "withdrawingLiquidity": "Retirado {{ amount }} {{ symbol }}",
     "claimingReward": "Reivindicando {{ amount }} {{ symbol }}",
@@ -747,7 +748,7 @@
   },
   "pangoChef": {
     "claimWarning1": "Quando você reivindica sem retirar sua liquidez permanece no pool de mineração.",
-    "claimWarning2": "Reivindicar suas recompensas reduzirá sua APR para 0. Em vez disso, você pode optar por compor.",
+    "claimWarning2": "Reivindicar suas recompensas reivindicará todos os tokens pendentes, incluindo recompensas da Super Fazenda e reiniciará sua APR para 0%. Em vez disso, você pode optar por compor.",
     "compoundWarning": "A composição de suas recompensas para a farm {{ token0 }}-{{ token1 }} fará com que suas recompensas sejam apostadas na farm {{ stakeToken0 }}-{{ stakeToken1 }}. Você precisa adicionar o valor igual de {{ compoundToken }} para suas recompensas acumuladas de {{ png }}.",
     "compoundAmountWarning": "Você precisa adicionar {{ amount }} {{ symbol }} para compor. Por favor, esteja ciente de que a composição pode diminuir ligeiramente o seu APR.",
     "compoundAmountWarning2": "Tenha cuidado para bloquear sua pool de {{ token0 }} {{ token1 }} até reivindicar as recompensas desta pool.",
@@ -758,6 +759,26 @@
     "lockingPoolZeroWarning": "Você não pode remover sua liquidez ou reivindicar suas recompensas neste farm. Para fazer isso, primeiro você precisa reivindicar ou remover sua participação nestas fazendas: ",
     "decreaseWarning": "Seu APR diminuirá porque a nova parte composta começa com APR 0 e uma média será feita entre a parte antiga e a nova.",
     "createStorageContract": "Create Storage Contract"
+  },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    }
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -846,6 +867,11 @@
     "save": "Save",
     "close": "Close",
     "back": "Back",
-    "noDataAvailable": "No data available!"
+    "noDataAvailable": "No data available!",
+    "sortBy": "Sort By",
+    "max": "Max",
+    "min": "Min",
+    "open": "Open",
+    "closed": "Closed"
   }
 }
