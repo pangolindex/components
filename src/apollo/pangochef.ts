@@ -67,7 +67,7 @@ export const GET_PANGOCHEF = gql`
       periodFinish
       periodDuration
       totalRewardAdded
-      farms {
+      farms(first: 1000) {
         id
         pid
         tvl

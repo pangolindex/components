@@ -7,7 +7,7 @@ export const GET_MINICHEF = gql`
       totalAllocPoint
       rewardPerSecond
       rewardsExpiration
-      farms {
+      farms(first: 1000) {
         id
         pid
         tvl
