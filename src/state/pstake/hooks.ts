@@ -20,7 +20,7 @@ import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { MINICHEF_ADDRESS } from 'src/constants/address';
-import { DAIe, PNG, USDC, USDCe, USDTe, axlUST } from 'src/constants/tokens';
+import { DAIe, PNG, USDC, USDCe, USDTe } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
@@ -370,9 +370,6 @@ export const tokenComparator = (
   // Sort PNG first
   else if (addressA === PNG[ChainId.AVALANCHE].address) return -1;
   else if (addressB === PNG[ChainId.AVALANCHE].address) return 1;
-  // Sort axlUST first
-  else if (addressA === axlUST[ChainId.AVALANCHE].address) return -1;
-  else if (addressB === axlUST[ChainId.AVALANCHE].address) return 1;
   // Sort USDC first
   else if (addressA === USDC[ChainId.AVALANCHE].address) return -1;
   else if (addressB === USDC[ChainId.AVALANCHE].address) return 1;
@@ -627,12 +624,6 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
           totalStakedInUsd = CHAINS[(chainId as ChainId) || ChainId].mainnet
             ? new TokenAmount(USDC[chainId], stakedValueInUSDC)
             : undefined;
-        } else if (pair.involvesToken(axlUST[chainId])) {
-          const pairValueInUST = JSBI.multiply(pair.reserveOfToken(axlUST[chainId]).raw, BIG_INT_TWO);
-          const stakedValueInUST = JSBI.divide(JSBI.multiply(pairValueInUST, totalSupplyStaked), totalSupplyAvailable);
-          totalStakedInUsd = CHAINS[(chainId as ChainId) || ChainId].mainnet
-            ? new TokenAmount(axlUST[chainId], stakedValueInUST)
-            : undefined;
         } else if (pair.involvesToken(USDTe[chainId])) {
           const pairValueInUSDT = JSBI.multiply(pair.reserveOfToken(USDTe[chainId]).raw, BIG_INT_TWO);
           const stakedValueInUSDT = JSBI.divide(
@@ -797,16 +788,13 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
 
       const pair = farm.pair;
 
-      const axlUSTToken = axlUST[chainId];
-      const axlUSTAddress = axlUSTToken.address;
-
       const pairToken0 = pair?.token0;
 
       const token0 = new Token(
         chainId,
         getAddress(pairToken0.id),
         Number(pairToken0.decimals),
-        axlUSTAddress.toLowerCase() === pairToken0.id.toLowerCase() ? axlUSTToken.symbol : pairToken0.symbol,
+        pairToken0.symbol,
         pairToken0.name,
       );
 
@@ -815,7 +803,7 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
         chainId,
         getAddress(pairToken1.id),
         Number(pairToken1.decimals),
-        axlUSTAddress.toLowerCase() === pairToken1.id.toLowerCase() ? axlUSTToken.symbol : pairToken1.symbol,
+        pairToken1.symbol,
         pairToken1.name,
       );
 
