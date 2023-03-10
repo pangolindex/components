@@ -1,7 +1,6 @@
 import { JSBI } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
 import { BIG_INT_ZERO } from 'src/constants';
-import { useMinichefPools } from 'src/state/pstake/hooks';
 import { MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
 import PoolListV2 from '../PoolList/PoolListV2';
 
@@ -14,8 +13,6 @@ interface Props {
 }
 
 const PoolV2: React.FC<Props> = ({ type, setMenu, activeMenu, menuItems, miniChefStakingInfo }) => {
-  const poolMap = useMinichefPools();
-
   const stakingInfos = useMemo(() => {
     switch (type) {
       case PoolType.all:
@@ -42,7 +39,6 @@ const PoolV2: React.FC<Props> = ({ type, setMenu, activeMenu, menuItems, miniChe
     <PoolListV2
       version="2"
       stakingInfos={stakingInfos}
-      poolMap={poolMap}
       activeMenu={activeMenu}
       setMenu={setMenu}
       menuItems={menuItems}

@@ -10,7 +10,6 @@ import PoolCardListView, { SortingType } from './PoolCardListView';
 export interface EarnProps {
   version: string;
   stakingInfos: MinichefStakingInfo[];
-  poolMap?: { [key: string]: number };
   setMenu: (value: string) => void;
   activeMenu: string;
   menuItems: Array<{ label: string; value: string }>;
