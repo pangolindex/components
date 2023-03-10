@@ -984,13 +984,7 @@ export function useGetPangoChefInfosViaSubgraph() {
         (memo, rewardToken) => {
           const tokenObj = rewardToken.token;
           const _address = getAddress(tokenObj.id);
-          const _token = new Token(
-            chainId,
-            getAddress(tokenObj.id),
-            Number(tokenObj.decimals),
-            tokenObj.symbol,
-            tokenObj.name,
-          );
+          const _token = new Token(chainId, _address, Number(tokenObj.decimals), tokenObj.symbol, tokenObj.name);
           const _multiplier = JSBI.BigInt(rewardToken?.multiplier.toString());
 
           // remove png from rewards

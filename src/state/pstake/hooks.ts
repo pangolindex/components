@@ -33,14 +33,7 @@ import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { useMiniChefContract, useRewardViaMultiplierContract } from '../../hooks/useContract';
 import { tryParseAmount } from '../../state/pswap/hooks';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import {
-  DoubleSideStaking,
-  DoubleSideStakingInfo,
-  MinichefFarm,
-  MinichefFarmReward,
-  MinichefStakingInfo,
-  MinichefV2,
-} from './types';
+import { DoubleSideStaking, DoubleSideStakingInfo, MinichefFarm, MinichefStakingInfo, MinichefV2 } from './types';
 
 // Each APR request performs an upper bound of (6 + 11n) subrequests where n = pid count
 // API requests cannot exceed 50 subrequests and therefore `chunkSize` is set to 4
@@ -899,15 +892,29 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
 
       const pid = farm?.pid;
 
-      const rewardTokens = rewardsAddresses.map((rewardToken: MinichefFarmReward) => {
-        const tokenObj = rewardToken.token;
-        return new Token(chainId, getAddress(tokenObj.id), tokenObj.decimals, tokenObj.symbol, tokenObj.name);
-      });
+      const { rewardTokensAddress, rewardTokens, rewardMultipliers } = rewardsAddresses.reduce(
+        (memo, rewardToken) => {
+          const tokenObj = rewardToken.token;
+          const _address = getAddress(tokenObj.id);
+          const _token = new Token(chainId, _address, Number(tokenObj.decimals), tokenObj.symbol, tokenObj.name);
+          const _multiplier = JSBI.BigInt(rewardToken?.multiplier.toString());
 
-      const rewardTokensAddress = rewardsAddresses.map((rewardToken: MinichefFarmReward) => {
-        const tokenObj = rewardToken.token;
-        return getAddress(tokenObj.id);
-      });
+          // remove png from rewards
+          if (_token.equals(png)) {
+            return memo;
+          }
+
+          memo.rewardTokensAddress.push(_address);
+          memo.rewardTokens.push(_token);
+          memo.rewardMultipliers.push(_multiplier);
+          return memo;
+        },
+        {
+          rewardTokensAddress: [] as string[],
+          rewardTokens: [] as Token[],
+          rewardMultipliers: [] as JSBI[],
+        },
+      );
 
       const getHypotheticalWeeklyRewardRate = (
         _stakedAmount: TokenAmount,
@@ -949,6 +956,7 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
         rewardsAddress,
         rewardTokens,
         rewardTokensAddress,
+        rewardTokensMultiplier: rewardMultipliers,
         swapFeeApr: farmApr.swapFeeApr,
         stakingApr: farmApr.stakingApr,
         combinedApr: farmApr.combinedApr,
