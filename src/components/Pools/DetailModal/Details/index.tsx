@@ -10,12 +10,12 @@ import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { convertCoingeckoTokens } from 'src/state/pcoingecko/hooks';
 import { useGetPoolDollerWorth } from 'src/state/pstake/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { DetailsContainer } from './styled';
 
 type Props = {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
 };
 
 const Details: React.FC<Props> = ({ stakingInfo }) => {

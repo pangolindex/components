@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { useTokenBalance } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
@@ -24,7 +24,7 @@ import {
 } from './styleds';
 
 export interface PoolCardViewProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   onClickViewDetail: () => void;
   version: number;
   combinedApr?: number;

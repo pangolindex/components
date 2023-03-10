@@ -6,13 +6,13 @@ import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { useMinichefPendingRewards } from 'src/state/pstake/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import ClaimDrawer from '../../ClaimDrawer';
 import RemoveDrawer from '../../RemoveDrawer';
 import { InnerWrapper, Wrapper } from './styleds';
 
 export interface EarnDetailProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
 }
 

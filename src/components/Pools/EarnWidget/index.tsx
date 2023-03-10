@@ -2,7 +2,7 @@ import { CHAINS, ChefType, Currency } from '@pangolindex/sdk';
 import React, { useState } from 'react';
 import { useChainId } from 'src/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { SpaceType, StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo, SpaceType } from 'src/state/pstake/types';
 import AddLiquidity from '../AddLiquidity';
 import StakeV3 from '../PangoChef/Stake';
 import Stake from '../Stake';
@@ -13,7 +13,7 @@ interface EarnWidgetProps {
   currencyA: Currency;
   currencyB: Currency;
   version: number;
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
 }
 
 const EarnWidget = ({ currencyA, currencyB, version, stakingInfo }: EarnWidgetProps) => {

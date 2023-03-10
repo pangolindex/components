@@ -4,7 +4,7 @@ import { Search } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DropdownMenu, Loader, TextInput } from 'src/components';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { Hidden } from 'src/theme/components';
 import DetailModal from '../DetailModal';
 import { LoadingWrapper, MobileGridContainer, PanelWrapper, PoolsWrapper } from './styleds';
@@ -37,7 +37,7 @@ export interface PoolCardListViewProps {
   isLoading: boolean;
   doesNotPoolExist: boolean;
   children: React.ReactNode;
-  selectedPool: StakingInfo;
+  selectedPool: DoubleSideStakingInfo;
 }
 
 const PoolCardListView = ({

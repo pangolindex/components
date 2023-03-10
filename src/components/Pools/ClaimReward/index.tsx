@@ -8,13 +8,13 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useStakingContract } from 'src/hooks/useContract';
 import { useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { waitForTransaction } from 'src/utils';
 import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
 export interface ClaimProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
   onClose: () => void;
 }
@@ -61,13 +61,17 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
         setHash(response.hash);
         const tokenA = stakingInfo.tokens[0];
         const tokenB = stakingInfo.tokens[1];
+
+        // farm version 0 is old and this has no pid
+        const pid = FARM_TYPE[version] !== FARM_TYPE[1] ? (stakingInfo as MinichefStakingInfo).pid : '';
+
         mixpanel.track(MixPanelEvents.CLAIM_REWARDS, {
           chainId: chainId,
           tokenA: tokenA?.symbol,
           tokenb: tokenB?.symbol,
           tokenA_Address: tokenA?.symbol,
           tokenB_Address: tokenB?.symbol,
-          pid: stakingInfo.pid,
+          pid: pid,
           farmType: FARM_TYPE[version]?.toLowerCase(),
         });
       } catch (error) {

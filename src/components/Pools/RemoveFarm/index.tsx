@@ -9,14 +9,14 @@ import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/ho
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
 import { useHederaPGLToken } from 'src/state/pwallet/hooks';
 import { hederaFn } from 'src/utils/hedera';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
 interface RemoveFarmProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
   onClose: () => void;
   // this prop will be used if user move away from first step
@@ -39,11 +39,13 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
 
   const png = PNG[chainId];
 
-  const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
-  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo?.rewardTokensAddress);
-  const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
-
   const chefType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
+
+  const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
+  const _rewardsTokens =
+    chefType === ChefType.MINI_CHEF ? undefined : (stakingInfo as MinichefStakingInfo)?.rewardTokens;
+  const rewardTokens = useGetRewardTokens(_rewardsTokens, stakingInfo?.rewardTokensAddress);
+  const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
   const mixpanel = useMixpanel();
 
@@ -79,7 +81,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
 
   const { callback: withdrawCallback, error: withdrawCallbackError } = useWithdrawCallback({
     version,
-    poolId: stakingInfo?.pid,
+    poolId: chefType === ChefType.MINI_CHEF ? undefined : (stakingInfo as MinichefStakingInfo)?.pid,
     stakedAmount: stakingInfo?.stakedAmount,
     stakingRewardAddress: stakingInfo?.stakingRewardAddress,
   });
@@ -146,8 +148,6 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
 
   const token0 = stakingInfo.tokens[0];
   const token1 = stakingInfo.tokens[1];
-
-  const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
   const renderButton = () => {
     if (!isHederaTokenAssociated && notAssociateTokens?.length > 0) {
@@ -223,7 +223,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
                 <Button
                   variant="primary"
                   onClick={
-                    cheftType === ChefType.PANGO_CHEF && !confirmRemove ? () => setConfirmRemove(true) : onWithdraw
+                    chefType === ChefType.PANGO_CHEF && !confirmRemove ? () => setConfirmRemove(true) : onWithdraw
                   }
                 >
                   {error ?? t('earn.withdrawAndClaim')}

@@ -39,7 +39,6 @@ import {
   MinichefFarmReward,
   MinichefStakingInfo,
   MinichefV2,
-  StakingInfo,
 } from './types';
 
 // Each APR request performs an upper bound of (6 + 11n) subrequests where n = pid count
@@ -129,7 +128,7 @@ export const useMinichefPools = (): { [key: string]: number } => {
   }, [lpTokensArr]);
 };
 
-export function useMinichefPendingRewards(miniChefStaking: StakingInfo | null) {
+export function useMinichefPendingRewards(miniChefStaking: DoubleSideStakingInfo | null) {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const useTokens = useTokensHook[chainId];
