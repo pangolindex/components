@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Field } from 'src/state/pswap/actions';
 import { tryParseAmount, useSwapActionHandlers } from 'src/state/pswap/hooks/common';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { useCurrencyBalance } from 'src/state/pwallet/hooks';
+import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { useChainId, usePangolinWeb3 } from '../index';
 import { useWETHContract } from '../useContract';
 import { NOT_APPLICABLE, WrapType } from './constant';

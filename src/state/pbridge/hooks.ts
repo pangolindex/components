@@ -27,7 +27,7 @@ import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { getSigner } from 'src/utils';
-import { useCurrencyBalances } from '../pwallet/hooks';
+import { useCurrencyBalances } from '../pwallet/hooks/common';
 import {
   ChainField,
   CurrencyField,

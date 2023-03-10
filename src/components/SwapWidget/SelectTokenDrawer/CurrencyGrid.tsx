@@ -2,7 +2,7 @@ import { Currency } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import { LoaderIcon } from 'src/components/Icons';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useCurrencyBalance } from 'src/state/pwallet/hooks';
+import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { CurrencyLogo, Text } from '../..';
 import { Balance, CurrencyRoot } from './styled';
 

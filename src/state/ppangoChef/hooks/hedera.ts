@@ -20,7 +20,7 @@ import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
 import { getExtraTokensWeeklyRewardRate } from 'src/state/pstake/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks';
+import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks/hedera';
 import { decimalToFraction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import {

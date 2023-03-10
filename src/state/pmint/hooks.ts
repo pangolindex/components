@@ -17,7 +17,7 @@ import { AppState, useDispatch, useSelector } from 'src/state';
 import { PairState, usePair } from '../../data/Reserves';
 import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency';
 import { tryParseAmount } from '../pswap/hooks/common';
-import { useCurrencyBalances } from '../pwallet/hooks';
+import { useCurrencyBalances } from '../pwallet/hooks/common';
 import { Field, typeInput } from './actions';
 import { initialKeyState } from './reducer';
 

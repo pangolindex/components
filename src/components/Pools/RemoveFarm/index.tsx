@@ -10,7 +10,7 @@ import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/ho
 import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/hooks';
 import { useGetEarnedAmount, useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
-import { useHederaPGLToken } from 'src/state/pwallet/hooks';
+import { useHederaPGLToken } from 'src/state/pwallet/hooks/hedera';
 import { hederaFn } from 'src/utils/hedera';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';

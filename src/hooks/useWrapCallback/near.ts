@@ -3,7 +3,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';
 import { tryParseAmount } from 'src/state/pswap/hooks/common';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { useCurrencyBalance } from 'src/state/pwallet/hooks';
+import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { Transaction, nearFn } from 'src/utils/near';
 import { useChainId, usePangolinWeb3 } from '../index';
 import { NOT_APPLICABLE, WrapType } from './constant';

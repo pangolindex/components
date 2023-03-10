@@ -29,7 +29,7 @@ import { isAddress, isEvmChain, validateAddressMapping } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useUserSlippageTolerance } from '../../puser/hooks';
-import { useCurrencyBalances } from '../../pwallet/hooks';
+import { useCurrencyBalances } from '../../pwallet/hooks/common';
 import {
   FeeInfo,
   Field,
