@@ -2,13 +2,13 @@ import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@pan
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO } from 'src/constants';
+import { usePair } from 'src/data/Reserves';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
+import { tryParseAmount } from 'src/state/pswap/hooks/common';
 import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { usePair } from '../../data/Reserves';
-import { tryParseAmount } from '../../state/pswap/hooks';
-import { wrappedCurrency } from '../../utils/wrappedCurrency';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Field, typeInput } from './actions';
 import { initialKeyState } from './reducer';
 

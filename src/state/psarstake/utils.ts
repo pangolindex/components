@@ -15,7 +15,7 @@ import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { CallState } from '../pmulticall/hooks';
 import { useDerivedStakeInfo } from '../pstake/hooks';
-import { tryParseAmount } from '../pswap/hooks';
+import { tryParseAmount } from '../pswap/hooks/common';
 import { useTransactionAdder } from '../ptransactions/hooks';
 import { useTokenBalanceHook } from '../pwallet/multiChainsHooks';
 import { Position, URI } from './types';

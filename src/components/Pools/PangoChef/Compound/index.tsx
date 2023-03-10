@@ -17,7 +17,7 @@ import { useTokensCurrencyPriceHook } from 'src/hooks/multiChainsHooks';
 import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { usePangoChefContract } from 'src/hooks/useContract';
-import { usePangoChefCompoundCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { usePangoChefCompoundCallbackHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { calculateCompoundSlippage } from 'src/state/ppangoChef/utils';
 import { useAccountBalanceHook, useTokenBalancesHook } from 'src/state/pwallet/multiChainsHooks';

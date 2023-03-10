@@ -1,12 +1,9 @@
 import { ChainId } from '@pangolindex/sdk';
+import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { useUsdPriceCoingecko } from './coingecko';
 import { useUSDCPrice } from './evm';
 import { useNearUSDCPrice } from './near';
 import { useSongBirdUSDPrice } from './songbird';
-
-export function useDummyHook() {
-  return undefined;
-}
 
 export type UseUSDCPriceHookType = {
   [chainId in ChainId]:

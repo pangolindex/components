@@ -6,7 +6,7 @@ import { Box, Button, Drawer, Stat, Text, Tooltip } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useGetLockingPoolsForPoolIdHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { useGetLockingPoolsForPoolIdHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';

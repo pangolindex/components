@@ -1,7 +1,7 @@
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';
-import { tryParseAmount } from 'src/state/pswap/hooks';
+import { tryParseAmount } from 'src/state/pswap/hooks/common';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks';
 import { Transaction, nearFn } from 'src/utils/near';

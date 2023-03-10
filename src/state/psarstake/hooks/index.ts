@@ -5,21 +5,21 @@ import {
   useDummyDerivativeSarStake,
   useDummyDerivativeSarUnstake,
   useDummySarPositions,
-} from './dummyHooks';
-import {
-  useDerivativeHederaSarClaim,
-  useDerivativeHederaSarCompound,
-  useDerivativeHederaSarStake,
-  useDerivativeHederaSarUnstake,
-  useHederaSarPositions,
-} from './hederaHooks';
+} from './dummy';
 import {
   useDerivativeSarClaim,
   useDerivativeSarCompound,
   useDerivativeSarStake,
   useDerivativeSarUnstake,
   useSarPositions,
-} from './hooks';
+} from './evm';
+import {
+  useDerivativeHederaSarClaim,
+  useDerivativeHederaSarCompound,
+  useDerivativeHederaSarStake,
+  useDerivativeHederaSarUnstake,
+  useHederaSarPositions,
+} from './hedera';
 
 export type useSarPositionsType = {
   [chainId in ChainId]: typeof useSarPositions | typeof useHederaSarPositions | typeof useDummySarPositions;
