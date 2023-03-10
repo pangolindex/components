@@ -4,7 +4,7 @@ import { Loader } from 'src/components/Loader';
 import { ZERO_ADDRESS } from 'src/constants';
 import { SwapTypes } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useAllTokens } from 'src/hooks/Tokens';
+import { useAllTokens } from 'src/hooks/useAllTokens';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Field } from '../../../state/pswap/actions';
 import { useSwapActionHandlers } from '../../../state/pswap/hooks';

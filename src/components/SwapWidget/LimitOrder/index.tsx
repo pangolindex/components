@@ -10,7 +10,7 @@ import { NATIVE } from 'src/constants';
 import { SwapTypes } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useTokenHook } from 'src/hooks/multiChainsHooks';
+import { useTokenHook } from 'src/hooks/tokens';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback/evm';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';

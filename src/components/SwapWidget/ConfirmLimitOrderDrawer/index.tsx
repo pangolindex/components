@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice';
+import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import { getEtherscanLink, isAddress, shortenAddress } from 'src/utils';
 import { computeFiatValuePriceImpact } from 'src/utils/computeFiatValuePriceImpact';
 import { Box, Button, CurrencyLogo, Loader, Text } from '../../';

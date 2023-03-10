@@ -5,8 +5,8 @@ import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/compo
 import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
 import { useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';

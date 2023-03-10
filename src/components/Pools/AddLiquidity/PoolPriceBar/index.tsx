@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Stat } from 'src/components';
 import { ONE_BIPS } from 'src/constants';
 import { useChainId } from 'src/hooks';
-import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
+import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { Field } from 'src/state/pmint/actions';
 import { GridContainer, Root } from './styled';
 
