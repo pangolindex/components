@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
-import { CHAINS, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, ChainId, ChefType, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import axios from 'axios';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -272,24 +272,42 @@ export function useDerivedStakeInfo(
   };
 }
 /**
- * here we can get rewardToken from address
- * @param rewardTokens
- * @param rewardTokensAddress
+ * here we can get rewards tokens from addresses or from array
+ * @param stakingInfo
  * @returns rewardTokens
  */
-export function useGetRewardTokens(rewardTokens?: Array<Token>, rewardTokensAddress?: Array<string>) {
+export function useGetRewardTokens(stakingInfo: DoubleSideStakingInfo) {
   const chainId = useChainId();
   const useTokens = useTokensHook[chainId];
-  const _rewardTokens = useTokens(rewardTokensAddress);
+
+  const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
+
+  function getRewardsTokensAddresses() {
+    // for another minichefs, if there is an array of reward tokens (stakingInfo.rewardTokens)
+    // we don't need to query for the tokens, so the addresses can be undefined
+    const _stakingInfo = stakingInfo as MinichefStakingInfo;
+    if (cheftType !== ChefType.MINI_CHEF && _stakingInfo.rewardTokens && _stakingInfo.rewardTokens.length > 0) {
+      return undefined;
+    }
+
+    return stakingInfo.rewardTokensAddress;
+  }
+
+  const tokensAddresses = getRewardsTokensAddresses();
+
+  const _rewardTokens = useTokens(tokensAddresses);
 
   return useMemo(() => {
+    const rewardTokens =
+      cheftType === ChefType.MINI_CHEF ? undefined : (stakingInfo as MinichefStakingInfo).rewardTokens;
+
     if (!rewardTokens && _rewardTokens) {
       // filter only tokens
       const tokens = _rewardTokens.filter((token) => token && token instanceof Token) as Token[];
       return tokens;
     }
     return rewardTokens;
-  }, [_rewardTokens, rewardTokens]);
+  }, [_rewardTokens, cheftType, stakingInfo]);
 }
 
 export const calculateTotalStakedAmountInAvax = function (

@@ -12,7 +12,7 @@ export interface PoolCardProps {
 const PoolCardV2 = ({ stakingInfo, onClickViewDetail, version }: PoolCardProps) => {
   const { combinedApr, earnedAmount } = stakingInfo;
 
-  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo.rewardTokensAddress);
+  const rewardTokens = useGetRewardTokens(stakingInfo);
 
   return (
     <PoolCardView

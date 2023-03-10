@@ -9,7 +9,7 @@ import { useChainId } from 'src/hooks';
 import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetRewardTokens } from 'src/state/pstake/hooks';
-import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { CloseIcon, Hidden, Visible } from 'src/theme/components';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RewardTokens from '../../RewardTokens';
@@ -32,12 +32,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
   const currency0 = unwrappedToken(token0, chainId);
   const currency1 = unwrappedToken(token1, chainId);
 
-  const _rewardTokens =
-    CHAINS[chainId].contracts?.mini_chef?.type === ChefType.MINI_CHEF
-      ? undefined
-      : (stakingInfo as MinichefStakingInfo).rewardTokens;
-
-  const rewardTokens = useGetRewardTokens(_rewardTokens, stakingInfo?.rewardTokensAddress);
+  const rewardTokens = useGetRewardTokens(stakingInfo);
 
   const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 

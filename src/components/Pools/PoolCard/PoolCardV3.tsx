@@ -10,7 +10,7 @@ export interface PoolCardProps {
 }
 
 const PoolCardV3 = ({ stakingInfo, onClickViewDetail, version }: PoolCardProps) => {
-  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo?.rewardTokensAddress);
+  const rewardTokens = useGetRewardTokens(stakingInfo);
 
   return (
     <PoolCardViewV3

@@ -42,9 +42,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
   const chefType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
   const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
-  const _rewardsTokens =
-    chefType === ChefType.MINI_CHEF ? undefined : (stakingInfo as MinichefStakingInfo)?.rewardTokens;
-  const rewardTokens = useGetRewardTokens(_rewardsTokens, stakingInfo?.rewardTokensAddress);
+  const rewardTokens = useGetRewardTokens(stakingInfo);
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
   const mixpanel = useMixpanel();

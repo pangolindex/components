@@ -35,7 +35,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
   const [claimError, setClaimError] = useState<string | undefined>();
 
   const pangoChefContract = usePangoChefContract();
-  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo?.rewardTokensAddress);
+  const rewardTokens = useGetRewardTokens(stakingInfo);
   const mixpanel = useMixpanel();
 
   const notAssociateTokens = useGetHederaTokenNotAssociated(rewardTokens || []);
