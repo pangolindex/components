@@ -76,6 +76,7 @@
     "hashconnect": "0.2.4",
     "i18next": "20.6.1",
     "i18next-browser-languagedetector": "^6.1.4",
+    "jotai": "^2.0.3",
     "lodash.flatmap": "4.5.0",
     "lodash.get": "^4.4.2",
     "lodash.isequal": "4.5.0",

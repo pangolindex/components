@@ -4,9 +4,8 @@ import { Line, LineChart, ResponsiveContainer } from 'recharts';
 import { ThemeContext } from 'styled-components';
 import { Box, Text } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useDispatch } from 'src/state';
 import { CoingeckoWatchListToken } from 'src/state/pcoingecko/hooks';
-import { removeCurrency } from 'src/state/pwatchlists/actions';
+import { useRemoveCurrencyFromWatchlist } from 'src/state/pwatchlists/atom';
 import { DeleteButton, RowWrapper } from './styleds';
 
 type Props = {
@@ -20,6 +19,7 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, isSelected, totalLength 
   const [showChart, setShowChart] = useState(false);
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const theme = useContext(ThemeContext);
+  const removeCurrency = useRemoveCurrencyFromWatchlist();
 
   const usdcPrice = coin?.price;
 
@@ -31,10 +31,9 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, isSelected, totalLength 
   const decreaseValue = currentUSDPrice - previousUSDPrice;
   const perc = (decreaseValue / previousUSDPrice) * 100;
 
-  const dispatch = useDispatch();
   const mixpanel = useMixpanel();
   const removeToken = () => {
-    dispatch(removeCurrency(coin?.id));
+    removeCurrency(coin?.id);
     mixpanel.track(MixPanelEvents.REMOVE_WATCHLIST, {
       token: coin?.symbol,
       tokenAddress: coin?.id,

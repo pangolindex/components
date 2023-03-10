@@ -4,9 +4,8 @@ import { Box, TextInput } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
 import usePrevious from 'src/hooks/usePrevious';
-import { AppState, useDispatch, useSelector } from 'src/state';
 import { CoingeckoWatchListToken, useCoinGeckoSearchTokens } from 'src/state/pcoingecko/hooks';
-import { addCurrency } from 'src/state/pwatchlists/actions';
+import { useAddCurrencyToWatchlist, useWatchlistAtom } from 'src/state/pwatchlists/atom';
 import CurrencyRow from './CurrencyRow';
 import { AddInputWrapper, CurrencyList, PopoverContainer } from './styled';
 
@@ -28,12 +27,11 @@ const CurrencyPopover: React.FC<Props> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
+  const addCurrency = useAddCurrencyToWatchlist();
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
   const { t } = useTranslation();
-  const allWatchlistCurrencies = useSelector<AppState['pwatchlists']['selectedCurrencies']>((state: AppState) =>
-    ([] as CoingeckoWatchListToken[]).concat(state?.pwatchlists?.selectedCurrencies || []),
-  );
+  const allWatchlistCurrencies = useWatchlistAtom();
 
   useEffect(() => {
     if (isOpen && !lastOpen) {
@@ -55,15 +53,13 @@ const CurrencyPopover: React.FC<Props> = ({
 
   const currencies = Object.values(filteredTokens || {}).length > 0 ? Object.values(filteredTokens || {}) : coins;
 
-  const dispatch = useDispatch();
-
   const mixpanel = useMixpanel();
 
   const onCurrencySelection = useCallback(
     (currency: CoingeckoWatchListToken) => {
-      dispatch(addCurrency(currency));
+      addCurrency(currency);
     },
-    [dispatch],
+    [addCurrency],
   );
 
   return (
