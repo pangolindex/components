@@ -35,7 +35,7 @@ import {
   updateMinichefStakingAllFarmsEarnedAmount,
 } from 'src/state/pstake/actions';
 import { tryParseAmount } from 'src/state/pswap/hooks/common';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { useMiniChefContract, useRewardViaMultiplierContract, useStakingContract } from '../../hooks/useContract';
 import { AppState, useDispatch, useSelector } from '../index';

@@ -17,7 +17,7 @@ import { CallState } from '../pmulticall/hooks';
 import { useDerivedStakeInfo } from '../pstake/hooks';
 import { tryParseAmount } from '../pswap/hooks/common';
 import { useTransactionAdder } from '../ptransactions/hooks';
-import { useTokenBalanceHook } from '../pwallet/multiChainsHooks';
+import { useTokenBalanceHook } from '../pwallet/hooks';
 import { Position, URI } from './types';
 
 /**

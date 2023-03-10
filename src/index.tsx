@@ -66,8 +66,8 @@ import {
 
 import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransactions/hooks';
 import TransactionUpdater from 'src/state/ptransactions/updater';
-import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/hooks';
+import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { existSarContract, getEtherscanLink, isEvmChain, shortenAddress, shortenAddressMapping } from 'src/utils';
 import chunkArray from 'src/utils/chunkArray';
 import listVersionLabel from 'src/utils/listVersionLabel';

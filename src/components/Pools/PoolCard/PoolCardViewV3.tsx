@@ -8,7 +8,7 @@ import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks/common';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import FarmDrawer from '../FarmDrawer';

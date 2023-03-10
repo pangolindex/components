@@ -7,7 +7,7 @@ import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { tryParseAmount } from 'src/state/pswap/hooks/common';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Field, typeInput } from './actions';
 import { initialKeyState } from './reducer';

@@ -20,7 +20,7 @@ import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePangoChefCompoundCallbackHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { calculateCompoundSlippage } from 'src/state/ppangoChef/utils';
-import { useAccountBalanceHook, useTokenBalancesHook } from 'src/state/pwallet/multiChainsHooks';
+import { useAccountBalanceHook, useTokenBalancesHook } from 'src/state/pwallet/hooks';
 import { hederaFn } from 'src/utils/hedera';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root, WarningMessageWrapper } from './styleds';

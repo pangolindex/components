@@ -17,7 +17,7 @@ import { useHederaSarNFTContract } from 'src/hooks/useContract';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/state/psarstake/hooks';
 import { useSarStakeInfo } from 'src/state/psarstake/hooks/evm';
-import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { useTokenBalanceHook } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';

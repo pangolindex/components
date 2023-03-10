@@ -19,7 +19,7 @@ import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/h
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useDerivedStakeInfo, useGetPoolDollerWorth, useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { SpaceType } from 'src/state/pstake/types';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
 import ConfirmDrawer from './ConfirmDrawer';
 import {
