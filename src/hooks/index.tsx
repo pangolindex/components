@@ -4,11 +4,11 @@ import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
-import { hashConnect, network } from 'src/connectors';
-import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
+import { network } from 'src/connectors';
+//import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { PROVIDER_MAPPING } from 'src/constants/wallets';
-import { useDispatch } from 'src/state';
-import { setAvailableHashpack } from 'src/state/papplication/actions';
+//import { useDispatch } from 'src/state';
+//import { setAvailableHashpack } from 'src/state/papplication/actions';
 import { isAddress } from 'src/utils';
 
 interface Web3State {
@@ -40,36 +40,36 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   chainId,
   account,
 }: Web3ProviderProps) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const { activate } = useWeb3React();
+  // const { activate } = useWeb3React();
 
   // this is special case for hashpack wallet
   // we need to listen for
   // 1. hashpack wallet installed or not event and we are storing this boolean to redux so that
   // 2. if user open pangolin in dApp browser then we need to manually calls ACTIVATE_CONNECTOR
   // in walletModal we can re-render as value updates
-  useEffect(() => {
-    const emitterFn = (isHashpackAvailable: boolean) => {
-      console.log('received hashpack emit event CHECK_EXTENSION in provider', isHashpackAvailable);
-      dispatch(setAvailableHashpack(true));
-    };
-    hashconnectEvent.on(HashConnectEvents.CHECK_EXTENSION, emitterFn);
+  // useEffect(() => {
+  //   const emitterFn = (isHashpackAvailable: boolean) => {
+  //     console.log('received hashpack emit event CHECK_EXTENSION in provider', isHashpackAvailable);
+  //     dispatch(setAvailableHashpack(true));
+  //   };
+  //   hashconnectEvent.on(HashConnectEvents.CHECK_EXTENSION, emitterFn);
 
-    // Here when load in iframe  we need to internally activate connector to connect account
-    const emitterFnForActivateConnector = (isIframeEventFound: boolean) => {
-      console.log('received hashpack emit event ACTIVATE_CONNECTOR in provider', isIframeEventFound);
-      activate(hashConnect);
-    };
-    hashconnectEvent.once(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
+  //   // Here when load in iframe  we need to internally activate connector to connect account
+  //   const emitterFnForActivateConnector = (isIframeEventFound: boolean) => {
+  //     console.log('received hashpack emit event ACTIVATE_CONNECTOR in provider', isIframeEventFound);
+  //     activate(hashConnect);
+  //   };
+  //   hashconnectEvent.once(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
 
-    return () => {
-      console.log('removing hashpack CHECK_EXTENSION event listener');
-      hashconnectEvent.off(HashConnectEvents.CHECK_EXTENSION, emitterFn);
-      console.log('removing hashpack ACTIVATE_CONNECTOR event listener');
-      hashconnectEvent.off(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
-    };
-  }, []);
+  //   return () => {
+  //     console.log('removing hashpack CHECK_EXTENSION event listener');
+  //     hashconnectEvent.off(HashConnectEvents.CHECK_EXTENSION, emitterFn);
+  //     console.log('removing hashpack ACTIVATE_CONNECTOR event listener');
+  //     hashconnectEvent.off(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
+  //   };
+  // }, []);
 
   const state = useMemo(() => {
     let normalizedAccount;
