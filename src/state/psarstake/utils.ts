@@ -9,15 +9,15 @@ import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useMixpanel } from 'src/hooks/mixpanel';
-import { useUSDCPriceHook } from 'src/hooks/multiChainsHooks';
 import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
 import { useSarStakingContract } from 'src/hooks/useContract';
+import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { CallState } from '../pmulticall/hooks';
 import { useDerivedStakeInfo } from '../pstake/hooks';
-import { tryParseAmount } from '../pswap/hooks';
+import { tryParseAmount } from '../pswap/hooks/common';
 import { useTransactionAdder } from '../ptransactions/hooks';
-import { useTokenBalanceHook } from '../pwallet/multiChainsHooks';
+import { useTokenBalanceHook } from '../pwallet/hooks';
 import { Position, URI } from './types';
 
 /**

@@ -3,7 +3,7 @@ import { ChainId, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { useSubgraphPairs } from 'src/apollo/pairs';
 import { useChainId } from 'src/hooks';
-import { useHederaTokensMetaData } from 'src/state/pwallet/hooks';
+import { useHederaTokensMetaData } from 'src/state/pwallet/hooks/hedera';
 import { nearFn } from 'src/utils/near';
 import { PNG } from '../constants/tokens';
 import { useTokenContract } from '../hooks/useContract';

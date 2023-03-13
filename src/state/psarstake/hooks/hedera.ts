@@ -4,15 +4,15 @@ import { Fraction, JSBI } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
+import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useHederaSarNFTContract, useSarStakingContract } from 'src/hooks/useContract';
 import { existSarContract } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
-import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { Position, URI } from './types';
-import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from './utils';
+import { useSingleCallResult, useSingleContractMultipleData } from '../../pmulticall/hooks';
+import { Position, URI } from '../types';
+import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from '../utils';
 
 export function useHederaExchangeRate() {
   return useQuery(

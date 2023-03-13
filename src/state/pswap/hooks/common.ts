@@ -20,16 +20,16 @@ import { NATIVE } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { SWAP_DEFAULT_CURRENCY } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useCurrency, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
+import { useCurrency } from 'src/hooks/useCurrency';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { isAddress, isEvmChain, validateAddressMapping } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { useUserSlippageTolerance } from '../puser/hooks';
-import { useCurrencyBalances } from '../pwallet/hooks';
+import { useUserSlippageTolerance } from '../../puser/hooks';
+import { useCurrencyBalances } from '../../pwallet/hooks/common';
 import {
   FeeInfo,
   Field,
@@ -40,8 +40,8 @@ import {
   typeInput,
   updateFeeInfo,
   updateFeeTo,
-} from './actions';
-import { DefaultSwapState, SwapParams } from './reducer';
+} from '../actions';
+import { DefaultSwapState, SwapParams } from '../reducer';
 
 export interface LimitOrderInfo extends Order {
   pending?: boolean;
@@ -272,36 +272,6 @@ export function useDerivedSwapInfo(): {
     inputError,
     v1Trade,
     isLoading,
-  };
-}
-
-export function useHederaSwapTokenAssociated(): {
-  associate: undefined | (() => Promise<void>);
-  isLoading: boolean;
-  hederaAssociated: boolean;
-} {
-  const chainId = useChainId();
-
-  const {
-    [Field.OUTPUT]: { currencyId: outputCurrencyId },
-  } = useSwapState();
-
-  const outputCurrency = useCurrency(outputCurrencyId);
-  const token = outputCurrency ? wrappedCurrency(outputCurrency, chainId) : undefined;
-  const { associate, isLoading, hederaAssociated } = useHederaTokenAssociated(token?.address, token?.symbol);
-
-  if (outputCurrency === CAVAX[chainId]) {
-    return {
-      associate: undefined,
-      isLoading: false,
-      hederaAssociated: true,
-    };
-  }
-
-  return {
-    associate,
-    isLoading,
-    hederaAssociated,
   };
 }
 

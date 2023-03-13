@@ -34,6 +34,7 @@ export { Portfolio } from './Portfolio';
 export { MyPortfolio } from './MyPortfolio';
 export { Stat } from './Stat';
 export { default as PoolsUI } from './Pools';
+export { default as ConcentratedLiquidity } from './ConcentratedLiquidity';
 export { default as Pools } from './Pools/Pool';
 export { default as DropdownMenu } from './DropdownMenu';
 export { default as Wallet } from './Pools/Wallet';

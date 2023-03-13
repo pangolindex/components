@@ -9,11 +9,11 @@ import { TRUSTED_TOKEN_ADDRESSES } from 'src/constants/address';
 import { DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { SwapTypes } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useCurrency } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useTokenHook } from 'src/hooks/multiChainsHooks';
+import { useTokenHook } from 'src/hooks/tokens';
 import { useApproveCallbackFromTradeHook } from 'src/hooks/useApproveCallback';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
+import { useCurrency } from 'src/hooks/useCurrency';
 import useENS from 'src/hooks/useENS';
 import { useSwapCallbackHook } from 'src/hooks/useSwapCallback';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
@@ -26,10 +26,10 @@ import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
-  useHederaSwapTokenAssociated,
   useSwapActionHandlers,
   useSwapState,
-} from 'src/state/pswap/hooks';
+} from 'src/state/pswap/hooks/common';
+import { useHederaSwapTokenAssociated } from 'src/state/pswap/hooks/hedera';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { isTokenOnList, validateAddressMapping } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
