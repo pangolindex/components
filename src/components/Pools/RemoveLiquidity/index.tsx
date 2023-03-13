@@ -121,9 +121,15 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoading, onComplete }: Remove
 
   const mixpanel = useMixpanel();
 
+  // on change the amount we need to change the steper
   useEffect(() => {
     setPercetage(Number(parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0)) / 25);
   }, [parsedAmounts]);
+
+  // reset signature when change percentage
+  useEffect(() => {
+    setSignatureData(null);
+  }, [percetage]);
 
   async function onRemove() {
     if (!chainId || !library || !account || !deadline) throw new Error(t('error.missingDependencies'));
