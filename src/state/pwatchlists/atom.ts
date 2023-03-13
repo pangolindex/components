@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
@@ -11,19 +11,6 @@ import {
 
 const localstorageKey = 'watchlist_pangolin';
 const watchlistAtom = atomWithStorage<CoingeckoWatchListToken[]>(localstorageKey, []);
-
-type useWatchlistType = [
-  CoingeckoWatchListToken[],
-  {
-    addCurrency: (currency: CoingeckoWatchListToken) => void;
-    removeCurrency: (id: string) => void;
-    updateCurrencies: (data: CoingeckoWatchListToken[]) => void;
-  },
-];
-
-export const useWatchlistAtom = () => {
-  return useAtomValue(watchlistAtom);
-};
 
 export const useWatchlist = () => {
   const [selectedCurrencies, setSelectedCurrencies] = useAtom(watchlistAtom);
@@ -63,12 +50,11 @@ export const useWatchlist = () => {
     [setSelectedCurrencies],
   );
 
-  return [selectedCurrencies, { addCurrency, removeCurrency, updateCurrencies }] as useWatchlistType;
+  return { selectedCurrencies, addCurrency, removeCurrency, updateCurrencies };
 };
 
 export function useSelectedCurrencyLists(): CoingeckoWatchListToken[] | undefined {
-  const [, { updateCurrencies }] = useWatchlist();
-  const allWatchlistCurrencies = useWatchlistAtom();
+  const { selectedCurrencies: allWatchlistCurrencies, updateCurrencies } = useWatchlist();
 
   const coinIds = (allWatchlistCurrencies || []).map((item) => {
     return item.id;

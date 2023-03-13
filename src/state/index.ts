@@ -16,14 +16,7 @@ import ptoken from './ptoken/reducer';
 import ptransactions from './ptransactions/reducer';
 import puser from './puser/reducer';
 
-export const PANGOLIN_PERSISTED_KEYS: string[] = [
-  'puser',
-  'plists',
-  'ptransactions',
-  'pwatchlists',
-  'ptoken',
-  'pstake',
-];
+export const PANGOLIN_PERSISTED_KEYS: string[] = ['puser', 'plists', 'ptransactions', 'ptoken', 'pstake'];
 
 export const pangolinReducers = {
   papplication,
