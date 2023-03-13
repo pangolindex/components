@@ -3,8 +3,8 @@ import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
 import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
-import { fetchChunkedAprs, sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/hooks';
 import { DoubleSideStakingInfo } from 'src/state/pstake/types';
+import { fetchChunkedAprs, sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/utils';
 import PoolCardV1 from '../PoolCard/PoolCardV1';
 import PoolCardListView, { SortingType } from './PoolCardListView';
 

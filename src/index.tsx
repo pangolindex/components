@@ -34,16 +34,15 @@ import { useCoinGeckoTokenData } from 'src/state/pcoingecko/hooks';
 import ListsUpdater from 'src/state/plists/updater';
 import MulticallUpdater from 'src/state/pmulticall/updater';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/hooks';
+import { useMinichefStakingInfosHook } from 'src/state/pstake/hooks';
+import { useDerivedStakeInfo, useMinichefPools } from 'src/state/pstake/hooks/common';
+import { useMinichefStakingInfos } from 'src/state/pstake/hooks/evm';
+import { DoubleSideStaking, DoubleSideStakingInfo, MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
 import {
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
   fetchChunkedAprs,
-  useDerivedStakeInfo,
-  useMinichefPools,
-  useMinichefStakingInfos,
-} from 'src/state/pstake/hooks';
-import { useMinichefStakingInfosHook } from 'src/state/pstake/multiChainsHooks';
-import { DoubleSideStaking, DoubleSideStakingInfo, MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
+} from 'src/state/pstake/utils';
 import { useGelatoLimitOrdersListHook } from 'src/state/pswap/hooks';
 import {
   LimitOrderInfo,

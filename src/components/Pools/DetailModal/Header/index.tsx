@@ -8,7 +8,7 @@ import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
 import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks/common';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useGetRewardTokens } from 'src/state/pstake/hooks';
+import { useGetRewardTokens } from 'src/state/pstake/hooks/common';
 import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { CloseIcon, Hidden, Visible } from 'src/theme/components';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';

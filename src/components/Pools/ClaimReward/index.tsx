@@ -7,7 +7,7 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useStakingContract } from 'src/hooks/useContract';
-import { useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
+import { useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks/common';
 import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { waitForTransaction } from 'src/utils';

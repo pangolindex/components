@@ -2,8 +2,8 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { BIG_INT_ZERO } from 'src/constants';
 import useDebounce from 'src/hooks/useDebounce';
 import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
-import { sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/hooks';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
+import { sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/utils';
 import PoolCardV2 from '../PoolCard/PoolCardV2';
 import PoolCardListView, { SortingType } from './PoolCardListView';
 

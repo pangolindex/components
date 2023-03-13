@@ -1,5 +1,6 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyMinichefHook, useGetMinichefStakingInfosViaSubgraph, useMinichefStakingInfos } from './hooks';
+import { useDummyMinichefHook } from './dummy';
+import { useGetMinichefStakingInfosViaSubgraph, useMinichefStakingInfos } from './evm';
 
 export type UseMinichefStakingInfosHookType = {
   [chainId in ChainId]:

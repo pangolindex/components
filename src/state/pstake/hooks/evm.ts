@@ -1,88 +1,37 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
-import { CHAINS, ChainId, ChefType, CurrencyAmount, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
-import axios from 'axios';
+import { CHAINS, ChainId, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { SubgraphEnum, getSubgraphClient } from 'src/apollo/client';
 import { GET_MINICHEF } from 'src/apollo/minichef';
-import {
-  BIG_INT_SECONDS_IN_WEEK,
-  BIG_INT_TWO,
-  BIG_INT_ZERO,
-  ONE_TOKEN,
-  PANGOLIN_API_BASE_URL,
-  ZERO_ADDRESS,
-} from 'src/constants';
+import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_TWO, BIG_INT_ZERO, ONE_TOKEN } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { MINICHEF_ADDRESS } from 'src/constants/address';
 import { DAIe, PNG, USDC, USDCe, USDTe } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
-import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTokensHook } from 'src/hooks/tokens';
 import { useTokens } from 'src/hooks/tokens/evm';
-import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
-import { tryParseAmount } from 'src/state/pswap/hooks/common';
-import { usePairBalanceHook } from 'src/state/pwallet/hooks';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
-import { useMiniChefContract, useRewardViaMultiplierContract } from '../../hooks/useContract';
-import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { DoubleSideStaking, DoubleSideStakingInfo, MinichefFarm, MinichefStakingInfo, MinichefV2 } from './types';
-
-// Each APR request performs an upper bound of (6 + 11n) subrequests where n = pid count
-// API requests cannot exceed 50 subrequests and therefore `chunkSize` is set to 4
-// ie (6 + 11(4)) = 50
-
-interface AprResult {
-  swapFeeApr: number;
-  stakingApr: number;
-  combinedApr: number;
-}
-
-const pangolinApi = axios.create({
-  baseURL: PANGOLIN_API_BASE_URL,
-  timeout: 10000,
-});
-
-export const fetchChunkedAprs = async (pids: string[], chainId: ChainId, chunkSize = 4) => {
-  const pidChunks: string[][] = [];
-
-  for (let i = 0; i < pids.length; i += chunkSize) {
-    const pidChunk = pids.slice(i, i + chunkSize);
-    pidChunks.push(pidChunk);
-  }
-
-  const chunkedResults = await Promise.all(
-    pidChunks.map((chunk) => pangolinApi.get<AprResult[]>(`/v2/${chainId}/pangolin/aprs/${chunk.join(',')}`)),
-  );
-
-  const datas = chunkedResults.map((response) => response.data);
-
-  return datas.flat();
-};
-
-export const sortingOnAvaxStake = (info_a: DoubleSideStakingInfo, info_b: DoubleSideStakingInfo) => {
-  // only first has ended
-  if (info_a.isPeriodFinished && !info_b.isPeriodFinished) return 1;
-  // only second has ended
-  if (!info_a.isPeriodFinished && info_b.isPeriodFinished) return -1;
-  // greater stake in avax comes first
-  return info_a.totalStakedInUsd?.greaterThan(info_b.totalStakedInUsd ?? BIG_INT_ZERO) ? -1 : 1;
-};
-
-export const sortingOnStakedAmount = (info_a: DoubleSideStakingInfo, info_b: DoubleSideStakingInfo) => {
-  // only the first is being staked, so we should bring the first up
-  if (info_a.stakedAmount.greaterThan(BIG_INT_ZERO) && !info_b.stakedAmount.greaterThan(BIG_INT_ZERO)) return -1;
-  // only the second is being staked, so we should bring the first down
-  if (!info_a.stakedAmount.greaterThan(BIG_INT_ZERO) && info_b.stakedAmount.greaterThan(BIG_INT_ZERO)) return 1;
-  return 0;
-};
+import { useMiniChefContract } from '../../../hooks/useContract';
+import {
+  useMultipleContractSingleData,
+  useSingleCallResult,
+  useSingleContractMultipleData,
+} from '../../pmulticall/hooks';
+import { DoubleSideStaking, MinichefFarm, MinichefStakingInfo, MinichefV2 } from '../types';
+import {
+  AprResult,
+  calculateTotalStakedAmountInAvax,
+  calculateTotalStakedAmountInAvaxFromPng,
+  fetchChunkedAprs,
+  getExtraTokensWeeklyRewardRate,
+  tokenComparator,
+} from '../utils';
+import { useMinichefPools } from './common';
 
 export function useMichefFarmsAprs(pids: string[]) {
   const chainId = useChainId();
@@ -105,295 +54,6 @@ export function useMichefFarmsAprs(pids: string[]) {
     },
   );
 }
-
-export const useMinichefPools = (): { [key: string]: number } => {
-  const minichefContract = useMiniChefContract();
-  const lpTokens = useSingleCallResult(minichefContract, 'lpTokens', []).result;
-  const lpTokensArr = lpTokens?.[0];
-
-  return useMemo(() => {
-    const poolMap: { [key: string]: number } = {};
-    if (lpTokensArr) {
-      lpTokensArr.forEach((address: string, index: number) => {
-        poolMap[address] = index;
-      });
-    }
-    return poolMap;
-  }, [lpTokensArr]);
-};
-
-export function useMinichefPendingRewards(miniChefStaking: DoubleSideStakingInfo | null) {
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-  const useTokens = useTokensHook[chainId];
-  const rewardData = useRef(
-    {} as {
-      rewardTokensAmount: TokenAmount[];
-      rewardTokensMultiplier: any;
-    },
-  );
-
-  const rewardAddress = miniChefStaking?.rewardsAddress;
-  const rewardContract = useRewardViaMultiplierContract(rewardAddress !== ZERO_ADDRESS ? rewardAddress : undefined);
-  const getRewardTokensRes = useSingleCallResult(rewardContract, 'getRewardTokens');
-  const getRewardMultipliersRes = useSingleCallResult(rewardContract, 'getRewardMultipliers');
-
-  // this function will always return the maximum value earnedAmount
-  const getEarnedAmount = useCallback(() => {
-    // else if exist miniChefStaking.earnedAmount use this
-    if (miniChefStaking?.earnedAmount) {
-      return miniChefStaking.earnedAmount;
-    }
-    return new TokenAmount(PNG[chainId], '0');
-  }, [miniChefStaking?.earnedAmount, chainId]);
-
-  const earnedAmount = getEarnedAmount();
-
-  const rewardTokensAddress = getRewardTokensRes?.result?.[0];
-
-  const rewardTokensMultiplier = getRewardMultipliersRes?.result?.[0];
-  const earnedAmountStr = earnedAmount ? JSBI.BigInt(earnedAmount?.raw).toString() : JSBI.BigInt(0).toString();
-
-  const emptyArr = useMemo(() => [], []);
-
-  const pendingTokensParams = useMemo(() => [[0, account as string, earnedAmountStr]], [account, earnedAmountStr]);
-  const pendingTokensRes = useSingleContractMultipleData(
-    rewardContract,
-    'pendingTokens',
-    account ? pendingTokensParams : emptyArr,
-  );
-
-  const isLoading = pendingTokensRes?.[0]?.loading;
-  const rewardTokens = useTokens(rewardTokensAddress);
-
-  const rewardAmounts = pendingTokensRes?.[0]?.result?.amounts || emptyArr; // eslint-disable-line react-hooks/exhaustive-deps
-
-  const rewardTokensAmount = useMemo(() => {
-    if (!rewardTokens) return emptyArr;
-
-    return rewardTokens.map((rewardToken, index) => new TokenAmount(rewardToken as Token, rewardAmounts[index] || 0));
-  }, [rewardAmounts, rewardTokens]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      rewardData.current = {
-        rewardTokensAmount,
-        rewardTokensMultiplier,
-      };
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rewardTokens, rewardTokensAmount, rewardTokensMultiplier, isLoading]);
-
-  return rewardData.current;
-}
-
-export function useGetPoolDollerWorth(pair: Pair | null) {
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-
-  const usePairBalance = usePairBalanceHook[chainId];
-  const usePairTotalSupply = usePairTotalSupplyHook[chainId];
-  const _useUSDCPrice = useUSDCPriceHook[chainId];
-  const token0 = pair?.token0;
-  const currency0 = unwrappedToken(token0 as Token, chainId);
-  const currency0PriceTmp = _useUSDCPrice(currency0);
-  const currency0Price = CHAINS[chainId]?.mainnet ? currency0PriceTmp : undefined;
-
-  const userPgl = usePairBalance(account ?? undefined, pair ?? undefined);
-  const totalPoolTokens = usePairTotalSupply(pair ?? undefined);
-
-  const [token0Deposited] =
-    !!pair &&
-    !!totalPoolTokens &&
-    !!userPgl &&
-    JSBI.greaterThan(totalPoolTokens.raw, BIG_INT_ZERO) &&
-    JSBI.greaterThan(userPgl.raw, BIG_INT_ZERO) &&
-    // this condition is a short-circuit in the case where useTokenBalance updates sooner than useTotalSupply
-    JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPgl.raw)
-      ? pair.getLiquidityValues(totalPoolTokens, userPgl, { feeOn: false })
-      : [undefined, undefined];
-
-  let liquidityInUSD = 0;
-
-  if (CHAINS[chainId]?.mainnet && currency0Price && token0Deposited) {
-    liquidityInUSD = Number(currency0Price.toFixed()) * 2 * Number(token0Deposited?.toSignificant(6));
-  }
-
-  return useMemo(
-    () => ({
-      userPgl,
-      liquidityInUSD,
-    }),
-    [userPgl, liquidityInUSD],
-  );
-}
-
-// based on typed value
-export function useDerivedStakeInfo(
-  typedValue: string,
-  stakingToken: Token,
-  userLiquidityUnstaked: TokenAmount | undefined,
-): {
-  parsedAmount?: CurrencyAmount;
-  error?: string;
-} {
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-
-  const { t } = useTranslation();
-
-  const parsedInput: CurrencyAmount | undefined = tryParseAmount(typedValue, stakingToken, chainId);
-  const parsedAmount =
-    parsedInput && userLiquidityUnstaked && JSBI.lessThanOrEqual(parsedInput.raw, userLiquidityUnstaked.raw)
-      ? parsedInput
-      : undefined;
-
-  let error: string | undefined;
-  if (!account) {
-    error = t('stakeHooks.connectWallet');
-  }
-  if (parsedInput && !parsedAmount) {
-    error = error ?? t('stakeHooks.insufficientBalance', { symbol: stakingToken.symbol });
-  }
-  if (!parsedAmount) {
-    error = error ?? t('stakeHooks.enterAmount');
-  }
-
-  return {
-    parsedAmount,
-    error,
-  };
-}
-/**
- * here we can get rewards tokens from addresses or from array
- * @param stakingInfo
- * @returns rewardTokens
- */
-export function useGetRewardTokens(stakingInfo: DoubleSideStakingInfo) {
-  const chainId = useChainId();
-  const useTokens = useTokensHook[chainId];
-
-  const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
-
-  function getRewardsTokensAddresses() {
-    // for another minichefs, if there is an array of reward tokens (stakingInfo.rewardTokens)
-    // we don't need to query for the tokens, so the addresses can be undefined
-    const _stakingInfo = stakingInfo as MinichefStakingInfo;
-    if (cheftType !== ChefType.MINI_CHEF && _stakingInfo.rewardTokens && _stakingInfo.rewardTokens.length > 0) {
-      return undefined;
-    }
-
-    return stakingInfo.rewardTokensAddress;
-  }
-
-  const tokensAddresses = getRewardsTokensAddresses();
-
-  const _rewardTokens = useTokens(tokensAddresses);
-
-  return useMemo(() => {
-    const rewardTokens =
-      cheftType === ChefType.MINI_CHEF ? undefined : (stakingInfo as MinichefStakingInfo).rewardTokens;
-
-    if (!rewardTokens && _rewardTokens) {
-      // filter only tokens
-      const tokens = _rewardTokens.filter((token) => token && token instanceof Token) as Token[];
-      return tokens;
-    }
-    return rewardTokens;
-  }, [_rewardTokens, cheftType, stakingInfo]);
-}
-
-export const calculateTotalStakedAmountInAvax = function (
-  amountStaked: JSBI,
-  amountAvailable: JSBI,
-  reserveInWavax: JSBI,
-  chainId: ChainId,
-): TokenAmount {
-  if (JSBI.GT(amountAvailable, 0)) {
-    // take the total amount of LP tokens staked, multiply by AVAX value of all LP tokens, divide by all LP tokens
-    return new TokenAmount(
-      WAVAX[chainId],
-      JSBI.divide(
-        JSBI.multiply(
-          JSBI.multiply(amountStaked, reserveInWavax),
-          JSBI.BigInt(2), // this is b/c the value of LP shares are ~double the value of the wavax they entitle owner to
-        ),
-        amountAvailable,
-      ),
-    );
-  } else {
-    return new TokenAmount(WAVAX[chainId], JSBI.BigInt(0));
-  }
-};
-
-export const calculateTotalStakedAmountInAvaxFromPng = function (
-  amountStaked: JSBI,
-  amountAvailable: JSBI,
-  avaxPngPairReserveOfPng: JSBI,
-  avaxPngPairReserveOfWavax: JSBI,
-  reserveInPng: JSBI,
-  chainId: ChainId,
-): TokenAmount {
-  if (JSBI.EQ(amountAvailable, JSBI.BigInt(0))) {
-    return new TokenAmount(WAVAX[chainId], JSBI.BigInt(0));
-  }
-
-  const oneToken = JSBI.BigInt(1000000000000000000);
-  const avaxPngRatio = JSBI.divide(JSBI.multiply(oneToken, avaxPngPairReserveOfWavax), avaxPngPairReserveOfPng);
-  const valueOfPngInAvax = JSBI.divide(JSBI.multiply(reserveInPng, avaxPngRatio), oneToken);
-
-  return new TokenAmount(
-    WAVAX[chainId],
-    JSBI.divide(
-      JSBI.multiply(
-        JSBI.multiply(amountStaked, valueOfPngInAvax),
-        JSBI.BigInt(2), // this is b/c the value of LP shares are ~double the value of the wavax they entitle owner to
-      ),
-      amountAvailable,
-    ),
-  );
-};
-
-export const getExtraTokensWeeklyRewardRate = (
-  rewardRatePerWeek: TokenAmount,
-  token: Token,
-  tokenMultiplier: JSBI | undefined,
-) => {
-  const TEN_EIGHTEEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18));
-
-  const rewardMultiplier = JSBI.BigInt(tokenMultiplier || 1);
-
-  const unadjustedRewardPerWeek = JSBI.multiply(rewardMultiplier, rewardRatePerWeek?.raw);
-
-  const finalReward = JSBI.divide(unadjustedRewardPerWeek, TEN_EIGHTEEN);
-
-  return new TokenAmount(token, finalReward);
-};
-
-export const tokenComparator = (
-  { address: addressA }: { address: string },
-  { address: addressB }: { address: string },
-) => {
-  // Sort AVAX last
-  if (addressA === WAVAX[ChainId.AVALANCHE].address) return 1;
-  else if (addressB === WAVAX[ChainId.AVALANCHE].address) return -1;
-  // Sort PNG first
-  else if (addressA === PNG[ChainId.AVALANCHE].address) return -1;
-  else if (addressB === PNG[ChainId.AVALANCHE].address) return 1;
-  // Sort USDC first
-  else if (addressA === USDC[ChainId.AVALANCHE].address) return -1;
-  else if (addressB === USDC[ChainId.AVALANCHE].address) return 1;
-  // Sort USDCe first
-  else if (addressA === USDCe[ChainId.AVALANCHE].address) return -1;
-  else if (addressB === USDCe[ChainId.AVALANCHE].address) return 1;
-  else return 0;
-};
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-export const useDummyMinichefHook = (_version?: number, _pairToFilterBy?: Pair | null) => {
-  return [] as MinichefStakingInfo[];
-};
 
 const dummyApr: AprResult = {
   combinedApr: 0,

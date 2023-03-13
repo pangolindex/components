@@ -8,7 +8,7 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { useGetLockingPoolsForPoolIdHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useMinichefPendingRewards } from 'src/state/pstake/hooks';
+import { useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RemoveDrawer from '../../RemoveDrawer';
 import ClaimRewardV3 from '../ClaimReward';

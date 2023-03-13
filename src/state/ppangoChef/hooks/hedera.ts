@@ -18,7 +18,7 @@ import { useTokens } from 'src/hooks/tokens/evm';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
-import { getExtraTokensWeeklyRewardRate } from 'src/state/pstake/hooks';
+import { getExtraTokensWeeklyRewardRate } from 'src/state/pstake/utils';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks/hedera';
 import { decimalToFraction } from 'src/utils';

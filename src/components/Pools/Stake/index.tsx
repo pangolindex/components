@@ -30,7 +30,7 @@ import {
   useGetPoolDollerWorth,
   useMinichefPendingRewards,
   useMinichefPools,
-} from 'src/state/pstake/hooks';
+} from 'src/state/pstake/hooks/common';
 import { DoubleSideStakingInfo, SpaceType } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks/evm';

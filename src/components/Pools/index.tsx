@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useChainId } from 'src/hooks';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useMinichefStakingInfosHook } from 'src/state/pstake/multiChainsHooks';
+import { useMinichefStakingInfosHook } from 'src/state/pstake/hooks';
 import { MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
 import { isEvmChain } from 'src/utils';
 import { Box } from '../Box';

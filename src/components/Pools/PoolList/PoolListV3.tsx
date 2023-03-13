@@ -3,8 +3,8 @@ import { BIG_INT_ZERO } from 'src/constants';
 import useDebounce from 'src/hooks/useDebounce';
 import { useGetSelectedPoolId, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/hooks';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
+import { sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/utils';
 import PoolCardV3 from '../PoolCard/PoolCardV3';
 import PoolCardListView, { SortingType } from './PoolCardListView';
 

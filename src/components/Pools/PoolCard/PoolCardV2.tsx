@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGetRewardTokens } from 'src/state/pstake/hooks';
+import { useGetRewardTokens } from 'src/state/pstake/hooks/common';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
 import PoolCardView from './PoolCardView';
 
