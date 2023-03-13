@@ -1,21 +1,20 @@
 import { ChainId } from '@pangolindex/sdk';
+import { useGetLockingPoolsForPoolId, useGetLockingPoolsForPoolZero } from './common';
+import { useDummyIsLockingPoolZero, useDummyPangoChefCallback, useDummyPangoChefInfos } from './dummy';
 import {
-  useDummyIsLockingPoolZero,
-  useDummyPangoChefCallback,
-  useDummyPangoChefInfos,
   useEVMPangoChefClaimRewardCallback,
   useEVMPangoChefCompoundCallback,
   useEVMPangoChefStakeCallback,
   useEVMPangoChefWithdrawCallback,
-  useGetLockingPoolsForPoolId,
-  useGetLockingPoolsForPoolZero,
+  usePangoChefInfos,
+} from './evm';
+import {
   useGetPangoChefInfosViaSubgraph,
   useHederaPangoChefClaimRewardCallback,
   useHederaPangoChefCompoundCallback,
   useHederaPangoChefStakeCallback,
   useHederaPangoChefWithdrawCallback,
-  usePangoChefInfos,
-} from './hooks';
+} from './hedera';
 
 export type UsePangoChefInfosHookType = {
   [chainId in ChainId]:

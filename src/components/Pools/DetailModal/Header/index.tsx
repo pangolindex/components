@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
-import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
+import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks/common';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetRewardTokens } from 'src/state/pstake/hooks';
 import { DoubleSideStakingInfo } from 'src/state/pstake/types';

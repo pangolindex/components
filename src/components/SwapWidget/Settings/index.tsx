@@ -1,4 +1,3 @@
-import { CHAINS, HEDERA_MAINNET } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
@@ -10,7 +9,6 @@ import { Text } from 'src/components/Text';
 import { TextInput } from 'src/components/TextInput';
 import { ToggleButtons } from 'src/components/ToggleButtons';
 import { DEFAULT_DEADLINE_FROM_NOW } from 'src/constants';
-import { useChainId } from 'src/hooks';
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import WarningModal from './WarningModal';
 import { Frame, InputOptions } from './styled';
@@ -25,18 +23,9 @@ const SwapSettingsDrawer: React.FC<Props> = ({ isOpen, close }) => {
   const [userslippage, setUserSlippageTolerance] = useUserSlippageTolerance();
   const [userDeadline, setUserDeadline] = useUserDeadline();
 
-  // Hotfix for the hedera slippage issue
-  // -----------------------------------
-  // -----------------------------------
-  const chainId = useChainId();
-  const chain = CHAINS[chainId];
-  const slippageRatio = chain === HEDERA_MAINNET ? 50 : userslippage / 100;
-  // -----------------------------------
-  // -----------------------------------
-
   const [deadline, setDeadline] = useState(userDeadline);
   const [expertMode, setExpertMode] = useState(userExpertMode);
-  const [slippageTolerance, setSlippageTolerance] = useState(slippageRatio.toString());
+  const [slippageTolerance, setSlippageTolerance] = useState((userslippage / 100).toString());
 
   const [isValidValues, setValidValues] = useState(true);
 

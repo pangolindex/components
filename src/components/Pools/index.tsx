@@ -2,7 +2,7 @@ import { CHAINS, ChefType } from '@pangolindex/sdk';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChainId } from 'src/hooks';
-import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { usePangoChefInfosHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useMinichefStakingInfosHook } from 'src/state/pstake/multiChainsHooks';
 import { MinichefStakingInfo, PoolType } from 'src/state/pstake/types';

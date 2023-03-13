@@ -28,10 +28,10 @@ import { useTokensHook } from 'src/hooks/tokens';
 import { useTokens } from 'src/hooks/tokens/evm';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { tryParseAmount } from 'src/state/pswap/hooks/common';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { useMiniChefContract, useRewardViaMultiplierContract } from '../../hooks/useContract';
-import { tryParseAmount } from '../../state/pswap/hooks';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { DoubleSideStaking, DoubleSideStakingInfo, MinichefFarm, MinichefStakingInfo, MinichefV2 } from './types';
 
@@ -965,11 +965,6 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
       return memo;
     }, [] as MinichefStakingInfo[]);
   }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms, farmsAprs]);
-};
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-export const useDummyMinichefStakingInfosViaSubgraph = () => {
-  return [] as MinichefStakingInfo[];
 };
 
 /* eslint-enable max-lines */

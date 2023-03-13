@@ -1,5 +1,5 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useGelatoLimitOrderList } from './hooks';
+import { useGelatoLimitOrderList } from './common';
 
 const useDummyGelatoLimitOrdersList = () => [];
 

@@ -33,7 +33,7 @@ import {
 } from 'src/state/pstake/hooks';
 import { DoubleSideStakingInfo, SpaceType } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { waitForTransaction } from 'src/utils';
 import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
 import SelectPoolDrawer from './SelectPoolDrawer';

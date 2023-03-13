@@ -26,10 +26,10 @@ import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
-  useHederaSwapTokenAssociated,
   useSwapActionHandlers,
   useSwapState,
-} from 'src/state/pswap/hooks';
+} from 'src/state/pswap/hooks/common';
+import { useHederaSwapTokenAssociated } from 'src/state/pswap/hooks/hedera';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { isTokenOnList, validateAddressMapping } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';

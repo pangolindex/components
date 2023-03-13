@@ -33,7 +33,7 @@ import ApplicationUpdater from 'src/state/papplication/updater';
 import { useCoinGeckoTokenData } from 'src/state/pcoingecko/hooks';
 import ListsUpdater from 'src/state/plists/updater';
 import MulticallUpdater from 'src/state/pmulticall/updater';
-import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { usePangoChefInfosHook } from 'src/state/ppangoChef/hooks';
 import {
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
@@ -44,19 +44,18 @@ import {
 } from 'src/state/pstake/hooks';
 import { useMinichefStakingInfosHook } from 'src/state/pstake/multiChainsHooks';
 import { DoubleSideStaking, DoubleSideStakingInfo, MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
+import { useGelatoLimitOrdersListHook } from 'src/state/pswap/hooks';
 import {
   LimitOrderInfo,
   useDerivedSwapInfo,
   useGelatoLimitOrderDetail,
   useSwapActionHandlers,
-} from 'src/state/pswap/hooks';
-
-import { useGelatoLimitOrdersListHook } from 'src/state/pswap/multiChainsHooks';
+} from 'src/state/pswap/hooks/common';
 
 import { useAllTransactions, useAllTransactionsClearer } from 'src/state/ptransactions/hooks';
 import TransactionUpdater from 'src/state/ptransactions/updater';
-import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks';
-import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { useAccountBalanceHook, useTokenBalanceHook } from 'src/state/pwallet/hooks';
+import { useGetUserLP, useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { existSarContract, getEtherscanLink, isEvmChain, shortenAddress, shortenAddressMapping } from 'src/utils';
 import chunkArray from 'src/utils/chunkArray';
 import listVersionLabel from 'src/utils/listVersionLabel';
@@ -69,8 +68,8 @@ import { MixPanelEvents, MixPanelProvider, useMixpanel } from './hooks/mixpanel'
 import i18n, { availableLanguages } from './i18n';
 import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
 import { PangoChefInfo } from './state/ppangoChef/types';
-import { useSarStakeInfo } from './state/psarstake/hooks';
-import { useSarPositionsHook } from './state/psarstake/multiChainsHooks';
+import { useSarPositionsHook } from './state/psarstake/hooks';
+import { useSarStakeInfo } from './state/psarstake/hooks/evm';
 import { Position } from './state/psarstake/types';
 import SwapUpdater from './state/pswap/updater';
 import { default as ThemeProvider } from './theme';
