@@ -2,7 +2,7 @@ import { Pair } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import { Box, DoubleCurrencyLogo, Text } from 'src/components';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { Balance, CurrencyRowRoot } from './styled';
 

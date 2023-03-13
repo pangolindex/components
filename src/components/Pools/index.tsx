@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId } from 'src/hooks';
-import { usePangoChefInfosHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { usePangoChefInfosHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import {
   useGetAllFarmDataHook,

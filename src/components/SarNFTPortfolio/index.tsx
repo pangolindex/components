@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useSarPositionsHook } from 'src/state/psarstake/multiChainsHooks';
+import { useSarPositionsHook } from 'src/state/psarstake/hooks';
 import { Position } from 'src/state/psarstake/types';
 import { scrollElementIntoView } from 'src/utils';
 import { Box } from '../Box';

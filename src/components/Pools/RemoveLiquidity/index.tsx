@@ -15,7 +15,7 @@ import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Field, resetBurnState } from 'src/state/pburn/actions';
 import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/state/pburn/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { useRemoveLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
+import { useRemoveLiquidityHook } from 'src/state/pwallet/hooks';
 import { isEvmChain } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { ButtonWrapper, RemoveWrapper } from './styleds';

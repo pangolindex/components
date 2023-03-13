@@ -9,7 +9,7 @@ import { useHederaTotalSupply } from 'src/data/TotalSupply';
 import { Field } from 'src/state/pswap/actions';
 import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useIsApprovingInfinite } from 'src/state/puser/hooks';
-import { fetchHederaPGLToken } from 'src/state/pwallet/hooks';
+import { fetchHederaPGLToken } from 'src/state/pwallet/hooks/hedera';
 import { hederaFn } from 'src/utils/hedera';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { usePangolinWeb3 } from '../index';

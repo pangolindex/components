@@ -6,7 +6,7 @@ import { PairState } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useChainId } from 'src/hooks';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { useDaasFeeInfo, useDaasFeeTo } from '../state/pswap/hooks';
+import { useDaasFeeInfo, useDaasFeeTo } from '../state/pswap/hooks/common';
 
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): { pairs: Pair[]; isLoading: boolean } {
   const chainId = useChainId();

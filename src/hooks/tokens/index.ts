@@ -1,11 +1,8 @@
 import { ChainId } from '@pangolindex/sdk';
+import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { useToken, useTokens } from './evm';
 import { useNearToken, useNearTokens } from './near';
 import { useTokensViaSubGraph } from './subgraph';
-
-export function useDummyHook() {
-  return undefined;
-}
 
 export type UseTokenHookType = {
   [chainId in ChainId]: typeof useToken | typeof useNearToken | typeof useDummyHook;

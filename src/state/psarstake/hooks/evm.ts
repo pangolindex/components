@@ -10,9 +10,9 @@ import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useSarStakingContract } from 'src/hooks/useContract';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
-import { useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
-import { Position, URI } from './types';
-import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from './utils';
+import { useSingleCallResult, useSingleContractMultipleData } from '../../pmulticall/hooks';
+import { Position, URI } from '../types';
+import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from '../utils';
 
 // Return the info of the sar stake
 export function useSarStakeInfo() {
