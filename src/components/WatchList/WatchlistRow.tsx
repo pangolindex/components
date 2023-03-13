@@ -19,7 +19,7 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, isSelected, totalLength 
   const [showChart, setShowChart] = useState(false);
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const theme = useContext(ThemeContext);
-  const [, { removeCurrency }] = useWatchlist();
+  const { removeCurrency } = useWatchlist();
 
   const usdcPrice = coin?.price;
 

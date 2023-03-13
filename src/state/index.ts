@@ -12,11 +12,10 @@ import pmint from './pmint/reducer';
 import pmulticall from './pmulticall/reducer';
 import pstake from './pstake/reducer';
 import pswap from './pswap/reducer';
-import ptoken from './ptoken/reducer';
 import ptransactions from './ptransactions/reducer';
 import puser from './puser/reducer';
 
-export const PANGOLIN_PERSISTED_KEYS: string[] = ['puser', 'plists', 'ptransactions', 'ptoken', 'pstake'];
+export const PANGOLIN_PERSISTED_KEYS: string[] = ['puser', 'plists', 'ptransactions', 'pstake'];
 
 export const pangolinReducers = {
   papplication,
@@ -25,7 +24,6 @@ export const pangolinReducers = {
   plists,
   pmulticall,
   puser,
-  ptoken,
   pstake,
   pmint,
   pburn,
