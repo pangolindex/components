@@ -1,13 +1,7 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
-import {
-  useDummyMinichefHook,
-  useDummyMinichefStakingInfosViaSubgraph,
-  useGetAllFarmData,
-  useGetDummyAllFarmData,
-  useGetMinichefStakingInfosViaSubgraph,
-  useMinichefStakingInfos,
-} from './hooks';
+import { useDummyMinichefHook, useDummyMinichefStakingInfosViaSubgraph, useGetDummyAllFarmData } from './dummyHooks';
+import { useGetAllFarmData, useGetMinichefStakingInfosViaSubgraph, useMinichefStakingInfos } from './hooks';
 
 export type UseMinichefStakingInfosHookType = {
   [chainId in ChainId]: typeof useMinichefStakingInfos | typeof useDummyMinichefHook | typeof useDummyHook;

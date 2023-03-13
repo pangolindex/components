@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import Drawer from 'src/components/Drawer';
-import { useGetUserLP } from 'src/state/pwallet/hooks';
+import { useGetUserLP } from 'src/state/pwallet/hooks/evm';
 import PoolRow from './PoolRow';
 import { CurrencyList } from './styled';
 

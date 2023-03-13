@@ -34,10 +34,10 @@ import {
   updateMinichefStakingAllData,
   updateMinichefStakingAllFarmsEarnedAmount,
 } from 'src/state/pstake/actions';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { tryParseAmount } from 'src/state/pswap/hooks/common';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { useMiniChefContract, useRewardViaMultiplierContract, useStakingContract } from '../../hooks/useContract';
-import { tryParseAmount } from '../../state/pswap/hooks';
 import { AppState, useDispatch, useSelector } from '../index';
 import { useMultipleContractSingleData, useSingleCallResult, useSingleContractMultipleData } from '../pmulticall/hooks';
 import { Apr } from './reducer';
@@ -494,11 +494,6 @@ export const tokenComparator = (
   else return 0;
 };
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-export const useDummyMinichefHook = (_version?: number, _pairToFilterBy?: Pair | null) => {
-  return [] as StakingInfo[];
-};
-
 export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | null): StakingInfo[] => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -890,10 +885,6 @@ export function useGetAllFarmData() {
   }, [allFarms?.data, allFarms?.isLoading, allFarms?.isError]);
 }
 
-export function useGetDummyAllFarmData() {
-  // This is intentional
-}
-
 export function useAllMinichefStakingInfoData(): MinichefV2 | undefined {
   const chainId = useChainId();
   return useSelector<AppState['pstake']['minichefStakingData'][ChainId.AVALANCHE]>(
@@ -1045,11 +1036,6 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
       return memo;
     }, []);
   }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms]);
-};
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-export const useDummyMinichefStakingInfosViaSubgraph = () => {
-  return [] as MinichefStakingInfo[];
 };
 
 /* eslint-enable max-lines */

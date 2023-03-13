@@ -9,7 +9,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { usePangoChefContract } from 'src/hooks/useContract';
-import { usePangoChefClaimRewardCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { usePangoChefClaimRewardCallbackHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetRewardTokens } from 'src/state/pstake/hooks';
 import { Buttons, ClaimWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';

@@ -8,7 +8,7 @@ import { useChainId } from 'src/hooks';
 import { useCurrency } from 'src/hooks/useCurrency';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { SpaceType } from 'src/state/pstake/types';
-import { useCreatePairHook } from 'src/state/pwallet/multiChainsHooks';
+import { useCreatePairHook } from 'src/state/pwallet/hooks';
 import { CloseIcon } from 'src/theme/components';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import AddLiquidity from '../AddLiquidity';

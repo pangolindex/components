@@ -6,7 +6,7 @@ import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import ClaimDrawer from '../ClaimDrawer';

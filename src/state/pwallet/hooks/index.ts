@@ -1,15 +1,18 @@
 /* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
+import { useDummyCreatePair, useDummyGetUserLP } from './dummy';
 import {
   useAddLiquidity,
-  useDummyCreatePair,
-  useDummyGetUserLP,
   useETHBalances,
   useEVMPairBalance,
-  useGetHederaUserLP,
-  useGetNearUserLP,
   useGetUserLP,
+  useRemoveLiquidity,
+  useTokenBalance,
+  useTokenBalances,
+} from './evm';
+import {
+  useGetHederaUserLP,
   useHederaAddLiquidity,
   useHederaBalance,
   useHederaCreatePair,
@@ -17,6 +20,9 @@ import {
   useHederaRemoveLiquidity,
   useHederaTokenBalance,
   useHederaTokenBalances,
+} from './hedera';
+import {
+  useGetNearUserLP,
   useNearAddLiquidity,
   useNearBalance,
   useNearCreatePair,
@@ -24,10 +30,7 @@ import {
   useNearRemoveLiquidity,
   useNearTokenBalance,
   useNearTokenBalances,
-  useRemoveLiquidity,
-  useTokenBalance,
-  useTokenBalances,
-} from './hooks';
+} from './near';
 
 export type UseTokenBalancesHookType = {
   [chainId in ChainId]: typeof useTokenBalances | typeof useNearTokenBalances | typeof useHederaTokenBalances;
