@@ -5,7 +5,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, Text } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { CoingeckoWatchListToken } from 'src/state/pcoingecko/hooks';
-import { useRemoveCurrencyFromWatchlist } from 'src/state/pwatchlists/atom';
+import { useWatchlist } from 'src/state/pwatchlists/atom';
 import { DeleteButton, RowWrapper } from './styleds';
 
 type Props = {
@@ -19,7 +19,7 @@ const WatchlistRow: React.FC<Props> = ({ coin, onClick, isSelected, totalLength 
   const [showChart, setShowChart] = useState(false);
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const theme = useContext(ThemeContext);
-  const removeCurrency = useRemoveCurrencyFromWatchlist();
+  const [, { removeCurrency }] = useWatchlist();
 
   const usdcPrice = coin?.price;
 

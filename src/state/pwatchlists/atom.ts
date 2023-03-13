@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
@@ -12,42 +12,39 @@ import {
 const localstorageKey = 'watchlist_pangolin';
 const watchlistAtom = atomWithStorage<CoingeckoWatchListToken[]>(localstorageKey, []);
 
+type useWatchlistType = [
+  CoingeckoWatchListToken[],
+  {
+    addCurrency: (currency: CoingeckoWatchListToken) => void;
+    removeCurrency: (id: string) => void;
+    updateCurrencies: (data: CoingeckoWatchListToken[]) => void;
+  },
+];
+
 export const useWatchlistAtom = () => {
   return useAtomValue(watchlistAtom);
 };
 
-export const useAddCurrencyToWatchlist = () => {
-  const setCurrencies = useSetAtom(watchlistAtom);
+export const useWatchlist = () => {
+  const [selectedCurrencies, setSelectedCurrencies] = useAtom(watchlistAtom);
 
   const addCurrency = useCallback(
     (currency: CoingeckoWatchListToken) => {
-      setCurrencies((prev) => [...prev, currency]);
+      setSelectedCurrencies((prev) => [...prev, currency]);
     },
-    [setCurrencies],
+    [setSelectedCurrencies],
   );
-
-  return addCurrency;
-};
-
-export const useRemoveCurrencyFromWatchlist = () => {
-  const setCurrencies = useSetAtom(watchlistAtom);
 
   const removeCurrency = useCallback(
     (id: string) => {
-      setCurrencies((prev) => prev.filter((currency) => currency.id !== id));
+      setSelectedCurrencies((prev) => prev.filter((currency) => currency.id !== id));
     },
-    [setCurrencies],
+    [setSelectedCurrencies],
   );
 
-  return removeCurrency;
-};
-
-export const useUpdateWatchlistCurrencies = () => {
-  const setCurrencies = useSetAtom(watchlistAtom);
-
-  const removeCurrency = useCallback(
+  const updateCurrencies = useCallback(
     (data: CoingeckoWatchListToken[]) => {
-      setCurrencies((prev) =>
+      setSelectedCurrencies((prev) =>
         data.map((currency) => {
           const prevCurrency = prev.find((prevCurrency) => prevCurrency.id === currency.id);
 
@@ -63,14 +60,14 @@ export const useUpdateWatchlistCurrencies = () => {
         }),
       );
     },
-    [setCurrencies],
+    [setSelectedCurrencies],
   );
 
-  return removeCurrency;
+  return [selectedCurrencies, { addCurrency, removeCurrency, updateCurrencies }] as useWatchlistType;
 };
 
 export function useSelectedCurrencyLists(): CoingeckoWatchListToken[] | undefined {
-  const updateCurrencies = useUpdateWatchlistCurrencies();
+  const [, { updateCurrencies }] = useWatchlist();
   const allWatchlistCurrencies = useWatchlistAtom();
 
   const coinIds = (allWatchlistCurrencies || []).map((item) => {
@@ -100,48 +97,3 @@ export function useSelectedCurrencyLists(): CoingeckoWatchListToken[] | undefine
 
   return allWatchlistCurrencies;
 }
-
-/**
- * another way to handle above code
-
- const watchlistAtom = atom<CoingeckoWatchListToken[]>([]);
-
-  export const useWatchlist = () => {
-    const [selectedCurrencies, setSelectedCurrencies] = useAtom(watchlistAtom);
-
-    const addCurrency = (currency: CoingeckoWatchListToken) => {
-      setSelectedCurrencies((prevSelectedCurrencies) => [
-        ...prevSelectedCurrencies,
-        currency,
-      ]);
-    };
-
-    const removeCurrency = (id: string) => {
-      setSelectedCurrencies((prevSelectedCurrencies) =>
-        prevSelectedCurrencies.filter((currency) => currency.id !== id)
-      );
-    };
-
-    const updateCurrencies = (data: CoingeckoWatchListToken[]) => {
-      setSelectedCurrencies((prevSelectedCurrencies) =>
-        data.map((currency) => {
-          const prevCurrency = prevSelectedCurrencies.find(
-            (prevCurrency) => prevCurrency.id === currency.id
-          );
-
-          if (prevCurrency) {
-            return {
-              ...prevCurrency,
-              price: currency.price,
-              weeklyChartData: currency.weeklyChartData,
-            };
-          } else {
-            return currency;
-          }
-        })
-      );
-    };
-
-    return [selectedCurrencies, { addCurrency, removeCurrency, updateCurrencies }];
-  };
- */

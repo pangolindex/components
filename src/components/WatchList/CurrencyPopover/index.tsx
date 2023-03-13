@@ -5,7 +5,7 @@ import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
 import usePrevious from 'src/hooks/usePrevious';
 import { CoingeckoWatchListToken, useCoinGeckoSearchTokens } from 'src/state/pcoingecko/hooks';
-import { useAddCurrencyToWatchlist, useWatchlistAtom } from 'src/state/pwatchlists/atom';
+import { useWatchlist, useWatchlistAtom } from 'src/state/pwatchlists/atom';
 import CurrencyRow from './CurrencyRow';
 import { AddInputWrapper, CurrencyList, PopoverContainer } from './styled';
 
@@ -27,7 +27,7 @@ const CurrencyPopover: React.FC<Props> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
-  const addCurrency = useAddCurrencyToWatchlist();
+  const [, { addCurrency }] = useWatchlist();
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
   const { t } = useTranslation();
