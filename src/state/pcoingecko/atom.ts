@@ -13,7 +13,6 @@ export const useCoingeckoWatchList = () => {
 
   const addCoingeckoTokens = useCallback(
     (payload: CoingeckoWatchListState) => {
-      console.log('==payload', payload);
       setCurrencies(payload);
     },
     [setCurrencies],

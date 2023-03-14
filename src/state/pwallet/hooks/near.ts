@@ -11,7 +11,7 @@ import { NEAR_LP_STORAGE_AMOUNT, NEAR_STORAGE_TO_REGISTER_WITH_FT, ONE_YOCTO_NEA
 import { useGetNearAllPool, useNearPairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useNearTokens } from 'src/hooks/tokens/near';
-import { Field } from 'src/state/pburn/actions';
+import { Field } from 'src/state/pburn/atom';
 import { Field as AddField } from 'src/state/pmint/actions';
 import { calculateSlippageAmount } from 'src/utils';
 import { FunctionCallOptions, Transaction as NearTransaction, nearFn } from 'src/utils/near';
