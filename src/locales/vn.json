@@ -872,6 +872,7 @@
     "max": "Max",
     "min": "Min",
     "open": "Open",
-    "closed": "Closed"
+    "closed": "Closed",
+    "notFound": "Không tìm thấy"
   }
 }
