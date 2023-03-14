@@ -9,7 +9,7 @@ import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useGetAllHederaAssociatedTokens, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useBlockNumber } from 'src/state/papplication/hooks';
 import { Field } from 'src/state/pburn/atom';
-import { Field as AddField } from 'src/state/pmint/actions';
+import { Field as AddField } from 'src/state/pmint/atom';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateSlippageAmount, getRouterContract, isAddress } from 'src/utils';
 import { HederaTokenMetadata, hederaFn } from 'src/utils/hedera';

@@ -12,7 +12,7 @@ import { useGetNearAllPool, useNearPairs } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useNearTokens } from 'src/hooks/tokens/near';
 import { Field } from 'src/state/pburn/atom';
-import { Field as AddField } from 'src/state/pmint/actions';
+import { Field as AddField } from 'src/state/pmint/atom';
 import { calculateSlippageAmount } from 'src/utils';
 import { FunctionCallOptions, Transaction as NearTransaction, nearFn } from 'src/utils/near';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';

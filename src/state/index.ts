@@ -6,7 +6,6 @@ import { load, save } from 'redux-localstorage-simple';
 import papplication from './papplication/reducer';
 import pbridge from './pbridge/reducer';
 import plists from './plists/reducer';
-import pmint from './pmint/reducer';
 import pmulticall from './pmulticall/reducer';
 import pstake from './pstake/reducer';
 import pswap from './pswap/reducer';
@@ -23,7 +22,6 @@ export const pangolinReducers = {
   pmulticall,
   puser,
   pstake,
-  pmint,
   pbridge,
 };
 

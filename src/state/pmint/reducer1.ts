@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { Field, resetMintState, typeInput } from './actions';
+import { Field, resetMintState, typeInput } from './actions1';
 
 export interface MintState {
   [x: string]: {

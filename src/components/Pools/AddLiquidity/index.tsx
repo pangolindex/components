@@ -12,9 +12,8 @@ import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
-import { useDispatch } from 'src/state';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Field, resetMintState } from 'src/state/pmint/actions';
+import { Field, useMintStateAtom } from 'src/state/pmint/atom';
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/state/pmint/hooks';
 import { SpaceType } from 'src/state/pstake/types';
 import { useIsExpertMode, useUserSlippageTolerance } from 'src/state/puser/hooks';
@@ -40,8 +39,8 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
   const { library } = useLibrary();
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
-  const dispatch = useDispatch();
 
+  const { resetMintState } = useMintStateAtom();
   const expertMode = useIsExpertMode();
 
   const wrappedCurrencyA = wrappedCurrency(currencyA, chainId);
@@ -145,7 +144,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
         tokenA_Address: wrappedCurrency(currencyA, chainId)?.address,
         tokenB_Address: wrappedCurrency(currencyB, chainId)?.address,
       });
-      dispatch(resetMintState({ pairAddress }));
+      resetMintState({ pairAddress });
     } catch (err) {
       const _err = err as any;
 

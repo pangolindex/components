@@ -12,7 +12,7 @@ import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
 import { Field } from 'src/state/pburn/atom';
-import { Field as AddField } from 'src/state/pmint/actions';
+import { Field as AddField } from 'src/state/pmint/atom';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import {
   calculateGasMargin,
