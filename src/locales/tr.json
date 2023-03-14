@@ -180,7 +180,7 @@
     "expertInfo": "Uzman modu, işlem onayı aşamasını pas geçmenize ve yüksek slipajlı işlemler yapmanıza olanak sağlar.",
     "expertWarningCAPS": "BU MODU SADECE NE YAPTIĞINIZI BİLİYORSANIZ KULLANIN.",
     "confirm": "onayla",
-    "confirmExpertMode": "Uzman modunu etkinleştirmek için lütfen \"onayla\" yazın.",
+    "confirmExpertMode": "Uzman modunu etkinleştirmek için lütfen \"confirm\" yazın.",
     "turnOnExpertMode": "Uzman Modunu Aç",
     "transactionSettings": "İşlem Ayarları",
     "interfaceSettings": "Arayüz Ayarları",
@@ -872,6 +872,7 @@
     "max": "Maks",
     "min": "Min",
     "open": "Açık",
-    "closed": "Kapalı"
+    "closed": "Kapalı",
+    "notFound": "Bulunamadı"
   }
 }

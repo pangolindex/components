@@ -210,7 +210,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
                     loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_A]?.symbol}`}
                     height="46px"
                   >
-                    {t('addLiquidity.approve') + currencies[Field.CURRENCY_A]?.symbol}
+                    {`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_A]?.symbol}
                   </Button>
                 )}
                 {approvalB !== ApprovalState.APPROVED && (
@@ -223,7 +223,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
                     loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_B]?.symbol}`}
                     height="46px"
                   >
-                    {t('addLiquidity.approve') + currencies[Field.CURRENCY_B]?.symbol}
+                    {`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_B]?.symbol}
                   </Button>
                 )}
               </ButtonWrapper>
