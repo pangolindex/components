@@ -27,7 +27,7 @@ export interface TransactionDetails {
   from: string;
 }
 
-export interface addTransactionDetails {
+export interface AddTransactionDetails {
   chainId: number;
   from: string;
   hash: string;
@@ -48,7 +48,7 @@ export function useTransactionState() {
   const [transactions, setTransactions] = useAtom(transactionAtom);
 
   const addTransaction = useCallback(
-    ({ chainId, from, hash, approval, summary, claim }: addTransactionDetails) => {
+    ({ chainId, from, hash, approval, summary, claim }: AddTransactionDetails) => {
       if (transactions[chainId]?.[hash]) {
         return;
       }
