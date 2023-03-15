@@ -2,7 +2,7 @@ import { Pair } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { Modal } from 'src/components';
-import { ApplicationModal } from 'src/state/papplication/actions';
+import { ApplicationModal } from 'src/state/papplication/atom';
 import { useModalOpen, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
 import { useBurnStateAtom } from 'src/state/pburn/atom';
 import { useMintStateAtom } from 'src/state/pmint/atom';
