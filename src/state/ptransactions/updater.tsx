@@ -4,7 +4,7 @@ import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { nearFn } from 'src/utils/near';
 import { useChainId, useLibrary } from '../../hooks';
 import { useAddPopup, useBlockNumber } from '../papplication/hooks';
-import { TransactionDetails, AddTransactionDetails, useTransactionState } from './atom';
+import { AddTransactionDetails, TransactionDetails, useTransactionState } from './atom';
 
 export function shouldCheck(
   lastBlockNumber: number,
