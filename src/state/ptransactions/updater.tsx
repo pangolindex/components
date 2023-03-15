@@ -4,7 +4,7 @@ import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { nearFn } from 'src/utils/near';
 import { useChainId, useLibrary } from '../../hooks';
 import { useAddPopup, useBlockNumber } from '../papplication/hooks';
-import { TransactionDetails, addTransactionDetails, useTransactionState } from './atom';
+import { TransactionDetails, AddTransactionDetails, useTransactionState } from './atom';
 
 export function shouldCheck(
   lastBlockNumber: number,
@@ -40,7 +40,7 @@ type TxCheckerProps = {
   transactions: {
     [txHash: string]: TransactionDetails;
   };
-  addTransaction: (args: addTransactionDetails) => void;
+  addTransaction: (args: AddTransactionDetails) => void;
   chainId: number;
 };
 
