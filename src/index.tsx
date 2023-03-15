@@ -153,6 +153,7 @@ export { TIMEFRAME, SwapTypes } from './constants/swap';
 export * from './connectors';
 export * from './components';
 export * from './state/papplication/hooks';
+export { ApplicationModal } from './state/papplication/atom';
 export * as Tokens from './constants/tokens';
 
 export * from '@gelatonetwork/limit-orders-react';
