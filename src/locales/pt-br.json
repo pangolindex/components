@@ -180,7 +180,7 @@
     "expertInfo": "O modo expert desliga o prompt de confirmação de transação e permite alta variação de preço que muitas vezes resultam em taxas ruins e perdas.",
     "expertWarningCAPS": "USE APENAS ESTE MODO SE VOCÊ SABE O QUE ESTÁ FAZENDO",
     "confirm": "confirmar",
-    "confirmExpertMode": "Por favor digite a palavra \"confirmar\" para habilitar o modo expert.",
+    "confirmExpertMode": "Por favor digite a palavra \"confirm\" para habilitar o modo expert.",
     "turnOnExpertMode": "Ativar modo expert",
     "transactionSettings": "Configurações de transação",
     "interfaceSettings": "Configurações da Interface",
@@ -861,17 +861,18 @@
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
   "common": {
-    "loading": "Loading",
-    "search": "Search",
-    "required": "Required",
-    "save": "Save",
-    "close": "Close",
-    "back": "Back",
-    "noDataAvailable": "No data available!",
-    "sortBy": "Sort By",
+    "loading": "Carregando",
+    "search": "Procurar",
+    "required": "Obrigatório",
+    "save": "Salvar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "noDataAvailable": "Nenhum dado disponível!",
+    "sortBy": "Ordenar por",
     "max": "Max",
     "min": "Min",
-    "open": "Open",
-    "closed": "Closed"
+    "open": "Abrir",
+    "closed": "Fechado",
+    "notFound": "Não encontrado"
   }
 }

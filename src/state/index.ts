@@ -6,24 +6,14 @@ import { load, save } from 'redux-localstorage-simple';
 import papplication from './papplication/reducer';
 import pbridge from './pbridge/reducer';
 import pburn from './pburn/reducer';
-import pcoingecko from './pcoingecko/reducer';
 import plists from './plists/reducer';
 import pmint from './pmint/reducer';
 import pmulticall from './pmulticall/reducer';
 import pswap from './pswap/reducer';
-import ptoken from './ptoken/reducer';
 import ptransactions from './ptransactions/reducer';
 import puser from './puser/reducer';
-import pwatchlists from './pwatchlists/reducer';
 
-export const PANGOLIN_PERSISTED_KEYS: string[] = [
-  'puser',
-  'plists',
-  'ptransactions',
-  'pwatchlists',
-  'ptoken',
-  'pstake',
-];
+export const PANGOLIN_PERSISTED_KEYS: string[] = ['puser', 'plists', 'ptransactions', 'pstake'];
 
 export const pangolinReducers = {
   papplication,
@@ -32,12 +22,9 @@ export const pangolinReducers = {
   plists,
   pmulticall,
   puser,
-  pwatchlists,
-  ptoken,
   pmint,
   pburn,
   pbridge,
-  pcoingecko,
 };
 
 const store = configureStore({
