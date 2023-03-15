@@ -5,7 +5,7 @@ import {
   checkedTransaction,
   clearAllTransactions,
   finalizeTransaction,
-} from './actions';
+} from './actions1';
 
 const now = () => new Date().getTime();
 
