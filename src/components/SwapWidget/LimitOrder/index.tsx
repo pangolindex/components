@@ -15,7 +15,7 @@ import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback/evm';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
-import { LimitField, LimitNewField } from 'src/state/pswap/actions';
+import { LimitField, LimitNewField } from 'src/state/pswap/atom';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks/common';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';

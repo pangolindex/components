@@ -3,7 +3,7 @@ import { useChainId } from 'src/hooks';
 import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { Field } from '../actions';
+import { Field } from '../atom';
 import { useSwapState } from './common';
 
 export function useHederaSwapTokenAssociated(): {

@@ -1,19 +1,15 @@
 import { Contract } from '@ethersproject/contracts';
 import { useEffect, useMemo } from 'react';
 import { useChainId, useLibrary } from 'src/hooks';
-import { AppState, useDispatch, useSelector } from 'src/state';
 import { ZERO_ADDRESS } from '../../constants';
 import { getRouterContractDaaS } from '../../utils';
 import { NEVER_RELOAD, useSingleCallResult } from '../pmulticall/hooks';
-import { updateFeeInfo } from './actions';
+import { useSwapState } from './atom';
 
 export default function Updater(): null {
   const chainId = useChainId();
   const { library } = useLibrary();
-  const dispatch = useDispatch();
-
-  const state = useSelector<AppState['pswap']>((state) => state.pswap);
-
+  const { swapState: state, updateFeeInfo } = useSwapState();
   const feeTo = state[chainId]?.feeTo;
 
   const router: Contract | null = useMemo(() => {
@@ -24,7 +20,7 @@ export default function Updater(): null {
   const feeInfoResponse = useSingleCallResult(router, 'getFeeInfo', [feeTo], NEVER_RELOAD).result;
 
   useEffect(() => {
-    if (!feeInfoResponse || !dispatch || !updateFeeInfo || !chainId) return;
+    if (!feeInfoResponse || !updateFeeInfo || !chainId) return;
     const feeInfo = {
       feePartner: feeInfoResponse.feePartner,
       feeProtocol: feeInfoResponse.feeProtocol,
@@ -32,8 +28,8 @@ export default function Updater(): null {
       feeCut: feeInfoResponse.feeCut,
       initialized: feeInfoResponse.initialized,
     };
-    dispatch(updateFeeInfo({ feeInfo, chainId }));
-  }, [feeInfoResponse, dispatch, updateFeeInfo, chainId]);
+    updateFeeInfo({ feeInfo, chainId });
+  }, [feeInfoResponse, updateFeeInfo, chainId]);
 
   return null;
 }
