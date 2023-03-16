@@ -101,7 +101,7 @@
     "poolRewards": "Havuz Ödülleri",
     "rewardsIn": "Ödüller: ",
     "removeWarning": "Bu havuzdan likiditeyi kaldırıyorsunuz. Bu işlem size jetonlarınızı geri verecektir. Alternatif olarak, ödül kazanmak için jetonlarınızı çiftliğe yatırmayı seçebilirsiniz.",
-    "rewardClaimed" : "Your rewards claimed"
+    "rewardClaimed": "Your rewards claimed"
   },
   "menu": {
     "code": "Kaynak Kodu",
@@ -173,14 +173,14 @@
     "selected": "Seçildi",
     "select": "Seç",
     "manageTokenLists": "Token Listelerini Yönet",
-    "listsSelected" :"lists selected"
+    "listsSelected": "lists selected"
   },
   "settings": {
     "areYouSure": "Emin misiniz?",
     "expertInfo": "Uzman modu, işlem onayı aşamasını pas geçmenize ve yüksek slipajlı işlemler yapmanıza olanak sağlar.",
     "expertWarningCAPS": "BU MODU SADECE NE YAPTIĞINIZI BİLİYORSANIZ KULLANIN.",
     "confirm": "onayla",
-    "confirmExpertMode": "Uzman modunu etkinleştirmek için lütfen \"onayla\" yazın.",
+    "confirmExpertMode": "Uzman modunu etkinleştirmek için lütfen \"confirm\" yazın.",
     "turnOnExpertMode": "Uzman Modunu Aç",
     "transactionSettings": "İşlem Ayarları",
     "interfaceSettings": "Arayüz Ayarları",
@@ -498,10 +498,10 @@
     "seeMore": "Daha Fazlasını Gör",
     "seeLess": "Daha Azını Gör",
     "orderPlaced": "{{ orderType }} sipariş verildi.",
-    "selectToken" : "Select Token",
-    "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain",
-    "sendingTo" : "Sending to",
+    "selectToken": "Select Token",
+    "notFoundBalances": "Not found balances",
+    "notFoundToken": "Not found tokens on this chain",
+    "sendingTo": "Sending to",
     "invalidAddress": "Invalid Address",
     "addRecipient": "Add Recipient",
     "removeRecipient": "Remove Recipient",
@@ -655,7 +655,7 @@
     "staked": "Staked",
     "stakeSuccessMsg": "Your rewards have been staked.",
     "stakeYourReward": "Stake your rewards",
-    "stakePng" : "Stake your PNG token to share platform fees",
+    "stakePng": "Stake your PNG token to share platform fees",
     "unstaking": "Unstaking",
     "unstaked": "Unstaked",
     "unstakeYourReward": "You can unstake your rewards.",
@@ -669,7 +669,7 @@
     "couldNotWrap": "Kaydırılamadı",
     "attemptingToConfirmApproval": "Onay veya imza olmadan onaylamaya çalışılıyor. Lütfen destek ile iletişime geçin."
   },
-  "sarTitle":{
+  "sarTitle": {
     "addMore": "DAHA EKLE",
     "unstake": "BİR POZİSYONU KALDIR",
     "compound": "BİLEŞİK ÖDÜLLER",
@@ -760,6 +760,26 @@
     "decreaseWarning": "Yeni bileşik kısım 0 nisan ile başladığı için apr'ınız düşecek ve eski ile yeni kısım arasında bir ortalama alınacaktır.",
     "createStorageContract": "Create Storage Contract"
   },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "Tüm Pozisyonlar",
+      "openPositions": "Açık Pozisyonlar",
+      "closedPositions": "Kapalı Pozisyonlar"
+    },
+    "sortTypes": {
+      "liquidity": "Likidite",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Havuzlar V3",
+      "seeMore": "Klasik havuzları görmek mi istiyorsunuz",
+      "goToFarm": "Çiftlik sayfasına git"
+    },
+    "positionList": {
+      "searchContent": "Token adını aramayı deneyin…",
+      "poolNotExist": "Gösterilecek açık veya kapalı pozisyonunuz yok."
+    }
+  },
   "bridge": {
     "selectChain": "Select Chain",
     "availableRoutes": "Mevcut Rotalar ({{ number }})",
@@ -770,7 +790,7 @@
     "selectCurrency": "Select a Currency",
     "search": "Search",
     "tableOfContent": "Table of Content",
-    "haveQuestion" :"Have Questions? Look Here:",
+    "haveQuestion": "Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Gelişmiş Seçenekler",
       "title": "Cross Chain",
@@ -836,7 +856,7 @@
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
   },
-  "buy":{
+  "buy": {
     "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
@@ -847,6 +867,12 @@
     "save": "Save",
     "close": "Close",
     "back": "Back",
-    "noDataAvailable": "No data available!"
+    "noDataAvailable": "No data available!",
+    "sortBy": "Sıralama Ölçütü",
+    "max": "Maks",
+    "min": "Min",
+    "open": "Açık",
+    "closed": "Kapalı",
+    "notFound": "Bulunamadı"
   }
 }

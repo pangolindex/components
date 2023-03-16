@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
-import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
+import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks/common';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetFarmApr, useGetRewardTokens } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -38,9 +38,11 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
 
   const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
-  const _userApr = useUserPangoChefAPR(cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined);
-
   const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
+
+  const _userApr = useUserPangoChefAPR(
+    cheftType === ChefType.PANGO_CHEF && isStaking ? (stakingInfo as PangoChefInfo) : undefined,
+  );
 
   const userRewardRate =
     cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.userRewardRate : BigNumber.from(0);

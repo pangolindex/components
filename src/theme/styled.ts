@@ -143,6 +143,11 @@ export interface Colors {
     };
   };
 
+  concentratedLiquidity?: {
+    primaryBgColor?: Color;
+    secondaryBgColor?: Color;
+  };
+
   bridge?: {
     primaryBgColor?: Color;
     secondaryBgColor?: Color;

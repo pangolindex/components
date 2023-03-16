@@ -1,7 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { CAVAX, JSBI, Percent, Router, Trade, TradeType } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import {} from 'src/connectors';
 import { INITIAL_ALLOWED_SLIPPAGE } from 'src/constants';
 import { BIPS_BASE } from 'src/constants/swap';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';

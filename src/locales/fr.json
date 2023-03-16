@@ -180,7 +180,7 @@
     "expertInfo": "Le mode expert désactive l'invite de confirmation de la transaction et autorise les transactions à fort slippage qui entraînent souvent de mauvais taux et des pertes de fonds.",
     "expertWarningCAPS": "N'UTILISEZ CE MODE QUE SI VOUS SAVEZ CE QUE VOUS FAITES.",
     "confirm": "confirmer",
-    "confirmExpertMode": "Veuillez taper le mot \"confirmer\" pour activer le mode expert.",
+    "confirmExpertMode": "Veuillez taper le mot \"confirm\" pour activer le mode expert.",
     "turnOnExpertMode": "Activer le mode expert",
     "transactionSettings": "Paramètres de transaction",
     "interfaceSettings": "Paramètres de l'interface",
@@ -760,6 +760,26 @@
     "decreaseWarning": "Votre apr diminuera car la nouvelle partie composée commence par apr 0 et une moyenne sera prise entre l'ancienne et la nouvelle partie.",
     "createStorageContract": "Create Storage Contract"
   },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    }
+  },
   "bridge": {
     "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
@@ -847,6 +867,12 @@
     "save": "Save",
     "close": "Close",
     "back": "Back",
-    "noDataAvailable": "No data available!"
+    "noDataAvailable": "No data available!",
+    "sortBy": "Sort By",
+    "max": "Max",
+    "min": "Min",
+    "open": "Open",
+    "closed": "Closed",
+    "notFound": "Pas trouvé"
   }
 }

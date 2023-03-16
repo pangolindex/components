@@ -18,7 +18,7 @@ import {
 import Drawer from 'src/components/Drawer';
 import { Field } from 'src/state/pmint/actions';
 import { SpaceType } from 'src/state/pstake/types';
-import { useHederaPGLAssociated } from 'src/state/pwallet/hooks';
+import { useHederaPGLAssociated } from 'src/state/pwallet/hooks/hedera';
 import { Hidden } from 'src/theme/components';
 import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
 

@@ -1,10 +1,10 @@
 import { Token } from '@pangolindex/sdk';
 import React, { useCallback, useMemo, useState } from 'react';
+import { useAllTokens } from 'src/hooks/useAllTokens';
 import { ExternalLink } from 'src/theme';
 import { getEtherscanLink, shortenAddress } from 'src/utils';
 import { Box, Button, CurrencyLogo, Modal, Text } from '../../';
 import { usePangolinWeb3 } from '../../../hooks';
-import { useAllTokens } from '../../../hooks/Tokens';
 import { AutoColumn, StyledWarningIcon, WarningContainer, Wrapper } from './styled';
 
 interface TokenWarningCardProps {

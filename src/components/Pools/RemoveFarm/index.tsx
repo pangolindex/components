@@ -5,12 +5,12 @@ import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/compo
 import { FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/Tokens';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
+import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/hooks';
 import { useGetEarnedAmount, useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
-import { useHederaPGLToken } from 'src/state/pwallet/hooks';
+import { useHederaPGLToken } from 'src/state/pwallet/hooks/hedera';
 import { hederaFn } from 'src/utils/hedera';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
@@ -20,10 +20,12 @@ interface RemoveFarmProps {
   version: number;
   onClose: () => void;
   // this prop will be used if user move away from first step
-  onLoadingOrComplete?: (value: boolean) => void;
+  onLoading?: (value: boolean) => void;
+  // percetage is the percetage removed
+  onComplete?: (percetage: number) => void;
   redirectToCompound?: () => void;
 }
-const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redirectToCompound }: RemoveFarmProps) => {
+const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redirectToCompound }: RemoveFarmProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const [isRemoveLiquidityDrawerVisible, setShowRemoveLiquidityDrawer] = useState(false);
@@ -85,16 +87,10 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
   });
 
   useEffect(() => {
-    if (onLoadingOrComplete) {
-      if (hash || attempting || confirmRemove) {
-        onLoadingOrComplete(true);
-      } else {
-        onLoadingOrComplete(false);
-      }
+    if (onLoading) {
+      onLoading(attempting);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hash, attempting, confirmRemove]);
+  }, [attempting]);
 
   function wrappedOnDismiss() {
     setHash(undefined);
@@ -109,6 +105,10 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
       try {
         const hash = await withdrawCallback();
         setHash(hash);
+
+        if (onComplete) {
+          onComplete(100);
+        }
 
         mixpanel.track(MixPanelEvents.REMOVE_FARM, {
           chainId: chainId,

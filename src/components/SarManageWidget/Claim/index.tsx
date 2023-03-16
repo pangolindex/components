@@ -7,7 +7,7 @@ import { Button } from 'src/components/Button';
 import { Text } from 'src/components/Text';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useDerivativeSarClaimHook } from 'src/state/psarstake/multiChainsHooks';
+import { useDerivativeSarClaimHook } from 'src/state/psarstake/hooks';
 import { Position } from 'src/state/psarstake/types';
 import RewardsInfo from '../Compound/RewardsInfo';
 import ConfirmDrawer from '../ConfirmDrawer';

@@ -4,7 +4,7 @@ import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from '@pangol
 import { useMemo } from 'react';
 import { INITIAL_ALLOWED_SLIPPAGE, ZERO_ADDRESS } from 'src/constants';
 import { BIPS_BASE } from 'src/constants/swap';
-import { useDaasFeeTo } from 'src/state/pswap/hooks';
+import { useDaasFeeTo } from 'src/state/pswap/hooks/common';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin, getRouterContract, getRouterContractDaaS, isAddress, shortenAddress } from 'src/utils';
 import isZero from 'src/utils/isZero';

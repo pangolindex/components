@@ -48,6 +48,9 @@ export default function Header() {
           <MenuLink id="pool" to="/pool">
             Pool
           </MenuLink>
+          <MenuLink id="concliq" to="/concliq">
+            ConcLiq
+          </MenuLink>
           <MenuLink id="bridge" to="/bridge">
             Bridge
           </MenuLink>

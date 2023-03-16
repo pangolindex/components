@@ -3,7 +3,7 @@ import { ChainId, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { useSubgraphPairs } from 'src/apollo/pairs';
 import { useChainId } from 'src/hooks';
-import { useHederaTokensMetaData } from 'src/state/pwallet/hooks';
+import { useHederaPGLTokenAddresses, useHederaTokensMetaData } from 'src/state/pwallet/hooks/hedera';
 import { nearFn } from 'src/utils/near';
 import { PNG } from '../constants/tokens';
 import { useTokenContract } from '../hooks/useContract';
@@ -94,6 +94,33 @@ export function useNearPairTotalSupply(pair?: Pair): TokenAmount | undefined {
   }, [pair, chainId]);
 
   return useMemo(() => totalSupply, [totalSupply]);
+}
+
+/**
+ * this hook is used to fetch total supply of given pair
+ * @param pair pair object
+ * @returns total supply in form of TokenAmount or undefined
+ */
+export function useHederaPairTotalSupply(pair?: Pair): TokenAmount | undefined {
+  const token = pair?.liquidityToken;
+
+  const lpTokenAddresses = token?.address;
+
+  const pglTokenAddresses = useHederaPGLTokenAddresses([lpTokenAddresses]);
+
+  const tokensMetadata = useHederaTokensMetaData([lpTokenAddresses ? pglTokenAddresses[lpTokenAddresses] : undefined]);
+
+  return useMemo(() => {
+    if (!token || !lpTokenAddresses || !pglTokenAddresses || !tokensMetadata) {
+      return undefined;
+    }
+
+    const pglTokenAddress = pglTokenAddresses[lpTokenAddresses];
+
+    const totalSupply = pglTokenAddress ? tokensMetadata[pglTokenAddress]?.totalSupply : '0';
+
+    return token && totalSupply ? new TokenAmount(token, totalSupply.toString()) : undefined;
+  }, [token, lpTokenAddresses, tokensMetadata, pglTokenAddresses]);
 }
 
 /**

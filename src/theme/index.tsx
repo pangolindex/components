@@ -47,6 +47,8 @@ const oceanBlue = '#18C145';
 const quickSilver = '#A3A3A3';
 const warning = '#F3841E';
 const success = '#18C145';
+const gray = '#393939';
+const darkGray = '#0A0A0A';
 
 export const defaultColors: Colors = {
   // base
@@ -191,7 +193,10 @@ export const defaultColors: Colors = {
       borderColor: oceanBlue,
     },
   },
-
+  concentratedLiquidity: {
+    primaryBgColor: gray,
+    secondaryBgColor: darkGray,
+  },
   bridge: {
     primaryBgColor: white,
     secondaryBgColor: ghostWhite,

@@ -179,7 +179,7 @@
     "expertInfo": "专家模式会关闭确认交易提示，并允许高滑点交易可能导致不良的利率和资金损失。",
     "expertWarningCAPS": "仅当您知道自己在做什么时才使用此模式。",
     "confirm": "确",
-    "confirmExpertMode": "请输入 \"确\" 一词以启用专家模式。",
+    "confirmExpertMode": "请输入 \"confirm\" 一词以启用专家模式。",
     "turnOnExpertMode": "开启专家模式",
     "transactionSettings": "交易设置",
     "interfaceSettings": "界面设置",
@@ -753,6 +753,26 @@
     "decreaseWarning": "你的 apr 会减少，因为新的复合部分从 apr 0 开始，并且将在新旧部分之间取平均值。",
     "createStorageContract": "Create Storage Contract"
   },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    }
+  },
   "bridge": {
     "selectChain": "Select Chain",
     "availableRoutes": "Available Routes ({{ number }})",
@@ -840,6 +860,12 @@
     "save": "Save",
     "close": "Close",
     "back": "Back",
-    "noDataAvailable": "No data available!"
+    "noDataAvailable": "No data available!",
+    "sortBy": "Sort By",
+    "max": "Max",
+    "min": "Min",
+    "open": "Open",
+    "closed": "Closed",
+    "notFound": "未找到"
   }
 }
