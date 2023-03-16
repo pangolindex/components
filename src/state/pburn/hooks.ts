@@ -5,21 +5,19 @@ import { BIG_INT_ZERO } from 'src/constants';
 import { usePair } from 'src/data/Reserves';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { AppState, useDispatch, useSelector } from 'src/state';
 import { tryParseAmount } from 'src/state/pswap/hooks/common';
 import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { Field, typeInput } from './actions';
-import { initialKeyState } from './reducer';
+import { Field, initialKeyState, useBurnStateAtom } from './atom';
 
 export function useBurnState(pairAddress: string) {
-  return useSelector<AppState['pburn']['any']>((state) => {
-    const pairState = state.pburn[pairAddress];
-    if (pairState) {
-      return pairState;
-    }
-    return initialKeyState;
-  });
+  const { burnState } = useBurnStateAtom();
+
+  const pairState = burnState[pairAddress];
+  if (pairState) {
+    return pairState;
+  }
+  return initialKeyState;
 }
 
 export function useDerivedBurnInfo(
@@ -151,13 +149,13 @@ export function useDerivedBurnInfo(
 export function useBurnActionHandlers(): {
   onUserInput: (field: Field, typedValue: string, pairAddress: string) => void;
 } {
-  const dispatch = useDispatch();
+  const { typeInput } = useBurnStateAtom();
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string, pairAddress: string) => {
-      dispatch(typeInput({ field, typedValue, pairAddress }));
+      typeInput({ pairAddress, field, typedValue });
     },
-    [dispatch],
+    [typeInput],
   );
 
   return {

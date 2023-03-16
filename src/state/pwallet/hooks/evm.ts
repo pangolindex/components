@@ -11,8 +11,8 @@ import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } f
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
-import { Field } from 'src/state/pburn/actions';
-import { Field as AddField } from 'src/state/pmint/actions';
+import { Field } from 'src/state/pburn/atom';
+import { Field as AddField } from 'src/state/pmint/atom';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import {
   calculateGasMargin,
@@ -341,6 +341,10 @@ export function useRemoveLiquidity(pair?: Pair | null | undefined) {
     } else {
       const methodName = methodNames[indexOfSuccessfulEstimation];
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation];
+
+      console.log('==args', args);
+      console.log('==methodName', methodName);
+      console.log('==safeGasEstimate', safeGasEstimate);
 
       try {
         const response: TransactionResponse = await router[methodName](...args, {
