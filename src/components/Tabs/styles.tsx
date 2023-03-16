@@ -59,6 +59,9 @@ export const STab = styled(Tab)`
   }
 
   &.is-selected {
+    &:hover {
+      cursor: default;
+    }
     border-bottom: 3px solid ${({ theme }) => theme.primary};
   }
 

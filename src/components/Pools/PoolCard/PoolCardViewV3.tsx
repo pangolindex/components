@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, DoubleCurrencyLogo, Drawer, Stat, Text } from 'src/components';
+import { Box, DoubleCurrencyLogo, Drawer, RewardTokens, Stat, Text } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
@@ -13,7 +13,6 @@ import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import FarmDrawer from '../FarmDrawer';
 import CompoundV3 from '../PangoChef/Compound';
-import RewardTokens from '../RewardTokens';
 import {
   ActionButon,
   DetailButton,

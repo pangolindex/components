@@ -28,3 +28,21 @@ export const Cards = styled.div`
   white-space: nowrap;
   width: 100%;
 `;
+
+export const MobileHeader = styled(Box)`
+  display: grid;
+  flex-direction: row;
+  padding: 10px;
+  grid-template-columns: max-content max-content;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const Content = styled(Box)`
+  display: grid;
+  width: 100%;
+  background-color: ${({ theme }) => theme.color8};
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-rows: max-content auto;
+  `};
+`;

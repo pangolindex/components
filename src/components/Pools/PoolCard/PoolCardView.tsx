@@ -2,7 +2,7 @@ import { CHAINS, Fraction, Token, TokenAmount } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
+import { Box, DoubleCurrencyLogo, RewardTokens, Stat, Text } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { StakingInfo } from 'src/state/pstake/types';
@@ -11,7 +11,6 @@ import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import ClaimDrawer from '../ClaimDrawer';
 import FarmDrawer from '../FarmDrawer';
-import RewardTokens from '../RewardTokens';
 import {
   ActionButon,
   DetailButton,

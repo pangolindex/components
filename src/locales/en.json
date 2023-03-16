@@ -101,7 +101,7 @@
     "poolRewards": "Pool Rewards",
     "rewardsIn": "Rewards in",
     "removeWarning": "You are removing liquidity from this pool. This action will give you back your tokens. Alternatively you can choose to stake your tokens to farm to earn rewards.",
-    "rewardClaimed" : "Your rewards claimed"
+    "rewardClaimed": "Your rewards claimed"
   },
   "menu": {
     "code": "Code",
@@ -173,7 +173,7 @@
     "selected": "Selected",
     "select": "Select",
     "manageTokenLists": "Manage Token Lists",
-    "listsSelected" :"lists selected"
+    "listsSelected": "lists selected"
   },
   "settings": {
     "areYouSure": "Are you sure?",
@@ -498,10 +498,10 @@
     "seeMore": "See More",
     "seeLess": "See Less",
     "orderPlaced": "{{ orderType }} order placed.",
-    "selectToken" : "Select Token",
-    "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain",
-    "sendingTo" : "Sending to",
+    "selectToken": "Select Token",
+    "notFoundBalances": "Not found balances",
+    "notFoundToken": "Not found tokens on this chain",
+    "sendingTo": "Sending to",
     "invalidAddress": "Invalid Address",
     "addRecipient": "Add Recipient",
     "removeRecipient": "Remove Recipient",
@@ -655,7 +655,7 @@
     "staked": "Staked",
     "stakeSuccessMsg": "Your rewards have been staked.",
     "stakeYourReward": "Stake your rewards",
-    "stakePng" : "Stake your PNG token to share platform fees",
+    "stakePng": "Stake your PNG token to share platform fees",
     "unstaking": "Unstaking",
     "unstaked": "Unstaked",
     "unstakeYourReward": "You can unstake your rewards.",
@@ -773,11 +773,28 @@
     "sidebar": {
       "title": "Pools V3",
       "seeMore": "Want to see classic pools",
-      "goToFarm": "Go to farm page"
+      "goToFarm": "Go to farm page",
+      "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
       "searchContent": "Try searching for coin names…",
       "poolNotExist": "You don’t have any open or closed positions to show."
+    },
+    "addLiquidity": {
+      "title": "Add Liquidity",
+      "selectFeeTier": "Select Fee Tier"
+    },
+    "selectPair": {
+      "title": "Select Pair"
+    },
+    "feeTier": {
+      "selectedPercentage": "select"
+    },
+    "priceRange": {
+      "title": "Set Price Range"
+    },
+    "increasePosition": {
+      "title": "Increase Position"
     }
   },
   "bridge": {
@@ -790,7 +807,7 @@
     "selectCurrency": "Select a Currency",
     "search": "Search",
     "tableOfContent": "Table of Content",
-    "haveQuestion" :"Have Questions? Look Here:",
+    "haveQuestion": "Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
@@ -856,7 +873,7 @@
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
   },
-  "buy":{
+  "buy": {
     "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
@@ -872,6 +889,24 @@
     "max": "Max",
     "min": "Min",
     "open": "Open",
-    "closed": "Closed"
+    "closed": "Closed",
+    "addLiquidity": "Add Liquidity",
+    "noLiquidity": "No liquidity found.",
+    "from": "From",
+    "to": "To",
+    "remove": "Remove",
+    "connectWallet": "Connect Wallet",
+    "approving": "Approving",
+    "approve": "Approve",
+    "approved": "Approved",
+    "output": "Output",
+    "amount": "Amount",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity",
+    "earned": "Earned",
+    "poolRewards": "Pool Rewards",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake"
+    
   }
 }
