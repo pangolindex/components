@@ -74,7 +74,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
   const farmApr = stakingInfo?.stakingApr;
   const earnedAmount = stakingInfo?.earnedAmount;
 
-  const userApr = useUserPangoChefAPR(stakingInfo);
+  const userApr = useUserPangoChefAPR(isStaking ? stakingInfo : undefined);
 
   const userRewardRate = stakingInfo?.userRewardRate;
   const rewardRate = isStaking ? userRewardRate : stakingInfo?.poolRewardRate;

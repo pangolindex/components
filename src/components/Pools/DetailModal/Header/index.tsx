@@ -38,7 +38,9 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
 
   const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
-  const _userApr = useUserPangoChefAPR(cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo) : undefined);
+  const _userApr = useUserPangoChefAPR(
+    cheftType === ChefType.PANGO_CHEF && isStaking ? (stakingInfo as PangoChefInfo) : undefined,
+  );
 
   const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
 
