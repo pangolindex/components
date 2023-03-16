@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { SpaceType, StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo, SpaceType } from 'src/state/pstake/types';
 import StakeV3 from '../PangoChef/Stake';
 import Stake from '../Stake';
 
@@ -13,7 +13,7 @@ type Props = {
   onClose: () => void;
   backgroundColor?: string;
   version: number;
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   combinedApr?: number;
 };
 

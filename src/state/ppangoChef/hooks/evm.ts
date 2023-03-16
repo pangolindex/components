@@ -16,7 +16,8 @@ import { useTokens } from 'src/hooks/tokens/evm';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
-import { getExtraTokensWeeklyRewardRate, useMinichefPools } from 'src/state/pstake/hooks';
+import { useMinichefPools } from 'src/state/pstake/hooks/common';
+import { getExtraTokensWeeklyRewardRate } from 'src/state/pstake/utils';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin, decimalToFraction, waitForTransaction } from 'src/utils';
 import {

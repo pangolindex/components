@@ -34,28 +34,15 @@ import { useCoinGeckoTokenData } from 'src/state/pcoingecko/hooks';
 import ListsUpdater from 'src/state/plists/updater';
 import MulticallUpdater from 'src/state/pmulticall/updater';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/hooks';
+import { useMinichefStakingInfosHook } from 'src/state/pstake/hooks';
+import { useDerivedStakeInfo, useMinichefPools } from 'src/state/pstake/hooks/common';
+import { useMinichefStakingInfos } from 'src/state/pstake/hooks/evm';
+import { DoubleSideStaking, DoubleSideStakingInfo, MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
 import {
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
   fetchChunkedAprs,
-  fetchMinichefData,
-  useDerivedStakeInfo,
-  useGetAllFarmData,
-  useMinichefPools,
-  useMinichefStakingInfos,
-} from 'src/state/pstake/hooks';
-import {
-  useGetAllFarmDataHook,
-  useGetMinichefStakingInfosViaSubgraphHook,
-  useMinichefStakingInfosHook,
-} from 'src/state/pstake/multiChainsHooks';
-import {
-  DoubleSideStaking,
-  DoubleSideStakingInfo,
-  MinichefStakingInfo,
-  PoolType,
-  StakingInfo,
-} from 'src/state/pstake/types';
+} from 'src/state/pstake/utils';
 import { useGelatoLimitOrdersListHook } from 'src/state/pswap/hooks';
 import {
   LimitOrderInfo,
@@ -157,15 +144,7 @@ export { ApplicationModal } from './state/papplication/atom';
 export * as Tokens from './constants/tokens';
 
 export * from '@gelatonetwork/limit-orders-react';
-export type {
-  LimitOrderInfo,
-  MinichefStakingInfo,
-  DoubleSideStakingInfo,
-  StakingInfo,
-  DoubleSideStaking,
-  Position,
-  PangoChefInfo,
-};
+export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, DoubleSideStaking, Position, PangoChefInfo };
 
 // components
 export { SelectTokenDrawer };
@@ -188,15 +167,12 @@ export {
   useAccountBalanceHook,
   useTranslation,
   useMinichefStakingInfosHook,
-  useGetAllFarmData,
-  useGetMinichefStakingInfosViaSubgraphHook,
   useGetUserLP,
   useMinichefStakingInfos,
   useDerivedStakeInfo,
   useMinichefPools,
   useTotalSupplyHook,
   useTotalSupply,
-  useGetAllFarmDataHook,
   useTokenBalanceHook,
   useTokenBalance,
   usePangoChefInfosHook,
@@ -230,7 +206,6 @@ export {
   availableLanguages,
   Trans,
   PoolType,
-  fetchMinichefData,
   fetchChunkedAprs,
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,

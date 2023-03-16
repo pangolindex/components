@@ -35,15 +35,13 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
 
     const pairBalance = pairPrice.raw.multiply(balance);
 
-    const expoent = png.decimals - balance.token.decimals;
-
-    //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / ((getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE) * 1e(png.decimals-lptoken.decimals))
+    //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / ((getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE) * 1e(png.decimals))
     return pairPrice.equalTo('0') || balance.equalTo('0')
       ? '0'
       : pngPrice.raw
           .multiply(userRewardRate.mul(86400).mul(365).mul(100).toString())
-          .divide(pairBalance.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent))))
-          .toFixed(0);
+          .divide(pairBalance.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals))))
+          .toFixed(2);
   }, [stakingInfo, pair, png, wavax]);
 }
 

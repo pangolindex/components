@@ -6,11 +6,11 @@ import { ApplicationModal } from 'src/state/papplication/atom';
 import { useModalOpen, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
 import { useBurnStateAtom } from 'src/state/pburn/atom';
 import { useMintStateAtom } from 'src/state/pmint/atom';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import DetailView from './DetailView';
 
 export interface DetailModalProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
 }
 

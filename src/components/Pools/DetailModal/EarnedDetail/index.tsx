@@ -5,14 +5,14 @@ import { Box, Button, Stat, Text } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useGetEarnedAmount, useMinichefPendingRewards } from 'src/state/pstake/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import ClaimDrawer from '../../ClaimDrawer';
 import RemoveDrawer from '../../RemoveDrawer';
 import { InnerWrapper, Wrapper } from './styleds';
 
 export interface EarnDetailProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
 }
 
@@ -29,9 +29,7 @@ const EarnedDetail = ({ stakingInfo, version }: EarnDetailProps) => {
 
   const png = PNG[chainId]; // add PNG as default reward
 
-  const { earnedAmount } = useGetEarnedAmount(stakingInfo?.pid as string);
-
-  const newEarnedAmount = version < 2 ? stakingInfo?.earnedAmount : earnedAmount;
+  const { earnedAmount } = stakingInfo;
 
   return (
     <Wrapper>
@@ -63,7 +61,7 @@ const EarnedDetail = ({ stakingInfo, version }: EarnDetailProps) => {
           <Box>
             <Stat
               title={t('dashboardPage.earned_totalEarned')}
-              stat={`${newEarnedAmount?.toFixed(6) ?? '0'}`}
+              stat={`${earnedAmount?.toFixed(6) ?? '0'}`}
               titlePosition="top"
               titleFontSize={14}
               statFontSize={[20, 18]}
@@ -111,7 +109,7 @@ const EarnedDetail = ({ stakingInfo, version }: EarnDetailProps) => {
       <Box mt={10}>
         <Button
           padding="15px 18px"
-          isDisabled={!newEarnedAmount?.greaterThan(BIG_INT_ZERO)}
+          isDisabled={!earnedAmount?.greaterThan(BIG_INT_ZERO)}
           variant="primary"
           onClick={() => setShowClaimDrawer(true)}
         >

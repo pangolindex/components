@@ -54,70 +54,31 @@ export interface DoubleSideStakingInfo extends StakingInfoBase {
   // total staked AVAX in the pool
   totalStakedInWavax: TokenAmount;
   totalStakedInUsd: TokenAmount;
+  // array of addresses of extra reward tokens
   rewardTokensAddress?: Array<string>;
+  // address of the rewarder contract (used to add extra tokens as rewards for farm)
   rewardsAddress?: string;
+  // extra reward tokens multipliers
   rewardTokensMultiplier?: Array<JSBI>;
   getExtraTokensWeeklyRewardRate?: (
     rewardRatePerWeek: TokenAmount,
     token: Token,
     tokenMultiplier: JSBI | undefined,
   ) => TokenAmount;
+
+  // apr from swap fees
+  swapFeeApr?: number;
+  // apr from rewards
+  stakingApr?: number;
+  // swapFeeApr + stakingApr
+  combinedApr?: number;
 }
 
-export interface StakingInfo extends DoubleSideStakingInfo {
-  swapFeeApr?: number;
-  stakingApr?: number;
-  combinedApr?: number;
+export interface MinichefStakingInfo extends DoubleSideStakingInfo {
+  // array of extra reward tokens (super farms)
   rewardTokens?: Array<Token>;
-  pid?: string;
-}
-
-export interface MinichefStakingInfo {
-  // the address of the reward contract
-  stakingRewardAddress: string;
-  // the amount of token currently staked, or undefined if no account
-  stakedAmount: TokenAmount;
-  // the amount of reward token earned by the active account, or undefined if no account
-  earnedAmount: TokenAmount;
-  // the total amount of token staked in the contract
-  totalStakedAmount: TokenAmount;
-  swapFeeApr?: number;
-  stakingApr?: number;
-  combinedApr?: number;
-  // the tokens involved in this pair
-  tokens: [Token, Token];
-  // the pool weight
-  multiplier: JSBI;
-  totalStakedInUsd: TokenAmount;
-  // has the reward period expired
-  isPeriodFinished: boolean;
-  rewardTokens?: Array<Token>;
-  rewardsAddress?: string;
+  // farm id
   pid: string;
-
-  // Extra Fields
-  totalStakedInWavax: TokenAmount;
-  rewardTokensAddress?: Array<string>;
-  rewardTokensMultiplier?: Array<JSBI>;
-  getExtraTokensWeeklyRewardRate?: (
-    rewardRatePerWeek: TokenAmount,
-    token: Token,
-    tokenMultiplier: JSBI | undefined,
-  ) => TokenAmount;
-  // the amount of token distributed per second to all LPs, constant
-  totalRewardRatePerSecond: TokenAmount;
-  totalRewardRatePerWeek: TokenAmount;
-  // equivalent to percent of total supply * reward rate * (60 * 60 * 24 * 7)
-  rewardRatePerWeek: TokenAmount;
-  // when the period ends
-  periodFinish: Date | undefined;
-
-  // calculates a hypothetical amount of token distributed to the active account per second.
-  getHypotheticalWeeklyRewardRate: (
-    stakedAmount: TokenAmount,
-    totalStakedAmount: TokenAmount,
-    totalRewardRatePerSecond: TokenAmount,
-  ) => TokenAmount;
 }
 
 export interface DoubleSideStaking {
@@ -131,6 +92,7 @@ export interface MinichefToken {
   id: string;
   symbol: string;
   derivedUSD: number;
+  derivedETH: string;
   name: string;
   decimals: number;
 }

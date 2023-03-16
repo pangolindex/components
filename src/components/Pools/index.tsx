@@ -1,15 +1,10 @@
 import { CHAINS, ChefType } from '@pangolindex/sdk';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import {
-  useGetAllFarmDataHook,
-  useGetMinichefStakingInfosViaSubgraphHook,
-  useMinichefStakingInfosHook,
-} from 'src/state/pstake/multiChainsHooks';
+import { useMinichefStakingInfosHook } from 'src/state/pstake/hooks';
 import { MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
 import { isEvmChain } from 'src/utils';
 import { Box } from '../Box';
@@ -26,32 +21,18 @@ const PoolsUI = () => {
 
   const { t } = useTranslation();
 
-  const useGetAllFarmData = useGetAllFarmDataHook[chainId];
+  const usePangoChefInfos = usePangoChefInfosHook[chainId];
+  const pangoChefStakingInfos = usePangoChefInfos();
 
-  useGetAllFarmData();
-  const pangoChefStakingInfos = usePangoChefInfosHook[chainId]() || [];
+  const useMiniChefStakingInfos = useMinichefStakingInfosHook[chainId];
+  const miniChefStakingInfos = useMiniChefStakingInfos();
 
-  const subgraphMiniChefStakingInfo = useGetMinichefStakingInfosViaSubgraphHook[chainId]() || [];
-  const onChainMiniChefStakingInfo = useMinichefStakingInfosHook[chainId]() || [];
-
-  // filter only live or needs migration pools
-  const miniChefStakingInfo = useMemo(() => {
-    if (subgraphMiniChefStakingInfo.length === 0 && onChainMiniChefStakingInfo?.length > 0) {
-      return onChainMiniChefStakingInfo.filter(
-        (info: any) => !info.isPeriodFinished || info.stakedAmount.greaterThan(BIG_INT_ZERO),
-      ) as MinichefStakingInfo[];
-    }
-    return (subgraphMiniChefStakingInfo || []).filter(
-      (info: MinichefStakingInfo) => !info.isPeriodFinished || info.stakedAmount.greaterThan(BIG_INT_ZERO),
-    );
-  }, [subgraphMiniChefStakingInfo, onChainMiniChefStakingInfo]);
-
-  const ownminiChefStakingInfo = useMemo(
+  const ownminiChefStakingInfos = useMemo(
     () =>
-      (miniChefStakingInfo || []).filter((stakingInfo: MinichefStakingInfo) => {
+      (miniChefStakingInfos || []).filter((stakingInfo: MinichefStakingInfo) => {
         return Boolean(stakingInfo.stakedAmount.greaterThan('0'));
       }),
-    [miniChefStakingInfo],
+    [miniChefStakingInfos],
   );
 
   const ownPangoCheftStakingInfo = useMemo(
@@ -65,12 +46,14 @@ const PoolsUI = () => {
   const pangoChefStakingLength = (pangoChefStakingInfos || []).length;
   const superFarms = useMemo(() => {
     if (pangoChefStakingLength > 0) {
-      return pangoChefStakingInfos?.filter((item: PangoChefInfo) => (item?.rewardTokensAddress?.length || 0) > 1);
+      return (pangoChefStakingInfos || [])?.filter(
+        (item: PangoChefInfo) => (item?.rewardTokensAddress?.length || 0) > 1,
+      );
     }
-    return (miniChefStakingInfo || onChainMiniChefStakingInfo || []).filter(
+    return (miniChefStakingInfos || []).filter(
       (item: MinichefStakingInfo) => (item?.rewardTokensAddress?.length || 0) > 1,
     );
-  }, [miniChefStakingInfo, onChainMiniChefStakingInfo, pangoChefStakingInfos, pangoChefStakingLength]);
+  }, [miniChefStakingInfos, pangoChefStakingInfos, pangoChefStakingLength]);
 
   const menuItems: Array<{ label: string; value: string }> = [
     {
@@ -80,7 +63,7 @@ const PoolsUI = () => {
   ];
 
   // add own v2
-  if (ownminiChefStakingInfo.length > 0) {
+  if (ownminiChefStakingInfos.length > 0) {
     menuItems.push({
       label: `${t('pool.yourFarms')}`,
       value: MenuType.yourFarm,
@@ -154,7 +137,7 @@ const PoolsUI = () => {
                 }
                 version={version}
                 stakingInfoV1={[]}
-                miniChefStakingInfo={miniChefStakingInfo}
+                miniChefStakingInfo={miniChefStakingInfos}
                 pangoChefStakingInfo={pangoChefStakingInfos}
                 activeMenu={activeMenu}
                 setMenu={handleSetMenu}
