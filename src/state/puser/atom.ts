@@ -117,7 +117,6 @@ export function useUserAtom() {
 
   const addSerializedToken = useCallback(
     ({ serializedToken }: { serializedToken: SerializedToken }) => {
-      console.log('serializedToken', serializedToken);
       setUserState((state) => {
         const newState = { ...state };
         newState.tokens[serializedToken.chainId] = newState.tokens[serializedToken.chainId] || {};
@@ -149,8 +148,6 @@ export function useUserAtom() {
 
   const addSerializedPair = useCallback(
     ({ serializedPair }: { serializedPair: SerializedPair }) => {
-      console.log('serializedPair', serializedPair);
-
       setUserState((state) => {
         if (
           serializedPair.token0.chainId === serializedPair.token1.chainId &&
