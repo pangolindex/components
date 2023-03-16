@@ -172,23 +172,31 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
       </Box>
       {/* Render All Selected Tokens */}
       <CurrencyList>
-        <AutoSizer>
-          {({ height, width }) => (
-            <FixedSizeGrid
-              height={height}
-              columnWidth={(width - 10) / 4}
-              rowHeight={110}
-              columnCount={4}
-              rowCount={Math.ceil(currencies.length / 4)}
-              width={width}
-              itemData={currencies}
-              itemKey={({ columnIndex, rowIndex, data }) => currencyKey(columnIndex, rowIndex, data, chainId)}
-              style={{ overflowX: 'hidden' }}
-            >
-              {Item}
-            </FixedSizeGrid>
-          )}
-        </AutoSizer>
+        {currencies.length > 0 ? (
+          <AutoSizer>
+            {({ height, width }) => (
+              <FixedSizeGrid
+                height={height}
+                columnWidth={(width - 10) / 4}
+                rowHeight={110}
+                columnCount={4}
+                rowCount={Math.ceil(currencies.length / 4)}
+                width={width}
+                itemData={currencies}
+                itemKey={({ columnIndex, rowIndex, data }) => currencyKey(columnIndex, rowIndex, data, chainId)}
+                style={{ overflowX: 'hidden' }}
+              >
+                {Item}
+              </FixedSizeGrid>
+            )}
+          </AutoSizer>
+        ) : (
+          <Box mt="10px" height="100%">
+            <Text color="text1" textAlign="center">
+              {t('common.notFound')}
+            </Text>
+          </Box>
+        )}
       </CurrencyList>
       {/* Render Selected Token List Info */}
       <ManageList onClick={() => setIsTokenListOpen(true)}>

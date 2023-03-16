@@ -4,13 +4,12 @@ import { useQuery } from 'react-query';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useLastBlockHook } from 'src/hooks/block';
 import useDebounce from 'src/hooks/useDebounce';
-import { useDispatch } from 'src/state';
-import { updateBlockNumber } from './actions';
+import { useApplicationState } from './atom';
 
 const NearApplicationUpdater = () => {
   const chainId = useChainId();
   const { provider } = useLibrary();
-  const dispatch = useDispatch();
+  const { updateBlockNumber } = useApplicationState();
 
   const { data: blockNumber } = useQuery(
     'get-block',
@@ -22,7 +21,7 @@ const NearApplicationUpdater = () => {
 
   useEffect(() => {
     if (blockNumber) {
-      dispatch(updateBlockNumber({ chainId, blockNumber }));
+      updateBlockNumber({ chainId, blockNumber });
     }
   }, [blockNumber]);
 
@@ -32,7 +31,7 @@ const NearApplicationUpdater = () => {
 export const EvmApplicationUpdater = () => {
   const { chainId } = usePangolinWeb3();
   const { provider } = useLibrary();
-  const dispatch = useDispatch();
+  const { updateBlockNumber } = useApplicationState();
 
   const [state, setState] = useState<{ chainId: number | undefined; blockNumber: number | null }>({
     chainId,
@@ -86,8 +85,8 @@ export const EvmApplicationUpdater = () => {
 
   useEffect(() => {
     if (!debouncedState.chainId || !debouncedState?.blockNumber) return;
-    dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState?.blockNumber }));
-  }, [dispatch, debouncedState?.blockNumber, debouncedState.chainId]);
+    updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState?.blockNumber });
+  }, [debouncedState?.blockNumber, debouncedState.chainId]);
 
   return null;
 };

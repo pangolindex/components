@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
-import { useGetPoolDollerWorth } from 'src/state/pstake/hooks';
+import { useGetPoolDollerWorth } from 'src/state/pstake/hooks/common';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../../AddLiquidityDrawer';
 import RemoveLiquidityDrawer from '../../RemoveLiquidityDrawer';
