@@ -1,39 +1,12 @@
 import styled from 'styled-components';
 import { Box, Text } from 'src/components';
 
-// export const HoverWrapper = styled.div`
-//   width: 100%;
-//   --c: ${({ theme }) => theme.primary}; /* the border color */
-//   --b: 3px; /* the border thickness*/
-//   --g: 0px; /* the gap on hover */
-//   border-radius: 3px;
-//   padding: calc(var(--g) + var(--b));
-//   --_g: #0000 25%, var(--c) 0;
-//   background: conic-gradient(from 180deg at top var(--b) right var(--b), var(--_g)) var(--_i, 200%) 0 /200% var(
-//         --_i,
-//         var(--b)
-//       ) no-repeat,
-//     conic-gradient(at bottom var(--b) left var(--b), var(--_g)) 0 var(--_i, 200%) / var(--_i, var(--b)) 200% no-repeat;
-//   transition: 0.3s, background-position 0.3s 0.3s;
-//   cursor: pointer;
-//   &:hover {
-//     --_i: 100%;
-//     transition: 0.3s, background-size 0.3s 0.3s;
-//   }
-// `;
-
 export const HoverWrapper = styled.div`
   --border-size: 5px;
   --c: ${({ theme }) => theme.color8}; /* the border color */
   --b: 3px; /* the border thickness*/
   --g: 2px; /* the gap on hover */
   --border-angle: 0turn;
-  animation: bg-spin 3s linear infinite;
-  @keyframes bg-spin {
-    to {
-      --border-angle: 1turn;
-    }
-  }
   padding: calc(var(--g) + var(--b));
   width: 100%;
   background-image: conic-gradient(from var(--border-angle), #213, #112 50%, #213),

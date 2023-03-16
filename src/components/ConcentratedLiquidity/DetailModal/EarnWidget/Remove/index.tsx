@@ -17,25 +17,6 @@ const Remove = ({ isOpen, onClose }: RemoveProps) => {
   const { t } = useTranslation();
   const [percentage, setPercentage] = useState<number>(100);
 
-  function getApproveButtonVariant() {
-    // if (approval === ApprovalState.APPROVED || signatureData !== null) {
-    if (true) {
-      return 'confirm';
-    }
-    return 'primary';
-  }
-
-  function getApproveButtonText() {
-    // if (approval === ApprovalState.PENDING) {
-    if (true) {
-      return t('common.approving');
-      // } else if (approval === ApprovalState.APPROVED || signatureData !== null) {
-      //   return t('removeLiquidity.approved');
-      // }
-    }
-    return t('common.approve');
-  }
-
   const renderButton = () => {
     if (!account) {
       return (
@@ -50,13 +31,13 @@ const Remove = ({ isOpen, onClose }: RemoveProps) => {
         {isEvmChain(chainId) && (
           <Box mr="5px" width="100%">
             <Button
-              variant={getApproveButtonVariant()}
+              variant={'confirm'}
               onClick={() => {}}
               loading={attempting && !hash}
               loadingText={t('common.approving')}
               height="46px"
             >
-              {getApproveButtonText()}
+              {t('common.approving')}
             </Button>
           </Box>
         )}
@@ -79,7 +60,6 @@ const Remove = ({ isOpen, onClose }: RemoveProps) => {
               <Box>
                 <Box display="flex" flexDirection="column">
                   <TextInput
-                    // value={formattedAmounts[Field.LIQUIDITY]}
                     addonAfter={
                       <Box display="flex" alignItems="center">
                         <Text color="text4" fontSize={[24, 18]}>
@@ -87,9 +67,7 @@ const Remove = ({ isOpen, onClose }: RemoveProps) => {
                         </Text>
                       </Box>
                     }
-                    onChange={() => {
-                      // onUserInput(value);
-                    }}
+                    onChange={() => {}}
                     fontSize={24}
                     isNumeric={true}
                     placeholder="0.00"
@@ -107,7 +85,6 @@ const Remove = ({ isOpen, onClose }: RemoveProps) => {
                       onChange={(value) => {
                         console.log(value);
                         setPercentage(value);
-                        // onChangePercentage(value * 25);
                       }}
                       currentValue={percentage}
                       variant="step"
@@ -124,7 +101,6 @@ const Remove = ({ isOpen, onClose }: RemoveProps) => {
         {attempting && !hash && <Loader size={100} label={`${t('common.removingLiquidity')}...`} />}
         {hash && (
           <TransactionCompleted
-            // onButtonClick={wrappedOnDismiss}
             buttonText={t('common.close')}
             submitText={t('common.removedLiquidity')}
             isShowButtton={true}

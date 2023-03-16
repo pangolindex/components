@@ -27,7 +27,6 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     'Pangolin',
   );
   // ---------------------------------------------------------------------------
-  // const theme = useContext(ThemeContext);
   const { t } = useTranslation();
   const { account } = usePangolinWeb3();
   const {} = props;
@@ -50,8 +49,6 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
             onClick={() => {
               console.log('ADD LIQUIDITY');
             }}
-            // isDisabled={!isValid || approvalA !== ApprovalState.APPROVED || approvalB !== ApprovalState.APPROVED}
-            //error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
           >
             {t('common.addLiquidity')}
           </Button>
@@ -76,21 +73,12 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
             <TextInput
               value={''}
               addonAfter={
-                // !atMaxAmounts[Field.CURRENCY_A] ? (
                 <Box display={'flex'} alignItems={'center'} height={'100%'} justifyContent={'center'}>
-                  <StyledBalanceMax
-                  // onClick={() => onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '', pairAddress)}
-                  >
-                    {t('currencyInputPanel.max')}
-                  </StyledBalanceMax>
+                  <StyledBalanceMax>{t('currencyInputPanel.max')}</StyledBalanceMax>
                 </Box>
-                // ) : (
-                // ''
-                // )
               }
               style={{ borderRadius: '4px' }}
               onChange={(value: any) => {
-                // handleTypeInput(value);
                 console.log(value);
               }}
               label={`${currency0?.symbol}`}
@@ -101,7 +89,6 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
               addonLabel={
                 account && (
                   <Text color="text2" fontWeight={500} fontSize={12}>
-                    {/* {!!currency0 && selectedCurrencyBalanceA ? selectedCurrencyBalanceA?.toSignificant(4) : ' -'} */}
                     -
                   </Text>
                 )
@@ -115,24 +102,14 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
             </Box>
 
             <TextInput
-              // value={formattedAmounts[Field.CURRENCY_B]}
               value={''}
               addonAfter={
-                // !atMaxAmounts[Field.CURRENCY_B] ? (
                 <Box display={'flex'} alignItems={'center'} height={'100%'} justifyContent={'center'}>
-                  <StyledBalanceMax
-                  // onClick={() => onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '', pairAddress)}
-                  >
-                    {t('currencyInputPanel.max')}
-                  </StyledBalanceMax>
+                  <StyledBalanceMax>{t('currencyInputPanel.max')}</StyledBalanceMax>
                 </Box>
-                // ) : (
-                // ''
-                // )
               }
               style={{ borderRadius: 4 }}
               onChange={(value: any) => {
-                // handleTypeOutput(value);
                 console.log(value);
               }}
               label={`${currency1?.symbol}`}
@@ -143,7 +120,6 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
               addonLabel={
                 account && (
                   <Text color="text2" fontWeight={500} fontSize={12}>
-                    {/* {!!currency1 && selectedCurrencyBalanceB ? selectedCurrencyBalanceB?.toSignificant(4) : ' -'} */}
                     -
                   </Text>
                 )

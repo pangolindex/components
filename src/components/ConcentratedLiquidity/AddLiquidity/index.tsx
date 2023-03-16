@@ -53,7 +53,6 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const onCurrencySelect = useCallback(
     (currency: Currency) => {
       console.log(currency);
-      //   onCurrencySelection(drawerType === TokenField.INPUT0 ? currency0 : currency1, currency);
     },
     [drawerType],
   );
@@ -70,7 +69,6 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   );
   const percentageValue = [25, 50, 75, 100];
   const chainId = useChainId();
-  // const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT]);
   const maxAmountInput = new TokenAmount(currency0 as Token, JSBI.BigInt(100000));
 
   const renderPercentage = () => {
