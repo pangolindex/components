@@ -3,20 +3,8 @@ import flatMap from 'lodash.flatmap';
 import { useCallback, useMemo } from 'react';
 import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from 'src/constants';
 import { useAllTokens } from 'src/hooks/useAllTokens';
-import { AppState, useDispatch, useSelector } from 'src/state';
 import { usePangolinWeb3 } from '../../hooks';
-import {
-  SerializedPair,
-  SerializedToken,
-  addSerializedPair,
-  addSerializedToken,
-  removeSerializedToken,
-  updateUserApproveInfinite,
-  updateUserDeadline,
-  updateUserExpertMode,
-  updateUserShowBalances,
-  updateUserSlippageTolerance,
-} from './actions';
+import { SerializedPair, SerializedToken, useUserAtom } from './atom';
 
 function serializeToken(token: Token): SerializedToken {
   return {
@@ -39,44 +27,46 @@ function deserializeToken(serializedToken: SerializedToken): Token {
 }
 
 export function useUserSlippageTolerance(): [number, (slippage: number) => void] {
-  const dispatch = useDispatch();
-  const userSlippageTolerance = useSelector<AppState['puser']['userSlippageTolerance']>((state) => {
-    return state.puser.userSlippageTolerance;
-  });
+  const { userState, updateUserSlippageTolerance } = useUserAtom();
+
+  const userSlippageTolerance = userState.userSlippageTolerance;
 
   const setUserSlippageTolerance = useCallback(
     (userSlippageTolerance: number) => {
-      dispatch(updateUserSlippageTolerance({ userSlippageTolerance: userSlippageTolerance }));
+      updateUserSlippageTolerance({ userSlippageTolerance: userSlippageTolerance });
     },
-    [dispatch],
+    [updateUserSlippageTolerance],
   );
 
   return [userSlippageTolerance, setUserSlippageTolerance];
 }
 
 export function useAddUserToken(): (token: Token) => void {
-  const dispatch = useDispatch();
+  const { addSerializedToken } = useUserAtom();
   return useCallback(
     (token: Token) => {
-      dispatch(addSerializedToken({ serializedToken: serializeToken(token) }));
+      addSerializedToken({ serializedToken: serializeToken(token) });
     },
-    [dispatch],
+    [addSerializedToken],
   );
 }
-
+/*not used anywhere */
 export function useRemoveUserAddedToken(): (chainId: number, address: string) => void {
-  const dispatch = useDispatch();
+  const { removeSerializedToken } = useUserAtom();
   return useCallback(
     (chainId: number, address: string) => {
-      dispatch(removeSerializedToken({ chainId, address }));
+      removeSerializedToken({ chainId, address });
     },
-    [dispatch],
+    [removeSerializedToken],
   );
 }
 
 export function useUserAddedTokens(): Token[] {
   const { chainId } = usePangolinWeb3();
-  const serializedTokensMap = useSelector<AppState['puser']['tokens']>(({ puser: { tokens } }) => tokens);
+
+  const { userState } = useUserAtom();
+
+  const serializedTokensMap = userState.tokens;
 
   return useMemo(() => {
     if (!chainId) return [];
@@ -85,70 +75,75 @@ export function useUserAddedTokens(): Token[] {
 }
 
 export function useIsExpertMode(): boolean {
-  return useSelector<AppState['puser']['userExpertMode']>((state) => state.puser.userExpertMode);
+  const { userState } = useUserAtom();
+
+  return userState.userExpertMode;
 }
 
 export function useExpertModeManager(): [boolean, (value: boolean) => void] {
-  const dispatch = useDispatch();
+  const { updateUserExpertMode } = useUserAtom();
+
   const expertMode = useIsExpertMode();
 
   const setExpertMode = useCallback(
     (value: boolean) => {
-      dispatch(updateUserExpertMode({ userExpertMode: value }));
+      updateUserExpertMode({ userExpertMode: value });
     },
-    [dispatch],
+    [updateUserExpertMode],
   );
 
   return [expertMode, setExpertMode];
 }
 
 export function useUserDeadline(): [string, (deadline: string) => void] {
-  const dispatch = useDispatch();
-  const userDeadline = useSelector<AppState['puser']['userDeadline']>((state) => state.puser.userDeadline);
+  const { userState, updateUserDeadline } = useUserAtom();
+  const userDeadline = userState.userDeadline;
 
   const setUserDeadline = useCallback(
     (userDeadline: string) => {
-      dispatch(updateUserDeadline({ userDeadline: userDeadline }));
+      updateUserDeadline({ userDeadline: userDeadline });
     },
-    [dispatch],
+    [updateUserDeadline],
   );
 
   return [userDeadline, setUserDeadline];
 }
 
 export function useIsShowingBalances(): boolean {
-  return useSelector<AppState['puser']['userShowBalances']>((state) => state.puser.userShowBalances);
+  const { userState } = useUserAtom();
+
+  return userState.userShowBalances;
 }
 
 export function useShowBalancesManager(): [boolean, (value: boolean) => void] {
-  const dispatch = useDispatch();
-
+  const { updateUserShowBalances } = useUserAtom();
   const showBalances = useIsShowingBalances();
 
   const setShowBalances = useCallback(
     (value: boolean) => {
-      dispatch(updateUserShowBalances({ userShowBalances: value }));
+      updateUserShowBalances({ userShowBalances: value });
     },
-    [dispatch],
+    [updateUserShowBalances],
   );
 
   return [showBalances, setShowBalances];
 }
 
 export function useIsApprovingInfinite(): boolean {
-  return useSelector<AppState['puser']['userApproveInfinite']>((state) => state.puser.userApproveInfinite);
+  const { userState } = useUserAtom();
+  return userState.userApproveInfinite;
 }
-
+/*not used anywhere */
 export function useApproveManager(): [boolean, (value: boolean) => void] {
-  const dispatch = useDispatch();
+  const { updateUserApproveInfinite } = useUserAtom();
 
   const isApprovingInfinity = useIsApprovingInfinite();
 
   const setApprove = useCallback(
     (value: boolean) => {
-      dispatch(updateUserApproveInfinite({ userApproveInfinite: value }));
+      updateUserApproveInfinite({ userApproveInfinite: value });
     },
-    [dispatch],
+    [updateUserApproveInfinite],
   );
 
   return [isApprovingInfinity, setApprove];
@@ -168,6 +163,7 @@ export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token], chainId: Ch
  */
 export function useTrackedTokenPairs(): [Token, Token][] {
   const { chainId } = usePangolinWeb3();
+  const { userState } = useUserAtom();
   const tokens = useAllTokens();
 
   // pinned pairs
@@ -199,7 +195,7 @@ export function useTrackedTokenPairs(): [Token, Token][] {
   );
 
   // pairs saved by users
-  const savedSerializedPairs = useSelector<AppState['puser']['pairs']>(({ puser: { pairs } }) => pairs);
+  const savedSerializedPairs = userState.pairs;
 
   const userPairs: [Token, Token][] = useMemo(() => {
     if (!chainId || !savedSerializedPairs) return [];
@@ -238,12 +234,12 @@ function serializePair(pair: Pair): SerializedPair {
 }
 
 export function usePairAdder(): (pair: Pair) => void {
-  const dispatch = useDispatch();
+  const { addSerializedPair } = useUserAtom();
 
   return useCallback(
     (pair: Pair) => {
-      dispatch(addSerializedPair({ serializedPair: serializePair(pair) }));
+      addSerializedPair({ serializedPair: serializePair(pair) });
     },
-    [dispatch],
+    [addSerializedPair],
   );
 }

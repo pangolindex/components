@@ -46,6 +46,15 @@ export interface DefaultSwapState extends SwapParams {
   readonly feeInfo: FeeInfo;
 }
 
+interface ReplaceSwapState {
+  typedValue: string;
+  recipient: string | null;
+  field: Field;
+  inputCurrencyId: string;
+  outputCurrencyId: string;
+  chainId: ChainId;
+}
+
 const initialValue = {
   independentField: Field.INPUT,
   typedValue: '',
@@ -108,21 +117,7 @@ export const useSwapState = () => {
   const [swapState, setSwapState] = useAtom(swapStateAtom);
 
   const replaceSwapState = useCallback(
-    ({
-      typedValue,
-      recipient,
-      field,
-      inputCurrencyId,
-      outputCurrencyId,
-      chainId,
-    }: {
-      typedValue: string;
-      recipient: string | null;
-      field: Field;
-      inputCurrencyId: string;
-      outputCurrencyId: string;
-      chainId: ChainId;
-    }) => {
+    ({ typedValue, recipient, field, inputCurrencyId, outputCurrencyId, chainId }: ReplaceSwapState) => {
       setSwapState((prev) => ({
         ...prev,
         [chainId]: {
@@ -145,6 +140,7 @@ export const useSwapState = () => {
   const selectCurrency = useCallback(
     ({ currencyId, field, chainId }: { currencyId: string; field: Field; chainId: ChainId }) => {
       const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT;
+
       if (currencyId === swapState[chainId][otherField].currencyId) {
         // the case where we have to swap the order
         setSwapState((prev) => ({
@@ -167,7 +163,7 @@ export const useSwapState = () => {
         }));
       }
     },
-    [setSwapState],
+    [setSwapState, swapState],
   );
 
   const switchCurrencies = useCallback(
