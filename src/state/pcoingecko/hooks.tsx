@@ -3,12 +3,9 @@ import { CHAINS, ChainId, Currency, Token } from '@pangolindex/sdk';
 import axios, { AxiosResponse } from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { UseQueryResult, useQueries, useQuery } from 'react-query';
-import { COINGECKO_CURRENCY_ID, COINGEKO_BASE_URL } from 'src/constants';
-import { COINGECKO_TOKENS_MAPPING } from 'src/constants/coingeckoTokens';
+import { COINGECKO_CURRENCY_ID, COINGECKO_TOKENS_MAPPING, COINGEKO_BASE_URL } from 'src/constants/coingecko';
 import { useChainId } from 'src/hooks';
-import { AppState, useDispatch, useSelector } from 'src/state';
-import { addCoingeckoTokens } from './actions';
-import { CoingeckoWatchListState } from './reducer';
+import { CoingeckoWatchListState, useCoingeckoWatchList } from './atom';
 
 export interface CoingeckoTokenData {
   id: string;
@@ -293,8 +290,7 @@ export const makeCoingeckoTokenData = (toknesData: MarketCoinsAPIResponse[]): Co
  * @returns CoingeckoData of token if exist in coingecko else null
  * */
 export function useCoinGeckoTokens(): CoingeckoWatchListState {
-  const dispatch = useDispatch();
-  const currencies = useSelector<AppState['pcoingecko']['currencies']>((state) => state?.pcoingecko?.currencies);
+  const { currencies, addCoingeckoTokens } = useCoingeckoWatchList();
 
   const queryParameter = [] as any;
   const totalPages = 2;
@@ -322,8 +318,8 @@ export function useCoinGeckoTokens(): CoingeckoWatchListState {
   }, [results]);
 
   useEffect(() => {
-    dispatch(addCoingeckoTokens(apiTokens));
-  }, [dispatch, Object.values(apiTokens || []).length]);
+    addCoingeckoTokens(apiTokens);
+  }, [Object.values(apiTokens || []).length]);
 
   return currencies;
 }

@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Plus } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, ShowMore } from 'src/components';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import useToggle from 'src/hooks/useToggle';
 import { CoingeckoWatchListToken, useCoinGeckoTokens } from 'src/state/pcoingecko/hooks';
-import { useSelectedCurrencyLists } from 'src/state/pwatchlists/hooks';
+import { useSelectedCurrencyLists } from 'src/state/pwatchlists/atom';
 import { Hidden } from 'src/theme/components';
 import CoinChart from './CoinChart';
 import CurrencyPopover from './CurrencyPopover';
@@ -21,7 +22,7 @@ const WatchList: React.FC<Props> = ({ coinChartVisible = true }) => {
   const [showMore, setShowMore] = useState(false as boolean);
 
   const allTokens = useCoinGeckoTokens();
-
+  const { t } = useTranslation();
   const coins = Object.values(allTokens || {});
   const selectedCurrencies = useSelectedCurrencyLists();
   const theme = useContext(ThemeContext);
@@ -89,9 +90,9 @@ const WatchList: React.FC<Props> = ({ coinChartVisible = true }) => {
     } else {
       return (
         <NoDataWrapper>
-          No data available!
+          {t('common.noDataAvailable')}
           <Box display="flex" alignItems="center" color="text1" justifyContent="center" mt={2}>
-            Add tokens to watchlist using{' '}
+            {t('swapPage.addTokenWatchlist')}{' '}
             <Box mx={2}>
               <Button
                 variant="primary"
@@ -115,7 +116,7 @@ const WatchList: React.FC<Props> = ({ coinChartVisible = true }) => {
   return (
     <WatchListRoot>
       <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Title>Watchlist</Title>
+        <Title>{t('swapPage.watchList')}</Title>
         <Box bgColor={theme.bg5 as any} position="relative" p={'5px'} ref={node as any}>
           <Box ref={referenceElement} onClick={toggle}>
             <Button

@@ -1,13 +1,10 @@
 import { ChainId } from '@pangolindex/sdk';
-import { AnyAction } from '@reduxjs/toolkit';
-import { Dispatch, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
-import { AppState, useDispatch, useSelector } from 'src/state';
 import { nearFn } from 'src/utils/near';
 import { useChainId, useLibrary } from '../../hooks';
 import { useAddPopup, useBlockNumber } from '../papplication/hooks';
-import { addTransaction, checkedTransaction, finalizeTransaction } from './actions';
-import { TransactionDetails } from './reducer';
+import { AddTransactionDetails, TransactionDetails, useTransactionState } from './atom';
 
 export function shouldCheck(
   lastBlockNumber: number,
@@ -43,7 +40,7 @@ type TxCheckerProps = {
   transactions: {
     [txHash: string]: TransactionDetails;
   };
-  dispatch: Dispatch<AnyAction>;
+  addTransaction: (args: AddTransactionDetails) => void;
   chainId: number;
 };
 
@@ -57,7 +54,7 @@ const NEAR_TX_HASH_PARAM = 'transactionHashes';
  * this method is used to check transaction hashes in url and if found then get summary of that transaction and add it to the reducer
  * @returns txChecker function
  */
-const nearTxChecker = async ({ transactions, dispatch, chainId }) => {
+const nearTxChecker = async ({ transactions, addTransaction, chainId }) => {
   const search = window.location.search;
   // get transactionHashes from url
   const txHashes = new URLSearchParams(search).get(NEAR_TX_HASH_PARAM)?.split(',') || [];
@@ -71,7 +68,7 @@ const nearTxChecker = async ({ transactions, dispatch, chainId }) => {
       const exists = !!transactions[txHash];
       // if hash doesn't exist then only add it to redux
       if (!exists) {
-        dispatch(addTransaction({ hash: txHash, from: nearFn.getAccountId(), chainId, summary }));
+        addTransaction({ hash: txHash, from: nearFn.getAccountId(), chainId, summary });
       }
     }
 
@@ -110,6 +107,7 @@ const txCheckerMapping: { [chainId in ChainId]: (params: TxCheckerProps) => void
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
   [ChainId.EVMOS_TESTNET]: txChecker,
+  [ChainId.EVMOS_MAINNET]: txChecker,
 };
 
 const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
@@ -125,6 +123,7 @@ const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
   [ChainId.NEAR_TESTNET]: true,
   [ChainId.COSTON2]: true,
   [ChainId.EVMOS_TESTNET]: true,
+  [ChainId.EVMOS_MAINNET]: true,
   //TODO: remove this once we have proper implementation
   [ChainId.ETHEREUM]: false,
   [ChainId.POLYGON]: false,
@@ -149,8 +148,14 @@ export default function Updater(): null {
 
   const lastBlockNumber = useBlockNumber();
 
-  const dispatch = useDispatch();
-  const state = useSelector<AppState['ptransactions']>((state) => state.ptransactions);
+  const {
+    transactions: allTransactions,
+    finalizeTransaction,
+    checkedTransaction,
+    addTransaction,
+  } = useTransactionState();
+
+  const state = allTransactions;
 
   const transactions = chainId ? state[chainId] ?? {} : {}; // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -159,9 +164,9 @@ export default function Updater(): null {
   // as of now this is specific to Near chain, we are checking user is coming to pangolin after completing tx or not
   useEffect(() => {
     if (txCheckerFn) {
-      txCheckerFn({ transactions, chainId, dispatch });
+      txCheckerFn({ transactions, chainId, addTransaction });
     }
-  }, [transactions, chainId, dispatch]);
+  }, [transactions, chainId, addTransaction]);
 
   // show popup on confirm
   const addPopup = useAddPopup();
@@ -179,24 +184,22 @@ export default function Updater(): null {
           const status = receipt?.status;
 
           if (receipt) {
-            dispatch(
-              finalizeTransaction({
-                chainId,
-                hash,
-                receipt: {
-                  blockHash: receipt.blockHash,
-                  blockNumber: receipt?.blockNumber,
-                  // contractAddress: receipt.contractAddress,
-                  contractAddress: '',
-                  from: receipt.from,
-                  status,
-                  to: receipt.to,
-                  // transactionHash: receipt.transactionHash,
-                  transactionHash: receipt.hash,
-                  transactionIndex: receipt.transactionIndex,
-                },
-              }),
-            );
+            finalizeTransaction({
+              chainId,
+              hash,
+              receipt: {
+                blockHash: receipt.blockHash,
+                blockNumber: receipt?.blockNumber,
+                // contractAddress: receipt.contractAddress,
+                contractAddress: '',
+                from: receipt.from,
+                status,
+                to: receipt.to,
+                // transactionHash: receipt.transactionHash,
+                transactionHash: receipt.hash,
+                transactionIndex: receipt.transactionIndex,
+              },
+            });
 
             addPopup(
               {
@@ -209,13 +212,13 @@ export default function Updater(): null {
               hash,
             );
           } else {
-            dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }));
+            checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber });
           }
         } catch (error) {
           console.error(`failed to check transaction hash: ${hash}`, error);
         }
       });
-  }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup]);
+  }, [chainId, library, transactions, lastBlockNumber, addPopup, checkedTransaction, finalizeTransaction]);
 
   return null;
 }

@@ -1,9 +1,10 @@
 import { Pair } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import Drawer from 'src/components/Drawer';
-import { useGetUserLP } from 'src/state/pwallet/hooks';
+import { useGetUserLP } from 'src/state/pwallet/hooks/evm';
 import PoolRow from './PoolRow';
 import { CurrencyList } from './styled';
 
@@ -16,7 +17,7 @@ interface Props {
 
 const SelectPoolDrawer: React.FC<Props> = (props) => {
   const { isOpen, onClose, onPoolSelect, selectedPair } = props;
-
+  const { t } = useTranslation();
   // fetch the user's balances of all tracked V2 LP tokens
   const { allV2PairsWithLiquidity } = useGetUserLP();
 
@@ -40,7 +41,7 @@ const SelectPoolDrawer: React.FC<Props> = (props) => {
   );
 
   return (
-    <Drawer title="Select a token" isOpen={isOpen} onClose={onClose}>
+    <Drawer title={t('searchModal.selectToken')} isOpen={isOpen} onClose={onClose}>
       <CurrencyList>
         <AutoSizer disableWidth>
           {({ height }) => (

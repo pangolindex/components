@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { ChevronDown } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { removeList, selectList } from 'src/state/plists/actions';
@@ -16,7 +17,7 @@ interface Props {
 const TokenListRow: React.FC<Props> = ({ listUrl }) => {
   const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
   const { current: list } = lists[listUrl];
-
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const selectedListUrl = useSelectedListUrl();
   const isSelected = (selectedListUrl || []).includes(listUrl);
@@ -37,7 +38,7 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
   }, [dispatch, isSelected, listUrl]);
 
   const handleRemoveList = useCallback(() => {
-    const answer = window.prompt('Please confirm you would like to remove this list by typing "remove"');
+    const answer = window.prompt(`${t('searchModal.confirmListRemovalPrompt')}`);
     if (answer?.toLocaleLowerCase() === 'remove') {
       dispatch(removeList(listUrl));
     }
@@ -76,7 +77,7 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
               href={`https://tokenlists.org/token-list?url=${listUrl}`}
               target="_blank"
             >
-              View list
+              {t('searchModal.viewList')}
             </ViewLink>
             <ViewLink
               fontSize={13}
@@ -84,7 +85,7 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
               onClick={handleRemoveList}
               disabled={Object.keys(lists).length === 1}
             >
-              Remove list
+              {t('searchModal.removeList')}
             </ViewLink>
           </PopoverContainer>
         )}

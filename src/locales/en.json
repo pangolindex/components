@@ -62,6 +62,7 @@
     "unclaimedReward": "Unclaimed {{ symbol }}",
     "claim": "Claim",
     "claimReward": "Claim {{ symbol }}",
+    "claimRewards": "Claim Rewards",
     "liquidityRemainsPool": "When you claim without withdrawing your liquidity remains in the mining pool.",
     "withdrawingLiquidity": "Withdrawing {{ amount }} {{ symbol }}",
     "claimingReward": "Claiming {{ amount }} {{ symbol }}",
@@ -76,7 +77,7 @@
     "yourRate": "Your rate",
     "totalDeposited": "Total deposited",
     "totalStaked": "Total staked",
-    "depositLiquidity": "Deposit liquidity",
+    "depositLiquidity": "Deposited liquidity",
     "attemptingToStakeError": "Attempting to stake without approval or a signature. Please contact support.",
     "transactionSubmitted": "Transaction Submitted",
     "depositingLiquidity": "Depositing Liquidity",
@@ -99,7 +100,8 @@
     "extraReward": "Extra Reward",
     "poolRewards": "Pool Rewards",
     "rewardsIn": "Rewards in",
-    "removeWarning": "You are removing liquidity from this pool. This action will give you back your tokens. Alternatively you can choose to stake your tokens to farm to earn rewards."
+    "removeWarning": "You are removing liquidity from this pool. This action will give you back your tokens. Alternatively you can choose to stake your tokens to farm to earn rewards.",
+    "rewardClaimed" : "Your rewards claimed"
   },
   "menu": {
     "code": "Code",
@@ -170,7 +172,8 @@
     "removeList": "Remove list",
     "selected": "Selected",
     "select": "Select",
-    "manageTokenLists": "Manage Token Lists"
+    "manageTokenLists": "Manage Token Lists",
+    "listsSelected" :"lists selected"
   },
   "settings": {
     "areYouSure": "Are you sure?",
@@ -185,7 +188,9 @@
     "expertModeHelper": "Bypasses confirmation modals and allows high slippage trades. Use at your own risk.",
     "toggleDarkMode": "Toggle Dark Mode",
     "slippage": "Slippage",
-    "percent": "Percent"
+    "percent": "Percent",
+    "timeLimit": "Time Limit",
+    "seconds": "Seconds"
   },
   "swap": {
     "priceImpact": "Price Impact",
@@ -207,7 +212,11 @@
     "inputEstimated": "Input is estimated. You will sell at most <strong>{{amount}} {{currencySymbol}}</strong> or the transaction will revert.",
     "outputSentTo": "Output will be sent to ",
     "priceImpactMinPrompt": "This swap has a price impact of at least {{ priceImpact }}%. Please type the word \"confirm\" to continue with this swap.",
-    "priceImpactHighPrompt": "This swap has a price impact of at least {{ priceImpact }}%. Please confirm that you would like to continue with this swap."
+    "priceImpactHighPrompt": "This swap has a price impact of at least {{ priceImpact }}%. Please confirm that you would like to continue with this swap.",
+    "realExecutionPrice": "Real Execution Price",
+    "gasPrice": "Gas Price",
+    "gelatoFee": "Gelato Fee",
+    "totalFee": "Total Fee"
   },
   "toggle": {
     "on": "On",
@@ -384,12 +393,26 @@
     "yourFarms": "Your Farms",
     "yourPools": "Your Pools",
     "noFarms": "No farms found.",
+    "visitWebsite": "Visit Website",
     "successWithdraw": "Your liquidity removed from farm, And accrued rewards claimed!",
     "importDescription1": "With import function you can look for pools that doesn’t appear in 'Your Pools' section.",
     "importDescription2": "Just choose the underlying coins that was in your pool.",
     "createPairDescription": "With create function you can create a new pair. Just search the coins that you want to create a pair for and system will either finds the pool if exists on Pangolin or creates a brand new one if its not.",
     "addLiquidityDescription": "With the add liquidity function you add liquidity to a pair. Just search for the coins you want to add liquidity to and the system will find the pool if it exists in Pangolin or create a new one if it doesn't.",
-    "createStorageContract": "On Hedera, all smart contracts need to pay fees for utilising space on the ledger. These are storage fees and auto renewal fees. You'll need to create a Storage contract in order to farm. The storage will be free, but in future you will be required to pay auto renewal fees. These are about 2 cents. So we recommend keeping $1 on HBAR in your wallet at all times to ensure you don't experience any issues."
+    "createStorageContract": "On Hedera, all smart contracts need to pay fees for utilising space on the ledger. These are storage fees and auto renewal fees. You'll need to create a Storage contract in order to farm. The storage will be free, but in future you will be required to pay auto renewal fees. These are about 2 cents. So we recommend keeping $1 on HBAR in your wallet at all times to ensure you don't experience any issues.",
+    "supplying": "Supplying",
+    "associating": "Associating",
+    "associate": "Associate",
+    "liquidityAdded": "Liquidity Added",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
+    "yourAPR": "Your APR",
+    "swapFeeAPR": "Swap fee APR",
+    "rewardAPR": "Reward APR",
+    "totalAPR": "Total APR",
+    "averageAPR": "Average APR",
+    "yourTVL": "Your TVL",
+    "yourAverageAPR": "Your Average APR"
   },
   "poolFinder": {
     "connectToFind": "Connect to a wallet to find pools",
@@ -417,7 +440,9 @@
     "approved": "Approved",
     "remove": "Remove",
     "output": "Output",
-    "amount": "Amount"
+    "amount": "Amount",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity"
   },
   "swapPage": {
     "addSend": "+ Add a send (optional)",
@@ -472,7 +497,15 @@
     "executionPrice": "Execution Price",
     "seeMore": "See More",
     "seeLess": "See Less",
-    "orderPlaced": "{{ orderType }} order placed."
+    "orderPlaced": "{{ orderType }} order placed.",
+    "selectToken" : "Select Token",
+    "notFoundBalances" : "Not found balances",
+    "notFoundToken" : "Not found tokens on this chain",
+    "sendingTo" : "Sending to",
+    "invalidAddress": "Invalid Address",
+    "addRecipient": "Add Recipient",
+    "removeRecipient": "Remove Recipient",
+    "addTokenWatchlist": "Add tokens to watchlist using"
   },
   "buyPage": {
     "buyAvaxInfo": "Buy AVAX with fiat from our partner Wyre.",
@@ -531,7 +564,8 @@
     "selectToken": "Select a token",
     "enterRecipient": "Enter a recipient",
     "invalidRecipient": "Invalid recipient",
-    "insufficientBalance": "Insufficient {{ symbol }} balance"
+    "insufficientBalance": "Insufficient {{ symbol }} balance",
+    "selectChain": "Select a Chain"
   },
   "mintHooks": {
     "connectWallet": "Connect Wallet",
@@ -604,7 +638,8 @@
     "earned_customizePools": "Customize Pools",
     "followed_address": "Address",
     "followed_worth": "Worth",
-    "followed_interact": "Interact"
+    "followed_interact": "Interact",
+    "news": "News"
   },
   "stakePage": {
     "totalStaked": "Total Staked",
@@ -612,7 +647,19 @@
     "seeDetails": "SEE DETAILS",
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
-    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!"
+    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
+    "total": "Total (staked + rewards)",
+    "yourWeeklyRate": "Your Weekly Rate",
+    "weeklyPoolRate": "Weekly Pool Rate",
+    "rewardStaking": "Reward Staking",
+    "staked": "Staked",
+    "stakeSuccessMsg": "Your rewards have been staked.",
+    "stakeYourReward": "Stake your rewards",
+    "stakePng" : "Stake your PNG token to share platform fees",
+    "unstaking": "Unstaking",
+    "unstaked": "Unstaked",
+    "unstakeYourReward": "You can unstake your rewards.",
+    "stakeReward": "Stake Reward"
   },
   "error": {
     "missingCurrencyAmounts": "Missing currency amounts",
@@ -686,7 +733,8 @@
     "pending": "Claiming",
     "transactionSummary": "Claimed position rewards",
     "aprAfter": "APR After Claim",
-    "noRewards": "No rewards to claim"
+    "noRewards": "No rewards to claim",
+    "claimWarning": "Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead compound your rewards without losing your APR."
   },
   "sarPortfolio": {
     "noPositions": "You don't have a staking position NFT.\nLET'S GET YOU ONE!",
@@ -700,7 +748,7 @@
   },
   "pangoChef": {
     "claimWarning1": "When you claim without withdrawing, your liquidity remains in the farm.",
-    "claimWarning2": "Claiming rewards restarts your APR from 0%. Instead you may choose to compound.",
+    "claimWarning2": "Claiming your rewards will claim all outstanding tokens, including Super Farm rewards and restarts your APR to 0%. Instead you may choose to compound.",
     "compoundWarning": "Compounding your rewards for {{ token0 }}-{{ token1 }} farm will get your rewards staked into {{ stakeToken0 }}-{{ stakeToken1 }} farm. You need to add equal value of {{ compoundToken }} token to your accrued {{ png }} rewards.",
     "compoundAmountWarning": "You need to add {{ amount }} {{ symbol }} to compound. Please beware that Compounding may slightly decrease your APR.",
     "compoundAmountWarning2": "Be careful that you will be locking your {{ token0 }} {{ token1 }} pool till you claim the rewards of this pool.",
@@ -709,7 +757,28 @@
     "compoundTransactionSummary": "Compounded farm",
     "removeWarning": "Removing any amount from farm will get your APR to 0. You can instead compound your rewards without losing your APR.",
     "lockingPoolZeroWarning": "You can’t remove your liquidity or claim your rewards from this farm. To do this you first need to either claim or remove your stake from this farms: ",
-    "decreaseWarning": "Your apr will decrease because the new compounded part starts with apr 0 and an average will be taken between the old and new part."
+    "decreaseWarning": "Your apr will decrease because the new compounded part starts with apr 0 and an average will be taken between the old and new part.",
+    "createStorageContract": "Create Storage Contract"
+  },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    }
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -718,10 +787,16 @@
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "poweredBy": "Powered by",
+    "selectCurrency": "Select a Currency",
+    "search": "Search",
+    "tableOfContent": "Table of Content",
+    "haveQuestion" :"Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "switchChain": "Switch Chain",
+      "selectChain": "Please Select Chain",
       "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
@@ -742,7 +817,8 @@
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
       "max": "MAX",
       "recipient": "Recipient",
-      "walletAddress": "Wallet Address"
+      "walletAddress": "Wallet Address",
+      "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -771,5 +847,32 @@
   },
   "dropdown": {
     "select": "Select"
+  },
+  "portfolio": {
+    "portfolioAllChain": "Portfolio Value in All Chains",
+    "connectToseePortfolio": "Connect a wallet to see your Portfolio",
+    "totalAmountInvested": "Total Amount Invested",
+    "balanceNotFound": "Balances not found",
+    "hideYourBalance": "Hide Your Balance",
+    "showYourBalance": "Show Your Balance"
+  },
+  "buy":{
+    "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
+    "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
+  },
+  "common": {
+    "loading": "Loading",
+    "search": "Search",
+    "required": "Required",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "noDataAvailable": "No data available!",
+    "sortBy": "Sort By",
+    "max": "Max",
+    "min": "Min",
+    "open": "Open",
+    "closed": "Closed",
+    "notFound": "Not found"
   }
 }

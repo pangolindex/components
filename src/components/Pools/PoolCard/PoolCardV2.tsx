@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGetEarnedAmount, useGetFarmApr, useGetRewardTokens } from 'src/state/pstake/hooks';
+import { useGetRewardTokens } from 'src/state/pstake/hooks/common';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
 import PoolCardView from './PoolCardView';
 
@@ -10,10 +10,9 @@ export interface PoolCardProps {
 }
 
 const PoolCardV2 = ({ stakingInfo, onClickViewDetail, version }: PoolCardProps) => {
-  const { combinedApr } = useGetFarmApr(stakingInfo?.pid);
-  const { earnedAmount } = useGetEarnedAmount(stakingInfo?.pid);
+  const { combinedApr, earnedAmount } = stakingInfo;
 
-  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo.rewardTokensAddress);
+  const rewardTokens = useGetRewardTokens(stakingInfo);
 
   return (
     <PoolCardView

@@ -20,7 +20,8 @@ import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { ApprovalState, useApproveCallback } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
+import { useApproveCallback } from 'src/hooks/useApproveCallback/evm';
 import { usePairContract, useStakingContract } from 'src/hooks/useContract';
 import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
@@ -29,10 +30,10 @@ import {
   useGetPoolDollerWorth,
   useMinichefPendingRewards,
   useMinichefPools,
-} from 'src/state/pstake/hooks';
-import { SpaceType, StakingInfo } from 'src/state/pstake/types';
+} from 'src/state/pstake/hooks/common';
+import { DoubleSideStakingInfo, SpaceType } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { waitForTransaction } from 'src/utils';
 import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
 import SelectPoolDrawer from './SelectPoolDrawer';
@@ -51,7 +52,7 @@ interface StakeProps {
   version: number;
   onComplete?: () => void;
   type: SpaceType.card | SpaceType.detail;
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   combinedApr?: number;
 }
 
@@ -416,6 +417,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
                   )
                 }
                 label={type === SpaceType.card ? balanceLabel : undefined}
+                disabled={userLiquidityUnstaked?.equalTo('0')}
               />
 
               <Box mt={type === 'card' ? '25px' : '0px'}>

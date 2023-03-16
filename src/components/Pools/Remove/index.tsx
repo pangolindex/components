@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Text, ToggleButtons } from 'src/components';
 import { useChainId } from 'src/hooks';
 import { useDerivedBurnInfo } from 'src/state/pburn/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RemoveFarm from '../RemoveFarm';
 import RemoveLiquidity from '../RemoveLiquidity';
@@ -15,7 +15,7 @@ enum REMOVE_TYPE {
 }
 
 interface WithdrawProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
   onClose: () => void;
   redirectToCompound?: () => void;
@@ -36,14 +36,32 @@ const Remove = ({ stakingInfo, version, onClose, redirectToCompound }: WithdrawP
 
   const { userLiquidity } = useDerivedBurnInfo(currencyA ?? undefined, currencyB ?? undefined);
 
+  function onComplete(percetage: number, type: REMOVE_TYPE) {
+    if (percetage >= 100) {
+      setShowRemoveTab(false);
+      // if remove all from farm it will show the liquidity tab
+      if (type === REMOVE_TYPE.FARM) {
+        setRemoveType(REMOVE_TYPE.LIQUIDITY);
+      } else {
+        // if remove all liquidity and have a stake in farm it show farm tab
+        if (stakingInfo.stakedAmount && stakingInfo.stakedAmount.greaterThan('0')) {
+          setRemoveType(REMOVE_TYPE.FARM);
+        }
+      }
+    }
+  }
+
   const renderRemoveContent = () => {
     if (!!userLiquidity && Number(userLiquidity?.toSignificant()) > 0) {
       return (
         <RemoveLiquidity
           currencyA={currencyA}
           currencyB={currencyB}
-          onLoadingOrComplete={(isLoadingOrComplete: boolean) => {
+          onLoading={(isLoadingOrComplete: boolean) => {
             setShowRemoveTab(!isLoadingOrComplete);
+          }}
+          onComplete={(percetage) => {
+            onComplete(percetage, REMOVE_TYPE.LIQUIDITY);
           }}
         />
       );
@@ -77,8 +95,11 @@ const Remove = ({ stakingInfo, version, onClose, redirectToCompound }: WithdrawP
           stakingInfo={stakingInfo}
           onClose={onClose}
           version={version}
-          onLoadingOrComplete={(isLoadingOrComplete: boolean) => {
+          onLoading={(isLoadingOrComplete: boolean) => {
             setShowRemoveTab(!isLoadingOrComplete);
+          }}
+          onComplete={(percetage) => {
+            onComplete(percetage, REMOVE_TYPE.FARM);
           }}
           redirectToCompound={redirectToCompound}
         />

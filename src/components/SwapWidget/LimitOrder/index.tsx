@@ -6,15 +6,17 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { NATIVE, SwapTypes } from 'src/constants';
+import { NATIVE } from 'src/constants';
+import { SwapTypes } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useTokenHook } from 'src/hooks/multiChainsHooks';
-import { ApprovalState, useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback';
+import { useTokenHook } from 'src/hooks/tokens';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
+import { useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallback/evm';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
 import { LimitField, LimitNewField } from 'src/state/pswap/actions';
-import { useSwapActionHandlers } from 'src/state/pswap/hooks';
+import { useSwapActionHandlers } from 'src/state/pswap/hooks/common';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { capitalizeWord } from 'src/utils';
@@ -37,6 +39,7 @@ interface Props {
   swapType: string;
   setSwapType: (value: SwapTypes) => void;
   isLimitOrderVisible: boolean;
+  isTWAPOrderVisible: boolean;
   defaultInputAddress?: string;
   defaultOutputAddress?: string;
 }
@@ -45,6 +48,7 @@ const LimitOrder: React.FC<Props> = ({
   swapType,
   setSwapType,
   isLimitOrderVisible,
+  isTWAPOrderVisible,
   defaultInputAddress,
   defaultOutputAddress,
 }) => {
@@ -421,7 +425,7 @@ const LimitOrder: React.FC<Props> = ({
             >
               {approvalSubmitted && approval === ApprovalState.APPROVED
                 ? t('swapPage.approved')
-                : `${t('swapPage.approve')} ${currencies[LimitField.INPUT]?.symbol}`}
+                : `${t('swapPage.approve')} ` + currencies[LimitField.INPUT]?.symbol}
             </Button>
           </Box>
 
@@ -483,7 +487,12 @@ const LimitOrder: React.FC<Props> = ({
 
   return (
     <Root>
-      <TradeOption swapType={swapType} setSwapType={setSwapType} isLimitOrderVisible={isLimitOrderVisible} />
+      <TradeOption
+        isTWAPOrderVisible={isTWAPOrderVisible}
+        swapType={swapType}
+        setSwapType={setSwapType}
+        isLimitOrderVisible={isLimitOrderVisible}
+      />
 
       <SwapWrapper>
         <Box width="100%" display="flex" justifyContent="center">

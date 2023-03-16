@@ -24,7 +24,6 @@ interface Window {
     getTransactionReceipt?: (hash) => Promise<any>;
     getBlockNumber?: () => Promise<any>;
     execute?: (method, params) => Promise<any>;
-    getBlockTimestamp?: (blockNumber) => Promise<any>;
   };
   web3?: any;
   pendo?: any;

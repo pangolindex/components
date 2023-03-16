@@ -62,6 +62,7 @@
     "unclaimedReward": "未領取的 {{ symbol }}",
     "claim": "领取",
     "claimReward": "领取 {{ symbol }}",
+    "claimRewards": "领取奖励",
     "liquidityRemainsPool": "当您在不提取LP的情况下领取奖励，您的流动性仍留在矿池中。",
     "withdrawingLiquidity": "取款 {{ amount }} {{ symbol }}",
     "claimingReward": "领取中 {{ amount }} {{ symbol }}",
@@ -99,7 +100,8 @@
     "extraReward": "额外奖励",
     "poolRewards": "矿池奖励",
     "rewardsIn": "奖励在",
-    "removeWarning": "您正在从该池中移除流动性。 此操作将退还您的代币。 或者，您可以选择将您的代币投入农场以赚取奖励。"
+    "removeWarning": "您正在从该池中移除流动性。 此操作将退还您的代币。 或者，您可以选择将您的代币投入农场以赚取奖励。",
+    "rewardClaimed" : "Your rewards claimed"
   },
   "menu": {
     "code": "Code",
@@ -177,7 +179,7 @@
     "expertInfo": "专家模式会关闭确认交易提示，并允许高滑点交易可能导致不良的利率和资金损失。",
     "expertWarningCAPS": "仅当您知道自己在做什么时才使用此模式。",
     "confirm": "确",
-    "confirmExpertMode": "请输入 \"确\" 一词以启用专家模式。",
+    "confirmExpertMode": "请输入 \"confirm\" 一词以启用专家模式。",
     "turnOnExpertMode": "开启专家模式",
     "transactionSettings": "交易设置",
     "interfaceSettings": "界面设置",
@@ -384,12 +386,26 @@
     "yourFarms": "你的农场",
     "yourPools": "你的游泳池",
     "noFarms": "没有找到农场。",
+    "visitWebsite": "Visit Website",
     "successWithdraw": "您的流动性从农场中移除，并获得了应计奖励",
     "importDescription1": "使用导入功能，您可以查找未出现在“您的池”部分中的池。",
     "importDescription2": "只需选择您池中的基础代币。",
     "createPairDescription": "使用 create 函数，您可以创建一个新对。 只需搜索您要为其创建一对的硬币，如果 Pangolin 上存在该池，系统将找到该池，如果不存在则创建一个全新的池。",
     "addLiquidityDescription": "使用添加流动性功能，您可以为货币对添加流动性。 只需搜索您想要增加流动性的代币，如果 Pangolin 中存在该池，系统将找到该池，如果不存在则创建一个新池。",
-    "createStorageContract": "在 Hedera 上，所有智能合约都需要为使用账本上的空间支付费用。这些是仓储费 和自动续订费用。您需要创建一个存储合同才能耕种。存储将是 免费，但将来您将需要支付自动续订费用。这些大约是 2 美分。所以我们 建议始终在您的钱包中保留 1 美元的 HBAR，以确保您不会遇到任何问题。"
+    "createStorageContract": "在 Hedera 上，所有智能合约都需要为使用账本上的空间支付费用。这些是仓储费 和自动续订费用。您需要创建一个存储合同才能耕种。存储将是 免费，但将来您将需要支付自动续订费用。这些大约是 2 美分。所以我们 建议始终在您的钱包中保留 1 美元的 HBAR，以确保您不会遇到任何问题。",
+    "supplying": "Supplying",
+    "associating": "Associating",
+    "associate": "Associate",
+    "liquidityAdded": "Liquidity Added",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
+    "yourAPR": "Your APR",
+    "swapFeeAPR": "Swap fee APR",
+    "rewardAPR": "Reward APR",
+    "totalAPR": "Total APR",
+    "averageAPR": "Average APR",
+    "yourTVL": "Your TVL",
+    "yourAverageAPR": "Your Average APR"
   },
   "poolFinder": {
     "connectToFind": "连接到钱包以查找矿池",
@@ -417,7 +433,9 @@
     "approved": "已批准",
     "remove": "移除",
     "output": "输出",
-    "amount": "合计"
+    "amount": "合计",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity"
   },
   "swapPage": {
     "addSend": "+ 添加发送（可选）",
@@ -455,6 +473,7 @@
     "trade": "贸易",
     "watchList": "观察名单",
     "yourPortFolio": "您的投资组合",
+    "comingSoon": "Coming Soon",
     "connectWalletViewPortFolio": "连接到钱包以检查您的投资组合.",
     "limitOrders": "限价单",
     "cancelOrder": "取消订单",
@@ -471,7 +490,15 @@
     "executionPrice": "执行价格",
     "seeMore": "查看更多",
     "seeLess": "少看",
-    "orderPlaced": "{{ orderType } 订单已下。"
+    "orderPlaced": "{{ orderType } 订单已下。",
+    "selectToken" : "Select Token",
+    "notFoundBalances" : "Not found balances",
+    "notFoundToken" : "Not found tokens on this chain",
+    "sendingTo" : "Sending to",
+    "invalidAddress": "Invalid Address",
+    "addRecipient": "Add Recipient",
+    "removeRecipient": "Remove Recipient",
+    "addTokenWatchlist": "Add tokens to watchlist using"
   },
   "buyPage": {
     "buyAvaxInfo": "用我们的合作伙伴怀尔的法定资金购买 AVAX。",
@@ -530,7 +557,8 @@
     "selectToken": "选择一个代币",
     "enterRecipient": "输入收件人",
     "invalidRecipient": "收件人无效",
-    "insufficientBalance": "{{ symbol }}余额不足"
+    "insufficientBalance": "{{ symbol }}余额不足",
+    "selectChain": "Select a Chain"
   },
   "mintHooks": {
     "connectWallet": "连接钱包",
@@ -603,7 +631,8 @@
     "earned_customizePools": "Customize Pools",
     "followed_address": "Address",
     "followed_worth": "Worth",
-    "followed_interact": "Interact"
+    "followed_interact": "Interact",
+    "news": "News"
   },
   "stakePage": {
     "totalStaked": "Total Staked",
@@ -611,7 +640,19 @@
     "seeDetails": "SEE DETAILS",
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
-    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!"
+    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
+    "total": "总计（质押 + 奖励）",
+    "yourWeeklyRate": "Your Weekly Rate",
+    "weeklyPoolRate": "Weekly Pool Rate",
+    "rewardStaking": "Reward Staking",
+    "staked": "Staked",
+    "stakeSuccessMsg": "Your rewards have been staked.",
+    "stakeYourReward": "Stake your rewards",
+    "stakePng" : "Stake your PNG token to share platform fees",
+    "unstaking": "Unstaking",
+    "unstaked": "Unstaked",
+    "unstakeYourReward": "You can unstake your rewards.",
+    "stakeReward": "Stake Reward"
   },
   "error": {
     "missingCurrencyAmounts": "缺少货币金额",
@@ -685,7 +726,8 @@
     "pending": "声称",
     "transactionSummary": "已申请的职位奖励",
     "aprAfter": "理赔后年利率",
-    "noRewards": "没有可领取的奖励"
+    "noRewards": "没有可领取的奖励",
+    "claimWarning": "Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead compound your rewards without losing your APR."
   },
   "sarPortfolio": {
     "noPositions": "你没有任何PANGUARDIAN NFT。\n让您得到一个",
@@ -699,7 +741,7 @@
   },
   "pangoChef": {
     "claimWarning1": "当您在未提取流动性的情况下申领时，您的流动性仍保留在矿池中。",
-    "claimWarning2": "领取您的奖励将使您的 APR 降至 0。相反，您可以选择复合。",
+    "claimWarning2": "领取您的奖励将领取所有未偿还的代币，包括 Super Farm 奖励并将您的 APR 重新设为 0%。 相反，您可以选择复合。",
     "compoundWarning": "将您对 {{ token0 }}-{{ token1 }} 农场的奖励组合起来，您的奖励将投入 {{ stakeToken0 }}-{{ stakeToken1 }} 农场。 您需要在累积的 {{ png }} 奖励中添加等值的 {{ compoundToken }} 代币。",
     "compoundAmountWarning": "您需要添加 {{ amount }} {{ symbol }} 来复合。请注意，复利可能会略微降低您的 APR。",
     "compoundAmountWarning2": "请注意，您将锁定您的 {{ token0 }} {{ token1 }} 池，直到您获得该池的奖励。",
@@ -708,7 +750,28 @@
     "compoundTransactionSummary": "复合农场。",
     "removeWarning": "从农场中删除任何金额将使您的 APR 变为 0。您可以在不损失 APR 的情况下复合您的奖励。",
     "lockingPoolZeroWarning": "您无法从该农场移除您的流动性或索取您的奖励。 为此，您首先需要从该农场中认领或移除您的股份： ",
-    "decreaseWarning": "你的 apr 会减少，因为新的复合部分从 apr 0 开始，并且将在新旧部分之间取平均值。"
+    "decreaseWarning": "你的 apr 会减少，因为新的复合部分从 apr 0 开始，并且将在新旧部分之间取平均值。",
+    "createStorageContract": "Create Storage Contract"
+  },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    }
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -717,10 +780,16 @@
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "poweredBy": "Powered by",
+    "selectCurrency": "Select a Currency",
+    "search": "Search",
+    "tableOfContent": "Table of Content",
+    "haveQuestion" :"Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "switchChain": "Switch Chain",
+      "selectChain": "Please Select Chain",
       "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
@@ -741,7 +810,8 @@
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
       "max": "MAX",
       "recipient": "Recipient",
-      "walletAddress": "Wallet Address"
+      "walletAddress": "Wallet Address",
+      "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -770,5 +840,32 @@
   },
   "dropdown": {
     "select": "Select"
+  },
+  "portfolio": {
+    "portfolioAllChain": "Portfolio Value in All Chains",
+    "connectToseePortfolio": "Connect a wallet to see your Portfolio",
+    "totalAmountInvested": "Total Amount Invested",
+    "balanceNotFound": "Balances not found",
+    "hideYourBalance": "Hide Your Balance",
+    "showYourBalance": "Show Your Balance"
+  },
+  "buy":{
+    "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
+    "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
+  },
+  "common": {
+    "loading": "Loading",
+    "search": "Search",
+    "required": "Required",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "noDataAvailable": "No data available!",
+    "sortBy": "Sort By",
+    "max": "Max",
+    "min": "Min",
+    "open": "Open",
+    "closed": "Closed",
+    "notFound": "未找到"
   }
 }

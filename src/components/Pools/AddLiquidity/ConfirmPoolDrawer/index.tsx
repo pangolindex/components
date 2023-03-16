@@ -1,4 +1,6 @@
+/* eslint-disable max-lines */
 import { Currency, CurrencyAmount, Fraction, Percent, TokenAmount } from '@pangolindex/sdk';
+import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -14,9 +16,9 @@ import {
   TransactionCompleted,
 } from 'src/components';
 import Drawer from 'src/components/Drawer';
-import { Field } from 'src/state/pmint/actions';
+import { Field } from 'src/state/pmint/atom';
 import { SpaceType } from 'src/state/pstake/types';
-import { useHederaPGLAssociated } from 'src/state/pwallet/hooks';
+import { useHederaPGLAssociated } from 'src/state/pwallet/hooks/hedera';
 import { Hidden } from 'src/theme/components';
 import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
 
@@ -73,14 +75,14 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
     hederaAssociated: isHederaTokenAssociated,
   } = useHederaPGLAssociated(inputCurrency, outputCurrency);
 
-  const pendingText = `Supplying ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
+  const pendingText = `${t('pool.supplying')} ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
     currencies[Field.CURRENCY_A]?.symbol
   } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`;
 
   function renderAssociatButton() {
     return (
       <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-        {isLoadingAssociate ? 'Associating' : 'Associate PGL'}
+        {isLoadingAssociate ? `${t('pool.associating')}` : `${t('pool.associate')} PGL`}
       </Button>
     );
   }
@@ -101,7 +103,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
     if (isHederaTokenAssociated) {
       return (
         <Button variant="primary" onClick={onAdd} height="46px">
-          {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.giveOrder')}
+          {noLiquidity ? t('addLiquidity.createPoolSupply') : t('addLiquidity.confirmSupply')}
         </Button>
       );
     }
@@ -232,10 +234,11 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
 
           <Stat
             title={`PGL`}
-            stat={noLiquidity ? '-' : `${liquidityMinted?.toSignificant(6)}`}
+            stat={noLiquidity ? '-' : `${numeral(liquidityMinted?.toSignificant(6)).format('0.00a')}`}
             titlePosition="top"
             titleFontSize={14}
             statFontSize={[16, 20]}
+            toolTipText={`pgl: ${liquidityMinted?.toSignificant(6)}`}
           />
 
           <Stat
@@ -275,7 +278,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
   const SubmittedContent = (
     <Box padding="10px" height="100%">
       <TransactionCompleted
-        submitText={`Liquidity Added`}
+        submitText={t('pool.liquidityAdded')}
         isShowButtton={Boolean((type === SpaceType.card && onAddToFarm) || type === SpaceType.detail)}
         onButtonClick={() => {
           onClose();
@@ -310,9 +313,21 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
     return CardConfirmContent;
   };
 
+  function getTitle() {
+    if (noLiquidity) {
+      return t('addLiquidity.creatingPool');
+    }
+
+    if (txHash) {
+      return undefined;
+    }
+
+    return t('addLiquidity.willReceive');
+  }
+
   return (
     <Drawer
-      title={noLiquidity ? t('addLiquidity.creatingPool') : t('addLiquidity.willReceive')}
+      title={getTitle()}
       isOpen={isOpen}
       onClose={() => {
         type === SpaceType.card ? onComplete() : onClose();
@@ -324,3 +339,4 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
   );
 };
 export default ConfirmSwapDrawer;
+/* eslint-enable max-lines */

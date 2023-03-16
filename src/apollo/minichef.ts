@@ -23,6 +23,7 @@ export const GET_MINICHEF = gql`
               id
               symbol
               derivedUSD
+              derivedETH
               name
               decimals
             }
@@ -38,6 +39,7 @@ export const GET_MINICHEF = gql`
             id
             symbol
             derivedUSD
+            derivedETH
             name
             decimals
           }
@@ -45,6 +47,7 @@ export const GET_MINICHEF = gql`
             id
             symbol
             derivedUSD
+            derivedETH
             name
             decimals
           }

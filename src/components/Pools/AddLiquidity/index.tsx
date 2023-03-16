@@ -1,24 +1,24 @@
 /* eslint-disable max-lines */
-import { Currency, TokenAmount } from '@pangolindex/sdk';
+import { Currency, Pair, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import { Plus } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Text, TextInput } from 'src/components';
-import { ROUTER_ADDRESS } from 'src/constants';
+import { ROUTER_ADDRESS } from 'src/constants/address';
 import { PairState } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
-import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Field } from 'src/state/pmint/actions';
+import { Field, useMintStateAtom } from 'src/state/pmint/atom';
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/state/pmint/hooks';
 import { SpaceType } from 'src/state/pstake/types';
 import { useIsExpertMode, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { useCurrencyBalance } from 'src/state/pwallet/hooks';
-import { useAddLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
+import { useAddLiquidityHook } from 'src/state/pwallet/hooks';
+import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import ConfirmPoolDrawer from './ConfirmPoolDrawer';
@@ -40,10 +40,16 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
 
+  const { resetMintState } = useMintStateAtom();
   const expertMode = useIsExpertMode();
 
+  const wrappedCurrencyA = wrappedCurrency(currencyA, chainId);
+  const wrappedCurrencyB = wrappedCurrency(currencyB, chainId);
+
+  const pairAddress = wrappedCurrencyA && wrappedCurrencyB ? Pair.getAddress(wrappedCurrencyA, wrappedCurrencyB) : '';
+
   // mint state
-  const { independentField, typedValue, otherTypedValue } = useMintState();
+  const { independentField, typedValue, otherTypedValue } = useMintState(pairAddress);
   const {
     dependentField,
     currencies,
@@ -138,6 +144,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
         tokenA_Address: wrappedCurrency(currencyA, chainId)?.address,
         tokenB_Address: wrappedCurrency(currencyB, chainId)?.address,
       });
+      resetMintState({ pairAddress });
     } catch (err) {
       const _err = err as any;
 
@@ -151,7 +158,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
     setShowConfirm(false);
     // if there was a tx hash, we want to clear the input
     if (txHash) {
-      onFieldAInput('');
+      onFieldAInput('', pairAddress);
     }
     setTxHash('');
     setAttemptingTxn(false);
@@ -159,13 +166,13 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
 
   const handleTypeInput = useCallback(
     (value: string) => {
-      onFieldAInput(value);
+      onFieldAInput(value, pairAddress);
     },
     [onFieldAInput],
   );
   const handleTypeOutput = useCallback(
     (value: string) => {
-      onFieldBInput(value);
+      onFieldBInput(value, pairAddress);
     },
     [onFieldBInput],
   );
@@ -202,7 +209,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
                     loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_A]?.symbol}`}
                     height="46px"
                   >
-                    {t('addLiquidity.approve') + currencies[Field.CURRENCY_A]?.symbol}
+                    {`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_A]?.symbol}
                   </Button>
                 )}
                 {approvalB !== ApprovalState.APPROVED && (
@@ -215,7 +222,7 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
                     loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_B]?.symbol}`}
                     height="46px"
                   >
-                    {t('addLiquidity.approve') + currencies[Field.CURRENCY_B]?.symbol}
+                    {`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_B]?.symbol}
                   </Button>
                 )}
               </ButtonWrapper>
@@ -245,7 +252,9 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
             addonAfter={
               !atMaxAmounts[Field.CURRENCY_A] ? (
                 <Box display={'flex'} alignItems={'center'} height={'100%'} justifyContent={'center'}>
-                  <StyledBalanceMax onClick={() => onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '')}>
+                  <StyledBalanceMax
+                    onClick={() => onFieldAInput(maxAmounts[Field.CURRENCY_A]?.toExact() ?? '', pairAddress)}
+                  >
                     {t('currencyInputPanel.max')}
                   </StyledBalanceMax>
                 </Box>
@@ -287,7 +296,9 @@ const AddLiquidity = ({ currencyA, currencyB, onComplete, onAddToFarm, type }: A
             addonAfter={
               !atMaxAmounts[Field.CURRENCY_B] ? (
                 <Box display={'flex'} alignItems={'center'} height={'100%'} justifyContent={'center'}>
-                  <StyledBalanceMax onClick={() => onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '')}>
+                  <StyledBalanceMax
+                    onClick={() => onFieldBInput(maxAmounts[Field.CURRENCY_B]?.toExact() ?? '', pairAddress)}
+                  >
                     {t('currencyInputPanel.max')}
                   </StyledBalanceMax>
                 </Box>

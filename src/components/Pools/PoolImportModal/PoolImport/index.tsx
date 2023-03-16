@@ -7,7 +7,7 @@ import { Box, CurrencyLogo, Text } from 'src/components';
 import { PairState, usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePairAdder } from 'src/state/puser/hooks';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import PositionCard from '../PositionCard';
 import { ArrowWrapper, CurrencySelectWrapper, Dots, LightCard, PoolImportWrapper } from './styleds';
 

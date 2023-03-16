@@ -1,7 +1,8 @@
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
-import { useChainId } from 'src/hooks';
-import { subgraphClient } from './client';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { hederaFn } from 'src/utils/hedera';
+import { SubgraphEnum, useSubgraphClient } from './client';
 import { SubgraphToken } from './tokens';
 
 export interface PangoChefSubgraphInfo {
@@ -18,9 +19,16 @@ export interface PangoChefFarm {
   id: string;
   pid: string;
   tvl: string;
+  weight: string;
   tokenOrRecipientAddress: string;
+  sumOfEntryTimes: string;
   rewarder: PangochefFarmRewarder;
-  pair: PangochefPair;
+  // pair can be null in relayer pool case
+  pair: PangochefPair | null;
+  farmingPositions: {
+    stakedTokenBalance: string;
+    sumOfEntryTimes: string;
+  }[];
 }
 
 export interface PangochefFarmRewarder {
@@ -43,8 +51,15 @@ export interface PangochefPair {
   token1: SubgraphToken;
 }
 
+export interface FarmPosition {
+  stakedAmount: string;
+  farm: {
+    pid: string;
+  };
+}
+
 export const GET_PANGOCHEF = gql`
-  query pangoChefs($where: PangoChef_filter) {
+  query pangoChefs($where: PangoChef_filter, $userAddress: String!) {
     pangoChefs(where: $where) {
       id
       totalWeight
@@ -52,12 +67,13 @@ export const GET_PANGOCHEF = gql`
       periodFinish
       periodDuration
       totalRewardAdded
-      farms {
+      farms(first: 1000) {
         id
         pid
         tvl
         weight
         tokenOrRecipientAddress
+        sumOfEntryTimes
         rewarder {
           id
           rewards {
@@ -96,6 +112,21 @@ export const GET_PANGOCHEF = gql`
             decimals
           }
         }
+        farmingPositions(where: { user: $userAddress }) {
+          stakedTokenBalance
+          sumOfEntryTimes
+        }
+      }
+    }
+  }
+`;
+
+export const GET_FARMS_STAKED = gql`
+  query farmPositions($where: PangoChef_filter, $userAddress: String!) {
+    farmingPositions(where: { user: $userAddress }) {
+      stakedTokenBalance
+      farm {
+        pid
       }
     }
   }
@@ -108,15 +139,17 @@ export const GET_PANGOCHEF = gql`
  */
 export const useSubgraphFarms = () => {
   const chainId = useChainId();
-
-  return useQuery<PangoChefSubgraphInfo>(
-    ['get-pangochef-subgraph-farms', chainId],
+  const { account } = usePangolinWeb3();
+  const gqlClient = useSubgraphClient(SubgraphEnum.Pangochef);
+  return useQuery<PangoChefSubgraphInfo[]>(
+    ['get-pangochef-subgraph-farms', chainId, account],
     async () => {
-      const gqlClient = subgraphClient[chainId];
       if (!gqlClient) {
         return null;
       }
-      const data = await gqlClient.request(GET_PANGOCHEF);
+      const data = await gqlClient.request(GET_PANGOCHEF, {
+        userAddress: account ? account.toLowerCase() : '',
+      });
       return data?.pangoChefs;
     },
     {
@@ -124,3 +157,27 @@ export const useSubgraphFarms = () => {
     },
   );
 };
+
+export function useSubgraphFarmsStakedAmount() {
+  const chainId = useChainId();
+  const { account } = usePangolinWeb3();
+  const gqlClient = useSubgraphClient(SubgraphEnum.Pangochef);
+  return useQuery<FarmPosition[]>(
+    ['get-pangochef-subgraph-farms-staked-amount', chainId, account],
+    async () => {
+      if (!gqlClient) {
+        return undefined;
+      }
+
+      const data = await gqlClient.request(GET_FARMS_STAKED, {
+        userAddress: account?.toLowerCase() ?? '',
+      });
+
+      return data?.farmingPositions;
+    },
+    {
+      refetchInterval: 1000 * 60 * 1, // 1 minutes
+      enabled: hederaFn.isHederaChain(chainId) && Boolean(account),
+    },
+  );
+}

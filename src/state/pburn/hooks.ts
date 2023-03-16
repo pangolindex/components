@@ -2,17 +2,22 @@ import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@pan
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO } from 'src/constants';
+import { usePair } from 'src/data/Reserves';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { AppState, useDispatch, useSelector } from 'src/state';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
-import { usePair } from '../../data/Reserves';
-import { tryParseAmount } from '../../state/pswap/hooks';
-import { wrappedCurrency } from '../../utils/wrappedCurrency';
-import { Field, typeInput } from './actions';
+import { tryParseAmount } from 'src/state/pswap/hooks/common';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { Field, initialKeyState, useBurnStateAtom } from './atom';
 
-export function useBurnState(): AppState['pburn'] {
-  return useSelector<AppState['pburn']>((state) => state.pburn);
+export function useBurnState(pairAddress: string) {
+  const { burnState } = useBurnStateAtom();
+
+  const pairState = burnState[pairAddress];
+  if (pairState) {
+    return pairState;
+  }
+  return initialKeyState;
 }
 
 export function useDerivedBurnInfo(
@@ -38,7 +43,11 @@ export function useDerivedBurnInfo(
 
   const { t } = useTranslation();
 
-  const { independentField, typedValue } = useBurnState();
+  const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)];
+
+  const pairAddress = tokenA && tokenB ? Pair.getAddress(tokenA, tokenB) : '';
+
+  const { independentField, typedValue } = useBurnState(pairAddress);
 
   // pair + totalsupply
   const [, pair] = usePair(currencyA, currencyB);
@@ -46,7 +55,6 @@ export function useDerivedBurnInfo(
   // balances
   const userLiquidity = usePairBalance(account ?? undefined, pair ?? undefined);
 
-  const [tokenA, tokenB] = [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)];
   const tokens = {
     [Field.CURRENCY_A]: tokenA,
     [Field.CURRENCY_B]: tokenB,
@@ -128,22 +136,26 @@ export function useDerivedBurnInfo(
   }
 
   if (!parsedAmounts[Field.LIQUIDITY] || !parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
-    error = error ?? t('burnHooks.enterAmount');
+    if (typedValue !== '0') {
+      error = error ?? t('stakeHooks.insufficientBalance', { symbol: 'PGL' });
+    } else {
+      error = error ?? t('burnHooks.enterAmount');
+    }
   }
 
   return { pair, parsedAmounts, error, userLiquidity };
 }
 
 export function useBurnActionHandlers(): {
-  onUserInput: (field: Field, typedValue: string) => void;
+  onUserInput: (field: Field, typedValue: string, pairAddress: string) => void;
 } {
-  const dispatch = useDispatch();
+  const { typeInput } = useBurnStateAtom();
 
   const onUserInput = useCallback(
-    (field: Field, typedValue: string) => {
-      dispatch(typeInput({ field, typedValue }));
+    (field: Field, typedValue: string, pairAddress: string) => {
+      typeInput({ pairAddress, field, typedValue });
     },
-    [dispatch],
+    [typeInput],
   );
 
   return {

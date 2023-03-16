@@ -7,7 +7,7 @@ import { Button } from 'src/components/Button';
 import { Text } from 'src/components/Text';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useDerivativeSarClaimHook } from 'src/state/psarstake/multiChainsHooks';
+import { useDerivativeSarClaimHook } from 'src/state/psarstake/hooks';
 import { Position } from 'src/state/psarstake/types';
 import RewardsInfo from '../Compound/RewardsInfo';
 import ConfirmDrawer from '../ConfirmDrawer';
@@ -72,7 +72,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
     }
     return (
       <Buttons>
-        <Button variant="primary" onClick={() => onChange(Options.COMPOUND)}>
+        <Button variant="primary" onClick={() => onChange(Options.COMPOUND)} isDisabled={pendingRewards.isZero()}>
           {t('sarCompound.compound')}
         </Button>
         <Button variant="primary" onClick={handleConfirm} isDisabled={!!error}>
@@ -103,8 +103,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
             </Box>
           </Box>
           <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-            Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead
-            compound your rewards without losing your APR.
+            {t('sarClaim.claimWarning')}
           </Text>
         </Box>
         {renderButton()}

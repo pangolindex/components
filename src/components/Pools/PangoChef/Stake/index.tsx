@@ -10,16 +10,16 @@ import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useApproveCallbackHook } from 'src/hooks/multiChainsHooks';
-import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { usePairContract, usePangoChefContract } from 'src/hooks/useContract';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
-import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/hooks';
-import { usePangoChefStakeCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { usePangoChefStakeCallbackHook } from 'src/state/ppangoChef/hooks';
+import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/hooks/hedera';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useDerivedStakeInfo, useGetPoolDollerWorth, useMinichefPendingRewards } from 'src/state/pstake/hooks';
+import { useDerivedStakeInfo, useGetPoolDollerWorth, useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
 import { SpaceType } from 'src/state/pstake/types';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
 import ConfirmDrawer from './ConfirmDrawer';
 import {
@@ -263,7 +263,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
       : '-';
 
   const renderButton = () => {
-    if (shouldCreateStorage) {
+    if (shouldCreateStorage && !error) {
       return (
         <>
           <Tooltip id="storageContract" effect="solid" backgroundColor={theme.primary}>
@@ -275,7 +275,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
           </Tooltip>
           <Buttons>
             <Button variant="primary" onClick={create} height="45px" data-tip data-for="storageContract">
-              Create Storage Contract
+              {t('pangoChef.createStorageContract')}
             </Button>
           </Buttons>
         </>
@@ -295,7 +295,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
 
           <Button
             variant="primary"
-            isDisabled={!!error || approval !== ApprovalState.APPROVED || !!stakeCallbackError}
+            isDisabled={!!error || approval !== ApprovalState.APPROVED || !!stakeCallbackError || shouldCreateStorage}
             onClick={onConfirm}
             loading={attempting && !hash}
             loadingText={t('migratePage.loading')}
@@ -348,6 +348,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
                   )
                 }
                 label={type === SpaceType.card ? balanceLabel : undefined}
+                disabled={userLiquidityUnstaked?.equalTo('0')}
               />
 
               <Box mt={type === 'card' ? '25px' : '0px'}>

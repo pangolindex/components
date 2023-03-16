@@ -28,6 +28,7 @@ export function useLiFiSwapChains() {
         tracked_by_debank: false,
         supported_by_gelato: false,
         supported_by_bridge: chain?.mainnet, // only if chain is mainnet
+        supported_by_twap: false,
         rpc_uri: chain?.metamask?.rpcUrls[0],
         symbol: chain?.metamask?.nativeCurrency?.symbol,
         nativeCurrency: chain?.metamask?.nativeCurrency,
@@ -81,7 +82,9 @@ export function useRangoChains() {
     const chains = await rango.chains();
     const isEvmBlockchain = (blockchainMeta: RangoChainMeta): blockchainMeta is RangoEvmChainMeta =>
       blockchainMeta.type === TransactionType.EVM;
-    const evmChains: RangoEvmChainMeta[] = chains.filter(isEvmBlockchain);
+    const evmChains: RangoEvmChainMeta[] = chains
+      .filter(isEvmBlockchain)
+      .filter((blockchainMeta: RangoChainMeta) => !!blockchainMeta.enabled);
 
     const formattedChains: BridgeChain[] = evmChains?.map((chain: RangoEvmChainMeta) => {
       return {

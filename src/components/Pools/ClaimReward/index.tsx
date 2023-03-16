@@ -7,14 +7,14 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useStakingContract } from 'src/hooks/useContract';
-import { useGetEarnedAmount, useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { useMinichefPendingRewards, useMinichefPools } from 'src/state/pstake/hooks/common';
+import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { waitForTransaction } from 'src/utils';
 import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
 export interface ClaimProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
   onClose: () => void;
 }
@@ -61,13 +61,17 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
         setHash(response.hash);
         const tokenA = stakingInfo.tokens[0];
         const tokenB = stakingInfo.tokens[1];
+
+        // farm version 0 is old and this has no pid
+        const pid = FARM_TYPE[version] !== FARM_TYPE[1] ? (stakingInfo as MinichefStakingInfo).pid : '';
+
         mixpanel.track(MixPanelEvents.CLAIM_REWARDS, {
           chainId: chainId,
           tokenA: tokenA?.symbol,
           tokenb: tokenB?.symbol,
           tokenA_Address: tokenA?.symbol,
           tokenB_Address: tokenB?.symbol,
-          pid: stakingInfo.pid,
+          pid: pid,
           farmType: FARM_TYPE[version]?.toLowerCase(),
         });
       } catch (error) {
@@ -89,9 +93,7 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
     _error = _error ?? t('earn.enterAmount');
   }
 
-  const { earnedAmount } = useGetEarnedAmount(stakingInfo?.pid as string);
-
-  const newEarnedAmount = version < 2 ? stakingInfo?.earnedAmount : earnedAmount;
+  const { earnedAmount } = stakingInfo;
 
   return (
     <ClaimWrapper>
@@ -102,7 +104,7 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
               <StatWrapper>
                 <Stat
                   title={t('earn.unclaimedReward', { symbol: 'PNG' })}
-                  stat={newEarnedAmount?.toSignificant(4)}
+                  stat={earnedAmount?.toSignificant(4)}
                   titlePosition="top"
                   titleFontSize={12}
                   statFontSize={[24, 18]}
@@ -140,9 +142,9 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
         </Root>
       )}
 
-      {attempting && !hash && <Loader size={100} label=" Claiming..." />}
+      {attempting && !hash && <Loader size={100} label={` ${t('sarClaim.claiming')}...`} />}
 
-      {hash && <TransactionCompleted onClose={wrappedOnDismiss} submitText="Your rewards claimed" />}
+      {hash && <TransactionCompleted onClose={wrappedOnDismiss} submitText={t('earn.rewardClaimed')} />}
     </ClaimWrapper>
   );
 };

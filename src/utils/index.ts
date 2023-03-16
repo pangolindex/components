@@ -25,8 +25,9 @@ import {
   Trade,
   currencyEquals,
 } from '@pangolindex/sdk';
+import { MetamaskError, ZERO_ADDRESS } from 'src/constants';
+import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
 import { hederaFn } from 'src/utils/hedera';
-import { MetamaskError, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '../constants';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { wait } from './retry';
 
@@ -87,6 +88,7 @@ export const validateAddressMapping: { [chainId in ChainId]: (value: any) => str
   [ChainId.MOONBEAM]: isDummyAddress,
   [ChainId.OP]: isDummyAddress,
   [ChainId.EVMOS_TESTNET]: isAddress,
+  [ChainId.EVMOS_MAINNET]: isAddress,
 };
 
 export const checkAddressNetworkBaseMapping: {
@@ -127,6 +129,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].blockExplorerUrls?.[0] || '',
+  [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET].blockExplorerUrls?.[0] || '',
 };
 
 const transactionPath: { [chainId in ChainId]: string } = {
@@ -157,6 +160,7 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'tx',
+  [ChainId.EVMOS_MAINNET]: 'tx',
 };
 
 const addressPath: { [chainId in ChainId]: string } = {
@@ -187,6 +191,7 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'address',
+  [ChainId.EVMOS_MAINNET]: 'address',
 };
 
 const blockPath: { [chainId in ChainId]: string } = {
@@ -217,6 +222,7 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'block',
+  [ChainId.EVMOS_MAINNET]: 'block',
 };
 
 const tokenPath: { [chainId in ChainId]: string } = {
@@ -247,6 +253,7 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'token',
+  [ChainId.EVMOS_MAINNET]: 'token',
 };
 
 export function getEtherscanLink(
@@ -389,6 +396,40 @@ export function filterTokenOrChain(
     return (symbol && matchesSearch(symbol)) || (name && matchesSearch(name));
   });
 }
+
+// this mapping is useful for transforming address before displaying it on UI
+// for EVM chain this is shortening the address to fit it in UI
+// for Hedera chain this is converting address to Hedera Account Id
+export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+  [ChainId.FUJI]: shortenAddress,
+  [ChainId.AVALANCHE]: shortenAddress,
+  [ChainId.WAGMI]: shortenAddress,
+  [ChainId.COSTON]: shortenAddress,
+  [ChainId.SONGBIRD]: shortenAddress,
+  [ChainId.FLARE_MAINNET]: shortenAddress,
+  [ChainId.HEDERA_TESTNET]: hederaFn.hederaId,
+  [ChainId.HEDERA_MAINNET]: hederaFn.hederaId,
+  [ChainId.NEAR_MAINNET]: shortenAddress,
+  [ChainId.NEAR_TESTNET]: shortenAddress,
+  [ChainId.COSTON2]: shortenAddress,
+  [ChainId.ETHEREUM]: shortenAddress,
+  [ChainId.POLYGON]: shortenAddress,
+  [ChainId.FANTOM]: shortenAddress,
+  [ChainId.XDAI]: shortenAddress,
+  [ChainId.BSC]: shortenAddress,
+  [ChainId.ARBITRUM]: shortenAddress,
+  [ChainId.CELO]: shortenAddress,
+  [ChainId.OKXCHAIN]: shortenAddress,
+  [ChainId.VELAS]: shortenAddress,
+  [ChainId.AURORA]: shortenAddress,
+  [ChainId.CRONOS]: shortenAddress,
+  [ChainId.FUSE]: shortenAddress,
+  [ChainId.MOONRIVER]: shortenAddress,
+  [ChainId.MOONBEAM]: shortenAddress,
+  [ChainId.OP]: shortenAddress,
+  [ChainId.EVMOS_TESTNET]: shortenAddress,
+  [ChainId.EVMOS_MAINNET]: shortenAddress,
+};
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALANCHE, chars = 4): string {

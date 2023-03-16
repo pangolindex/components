@@ -1,12 +1,13 @@
 import { CHAINS, ChefType } from '@pangolindex/sdk';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { Box } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId } from 'src/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useGetPoolDollerWorth } from 'src/state/pstake/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { useGetPoolDollerWorth } from 'src/state/pstake/hooks/common';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import EarnWidget from '../../EarnWidget';
 import EarnedDetailV3 from '../../PangoChef/EarnDetail';
@@ -18,13 +19,14 @@ import { DesktopWrapper, DetailsWrapper, LeftSection, MobileWrapper, RightSectio
 
 export interface PoolDetailProps {
   onDismiss: () => void;
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
 }
 
 const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
   const { height } = useWindowSize();
   const chainId = useChainId();
+  const { t } = useTranslation();
   const chain = CHAINS[chainId];
 
   const token0 = stakingInfo?.tokens?.[0];
@@ -64,7 +66,7 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
 
           <Box mt={25}>
             <Tabs>
-              <Tab>Details</Tab>
+              <Tab>{t('votePage.details')}</Tab>
             </Tabs>
             <Details stakingInfo={stakingInfo} />
           </Box>
@@ -75,7 +77,7 @@ const DetailView = ({ stakingInfo, onDismiss, version }: PoolDetailProps) => {
         <DetailsWrapper>
           <LeftSection>
             <Tabs>
-              <Tab>Details</Tab>
+              <Tab>{t('votePage.details')}</Tab>
             </Tabs>
             <Details stakingInfo={stakingInfo} />
           </LeftSection>

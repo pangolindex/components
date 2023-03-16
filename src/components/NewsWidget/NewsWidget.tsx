@@ -1,6 +1,7 @@
 import React, { useContext, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { ArrowLeft, ArrowRight } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 import Slider, { Settings } from 'react-slick';
 import remarkGfm from 'remark-gfm';
@@ -28,7 +29,7 @@ const NewsFeedSettings: Settings = {
 
 const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
   const [interactedNewsIds, setInteractedNewsIds] = useState<number[]>([]);
-
+  const { t } = useTranslation();
   const theme = useContext(ThemeContext);
   const sliderRef = useRef<Slider | null>(null);
   const handleNewsNext = () => {
@@ -56,7 +57,7 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
   return (
     <NewsSection img={Earth}>
       <TitleWrapper>
-        <NewsTitle>News</NewsTitle>
+        <NewsTitle> {t('dashboardPage.news')}</NewsTitle>
         <ArrowWrapper>
           <SlickNext onClick={handleNewsBack} style={{ right: 60 }}>
             <ArrowLeft size={20} style={{ minWidth: 24 }} />

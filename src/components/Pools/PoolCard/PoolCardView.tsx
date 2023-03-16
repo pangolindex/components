@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
-import { useTokenBalance } from 'src/state/pwallet/hooks';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
+import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import ClaimDrawer from '../ClaimDrawer';
@@ -24,7 +24,7 @@ import {
 } from './styleds';
 
 export interface PoolCardViewProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   onClickViewDetail: () => void;
   version: number;
   combinedApr?: number;
@@ -138,7 +138,7 @@ const PoolCardView = ({
         <StatWrapper>
           {isStaking ? (
             <Stat
-              title={'Your TVL'}
+              title={t('pool.yourTVL')}
               stat={numeral((yourStackedInUsd as Fraction)?.toFixed(2)).format('$0.00a')}
               titlePosition="top"
               titleFontSize={[16, 14]}

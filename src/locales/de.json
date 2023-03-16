@@ -62,6 +62,7 @@
     "unclaimedReward": "Unbeanspruchte {{ symbol }}",
     "claim": "Beanspruchen",
     "claimReward": "{{ symbol }} Beanspruchen",
+    "claimRewards": "Belohnung entgegennehmen",
     "liquidityRemainsPool": "Wenn du deine Vergütung ohne abzubuchen beanspruchst, wird deine Liquidität im Pool verbleiben.",
     "withdrawingLiquidity": "{{ amount }} {{ symbol }} opnemen",
     "claimingReward": "Wird beansprucht {{ amount }} {{ symbol }}",
@@ -99,7 +100,8 @@
     "extraReward": "Zusätzliche Belohnung",
     "poolRewards": "Pool-Belohnungen",
     "rewardsIn": "Belohnungen ein",
-    "removeWarning": "Sie entfernen Liquidität aus diesem Pool. Diese Aktion gibt Ihnen Ihre Token zurück. Alternativ können Sie sich dafür entscheiden, Ihre Token zu farmen, um Belohnungen zu verdienen."
+    "removeWarning": "Sie entfernen Liquidität aus diesem Pool. Diese Aktion gibt Ihnen Ihre Token zurück. Alternativ können Sie sich dafür entscheiden, Ihre Token zu farmen, um Belohnungen zu verdienen.",
+    "rewardClaimed" : "Your rewards claimed"
   },
   "menu": {
     "code": "Code",
@@ -170,14 +172,15 @@
     "removeList": "Liste entfernen",
     "selected": "ausgewählt",
     "select": "auswählen",
-    "manageTokenLists": "Tokenlisten verwalten"
+    "manageTokenLists": "Tokenlisten verwalten",
+    "listsSelected" :"lists selected"
   },
   "settings": {
     "areYouSure": "Bist du dir sicher?",
     "expertInfo": "Der Expertenmodus deaktiviert die Aufforderung zur Transaktionsbestätigung und erlaubt Trades mit hoher Slippage, welche oft zu schlechten Tauschraten und unwiderruflich verlorenen Mitteln führen.",
     "expertWarningCAPS": "BENUTZE DIESEN MODUS NUR, WENN DU GENAU WEISST, WAS DU TUST.",
     "confirm": "bestätige",
-    "confirmExpertMode": "Bitte gib das Wort \"bestätige\" ein, um den Expertenmodus zu aktivieren.",
+    "confirmExpertMode": "Bitte gib das Wort \"confirm\" ein, um den Expertenmodus zu aktivieren.",
     "turnOnExpertMode": "Aktiviere Expertenmodus",
     "transactionSettings": "Transaktionseinstellungen",
     "interfaceSettings": "Schnittstelleneinstellungen",
@@ -185,7 +188,9 @@
     "expertModeHelper": "Umgeht Bestätigungsaufforderungen und ermöglicht Trades mit hoher Slippage. Verwendung auf eigene Gefahr.",
     "toggleDarkMode": "Nachtmodus",
     "slippage": "Slippage",
-    "percent": "Percent"
+    "percent": "Percent",
+    "timeLimit": "Time Limit",
+    "seconds": "Seconds"
   },
   "swap": {
     "priceImpact": "Preisauswirkungen",
@@ -207,7 +212,11 @@
     "inputEstimated": "Die Verkaufsmenge ist geschätzt. Du verkaufst höchstens <strong>{{amount}} {{currencySymbol}}</strong> oder die Transaktion wird storniert.",
     "outputSentTo": "Die Verkaufsmenge wird gesendet an ",
     "priceImpactMinPrompt": "Dieser Tausch hat eine Preisauswirkung von mindestens {{ priceImpact }}%. Bitte gib das Wort \"bestätige\" ein, um mit dem Tausch fortzufahren.",
-    "priceImpactHighPrompt": "Dieser Tausch hat eine Preisauswirkung von mindestens {{ priceImpact }}%. Bitte gib das Wort \"bestätige\" ein, um mit dem Tausch fortzufahren."
+    "priceImpactHighPrompt": "Dieser Tausch hat eine Preisauswirkung von mindestens {{ priceImpact }}%. Bitte gib das Wort \"bestätige\" ein, um mit dem Tausch fortzufahren.",
+    "realExecutionPrice": "Real Execution Price",
+    "gasPrice": "Gas Price",
+    "gelatoFee": "Gelato Fee",
+    "totalFee": "Total Fee"
   },
   "toggle": {
     "on": "Ein",
@@ -384,12 +393,26 @@
     "yourFarms": "Ihre Höfe",
     "yourPools": "Ihre Pools",
     "noFarms": "Keine Höfe gefunden.",
+    "visitWebsite": "Visit Website",
     "successWithdraw": "Ihre Liquidität wurde aus der Farm entfernt und aufgelaufene Prämien eingefordert!",
     "importDescription1": "Mit der Importfunktion können Sie nach Pools suchen, die nicht im Abschnitt 'Ihre Pools' erscheinen.",
     "importDescription2": "Wählen Sie einfach die zugrunde liegenden Münzen aus, die sich in Ihrem Pool befanden.",
     "createPairDescription": "Mit der Erstellungsfunktion können Sie ein neues Paar erstellen. Suchen Sie einfach nach den Münzen, für die Sie ein Paar erstellen möchten, und das System findet entweder den Pool, falls er auf Pangolin existiert, oder erstellt einen brandneuen, falls dies nicht der Fall ist.",
     "addLiquidityDescription": "Mit der Funktion „Liquidität hinzufügen“ fügen Sie einem Paar Liquidität hinzu. Suchen Sie einfach nach den Münzen, denen Sie Liquidität hinzufügen möchten, und das System findet den Pool, falls er in Pangolin existiert, oder erstellt einen neuen, falls dies nicht der Fall ist.",
-    "createStorageContract": "Auf Hedera müssen alle Smart Contracts Gebühren für die Nutzung des Speicherplatzes im Hauptbuch zahlen. Dies sind Lagergebühren und Gebühren für die automatische Verlängerung. Sie müssen einen Speichervertrag erstellen, um zu farmen. Die Lagerung wird kostenlos, aber in Zukunft müssen Sie Gebühren für die automatische Verlängerung zahlen. Das sind etwa 2 Cent. Also wir empfehlen, immer 1 $ auf HBAR in Ihrer Brieftasche zu haben, um sicherzustellen, dass Sie keine Probleme haben."
+    "createStorageContract": "Auf Hedera müssen alle Smart Contracts Gebühren für die Nutzung des Speicherplatzes im Hauptbuch zahlen. Dies sind Lagergebühren und Gebühren für die automatische Verlängerung. Sie müssen einen Speichervertrag erstellen, um zu farmen. Die Lagerung wird kostenlos, aber in Zukunft müssen Sie Gebühren für die automatische Verlängerung zahlen. Das sind etwa 2 Cent. Also wir empfehlen, immer 1 $ auf HBAR in Ihrer Brieftasche zu haben, um sicherzustellen, dass Sie keine Probleme haben.",
+    "supplying": "Supplying",
+    "associating": "Associating",
+    "associate": "Associate",
+    "liquidityAdded": "Liquidity Added",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
+    "yourAPR": "Your APR",
+    "swapFeeAPR": "Swap fee APR",
+    "rewardAPR": "Reward APR",
+    "totalAPR": "Total APR",
+    "averageAPR": "Average APR",
+    "yourTVL": "Your TVL",
+    "yourAverageAPR": "Your Average APR"
   },
   "poolFinder": {
     "connectToFind": "Verbinde mit einer Wallet, um Pools zu finden",
@@ -417,7 +440,9 @@
     "approved": "Bestätigt",
     "remove": "Entferne",
     "output": "Auszahlung",
-    "amount": "Anzahl"
+    "amount": "Anzahl",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity"
   },
   "swapPage": {
     "addSend": "+ Empfängerwallet hinzufügen (optional)",
@@ -472,7 +497,15 @@
     "executionPrice": "Ausführungspreis",
     "seeMore": "Mehr sehen",
     "seeLess": "Siehe Weniger",
-    "orderPlaced": "{{ orderType }} auftrag erteilt."
+    "orderPlaced": "{{ orderType }} auftrag erteilt.",
+    "selectToken" : "Select Token",
+    "notFoundBalances" : "Not found balances",
+    "notFoundToken" : "Not found tokens on this chain",
+    "sendingTo" : "Sending to",
+    "invalidAddress": "Invalid Address",
+    "addRecipient": "Add Recipient",
+    "removeRecipient": "Remove Recipient",
+    "addTokenWatchlist": "Add tokens to watchlist using"
   },
   "buyPage": {
     "buyAvaxInfo": "Kaufen Sie AVAX mit Fiatgeld von unserem Partner Wyre.",
@@ -531,7 +564,8 @@
     "selectToken": "Wähle einen Token aus",
     "enterRecipient": "Gib einen Empfänger ein",
     "invalidRecipient": "Ungültiger Empfänger",
-    "insufficientBalance": "Unzureichendes {{ symbol }}-Guthaben"
+    "insufficientBalance": "Unzureichendes {{ symbol }}-Guthaben",
+    "selectChain": "Select a Chain"
   },
   "mintHooks": {
     "connectWallet": "Mit Wallet verbinden",
@@ -604,7 +638,8 @@
     "earned_customizePools": "Customize Pools",
     "followed_address": "Address",
     "followed_worth": "Worth",
-    "followed_interact": "Interact"
+    "followed_interact": "Interact",
+    "news": "News"
   },
   "stakePage": {
     "totalStaked": "Total Staked",
@@ -612,7 +647,19 @@
     "seeDetails": "SEE DETAILS",
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
-    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!"
+    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
+    "total": "Gesamt (Stakes + Prämien)",
+    "yourWeeklyRate": "Your Weekly Rate",
+    "weeklyPoolRate": "Weekly Pool Rate",
+    "rewardStaking": "Reward Staking",
+    "staked": "Staked",
+    "stakeSuccessMsg": "Your rewards have been staked.",
+    "stakeYourReward": "Stake your rewards",
+    "stakePng" : "Stake your PNG token to share platform fees",
+    "unstaking": "Unstaking",
+    "unstaked": "Unstaked",
+    "unstakeYourReward": "You can unstake your rewards.",
+    "stakeReward": "Stake Reward"
   },
   "error": {
     "missingCurrencyAmounts": "Fehlende Währungsbeträge",
@@ -686,7 +733,8 @@
     "pending": "Fordernd",
     "transactionSummary": "Beanspruchte Positionsprämien",
     "aprAfter": "effektiver Jahreszins nach der Reklamation",
-    "noRewards": "Keine Prämien zu beanspruchen"
+    "noRewards": "Keine Prämien zu beanspruchen",
+    "claimWarning": "Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead compound your rewards without losing your APR."
   },
   "sarPortfolio": {
     "noPositions": "Sie haben kein PANGUARDIAN NFT.\nLASS UNS DIR EINEN BESORGEN",
@@ -700,7 +748,7 @@
   },
   "pangoChef": {
     "claimWarning1": "Wenn Sie einen Anspruch geltend machen, ohne abzuheben, bleibt Ihre Liquidität im Mining-Pool.",
-    "claimWarning2": "Wenn Sie Ihre Prämien beanspruchen, sinkt Ihr effektiver Jahreszins auf 0. Stattdessen können Sie sich für eine Aufzinsung entscheiden.",
+    "claimWarning2": "Wenn Sie Ihre Belohnungen einfordern, werden alle ausstehenden Token beansprucht, einschließlich der Super Farm-Belohnungen, und Ihr effektiver Jahreszins wird auf 0 % zurückgesetzt. Stattdessen können Sie sich für eine Aufzinsung entscheiden.",
     "compoundWarning": "Wenn Sie Ihre Belohnungen für die {{ token0 }}-{{ token1 }}-Farm zusammensetzen, werden Ihre Belohnungen in die {{ stakeToken0 }}-{{ stakeToken1 }} farm eingesetzt. Sie müssen den gleichen Wert von {{ compoundToken }}Token für Ihre angesammelten {{ png }} Prämien.",
     "compoundAmountWarning": "Sie müssen {{ amount }} {{ symbol }} zur Verbindung hinzufügen. Bitte beachten Sie, dass die Aufzinsung Ihren effektiven Jahreszins leicht verringern kann.",
     "compoundAmountWarning2": "Zum Zusammensetzen. Seien Sie vorsichtig, dass Sie Ihren {{ token0 }} {{ token1 }} pool sperren, bis Sie die Belohnungen dieses Pools beanspruchen.",
@@ -709,7 +757,28 @@
     "compoundTransactionSummary": "Zusammengesetzte Farm.",
     "removeWarning": "Wenn Sie einen beliebigen Betrag von der Farm entfernen, wird Ihr effektiver Jahreszins auf 0 gesetzt. Sie können stattdessen Ihre Belohnungen aufstocken, ohne Ihren effektiven Jahreszins zu verlieren.",
     "lockingPoolZeroWarning": "Sie können Ihre Liquidität nicht entfernen oder Ihre Belohnungen von dieser Farm einfordern. Um dies zu tun, müssen Sie zuerst Ihren Anteil von diesen Farmen entweder beanspruchen oder entfernen: ",
-    "decreaseWarning": "Ihr APR wird sinken, da der neue zusammengesetzte Teil mit APR 0 beginnt und ein Durchschnitt zwischen dem alten und dem neuen Teil genommen wird."
+    "decreaseWarning": "Ihr APR wird sinken, da der neue zusammengesetzte Teil mit APR 0 beginnt und ein Durchschnitt zwischen dem alten und dem neuen Teil genommen wird.",
+    "createStorageContract": "Create Storage Contract"
+  },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    }
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -718,10 +787,16 @@
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "poweredBy": "Powered by",
+    "selectCurrency": "Select a Currency",
+    "search": "Search",
+    "tableOfContent": "Table of Content",
+    "haveQuestion" :"Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "switchChain": "Switch Chain",
+      "selectChain": "Please Select Chain",
       "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
@@ -742,7 +817,8 @@
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
       "max": "MAX",
       "recipient": "Recipient",
-      "walletAddress": "Wallet Address"
+      "walletAddress": "Wallet Address",
+      "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -771,5 +847,32 @@
   },
   "dropdown": {
     "select": "Select"
+  },
+  "portfolio": {
+    "portfolioAllChain": "Portfolio Value in All Chains",
+    "connectToseePortfolio": "Connect a wallet to see your Portfolio",
+    "totalAmountInvested": "Total Amount Invested",
+    "balanceNotFound": "Balances not found",
+    "hideYourBalance": "Hide Your Balance",
+    "showYourBalance": "Show Your Balance"
+  },
+  "buy":{
+    "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
+    "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
+  },
+  "common": {
+    "loading": "Loading",
+    "search": "Search",
+    "required": "Required",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "noDataAvailable": "No data available!",
+    "sortBy": "Sort By",
+    "max": "Max",
+    "min": "Min",
+    "open": "Open",
+    "closed": "Closed",
+    "notFound": "Nicht gefunden"
   }
 }

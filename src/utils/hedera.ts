@@ -14,7 +14,7 @@ import {
 import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { hashConnect } from 'src/connectors';
-import { PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants';
+import { PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
@@ -41,6 +41,8 @@ export interface HederaTokenMetadata {
   symbol: string;
   decimals: number;
   icon: string;
+  type: string;
+  totalSupply: string;
 }
 
 export interface HederaAssociateTokensData {
@@ -420,6 +422,8 @@ class Hedera {
         symbol: tokenInfo?.symbol,
         decimals: Number(tokenInfo?.decimals),
         icon: '',
+        type: tokenInfo?.type,
+        totalSupply: tokenInfo?.total_supply,
       };
       return token;
     } catch (error) {
@@ -1016,7 +1020,10 @@ class Hedera {
     const accountId = account ? this.hederaId(account) : '';
     const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
 
-    const maxGas = methodName === 'stake' ? TRANSACTION_MAX_FEES.STAKE_LP_TOKEN : TRANSACTION_MAX_FEES.WITHDRAW;
+    const maxGas =
+      methodName === 'stake'
+        ? TRANSACTION_MAX_FEES.STAKE_LP_TOKEN + TRANSACTION_MAX_FEES.TRANSFER_ERC20
+        : TRANSACTION_MAX_FEES.WITHDRAW;
 
     const transaction = new ContractExecuteTransaction()
       //Set the ID of the contract

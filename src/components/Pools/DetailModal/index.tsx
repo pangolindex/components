@@ -1,15 +1,16 @@
+import { Pair } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { Modal } from 'src/components';
-import { useDispatch } from 'src/state';
-import { ApplicationModal } from 'src/state/papplication/actions';
+import { ApplicationModal } from 'src/state/papplication/atom';
 import { useModalOpen, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
-import { resetMintState } from 'src/state/pmint/actions';
-import { StakingInfo } from 'src/state/pstake/types';
+import { useBurnStateAtom } from 'src/state/pburn/atom';
+import { useMintStateAtom } from 'src/state/pmint/atom';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import DetailView from './DetailView';
 
 export interface DetailModalProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
 }
 
@@ -18,12 +19,18 @@ const DetailModal = ({ stakingInfo, version }: DetailModalProps) => {
   const togglePoolDetailModal = usePoolDetailnModalToggle();
   const updateSelectedPoolId = useUpdateSelectedPoolId();
   const theme = useContext(ThemeContext);
+  const { resetBurnState } = useBurnStateAtom();
+  const { resetMintState } = useMintStateAtom();
 
-  const dispatch = useDispatch();
+  const pairAddress =
+    stakingInfo?.tokens?.[0] && stakingInfo?.tokens?.[1]
+      ? Pair.getAddress(stakingInfo.tokens[0], stakingInfo.tokens[1])
+      : '';
 
   useEffect(() => {
-    dispatch(resetMintState());
-  }, [detailModalOpen, dispatch]);
+    resetMintState({ pairAddress: pairAddress });
+    resetBurnState({ pairAddress: pairAddress });
+  }, [detailModalOpen, resetMintState, resetBurnState]);
 
   const handleOnDismiss = useCallback(() => {
     updateSelectedPoolId(undefined);

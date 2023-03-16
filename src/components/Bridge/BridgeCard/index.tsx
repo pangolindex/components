@@ -276,7 +276,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
         maxAmountInput={maxAmountInput}
         amount={parsedAmount}
         handleMaxInput={handleMaxInput}
-        title="From"
+        title={t('bridge.bridgeTransfer.from')}
         inputDisabled={false}
         chain={fromChain}
         currency={inputCurrency}
@@ -303,7 +303,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           setDrawerType(ChainField.TO);
           onChangeChainDrawerStatus();
         }}
-        title="To"
+        title={t('bridge.bridgeTransfer.to')}
         onChangeRecipient={changeRecipient}
         recipient={recipient}
         inputDisabled={true}
@@ -315,7 +315,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       <Box marginY={30}>
         {!account ? (
           <Button variant="primary" onClick={toggleWalletModal}>
-            Connect Wallet
+            {t('earn.connectWallet')}
           </Button>
         ) : sdkChainId !== fromChain?.chain_id ? (
           <Button
@@ -325,7 +325,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
             }}
             isDisabled={!fromChain || (toChain?.network_type === NetworkType.EVM && !recipient)}
           >
-            {fromChain ? 'Switch Chain' : 'Please Select Chain'}
+            {fromChain ? t('bridge.bridgeCard.switchChain') : t('bridge.bridgeCard.selectChain')}
           </Button>
         ) : (
           <Button

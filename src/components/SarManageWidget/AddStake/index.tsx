@@ -11,14 +11,14 @@ import { TextInput } from 'src/components/TextInput';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useHederaTokenAssociated } from 'src/hooks/Tokens';
-import { ApprovalState } from 'src/hooks/useApproveCallback';
+import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { useHederaSarNFTContract } from 'src/hooks/useContract';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useSarStakeInfo } from 'src/state/psarstake/hooks';
-import { useDerivativeSarStakeHook } from 'src/state/psarstake/multiChainsHooks';
+import { useDerivativeSarStakeHook } from 'src/state/psarstake/hooks';
+import { useSarStakeInfo } from 'src/state/psarstake/hooks/evm';
 import { Position } from 'src/state/psarstake/types';
-import { useTokenBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { useTokenBalanceHook } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import ConfirmDrawer from '../ConfirmDrawer';
@@ -88,6 +88,11 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
     }
   }, [approval, approvalSubmitted]);
 
+  // if changed the position and the drawer is open, close
+  useEffect(() => {
+    if (openDrawer) setOpenDrawer(false);
+  }, [selectedPosition]);
+
   const handleConfirmDismiss = useCallback(() => {
     setOpenDrawer(false);
     // if there was a tx hash, we want to clear the input
@@ -129,7 +134,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
     } else if (!isHederaTokenAssociated && isHedera) {
       return (
         <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-          {isLoadingAssociate ? 'Associating' : 'Associate '}
+          {isLoadingAssociate ? `${t('pool.associating')}` : `${t('pool.associate')} `}
         </Button>
       );
     } else {
@@ -226,9 +231,9 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
         </Box>
         <Box display="grid" bgColor="color3" borderRadius="4px" padding="20px" style={{ gridGap: '20px' }}>
           <Box display="flex" justifyContent="space-between">
-            <Box>
+            <Box maxWidth="150px" style={{ overflow: 'hidden' }}>
               <Text color="text2">{t('sarStake.dollarValue')}</Text>
-              <Text color="text1">${(dollerWorth ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</Text>
+              <Text color="text1">{dollerWorth ? `$ ${numeral(dollerWorth).format('0.00a')}` : '-'}</Text>
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>

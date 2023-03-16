@@ -20,13 +20,14 @@ import {
 } from '@pangolindex/sdk';
 import { RangoClient, SwapResponse as RangoRoute } from 'rango-sdk-basic';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RANGO_API_KEY, SQUID_API } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
 import { AppState, useDispatch, useSelector } from 'src/state';
 import { getSigner } from 'src/utils';
-import { useCurrencyBalances } from '../pwallet/hooks';
+import { useCurrencyBalances } from '../pwallet/hooks/common';
 import {
   ChainField,
   CurrencyField,
@@ -178,6 +179,7 @@ export function useDerivedBridgeInfo(): {
 } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
+  const { t } = useTranslation();
   const [chainList, setChainList] = useState<BridgeChain[]>([]);
   const [currencyList, setCurrencyList] = useState<BridgeCurrency[]>([]);
 
@@ -266,19 +268,19 @@ export function useDerivedBridgeInfo(): {
 
   let inputError: string | undefined;
   if (!account) {
-    inputError = 'Connect Wallet';
+    inputError = t('swapHooks.connectWallet');
   }
 
   if (!parsedAmount) {
-    inputError = inputError ?? 'Enter an amount';
+    inputError = inputError ?? t('swapHooks.enterAmount');
   }
 
   if (!currencies[CurrencyField.INPUT] || !currencies[CurrencyField.OUTPUT]) {
-    inputError = inputError ?? 'Select a token';
+    inputError = inputError ?? t('swapHooks.selectToken');
   }
 
   if (!chains[ChainField.FROM] || !chains[ChainField.TO]) {
-    inputError = inputError ?? 'Select a chain';
+    inputError = inputError ?? t('swapHooks.selectChain');
   }
 
   return {

@@ -11,14 +11,13 @@ import { TextInput } from 'src/components/TextInput';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useDerivativeSarUnstakeHook } from 'src/state/psarstake/multiChainsHooks';
+import { useDerivativeSarUnstakeHook } from 'src/state/psarstake/hooks';
 import { Position } from 'src/state/psarstake/types';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import Title from '../Title';
-import { Wrapper } from '../styleds';
 import { Options } from '../types';
-import { Root } from './styleds';
+import { Root, Wrapper } from './styleds';
 
 interface Props {
   selectedOption: Options;
@@ -93,7 +92,7 @@ export default function Unstake({ selectedOption, selectedPosition, onChange, on
   };
 
   const ConfirmContent = (
-    <Wrapper paddingX="20px" paddingBottom="20px">
+    <Wrapper>
       <Header>
         <TokenRow>
           <Text fontSize={24} fontWeight={500} color="text1" style={{ marginRight: '12px' }}>

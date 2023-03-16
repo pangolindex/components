@@ -1,8 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { ChainId, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
+import { useSubgraphPairs } from 'src/apollo/pairs';
 import { useChainId } from 'src/hooks';
-import { useHederaPGLToken } from 'src/state/pwallet/hooks';
+import { useHederaPGLTokenAddresses, useHederaTokensMetaData } from 'src/state/pwallet/hooks/hedera';
 import { nearFn } from 'src/utils/near';
 import { PNG } from '../constants/tokens';
 import { useTokenContract } from '../hooks/useContract';
@@ -19,6 +20,16 @@ export function useTotalSupply(token?: Token): TokenAmount | undefined {
   if (token?.equals(PNG[ChainId.AVALANCHE])) {
     return new TokenAmount(token, '230000000000000000000000000');
   }
+
+  return token && totalSupply ? new TokenAmount(token, totalSupply.toString()) : undefined;
+}
+
+// returns undefined if input token is undefined, ,
+// Hedera token total supply
+export function useHederaTotalSupply(token?: Token): TokenAmount | undefined {
+  const tokensMetadata = useHederaTokensMetaData([token?.address]);
+
+  const totalSupply = token?.address ? tokensMetadata[token?.address]?.totalSupply : '0';
 
   return token && totalSupply ? new TokenAmount(token, totalSupply.toString()) : undefined;
 }
@@ -86,18 +97,48 @@ export function useNearPairTotalSupply(pair?: Pair): TokenAmount | undefined {
 }
 
 /**
- * this hook is used to fetch total supply of given Hedera pair
+ * this hook is used to fetch total supply of given pair
  * @param pair pair object
  * @returns total supply in form of TokenAmount or undefined
  */
 export function useHederaPairTotalSupply(pair?: Pair): TokenAmount | undefined {
-  const [pglToken, liqToken] = useHederaPGLToken(pair?.token0, pair?.token1);
-  const contract = useTokenContract(pglToken?.address, false);
+  const token = pair?.liquidityToken;
 
-  const totalSupply: BigNumber = useSingleCallResult(contract, 'totalSupply')?.result?.[0];
+  const lpTokenAddresses = token?.address;
 
-  // here we create TokenAmount with liqToken so that we can use sdk methods like `pair.getLiquidityMinted` etc
-  // we need to do this because in sdk its checking token equality
-  // @link https://github.com/pangolindex/sdk/blob/dev/src/entities/pools/pair.ts#L146
-  return pglToken && liqToken && pair && totalSupply ? new TokenAmount(liqToken, totalSupply.toString()) : undefined;
+  const pglTokenAddresses = useHederaPGLTokenAddresses([lpTokenAddresses]);
+
+  const tokensMetadata = useHederaTokensMetaData([lpTokenAddresses ? pglTokenAddresses[lpTokenAddresses] : undefined]);
+
+  return useMemo(() => {
+    if (!token || !lpTokenAddresses || !pglTokenAddresses || !tokensMetadata) {
+      return undefined;
+    }
+
+    const pglTokenAddress = pglTokenAddresses[lpTokenAddresses];
+
+    const totalSupply = pglTokenAddress ? tokensMetadata[pglTokenAddress]?.totalSupply : '0';
+
+    return token && totalSupply ? new TokenAmount(token, totalSupply.toString()) : undefined;
+  }, [token, lpTokenAddresses, tokensMetadata, pglTokenAddresses]);
+}
+
+/**
+ * this hook is used to fetch total supply of given pair via subgraph
+ * @param pair pair object
+ * @returns total supply in form of TokenAmount or undefined
+ */
+export function usePairTotalSupplyViaSubgraph(pair?: Pair): TokenAmount | undefined {
+  const token = pair?.liquidityToken;
+  // get pair from subgraph
+  const { data, isLoading } = useSubgraphPairs([token?.address]);
+
+  return useMemo(() => {
+    if (!token || isLoading || !data || data.length === 0) return undefined;
+
+    const pairInfo = data[0];
+    if (pairInfo.id !== token.address) return undefined;
+
+    return new TokenAmount(token, pairInfo.totalSupply);
+  }, [token, data, isLoading]);
 }

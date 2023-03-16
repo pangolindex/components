@@ -2,14 +2,14 @@ import { ChainId } from '@pangolindex/sdk';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
+import { useLastBlockHook } from 'src/hooks/block';
 import useDebounce from 'src/hooks/useDebounce';
-import { useDispatch } from 'src/state';
-import { updateBlockNumber } from './actions';
+import { useApplicationState } from './atom';
 
 const NearApplicationUpdater = () => {
   const chainId = useChainId();
   const { provider } = useLibrary();
-  const dispatch = useDispatch();
+  const { updateBlockNumber } = useApplicationState();
 
   const { data: blockNumber } = useQuery(
     'get-block',
@@ -21,7 +21,7 @@ const NearApplicationUpdater = () => {
 
   useEffect(() => {
     if (blockNumber) {
-      dispatch(updateBlockNumber({ chainId, blockNumber }));
+      updateBlockNumber({ chainId, blockNumber });
     }
   }, [blockNumber]);
 
@@ -31,33 +31,49 @@ const NearApplicationUpdater = () => {
 export const EvmApplicationUpdater = () => {
   const { chainId } = usePangolinWeb3();
   const { provider } = useLibrary();
-  const dispatch = useDispatch();
+  const { updateBlockNumber } = useApplicationState();
 
   const [state, setState] = useState<{ chainId: number | undefined; blockNumber: number | null }>({
     chainId,
     blockNumber: null,
   });
 
-  useQuery(
-    ['blocknumber'],
+  const useLastBlock = useLastBlockHook[(chainId ?? ChainId.AVALANCHE) as ChainId];
+
+  const lastBlock = useLastBlock();
+
+  const { data: providerBlockNumber } = useQuery(
+    ['get-block-number-provider', chainId],
     async () => {
       try {
         if (provider) {
-          const blockNumber = await provider?.getBlockNumber();
-          setState((_state) => {
-            if (chainId === _state.chainId) {
-              if (typeof _state.blockNumber !== 'number') return { chainId, blockNumber };
-              return { chainId, blockNumber: Math.max(blockNumber, _state.blockNumber) };
-            }
-            return _state;
-          });
+          const blockNumber: number = await provider?.getBlockNumber();
+          return blockNumber;
         }
+        return undefined;
       } catch (error) {}
     },
     {
-      refetchInterval: 1000 * 30,
+      refetchInterval: 1000 * 20,
     },
   );
+
+  useEffect(() => {
+    if (providerBlockNumber || lastBlock) {
+      setState((_state) => {
+        if (chainId === _state.chainId) {
+          if (typeof _state.blockNumber !== 'number') {
+            return { chainId, blockNumber: Math.max(Number(providerBlockNumber ?? 0), Number(lastBlock?.number ?? 0)) };
+          }
+          return {
+            chainId,
+            blockNumber: Math.max(Number(providerBlockNumber ?? 0), Number(lastBlock?.number ?? 0), _state.blockNumber),
+          };
+        }
+        return _state;
+      });
+    }
+  }, [providerBlockNumber, lastBlock]);
 
   useEffect(() => {
     if (!chainId) return undefined;
@@ -69,8 +85,8 @@ export const EvmApplicationUpdater = () => {
 
   useEffect(() => {
     if (!debouncedState.chainId || !debouncedState?.blockNumber) return;
-    dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState?.blockNumber }));
-  }, [dispatch, debouncedState?.blockNumber, debouncedState.chainId]);
+    updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState?.blockNumber });
+  }, [debouncedState?.blockNumber, debouncedState.chainId]);
 
   return null;
 };
@@ -88,6 +104,7 @@ const updaterMapping: { [chainId in ChainId]: () => null } = {
   [ChainId.NEAR_TESTNET]: NearApplicationUpdater,
   [ChainId.COSTON2]: EvmApplicationUpdater,
   [ChainId.EVMOS_TESTNET]: EvmApplicationUpdater,
+  [ChainId.EVMOS_MAINNET]: EvmApplicationUpdater,
   //TODO: remove this once we have proper implementation
   [ChainId.ETHEREUM]: EvmApplicationUpdater,
   [ChainId.POLYGON]: EvmApplicationUpdater,

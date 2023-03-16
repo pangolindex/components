@@ -33,7 +33,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const PendingContent = <Loader size={100} />;
+  const PendingContent = <Loader size={100} label={t('sarStake.staking')} />;
 
   const token0 = tokens[0];
   const token1 = tokens[1];
@@ -83,9 +83,9 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
 
   const confirmContent = (
     <ContentWrapper>
-      <Box display="flex" justifyContent="space-between" width="100%">
+      <Box display="flex" justifyContent="space-between" width="100%" alignItems="center">
         <Text fontSize={type === SpaceType.card ? '20px' : '28px'} fontWeight={500} color="text1">
-          {amount ? amount?.toSignificant(6) : 0}PGL
+          {amount ? amount?.toSignificant(6) : 0} PGL
         </Text>
         <DoubleCurrencyLogo size={24} currency0={token0} currency1={token1} />
       </Box>
@@ -108,11 +108,9 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
           share of the rewards you’ll get.
         </Text>
       </Box>
-      <Box alignSelf="flex-end">
-        <Button variant="primary" onClick={onStake}>
-          Stake
-        </Button>
-      </Box>
+      <Button variant="primary" onClick={onStake}>
+        Stake
+      </Button>
     </ContentWrapper>
   );
 

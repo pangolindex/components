@@ -1,13 +1,16 @@
 import { CAVAX, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
+import { useTranslation } from 'react-i18next';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
-import { useAllTokens, useToken } from 'src/hooks/Tokens';
+import { useTokenHook } from 'src/hooks/tokens';
+import { useAllTokens } from 'src/hooks/useAllTokens';
 import usePrevious from 'src/hooks/usePrevious';
 import { useSelectedListInfo } from 'src/state/plists/hooks';
+import { useAddUserToken } from 'src/state/puser/hooks';
 import { filterTokenOrChain, isAddress } from 'src/utils';
 import { Box, Text, TextInput } from '../../';
 import { useTokenComparator } from '../SearchModal/sorting';
@@ -36,12 +39,16 @@ const currencyKey = (columnIndex: number, rowIndex: number, data: Currency[], ch
 
 const SelectTokenDrawer: React.FC<Props> = (props) => {
   const { isOpen, onClose, onCurrencySelect, otherSelectedCurrency, selectedCurrency } = props;
+  const chainId = useChainId();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isTokenListOpen, setIsTokenListOpen] = useState<boolean>(false);
   const [invertSearchOrder] = useState<boolean>(false);
-
+  const { t } = useTranslation();
+  const useToken = useTokenHook[chainId];
   const inputRef = useRef<HTMLInputElement>(null);
   const lastOpen = usePrevious(isOpen);
+
+  const addToken = useAddUserToken();
 
   useEffect(() => {
     if (isOpen && !lastOpen) {
@@ -61,8 +68,6 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
 
   const allTokens = useAllTokens();
   const selectedListInfo = useSelectedListInfo();
-
-  const chainId = useChainId();
 
   const isAddressSearch = isAddress(searchQuery);
   const searchToken = useToken(searchQuery);
@@ -108,6 +113,10 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   const onSelect = useCallback(
     (currency) => {
       onCurrencySelect(currency);
+      // workaround for now, if it's a custom token we will force add it
+      if (currency && !allTokens[currency?.address || '']) {
+        addToken(currency);
+      }
       onClose();
     },
     [onCurrencySelect, onClose],
@@ -144,11 +153,11 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   );
 
   return (
-    <Drawer title="Select a token" isOpen={isOpen} onClose={onClose}>
+    <Drawer title={t('currencyInputPanel.selectToken')} isOpen={isOpen} onClose={onClose}>
       {/* Render Search Token Input */}
       <Box padding="0px 10px">
         <TextInput
-          placeholder="Search"
+          placeholder={t('common.search')}
           onChange={(value: any) => {
             setSearchQuery(value as string);
           }}
@@ -163,33 +172,41 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
       </Box>
       {/* Render All Selected Tokens */}
       <CurrencyList>
-        <AutoSizer>
-          {({ height, width }) => (
-            <FixedSizeGrid
-              height={height}
-              columnWidth={(width - 10) / 4}
-              rowHeight={110}
-              columnCount={4}
-              rowCount={Math.ceil(currencies.length / 4)}
-              width={width}
-              itemData={currencies}
-              itemKey={({ columnIndex, rowIndex, data }) => currencyKey(columnIndex, rowIndex, data, chainId)}
-              style={{ overflowX: 'hidden' }}
-            >
-              {Item}
-            </FixedSizeGrid>
-          )}
-        </AutoSizer>
+        {currencies.length > 0 ? (
+          <AutoSizer>
+            {({ height, width }) => (
+              <FixedSizeGrid
+                height={height}
+                columnWidth={(width - 10) / 4}
+                rowHeight={110}
+                columnCount={4}
+                rowCount={Math.ceil(currencies.length / 4)}
+                width={width}
+                itemData={currencies}
+                itemKey={({ columnIndex, rowIndex, data }) => currencyKey(columnIndex, rowIndex, data, chainId)}
+                style={{ overflowX: 'hidden' }}
+              >
+                {Item}
+              </FixedSizeGrid>
+            )}
+          </AutoSizer>
+        ) : (
+          <Box mt="10px" height="100%">
+            <Text color="text1" textAlign="center">
+              {t('common.notFound')}
+            </Text>
+          </Box>
+        )}
       </CurrencyList>
       {/* Render Selected Token List Info */}
       <ManageList onClick={() => setIsTokenListOpen(true)}>
         {selectedListInfo.multipleSelected ? (
           <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
             <Text fontSize={14} color="swapWidget.primary">
-              {selectedListInfo.selectedCount} lists selected
+              {selectedListInfo.selectedCount} {t('searchModal.listsSelected')}
             </Text>
             <Text fontSize={12} color="swapWidget.primary">
-              Change
+              {t('searchModal.change')}
             </Text>
           </Box>
         ) : (
@@ -205,7 +222,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
               </Text>
             </Box>
             <Text fontSize={12} color="swapWidget.primary">
-              Change
+              {t('searchModal.change')}
             </Text>
           </Box>
         )}

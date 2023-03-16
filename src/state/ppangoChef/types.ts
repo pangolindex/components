@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { Price } from '@pangolindex/sdk';
+import { CurrencyAmount, Price, TokenAmount } from '@pangolindex/sdk';
 import { MinichefStakingInfo } from '../pstake/types';
 
 export enum PoolType {
@@ -13,14 +13,8 @@ export interface ValueVariables {
   sumOfEntryTimes: BigNumber;
 }
 
-export interface RewardSummations {
-  idealPosition: BigNumber;
-  rewardPerValue: BigNumber;
-}
-
 export interface UserInfo {
   valueVariables: ValueVariables;
-  rewardSummations: RewardSummations;
   previousValues: BigNumber;
   lockCount: number | undefined;
 }
@@ -31,7 +25,6 @@ export interface Pool {
   rewarder: string;
   rewardPair: string;
   valueVariables: ValueVariables;
-  rewardSummations: RewardSummations;
 }
 
 export interface PangoChefInfo extends MinichefStakingInfo {
@@ -42,4 +35,17 @@ export interface PangoChefInfo extends MinichefStakingInfo {
   poolType: PoolType;
   poolRewardRate: BigNumber;
   lockCount: number | undefined;
+}
+
+export interface WithdrawData {
+  version?: number;
+  poolId: string | undefined;
+  stakedAmount: TokenAmount;
+  stakingRewardAddress?: string;
+}
+
+export interface PangoChefCompoundData {
+  poolId: string | undefined;
+  isPNGPool: boolean;
+  amountToAdd: CurrencyAmount | TokenAmount;
 }

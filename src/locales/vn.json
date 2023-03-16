@@ -62,6 +62,7 @@
     "unclaimedReward": " Phần thưởng chưa được nhận{{ symbol }}",
     "claim": "nhận",
     "claimReward": "{{ symbol }} Nhận phần thưởng",
+    "claimRewards": "Yêu cầu phần thưởng",
     "liquidityRemainsPool": "Nếu bạn yêu cầu khoản thanh khoản của mình mà không rút tiền, tiền của bạn sẽ vẫn ở trong bể khai thác.",
     "withdrawingLiquidity": "Rút {{ amount }} {{ symbol }}",
     "claimingReward": "Đang nhận phần thưởng {{ amount }} {{ symbol }}",
@@ -99,7 +100,8 @@
     "extraReward": "Phần thưởng bổ sung",
     "poolRewards": "Phần thưởng hồ bơi",
     "rewardsIn": "Phần thưởng trong",
-    "removeWarning": "Bạn đang xóa thanh khoản khỏi nhóm này. Hành động này sẽ trả lại cho bạn các mã thông báo của bạn. Ngoài ra, bạn có thể chọn đặt cược mã thông báo của mình vào trang trại để kiếm phần thưởng."
+    "removeWarning": "Bạn đang xóa thanh khoản khỏi nhóm này. Hành động này sẽ trả lại cho bạn các mã thông báo của bạn. Ngoài ra, bạn có thể chọn đặt cược mã thông báo của mình vào trang trại để kiếm phần thưởng.",
+    "rewardClaimed" : "Your rewards claimed"
   },
   "menu": {
     "code": "Mã",
@@ -170,7 +172,8 @@
     "removeList": "Loại bỏ danh sách",
     "selected": "Đã chọn",
     "select": "Chọn",
-    "manageTokenLists": "Quản lý danh sách token"
+    "manageTokenLists": "Quản lý danh sách token",
+    "listsSelected" :"lists selected"
   },
   "settings": {
     "areYouSure": "Bạn chắc chắn chứ?",
@@ -185,7 +188,9 @@
     "expertModeHelper": "Bỏ qua các phương thức xác nhận và cho phép các giao dịch có độ trượt cao. Sẽ sử dụng với nguy cơ của riêng bạn .",
     "toggleDarkMode": "Chuyển đổi chế độ ban đêm",
     "slippage": "Slippage",
-    "percent": "Percent"
+    "percent": "Percent",
+    "timeLimit": "Time Limit",
+    "seconds": "Seconds"
   },
   "swap": {
     "priceImpact": "Tác động giá",
@@ -207,7 +212,11 @@
     "inputEstimated": "Đầu vào được ước tính. Bạn sẽ bán được nhiều nhất <strong>{{amount}} {{currencySymbol}}</strong> hoặc giao dịch sẽ hoàn lại.",
     "outputSentTo": "Đầu ra sẽ được gửi tới ",
     "priceImpactMinPrompt": "Sự hoán đổi này có tác động về giá ít nhất là  {{ priceImpact }}%. Vui lòng gõ từ \"confirm\" để tiếp tục thao tác hoán đổi này.",
-    "priceImpactHighPrompt": "Sự hoán đổi này có tác động về giá ít nhất là  {{ priceImpact }}%. Vui lòng xác nhận rằng bạn muốn tiếp tục thao tác hoán đổi này."
+    "priceImpactHighPrompt": "Sự hoán đổi này có tác động về giá ít nhất là  {{ priceImpact }}%. Vui lòng xác nhận rằng bạn muốn tiếp tục thao tác hoán đổi này.",
+    "realExecutionPrice": "Real Execution Price",
+    "gasPrice": "Gas Price",
+    "gelatoFee": "Gelato Fee",
+    "totalFee": "Total Fee"
   },
   "toggle": {
     "on": "Mở",
@@ -384,12 +393,26 @@
     "yourFarms": "trang trại của bạn",
     "yourPools": "Hồ bơi của bạn",
     "noFarms": "Không tìm thấy trang trại nào.",
+    "visitWebsite": "Visit Website",
     "successWithdraw": "Thanh khoản của bạn đã bị xóa khỏi trang trại và đã nhận được phần thưởng tích lũy!",
     "importDescription1": "Với chức năng nhập, bạn có thể tìm kiếm các nhóm không xuất hiện trong phần 'Bể bơi của bạn'.",
     "importDescription2": "Chỉ cần chọn các đồng tiền cơ bản trong nhóm của bạn.",
     "createPairDescription": "Với chức năng tạo, bạn có thể tạo một cặp mới. Chỉ cần tìm kiếm các đồng tiền mà bạn muốn tạo một cặp và hệ thống sẽ tìm thấy đồng tiền nếu tồn tại trên Pangolin hoặc tạo một đồng mới nếu không có.",
     "addLiquidityDescription": "Với chức năng thêm thanh khoản, bạn thêm thanh khoản cho một cặp. Chỉ cần tìm kiếm những đồng tiền mà bạn muốn thêm thanh khoản và hệ thống sẽ tìm đồng tiền nếu nó tồn tại ở Pangolin hoặc tạo một đồng mới nếu nó không có.",
-    "createStorageContract": "Trên Hedera, tất cả các hợp đồng thông minh cần phải trả phí để sử dụng không gian trên sổ cái. Đây là phí lưu trữ và phí gia hạn tự động. Bạn sẽ cần tạo hợp đồng Lưu trữ để trang trại. Kho lưu trữ sẽ miễn phí, nhưng trong tương lai bạn sẽ phải trả phí gia hạn tự động. Đây là khoảng 2 xu. Vì vậy, chúng tôi khuyên bạn nên giữ $1 trên HBAR trong ví của mình mọi lúc để đảm bảo bạn không gặp phải bất kỳ sự cố nào."
+    "createStorageContract": "Trên Hedera, tất cả các hợp đồng thông minh cần phải trả phí để sử dụng không gian trên sổ cái. Đây là phí lưu trữ và phí gia hạn tự động. Bạn sẽ cần tạo hợp đồng Lưu trữ để trang trại. Kho lưu trữ sẽ miễn phí, nhưng trong tương lai bạn sẽ phải trả phí gia hạn tự động. Đây là khoảng 2 xu. Vì vậy, chúng tôi khuyên bạn nên giữ $1 trên HBAR trong ví của mình mọi lúc để đảm bảo bạn không gặp phải bất kỳ sự cố nào.",
+    "supplying": "Supplying",
+    "associating": "Associating",
+    "associate": "Associate",
+    "liquidityAdded": "Liquidity Added",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
+    "yourAPR": "Your APR",
+    "swapFeeAPR": "Swap fee APR",
+    "rewardAPR": "Reward APR",
+    "totalAPR": "Total APR",
+    "averageAPR": "Average APR",
+    "yourTVL": "Your TVL",
+    "yourAverageAPR": "Your Average APR"
   },
   "poolFinder": {
     "connectToFind": "Kêt nối với một ví để nhìn thấy bể",
@@ -417,7 +440,9 @@
     "approved": "Đã chấp nhận",
     "remove": "Loại bỏ",
     "output": "Đầu ra",
-    "amount": "Số lượng"
+    "amount": "Số lượng",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity"
   },
   "swapPage": {
     "addSend": "+ Thêm lần gửi (tùy chọn) ",
@@ -472,7 +497,15 @@
     "executionPrice": "Giá thực hiện",
     "seeMore": "Xem thêm",
     "seeLess": "Thấy ít",
-    "orderPlaced": "{{ orderType }} order placed"
+    "orderPlaced": "{{ orderType }} order placed",
+    "selectToken" : "Select Token",
+    "notFoundBalances" : "Not found balances",
+    "notFoundToken" : "Not found tokens on this chain",
+    "sendingTo" : "Sending to",
+    "invalidAddress": "Invalid Address",
+    "addRecipient": "Add Recipient",
+    "removeRecipient": "Remove Recipient",
+    "addTokenWatchlist": "Add tokens to watchlist using"
   },
   "buyPage": {
     "buyAvaxInfo": "Mua AVAX bằng fiat từ đối tác Wyre của chúng tôi.",
@@ -531,7 +564,8 @@
     "selectToken": "Chọn một token",
     "enterRecipient": "Nhập một người nhận",
     "invalidRecipient": "Người nhận không hợp lệ",
-    "insufficientBalance": "Insufficient {{ symbol }} balance"
+    "insufficientBalance": "Insufficient {{ symbol }} balance",
+    "selectChain": "Select a Chain"
   },
   "mintHooks": {
     "connectWallet": "Kết nối ví",
@@ -604,7 +638,8 @@
     "earned_customizePools": "Customize Pools",
     "followed_address": "Address",
     "followed_worth": "Worth",
-    "followed_interact": "Interact"
+    "followed_interact": "Interact",
+    "news": "News"
   },
   "stakePage": {
     "totalStaked": "Total Staked",
@@ -612,7 +647,19 @@
     "seeDetails": "SEE DETAILS",
     "stake": "STAKE",
     "earn": "Earn {{symbol}}",
-    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!"
+    "stakeAndEarn": "Stake Your {{ pngSymbol }} and Earn Rewards!",
+    "total": "Tổng số (đặt cược + phần thưởng)",
+    "yourWeeklyRate": "Your Weekly Rate",
+    "weeklyPoolRate": "Weekly Pool Rate",
+    "rewardStaking": "Reward Staking",
+    "staked": "Staked",
+    "stakeSuccessMsg": "Your rewards have been staked.",
+    "stakeYourReward": "Stake your rewards",
+    "stakePng" : "Stake your PNG token to share platform fees",
+    "unstaking": "Unstaking",
+    "unstaked": "Unstaked",
+    "unstakeYourReward": "You can unstake your rewards.",
+    "stakeReward": "Stake Reward"
   },
   "error": {
     "missCurrencyAmounts": "Thiếu số tiền",
@@ -686,7 +733,8 @@
     "pending": "Tuyên bố",
     "transactionSummary": "Phần thưởng vị trí đã nhận",
     "aprAfter": "APR sau khi yêu cầu bồi thường",
-    "noRewards": "Không có phần thưởng để yêu cầu"
+    "noRewards": "Không có phần thưởng để yêu cầu",
+    "claimWarning": "Due to the nature of SAR staking system claiming your rewards will drop your APR to 0. You can instead compound your rewards without losing your APR."
   },
   "sarPortfolio": {
     "noPositions": "Bạn không có bất kỳ PANGUARDIAN NFT nào.\nHÃY GIÚP BẠN CÓ ĐƯỢC MỘT",
@@ -700,7 +748,7 @@
   },
   "pangoChef": {
     "claimWarning1": "Khi bạn yêu cầu mà không rút tiền, thanh khoản của bạn vẫn còn trong nhóm khai thác.",
-    "claimWarning2": "Yêu cầu phần thưởng của bạn sẽ giảm APR của bạn xuống 0. Thay vào đó, bạn có thể chọn kết hợp.",
+    "claimWarning2": "Yêu cầu phần thưởng của bạn sẽ yêu cầu tất cả các mã thông báo chưa thanh toán, bao gồm cả phần thưởng Super Farm và khởi động lại APR của bạn thành 0%. Thay vào đó, bạn có thể chọn ghép.",
     "compoundWarning": "Tích lũy phần thưởng của bạn cho trang trại {{ token0 }} - {{ token1 }} sẽ nhận được phần thưởng của bạn vào trang trại {{ stakeToken0 }} - {{ stakeToken1 }}. Bạn cần thêm giá trị tương đương của mã thông báo {{ compoundToken }} vào phần thưởng {{ png }} đã tích lũy của mình.",
     "compoundAmountWarning": "Bạn cần thêm {{amount}} {{symbol}} để kết hợp. Hãy lưu ý rằng Kết hợp có thể làm giảm một chút APR của bạn.",
     "compoundAmountWarning2": "Hãy cẩn thận rằng bạn sẽ khóa nhóm {{ token0 }} {{ token1 }} của mình cho đến khi bạn nhận được phần thưởng của nhóm này.",
@@ -709,7 +757,28 @@
     "compoundTransactionSummary": "Trang trại tổng hợp.",
     "removeWarning": "Loại bỏ bất kỳ số tiền nào khỏi trang trại sẽ nhận được APR của bạn thành 0. Thay vào đó, bạn có thể gộp phần thưởng của mình mà không bị mất APR.",
     "lockingPoolZeroWarning": "Bạn không thể xóa thanh khoản của mình hoặc yêu cầu phần thưởng của mình từ trang trại này. Để làm điều này, trước tiên bạn cần xác nhận quyền sở hữu hoặc loại bỏ cổ phần của bạn khỏi các trang trại này: ",
-    "decreaseWarning": "Apr của bạn sẽ giảm vì phần phức hợp mới bắt đầu bằng apr 0 và trung bình sẽ được lấy giữa phần cũ và mới."
+    "decreaseWarning": "Apr của bạn sẽ giảm vì phần phức hợp mới bắt đầu bằng apr 0 và trung bình sẽ được lấy giữa phần cũ và mới.",
+    "createStorageContract": "Create Storage Contract"
+  },
+  "concentratedLiquidity": {
+    "menuTypes": {
+      "allPositions": "All Positions",
+      "openPositions": "Open Positions",
+      "closedPositions": "Closed Positions"
+    },
+    "sortTypes": {
+      "liquidity": "Liquidity",
+      "apr": "APR"
+    },
+    "sidebar": {
+      "title": "Pools V3",
+      "seeMore": "Want to see classic pools",
+      "goToFarm": "Go to farm page"
+    },
+    "positionList": {
+      "searchContent": "Try searching for coin names…",
+      "poolNotExist": "You don’t have any open or closed positions to show."
+    }
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -718,10 +787,16 @@
     "activeTransfers": "Active Transfers ({{ number }})",
     "historicalTransfers": "Historical Transfers ({{ number }})",
     "poweredBy": "Powered by",
+    "selectCurrency": "Select a Currency",
+    "search": "Search",
+    "tableOfContent": "Table of Content",
+    "haveQuestion" :"Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
       "swap": "Swap",
+      "switchChain": "Switch Chain",
+      "selectChain": "Please Select Chain",
       "transactionSucceeded": "Transaction Succeeded.",
       "loader": {
         "labels": {
@@ -742,7 +817,8 @@
       "tooltip": "The final amount might change due to slippage but will not fall below {{ amount }} {{ currency }}",
       "max": "MAX",
       "recipient": "Recipient",
-      "walletAddress": "Wallet Address"
+      "walletAddress": "Wallet Address",
+      "invalidAddress": "Invalid Address"
     },
     "bridgeRoute": {
       "selected": "Selected",
@@ -771,5 +847,32 @@
   },
   "dropdown": {
     "select": "Select"
+  },
+  "portfolio": {
+    "portfolioAllChain": "Portfolio Value in All Chains",
+    "connectToseePortfolio": "Connect a wallet to see your Portfolio",
+    "totalAmountInvested": "Total Amount Invested",
+    "balanceNotFound": "Balances not found",
+    "hideYourBalance": "Hide Your Balance",
+    "showYourBalance": "Show Your Balance"
+  },
+  "buy":{
+    "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
+    "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
+  },
+  "common": {
+    "loading": "Loading",
+    "search": "Search",
+    "required": "Required",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "noDataAvailable": "No data available!",
+    "sortBy": "Sort By",
+    "max": "Max",
+    "min": "Min",
+    "open": "Open",
+    "closed": "Closed",
+    "notFound": "Không tìm thấy"
   }
 }
