@@ -9,7 +9,6 @@ import pburn from './pburn/reducer';
 import plists from './plists/reducer';
 import pmint from './pmint/reducer';
 import pmulticall from './pmulticall/reducer';
-import pstake from './pstake/reducer';
 import pswap from './pswap/reducer';
 import ptransactions from './ptransactions/reducer';
 import puser from './puser/reducer';
@@ -23,7 +22,6 @@ export const pangolinReducers = {
   plists,
   pmulticall,
   puser,
-  pstake,
   pmint,
   pburn,
   pbridge,

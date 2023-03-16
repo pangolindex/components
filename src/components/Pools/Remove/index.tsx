@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Text, ToggleButtons } from 'src/components';
 import { useChainId } from 'src/hooks';
 import { useDerivedBurnInfo } from 'src/state/pburn/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RemoveFarm from '../RemoveFarm';
 import RemoveLiquidity from '../RemoveLiquidity';
@@ -15,7 +15,7 @@ enum REMOVE_TYPE {
 }
 
 interface WithdrawProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
   onClose: () => void;
   redirectToCompound?: () => void;

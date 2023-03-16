@@ -7,11 +7,11 @@ import { ApplicationModal } from 'src/state/papplication/actions';
 import { useModalOpen, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
 import { resetBurnState } from 'src/state/pburn/actions';
 import { resetMintState } from 'src/state/pmint/actions';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import DetailView from './DetailView';
 
 export interface DetailModalProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
 }
 

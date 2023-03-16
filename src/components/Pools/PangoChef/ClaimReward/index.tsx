@@ -11,7 +11,7 @@ import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/ho
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePangoChefClaimRewardCallbackHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useGetRewardTokens } from 'src/state/pstake/hooks';
+import { useGetRewardTokens } from 'src/state/pstake/hooks/common';
 import { Buttons, ClaimWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';
 
 export interface ClaimProps {
@@ -35,7 +35,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
   const [claimError, setClaimError] = useState<string | undefined>();
 
   const pangoChefContract = usePangoChefContract();
-  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo?.rewardTokensAddress);
+  const rewardTokens = useGetRewardTokens(stakingInfo);
   const mixpanel = useMixpanel();
 
   const notAssociateTokens = useGetHederaTokenNotAssociated(rewardTokens || []);
