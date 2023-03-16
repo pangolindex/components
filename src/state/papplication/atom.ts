@@ -51,9 +51,13 @@ export function useApplicationState() {
   const updateBlockNumber = useCallback(
     ({ chainId, blockNumber }: { chainId: number; blockNumber: number }) => {
       if (typeof blockNumbers?.[chainId] !== 'number') {
-        setBlockNumbers({ [chainId]: blockNumber });
+        setBlockNumbers({
+          ...blockNumbers,
+          [chainId]: blockNumber,
+        });
       } else {
         setBlockNumbers({
+          ...blockNumbers,
           [chainId]: Math.max(blockNumber, blockNumbers?.[chainId]),
         });
       }

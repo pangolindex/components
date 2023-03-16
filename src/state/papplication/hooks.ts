@@ -54,9 +54,8 @@ export function useRemovePopup(): (key: string) => void {
 
 // get the list of active popups
 export function useActivePopups(): PopupList {
-  const { popupList } = useApplicationState();
+  const { popupList: list } = useApplicationState();
 
-  const list = popupList;
   return useMemo(() => list.filter((item) => item.show), [list]);
 }
 
