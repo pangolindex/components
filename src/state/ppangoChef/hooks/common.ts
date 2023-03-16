@@ -41,7 +41,7 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
       : pngPrice.raw
           .multiply(userRewardRate.mul(86400).mul(365).mul(100).toString())
           .divide(pairBalance.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals))))
-          .toFixed(0);
+          .toFixed(2);
   }, [stakingInfo, pair, png, wavax]);
 }
 
