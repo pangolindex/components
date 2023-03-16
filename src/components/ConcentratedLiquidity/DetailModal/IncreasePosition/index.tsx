@@ -16,7 +16,7 @@ import {
 } from './styles';
 import { IncreasePositionProps } from './types';
 
-const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
+const IncreasePosition: React.FC<IncreasePositionProps> = () => {
   // ------------------------------ MOCK DATA ----------------------------------
   const currency0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
   const currency1 = new Token(
@@ -29,7 +29,6 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
   // ---------------------------------------------------------------------------
   const { t } = useTranslation();
   const { account } = usePangolinWeb3();
-  const {} = props;
   const toggleWalletModal = useWalletModalToggle();
 
   const renderButton = () => {

@@ -1,8 +1,7 @@
 import React from 'react';
 import { PriceGraphProps } from './types';
 
-const PriceGraph: React.FC<PriceGraphProps> = (props) => {
-  const {} = props;
+const PriceGraph: React.FC<PriceGraphProps> = () => {
   return <div>Graph</div>;
 };
 

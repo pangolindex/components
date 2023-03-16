@@ -7,8 +7,7 @@ import PriceCard from './PriceCard';
 import { Information, NFT, PriceCards, PriceDetailAndNft, StateContainer, Wrapper } from './styles';
 import { DetailTabProps } from './types';
 
-const DetailTab: React.FC<DetailTabProps> = (props) => {
-  const {} = props;
+const DetailTab: React.FC<DetailTabProps> = () => {
   const { t } = useTranslation();
   // ------------------------------ MOCK DATA ----------------------------------
   const currency0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');

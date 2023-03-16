@@ -5,8 +5,7 @@ import Remove from './Remove';
 import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styles';
 import { EarnWidgetProps } from './types';
 
-const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
-  const {} = props;
+const EarnWidget: React.FC<EarnWidgetProps> = () => {
   const { t } = useTranslation();
   const [hash, setHash] = useState<string | undefined>();
   const [attempting, setAttempting] = useState(false);
