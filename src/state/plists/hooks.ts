@@ -180,8 +180,6 @@ export function useIsSelectedAEBToken(): boolean {
 
   const { swapState: state } = useSwapState();
 
-  // const state = useSelector<AppState['pswap']>((state) => state.pswap);
-
   const selectedOutputToken = state[chainId]?.OUTPUT;
 
   return AEB_TOKENS.some((tokenAddress) => tokenAddress === selectedOutputToken?.currencyId);
