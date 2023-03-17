@@ -19,7 +19,7 @@ import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/state/psarst
 import { useSarStakeInfo } from 'src/state/psarstake/hooks/evm';
 import { useTokenBalanceHook } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../SarManageWidget/ConfirmDrawer/styled';
 import { Buttons, Root, Wrapper } from './styleds';
@@ -89,7 +89,7 @@ export default function SarManageWidget() {
     }
   };
 
-  const isHedera = hederaFn.isHederaChain(chainId);
+  const isHedera = Hedera.isHederaChain(chainId);
   const sarNftContract = useHederaSarNFTContract();
 
   const {

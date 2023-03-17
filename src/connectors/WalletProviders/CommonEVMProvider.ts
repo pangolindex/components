@@ -1,7 +1,9 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { ChainId } from '@pangolindex/sdk';
 import React from 'react';
 
-export const CommonEVMProvider = (provider: Web3Provider) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const CommonEVMProvider = (provider: Web3Provider, _chainId: ChainId) => {
   if (provider) {
     const getTransactionReceipt = async (hash: string) => {
       if (provider.send) {

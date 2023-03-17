@@ -10,9 +10,9 @@ import { Field } from 'src/state/pswap/actions';
 import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useIsApprovingInfinite } from 'src/state/puser/hooks';
 import { fetchHederaPGLToken } from 'src/state/pwallet/hooks/hedera';
-import { hederaFn } from 'src/utils/hedera';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { usePangolinWeb3 } from '../index';
+import { useHederaFn } from '../useConnector';
 import { ApprovalState } from './constant';
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns
@@ -25,10 +25,12 @@ export function useHederaApproveCallback(
 
   const amountToken = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined;
 
+  const hederaFn = useHederaFn();
+
   //Here for Hedera chain we need to pass fungibal token for get TokenAllowance so need to convert
   const { isLoading, data } = useQuery(
     ['get-pgl-token', amountToken?.address],
-    fetchHederaPGLToken(amountToken, chainId),
+    fetchHederaPGLToken(amountToken, chainId, hederaFn),
     {
       enabled: amountToken?.symbol === 'PGL',
     },

@@ -4,8 +4,8 @@ import { useMemo } from 'react';
 import { INITIAL_ALLOWED_SLIPPAGE } from 'src/constants';
 import { BIPS_BASE } from 'src/constants/swap';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { hederaFn } from 'src/utils/hedera';
 import { useChainId, usePangolinWeb3 } from '../index';
+import { useHederaFn } from '../useConnector';
 import { Version } from '../useToggledVersion';
 import useTransactionDeadline from '../useTransactionDeadline';
 import { SwapCallbackState } from './constant';
@@ -21,6 +21,8 @@ export function useHederaSwapCallback(
   const chainId = useChainId();
 
   let deadline = useTransactionDeadline();
+
+  const hederaFn = useHederaFn();
 
   const currentTime = BigNumber.from(new Date().getTime());
   if (deadline && deadline < currentTime.add(10)) {

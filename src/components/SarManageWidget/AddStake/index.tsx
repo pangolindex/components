@@ -20,7 +20,7 @@ import { useSarStakeInfo } from 'src/state/psarstake/hooks/evm';
 import { Position } from 'src/state/psarstake/types';
 import { useTokenBalanceHook } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import Title from '../Title';
@@ -109,7 +109,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
       approval === ApprovalState.PENDING ||
       (approvalSubmitted && approval === ApprovalState.APPROVED));
 
-  const isHedera = hederaFn.isHederaChain(chainId);
+  const isHedera = Hedera.isHederaChain(chainId);
   const sarNftContract = useHederaSarNFTContract();
 
   const {

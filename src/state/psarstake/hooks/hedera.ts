@@ -7,14 +7,16 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
+import { useHederaFn } from 'src/hooks/useConnector';
 import { useHederaSarNFTContract, useSarStakingContract } from 'src/hooks/useContract';
 import { existSarContract } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
 import { useSingleCallResult, useSingleContractMultipleData } from '../../pmulticall/hooks';
 import { Position, URI } from '../types';
 import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from '../utils';
 
 export function useHederaExchangeRate() {
+  const hederaFn = useHederaFn();
+
   return useQuery(
     'get-hedera-exchange-rate',
     async () => {
@@ -39,6 +41,8 @@ function useHederaSarRent(positionId: string | undefined) {
 
   const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
   const blockTimestamp = useGetBlockTimestamp();
+
+  const hederaFn = useHederaFn();
 
   const positionState = useSingleCallResult(
     positionId ? sarStakingContract : undefined,
@@ -117,6 +121,8 @@ export function useDerivativeHederaSarStake(positionId?: BigNumber) {
   const tinyRentAddMore = useHederaSarRent(positionId?.toString());
 
   const { hederaAssociated: isAssociated } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
+
+  const hederaFn = useHederaFn();
 
   const queryClient = useQueryClient();
 
@@ -245,6 +251,8 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
 
   const tinyRent = useHederaSarRent(position?.id?.toHexString());
 
+  const hederaFn = useHederaFn();
+
   const sarNftContract = useHederaSarNFTContract();
   const queryClient = useQueryClient();
 
@@ -336,6 +344,8 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
   const rent = useHederaSarRent(position?.id?.toHexString());
 
   const sarNftContract = useHederaSarNFTContract();
+  const hederaFn = useHederaFn();
+
   const queryClient = useQueryClient();
   const onCompound = async () => {
     if (!sarStakingContract || !position || !account || !rent) {
@@ -404,6 +414,8 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
   const rent = useHederaSarRent(position?.id?.toHexString());
 
   const sarNftContract = useHederaSarNFTContract();
+  const hederaFn = useHederaFn();
+
   const queryClient = useQueryClient();
 
   const onClaim = async () => {
@@ -460,6 +472,7 @@ export function useHederaSarPositions() {
 
   const sarStakingContract = useSarStakingContract();
   const sarNFTcontract = useHederaSarNFTContract();
+  const hederaFn = useHederaFn();
 
   const balanceState = useSingleCallResult(sarNFTcontract, 'balanceOf', [account ?? undefined]);
 

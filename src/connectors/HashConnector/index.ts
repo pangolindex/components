@@ -16,8 +16,8 @@ import { TransactionResponse } from 'src/utils/hedera';
 export const hashconnectEvent = new EventEmitter();
 
 export interface HashConfigType {
-  networkId: string;
-  chainId: number;
+  networkId: 'testnet' | 'mainnet' | 'previewnet';
+  chainId: ChainId.HEDERA_MAINNET | ChainId.HEDERA_TESTNET;
   contractId: string;
 }
 
@@ -35,10 +35,10 @@ const APP_METADATA: HashConnectTypes.AppMetadata = {
 
 export class HashConnector extends AbstractConnector {
   private provider!: JsonRpcProvider;
-  private chainId!: number;
+  private chainId!: ChainId.HEDERA_MAINNET | ChainId.HEDERA_TESTNET;
   private normalizeChainId!: boolean;
   private normalizeAccount!: boolean;
-  private network!: string; //"testnet" | "mainnet" | "previewnet"
+  private network!: 'testnet' | 'mainnet' | 'previewnet';
   private instance!: HashConnect;
   private topic: string;
   private pairingString: string;

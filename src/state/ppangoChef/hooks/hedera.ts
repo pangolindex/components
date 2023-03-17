@@ -15,6 +15,7 @@ import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { useTokens } from 'src/hooks/tokens/evm';
+import { useHederaFn } from 'src/hooks/useConnector';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
@@ -22,7 +23,7 @@ import { getExtraTokensWeeklyRewardRate } from 'src/state/pstake/utils';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks/hedera';
 import { decimalToFraction } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import {
   useMultipleContractSingleData,
   useSingleCallResult,
@@ -826,6 +827,8 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
   const pangoChefContract = usePangoChefContract();
   const addTransaction = useTransactionAdder();
 
+  const hederaFn = useHederaFn();
+
   // get on chain data
   const { data: userStorageAddress, refetch } = useQuery(
     ['hedera-pangochef-user-storage', account],
@@ -837,7 +840,7 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
         return undefined;
       }
     },
-    { enabled: Boolean(pangoChefContract) && Boolean(account) && hederaFn.isHederaChain(chainId) },
+    { enabled: Boolean(pangoChefContract) && Boolean(account) && Hedera.isHederaChain(chainId) },
   );
 
   // we need on chain fallback
@@ -876,7 +879,7 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
     }
   }, [account, chainId, addTransaction]);
 
-  if (!hederaFn.isHederaChain(chainId)) {
+  if (!Hedera.isHederaChain(chainId)) {
     return [
       false,
       () => {
@@ -902,6 +905,8 @@ export function useHederaPangoChefStakeCallback(
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
+
+  const hederaFn = useHederaFn();
 
   return useMemo(() => {
     if (!poolId || !account || !chainId || !amount) {
@@ -958,6 +963,9 @@ export function useHederaPangoChefClaimRewardCallback(
   const { t } = useTranslation();
 
   const addTransaction = useTransactionAdder();
+
+  const hederaFn = useHederaFn();
+
   const png = PNG[chainId];
   return useMemo(() => {
     if (!poolId || !account || !chainId || !poolType) {
@@ -1014,6 +1022,7 @@ export function useHederaPangoChefWithdrawCallback(withdrawData: WithdrawData): 
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
+  const hederaFn = useHederaFn();
   const { poolId, stakedAmount } = withdrawData;
   return useMemo(() => {
     if (!account || !chainId || !poolId || !stakedAmount) {
@@ -1068,6 +1077,7 @@ export function useHederaPangoChefCompoundCallback(compoundData: PangoChefCompou
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
+  const hederaFn = useHederaFn();
   const pangoChefContract = usePangoChefContract();
 
   const { poolId, isPNGPool, amountToAdd } = compoundData;

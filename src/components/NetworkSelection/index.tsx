@@ -7,11 +7,11 @@ import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
-import { hashConnect } from 'src/connectors';
+import { mainnetHashConnect } from 'src/connectors';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
 import { changeNetwork } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import ChainItem from './ChainItem';
 import { ChainsList, Frame, Inputs, Wrapper } from './styled';
 import { NETWORK_TYPE, NetworkProps } from './types';
@@ -56,10 +56,10 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
 
   const onChainClick = async (chain: Chain) => {
     try {
-      const isHedera = hederaFn.isHederaChain(chain?.chain_id as ChainId);
+      const isHedera = Hedera.isHederaChain(chain?.chain_id as ChainId);
 
       if (isHedera) {
-        await activate(hashConnect, undefined, true);
+        await activate(mainnetHashConnect, undefined, true);
 
         mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
           wallet_name: 'HashPack Wallet',

@@ -4,6 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner, TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import { hethers } from '@hashgraph/hethers';
 import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouter.sol/IPangolinRouter.json';
 import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
@@ -27,8 +28,8 @@ import {
 } from '@pangolindex/sdk';
 import { MetamaskError, ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
-import { hederaFn } from 'src/utils/hedera';
 import { TokenAddressMap } from '../state/plists/hooks';
+import { Hedera } from './hedera';
 import { wait } from './retry';
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -67,8 +68,8 @@ export const validateAddressMapping: { [chainId in ChainId]: (value: any) => str
   [ChainId.COSTON]: isAddress,
   [ChainId.SONGBIRD]: isAddress,
   [ChainId.FLARE_MAINNET]: isAddress,
-  [ChainId.HEDERA_TESTNET]: hederaFn.isAddressValid,
-  [ChainId.HEDERA_MAINNET]: hederaFn.isAddressValid,
+  [ChainId.HEDERA_TESTNET]: Hedera.isAddressValid,
+  [ChainId.HEDERA_MAINNET]: Hedera.isAddressValid,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
   [ChainId.COSTON2]: isAddress,
@@ -407,8 +408,8 @@ export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => stri
   [ChainId.COSTON]: shortenAddress,
   [ChainId.SONGBIRD]: shortenAddress,
   [ChainId.FLARE_MAINNET]: shortenAddress,
-  [ChainId.HEDERA_TESTNET]: hederaFn.hederaId,
-  [ChainId.HEDERA_MAINNET]: hederaFn.hederaId,
+  [ChainId.HEDERA_TESTNET]: shortenHederaAddress,
+  [ChainId.HEDERA_MAINNET]: shortenHederaAddress,
   [ChainId.NEAR_MAINNET]: shortenAddress,
   [ChainId.NEAR_TESTNET]: shortenAddress,
   [ChainId.COSTON2]: shortenAddress,
@@ -438,6 +439,10 @@ export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALA
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
   return `${parsed.substring(0, chars)}...${parsed.substring(parsed.length - chars)}`;
+}
+
+export function shortenHederaAddress(address: string) {
+  return hethers.utils.asAccountString(address);
 }
 
 // add 10%

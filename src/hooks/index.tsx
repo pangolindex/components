@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
-import { hashConnect, network } from 'src/connectors';
+import { mainnetHashConnect, network } from 'src/connectors';
 import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { PROVIDER_MAPPING } from 'src/constants/wallets';
 import { useApplicationState } from 'src/state/papplication/atom';
@@ -58,7 +58,7 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
     // Here when load in iframe  we need to internally activate connector to connect account
     const emitterFnForActivateConnector = (isIframeEventFound: boolean) => {
       console.log('received hashpack emit event ACTIVATE_CONNECTOR in provider', isIframeEventFound);
-      activate(hashConnect);
+      activate(mainnetHashConnect);
     };
     hashconnectEvent.once(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
 
@@ -151,7 +151,8 @@ export function useLibrary(): { library: any; provider: any } {
       }
 
       const finalEthersLibrary = ethersConnectorProvider || ethersUserProvidedLibrary || ethersDefaultProvider;
-      const extendedWeb3Provider = finalEthersLibrary && (PROVIDER_MAPPING as any)[chainId]?.(finalEthersLibrary);
+      const extendedWeb3Provider =
+        finalEthersLibrary && (PROVIDER_MAPPING as any)[chainId]?.(finalEthersLibrary, chainId);
 
       setResult({ library: finalEthersLibrary, provider: extendedWeb3Provider });
     }

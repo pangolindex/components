@@ -1,8 +1,8 @@
-import { NetworkType } from '@pangolindex/sdk';
+import { ChainId, NetworkType } from '@pangolindex/sdk';
 import hashIcon from 'src/assets/images/hashConnect.png';
 import nearIcon from 'src/assets/images/near.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
-import { hashConnect, near, xDefi } from 'src/connectors';
+import { HashConnector, near, xDefi } from 'src/connectors';
 import { Wallet } from './wallet';
 
 export class XDefiWallet extends Wallet {
@@ -26,15 +26,20 @@ export class NearWallet extends Wallet {
     return true;
   }
 }
-
 export class HashPackWallet extends Wallet {
-  constructor() {
-    super(hashConnect, 'HashPack Wallet', 'https://www.hashpack.app/', hashIcon, 'HashPack Wallet Connect.', [
-      NetworkType.HEDERA,
-    ]);
+  constructor(connector: HashConnector, supportedChainsId: ChainId[]) {
+    super(
+      connector,
+      'HashPack Wallet',
+      'https://www.hashpack.app/',
+      hashIcon,
+      'HashPack Wallet Connect.',
+      [NetworkType.HEDERA],
+      supportedChainsId,
+    );
   }
 
   installed(): boolean {
-    return !hashConnect.availableExtension;
+    return true;
   }
 }

@@ -134,7 +134,7 @@ export function PangolinProvider({
 }
 
 export * from './constants';
-export { SUPPORTED_WALLETS } from './constants/wallets';
+export { SUPPORTED_WALLETS } from './wallet';
 export { ROUTER_ADDRESS, MINICHEF_ADDRESS } from './constants/address';
 export { TIMEFRAME, SwapTypes } from './constants/swap';
 export * from './connectors';

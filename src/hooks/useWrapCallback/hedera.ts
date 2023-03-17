@@ -5,8 +5,8 @@ import { Field } from 'src/state/pswap/actions';
 import { tryParseAmount, useSwapActionHandlers } from 'src/state/pswap/hooks/common';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
-import { hederaFn } from 'src/utils/hedera';
 import { useChainId, usePangolinWeb3 } from '../index';
+import { useHederaFn } from '../useConnector';
 import { NOT_APPLICABLE, WrapType } from './constant';
 
 /**
@@ -26,6 +26,8 @@ export function useWrapHbarCallback(
   const [executing, setExecuting] = useState(false);
   const { onUserInput } = useSwapActionHandlers(chainId);
   const balance = useCurrencyBalance(chainId, account ?? undefined, inputCurrency);
+
+  const hederaFn = useHederaFn();
 
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
   const inputAmount = useMemo(

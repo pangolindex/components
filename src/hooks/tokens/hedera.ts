@@ -3,7 +3,8 @@ import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
+import { useHederaFn } from '../useConnector';
 
 /**
  * to get all hedera associated tokens
@@ -15,17 +16,19 @@ export function useGetAllHederaAssociatedTokens(dependancies = [] as any[]) {
 
   const { account } = usePangolinWeb3();
 
+  const hederaFn = useHederaFn();
+
   const response = useQuery(
     ['check-hedera-token-associated', account, ...dependancies],
     async () => {
-      if (!account || !hederaFn.isHederaChain(chainId)) return;
+      if (!account || !Hedera.isHederaChain(chainId)) return;
       const tokens = await hederaFn.getAccountAssociatedTokens(account);
       return tokens;
     },
     {
       keepPreviousData: true,
       refetchInterval: 1000 * 60, // 1 minute
-      enabled: hederaFn.isHederaChain(chainId), // only fetch if the chain id is hedera
+      enabled: Hedera.isHederaChain(chainId), // only fetch if the chain id is hedera
     },
   );
 
@@ -54,10 +57,12 @@ export function useHederaTokenAssociated(
 
   const { data: tokens, isLoading, refetch } = useGetAllHederaAssociatedTokens();
 
+  const hederaFn = useHederaFn();
+
   const currencyId = address ? hederaFn.hederaId(address) : '';
 
   let isAssociated = true; // if its not hedera chain then by default its true
-  if (hederaFn.isHederaChain(chainId)) {
+  if (Hedera.isHederaChain(chainId)) {
     isAssociated = !!(tokens || []).find((token) => token.tokenId === currencyId);
   }
 
@@ -95,6 +100,8 @@ export function useGetHederaTokenNotAssociated(tokens: Array<Token> | undefined)
   const { account } = usePangolinWeb3();
 
   const { data, isLoading } = useGetAllHederaAssociatedTokens();
+
+  const hederaFn = useHederaFn();
 
   return useMemo(() => {
     if (!tokens) {

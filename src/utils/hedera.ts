@@ -13,7 +13,7 @@ import {
 } from '@hashgraph/sdk';
 import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
-import { hashConnect } from 'src/connectors';
+import { HashConnector, mainnetHashConnect, testnetHashConnect } from 'src/connectors';
 import { PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
 
 export const TRANSACTION_MAX_FEES = {
@@ -289,20 +289,22 @@ export interface CompoundData {
 
 export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & { positionId: string };
 
-class Hedera {
+export class Hedera {
   axios: AxiosInstance;
+  private hashConnect: HashConnector;
 
-  constructor() {
+  constructor(connector: HashConnector) {
     this.axios = BaseAxios.create({ timeout: 60000 });
+    this.hashConnect = connector;
   }
 
   get client(): Client {
-    const chainId = hashConnect.getChainId();
+    const chainId = this.hashConnect.getChainId();
     return chainId === ChainId.HEDERA_MAINNET ? Client.forMainnet() : Client.forTestnet();
   }
 
   get HEDERA_API_BASE_URL(): string {
-    const chainId = hashConnect.getChainId();
+    const chainId = this.hashConnect.getChainId();
     return chainId === ChainId.HEDERA_MAINNET
       ? `https://mainnet-public.mirrornode.hedera.com`
       : `https://testnet.mirrornode.hedera.com`;
@@ -326,7 +328,7 @@ class Hedera {
     }
   }
 
-  isHederaChain = (chainId: ChainId) => {
+  static isHederaChain = (chainId: ChainId) => {
     return chainId === ChainId.HEDERA_TESTNET || chainId === ChainId.HEDERA_MAINNET;
   };
 
@@ -341,7 +343,7 @@ class Hedera {
     }
   };
 
-  isAddressValid = (address: string): string | false => {
+  static isAddressValid = (address: string): string | false => {
     if (address && hethers.utils.isAddress(address.toLowerCase())) {
       return hethers.utils.getChecksumAddress(address);
     } else {
@@ -539,7 +541,7 @@ class Hedera {
     transaction.setTokenIds(tokenIds);
     transaction.setAccountId(accountId);
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   // Wrap Function
@@ -554,7 +556,7 @@ class Hedera {
     transaction.setFunction('deposit');
     transaction.setPayableAmount(Hbar.fromString(amount.toExact()));
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   // UnWrap Function
@@ -568,7 +570,7 @@ class Hedera {
 
     transaction.setFunction('withdraw', new ContractFunctionParameters().addUint256(amount.raw.toString() as any));
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   public async getTransactionById(transactionId: string) {
@@ -636,7 +638,7 @@ class Hedera {
       .setPayableAmount(Hbar.from(25, HbarUnit.Hbar))
       .setFunction('createPair', new ContractFunctionParameters().addAddress(tokenAAddress).addAddress(tokenBAddress));
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   addNativeLiquidity(addNativeLiquidityData: AddNativeLiquidityData) {
@@ -663,7 +665,7 @@ class Hedera {
           .addUint256(deadline),
       );
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   public addLiquidity(addLiquidityData: AddLiquidityData) {
@@ -707,7 +709,7 @@ class Hedera {
           .addUint256(deadline),
       );
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   public removeNativeLiquidity(removeNativeLiquidityData: RemoveNativeLiquidityData) {
@@ -737,7 +739,7 @@ class Hedera {
           .addUint256(deadline),
       );
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   async removeLiquidity(removeLiquidityData: RemoveLiquidityData) {
@@ -769,7 +771,7 @@ class Hedera {
           .addUint256(deadline),
       );
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   public spendingApproval(approvalData: SendingApprovalData) {
@@ -786,7 +788,7 @@ class Hedera {
       amount as any,
     );
 
-    return hashConnect.sendTransaction(approvalTx, accountId);
+    return this.hashConnect.sendTransaction(approvalTx, accountId);
   }
 
   public async getContractData(address: string) {
@@ -859,7 +861,7 @@ class Hedera {
       );
     }
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   public async sarStake(stakeData: SarStakeData) {
@@ -901,7 +903,7 @@ class Hedera {
         );
     }
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   public async sarUnstake(unstakeData: SarUnstakeData) {
@@ -935,7 +937,7 @@ class Hedera {
         new ContractFunctionParameters().addUint256(positionId as any).addUint256(amount as any),
       );
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   public async sarHarvestOrCompound(baseData: SarBaseData, methodName: 'harvest' | 'compound') {
@@ -966,7 +968,7 @@ class Hedera {
       .setPayableAmount(Hbar.fromTinybars(rent))
       .setFunction(methodName, new ContractFunctionParameters().addUint256(positionId as any));
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   public async createPangoChefUserStorageContract(chainId: ChainId, account: string) {
@@ -980,7 +982,7 @@ class Hedera {
       .setContractId(contractId)
       .setGas(maxGas)
       .setFunction('createUserStorageContract');
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   public convertHBarToTinyBars(value: string | number) {
@@ -1036,7 +1038,7 @@ class Hedera {
       new ContractFunctionParameters().addUint256(Number(poolId)).addUint256(amount ? amount : (amount as any)),
     );
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   public async claimReward(claimRewardData: ClaimRewardData) {
@@ -1056,7 +1058,7 @@ class Hedera {
 
     transaction.setFunction(methodName, new ContractFunctionParameters().addUint256(Number(poolId)));
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 
   public async compound(compoundData: CompoundData) {
@@ -1090,9 +1092,11 @@ class Hedera {
       .setPayableAmount(Hbar.fromString('0'))
       .setFunctionParameters(params);
 
-    return hashConnect.sendTransaction(transaction, accountId);
+    return this.hashConnect.sendTransaction(transaction, accountId);
   }
 }
 
-export const hederaFn = new Hedera();
+export const mainnetHederaFn = new Hedera(mainnetHashConnect);
+export const testnetHederaFn = new Hedera(testnetHashConnect);
+
 /* eslint-enable max-lines */

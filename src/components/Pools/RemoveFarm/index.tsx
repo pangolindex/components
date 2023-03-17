@@ -11,7 +11,7 @@ import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/hooks';
 import { useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
 import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
 import { useHederaPGLToken } from 'src/state/pwallet/hooks/hedera';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
@@ -51,8 +51,8 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
 
   const args: [Token | undefined, Token | undefined] = useMemo(
     () =>
-      hederaFn.isHederaChain(chainId) ? [stakingInfo?.tokens?.[0], stakingInfo?.tokens?.[1]] : [undefined, undefined],
-    [chainId, hederaFn],
+      Hedera.isHederaChain(chainId) ? [stakingInfo?.tokens?.[0], stakingInfo?.tokens?.[1]] : [undefined, undefined],
+    [chainId],
   );
 
   const [pglToken] = useHederaPGLToken(...args);
@@ -61,11 +61,11 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
   // because case a user farm in non Pangolin token/Wrapped token farm and compound to this farm
   // in compoundTo
   const tokensToCheck = useMemo(() => {
-    if (hederaFn.isHederaChain(chainId)) {
+    if (Hedera.isHederaChain(chainId)) {
       return [...(rewardTokens || []), pglToken].filter((item) => !!item) as Token[];
     }
     return undefined;
-  }, [rewardTokens, pglToken, hederaFn, chainId]);
+  }, [rewardTokens, pglToken, chainId]);
 
   const notAssociateTokens = useGetHederaTokenNotAssociated(tokensToCheck);
   // here we get all not associated rewards tokens
