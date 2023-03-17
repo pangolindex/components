@@ -39,7 +39,7 @@ export default function WalletModal({
 }: WalletModalProps) {
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedChain, setSelectedChain] = useState(ChainId.AVALANCHE);
+  const [selectedChainId, setSelectedChainId] = useState(ChainId.AVALANCHE);
   const [pendingWallet, setPendingWallet] = useState<string | null>(null);
   const [pendingError, setPendingError] = useState<boolean>(false);
 
@@ -71,16 +71,21 @@ export default function WalletModal({
   const _wallets = supportedWallets || SUPPORTED_WALLETS;
 
   const wallets = useMemo(() => {
-    const _selectedChains = CHAINS[selectedChain];
+    const selectedChain = CHAINS[selectedChainId];
     // adding additional wallets in wallets mapping
     return Object.values(_wallets)
-      .filter(
-        (wallet) =>
-          wallet.supportedChains.includes(_selectedChains.network_type) &&
-          wallet.name.toLowerCase().includes(debouncedSearchQuery),
-      )
+      .filter((wallet) => {
+        const bool = Boolean(
+          wallet.supportedChains.includes(selectedChain.network_type) &&
+            wallet.name.toLowerCase().includes(debouncedSearchQuery),
+        );
+        if (!wallet.supportedChainsId) {
+          return bool;
+        }
+        return bool && wallet.supportedChainsId.includes(selectedChain.chain_id ?? NaN);
+      })
       .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
-  }, [_wallets, selectedChain, debouncedSearchQuery]);
+  }, [_wallets, selectedChainId, debouncedSearchQuery]);
 
   function getWalletKey(wallet: Wallet): string | null {
     const result = Object.entries(_wallets).find(
@@ -160,10 +165,10 @@ export default function WalletModal({
                     <ChainButton
                       variant="plain"
                       width="68px"
-                      onClick={() => setSelectedChain(chain.chain_id ?? ChainId.AVALANCHE)}
+                      onClick={() => setSelectedChainId(chain.chain_id ?? ChainId.AVALANCHE)}
                       key={index}
                     >
-                      {selectedChain === chain.chain_id ? <Bookmark /> : null}
+                      {selectedChainId === chain.chain_id ? <Bookmark /> : null}
                       <StyledLogo srcs={[chain.logo ?? '']} alt={`${chain.name} Logo`} />
                     </ChainButton>
                   ))}
