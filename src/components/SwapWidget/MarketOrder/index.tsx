@@ -21,7 +21,7 @@ import { useWrapCallbackHook } from 'src/hooks/useWrapCallback';
 import { WrapType } from 'src/hooks/useWrapCallback/constant';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
-import { Field } from 'src/state/pswap/actions';
+import { Field } from 'src/state/pswap/atom';
 import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
