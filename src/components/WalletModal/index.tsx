@@ -39,7 +39,7 @@ export default function WalletModal({
 }: WalletModalProps) {
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedChainId, setSelectedChainId] = useState(ChainId.AVALANCHE);
+  const [selectedChainId, setSelectedChainId] = useState(mainnet ? ChainId.AVALANCHE : ChainId.FUJI);
   const [pendingWallet, setPendingWallet] = useState<string | null>(null);
   const [pendingError, setPendingError] = useState<boolean>(false);
 
@@ -57,6 +57,7 @@ export default function WalletModal({
 
   function handleChainType(value: NETWORK_TYPE) {
     setMainnet(value === NETWORK_TYPE.MAINNET);
+    setSelectedChainId(value === NETWORK_TYPE.MAINNET ? ChainId.AVALANCHE : ChainId.FUJI);
   }
 
   const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 250);
