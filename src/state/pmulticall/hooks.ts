@@ -91,7 +91,7 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): C
 
         return { valid: true, data, blockNumber: result?.blockNumber };
       }),
-    [callResults, calls, chainId],
+    [multicallState, calls, chainId],
   );
 }
 

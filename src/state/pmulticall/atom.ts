@@ -76,10 +76,11 @@ export function useMulticallAtom() {
       chainId: number;
       options?: ListenerOptions;
     }) => {
-      setMulticallState((prev) => {
-        const listeners: MulticallState['callListeners'] = prev.callListeners
-          ? prev.callListeners
-          : (prev.callListeners = {});
+      setMulticallState((state) => {
+        const updatedState = { ...state };
+        const listeners: MulticallState['callListeners'] = updatedState.callListeners
+          ? updatedState.callListeners
+          : (updatedState.callListeners = {});
         listeners[chainId] = listeners[chainId] ?? {};
 
         calls.forEach((call) => {
@@ -88,7 +89,7 @@ export function useMulticallAtom() {
           listeners[chainId][callKey][blocksPerFetch] = (listeners[chainId][callKey][blocksPerFetch] ?? 0) + 1;
         });
 
-        return { ...prev, callListeners: listeners };
+        return { ...updatedState, callListeners: { ...listeners } };
       });
     },
     [setMulticallState],
@@ -104,12 +105,13 @@ export function useMulticallAtom() {
       chainId: number;
       options?: ListenerOptions;
     }) => {
-      setMulticallState((prev) => {
-        const listeners: MulticallState['callListeners'] = prev.callListeners
-          ? prev.callListeners
-          : (prev.callListeners = {});
+      setMulticallState((state) => {
+        const updatedState = { ...state };
+        const listeners: MulticallState['callListeners'] = updatedState.callListeners
+          ? updatedState.callListeners
+          : (updatedState.callListeners = {});
 
-        if (!listeners[chainId]) return prev;
+        if (!listeners[chainId]) return updatedState;
         calls.forEach((call) => {
           const callKey = toCallKey(call);
           if (!listeners[chainId][callKey]) return;
@@ -121,7 +123,7 @@ export function useMulticallAtom() {
             listeners[chainId][callKey][blocksPerFetch]--;
           }
         });
-        return { ...prev, callListeners: listeners };
+        return { ...updatedState, callListeners: { ...listeners } };
       });
     },
     [setMulticallState],
@@ -130,21 +132,22 @@ export function useMulticallAtom() {
   const fetchingMulticallResults = useCallback(
     ({ chainId, fetchingBlockNumber, calls }: { chainId: number; fetchingBlockNumber: number; calls: any[] }) => {
       setMulticallState((state) => {
-        state.callResults[chainId] = state.callResults[chainId] ?? {};
+        const updatedState = { ...state };
+        updatedState.callResults[chainId] = updatedState.callResults[chainId] ?? {};
 
         calls.forEach((call) => {
           const callKey = toCallKey(call);
-          const current = state.callResults?.[chainId]?.[callKey];
+          const current = updatedState.callResults?.[chainId]?.[callKey];
           if (!current) {
-            state.callResults[chainId][callKey] = {
+            updatedState.callResults[chainId][callKey] = {
               fetchingBlockNumber,
             };
           } else {
             if ((current.fetchingBlockNumber ?? 0) >= fetchingBlockNumber) return;
-            state.callResults[chainId][callKey].fetchingBlockNumber = fetchingBlockNumber;
+            updatedState.callResults[chainId][callKey].fetchingBlockNumber = fetchingBlockNumber;
           }
         });
-        return state;
+        return Object.assign({}, updatedState);
       });
     },
     [setMulticallState],
@@ -153,10 +156,11 @@ export function useMulticallAtom() {
   const errorFetchingMulticallResults = useCallback(
     ({ chainId, fetchingBlockNumber, calls }: { chainId: number; fetchingBlockNumber: number; calls: any[] }) => {
       setMulticallState((state) => {
-        state.callResults[chainId] = state.callResults[chainId] ?? {};
+        const updatedState = { ...state };
+        updatedState.callResults[chainId] = updatedState.callResults[chainId] ?? {};
         calls.forEach((call) => {
           const callKey = toCallKey(call);
-          const current = state.callResults[chainId][callKey];
+          const current = updatedState.callResults[chainId][callKey];
           if (!current) return; // only should be dispatched if we are already fetching
           if (current.fetchingBlockNumber === fetchingBlockNumber) {
             delete current.fetchingBlockNumber;
@@ -164,7 +168,7 @@ export function useMulticallAtom() {
             current.blockNumber = fetchingBlockNumber;
           }
         });
-        return state;
+        return Object.assign({}, updatedState);
       });
     },
     [setMulticallState],
@@ -183,17 +187,19 @@ export function useMulticallAtom() {
       blockNumber: number;
     }) => {
       setMulticallState((state) => {
-        state.callResults[chainId] = state.callResults[chainId] ?? {};
+        const updatedState = { ...state };
+        updatedState.callResults[chainId] = updatedState.callResults[chainId] ?? {};
+
         Object.keys(results).forEach((callKey) => {
-          const current = state.callResults[chainId][callKey];
+          const current = updatedState.callResults[chainId][callKey];
           if ((current?.blockNumber ?? 0) > blockNumber) return;
-          state.callResults[chainId][callKey] = {
+          updatedState.callResults[chainId][callKey] = {
             data: results[callKey],
             blockNumber,
           };
         });
 
-        return state;
+        return Object.assign({}, updatedState);
       });
     },
     [setMulticallState],
