@@ -140,7 +140,7 @@ export const useBridgeStateAtom = () => {
     ({ field, typedValue }) => {
       setBridgeState((state) => ({
         ...state,
-        [field]: field,
+        field: field,
         typedValue,
       }));
     },
