@@ -3,6 +3,7 @@ import { Tags, TokenInfo, TokenList } from '@pangolindex/token-lists';
 import { useMemo } from 'react';
 import { AEB_TOKENS } from 'src/constants/lists';
 import { useChainId } from 'src/hooks';
+import { useSwapState } from 'src/state/pswap/atom';
 import { AppState, useSelector } from '../index';
 
 type TagDetails = Tags[keyof Tags];
@@ -177,7 +178,7 @@ export function useAllLists(): TokenList[] {
 export function useIsSelectedAEBToken(): boolean {
   const chainId = useChainId();
 
-  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+  const { swapState: state } = useSwapState();
 
   const selectedOutputToken = state[chainId]?.OUTPUT;
 

@@ -24,24 +24,12 @@ import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import { useCurrency } from 'src/hooks/useCurrency';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
-import { AppState, useDispatch, useSelector } from 'src/state';
 import { isAddress, isEvmChain, validateAddressMapping } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useUserSlippageTolerance } from '../../puser/hooks';
 import { useCurrencyBalances } from '../../pwallet/hooks/common';
-import {
-  FeeInfo,
-  Field,
-  replaceSwapState,
-  selectCurrency,
-  setRecipient,
-  switchCurrencies,
-  typeInput,
-  updateFeeInfo,
-  updateFeeTo,
-} from '../actions';
-import { DefaultSwapState, SwapParams } from '../reducer';
+import { DefaultSwapState, FeeInfo, Field, SwapParams, useSwapState as useSwapStateAtom } from '../atom';
 
 export interface LimitOrderInfo extends Order {
   pending?: boolean;
@@ -49,8 +37,7 @@ export interface LimitOrderInfo extends Order {
 
 export function useSwapState(): DefaultSwapState {
   const chainId = useChainId();
-
-  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+  const { swapState: state } = useSwapStateAtom();
 
   const swapState = chainId ? state[chainId] ?? {} : ({} as DefaultSwapState);
   return swapState;
@@ -62,41 +49,40 @@ export function useSwapActionHandlers(chainId: ChainId): {
   onUserInput: (field: Field, typedValue: string) => void;
   onChangeRecipient: (recipient: string | null) => void;
 } {
-  const dispatch = useDispatch();
+  const { selectCurrency, switchCurrencies, typeInput, setRecipient } = useSwapStateAtom();
+
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
-      dispatch(
-        selectCurrency({
-          field,
-          currencyId:
-            currency instanceof Token
-              ? currency.address
-              : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
-              ? (CAVAX[chainId]?.symbol as string)
-              : '',
-          chainId,
-        }),
-      );
+      selectCurrency({
+        field,
+        currencyId:
+          currency instanceof Token
+            ? currency.address
+            : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
+            ? (CAVAX[chainId]?.symbol as string)
+            : '',
+        chainId,
+      });
     },
-    [dispatch, chainId],
+    [selectCurrency, chainId],
   );
 
   const onSwitchTokens = useCallback(() => {
-    dispatch(switchCurrencies({ chainId }));
-  }, [dispatch, chainId]);
+    switchCurrencies({ chainId });
+  }, [switchCurrencies, chainId]);
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      dispatch(typeInput({ field, typedValue, chainId }));
+      typeInput({ field, typedValue, chainId });
     },
-    [dispatch, chainId],
+    [typeInput, chainId],
   );
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
-      dispatch(setRecipient({ recipient, chainId }));
+      setRecipient({ recipient, chainId });
     },
-    [dispatch, chainId],
+    [setRecipient, chainId],
   );
 
   return {
@@ -336,7 +322,9 @@ export function useDefaultsFromURLSearch():
   | { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined }
   | undefined {
   const chainId = useChainId();
-  const dispatch = useDispatch();
+
+  const { replaceSwapState } = useSwapStateAtom();
+
   const parsedQs = useParsedQueryString();
   const [result, setResult] = useState<
     { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined
@@ -352,28 +340,26 @@ export function useDefaultsFromURLSearch():
 
     const parsed = queryParametersToSwapState(parsedQs, chainId);
 
-    dispatch(
-      replaceSwapState({
-        typedValue: parsed.typedValue,
-        field: parsed.independentField,
-        inputCurrencyId: parsed[Field.INPUT].currencyId
-          ? parsed[Field.INPUT].currencyId
-          : inputCurrencyId
-          ? inputCurrencyId
-          : SWAP_DEFAULT_CURRENCY[chainId]?.inputCurrency,
-        outputCurrencyId: parsed[Field.OUTPUT].currencyId
-          ? parsed[Field.OUTPUT].currencyId
-          : outputCurrencyId
-          ? outputCurrencyId
-          : SWAP_DEFAULT_CURRENCY[chainId]?.outputCurrency,
-        recipient: parsed.recipient,
-        chainId,
-      }),
-    );
+    replaceSwapState({
+      typedValue: parsed.typedValue,
+      field: parsed.independentField,
+      inputCurrencyId: parsed[Field.INPUT].currencyId
+        ? parsed[Field.INPUT].currencyId
+        : inputCurrencyId
+        ? inputCurrencyId
+        : SWAP_DEFAULT_CURRENCY[chainId]?.inputCurrency,
+      outputCurrencyId: parsed[Field.OUTPUT].currencyId
+        ? parsed[Field.OUTPUT].currencyId
+        : outputCurrencyId
+        ? outputCurrencyId
+        : SWAP_DEFAULT_CURRENCY[chainId]?.outputCurrency,
+      recipient: parsed.recipient,
+      chainId,
+    });
 
     setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, chainId]);
+  }, [chainId]);
 
   return result;
 }
@@ -480,16 +466,14 @@ export function useGelatoLimitOrderList() {
 export function useDaasFeeTo(): [string, (feeTo: string) => void] {
   const chainId = useChainId();
 
-  const dispatch = useDispatch();
-
-  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+  const { swapState: state, updateFeeTo } = useSwapStateAtom();
 
   const feeTo = state[chainId]?.feeTo;
   const setFeeTo = useCallback(
     (newFeeTo: string) => {
-      dispatch(updateFeeTo({ feeTo: newFeeTo, chainId }));
+      updateFeeTo({ feeTo: newFeeTo, chainId });
     },
-    [dispatch],
+    [updateFeeTo],
   );
 
   return [feeTo, setFeeTo];
@@ -498,17 +482,15 @@ export function useDaasFeeTo(): [string, (feeTo: string) => void] {
 export function useDaasFeeInfo(): [FeeInfo, (feeInfo: FeeInfo) => void] {
   const chainId = useChainId();
 
-  const dispatch = useDispatch();
-
-  const state = useSelector<AppState['pswap']>((state) => state.pswap);
+  const { swapState: state, updateFeeInfo } = useSwapStateAtom();
 
   const feeInfo = state[chainId]?.feeInfo;
 
   const setFeeInfo = useCallback(
     (newFeeInfo: FeeInfo) => {
-      dispatch(updateFeeInfo({ feeInfo: newFeeInfo, chainId }));
+      updateFeeInfo({ feeInfo: newFeeInfo, chainId });
     },
-    [dispatch],
+    [updateFeeInfo],
   );
 
   return [feeInfo, setFeeInfo];

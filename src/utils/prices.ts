@@ -5,7 +5,7 @@ import {
   ALLOWED_PRICE_IMPACT_MEDIUM,
   BLOCKED_PRICE_IMPACT_NON_EXPERT,
 } from 'src/constants/swap';
-import { Field } from '../state/pswap/actions';
+import { Field } from '../state/pswap/atom';
 import { basisPointsToPercent } from './index';
 
 const ONE_HUNDRED_PERCENT = new Percent(JSBI.BigInt(1000), JSBI.BigInt(1000));
