@@ -342,10 +342,6 @@ export function useRemoveLiquidity(pair?: Pair | null | undefined) {
       const methodName = methodNames[indexOfSuccessfulEstimation];
       const safeGasEstimate = safeGasEstimates[indexOfSuccessfulEstimation];
 
-      console.log('==args', args);
-      console.log('==methodName', methodName);
-      console.log('==safeGasEstimate', safeGasEstimate);
-
       try {
         const response: TransactionResponse = await router[methodName](...args, {
           gasLimit: safeGasEstimate,

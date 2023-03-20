@@ -4,7 +4,7 @@ import { TokenList } from '@pangolindex/token-lists/dist/types';
 import { createReducer } from '@reduxjs/toolkit';
 import { DEFAULT_TOKEN_LISTS, DEFAULT_TOKEN_LISTS_SELECTED } from 'src/constants/lists';
 import { updateVersion } from '../pglobal/actions';
-import { acceptListUpdate, addList, fetchTokenList, removeList, selectList } from './actions';
+import { acceptListUpdate, addList, fetchTokenList, removeList, selectList } from './actions1';
 
 export interface ListsState {
   readonly byUrl: {

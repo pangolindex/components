@@ -5,13 +5,16 @@ import { useLibrary } from 'src/hooks';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';
 import useInterval from 'src/hooks/useInterval';
 import useIsWindowVisible from 'src/hooks/useIsWindowVisible';
-import { AppState, useDispatch, useSelector } from 'src/state';
-import { acceptListUpdate } from './actions';
+import { useListsStateAtom } from './atom';
 
 export default function Updater(): null {
   const { library } = useLibrary();
-  const dispatch = useDispatch();
-  const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
+
+  const { listsState, acceptListUpdate } = useListsStateAtom();
+  const lists = listsState?.byUrl;
+
+  console.log('lists', lists);
+  console.log('listsState', listsState);
 
   const isWindowVisible = useIsWindowVisible();
 
@@ -36,7 +39,7 @@ export default function Updater(): null {
         fetchList(listUrl).catch((error) => console.debug('list added fetching error', error));
       }
     });
-  }, [dispatch, fetchList, library, lists]);
+  }, [fetchList, library, lists]);
 
   // automatically update lists if versions are minor/patch
   useEffect(() => {
@@ -44,7 +47,14 @@ export default function Updater(): null {
       const list = lists[listUrl];
       if (list.current && list.pendingUpdate) {
         const bump = getVersionUpgrade(list.current.version, list.pendingUpdate.version);
+
+        console.log('bump', bump);
         const isDefaultList = DEFAULT_TOKEN_LISTS.includes(listUrl);
+
+        console.log('isDefaultList', isDefaultList);
+
+        console.log('bump', bump);
+
         switch (bump) {
           case VersionUpgrade.NONE:
             throw new Error('unexpected no version bump');
@@ -55,7 +65,7 @@ export default function Updater(): null {
             if (bump >= min) {
               if (isDefaultList) {
                 //if its pangolin hosted token list then we will autoupdate it
-                dispatch(acceptListUpdate(listUrl));
+                acceptListUpdate(listUrl);
               } else {
                 //show prompts for user added token list
                 // dispatch(
@@ -81,8 +91,9 @@ export default function Updater(): null {
 
           case VersionUpgrade.MAJOR:
             if (isDefaultList) {
+              console.log('===========456');
               // if its pangolin hosted token list then we will autoupdate it
-              dispatch(acceptListUpdate(listUrl));
+              acceptListUpdate(listUrl);
             } else {
               // show prompts for user added token list
               // dispatch(
@@ -103,7 +114,7 @@ export default function Updater(): null {
         }
       }
     });
-  }, [dispatch, lists]);
+  }, [lists]);
 
   return null;
 }
