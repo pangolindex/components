@@ -4,13 +4,11 @@ import React from 'react';
 import { createDispatchHook, createSelectorHook, createStoreHook } from 'react-redux';
 import { load, save } from 'redux-localstorage-simple';
 import plists from './plists/reducer';
-import pmulticall from './pmulticall/reducer';
 
 export const PANGOLIN_PERSISTED_KEYS: string[] = ['plists'];
 
 export const pangolinReducers = {
   plists,
-  pmulticall,
 };
 
 const store = configureStore({
