@@ -212,7 +212,7 @@ export class HashConnector extends AbstractConnector {
     }
   }
 
-  public async deactivate() {
+  public deactivate() {
     this._close();
   }
 

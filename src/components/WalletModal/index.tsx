@@ -11,6 +11,7 @@ import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/com
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
 import { MEDIA_WIDTHS } from 'src/theme';
+import { wait } from 'src/utils/retry';
 import { SUPPORTED_CHAINS, SUPPORTED_WALLETS } from 'src/wallet';
 import { Wallet } from 'src/wallet/classes/wallet';
 import { NETWORK_TYPE } from '../NetworkSelection/types';
@@ -43,7 +44,7 @@ export default function WalletModal({
   const [pendingWallet, setPendingWallet] = useState<string | null>(null);
   const [pendingError, setPendingError] = useState<boolean>(false);
 
-  const { activate } = useWeb3React();
+  const { activate, deactivate, connector } = useWeb3React();
 
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);
@@ -121,8 +122,7 @@ export default function WalletModal({
       });
       setPendingError(false);
       setPendingWallet(null);
-      //if wallet is active deactivate it
-      wallets.forEach((wallet) => {
+      Object.values(_wallets).forEach((wallet) => {
         if (wallet.isActive) {
           wallet.isActive = false;
         }
@@ -131,6 +131,11 @@ export default function WalletModal({
     }
 
     if (wallet.installed() && !wallet.isActive) {
+      //if wallet is active deactivate it
+      if (connector) {
+        deactivate();
+        await wait(500);
+      }
       await wallet.tryActivation(activate, onSuccess, onError);
     }
   }

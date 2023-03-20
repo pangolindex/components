@@ -45,8 +45,8 @@ export abstract class Wallet {
     this.supportedChains = supportedChains;
     this.supportedChainsId = supportedChainsId;
 
-    // On disconnect the wallet we need to set the `isActive` to false
-    // To do this, when disconnect the connector, this emits the Web3ReactDeactivate event by default
+    // // On disconnect the wallet we need to set the `isActive` to false
+    // // To do this, when disconnect the connector, this emits the Web3ReactDeactivate event by default
     this.connector.on('Web3ReactDeactivate', () => (this.isActive = false));
   }
 
@@ -80,10 +80,9 @@ export abstract class Wallet {
 
   /**
    * Function to disconnect the wallet
-   * @param deactivate useWeb3React function that deactivate the connector and the wallet
    */
-  disconnect(deactivate: () => void) {
-    deactivate();
+  disconnect() {
+    this.connector.deactivate();
     this.isActive = false;
   }
 }

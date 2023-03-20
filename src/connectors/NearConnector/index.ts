@@ -106,7 +106,7 @@ export class NearConnector extends AbstractConnector {
     return null;
   }
 
-  public async deactivate() {
+  public deactivate() {
     return null;
   }
 
