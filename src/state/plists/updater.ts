@@ -13,9 +13,6 @@ export default function Updater(): null {
   const { listsState, acceptListUpdate } = useListsStateAtom();
   const lists = listsState?.byUrl;
 
-  console.log('lists', lists);
-  console.log('listsState', listsState);
-
   const isWindowVisible = useIsWindowVisible();
 
   const fetchList = useFetchListCallback();
@@ -48,12 +45,7 @@ export default function Updater(): null {
       if (list.current && list.pendingUpdate) {
         const bump = getVersionUpgrade(list.current.version, list.pendingUpdate.version);
 
-        console.log('bump', bump);
         const isDefaultList = DEFAULT_TOKEN_LISTS.includes(listUrl);
-
-        console.log('isDefaultList', isDefaultList);
-
-        console.log('bump', bump);
 
         switch (bump) {
           case VersionUpgrade.NONE:
@@ -91,7 +83,6 @@ export default function Updater(): null {
 
           case VersionUpgrade.MAJOR:
             if (isDefaultList) {
-              console.log('===========456');
               // if its pangolin hosted token list then we will autoupdate it
               acceptListUpdate(listUrl);
             } else {
