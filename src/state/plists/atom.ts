@@ -228,17 +228,6 @@ export const useListsStateAtom = () => {
         current: newState.byUrl[url].pendingUpdate,
       };
       setListsState(newState);
-      // setListsState((prevState) => ({
-      //   ...prevState,
-      //   byUrl: {
-      //     ...prevState.byUrl,
-      //     [url]: {
-      //       ...prevState.byUrl[url],
-      //       current: prevState.byUrl[url].pendingUpdate,
-      //       pendingUpdate: null,
-      //     },
-      //   },
-      // }));
     },
     [setListsState, listsState],
   );
