@@ -1,6 +1,5 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { DetailTabProps } from './types';
 import DetailTab from '.';
 
 export default {
@@ -24,4 +23,3 @@ const TemplateDetailTab: ComponentStory<typeof DetailTab> = () => {
 };
 
 export const Default = TemplateDetailTab.bind({});
-Default.args = {} as Partial<DetailTabProps>;

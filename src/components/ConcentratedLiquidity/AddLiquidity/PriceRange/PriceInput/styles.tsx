@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Box } from 'src/components';
 
 export const Wrapper = styled(Box)`
+  text-align: center;
   display: flex;
   background-color: ${({ theme }) => theme?.concentratedLiquidity?.primaryBgColor};
   flex-direction: column;

@@ -1,15 +1,15 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { RemoveProps } from './types';
-import Remove from '.';
+import { RemoveDrawerProps } from './types';
+import RemoveDrawer from '.';
 
 export default {
-  component: Remove,
-  title: 'DeFi Primitives/ConcentratedLiquidity/DetailModal/EarnWidget/Remove',
+  component: RemoveDrawer,
+  title: 'DeFi Primitives/ConcentratedLiquidity/DetailModal/EarnWidget/RemoveDrawer',
   parameters: {
     docs: {
       description: {
-        component: 'Header',
+        component: 'RemoveDrawer',
       },
     },
   },
@@ -30,16 +30,16 @@ export default {
   },
 };
 
-const TemplateRemove: ComponentStory<typeof Remove> = (args: any) => {
+const TemplateRemoveDrawer: ComponentStory<typeof RemoveDrawer> = (args: any) => {
   return (
     <div>
-      <Remove {...args} />
+      <RemoveDrawer {...args} />
     </div>
   );
 };
 
-export const Default = TemplateRemove.bind({});
+export const Default = TemplateRemoveDrawer.bind({});
 Default.args = {
   isOpen: true,
   onClose: function (): void {},
-} as Partial<RemoveProps>;
+} as Partial<RemoveDrawerProps>;

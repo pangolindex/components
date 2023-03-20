@@ -1,4 +1,4 @@
-export interface RemoveProps {
+export interface RemoveDrawerProps {
   isOpen: boolean;
   onClose: () => void;
 }

@@ -12,7 +12,7 @@ export const RemoveWrapper = styled(Box)`
   }
 `;
 
-export const RWrapper = styled(Box)`
+export const RemoveLiquidityWrapper = styled(Box)`
   width: 100%;
   height: 100%;
   display: flex;

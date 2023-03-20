@@ -14,9 +14,8 @@ import {
   InputWrapper,
   StyledBalanceMax,
 } from './styles';
-import { IncreasePositionProps } from './types';
 
-const IncreasePosition: React.FC<IncreasePositionProps> = () => {
+const IncreasePosition: React.FC = () => {
   // ------------------------------ MOCK DATA ----------------------------------
   const currency0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
   const currency1 = new Token(

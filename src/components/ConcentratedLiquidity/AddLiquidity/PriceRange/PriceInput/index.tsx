@@ -9,7 +9,7 @@ const PriceInput: React.FC<PriceInputProps> = (props) => {
   const { currency0, currency1, price, setPrice, title } = props;
   const theme = useContext(ThemeContext);
   return (
-    <Wrapper textAlign={'center'} display={'flex'} flexDirection={'column'}>
+    <Wrapper>
       <Box display={'flex'} mb={'10px'}>
         <Text color={'text16'} fontSize={'12px'} fontWeight={500}>
           {title}

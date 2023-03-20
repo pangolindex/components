@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
-import Remove from './Remove';
+import RemoveDrawer from './RemoveDrawer';
 import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styles';
-import { EarnWidgetProps } from './types';
 
-const EarnWidget: React.FC<EarnWidgetProps> = () => {
+const EarnWidget: React.FC = () => {
   const { t } = useTranslation();
   const [hash, setHash] = useState<string | undefined>();
   const [attempting, setAttempting] = useState(false);
@@ -83,7 +82,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = () => {
         </Root>
       )}
 
-      <Remove
+      <RemoveDrawer
         isOpen={isRemoveDrawerVisible}
         onClose={() => {
           setShowRemoveDrawer(false);

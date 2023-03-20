@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Drawer, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
+import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { isEvmChain } from 'src/utils';
-import { ButtonWrapper, RWrapper, RemoveWrapper } from './styles';
-import { RemoveProps } from './types';
+import { ButtonWrapper, RemoveLiquidityWrapper, RemoveWrapper } from './styles';
 
-const Remove = ({ isOpen, onClose }: RemoveProps) => {
+const Remove = () => {
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
   const toggleWalletModal = useWalletModalToggle();
@@ -53,7 +52,7 @@ const Remove = ({ isOpen, onClose }: RemoveProps) => {
 
   const removeLiquidity = () => {
     return (
-      <RWrapper>
+      <RemoveLiquidityWrapper>
         {!attempting && !hash && (
           <>
             <Box flex={1}>
@@ -106,7 +105,7 @@ const Remove = ({ isOpen, onClose }: RemoveProps) => {
             isShowButtton={true}
           />
         )}
-      </RWrapper>
+      </RemoveLiquidityWrapper>
     );
   };
 
@@ -124,10 +123,6 @@ const Remove = ({ isOpen, onClose }: RemoveProps) => {
     }
   };
 
-  return (
-    <Drawer title={t('common.remove')} isOpen={isOpen} onClose={onClose}>
-      <RemoveWrapper>{renderRemoveContent()}</RemoveWrapper>
-    </Drawer>
-  );
+  return <RemoveWrapper>{renderRemoveContent()}</RemoveWrapper>;
 };
 export default Remove;

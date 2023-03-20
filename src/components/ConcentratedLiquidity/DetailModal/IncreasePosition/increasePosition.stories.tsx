@@ -1,6 +1,5 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { IncreasePositionProps } from './types';
 import IncreasePosition from '.';
 
 export default {
@@ -24,4 +23,3 @@ const TemplateIncreasePosition: ComponentStory<typeof IncreasePosition> = () => 
 };
 
 export const Default = TemplateIncreasePosition.bind({});
-Default.args = {} as Partial<IncreasePositionProps>;
