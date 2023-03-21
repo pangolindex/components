@@ -37,6 +37,7 @@ export type ButtonStyleProps = {
   minWidth?: string | number;
   padding?: string;
   borderRadius?: string;
+  cursor?: string;
   backgroundColor?: string;
   color?: string;
   borderColor?: string;

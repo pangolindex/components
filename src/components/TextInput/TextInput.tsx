@@ -7,6 +7,7 @@ import { TextInputProps } from './types';
 const TextInput: React.FC<TextInputProps> = (props) => {
   const {
     label,
+    labelColor,
     addonLabel,
     addonAfter,
     addonBefore,
@@ -24,7 +25,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
   return (
     <Box>
       <Box display="flex" justifyContent={label ? 'space-between' : 'flex-end'}>
-        {label && <Text color="textInput.labelText">{label}</Text>}
+        {label && <Text color={labelColor || 'textInput.labelText'}>{label}</Text>}
         {addonLabel && addonLabel}
       </Box>
       <InputWrapper>
