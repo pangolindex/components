@@ -781,7 +781,6 @@
       "poolNotExist": "You don’t have any open or closed positions to show."
     },
     "addLiquidity": {
-      "title": "Add Liquidity",
       "selectFeeTier": "Select Fee Tier"
     },
     "selectPair": {
@@ -864,6 +863,11 @@
   },
   "dropdown": {
     "select": "Select"
+  },
+  "liquidityChartRangeInput": {
+    "uninitialized": "Your position will appear here.",
+    "error": "Liquidity data not available.",
+    "noData": "There is no liquidity data."
   },
   "portfolio": {
     "portfolioAllChain": "Portfolio Value in All Chains",
