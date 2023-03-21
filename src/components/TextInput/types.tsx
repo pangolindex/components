@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ThemeColorsType } from 'src/theme';
 
 export type ReactInputKeyboardEvent = React.KeyboardEvent<HTMLInputElement>;
 
@@ -15,6 +16,7 @@ export type TextInputProps = Omit<React.HTMLProps<HTMLInputElement>, 'accept' | 
   showErrorMessage?: boolean;
   /** Label to be displayed above the input. */
   label?: string;
+  labelColor?: ThemeColorsType;
   addonLabel?: React.ReactNode | null;
   id?: string;
   fontSize?: number;

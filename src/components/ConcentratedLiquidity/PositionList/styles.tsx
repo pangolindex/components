@@ -7,7 +7,6 @@ export const PoolsWrapper = styled(Box)`
   padding: 10px;
   border-radius: 0px;
   overflow: hidden;
-  position: relative;
   color: ${({ theme }) => theme.text7};
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding-bottom : 50px;
