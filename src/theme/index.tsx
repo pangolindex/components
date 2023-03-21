@@ -31,6 +31,7 @@ const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } 
 
 const white = '#FFFFFF';
 const black = '#000000';
+const green1 = '#27AE60';
 
 const philippineYellow = '#FFC800'; //primary
 const mustardYellow = '#E1AA00';
@@ -220,6 +221,14 @@ export const defaultColors: Colors = {
   chainInput: {
     text: black,
     primaryBgColor: ghostWhite,
+  },
+  liquidityChartRangeInput: {
+    bgColor: gray,
+    tooltipBackground: white,
+    tooltipText: philippineYellow,
+    handleAccentColor: white,
+    pathColor: green1,
+    styledLine: black,
   },
 
   primary: philippineYellow,

@@ -176,6 +176,15 @@ export interface Colors {
     primaryBgColor?: Color;
   };
 
+  liquidityChartRangeInput: {
+    bgColor?: Color;
+    tooltipBackground?: Color;
+    tooltipText?: Color;
+    handleAccentColor?: Color;
+    pathColor?: Color;
+    styledLine?: Color;
+  };
+
   primary: Color;
   mustardYellow: Color;
   eerieBlack: Color;
