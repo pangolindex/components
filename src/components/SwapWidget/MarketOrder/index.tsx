@@ -21,15 +21,15 @@ import { useWrapCallbackHook } from 'src/hooks/useWrapCallback';
 import { WrapType } from 'src/hooks/useWrapCallback/constant';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
-import { Field } from 'src/state/pswap/actions';
+import { Field } from 'src/state/pswap/atom';
 import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
-  useHederaSwapTokenAssociated,
   useSwapActionHandlers,
   useSwapState,
-} from 'src/state/pswap/hooks';
+} from 'src/state/pswap/hooks/common';
+import { useHederaSwapTokenAssociated } from 'src/state/pswap/hooks/hedera';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { isTokenOnList, validateAddressMapping } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
@@ -493,8 +493,7 @@ const MarketOrder: React.FC<Props> = ({
         }}
         id="swap-button"
         isDisabled={!isValid || (priceImpactSeverity > 3 && !isExpertMode) || !!swapCallbackError || !!swapInputError}
-        backgroundColor={isValid && priceImpactSeverity > 2 ? 'primary' : undefined}
-        color={isValid && priceImpactSeverity <= 2 ? 'black' : undefined}
+        backgroundColor={isValid && priceImpactSeverity > 2 && isExpertMode ? 'primary' : undefined}
       >
         {swapInputError
           ? swapInputError

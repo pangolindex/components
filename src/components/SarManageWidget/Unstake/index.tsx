@@ -11,7 +11,7 @@ import { TextInput } from 'src/components/TextInput';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useDerivativeSarUnstakeHook } from 'src/state/psarstake/multiChainsHooks';
+import { useDerivativeSarUnstakeHook } from 'src/state/psarstake/hooks';
 import { Position } from 'src/state/psarstake/types';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';

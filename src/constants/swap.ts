@@ -1,5 +1,5 @@
 import { ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
-import { DAIe, PNG, USDC, USDCe, USDTe, UST, axlUST } from './tokens';
+import { DAIe, PNG, USDC, USDCe, USDTe } from './tokens';
 
 // a list of tokens by chain
 type ChainTokenList = {
@@ -30,8 +30,8 @@ export const SWAP_DEFAULT_CURRENCY = {
     outputCurrency: USDC[ChainId.AVALANCHE].address,
   },
   [ChainId.FUJI]: {
-    inputCurrency: '',
-    outputCurrency: '',
+    inputCurrency: 'AVAX',
+    outputCurrency: PNG[ChainId.FUJI].address,
   },
   [ChainId.WAGMI]: {
     inputCurrency: '',
@@ -88,8 +88,6 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     USDTe[ChainId.AVALANCHE],
     DAIe[ChainId.AVALANCHE],
     USDCe[ChainId.AVALANCHE],
-    UST[ChainId.AVALANCHE],
-    axlUST[ChainId.AVALANCHE],
     USDC[ChainId.AVALANCHE],
   ],
   [ChainId.WAGMI]: [WAVAX[ChainId.WAGMI], PNG[ChainId.WAGMI]],

@@ -7,23 +7,25 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
-import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
-import { useGetEarnedAmount, useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
-import { useHederaPGLToken } from 'src/state/pwallet/hooks';
+import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/hooks';
+import { useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
+import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
+import { useHederaPGLToken } from 'src/state/pwallet/hooks/hedera';
 import { hederaFn } from 'src/utils/hedera';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
 interface RemoveFarmProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
   onClose: () => void;
   // this prop will be used if user move away from first step
-  onLoadingOrComplete?: (value: boolean) => void;
+  onLoading?: (value: boolean) => void;
+  // percetage is the percetage removed
+  onComplete?: (percetage: number) => void;
   redirectToCompound?: () => void;
 }
-const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redirectToCompound }: RemoveFarmProps) => {
+const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redirectToCompound }: RemoveFarmProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const [isRemoveLiquidityDrawerVisible, setShowRemoveLiquidityDrawer] = useState(false);
@@ -39,11 +41,11 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
 
   const png = PNG[chainId];
 
-  const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
-  const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo?.rewardTokensAddress);
-  const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
-
   const chefType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
+
+  const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
+  const rewardTokens = useGetRewardTokens(stakingInfo);
+  const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
   const mixpanel = useMixpanel();
 
@@ -79,22 +81,16 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
 
   const { callback: withdrawCallback, error: withdrawCallbackError } = useWithdrawCallback({
     version,
-    poolId: stakingInfo?.pid,
+    poolId: chefType === ChefType.MINI_CHEF ? undefined : (stakingInfo as MinichefStakingInfo)?.pid,
     stakedAmount: stakingInfo?.stakedAmount,
     stakingRewardAddress: stakingInfo?.stakingRewardAddress,
   });
 
   useEffect(() => {
-    if (onLoadingOrComplete) {
-      if (hash || attempting || confirmRemove) {
-        onLoadingOrComplete(true);
-      } else {
-        onLoadingOrComplete(false);
-      }
+    if (onLoading) {
+      onLoading(attempting);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hash, attempting, confirmRemove]);
+  }, [attempting]);
 
   function wrappedOnDismiss() {
     setHash(undefined);
@@ -109,6 +105,10 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
       try {
         const hash = await withdrawCallback();
         setHash(hash);
+
+        if (onComplete) {
+          onComplete(100);
+        }
 
         mixpanel.track(MixPanelEvents.REMOVE_FARM, {
           chainId: chainId,
@@ -142,14 +142,10 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
     error = withdrawCallbackError;
   }
 
-  const { earnedAmount } = useGetEarnedAmount(stakingInfo?.pid as string);
-
-  const newEarnedAmount = version !== 2 ? stakingInfo?.earnedAmount : earnedAmount;
+  const { earnedAmount } = stakingInfo;
 
   const token0 = stakingInfo.tokens[0];
   const token1 = stakingInfo.tokens[1];
-
-  const cheftType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
   const renderButton = () => {
     if (!isHederaTokenAssociated && notAssociateTokens?.length > 0) {
@@ -190,11 +186,11 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
                       />
                     </StatWrapper>
                   )}
-                  {newEarnedAmount && (
+                  {earnedAmount && (
                     <StatWrapper>
                       <Stat
                         title={t('earn.unclaimedReward', { symbol: png.symbol })}
-                        stat={newEarnedAmount?.toSignificant(4)}
+                        stat={earnedAmount?.toSignificant(4)}
                         titlePosition="top"
                         titleFontSize={12}
                         statFontSize={[20, 18]}
@@ -225,7 +221,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoadingOrComplete, redire
                 <Button
                   variant="primary"
                   onClick={
-                    cheftType === ChefType.PANGO_CHEF && !confirmRemove ? () => setConfirmRemove(true) : onWithdraw
+                    chefType === ChefType.PANGO_CHEF && !confirmRemove ? () => setConfirmRemove(true) : onWithdraw
                   }
                 >
                   {error ?? t('earn.withdrawAndClaim')}

@@ -43,6 +43,7 @@ export const ErrorWrapper = styled(Box)`
   grid-template-rows: minmax(300px, auto) max-content;
   height: 100%;
   padding: 10px;
+  word-wrap: break-word;
 `;
 
 export const ErrorBox = styled(Box)`

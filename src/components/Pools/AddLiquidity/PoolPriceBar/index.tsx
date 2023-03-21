@@ -5,7 +5,7 @@ import { Box, Stat } from 'src/components';
 import { ONE_BIPS } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
-import { Field } from 'src/state/pmint/actions';
+import { Field } from 'src/state/pmint/atom';
 import { GridContainer, Root } from './styled';
 
 interface BarProps {

@@ -6074,10 +6074,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@pangolindex/sdk@5.0.0-internal.17ba06c":
-  version "5.0.0-internal.17ba06c"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-5.0.0-internal.17ba06c.tgz#1414629a30db17c8838e1c2a46eb1c661489bc34"
-  integrity sha512-nOW4X8ClEJ65FlSHdvBmKvM07Kp2bPx8XQcrOafSmNsElOes/nTNyP6PDdT4FOj2Gan1BKEK809HF9TTFAdfyA==
+"@pangolindex/sdk@5.0.1-internal.bdd1315":
+  version "5.0.1-internal.bdd1315"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-5.0.1-internal.bdd1315.tgz#b4d2751d54c70bc220b46a135ce53d3fe74eee5a"
+  integrity sha512-xdX8kNGsyXFr9mDuQ/4ZYScza/GBVuBAooMIpcGxcfgn3tecwv1Whu6egHDoN6dmxJSO0QAoj+oYIQIy5AGAog==
   dependencies:
     big.js "^5.2.2"
     decimal.js-light "^2.5.0"
@@ -17825,6 +17825,11 @@ jest@^24.8.0:
   dependencies:
     import-local "^2.0.0"
     jest-cli "^24.9.0"
+
+jotai@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/jotai/-/jotai-2.0.3.tgz#3b67cda9f6d5feb70a14db0b842a9873aacda8b5"
+  integrity sha512-MMjhSPAL3RoeZD9WbObufRT2quThEAEknHHridf2ma8Ml7ZVQmUiHk0ssdbR3F0h3kcwhYqSGJ59OjhPge7RRg==
 
 jpeg-js@0.4.2:
   version "0.4.2"

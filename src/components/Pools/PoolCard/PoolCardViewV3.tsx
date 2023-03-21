@@ -6,9 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Drawer, Stat, Text } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks';
+import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks/common';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import FarmDrawer from '../FarmDrawer';
@@ -74,7 +74,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
   const farmApr = stakingInfo?.stakingApr;
   const earnedAmount = stakingInfo?.earnedAmount;
 
-  const userApr = useUserPangoChefAPR(stakingInfo);
+  const userApr = useUserPangoChefAPR(isStaking ? stakingInfo : undefined);
 
   const userRewardRate = stakingInfo?.userRewardRate;
   const rewardRate = isStaking ? userRewardRate : stakingInfo?.poolRewardRate;

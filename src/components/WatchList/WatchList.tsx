@@ -7,7 +7,7 @@ import { Box, Button, ShowMore } from 'src/components';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import useToggle from 'src/hooks/useToggle';
 import { CoingeckoWatchListToken, useCoinGeckoTokens } from 'src/state/pcoingecko/hooks';
-import { useSelectedCurrencyLists } from 'src/state/pwatchlists/hooks';
+import { useSelectedCurrencyLists } from 'src/state/pwatchlists/atom';
 import { Hidden } from 'src/theme/components';
 import CoinChart from './CoinChart';
 import CurrencyPopover from './CurrencyPopover';

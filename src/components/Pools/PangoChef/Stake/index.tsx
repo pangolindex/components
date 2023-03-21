@@ -14,12 +14,12 @@ import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { usePairContract, usePangoChefContract } from 'src/hooks/useContract';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
-import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/hooks';
-import { usePangoChefStakeCallbackHook } from 'src/state/ppangoChef/multiChainsHooks';
+import { usePangoChefStakeCallbackHook } from 'src/state/ppangoChef/hooks';
+import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/hooks/hedera';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useDerivedStakeInfo, useGetPoolDollerWorth, useMinichefPendingRewards } from 'src/state/pstake/hooks';
+import { useDerivedStakeInfo, useGetPoolDollerWorth, useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
 import { SpaceType } from 'src/state/pstake/types';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
 import ConfirmDrawer from './ConfirmDrawer';
 import {

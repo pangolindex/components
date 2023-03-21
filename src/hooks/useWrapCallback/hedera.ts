@@ -1,10 +1,10 @@
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Field } from 'src/state/pswap/actions';
-import { tryParseAmount, useSwapActionHandlers } from 'src/state/pswap/hooks';
+import { Field } from 'src/state/pswap/atom';
+import { tryParseAmount, useSwapActionHandlers } from 'src/state/pswap/hooks/common';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { useCurrencyBalance } from 'src/state/pwallet/hooks';
+import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { hederaFn } from 'src/utils/hedera';
 import { useChainId, usePangolinWeb3 } from '../index';
 import { NOT_APPLICABLE, WrapType } from './constant';

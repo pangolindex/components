@@ -5,7 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import Drawer from 'src/components/Drawer';
 import { usePangolinWeb3 } from 'src/hooks';
-import { Field } from 'src/state/pswap/actions';
+import { Field } from 'src/state/pswap/atom';
 import { getEtherscanLink, tradeMeaningfullyDiffers } from 'src/utils';
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { Box, Button, CurrencyLogo, Loader, Text } from '../../';
@@ -170,7 +170,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
     <ErrorWrapper>
       <ErrorBox>
         <AlertTriangle color={theme.error} style={{ strokeWidth: 1.5 }} size={64} />
-        <Text fontWeight={500} fontSize={16} color={'error'} style={{ textAlign: 'center', width: '85%' }}>
+        <Text fontWeight={500} fontSize={16} color={'error'} style={{ textAlign: 'center' }}>
           {swapErrorMessage}
         </Text>
       </ErrorBox>

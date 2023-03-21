@@ -10,12 +10,11 @@ import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/ho
 import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
-import { useDispatch } from 'src/state';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Field, resetBurnState } from 'src/state/pburn/actions';
+import { Field, useBurnStateAtom } from 'src/state/pburn/atom';
 import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/state/pburn/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { useRemoveLiquidityHook } from 'src/state/pwallet/multiChainsHooks';
+import { useRemoveLiquidityHook } from 'src/state/pwallet/hooks';
 import { isEvmChain } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { ButtonWrapper, RemoveWrapper } from './styleds';
@@ -24,19 +23,22 @@ interface RemoveLiquidityProps {
   currencyA?: Currency;
   currencyB?: Currency;
   // this prop will be used if user move away from first step
-  onLoadingOrComplete?: (value: boolean) => void;
+  onLoading?: (value: boolean) => void;
+  // percetage is the percetage removed
+  onComplete?: (percetage: number) => void;
 }
 
-const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLiquidityProps) => {
+const RemoveLiquidity = ({ currencyA, currencyB, onLoading, onComplete }: RemoveLiquidityProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { library } = useLibrary();
-  const dispatch = useDispatch();
 
   const useApproveCallback = useApproveCallbackHook[chainId];
   const useRemoveLiquidity = useRemoveLiquidityHook[chainId];
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
+
+  const { resetBurnState } = useBurnStateAtom();
 
   const wrappedCurrencyA = wrappedCurrency(currencyA, chainId);
   const wrappedCurrencyB = wrappedCurrency(currencyB, chainId);
@@ -98,16 +100,10 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
   }, [_onUserInput]);
 
   useEffect(() => {
-    if (onLoadingOrComplete) {
-      if (hash || attempting) {
-        onLoadingOrComplete(true);
-      } else {
-        onLoadingOrComplete(false);
-      }
+    if (onLoading) {
+      onLoading(attempting);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hash, attempting]);
+  }, [attempting]);
 
   const onChangePercentage = (value: number) => {
     _onUserInput(Field.LIQUIDITY_PERCENT, `${value}`, pairAddress);
@@ -125,9 +121,15 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
 
   const mixpanel = useMixpanel();
 
+  // on change the amount we need to change the steper
   useEffect(() => {
     setPercetage(Number(parsedAmounts[Field.LIQUIDITY_PERCENT].toFixed(0)) / 25);
   }, [parsedAmounts]);
+
+  // reset signature when change percentage
+  useEffect(() => {
+    setSignatureData(null);
+  }, [percetage]);
 
   async function onRemove() {
     if (!chainId || !library || !account || !deadline) throw new Error(t('error.missingDependencies'));
@@ -144,6 +146,11 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
       const response = await removeLiquidity(removeData);
 
       setHash(response?.hash);
+
+      if (onComplete) {
+        onComplete(percetage);
+      }
+
       mixpanel.track(MixPanelEvents.REMOVE_LIQUIDITY, {
         chainId: chainId,
         tokenA: currencyA?.symbol,
@@ -151,7 +158,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoadingOrComplete }: RemoveLi
         tokenA_Address: wrappedCurrencyA?.address,
         tokenB_Address: wrappedCurrencyB?.address,
       });
-      dispatch(resetBurnState({ pairAddress }));
+      resetBurnState({ pairAddress });
     } catch (err) {
       const _err = err as any;
 

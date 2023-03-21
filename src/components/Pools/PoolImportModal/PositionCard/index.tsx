@@ -5,7 +5,7 @@ import { Box, Button, DoubleCurrencyLogo, Stat, Text } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { usePairBalanceHook } from 'src/state/pwallet/multiChainsHooks';
+import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { InnerWrapper, Wrapper } from './styleds';
 
