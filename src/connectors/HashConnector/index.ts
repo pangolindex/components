@@ -74,7 +74,7 @@ export class HashConnector extends AbstractConnector {
     this.handleFoundExtensionEvent = this.handleFoundExtensionEvent.bind(this);
     this.handleFoundIframeEvent = this.handleFoundIframeEvent.bind(this);
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
-    this.init();
+    // this.init();
   }
 
   public async init() {
@@ -163,6 +163,15 @@ export class HashConnector extends AbstractConnector {
       this.instance.connectToLocalWallet();
     }
 
+    // hashpack uses local storage to save some information, as we are using the same connector
+    // for testnet and mainnnet we need to clean this local storage whenever we change chains
+    const chainIdConneted = localStorage.getItem('hashconnectedChainId');
+    if (chainIdConneted && chainIdConneted !== this.chainId.toString()) {
+      localStorage.removeItem('hashconnectData');
+      await this.init();
+      this.instance.connectToLocalWallet();
+    }
+
     // workaround, it has not been initialized, we need to initialize it so we can
     // activate this connector without appearing the popup to connect the wallet
     if (!this.initData) {
@@ -176,6 +185,7 @@ export class HashConnector extends AbstractConnector {
 
       this.topic = this.initData.topic;
       this.pairingString = this.initData.pairingString;
+      localStorage.setItem('hashconnectedChainId', this.chainId.toString());
     }
 
     this.provider = await this.getProvider();
@@ -204,6 +214,7 @@ export class HashConnector extends AbstractConnector {
       this.instance.disconnect(this.pairingData?.topic);
       this.instance.clearConnectionsAndData();
       localStorage.removeItem('hashconnectData');
+      localStorage.removeItem('hashconnectedChainId');
       this.initData = null;
       this.pairingData = null;
       this.topic = '';
