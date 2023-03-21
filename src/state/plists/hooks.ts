@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { AEB_TOKENS } from 'src/constants/lists';
 import { useChainId } from 'src/hooks';
 import { useSwapState } from 'src/state/pswap/atom';
-import { AppState, useSelector } from '../index';
+import { useListsStateAtom } from './atom';
 
 type TagDetails = Tags[keyof Tags];
 export interface TagInfo extends TagDetails {
@@ -103,7 +103,8 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
 }
 
 export function useTokenList(urls: string[] | undefined): TokenAddressMap {
-  const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
+  const { listsState } = useListsStateAtom();
+  const lists = listsState?.byUrl;
 
   const tokenList = useMemo(() => ({} as { [chainId: string]: { [tokenAddress: string]: WrappedTokenInfo } }), []);
   return useMemo(() => {
@@ -130,7 +131,9 @@ export function useTokenList(urls: string[] | undefined): TokenAddressMap {
 }
 
 export function useSelectedListUrl(): string[] | undefined {
-  const selectedUrls = useSelector<AppState['plists']['selectedListUrl']>((state) => state?.plists?.selectedListUrl);
+  const { listsState } = useListsStateAtom();
+  const selectedUrls = listsState?.selectedListUrl;
+
   return useMemo(() => ([] as string[]).concat(selectedUrls || []), [selectedUrls]);
 }
 
@@ -146,10 +149,10 @@ export function useSelectedListInfo(): {
   selectedCount: number;
 } {
   const selectedListUrl = useSelectedListUrl();
-
+  const { listsState } = useListsStateAtom();
   const firstSelectedUrl = (selectedListUrl || [])?.[0];
 
-  const listsByUrl = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
+  const listsByUrl = listsState?.byUrl;
 
   const list = firstSelectedUrl ? listsByUrl[firstSelectedUrl] : undefined;
 
@@ -164,7 +167,8 @@ export function useSelectedListInfo(): {
 
 // returns all downloaded current lists
 export function useAllLists(): TokenList[] {
-  const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
+  const { listsState } = useListsStateAtom();
+  const lists = listsState?.byUrl;
 
   return useMemo(
     () =>

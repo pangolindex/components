@@ -25,31 +25,15 @@ import { RANGO_API_KEY, SQUID_API } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
-import { AppState, useDispatch, useSelector } from 'src/state';
 import { getSigner } from 'src/utils';
 import { useCurrencyBalances } from '../pwallet/hooks/common';
-import {
-  ChainField,
-  CurrencyField,
-  TransactionStatus,
-  changeRouteLoaderStatus,
-  changeTransactionLoaderStatus,
-  clearTransactionData,
-  selectChain,
-  selectCurrency,
-  selectRoute,
-  setRecipient,
-  setRoutes,
-  setTransactionError,
-  switchChains,
-  switchCurrencies,
-  typeAmount,
-} from './actions';
+import { BridgeState, ChainField, CurrencyField, TransactionStatus, useBridgeStateAtom } from './atom';
 import { getRoutesProviders } from './providers';
 import { BridgePrioritizations, GetRoutesProps, Route, SendTransaction } from './types';
 
-export function useBridgeState(): AppState['pbridge'] {
-  return useSelector<AppState['pbridge']>((state) => state.pbridge);
+export function useBridgeState(): BridgeState {
+  const { bridgeState } = useBridgeStateAtom();
+  return bridgeState;
 }
 
 export function useBridgeActionHandlers(): {
@@ -63,73 +47,80 @@ export function useBridgeActionHandlers(): {
   onChangeRouteLoaderStatus: () => void;
   onClearTransactionData: (transactionStatus: TransactionStatus) => void;
 } {
-  const dispatch = useDispatch();
+  const {
+    selectRoute,
+    selectCurrency,
+    selectChain,
+    switchCurrencies,
+    switchChains,
+    clearTransactionData,
+    setRoutes,
+    typeAmount,
+    setRecipient,
+    changeRouteLoaderStatus,
+  } = useBridgeStateAtom();
   const { routes, routesLoaderStatus } = useBridgeState();
 
   const onSelectRoute = (route: Route) => {
     const selectedRouteIndex = routes.findIndex((r) => r === route);
-    dispatch(selectRoute({ selectedRoute: selectedRouteIndex }));
+    selectRoute({ selectedRoute: selectedRouteIndex });
   };
 
   const onCurrencySelection = useCallback(
     (field: CurrencyField, currency: BridgeCurrency) => {
-      dispatch(
-        selectCurrency({
-          field,
-          currencyId: currency?.symbol || '',
-        }),
-      );
+      selectCurrency({
+        field,
+        currencyId: currency?.symbol || '',
+      });
     },
-    [dispatch],
+    [selectCurrency],
   );
 
   const onChainSelection = useCallback(
     (field: ChainField, chain: Chain) => {
-      dispatch(
-        selectChain({
-          field,
-          chainId: chain ? chain.id : '',
-        }),
-      );
+      selectChain({
+        field,
+        chainId: chain ? chain.id : '',
+      });
     },
-    [dispatch],
+    [selectChain],
   );
 
   const onSwitchTokens = useCallback(() => {
-    dispatch(switchCurrencies());
-  }, [dispatch]);
+    switchCurrencies();
+  }, [switchCurrencies]);
 
   const onSwitchChains = useCallback(() => {
-    dispatch(switchChains());
-  }, [dispatch]);
+    switchChains();
+  }, [switchChains]);
 
   const onClearTransactionData = useCallback(
     (transactionStatus?: TransactionStatus) => {
-      dispatch(clearTransactionData());
+      clearTransactionData();
       if (transactionStatus === TransactionStatus.SUCCESS) {
-        dispatch(setRoutes({ routes: [], routesLoaderStatus: false }));
+        setRoutes({ routes: [], routesLoaderStatus: false });
       }
     },
-    [dispatch],
+    [clearTransactionData, setRoutes],
   );
 
   const onUserInput = useCallback(
     (field: CurrencyField, typedValue: string) => {
-      dispatch(typeAmount({ field, typedValue }));
+      typeAmount({ field, typedValue });
     },
-    [dispatch],
+    [typeAmount],
   );
 
   const onChangeRecipient = useCallback(
     (recipient: string | null) => {
-      dispatch(setRecipient({ recipient }));
+      setRecipient({ recipient });
     },
-    [dispatch],
+    [setRecipient],
   );
 
   const onChangeRouteLoaderStatus = useCallback(() => {
-    dispatch(changeRouteLoaderStatus({ routesLoaderStatus: !routesLoaderStatus }));
-  }, [dispatch]);
+    changeRouteLoaderStatus({ routesLoaderStatus: !routesLoaderStatus });
+  }, [changeRouteLoaderStatus]);
 
   return {
     onSwitchTokens,
@@ -305,10 +296,10 @@ export function useBridgeSwapActionHandlers(): {
   getRoutes: (props: GetRoutesProps) => void;
   sendTransaction: SendTransaction;
 } {
-  const dispatch = useDispatch();
+  const { setRoutes, changeTransactionLoaderStatus, setTransactionError } = useBridgeStateAtom();
   const getRoutes = async (routesProps: GetRoutesProps) => {
     if (parseFloat(routesProps.amount) <= 0) {
-      dispatch(setRoutes({ routes: [], routesLoaderStatus: false }));
+      setRoutes({ routes: [], routesLoaderStatus: false });
     } else {
       const promises = Object.values(getRoutesProviders).map((getRoutes) => getRoutes(routesProps));
       const routes = (await Promise.allSettled(promises)).flatMap((p) => (p.status === 'fulfilled' ? p.value : []));
@@ -322,51 +313,44 @@ export function useBridgeSwapActionHandlers(): {
         return 0;
       };
 
-      dispatch(
-        setRoutes({
-          routes: (routes.filter((x: Route | undefined) => !!x) as Route[]).sort(compareRoutes),
-          routesLoaderStatus: false,
-        }),
-      );
+      setRoutes({
+        routes: (routes.filter((x: Route | undefined) => !!x) as Route[]).sort(compareRoutes),
+        routesLoaderStatus: false,
+      });
     }
   };
 
   const sendTransactionLifi = async (library: any, selectedRoute?: Route, account?: string | null) => {
-    dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
+    changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined });
     const lifi = new LIFI();
 
     const signer: JsonRpcSigner = await getSigner(library, account || '');
     // executing a route
     try {
       await lifi.executeRoute(signer as any, selectedRoute?.nativeRoute as LifiRoute);
-      dispatch(
+
+      changeTransactionLoaderStatus({
+        transactionLoaderStatus: false,
+        transactionStatus: TransactionStatus.SUCCESS,
+      });
+    } catch (e: Error | unknown) {
+      if (e) {
+        changeTransactionLoaderStatus({
+          transactionLoaderStatus: false,
+          transactionStatus: TransactionStatus.FAILED,
+        });
+        setTransactionError({ transactionError: e as Error });
+      } else {
         changeTransactionLoaderStatus({
           transactionLoaderStatus: false,
           transactionStatus: TransactionStatus.SUCCESS,
-        }),
-      );
-    } catch (e: Error | unknown) {
-      if (e) {
-        dispatch(
-          changeTransactionLoaderStatus({
-            transactionLoaderStatus: false,
-            transactionStatus: TransactionStatus.FAILED,
-          }),
-        );
-        dispatch(setTransactionError({ transactionError: e as Error }));
-      } else {
-        dispatch(
-          changeTransactionLoaderStatus({
-            transactionLoaderStatus: false,
-            transactionStatus: TransactionStatus.SUCCESS,
-          }),
-        );
+        });
       }
     }
   };
 
   const sendTransactionSquid = async (library: any, selectedRoute?: Route, account?: string | null) => {
-    dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
+    changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined });
     const signer: JsonRpcSigner = await getSigner(library, account || '');
     const squidRoute = selectedRoute?.nativeRoute as SquidRouteData;
     const squid = new Squid({
@@ -380,44 +364,38 @@ export function useBridgeSwapActionHandlers(): {
         route: squidRoute,
       });
       await tx.wait();
-      dispatch(
-        changeTransactionLoaderStatus({
-          transactionLoaderStatus: false,
-          transactionStatus: TransactionStatus.SUCCESS,
-        }),
-      );
+
+      changeTransactionLoaderStatus({
+        transactionLoaderStatus: false,
+        transactionStatus: TransactionStatus.SUCCESS,
+      });
     } catch (e: Error | unknown) {
-      dispatch(
-        changeTransactionLoaderStatus({
-          transactionLoaderStatus: false,
-          transactionStatus: TransactionStatus.FAILED,
-        }),
-      );
-      dispatch(setTransactionError({ transactionError: e as Error }));
+      changeTransactionLoaderStatus({
+        transactionLoaderStatus: false,
+        transactionStatus: TransactionStatus.FAILED,
+      });
+      setTransactionError({ transactionError: e as Error });
     }
   };
 
   const sendTransactionRango = async (library: any, selectedRoute?: Route, account?: string | null) => {
-    dispatch(changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined }));
+    changeTransactionLoaderStatus({ transactionLoaderStatus: true, transactionStatus: undefined });
     const signer: JsonRpcSigner = await getSigner(library, account || '');
     const rangoRoute = selectedRoute?.nativeRoute as RangoRoute;
     const rango = new RangoClient(RANGO_API_KEY);
     try {
       await rango.executeEvmRoute(signer as any, rangoRoute);
-      dispatch(
-        changeTransactionLoaderStatus({
-          transactionLoaderStatus: false,
-          transactionStatus: TransactionStatus.SUCCESS,
-        }),
-      );
+
+      changeTransactionLoaderStatus({
+        transactionLoaderStatus: false,
+        transactionStatus: TransactionStatus.SUCCESS,
+      });
     } catch (e: Error | unknown) {
-      dispatch(
-        changeTransactionLoaderStatus({
-          transactionLoaderStatus: false,
-          transactionStatus: TransactionStatus.FAILED,
-        }),
-      );
-      dispatch(setTransactionError({ transactionError: e as Error }));
+      changeTransactionLoaderStatus({
+        transactionLoaderStatus: false,
+        transactionStatus: TransactionStatus.FAILED,
+      });
+      setTransactionError({ transactionError: e as Error });
     }
   };
 

@@ -36,7 +36,7 @@ import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
 import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { ChainField, CurrencyField, TransactionStatus } from 'src/state/pbridge/actions';
+import { ChainField, CurrencyField, TransactionStatus } from 'src/state/pbridge/atom';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
 import { changeNetwork, checkAddressNetworkBaseMapping } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
