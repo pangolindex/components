@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, CountdownCounter, Loader, Text, Tooltip } from 'src/components';
 import { usePangolinWeb3 } from 'src/hooks';
-import { ChainField, CurrencyField } from 'src/state/pbridge/actions';
+import { ChainField, CurrencyField } from 'src/state/pbridge/atom';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
 import { Route } from 'src/state/pbridge/types';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';

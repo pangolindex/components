@@ -6,7 +6,7 @@ import { SwapTypes } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useAllTokens } from 'src/hooks/useAllTokens';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Field } from 'src/state/pswap/actions';
+import { Field } from 'src/state/pswap/atom';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks/common';
 import SelectTokenDrawer from '../SelectTokenDrawer';
 import TradeOption from '../TradeOption';

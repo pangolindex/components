@@ -3,21 +3,10 @@ import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import React from 'react';
 import { createDispatchHook, createSelectorHook, createStoreHook } from 'react-redux';
 import { load, save } from 'redux-localstorage-simple';
-import pbridge from './pbridge/reducer';
-import plists from './plists/reducer';
-import pmulticall from './pmulticall/reducer';
-import pswap from './pswap/reducer';
-import puser from './puser/reducer';
 
-export const PANGOLIN_PERSISTED_KEYS: string[] = ['puser', 'plists'];
+export const PANGOLIN_PERSISTED_KEYS: string[] = [];
 
-export const pangolinReducers = {
-  pswap,
-  plists,
-  pmulticall,
-  puser,
-  pbridge,
-};
+export const pangolinReducers = {};
 
 const store = configureStore({
   reducer: pangolinReducers,
