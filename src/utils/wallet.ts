@@ -43,7 +43,7 @@ export async function changeNetwork(args: {
   let deactivateWallet = false;
   // we need to deactivate the web3react when user chanve for another chain type or
   // when user want to change to any hedera network
-  if (connectedChain.network_type !== chain.network_type || chain.network_type === NetworkType.EVM) {
+  if (connectedChain.network_type !== chain.network_type || chain.network_type === NetworkType.HEDERA) {
     deactivate();
     deactivateWallet = true;
     await wait(500);
