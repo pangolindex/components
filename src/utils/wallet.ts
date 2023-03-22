@@ -1,6 +1,6 @@
 import { CHAINS, Chain, ChainId, NetworkType } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { isDeepEqual } from 'react-use/lib/util';
+import deepEqual from 'deep-equal';
 import { NetworkConnector } from 'src/connectors/NetworkConnector';
 import { hashPack, hashPackTestnet, injectWallet } from 'src/wallet';
 import { Wallet, activeFunctionType } from 'src/wallet/classes/wallet';
@@ -18,7 +18,7 @@ export function getInstalledEvmWallet(wallets: Wallet[]) {
   // skip injected wallet
   return wallets.filter(
     (wallet) =>
-      wallet.supportedChains.includes(NetworkType.EVM) && wallet.installed() && !isDeepEqual(wallet, injectWallet),
+      wallet.supportedChains.includes(NetworkType.EVM) && wallet.installed() && !deepEqual(wallet, injectWallet),
   );
 }
 
