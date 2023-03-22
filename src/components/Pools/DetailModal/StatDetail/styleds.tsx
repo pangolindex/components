@@ -18,4 +18,8 @@ export const StateContainer = styled.div`
     grid-column-gap: 6px;
     grid-row-gap:6px;
   `};
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: repeat(3, 1fr);
+    align-items: start;
+  `};
 `;

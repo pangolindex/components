@@ -71,6 +71,7 @@ export const defaultColors: Colors = {
   text13: '#000000',
   text14: '#000000',
   text15: '#000000',
+  text16: '#686868',
 
   // backgrounds / greys
   bg1: '#FFFFFF',

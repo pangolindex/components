@@ -7,6 +7,7 @@ export type CurrencyInputProps = TextInputProps & {
   pair?: Pair | null;
   alternativeLogoSrc?: string | null;
   isShowTextInput?: boolean;
+  showArrowIcon?: boolean;
   buttonStyle?: ButtonStyleProps;
   onTokenClick?: () => void;
 };

@@ -4,7 +4,7 @@ import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
+import { Box, DoubleCurrencyLogo, RewardTokens, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
 import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks/common';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
@@ -12,7 +12,6 @@ import { useGetRewardTokens } from 'src/state/pstake/hooks/common';
 import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { CloseIcon, Hidden, Visible } from 'src/theme/components';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
-import RewardTokens from '../../RewardTokens';
 import { HeaderRoot, HeaderWrapper, StatsWrapper } from './styled';
 
 type Props = {
@@ -97,7 +96,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
             {currency0?.symbol}/{currency1?.symbol}
           </Text>
         </Box>
-        <Visible upToSmall={true}>
+        <Visible upToSmall={true} upToMedium={true}>
           <CloseIcon onClick={onClose} color={theme.text3} />
         </Visible>
       </HeaderWrapper>
@@ -146,7 +145,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
           statFontSize={[24, 18]}
           titleColor="text2"
         />
-        <Hidden upToSmall={true}>
+        <Hidden upToSmall={true} upToMedium={true}>
           <CloseIcon onClick={onClose} color={theme.text3} />
         </Hidden>
       </StatsWrapper>

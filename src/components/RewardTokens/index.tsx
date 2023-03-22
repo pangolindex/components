@@ -1,16 +1,11 @@
 import { Token } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
 import { Box, CurrencyLogo } from 'src/components';
-import { LogoSize } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
+import { RewardTokensProps } from './types';
 
-interface RewardTokensLogoProps {
-  size?: LogoSize;
-  rewardTokens?: Array<Token | null | undefined> | null;
-}
-
-export default function RewardTokens({ rewardTokens = [], size = 24 }: RewardTokensLogoProps) {
+const RewardTokens = ({ rewardTokens = [], size = 24 }: RewardTokensProps) => {
   const chainId = useChainId();
   const png = PNG[chainId];
 
@@ -18,7 +13,6 @@ export default function RewardTokens({ rewardTokens = [], size = 24 }: RewardTok
     if (!rewardTokens) {
       return [];
     }
-    // add png in first position
     const filteredTokens = rewardTokens.filter((token) => !!token && !token.equals(png));
     return [png, ...filteredTokens];
   }, [rewardTokens]);
@@ -30,4 +24,6 @@ export default function RewardTokens({ rewardTokens = [], size = 24 }: RewardTok
       })}
     </Box>
   );
-}
+};
+
+export default RewardTokens;

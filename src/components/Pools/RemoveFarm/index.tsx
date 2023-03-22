@@ -61,8 +61,12 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
   // because case a user farm in non Pangolin token/Wrapped token farm and compound to this farm
   // in compoundTo
   const tokensToCheck = useMemo(() => {
+    // add png in first position
+    const filteredTokens = (rewardTokens || []).filter((token) => !!token && !token.equals(png));
+    const _rewardTokens = [png, ...filteredTokens];
+
     if (Hedera.isHederaChain(chainId)) {
-      return [...(rewardTokens || []), pglToken].filter((item) => !!item) as Token[];
+      return [...(_rewardTokens || []), pglToken].filter((item) => !!item) as Token[];
     }
     return undefined;
   }, [rewardTokens, pglToken, chainId]);
