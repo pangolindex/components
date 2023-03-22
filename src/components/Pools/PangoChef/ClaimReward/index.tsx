@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
@@ -38,7 +38,14 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
   const rewardTokens = useGetRewardTokens(stakingInfo?.rewardTokens, stakingInfo?.rewardTokensAddress);
   const mixpanel = useMixpanel();
 
-  const notAssociateTokens = useGetHederaTokenNotAssociated(rewardTokens || []);
+  // need to check pbar as reward token associate
+  const tokensToCheck = useMemo(() => {
+    // add png in first position
+    const filteredTokens = (rewardTokens || []).filter((token) => !!token && !token.equals(png));
+    return [png, ...filteredTokens];
+  }, [rewardTokens, chainId]);
+
+  const notAssociateTokens = useGetHederaTokenNotAssociated(tokensToCheck || []);
 
   // here we get all not associated rewards tokens
   // but we associate one token at a time
