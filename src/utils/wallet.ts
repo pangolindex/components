@@ -123,7 +123,9 @@ export async function changeNetwork(args: {
       if (chain.chain_id === ChainId.HEDERA_MAINNET) {
         hashPack.tryActivation(
           activate,
-          () => {},
+          () => {
+            disconnectWallets(wallets);
+          },
           () => {},
         );
       } else {
