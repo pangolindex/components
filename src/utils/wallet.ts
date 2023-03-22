@@ -1,7 +1,8 @@
 import { CHAINS, Chain, ChainId, NetworkType } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import { isDeepEqual } from 'react-use/lib/util';
 import { NetworkConnector } from 'src/connectors/NetworkConnector';
-import { hashPack, hashPackTestnet } from 'src/wallet';
+import { hashPack, hashPackTestnet, injectWallet } from 'src/wallet';
 import { Wallet, activeFunctionType } from 'src/wallet/classes/wallet';
 import { wait } from './retry';
 
@@ -11,6 +12,14 @@ export function disconnectWallets(wallets: Wallet[]) {
       wallet.isActive = false;
     }
   });
+}
+
+export function getInstalledEvmWallet(wallets: Wallet[]) {
+  // skip injected wallet
+  return wallets.filter(
+    (wallet) =>
+      wallet.supportedChains.includes(NetworkType.EVM) && wallet.installed() && !isDeepEqual(wallet, injectWallet),
+  );
 }
 
 /**
@@ -35,10 +44,6 @@ export async function changeNetwork(args: {
     return;
   }
 
-  function getInstalledEvmWallet() {
-    return wallets.filter((wallet) => wallet.supportedChains.includes(NetworkType.EVM) && wallet.installed);
-  }
-
   const connectedChain = CHAINS[chainId];
   let deactivateWallet = false;
   // we need to deactivate the web3react when user chanve for another chain type or
@@ -55,7 +60,7 @@ export async function changeNetwork(args: {
       // if we leave a chain for example hedera for avalanche (evm)
       // we need to change wallets so we deactivate web3react and activate an evm wallet
       if (deactivateWallet) {
-        const evmWallets = getInstalledEvmWallet();
+        const evmWallets = getInstalledEvmWallet(wallets);
         if (wallets.length > 0) {
           for (let index = 0; index < evmWallets.length; index++) {
             try {

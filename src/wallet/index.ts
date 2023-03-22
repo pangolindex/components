@@ -9,7 +9,7 @@ import { HashPackWallet, NearWallet, XDefiWallet } from './classes/nonInjected';
 import { CoinbaseWallet, GnosisSafeWallet, WalletConnect } from './classes/others';
 import { Wallet } from './classes/wallet';
 
-const injectWallet = new InjectedWallet(
+export const injectWallet = new InjectedWallet(
   'Inject',
   null,
   injectWalletIcon,
@@ -19,7 +19,7 @@ const injectWallet = new InjectedWallet(
   undefined,
   () => isMobile,
 );
-const metamask = new InjectedWallet(
+export const metamask = new InjectedWallet(
   'Metamask',
   'https://metamask.io/',
   metamaskIcon,
@@ -28,7 +28,7 @@ const metamask = new InjectedWallet(
   undefined,
   'isMetaMask',
 );
-const rabbyWallet = new InjectedWallet(
+export const rabbyWallet = new InjectedWallet(
   'Rabby Wallet',
   'https://rabby.io/',
   rabbyIcon,
