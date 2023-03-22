@@ -10,8 +10,10 @@ import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
+import { useApplicationState } from 'src/state/papplication/atom';
 import { MEDIA_WIDTHS } from 'src/theme';
 import { wait } from 'src/utils/retry';
+import { disconnectWallets } from 'src/utils/wallet';
 import { SUPPORTED_CHAINS, SUPPORTED_WALLETS } from 'src/wallet';
 import { Wallet } from 'src/wallet/classes/wallet';
 import { NETWORK_TYPE } from '../NetworkSelection/types';
@@ -46,6 +48,8 @@ export default function WalletModal({
 
   const { activate, deactivate, connector } = useWeb3React();
 
+  const { setWallets } = useApplicationState();
+
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);
   const mixpanel = useMixpanel();
@@ -70,7 +74,11 @@ export default function WalletModal({
       .filter((chain) => chain.mainnet === mainnet);
   }, [supportedChains, mainnet]);
 
-  const _wallets = supportedWallets || SUPPORTED_WALLETS;
+  const _wallets = useMemo(() => {
+    const memoWallets = supportedWallets || SUPPORTED_WALLETS;
+    setWallets(Object.values(memoWallets));
+    return memoWallets;
+  }, [supportedWallets]);
 
   const wallets = useMemo(() => {
     const selectedChain = CHAINS[selectedChainId];
@@ -124,11 +132,7 @@ export default function WalletModal({
       });
       setPendingError(false);
       setPendingWallet(null);
-      Object.values(_wallets).forEach((wallet) => {
-        if (wallet.isActive) {
-          wallet.isActive = false;
-        }
-      });
+      disconnectWallets(Object.values(wallets));
       onWalletConnect(walletKey);
       closeModal();
     }

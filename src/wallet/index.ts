@@ -38,18 +38,18 @@ const rabbyWallet = new InjectedWallet(
   'isRabby',
 );
 
-const talismanWallet = new TalismanWallet();
-const bitkeepWallet = new BitKeepWallet();
-const avalanhceCoreWallet = new AvalancheCoreWallet();
+export const talismanWallet = new TalismanWallet();
+export const bitkeepWallet = new BitKeepWallet();
+export const avalanhceCoreWallet = new AvalancheCoreWallet();
 
-const xDefiWallet = new XDefiWallet();
-const nearWallet = new NearWallet();
-const hashPack = new HashPackWallet(mainnetHashConnect, [ChainId.HEDERA_MAINNET]);
-const hashPackTestnet = new HashPackWallet(testnetHashConnect, [ChainId.HEDERA_TESTNET]);
+export const xDefiWallet = new XDefiWallet();
+export const nearWallet = new NearWallet();
+export const hashPack = new HashPackWallet(mainnetHashConnect, [ChainId.HEDERA_MAINNET]);
+export const hashPackTestnet = new HashPackWallet(testnetHashConnect, [ChainId.HEDERA_TESTNET]);
 
-const gnosisSafeWallet = new GnosisSafeWallet();
-const coinbaseWallet = new CoinbaseWallet();
-const walletConnect = new WalletConnect();
+export const gnosisSafeWallet = new GnosisSafeWallet();
+export const coinbaseWallet = new CoinbaseWallet();
+export const walletConnect = new WalletConnect();
 
 export const SUPPORTED_WALLETS: { [key: string]: Wallet } = {
   INJECTED: injectWallet,

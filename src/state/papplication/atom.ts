@@ -2,6 +2,8 @@ import { TokenList } from '@pangolindex/token-lists';
 import { atom, useAtom } from 'jotai';
 import { nanoid } from 'nanoid';
 import { useCallback } from 'react';
+import { SUPPORTED_WALLETS } from 'src/wallet';
+import { Wallet } from 'src/wallet/classes/wallet';
 
 export type PopupContent =
   | {
@@ -33,6 +35,7 @@ export interface ApplicationState {
   readonly openModal: ApplicationModal | null;
   readonly selectedPoolId: string | undefined;
   readonly isAvailableHashpack: boolean;
+  readonly wallets: Wallet[];
 }
 
 const blockNumbersAtom = atom<ApplicationState['blockNumbers']>({});
@@ -40,6 +43,7 @@ const popupListAtom = atom<ApplicationState['popupList']>([]);
 const openModalAtom = atom<ApplicationState['openModal']>(null);
 const selectedPoolIdAtom = atom<ApplicationState['selectedPoolId']>(undefined);
 const isAvailableHashpackAtom = atom<ApplicationState['isAvailableHashpack']>(false);
+const walletsAtom = atom<ApplicationState['wallets']>(Object.values(SUPPORTED_WALLETS));
 
 export function useApplicationState() {
   const [blockNumbers, setBlockNumbers] = useAtom(blockNumbersAtom);
@@ -47,6 +51,7 @@ export function useApplicationState() {
   const [openModal, setOpenModal] = useAtom(openModalAtom);
   const [selectedPoolId, setSelectedPooId] = useAtom(selectedPoolIdAtom);
   const [isAvailableHashpack, setAvailableHashpack] = useAtom(isAvailableHashpackAtom);
+  const [wallets, setWallets] = useAtom(walletsAtom);
 
   const updateBlockNumber = useCallback(
     ({ chainId, blockNumber }: { chainId: number; blockNumber: number }) => {
@@ -101,10 +106,12 @@ export function useApplicationState() {
     selectedPoolId,
     openModal,
     popupList,
+    wallets,
     updateBlockNumber,
     setAvailableHashpack,
     setSelectedPooId,
     setOpenModal,
+    setWallets,
     addPopup,
     removePopup,
   };

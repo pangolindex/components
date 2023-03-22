@@ -1,4 +1,4 @@
-import { CHAINS, Chain, ChainId } from '@pangolindex/sdk';
+import { CHAINS, Chain } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
@@ -7,21 +7,23 @@ import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
-import { mainnetHashConnect } from 'src/connectors';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import { network } from 'src/connectors';
+import { useChainId } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
-import { changeNetwork } from 'src/utils';
-import { Hedera } from 'src/utils/hedera';
+import { useApplicationState } from 'src/state/papplication/atom';
+import { changeNetwork } from 'src/utils/wallet';
 import ChainItem from './ChainItem';
 import { ChainsList, Frame, Inputs, Wrapper } from './styled';
 import { NETWORK_TYPE, NetworkProps } from './types';
 
 export default function NetworkSelection({ open, closeModal }: NetworkProps) {
-  const { activate } = useWeb3React();
-  const mixpanel = useMixpanel();
+  const { activate, connector, deactivate } = useWeb3React();
+  const chainId = useChainId();
   const { t } = useTranslation();
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const { wallets } = useApplicationState();
 
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());
@@ -54,22 +56,17 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
     return maxHeight <= 0 ? 125 : maxHeight;
   }
 
-  const onChainClick = async (chain: Chain) => {
-    try {
-      const isHedera = Hedera.isHederaChain(chain?.chain_id as ChainId);
-
-      if (isHedera) {
-        await activate(mainnetHashConnect, undefined, true);
-
-        mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
-          wallet_name: 'HashPack Wallet',
-          source: 'pangolin-components',
-        });
-      } else {
-        await changeNetwork(chain, closeModal);
-      }
-    } catch (e) {}
-  };
+  async function onChainClick(chain: Chain) {
+    await changeNetwork({
+      chain,
+      chainId,
+      wallets,
+      activate,
+      deactivate,
+      callBack: closeModal,
+      connector: connector ?? network,
+    });
+  }
 
   return (
     <Modal isOpen={open} onDismiss={closeModal}>
