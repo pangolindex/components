@@ -23,7 +23,7 @@ const StyledDialogOverlay = styled.div<{ background?: string; isOpen: boolean }>
 const Container = styled.div`
   background: ${({ theme }) => theme.bg8};
   border-radius: 10px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     border-radius: 0px;
     width: 100%;
     height: 100%;
