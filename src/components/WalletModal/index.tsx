@@ -115,9 +115,11 @@ export default function WalletModal({
     }
 
     function onSuccess() {
-      onWalletConnect(walletKey);
+      localStorage.setItem('lastConnectedChainId', selectedChainId.toString());
+
       mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
         wallet_name: wallet?.name?.toLowerCase(),
+        ChainId: selectedChainId,
         source: 'pangolin-components',
       });
       setPendingError(false);
@@ -127,6 +129,7 @@ export default function WalletModal({
           wallet.isActive = false;
         }
       });
+      onWalletConnect(walletKey);
       closeModal();
     }
 

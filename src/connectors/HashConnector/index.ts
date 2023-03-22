@@ -185,7 +185,6 @@ export class HashConnector extends AbstractConnector {
 
       this.topic = this.initData.topic;
       this.pairingString = this.initData.pairingString;
-      localStorage.setItem('hashconnectedChainId', this.chainId.toString());
     }
 
     this.provider = await this.getProvider();
@@ -214,7 +213,7 @@ export class HashConnector extends AbstractConnector {
       this.instance.disconnect(this.pairingData?.topic);
       this.instance.clearConnectionsAndData();
       localStorage.removeItem('hashconnectData');
-      localStorage.removeItem('hashconnectedChainId');
+      localStorage.removeItem('lastConnectedChainId');
       this.initData = null;
       this.pairingData = null;
       this.topic = '';
