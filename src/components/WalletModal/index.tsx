@@ -1,4 +1,4 @@
-import { CHAINS, ChainId } from '@pangolindex/sdk';
+import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
@@ -13,7 +13,7 @@ import useDebounce from 'src/hooks/useDebounce';
 import { useApplicationState } from 'src/state/papplication/atom';
 import { MEDIA_WIDTHS } from 'src/theme';
 import { wait } from 'src/utils/retry';
-import { disconnectWallets } from 'src/utils/wallet';
+import { changeNetwork, disconnectWallets } from 'src/utils/wallet';
 import { SUPPORTED_CHAINS, SUPPORTED_WALLETS } from 'src/wallet';
 import { Wallet } from 'src/wallet/classes/wallet';
 import { NETWORK_TYPE } from '../NetworkSelection/types';
@@ -76,6 +76,8 @@ export default function WalletModal({
 
   const _wallets = useMemo(() => {
     const memoWallets = supportedWallets || SUPPORTED_WALLETS;
+    // if you use custom wallets we need to populate the state with these
+    // wallets so we can deactivate it in the network selection component
     setWallets(Object.values(memoWallets));
     return memoWallets;
   }, [supportedWallets]);
@@ -132,7 +134,7 @@ export default function WalletModal({
       });
       setPendingError(false);
       setPendingWallet(null);
-      disconnectWallets(Object.values(wallets));
+      disconnectWallets(Object.values(_wallets));
       onWalletConnect(walletKey);
       closeModal();
     }
@@ -144,6 +146,17 @@ export default function WalletModal({
         await wait(500);
       }
       await wallet.tryActivation(activate, onSuccess, onError);
+      const chain = CHAINS[selectedChainId];
+      if (wallet.isActive && chain.network_type === NetworkType.EVM) {
+        await changeNetwork({
+          chainId: selectedChainId,
+          connector: wallet.connector,
+          wallets: Object.values(_wallets),
+          chain,
+          activate,
+          deactivate,
+        });
+      }
     }
   }
 
