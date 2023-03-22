@@ -490,13 +490,13 @@ export function useGetPangoChefInfosViaSubgraph() {
     [allFarms],
   );
 
+  const useInfoCallOptions = useMemo(() => ({ blocksPerFetch: 20 }), []);
+
   const userInfosState = useSingleContractMultipleData(
     pangoChefContract,
     'getUser',
     !shouldCreateStorage && isUserStaked ? userInfoInput : [],
-    {
-      blocksPerFetch: 20,
-    },
+    useInfoCallOptions,
   );
 
   // format the data to UserInfo type

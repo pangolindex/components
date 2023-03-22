@@ -6,7 +6,7 @@ import { useCallback, useMemo } from 'react';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { useTokenAllowance } from 'src/data/Allowances';
-import { Field } from 'src/state/pswap/actions';
+import { Field } from 'src/state/pswap/atom';
 import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useIsApprovingInfinite } from 'src/state/puser/hooks';
 import { calculateGasMargin, waitForTransaction } from 'src/utils';

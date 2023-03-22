@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from 'src/constants';
 import { BIPS_BASE } from 'src/constants/swap';
-import { Field } from 'src/state/pswap/actions';
+import { Field } from 'src/state/pswap/atom';
 import { useDaasFeeInfo } from 'src/state/pswap/hooks/common';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';

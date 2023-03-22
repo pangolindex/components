@@ -3,8 +3,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { useTranslation } from 'react-i18next';
 import Drawer from 'src/components/Drawer';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';
-import { AppState, useDispatch, useSelector } from 'src/state';
-import { removeList } from 'src/state/plists/actions';
+import { useListsStateAtom } from 'src/state/plists/atom';
 import { parseENSAddress } from 'src/utils/parseENSAddress';
 import uriToHttp from 'src/utils/uriToHttp';
 import { Box, Button, Text, TextInput } from '../../';
@@ -18,9 +17,12 @@ interface Props {
 
 const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
   const [listUrlInput, setListUrlInput] = useState<string>('');
-  const dispatch = useDispatch();
+
+  const { listsState, removeList } = useListsStateAtom();
+
   const { t } = useTranslation();
-  const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
+  const lists = listsState?.byUrl;
+
   const adding = Boolean(lists[listUrlInput]?.loadingRequestId);
   const [addError, setAddError] = useState<string | null>(null);
 
@@ -35,9 +37,9 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
       })
       .catch((error) => {
         setAddError(error.message);
-        dispatch(removeList(listUrlInput));
+        removeList(listUrlInput);
       });
-  }, [adding, dispatch, fetchList, listUrlInput]);
+  }, [adding, removeList, fetchList, listUrlInput]);
 
   const validUrl = useMemo(() => {
     return uriToHttp(listUrlInput).length > 0 || Boolean(parseENSAddress(listUrlInput));
@@ -72,7 +74,7 @@ const TokenListDrawer: React.FC<Props> = ({ isOpen, onClose }) => {
         if (l2) return 1;
         return 0;
       });
-  }, [lists]);
+  }, [lists, listsState]);
 
   return (
     <Drawer title={t('searchModal.manageLists')} isOpen={isOpen} onClose={onClose}>

@@ -1,7 +1,7 @@
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Field } from 'src/state/pswap/actions';
+import { Field } from 'src/state/pswap/atom';
 import { tryParseAmount, useSwapActionHandlers } from 'src/state/pswap/hooks/common';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
