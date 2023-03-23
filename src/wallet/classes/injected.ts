@@ -9,17 +9,21 @@ export class InjectedWallet extends Wallet {
   readonly walletKey?: string;
   readonly conditionToShowWallet?: () => boolean;
 
-  constructor(
-    name: string,
-    href: string | null,
-    icon: string,
-    description: string,
-    supportedChains: NetworkType[],
-    supportedChainsId?: number[],
-    walletKey?: string,
-    conditionToShowWallet?: () => boolean,
-  ) {
-    super(injected, name, href, icon, description, supportedChains, supportedChainsId);
+  constructor(args: {
+    name: string;
+    href: string | null;
+    icon: string;
+    description: string;
+    supportedChains: NetworkType[];
+    supportedChainsId?: number[];
+    walletKey?: string;
+    conditionToShowWallet?: () => boolean;
+  }) {
+    const { name, href, icon, description, supportedChains, supportedChainsId, walletKey, conditionToShowWallet } =
+      args;
+
+    super({ connector: injected, name, href, icon, description, supportedChains, supportedChainsId });
+
     this.walletKey = walletKey;
     this.conditionToShowWallet = conditionToShowWallet;
   }
@@ -36,7 +40,14 @@ export class InjectedWallet extends Wallet {
 
 export class TalismanWallet extends Wallet {
   constructor() {
-    super(talisman, 'Talisman', 'https://www.talisman.xyz/', talismanIcon, 'Enter the Paraverse.', [NetworkType.EVM]);
+    super({
+      connector: talisman,
+      name: 'Talisman',
+      href: 'https://www.talisman.xyz/',
+      icon: talismanIcon,
+      description: 'Enter the Paraverse.',
+      supportedChains: [NetworkType.EVM],
+    });
   }
 
   installed(): boolean {
@@ -46,7 +57,14 @@ export class TalismanWallet extends Wallet {
 
 export class BitKeepWallet extends Wallet {
   constructor() {
-    super(bitKeep, 'BitKeep', 'https://bitkeep.com/', bitKeepIcon, 'Easy-to-use browser extension.', [NetworkType.EVM]);
+    super({
+      connector: bitKeep,
+      name: 'BitKeep',
+      href: 'https://bitkeep.com/',
+      icon: bitKeepIcon,
+      description: 'Easy-to-use browser extension.',
+      supportedChains: [NetworkType.EVM],
+    });
   }
 
   installed(): boolean {
@@ -56,9 +74,14 @@ export class BitKeepWallet extends Wallet {
 
 export class AvalancheCoreWallet extends Wallet {
   constructor() {
-    super(avalancheCore, 'Core', 'https://core.app/', avalancheCoreIcon, 'Easy-to-use browser extension.', [
-      NetworkType.EVM,
-    ]);
+    super({
+      connector: avalancheCore,
+      name: 'Core',
+      href: 'https://core.app/',
+      icon: avalancheCoreIcon,
+      description: 'Easy-to-use browser extension.',
+      supportedChains: [NetworkType.EVM],
+    });
   }
 
   installed(): boolean {

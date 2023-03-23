@@ -7,9 +7,14 @@ import { Wallet } from './wallet';
 
 export class XDefiWallet extends Wallet {
   constructor() {
-    super(xDefi, 'XDEFI Wallet', 'https://www.xdefi.io', xDefiIcon, 'One wallet for all your Crypto.', [
-      NetworkType.EVM,
-    ]);
+    super({
+      connector: xDefi,
+      name: 'XDEFI Wallet',
+      href: 'https://www.xdefi.io',
+      icon: xDefiIcon,
+      description: 'One wallet for all your Crypto.',
+      supportedChains: [NetworkType.EVM],
+    });
   }
 
   installed(): boolean {
@@ -19,7 +24,14 @@ export class XDefiWallet extends Wallet {
 
 export class NearWallet extends Wallet {
   constructor() {
-    super(near, 'Near', 'https://wallet.near.org/', nearIcon, 'Near Web.', [NetworkType.NEAR]);
+    super({
+      connector: near,
+      name: 'Near',
+      href: 'https://wallet.near.org/',
+      icon: nearIcon,
+      description: 'Near Web.',
+      supportedChains: [NetworkType.NEAR],
+    });
   }
 
   installed(): boolean {
@@ -28,15 +40,15 @@ export class NearWallet extends Wallet {
 }
 export class HashPackWallet extends Wallet {
   constructor(connector: HashConnector, supportedChainsId: ChainId[]) {
-    super(
+    super({
       connector,
-      'HashPack Wallet',
-      'https://www.hashpack.app/',
-      hashIcon,
-      'HashPack Wallet Connect.',
-      [NetworkType.HEDERA],
+      name: 'HashPack Wallet',
+      href: 'https://www.hashpack.app/',
+      icon: hashIcon,
+      description: 'HashPack Wallet Connect.',
+      supportedChains: [NetworkType.HEDERA],
       supportedChainsId,
-    );
+    });
   }
 
   installed(): boolean {

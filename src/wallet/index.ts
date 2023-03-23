@@ -9,34 +9,30 @@ import { HashPackWallet, NearWallet, XDefiWallet } from './classes/nonInjected';
 import { CoinbaseWallet, GnosisSafeWallet, WalletConnect } from './classes/others';
 import { Wallet } from './classes/wallet';
 
-export const injectWallet = new InjectedWallet(
-  'Inject',
-  null,
-  injectWalletIcon,
-  'Injected Wallet.',
-  [NetworkType.EVM],
-  undefined,
-  undefined,
-  () => isMobile,
-);
-export const metamask = new InjectedWallet(
-  'Metamask',
-  'https://metamask.io/',
-  metamaskIcon,
-  'A crypto wallet & gateway to blockchain apps.',
-  [NetworkType.EVM],
-  undefined,
-  'isMetaMask',
-);
-export const rabbyWallet = new InjectedWallet(
-  'Rabby Wallet',
-  'https://rabby.io/',
-  rabbyIcon,
-  'Easy-to-use browser extension.',
-  [NetworkType.EVM],
-  undefined,
-  'isRabby',
-);
+export const injectWallet = new InjectedWallet({
+  name: 'Inject',
+  href: null,
+  icon: injectWalletIcon,
+  description: 'Injected Wallet.',
+  supportedChains: [NetworkType.EVM],
+  conditionToShowWallet: () => isMobile,
+});
+export const metamask = new InjectedWallet({
+  name: 'Metamask',
+  href: 'https://metamask.io/',
+  icon: metamaskIcon,
+  description: 'A crypto wallet & gateway to blockchain apps.',
+  supportedChains: [NetworkType.EVM],
+  walletKey: 'isMetaMask',
+});
+export const rabbyWallet = new InjectedWallet({
+  name: 'Rabby Wallet',
+  href: 'https://rabby.io/',
+  icon: rabbyIcon,
+  description: 'Easy-to-use browser extension.',
+  supportedChains: [NetworkType.EVM],
+  walletKey: 'isRabby',
+});
 
 export const talismanWallet = new TalismanWallet();
 export const bitkeepWallet = new BitKeepWallet();

@@ -28,15 +28,17 @@ export abstract class Wallet {
    * @param description Breef description of wallet
    * @param supportedChains Array of NetworkType that this chain supports
    */
-  constructor(
-    connector: PangolinConnector,
-    name: string,
-    href: string | null,
-    icon: string,
-    description: string,
-    supportedChains: NetworkType[],
-    supportedChainsId?: number[],
-  ) {
+  constructor(args: {
+    connector: PangolinConnector;
+    name: string;
+    href: string | null;
+    icon: string;
+    description: string;
+    supportedChains: NetworkType[];
+    supportedChainsId?: number[];
+  }) {
+    const { connector, name, href, icon, description, supportedChains, supportedChainsId } = args;
+
     this.connector = connector;
     this.name = name;
     this.href = href;

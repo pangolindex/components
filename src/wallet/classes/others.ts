@@ -17,9 +17,14 @@ export class GnosisSafeWallet extends Wallet {
   private triedSafe = false;
 
   constructor() {
-    super(gnosisSafe, 'Gnosis Safe', 'https://app.safe.global/', gnosisSafeIcon, 'Gnosis Safe Multisig Wallet.', [
-      NetworkType.EVM,
-    ]);
+    super({
+      connector: gnosisSafe,
+      name: 'Gnosis Safe',
+      href: 'https://app.safe.global/',
+      icon: gnosisSafeIcon,
+      description: 'Gnosis Safe Multisig Wallet.',
+      supportedChains: [NetworkType.EVM],
+    });
   }
 
   showWallet(): boolean {
@@ -47,14 +52,14 @@ export class CoinbaseWallet extends Wallet {
   private isCbWallet = this.isCbWalletDappBrowser || this.isWalletlink;
 
   constructor() {
-    super(
-      walletlink,
-      'Coinbase Wallet',
-      'https://www.coinbase.com/wallet',
-      coinbaseWalletIcon,
-      'Your key to the world of crypto.',
-      [NetworkType.EVM],
-    );
+    super({
+      connector: walletlink,
+      name: 'Coinbase Wallet',
+      href: 'https://www.coinbase.com/wallet',
+      icon: coinbaseWalletIcon,
+      description: 'Your key to the world of crypto.',
+      supportedChains: [NetworkType.EVM],
+    });
   }
 
   showWallet(): boolean {
@@ -68,14 +73,15 @@ export class CoinbaseWallet extends Wallet {
 
 export class WalletConnect extends Wallet {
   constructor() {
-    super(
-      walletconnect,
-      'WalletConnect',
-      'https://walletconnect.com/',
-      walletConnectIcon,
-      'With WalletConnect, you can connect your wallet with hundreds of apps, opening the doors to a new world of web3 experiences.',
-      [NetworkType.EVM],
-    );
+    super({
+      connector: walletconnect,
+      name: 'WalletConnect',
+      href: 'https://walletconnect.com/',
+      icon: walletConnectIcon,
+      description:
+        'With WalletConnect, you can connect your wallet with hundreds of apps, opening the doors to a new world of web3 experiences.',
+      supportedChains: [NetworkType.EVM],
+    });
   }
 
   showWallet(): boolean {
