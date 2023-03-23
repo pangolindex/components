@@ -65,13 +65,9 @@ export async function changeNetwork(args: {
           for (let index = 0; index < evmWallets.length; index++) {
             try {
               const wallet = evmWallets[index];
-              await wallet.tryActivation(
-                activate,
-                () => {
-                  disconnectWallets(wallets);
-                },
-                () => {},
-              );
+              await wallet.tryActivation(activate, () => {
+                disconnectWallets(wallets);
+              });
               walletProvider = await wallet.connector.getProvider();
               // break the loop when user accepts the wallet connection
               if (walletProvider) {
@@ -126,21 +122,13 @@ export async function changeNetwork(args: {
       }
     case NetworkType.HEDERA:
       if (chain.chain_id === ChainId.HEDERA_MAINNET) {
-        await hashPack.tryActivation(
-          activate,
-          () => {
-            disconnectWallets(wallets);
-          },
-          () => {},
-        );
+        await hashPack.tryActivation(activate, () => {
+          disconnectWallets(wallets);
+        });
       } else {
-        await hashPackTestnet.tryActivation(
-          activate,
-          () => {
-            disconnectWallets(wallets);
-          },
-          () => {},
-        );
+        await hashPackTestnet.tryActivation(activate, () => {
+          disconnectWallets(wallets);
+        });
       }
       return;
     case NetworkType.NEAR:
