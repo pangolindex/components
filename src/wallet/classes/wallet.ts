@@ -82,7 +82,6 @@ export abstract class Wallet {
    * Function to disconnect the wallet
    */
   disconnect() {
-    this.connector.deactivate();
     this.isActive = false;
   }
 }

@@ -21,7 +21,8 @@ export default function WalletView({
   const theme = useContext(ThemeContext);
 
   function onDisconnect() {
-    wallet.disconnect(deactivate);
+    wallet.disconnect();
+    deactivate();
     onBack();
   }
 
