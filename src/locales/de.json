@@ -773,7 +773,8 @@
     "sidebar": {
       "title": "Pools V3",
       "seeMore": "Want to see classic pools",
-      "goToFarm": "Go to farm page"
+      "goToFarm": "Go to farm page",
+      "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
       "searchContent": "Try searching for coin names…",

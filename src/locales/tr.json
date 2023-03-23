@@ -773,7 +773,8 @@
     "sidebar": {
       "title": "Havuzlar V3",
       "seeMore": "Klasik havuzları görmek mi istiyorsunuz",
-      "goToFarm": "Çiftlik sayfasına git"
+      "goToFarm": "Çiftlik sayfasına git",
+      "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
       "searchContent": "Token adını aramayı deneyin…",
