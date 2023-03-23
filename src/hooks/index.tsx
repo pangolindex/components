@@ -5,11 +5,9 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
 import { network } from 'src/connectors';
-import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { PROVIDER_MAPPING } from 'src/constants/wallets';
-import { useApplicationState } from 'src/state/papplication/atom';
 import { isAddress, isEvmChain } from 'src/utils';
-import { hashPack } from 'src/wallet';
+import { useEagerConnect } from './useConnector';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -40,36 +38,7 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   chainId,
   account,
 }: Web3ProviderProps) => {
-  const { setAvailableHashpack } = useApplicationState();
-
-  const { activate } = useWeb3React();
-
-  // this is special case for hashpack wallet
-  // we need to listen for
-  // 1. hashpack wallet installed or not event and we are storing this boolean to redux so that
-  // 2. if user open pangolin in dApp browser then we need to manually calls ACTIVATE_CONNECTOR
-  // in walletModal we can re-render as value updates
-  useEffect(() => {
-    const emitterFn = (isHashpackAvailable: boolean) => {
-      console.log('received hashpack emit event CHECK_EXTENSION in provider', isHashpackAvailable);
-      setAvailableHashpack(true);
-    };
-    hashconnectEvent.on(HashConnectEvents.CHECK_EXTENSION, emitterFn);
-
-    // Here when load in iframe  we need to internally activate connector to connect account
-    const emitterFnForActivateConnector = (isIframeEventFound: boolean) => {
-      console.log('received hashpack emit event ACTIVATE_CONNECTOR in provider', isIframeEventFound);
-      hashPack.tryActivation(activate);
-    };
-    hashconnectEvent.once(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
-
-    return () => {
-      console.log('removing hashpack CHECK_EXTENSION event listener');
-      hashconnectEvent.off(HashConnectEvents.CHECK_EXTENSION, emitterFn);
-      console.log('removing hashpack ACTIVATE_CONNECTOR event listener');
-      hashconnectEvent.off(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
-    };
-  }, []);
+  const { active, error, activate } = useWeb3React();
 
   const state = useMemo(() => {
     let normalizedAccount;
@@ -83,6 +52,19 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
       account: normalizedAccount,
     };
   }, [library, chainId, account]);
+
+  const tryToActiveEager = !library || !account;
+  // try to eagerly connect to a wallet, if it exists and has granted access already
+  const triedEager = useEagerConnect(tryToActiveEager);
+
+  // active the network connector  only when no error, active
+  // and user not provide library, account and chainId
+  // and tried to connect to preveius wallet
+  useEffect(() => {
+    if (triedEager && !active && !error && !active && !library && !account) {
+      activate(network);
+    }
+  }, [triedEager, active, error, activate, active, library, account, chainId]);
 
   return (
     <Web3Context.Provider

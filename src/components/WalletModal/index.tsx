@@ -1,5 +1,6 @@
 import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
+import deepEqual from 'deep-equal';
 import React, { useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
@@ -11,6 +12,7 @@ import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/com
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
 import { useApplicationState } from 'src/state/papplication/atom';
+import { useUserAtom } from 'src/state/puser/atom';
 import { MEDIA_WIDTHS } from 'src/theme';
 import { wait } from 'src/utils/retry';
 import { changeNetwork, disconnectWallets } from 'src/utils/wallet';
@@ -49,6 +51,7 @@ export default function WalletModal({
   const { activate, deactivate, connector } = useWeb3React();
 
   const { setWallets } = useApplicationState();
+  const { updateWallet } = useUserAtom();
 
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);
@@ -100,9 +103,7 @@ export default function WalletModal({
   }, [_wallets, selectedChainId, debouncedSearchQuery]);
 
   function getWalletKey(wallet: Wallet): string | null {
-    const result = Object.entries(_wallets).find(
-      ([, value]) => value === wallet && value.name.toLowerCase() === wallet.name.toLowerCase(),
-    );
+    const result = Object.entries(_wallets).find(([, value]) => deepEqual(value, wallet));
 
     if (result) {
       return result[0];
@@ -135,6 +136,7 @@ export default function WalletModal({
       setPendingError(false);
       setPendingWallet(null);
       disconnectWallets(Object.values(_wallets));
+      updateWallet(walletKey);
       onWalletConnect(walletKey);
       closeModal();
     }
