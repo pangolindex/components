@@ -101,7 +101,7 @@
     "poolRewards": "矿池奖励",
     "rewardsIn": "奖励在",
     "removeWarning": "您正在从该池中移除流动性。 此操作将退还您的代币。 或者，您可以选择将您的代币投入农场以赚取奖励。",
-    "rewardClaimed" : "Your rewards claimed"
+    "rewardClaimed": "Your rewards claimed"
   },
   "menu": {
     "code": "Code",
@@ -172,7 +172,8 @@
     "removeList": "删除列表",
     "selected": "已选",
     "select": "选择",
-    "manageTokenLists": "管理令牌列表"
+    "manageTokenLists": "管理令牌列表",
+    "listsSelected": "lists selected"
   },
   "settings": {
     "areYouSure": "你确定吗?",
@@ -187,7 +188,9 @@
     "expertModeHelper": "绕过确认模式并允许高滑点交易。使用风险自负。",
     "toggleDarkMode": "切换深色模式",
     "slippage": "Slippage",
-    "percent": "Percent"
+    "percent": "Percent",
+    "timeLimit": "Time Limit",
+    "seconds": "Seconds"
   },
   "swap": {
     "priceImpact": "价格影响",
@@ -209,7 +212,11 @@
     "inputEstimated": "输入是估计的。你最多会卖掉 <strong>{{amount}} {{currencySymbol}}</strong>  否则交易将取消。",
     "outputSentTo": "输出将发送到 ",
     "priceImpactMinPrompt": "此兌換对价格的影响至少为 {{ priceImpact }}%. 请输入\"确\" 继续这个兌換。",
-    "priceImpactHighPrompt": "此兌換对价格的影响至少为 {{ priceImpact }}%. 请确认您想继续进行此兌换。"
+    "priceImpactHighPrompt": "此兌換对价格的影响至少为 {{ priceImpact }}%. 请确认您想继续进行此兌换。",
+    "realExecutionPrice": "Real Execution Price",
+    "gasPrice": "Gas Price",
+    "gelatoFee": "Gelato Fee",
+    "totalFee": "Total Fee"
   },
   "toggle": {
     "on": "开",
@@ -491,10 +498,10 @@
     "seeMore": "查看更多",
     "seeLess": "少看",
     "orderPlaced": "{{ orderType } 订单已下。",
-    "selectToken" : "Select Token",
-    "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain",
-    "sendingTo" : "Sending to",
+    "selectToken": "Select Token",
+    "notFoundBalances": "Not found balances",
+    "notFoundToken": "Not found tokens on this chain",
+    "sendingTo": "Sending to",
     "invalidAddress": "Invalid Address",
     "addRecipient": "Add Recipient",
     "removeRecipient": "Remove Recipient",
@@ -648,7 +655,7 @@
     "staked": "Staked",
     "stakeSuccessMsg": "Your rewards have been staked.",
     "stakeYourReward": "Stake your rewards",
-    "stakePng" : "Stake your PNG token to share platform fees",
+    "stakePng": "Stake your PNG token to share platform fees",
     "unstaking": "Unstaking",
     "unstaked": "Unstaked",
     "unstakeYourReward": "You can unstake your rewards.",
@@ -662,7 +669,7 @@
     "couldNotWrap": "不能换行",
     "attemptingToConfirmApproval": "尝试在未经批准或签名的情况下进行确认。请联系支持人员。"
   },
-  "sarTitle":{
+  "sarTitle": {
     "addMore": "添加更多",
     "unstake": "取消仓位",
     "compound": "复合奖励",
@@ -766,7 +773,8 @@
     "sidebar": {
       "title": "Pools V3",
       "seeMore": "Want to see classic pools",
-      "goToFarm": "Go to farm page"
+      "goToFarm": "Go to farm page",
+      "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
       "searchContent": "Try searching for coin names…",
@@ -798,7 +806,7 @@
     "selectCurrency": "Select a Currency",
     "search": "Search",
     "tableOfContent": "Table of Content",
-    "haveQuestion" :"Have Questions? Look Here:",
+    "haveQuestion": "Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
@@ -869,7 +877,7 @@
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
   },
-  "buy":{
+  "buy": {
     "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
