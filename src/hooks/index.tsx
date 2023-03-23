@@ -4,11 +4,12 @@ import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
-import { mainnetHashConnect, network } from 'src/connectors';
+import { network } from 'src/connectors';
 import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { PROVIDER_MAPPING } from 'src/constants/wallets';
 import { useApplicationState } from 'src/state/papplication/atom';
 import { isAddress, isEvmChain } from 'src/utils';
+import { hashPack } from 'src/wallet';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -58,7 +59,7 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
     // Here when load in iframe  we need to internally activate connector to connect account
     const emitterFnForActivateConnector = (isIframeEventFound: boolean) => {
       console.log('received hashpack emit event ACTIVATE_CONNECTOR in provider', isIframeEventFound);
-      activate(mainnetHashConnect);
+      hashPack.tryActivation(activate);
     };
     hashconnectEvent.once(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
 
