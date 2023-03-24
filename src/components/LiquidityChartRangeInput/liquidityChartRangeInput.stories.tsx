@@ -11,7 +11,8 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'LiquidityChartRangeInput',
+        component:
+          'LiquidityChartRangeInput. Uses [uniswap-liquidityChartRangeInput](https://github.com/Uniswap/interface/tree/main/src/components/LiquidityChartRangeInput) under the hood.',
       },
     },
   },
