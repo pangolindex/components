@@ -9,7 +9,7 @@ export default {
 
 const TemplatePriceGraph: ComponentStory<typeof PriceGraph> = () => {
   return (
-    <div style={{ width: 'max-content' }}>
+    <div style={{ marginTop: '30px', width: '400px' }}>
       <PriceGraph />
     </div>
   );

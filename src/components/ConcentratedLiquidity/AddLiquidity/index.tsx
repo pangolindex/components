@@ -1,6 +1,7 @@
 import { Currency, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, Modal, Text } from 'src/components';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
@@ -44,6 +45,7 @@ const FeeTiersData = [
 
 const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const { t } = useTranslation();
+  const { height } = useWindowSize();
   const { currency0, currency1, isOpen, onClose } = props;
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const theme = useContext(ThemeContext);
@@ -107,7 +109,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
       closeOnClickOutside={true}
     >
       <>
-        <Wrapper>
+        <Wrapper maximumHeight={height - 150}>
           <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
             <Text color="text1" fontSize={[32, 28]} fontWeight={500} mt={10} mb={12}>
               {t('concentratedLiquidity.addLiquidity.title')}

@@ -1,17 +1,19 @@
 import styled from 'styled-components';
 import { Box, CurrencyInput } from 'src/components';
 
-export const Wrapper = styled(Box)`
+export const Wrapper = styled(Box)<{ maximumHeight: number }>`
   background-color: ${({ theme }) => theme.color8};
   border-radius: 10px;
   padding: 25px 30px;
   position: relative;
-  overflow: hidden;
   min-width: 100%;
   width: 450px;
+  overflow: auto;
+  max-height: ${({ maximumHeight }) => maximumHeight}px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 100%;
     width: 100%;
+    max-height: 100%;
   `};
 `;
 
