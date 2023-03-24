@@ -333,10 +333,9 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
                 changeNetwork({
                   chain: fromChain as Chain,
                   chainId: sdkChainId,
-                  wallets,
+                  wallets: Object.values(wallets),
                   activate,
                   deactivate,
-                  callBack: undefined,
                   connector: connector ?? injected,
                 });
             }}

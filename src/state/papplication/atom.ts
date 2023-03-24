@@ -3,7 +3,6 @@ import { atom, useAtom } from 'jotai';
 import { nanoid } from 'nanoid';
 import { useCallback } from 'react';
 import { SUPPORTED_WALLETS } from 'src/wallet';
-import { Wallet } from 'src/wallet/classes/wallet';
 
 export type PopupContent =
   | {
@@ -35,7 +34,7 @@ export interface ApplicationState {
   readonly openModal: ApplicationModal | null;
   readonly selectedPoolId: string | undefined;
   readonly isAvailableHashpack: boolean;
-  readonly wallets: Wallet[];
+  readonly wallets: typeof SUPPORTED_WALLETS;
 }
 
 const blockNumbersAtom = atom<ApplicationState['blockNumbers']>({});
@@ -43,7 +42,7 @@ const popupListAtom = atom<ApplicationState['popupList']>([]);
 const openModalAtom = atom<ApplicationState['openModal']>(null);
 const selectedPoolIdAtom = atom<ApplicationState['selectedPoolId']>(undefined);
 const isAvailableHashpackAtom = atom<ApplicationState['isAvailableHashpack']>(false);
-const walletsAtom = atom<ApplicationState['wallets']>(Object.values(SUPPORTED_WALLETS));
+const walletsAtom = atom<ApplicationState['wallets']>(SUPPORTED_WALLETS);
 
 export function useApplicationState() {
   const [blockNumbers, setBlockNumbers] = useAtom(blockNumbersAtom);

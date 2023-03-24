@@ -1,6 +1,5 @@
 import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
-import deepEqual from 'deep-equal';
 import React, { useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
@@ -15,7 +14,7 @@ import { useApplicationState } from 'src/state/papplication/atom';
 import { useUserAtom } from 'src/state/puser/atom';
 import { MEDIA_WIDTHS } from 'src/theme';
 import { wait } from 'src/utils/retry';
-import { changeNetwork, disconnectWallets } from 'src/utils/wallet';
+import { changeNetwork, disconnectWallets, getWalletKey } from 'src/utils/wallet';
 import { SUPPORTED_CHAINS, SUPPORTED_WALLETS } from 'src/wallet';
 import { Wallet } from 'src/wallet/classes/wallet';
 import { NETWORK_TYPE } from '../NetworkSelection/types';
@@ -77,18 +76,18 @@ export default function WalletModal({
       .filter((chain) => chain.mainnet === mainnet);
   }, [supportedChains, mainnet]);
 
-  const _wallets = useMemo(() => {
+  const wallets = useMemo(() => {
     const memoWallets = supportedWallets || SUPPORTED_WALLETS;
     // if you use custom wallets we need to populate the state with these
     // wallets so we can deactivate it in the network selection component
-    setWallets(Object.values(memoWallets));
+    setWallets(memoWallets);
     return memoWallets;
   }, [supportedWallets]);
 
-  const wallets = useMemo(() => {
+  const filteredWallets = useMemo(() => {
     const selectedChain = CHAINS[selectedChainId];
     // adding additional wallets in wallets mapping
-    return Object.values(_wallets)
+    return Object.values(wallets)
       .filter((wallet) => {
         const bool = Boolean(
           wallet.supportedChains.includes(selectedChain.network_type) &&
@@ -100,23 +99,14 @@ export default function WalletModal({
         return bool && wallet.supportedChainsId.includes(selectedChain.chain_id ?? NaN);
       })
       .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
-  }, [_wallets, selectedChainId, debouncedSearchQuery]);
-
-  function getWalletKey(wallet: Wallet): string | null {
-    const result = Object.entries(_wallets).find(([, value]) => deepEqual(value, wallet));
-
-    if (result) {
-      return result[0];
-    }
-    return null;
-  }
+  }, [wallets, selectedChainId, debouncedSearchQuery]);
 
   function onBack() {
     setPendingWallet(null);
   }
 
   async function onConnect(wallet: Wallet) {
-    const walletKey = getWalletKey(wallet);
+    const walletKey = getWalletKey(wallet, wallets);
     setPendingError(false);
     setPendingWallet(walletKey); // set for wallet view
 
@@ -135,7 +125,7 @@ export default function WalletModal({
       });
       setPendingError(false);
       setPendingWallet(null);
-      disconnectWallets(Object.values(_wallets));
+      disconnectWallets(Object.values(wallets));
       updateWallet(walletKey);
       onWalletConnect(walletKey);
       closeModal();
@@ -153,7 +143,7 @@ export default function WalletModal({
         await changeNetwork({
           chainId: selectedChainId,
           connector: wallet.connector,
-          wallets: Object.values(_wallets),
+          wallets: Object.values(wallets),
           chain,
           activate,
           deactivate,
@@ -207,14 +197,14 @@ export default function WalletModal({
           <Separator />
           <Box flexGrow={1} overflowX="hidden">
             {pendingWallet ? (
-              <WalletView wallet={_wallets[pendingWallet]} error={pendingError} onBack={onBack} onConnect={onConnect} />
+              <WalletView wallet={wallets[pendingWallet]} error={pendingError} onBack={onBack} onConnect={onConnect} />
             ) : (
               <Scrollbars
                 height="100%"
                 renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
               >
                 <WalletFrame>
-                  {wallets.map((wallet, index) => {
+                  {filteredWallets.map((wallet, index) => {
                     if (!wallet.showWallet()) return null;
                     return (
                       <WalletButton variant="plain" onClick={() => onConnect(wallet)} key={index}>

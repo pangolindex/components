@@ -6,6 +6,20 @@ import { hashPack, hashPackTestnet, injectWallet } from 'src/wallet';
 import { Wallet, activeFunctionType } from 'src/wallet/classes/wallet';
 import { wait } from './retry';
 
+export type callBackArgsType = {
+  deactivatedWallet: boolean;
+  wallet?: Wallet;
+};
+
+export function getWalletKey(wallet: Wallet, walletMapping: { [x: string]: Wallet }): string | null {
+  const result = Object.entries(walletMapping).find(([, value]) => deepEqual(value, wallet));
+
+  if (result) {
+    return result[0];
+  }
+  return null;
+}
+
 export function disconnectWallets(wallets: Wallet[]) {
   wallets.forEach((wallet) => {
     if (wallet.isActive) {
@@ -37,7 +51,7 @@ export async function changeNetwork(args: {
   chainId: ChainId;
   connector: AbstractConnector;
   wallets: Wallet[];
-  callBack?: () => void;
+  callBack?: (args: callBackArgsType) => void;
   activate: activeFunctionType;
   deactivate: () => void;
 }) {
@@ -49,21 +63,23 @@ export async function changeNetwork(args: {
   }
 
   const connectedChain = CHAINS[chainId];
-  let deactivateWallet = false;
+  let deactivatedWallet = false;
   // we need to deactivate the web3react when user chanve for another chain type or
   // when user want to change to any hedera network
   if (connectedChain.network_type !== chain.network_type || chain.network_type === NetworkType.HEDERA) {
     deactivate();
-    deactivateWallet = true;
+    deactivatedWallet = true;
     await wait(500);
   }
+
+  let usedWallet: Wallet | undefined = undefined;
 
   switch (chain.network_type) {
     case NetworkType.EVM:
       let walletProvider: any;
       // if we leave a chain for example hedera for avalanche (evm)
       // we need to change wallets so we deactivate web3react and activate an evm wallet
-      if (deactivateWallet) {
+      if (deactivatedWallet) {
         const evmWallets = getInstalledEvmWallet(wallets);
         if (wallets.length > 0) {
           for (let index = 0; index < evmWallets.length; index++) {
@@ -75,6 +91,7 @@ export async function changeNetwork(args: {
               walletProvider = await wallet.connector.getProvider();
               // break the loop when user accepts the wallet connection
               if (walletProvider) {
+                usedWallet = wallet;
                 break;
               }
             } catch {
@@ -101,7 +118,7 @@ export async function changeNetwork(args: {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
         });
-        callBack && callBack();
+        callBack && callBack({ deactivatedWallet, wallet: usedWallet });
         return;
       } catch {
         try {
@@ -129,10 +146,12 @@ export async function changeNetwork(args: {
         await hashPack.tryActivation(activate, () => {
           disconnectWallets(wallets);
         });
+        callBack && callBack({ deactivatedWallet, wallet: hashPack });
       } else {
         await hashPackTestnet.tryActivation(activate, () => {
           disconnectWallets(wallets);
         });
+        callBack && callBack({ deactivatedWallet, wallet: hashPackTestnet });
       }
       return;
     case NetworkType.NEAR:
