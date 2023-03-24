@@ -9,7 +9,7 @@ import { wait } from './retry';
 export function disconnectWallets(wallets: Wallet[]) {
   wallets.forEach((wallet) => {
     if (wallet.isActive) {
-      wallet.isActive = false;
+      wallet.disconnect();
     }
   });
 }
@@ -25,8 +25,12 @@ export function getInstalledEvmWallet(wallets: Wallet[]) {
 /**
  * This function request the wallet provider to change the chain
  * @param chain Chain to be changed
+ * @param chainId active chain id
  * @param connector The connector, injected, haspack, etc. Instance of AbstractConnector
+ * @param wallets array of wallets used in app
  * @param callBack Callback function to executed on success
+ * @param activate function provide by @web3/react to active the connector
+ * @param deactivate function provide by @web3/react to deactive the connector
  */
 export async function changeNetwork(args: {
   chain: Chain;
@@ -40,7 +44,7 @@ export async function changeNetwork(args: {
   const { chain, chainId, connector, wallets, callBack, deactivate, activate } = args;
 
   if (connector instanceof NetworkConnector) {
-    // TODO: make possible to change network without a connected wallet
+    connector.changeChain(chain.chain_id ?? 43114);
     return;
   }
 

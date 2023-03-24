@@ -3,7 +3,7 @@ import { ConnectorUpdate } from '@web3-react/types';
 import invariant from 'tiny-invariant';
 
 interface NetworkConnectorArguments {
-  urls: { [chainId: number]: string };
+  urls: { [chainId: string]: string };
   defaultChainId?: number;
 }
 
@@ -180,5 +180,10 @@ export class NetworkConnector extends AbstractConnector {
 
   public deactivate() {
     return;
+  }
+
+  public changeChain(chainId: number) {
+    this.currentChainId = chainId;
+    this.emitUpdate({ chainId });
   }
 }

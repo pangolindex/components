@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
-import { ALL_CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
+import { ALL_CHAINS, AVALANCHE_MAINNET, CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { InjectedConnector } from '@pangolindex/web3-react-injected-connector';
 import { TalismanConnector } from '@talismn/web3react-v6-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
@@ -17,23 +17,20 @@ export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter(
   (chain) => (chain.pangolin_is_live || chain.supported_by_bridge) && chain?.network_type === NetworkType.EVM,
 ).map((chain) => chain.chain_id ?? 43114);
 
-const NETWORK_URL = 'https://api.avax.network/ext/bc/C/rpc';
-
 // Near Exchnage Contract
 export const NEAR_EXCHANGE_CONTRACT_ADDRESS = {
   [ChainId.NEAR_MAINNET]: 'png-exchange-v1.mainnet',
   [ChainId.NEAR_TESTNET]: 'png-exchange-v1.testnet',
 };
 
-export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? ChainId.AVALANCHE.toString());
-
-if (typeof NETWORK_URL === 'undefined') {
-  throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`);
-}
+const urls = Object.entries(CHAINS).reduce((acc, [key, chain]) => {
+  acc[key] = chain.rpc_uri;
+  return acc;
+}, {} as { [x in string]: string });
 
 export const network = new NetworkConnector({
-  urls: { [NETWORK_CHAIN_ID]: NETWORK_URL },
-  defaultChainId: NETWORK_CHAIN_ID,
+  urls: urls,
+  defaultChainId: ChainId.AVALANCHE,
 });
 
 let networkLibrary: Web3Provider | undefined;
@@ -55,7 +52,7 @@ export const gnosisSafe = new SafeAppConnector({
 });
 
 export const walletlink = new WalletLinkConnector({
-  url: NETWORK_URL,
+  url: AVALANCHE_MAINNET.rpc_uri,
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
   appName: 'Pangolin',
   appLogoUrl: 'https://raw.githubusercontent.com/pangolindex/interface/master/public/images/384x384_App_Icon.png',
@@ -63,7 +60,7 @@ export const walletlink = new WalletLinkConnector({
 
 export const walletconnect = new WalletConnectConnector({
   rpc: {
-    [ChainId.AVALANCHE]: NETWORK_URL,
+    [ChainId.AVALANCHE]: AVALANCHE_MAINNET.rpc_uri,
   },
   qrcode: true,
   bridge: 'https://bridge.walletconnect.org',
