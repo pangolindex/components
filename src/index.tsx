@@ -1,7 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
-import React from 'react';
+import { useWeb3React } from '@web3-react/core';
+import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
@@ -63,7 +64,9 @@ import { parseENSAddress } from 'src/utils/parseENSAddress';
 import { splitQuery } from 'src/utils/query';
 import uriToHttp from 'src/utils/uriToHttp';
 import { unwrappedToken, wrappedCurrency, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
+import { network } from './connectors';
 import { MixPanelEvents, MixPanelProvider, useMixpanel } from './hooks/mixpanel';
+import { useEagerConnect } from './hooks/useConnector';
 import i18n, { availableLanguages } from './i18n';
 import { galetoStore } from './state';
 import { PangoChefInfo } from './state/ppangoChef/types';
@@ -97,6 +100,21 @@ export function PangolinProvider({
   theme?: any;
   mixpanelToken?: string;
 }) {
+  const { active, error, activate } = useWeb3React();
+
+  const tryToActiveEager = !library || !account;
+  // try to eagerly connect to a wallet, if it exists and has granted access already
+  const triedEager = useEagerConnect(tryToActiveEager);
+
+  // active the network connector  only when no error, active
+  // and user not provide library, account and chainId
+  // and tried to connect to preveius wallet
+  useEffect(() => {
+    if (triedEager && !active && !error && !active && !library && !account) {
+      activate(network);
+    }
+  }, [triedEager, active, error, activate, active, library, account, chainId]);
+
   const ethersLibrary = library && !library?._isProvider ? new Web3Provider(library) : library;
 
   return (

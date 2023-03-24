@@ -7,7 +7,6 @@ import { useQueryClient } from 'react-query';
 import { network } from 'src/connectors';
 import { PROVIDER_MAPPING } from 'src/constants/wallets';
 import { isAddress, isEvmChain } from 'src/utils';
-import { useEagerConnect } from './useConnector';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -38,8 +37,6 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   chainId,
   account,
 }: Web3ProviderProps) => {
-  const { active, error, activate } = useWeb3React();
-
   const state = useMemo(() => {
     let normalizedAccount;
     if (chainId) {
@@ -52,19 +49,6 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
       account: normalizedAccount,
     };
   }, [library, chainId, account]);
-
-  const tryToActiveEager = !library || !account;
-  // try to eagerly connect to a wallet, if it exists and has granted access already
-  const triedEager = useEagerConnect(tryToActiveEager);
-
-  // active the network connector  only when no error, active
-  // and user not provide library, account and chainId
-  // and tried to connect to preveius wallet
-  useEffect(() => {
-    if (triedEager && !active && !error && !active && !library && !account) {
-      activate(network);
-    }
-  }, [triedEager, active, error, activate, active, library, account, chainId]);
 
   return (
     <Web3Context.Provider

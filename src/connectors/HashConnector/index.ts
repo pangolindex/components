@@ -74,7 +74,6 @@ export class HashConnector extends AbstractConnector {
     this.handleFoundExtensionEvent = this.handleFoundExtensionEvent.bind(this);
     this.handleFoundIframeEvent = this.handleFoundIframeEvent.bind(this);
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
-    // this.init();
   }
 
   public async init() {
