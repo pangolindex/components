@@ -181,6 +181,13 @@ export function useEagerConnect(tryToActive: boolean) {
   return tried;
 }
 
+/**
+ * This hook configures a function for connection events from any wallet
+ *
+ * We do this so that we can have a single global function where we update the state
+ * of the last connected wallet, deactivate a wallet if it is active and trigger the
+ * mixpanel event of wallet connected
+ */
 export function useWalletUpdater() {
   const mixpanel = useMixpanel();
   const { wallets } = useApplicationState();
@@ -194,6 +201,8 @@ export function useWalletUpdater() {
 
       mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
         wallet_name: wallet?.name?.toLowerCase(),
+        // local storage will always have a value as this event
+        // triggered after we add a value in local storage
         ChainId: localStorage.getItem('lastConnectedChainId') ?? ChainId.AVALANCHE.toString(),
         source: 'pangolin-components',
       });
