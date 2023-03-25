@@ -66,7 +66,7 @@ import uriToHttp from 'src/utils/uriToHttp';
 import { unwrappedToken, wrappedCurrency, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
 import { network } from './connectors';
 import { MixPanelEvents, MixPanelProvider, useMixpanel } from './hooks/mixpanel';
-import { useEagerConnect } from './hooks/useConnector';
+import { useEagerConnect, useWalletUpdater } from './hooks/useConnector';
 import i18n, { availableLanguages } from './i18n';
 import { galetoStore } from './state';
 import { PangoChefInfo } from './state/ppangoChef/types';
@@ -114,6 +114,8 @@ export function PangolinProvider({
       activate(network);
     }
   }, [triedEager, active, error, activate, active, library, account, chainId]);
+
+  useWalletUpdater();
 
   const ethersLibrary = library && !library?._isProvider ? new Web3Provider(library) : library;
 

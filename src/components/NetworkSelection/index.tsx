@@ -11,9 +11,7 @@ import { network } from 'src/connectors';
 import { useChainId } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
 import { useApplicationState } from 'src/state/papplication/atom';
-import { useUserAtom } from 'src/state/puser/atom';
-import { callBackArgsType, changeNetwork, getWalletKey } from 'src/utils/wallet';
-import { Wallet } from 'src/wallet/classes/wallet';
+import { changeNetwork } from 'src/utils/wallet';
 import ChainItem from './ChainItem';
 import { ChainsList, Frame, Inputs, Wrapper } from './styled';
 import { NETWORK_TYPE, NetworkProps } from './types';
@@ -26,7 +24,6 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const { wallets } = useApplicationState();
-  const { updateWallet } = useUserAtom();
 
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());
@@ -60,12 +57,7 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
   }
 
   async function onChainClick(chain: Chain) {
-    function onSuccess({ deactivatedWallet, wallet }: callBackArgsType) {
-      if (deactivatedWallet) {
-        const walletKey = getWalletKey(wallet as Wallet, wallets);
-        updateWallet(walletKey);
-      }
-
+    function onSuccess() {
       closeModal();
     }
 

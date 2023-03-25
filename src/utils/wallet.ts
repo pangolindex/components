@@ -6,11 +6,6 @@ import { hashPack, hashPackTestnet, injectWallet } from 'src/wallet';
 import { Wallet, activeFunctionType } from 'src/wallet/classes/wallet';
 import { wait } from './retry';
 
-export type callBackArgsType = {
-  deactivatedWallet: boolean;
-  wallet?: Wallet;
-};
-
 export function getWalletKey(wallet: Wallet, walletMapping: { [x: string]: Wallet }): string | null {
   const result = Object.entries(walletMapping).find(([, value]) => deepEqual(value, wallet));
 
@@ -24,6 +19,7 @@ export function disconnectWallets(wallets: Wallet[]) {
   wallets.forEach((wallet) => {
     if (wallet.isActive) {
       wallet.disconnect();
+      console.debug('Wallet disconnected ', wallet);
     }
   });
 }
@@ -51,7 +47,7 @@ export async function changeNetwork(args: {
   chainId: ChainId;
   connector: AbstractConnector;
   wallets: Wallet[];
-  callBack?: (args: callBackArgsType) => void;
+  callBack?: () => void;
   activate: activeFunctionType;
   deactivate: () => void;
 }) {
@@ -72,8 +68,6 @@ export async function changeNetwork(args: {
     await wait(500);
   }
 
-  let usedWallet: Wallet | undefined = undefined;
-
   switch (chain.network_type) {
     case NetworkType.EVM:
       let walletProvider: any;
@@ -85,13 +79,10 @@ export async function changeNetwork(args: {
           for (let index = 0; index < evmWallets.length; index++) {
             try {
               const wallet = evmWallets[index];
-              await wallet.tryActivation(activate, () => {
-                disconnectWallets(wallets);
-              });
+              await wallet.tryActivation(activate);
               walletProvider = await wallet.connector.getProvider();
               // break the loop when user accepts the wallet connection
               if (walletProvider) {
-                usedWallet = wallet;
                 break;
               }
             } catch {
@@ -118,7 +109,7 @@ export async function changeNetwork(args: {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
         });
-        callBack && callBack({ deactivatedWallet, wallet: usedWallet });
+        callBack && callBack();
         return;
       } catch {
         try {
@@ -143,15 +134,11 @@ export async function changeNetwork(args: {
       }
     case NetworkType.HEDERA:
       if (chain.chain_id === ChainId.HEDERA_MAINNET) {
-        await hashPack.tryActivation(activate, () => {
-          disconnectWallets(wallets);
-        });
-        callBack && callBack({ deactivatedWallet, wallet: hashPack });
+        await hashPack.tryActivation(activate);
+        callBack && callBack();
       } else {
-        await hashPackTestnet.tryActivation(activate, () => {
-          disconnectWallets(wallets);
-        });
-        callBack && callBack({ deactivatedWallet, wallet: hashPackTestnet });
+        await hashPackTestnet.tryActivation(activate);
+        callBack && callBack();
       }
       return;
     case NetworkType.NEAR:

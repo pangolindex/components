@@ -9,8 +9,10 @@ import { IS_IN_IFRAME } from 'src/constants';
 import { useApplicationState } from 'src/state/papplication/atom';
 import { useUserAtom } from 'src/state/puser/atom';
 import { mainnetHederaFn, testnetHederaFn } from 'src/utils/hedera';
+import { disconnectWallets, getWalletKey } from 'src/utils/wallet';
 import { SUPPORTED_WALLETS, gnosisSafeWallet, hashPack, injectWallet } from 'src/wallet';
-import { Wallet } from 'src/wallet/classes/wallet';
+import { Wallet, WalletEvents, walletEvent } from 'src/wallet/classes/wallet';
+import { MixPanelEvents, useMixpanel } from './mixpanel';
 import { useChainId } from '.';
 
 export function useHederaFn() {
@@ -177,4 +179,34 @@ export function useEagerConnect(tryToActive: boolean) {
   }, []);
 
   return tried;
+}
+
+export function useWalletUpdater() {
+  const mixpanel = useMixpanel();
+  const { wallets } = useApplicationState();
+  const { updateWallet } = useUserAtom();
+
+  useEffect(() => {
+    function onConnect(wallet: Wallet) {
+      const walletKey = getWalletKey(wallet as Wallet, wallets);
+      console.debug('Wallet connected ', wallet);
+      updateWallet(walletKey);
+
+      mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
+        wallet_name: wallet?.name?.toLowerCase(),
+        ChainId: localStorage.getItem('lastConnectedChainId') ?? ChainId.AVALANCHE.toString(),
+        source: 'pangolin-components',
+      });
+
+      disconnectWallets(Object.values(wallets));
+    }
+
+    console.debug('Setuping Wallet Events');
+    walletEvent.on(WalletEvents.CONNECTED, onConnect);
+
+    return () => {
+      console.debug('Removing Wallet Events');
+      walletEvent.off(WalletEvents.CONNECTED, onConnect);
+    };
+  }, []);
 }

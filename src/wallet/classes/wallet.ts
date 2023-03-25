@@ -1,5 +1,6 @@
 import { NetworkType } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import EventEmitter from 'eventemitter3';
 import { isMobile } from 'react-device-detect';
 
 export type activeFunctionType = (
@@ -9,6 +10,13 @@ export type activeFunctionType = (
 ) => Promise<void>;
 
 export type PangolinConnector = AbstractConnector & { isAuthorized?: () => Promise<boolean> };
+
+export const walletEvent = new EventEmitter();
+
+export enum WalletEvents {
+  CONNECTED = 'connected',
+  DISCONNECTED = 'disconnected',
+}
 
 export abstract class Wallet {
   readonly connector: PangolinConnector;
@@ -65,6 +73,7 @@ export abstract class Wallet {
     try {
       await activate(this.connector, undefined, true);
       onSuccess && onSuccess();
+      walletEvent.emit(WalletEvents.CONNECTED, this);
       this.isActive = true;
     } catch (error) {
       onError && onError(error);
@@ -85,5 +94,6 @@ export abstract class Wallet {
    */
   disconnect() {
     this.isActive = false;
+    walletEvent.emit(WalletEvents.DISCONNECTED, this);
   }
 }

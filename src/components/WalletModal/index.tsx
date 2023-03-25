@@ -8,13 +8,11 @@ import { useMedia } from 'react-use';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
 import { useApplicationState } from 'src/state/papplication/atom';
-import { useUserAtom } from 'src/state/puser/atom';
 import { MEDIA_WIDTHS } from 'src/theme';
 import { wait } from 'src/utils/retry';
-import { changeNetwork, disconnectWallets, getWalletKey } from 'src/utils/wallet';
+import { changeNetwork, getWalletKey } from 'src/utils/wallet';
 import { SUPPORTED_CHAINS, SUPPORTED_WALLETS } from 'src/wallet';
 import { Wallet } from 'src/wallet/classes/wallet';
 import { NETWORK_TYPE } from '../NetworkSelection/types';
@@ -50,11 +48,9 @@ export default function WalletModal({
   const { activate, deactivate, connector } = useWeb3React();
 
   const { setWallets } = useApplicationState();
-  const { updateWallet } = useUserAtom();
 
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);
-  const mixpanel = useMixpanel();
 
   const isMobile = useMedia(`(max-width: ${MEDIA_WIDTHS.upToSmall}px)`);
 
@@ -118,15 +114,9 @@ export default function WalletModal({
     function onSuccess() {
       localStorage.setItem('lastConnectedChainId', selectedChainId.toString());
 
-      mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
-        wallet_name: wallet?.name?.toLowerCase(),
-        ChainId: selectedChainId,
-        source: 'pangolin-components',
-      });
       setPendingError(false);
       setPendingWallet(null);
-      disconnectWallets(Object.values(wallets));
-      updateWallet(walletKey);
+
       onWalletConnect(walletKey);
       closeModal();
     }
@@ -137,7 +127,9 @@ export default function WalletModal({
         deactivate();
         await wait(500);
       }
+
       await wallet.tryActivation(activate, onSuccess, onError);
+
       const chain = CHAINS[selectedChainId];
       if (wallet.isActive && chain.network_type === NetworkType.EVM) {
         await changeNetwork({
