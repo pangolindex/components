@@ -26,7 +26,7 @@ export abstract class Wallet {
   readonly description: string;
   readonly supportedChains: NetworkType[];
   readonly supportedChainsId: number[] | undefined;
-  isActive = false;
+  private wallletIsActive = false;
 
   /**
    * @param connector The connector in AbstractConnector object
@@ -57,7 +57,7 @@ export abstract class Wallet {
 
     // On disconnect the wallet we need to set the `isActive` to false
     // To do this, when disconnect the connector, this emits the Web3ReactDeactivate event by default
-    this.connector.on('Web3ReactDeactivate', () => (this.isActive = false));
+    this.connector.on('Web3ReactDeactivate', () => (this.wallletIsActive = false));
   }
 
   /**
@@ -74,7 +74,7 @@ export abstract class Wallet {
       await activate(this.connector, undefined, true);
       onSuccess && onSuccess();
       walletEvent.emit(WalletEvents.CONNECTED, this);
-      this.isActive = true;
+      this.wallletIsActive = true;
     } catch (error) {
       onError && onError(error);
     }
@@ -93,7 +93,11 @@ export abstract class Wallet {
    * Function to disconnect the wallet
    */
   disconnect() {
-    this.isActive = false;
+    this.wallletIsActive = false;
     walletEvent.emit(WalletEvents.DISCONNECTED, this);
+  }
+
+  public get isActive() {
+    return this.wallletIsActive;
   }
 }
