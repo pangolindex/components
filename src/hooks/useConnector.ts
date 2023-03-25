@@ -188,7 +188,7 @@ export function useWalletUpdater() {
 
   useEffect(() => {
     function onConnect(wallet: Wallet) {
-      const walletKey = getWalletKey(wallet as Wallet, wallets);
+      const walletKey = getWalletKey(wallet, wallets);
       console.debug('Wallet connected ', wallet);
       updateWallet(walletKey);
 
