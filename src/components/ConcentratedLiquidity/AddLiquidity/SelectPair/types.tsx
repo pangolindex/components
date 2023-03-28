@@ -1,5 +1,5 @@
 import { Currency } from '@pangolindex/sdk';
-import { TokenField } from '..';
+import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
 
 export type SelectPairProps = {
   currency0?: Currency;
@@ -7,5 +7,5 @@ export type SelectPairProps = {
   /**
    * Callback to open Token Drawer
    */
-  onChangeTokenDrawerStatus?: (tokenField: TokenField) => void;
+  onChangeTokenDrawerStatus?: (tokenField: Field) => void;
 };
