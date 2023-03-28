@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "6.0.8-rc.0",
+  "version": "7.0.0-rc.1",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "engines": {
@@ -67,6 +67,7 @@
     "bn.js": "^5.2.1",
     "borsh": "^0.7.0",
     "cids": "^1.1.9",
+    "d3": "^7.6.1",
     "dayjs": "^1.10.7",
     "deep-equal": "^2.0.5",
     "ethers": "^5.5.4",

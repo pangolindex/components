@@ -773,11 +773,27 @@
     "sidebar": {
       "title": "Pools V3",
       "seeMore": "Want to see classic pools",
-      "goToFarm": "Go to farm page"
+      "goToFarm": "Go to farm page",
+      "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
       "searchContent": "Try searching for coin names…",
       "poolNotExist": "You don’t have any open or closed positions to show."
+    },
+    "addLiquidity": {
+      "selectFeeTier": "Select Fee Tier"
+    },
+    "selectPair": {
+      "title": "Select Pair"
+    },
+    "feeTier": {
+      "selectedPercentage": "select"
+    },
+    "priceRange": {
+      "title": "Set Price Range"
+    },
+    "increasePosition": {
+      "title": "Increase Position"
     }
   },
   "bridge": {
@@ -848,6 +864,11 @@
   "dropdown": {
     "select": "Select"
   },
+  "liquidityChartRangeInput": {
+    "uninitialized": "Your position will appear here.",
+    "error": "Liquidity data not available.",
+    "noData": "There is no liquidity data."
+  },
   "portfolio": {
     "portfolioAllChain": "Portfolio Value in All Chains",
     "connectToseePortfolio": "Connect a wallet to see your Portfolio",
@@ -873,6 +894,23 @@
     "min": "Min",
     "open": "Open",
     "closed": "Closed",
+    "addLiquidity": "Add Liquidity",
+    "noLiquidity": "No liquidity found.",
+    "from": "From",
+    "to": "To",
+    "remove": "Remove",
+    "connectWallet": "Connect Wallet",
+    "approving": "Approving",
+    "approve": "Approve",
+    "approved": "Approved",
+    "output": "Output",
+    "amount": "Amount",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity",
+    "earned": "Earned",
+    "poolRewards": "Pool Rewards",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
     "notFound": "Nicht gefunden"
   }
 }

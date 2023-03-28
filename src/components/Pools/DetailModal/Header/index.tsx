@@ -96,7 +96,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
             {currency0?.symbol}/{currency1?.symbol}
           </Text>
         </Box>
-        <Visible upToSmall={true}>
+        <Visible upToSmall={true} upToMedium={true}>
           <CloseIcon onClick={onClose} color={theme.text3} />
         </Visible>
       </HeaderWrapper>
@@ -145,7 +145,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
           statFontSize={[24, 18]}
           titleColor="text2"
         />
-        <Hidden upToSmall={true}>
+        <Hidden upToSmall={true} upToMedium={true}>
           <CloseIcon onClick={onClose} color={theme.text3} />
         </Hidden>
       </StatsWrapper>
