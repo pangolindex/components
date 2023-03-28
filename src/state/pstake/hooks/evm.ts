@@ -406,8 +406,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
 };
 
 export function useMiniChefSubgraphData() {
-  const account = '0xe03c1bbaf4ad788bd2e9751abbaa645dba2c423a'; //usePangolinWeb3();
-  //const { account } = usePangolinWeb3();
+  const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
   return useQuery<MinichefV2[]>(
@@ -428,7 +427,7 @@ export function useMiniChefSubgraphData() {
 
 // get data for all farms
 export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] => {
-  const account = '0xe03c1bbaf4ad788bd2e9751abbaa645dba2c423a'; //usePangolinWeb3();
+  const { account } = usePangolinWeb3();
   const minichefContract = useMiniChefContract();
   const results = useMiniChefSubgraphData();
 
