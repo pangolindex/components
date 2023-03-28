@@ -210,4 +210,35 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
   [ChainId.EVMOS_MAINNET]: undefined,
 };
 
+export const CONC_LIQ_NFT_POSITION_MANAGER_ADDRESS: { [chainId in ChainId]: string | undefined } = {
+  [ChainId.FUJI]: '0x1ff5C8F2499Ea5bc0D2fACBd382cA800f9083361', // TODO:
+  [ChainId.AVALANCHE]: undefined,
+  [ChainId.WAGMI]: undefined,
+  [ChainId.COSTON]: undefined,
+  [ChainId.SONGBIRD]: undefined,
+  [ChainId.FLARE_MAINNET]: undefined,
+  [ChainId.HEDERA_TESTNET]: undefined,
+  [ChainId.HEDERA_MAINNET]: undefined,
+  [ChainId.NEAR_MAINNET]: undefined,
+  [ChainId.NEAR_TESTNET]: undefined,
+  [ChainId.COSTON2]: undefined,
+  [ChainId.ETHEREUM]: undefined,
+  [ChainId.POLYGON]: undefined,
+  [ChainId.FANTOM]: undefined,
+  [ChainId.XDAI]: undefined,
+  [ChainId.BSC]: undefined,
+  [ChainId.ARBITRUM]: undefined,
+  [ChainId.CELO]: undefined,
+  [ChainId.OKXCHAIN]: undefined,
+  [ChainId.VELAS]: undefined,
+  [ChainId.AURORA]: undefined,
+  [ChainId.CRONOS]: undefined,
+  [ChainId.FUSE]: undefined,
+  [ChainId.MOONRIVER]: undefined,
+  [ChainId.MOONBEAM]: undefined,
+  [ChainId.OP]: undefined,
+  [ChainId.EVMOS_TESTNET]: undefined,
+  [ChainId.EVMOS_MAINNET]: undefined,
+};
+
 /* eslint-enable max-lines */
