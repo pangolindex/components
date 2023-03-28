@@ -76,6 +76,13 @@ export function usePangoChefExtraFarmApr(
 
   const _rewarRate = balance.multiply(stakingInfo.poolRewardRate.toString()).divide(stakingInfo.totalStakedAmount);
 
+  const lpToken = stakingInfo.stakedAmount.token;
+
+  const expoent = png.decimals - lpToken.decimals;
+
+  // we need to divide by the diference between png.decimals and lpToken.decimals
+  const aprDenominator = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent));
+
   return useMemo(() => {
     let extraAPR = 0;
 
@@ -109,7 +116,7 @@ export function usePangoChefExtraFarmApr(
                 .multiply(_rewarRate)
                 .multiply((365 * 86400 * 100).toString())
                 .multiply(multiplier)
-                .divide(pairBalance.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals))))
+                .divide(pairBalance.multiply(aprDenominator))
                 .divide((10 ** token.decimals).toString())
                 .toSignificant(2),
             );
