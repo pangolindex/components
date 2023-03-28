@@ -112,7 +112,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
         <Wrapper maximumHeight={height - 150}>
           <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
             <Text color="text1" fontSize={[32, 28]} fontWeight={500} mt={10} mb={12}>
-              {t('concentratedLiquidity.addLiquidity.title')}
+              {t('common.addLiquidity')}
             </Text>
             <CloseIcon onClick={onClose} color={theme.text1} />
           </Box>
