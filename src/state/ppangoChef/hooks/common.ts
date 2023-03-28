@@ -74,7 +74,9 @@ export function usePangoChefExtraFarmApr(
   const png = PNG[chainId];
   const tokensPrices = useTokensCurrencyPrice([..._rewardTokens, png]);
 
-  const _rewarRate = balance.multiply(stakingInfo.poolRewardRate.toString()).divide(stakingInfo.totalStakedAmount);
+  const _rewarRate = balance
+    ?.multiply((stakingInfo?.poolRewardRate ?? 0).toString())
+    .divide(stakingInfo.totalStakedAmount);
 
   const lpToken = stakingInfo.stakedAmount.token;
 

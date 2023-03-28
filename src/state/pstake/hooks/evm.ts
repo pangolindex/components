@@ -406,7 +406,8 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
 };
 
 export function useMiniChefSubgraphData() {
-  const { account } = usePangolinWeb3();
+  const account = '0xe03c1bbaf4ad788bd2e9751abbaa645dba2c423a'; //usePangolinWeb3();
+  //const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
   return useQuery<MinichefV2[]>(
@@ -427,6 +428,8 @@ export function useMiniChefSubgraphData() {
 
 // get data for all farms
 export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] => {
+  const account = '0xe03c1bbaf4ad788bd2e9751abbaa645dba2c423a'; //usePangolinWeb3();
+  const minichefContract = useMiniChefContract();
   const results = useMiniChefSubgraphData();
 
   const minichefData = results?.data?.[0];
@@ -449,10 +452,23 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
 
   const wavax = WAVAX[chainId];
 
+  const userInfoInput = useMemo(() => {
+    if (pids.length === 0 || !account) return [];
+    return pids.map((pid) => [pid, account]);
+  }, [pids, account]); // [[pid, account], ...] [[0, account], [1, account], [2, account] ...]
+
+  // get the user pending rewards for each pool
+  const userPendingRewardsState = useSingleContractMultipleData(
+    minichefContract,
+    'pendingReward',
+    userInfoInput ? userInfoInput : [],
+  );
+
   return useMemo(() => {
     if (!chainId || !png || !farms?.length) return [];
 
-    return farms.reduce(function (memo, farm: MinichefFarm) {
+    return farms.reduce(function (memo, farm: MinichefFarm, index) {
+      const userPendingRewardState = userPendingRewardsState[index];
       const rewardsAddress = farm?.rewarderAddress;
 
       const rewardsAddresses = farm.rewarder.rewards;
@@ -519,7 +535,10 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
         lpToken,
         parseUnits(farm?.farmingPositions?.[0]?.stakedTokenBalance?.toString() ?? '0').toString(),
       );
-      const earnedAmount = new TokenAmount(png, JSBI.BigInt(farm?.earnedAmount ?? 0));
+      const earnedAmount = new TokenAmount(
+        png,
+        JSBI.BigInt(userPendingRewardState?.result?.['pending']?.toString() ?? 0),
+      );
 
       const multiplier = JSBI.BigInt(farm?.allocPoint);
 
@@ -624,7 +643,7 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
 
       return memo;
     }, [] as MinichefStakingInfo[]);
-  }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms, farmsAprs]);
+  }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms, farmsAprs, userPendingRewardsState]);
 };
 
 /* eslint-enable max-lines */
