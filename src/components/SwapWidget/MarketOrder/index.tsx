@@ -673,6 +673,7 @@ const MarketOrder: React.FC<Props> = ({
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={tokenDrawerType === Field.INPUT ? inputCurrency : outputCurrency}
           otherSelectedCurrency={tokenDrawerType === Field.INPUT ? outputCurrency : inputCurrency}
+          seletedField={tokenDrawerType}
         />
       )}
 

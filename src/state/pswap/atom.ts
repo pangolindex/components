@@ -1,6 +1,7 @@
-import { ChainId } from '@pangolindex/sdk';
+import { CAVAX, ChainId, WAVAX } from '@pangolindex/sdk';
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
+import { hederaFn } from 'src/utils/hedera';
 import { ZERO_ADDRESS } from '../../constants';
 
 export enum Field {
@@ -168,15 +169,32 @@ export const useSwapState = () => {
 
   const switchCurrencies = useCallback(
     ({ chainId }: { chainId: ChainId }) => {
-      setSwapState((prev) => ({
-        ...prev,
-        [chainId]: {
-          ...prev[chainId],
-          independentField: prev[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
-          [Field.INPUT]: { currencyId: prev[chainId]?.[Field.OUTPUT].currencyId },
-          [Field.OUTPUT]: { currencyId: prev[chainId]?.[Field.INPUT].currencyId },
-        },
-      }));
+      setSwapState((prev) => {
+        let inputCurrencyId = prev[chainId]?.[Field.INPUT].currencyId;
+        let outputcurrencyId = prev[chainId]?.[Field.OUTPUT].currencyId;
+        const currency = CAVAX[chainId];
+
+        // we need to change from hbar to whbar when if the field.input is hbar
+        if (hederaFn.isHederaChain(chainId) && inputCurrencyId === currency.symbol) {
+          const wrappedCurrency = WAVAX[chainId];
+          inputCurrencyId = wrappedCurrency.address;
+
+          if (outputcurrencyId === wrappedCurrency.address) {
+            outputcurrencyId = inputCurrencyId;
+            inputCurrencyId = undefined;
+          }
+        }
+
+        return {
+          ...prev,
+          [chainId]: {
+            ...prev[chainId],
+            independentField: prev[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
+            [Field.INPUT]: { currencyId: outputcurrencyId },
+            [Field.OUTPUT]: { currencyId: inputCurrencyId },
+          },
+        };
+      });
     },
     [setSwapState],
   );
