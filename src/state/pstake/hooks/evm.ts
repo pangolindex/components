@@ -371,7 +371,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
           isPeriodFinished,
           getHypotheticalWeeklyRewardRate,
           getExtraTokensWeeklyRewardRate,
-          rewardTokensAddress: [PNG[chainId]?.address, ...(rewardTokensAddress?.result?.[0] || [])],
+          rewardTokensAddress: [...(rewardTokensAddress?.result?.[0] || [])],
           rewardTokensMultiplier: [BigNumber.from(1), ...(rewardTokensMultiplier?.result?.[0] || [])],
           rewardsAddress,
           swapFeeApr: farmApr.swapFeeApr,

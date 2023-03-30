@@ -394,7 +394,7 @@ export function usePangoChefInfos() {
         isPeriodFinished: rewardRate.isZero(),
         periodFinish: undefined,
         rewardsAddress: pool.rewarder,
-        rewardTokensAddress: [png.address, ...(rewardTokensState?.result?.[0] || [])],
+        rewardTokensAddress: [...(rewardTokensState?.result?.[0] || [])],
         rewardTokensMultiplier: rewardMultipliers,
         totalRewardRatePerSecond: totalRewardRatePerSecond,
         totalRewardRatePerWeek: totalRewardRatePerWeek,

@@ -61,8 +61,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
 
   const isLiquidity = Boolean(userPgl?.greaterThan('0'));
 
-  const isSuperFarm =
-    version > 1 ? (rewardTokens || [])?.length > 1 : (stakingInfo?.rewardTokensAddress || [])?.length > 1;
+  const isSuperFarm = (stakingInfo?.rewardTokensAddress || [])?.length > 0;
 
   const redirectToFarmDrawer = () => {
     setShowFarmDrawer(true);
