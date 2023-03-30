@@ -72,18 +72,14 @@ export function usePangoChefExtraFarmApr(
   const pairPrice: Price | undefined = stakingInfo.pairPrice;
 
   const png = PNG[chainId];
-  const tokensPrices = useTokensCurrencyPrice([..._rewardTokens, png]);
+  const tokensPrices = useTokensCurrencyPrice(_rewardTokens);
 
   const _rewarRate = balance
     ?.multiply((stakingInfo?.poolRewardRate ?? 0).toString())
     .divide(stakingInfo.totalStakedAmount);
 
-  const lpToken = stakingInfo.stakedAmount.token;
-
-  const expoent = png.decimals - lpToken.decimals;
-
-  // we need to divide by the diference between png.decimals and lpToken.decimals
-  const aprDenominator = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent));
+  // we need to divide by png.decimals
+  const aprDenominator = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals));
 
   return useMemo(() => {
     let extraAPR = 0;
@@ -100,10 +96,9 @@ export function usePangoChefExtraFarmApr(
       }
 
       const tokenPrice = tokensPrices[token.address];
-      const pngPrice = tokensPrices[png.address];
 
       const multiplier = multipliers[index];
-      if (!pngPrice || !tokenPrice || !multiplier) {
+      if (!tokenPrice || !multiplier || !pairPrice) {
         continue;
       }
 
@@ -111,7 +106,7 @@ export function usePangoChefExtraFarmApr(
 
       //extraAPR = poolRewardRate(POOL_ID) * rewardMultiplier / (10** REWARD_TOKEN_PRICE.decimals) * 365 days * 100 * REWARD_TOKEN_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       extraAPR =
-        !pngPrice || !tokenPrice || pairBalance.equalTo('0') || pngPrice.equalTo('0')
+        !tokenPrice || pairBalance.equalTo('0')
           ? 0
           : Number(
               tokenPrice.raw
