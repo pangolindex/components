@@ -1,5 +1,4 @@
 import { CHAINS, Fraction, Token } from '@pangolindex/sdk';
-import { BigNumber } from 'ethers';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -62,8 +61,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
 
   const isLiquidity = Boolean(userPgl?.greaterThan('0'));
 
-  const isSuperFarm =
-    version > 1 ? (rewardTokens || [])?.length > 1 : (stakingInfo?.rewardTokensAddress || [])?.length > 1;
+  const isSuperFarm = (stakingInfo?.rewardTokensAddress || [])?.length > 0;
 
   const redirectToFarmDrawer = () => {
     setShowFarmDrawer(true);
@@ -77,9 +75,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
 
   const userRewardRate = stakingInfo?.userRewardRate;
   const rewardRate = isStaking ? userRewardRate : stakingInfo?.poolRewardRate;
-  const balance = BigNumber.from(
-    isStaking ? userStakedAmount.raw.toString() : stakingInfo?.totalStakedAmount.raw.toString(),
-  );
+  const balance = isStaking ? userStakedAmount : stakingInfo?.totalStakedAmount;
 
   const extraAPR = usePangoChefExtraFarmApr(rewardTokens, rewardRate, balance, stakingInfo);
   const apr = isStaking ? userApr : farmApr;
