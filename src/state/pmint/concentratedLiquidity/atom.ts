@@ -1,4 +1,4 @@
-import { ChainId } from '@pangolindex/sdk';
+import { ChainId, FeeAmount } from '@pangolindex/sdk';
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
 
@@ -6,12 +6,17 @@ export enum Field {
   CURRENCY_A = 'CURRENCY_A',
   CURRENCY_B = 'CURRENCY_B',
 }
+export enum Bound {
+  LOWER = 'LOWER',
+  UPPER = 'UPPER',
+}
 
 type FullRange = true;
 
 export interface MintState {
   readonly independentField: Field;
   readonly typedValue: string;
+  readonly feeAmount: FeeAmount;
   readonly startPriceTypedValue: string; // for the case when there's no liquidity
   readonly leftRangeTypedValue: string | FullRange;
   readonly rightRangeTypedValue: string | FullRange;
@@ -26,6 +31,7 @@ export interface MintState {
 export const initialState: MintState = {
   independentField: Field.CURRENCY_A,
   typedValue: '',
+  feeAmount: FeeAmount.LOWEST,
   startPriceTypedValue: '',
   leftRangeTypedValue: '',
   rightRangeTypedValue: '',
@@ -84,6 +90,16 @@ export const useMintStateAtom = () => {
     [setMintState],
   );
 
+  const setFeeAmount = useCallback(
+    ({ value }: { value: FeeAmount }) => {
+      setMintState((state) => ({
+        ...state,
+        feeAmount: value,
+      }));
+    },
+    [setMintState],
+  );
+
   const setTypeInput = useCallback(
     ({ field, typedValue, noLiquidity }: { field: Field; typedValue: string; noLiquidity?: boolean }) => {
       if (noLiquidity) {
@@ -119,7 +135,7 @@ export const useMintStateAtom = () => {
         // the case where we have to swap the order
         setMintState((prev) => ({
           ...prev,
-          independentField: prev[chainId]?.independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A,
+          independentField: prev?.independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A,
           [field]: { currencyId: currencyId },
           [otherField]: { currencyId: prev[field].currencyId },
         }));
@@ -143,5 +159,6 @@ export const useMintStateAtom = () => {
     setTypeRightRangeInput,
     setTypeInput,
     selectCurrency,
+    setFeeAmount,
   };
 };

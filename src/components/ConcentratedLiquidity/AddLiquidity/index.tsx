@@ -3,11 +3,11 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
-import { PNG } from 'src/constants/tokens';
 import { Box, Modal, Text } from 'src/components';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
+import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { Field, useMintStateAtom } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/state/pmint/concentratedLiquidity/hooks';
 import { CloseIcon } from 'src/theme/components';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -47,7 +47,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const { t } = useTranslation();
   const { height } = useWindowSize();
   const chainId = useChainId();
-  const { resetMintState } = useMintStateAtom();
+  // const { resetMintState } = useMintStateAtom();
 
   const { isOpen, onClose } = props;
   const [selectedPercentage, setSelectedPercentage] = useState(0);
@@ -61,7 +61,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
 
   const { dependentField, noLiquidity, currencies } = useDerivedMintInfo();
 
-  const { onFieldAInput, onFieldBInput, onLeftRangeInput, onRightRangeInput, onStartPriceInput, onCurrencySelection } =
+  const { onFieldAInput, onFieldBInput, onLeftRangeInput, onRightRangeInput, onCurrencySelection } =
     useMintActionHandlers(noLiquidity);
 
   const currency0 = currencies[Field.CURRENCY_A];
@@ -83,34 +83,6 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
       setSelectedFeeTier(index);
     },
     [setSelectedFeeTier],
-  );
-
-  const handleTypeInput = useCallback(
-    (value: string) => {
-      onFieldAInput(value);
-    },
-    [onFieldAInput],
-  );
-
-  const handleTypeOutput = useCallback(
-    (value: string) => {
-      onFieldBInput(value);
-    },
-    [onFieldBInput],
-  );
-
-  const handleLeftRangeInput = useCallback(
-    (value: string) => {
-      onLeftRangeInput(value);
-    },
-    [onLeftRangeInput],
-  );
-
-  const handleRightRangeInput = useCallback(
-    (value: string) => {
-      onRightRangeInput(value);
-    },
-    [onRightRangeInput],
   );
 
   const switchCurrencies = useCallback(() => {
@@ -217,8 +189,8 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
           <PriceRange
             currency0={currency0}
             currency1={currency1}
-            handleLeftRangeInput={handleLeftRangeInput}
-            handleRightRangeInput={handleRightRangeInput}
+            handleLeftRangeInput={onLeftRangeInput}
+            handleRightRangeInput={onRightRangeInput}
           />
           <CurrencyInputs>
             <CurrencyInputTextBox
@@ -226,7 +198,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
               value={formattedAmounts[Field.CURRENCY_A]}
               onChange={(value: any) => {
                 setSelectedPercentage(0);
-                handleTypeInput(value);
+                onFieldAInput(value);
                 console.log('value: ', value);
               }}
               buttonStyle={{
@@ -246,7 +218,9 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
               value={formattedAmounts[Field.CURRENCY_B]}
               onChange={(value: any) => {
                 setSelectedPercentage(0);
-                handleTypeOutput(value);
+
+                onFieldBInput(value);
+
                 console.log('value: ', value);
               }}
               buttonStyle={{
