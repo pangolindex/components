@@ -344,7 +344,7 @@ export function usePangoChefInfos() {
 
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
-        pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0')
+        pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0') || !pairPrice
           ? 0
           : Number(
               pngPrice?.raw
