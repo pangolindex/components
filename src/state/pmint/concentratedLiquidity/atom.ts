@@ -101,28 +101,12 @@ export const useMintStateAtom = () => {
   );
 
   const setTypeInput = useCallback(
-    ({ field, typedValue, noLiquidity }: { field: Field; typedValue: string; noLiquidity?: boolean }) => {
-      if (noLiquidity) {
-        if (field === mintState.independentField) {
-          setMintState((state) => ({
-            ...state,
-            independentField: field,
-            typedValue,
-          }));
-        } else {
-          setMintState((state) => ({
-            ...state,
-            independentField: field,
-            typedValue,
-          }));
-        }
-      } else {
-        setMintState((state) => ({
-          ...state,
-          independentField: field,
-          typedValue,
-        }));
-      }
+    ({ field, typedValue }: { field: Field; typedValue: string }) => {
+      setMintState((state) => ({
+        ...state,
+        independentField: field,
+        typedValue,
+      }));
     },
     [setMintState, mintState],
   );

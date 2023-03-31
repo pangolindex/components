@@ -56,14 +56,14 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
 
   const onFieldAInput = useCallback(
     (typedValue: string) => {
-      setTypeInput({ field: Field.CURRENCY_A, typedValue, noLiquidity: noLiquidity === true });
+      setTypeInput({ field: Field.CURRENCY_A, typedValue });
     },
     [setTypeInput, noLiquidity],
   );
 
   const onFieldBInput = useCallback(
     (typedValue: string) => {
-      setTypeInput({ field: Field.CURRENCY_B, typedValue, noLiquidity: noLiquidity === true });
+      setTypeInput({ field: Field.CURRENCY_B, typedValue });
     },
     [setTypeInput, noLiquidity],
   );
