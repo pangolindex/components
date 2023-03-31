@@ -485,7 +485,9 @@ export function useGetPangoChefInfosViaSubgraph() {
   const isUserStaked = useMemo(
     () =>
       allFarms.some(
-        (farm) => farm.farmingPositions.length > 0 && Number(farm.farmingPositions[0].stakedTokenBalance) > 0,
+        (farm) =>
+          farm.farmingPositions.length > 0 &&
+          farm.farmingPositions.some((farmPosition) => Number(farmPosition.stakedTokenBalance) > 0),
       ),
     [allFarms],
   );
