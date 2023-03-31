@@ -485,15 +485,21 @@ export function useGetPangoChefInfosViaSubgraph() {
   const isUserStaked = useMemo(
     () =>
       allFarms.some(
-        (farm) => farm.farmingPositions.length > 0 && Number(farm.farmingPositions[0].stakedTokenBalance) > 0,
+        (farm) =>
+          farm.farmingPositions.length > 0 &&
+          farm.farmingPositions.some((farmPosition) => Number(farmPosition.stakedTokenBalance) > 0),
       ),
     [allFarms],
   );
 
+  // TODO: implement flag sistem to us can enable disable this more easy
+  // we are using this for force to use the on chain data when the subgraph are broken
+  const FETCH_ON_CHAIN_PANGOCHEF_USER_INFO = true;
+
   const userInfosState = useSingleContractMultipleData(
     pangoChefContract,
     'getUser',
-    !shouldCreateStorage && isUserStaked ? userInfoInput : [],
+    (!shouldCreateStorage && isUserStaked) || FETCH_ON_CHAIN_PANGOCHEF_USER_INFO ? userInfoInput : [],
     {
       blocksPerFetch: 20,
     },
