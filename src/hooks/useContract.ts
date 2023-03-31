@@ -3,7 +3,7 @@ import MiniChefV2 from '@pangolindex/exchange-contracts/artifacts/contracts/mini
 import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
 import Png from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-token/Png.sol/Png.json';
 import StakingRewards from '@pangolindex/exchange-contracts/artifacts/contracts/staking-rewards/StakingRewards.sol/StakingRewards.json';
-import { ChainId, WAVAX } from '@pangolindex/sdk';
+import { CHAINS, ChainId, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ERC20_BYTES32_ABI } from 'src/constants/abis/erc20';
@@ -14,6 +14,7 @@ import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderVi
 import SarStaking from 'src/constants/abis/sar.json';
 import WETH_ABI from 'src/constants/abis/weth.json';
 import { MINICHEF_ADDRESS, PANGOCHEF_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
+import NonFungiblePositionManager from 'src/constants/concentratedLiquidity/abis/nonfungiblePositionManager.json';
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from 'src/constants/multicall';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
@@ -113,4 +114,13 @@ export function usePangoChefContract(): Contract | null {
     abi = PANGOCHEF_ABI.abi;
   }
   return useContract(PANGOCHEF_ADDRESS[chainId], abi, true);
+}
+
+export function useV3NFTPositionManagerContract(withSignerIfPossible?: boolean): Contract | null {
+  const { chainId } = usePangolinWeb3();
+  return useContract(
+    chainId && CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager?.address,
+    NonFungiblePositionManager.abi,
+    withSignerIfPossible,
+  );
 }
