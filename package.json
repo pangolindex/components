@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "6.0.9",
+  "version": "6.0.10",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "engines": {
