@@ -2,6 +2,8 @@ import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Text } from 'src';
+import { useChainId } from 'src/hooks';
+import { useGetUserPositionsHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
 import { Visible } from 'src/theme/components';
 import AddLiquidity from './AddLiquidity';
 import DetailModal from './DetailModal';
@@ -13,8 +15,11 @@ import { Cards, Content, GridContainer, MobileHeader, PageWrapper } from './styl
 
 const ConcentratedLiquidity = () => {
   const { t } = useTranslation();
-
+  const chainId = useChainId();
+  const useGetUserPositions = useGetUserPositionsHook[chainId];
+  const { positions, loading } = useGetUserPositions();
   // ------------------ MOCK DATA ------------------
+  console.log('positions: ', positions, ' loading: ', loading); // TODO:
   const currency0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
   const currency1 = new Token(
     ChainId.AVALANCHE,

@@ -2,6 +2,7 @@ import { format } from 'd3';
 import { saturate } from 'polished';
 import React, { ReactNode, useCallback, useContext, useMemo } from 'react';
 import { BarChart2, CloudOff, Inbox } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { batch } from 'react-redux';
 import { ThemeContext } from 'styled-components';
 import { Loader, Text } from 'src/components';
@@ -37,6 +38,7 @@ const LiquidityChartRangeInput: React.FC<LiquidityChartRangeInputProps> = (props
     interactive,
   } = props;
   const theme = useContext(ThemeContext);
+  const { t } = useTranslation();
 
   // ------------------ MockData ------------------
   const isSorted = true;
@@ -135,18 +137,21 @@ const LiquidityChartRangeInput: React.FC<LiquidityChartRangeInputProps> = (props
     <AutoColumn gap="md" style={{ minHeight: '200px' }}>
       {isUninitialized ? (
         <InfoBox
-          message={<div>Your position will appear here.</div>}
+          message={<div>{t('liquidityChartRangeInput.uninitialized')}</div>}
           icon={<Inbox size={56} stroke={theme.primary} />}
         />
       ) : isLoading ? (
         <InfoBox icon={<Loader size={40} />} />
       ) : error ? (
         <InfoBox
-          message={<div>Liquidity data not available.</div>}
+          message={<div>{t('liquidityChartRangeInput.error')}</div>}
           icon={<CloudOff size={56} stroke={theme.text1} />}
         />
       ) : !formattedData || formattedData.length === 0 || !price ? (
-        <InfoBox message={<div>There is no liquidity data.</div>} icon={<BarChart2 size={56} stroke={theme.text1} />} />
+        <InfoBox
+          message={<div>{t('liquidityChartRangeInput.noData')}</div>}
+          icon={<BarChart2 size={56} stroke={theme.text1} />}
+        />
       ) : (
         <ChartWrapper>
           <Chart

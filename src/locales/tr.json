@@ -773,11 +773,27 @@
     "sidebar": {
       "title": "Havuzlar V3",
       "seeMore": "Klasik havuzları görmek mi istiyorsunuz",
-      "goToFarm": "Çiftlik sayfasına git"
+      "goToFarm": "Çiftlik sayfasına git",
+      "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
       "searchContent": "Token adını aramayı deneyin…",
       "poolNotExist": "Gösterilecek açık veya kapalı pozisyonunuz yok."
+    },
+    "addLiquidity": {
+      "selectFeeTier": "Select Fee Tier"
+    },
+    "selectPair": {
+      "title": "Select Pair"
+    },
+    "feeTier": {
+      "selectedPercentage": "select"
+    },
+    "priceRange": {
+      "title": "Set Price Range"
+    },
+    "increasePosition": {
+      "title": "Increase Position"
     }
   },
   "bridge": {
@@ -848,6 +864,11 @@
   "dropdown": {
     "select": "Seç"
   },
+  "liquidityChartRangeInput": {
+    "uninitialized": "Your position will appear here.",
+    "error": "Liquidity data not available.",
+    "noData": "There is no liquidity data."
+  },
   "portfolio": {
     "portfolioAllChain": "Portfolio Value in All Chains",
     "connectToseePortfolio": "Connect a wallet to see your Portfolio",
@@ -861,6 +882,23 @@
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
   "common": {
+    "addLiquidity": "Add Liquidity",
+    "noLiquidity": "No liquidity found.",
+    "from": "From",
+    "to": "To",
+    "remove": "Remove",
+    "connectWallet": "Connect Wallet",
+    "approving": "Approving",
+    "approve": "Approve",
+    "approved": "Approved",
+    "output": "Output",
+    "amount": "Amount",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity",
+    "earned": "Earned",
+    "poolRewards": "Pool Rewards",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
     "loading": "Loading",
     "search": "Search",
     "required": "Required",
