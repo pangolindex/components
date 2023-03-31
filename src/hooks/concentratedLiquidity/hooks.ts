@@ -1,6 +1,6 @@
 import {
   BigintIsh,
-  CONCENTRATE_FACTORY_ADDRESS,
+  CHAINS,
   ChainId,
   ConcentratedPool,
   Currency,
@@ -116,7 +116,7 @@ export function usePools(
   }, [chainId, poolKeys]);
 
   const poolAddresses: (string | undefined)[] = useMemo(() => {
-    const v3CoreFactoryAddress = chainId && CONCENTRATE_FACTORY_ADDRESS[chainId];
+    const v3CoreFactoryAddress = chainId && CHAINS[chainId].contracts?.concentratedLiquidity?.factory;
     if (!v3CoreFactoryAddress) return new Array(poolTokens.length);
 
     return poolTokens.map((value) => value && PoolCache.getPoolAddress(v3CoreFactoryAddress, ...value, chainId));

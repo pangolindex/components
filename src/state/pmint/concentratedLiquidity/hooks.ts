@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { BigNumber } from '@ethersproject/bignumber';
 import {
   CAVAX,
   ConcentratedPool,
@@ -107,7 +106,6 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
             : currency === CAVAX[chainId] && CAVAX[chainId]?.symbol
             ? (CAVAX[chainId]?.symbol as string)
             : '',
-        chainId,
       });
     },
     [selectCurrency, chainId],
@@ -124,50 +122,7 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
   };
 }
 
-export interface PositionDetails {
-  nonce: BigNumber;
-  tokenId: BigNumber;
-  operator: string;
-  token0: string;
-  token1: string;
-  fee: number;
-  tickLower: number;
-  tickUpper: number;
-  liquidity: BigNumber;
-  feeGrowthInside0LastX128: BigNumber;
-  feeGrowthInside1LastX128: BigNumber;
-  tokensOwed0: BigNumber;
-  tokensOwed1: BigNumber;
-}
-
-export function useDerivedPositionInfo(positionDetails: PositionDetails | undefined): {
-  position: Position | undefined;
-  pool: ConcentratedPool | undefined;
-} {
-  const currency0 = useCurrency(positionDetails?.token0);
-  const currency1 = useCurrency(positionDetails?.token1);
-
-  // construct pool data
-  const [, pool] = usePool(currency0 ?? undefined, currency1 ?? undefined, positionDetails?.fee);
-
-  let position = undefined as Position | undefined;
-  if (pool && positionDetails) {
-    position = new Position({
-      pool,
-      liquidity: positionDetails.liquidity.toString(),
-      tickLower: positionDetails.tickLower,
-      tickUpper: positionDetails.tickUpper,
-    });
-  }
-
-  return {
-    position,
-    pool: pool ?? undefined,
-  };
-}
-
-export function useDerivedMintInfo(existingPosition?: Position): {
-  // override for existing position
+export interface DerivedMintInfo {
   pool?: ConcentratedPool | null;
   poolState: PoolState;
   ticks: { [bound in Bound]?: number | undefined };
@@ -192,7 +147,9 @@ export function useDerivedMintInfo(existingPosition?: Position): {
   depositBDisabled: boolean;
   invertPrice: boolean;
   ticksAtLimit: { [bound in Bound]?: boolean | undefined };
-} {
+}
+
+export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
@@ -220,6 +177,8 @@ export function useDerivedMintInfo(existingPosition?: Position): {
   const tokenA = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
   const tokenB = currencyB ? wrappedCurrency(currencyB, chainId) : undefined;
 
+  const baseToken = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
+
   const [token0, token1] = useMemo(
     () =>
       tokenA && tokenB ? (tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]) : [undefined, undefined],
@@ -241,8 +200,8 @@ export function useDerivedMintInfo(existingPosition?: Position): {
   const noLiquidity = poolState === PoolState.NOT_EXISTS;
 
   // note to parse inputs in reverse TODO
-  // const invertPrice = Boolean(baseToken && token0 && !baseToken.equals(token0));
-  const invertPrice = false;
+  const invertPrice = Boolean(baseToken && token0 && !baseToken.equals(token0));
+
   // always returns the price with 0 as base token
   const price: Price | undefined = useMemo(() => {
     // if no liquidity use typed value

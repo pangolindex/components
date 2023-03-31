@@ -1,4 +1,4 @@
-import { ChainId, FeeAmount } from '@pangolindex/sdk';
+import { FeeAmount } from '@pangolindex/sdk';
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
 
@@ -128,7 +128,7 @@ export const useMintStateAtom = () => {
   );
 
   const selectCurrency = useCallback(
-    ({ currencyId, field, chainId }: { currencyId: string; field: Field; chainId: ChainId }) => {
+    ({ currencyId, field }: { currencyId: string; field: Field }) => {
       const otherField = field === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A;
 
       if (currencyId === mintState[otherField].currencyId) {
