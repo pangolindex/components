@@ -777,8 +777,7 @@
       "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
-      "searchContent": "Token adını aramayı deneyin…",
-      "poolNotExist": "Gösterilecek açık veya kapalı pozisyonunuz yok."
+      "searchContent": "Token adını aramayı deneyin…"
     },
     "addLiquidity": {
       "selectFeeTier": "Select Fee Tier"
@@ -794,7 +793,8 @@
     },
     "increasePosition": {
       "title": "Increase Position"
-    }
+    },
+    "positionNotFound": "Gösterilecek açık veya kapalı pozisyonunuz yok."
   },
   "bridge": {
     "selectChain": "Select Chain",

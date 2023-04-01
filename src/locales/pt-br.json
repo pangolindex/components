@@ -778,7 +778,8 @@
     },
     "positionList": {
       "searchContent": "Try searching for coin names…",
-      "poolNotExist": "You don’t have any open or closed positions to show."
+      "positionNotFound": "You don’t have any open or closed positions to show.",
+    "positionNotExist": "Your active concentrated liquidity positions will appear here"
     },
     "addLiquidity": {
       "selectFeeTier": "Select Fee Tier"
