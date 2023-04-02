@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, CurrencyInput, Text } from 'src/components';
-import { TokenField } from '..';
+import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
 import { Currencies } from './styles';
 import { SelectPairProps } from './types';
 
@@ -25,7 +25,7 @@ const SelectPair: React.FC<SelectPairProps> = (props) => {
             width: '100%',
           }}
           onTokenClick={() => {
-            onChangeTokenDrawerStatus && onChangeTokenDrawerStatus(TokenField.INPUT0);
+            onChangeTokenDrawerStatus && onChangeTokenDrawerStatus(Field.CURRENCY_A);
           }}
           isShowTextInput={false}
           fontSize={24}
@@ -40,7 +40,7 @@ const SelectPair: React.FC<SelectPairProps> = (props) => {
             width: '100%',
           }}
           onTokenClick={() => {
-            onChangeTokenDrawerStatus && onChangeTokenDrawerStatus(TokenField.INPUT1);
+            onChangeTokenDrawerStatus && onChangeTokenDrawerStatus(Field.CURRENCY_B);
           }}
           isShowTextInput={false}
           fontSize={24}

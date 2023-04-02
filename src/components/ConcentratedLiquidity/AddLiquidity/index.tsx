@@ -5,7 +5,10 @@ import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, Modal, Text } from 'src/components';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
+import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
+import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
+import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/state/pmint/concentratedLiquidity/hooks';
 import { CloseIcon } from 'src/theme/components';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import FeeTier from './FeeTier';
@@ -15,10 +18,7 @@ import { CurrencyInputTextBox, CurrencyInputs, FeeTiers, PValue, Wrapper } from 
 import { AddLiquidityProps } from './types';
 
 // ------------------ MockData ------------------
-export enum TokenField {
-  INPUT0 = 'INPUT0',
-  INPUT1 = 'INPUT1',
-}
+
 const FeeTiersData = [
   {
     feeTierName: '0.01%',
@@ -46,18 +46,33 @@ const FeeTiersData = [
 const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const { t } = useTranslation();
   const { height } = useWindowSize();
-  const { currency0, currency1, isOpen, onClose } = props;
+  const chainId = useChainId();
+  // const { resetMintState } = useMintStateAtom();
+
+  const { isOpen, onClose } = props;
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const theme = useContext(ThemeContext);
   const [isCurrencyDrawerOpen, setIsCurrencyDrawerOpen] = useState(false);
-  const [drawerType, setDrawerType] = useState<TokenField>(TokenField.INPUT0);
+  const [drawerType, setDrawerType] = useState<Field>(Field.CURRENCY_A);
   const [selectedFeeTier, setSelectedFeeTier] = useState(0);
-  const onCurrencySelect = useCallback(
-    (currency: Currency) => {
-      console.log(currency);
-    },
-    [drawerType],
-  );
+
+  // mint state
+  const { independentField, typedValue } = useMintState();
+
+  const { dependentField, noLiquidity, currencies } = useDerivedMintInfo();
+
+  const { onFieldAInput, onFieldBInput, onLeftRangeInput, onRightRangeInput, onCurrencySelection } =
+    useMintActionHandlers(noLiquidity);
+
+  const currency0 = currencies[Field.CURRENCY_A];
+  const currency1 = currencies[Field.CURRENCY_B];
+
+  // get formatted amounts
+  const formattedAmounts = {
+    [independentField]: typedValue,
+    // [dependentField]: parsedAmounts[dependentField]?.toSignificant(6) ?? '',
+    [dependentField]: '',
+  };
 
   const onChangeTokenDrawerStatus = useCallback(() => {
     setIsCurrencyDrawerOpen(!isCurrencyDrawerOpen);
@@ -69,9 +84,37 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     },
     [setSelectedFeeTier],
   );
+
+  const switchCurrencies = useCallback(() => {
+    if (currency1 && currency0) {
+      const temp = currency0;
+      onCurrencySelection(Field.CURRENCY_A, currency1);
+      onCurrencySelection(Field.CURRENCY_B, temp);
+    }
+  }, [currency0, currency1]);
+
+  const handleCurrencySelect = useCallback(
+    (currency: Currency) => {
+      if (drawerType === Field.CURRENCY_A) {
+        if (currency1 === currency) {
+          switchCurrencies();
+        } else {
+          onCurrencySelection(Field.CURRENCY_A, currency);
+        }
+      } else {
+        if (currency0 === currency) {
+          switchCurrencies();
+        } else {
+          onCurrencySelection(Field.CURRENCY_B, currency);
+        }
+      }
+    },
+    [drawerType, switchCurrencies, currency0, currency1],
+  );
+
   const percentageValue = [25, 50, 75, 100];
-  const chainId = useChainId();
-  const maxAmountInput = new TokenAmount(currency0 as Token, JSBI.BigInt(100000));
+  const png = PNG[chainId];
+  const maxAmountInput = new TokenAmount(png as Token, JSBI.BigInt(100000));
 
   const renderPercentage = () => {
     return (
@@ -117,10 +160,12 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
             <CloseIcon onClick={onClose} color={theme.text1} />
           </Box>
           <SelectPair
-            onChangeTokenDrawerStatus={(tokenField: TokenField) => {
+            onChangeTokenDrawerStatus={(tokenField: Field) => {
               setDrawerType(tokenField);
               onChangeTokenDrawerStatus();
             }}
+            currency0={currency0}
+            currency1={currency1}
           />
           <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
             {t('concentratedLiquidity.addLiquidity.selectFeeTier')}
@@ -141,13 +186,19 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
               );
             })}
           </FeeTiers>
-          <PriceRange currency0={currency0} currency1={currency1} />
+          <PriceRange
+            currency0={currency0}
+            currency1={currency1}
+            handleLeftRangeInput={onLeftRangeInput}
+            handleRightRangeInput={onRightRangeInput}
+          />
           <CurrencyInputs>
             <CurrencyInputTextBox
               label={`${t('common.from')}`}
-              value={''}
+              value={formattedAmounts[Field.CURRENCY_A]}
               onChange={(value: any) => {
                 setSelectedPercentage(0);
+                onFieldAInput(value);
                 console.log('value: ', value);
               }}
               buttonStyle={{
@@ -164,9 +215,12 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
             />
             <CurrencyInputTextBox
               label={`${t('common.to')}`}
-              value={''}
+              value={formattedAmounts[Field.CURRENCY_B]}
               onChange={(value: any) => {
                 setSelectedPercentage(0);
+
+                onFieldBInput(value);
+
                 console.log('value: ', value);
               }}
               buttonStyle={{
@@ -188,7 +242,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
               onClose={() => {
                 onChangeTokenDrawerStatus();
               }}
-              onCurrencySelect={onCurrencySelect}
+              onCurrencySelect={handleCurrencySelect}
             />
           )}
         </Wrapper>

@@ -7,7 +7,7 @@ import { PriceInputs } from './styles';
 import { PriceRangeProps } from './types';
 
 const PriceRange: React.FC<PriceRangeProps> = (props) => {
-  const { currency0, currency1 } = props;
+  const { currency0, currency1, handleLeftRangeInput, handleRightRangeInput } = props;
   const { t } = useTranslation();
   return (
     <Box>
@@ -23,6 +23,7 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
           currency1={currency1}
           setPrice={(price: string) => {
             console.log(price);
+            handleLeftRangeInput(price);
           }}
         />
         <PriceInput
@@ -32,6 +33,7 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
           currency1={currency1}
           setPrice={(price: string) => {
             console.log(price);
+            handleRightRangeInput(price);
           }}
         />
       </PriceInputs>
