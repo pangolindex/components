@@ -17,13 +17,6 @@ export const Wrapper = styled(Box)<{ maximumHeight: number }>`
   `};
 `;
 
-export const FeeTiers = styled(Box)`
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  margin-top: 6px;
-`;
-
 export const CurrencyInputTextBox = styled(CurrencyInput)`
   align-items: center;
   border-radius: 4px;

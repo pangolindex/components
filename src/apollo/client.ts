@@ -49,3 +49,5 @@ export function useSubgraphClient(subgraph: SubgraphEnum): GraphQLClient | undef
   const chainId = useChainId();
   return getSubgraphClient(chainId, subgraph);
 }
+
+export const concentrateClient = new GraphQLClient(`https://hedera-test.pangolin.network/subgraphs/name/uniswap-v3`);

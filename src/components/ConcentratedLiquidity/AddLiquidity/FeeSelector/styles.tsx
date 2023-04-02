@@ -30,3 +30,10 @@ export const CheckBox = styled(Box)`
   right: 0;
   padding: 0.5rem;
 `;
+
+export const FeeTiers = styled(Box)`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: 6px;
+`;
