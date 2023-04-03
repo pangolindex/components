@@ -101,7 +101,7 @@
     "poolRewards": "Recompensas de pool",
     "rewardsIn": "Recompensas em",
     "removeWarning": "Você está removendo liquidez deste pool. Esta ação devolverá seus tokens. Alternativamente, você pode optar por apostar seus tokens para farmar para ganhar recompensas.",
-    "rewardClaimed" : "Your rewards claimed"
+    "rewardClaimed": "Your rewards claimed"
   },
   "menu": {
     "code": "Código",
@@ -173,7 +173,7 @@
     "selected": "Selecionado",
     "select": "Selecionar",
     "manageTokenLists": "Gerenciar Lista de Tokens",
-    "listsSelected" :"lists selected"
+    "listsSelected": "lists selected"
   },
   "settings": {
     "areYouSure": "Você tem certeza?",
@@ -386,7 +386,7 @@
     "noSeePoolJoined": "Não vê uma pool da qual participa?",
     "migrateNow": "Migre-a.",
     "importIt": "Importe-a.",
-    "seeDetails":"VEJA DETALHES",
+    "seeDetails": "VEJA DETALHES",
     "totalLockedValue": "Valor total bloqueado",
     "yourLockedValue": "Seu valor bloqueado",
     "allFarms": "Todas as farms",
@@ -483,7 +483,7 @@
     "comingSoon": "Em breve",
     "connectWalletViewPortFolio": "Conecte-se a uma carteira para ver seu portfólio.",
     "limitOrders": "Limite de pedidos",
-    "cancelOrder" : "Cancelar pedido",
+    "cancelOrder": "Cancelar pedido",
     "all": "TUDO",
     "open": "ABRIR",
     "executed": "EXECUTADA",
@@ -498,10 +498,10 @@
     "seeMore": "Ver mais",
     "seeLess": "Ver menos",
     "orderPlaced": "Ordem de {{ orderType }} colocada",
-    "selectToken" : "Select Token",
-    "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain",
-    "sendingTo" : "Sending to",
+    "selectToken": "Select Token",
+    "notFoundBalances": "Not found balances",
+    "notFoundToken": "Not found tokens on this chain",
+    "sendingTo": "Sending to",
     "invalidAddress": "Invalid Address",
     "addRecipient": "Add Recipient",
     "removeRecipient": "Remove Recipient",
@@ -655,7 +655,7 @@
     "staked": "Staked",
     "stakeSuccessMsg": "Your rewards have been staked.",
     "stakeYourReward": "Stake your rewards",
-    "stakePng" : "Stake your PNG token to share platform fees",
+    "stakePng": "Stake your PNG token to share platform fees",
     "unstaking": "Unstaking",
     "unstaked": "Unstaked",
     "unstakeYourReward": "You can unstake your rewards.",
@@ -669,7 +669,7 @@
     "couldNotWrap": "Não foi possível fazer Wrap",
     "attemptingToConfirmApproval": "Tentando confirmar sem aprovação ou assinatura. Por favor, contate o suporte."
   },
-  "sarTitle":{
+  "sarTitle": {
     "addMore": "ADICIONAR MAIS",
     "unstake": "RETIRAR UMA POSIÇÃO",
     "compound": "COMPOR RECOMPENSAS",
@@ -777,8 +777,7 @@
       "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
-      "searchContent": "Try searching for coin names…",
-      "poolNotExist": "You don’t have any open or closed positions to show."
+      "searchContent": "Try searching for coin names…"
     },
     "addLiquidity": {
       "selectFeeTier": "Select Fee Tier"
@@ -794,7 +793,9 @@
     },
     "increasePosition": {
       "title": "Increase Position"
-    }
+    },
+    "positionNotFound": "You don’t have any open or closed positions to show.",
+    "positionNotExist": "Your active concentrated liquidity positions will appear here"
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -806,7 +807,7 @@
     "selectCurrency": "Select a Currency",
     "search": "Search",
     "tableOfContent": "Table of Content",
-    "haveQuestion" :"Have Questions? Look Here:",
+    "haveQuestion": "Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
@@ -877,7 +878,7 @@
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
   },
-  "buy":{
+  "buy": {
     "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
