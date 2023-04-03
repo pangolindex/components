@@ -1,17 +1,9 @@
-import { FeeAmount } from '@pangolindex/sdk';
 import React from 'react';
-import { PoolState, useFeeTierDistribution } from 'src/hooks/concentratedLiquidity/hooks';
+import { PoolState } from 'src/hooks/concentratedLiquidity/types';
 import { BlackBox, BlackBoxContent } from './styles';
+import { FeeTierPercentageBadgeProps } from './types';
 
-export function FeeTierPercentageBadge({
-  feeAmount,
-  distributions,
-  poolState,
-}: {
-  feeAmount: FeeAmount;
-  distributions: ReturnType<typeof useFeeTierDistribution>['distributions'];
-  poolState: PoolState;
-}) {
+export function FeeTierPercentageBadge({ feeAmount, distributions, poolState }: FeeTierPercentageBadgeProps) {
   return (
     <BlackBox mt={'5px'}>
       <BlackBoxContent color="color11" fontSize={10} fontWeight={500}>

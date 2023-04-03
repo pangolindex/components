@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { concentrateClient } from './client';
+import { SubgraphEnum, useSubgraphClient } from './client';
 
 type TokenData = {
   feeTier: string;
@@ -53,14 +53,16 @@ export function useFeeTierDistributionQuery(
   token1: string | undefined,
   interval: number,
 ): { error: any | undefined; isLoading: boolean; data: FeeTierDistribution } {
+  const gqlClient = useSubgraphClient(SubgraphEnum.ConcentratedLiquidity);
+
   const { data, isLoading, error } = useQuery<any>(
     ['get-fee-tier-distribution'],
     async () => {
-      if (!concentrateClient) {
+      if (!gqlClient) {
         return undefined;
       }
 
-      return await concentrateClient.request(GET_FEE_TIER_DISTRIBUTION, {
+      return await gqlClient.request(GET_FEE_TIER_DISTRIBUTION, {
         token0: token0?.toLowerCase(),
         token1: token1?.toLowerCase(),
       });

@@ -4,25 +4,20 @@ import {
   ChainId,
   ConcentratedPool,
   Currency,
+  FeeAmount,
   JSBI,
   Token,
   computePoolAddress,
 } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useFeeTierDistributionQuery } from 'src/apollo/feeTierDistribution';
-import { FeeAmount } from 'src/components/LiquidityChartRangeInput/types';
 import { CONCENTRATE_POOL_STATE_INTERFACE } from 'src/constants/abis/concentratedPool';
 import { useChainId } from 'src/hooks';
 import { useBlockNumber } from 'src/state/papplication/hooks';
 import { useMultipleContractSingleData } from 'src/state/pmulticall/hooks';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-
-export enum PoolState {
-  LOADING,
-  NOT_EXISTS,
-  EXISTS,
-  INVALID,
-}
+import { FeeTierDistribution, PoolState } from './types';
+import { usePoolsHook } from './index';
 
 // Classes are expensive to instantiate, so this caches the recently instantiated pools.
 // This avoids re-instantiating pools as the other pools in the same request are loaded.
@@ -160,6 +155,9 @@ export function usePool(
   currencyB: Currency | undefined,
   feeAmount: FeeAmount | undefined,
 ): [PoolState, ConcentratedPool | null] {
+  const chainId = useChainId();
+  const usePools = usePoolsHook[chainId];
+
   const poolKeys: [Currency | undefined, Currency | undefined, FeeAmount | undefined][] = useMemo(
     () => [[currencyA, currencyB, feeAmount]],
     [currencyA, currencyB, feeAmount],
@@ -170,15 +168,6 @@ export function usePool(
 
 // maximum number of blocks past which we consider the data stale
 const MAX_DATA_BLOCK_AGE = 20;
-
-export interface FeeTierDistribution {
-  isLoading: boolean;
-  isError: boolean;
-  largestUsageFeeTier?: FeeAmount | undefined;
-
-  // distributions as percentages of overall liquidity
-  distributions?: Record<FeeAmount, number | undefined>;
-}
 
 export function useFeeTierDistribution(
   currencyA: Currency | undefined,
@@ -238,7 +227,7 @@ export function useFeeTierDistribution(
   }, [isLoading, error, distributions, poolStateVeryLow, poolStateLow, poolStateMedium, poolStateHigh]);
 }
 
-function usePoolTVL(token0: Token | undefined, token1: Token | undefined) {
+export function usePoolTVL(token0: Token | undefined, token1: Token | undefined) {
   const latestBlock = useBlockNumber();
   const { isLoading, error, data } = useFeeTierDistributionQuery(token0?.address, token1?.address, 30000);
 

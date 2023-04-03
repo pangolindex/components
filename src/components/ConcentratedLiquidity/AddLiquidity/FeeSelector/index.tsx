@@ -1,7 +1,9 @@
 import { FeeAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Button, Text } from 'src/components';
-import { PoolState, useFeeTierDistribution, usePools } from 'src/hooks/concentratedLiquidity/hooks';
+import { useChainId } from 'src/hooks';
+import { useFeeTierDistributionHook, usePoolsHook } from 'src/hooks/concentratedLiquidity';
+import { PoolState } from 'src/hooks/concentratedLiquidity/types';
 import usePrevious from 'src/hooks/usePrevious';
 import FeeOption from './FeeOption';
 import { FeeTierPercentageBadge } from './FeeTierPercentageBadge';
@@ -18,6 +20,10 @@ import { FeeSelectorProps } from './types';
 
 const FeeSelector: React.FC<FeeSelectorProps> = (props) => {
   const { disabled = false, feeAmount, handleFeePoolSelect, currency0, currency1 } = props;
+
+  const chainId = useChainId();
+  const usePools = usePoolsHook[chainId];
+  const useFeeTierDistribution = useFeeTierDistributionHook[chainId];
 
   const { isLoading, isError, largestUsageFeeTier, distributions } = useFeeTierDistribution(currency0, currency1);
 
@@ -135,7 +141,7 @@ const FeeSelector: React.FC<FeeSelectorProps> = (props) => {
 
         {showOptions && (
           <FeeTiers>
-            {[FeeAmount.LOWEST, FeeAmount.LOW, FeeAmount.MEDIUM, FeeAmount.HIGH].map((_feeAmount, i) => {
+            {[FeeAmount.LOWEST, FeeAmount.LOW, FeeAmount.MEDIUM, FeeAmount.HIGH].map((_feeAmount) => {
               return (
                 <FeeOption
                   feeAmount={_feeAmount}
@@ -143,7 +149,7 @@ const FeeSelector: React.FC<FeeSelectorProps> = (props) => {
                   onClick={() => handleFeePoolSelectWithEvent(_feeAmount)}
                   distributions={distributions}
                   poolState={poolsByFeeTier[_feeAmount]}
-                  key={i}
+                  key={_feeAmount}
                 />
               );
             })}
