@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { CurrencyAmount, JSBI } from '@pangolindex/sdk';
+import { CurrencyAmount, Fraction, JSBI, Price, Token, TokenAmount } from '@pangolindex/sdk';
 import { BIGNUMBER_ZERO, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE } from 'src/constants';
 import { ValueVariables } from './types';
 
@@ -49,4 +49,40 @@ export function calculateUserRewardRate(
   const userValue = blockTimestamp.mul(userBalance).sub(userSumOfEntryTimes);
   const poolValue = blockTimestamp.mul(poolBalance).sub(poolSumOfEntryTimes);
   return userValue.lte(0) || poolValue.lte(0) ? BIGNUMBER_ZERO : poolRewardRate?.mul(userValue).div(poolValue);
+}
+
+interface CalculateAprArgs {
+  pairPrice: Price | Fraction;
+  stakedAmount: TokenAmount;
+  userRewardRate: BigNumber;
+  pngPrice: Price;
+  png: Token;
+}
+
+/**
+ * This function calculate the user apr
+ *
+ * @param pairPrice price of pair in wrapped currency
+ * @param stakedAmount total staked of user
+ * @param userRewardRate reward rate of user in png/s
+ * @param pngPrice price of png in wrappred currency
+ * @param png pangolin governace token
+ * @returns return the apr of user
+ */
+export function calculateUserAPR(args: CalculateAprArgs) {
+  const { pairPrice, stakedAmount, userRewardRate, pngPrice, png } = args;
+
+  const rawPrice = !(pairPrice instanceof Price) && pairPrice instanceof Fraction ? pairPrice : pairPrice.raw;
+
+  const pairBalance = rawPrice.multiply(stakedAmount);
+
+  //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / ((getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE) * 1e(png.decimals))
+  return pairBalance.equalTo('0')
+    ? 0
+    : Number(
+        pngPrice.raw
+          .multiply(userRewardRate.mul(86400).mul(365).mul(100).toString())
+          .divide(pairBalance.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals))))
+          .toFixed(4),
+      );
 }

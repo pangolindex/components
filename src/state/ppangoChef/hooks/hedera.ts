@@ -29,7 +29,7 @@ import {
   useSingleContractMultipleData,
 } from '../../pmulticall/hooks';
 import { PangoChefCompoundData, PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables, WithdrawData } from '../types';
-import { calculateCompoundSlippage, calculateUserRewardRate } from '../utils';
+import { calculateCompoundSlippage, calculateUserAPR, calculateUserRewardRate } from '../utils';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export function useHederaPangoChefInfos() {
@@ -394,10 +394,18 @@ export function useHederaPangoChefInfos() {
         blockTime,
       );
 
+      const userApr = calculateUserAPR({
+        pairPrice,
+        png,
+        pngPrice,
+        userRewardRate,
+        stakedAmount: userTotalStakedAmount,
+      });
+
       farms.push({
         pid: pid,
         tokens: [pair?.token0, pair?.token1],
-        stakingRewardAddress: pangoChefContract?.address,
+        stakingRewardAddress: pangoChefContract?.address ?? '',
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         totalStakedInWavax: totalStakedInWavax,
@@ -422,7 +430,8 @@ export function useHederaPangoChefInfos() {
         pairPrice: pairPrice,
         poolType: pool.poolType,
         poolRewardRate: rewardRate,
-      } as PangoChefInfo);
+        userApr,
+      });
     }
 
     return farms;
@@ -611,7 +620,7 @@ export function useGetPangoChefInfosViaSubgraph() {
         pairToken1.name,
       );
 
-      const tokens = [token0, token1];
+      const tokens = [token0, token1] as [Token, Token];
       const dummyPair = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0'), chainId);
       const lpToken = dummyPair.liquidityToken;
 
@@ -769,10 +778,18 @@ export function useGetPangoChefInfosViaSubgraph() {
 
       const userRewardRate = calculateUserRewardRate(userValueVariables, poolValueVariables, rewardRate, blockTime);
 
+      const userApr = calculateUserAPR({
+        pngPrice,
+        png,
+        userRewardRate,
+        stakedAmount: userTotalStakedAmount,
+        pairPrice: pairPriceInEth,
+      });
+
       farms.push({
         pid: pid,
         tokens,
-        stakingRewardAddress: pangoChefContract?.address,
+        stakingRewardAddress: pangoChefContract?.address ?? '',
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         stakedAmount: userTotalStakedAmount,
@@ -798,7 +815,8 @@ export function useGetPangoChefInfosViaSubgraph() {
         pairPrice,
         poolType: PoolType.ERC20_POOL,
         poolRewardRate: rewardRate,
-      } as PangoChefInfo);
+        userApr: userApr,
+      });
     }
 
     return farms;

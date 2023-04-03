@@ -46,7 +46,12 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
       });
       setStakingInfoData(sortedFarms);
     } else if (sortBy === SortingType.totalApr) {
-      const sortedFarms = [...farms].sort((a, b) => (b?.stakingApr ?? 0) - (a?.stakingApr ?? 0));
+      const sortedFarms = [...farms].sort((a, b) => {
+        const aprA = a.stakedAmount.greaterThan('0') ? a.userApr : a.stakingApr ?? 0;
+        const aprB = b.stakedAmount.greaterThan('0') ? b.userApr : b.stakingApr ?? 0;
+
+        return aprB - aprA;
+      });
       setStakingInfoData(sortedFarms);
     }
   };

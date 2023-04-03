@@ -35,6 +35,7 @@ export interface PangoChefInfo extends MinichefStakingInfo {
   poolType: PoolType;
   poolRewardRate: BigNumber;
   lockCount: number | undefined;
+  userApr: number;
 }
 
 export interface WithdrawData {

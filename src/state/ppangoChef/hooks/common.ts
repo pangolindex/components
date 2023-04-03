@@ -1,49 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { JSBI, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { JSBI, Price, Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { PNG } from 'src/constants/tokens';
-import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTokensCurrencyPriceHook } from 'src/hooks/multiChainsHooks';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { useSingleContractMultipleData } from '../../pmulticall/hooks';
 import { PangoChefInfo } from '../types';
 import { usePangoChefInfosHook } from './index';
-
-/**
- * This hook return the apr of a user
- *
- * @param stakingInfo Staking info provided by usePangoChefInfos
- * @returns return the apr of user
- */
-export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
-  const chainId = useChainId();
-
-  const png = PNG[chainId];
-  const wavax = WAVAX[chainId];
-
-  const [, pair] = usePair(png, wavax);
-
-  return useMemo(() => {
-    if (!stakingInfo || !pair) return '0';
-
-    const userRewardRate = stakingInfo.userRewardRate;
-    const pngPrice = pair.priceOf(png, wavax);
-
-    const pairPrice = stakingInfo.pairPrice;
-    const balance = stakingInfo.stakedAmount;
-
-    const pairBalance = pairPrice.raw.multiply(balance);
-
-    //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / ((getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE) * 1e(png.decimals))
-    return pairPrice.equalTo('0') || balance.equalTo('0')
-      ? '0'
-      : pngPrice.raw
-          .multiply(userRewardRate.mul(86400).mul(365).mul(100).toString())
-          .divide(pairBalance.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals))))
-          .toFixed(2);
-  }, [stakingInfo, pair, png, wavax]);
-}
 
 /**
  * This hook returns the extra value provided by super farm extra reward tokens

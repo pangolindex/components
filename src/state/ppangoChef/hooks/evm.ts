@@ -26,7 +26,7 @@ import {
   useSingleContractMultipleData,
 } from '../../pmulticall/hooks';
 import { PangoChefCompoundData, PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables, WithdrawData } from '../types';
-import { calculateCompoundSlippage, calculateUserRewardRate } from '../utils';
+import { calculateCompoundSlippage, calculateUserAPR, calculateUserRewardRate } from '../utils';
 
 export function usePangoChefInfos() {
   const { account } = usePangolinWeb3();
@@ -382,10 +382,18 @@ export function usePangoChefInfos() {
         blockTime,
       );
 
+      const userApr = calculateUserAPR({
+        pairPrice,
+        pngPrice,
+        png,
+        userRewardRate,
+        stakedAmount: userTotalStakedAmount,
+      });
+
       farms.push({
         pid: pid,
         tokens: [pair.token0, pair.token1],
-        stakingRewardAddress: pangoChefContract?.address,
+        stakingRewardAddress: pangoChefContract?.address ?? '',
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         totalStakedInWavax: totalStakedInWavax,
@@ -410,7 +418,8 @@ export function usePangoChefInfos() {
         pairPrice: pairPrice,
         poolType: pool.poolType,
         poolRewardRate: rewardRate,
-      } as PangoChefInfo);
+        userApr: userApr,
+      });
     }
     return farms;
   }, [
