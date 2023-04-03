@@ -777,8 +777,7 @@
       "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
-      "searchContent": "Try searching for coin names…",
-      "poolNotExist": "You don’t have any open or closed positions to show."
+      "searchContent": "Try searching for coin names…"
     },
     "addLiquidity": {
       "selectFeeTier": "Select Fee Tier"
@@ -794,7 +793,9 @@
     },
     "increasePosition": {
       "title": "Increase Position"
-    }
+    },
+    "positionNotFound": "You don’t have any open or closed positions to show.",
+    "positionNotExist": "Your active concentrated liquidity positions will appear here"
   },
   "bridge": {
     "selectChain": "Select Chain",

@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { Search } from 'react-feather';
+import { Inbox, Search } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, DropdownMenu, Loader, TextInput } from 'src/components';
+import { Box, DropdownMenu, Loader, Text, TextInput } from 'src/components';
 import { Hidden } from 'src/theme/components';
 import { LoaderWrapper, MobileGridContainer, PanelWrapper, PoolsWrapper } from './styles';
 import { PositionListProps, SortingType } from './types';
@@ -35,7 +35,7 @@ const PositionList: React.FC<PositionListProps> = (props) => {
     <PoolsWrapper>
       {isLoading && (
         <LoaderWrapper>
-          <Loader size={100} />
+          <Loader height={'auto'} size={100} />
         </LoaderWrapper>
       )}
       <>
@@ -86,8 +86,11 @@ const PositionList: React.FC<PositionListProps> = (props) => {
           </MobileGridContainer>
         </Box>
         {doesNotPoolExist ? (
-          <Box textAlign="center" color="color4">
-            {t('concentratedLiquidity.positionList.poolNotExist')}
+          <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+            <Inbox size={'121px'} />
+            <Text pt={'25px'} pb={'25px'} color="color11" fontSize={[18, 22]} fontWeight={400}>
+              {t('concentratedLiquidity.positionNotFound')}
+            </Text>
           </Box>
         ) : (
           <Scrollbars>

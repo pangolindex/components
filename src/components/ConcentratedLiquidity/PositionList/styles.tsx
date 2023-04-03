@@ -24,7 +24,11 @@ export const LoaderWrapper = styled(Box)`
   align-items: center;
   pointer-events: all;
   justify-content: center;
+  padding-right: 200px; // sidebar width
   background-color: ${({ theme }) => theme.bg2 + '70'}; // opacity 70%
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding-right: 0px;
+  `};
 `;
 
 export const PanelWrapper = styled.div`

@@ -1,6 +1,15 @@
 import styled from 'styled-components';
 import { Box } from 'src/components';
 
+export const ErrorContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+  padding: 0px 10px;
+`;
+
 export const PageWrapper = styled(Box)`
   width: 100%;
   height: calc(100vh - 76px);
