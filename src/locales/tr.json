@@ -794,7 +794,8 @@
     "increasePosition": {
       "title": "Increase Position"
     },
-    "positionNotFound": "Gösterilecek açık veya kapalı pozisyonunuz yok."
+    "positionNotFound": "Gösterilecek açık veya kapalı pozisyonunuz yok.",
+    "positionNotExist": "Your active concentrated liquidity positions will appear here"
   },
   "bridge": {
     "selectChain": "Select Chain",

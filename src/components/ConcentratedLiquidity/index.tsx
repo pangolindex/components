@@ -3,8 +3,11 @@ import { BigNumber } from 'ethers';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Inbox } from 'react-feather';
 import { useTranslation } from 'react-i18next';
-import { BIG_INT_ZERO, Box, Button, Loader, Text, useDebounce, useWalletModalToggle } from 'src';
+import { Box, Button, Loader, Text } from 'src/components';
+import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import useDebounce from 'src/hooks/useDebounce';
+import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useGetUserPositionsHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
 import { PositionDetails } from 'src/state/pwallet/concentratedLiquidity/types';
 import { Visible } from 'src/theme/components';
@@ -50,28 +53,28 @@ const ConcentratedLiquidity = () => {
       tokenId: BigNumber.from('53808'),
       token0: currency1,
       token1: currency2,
-      apr: 500,
+      fee: 500,
       liquidity: BigNumber.from('0'),
     },
     {
       tokenId: BigNumber.from('73807'),
       token0: currency0,
       token1: currency2,
-      apr: 200,
+      fee: 200,
       liquidity: BigNumber.from('10000000000000000000'),
     },
     {
       tokenId: BigNumber.from('33807'),
       token0: currency0,
       token1: currency1,
-      apr: 100,
+      fee: 100,
       liquidity: BigNumber.from('10000000000000000000'),
     },
     {
       tokenId: BigNumber.from('53858'),
       token0: currency1,
       token1: currency0,
-      apr: 700,
+      fee: 700,
       liquidity: BigNumber.from('0'),
     },
   ];
@@ -88,7 +91,7 @@ const ConcentratedLiquidity = () => {
       });
       return sortedPositions;
     } else if (sortBy === SortingType.apr) {
-      const sortedPositions = [...positions].sort((a, b) => (b?.apr ?? 0) - (a?.apr ?? 0));
+      const sortedPositions = [...positions].sort((a, b) => (b?.fee ?? 0) - (a?.fee ?? 0));
       return sortedPositions;
     }
   };

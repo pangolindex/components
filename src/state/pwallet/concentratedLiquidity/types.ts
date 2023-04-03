@@ -17,7 +17,7 @@ export interface PositionDetails {
   operator?: string;
   token0: Token;
   token1: Token;
-  apr: number;
+  fee: number;
   tickLower?: number;
   tickUpper?: number;
   liquidity: BigNumber;
