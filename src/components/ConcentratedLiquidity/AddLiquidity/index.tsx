@@ -21,14 +21,12 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const { t } = useTranslation();
   const { height } = useWindowSize();
   const chainId = useChainId();
-  // const { resetMintState } = useMintStateAtom();
 
   const { isOpen, onClose } = props;
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const theme = useContext(ThemeContext);
   const [isCurrencyDrawerOpen, setIsCurrencyDrawerOpen] = useState(false);
   const [drawerType, setDrawerType] = useState<Field>(Field.CURRENCY_A);
-  // const [selectedFeeTier, setSelectedFeeTier] = useState(0);
 
   // mint state
   const { independentField, typedValue, feeAmount } = useMintState();
@@ -51,13 +49,6 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const onChangeTokenDrawerStatus = useCallback(() => {
     setIsCurrencyDrawerOpen(!isCurrencyDrawerOpen);
   }, [isCurrencyDrawerOpen]);
-
-  // const onSelectRoute = useCallback(
-  //   (index: number) => {
-  //     setSelectedFeeTier(index);
-  //   },
-  //   [setSelectedFeeTier],
-  // );
 
   const handleFeePoolSelect = useCallback(
     (newFeeAmount: FeeAmount) => {
