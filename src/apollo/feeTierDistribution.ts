@@ -2,9 +2,25 @@ import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { concentrateClient } from './client';
-// import { FeeTierDistribution } from './__generated__/types-and-hooks'
 
-export const GET_PANGOCHEF = gql`
+type TokenData = {
+  feeTier: string;
+  totalValueLockedToken0: string;
+  totalValueLockedToken1: string;
+};
+
+type FeeTierDistribution = {
+  asToken0: Array<TokenData>;
+  asToken1: Array<TokenData>;
+
+  _meta: {
+    block: {
+      number: number;
+    };
+  };
+};
+
+export const GET_FEE_TIER_DISTRIBUTION = gql`
   query FeeTierDistribution($token0: String!, $token1: String!) {
     _meta {
       block {
@@ -36,7 +52,7 @@ export function useFeeTierDistributionQuery(
   token0: string | undefined,
   token1: string | undefined,
   interval: number,
-): { error: any | undefined; isLoading: boolean; data: any } {
+): { error: any | undefined; isLoading: boolean; data: FeeTierDistribution } {
   const { data, isLoading, error } = useQuery<any>(
     ['get-fee-tier-distribution'],
     async () => {
@@ -44,7 +60,7 @@ export function useFeeTierDistributionQuery(
         return undefined;
       }
 
-      return await concentrateClient.request(GET_PANGOCHEF, {
+      return await concentrateClient.request(GET_FEE_TIER_DISTRIBUTION, {
         token0: token0?.toLowerCase(),
         token1: token1?.toLowerCase(),
       });
@@ -63,26 +79,4 @@ export function useFeeTierDistributionQuery(
     }),
     [data, error, isLoading],
   );
-
-  // const {
-  //   data,
-  //   loading: isLoading,
-  //   error,
-  // } = useQuery(query, {
-  //   variables: {
-  //     token0: token0?.toLowerCase(),
-  //     token1: token1?.toLowerCase(),
-  //   },
-  //   pollInterval: interval,
-  //   client: apolloClient,
-  // })
-
-  // return useMemo(
-  //   () => ({
-  //     error,
-  //     isLoading,
-  //     data,
-  //   }),
-  //   [data, error, isLoading]
-  // )
 }

@@ -263,20 +263,20 @@ function usePoolTVL(token0: Token | undefined, token1: Token | undefined) {
     const all = asToken0.concat(asToken1);
 
     // sum tvl for token0 and token1 by fee tier
-    // const tvlByFeeTier = all.reduce<{ [feeAmount: number]: [number | undefined, number | undefined] }>(
-    //   (acc, value) => {
-    //     acc[value.feeTier][0] = (acc[value.feeTier][0] ?? 0) + Number(value.totalValueLockedToken0);
-    //     acc[value.feeTier][1] = (acc[value.feeTier][1] ?? 0) + Number(value.totalValueLockedToken1);
-    //     return acc;
-    //   },
-    //   {
-    //     [FeeAmount.LOWEST]: [undefined, undefined],
-    //     [FeeAmount.LOW]: [undefined, undefined],
-    //     [FeeAmount.MEDIUM]: [undefined, undefined],
-    //     [FeeAmount.HIGH]: [undefined, undefined],
-    //   } as Record<FeeAmount, [number | undefined, number | undefined]>,
-    // );
-    const tvlByFeeTier = {};
+    const tvlByFeeTier = all.reduce<{ [feeAmount: number]: [number | undefined, number | undefined] }>(
+      (acc, value) => {
+        acc[value.feeTier][0] = (acc[value.feeTier][0] ?? 0) + Number(value.totalValueLockedToken0);
+        acc[value.feeTier][1] = (acc[value.feeTier][1] ?? 0) + Number(value.totalValueLockedToken1);
+        return acc;
+      },
+      {
+        [FeeAmount.LOWEST]: [undefined, undefined],
+        [FeeAmount.LOW]: [undefined, undefined],
+        [FeeAmount.MEDIUM]: [undefined, undefined],
+        [FeeAmount.HIGH]: [undefined, undefined],
+      } as Record<FeeAmount, [number | undefined, number | undefined]>,
+    );
+    // const tvlByFeeTier = {};
     // sum total tvl for token0 and token1
     const [sumToken0Tvl, sumToken1Tvl] = Object.values(tvlByFeeTier).reduce(
       (acc: [number, number], value: any) => {

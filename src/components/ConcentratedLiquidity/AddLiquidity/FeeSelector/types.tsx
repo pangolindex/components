@@ -1,5 +1,5 @@
 import { Currency, FeeAmount } from '@pangolindex/sdk';
-import { FeeTierDistribution, PoolState } from 'src/hooks/concentratedLiquidity/hooks';
+import { PoolState, useFeeTierDistribution } from 'src/hooks/concentratedLiquidity/hooks';
 
 export type FeeSelectorProps = {
   disabled?: boolean;
@@ -12,7 +12,7 @@ export type FeeSelectorProps = {
 export interface FeeOptionProps {
   feeAmount: FeeAmount;
   active: boolean;
-  distributions: FeeTierDistribution;
+  distributions: ReturnType<typeof useFeeTierDistribution>['distributions'];
   poolState: PoolState;
   onClick: () => void;
 }

@@ -17,32 +17,6 @@ import SelectPair from './SelectPair';
 import { CurrencyInputTextBox, CurrencyInputs, PValue, Wrapper } from './styles';
 import { AddLiquidityProps } from './types';
 
-// ------------------ MockData ------------------
-
-const FeeTiersData = [
-  {
-    feeTierName: '0.01%',
-    description: 'Best for very stable pairs.',
-    selectedPercentage: 1,
-  },
-  {
-    feeTierName: '0.05%',
-    description: 'Best for stable pairs.',
-    selectedPercentage: 50,
-  },
-  {
-    feeTierName: '0.3%',
-    description: 'Best for most pairs.',
-    selectedPercentage: 47,
-  },
-  {
-    feeTierName: '1%',
-    description: 'Best for exotic pairs.',
-    selectedPercentage: 2,
-  },
-];
-// ----------------------------------------------
-
 const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const { t } = useTranslation();
   const { height } = useWindowSize();
@@ -54,7 +28,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const theme = useContext(ThemeContext);
   const [isCurrencyDrawerOpen, setIsCurrencyDrawerOpen] = useState(false);
   const [drawerType, setDrawerType] = useState<Field>(Field.CURRENCY_A);
-  const [selectedFeeTier, setSelectedFeeTier] = useState(0);
+  // const [selectedFeeTier, setSelectedFeeTier] = useState(0);
 
   // mint state
   const { independentField, typedValue, feeAmount } = useMintState();
@@ -78,12 +52,12 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     setIsCurrencyDrawerOpen(!isCurrencyDrawerOpen);
   }, [isCurrencyDrawerOpen]);
 
-  const onSelectRoute = useCallback(
-    (index: number) => {
-      setSelectedFeeTier(index);
-    },
-    [setSelectedFeeTier],
-  );
+  // const onSelectRoute = useCallback(
+  //   (index: number) => {
+  //     setSelectedFeeTier(index);
+  //   },
+  //   [setSelectedFeeTier],
+  // );
 
   const handleFeePoolSelect = useCallback(
     (newFeeAmount: FeeAmount) => {
