@@ -55,15 +55,6 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
           title={'Min Price'}
           tokenA={currencyA?.symbol}
           tokenB={currencyB?.symbol}
-
-          // title={'Min Price'}
-          // price={'780.4'}
-          // currency0={currency0}
-          // currency1={currency1}
-          // setPrice={(price: string) => {
-          //   console.log(price);
-          //   handleLeftRangeInput(price);
-          // }}
         />
         <PriceInput
           value={ticksAtLimit[isSorted ? Bound.UPPER : Bound.LOWER] ? '∞' : rightPrice?.toSignificant(5) ?? ''}
@@ -78,14 +69,6 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
           title={'Max Price'}
           tokenA={currencyA?.symbol}
           tokenB={currencyB?.symbol}
-
-          // price={'780.4'}
-          // currency0={currency0}
-          // currency1={currency1}
-          // setPrice={(price: string) => {
-          //   console.log(price);
-          //   handleRightRangeInput(price);
-          // }}
         />
       </PriceInputs>
     </Box>
