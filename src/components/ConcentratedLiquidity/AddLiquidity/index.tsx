@@ -1,4 +1,4 @@
-import { Currency, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import { Currency, FeeAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
@@ -11,57 +11,29 @@ import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/state/pmint/concentratedLiquidity/hooks';
 import { CloseIcon } from 'src/theme/components';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import FeeTier from './FeeTier';
+import FeeSelector from './FeeSelector';
 import PriceRange from './PriceRange';
 import SelectPair from './SelectPair';
-import { CurrencyInputTextBox, CurrencyInputs, FeeTiers, PValue, Wrapper } from './styles';
+import { CurrencyInputTextBox, CurrencyInputs, PValue, Wrapper } from './styles';
 import { AddLiquidityProps } from './types';
-
-// ------------------ MockData ------------------
-
-const FeeTiersData = [
-  {
-    feeTierName: '0.01%',
-    description: 'Best for very stable pairs.',
-    selectedPercentage: 1,
-  },
-  {
-    feeTierName: '0.05%',
-    description: 'Best for stable pairs.',
-    selectedPercentage: 50,
-  },
-  {
-    feeTierName: '0.3%',
-    description: 'Best for most pairs.',
-    selectedPercentage: 47,
-  },
-  {
-    feeTierName: '1%',
-    description: 'Best for exotic pairs.',
-    selectedPercentage: 2,
-  },
-];
-// ----------------------------------------------
 
 const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const { t } = useTranslation();
   const { height } = useWindowSize();
   const chainId = useChainId();
-  // const { resetMintState } = useMintStateAtom();
 
   const { isOpen, onClose } = props;
   const [selectedPercentage, setSelectedPercentage] = useState(0);
   const theme = useContext(ThemeContext);
   const [isCurrencyDrawerOpen, setIsCurrencyDrawerOpen] = useState(false);
   const [drawerType, setDrawerType] = useState<Field>(Field.CURRENCY_A);
-  const [selectedFeeTier, setSelectedFeeTier] = useState(0);
 
   // mint state
-  const { independentField, typedValue } = useMintState();
+  const { independentField, typedValue, feeAmount } = useMintState();
 
   const { dependentField, noLiquidity, currencies } = useDerivedMintInfo();
 
-  const { onFieldAInput, onFieldBInput, onLeftRangeInput, onRightRangeInput, onCurrencySelection } =
+  const { onFieldAInput, onFieldBInput, onLeftRangeInput, onRightRangeInput, onCurrencySelection, onSetFeeAmount } =
     useMintActionHandlers(noLiquidity);
 
   const currency0 = currencies[Field.CURRENCY_A];
@@ -78,11 +50,13 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     setIsCurrencyDrawerOpen(!isCurrencyDrawerOpen);
   }, [isCurrencyDrawerOpen]);
 
-  const onSelectRoute = useCallback(
-    (index: number) => {
-      setSelectedFeeTier(index);
+  const handleFeePoolSelect = useCallback(
+    (newFeeAmount: FeeAmount) => {
+      onSetFeeAmount(newFeeAmount);
+      onLeftRangeInput('');
+      onRightRangeInput('');
     },
-    [setSelectedFeeTier],
+    [onSetFeeAmount, onLeftRangeInput, onRightRangeInput],
   );
 
   const switchCurrencies = useCallback(() => {
@@ -170,22 +144,15 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
           <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
             {t('concentratedLiquidity.addLiquidity.selectFeeTier')}
           </Text>
-          <FeeTiers>
-            {FeeTiersData.map((feeTier, index) => {
-              return (
-                <FeeTier
-                  key={index}
-                  onSelectFeeTier={() => {
-                    onSelectRoute(index);
-                  }}
-                  selected={index === selectedFeeTier}
-                  feeTierName={feeTier.feeTierName}
-                  description={feeTier.description}
-                  selectedPercentage={feeTier.selectedPercentage}
-                />
-              );
-            })}
-          </FeeTiers>
+
+          <FeeSelector
+            handleFeePoolSelect={handleFeePoolSelect}
+            disabled={!currency0 || !currency1}
+            feeAmount={feeAmount}
+            currency0={currency0}
+            currency1={currency1}
+          />
+
           <PriceRange
             currency0={currency0}
             currency1={currency1}

@@ -1,11 +1,11 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { FeeTierProps } from './types';
-import FeeTier from '.';
+import { FeeSelectorProps } from './types';
+import FeeSelector from '.';
 
 export default {
-  component: FeeTier,
-  title: 'DeFi Primitives/ConcentratedLiquidity/AddLiquidity/FeeTier',
+  component: FeeSelector,
+  title: 'DeFi Primitives/ConcentratedLiquidity/AddLiquidity/FeeSelector',
   parameters: {
     docs: {
       description: {
@@ -48,10 +48,10 @@ export default {
   },
 };
 
-const TemplateFeeTier: ComponentStory<typeof FeeTier> = (args: any) => {
+const TemplateFeeTier: ComponentStory<typeof FeeSelector> = (args: any) => {
   return (
     <div style={{ width: 'max-content' }}>
-      <FeeTier {...args} />
+      <FeeSelector {...args} />
     </div>
   );
 };
@@ -63,4 +63,4 @@ Default.args = {
   selectedPercentage: 0.3,
   selected: false,
   onSelectFeeTier: () => {},
-} as Partial<FeeTierProps>;
+} as Partial<FeeSelectorProps>;
