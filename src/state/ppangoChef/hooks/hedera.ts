@@ -6,7 +6,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { useSubgraphFarms, useSubgraphFarmsStakedAmount } from 'src/apollo/pangochef';
-import { BIGNUMBER_ZERO, BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
+import { BIGNUMBER_ZERO, BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS, ZERO_FRACTION } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
@@ -314,7 +314,7 @@ export function useHederaPangoChefInfos() {
 
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
-      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? new Fraction('0', '1');
+      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? ZERO_FRACTION;
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
       // calculate the total staked amount in usd
@@ -429,7 +429,7 @@ export function useHederaPangoChefInfos() {
         stakingApr: apr,
         pairPrice: pairPrice,
         poolType: pool.poolType,
-        poolRewardRate: rewardRate,
+        poolRewardRate: new Fraction(rewardRate.toString()),
         userApr,
       });
     }
@@ -814,7 +814,7 @@ export function useGetPangoChefInfosViaSubgraph() {
         stakingApr: apr,
         pairPrice,
         poolType: PoolType.ERC20_POOL,
-        poolRewardRate: rewardRate,
+        poolRewardRate: new Fraction(rewardRate.toString()),
         userApr: userApr,
       });
     }

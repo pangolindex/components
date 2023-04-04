@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { JSBI, Price, Token, TokenAmount } from '@pangolindex/sdk';
+import { Fraction, JSBI, Price, Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
@@ -19,7 +19,7 @@ import { usePangoChefInfosHook } from './index';
  */
 export function usePangoChefExtraFarmApr(
   rewardTokens: Array<Token | null | undefined> | null | undefined,
-  rewardRate: BigNumber,
+  rewardRate: Fraction,
   balance: TokenAmount,
   stakingInfo: PangoChefInfo,
 ) {
@@ -37,10 +37,6 @@ export function usePangoChefExtraFarmApr(
 
   const png = PNG[chainId];
   const tokensPrices = useTokensCurrencyPrice(_rewardTokens);
-
-  const _rewarRate = balance
-    ?.multiply((stakingInfo?.poolRewardRate ?? 0).toString())
-    .divide(stakingInfo.totalStakedAmount);
 
   // we need to divide by png.decimals
   const aprDenominator = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals));
@@ -74,7 +70,7 @@ export function usePangoChefExtraFarmApr(
           ? 0
           : Number(
               tokenPrice.raw
-                .multiply(_rewarRate)
+                .multiply(rewardRate)
                 .multiply((365 * 86400 * 100).toString())
                 .multiply(multiplier)
                 .divide(pairBalance.multiply(aprDenominator))
@@ -84,7 +80,7 @@ export function usePangoChefExtraFarmApr(
     }
 
     return extraAPR;
-  }, [rewardTokens, rewardRate, multipliers, balance, pairPrice, tokensPrices, _rewardTokens]);
+  }, [rewardTokens, multipliers, balance, pairPrice, tokensPrices, _rewardTokens, rewardRate]);
 }
 
 /**

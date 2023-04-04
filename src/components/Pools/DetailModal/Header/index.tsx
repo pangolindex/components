@@ -1,10 +1,10 @@
 import { CHAINS, ChefType } from '@pangolindex/sdk';
-import { BigNumber } from 'ethers';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, RewardTokens, Stat, Text } from 'src/components';
+import { ZERO_FRACTION } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import { usePangoChefExtraFarmApr } from 'src/state/ppangoChef/hooks/common';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
@@ -38,11 +38,11 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
   const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
 
   const userRewardRate =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.userRewardRate : BigNumber.from(0);
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.userRewardRate : ZERO_FRACTION;
 
   const poolBalance = stakingInfo.totalStakedAmount;
   const poolRewardRate =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.poolRewardRate : BigNumber.from(0);
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.poolRewardRate : ZERO_FRACTION;
 
   const userBalance = stakingInfo.stakedAmount;
 

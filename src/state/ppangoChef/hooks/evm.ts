@@ -4,7 +4,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { CHAINS, ChainId, Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
+import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS, ZERO_FRACTION } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
@@ -305,7 +305,7 @@ export function usePangoChefInfos() {
       const pairPrice = pairPrices[pair.liquidityToken.address];
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
-      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? new Fraction('0', '1');
+      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? ZERO_FRACTION;
 
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
@@ -417,7 +417,7 @@ export function usePangoChefInfos() {
         stakingApr: apr,
         pairPrice: pairPrice,
         poolType: pool.poolType,
-        poolRewardRate: rewardRate,
+        poolRewardRate: new Fraction(rewardRate.toString()),
         userApr: userApr,
       });
     }

@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { CurrencyAmount, Fraction, JSBI, Price, Token, TokenAmount } from '@pangolindex/sdk';
-import { BIGNUMBER_ZERO, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE } from 'src/constants';
+import { ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE, ZERO_FRACTION } from 'src/constants';
 import { ValueVariables } from './types';
 
 /**
@@ -30,9 +30,9 @@ export function calculateUserRewardRate(
   poolValueVariables: ValueVariables,
   poolRewardRate: BigNumber,
   blockTime?: number,
-): BigNumber {
+) {
   if (!blockTime) {
-    return BIGNUMBER_ZERO;
+    return ZERO_FRACTION;
   }
 
   const userBalance = userValueVariables.balance || BigNumber.from(0);
@@ -42,19 +42,22 @@ export function calculateUserRewardRate(
   const poolSumOfEntryTimes = poolValueVariables.sumOfEntryTimes || BigNumber.from(0);
 
   if (userBalance.isZero() || poolBalance.isZero()) {
-    return BIGNUMBER_ZERO;
+    return ZERO_FRACTION;
   }
 
   const blockTimestamp = BigNumber.from(blockTime.toString());
   const userValue = blockTimestamp.mul(userBalance).sub(userSumOfEntryTimes);
   const poolValue = blockTimestamp.mul(poolBalance).sub(poolSumOfEntryTimes);
-  return userValue.lte(0) || poolValue.lte(0) ? BIGNUMBER_ZERO : poolRewardRate?.mul(userValue).div(poolValue);
+
+  return userValue.lte(0) || poolValue.lte(0)
+    ? ZERO_FRACTION
+    : new Fraction(poolRewardRate?.mul(userValue).toString(), poolValue.toString());
 }
 
 interface CalculateAprArgs {
   pairPrice: Price | Fraction;
   stakedAmount: TokenAmount;
-  userRewardRate: BigNumber;
+  userRewardRate: Fraction;
   pngPrice: Price;
   png: Token;
 }
@@ -81,7 +84,8 @@ export function calculateUserAPR(args: CalculateAprArgs) {
     ? 0
     : Number(
         pngPrice.raw
-          .multiply(userRewardRate.mul(86400).mul(365).mul(100).toString())
+          .multiply(userRewardRate)
+          .multiply((86400 * 365 * 100).toString())
           .divide(pairBalance.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals))))
           .toFixed(4),
       );
