@@ -1,6 +1,6 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyGetUserPositions } from './dummy';
-import { useGetUserPositions } from './evm';
+import { useDummyConcentratedPositionsFromTokenIds, useDummyGetUserPositions } from './dummy';
+import { useConcentratedPositionsFromTokenIds, useGetUserPositions } from './evm';
 
 export type UseGetUserPositionsHookType = {
   [chainId in ChainId]: typeof useGetUserPositions | typeof useDummyGetUserPositions;
@@ -35,4 +35,39 @@ export const useGetUserPositionsHook: UseGetUserPositionsHookType = {
   [ChainId.MOONRIVER]: useDummyGetUserPositions,
   [ChainId.MOONBEAM]: useDummyGetUserPositions,
   [ChainId.OP]: useDummyGetUserPositions,
+};
+
+export type UseConcentratedPositionsFromTokenIdsHookType = {
+  [chainId in ChainId]: typeof useConcentratedPositionsFromTokenIds | typeof useDummyConcentratedPositionsFromTokenIds;
+};
+
+export const useConcentratedPositionsFromTokenIdsHook: UseConcentratedPositionsFromTokenIdsHookType = {
+  [ChainId.FUJI]: useConcentratedPositionsFromTokenIds,
+  [ChainId.AVALANCHE]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.WAGMI]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.COSTON]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.SONGBIRD]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.FLARE_MAINNET]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.HEDERA_TESTNET]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.HEDERA_MAINNET]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.NEAR_MAINNET]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.NEAR_TESTNET]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.COSTON2]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.EVMOS_TESTNET]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.EVMOS_MAINNET]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.ETHEREUM]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.POLYGON]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.FANTOM]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.XDAI]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.BSC]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.ARBITRUM]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.CELO]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.OKXCHAIN]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.VELAS]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.AURORA]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.CRONOS]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.FUSE]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.MOONRIVER]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.MOONBEAM]: useDummyConcentratedPositionsFromTokenIds,
+  [ChainId.OP]: useDummyConcentratedPositionsFromTokenIds,
 };

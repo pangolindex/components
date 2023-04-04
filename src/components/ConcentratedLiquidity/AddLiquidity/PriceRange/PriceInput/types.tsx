@@ -1,9 +1,18 @@
-import { Currency } from '@pangolindex/sdk';
+import { FeeAmount } from '@pangolindex/sdk';
+import { ReactNode } from 'react';
 
 export type PriceInputProps = {
-  title: string;
-  price: string;
-  setPrice: (price: string) => void;
-  currency0: Currency | undefined;
-  currency1: Currency | undefined;
+  value: string;
+  onUserInput: (value: string) => void;
+  decrement: () => string;
+  increment: () => string;
+  decrementDisabled?: boolean;
+  incrementDisabled?: boolean;
+  feeAmount?: FeeAmount;
+  label?: string;
+  width?: string;
+  locked?: boolean; // disable input
+  title: ReactNode;
+  tokenA: string | undefined;
+  tokenB: string | undefined;
 };

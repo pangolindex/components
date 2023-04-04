@@ -8,12 +8,14 @@ import {
   JSBI,
   Position,
   Price,
+  Rounding,
   TICK_SPACINGS,
   TickMath,
   Token,
   encodeSqrtRatioX96,
   nearestUsableTick,
   priceToClosestTick,
+  tickToPrice,
 } from '@pangolindex/sdk';
 import { ReactNode, useCallback, useMemo } from 'react';
 import { BIG_INT_ZERO } from 'src/constants';
@@ -519,5 +521,81 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     invertPrice,
     ticksAtLimit,
   };
+}
+
+export function useRangeHopCallbacks(
+  currencyA: Currency | undefined,
+  currencyB: Currency | undefined,
+  feeAmount: FeeAmount | undefined,
+  tickLower: number | undefined,
+  tickUpper: number | undefined,
+  pool?: ConcentratedPool | undefined | null,
+) {
+  const chainId = useChainId();
+  const { setFullRangeValue } = useMintStateAtom();
+
+  const tokenA = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
+  const tokenB = currencyB ? wrappedCurrency(currencyB, chainId) : undefined;
+
+  // const baseToken = useMemo(() => baseCurrency?.wrapped, [baseCurrency]);
+  // const tokenB = useMemo(() => quoteCurrency?.wrapped, [quoteCurrency]);
+
+  const getDecrementLower = useCallback(() => {
+    if (tokenA && tokenB && typeof tickLower === 'number' && feeAmount) {
+      const newPrice = tickToPrice(tokenA, tokenB, tickLower - TICK_SPACINGS[feeAmount]);
+      return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
+    }
+    // use pool current tick as starting tick if we have pool but no tick input
+    if (!(typeof tickLower === 'number') && tokenA && tokenB && feeAmount && pool) {
+      const newPrice = tickToPrice(tokenA, tokenB, pool?.tickCurrent - TICK_SPACINGS[feeAmount]);
+      return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
+    }
+    return '';
+  }, [tokenA, tokenB, tickLower, feeAmount, pool]);
+
+  const getIncrementLower = useCallback(() => {
+    if (tokenA && tokenB && typeof tickLower === 'number' && feeAmount) {
+      const newPrice = tickToPrice(tokenA, tokenB, tickLower + TICK_SPACINGS[feeAmount]);
+      return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
+    }
+    // use pool current tick as starting tick if we have pool but no tick input
+    if (!(typeof tickLower === 'number') && tokenA && tokenB && feeAmount && pool) {
+      const newPrice = tickToPrice(tokenA, tokenB, pool.tickCurrent + TICK_SPACINGS[feeAmount]);
+      return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
+    }
+    return '';
+  }, [tokenA, tokenB, tickLower, feeAmount, pool]);
+
+  const getDecrementUpper = useCallback(() => {
+    if (tokenA && tokenB && typeof tickUpper === 'number' && feeAmount) {
+      const newPrice = tickToPrice(tokenA, tokenB, tickUpper - TICK_SPACINGS[feeAmount]);
+      return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
+    }
+    // use pool current tick as starting tick if we have pool but no tick input
+    if (!(typeof tickUpper === 'number') && tokenA && tokenB && feeAmount && pool) {
+      const newPrice = tickToPrice(tokenA, tokenB, pool.tickCurrent - TICK_SPACINGS[feeAmount]);
+      return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
+    }
+    return '';
+  }, [tokenA, tokenB, tickUpper, feeAmount, pool]);
+
+  const getIncrementUpper = useCallback(() => {
+    if (tokenA && tokenB && typeof tickUpper === 'number' && feeAmount) {
+      const newPrice = tickToPrice(tokenA, tokenB, tickUpper + TICK_SPACINGS[feeAmount]);
+      return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
+    }
+    // use pool current tick as starting tick if we have pool but no tick input
+    if (!(typeof tickUpper === 'number') && tokenA && tokenB && feeAmount && pool) {
+      const newPrice = tickToPrice(tokenA, tokenB, pool.tickCurrent + TICK_SPACINGS[feeAmount]);
+      return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
+    }
+    return '';
+  }, [tokenA, tokenB, tickUpper, feeAmount, pool]);
+
+  const getSetFullRange = useCallback(() => {
+    setFullRangeValue();
+  }, [setFullRangeValue]);
+
+  return { getDecrementLower, getIncrementLower, getDecrementUpper, getIncrementUpper, getSetFullRange };
 }
 /* eslint-enable max-lines */

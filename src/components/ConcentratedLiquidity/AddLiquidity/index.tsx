@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { Currency, FeeAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,14 +8,33 @@ import { Box, Modal, Text } from 'src/components';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
-import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/state/pmint/concentratedLiquidity/hooks';
+import { Bound, Field } from 'src/state/pmint/concentratedLiquidity/atom';
+import {
+  useDerivedMintInfo,
+  useMintActionHandlers,
+  useMintState,
+  useRangeHopCallbacks,
+} from 'src/state/pmint/concentratedLiquidity/hooks';
+import {
+  useConcentratedPositionFromTokenId,
+  useDerivedPositionInfo,
+} from 'src/state/pwallet/concentratedLiquidity/hooks/evm';
 import { CloseIcon } from 'src/theme/components';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import FeeSelector from './FeeSelector';
+import PriceGraph from './PriceGraph';
 import PriceRange from './PriceRange';
 import SelectPair from './SelectPair';
-import { CurrencyInputTextBox, CurrencyInputs, PValue, Wrapper } from './styles';
+import {
+  CurrencyInputTextBox,
+  CurrencyInputs,
+  DynamicSection,
+  InputText,
+  InputValue,
+  InputWrapper,
+  PValue,
+  Wrapper,
+} from './styles';
 import { AddLiquidityProps } from './types';
 
 const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
@@ -29,12 +49,39 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const [drawerType, setDrawerType] = useState<Field>(Field.CURRENCY_A);
 
   // mint state
-  const { independentField, typedValue, feeAmount } = useMintState();
+  const { independentField, typedValue, feeAmount, startPriceTypedValue } = useMintState();
 
-  const { dependentField, noLiquidity, currencies } = useDerivedMintInfo();
+  // TODO check tokenId
+  // const tokenId = 'klasjdkasjkldj';
+  // check for existing position if tokenId in url
+  const { position: existingPositionDetails, loading: positionLoading } = useConcentratedPositionFromTokenId(undefined);
+  const hasExistingPosition = !!existingPositionDetails && !positionLoading;
+  const { position: existingPosition } = useDerivedPositionInfo(existingPositionDetails);
 
-  const { onFieldAInput, onFieldBInput, onLeftRangeInput, onRightRangeInput, onCurrencySelection, onSetFeeAmount } =
-    useMintActionHandlers(noLiquidity);
+  const {
+    dependentField,
+    noLiquidity,
+    currencies,
+    price,
+    invertPrice,
+    ticks,
+    pricesAtTicks,
+    pool,
+    ticksAtLimit,
+    invalidPool,
+    invalidRange,
+    outOfRange,
+  } = useDerivedMintInfo(existingPosition);
+
+  const {
+    onFieldAInput,
+    onFieldBInput,
+    onLeftRangeInput,
+    onRightRangeInput,
+    onCurrencySelection,
+    onSetFeeAmount,
+    onStartPriceInput,
+  } = useMintActionHandlers(noLiquidity);
 
   const currency0 = currencies[Field.CURRENCY_A];
   const currency1 = currencies[Field.CURRENCY_B];
@@ -90,6 +137,19 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const png = PNG[chainId];
   const maxAmountInput = new TokenAmount(png as Token, JSBI.BigInt(100000));
 
+  // get value and prices at ticks
+  const { [Bound.LOWER]: tickLower, [Bound.UPPER]: tickUpper } = ticks;
+  const { [Bound.LOWER]: priceLower, [Bound.UPPER]: priceUpper } = pricesAtTicks;
+
+  const { getDecrementLower, getIncrementLower, getDecrementUpper, getIncrementUpper } = useRangeHopCallbacks(
+    currency0 ?? undefined,
+    currency1 ?? undefined,
+    feeAmount,
+    tickLower,
+    tickUpper,
+    pool,
+  );
+
   const renderPercentage = () => {
     return (
       <Box display="flex" pb="5px">
@@ -133,76 +193,189 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
             </Text>
             <CloseIcon onClick={onClose} color={theme.text1} />
           </Box>
-          <SelectPair
-            onChangeTokenDrawerStatus={(tokenField: Field) => {
-              setDrawerType(tokenField);
-              onChangeTokenDrawerStatus();
-            }}
-            currency0={currency0}
-            currency1={currency1}
-          />
-          <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
-            {t('concentratedLiquidity.addLiquidity.selectFeeTier')}
-          </Text>
 
-          <FeeSelector
-            handleFeePoolSelect={handleFeePoolSelect}
-            disabled={!currency0 || !currency1}
-            feeAmount={feeAmount}
-            currency0={currency0}
-            currency1={currency1}
-          />
+          {!hasExistingPosition && (
+            <>
+              <SelectPair
+                onChangeTokenDrawerStatus={(tokenField: Field) => {
+                  setDrawerType(tokenField);
+                  onChangeTokenDrawerStatus();
+                }}
+                currency0={currency0}
+                currency1={currency1}
+              />
 
-          <PriceRange
-            currency0={currency0}
-            currency1={currency1}
-            handleLeftRangeInput={onLeftRangeInput}
-            handleRightRangeInput={onRightRangeInput}
-          />
-          <CurrencyInputs>
-            <CurrencyInputTextBox
-              label={`${t('common.from')}`}
-              value={formattedAmounts[Field.CURRENCY_A]}
-              onChange={(value: any) => {
-                setSelectedPercentage(0);
-                onFieldAInput(value);
-                console.log('value: ', value);
-              }}
-              buttonStyle={{
-                cursor: 'default',
-              }}
-              showArrowIcon={false}
-              onTokenClick={() => {}}
-              currency={currency0}
-              fontSize={24}
-              isNumeric={true}
-              placeholder="0.00"
-              id="swap-currency-input"
-              addonLabel={renderPercentage()}
+              <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
+                {t('concentratedLiquidity.addLiquidity.selectFeeTier')}
+              </Text>
+
+              <FeeSelector
+                handleFeePoolSelect={handleFeePoolSelect}
+                disabled={!currency0 || !currency1}
+                feeAmount={feeAmount}
+                currency0={currency0}
+                currency1={currency1}
+              />
+            </>
+          )}
+          <DynamicSection disabled={!feeAmount || invalidPool}>
+            {!noLiquidity ? (
+              <PriceGraph />
+            ) : (
+              <Box>
+                <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
+                  Set Starting Price
+                </Text>
+
+                {noLiquidity && (
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    padding="10px"
+                    bgColor="color3"
+                    borderRadius="8px"
+                    margin="auto"
+                    flexGrow={1}
+                    mb={10}
+                  >
+                    <Text fontSize={14} textAlign="left" color="text1">
+                      This pool must be initialized before you can add liquidity. To initialize, select a starting price
+                      for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher
+                      than usual due to the initialization transaction.
+                    </Text>
+                  </Box>
+                )}
+
+                <InputWrapper>
+                  <InputText
+                    value={startPriceTypedValue}
+                    onChange={(value: any) => {
+                      onStartPriceInput(value);
+                    }}
+                    fontSize={24}
+                    isNumeric={true}
+                    placeholder="0.00"
+                  />
+
+                  <InputValue>
+                    <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
+                      Current {currency0?.symbol} Price:
+                    </Text>
+
+                    {price ? (
+                      <>
+                        <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
+                          {invertPrice ? price?.invert()?.toSignificant(5) : price?.toSignificant(5)}
+                        </Text>{' '}
+                        <span style={{ marginLeft: '4px' }}>{currency1?.symbol}</span>
+                      </>
+                    ) : (
+                      '-'
+                    )}
+                  </InputValue>
+                </InputWrapper>
+              </Box>
+            )}
+          </DynamicSection>
+
+          <DynamicSection disabled={!feeAmount || invalidPool || (noLiquidity && !startPriceTypedValue)}>
+            <PriceRange
+              priceLower={priceLower}
+              priceUpper={priceUpper}
+              getDecrementLower={getDecrementLower}
+              getIncrementLower={getIncrementLower}
+              getDecrementUpper={getDecrementUpper}
+              getIncrementUpper={getIncrementUpper}
+              onLeftRangeInput={onLeftRangeInput}
+              onRightRangeInput={onRightRangeInput}
+              currencyA={currency0}
+              currencyB={currency1}
+              feeAmount={feeAmount}
+              ticksAtLimit={ticksAtLimit}
             />
-            <CurrencyInputTextBox
-              label={`${t('common.to')}`}
-              value={formattedAmounts[Field.CURRENCY_B]}
-              onChange={(value: any) => {
-                setSelectedPercentage(0);
+            {outOfRange ? (
+              <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                padding="10px"
+                bgColor="color3"
+                borderRadius="8px"
+                margin="auto"
+                flexGrow={1}
+                mb={10}
+              >
+                <Text fontSize={14} textAlign="left" color="text1">
+                  Your position will not earn fees or be used in trades until the market price moves into your range.
+                </Text>
+              </Box>
+            ) : null}
+            {invalidRange ? (
+              <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                padding="10px"
+                bgColor="color3"
+                borderRadius="8px"
+                margin="auto"
+                flexGrow={1}
+                mb={10}
+              >
+                <Text fontSize={14} textAlign="left" color="text1">
+                  Invalid range selected. The min price must be lower than the max price.
+                </Text>
+              </Box>
+            ) : null}
+          </DynamicSection>
 
-                onFieldBInput(value);
+          <DynamicSection disabled={tickLower === undefined || tickUpper === undefined || invalidPool || invalidRange}>
+            <CurrencyInputs>
+              <CurrencyInputTextBox
+                label={`${t('common.from')}`}
+                value={formattedAmounts[Field.CURRENCY_A]}
+                onChange={(value: any) => {
+                  setSelectedPercentage(0);
+                  onFieldAInput(value);
+                }}
+                buttonStyle={{
+                  cursor: 'default',
+                }}
+                showArrowIcon={false}
+                onTokenClick={() => {}}
+                currency={currency0}
+                fontSize={24}
+                isNumeric={true}
+                placeholder="0.00"
+                id="swap-currency-input"
+                addonLabel={renderPercentage()}
+              />
+              <CurrencyInputTextBox
+                label={`${t('common.to')}`}
+                value={formattedAmounts[Field.CURRENCY_B]}
+                onChange={(value: any) => {
+                  setSelectedPercentage(0);
 
-                console.log('value: ', value);
-              }}
-              buttonStyle={{
-                cursor: 'default',
-              }}
-              showArrowIcon={false}
-              onTokenClick={() => {}}
-              currency={currency1}
-              fontSize={24}
-              isNumeric={true}
-              placeholder="0.00"
-              id="swap-currency-input"
-              addonLabel={renderPercentage()}
-            />
-          </CurrencyInputs>
+                  onFieldBInput(value);
+                }}
+                buttonStyle={{
+                  cursor: 'default',
+                }}
+                showArrowIcon={false}
+                onTokenClick={() => {}}
+                currency={currency1}
+                fontSize={24}
+                isNumeric={true}
+                placeholder="0.00"
+                id="swap-currency-input"
+                addonLabel={renderPercentage()}
+              />
+            </CurrencyInputs>
+          </DynamicSection>
           {isCurrencyDrawerOpen && (
             <SelectTokenDrawer
               isOpen={isCurrencyDrawerOpen}
@@ -219,3 +392,4 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
 };
 
 export default AddLiquidity;
+/* eslint-enable max-lines */

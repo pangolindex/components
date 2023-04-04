@@ -1,8 +1,17 @@
-import { Currency } from '@pangolindex/sdk';
+import { Currency, Price } from '@pangolindex/sdk';
+import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
 
 export type PriceRangeProps = {
-  currency0: Currency | undefined;
-  currency1: Currency | undefined;
-  handleLeftRangeInput: (price: string) => void;
-  handleRightRangeInput: (price: string) => void;
+  priceLower?: Price;
+  priceUpper?: Price;
+  getDecrementLower: () => string;
+  getIncrementLower: () => string;
+  getDecrementUpper: () => string;
+  getIncrementUpper: () => string;
+  onLeftRangeInput: (typedValue: string) => void;
+  onRightRangeInput: (typedValue: string) => void;
+  currencyA?: Currency | null;
+  currencyB?: Currency | null;
+  feeAmount?: number;
+  ticksAtLimit: { [bound in Bound]?: boolean | undefined };
 };
