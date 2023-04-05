@@ -12,9 +12,9 @@ import {
   useGetPangoChefInfosViaSubgraph,
   useHederaPangoChefClaimRewardCallback,
   useHederaPangoChefCompoundCallback,
+  useHederaPangoChefInfos,
   useHederaPangoChefStakeCallback,
   useHederaPangoChefWithdrawCallback,
-  useHederaPangoChefInfos,
 } from './hedera';
 
 export type UsePangoChefInfosHookType = {
