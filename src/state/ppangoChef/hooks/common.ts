@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { JSBI, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { Fraction, JSBI, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
@@ -30,10 +30,11 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
     const userRewardRate = stakingInfo.userRewardRate;
     const pngPrice = pair.priceOf(png, wavax);
 
-    const pairPrice = stakingInfo.pairPrice;
+    const _pairPrice = stakingInfo.pairPrice;
     const balance = stakingInfo.stakedAmount;
 
-    const pairBalance = pairPrice.raw.multiply(balance);
+    const pairPrice = _pairPrice ? _pairPrice.raw : new Fraction('0', '1');
+    const pairBalance = pairPrice.multiply(balance);
 
     //userApr = userRewardRate(POOL_ID, USER_ADDRESS) * 365 days * 100 * PNG_PRICE / ((getUser(POOL_ID, USER_ADDRESS).valueVariables.balance * STAKING_TOKEN_PRICE) * 1e(png.decimals))
     return pairPrice.equalTo('0') || balance.equalTo('0')
