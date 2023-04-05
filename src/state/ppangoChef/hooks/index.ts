@@ -14,11 +14,13 @@ import {
   useHederaPangoChefCompoundCallback,
   useHederaPangoChefStakeCallback,
   useHederaPangoChefWithdrawCallback,
+  useHederaPangoChefInfos,
 } from './hedera';
 
 export type UsePangoChefInfosHookType = {
   [chainId in ChainId]:
     | typeof usePangoChefInfos
+    | typeof useHederaPangoChefInfos
     | typeof useGetPangoChefInfosViaSubgraph
     | typeof useDummyPangoChefInfos;
 };
@@ -31,7 +33,7 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.SONGBIRD]: usePangoChefInfos,
   [ChainId.FLARE_MAINNET]: usePangoChefInfos,
   [ChainId.HEDERA_TESTNET]: useGetPangoChefInfosViaSubgraph,
-  [ChainId.HEDERA_MAINNET]: useGetPangoChefInfosViaSubgraph,
+  [ChainId.HEDERA_MAINNET]: useHederaPangoChefInfos,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefInfos,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefInfos,
   [ChainId.COSTON2]: usePangoChefInfos,
