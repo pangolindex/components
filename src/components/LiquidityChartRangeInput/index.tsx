@@ -7,6 +7,8 @@ import { batch } from 'react-redux';
 import { ThemeContext } from 'styled-components';
 import { Loader, Text } from 'src/components';
 import { AutoColumn, ColumnCenter } from 'src/components/Column';
+import { useChainId } from 'src/hooks';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Chart } from './Chart';
 import { ChartWrapper } from './styles';
 import { Bound, ChartEntry, FeeAmount, LiquidityChartRangeInputProps, ZOOM_LEVELS } from './types';
@@ -41,43 +43,54 @@ const LiquidityChartRangeInput: React.FC<LiquidityChartRangeInputProps> = (props
   const { t } = useTranslation();
 
   // ------------------ MockData ------------------
-  const isSorted = true;
-  const isLoading = false;
-  const error = null;
-  const formattedData: ChartEntry[] = [
-    {
-      activeLiquidity: 50,
-      price0: 0.1,
-    },
-    {
-      activeLiquidity: 40,
-      price0: 4,
-    },
-    {
-      activeLiquidity: 30,
-      price0: 5,
-    },
-    {
-      activeLiquidity: 20,
-      price0: 6,
-    },
-    {
-      activeLiquidity: 40,
-      price0: 9,
-    },
-    {
-      activeLiquidity: 56,
-      price0: 15,
-    },
-    {
-      activeLiquidity: 98,
-      price0: 25,
-    },
-    {
-      activeLiquidity: 70,
-      price0: 30,
-    },
-  ];
+  const chainId = useChainId();
+  const tokenA = wrappedCurrency(currency0, chainId);
+  const tokenB = wrappedCurrency(currency1, chainId);
+
+  const isSorted = tokenA && tokenB && tokenA?.sortsBefore(tokenB);
+
+  const { isLoading, error, formattedData } = useDensityChartData({
+    currency0,
+    currency1,
+    feeAmount,
+  });
+
+  // const isLoading = false;
+  // const error = null;
+  // const formattedData: ChartEntry[] = [
+  //   {
+  //     activeLiquidity: 50,
+  //     price0: 0.1,
+  //   },
+  //   {
+  //     activeLiquidity: 40,
+  //     price0: 4,
+  //   },
+  //   {
+  //     activeLiquidity: 30,
+  //     price0: 5,
+  //   },
+  //   {
+  //     activeLiquidity: 20,
+  //     price0: 6,
+  //   },
+  //   {
+  //     activeLiquidity: 40,
+  //     price0: 9,
+  //   },
+  //   {
+  //     activeLiquidity: 56,
+  //     price0: 15,
+  //   },
+  //   {
+  //     activeLiquidity: 98,
+  //     price0: 25,
+  //   },
+  //   {
+  //     activeLiquidity: 70,
+  //     price0: 30,
+  //   },
+  // ];
   const leftPrice = 0.1;
   const rightPrice = 20;
   // ----------------------------------------------

@@ -1,9 +1,9 @@
 import { FeeAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useFeeTierDistributionHook, usePoolsHook } from 'src/hooks/concentratedLiquidity/hooks';
+import { PoolState } from 'src/hooks/concentratedLiquidity/hooks/types';
 import { Box, Button, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
-import { useFeeTierDistributionHook, usePoolsHook } from 'src/hooks/concentratedLiquidity';
-import { PoolState } from 'src/hooks/concentratedLiquidity/types';
 import usePrevious from 'src/hooks/usePrevious';
 import FeeOption from './FeeOption';
 import { FeeTierPercentageBadge } from './FeeTierPercentageBadge';

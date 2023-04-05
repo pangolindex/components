@@ -2,7 +2,7 @@ import { ConcentratedPool, Position } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { usePool } from 'src/hooks/concentratedLiquidity/common';
+import { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
 import { useV3NFTPositionManagerContract } from 'src/hooks/useContract';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { useSingleCallResult, useSingleContractMultipleData } from 'src/state/pmulticall/hooks';

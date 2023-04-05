@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, Modal, Text } from 'src/components';
+import LiquidityChartRangeInput from 'src/components/LiquidityChartRangeInput';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
@@ -22,7 +23,6 @@ import {
 import { CloseIcon } from 'src/theme/components';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import FeeSelector from './FeeSelector';
-import PriceGraph from './PriceGraph';
 import PriceRange from './PriceRange';
 import SelectPair from './SelectPair';
 import {
@@ -220,7 +220,18 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
           )}
           <DynamicSection disabled={!feeAmount || invalidPool}>
             {!noLiquidity ? (
-              <PriceGraph />
+              <LiquidityChartRangeInput
+                currency0={currency0}
+                currency1={currency1}
+                feeAmount={feeAmount}
+                ticksAtLimit={ticksAtLimit}
+                price={price ? parseFloat((invertPrice ? price.invert() : price).toSignificant(8)) : undefined}
+                priceLower={priceLower}
+                priceUpper={priceUpper}
+                onLeftRangeInput={onLeftRangeInput}
+                onRightRangeInput={onRightRangeInput}
+                interactive={!hasExistingPosition}
+              />
             ) : (
               <Box>
                 <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
@@ -234,13 +245,13 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                     justifyContent="center"
                     alignItems="center"
                     padding="10px"
-                    bgColor="color3"
+                    bgColor="color5"
                     borderRadius="8px"
                     margin="auto"
                     flexGrow={1}
                     mb={10}
                   >
-                    <Text fontSize={14} textAlign="left" color="text1">
+                    <Text fontSize={14} textAlign="left" color="text1" lineHeight={'20px'}>
                       This pool must be initialized before you can add liquidity. To initialize, select a starting price
                       for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher
                       than usual due to the initialization transaction.
@@ -265,12 +276,12 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                     </Text>
 
                     {price ? (
-                      <>
+                      <Box>
                         <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
                           {invertPrice ? price?.invert()?.toSignificant(5) : price?.toSignificant(5)}
                         </Text>{' '}
                         <span style={{ marginLeft: '4px' }}>{currency1?.symbol}</span>
-                      </>
+                      </Box>
                     ) : (
                       '-'
                     )}
@@ -302,11 +313,11 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                 justifyContent="center"
                 alignItems="center"
                 padding="10px"
-                bgColor="color3"
+                bgColor="color5"
                 borderRadius="8px"
                 margin="auto"
                 flexGrow={1}
-                mb={10}
+                mt={10}
               >
                 <Text fontSize={14} textAlign="left" color="text1">
                   Your position will not earn fees or be used in trades until the market price moves into your range.
@@ -320,11 +331,11 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                 justifyContent="center"
                 alignItems="center"
                 padding="10px"
-                bgColor="color3"
+                bgColor="color5"
                 borderRadius="8px"
                 margin="auto"
                 flexGrow={1}
-                mb={10}
+                mt={10}
               >
                 <Text fontSize={14} textAlign="left" color="text1">
                   Invalid range selected. The min price must be lower than the max price.
