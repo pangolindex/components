@@ -546,7 +546,7 @@ export function useRangeHopCallbacks(
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
     }
     // use pool current tick as starting tick if we have pool but no tick input
-    if (!(typeof tickLower === 'number') && tokenA && tokenB && feeAmount && pool) {
+    if (typeof tickLower !== 'number' && tokenA && tokenB && feeAmount && pool) {
       const newPrice = tickToPrice(tokenA, tokenB, pool?.tickCurrent - TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
     }
@@ -559,7 +559,7 @@ export function useRangeHopCallbacks(
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
     }
     // use pool current tick as starting tick if we have pool but no tick input
-    if (!(typeof tickLower === 'number') && tokenA && tokenB && feeAmount && pool) {
+    if (typeof tickLower !== 'number' && tokenA && tokenB && feeAmount && pool) {
       const newPrice = tickToPrice(tokenA, tokenB, pool.tickCurrent + TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
     }
@@ -572,7 +572,7 @@ export function useRangeHopCallbacks(
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
     }
     // use pool current tick as starting tick if we have pool but no tick input
-    if (!(typeof tickUpper === 'number') && tokenA && tokenB && feeAmount && pool) {
+    if (typeof tickUpper !== 'number' && tokenA && tokenB && feeAmount && pool) {
       const newPrice = tickToPrice(tokenA, tokenB, pool.tickCurrent - TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
     }
@@ -585,7 +585,7 @@ export function useRangeHopCallbacks(
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
     }
     // use pool current tick as starting tick if we have pool but no tick input
-    if (!(typeof tickUpper === 'number') && tokenA && tokenB && feeAmount && pool) {
+    if (typeof tickUpper !== 'number' && tokenA && tokenB && feeAmount && pool) {
       const newPrice = tickToPrice(tokenA, tokenB, pool.tickCurrent + TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
     }
