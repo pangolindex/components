@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box } from 'src/components';
+import { Box, TextInput } from 'src/components';
 
 export const Wrapper = styled(Box)`
   text-align: center;
@@ -19,16 +19,26 @@ export const Wrapper = styled(Box)`
 export const PriceSection = styled(Box)`
   display: flex;
   gap: 20px;
+  align-items: center;
 `;
 
-export const BlackBox = styled(Box)`
+export const BlackBox = styled(Box)<{ disabled?: boolean }>`
+  opacity: ${({ disabled }) => (disabled ? '0.2' : '1')};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'initial')};
   background-color: ${({ theme }) => theme.concentratedLiquidity?.secondaryBgColor};
   border-radius: 7px;
   display: flex;
   cursor: pointer;
   padding: 5px;
   flex-direction: row;
+  height: 25px;
   &:hover {
     background-color: ${({ theme }) => theme?.primary};
   }
+`;
+
+export const InputText = styled(TextInput)`
+  background-color: ${({ theme }) => theme.bg6};
+  align-items: center;
+  border-radius: 4px;
 `;

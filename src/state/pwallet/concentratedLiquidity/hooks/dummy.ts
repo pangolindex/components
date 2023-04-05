@@ -4,3 +4,10 @@ export function useDummyGetUserPositions() {
     positions: null,
   };
 }
+
+export function useDummyConcentratedPositionsFromTokenIds() {
+  return {
+    loading: false,
+    positions: null,
+  };
+}

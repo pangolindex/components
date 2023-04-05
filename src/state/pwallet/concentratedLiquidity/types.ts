@@ -1,16 +1,6 @@
 import { Token } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 
-export interface UseV3PositionResults {
-  loading: boolean;
-  position: PositionDetails | undefined;
-}
-
-export interface UseV3PositionsResults {
-  loading: boolean;
-  positions: PositionDetails[] | undefined;
-}
-
 export interface PositionDetails {
   nonce?: BigNumber;
   tokenId: BigNumber;
@@ -25,4 +15,13 @@ export interface PositionDetails {
   feeGrowthInside1LastX128?: BigNumber;
   tokensOwed0?: BigNumber;
   tokensOwed1?: BigNumber;
+}
+export interface UseConcentratedPositionResults {
+  loading: boolean;
+  position: PositionDetails | undefined;
+}
+
+export interface UseConcentratedPositionsResults {
+  loading: boolean;
+  positions: PositionDetails[] | undefined;
 }
