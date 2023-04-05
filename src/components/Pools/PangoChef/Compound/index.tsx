@@ -222,7 +222,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   */
   if (
     !JSBI.greaterThan(
-      JSBI.divide(earnedAmount.raw, JSBI.BigInt(userRewardRate.isZero() ? '1' : userRewardRate.toString())),
+      JSBI.divide(earnedAmount.raw, JSBI.BigInt(userRewardRate.equalTo('0') ? '1' : userRewardRate.toString())),
       JSBI.BigInt(30 * 55),
     )
   ) {

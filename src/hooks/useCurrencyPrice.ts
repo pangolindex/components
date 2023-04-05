@@ -191,7 +191,7 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
   const tokensPrices = useTokensCurrencyPrice(uniqueTokens);
 
   return useMemo(() => {
-    const pairsPrices: { [key: string]: Price } = {};
+    const pairsPrices: { [key: string]: Price | undefined } = {};
     for (let index = 0; index < pairs.length; index++) {
       const { pair, totalSupply } = pairs[index];
       const token0 = pair.token0;

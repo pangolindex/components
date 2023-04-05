@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { Fraction, JSBI, Price, Token, TokenAmount } from '@pangolindex/sdk';
+import { Fraction, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
@@ -33,7 +33,7 @@ export function usePangoChefExtraFarmApr(
 
   const multipliers = stakingInfo.rewardTokensMultiplier;
 
-  const pairPrice: Price | undefined = stakingInfo.pairPrice;
+  const pairPrice: Fraction | undefined = stakingInfo.pairPrice;
 
   const png = PNG[chainId];
   const tokensPrices = useTokensCurrencyPrice(_rewardTokens);
@@ -62,7 +62,7 @@ export function usePangoChefExtraFarmApr(
         continue;
       }
 
-      const pairBalance = pairPrice.raw.multiply(balance);
+      const pairBalance = pairPrice.multiply(balance);
 
       //extraAPR = poolRewardRate(POOL_ID) * rewardMultiplier / (10** REWARD_TOKEN_PRICE.decimals) * 365 days * 100 * REWARD_TOKEN_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       extraAPR =

@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
-import { Fraction, JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -310,11 +310,13 @@ export function useHederaPangoChefInfos() {
 
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
-      const pairPrice = pairPrices[pair?.liquidityToken?.address];
+      const _pairPrice = pairPrices[pair?.liquidityToken?.address];
+      const pairPrice = _pairPrice ? _pairPrice.raw : ZERO_FRACTION;
 
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
-      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? ZERO_FRACTION;
+      const _totalStakedInWavax = pairPrice.multiply(totalStakedAmount?.raw);
+
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
       // calculate the total staked amount in usd
@@ -363,7 +365,7 @@ export function useHederaPangoChefInfos() {
           : Number(
               pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
-                .divide(pairPrice?.raw?.multiply(pool?.valueVariables?.balance?.toString()))
+                .divide(pairPrice.multiply(pool?.valueVariables?.balance?.toString()))
                 // here apr is in 10^8 so we needed to divide by 10^8 to keep it in simple form
                 .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(8)))
                 .toSignificant(2),
@@ -395,7 +397,7 @@ export function useHederaPangoChefInfos() {
       );
 
       const userApr = calculateUserAPR({
-        pairPrice,
+        pairPrice: pairPrice,
         png,
         pngPrice,
         userRewardRate,
@@ -709,7 +711,6 @@ export function useGetPangoChefInfosViaSubgraph() {
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
       const pairPriceInEth = totalSupplyInETH.divide(totalSupplyAmount);
-      const pairPrice = new Price(lpToken, wavax, pairPriceInEth?.denominator, pairPriceInEth?.numerator);
 
       const expoent = png.decimals - lpToken.decimals;
 
@@ -812,7 +813,7 @@ export function useGetPangoChefInfosViaSubgraph() {
         lockCount: userInfo?.lockCount,
         userRewardRate: userRewardRate,
         stakingApr: apr,
-        pairPrice,
+        pairPrice: pairPriceInEth,
         poolType: PoolType.ERC20_POOL,
         poolRewardRate: new Fraction(rewardRate.toString()),
         userApr: userApr,

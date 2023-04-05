@@ -302,10 +302,11 @@ export function usePangoChefInfos() {
 
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
-      const pairPrice = pairPrices[pair.liquidityToken.address];
+      const _pairPrice = pairPrices[pair?.liquidityToken?.address];
+      const pairPrice = _pairPrice ? _pairPrice.raw : ZERO_FRACTION;
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
-      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? ZERO_FRACTION;
+      const _totalStakedInWavax = pairPrice.multiply(totalStakedAmount?.raw) ?? ZERO_FRACTION;
 
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
@@ -350,8 +351,8 @@ export function usePangoChefInfos() {
               pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
                 .divide(
-                  pairPrice?.raw
-                    ?.multiply(pool?.valueVariables?.balance?.toString())
+                  pairPrice
+                    .multiply(pool?.valueVariables?.balance?.toString())
                     .multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent))),
                 )
                 .toSignificant(2),
