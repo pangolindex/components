@@ -27,7 +27,9 @@ export enum PoolType {
   RATED_SWAP = 'RATED_SWAP',
 }
 
-export function usePairs(currencies: [Currency | undefined, Currency | undefined][]): [PairState, Pair | null][] {
+export function usePairsContract(
+  currencies: [Currency | undefined, Currency | undefined][],
+): [PairState, Pair | null][] {
   const chainId = useChainId();
 
   const tokens = useMemo(
@@ -243,9 +245,9 @@ export function usePairsViaSubgraph(
  * @param currencies
  * @returns
  */
-export function useHederaPairs(currencies: [Currency | undefined, Currency | undefined][]) {
+export function usePairs(currencies: [Currency | undefined, Currency | undefined][]) {
   const shouldUseSubgraph = useShouldUseSubgraph();
-  const useHook = shouldUseSubgraph ? usePairsViaSubgraph : usePairs;
+  const useHook = shouldUseSubgraph ? usePairsViaSubgraph : usePairsContract;
   const res = useHook(currencies);
   return res;
 }

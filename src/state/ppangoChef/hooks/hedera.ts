@@ -11,7 +11,7 @@ import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG, USDC } from 'src/constants/tokens';
-import { PairState, usePair, usePairs } from 'src/data/Reserves';
+import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { useTokensContract } from 'src/hooks/tokens/evm';
@@ -168,7 +168,7 @@ export function useHederaPangoChefInfos() {
   }, [tokens0, tokens1]);
 
   // get the pairs for each pool
-  const pairs = usePairs(tokensPairs);
+  const pairs = usePairsContract(tokensPairs);
 
   const pairAddresses = useMemo(() => {
     return pairs.map(([, pair]) => pair?.liquidityToken?.address);
