@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { useSubgraphPairs } from 'src/apollo/pairs';
 import { useChainId } from 'src/hooks';
+import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
 import { nearFn } from 'src/utils/near';
 import { useMultipleContractSingleData } from '../state/pmulticall/hooks';
 import { wrappedCurrency } from '../utils/wrappedCurrency';
@@ -174,7 +175,9 @@ export function useGetNearPoolId(tokenA?: Token, tokenB?: Token): number | null 
   }, [allPools?.data, allPools?.isLoading, tokenA, tokenB]);
 }
 
-export function useHederaPairs(currencies: [Currency | undefined, Currency | undefined][]): [PairState, Pair | null][] {
+export function usePairsViaSubgraph(
+  currencies: [Currency | undefined, Currency | undefined][],
+): [PairState, Pair | null][] {
   const chainId = useChainId();
 
   const tokens = useMemo(
@@ -234,3 +237,10 @@ export function useHederaPairs(currencies: [Currency | undefined, Currency | und
     });
   }, [results, tokens, chainId, results?.data, results?.isLoading, pairReserves]);
 }
+
+export const useHederaPairs = (currencies: [Currency | undefined, Currency | undefined][]) => {
+  const shouldUseSubgraph = useShouldUseSubgraph();
+  const useHook = shouldUseSubgraph ? usePairsViaSubgraph : usePairs;
+  const res = useHook(currencies);
+  return res;
+};

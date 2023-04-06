@@ -23,6 +23,7 @@ import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks/hedera';
 import { decimalToFraction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
+import { useShouldUseSubgraph } from '../../papplication/hooks';
 import {
   useMultipleContractSingleData,
   useSingleCallResult,
@@ -814,6 +815,18 @@ export function useGetPangoChefInfosViaSubgraph() {
     blockTime,
   ]);
 }
+
+/**
+ * its wrapper hook to check which hook need to use based on subgraph on off
+ * @returns
+ */
+
+export const useHederaPangochef = () => {
+  const shouldUseSubgraph = useShouldUseSubgraph();
+  const useHook = shouldUseSubgraph ? useGetPangoChefInfosViaSubgraph : useHederaPangoChefInfos;
+  const res = useHook();
+  return res;
+};
 
 /**
  * this hook is useful to check whether user has created pangochef storage contract or not

@@ -4,6 +4,7 @@ import { useSubgraphTokens } from 'src/apollo/tokens';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PairState, usePair } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
+import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
 import { decimalToFraction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useTokensCurrencyPriceHook } from './multiChainsHooks';
@@ -143,6 +144,18 @@ export function useTokenCurrencyPriceSubgraph(token: Token | undefined): Price {
     return tokenPrice[token?.address];
   }, [tokenPrice, token]);
 }
+
+/**
+ * its wrapper hook to check which hook need to use based on subgraph on off
+ * @param tokens
+ * @returns
+ */
+export const useHederaTokensCurrencyPrice = (tokens: (Token | undefined)[]) => {
+  const shouldUseSubgraph = useShouldUseSubgraph();
+  const useHook = shouldUseSubgraph ? useTokensCurrencyPriceSubgraph : useTokensCurrencyPrice;
+  const res = useHook(tokens);
+  return res;
+};
 
 /**
  * Returns the tokens price in relation to gas coin hbar

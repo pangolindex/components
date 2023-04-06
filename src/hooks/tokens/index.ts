@@ -2,7 +2,7 @@ import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { useToken, useTokens } from './evm';
 import { useNearToken, useNearTokens } from './near';
-import { useTokensViaSubGraph } from './subgraph';
+import { useHederaTokens, useTokensViaSubGraph } from './subgraph';
 
 export type UseTokenHookType = {
   [chainId in ChainId]: typeof useToken | typeof useNearToken | typeof useDummyHook;
@@ -40,7 +40,12 @@ export const useTokenHook: UseTokenHookType = {
 };
 
 export type UseTokensHookType = {
-  [chainId in ChainId]: typeof useTokens | typeof useNearTokens | typeof useTokensViaSubGraph | typeof useDummyHook;
+  [chainId in ChainId]:
+    | typeof useTokens
+    | typeof useNearTokens
+    | typeof useTokensViaSubGraph
+    | typeof useDummyHook
+    | typeof useHederaTokens;
 };
 
 export const useTokensHook: UseTokensHookType = {
@@ -50,8 +55,8 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.COSTON]: useTokens,
   [ChainId.SONGBIRD]: useTokens,
   [ChainId.FLARE_MAINNET]: useTokens,
-  [ChainId.HEDERA_TESTNET]: useTokensViaSubGraph,
-  [ChainId.HEDERA_MAINNET]: useTokensViaSubGraph,
+  [ChainId.HEDERA_TESTNET]: useHederaTokens,
+  [ChainId.HEDERA_MAINNET]: useHederaTokens,
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
   [ChainId.COSTON2]: useTokens,

@@ -3,6 +3,7 @@ import { ChainId } from '@pangolindex/sdk';
 import {
   useDummyTokenCurrencyPrice,
   useDummyTokensCurrencyPrice,
+  useHederaTokensCurrencyPrice,
   useTokenCurrencyPrice,
   useTokenCurrencyPriceSubgraph,
   useTokensCurrencyPrice,
@@ -17,7 +18,8 @@ export type UseTokensCurrencyPriceHookType = {
   [chainId in ChainId]:
     | typeof useTokensCurrencyPrice
     | typeof useTokensCurrencyPriceSubgraph
-    | typeof useDummyTokensCurrencyPrice;
+    | typeof useDummyTokensCurrencyPrice
+    | typeof useHederaTokensCurrencyPrice;
 };
 
 export const useTokensCurrencyPriceHook: UseTokensCurrencyPriceHookType = {
@@ -27,8 +29,8 @@ export const useTokensCurrencyPriceHook: UseTokensCurrencyPriceHookType = {
   [ChainId.COSTON]: useTokensCurrencyPrice,
   [ChainId.SONGBIRD]: useTokensCurrencyPrice,
   [ChainId.FLARE_MAINNET]: useTokensCurrencyPrice,
-  [ChainId.HEDERA_TESTNET]: useTokensCurrencyPriceSubgraph,
-  [ChainId.HEDERA_MAINNET]: useTokensCurrencyPriceSubgraph,
+  [ChainId.HEDERA_TESTNET]: useHederaTokensCurrencyPrice,
+  [ChainId.HEDERA_MAINNET]: useHederaTokensCurrencyPrice,
   [ChainId.NEAR_MAINNET]: useDummyTokensCurrencyPrice,
   [ChainId.NEAR_TESTNET]: useDummyTokensCurrencyPrice,
   [ChainId.COSTON2]: useTokensCurrencyPrice,

@@ -1,7 +1,7 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { useTokenAllowance } from './Allowances';
-import { useHederaPairs, useNearPairs, usePairs } from './Reserves';
+import { useHederaPairs, useNearPairs, usePairs, usePairsViaSubgraph } from './Reserves';
 import {
   useEvmPairTotalSupply,
   useHederaPairTotalSupply,
@@ -13,7 +13,7 @@ import {
 } from './TotalSupply';
 
 export type UsePairsHookType = {
-  [chainId in ChainId]: typeof usePairs | typeof useNearPairs | typeof useHederaPairs;
+  [chainId in ChainId]: typeof usePairs | typeof useNearPairs | typeof usePairsViaSubgraph | typeof useHederaPairs;
 };
 
 export const usePairsHook: UsePairsHookType = {
