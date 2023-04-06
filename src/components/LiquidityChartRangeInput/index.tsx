@@ -8,10 +8,11 @@ import { ThemeContext } from 'styled-components';
 import { Loader, Text } from 'src/components';
 import { AutoColumn, ColumnCenter } from 'src/components/Column';
 import { useChainId } from 'src/hooks';
+import { useDensityChartData } from 'src/hooks/concentratedLiquidity/chart/evm';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Chart } from './Chart';
 import { ChartWrapper } from './styles';
-import { Bound, ChartEntry, FeeAmount, LiquidityChartRangeInputProps, ZOOM_LEVELS } from './types';
+import { Bound, FeeAmount, LiquidityChartRangeInputProps, ZOOM_LEVELS } from './types';
 
 function InfoBox({ message, icon }: { message?: ReactNode; icon: ReactNode }) {
   return (
@@ -50,8 +51,8 @@ const LiquidityChartRangeInput: React.FC<LiquidityChartRangeInputProps> = (props
   const isSorted = tokenA && tokenB && tokenA?.sortsBefore(tokenB);
 
   const { isLoading, error, formattedData } = useDensityChartData({
-    currency0,
-    currency1,
+    currencyA: currency0,
+    currencyB: currency1,
     feeAmount,
   });
 
@@ -91,8 +92,8 @@ const LiquidityChartRangeInput: React.FC<LiquidityChartRangeInputProps> = (props
   //     price0: 30,
   //   },
   // ];
-  const leftPrice = 0.1;
-  const rightPrice = 20;
+  // const leftPrice = 0.1;
+  // const rightPrice = 20;
   // ----------------------------------------------
 
   const onBrushDomainChangeEnded = useCallback(
@@ -127,8 +128,18 @@ const LiquidityChartRangeInput: React.FC<LiquidityChartRangeInputProps> = (props
 
   const interactiveStatus = interactive && Boolean(formattedData?.length);
 
+  // const brushDomain: [number, number] | undefined = useMemo(() => {
+
+  //   return leftPrice && rightPrice ? [leftPrice, rightPrice] : undefined;
+  // }, [isSorted, priceLower, priceUpper]);
+
   const brushDomain: [number, number] | undefined = useMemo(() => {
-    return leftPrice && rightPrice ? [leftPrice, rightPrice] : undefined;
+    const leftPrice = isSorted ? priceLower : priceUpper?.invert();
+    const rightPrice = isSorted ? priceUpper : priceLower?.invert();
+
+    return leftPrice && rightPrice
+      ? [parseFloat(leftPrice?.toSignificant(6)), parseFloat(rightPrice?.toSignificant(6))]
+      : undefined;
   }, [isSorted, priceLower, priceUpper]);
 
   const brushLabelValue = useCallback(

@@ -71,6 +71,8 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     invalidPool,
     invalidRange,
     outOfRange,
+    depositADisabled,
+    depositBDisabled,
   } = useDerivedMintInfo(existingPosition);
 
   const {
@@ -276,7 +278,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                     </Text>
 
                     {price ? (
-                      <Box>
+                      <Box display="flex">
                         <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
                           {invertPrice ? price?.invert()?.toSignificant(5) : price?.toSignificant(5)}
                         </Text>{' '}
@@ -346,45 +348,84 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
 
           <DynamicSection disabled={tickLower === undefined || tickUpper === undefined || invalidPool || invalidRange}>
             <CurrencyInputs>
-              <CurrencyInputTextBox
-                label={`${t('common.from')}`}
-                value={formattedAmounts[Field.CURRENCY_A]}
-                onChange={(value: any) => {
-                  setSelectedPercentage(0);
-                  onFieldAInput(value);
-                }}
-                buttonStyle={{
-                  cursor: 'default',
-                }}
-                showArrowIcon={false}
-                onTokenClick={() => {}}
-                currency={currency0}
-                fontSize={24}
-                isNumeric={true}
-                placeholder="0.00"
-                id="swap-currency-input"
-                addonLabel={renderPercentage()}
-              />
-              <CurrencyInputTextBox
-                label={`${t('common.to')}`}
-                value={formattedAmounts[Field.CURRENCY_B]}
-                onChange={(value: any) => {
-                  setSelectedPercentage(0);
+              {depositADisabled ? (
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  padding="10px"
+                  bgColor="color5"
+                  borderRadius="8px"
+                  margin="auto"
+                  flexGrow={1}
+                  mt={10}
+                >
+                  <Text fontSize={14} textAlign="left" color="text1">
+                    The market price is outside your specified price range. Single-asset deposit only.
+                  </Text>
+                </Box>
+              ) : (
+                <CurrencyInputTextBox
+                  label={`${t('common.from')}`}
+                  value={formattedAmounts[Field.CURRENCY_A]}
+                  onChange={(value: any) => {
+                    setSelectedPercentage(0);
+                    onFieldAInput(value);
+                  }}
+                  buttonStyle={{
+                    cursor: 'default',
+                  }}
+                  showArrowIcon={false}
+                  onTokenClick={() => {}}
+                  currency={currency0}
+                  fontSize={24}
+                  isNumeric={true}
+                  placeholder="0.00"
+                  id="swap-currency-input"
+                  addonLabel={renderPercentage()}
+                />
+              )}
 
-                  onFieldBInput(value);
-                }}
-                buttonStyle={{
-                  cursor: 'default',
-                }}
-                showArrowIcon={false}
-                onTokenClick={() => {}}
-                currency={currency1}
-                fontSize={24}
-                isNumeric={true}
-                placeholder="0.00"
-                id="swap-currency-input"
-                addonLabel={renderPercentage()}
-              />
+              {depositBDisabled ? (
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  padding="10px"
+                  bgColor="color5"
+                  borderRadius="8px"
+                  margin="auto"
+                  flexGrow={1}
+                  mt={10}
+                >
+                  <Text fontSize={14} textAlign="left" color="text1">
+                    The market price is outside your specified price range. Single-asset deposit only.
+                  </Text>
+                </Box>
+              ) : (
+                <CurrencyInputTextBox
+                  label={`${t('common.to')}`}
+                  value={formattedAmounts[Field.CURRENCY_B]}
+                  onChange={(value: any) => {
+                    setSelectedPercentage(0);
+
+                    onFieldBInput(value);
+                  }}
+                  buttonStyle={{
+                    cursor: 'default',
+                  }}
+                  showArrowIcon={false}
+                  onTokenClick={() => {}}
+                  currency={currency1}
+                  fontSize={24}
+                  isNumeric={true}
+                  placeholder="0.00"
+                  id="swap-currency-input"
+                  addonLabel={renderPercentage()}
+                />
+              )}
             </CurrencyInputs>
           </DynamicSection>
           {isCurrencyDrawerOpen && (

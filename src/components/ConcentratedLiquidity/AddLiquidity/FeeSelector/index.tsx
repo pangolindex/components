@@ -1,9 +1,9 @@
 import { FeeAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useFeeTierDistributionHook, usePoolsHook } from 'src/hooks/concentratedLiquidity/hooks';
-import { PoolState } from 'src/hooks/concentratedLiquidity/hooks/types';
 import { Box, Button, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
+import { useFeeTierDistributionHook, usePoolsHook } from 'src/hooks/concentratedLiquidity/hooks';
+import { PoolState } from 'src/hooks/concentratedLiquidity/hooks/types';
 import usePrevious from 'src/hooks/usePrevious';
 import FeeOption from './FeeOption';
 import { FeeTierPercentageBadge } from './FeeTierPercentageBadge';
@@ -131,7 +131,7 @@ const FeeSelector: React.FC<FeeSelectorProps> = (props) => {
               backgroundColor="color2"
               color="text1"
               height="30px"
-              width={'40px'}
+              width={'50px'}
               onClick={() => setShowOptions(!showOptions)}
             >
               {showOptions ? 'Hide' : 'Edit'}

@@ -9,11 +9,13 @@ import {
   tickToPrice,
 } from '@pangolindex/sdk';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { TickData, Ticks, useAllV3TicksQuery } from 'src/apollo/allTicks';
 import { ChartEntry } from 'src/components/LiquidityChartRangeInput/types';
 import { ZERO_ADDRESS } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import { useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
 import computeSurroundingTicks from 'src/utils/computeSurroundingTicks';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { usePool } from '../hooks/evm';
 import { PoolState } from '../hooks/types';
 import { TickProcessed } from './types';
@@ -62,7 +64,6 @@ export function useDensityChartData({
 }
 
 const PRICE_FIXED_DIGITS = 8;
-const CHAIN_IDS_MISSING_SUBGRAPH_DATA = [SupportedChainId.ARBITRUM_ONE, SupportedChainId.ARBITRUM_GOERLI];
 
 const REFRESH_FREQUENCY = { blocksPerFetch: 2 };
 
@@ -90,11 +91,14 @@ function useTicksFromTickLens(
 
   const chainId = useChainId();
 
+  const tokenA = wrappedCurrency(currencyA, chainId);
+  const tokenB = wrappedCurrency(currencyB, chainId);
+
   const poolAddress =
-    currencyA && currencyB && feeAmount && poolState === PoolState.EXISTS
+    tokenA && tokenB && feeAmount && poolState === PoolState.EXISTS
       ? ConcentratedPool.getAddress(
-          currencyA?.wrapped,
-          currencyB?.wrapped,
+          tokenA,
+          tokenB,
           feeAmount,
           undefined,
           chainId ? CHAINS[chainId].contracts?.concentratedLiquidity?.factory : undefined,
@@ -183,23 +187,21 @@ function useTicksFromSubgraph(
   skip = 0,
 ) {
   const chainId = useChainId();
+
+  const tokenA = wrappedCurrency(currencyA, chainId);
+  const tokenB = wrappedCurrency(currencyB, chainId);
   const poolAddress =
-    currencyA && currencyB && feeAmount
+    tokenA && tokenB && feeAmount
       ? ConcentratedPool.getAddress(
-          currencyA?.wrapped,
-          currencyB?.wrapped,
+          tokenA,
+          tokenB,
           feeAmount,
           undefined,
           chainId ? CHAINS[chainId].contracts?.concentratedLiquidity?.factory : undefined,
         )
       : undefined;
 
-  return useAllV3TicksQuery({
-    variables: { poolAddress: poolAddress?.toLowerCase(), skip },
-    skip: !poolAddress,
-    pollInterval: ms`30s`,
-    client: apolloClient,
-  });
+  return useAllV3TicksQuery(poolAddress?.toLowerCase(), skip);
 }
 
 const MAX_THE_GRAPH_TICK_FETCH_VALUE = 1000;
@@ -213,7 +215,7 @@ function useAllV3Ticks(
   error: unknown;
   ticks: TickData[] | undefined;
 } {
-  const useSubgraph = currencyA ? !CHAIN_IDS_MISSING_SUBGRAPH_DATA.includes(currencyA.chainId) : true;
+  const useSubgraph = true;
 
   const tickLensTickData = useTicksFromTickLens(!useSubgraph ? currencyA : undefined, currencyB, feeAmount);
 
@@ -253,6 +255,8 @@ export function usePoolActiveLiquidity(
   activeTick: number | undefined;
   data: TickProcessed[] | undefined;
 } {
+  const chainId = useChainId();
+
   const pool = usePool(currencyA, currencyB, feeAmount);
 
   // Find nearest valid tick for pool in case tick is not initialized.
@@ -278,8 +282,8 @@ export function usePoolActiveLiquidity(
       };
     }
 
-    const token0 = currencyA?.wrapped;
-    const token1 = currencyB?.wrapped;
+    const token0 = wrappedCurrency(currencyA, chainId);
+    const token1 = wrappedCurrency(currencyB, chainId);
 
     // find where the active tick would be to partition the array
     // if the active tick is initialized, the pivot will be an element
@@ -289,6 +293,15 @@ export function usePoolActiveLiquidity(
     if (pivot < 0) {
       // consider setting a local error
       console.error('TickData pivot not found');
+      return {
+        isLoading,
+        error,
+        activeTick,
+        data: undefined,
+      };
+    }
+
+    if (!token0 || !token1) {
       return {
         isLoading,
         error,

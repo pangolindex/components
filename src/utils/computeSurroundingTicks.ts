@@ -1,6 +1,6 @@
 import { JSBI, Token, tickToPrice } from '@pangolindex/sdk';
 import { TickProcessed } from 'src/hooks/concentratedLiquidity/chart/types';
-import { Ticks } from '../graphql/thegraph/AllV3TicksQuery';
+import { Ticks } from 'src/apollo/allTicks';
 
 const PRICE_FIXED_DIGITS = 8;
 
