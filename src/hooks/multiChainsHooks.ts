@@ -3,10 +3,10 @@ import { ChainId } from '@pangolindex/sdk';
 import {
   useDummyTokenCurrencyPrice,
   useDummyTokensCurrencyPrice,
-  useHederaTokensCurrencyPrice,
   useTokenCurrencyPrice,
   useTokenCurrencyPriceSubgraph,
   useTokensCurrencyPrice,
+  useTokensCurrencyPriceContract,
   useTokensCurrencyPriceSubgraph,
 } from './useCurrencyPrice';
 
@@ -19,23 +19,23 @@ export type UseTokensCurrencyPriceHookType = {
     | typeof useTokensCurrencyPrice
     | typeof useTokensCurrencyPriceSubgraph
     | typeof useDummyTokensCurrencyPrice
-    | typeof useHederaTokensCurrencyPrice;
+    | typeof useTokensCurrencyPriceContract;
 };
 
 export const useTokensCurrencyPriceHook: UseTokensCurrencyPriceHookType = {
   [ChainId.FUJI]: useDummyTokensCurrencyPrice,
   [ChainId.AVALANCHE]: useDummyTokensCurrencyPrice,
   [ChainId.WAGMI]: useDummyTokensCurrencyPrice,
-  [ChainId.COSTON]: useTokensCurrencyPrice,
-  [ChainId.SONGBIRD]: useTokensCurrencyPrice,
-  [ChainId.FLARE_MAINNET]: useTokensCurrencyPrice,
-  [ChainId.HEDERA_TESTNET]: useHederaTokensCurrencyPrice,
-  [ChainId.HEDERA_MAINNET]: useHederaTokensCurrencyPrice,
+  [ChainId.COSTON]: useTokensCurrencyPriceContract,
+  [ChainId.SONGBIRD]: useTokensCurrencyPriceContract,
+  [ChainId.FLARE_MAINNET]: useTokensCurrencyPriceContract,
+  [ChainId.HEDERA_TESTNET]: useTokensCurrencyPrice,
+  [ChainId.HEDERA_MAINNET]: useTokensCurrencyPrice,
   [ChainId.NEAR_MAINNET]: useDummyTokensCurrencyPrice,
   [ChainId.NEAR_TESTNET]: useDummyTokensCurrencyPrice,
-  [ChainId.COSTON2]: useTokensCurrencyPrice,
-  [ChainId.EVMOS_TESTNET]: useTokensCurrencyPrice,
-  [ChainId.EVMOS_MAINNET]: useTokensCurrencyPrice,
+  [ChainId.COSTON2]: useTokensCurrencyPriceContract,
+  [ChainId.EVMOS_TESTNET]: useTokensCurrencyPriceContract,
+  [ChainId.EVMOS_MAINNET]: useTokensCurrencyPriceContract,
   [ChainId.ETHEREUM]: useDummyTokensCurrencyPrice,
   [ChainId.POLYGON]: useDummyTokensCurrencyPrice,
   [ChainId.FANTOM]: useDummyTokensCurrencyPrice,

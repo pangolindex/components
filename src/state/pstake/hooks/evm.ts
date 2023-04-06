@@ -14,7 +14,7 @@ import { MINICHEF_ADDRESS } from 'src/constants/address';
 import { DAIe, PNG, USDC, USDCe, USDTe } from 'src/constants/tokens';
 import { PairState, usePair, usePairs } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTokens } from 'src/hooks/tokens/evm';
+import { useTokensContract } from 'src/hooks/tokens/evm';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import { useMiniChefContract } from '../../../hooks/useContract';
 import {
@@ -91,8 +91,8 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
     return _tokens1Call.map((result) => (result.result && result.result.length > 0 ? result.result[0] : null));
   }, [_tokens1Call]);
 
-  const tokens0 = useTokens(tokens0Adrr);
-  const tokens1 = useTokens(tokens1Adrr);
+  const tokens0 = useTokensContract(tokens0Adrr);
+  const tokens1 = useTokensContract(tokens1Adrr);
 
   const info = useMemo(() => {
     const filterPair = (item: DoubleSideStaking) => {

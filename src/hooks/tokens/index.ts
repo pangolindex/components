@@ -1,8 +1,8 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
-import { useToken, useTokens } from './evm';
+import { useToken, useTokensContract } from './evm';
 import { useNearToken, useNearTokens } from './near';
-import { useHederaTokens, useTokensViaSubGraph } from './subgraph';
+import { useTokens, useTokensViaSubGraph } from './subgraph';
 
 export type UseTokenHookType = {
   [chainId in ChainId]: typeof useToken | typeof useNearToken | typeof useDummyHook;
@@ -41,27 +41,27 @@ export const useTokenHook: UseTokenHookType = {
 
 export type UseTokensHookType = {
   [chainId in ChainId]:
-    | typeof useTokens
+    | typeof useTokensContract
     | typeof useNearTokens
     | typeof useTokensViaSubGraph
     | typeof useDummyHook
-    | typeof useHederaTokens;
+    | typeof useTokens;
 };
 
 export const useTokensHook: UseTokensHookType = {
-  [ChainId.FUJI]: useTokens,
-  [ChainId.AVALANCHE]: useTokens,
-  [ChainId.WAGMI]: useTokens,
-  [ChainId.COSTON]: useTokens,
-  [ChainId.SONGBIRD]: useTokens,
-  [ChainId.FLARE_MAINNET]: useTokens,
-  [ChainId.HEDERA_TESTNET]: useHederaTokens,
-  [ChainId.HEDERA_MAINNET]: useHederaTokens,
+  [ChainId.FUJI]: useTokensContract,
+  [ChainId.AVALANCHE]: useTokensContract,
+  [ChainId.WAGMI]: useTokensContract,
+  [ChainId.COSTON]: useTokensContract,
+  [ChainId.SONGBIRD]: useTokensContract,
+  [ChainId.FLARE_MAINNET]: useTokensContract,
+  [ChainId.HEDERA_TESTNET]: useTokens,
+  [ChainId.HEDERA_MAINNET]: useTokens,
   [ChainId.NEAR_MAINNET]: useNearTokens,
   [ChainId.NEAR_TESTNET]: useNearTokens,
-  [ChainId.COSTON2]: useTokens,
-  [ChainId.EVMOS_TESTNET]: useTokens,
-  [ChainId.EVMOS_MAINNET]: useTokens,
+  [ChainId.COSTON2]: useTokensContract,
+  [ChainId.EVMOS_TESTNET]: useTokensContract,
+  [ChainId.EVMOS_MAINNET]: useTokensContract,
   [ChainId.ETHEREUM]: useDummyHook,
   [ChainId.POLYGON]: useDummyHook,
   [ChainId.FANTOM]: useDummyHook,

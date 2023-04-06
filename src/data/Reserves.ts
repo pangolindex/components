@@ -238,9 +238,14 @@ export function usePairsViaSubgraph(
   }, [results, tokens, chainId, results?.data, results?.isLoading, pairReserves]);
 }
 
-export const useHederaPairs = (currencies: [Currency | undefined, Currency | undefined][]) => {
+/**
+ * its wrapper hook to check which hook need to use based on subgraph on off
+ * @param currencies
+ * @returns
+ */
+export function useHederaPairs(currencies: [Currency | undefined, Currency | undefined][]) {
   const shouldUseSubgraph = useShouldUseSubgraph();
   const useHook = shouldUseSubgraph ? usePairsViaSubgraph : usePairs;
   const res = useHook(currencies);
   return res;
-};
+}

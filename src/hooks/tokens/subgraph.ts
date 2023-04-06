@@ -6,7 +6,7 @@ import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
 import { validateAddressMapping } from 'src/utils';
 import { useAllTokens } from '../useAllTokens';
 import { TokenReturnType } from './constant';
-import { useTokens } from './evm';
+import { useTokensContract } from './evm';
 /**
  * This hook format the tokens address to token object from sdk
  * @param tokensAddress token address array
@@ -52,9 +52,9 @@ export function useTokensViaSubGraph(tokensAddress: string[] = []): Array<TokenR
  * @param tokensAddress
  * @returns
  */
-export const useHederaTokens = (tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null => {
+export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
   const shouldUseSubgraph = useShouldUseSubgraph();
-  const useHook = shouldUseSubgraph ? useTokensViaSubGraph : useTokens;
+  const useHook = shouldUseSubgraph ? useTokensViaSubGraph : useTokensContract;
   const res = useHook(tokensAddress);
   return res;
-};
+}

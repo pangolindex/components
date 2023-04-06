@@ -16,7 +16,7 @@ import { useChainId } from '.';
  * @param tokens array of tokens to get the price in wrapped gas coin
  * @returns object where the key is the address of the token and the value is the Price
  */
-export function useTokensCurrencyPrice(tokens: (Token | undefined)[]): { [x: string]: Price } {
+export function useTokensCurrencyPriceContract(tokens: (Token | undefined)[]): { [x: string]: Price } {
   const chainId = useChainId();
 
   const usePairs = usePairsHook[chainId];
@@ -150,12 +150,12 @@ export function useTokenCurrencyPriceSubgraph(token: Token | undefined): Price {
  * @param tokens
  * @returns
  */
-export const useHederaTokensCurrencyPrice = (tokens: (Token | undefined)[]) => {
+export function useTokensCurrencyPrice(tokens: (Token | undefined)[]) {
   const shouldUseSubgraph = useShouldUseSubgraph();
-  const useHook = shouldUseSubgraph ? useTokensCurrencyPriceSubgraph : useTokensCurrencyPrice;
+  const useHook = shouldUseSubgraph ? useTokensCurrencyPriceSubgraph : useTokensCurrencyPriceContract;
   const res = useHook(tokens);
   return res;
-};
+}
 
 /**
  * Returns the tokens price in relation to gas coin hbar
