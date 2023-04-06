@@ -35,7 +35,7 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.SONGBIRD]: usePangoChefInfos,
   [ChainId.FLARE_MAINNET]: usePangoChefInfos,
   [ChainId.HEDERA_TESTNET]: useGetPangoChefInfosViaSubgraph,
-  [ChainId.HEDERA_MAINNET]: useHederaPangoChefInfos,
+  [ChainId.HEDERA_MAINNET]: useGetPangoChefInfosViaSubgraph,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefInfos,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefInfos,
   [ChainId.COSTON2]: usePangoChefInfos,
