@@ -23,6 +23,7 @@ import {
 import { CloseIcon } from 'src/theme/components';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import FeeSelector from './FeeSelector';
+import PriceGraph from './PriceGraph';
 import PriceRange from './PriceRange';
 import SelectPair from './SelectPair';
 import {
