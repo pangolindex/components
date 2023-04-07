@@ -13,6 +13,7 @@ import { TickData, Ticks, useAllV3TicksQuery } from 'src/apollo/allTicks';
 import { ChartEntry } from 'src/components/LiquidityChartRangeInput/types';
 import { ZERO_ADDRESS } from 'src/constants';
 import { useChainId } from 'src/hooks';
+import { useTickLensContract } from 'src/hooks/useContract';
 import { useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
 import computeSurroundingTicks from 'src/utils/computeSurroundingTicks';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -130,7 +131,7 @@ function useTicksFromTickLens(
     [minIndex, maxIndex, poolAddress],
   );
 
-  const tickLens = useTickLens();
+  const tickLens = useTickLensContract();
   const callStates = useSingleContractMultipleData(
     tickLensArgs.length > 0 ? tickLens : undefined,
     'getPopulatedTicksInWord',
