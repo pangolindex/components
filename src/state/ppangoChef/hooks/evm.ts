@@ -9,10 +9,10 @@ import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG, USDC } from 'src/constants/tokens';
-import { PairState, usePair, usePairs } from 'src/data/Reserves';
+import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
-import { useTokens } from 'src/hooks/tokens/evm';
+import { useTokensContract } from 'src/hooks/tokens/evm';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
@@ -139,8 +139,8 @@ export function usePangoChefInfos() {
     return tokens1State.map((result) => (result?.result && result?.result?.length > 0 ? result?.result[0] : null));
   }, [tokens1State]);
 
-  const tokens0 = useTokens(tokens0Adrr);
-  const tokens1 = useTokens(tokens1Adrr);
+  const tokens0 = useTokensContract(tokens0Adrr);
+  const tokens1 = useTokensContract(tokens1Adrr);
 
   const tokensPairs = useMemo(() => {
     if (tokens0 && tokens1 && tokens0?.length === tokens1?.length) {
@@ -157,7 +157,7 @@ export function usePangoChefInfos() {
   }, [tokens0, tokens1]);
 
   // get the pairs for each pool
-  const pairs = usePairs(tokensPairs);
+  const pairs = usePairsContract(tokensPairs);
 
   const pairAddresses = useMemo(() => {
     return pairs.map(([, pair]) => pair?.liquidityToken?.address);

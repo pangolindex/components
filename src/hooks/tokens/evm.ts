@@ -78,7 +78,7 @@ export function useToken(tokenAddress?: string): TokenReturnType {
   ]);
 }
 
-export function useTokens(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
+export function useTokensContract(tokensAddress: string[] = []): Array<TokenReturnType> | undefined | null {
   const chainId = useChainId();
   const tokens = useAllTokens();
 

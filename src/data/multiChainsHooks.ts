@@ -1,7 +1,7 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { useTokenAllowance } from './Allowances';
-import { useHederaPairs, useNearPairs, usePairs } from './Reserves';
+import { useNearPairs, usePairs, usePairsContract, usePairsViaSubgraph } from './Reserves';
 import {
   useEvmPairTotalSupply,
   useHederaPairTotalSupply,
@@ -13,39 +13,39 @@ import {
 } from './TotalSupply';
 
 export type UsePairsHookType = {
-  [chainId in ChainId]: typeof usePairs | typeof useNearPairs | typeof useHederaPairs;
+  [chainId in ChainId]: typeof usePairsContract | typeof useNearPairs | typeof usePairsViaSubgraph | typeof usePairs;
 };
 
 export const usePairsHook: UsePairsHookType = {
-  [ChainId.FUJI]: usePairs,
-  [ChainId.AVALANCHE]: usePairs,
-  [ChainId.WAGMI]: usePairs,
-  [ChainId.COSTON]: usePairs,
-  [ChainId.SONGBIRD]: usePairs,
-  [ChainId.FLARE_MAINNET]: usePairs,
-  [ChainId.HEDERA_TESTNET]: useHederaPairs,
-  [ChainId.HEDERA_MAINNET]: useHederaPairs,
+  [ChainId.FUJI]: usePairsContract,
+  [ChainId.AVALANCHE]: usePairsContract,
+  [ChainId.WAGMI]: usePairsContract,
+  [ChainId.COSTON]: usePairsContract,
+  [ChainId.SONGBIRD]: usePairsContract,
+  [ChainId.FLARE_MAINNET]: usePairsContract,
+  [ChainId.HEDERA_TESTNET]: usePairs,
+  [ChainId.HEDERA_MAINNET]: usePairs,
   [ChainId.NEAR_MAINNET]: useNearPairs,
   [ChainId.NEAR_TESTNET]: useNearPairs,
-  [ChainId.COSTON2]: usePairs,
-  [ChainId.EVMOS_TESTNET]: usePairs,
-  [ChainId.EVMOS_MAINNET]: usePairs,
+  [ChainId.COSTON2]: usePairsContract,
+  [ChainId.EVMOS_TESTNET]: usePairsContract,
+  [ChainId.EVMOS_MAINNET]: usePairsContract,
   //TODO: We used usePairs for now, but we need to check following chains
-  [ChainId.ETHEREUM]: usePairs,
-  [ChainId.POLYGON]: usePairs,
-  [ChainId.FANTOM]: usePairs,
-  [ChainId.XDAI]: usePairs,
-  [ChainId.BSC]: usePairs,
-  [ChainId.ARBITRUM]: usePairs,
-  [ChainId.CELO]: usePairs,
-  [ChainId.OKXCHAIN]: usePairs,
-  [ChainId.VELAS]: usePairs,
-  [ChainId.AURORA]: usePairs,
-  [ChainId.CRONOS]: usePairs,
-  [ChainId.FUSE]: usePairs,
-  [ChainId.MOONRIVER]: usePairs,
-  [ChainId.MOONBEAM]: usePairs,
-  [ChainId.OP]: usePairs,
+  [ChainId.ETHEREUM]: usePairsContract,
+  [ChainId.POLYGON]: usePairsContract,
+  [ChainId.FANTOM]: usePairsContract,
+  [ChainId.XDAI]: usePairsContract,
+  [ChainId.BSC]: usePairsContract,
+  [ChainId.ARBITRUM]: usePairsContract,
+  [ChainId.CELO]: usePairsContract,
+  [ChainId.OKXCHAIN]: usePairsContract,
+  [ChainId.VELAS]: usePairsContract,
+  [ChainId.AURORA]: usePairsContract,
+  [ChainId.CRONOS]: usePairsContract,
+  [ChainId.FUSE]: usePairsContract,
+  [ChainId.MOONRIVER]: usePairsContract,
+  [ChainId.MOONBEAM]: usePairsContract,
+  [ChainId.OP]: usePairsContract,
 };
 
 export type UseTokenAllowanceHookType = {

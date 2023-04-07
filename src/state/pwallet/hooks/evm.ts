@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { ROUTER_ADDRESS } from 'src/constants/address';
-import { usePairs } from 'src/data/Reserves';
+import { usePairsContract } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
@@ -471,7 +471,7 @@ export function useGetUserLP() {
     [liquidityTokensWithBalances],
   );
 
-  const v2Pairs = usePairs(lpTokensWithBalances);
+  const v2Pairs = usePairsContract(lpTokensWithBalances);
 
   const v2IsLoading =
     fetchingV2PairBalances ||
@@ -488,7 +488,7 @@ export function useGetUserLP() {
     [tokenPairsWithLiquidityTokens],
   );
 
-  const v2AllPairs = usePairs(pairWithLpTokens);
+  const v2AllPairs = usePairsContract(pairWithLpTokens);
 
   const allV2AllPairsWithLiquidity = useMemo(
     () => v2AllPairs.map(([, pair]) => pair).filter((_v2AllPairs): _v2AllPairs is Pair => Boolean(_v2AllPairs)),
