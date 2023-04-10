@@ -1,5 +1,4 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { useGetLockingPoolsForPoolId, useGetLockingPoolsForPoolZero } from './common';
 import { useDummyIsLockingPoolZero, useDummyPangoChefCallback, useDummyPangoChefInfos } from './dummy';
 import {
@@ -16,6 +15,7 @@ import {
   useHederaPangoChefInfos,
   useHederaPangoChefStakeCallback,
   useHederaPangoChefWithdrawCallback,
+  useHederaPangochef,
 } from './hedera';
 
 export type UsePangoChefInfosHookType = {
@@ -24,7 +24,7 @@ export type UsePangoChefInfosHookType = {
     | typeof useGetPangoChefInfosViaSubgraph
     | typeof useHederaPangoChefInfos
     | typeof useDummyPangoChefInfos
-    | typeof useDummyHook;
+    | typeof useHederaPangochef;
 };
 
 export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
@@ -34,28 +34,28 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.COSTON]: usePangoChefInfos,
   [ChainId.SONGBIRD]: usePangoChefInfos,
   [ChainId.FLARE_MAINNET]: usePangoChefInfos,
-  [ChainId.HEDERA_TESTNET]: useGetPangoChefInfosViaSubgraph,
-  [ChainId.HEDERA_MAINNET]: useGetPangoChefInfosViaSubgraph,
+  [ChainId.HEDERA_TESTNET]: useHederaPangochef,
+  [ChainId.HEDERA_MAINNET]: useHederaPangochef,
   [ChainId.NEAR_MAINNET]: useDummyPangoChefInfos,
   [ChainId.NEAR_TESTNET]: useDummyPangoChefInfos,
   [ChainId.COSTON2]: usePangoChefInfos,
-  [ChainId.ETHEREUM]: useDummyHook,
-  [ChainId.POLYGON]: useDummyHook,
-  [ChainId.FANTOM]: useDummyHook,
-  [ChainId.XDAI]: useDummyHook,
-  [ChainId.BSC]: useDummyHook,
-  [ChainId.ARBITRUM]: useDummyHook,
-  [ChainId.CELO]: useDummyHook,
-  [ChainId.OKXCHAIN]: useDummyHook,
-  [ChainId.VELAS]: useDummyHook,
-  [ChainId.AURORA]: useDummyHook,
-  [ChainId.CRONOS]: useDummyHook,
-  [ChainId.FUSE]: useDummyHook,
-  [ChainId.MOONRIVER]: useDummyHook,
-  [ChainId.MOONBEAM]: useDummyHook,
-  [ChainId.OP]: useDummyHook,
+  [ChainId.ETHEREUM]: useDummyPangoChefInfos,
+  [ChainId.POLYGON]: useDummyPangoChefInfos,
+  [ChainId.FANTOM]: useDummyPangoChefInfos,
+  [ChainId.XDAI]: useDummyPangoChefInfos,
+  [ChainId.BSC]: useDummyPangoChefInfos,
+  [ChainId.ARBITRUM]: useDummyPangoChefInfos,
+  [ChainId.CELO]: useDummyPangoChefInfos,
+  [ChainId.OKXCHAIN]: useDummyPangoChefInfos,
+  [ChainId.VELAS]: useDummyPangoChefInfos,
+  [ChainId.AURORA]: useDummyPangoChefInfos,
+  [ChainId.CRONOS]: useDummyPangoChefInfos,
+  [ChainId.FUSE]: useDummyPangoChefInfos,
+  [ChainId.MOONRIVER]: useDummyPangoChefInfos,
+  [ChainId.MOONBEAM]: useDummyPangoChefInfos,
+  [ChainId.OP]: useDummyPangoChefInfos,
   [ChainId.EVMOS_TESTNET]: usePangoChefInfos,
-  [ChainId.EVMOS_MAINNET]: useDummyHook,
+  [ChainId.EVMOS_MAINNET]: useDummyPangoChefInfos,
 };
 
 export type UsePangoChefStakeCallbackHookType = {

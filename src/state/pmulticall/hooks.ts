@@ -2,17 +2,9 @@ import { FunctionFragment, Interface } from '@ethersproject/abi';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { useEffect, useMemo } from 'react';
-import { AppState, useDispatch, useSelector } from 'src/state';
 import { useChainId } from '../../hooks';
 import { useBlockNumber } from '../papplication/hooks';
-import {
-  Call,
-  ListenerOptions,
-  addMulticallListeners,
-  parseCallKey,
-  removeMulticallListeners,
-  toCallKey,
-} from './actions';
+import { Call, ListenerOptions, parseCallKey, toCallKey, useMulticallAtom } from './atom';
 
 export interface Result extends ReadonlyArray<any> {
   readonly [key: string]: any;
@@ -50,8 +42,9 @@ export const NEVER_RELOAD: ListenerOptions = {
 // the lowest level call for subscribing to contract data
 function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): CallResult[] {
   const chainId = useChainId();
-  const callResults = useSelector<AppState['pmulticall']['callResults']>((state) => state.pmulticall.callResults);
-  const dispatch = useDispatch();
+  const { multicallState, addMulticallListeners, removeMulticallListeners } = useMulticallAtom();
+
+  const callResults = multicallState.callResults;
 
   const serializedCallKeys: string = useMemo(
     () =>
@@ -69,24 +62,21 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): C
     const callKeys: string[] = JSON.parse(serializedCallKeys);
     if (!chainId || callKeys.length === 0) return undefined;
     const calls = callKeys.map((key) => parseCallKey(key));
-    dispatch(
-      addMulticallListeners({
+
+    addMulticallListeners({
+      chainId,
+      calls,
+      options,
+    });
+
+    return () => {
+      removeMulticallListeners({
         chainId,
         calls,
         options,
-      }),
-    );
-
-    return () => {
-      dispatch(
-        removeMulticallListeners({
-          chainId,
-          calls,
-          options,
-        }),
-      );
+      });
     };
-  }, [chainId, dispatch, options, serializedCallKeys]);
+  }, [chainId, options, serializedCallKeys]);
 
   return useMemo(
     () =>
@@ -101,7 +91,7 @@ function useCallsData(calls: (Call | undefined)[], options?: ListenerOptions): C
 
         return { valid: true, data, blockNumber: result?.blockNumber };
       }),
-    [callResults, calls, chainId],
+    [multicallState, calls, chainId],
   );
 }
 

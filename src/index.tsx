@@ -34,28 +34,15 @@ import { useCoinGeckoTokenData } from 'src/state/pcoingecko/hooks';
 import ListsUpdater from 'src/state/plists/updater';
 import MulticallUpdater from 'src/state/pmulticall/updater';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/hooks';
+import { useMinichefStakingInfosHook } from 'src/state/pstake/hooks';
+import { useDerivedStakeInfo, useMinichefPools } from 'src/state/pstake/hooks/common';
+import { useMinichefStakingInfos } from 'src/state/pstake/hooks/evm';
+import { DoubleSideStaking, DoubleSideStakingInfo, MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
 import {
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,
   fetchChunkedAprs,
-  fetchMinichefData,
-  useDerivedStakeInfo,
-  useGetAllFarmData,
-  useMinichefPools,
-  useMinichefStakingInfos,
-} from 'src/state/pstake/hooks';
-import {
-  useGetAllFarmDataHook,
-  useGetMinichefStakingInfosViaSubgraphHook,
-  useMinichefStakingInfosHook,
-} from 'src/state/pstake/multiChainsHooks';
-import {
-  DoubleSideStaking,
-  DoubleSideStakingInfo,
-  MinichefStakingInfo,
-  PoolType,
-  StakingInfo,
-} from 'src/state/pstake/types';
+} from 'src/state/pstake/utils';
 import { useGelatoLimitOrdersListHook } from 'src/state/pswap/hooks';
 import {
   LimitOrderInfo,
@@ -78,7 +65,7 @@ import uriToHttp from 'src/utils/uriToHttp';
 import { unwrappedToken, wrappedCurrency, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
 import { MixPanelEvents, MixPanelProvider, useMixpanel } from './hooks/mixpanel';
 import i18n, { availableLanguages } from './i18n';
-import store, { PANGOLIN_PERSISTED_KEYS, StoreContext, galetoStore, pangolinReducers } from './state';
+import { galetoStore } from './state';
 import { PangoChefInfo } from './state/ppangoChef/types';
 import { useSarPositionsHook } from './state/psarstake/hooks';
 import { useSarStakeInfo } from './state/psarstake/hooks/evm';
@@ -113,36 +100,34 @@ export function PangolinProvider({
   const ethersLibrary = library && !library?._isProvider ? new Web3Provider(library) : library;
 
   return (
-    <Provider store={store} context={StoreContext}>
-      <PangolinWeb3Provider chainId={chainId} library={library} account={account} key={chainId}>
-        <MixPanelProvider mixpanelToken={mixpanelToken}>
-          <ThemeProvider theme={theme}>
-            <QueryClientProvider client={queryClient}>
-              <ListsUpdater />
-              <ApplicationUpdater />
-              <MulticallUpdater />
-              <TransactionUpdater />
-              <SwapUpdater />
-              {isEvmChain(chainId) && CHAINS[chainId]?.supported_by_gelato ? (
-                <Provider store={galetoStore}>
-                  <GelatoProvider
-                    library={ethersLibrary}
-                    chainId={chainId}
-                    account={account ?? undefined}
-                    useDefaultTheme={false}
-                    handler={'pangolin'}
-                  >
-                    {children}
-                  </GelatoProvider>
-                </Provider>
-              ) : (
-                children
-              )}
-            </QueryClientProvider>
-          </ThemeProvider>
-        </MixPanelProvider>
-      </PangolinWeb3Provider>
-    </Provider>
+    <PangolinWeb3Provider chainId={chainId} library={library} account={account} key={chainId}>
+      <MixPanelProvider mixpanelToken={mixpanelToken}>
+        <ThemeProvider theme={theme}>
+          <QueryClientProvider client={queryClient}>
+            <ListsUpdater />
+            <ApplicationUpdater />
+            <MulticallUpdater />
+            <TransactionUpdater />
+            <SwapUpdater />
+            {isEvmChain(chainId) && CHAINS[chainId]?.supported_by_gelato ? (
+              <Provider store={galetoStore}>
+                <GelatoProvider
+                  library={ethersLibrary}
+                  chainId={chainId}
+                  account={account ?? undefined}
+                  useDefaultTheme={false}
+                  handler={'pangolin'}
+                >
+                  {children}
+                </GelatoProvider>
+              </Provider>
+            ) : (
+              children
+            )}
+          </QueryClientProvider>
+        </ThemeProvider>
+      </MixPanelProvider>
+    </PangolinWeb3Provider>
   );
 }
 
@@ -153,19 +138,11 @@ export { TIMEFRAME, SwapTypes } from './constants/swap';
 export * from './connectors';
 export * from './components';
 export * from './state/papplication/hooks';
-export * from './state/papplication/actions';
+export { ApplicationModal } from './state/papplication/atom';
 export * as Tokens from './constants/tokens';
 
 export * from '@gelatonetwork/limit-orders-react';
-export type {
-  LimitOrderInfo,
-  MinichefStakingInfo,
-  DoubleSideStakingInfo,
-  StakingInfo,
-  DoubleSideStaking,
-  Position,
-  PangoChefInfo,
-};
+export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, DoubleSideStaking, Position, PangoChefInfo };
 
 // components
 export { SelectTokenDrawer };
@@ -188,15 +165,12 @@ export {
   useAccountBalanceHook,
   useTranslation,
   useMinichefStakingInfosHook,
-  useGetAllFarmData,
-  useGetMinichefStakingInfosViaSubgraphHook,
   useGetUserLP,
   useMinichefStakingInfos,
   useDerivedStakeInfo,
   useMinichefPools,
   useTotalSupplyHook,
   useTotalSupply,
-  useGetAllFarmDataHook,
   useTokenBalanceHook,
   useTokenBalance,
   usePangoChefInfosHook,
@@ -220,8 +194,6 @@ export {
 
 // misc
 export {
-  pangolinReducers,
-  PANGOLIN_PERSISTED_KEYS,
   wrappedCurrency,
   wrappedCurrencyAmount,
   unwrappedToken,
@@ -230,7 +202,6 @@ export {
   availableLanguages,
   Trans,
   PoolType,
-  fetchMinichefData,
   fetchChunkedAprs,
   calculateTotalStakedAmountInAvax,
   calculateTotalStakedAmountInAvaxFromPng,

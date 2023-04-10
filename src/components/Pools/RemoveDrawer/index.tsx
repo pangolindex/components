@@ -1,12 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Drawer from 'src/components/Drawer';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import Remove from '../Remove';
 
 type Props = {
   isOpen: boolean;
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   onClose: () => void;
   version: number;
   redirectToCompound?: () => void;

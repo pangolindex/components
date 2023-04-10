@@ -4,12 +4,12 @@ import { CAVAX, ChainId, Currency, JSBI, Pair, Token, TokenAmount, WAVAX } from 
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueries, useQuery } from 'react-query';
-import { usePair, usePairs } from 'src/data/Reserves';
+import { usePair, usePairsContract } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useGetAllHederaAssociatedTokens, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useBlockNumber } from 'src/state/papplication/hooks';
-import { Field } from 'src/state/pburn/actions';
-import { Field as AddField } from 'src/state/pmint/actions';
+import { Field } from 'src/state/pburn/atom';
+import { Field as AddField } from 'src/state/pmint/atom';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateSlippageAmount, getRouterContract, isAddress } from 'src/utils';
 import { HederaTokenMetadata, hederaFn } from 'src/utils/hedera';
@@ -386,7 +386,7 @@ export function useGetHederaUserLP() {
     [pglTokenAddresses, allTokensAddress, pairTokens],
   );
 
-  const allPairs = usePairs(filterPairTokens);
+  const allPairs = usePairsContract(filterPairTokens);
 
   const checkedAllPairs = useMemo(
     () => allPairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair)),

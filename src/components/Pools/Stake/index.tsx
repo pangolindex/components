@@ -30,8 +30,8 @@ import {
   useGetPoolDollerWorth,
   useMinichefPendingRewards,
   useMinichefPools,
-} from 'src/state/pstake/hooks';
-import { SpaceType, StakingInfo } from 'src/state/pstake/types';
+} from 'src/state/pstake/hooks/common';
+import { DoubleSideStakingInfo, SpaceType } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { waitForTransaction } from 'src/utils';
@@ -52,7 +52,7 @@ interface StakeProps {
   version: number;
   onComplete?: () => void;
   type: SpaceType.card | SpaceType.detail;
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   combinedApr?: number;
 }
 

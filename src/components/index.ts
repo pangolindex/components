@@ -13,6 +13,7 @@ export { DoubleCurrencyLogo } from './DoubleCurrencyLogo';
 export { default as Logo } from './Logo';
 export { CurrencyInput } from './CurrencyInput';
 export { ChainInput } from './ChainInput';
+export { default as RewardTokens } from './RewardTokens';
 export { default as Tooltip } from './Tooltip';
 export { default as Collapsed } from './Collapsed';
 export { ToggleButtons } from './ToggleButtons';

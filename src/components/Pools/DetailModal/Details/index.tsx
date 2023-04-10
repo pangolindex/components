@@ -9,13 +9,13 @@ import { ANALYTICS_PAGE } from 'src/constants';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { convertCoingeckoTokens } from 'src/state/pcoingecko/hooks';
-import { useGetPoolDollerWorth } from 'src/state/pstake/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { useGetPoolDollerWorth } from 'src/state/pstake/hooks/common';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { DetailsContainer } from './styled';
 
 type Props = {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
 };
 
 const Details: React.FC<Props> = ({ stakingInfo }) => {
@@ -25,10 +25,10 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
   const token1 = stakingInfo?.tokens?.[1];
   const chainId = useChainId();
   const { t } = useTranslation();
-  const totalStakedInUsd = numeral(stakingInfo?.totalStakedInUsd.toSignificant(4)).format('$0.00a');
+  const totalStakedInUsd = numeral(stakingInfo?.totalStakedInUsd?.toSignificant(4)).format('$0.00a');
 
   const yourStakeInUsd = CHAINS[chainId]?.mainnet
-    ? stakingInfo?.totalStakedInUsd.multiply(stakingInfo?.stakedAmount).divide(stakingInfo?.totalStakedAmount)
+    ? stakingInfo?.totalStakedInUsd?.multiply(stakingInfo?.stakedAmount).divide(stakingInfo?.totalStakedAmount)
     : undefined;
 
   const [, stakingTokenPair] = usePair(token0, token1);

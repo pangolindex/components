@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { JSBI, Price, Token, WAVAX } from '@pangolindex/sdk';
+import { JSBI, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
@@ -51,13 +51,12 @@ export function useUserPangoChefAPR(stakingInfo?: PangoChefInfo) {
  * @param rewardRate reward rate in png/s
  * @param multipliers multipler fro each token provider in rewardTokens
  * @param balance valueVariables from contract
- * @param pairPrice pair price in wrapped gas coin
  * @returns return the extra percentage of apr provided by super farm extra reward tokens
  */
 export function usePangoChefExtraFarmApr(
   rewardTokens: Array<Token | null | undefined> | null | undefined,
   rewardRate: BigNumber,
-  balance: BigNumber,
+  balance: TokenAmount,
   stakingInfo: PangoChefInfo,
 ) {
   const chainId = useChainId();
@@ -72,15 +71,15 @@ export function usePangoChefExtraFarmApr(
 
   const pairPrice: Price | undefined = stakingInfo.pairPrice;
 
+  const png = PNG[chainId];
   const tokensPrices = useTokensCurrencyPrice(_rewardTokens);
 
-  const png = PNG[chainId];
-  const lpToken = stakingInfo.stakedAmount.token;
+  const _rewarRate = balance
+    ?.multiply((stakingInfo?.poolRewardRate ?? 0).toString())
+    .divide(stakingInfo.totalStakedAmount);
 
-  const expoent = png.decimals - lpToken.decimals;
-
-  // we need to divide by the diference between png.decimals and lpToken.decimals
-  const aprDenominator = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent));
+  // we need to divide by png.decimals
+  const aprDenominator = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals));
 
   return useMemo(() => {
     let extraAPR = 0;
@@ -97,22 +96,25 @@ export function usePangoChefExtraFarmApr(
       }
 
       const tokenPrice = tokensPrices[token.address];
+
       const multiplier = multipliers[index];
-      if (!tokenPrice || !multiplier) {
+      if (!tokenPrice || !multiplier || !pairPrice) {
         continue;
       }
 
-      //extraAPR = poolRewardRate(POOL_ID) * rewardMultiplier / (10** token.decimals) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
-      extraAPR +=
-        !pairPrice || !balance || balance.isZero() || pairPrice.equalTo('0')
+      const pairBalance = pairPrice.raw.multiply(balance);
+
+      //extraAPR = poolRewardRate(POOL_ID) * rewardMultiplier / (10** REWARD_TOKEN_PRICE.decimals) * 365 days * 100 * REWARD_TOKEN_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
+      extraAPR =
+        !tokenPrice || pairBalance.equalTo('0')
           ? 0
           : Number(
               tokenPrice.raw
-                .multiply(rewardRate.mul(365 * 86400 * 100).toString())
+                .multiply(_rewarRate)
+                .multiply((365 * 86400 * 100).toString())
                 .multiply(multiplier)
-                .divide(pairPrice.raw.multiply(balance.toString()))
+                .divide(pairBalance.multiply(aprDenominator))
                 .divide((10 ** token.decimals).toString())
-                .divide(aprDenominator.toString())
                 .toSignificant(2),
             );
     }

@@ -13,6 +13,7 @@ const CurrencyInput = ({
   pair,
   alternativeLogoSrc = null,
   currency,
+  showArrowIcon = true,
   isShowTextInput = true,
   onTokenClick,
   ...rest
@@ -62,7 +63,7 @@ const CurrencyInput = ({
         <Aligner buttonStyle={buttonStyle} active={Boolean(currency && currency.symbol)}>
           {renderCurrency()}
           {renderStyletoken()}
-          <ChevronDown color={!Boolean(currency && currency.symbol) ? 'black' : undefined} />
+          {showArrowIcon && <ChevronDown color={!Boolean(currency && currency.symbol) ? 'black' : undefined} />}
         </Aligner>
       </CurrencySelect>
     );

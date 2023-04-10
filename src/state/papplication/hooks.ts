@@ -1,23 +1,24 @@
 import { useCallback, useMemo } from 'react';
-import { AppState, useDispatch, useSelector } from 'src/state';
 import { useChainId } from '../../hooks';
-import { ApplicationModal, PopupContent, addPopup, removePopup, setOpenModal, updateSelectedPoolId } from './actions';
+import { ApplicationModal, PopupContent, PopupList, useApplicationState } from './atom';
 
 export function useBlockNumber(): number | undefined {
   const chainId = useChainId();
-
-  return useSelector((state: AppState) => state?.papplication?.blockNumber?.[chainId]);
+  const { blockNumbers } = useApplicationState();
+  return blockNumbers?.[chainId];
 }
 
 export function useModalOpen(modal: ApplicationModal): boolean {
-  const openModal = useSelector((state: AppState) => state.papplication.openModal);
+  const { openModal } = useApplicationState();
+
   return openModal === modal;
 }
 
 export function useToggleModal(modal: ApplicationModal): () => void {
   const open = useModalOpen(modal);
-  const dispatch = useDispatch();
-  return useCallback(() => dispatch(setOpenModal(open ? null : modal)), [dispatch, modal, open]);
+
+  const { setOpenModal } = useApplicationState();
+  return useCallback(() => setOpenModal(open ? null : modal), [setOpenModal, modal, open]);
 }
 
 export function useWalletModalToggle(): () => void {
@@ -30,38 +31,47 @@ export function usePoolDetailnModalToggle(): () => void {
 
 // returns a function that allows adding a popup
 export function useAddPopup(): (content: PopupContent, key?: string) => void {
-  const dispatch = useDispatch();
+  const { addPopup } = useApplicationState();
 
   return useCallback(
     (content: PopupContent, key?: string) => {
-      dispatch(addPopup({ content, key }));
+      addPopup({ content, key });
     },
-    [dispatch],
+    [addPopup],
   );
 }
 
 // returns a function that allows removing a popup via its key
 export function useRemovePopup(): (key: string) => void {
-  const dispatch = useDispatch();
+  const { removePopup } = useApplicationState();
   return useCallback(
     (key: string) => {
-      dispatch(removePopup({ key }));
+      removePopup({ key });
     },
-    [dispatch],
+    [removePopup],
   );
 }
 
 // get the list of active popups
-export function useActivePopups(): AppState['papplication']['popupList'] {
-  const list = useSelector((state: AppState) => state.papplication.popupList);
+export function useActivePopups(): PopupList {
+  const { popupList: list } = useApplicationState();
+
   return useMemo(() => list.filter((item) => item.show), [list]);
 }
 
 export function useGetSelectedPoolId(): string | undefined {
-  return useSelector((state: AppState) => state?.papplication?.selectedPoolId);
+  const { selectedPoolId } = useApplicationState();
+
+  return selectedPoolId;
 }
 
 export function useUpdateSelectedPoolId(): (poolId: string | undefined) => void {
-  const dispatch = useDispatch();
-  return useCallback((poolId: string | undefined) => dispatch(updateSelectedPoolId(poolId)), [dispatch]);
+  const { setSelectedPooId } = useApplicationState();
+  return useCallback((poolId: string | undefined) => setSelectedPooId(poolId), [setSelectedPooId]);
+}
+
+export function useShouldUseSubgraph(): boolean {
+  const chainId = useChainId();
+  const { useSubgraph } = useApplicationState();
+  return useSubgraph?.[chainId];
 }

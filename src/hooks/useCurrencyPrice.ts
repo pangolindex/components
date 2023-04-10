@@ -4,6 +4,7 @@ import { useSubgraphTokens } from 'src/apollo/tokens';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PairState, usePair } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
+import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
 import { decimalToFraction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useTokensCurrencyPriceHook } from './multiChainsHooks';
@@ -15,7 +16,7 @@ import { useChainId } from '.';
  * @param tokens array of tokens to get the price in wrapped gas coin
  * @returns object where the key is the address of the token and the value is the Price
  */
-export function useTokensCurrencyPrice(tokens: (Token | undefined)[]): { [x: string]: Price } {
+export function useTokensCurrencyPriceContract(tokens: (Token | undefined)[]): { [x: string]: Price } {
   const chainId = useChainId();
 
   const usePairs = usePairsHook[chainId];
@@ -142,6 +143,18 @@ export function useTokenCurrencyPriceSubgraph(token: Token | undefined): Price {
     if (!token) return new Price(currency, currency, '1', '0');
     return tokenPrice[token?.address];
   }, [tokenPrice, token]);
+}
+
+/**
+ * its wrapper hook to check which hook need to use based on subgraph on off
+ * @param tokens
+ * @returns
+ */
+export function useTokensCurrencyPrice(tokens: (Token | undefined)[]) {
+  const shouldUseSubgraph = useShouldUseSubgraph();
+  const useHook = shouldUseSubgraph ? useTokensCurrencyPriceSubgraph : useTokensCurrencyPriceContract;
+  const res = useHook(tokens);
+  return res;
 }
 
 /**

@@ -22,6 +22,7 @@ export interface Colors {
   text13: Color;
   text14: Color;
   text15: Color;
+  text16: Color;
 
   // backgrounds / greys
   bg1: Color;
@@ -173,6 +174,15 @@ export interface Colors {
   chainInput: {
     text?: Color;
     primaryBgColor?: Color;
+  };
+
+  liquidityChartRangeInput: {
+    bgColor?: Color;
+    tooltipBackground?: Color;
+    tooltipText?: Color;
+    handleAccentColor?: Color;
+    pathColor?: Color;
+    styledLine?: Color;
   };
 
   primary: Color;

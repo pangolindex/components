@@ -6,7 +6,7 @@ import { SidebarProps } from './types';
 
 const Sidebar: React.FC<SidebarProps> = (props) => {
   const { t } = useTranslation();
-  const { setMenu, activeMenu, menuItems } = props;
+  const { setMenu, activeMenu, menuItems, changeAddLiquidityModalStatus } = props;
 
   return (
     <SidebarWrapper>
@@ -28,13 +28,31 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
       </Menu>
 
       <Box padding="8px" mb={10} ml="12px">
-        <Text color="color11" fontSize={14} mb="5px">
-          {t('concentratedLiquidity.sidebar.seeMore')}
-        </Text>
+        <Box pb={'30px'}>
+          <Text color="color11" fontSize={14} mb="5px">
+            {t('concentratedLiquidity.sidebar.wantToAddLiq')}
+          </Text>
 
-        <Link fontSize={14} color="primary" cursor="pointer" as="a" href="/pools">
-          {t('concentratedLiquidity.sidebar.goToFarm')}
-        </Link>
+          <Link
+            fontSize={14}
+            color="primary"
+            cursor="pointer"
+            onClick={() => {
+              changeAddLiquidityModalStatus();
+            }}
+          >
+            {t('common.addLiquidity')}
+          </Link>
+        </Box>
+        <Box>
+          <Text color="color11" fontSize={14} mb="5px">
+            {t('concentratedLiquidity.sidebar.seeMore')}
+          </Text>
+
+          <Link fontSize={14} color="primary" cursor="pointer" as="a" href="/pools">
+            {t('concentratedLiquidity.sidebar.goToFarm')}
+          </Link>
+        </Box>
       </Box>
     </SidebarWrapper>
   );

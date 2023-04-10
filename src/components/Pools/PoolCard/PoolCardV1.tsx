@@ -1,20 +1,20 @@
 import React from 'react';
-import { useTokens } from 'src/hooks/tokens/evm';
-import { StakingInfo } from 'src/state/pstake/types';
+import { useTokensContract } from 'src/hooks/tokens/evm';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import PoolCardView from './PoolCardView';
 
 export interface PoolCardV1Props {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   onClickViewDetail: () => void;
   version: number;
 }
 
 const PoolCardV1 = ({ stakingInfo, onClickViewDetail, version }: PoolCardV1Props) => {
-  const rewardTokens = useTokens(stakingInfo?.rewardTokensAddress);
+  const rewardTokens = useTokensContract(stakingInfo?.rewardTokensAddress);
 
   return (
     <PoolCardView
-      combinedApr={stakingInfo?.combinedApr}
+      combinedApr={stakingInfo.combinedApr}
       earnedAmount={stakingInfo?.earnedAmount}
       rewardTokens={rewardTokens}
       stakingInfo={stakingInfo}

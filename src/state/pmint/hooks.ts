@@ -13,24 +13,23 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { AppState, useDispatch, useSelector } from 'src/state';
 import { PairState, usePair } from '../../data/Reserves';
 import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency';
 import { tryParseAmount } from '../pswap/hooks/common';
 import { useCurrencyBalances } from '../pwallet/hooks/common';
-import { Field, typeInput } from './actions';
-import { initialKeyState } from './reducer';
+import { Field, initialKeyState, useMintStateAtom } from './atom';
 
 const ZERO = JSBI.BigInt(0);
 
 export function useMintState(pairAddress: string) {
-  return useSelector<AppState['pmint']['any']>((state) => {
-    const pairState = state.pmint[pairAddress];
-    if (pairState) {
-      return pairState;
-    }
-    return initialKeyState;
-  });
+  const { mintState } = useMintStateAtom();
+
+  const pairState = mintState[pairAddress];
+
+  if (pairState) {
+    return pairState;
+  }
+  return initialKeyState;
 }
 
 export function useDerivedMintInfo(
@@ -239,23 +238,19 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
   onFieldAInput: (typedValue: string, pairAddress: string) => void;
   onFieldBInput: (typedValue: string, pairAddress: string) => void;
 } {
-  const dispatch = useDispatch();
+  const { typeInput } = useMintStateAtom();
 
   const onFieldAInput = useCallback(
     (typedValue: string, pairAddress: string) => {
-      dispatch(
-        typeInput({ pairAddress: pairAddress, field: Field.CURRENCY_A, typedValue, noLiquidity: noLiquidity === true }),
-      );
+      typeInput({ pairAddress: pairAddress, field: Field.CURRENCY_A, typedValue, noLiquidity: noLiquidity === true });
     },
-    [dispatch, noLiquidity],
+    [typeInput, noLiquidity],
   );
   const onFieldBInput = useCallback(
     (typedValue: string, pairAddress: string) => {
-      dispatch(
-        typeInput({ pairAddress: pairAddress, field: Field.CURRENCY_B, typedValue, noLiquidity: noLiquidity === true }),
-      );
+      typeInput({ pairAddress: pairAddress, field: Field.CURRENCY_B, typedValue, noLiquidity: noLiquidity === true });
     },
-    [dispatch, noLiquidity],
+    [typeInput, noLiquidity],
   );
 
   return {

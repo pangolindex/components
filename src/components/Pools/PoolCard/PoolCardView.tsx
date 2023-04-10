@@ -2,16 +2,15 @@ import { CHAINS, Fraction, Token, TokenAmount } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
+import { Box, DoubleCurrencyLogo, RewardTokens, Stat, Text } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import ClaimDrawer from '../ClaimDrawer';
 import FarmDrawer from '../FarmDrawer';
-import RewardTokens from '../RewardTokens';
 import {
   ActionButon,
   DetailButton,
@@ -24,7 +23,7 @@ import {
 } from './styleds';
 
 export interface PoolCardViewProps {
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   onClickViewDetail: () => void;
   version: number;
   combinedApr?: number;
@@ -68,7 +67,7 @@ const PoolCardView = ({
   const isLiquidity = Boolean(userPgl?.greaterThan('0'));
 
   const isSuperFarm =
-    version > 1 ? (rewardTokens || [])?.length > 1 : (stakingInfo?.rewardTokensAddress || [])?.length > 1;
+    version === 1 ? (rewardTokens || [])?.length > 0 : (stakingInfo?.rewardTokensAddress || [])?.length > 0;
 
   const redirectToFarmDrawer = () => {
     setShowFarmDrawer(true);

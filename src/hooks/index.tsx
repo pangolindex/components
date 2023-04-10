@@ -7,8 +7,7 @@ import { useQueryClient } from 'react-query';
 import { hashConnect, network } from 'src/connectors';
 import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { PROVIDER_MAPPING } from 'src/constants/wallets';
-import { useDispatch } from 'src/state';
-import { setAvailableHashpack } from 'src/state/papplication/actions';
+import { useApplicationState } from 'src/state/papplication/atom';
 import { isAddress } from 'src/utils';
 
 interface Web3State {
@@ -40,7 +39,7 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   chainId,
   account,
 }: Web3ProviderProps) => {
-  const dispatch = useDispatch();
+  const { setAvailableHashpack } = useApplicationState();
 
   const { activate } = useWeb3React();
 
@@ -52,7 +51,7 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   useEffect(() => {
     const emitterFn = (isHashpackAvailable: boolean) => {
       console.log('received hashpack emit event CHECK_EXTENSION in provider', isHashpackAvailable);
-      dispatch(setAvailableHashpack(true));
+      setAvailableHashpack(true);
     };
     hashconnectEvent.on(HashConnectEvents.CHECK_EXTENSION, emitterFn);
 

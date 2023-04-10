@@ -6,8 +6,8 @@ import { Box } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId } from 'src/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useGetPoolDollerWorth } from 'src/state/pstake/hooks';
-import { StakingInfo } from 'src/state/pstake/types';
+import { useGetPoolDollerWorth } from 'src/state/pstake/hooks/common';
+import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import EarnWidget from '../../EarnWidget';
 import EarnedDetailV3 from '../../PangoChef/EarnDetail';
@@ -19,7 +19,7 @@ import { DesktopWrapper, DetailsWrapper, LeftSection, MobileWrapper, RightSectio
 
 export interface PoolDetailProps {
   onDismiss: () => void;
-  stakingInfo: StakingInfo;
+  stakingInfo: DoubleSideStakingInfo;
   version: number;
 }
 

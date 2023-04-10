@@ -1,20 +1,13 @@
 import { Contract } from '@ethersproject/contracts';
 import { useEffect, useMemo, useRef } from 'react';
 import { useChainId } from 'src/hooks';
-import { AppState, useDispatch, useSelector } from 'src/state';
 import { hederaFn } from 'src/utils/hedera';
 import { useMulticallContract } from '../../hooks/useContract';
 import useDebounce from '../../hooks/useDebounce';
 import chunkArray from '../../utils/chunkArray';
 import { CancelledError, RetryableError, retry } from '../../utils/retry';
 import { useBlockNumber } from '../papplication/hooks';
-import {
-  Call,
-  errorFetchingMulticallResults,
-  fetchingMulticallResults,
-  parseCallKey,
-  updateMulticallResults,
-} from './actions';
+import { Call, MulticallState, parseCallKey, useMulticallAtom } from './atom';
 
 // chunk calls so we do not exceed the gas limit
 const CALL_CHUNK_SIZE = 500;
@@ -56,7 +49,7 @@ async function fetchChunk(
  * @param chainId the current chain id
  */
 export function activeListeningKeys(
-  allListeners: AppState['pmulticall']['callListeners'],
+  allListeners: MulticallState['callListeners'],
   chainId?: number,
 ): { [callKey: string]: number } {
   if (!allListeners || !chainId) return {};
@@ -87,7 +80,7 @@ export function activeListeningKeys(
  * @param latestBlockNumber the latest block number
  */
 export function outdatedListeningKeys(
-  callResults: AppState['pmulticall']['callResults'],
+  callResults: MulticallState['callResults'],
   listeningKeys: { [callKey: string]: number },
   chainId: number | undefined,
   latestBlockNumber: number | undefined,
@@ -115,8 +108,9 @@ export function outdatedListeningKeys(
 }
 
 export default function Updater(): null {
-  const dispatch = useDispatch();
-  const state = useSelector<AppState['pmulticall']>((state) => state.pmulticall);
+  const { multicallState, fetchingMulticallResults, updateMulticallResults, errorFetchingMulticallResults } =
+    useMulticallAtom();
+  const state = multicallState;
   // wait for listeners to settle before triggering updates
   const debouncedListeners = useDebounce(state.callListeners, 100);
   const latestBlockNumber = useBlockNumber();
@@ -152,13 +146,11 @@ export default function Updater(): null {
       cancellations.current?.cancellations?.forEach((c) => c());
     }
 
-    dispatch(
-      fetchingMulticallResults({
-        calls,
-        chainId,
-        fetchingBlockNumber: latestBlockNumber,
-      }),
-    );
+    fetchingMulticallResults({
+      calls,
+      chainId,
+      fetchingBlockNumber: latestBlockNumber,
+    });
 
     cancellations.current = {
       blockNumber: latestBlockNumber,
@@ -178,18 +170,16 @@ export default function Updater(): null {
               .reduce<number>((memo, curr) => memo + curr.length, 0);
             const lastCallKeyIndex = firstCallKeyIndex + returnData.length;
 
-            dispatch(
-              updateMulticallResults({
-                chainId,
-                results: outdatedCallKeys
-                  .slice(firstCallKeyIndex, lastCallKeyIndex)
-                  .reduce<{ [callKey: string]: string | null }>((memo, callKey, i) => {
-                    memo[callKey] = returnData[i] ?? null;
-                    return memo;
-                  }, {}),
-                blockNumber: fetchBlockNumber,
-              }),
-            );
+            updateMulticallResults({
+              chainId,
+              results: outdatedCallKeys
+                .slice(firstCallKeyIndex, lastCallKeyIndex)
+                .reduce<{ [callKey: string]: string | null }>((memo, callKey, i) => {
+                  memo[callKey] = returnData[i] ?? null;
+                  return memo;
+                }, {}),
+              blockNumber: fetchBlockNumber,
+            });
           })
           .catch((error: any) => {
             if (error instanceof CancelledError) {
@@ -197,18 +187,17 @@ export default function Updater(): null {
               return;
             }
             console.error('Failed to fetch multicall chunk', chunk, chainId, error);
-            dispatch(
-              errorFetchingMulticallResults({
-                calls: chunk,
-                chainId,
-                fetchingBlockNumber: latestBlockNumber,
-              }),
-            );
+
+            errorFetchingMulticallResults({
+              calls: chunk,
+              chainId,
+              fetchingBlockNumber: latestBlockNumber,
+            });
           });
         return cancel;
       }),
     };
-  }, [chainId, multicallContract, dispatch, serializedOutdatedCallKeys, latestBlockNumber]);
+  }, [chainId, multicallContract, serializedOutdatedCallKeys, latestBlockNumber]);
 
   return null;
 }

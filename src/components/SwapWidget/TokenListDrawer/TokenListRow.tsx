@@ -2,8 +2,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import { ChevronDown } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
-import { AppState, useDispatch, useSelector } from 'src/state';
-import { removeList, selectList } from 'src/state/plists/actions';
+import { useListsStateAtom } from 'src/state/plists/atom';
 import { useSelectedListUrl } from 'src/state/plists/hooks';
 import listVersionLabel from 'src/utils/listVersionLabel';
 import { Box, Switch, Text } from '../../';
@@ -15,10 +14,11 @@ interface Props {
 }
 
 const TokenListRow: React.FC<Props> = ({ listUrl }) => {
-  const lists = useSelector<AppState['plists']['byUrl']>((state) => state.plists.byUrl);
+  const { listsState, removeList, selectList } = useListsStateAtom();
+  const lists = listsState?.byUrl;
+
   const { current: list } = lists[listUrl];
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const selectedListUrl = useSelectedListUrl();
   const isSelected = (selectedListUrl || []).includes(listUrl);
 
@@ -33,16 +33,16 @@ const TokenListRow: React.FC<Props> = ({ listUrl }) => {
   useOnClickOutside(node, open ? handleClose : undefined);
 
   const selectThisList = useCallback(() => {
-    dispatch(selectList({ url: listUrl, shouldSelect: !isSelected }));
+    selectList({ url: listUrl, shouldSelect: !isSelected });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, isSelected, listUrl]);
+  }, [selectList, isSelected, listUrl]);
 
   const handleRemoveList = useCallback(() => {
     const answer = window.prompt(`${t('searchModal.confirmListRemovalPrompt')}`);
     if (answer?.toLocaleLowerCase() === 'remove') {
-      dispatch(removeList(listUrl));
+      removeList(listUrl);
     }
-  }, [dispatch, listUrl]);
+  }, [listUrl, removeList]);
 
   if (!list) return null;
 

@@ -1,10 +1,7 @@
 import { TransactionResponse } from '@ethersproject/providers';
 import { useCallback, useMemo } from 'react';
-import { AppState, useDispatch, useSelector } from 'src/state';
-
 import { useChainId, usePangolinWeb3 } from '../../hooks';
-import { addTransaction, clearAllTransactions } from './actions';
-import { TransactionDetails } from './reducer';
+import { TransactionDetails, useTransactionState } from './atom';
 
 type TransactionOnlyWithHash = Pick<TransactionResponse, 'hash'>;
 
@@ -18,7 +15,7 @@ export function useTransactionAdder(): (
   },
 ) => void {
   const { chainId, account } = usePangolinWeb3();
-  const dispatch = useDispatch();
+  const { addTransaction } = useTransactionState();
 
   return useCallback(
     (
@@ -36,25 +33,25 @@ export function useTransactionAdder(): (
       if (!hash) {
         throw Error('No transaction hash found.');
       }
-      dispatch(addTransaction({ hash, from: account, chainId, approval, summary, claim }));
+      addTransaction({ hash, from: account, chainId, approval, summary, claim });
     },
-    [dispatch, chainId, account],
+    [addTransaction, chainId, account],
   );
 }
 
 export function useAllTransactionsClearer() {
   const chainId = useChainId();
-  const dispatch = useDispatch();
+  const { clearAllTransactions } = useTransactionState();
   return useCallback(() => {
-    dispatch(clearAllTransactions({ chainId }));
-  }, [chainId, dispatch]);
+    clearAllTransactions({ chainId });
+  }, [chainId, clearAllTransactions]);
 }
 
 // returns all the transactions for the current chain
 export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
   const { chainId } = usePangolinWeb3();
-
-  const state = useSelector<AppState['ptransactions']>((state) => state.ptransactions);
+  const { transactions } = useTransactionState();
+  const state = transactions;
 
   return chainId ? state[chainId] ?? {} : {};
 }
