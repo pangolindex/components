@@ -1,7 +1,7 @@
 import { ChainId, Currency, JSBI, Price, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { USDCe } from 'src/constants/tokens';
-import { PairState, usePairs } from 'src/data/Reserves';
+import { PairState, usePairsContract } from 'src/data/Reserves';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useChainId } from '../index';
 
@@ -25,7 +25,7 @@ export function useUSDCPrice(currency?: Currency): Price | undefined {
     [chainId, currency, wrapped, USDC],
   );
   const [[avaxPairState, avaxPair], [usdcPairState, usdcPair], [usdcAvaxPairState, usdcAvaxPair]] =
-    usePairs(tokenPairs);
+    usePairsContract(tokenPairs);
 
   return useMemo(() => {
     if (!currency || !wrapped || !chainId) {
