@@ -119,7 +119,7 @@ export function usePangoChefContract(): Contract | null {
 export function useV3NFTPositionManagerContract(withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = usePangolinWeb3();
   return useContract(
-    chainId && CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager?.address,
+    chainId && CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager,
     NonFungiblePositionManager.abi,
     withSignerIfPossible,
   );

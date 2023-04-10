@@ -53,6 +53,7 @@ class PoolCache {
         tokenA,
         tokenB,
         fee,
+        initCodeHashManualOverride: undefined,
         chainId,
       }),
     };
