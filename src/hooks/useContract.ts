@@ -129,5 +129,5 @@ export function useV3NFTPositionManagerContract(withSignerIfPossible?: boolean):
 export function useTickLensContract(): Contract | null {
   const chainId = useChainId();
   const address = chainId ? CHAINS[chainId]?.contracts?.concentratedLiquidity?.tickLens : undefined;
-  return useContract(address, TickLensABI.abi) as Contract | null;
+  return useContract(address, TickLensABI.abi);
 }
