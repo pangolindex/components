@@ -1,13 +1,19 @@
+import { ConcentratedPool, Position } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
-import { usePangolinWeb3 } from 'src/hooks';
 import { useTokens } from 'src/hooks/tokens/evm';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { usePool } from 'src/hooks/concentratedLiquidity/common';
 import { useV3NFTPositionManagerContract } from 'src/hooks/useContract';
+import { useCurrency } from 'src/hooks/useCurrency';
 import { useSingleCallResult, useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
-import { UseV3PositionsResults } from '../types';
+import { PositionDetails, UseConcentratedPositionResults, UseConcentratedPositionsResults } from '../types';
+import { useConcentratedPositionsFromTokenIdsHook } from './index';
 
 // It returns the positions based on the tokenIds.
-function useV3PositionsFromTokenIds(tokenIds: BigNumber[] | undefined): UseV3PositionsResults {
+export function useConcentratedPositionsFromTokenIds(
+  tokenIds: BigNumber[] | undefined,
+): UseConcentratedPositionsResults {
   const positionManager = useV3NFTPositionManagerContract();
   const inputs = useMemo(() => (tokenIds ? tokenIds.map((tokenId) => [BigNumber.from(tokenId)]) : []), [tokenIds]);
   const results = useSingleContractMultipleData(positionManager, 'positions', inputs);
@@ -43,6 +49,18 @@ function useV3PositionsFromTokenIds(tokenIds: BigNumber[] | undefined): UseV3Pos
   return {
     loading,
     positions: positions?.map((position, i) => ({ ...position, tokenId: inputs[i][0] })),
+  };
+}
+
+export function useConcentratedPositionFromTokenId(tokenId: BigNumber | undefined): UseConcentratedPositionResults {
+  const chainId = useChainId();
+
+  const useConcentratedPositionsFromTokenIds = useConcentratedPositionsFromTokenIdsHook[chainId];
+
+  const position = useConcentratedPositionsFromTokenIds(tokenId ? [tokenId] : undefined);
+  return {
+    loading: position.loading,
+    position: position.positions?.[0],
   };
 }
 
@@ -83,7 +101,7 @@ export function useGetUserPositions() {
     return [];
   }, [account, tokenIdResults]);
 
-  const { positions, loading: positionsLoading } = useV3PositionsFromTokenIds(tokenIds);
+  const { positions, loading: positionsLoading } = useConcentratedPositionsFromTokenIds(tokenIds);
 
   const uniqueTokens = useMemo(() => {
     if (positions) {
@@ -117,5 +135,31 @@ export function useGetUserPositions() {
   return {
     loading: someTokenIdsLoading || balanceLoading || positionsLoading,
     positions: positionsWithTokens,
+  };
+}
+
+export function useDerivedPositionInfo(positionDetails: PositionDetails | undefined): {
+  position: Position | undefined;
+  pool: ConcentratedPool | undefined;
+} {
+  const currency0 = useCurrency(positionDetails?.token0?.address);
+  const currency1 = useCurrency(positionDetails?.token1?.address);
+
+  // construct pool data
+  const [, pool] = usePool(currency0 ?? undefined, currency1 ?? undefined, positionDetails?.fee);
+
+  let position: any = undefined;
+  if (pool && positionDetails) {
+    position = new Position({
+      pool,
+      liquidity: positionDetails?.liquidity.toString(),
+      tickLower: positionDetails?.tickLower || 0, // TODO
+      tickUpper: positionDetails?.tickUpper || 0, // TODO
+    });
+  }
+
+  return {
+    position,
+    pool: pool ?? undefined,
   };
 }

@@ -33,3 +33,13 @@ export type PositionDetailsFromChain = PositionDetails & {
   token1: string;
   fee: number;
 };
+
+export interface UseConcentratedPositionResults {
+  loading: boolean;
+  position: PositionDetails | undefined;
+}
+
+export interface UseConcentratedPositionsResults {
+  loading: boolean;
+  positions: PositionDetails[] | undefined;
+}

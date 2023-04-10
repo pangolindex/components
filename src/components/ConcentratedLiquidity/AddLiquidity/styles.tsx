@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box, CurrencyInput } from 'src/components';
+import { Box, CurrencyInput, TextInput } from 'src/components';
 
 export const Wrapper = styled(Box)<{ maximumHeight: number }>`
   background-color: ${({ theme }) => theme.color8};
@@ -43,4 +43,33 @@ export const CurrencyInputs = styled(Box)`
   row-gap: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
+`;
+
+export const InputText = styled(TextInput)`
+  background-color: ${({ theme }) => theme.bg6};
+  align-items: center;
+  border-radius: 4px;
+`;
+
+export const InputWrapper = styled(Box)`
+  display: grid;
+  grid-auto-flow: 'row';
+  grid-auto-columns: minmax(0, 1fr);
+  margin-top: '10px';
+  grid-gap: 5px;
+  align-items: 'normal';
+`;
+
+export const InputValue = styled(Box)`
+  background-color: ${({ theme }) => theme.bg6};
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 4px;
+  justify-content: 'flex-start';
+`;
+
+export const DynamicSection = styled(Box)<{ disabled?: boolean }>`
+  opacity: ${({ disabled }) => (disabled ? '0.2' : '1')};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'initial')};
 `;
