@@ -2,16 +2,6 @@ import { FeeAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { TokenReturnType } from 'src/hooks/tokens/constant';
 
-export interface UseV3PositionResults {
-  loading: boolean;
-  position: PositionDetails | undefined;
-}
-
-export interface UseV3PositionsResults {
-  loading: boolean;
-  positions: PositionDetailsFromChain[] | undefined;
-}
-
 export interface PositionDetails {
   nonce?: BigNumber;
   tokenId: BigNumber;
@@ -36,10 +26,10 @@ export type PositionDetailsFromChain = PositionDetails & {
 
 export interface UseConcentratedPositionResults {
   loading: boolean;
-  position: PositionDetails | undefined;
+  position: PositionDetailsFromChain | undefined;
 }
 
 export interface UseConcentratedPositionsResults {
   loading: boolean;
-  positions: PositionDetails[] | undefined;
+  positions: PositionDetailsFromChain[] | undefined;
 }
