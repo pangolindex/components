@@ -75,7 +75,7 @@ export const Data = styled.div`
   padding-right: 30px;
 `;
 
-export const Price = styled.div`
+export const PriceWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;

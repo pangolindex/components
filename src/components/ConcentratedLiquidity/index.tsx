@@ -1,5 +1,4 @@
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
-import { BigNumber } from 'ethers';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Inbox } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +25,7 @@ const ConcentratedLiquidity = () => {
   const chainId = useChainId();
   const useGetUserPositions = useGetUserPositionsHook[chainId];
   const toggleWalletModal = useWalletModalToggle();
-  const { loading: positionsLoading } = useGetUserPositions(); // TODO: positions
+  const { positions, loading: positionsLoading } = useGetUserPositions();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
@@ -40,7 +39,6 @@ const ConcentratedLiquidity = () => {
 
   // ------------------ MOCK DATA ------------------
   const currency0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
-  const currency2 = new Token(ChainId.AVALANCHE, '0x0000000000000000000000000000000000000000', 18, 'AVAX', 'AVAX');
   const currency1 = new Token(
     ChainId.AVALANCHE,
     CHAINS[ChainId.AVALANCHE].contracts!.png,
@@ -48,38 +46,7 @@ const ConcentratedLiquidity = () => {
     CHAINS[ChainId.AVALANCHE].png_symbol!,
     'Pangolin',
   );
-  const positions: PositionDetails[] = [
-    {
-      tokenId: BigNumber.from('53808'),
-      token0: currency1,
-      token1: currency2,
-      fee: 500,
-      liquidity: BigNumber.from('0'),
-    },
-    {
-      tokenId: BigNumber.from('73807'),
-      token0: currency0,
-      token1: currency2,
-      fee: 200,
-      liquidity: BigNumber.from('10000000000000000000'),
-    },
-    {
-      tokenId: BigNumber.from('33807'),
-      token0: currency0,
-      token1: currency1,
-      fee: 100,
-      liquidity: BigNumber.from('10000000000000000000'),
-    },
-    {
-      tokenId: BigNumber.from('53858'),
-      token0: currency1,
-      token1: currency0,
-      fee: 700,
-      liquidity: BigNumber.from('0'),
-    },
-  ];
   // -----------------------------------------------
-
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());
   }, []);
@@ -121,7 +88,7 @@ const ConcentratedLiquidity = () => {
    * It sorts and filters the active menu positions based on the search query and the sorting type
    */
   const finalPositions = useMemo(() => {
-    let positions = filteredPositions;
+    let positions: PositionDetails[] = filteredPositions;
     if (searchQuery) {
       positions = filteredPositions.filter((position) => {
         return (
@@ -185,7 +152,7 @@ const ConcentratedLiquidity = () => {
                 onChangeSortBy={setSortBy}
                 sortBy={sortBy}
                 searchQuery={searchQuery}
-                isLoading={false} // TODO:
+                isLoading={false}
                 doesNotPoolExist={finalPositions?.length === 0}
               >
                 <Cards>
@@ -194,6 +161,11 @@ const ConcentratedLiquidity = () => {
                       key={position.tokenId.toString()}
                       currency0={position.token0}
                       currency1={position.token1}
+                      feeAmount={position.fee}
+                      tokenId={position.tokenId}
+                      liquidity={position.liquidity}
+                      tickLower={position.tickLower}
+                      tickUpper={position.tickUpper}
                       onClick={onChangeDetailModalStatus}
                     />
                   ))}
