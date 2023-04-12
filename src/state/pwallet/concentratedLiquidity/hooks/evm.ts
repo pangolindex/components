@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePool } from 'src/hooks/concentratedLiquidity/common';
-import { useTokens } from 'src/hooks/tokens/evm';
+import { useTokensHook } from 'src/hooks/tokens';
 import { useV3NFTPositionManagerContract } from 'src/hooks/useContract';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { useSingleCallResult, useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
@@ -68,6 +68,9 @@ export function useConcentratedPositionFromTokenId(tokenId: BigNumber | undefine
 export function useGetUserPositions() {
   const { account } = usePangolinWeb3();
   const positionManager = useV3NFTPositionManagerContract();
+
+  const chainId = useChainId();
+  const useTokens = useTokensHook[chainId];
 
   const { loading: balanceLoading, result: balanceResult } = useSingleCallResult(positionManager, 'balanceOf', [
     account ?? undefined,
