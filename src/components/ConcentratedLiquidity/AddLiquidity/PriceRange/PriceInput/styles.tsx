@@ -4,7 +4,7 @@ import { Box, TextInput } from 'src/components';
 export const Wrapper = styled(Box)`
   text-align: center;
   display: flex;
-  background-color: ${({ theme }) => theme?.concentratedLiquidity?.primaryBgColor};
+  background-color: ${({ theme }) => theme?.color3};
   flex-direction: column;
   align-items: center;
   width: 100%;

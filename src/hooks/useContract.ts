@@ -12,6 +12,7 @@ import PANGOCHEF_ABI from 'src/constants/abis/pangochef.json';
 import PANGOCHEF_V1_ABI from 'src/constants/abis/pangochefV1.json';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import SarStaking from 'src/constants/abis/sar.json';
+import TickLensABI from 'src/constants/abis/tickLens.json';
 import WETH_ABI from 'src/constants/abis/weth.json';
 import { MINICHEF_ADDRESS, PANGOCHEF_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
 import NonFungiblePositionManager from 'src/constants/concentratedLiquidity/abis/nonfungiblePositionManager.json';
@@ -117,10 +118,16 @@ export function usePangoChefContract(): Contract | null {
 }
 
 export function useV3NFTPositionManagerContract(withSignerIfPossible?: boolean): Contract | null {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   return useContract(
     chainId && CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager,
     NonFungiblePositionManager.abi,
     withSignerIfPossible,
   );
+}
+
+export function useTickLensContract(): Contract | null {
+  const chainId = useChainId();
+  const address = chainId ? CHAINS[chainId]?.contracts?.concentratedLiquidity?.tickLens : undefined;
+  return useContract(address, TickLensABI.abi);
 }

@@ -65,7 +65,7 @@ export const FocusedOutlineCard = styled(Box)<{ pulsing: boolean }>`
   border-radius: 16px;
   animation: ${({ pulsing, theme }) => pulsing && pulse(theme.bg2)} 0.6s linear;
   align-self: center;
-  background-color: ${({ theme }) => theme.color5};
+  background-color: ${({ theme }) => theme.color3};
 `;
 
 export const SelectFeeTierWrapper = styled.div`

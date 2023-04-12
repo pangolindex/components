@@ -1,5 +1,5 @@
 import React from 'react';
-import { PoolState } from 'src/hooks/concentratedLiquidity/types';
+import { PoolState } from 'src/hooks/concentratedLiquidity/hooks/types';
 import { BlackBox, BlackBoxContent } from './styles';
 import { FeeTierPercentageBadgeProps } from './types';
 

@@ -1,5 +1,5 @@
 import { Currency, FeeAmount } from '@pangolindex/sdk';
-import { PoolState } from 'src/hooks/concentratedLiquidity/types';
+import { PoolState } from 'src/hooks/concentratedLiquidity/hooks/types';
 
 export type FeeSelectorProps = {
   disabled?: boolean;

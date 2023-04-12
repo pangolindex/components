@@ -20,8 +20,8 @@ import {
 import { ReactNode, useCallback, useMemo } from 'react';
 import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { usePool } from 'src/hooks/concentratedLiquidity/common';
-import { PoolState } from 'src/hooks/concentratedLiquidity/types';
+import { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
+import { PoolState } from 'src/hooks/concentratedLiquidity/hooks/types';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { tryParseAmount } from 'src/state/pswap/hooks/common';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';

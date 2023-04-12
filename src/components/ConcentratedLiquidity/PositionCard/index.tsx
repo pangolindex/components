@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, DoubleCurrencyLogo, Text } from 'src/components';
 import { Bound } from 'src/components/LiquidityChartRangeInput/types';
-import useIsTickAtLimit, { usePool } from 'src/hooks/concentratedLiquidity/common';
+import useIsTickAtLimit, { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
 import { formatTickPrice } from 'src/utils';
 import {
   BlackBox,

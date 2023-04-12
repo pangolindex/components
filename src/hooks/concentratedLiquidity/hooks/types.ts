@@ -1,4 +1,4 @@
-import { FeeAmount } from '@pangolindex/sdk';
+import { FeeAmount, JSBI } from '@pangolindex/sdk';
 
 export enum PoolState {
   LOADING,
@@ -14,4 +14,12 @@ export interface FeeTierDistribution {
 
   // distributions as percentages of overall liquidity
   distributions?: Record<FeeAmount, number | undefined>;
+}
+
+// Tick with fields parsed to JSBIs, and active liquidity computed.
+export interface TickProcessed {
+  tick: number;
+  liquidityActive: JSBI;
+  liquidityNet: JSBI;
+  price0: string;
 }
