@@ -3,6 +3,7 @@ import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
+import { useTokensHook } from 'src/hooks/tokens';
 import { useV3NFTPositionManagerContract } from 'src/hooks/useContract';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { useSingleCallResult, useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
@@ -68,6 +69,9 @@ export function useGetUserPositions() {
   const { account } = usePangolinWeb3();
   const positionManager = useV3NFTPositionManagerContract();
 
+  const chainId = useChainId();
+  const useTokens = useTokensHook[chainId];
+
   const { loading: balanceLoading, result: balanceResult } = useSingleCallResult(positionManager, 'balanceOf', [
     account ?? undefined,
   ]);
@@ -76,7 +80,7 @@ export function useGetUserPositions() {
 
   const tokenIdsArgs = useMemo(() => {
     if (accountBalance && account) {
-      const tokenRequests = [] as any; // as any TODO:
+      const tokenRequests = [] as any;
       for (let i = 0; i < accountBalance; i++) {
         tokenRequests.push([account, i]);
       }
@@ -94,7 +98,7 @@ export function useGetUserPositions() {
     if (account) {
       return tokenIdResults
         .map(({ result }) => result)
-        .filter((result): result is any => !!result) // any => CallStateResult
+        .filter((result): result is any => !!result)
         .map((result) => BigNumber.from(result[0]));
     }
     return [];
@@ -102,9 +106,38 @@ export function useGetUserPositions() {
 
   const { positions, loading: positionsLoading } = useConcentratedPositionsFromTokenIds(tokenIds);
 
+  const uniqueTokens = useMemo(() => {
+    if (positions) {
+      const tokens = positions.map((position) => {
+        return [position.token0, position.token1];
+      });
+
+      const uniqueTokens = [...new Set(tokens.flat())];
+      return uniqueTokens;
+    }
+    return [];
+  }, [positions]);
+
+  const uniqueTokensWithData = useTokens(uniqueTokens);
+
+  const positionsWithTokens = useMemo(() => {
+    if (positions) {
+      const positionsWithTokenDetails = positions.map((position) => {
+        const token0 = uniqueTokensWithData?.find((token) => token?.address === position.token0);
+        const token1 = uniqueTokensWithData?.find((token) => token?.address === position.token1);
+        return {
+          ...position,
+          token0,
+          token1,
+        };
+      });
+      return positionsWithTokenDetails;
+    }
+  }, [positions, uniqueTokensWithData]);
+
   return {
     loading: someTokenIdsLoading || balanceLoading || positionsLoading,
-    positions,
+    positions: positionsWithTokens,
   };
 }
 

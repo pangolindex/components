@@ -19,14 +19,18 @@ import {
   Fraction,
   JSBI,
   NetworkType,
+  NumberType,
   Percent,
+  Price,
   Token,
   TokenAmount,
   Trade,
   currencyEquals,
+  formatPrice,
 } from '@pangolindex/sdk';
 import { MetamaskError, ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
+import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
 import { hederaFn } from 'src/utils/hedera';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { wait } from './retry';
@@ -589,4 +593,28 @@ export function decimalToFraction(number: number): Fraction {
 
 export function capitalizeWord(word = '') {
   return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+}
+
+export function formatTickPrice({
+  price,
+  atLimit,
+  direction,
+  placeholder,
+  numberType,
+}: {
+  price: Price | undefined;
+  atLimit: { [bound in Bound]?: boolean | undefined };
+  direction: Bound;
+  placeholder?: string;
+  numberType?: NumberType;
+}) {
+  if (atLimit[direction]) {
+    return direction === Bound.LOWER ? '0' : '∞';
+  }
+
+  if (!price && placeholder !== undefined) {
+    return placeholder;
+  }
+
+  return formatPrice(price, numberType ?? NumberType.TokenNonTx);
 }

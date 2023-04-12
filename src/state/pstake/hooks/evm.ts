@@ -12,9 +12,9 @@ import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { MINICHEF_ADDRESS } from 'src/constants/address';
 import { DAIe, PNG, USDC, USDCe, USDTe } from 'src/constants/tokens';
-import { PairState, usePair, usePairs } from 'src/data/Reserves';
+import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTokens } from 'src/hooks/tokens/evm';
+import { useTokensContract } from 'src/hooks/tokens/evm';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import { useMiniChefContract } from '../../../hooks/useContract';
 import {
@@ -91,8 +91,8 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
     return _tokens1Call.map((result) => (result.result && result.result.length > 0 ? result.result[0] : null));
   }, [_tokens1Call]);
 
-  const tokens0 = useTokens(tokens0Adrr);
-  const tokens1 = useTokens(tokens1Adrr);
+  const tokens0 = useTokensContract(tokens0Adrr);
+  const tokens1 = useTokensContract(tokens1Adrr);
 
   const info = useMemo(() => {
     const filterPair = (item: DoubleSideStaking) => {
@@ -123,7 +123,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
   }, [chainId, minichefContract, tokens0, tokens1, pairToFilterBy, version]);
 
   const _tokens = useMemo(() => (info ? info.map(({ tokens }) => tokens) : []), [info]);
-  const pairs = usePairs(_tokens);
+  const pairs = usePairsContract(_tokens);
   // @dev: If no farms load, you likely loaded an incorrect config from doubleSideConfig.js
   // Enable this and look for an invalid pair
 
@@ -371,7 +371,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
           isPeriodFinished,
           getHypotheticalWeeklyRewardRate,
           getExtraTokensWeeklyRewardRate,
-          rewardTokensAddress: [PNG[chainId]?.address, ...(rewardTokensAddress?.result?.[0] || [])],
+          rewardTokensAddress: [...(rewardTokensAddress?.result?.[0] || [])],
           rewardTokensMultiplier: [BigNumber.from(1), ...(rewardTokensMultiplier?.result?.[0] || [])],
           rewardsAddress,
           swapFeeApr: farmApr.swapFeeApr,
@@ -427,6 +427,8 @@ export function useMiniChefSubgraphData() {
 
 // get data for all farms
 export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] => {
+  const { account } = usePangolinWeb3();
+  const minichefContract = useMiniChefContract();
   const results = useMiniChefSubgraphData();
 
   const minichefData = results?.data?.[0];
@@ -449,10 +451,23 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
 
   const wavax = WAVAX[chainId];
 
+  const userInfoInput = useMemo(() => {
+    if (pids.length === 0 || !account) return [];
+    return pids.map((pid) => [pid, account]);
+  }, [pids, account]); // [[pid, account], ...] [[0, account], [1, account], [2, account] ...]
+
+  // get the user pending rewards for each pool
+  const userPendingRewardsState = useSingleContractMultipleData(
+    minichefContract,
+    'pendingReward',
+    userInfoInput ? userInfoInput : [],
+  );
+
   return useMemo(() => {
     if (!chainId || !png || !farms?.length) return [];
 
-    return farms.reduce(function (memo, farm: MinichefFarm) {
+    return farms.reduce(function (memo, farm: MinichefFarm, index) {
+      const userPendingRewardState = userPendingRewardsState[index];
       const rewardsAddress = farm?.rewarderAddress;
 
       const rewardsAddresses = farm.rewarder.rewards;
@@ -519,7 +534,10 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
         lpToken,
         parseUnits(farm?.farmingPositions?.[0]?.stakedTokenBalance?.toString() ?? '0').toString(),
       );
-      const earnedAmount = new TokenAmount(png, JSBI.BigInt(farm?.earnedAmount ?? 0));
+      const earnedAmount = new TokenAmount(
+        png,
+        JSBI.BigInt(userPendingRewardState?.result?.['pending']?.toString() ?? 0),
+      );
 
       const multiplier = JSBI.BigInt(farm?.allocPoint);
 
@@ -624,7 +642,7 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
 
       return memo;
     }, [] as MinichefStakingInfo[]);
-  }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms, farmsAprs]);
+  }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms, farmsAprs, userPendingRewardsState]);
 };
 
 /* eslint-enable max-lines */

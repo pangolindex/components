@@ -1,6 +1,6 @@
 {
   "name": "@pangolindex/components",
-  "version": "7.0.0-rc.1",
+  "version": "7.0.0-rc.3",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "engines": {
@@ -125,7 +125,7 @@
     "@babel/preset-typescript": "^7.18.6",
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
-    "@pangolindex/sdk": "5.0.2-internal.a872fc7",
+    "@pangolindex/sdk": "5.0.2-internal.21b729b",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.5",

@@ -779,6 +779,11 @@
     "positionList": {
       "searchContent": "Token adını aramayı deneyin…"
     },
+    "positionCard": {
+      "outOfRange": "Out Of Range",
+      "inRange": "In Range",
+      "seeDetails": "See Details"
+    },
     "addLiquidity": {
       "selectFeeTier": "Select Fee Tier"
     },
