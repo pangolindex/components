@@ -11,10 +11,10 @@ import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG, USDC } from 'src/constants/tokens';
-import { PairState, usePair, usePairs } from 'src/data/Reserves';
+import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
-import { useTokens } from 'src/hooks/tokens/evm';
+import { useTokensContract } from 'src/hooks/tokens/evm';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
@@ -23,6 +23,7 @@ import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks/hedera';
 import { decimalToFraction } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
+import { useShouldUseSubgraph } from '../../papplication/hooks';
 import {
   useMultipleContractSingleData,
   useSingleCallResult,
@@ -149,8 +150,8 @@ export function useHederaPangoChefInfos() {
     return tokens1State.map((result) => (result?.result && result?.result?.length > 0 ? result?.result[0] : null));
   }, [tokens1State]);
 
-  const tokens0 = useTokens(tokens0Adrr);
-  const tokens1 = useTokens(tokens1Adrr);
+  const tokens0 = useTokensContract(tokens0Adrr);
+  const tokens1 = useTokensContract(tokens1Adrr);
 
   const tokensPairs = useMemo(() => {
     if (tokens0 && tokens1 && tokens0?.length === tokens1?.length) {
@@ -167,7 +168,7 @@ export function useHederaPangoChefInfos() {
   }, [tokens0, tokens1]);
 
   // get the pairs for each pool
-  const pairs = usePairs(tokensPairs);
+  const pairs = usePairsContract(tokensPairs);
 
   const pairAddresses = useMemo(() => {
     return pairs.map(([, pair]) => pair?.liquidityToken?.address);
@@ -485,17 +486,22 @@ export function useGetPangoChefInfosViaSubgraph() {
   const isUserStaked = useMemo(
     () =>
       allFarms.some(
-        (farm) => farm.farmingPositions.length > 0 && Number(farm.farmingPositions[0].stakedTokenBalance) > 0,
+        (farm) =>
+          farm.farmingPositions.length > 0 &&
+          farm.farmingPositions.some((farmPosition) => Number(farmPosition.stakedTokenBalance) > 0),
       ),
     [allFarms],
   );
 
   const useInfoCallOptions = useMemo(() => ({ blocksPerFetch: 20 }), []);
+  // TODO: implement flag sistem to us can enable disable this more easy
+  // we are using this for force to use the on chain data when the subgraph are broken
+  const FETCH_ON_CHAIN_PANGOCHEF_USER_INFO = true;
 
   const userInfosState = useSingleContractMultipleData(
     pangoChefContract,
     'getUser',
-    !shouldCreateStorage && isUserStaked ? userInfoInput : [],
+    (!shouldCreateStorage && isUserStaked) || FETCH_ON_CHAIN_PANGOCHEF_USER_INFO ? userInfoInput : [],
     useInfoCallOptions,
   );
 
@@ -813,6 +819,18 @@ export function useGetPangoChefInfosViaSubgraph() {
     allPoolsIds,
     blockTime,
   ]);
+}
+
+/**
+ * its wrapper hook to check which hook need to use based on subgraph on off
+ * @returns
+ */
+
+export function useHederaPangochef() {
+  const shouldUseSubgraph = useShouldUseSubgraph();
+  const useHook = shouldUseSubgraph ? useGetPangoChefInfosViaSubgraph : useHederaPangoChefInfos;
+  const res = useHook();
+  return res;
 }
 
 /**

@@ -28,7 +28,7 @@ const PoolV2: React.FC<Props> = ({ type, setMenu, activeMenu, menuItems, miniChe
       case PoolType.superFarms:
         // return all farms with reward tokens address greater than 1 and with weight (multipler) greater than 0
         return (miniChefStakingInfo || []).filter(
-          (item) => (item?.rewardTokensAddress?.length || 0) > 1 && JSBI.greaterThan(item.multiplier, BIG_INT_ZERO),
+          (item) => (item?.rewardTokensAddress?.length || 0) > 0 && JSBI.greaterThan(item.multiplier, BIG_INT_ZERO),
         );
       default:
         return miniChefStakingInfo;
