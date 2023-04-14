@@ -1,9 +1,9 @@
-import { Currency } from '@pangolindex/sdk';
+import { Token } from '@pangolindex/sdk';
 import { StatItemProps } from '../types';
 
 export type HeaderProps = {
-  currency0: Currency;
-  currency1: Currency;
+  token0?: Token;
+  token1?: Token;
   statItems: StatItemProps[];
   onClose: () => void;
 };

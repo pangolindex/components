@@ -1,23 +1,29 @@
+/* eslint-disable max-lines */
 import {
   BigintIsh,
   CHAINS,
   ChainId,
   ConcentratedPool,
   Currency,
+  CurrencyAmount,
   FeeAmount,
   JSBI,
   Token,
+  TokenAmount,
   computePoolAddress,
 } from '@pangolindex/sdk';
-import { useMemo } from 'react';
+import { BigNumber } from 'ethers';
+import { useEffect, useMemo, useState } from 'react';
 import { useFeeTierDistributionQuery } from 'src/apollo/feeTierDistribution';
 import { CONCENTRATE_POOL_STATE_INTERFACE } from 'src/constants/abis/concentratedPool';
 import { useChainId } from 'src/hooks';
 import { useBlockNumber } from 'src/state/papplication/hooks';
-import { useMultipleContractSingleData } from 'src/state/pmulticall/hooks';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { FeeTierDistribution, PoolState } from './types';
-import { usePoolsHook } from './index';
+import { useMultipleContractSingleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
+import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { TokenReturnType } from '../tokens/constant';
+import { useConcLiqNFTPositionManagerContract, useTokenContract } from '../useContract';
+import { usePool } from './common';
+import { FeeTierDistribution, PoolState, TokenId, UsePositionTokenURIResult } from './types';
 
 // Classes are expensive to instantiate, so this caches the recently instantiated pools.
 // This avoids re-instantiating pools as the other pools in the same request are loaded.
@@ -149,22 +155,6 @@ export function usePools(
       }
     });
   }, [liquidities, poolKeys, slot0s, poolTokens]);
-}
-
-export function usePool(
-  currencyA: Currency | undefined,
-  currencyB: Currency | undefined,
-  feeAmount: FeeAmount | undefined,
-): [PoolState, ConcentratedPool | null] {
-  const chainId = useChainId();
-  const usePools = usePoolsHook[chainId];
-
-  const poolKeys: [Currency | undefined, Currency | undefined, FeeAmount | undefined][] = useMemo(
-    () => [[currencyA, currencyB, feeAmount]],
-    [currencyA, currencyB, feeAmount],
-  );
-
-  return usePools(poolKeys)[0];
 }
 
 // maximum number of blocks past which we consider the data stale
@@ -309,4 +299,126 @@ export function usePoolTVL(token0: Token | undefined, token1: Token | undefined)
       distributions,
     };
   }, [_meta, asToken0, asToken1, isLoading, error, latestBlock]);
+}
+
+export function useUnderlyingTokens(
+  token0?: TokenReturnType,
+  token1?: TokenReturnType,
+  fee?: FeeAmount,
+): [TokenAmount | undefined, TokenAmount | undefined] {
+  if (!token0 || !token1 || !fee) return [undefined, undefined];
+  const chainId = useChainId();
+  const poolAddress = ConcentratedPool.getAddress(token0, token1, fee, undefined, undefined, chainId);
+  if (!poolAddress) return [undefined, undefined];
+
+  const token0Contract = useTokenContract(token0?.address, false);
+  const token1Contract = useTokenContract(token1?.address, false);
+  const { result: token0result } = useSingleCallResult(token0Contract, 'balanceOf', [poolAddress]);
+  const { result: token1result } = useSingleCallResult(token1Contract, 'balanceOf', [poolAddress]);
+
+  const underlyingToken0 = token0result ? new TokenAmount(token0, token0result[0]) : undefined;
+  const underlyingToken1 = token1result ? new TokenAmount(token1, token1result[0]) : undefined;
+  return [underlyingToken0, underlyingToken1];
+}
+
+const MAX_UINT128 = BigNumber.from(2).pow(128).sub(1);
+
+// compute current + counterfactual fees for a conc liq position
+export function useConcLiqPositionFees(
+  pool?: ConcentratedPool,
+  tokenId?: BigNumber,
+): [CurrencyAmount, CurrencyAmount] | [undefined, undefined] {
+  const chainId = useChainId();
+  const positionManager = useConcLiqNFTPositionManagerContract(false);
+  const tokenIdHexString = tokenId?.toHexString();
+  const owner: string | undefined = useSingleCallResult(tokenId ? positionManager : null, 'ownerOf', [tokenIdHexString])
+    .result?.[0];
+  const latestBlockNumber = useBlockNumber();
+  // we can't use multicall for this because we need to simulate the call from a specific address
+  // latestBlockNumber is included to ensure data stays up-to-date every block
+  const [amounts, setAmounts] = useState<[BigNumber, BigNumber] | undefined>();
+  useEffect(() => {
+    if (positionManager && tokenIdHexString && owner) {
+      positionManager.callStatic
+        .collect(
+          {
+            tokenId: tokenIdHexString,
+            recipient: owner, // some tokens might fail if transferred to address(0)
+            amount0Max: MAX_UINT128,
+            amount1Max: MAX_UINT128,
+          },
+          { from: owner }, // need to simulate the call as the owner
+        )
+        .then((results) => {
+          setAmounts([results.amount0, results.amount1]);
+        });
+    }
+  }, [positionManager, tokenIdHexString, owner, latestBlockNumber]);
+
+  if (pool && amounts) {
+    return [
+      CurrencyAmount.fromRawAmount(unwrappedToken(pool.token0, chainId), amounts[0].toString()),
+      CurrencyAmount.fromRawAmount(unwrappedToken(pool.token1, chainId), amounts[1].toString()),
+    ];
+  } else {
+    return [undefined, undefined];
+  }
+}
+
+const STARTS_WITH = 'data:application/json;base64,';
+
+export function usePositionTokenURI(tokenId: TokenId | undefined): UsePositionTokenURIResult {
+  const positionManager = useConcLiqNFTPositionManagerContract(false);
+  const inputs = useMemo(
+    () => [tokenId instanceof BigNumber ? tokenId.toHexString() : tokenId?.toString(16)],
+    [tokenId],
+  );
+  const { result, error, loading, valid } = useSingleCallResult(
+    tokenId ? positionManager : null,
+    'tokenURI',
+    inputs,
+    // { TODO:
+    //   ...NEVER_RELOAD,
+    //   gasRequired: 3_000_000,
+    // }
+  );
+  const res = useMemo(() => {
+    if (error || !valid || !tokenId) {
+      return {
+        valid: false,
+        loading: false,
+      };
+    }
+    if (loading) {
+      return {
+        valid: true,
+        loading: true,
+      };
+    }
+    if (!result) {
+      return {
+        valid: false,
+        loading: false,
+      };
+    }
+    const [tokenURI] = result as [string];
+    if (!tokenURI || !tokenURI.startsWith(STARTS_WITH))
+      return {
+        valid: false,
+        loading: false,
+      };
+
+    try {
+      const json = JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
+      return {
+        valid: true,
+        loading: false,
+        result: json,
+      };
+    } catch (error) {
+      return { valid: false, loading: false };
+    }
+  }, [error, loading, result, tokenId, valid]);
+
+  return res;
 }

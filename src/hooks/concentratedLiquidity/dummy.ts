@@ -1,5 +1,5 @@
 import { ConcentratedPool } from '@pangolindex/sdk';
-import { PoolState } from './types';
+import { PoolState, UsePositionTokenURIResult } from './types';
 
 export function useDummyPools() {
   return [[PoolState.NOT_EXISTS, null]] as [PoolState, ConcentratedPool | null][];
@@ -18,5 +18,22 @@ export function useDummyFeeTierDistribution() {
     isError: false,
     largestUsageFeeTier: undefined,
     distributions: undefined,
+  };
+}
+
+export function useDummyUnderlyingTokens() {
+  return [undefined, undefined];
+}
+
+export function useDummyConcLiqPositionFees() {
+  return [undefined, undefined];
+}
+
+export function useDummyPositionTokenURI(): UsePositionTokenURIResult {
+  return {
+    valid: false,
+    loading: false,
+    result: undefined,
+    error: undefined,
   };
 }

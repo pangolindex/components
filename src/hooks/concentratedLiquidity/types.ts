@@ -1,4 +1,5 @@
-import { FeeAmount } from '@pangolindex/sdk';
+import { FeeAmount, JSBI } from '@pangolindex/sdk';
+import { BigNumber } from 'ethers';
 
 export enum PoolState {
   LOADING,
@@ -15,3 +16,16 @@ export interface FeeTierDistribution {
   // distributions as percentages of overall liquidity
   distributions?: Record<FeeAmount, number | undefined>;
 }
+
+export type TokenId = number | JSBI | BigNumber;
+
+export type UsePositionTokenURIResult = {
+  valid: boolean;
+  loading: boolean;
+  result?: {
+    name: string;
+    description: string;
+    image: string;
+  };
+  error?: Error;
+};

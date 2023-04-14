@@ -7,7 +7,7 @@ import { HeaderRoot, HeaderWrapper, StatsWrapper } from './styles';
 import { HeaderProps } from './types';
 
 const Header: React.FC<HeaderProps> = (props) => {
-  const { currency0, currency1, statItems, onClose } = props;
+  const { token0, token1, statItems, onClose } = props;
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);
 
@@ -15,9 +15,9 @@ const Header: React.FC<HeaderProps> = (props) => {
     <HeaderRoot>
       <HeaderWrapper>
         <Box display="flex" alignItems="center">
-          <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={48} />
+          <DoubleCurrencyLogo currency0={token0} currency1={token1} size={48} />
           <Text color="text1" fontSize={[28, 24]} fontWeight={700} marginLeft={10}>
-            {currency0?.symbol}-{currency1?.symbol}
+            {token0?.symbol}-{token1?.symbol}
           </Text>
         </Box>
         <Visible upToSmall={true}>
@@ -32,7 +32,9 @@ const Header: React.FC<HeaderProps> = (props) => {
           </Text>
 
           <Box display="flex" alignItems="center" mt="8px">
-            <RewardTokens rewardTokens={[]} size={24} />
+            {token0 && token1 && (
+              <RewardTokens showNativeRewardToken={false} rewardTokens={[token0, token1]} size={24} />
+            )}
           </Box>
         </Box>
         {statItems?.map((item, index) => (

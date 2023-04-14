@@ -362,6 +362,32 @@ export function getTokenComparator(balances: {
   };
 }
 
+export const useInverter = ({
+  priceLower,
+  priceUpper,
+  quote,
+  base,
+  invert,
+}: {
+  priceLower?: Price;
+  priceUpper?: Price;
+  quote?: Token;
+  base?: Token;
+  invert?: boolean;
+}): {
+  priceLower?: Price;
+  priceUpper?: Price;
+  quote?: Token;
+  base?: Token;
+} => {
+  return {
+    priceUpper: invert ? priceLower?.invert() : priceUpper,
+    priceLower: invert ? priceUpper?.invert() : priceLower,
+    quote: invert ? base : quote,
+    base: invert ? quote : base,
+  };
+};
+
 export function filterTokenOrChain(
   data: (BridgeCurrency | Token | Chain | BridgeChain)[],
   search: string,
