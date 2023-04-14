@@ -11,14 +11,7 @@ const FeeOption: React.FC<FeeOptionProps> = (props) => {
   const { feeAmount, active, poolState, distributions, onClick } = props;
   const theme = useContext(ThemeContext);
   return (
-    <Wrapper
-      onClick={onClick}
-      textAlign={'center'}
-      selected={active}
-      display={'flex'}
-      flexDirection={'column'}
-      position={'relative'}
-    >
+    <Wrapper onClick={onClick} selected={active} display={'flex'} flexDirection={'column'} position={'relative'}>
       {active && (
         <CheckBox>
           <CheckCircle size={14} color={theme?.primary} />

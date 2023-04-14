@@ -1,5 +1,6 @@
 import { FeeAmount } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Button, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
 import { useFeeTierDistributionHook, usePoolsHook } from 'src/hooks/concentratedLiquidity/hooks';
@@ -22,6 +23,7 @@ const FeeSelector: React.FC<FeeSelectorProps> = (props) => {
   const { disabled = false, feeAmount, handleFeePoolSelect, currency0, currency1 } = props;
 
   const chainId = useChainId();
+  const { t } = useTranslation();
   const usePools = usePoolsHook[chainId];
   const useFeeTierDistribution = useFeeTierDistributionHook[chainId];
 
@@ -101,12 +103,12 @@ const FeeSelector: React.FC<FeeSelectorProps> = (props) => {
             <SelectFeeTierWrapper>
               {!feeAmount ? (
                 <>
-                  <Text color="text1" fontSize={24} fontWeight={500}>
-                    Fee tier
+                  <Text color="text1" fontSize={16} fontWeight={500}>
+                    {t('concentratedLiquidity.feeTier.feeTier')}
                   </Text>
 
                   <Text fontWeight={400} fontSize="12px" textAlign="left">
-                    The % you will earn in fees.
+                    {t('concentratedLiquidity.feeTier.earnFees')}
                   </Text>
                 </>
               ) : (
@@ -134,14 +136,14 @@ const FeeSelector: React.FC<FeeSelectorProps> = (props) => {
               width={'50px'}
               onClick={() => setShowOptions(!showOptions)}
             >
-              {showOptions ? 'Hide' : 'Edit'}
+              {showOptions ? `${t('common.hide')}` : `${t('common.edit')}`}
             </Button>
           </RowBetween>
         </FocusedOutlineCard>
 
         {showOptions && (
           <FeeTiers>
-            {[FeeAmount.LOWEST, FeeAmount.LOW, FeeAmount.MEDIUM, FeeAmount.HIGH].map((_feeAmount) => {
+            {[FeeAmount.LOW, FeeAmount.MEDIUM, FeeAmount.HIGH].map((_feeAmount) => {
               return (
                 <FeeOption
                   feeAmount={_feeAmount}

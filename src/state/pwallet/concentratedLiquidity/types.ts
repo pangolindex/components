@@ -1,4 +1,4 @@
-import { FeeAmount } from '@pangolindex/sdk';
+import { Currency, CurrencyAmount, FeeAmount, Position } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { TokenReturnType } from 'src/hooks/tokens/constant';
 
@@ -32,4 +32,19 @@ export interface UseConcentratedPositionResults {
 export interface UseConcentratedPositionsResults {
   loading: boolean;
   positions: PositionDetailsFromChain[] | undefined;
+}
+
+export interface ConcAddLiquidityProps {
+  parsedAmounts: {
+    CURRENCY_A?: CurrencyAmount;
+    CURRENCY_B?: CurrencyAmount;
+  };
+  deadline: BigNumber | undefined;
+  noLiquidity: boolean | undefined;
+  allowedSlippage: number;
+  currencies: {
+    CURRENCY_A?: Currency;
+    CURRENCY_B?: Currency;
+  };
+  position?: Position;
 }

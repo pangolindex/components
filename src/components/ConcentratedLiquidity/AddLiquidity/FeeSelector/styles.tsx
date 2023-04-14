@@ -1,5 +1,5 @@
 import styled, { keyframes } from 'styled-components';
-import { Box, Text } from 'src/components';
+import { Box } from 'src/components';
 
 const pulse = (color: string) => keyframes`
   0% {
@@ -16,15 +16,16 @@ const pulse = (color: string) => keyframes`
 `;
 
 export const Wrapper = styled(Box)<{ selected: boolean }>`
-  display: flex;
-  background-color: ${({ theme }) => theme?.concentratedLiquidity?.primaryBgColor};
+  background-color: ${({ theme }) => theme?.color5};
   border: ${({ theme, selected }) => (selected ? `1px solid ${theme.primary}` : 'none')};
-  flex-direction: column;
-  align-items: center;
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   border-radius: 10px;
   cursor: pointer;
+  display: grid;
+  grid-auto-rows: auto;
+  row-gap: 8px;
+  justify-items: flex-start;
 `;
 
 export const BlackBox = styled(Box)`
@@ -32,10 +33,10 @@ export const BlackBox = styled(Box)`
   border-radius: 7px;
   display: flex;
   flex-direction: row;
-`;
-
-export const BlackBoxContent = styled(Text)`
-  padding: 0.1rem 0.3rem;
+  padding: 4px 6px;
+  -webkit-box-pack: center;
+  justify-content: center;
+  font-weight: 500;
 `;
 
 export const CheckBox = styled(Box)`

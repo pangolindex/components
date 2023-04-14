@@ -16,7 +16,7 @@ type FullRange = true;
 export interface MintState {
   readonly independentField: Field;
   readonly typedValue: string;
-  readonly feeAmount: FeeAmount;
+  readonly feeAmount: FeeAmount | undefined;
   readonly startPriceTypedValue: string; // for the case when there's no liquidity
   readonly leftRangeTypedValue: string | FullRange;
   readonly rightRangeTypedValue: string | FullRange;
@@ -31,7 +31,7 @@ export interface MintState {
 export const initialState: MintState = {
   independentField: Field.CURRENCY_A,
   typedValue: '',
-  feeAmount: FeeAmount.LOWEST,
+  feeAmount: undefined,
   startPriceTypedValue: '',
   leftRangeTypedValue: '',
   rightRangeTypedValue: '',
@@ -134,6 +134,20 @@ export const useMintStateAtom = () => {
     [setMintState, mintState],
   );
 
+  const switchCurrencies = useCallback(() => {
+    const currencyId0 = mintState[Field.CURRENCY_A].currencyId;
+    const currencyId1 = mintState[Field.CURRENCY_B].currencyId;
+
+    if (currencyId0 && currencyId1) {
+      const temp = currencyId0;
+      setMintState((prev) => ({
+        ...prev,
+        [Field.CURRENCY_A]: { currencyId: currencyId1 },
+        [Field.CURRENCY_B]: { currencyId: temp },
+      }));
+    }
+  }, [setMintState, mintState]);
+
   return {
     mintState,
     resetMintState,
@@ -144,5 +158,6 @@ export const useMintStateAtom = () => {
     setTypeInput,
     selectCurrency,
     setFeeAmount,
+    switchCurrencies,
   };
 };

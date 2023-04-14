@@ -203,12 +203,14 @@ const ConcentratedLiquidity = () => {
         isOpen={detailModalIsOpen}
         onClose={onChangeDetailModalStatus}
       />
-      <AddLiquidity
-        isOpen={addLiquidityIsOpen}
-        onClose={onChangeAddLiquidityStatus}
-        currency0={currency0}
-        currency1={currency1}
-      />
+      {addLiquidityIsOpen && (
+        <AddLiquidity
+          isOpen={addLiquidityIsOpen}
+          onClose={onChangeAddLiquidityStatus}
+          currency0={currency0}
+          currency1={currency1}
+        />
+      )}
     </PageWrapper>
   );
 };

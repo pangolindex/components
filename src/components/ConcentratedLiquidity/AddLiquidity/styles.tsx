@@ -1,15 +1,21 @@
 import styled from 'styled-components';
 import { Box, CurrencyInput, TextInput } from 'src/components';
 
-export const Wrapper = styled(Box)<{ maximumHeight: number }>`
+export const Root = styled(Box)`
+  width: 100%;
+  max-width: 470px;
   background-color: ${({ theme }) => theme.color8};
   border-radius: 10px;
-  padding: 25px 30px;
   position: relative;
-  min-width: 100%;
-  width: 450px;
+  overflow: hidden;
+`;
+export const Wrapper = styled(Box)<{ maximumHeight: number }>`
+  position: relative;
+  width: 100%;
   overflow: auto;
+  height: 100%;
   max-height: ${({ maximumHeight }) => maximumHeight}px;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 100%;
     width: 100%;
@@ -72,4 +78,20 @@ export const InputValue = styled(Box)`
 export const DynamicSection = styled(Box)<{ disabled?: boolean }>`
   opacity: ${({ disabled }) => (disabled ? '0.2' : '1')};
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'initial')};
+`;
+
+export const Buttons = styled(Box)`
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-gap: 10px;
+  margin-top: 10px;
+`;
+
+export const ButtonWrapper = styled(Box)`
+  justify-content: space-between;
+  width: 100%;
+  display: flex;
+  padding: 0;
+  align-items: center;
 `;

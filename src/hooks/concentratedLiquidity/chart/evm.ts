@@ -69,7 +69,9 @@ const PRICE_FIXED_DIGITS = 8;
 const REFRESH_FREQUENCY = { blocksPerFetch: 2 };
 
 const getActiveTick = (tickCurrent: number | undefined, feeAmount: FeeAmount | undefined) =>
-  tickCurrent && feeAmount ? Math.floor(tickCurrent / TICK_SPACINGS[feeAmount]) * TICK_SPACINGS[feeAmount] : undefined;
+  tickCurrent !== undefined && feeAmount
+    ? Math.floor(tickCurrent / TICK_SPACINGS[feeAmount]) * TICK_SPACINGS[feeAmount]
+    : undefined;
 
 const bitmapIndex = (tick: number, tickSpacing: number) => {
   return Math.floor(tick / tickSpacing / 256);

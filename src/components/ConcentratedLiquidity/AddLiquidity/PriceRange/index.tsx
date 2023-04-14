@@ -52,7 +52,7 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
           incrementDisabled={ticksAtLimit[isSorted ? Bound.LOWER : Bound.UPPER]}
           feeAmount={feeAmount}
           label={leftPrice ? `${currencyB?.symbol}` : '-'}
-          title={'Min Price'}
+          title={t('concentratedLiquidity.priceRange.minPrice')}
           tokenA={currencyA?.symbol}
           tokenB={currencyB?.symbol}
         />
@@ -66,7 +66,7 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
           decrementDisabled={ticksAtLimit[isSorted ? Bound.UPPER : Bound.LOWER]}
           feeAmount={feeAmount}
           label={rightPrice ? `${currencyB?.symbol}` : '-'}
-          title={'Max Price'}
+          title={t('concentratedLiquidity.priceRange.maxPrice')}
           tokenA={currencyA?.symbol}
           tokenB={currencyB?.symbol}
         />

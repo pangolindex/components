@@ -1,6 +1,6 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyConcentratedPositionsFromTokenIds, useDummyGetUserPositions } from './dummy';
-import { useConcentratedPositionsFromTokenIds, useGetUserPositions } from './evm';
+import { useConcentratedAddLiquidity, useConcentratedPositionsFromTokenIds, useGetUserPositions } from './evm';
 
 export type UseGetUserPositionsHookType = {
   [chainId in ChainId]: typeof useGetUserPositions | typeof useDummyGetUserPositions;
@@ -70,4 +70,39 @@ export const useConcentratedPositionsFromTokenIdsHook: UseConcentratedPositionsF
   [ChainId.MOONRIVER]: useDummyConcentratedPositionsFromTokenIds,
   [ChainId.MOONBEAM]: useDummyConcentratedPositionsFromTokenIds,
   [ChainId.OP]: useDummyConcentratedPositionsFromTokenIds,
+};
+
+export type UseConcAddLiquidityHookType = {
+  [chainId in ChainId]: typeof useConcentratedAddLiquidity;
+};
+
+export const useConcentratedAddLiquidityHook: UseConcAddLiquidityHookType = {
+  [ChainId.FUJI]: useConcentratedAddLiquidity,
+  [ChainId.AVALANCHE]: useConcentratedAddLiquidity,
+  [ChainId.WAGMI]: useConcentratedAddLiquidity,
+  [ChainId.COSTON]: useConcentratedAddLiquidity,
+  [ChainId.SONGBIRD]: useConcentratedAddLiquidity,
+  [ChainId.FLARE_MAINNET]: useConcentratedAddLiquidity,
+  [ChainId.HEDERA_TESTNET]: useConcentratedAddLiquidity,
+  [ChainId.HEDERA_MAINNET]: useConcentratedAddLiquidity,
+  [ChainId.NEAR_MAINNET]: useConcentratedAddLiquidity,
+  [ChainId.NEAR_TESTNET]: useConcentratedAddLiquidity,
+  [ChainId.COSTON2]: useConcentratedAddLiquidity,
+  [ChainId.EVMOS_TESTNET]: useConcentratedAddLiquidity,
+  [ChainId.EVMOS_MAINNET]: useConcentratedAddLiquidity,
+  [ChainId.ETHEREUM]: useConcentratedAddLiquidity,
+  [ChainId.POLYGON]: useConcentratedAddLiquidity,
+  [ChainId.FANTOM]: useConcentratedAddLiquidity,
+  [ChainId.XDAI]: useConcentratedAddLiquidity,
+  [ChainId.BSC]: useConcentratedAddLiquidity,
+  [ChainId.ARBITRUM]: useConcentratedAddLiquidity,
+  [ChainId.CELO]: useConcentratedAddLiquidity,
+  [ChainId.OKXCHAIN]: useConcentratedAddLiquidity,
+  [ChainId.VELAS]: useConcentratedAddLiquidity,
+  [ChainId.AURORA]: useConcentratedAddLiquidity,
+  [ChainId.CRONOS]: useConcentratedAddLiquidity,
+  [ChainId.FUSE]: useConcentratedAddLiquidity,
+  [ChainId.MOONRIVER]: useConcentratedAddLiquidity,
+  [ChainId.MOONBEAM]: useConcentratedAddLiquidity,
+  [ChainId.OP]: useConcentratedAddLiquidity,
 };
