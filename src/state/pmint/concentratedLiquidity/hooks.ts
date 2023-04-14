@@ -46,6 +46,8 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
   onStartPriceInput: (typedValue: string) => void;
   onSetFeeAmount: (value: FeeAmount) => void;
   onCurrencySelection: (field: Field, currency: Currency) => void;
+  onResetMintState: () => void;
+  onSwitchCurrencies: () => void;
 } {
   const chainId = useChainId();
   const {
@@ -55,6 +57,8 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
     setTypeStartPriceInput,
     selectCurrency,
     setFeeAmount,
+    resetMintState,
+    switchCurrencies,
   } = useMintStateAtom();
 
   const onFieldAInput = useCallback(
@@ -92,12 +96,9 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
     [setTypeStartPriceInput],
   );
 
-  const onSetFeeAmount = useCallback(
-    (value: FeeAmount) => {
-      setFeeAmount({ value });
-    },
-    [setFeeAmount],
-  );
+  const onResetMintState = useCallback(() => {
+    resetMintState();
+  }, [resetMintState]);
 
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
@@ -114,6 +115,17 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
     [selectCurrency, chainId],
   );
 
+  const onSetFeeAmount = useCallback(
+    (value: FeeAmount) => {
+      setFeeAmount({ value });
+    },
+    [setFeeAmount],
+  );
+
+  const onSwitchCurrencies = useCallback(() => {
+    switchCurrencies();
+  }, [switchCurrencies]);
+
   return {
     onFieldAInput,
     onFieldBInput,
@@ -122,6 +134,8 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
     onStartPriceInput,
     onCurrencySelection,
     onSetFeeAmount,
+    onResetMintState,
+    onSwitchCurrencies,
   };
 }
 
@@ -142,7 +156,7 @@ export interface DerivedMintInfo {
   parsedAmounts: { [field in Field]?: CurrencyAmount };
   position: Position | undefined;
   noLiquidity?: boolean;
-  errorMessage?: ReactNode;
+  errorMessage?: string;
   invalidPool: boolean;
   outOfRange: boolean;
   invalidRange: boolean;
@@ -172,15 +186,23 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
   const currencyA = useCurrency(inputCurrencyId);
   const currencyB = useCurrency(outputCurrencyId);
   // currencies
-  const currencies: { [field in Field]?: Currency } = {
-    [Field.CURRENCY_A]: currencyA ?? undefined,
-    [Field.CURRENCY_B]: currencyB ?? undefined,
-  };
+  const currencies: { [field in Field]?: Currency } = useMemo(
+    () => ({
+      [Field.CURRENCY_A]: currencyA ?? undefined,
+      [Field.CURRENCY_B]: currencyB ?? undefined,
+    }),
+    [currencyA, currencyB],
+  );
 
-  const tokenA = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
-  const tokenB = currencyB ? wrappedCurrency(currencyB, chainId) : undefined;
+  // formatted with tokens
+  const [tokenA, tokenB, baseToken] = useMemo(() => {
+    const tokenA = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
+    const tokenB = currencyB ? wrappedCurrency(currencyB, chainId) : undefined;
 
-  const baseToken = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
+    const baseToken = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
+
+    return [tokenA, tokenB, baseToken];
+  }, [currencyA, currencyB]);
 
   const [token0, token1] = useMemo(
     () =>
@@ -189,10 +211,11 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
   );
 
   // balances
-  const balances = useCurrencyBalances(chainId, account ?? undefined, [
-    currencies[Field.CURRENCY_A],
-    currencies[Field.CURRENCY_B],
-  ]);
+  const balances = useCurrencyBalances(
+    chainId,
+    account ?? undefined,
+    useMemo(() => [currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]], [currencies]),
+  );
   const currencyBalances: { [field in Field]?: CurrencyAmount } = {
     [Field.CURRENCY_A]: balances[0],
     [Field.CURRENCY_B]: balances[1],
@@ -217,8 +240,8 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
             ? new Price(
                 baseAmount.currency,
                 parsedQuoteAmount.currency,
-                baseAmount.quotient,
-                parsedQuoteAmount.quotient,
+                baseAmount.numerator, // here we can not use quotient bcoz diffrence sdk logic decimal places
+                parsedQuoteAmount.numerator,
               )
             : undefined;
         return (invertPrice ? price?.invert() : price) ?? undefined;
@@ -347,10 +370,11 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
       ? wrappedCurrency(independentAmount?.currency, chainId)
       : undefined;
 
-    // const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA;
+    const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA;
     if (
       independentAmount &&
       wrappedIndependentToken &&
+      dependentCurrency &&
       typeof tickLower === 'number' &&
       typeof tickUpper === 'number' &&
       poolForPosition
@@ -365,20 +389,22 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
             pool: poolForPosition,
             tickLower,
             tickUpper,
-            amount0: independentAmount.quotient,
+            amount0: independentAmount.numerator,
             useFullPrecision: true, // we want full precision for the theoretical position
           })
         : Position.fromAmount1({
             pool: poolForPosition,
             tickLower,
             tickUpper,
-            amount1: independentAmount.quotient,
+            amount1: independentAmount.numerator,
           });
 
       const dependentTokenAmount = wrappedIndependentToken.equals(poolForPosition.token0)
         ? position.amount1
         : position.amount0;
-      return CurrencyAmount.ether(dependentTokenAmount.raw, chainId);
+      return dependentCurrency === CAVAX[chainId]
+        ? CurrencyAmount.ether(dependentTokenAmount.raw, chainId)
+        : dependentTokenAmount;
     }
 
     return undefined;
@@ -438,10 +464,10 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
 
     // mark as 0 if disabled because out of range
     const amount0 = !deposit0Disabled
-      ? parsedAmounts?.[tokenA.equals(poolForPosition.token0) ? Field.CURRENCY_A : Field.CURRENCY_B]?.quotient
+      ? parsedAmounts?.[tokenA.equals(poolForPosition.token0) ? Field.CURRENCY_A : Field.CURRENCY_B]?.numerator
       : BIG_INT_ZERO;
     const amount1 = !deposit1Disabled
-      ? parsedAmounts?.[tokenA.equals(poolForPosition.token0) ? Field.CURRENCY_B : Field.CURRENCY_A]?.quotient
+      ? parsedAmounts?.[tokenA.equals(poolForPosition.token0) ? Field.CURRENCY_B : Field.CURRENCY_A]?.numerator
       : BIG_INT_ZERO;
 
     if (amount0 !== undefined && amount1 !== undefined) {
@@ -468,7 +494,7 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     tickUpper,
   ]);
 
-  let errorMessage: ReactNode | undefined;
+  let errorMessage: string | undefined;
   if (!account) {
     errorMessage = 'Connect Wallet';
   }

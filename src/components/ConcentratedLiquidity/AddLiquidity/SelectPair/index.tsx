@@ -1,52 +1,63 @@
+import { Currency } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
+import { ChevronDown } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, CurrencyInput, Text } from 'src/components';
+import { Box, CurrencyLogo, Text } from 'src/components';
 import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
-import { Currencies } from './styles';
+import { Currencies, CurrencySelectWrapper } from './styles';
 import { SelectPairProps } from './types';
 
 const SelectPair: React.FC<SelectPairProps> = (props) => {
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);
-  const { currency0, currency1, onChangeTokenDrawerStatus } = props;
+  const { currency0, currency1, onTokenClick } = props;
 
+  function renderCurrency(currency: Currency | undefined) {
+    if (!currency) {
+      return (
+        <Text color="text1" fontSize={[14, 16]} fontWeight={500} lineHeight="40px">
+          {t('swapPage.selectToken')}
+        </Text>
+      );
+    }
+
+    return (
+      <>
+        <CurrencyLogo size={24} currency={currency} imageSize={48} />
+        <Text color="text2" fontSize={[14, 16]} fontWeight={500} lineHeight="40px" marginLeft={10}>
+          {currency?.symbol}
+        </Text>
+      </>
+    );
+  }
   return (
     <Box>
       <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
         {t('concentratedLiquidity.selectPair.title')}
       </Text>
       <Currencies>
-        <CurrencyInput
-          buttonStyle={{
-            backgroundColor: theme.bridge?.primaryBgColor,
-            color: theme.bridge?.text,
-            padding: '1rem 1.1rem',
-            width: '100%',
+        <CurrencySelectWrapper
+          onClick={() => {
+            onTokenClick(Field.CURRENCY_A);
           }}
-          onTokenClick={() => {
-            onChangeTokenDrawerStatus && onChangeTokenDrawerStatus(Field.CURRENCY_A);
+        >
+          <Box display="flex" alignItems="center">
+            {renderCurrency(currency0)}
+          </Box>
+          <ChevronDown size="16" color={theme.text1} />
+        </CurrencySelectWrapper>
+
+        <CurrencySelectWrapper
+          onClick={() => {
+            onTokenClick(Field.CURRENCY_B);
           }}
-          isShowTextInput={false}
-          fontSize={24}
-          currency={currency0}
-          id="swap-currency-input-0"
-        />
-        <CurrencyInput
-          buttonStyle={{
-            backgroundColor: theme.bridge?.primaryBgColor,
-            color: theme.bridge?.text,
-            padding: '1rem 1.1rem',
-            width: '100%',
-          }}
-          onTokenClick={() => {
-            onChangeTokenDrawerStatus && onChangeTokenDrawerStatus(Field.CURRENCY_B);
-          }}
-          isShowTextInput={false}
-          fontSize={24}
-          currency={currency1}
-          id="swap-currency-input-1"
-        />
+        >
+          <Box display="flex" alignItems="center">
+            {renderCurrency(currency1)}
+          </Box>
+          <ChevronDown size="16" color={theme.text1} />
+        </CurrencySelectWrapper>
       </Currencies>
     </Box>
   );

@@ -12,7 +12,6 @@ export const Wrapper = styled(Box)`
   border-radius: 10px;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-content: space-between;
-    width: max-content;
   `};
 `;
 
@@ -41,4 +40,5 @@ export const InputText = styled(TextInput)`
   background-color: ${({ theme }) => theme.bg6};
   align-items: center;
   border-radius: 4px;
+  text-align: center;
 `;

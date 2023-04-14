@@ -7,5 +7,5 @@ export type SelectPairProps = {
   /**
    * Callback to open Token Drawer
    */
-  onChangeTokenDrawerStatus?: (tokenField: Field) => void;
+  onTokenClick: (tokenField: Field) => void;
 };

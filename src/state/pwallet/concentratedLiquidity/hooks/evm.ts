@@ -1,13 +1,23 @@
-import { ConcentratedPool, Position } from '@pangolindex/sdk';
+import { CAVAX, CHAINS, ConcentratedPool, JSBI, NonfungiblePositionManager, Percent, Position } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { BIPS_BASE } from 'src/constants/swap';
+import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
 import { useTokensHook } from 'src/hooks/tokens';
 import { useV3NFTPositionManagerContract } from 'src/hooks/useContract';
 import { useCurrency } from 'src/hooks/useCurrency';
+import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
 import { useSingleCallResult, useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
-import { PositionDetails, UseConcentratedPositionResults, UseConcentratedPositionsResults } from '../types';
+import { useTransactionAdder } from 'src/state/ptransactions/hooks';
+import { calculateGasMargin, waitForTransaction } from 'src/utils';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import {
+  ConcAddLiquidityProps,
+  PositionDetails,
+  UseConcentratedPositionResults,
+  UseConcentratedPositionsResults,
+} from '../types';
 import { useConcentratedPositionsFromTokenIdsHook } from './index';
 
 // It returns the positions based on the tokenIds.
@@ -164,5 +174,90 @@ export function useDerivedPositionInfo(positionDetails: PositionDetails | undefi
   return {
     position,
     pool: pool ?? undefined,
+  };
+}
+
+export function useConcentratedAddLiquidity() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+  const addTransaction = useTransactionAdder();
+
+  return async (data: ConcAddLiquidityProps) => {
+    if (!chainId || !library || !account) return;
+
+    const { parsedAmounts, deadline, noLiquidity, allowedSlippage, currencies, position } = data;
+
+    const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
+
+    try {
+      if (position && account && deadline) {
+        const useNative =
+          currencyA === CAVAX[chainId] ? currencyA : currencyB === CAVAX[chainId] ? currencyB : undefined;
+
+        // const { calldata, value } =
+        //   hasExistingPosition && tokenId
+        //     ? NonfungiblePositionManager.addCallParameters(position, {
+        //         tokenId,
+        //         slippageTolerance: allowedSlippage,
+        //         deadline: deadline.toString(),
+        //         useNative: wrappedCurrency(useNative, chainId),
+        //       })
+        //     : NonfungiblePositionManager.addCallParameters(position, {
+        //         slippageTolerance: allowedSlippage,
+        //         recipient: account,
+        //         deadline: deadline.toString(),
+        //         useNative: wrappedCurrency(useNative, chainId),
+        //         createPool: noLiquidity,
+        //       });
+
+        const { calldata, value } = NonfungiblePositionManager.addCallParameters(position, {
+          slippageTolerance: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
+          recipient: account,
+          deadline: deadline.toString(),
+          useNative: wrappedCurrency(useNative, chainId),
+          createPool: noLiquidity,
+        });
+
+        const txn: { to: string; data: string; value: string } = {
+          to: CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager ?? '',
+          data: calldata,
+          value,
+        };
+
+        const estimatedGasLimit = await library.getSigner().estimateGas(txn);
+
+        const newTxn = {
+          ...txn,
+          gasLimit: calculateGasMargin(estimatedGasLimit),
+        };
+
+        const response = await library.getSigner().sendTransaction(newTxn);
+
+        await waitForTransaction(response, 5);
+
+        addTransaction(response, {
+          summary:
+            'Added ' +
+            parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
+            ' ' +
+            currencies[Field.CURRENCY_A]?.symbol +
+            ' and ' +
+            parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
+            ' ' +
+            currencies[Field.CURRENCY_B]?.symbol,
+        });
+
+        return response;
+      }
+    } catch (err) {
+      const _err = err as any;
+      // we only care if the error is something _other_ than the user rejected the tx
+      if (_err?.code !== 4001) {
+        console.error(_err);
+      }
+    } finally {
+      // This is intentional
+    }
   };
 }

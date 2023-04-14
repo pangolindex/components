@@ -43,7 +43,7 @@ export function useAllV3TicksQuery(
   const gqlClient = useSubgraphClient(SubgraphEnum.ConcentratedLiquidity);
 
   const { data, isLoading, error } = useQuery<any>(
-    ['get-all-v3-ticks'],
+    ['get-all-v3-ticks', poolAddress],
     async () => {
       if (!gqlClient) {
         return undefined;
@@ -53,7 +53,7 @@ export function useAllV3TicksQuery(
     },
 
     {
-      enabled: !poolAddress,
+      enabled: !!poolAddress,
       refetchInterval: 3000, // 1 minutes
     },
   );
