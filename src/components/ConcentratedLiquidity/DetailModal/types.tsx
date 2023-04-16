@@ -1,9 +1,8 @@
-import { Currency } from '@pangolindex/sdk';
+import { PositionDetails } from 'src/state/pwallet/concentratedLiquidity/types';
 
 export type DetailModalProps = {
   isOpen: boolean;
-  currency0: Currency;
-  currency1: Currency;
+  position?: PositionDetails;
   onClose: () => void;
 };
 

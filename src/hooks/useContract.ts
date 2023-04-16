@@ -117,7 +117,7 @@ export function usePangoChefContract(): Contract | null {
   return useContract(PANGOCHEF_ADDRESS[chainId], abi, true);
 }
 
-export function useV3NFTPositionManagerContract(withSignerIfPossible?: boolean): Contract | null {
+export function useConcLiqNFTPositionManagerContract(withSignerIfPossible?: boolean): Contract | null {
   const chainId = useChainId();
   return useContract(
     chainId && CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager,

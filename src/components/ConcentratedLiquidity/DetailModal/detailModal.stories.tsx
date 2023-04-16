@@ -34,6 +34,12 @@ export default {
       type: { name: 'boolean', required: true },
       description: 'The state of the modal',
     },
+    position: {
+      name: 'Position',
+      control: 'object',
+      type: { name: 'object', required: true },
+      description: 'Position',
+    },
     onClose: {
       name: 'On Close',
       control: 'function',
@@ -76,5 +82,6 @@ Default.args = {
   currency0,
   currency1,
   isOpen: true,
+  position: undefined, // TODO: add position later on
   onClose: () => {},
 } as Partial<DetailModalProps>;

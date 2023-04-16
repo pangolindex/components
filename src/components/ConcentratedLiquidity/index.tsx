@@ -32,6 +32,7 @@ const ConcentratedLiquidity = () => {
   const [activeMenu, setMenu] = useState<string>(MenuType.allPositions);
   const [detailModalIsOpen, setDetailModalIsOpen] = useState<boolean>(false);
   const [addLiquidityIsOpen, setAddLiquidityIsOpen] = useState<boolean>(false);
+  const [selectedPosition, setSelectedPosition] = useState<PositionDetails | undefined>(undefined);
   const menuItems: Array<{ label: string; value: string }> = Object.keys(MenuType).map((key) => ({
     label: t(`concentratedLiquidity.menuTypes.${MenuType[key]}`),
     value: MenuType[key],
@@ -112,9 +113,13 @@ const ConcentratedLiquidity = () => {
     [setMenu],
   );
 
-  const onChangeDetailModalStatus = useCallback(() => {
-    setDetailModalIsOpen(!detailModalIsOpen);
-  }, [detailModalIsOpen]);
+  const onChangeDetailModalStatus = useCallback(
+    (position: PositionDetails | undefined) => {
+      setDetailModalIsOpen(!detailModalIsOpen);
+      setSelectedPosition(position);
+    },
+    [detailModalIsOpen],
+  );
 
   const onChangeAddLiquidityStatus = useCallback(() => {
     setAddLiquidityIsOpen(!addLiquidityIsOpen);
@@ -166,7 +171,9 @@ const ConcentratedLiquidity = () => {
                       liquidity={position.liquidity}
                       tickLower={position.tickLower}
                       tickUpper={position.tickUpper}
-                      onClick={onChangeDetailModalStatus}
+                      onClick={() => {
+                        onChangeDetailModalStatus(position);
+                      }}
                     />
                   ))}
                 </Cards>
@@ -198,10 +205,11 @@ const ConcentratedLiquidity = () => {
         </Box>
       </GridContainer>
       <DetailModal
-        currency0={currency0}
-        currency1={currency1}
         isOpen={detailModalIsOpen}
-        onClose={onChangeDetailModalStatus}
+        position={selectedPosition}
+        onClose={() => {
+          onChangeDetailModalStatus(undefined);
+        }}
       />
       {addLiquidityIsOpen && (
         <AddLiquidity

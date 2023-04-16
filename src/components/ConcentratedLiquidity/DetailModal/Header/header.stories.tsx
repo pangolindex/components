@@ -15,17 +15,17 @@ export default {
     },
   },
   argTypes: {
-    currency0: {
-      name: 'Currency 0',
+    token0: {
+      name: 'Token 0',
       control: 'object',
       type: { name: 'object', required: true },
-      description: 'Currency',
+      description: 'Token',
     },
-    currency1: {
-      name: 'Currency 1',
+    token1: {
+      name: 'Token 1',
       control: 'object',
       type: { name: 'object', required: true },
-      description: 'Currency',
+      description: 'Token',
     },
     statItems: {
       name: 'Stat Items',
@@ -43,8 +43,8 @@ export default {
   },
 };
 
-const currency0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
-const currency1 = new Token(
+const token0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
+const token1 = new Token(
   ChainId.AVALANCHE,
   CHAINS[ChainId.AVALANCHE].contracts!.png,
   18,
@@ -62,20 +62,12 @@ const TemplateHeader: ComponentStory<typeof Header> = (args: any) => {
 
 export const Default = TemplateHeader.bind({});
 Default.args = {
-  currency0,
-  currency1,
+  token0,
+  token1,
   statItems: [
     {
       title: 'Fee Rate',
       stat: '0.3%',
-    },
-    {
-      title: 'Min Price',
-      stat: `1,023.42 ${currency0?.symbol}/${currency1?.symbol}`,
-    },
-    {
-      title: 'Max Price',
-      stat: `1,023.42 ${currency0?.symbol}/${currency1?.symbol}`,
     },
     {
       title: 'Swap Fee APR',

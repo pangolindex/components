@@ -5,7 +5,7 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { RewardTokensProps } from './types';
 
-const RewardTokens = ({ rewardTokens = [], size = 24 }: RewardTokensProps) => {
+const RewardTokens = ({ showNativeRewardToken = true, rewardTokens = [], size = 24 }: RewardTokensProps) => {
   const chainId = useChainId();
   const png = PNG[chainId];
 
@@ -14,7 +14,8 @@ const RewardTokens = ({ rewardTokens = [], size = 24 }: RewardTokensProps) => {
       return [];
     }
     const filteredTokens = rewardTokens.filter((token) => !!token && !token.equals(png));
-    return [png, ...filteredTokens];
+    if (showNativeRewardToken) return [png, ...filteredTokens];
+    else return filteredTokens;
   }, [rewardTokens]);
 
   return (
