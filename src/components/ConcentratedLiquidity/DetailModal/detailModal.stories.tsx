@@ -1,7 +1,9 @@
-import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
+import { CHAINS, ChainId, FeeAmount, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
+import { BigNumber } from 'ethers';
 import React, { useCallback, useState } from 'react';
 import { Button } from 'src';
+import { PositionDetails } from 'src/state/pwallet/concentratedLiquidity/types';
 import { DetailModalProps } from './types';
 import DetailModal from '.';
 
@@ -50,14 +52,24 @@ export default {
   },
 };
 
-const currency0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
-const currency1 = new Token(
+const token0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
+const token1 = new Token(
   ChainId.AVALANCHE,
   CHAINS[ChainId.AVALANCHE].contracts!.png,
   18,
   CHAINS[ChainId.AVALANCHE].png_symbol!,
   'Pangolin',
 );
+
+const position: PositionDetails = {
+  tokenId: BigNumber.from(3800),
+  token0,
+  token1,
+  fee: FeeAmount.LOWEST,
+  tickLower: 0,
+  tickUpper: 0,
+  liquidity: BigNumber.from(645742),
+};
 
 const TemplateDetailModal: ComponentStory<typeof DetailModal> = (args: any) => {
   const [isDetailModalOpen, setDetailModalOpen] = useState<boolean>(false);
@@ -79,9 +91,7 @@ const TemplateDetailModal: ComponentStory<typeof DetailModal> = (args: any) => {
 
 export const Default = TemplateDetailModal.bind({});
 Default.args = {
-  currency0,
-  currency1,
   isOpen: true,
-  position: undefined, // TODO: add position later on
+  position: position,
   onClose: () => {},
 } as Partial<DetailModalProps>;

@@ -381,15 +381,7 @@ export function usePositionTokenURI(tokenId: TokenId | undefined): UsePositionTo
     () => [tokenId instanceof BigNumber ? tokenId.toHexString() : tokenId?.toString(16)],
     [tokenId],
   );
-  const { result, error, loading, valid } = useSingleCallResult(
-    tokenId ? positionManager : null,
-    'tokenURI',
-    inputs,
-    // { TODO:
-    //   ...NEVER_RELOAD,
-    //   gasRequired: 3_000_000,
-    // }
-  );
+  const { result, error, loading, valid } = useSingleCallResult(tokenId ? positionManager : null, 'tokenURI', inputs);
   const res = useMemo(() => {
     if (error || !valid || !tokenId) {
       return {
