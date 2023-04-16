@@ -306,15 +306,23 @@ export function useUnderlyingTokens(
   token1?: TokenReturnType,
   fee?: FeeAmount,
 ): [TokenAmount | undefined, TokenAmount | undefined] {
-  if (!token0 || !token1 || !fee) return [undefined, undefined];
   const chainId = useChainId();
-  const poolAddress = ConcentratedPool.getAddress(token0, token1, fee, undefined, undefined, chainId);
-  if (!poolAddress) return [undefined, undefined];
+  const poolAddress =
+    token0 && token1 && fee
+      ? ConcentratedPool.getAddress(token0, token1, fee, undefined, undefined, chainId)
+      : undefined;
 
   const token0Contract = useTokenContract(token0?.address, false);
   const token1Contract = useTokenContract(token1?.address, false);
-  const { result: token0result } = useSingleCallResult(token0Contract, 'balanceOf', [poolAddress]);
-  const { result: token1result } = useSingleCallResult(token1Contract, 'balanceOf', [poolAddress]);
+  const { result: token0result } = useSingleCallResult(token0Contract ? token0Contract : undefined, 'balanceOf', [
+    poolAddress,
+  ]);
+  const { result: token1result } = useSingleCallResult(token1Contract ? token1Contract : undefined, 'balanceOf', [
+    poolAddress,
+  ]);
+
+  if (!token0 || !token1 || !fee) return [undefined, undefined];
+  if (!poolAddress) return [undefined, undefined];
 
   const underlyingToken0 = token0result ? new TokenAmount(token0, token0result[0]) : undefined;
   const underlyingToken1 = token1result ? new TokenAmount(token1, token1result[0]) : undefined;
