@@ -1,79 +1,173 @@
-import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
-import React from 'react';
+import { CurrencyAmount, Fraction, NumberType, Position, formatPrice } from '@pangolindex/sdk';
+import numeral from 'numeral';
+import React, { useContext, useMemo } from 'react';
+import ContentLoader from 'react-content-loader';
 import { useTranslation } from 'react-i18next';
-import nft from 'src/assets/images/tmpNFT.svg';
+import { ThemeContext } from 'styled-components';
 import { Box, Stat, Text } from 'src/components';
+import { useChainId } from 'src/hooks';
+import { usePositionTokenURIHook, useUnderlyingTokensHook } from 'src/hooks/concentratedLiquidity/hooks';
+import useIsTickAtLimit, {
+  getPriceOrderingFromPositionForUI,
+  usePool,
+} from 'src/hooks/concentratedLiquidity/hooks/common';
+import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
+import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
+import { formatTickPrice, useInverter } from 'src/utils';
 import PriceCard from './PriceCard';
 import { Information, NFT, PriceCards, PriceDetailAndNft, StateContainer, Wrapper } from './styles';
+import { DetailTabProps } from './types';
 
-const DetailTab: React.FC = () => {
+const DetailTab: React.FC<DetailTabProps> = (props) => {
+  const { position } = props;
+  const theme = useContext(ThemeContext);
   const { t } = useTranslation();
-  // ------------------------------ MOCK DATA ----------------------------------
-  const currency0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
-  const currency1 = new Token(
-    ChainId.AVALANCHE,
-    CHAINS[ChainId.AVALANCHE].contracts!.png,
-    18,
-    CHAINS[ChainId.AVALANCHE].png_symbol!,
-    'Pangolin',
-  );
+  const chainId = useChainId();
+  const useUnderlyingTokens = useUnderlyingTokensHook[chainId];
+  const usePositionTokenURI = usePositionTokenURIHook[chainId];
+  const metadata = usePositionTokenURI(position?.tokenId);
+  const [, pool] = usePool(position?.token0 ?? undefined, position?.token1 ?? undefined, position?.fee);
+  const nativePosition = useMemo(() => {
+    if (
+      pool &&
+      position?.liquidity &&
+      typeof position?.tickLower === 'number' &&
+      typeof position?.tickUpper === 'number'
+    ) {
+      return new Position({
+        pool,
+        liquidity: position?.liquidity.toString(),
+        tickLower: position?.tickLower,
+        tickUpper: position?.tickUpper,
+      });
+    }
+    return undefined;
+  }, [position?.liquidity, pool, position?.tickLower, position?.tickUpper]);
+
+  const tickAtLimit = useIsTickAtLimit(position?.fee, position?.tickLower, position?.tickUpper);
+  const pricesFromPosition = getPriceOrderingFromPositionForUI(nativePosition);
+  const { priceLower, priceUpper, base } = useInverter({
+    priceLower: pricesFromPosition.priceLower,
+    priceUpper: pricesFromPosition.priceUpper,
+    quote: pricesFromPosition.quote,
+    base: pricesFromPosition.base,
+    invert: false, // we don't want to invert the price, just the tokens
+  });
+  const inverted = position?.token1 ? base?.equals(position?.token1) : undefined;
+  const currentPrice = pool && formatPrice(inverted ? pool?.token1Price : pool?.token0Price, NumberType.TokenTx);
+  const minPrice = formatTickPrice({
+    price: priceLower,
+    atLimit: tickAtLimit,
+    direction: Bound.LOWER,
+  });
+  const maxPrice = formatTickPrice({
+    price: priceUpper,
+    atLimit: tickAtLimit,
+    direction: Bound.UPPER,
+  });
+
+  const useUSDCPrice = useUSDCPriceHook[chainId];
+  const price0 = useUSDCPrice(position?.token0 ?? undefined);
+  const price1 = useUSDCPrice(position?.token1 ?? undefined);
+  const fiatValueOfLiquidity: CurrencyAmount | null = useMemo(() => {
+    if (!price0 || !price1 || !nativePosition) return null;
+    const amount0 = price0.quote(nativePosition?.amount0);
+    const amount1 = price1.quote(nativePosition?.amount1);
+    return amount0.add(amount1);
+  }, [price0, price1, nativePosition]);
+  const [underlyingToken0, underlyingToken1] = useUnderlyingTokens(position?.token0, position?.token1, position?.fee);
+  const totalFiatValueOfPool: CurrencyAmount | null = useMemo(() => {
+    if (!price0 || !price1 || !underlyingToken0 || !underlyingToken1) return null;
+
+    const amount0 = price0.quote(underlyingToken0);
+    const amount1 = price1.quote(underlyingToken1);
+    return amount0.add(amount1);
+  }, [price0, price1, underlyingToken0, underlyingToken1]);
+
+  const currencyPair = position ? `${position?.token0?.symbol}/${position?.token1?.symbol}` : '';
+
   const totalData = [
     {
       title: 'Total Stake',
-      stat: '25,43M$',
+      stat: totalFiatValueOfPool?.greaterThan(new Fraction('1', '100'))
+        ? numeral(totalFiatValueOfPool?.toFixed(2)).format('$0.00a')
+        : '-',
     },
     {
-      title: 'Underlying USDC',
-      stat: '25,43K',
-      currency: currency0,
+      title: `Underlying  ${position?.token0?.symbol}`,
+      stat: underlyingToken0 ? numeral(underlyingToken0?.toFixed(6)).format('0.00a') : '-',
+      currency: position?.token0,
     },
     {
-      title: 'Underlying PNG',
-      stat: '253,4K',
-      currency: currency1,
+      title: `Underlying ${position?.token1?.symbol}`,
+      stat: underlyingToken1 ? numeral(underlyingToken1?.toFixed(6)).format('0.00a') : '-',
+      currency: position?.token1,
     },
   ];
 
   const userData = [
     {
       title: 'Your Stake',
-      stat: '15.43M$',
+      stat: fiatValueOfLiquidity?.greaterThan(new Fraction('1', '100'))
+        ? numeral(fiatValueOfLiquidity?.toFixed(2)).format('$0.00a')
+        : '-',
     },
     {
-      title: 'Underlying USDC',
-      stat: '15,2K',
-      currency: currency0,
+      title: `Underlying ${position?.token0?.symbol}`,
+      stat: nativePosition?.amount0 ? numeral(nativePosition?.amount0?.toFixed(6)).format('0.00a') : '-',
+      currency: position?.token0,
     },
     {
-      title: 'Underlying PNG',
-      stat: '10,25K',
-      currency: currency1,
+      title: `Underlying ${position?.token1?.symbol}`,
+      stat: nativePosition?.amount1 ? numeral(nativePosition?.amount1?.toFixed(6)).format('0.00a') : '-',
+      currency: position?.token1,
     },
   ];
-  // ---------------------------------------------------------------------------
+
   return (
     <Wrapper>
       <PriceDetailAndNft>
         <Box display={'flex'}>
-          <NFT src={nft} alt={'Icon'} />
+          {metadata?.result?.image ? (
+            <NFT src={metadata?.result?.image || ''} alt={'Position'} />
+          ) : (
+            <ContentLoader
+              speed={3}
+              width={'100%'}
+              height={'100%'}
+              viewBox="0 0 210 362"
+              backgroundColor={theme?.concentratedLiquidity?.primaryBgColor}
+              foregroundColor={theme?.primary}
+              {...props}
+            >
+              <rect x="1" y="1" rx="8" ry="8" width="185" height="22" />
+              <rect x="1" y="38" rx="8" ry="8" width="185" height="22" />
+              <rect x="1" y="322" rx="8" ry="8" width="87" height="11" />
+              <rect x="1" y="343" rx="8" ry="8" width="87" height="11" />
+              <rect x="168" y="320" rx="4" ry="4" width="16" height="15" />
+              <rect x="168" y="340" rx="4" ry="4" width="16" height="15" />
+              <rect x="2" y="94" rx="8" ry="8" width="184" height="181" />
+              <rect x="0" y="301" rx="8" ry="8" width="87" height="11" />
+            </ContentLoader>
+          )}
         </Box>
         <Box display={'flex'} flexDirection={'column'}>
           <PriceCards>
             <PriceCard
               title={'Min Price'}
-              price={'786.87'}
-              currencyPair={'USDC/DAI'}
-              description={'Your position will be 100% AVAX at this price.'}
+              price={minPrice}
+              currencyPair={currencyPair}
+              description={`Your position will be 100% ${position?.token1?.symbol} at this price.`}
             />
             <PriceCard
               title={'Max Price'}
-              price={'3128.87'}
-              currencyPair={'USDC/DAI'}
-              description={'Your position will be 100% PNG at this price.'}
+              price={maxPrice}
+              currencyPair={currencyPair}
+              description={`Your position will be 100% ${position?.token0?.symbol} at this price.`}
             />
           </PriceCards>
           <Box>
-            <PriceCard title={'Current Price'} price={'786.87'} currencyPair={'USDC/DAI'} />
+            <PriceCard title={'Current Price'} price={currentPrice || ''} currencyPair={currencyPair} />
           </Box>
         </Box>
       </PriceDetailAndNft>

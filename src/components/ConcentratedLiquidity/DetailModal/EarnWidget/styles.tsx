@@ -12,10 +12,9 @@ export const Root = styled(Box)`
   padding: 0px 10px;
 `;
 
-export const RewardWrapper = styled(Box)<{ isSuperFarm?: boolean }>`
+export const RewardWrapper = styled(Box)`
   display: grid;
-  grid-template-columns: ${({ isSuperFarm }) =>
-    isSuperFarm ? 'minmax(auto, 50%) minmax(auto, 50%)' : 'minmax(auto, 100%)'};
+  grid-template-columns: minmax(auto, 50%) minmax(auto, 50%);
   grid-gap: 8px;
   justify-content: center;
 `;

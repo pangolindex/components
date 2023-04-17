@@ -1,3 +1,4 @@
+import { Token } from '@pangolindex/sdk';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
@@ -24,26 +25,18 @@ import { DetailModalProps } from './types';
 
 const DetailModal: React.FC<DetailModalProps> = (props) => {
   const { height } = useWindowSize();
-  const { isOpen, currency0, currency1, onClose } = props;
+  const { isOpen, position, onClose } = props;
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
   const [tabIndex, setTabIndex] = useState(0);
 
   const headerArgs = {
-    currency0,
-    currency1,
+    token0: position?.token0 as Token,
+    token1: position?.token1 as Token,
     statItems: [
       {
         title: 'Fee Rate',
-        stat: '0.3%',
-      },
-      {
-        title: 'Min Price',
-        stat: `1,023.42 ${currency0?.symbol}/${currency1?.symbol}`,
-      },
-      {
-        title: 'Max Price',
-        stat: `1,023.42 ${currency0?.symbol}/${currency1?.symbol}`,
+        stat: `%${position && position.fee / 10 ** 4}`,
       },
       {
         title: 'Swap Fee APR',
@@ -59,7 +52,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
         <CustomTab>{t('votePage.details')}</CustomTab>
       </CustomTabList>
       <CustomTabPanel>
-        <DetailTab />
+        <DetailTab position={position} />
       </CustomTabPanel>
     </Tabs>
   );
@@ -84,7 +77,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
             </Box>
             <Box mt={'20px'}>
               <Root>
-                <EarnWidget />
+                <EarnWidget position={position} />
               </Root>
             </Box>
             <Box mt={25}>{renderTabs()}</Box>
@@ -99,7 +92,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
                 <IncreasePosition />
               </Root>
               <Root>
-                <EarnWidget />
+                <EarnWidget position={position} />
               </Root>
             </RightSection>
           </DetailsWrapper>

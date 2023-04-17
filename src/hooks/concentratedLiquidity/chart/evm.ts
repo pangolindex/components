@@ -17,7 +17,7 @@ import { useTickLensContract } from 'src/hooks/useContract';
 import { useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
 import computeSurroundingTicks from 'src/utils/computeSurroundingTicks';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { usePool } from '../hooks/evm';
+import { usePool } from '../hooks/common';
 import { PoolState } from '../hooks/types';
 import { TickProcessed } from './types';
 

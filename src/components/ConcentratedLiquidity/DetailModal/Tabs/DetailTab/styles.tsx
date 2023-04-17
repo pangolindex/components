@@ -7,8 +7,10 @@ export const Wrapper = styled.div`
 `;
 
 export const NFT = styled.img`
+  max-width: 210px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100%;
+   max-width: 100%;
+   width: 100%;
   `};
 `;
 

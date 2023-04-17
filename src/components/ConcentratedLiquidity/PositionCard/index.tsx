@@ -1,9 +1,12 @@
-import { Currency, JSBI, Position, Price } from '@pangolindex/sdk';
+import { Position } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, DoubleCurrencyLogo, Text } from 'src/components';
 import { Bound } from 'src/components/LiquidityChartRangeInput/types';
-import useIsTickAtLimit, { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
+import useIsTickAtLimit, {
+  getPriceOrderingFromPositionForUI,
+  usePool,
+} from 'src/hooks/concentratedLiquidity/hooks/common';
 import { formatTickPrice } from 'src/utils';
 import {
   BlackBox,
@@ -20,61 +23,6 @@ import {
   Row,
 } from './styles';
 import { PositionCardProps } from './types';
-
-export function getPriceOrderingFromPositionForUI(position?: Position): {
-  priceLower?: Price;
-  priceUpper?: Price;
-  quote?: Currency;
-  base?: Currency;
-} {
-  if (!position) {
-    return {};
-  }
-
-  const token0 = position.amount0.currency;
-  const token1 = position.amount1.currency;
-
-  // TODO: handle stable assets
-  // if token0 is a dollar-stable asset, set it as the quote token
-  // const stables = [DAI, USDC_MAINNET, USDT];
-  // if (stables.some((stable) => stable.equals(token0))) {
-  //   return {
-  //     priceLower: position.token0PriceUpper.invert(),
-  //     priceUpper: position.token0PriceLower.invert(),
-  //     quote: token0,
-  //     base: token1,
-  //   };
-  // }
-
-  // if token1 is an ETH-/BTC-stable asset, set it as the base token
-  // const bases = [...Object.values(WRAPPED_NATIVE_CURRENCY), WBTC];
-  // if (bases.some((base) => base && base.equals(token1))) {
-  //   return {
-  //     priceLower: position.token0PriceUpper.invert(),
-  //     priceUpper: position.token0PriceLower.invert(),
-  //     quote: token0,
-  //     base: token1,
-  //   };
-  // }
-
-  // // if both prices are below 1, invert
-  if (position.token0PriceUpper.lessThan(JSBI.BigInt(1))) {
-    return {
-      priceLower: position.token0PriceUpper.invert(),
-      priceUpper: position.token0PriceLower.invert(),
-      quote: token0,
-      base: token1,
-    };
-  }
-
-  // otherwise, just return the default
-  return {
-    priceLower: position.token0PriceLower,
-    priceUpper: position.token0PriceUpper,
-    quote: token1,
-    base: token0,
-  };
-}
 
 const PositionCard: React.FC<PositionCardProps> = (props) => {
   const { currency0, currency1, feeAmount, liquidity, onClick, tickLower, tickUpper } = props;

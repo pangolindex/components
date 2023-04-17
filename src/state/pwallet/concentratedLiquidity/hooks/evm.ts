@@ -5,7 +5,7 @@ import { BIPS_BASE } from 'src/constants/swap';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
 import { useTokensHook } from 'src/hooks/tokens';
-import { useV3NFTPositionManagerContract } from 'src/hooks/useContract';
+import { useConcLiqNFTPositionManagerContract } from 'src/hooks/useContract';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
 import { useSingleCallResult, useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
@@ -24,7 +24,7 @@ import { useConcentratedPositionsFromTokenIdsHook } from './index';
 export function useConcentratedPositionsFromTokenIds(
   tokenIds: BigNumber[] | undefined,
 ): UseConcentratedPositionsResults {
-  const positionManager = useV3NFTPositionManagerContract();
+  const positionManager = useConcLiqNFTPositionManagerContract();
   const inputs = useMemo(() => (tokenIds ? tokenIds.map((tokenId) => [BigNumber.from(tokenId)]) : []), [tokenIds]);
   const results = useSingleContractMultipleData(positionManager, 'positions', inputs);
 
@@ -77,7 +77,7 @@ export function useConcentratedPositionFromTokenId(tokenId: BigNumber | undefine
 // It return the positions of the user.
 export function useGetUserPositions() {
   const { account } = usePangolinWeb3();
-  const positionManager = useV3NFTPositionManagerContract();
+  const positionManager = useConcLiqNFTPositionManagerContract();
 
   const chainId = useChainId();
   const useTokens = useTokensHook[chainId];
