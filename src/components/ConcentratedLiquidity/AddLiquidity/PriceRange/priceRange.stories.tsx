@@ -1,6 +1,7 @@
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
+import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
 import { PriceRangeProps } from './types';
 import PriceRange from '.';
 
@@ -51,4 +52,18 @@ export const Default = TemplatePriceRange.bind({});
 Default.args = {
   currency0: currency0,
   currency1: currency1,
+  getDecrementLower: () => '',
+  getIncrementLower: () => '',
+  getDecrementUpper: () => '',
+  getIncrementUpper: () => '',
+  onLeftRangeInput: (typedValue: string) => {
+    console.log(typedValue);
+  },
+  onRightRangeInput: (typedValue: string) => {
+    console.log(typedValue);
+  },
+  ticksAtLimit: {
+    [Bound.LOWER]: false,
+    [Bound.UPPER]: false,
+  },
 } as Partial<PriceRangeProps>;
