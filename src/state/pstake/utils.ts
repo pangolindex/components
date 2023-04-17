@@ -109,7 +109,8 @@ export function getExtraTokensWeeklyRewardRate(
   token: Token,
   tokenMultiplier: JSBI | undefined,
 ) {
-  const TEN_EIGHTEEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18));
+  const png = PNG[token.chainId];
+  const TEN_EIGHTEEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals));
 
   const rewardMultiplier = JSBI.BigInt(tokenMultiplier || 1);
 

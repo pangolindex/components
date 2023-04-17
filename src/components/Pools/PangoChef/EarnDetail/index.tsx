@@ -8,7 +8,7 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { useGetLockingPoolsForPoolIdHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
+import { useExtraPendingRewards } from 'src/state/pstake/hooks/common';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RemoveDrawer from '../../RemoveDrawer';
 import ClaimRewardV3 from '../ClaimReward';
@@ -28,7 +28,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
   const [isCompoundDrawerVisible, setShowCompoundDrawer] = useState(false);
   const [isRemoveDrawerVisible, setShowRemoveDrawer] = useState(false);
 
-  const { rewardTokensAmount, rewardTokensMultiplier } = useMinichefPendingRewards(stakingInfo);
+  const { rewardTokensAmount, rewardTokensMultiplier } = useExtraPendingRewards(stakingInfo);
 
   const useGetLockingPoolsForPoolId = useGetLockingPoolsForPoolIdHook[chainId];
 
@@ -85,7 +85,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           {t('dashboardPage.earned')}
         </Text>
 
-        {/* show unstak button */}
+        {/* show unstake button */}
         <Button
           variant="primary"
           width="100px"
@@ -129,7 +129,11 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
                 reward?.token,
                 tokenMultiplier,
               ) as TokenAmount;
-
+              console.log({
+                tokenMultiplier,
+                extraTokenWeeklyRewardRate,
+                rewardRate: extraTokenWeeklyRewardRate.toFixed(8),
+              });
               return (
                 <InnerWrapper key={index}>
                   <Box>

@@ -1,5 +1,5 @@
 import { CHAINS, ChefType, CurrencyAmount, JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
@@ -30,24 +30,35 @@ export const useMinichefPools = (): { [key: string]: number } => {
   }, [lpTokensArr]);
 };
 
-export function useMinichefPendingRewards(miniChefStaking: DoubleSideStakingInfo | null) {
+/**
+ * This hook return the pending rewards and multipliers of extra tokens give by farm
+ * @param miniChefStaking staking info with farm values
+ * @returns rewardTokensAmount is an array of tokens pending rewards,
+ * rewardTokensMultiplier is an array of tokens multipliers
+ */
+export function useExtraPendingRewards(miniChefStaking: DoubleSideStakingInfo | null) {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const useTokens = useTokensHook[chainId];
   const rewardData = useRef(
     {} as {
       rewardTokensAmount: TokenAmount[];
-      rewardTokensMultiplier: any;
+      rewardTokensMultiplier: JSBI[];
     },
   );
 
   const rewardAddress = miniChefStaking?.rewardsAddress;
   const rewardContract = useRewardViaMultiplierContract(rewardAddress !== ZERO_ADDRESS ? rewardAddress : undefined);
-  const getRewardTokensRes = useSingleCallResult(rewardContract, 'getRewardTokens');
-  const getRewardMultipliersRes = useSingleCallResult(rewardContract, 'getRewardMultipliers');
+  const getRewardTokensRes = useSingleCallResult(
+    miniChefStaking?.rewardTokensAddress ? undefined : rewardContract, // we don't need to make this contract call if exist this value in stakinginfo
+    'getRewardTokens',
+  );
+  const getRewardMultipliersRes = useSingleCallResult(
+    miniChefStaking?.rewardTokensMultiplier ? undefined : rewardContract, // same above
+    'getRewardMultipliers',
+  );
 
-  // this function will always return the maximum value earnedAmount
-  const getEarnedAmount = useCallback(() => {
+  const earnedAmount = useMemo(() => {
     // else if exist miniChefStaking.earnedAmount use this
     if (miniChefStaking?.earnedAmount) {
       return miniChefStaking.earnedAmount;
@@ -55,14 +66,26 @@ export function useMinichefPendingRewards(miniChefStaking: DoubleSideStakingInfo
     return new TokenAmount(PNG[chainId], '0');
   }, [miniChefStaking?.earnedAmount, chainId]);
 
-  const earnedAmount = getEarnedAmount();
-
-  const rewardTokensAddress = getRewardTokensRes?.result?.[0];
-
-  const rewardTokensMultiplier = getRewardMultipliersRes?.result?.[0];
-  const earnedAmountStr = earnedAmount ? JSBI.BigInt(earnedAmount?.raw).toString() : JSBI.BigInt(0).toString();
-
   const emptyArr = useMemo(() => [], []);
+
+  const rewardTokensAddress: string[] = useMemo(() => {
+    if ((miniChefStaking as MinichefStakingInfo)?.rewardTokens) {
+      return emptyArr;
+    }
+
+    return miniChefStaking?.rewardTokensAddress
+      ? miniChefStaking?.rewardTokensAddress
+      : getRewardTokensRes?.result?.[0]?.map();
+  }, [getRewardTokensRes, emptyArr, miniChefStaking]);
+
+  const rewardTokensMultiplier = useMemo(() => {
+    if (miniChefStaking?.rewardTokensMultiplier) {
+      return miniChefStaking.rewardTokensMultiplier;
+    }
+
+    return getRewardMultipliersRes?.result?.[0]?.map((multiplier) => JSBI.BigInt(multiplier?.toString() || 0));
+  }, [getRewardMultipliersRes, miniChefStaking]);
+  const earnedAmountStr = earnedAmount ? JSBI.BigInt(earnedAmount?.raw).toString() : JSBI.BigInt(0).toString();
 
   const pendingTokensParams = useMemo(() => [[0, account as string, earnedAmountStr]], [account, earnedAmountStr]);
   const pendingTokensRes = useSingleContractMultipleData(
@@ -72,7 +95,15 @@ export function useMinichefPendingRewards(miniChefStaking: DoubleSideStakingInfo
   );
 
   const isLoading = pendingTokensRes?.[0]?.loading;
-  const rewardTokens = useTokens(rewardTokensAddress);
+  const _rewardTokens = useTokens(rewardTokensAddress);
+
+  const rewardTokens = useMemo(() => {
+    const stakingInfo = miniChefStaking as MinichefStakingInfo;
+    if (stakingInfo?.rewardTokens) {
+      return stakingInfo.rewardTokens;
+    }
+    return _rewardTokens;
+  }, [_rewardTokens, miniChefStaking]);
 
   const rewardAmounts = pendingTokensRes?.[0]?.result?.amounts || emptyArr; // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -188,7 +219,7 @@ export function useGetRewardTokens(stakingInfo: DoubleSideStakingInfo) {
     // for another minichefs, if there is an array of reward tokens (stakingInfo.rewardTokens)
     // we don't need to query for the tokens, so the addresses can be undefined
     const _stakingInfo = stakingInfo as MinichefStakingInfo;
-    if (cheftType !== ChefType.MINI_CHEF && _stakingInfo.rewardTokens && _stakingInfo.rewardTokens.length > 0) {
+    if (cheftType !== ChefType.MINI_CHEF && _stakingInfo?.rewardTokens && _stakingInfo?.rewardTokens?.length > 0) {
       return undefined;
     }
 
