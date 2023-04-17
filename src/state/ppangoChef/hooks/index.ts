@@ -12,6 +12,7 @@ import {
   useGetPangoChefInfosViaSubgraph,
   useHederaPangoChefClaimRewardCallback,
   useHederaPangoChefCompoundCallback,
+  useHederaPangoChefInfos,
   useHederaPangoChefStakeCallback,
   useHederaPangoChefWithdrawCallback,
   useHederaPangochef,
@@ -21,6 +22,7 @@ export type UsePangoChefInfosHookType = {
   [chainId in ChainId]:
     | typeof usePangoChefInfos
     | typeof useGetPangoChefInfosViaSubgraph
+    | typeof useHederaPangoChefInfos
     | typeof useDummyPangoChefInfos
     | typeof useHederaPangochef;
 };
