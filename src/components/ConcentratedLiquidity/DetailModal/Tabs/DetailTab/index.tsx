@@ -1,17 +1,17 @@
-import { CurrencyAmount, Fraction, NumberType, Position, Price, formatPrice } from '@pangolindex/sdk';
+import { CurrencyAmount, Fraction, NumberType, Position, formatPrice } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useContext, useMemo } from 'react';
 import ContentLoader from 'react-content-loader';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Stat, Text } from 'src/components';
-import { USDCe } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { usePositionTokenURIHook, useUnderlyingTokensHook } from 'src/hooks/concentratedLiquidity/hooks';
 import useIsTickAtLimit, {
   getPriceOrderingFromPositionForUI,
   usePool,
 } from 'src/hooks/concentratedLiquidity/hooks/common';
+import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
 import { formatTickPrice, useInverter } from 'src/utils';
 import PriceCard from './PriceCard';
@@ -66,17 +66,9 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
     direction: Bound.UPPER,
   });
 
-  // TODO: Open it in production
-  // -------------------------------------------------------
-  // const useUSDCPrice = useUSDCPriceHook[chainId];
-  // const price0 = useUSDCPrice(position?.token0 ?? undefined);
-  // const price1 = useUSDCPrice(position?.token1 ?? undefined);
-  // -------------------------------------------------------
-  const USDC = USDCe[chainId];
-  const price0 = position?.token0 && new Price(position.token0, USDC, '1', '1');
-  const price1 = position?.token1 && new Price(position.token1, USDC, '1', '1');
-  // -------------------------------------------------------
-
+  const useUSDCPrice = useUSDCPriceHook[chainId];
+  const price0 = useUSDCPrice(position?.token0 ?? undefined);
+  const price1 = useUSDCPrice(position?.token1 ?? undefined);
   const fiatValueOfLiquidity: CurrencyAmount | null = useMemo(() => {
     if (!price0 || !price1 || !nativePosition) return null;
     const amount0 = price0.quote(nativePosition?.amount0);

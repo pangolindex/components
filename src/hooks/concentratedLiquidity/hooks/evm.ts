@@ -324,9 +324,11 @@ export function useUnderlyingTokens(
   if (!token0 || !token1 || !fee) return [undefined, undefined];
   if (!poolAddress) return [undefined, undefined];
 
-  const underlyingToken0 = token0result ? new TokenAmount(token0, token0result[0]) : undefined;
-  const underlyingToken1 = token1result ? new TokenAmount(token1, token1result[0]) : undefined;
-  return [underlyingToken0, underlyingToken1];
+  return useMemo(() => {
+    const underlyingToken0 = token0result ? new TokenAmount(token0, token0result[0]) : undefined;
+    const underlyingToken1 = token1result ? new TokenAmount(token1, token1result[0]) : undefined;
+    return [underlyingToken0, underlyingToken1];
+  }, [token0, token1, token0result, token1result]);
 }
 
 const MAX_UINT128 = BigNumber.from(2).pow(128).sub(1);
@@ -363,14 +365,16 @@ export function useConcLiqPositionFees(
     }
   }, [positionManager, tokenIdHexString, owner, latestBlockNumber]);
 
-  if (pool && amounts) {
-    return [
-      CurrencyAmount.fromRawAmount(unwrappedToken(pool.token0, chainId), amounts[0].toString()),
-      CurrencyAmount.fromRawAmount(unwrappedToken(pool.token1, chainId), amounts[1].toString()),
-    ];
-  } else {
-    return [undefined, undefined];
-  }
+  return useMemo(() => {
+    if (pool && amounts) {
+      return [
+        CurrencyAmount.fromRawAmount(unwrappedToken(pool.token0, chainId), amounts[0].toString()),
+        CurrencyAmount.fromRawAmount(unwrappedToken(pool.token1, chainId), amounts[1].toString()),
+      ];
+    } else {
+      return [undefined, undefined];
+    }
+  }, [pool, amounts, chainId]);
 }
 
 const STARTS_WITH = 'data:application/json;base64,';

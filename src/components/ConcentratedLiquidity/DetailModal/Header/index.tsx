@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = (props) => {
         </Visible>
       </HeaderWrapper>
 
-      <StatsWrapper colNumber={statItems.length + 1}>
+      <StatsWrapper colNumber={statItems.length + 2}>
         <Box display="inline-block">
           <Text color="text8" fontSize={14}>
             {t('common.poolRewards')}
@@ -48,10 +48,12 @@ const Header: React.FC<HeaderProps> = (props) => {
             statFontSize={[24, 18]}
           />
         ))}
+        <Box display="inline-block">
+          <Hidden upToSmall={true}>
+            <CloseIcon onClick={onClose} color={theme.text1} />
+          </Hidden>
+        </Box>
       </StatsWrapper>
-      <Hidden upToSmall={true}>
-        <CloseIcon onClick={onClose} color={theme.text1} />
-      </Hidden>
     </HeaderRoot>
   );
 };
