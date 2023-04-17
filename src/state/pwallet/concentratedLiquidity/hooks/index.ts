@@ -1,6 +1,11 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyConcentratedPositionsFromTokenIds, useDummyGetUserPositions } from './dummy';
-import { useConcentratedAddLiquidity, useConcentratedPositionsFromTokenIds, useGetUserPositions } from './evm';
+import {
+  useConcentratedAddLiquidity,
+  useConcentratedCollectEarnedFees,
+  useConcentratedPositionsFromTokenIds,
+  useGetUserPositions,
+} from './evm';
 
 export type UseGetUserPositionsHookType = {
   [chainId in ChainId]: typeof useGetUserPositions | typeof useDummyGetUserPositions;
@@ -105,4 +110,39 @@ export const useConcentratedAddLiquidityHook: UseConcAddLiquidityHookType = {
   [ChainId.MOONRIVER]: useConcentratedAddLiquidity,
   [ChainId.MOONBEAM]: useConcentratedAddLiquidity,
   [ChainId.OP]: useConcentratedAddLiquidity,
+};
+
+export type UseConcentratedCollectEarnedFeesHookType = {
+  [chainId in ChainId]: typeof useConcentratedCollectEarnedFees;
+};
+
+export const useConcentratedCollectEarnedFeesHook: UseConcentratedCollectEarnedFeesHookType = {
+  [ChainId.FUJI]: useConcentratedCollectEarnedFees,
+  [ChainId.AVALANCHE]: useConcentratedCollectEarnedFees,
+  [ChainId.WAGMI]: useConcentratedCollectEarnedFees,
+  [ChainId.COSTON]: useConcentratedCollectEarnedFees,
+  [ChainId.SONGBIRD]: useConcentratedCollectEarnedFees,
+  [ChainId.FLARE_MAINNET]: useConcentratedCollectEarnedFees,
+  [ChainId.HEDERA_TESTNET]: useConcentratedCollectEarnedFees,
+  [ChainId.HEDERA_MAINNET]: useConcentratedCollectEarnedFees,
+  [ChainId.NEAR_MAINNET]: useConcentratedCollectEarnedFees,
+  [ChainId.NEAR_TESTNET]: useConcentratedCollectEarnedFees,
+  [ChainId.COSTON2]: useConcentratedCollectEarnedFees,
+  [ChainId.EVMOS_TESTNET]: useConcentratedCollectEarnedFees,
+  [ChainId.EVMOS_MAINNET]: useConcentratedCollectEarnedFees,
+  [ChainId.ETHEREUM]: useConcentratedCollectEarnedFees,
+  [ChainId.POLYGON]: useConcentratedCollectEarnedFees,
+  [ChainId.FANTOM]: useConcentratedCollectEarnedFees,
+  [ChainId.XDAI]: useConcentratedCollectEarnedFees,
+  [ChainId.BSC]: useConcentratedCollectEarnedFees,
+  [ChainId.ARBITRUM]: useConcentratedCollectEarnedFees,
+  [ChainId.CELO]: useConcentratedCollectEarnedFees,
+  [ChainId.OKXCHAIN]: useConcentratedCollectEarnedFees,
+  [ChainId.VELAS]: useConcentratedCollectEarnedFees,
+  [ChainId.AURORA]: useConcentratedCollectEarnedFees,
+  [ChainId.CRONOS]: useConcentratedCollectEarnedFees,
+  [ChainId.FUSE]: useConcentratedCollectEarnedFees,
+  [ChainId.MOONRIVER]: useConcentratedCollectEarnedFees,
+  [ChainId.MOONBEAM]: useConcentratedCollectEarnedFees,
+  [ChainId.OP]: useConcentratedCollectEarnedFees,
 };
