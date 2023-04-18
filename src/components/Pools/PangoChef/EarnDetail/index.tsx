@@ -129,11 +129,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
                 reward?.token,
                 tokenMultiplier,
               ) as TokenAmount;
-              console.log({
-                tokenMultiplier,
-                extraTokenWeeklyRewardRate,
-                rewardRate: extraTokenWeeklyRewardRate.toFixed(8),
-              });
+
               return (
                 <InnerWrapper key={index}>
                   <Box>

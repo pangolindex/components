@@ -223,7 +223,7 @@ export function useGetRewardTokens(stakingInfo: DoubleSideStakingInfo) {
       return undefined;
     }
 
-    return stakingInfo.rewardTokensAddress;
+    return stakingInfo?.rewardTokensAddress;
   }
 
   const tokensAddresses = getRewardsTokensAddresses();
