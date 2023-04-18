@@ -38,12 +38,7 @@ export enum SubgraphEnum {
 }
 
 export const getSubgraphClient = (chainId: ChainId, subgraph: SubgraphEnum) => {
-  let url = CHAINS[chainId]?.subgraph?.[subgraph];
-
-  // workaround for now
-  if (chainId === ChainId.HEDERA_MAINNET) {
-    url = 'https://hedera-graph.pangolin.network/subgraphs/id/QmP4621zQ7VXfFm8hnoqpY8H4QVpoZ1jghnV2rgvtShdxT';
-  }
+  const url = CHAINS[chainId]?.subgraph?.[subgraph];
 
   if (url) {
     return new GraphQLClient(url);
