@@ -232,7 +232,7 @@ export function useGetRewardTokens(stakingInfo: DoubleSideStakingInfo) {
 
   return useMemo(() => {
     const rewardTokens =
-      cheftType === ChefType.MINI_CHEF ? undefined : (stakingInfo as MinichefStakingInfo).rewardTokens;
+      cheftType === ChefType.MINI_CHEF ? undefined : (stakingInfo as MinichefStakingInfo)?.rewardTokens;
 
     if (!rewardTokens && _rewardTokens) {
       // filter only tokens
