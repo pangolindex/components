@@ -1,6 +1,7 @@
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { PriceInputProps } from './types';
 import PriceInput from '.';
 
@@ -15,26 +16,26 @@ export default {
     },
   },
   argTypes: {
-    price: {
-      name: 'Price',
+    value: {
+      name: 'Value',
       control: 'text',
       type: { name: 'string', required: true },
-      description: 'Price',
+      description: 'Value',
     },
-    currency0: {
+    tokenA: {
       name: 'Currency 0',
       control: 'object',
       type: { name: 'object', required: true },
       description: 'Currency',
     },
-    currency1: {
+    tokenB: {
       name: 'Currency 1',
       control: 'object',
       type: { name: 'object', required: true },
       description: 'Currency',
     },
-    setPrice: {
-      name: 'Set Price',
+    onUserInput: {
+      name: 'User Input',
       control: 'function',
       type: { name: 'function', required: true },
       defaultValue: () => {},
@@ -52,6 +53,9 @@ const currency1 = new Token(
   'Pangolin',
 );
 
+const tokenA = currency0 ? wrappedCurrency(currency0, 43113) : undefined;
+const tokenB = currency1 ? wrappedCurrency(currency1, 43113) : undefined;
+
 const TemplatePriceInput: ComponentStory<typeof PriceInput> = (args: any) => {
   return (
     <div style={{ width: 'max-content' }}>
@@ -63,10 +67,17 @@ const TemplatePriceInput: ComponentStory<typeof PriceInput> = (args: any) => {
 export const Default = TemplatePriceInput.bind({});
 Default.args = {
   title: 'Min Price',
-  price: '102.6',
-  setPrice: (price: string) => {
+  value: '102.6',
+  onUserInput: (price: string) => {
     console.log(price);
   },
-  currency0,
-  currency1,
+  tokenA: tokenA?.symbol,
+  tokenB: tokenB?.symbol,
+  decrement: () => {},
+  increment: () => {},
+  decrementDisabled: false,
+  incrementDisabled: false,
+  feeAmount: 3000,
+  label: tokenA?.symbol,
+  locked: false, // disable input
 } as Partial<PriceInputProps>;

@@ -4,7 +4,6 @@ import { Box, CurrencyInput, TextInput } from 'src/components';
 export const Root = styled(Box)`
   width: 100%;
   max-width: 470px;
-  background-color: ${({ theme }) => theme.color8};
   border-radius: 10px;
   position: relative;
   overflow: hidden;
@@ -52,7 +51,7 @@ export const CurrencyInputs = styled(Box)`
 `;
 
 export const InputText = styled(TextInput)`
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.color3};
   align-items: center;
   border-radius: 4px;
 `;
@@ -67,7 +66,7 @@ export const InputWrapper = styled(Box)`
 `;
 
 export const InputValue = styled(Box)`
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.color3};
   padding: 15px;
   display: flex;
   justify-content: space-between;

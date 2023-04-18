@@ -16,7 +16,7 @@ const pulse = (color: string) => keyframes`
 `;
 
 export const Wrapper = styled(Box)<{ selected: boolean }>`
-  background-color: ${({ theme }) => theme?.color5};
+  background-color: ${({ theme }) => theme?.color3};
   border: ${({ theme, selected }) => (selected ? `1px solid ${theme.primary}` : 'none')};
   width: 100%;
   padding: 8px;

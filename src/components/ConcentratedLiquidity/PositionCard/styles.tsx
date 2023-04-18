@@ -9,8 +9,8 @@ export const HoverWrapper = styled.div`
   --border-angle: 0turn;
   padding: calc(var(--g) + var(--b));
   width: 100%;
-  background-image: conic-gradient(from var(--border-angle), #213, #112 50%, #213),
-    conic-gradient(from var(--border-angle), transparent 20%, var(--c), var(--c));
+  /* background-image: conic-gradient(from var(--border-angle), #213, #112 50%, #213),
+    conic-gradient(from var(--border-angle), transparent 20%, var(--c), var(--c)); */
   background-size: calc(100% - (var(--border-size) * 2)) calc(100% - (var(--border-size) * 2)), cover;
   background-position: center center;
   background-repeat: no-repeat;

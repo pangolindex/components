@@ -1,3 +1,4 @@
+import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { FeeSelectorProps } from './types';
@@ -14,39 +15,48 @@ export default {
     },
   },
   argTypes: {
-    feeTierName: {
-      name: 'Fee Tier Name',
-      control: 'text',
-      type: { name: 'string', required: true },
-      description: 'Fee Tier Name',
-    },
-    description: {
-      name: 'Description',
-      control: 'text',
-      type: { name: 'string', required: true },
-      description: 'Description',
-    },
-    selectedPercentage: {
-      name: 'Selected Percentage',
-      control: 'number',
-      type: { name: 'string', required: true },
-      description: 'Selected Percentage',
-    },
-    selected: {
-      name: 'Selected',
+    disabled: {
+      name: 'Disable',
       control: 'boolean',
       type: { name: 'boolean', required: true },
-      description: 'Mark the fee tier as selected',
+      description: 'The state of the Box disable',
     },
-    onSelectFeeTier: {
+    // feeAmount: {
+    //   name: 'Fee Amount',
+    //   control: 'text',
+    //   type: { name: 'string', required: true },
+    //   description: 'Fee Tier Amount',
+    // },
+    handleFeePoolSelect: {
       name: 'On Select Fee Tier',
       control: 'function',
       type: { name: 'function', required: true },
       defaultValue: () => {},
       description: 'The function to be called when user select the fee tier',
     },
+    currency0: {
+      name: 'Currency 0',
+      control: 'object',
+      type: { name: 'object', required: true },
+      description: 'Currency',
+    },
+    currency1: {
+      name: 'Currency 1',
+      control: 'object',
+      type: { name: 'object', required: true },
+      description: 'Currency',
+    },
   },
 };
+
+const currency0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
+const currency1 = new Token(
+  ChainId.AVALANCHE,
+  CHAINS[ChainId.AVALANCHE].contracts!.png,
+  18,
+  CHAINS[ChainId.AVALANCHE].png_symbol!,
+  'Pangolin',
+);
 
 const TemplateFeeTier: ComponentStory<typeof FeeSelector> = (args: any) => {
   return (
@@ -58,9 +68,8 @@ const TemplateFeeTier: ComponentStory<typeof FeeSelector> = (args: any) => {
 
 export const Default = TemplateFeeTier.bind({});
 Default.args = {
-  feeTierName: '0.3%',
-  description: '0.3% fee on all trades',
-  selectedPercentage: 0.3,
-  selected: false,
-  onSelectFeeTier: () => {},
+  feeAmount: 3000,
+  handleFeePoolSelect: () => {},
+  currency0,
+  currency1,
 } as Partial<FeeSelectorProps>;
