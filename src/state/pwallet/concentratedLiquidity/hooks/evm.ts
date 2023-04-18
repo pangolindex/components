@@ -2,7 +2,6 @@ import {
   CAVAX,
   CHAINS,
   ConcentratedPool,
-  CurrencyAmount,
   JSBI,
   NonfungiblePositionManager,
   Percent,
@@ -286,15 +285,16 @@ export function useConcentratedCollectEarnedFees() {
     if (!token0 || !token1 || !chainId || !account || !tokenId) return;
 
     try {
-      // we fall back to expecting 0 fees in case the fetch fails, which is safe in the
-      // vast majority of cases
-      const { calldata, value } = NonfungiblePositionManager.collectCallParameters({
+      const param = {
         tokenId: tokenId.toString(),
-        expectedCurrencyOwed0: (feeValue0 as TokenAmount) ?? TokenAmount.fromRawAmount(token0, 0),
-        expectedCurrencyOwed1: (feeValue1 as TokenAmount) ?? TokenAmount.fromRawAmount(token1, 0),
+        expectedCurrencyOwed0: feeValue0 ?? TokenAmount.fromRawAmount(token0, 0),
+        expectedCurrencyOwed1: feeValue1 ?? TokenAmount.fromRawAmount(token1, 0),
         recipient: account,
         chainId: chainId,
-      });
+      };
+      // we fall back to expecting 0 fees in case the fetch fails, which is safe in the
+      // vast majority of cases
+      const { calldata, value } = NonfungiblePositionManager.collectCallParameters(param);
 
       const txn: { to: string; data: string; value: string } = {
         to: CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager ?? '',
@@ -324,10 +324,10 @@ export function useConcentratedCollectEarnedFees() {
           ' ' +
           'Fees' +
           ' ' +
-          CurrencyAmount.fromRawAmount(token0, 0).toExact() +
+          param?.expectedCurrencyOwed0?.toExact() +
           'AND' +
           ' ' +
-          CurrencyAmount.fromRawAmount(token1, 0).toExact(),
+          param?.expectedCurrencyOwed1?.toExact(),
       });
 
       return response;

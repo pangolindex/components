@@ -91,7 +91,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
               <Root>
                 <IncreasePosition />
               </Root>
-              <Root>
+              <Root verticalPadding={'30px'}>
                 <EarnWidget position={position} />
               </Root>
             </RightSection>

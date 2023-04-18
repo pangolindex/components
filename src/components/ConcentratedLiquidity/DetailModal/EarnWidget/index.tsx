@@ -41,6 +41,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
   // these currencies will match the feeValue{0,1} currencies for the purposes of fee collection
   const currency0ForFeeCollectionPurposes = pool ? (unwrappedToken(pool.token0, chainId) as Token) : undefined;
   const currency1ForFeeCollectionPurposes = pool ? (unwrappedToken(pool.token1, chainId) as Token) : undefined;
+  const canClaim = feeValue0 && feeValue1 && feeValue0.greaterThan('0') && feeValue1.greaterThan('0');
 
   const collectFees = useConcentratedCollectEarnedFeesHook[chainId]();
   const onClaim = async () => {
@@ -59,6 +60,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
           feeValue1: feeValue1,
         },
       });
+
       setHash(collectFeesResponse?.hash as string);
       mixpanel.track(MixPanelEvents.CLAIM_REWARDS, {
         chainId: chainId,
@@ -129,7 +131,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
           </Box>
 
           <Box my={'12px'}>
-            <Button variant="primary" onClick={onClaim}>
+            <Button variant="primary" isDisabled={!canClaim} onClick={onClaim}>
               {_error ?? t('earn.claimReward', { symbol: '' })}
             </Button>
           </Box>
@@ -138,6 +140,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
 
       <RemoveDrawer
         isOpen={isRemoveDrawerVisible}
+        position={position}
         onClose={() => {
           setShowRemoveDrawer(false);
         }}
