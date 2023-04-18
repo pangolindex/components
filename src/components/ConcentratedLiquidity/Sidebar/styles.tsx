@@ -4,7 +4,7 @@ import { Box, Text } from 'src/components';
 
 export const SidebarWrapper = styled(Box)`
   width: 100%;
-  background-color: ${({ theme }) => theme.concentratedLiquidity?.secondaryBgColor};
+  background-color: ${({ theme }) => theme.color13};
   border-radius: 0px;
   height: auto;
   max-width: 200px;

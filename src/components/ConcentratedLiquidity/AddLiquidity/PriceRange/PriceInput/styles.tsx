@@ -37,7 +37,7 @@ export const BlackBox = styled(Box)<{ disabled?: boolean }>`
 `;
 
 export const InputText = styled(TextInput)`
-  background-color: ${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.color3};
   align-items: center;
   border-radius: 4px;
   text-align: center;

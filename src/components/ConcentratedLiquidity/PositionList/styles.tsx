@@ -3,7 +3,7 @@ import { Box } from 'src/components';
 
 export const PoolsWrapper = styled(Box)`
   width: 100%;
-  background-color: ${({ theme }) => theme.color8};
+  background-color: ${({ theme }) => theme.color2};
   padding: 10px;
   border-radius: 0px;
   overflow: hidden;
@@ -25,7 +25,6 @@ export const LoaderWrapper = styled(Box)`
   pointer-events: all;
   justify-content: center;
   padding-right: 200px; // sidebar width
-  background-color: ${({ theme }) => theme.bg2 + '70'}; // opacity 70%
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding-right: 0px;
   `};

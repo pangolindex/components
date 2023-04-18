@@ -387,7 +387,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                       justifyContent="center"
                       alignItems="center"
                       padding="10px"
-                      bgColor="color5"
+                      bgColor="color7"
                       borderRadius="8px"
                       margin="auto"
                       flexGrow={1}
@@ -461,7 +461,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                   justifyContent="center"
                   alignItems="center"
                   padding="10px"
-                  bgColor="color5"
+                  bgColor="color7"
                   borderRadius="8px"
                   margin="auto"
                   flexGrow={1}
@@ -479,7 +479,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                   justifyContent="center"
                   alignItems="center"
                   padding="10px"
-                  bgColor="color5"
+                  bgColor="color7"
                   borderRadius="8px"
                   margin="auto"
                   flexGrow={1}

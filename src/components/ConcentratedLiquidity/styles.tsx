@@ -50,7 +50,7 @@ export const MobileHeader = styled(Box)`
 export const Content = styled(Box)`
   display: grid;
   width: 100%;
-  background-color: ${({ theme }) => theme.color8};
+  background-color: ${({ theme }) => theme.color2};
   ${({ theme }) => theme.mediaWidth.upToSmall`
     grid-template-rows: max-content auto;
   `};
