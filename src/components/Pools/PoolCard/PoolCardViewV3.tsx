@@ -1,4 +1,4 @@
-import { CHAINS, Fraction, Token } from '@pangolindex/sdk';
+import { CHAINS, Fraction, JSBI, Token } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -69,7 +69,6 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
   };
 
   const farmApr = stakingInfo?.stakingApr;
-  const earnedAmount = stakingInfo?.earnedAmount;
 
   const userApr = stakingInfo.userApr;
 
@@ -83,7 +82,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
   const totalApr = (apr ?? 0) + extraAPR;
 
   const renderButton = () => {
-    if (isStaking && Boolean(earnedAmount.greaterThan('0')))
+    if (isStaking && JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0)))
       return (
         <ActionButon
           variant="plain"
