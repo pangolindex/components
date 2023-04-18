@@ -165,6 +165,7 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoading, onComplete }: Remove
       console.error(_err);
     } finally {
       setAttempting(false);
+      setSignatureData(null);
     }
   }
 
