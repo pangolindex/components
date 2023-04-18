@@ -1,4 +1,14 @@
-import { CAVAX, CHAINS, ConcentratedPool, JSBI, NonfungiblePositionManager, Percent, Position } from '@pangolindex/sdk';
+import {
+  CAVAX,
+  CHAINS,
+  ConcentratedPool,
+  CurrencyAmount,
+  JSBI,
+  NonfungiblePositionManager,
+  Percent,
+  Position,
+  TokenAmount,
+} from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { BIPS_BASE } from 'src/constants/swap';
@@ -14,6 +24,7 @@ import { calculateGasMargin, waitForTransaction } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import {
   ConcAddLiquidityProps,
+  ConcentratedLiquidityCollectFeesProps,
   PositionDetails,
   UseConcentratedPositionResults,
   UseConcentratedPositionsResults,
@@ -258,6 +269,73 @@ export function useConcentratedAddLiquidity() {
       }
     } finally {
       // This is intentional
+    }
+  };
+}
+
+export function useConcentratedCollectEarnedFees() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const { library } = useLibrary();
+  const addTransaction = useTransactionAdder();
+
+  return async (data: ConcentratedLiquidityCollectFeesProps) => {
+    const { tokenId, tokens, feeValues } = data;
+    const { token0, token1 } = tokens;
+    const { feeValue0, feeValue1 } = feeValues;
+    if (!token0 || !token1 || !chainId || !account || !tokenId) return;
+
+    try {
+      // we fall back to expecting 0 fees in case the fetch fails, which is safe in the
+      // vast majority of cases
+      const { calldata, value } = NonfungiblePositionManager.collectCallParameters({
+        tokenId: tokenId.toString(),
+        expectedCurrencyOwed0: (feeValue0 as TokenAmount) ?? TokenAmount.fromRawAmount(token0, 0),
+        expectedCurrencyOwed1: (feeValue1 as TokenAmount) ?? TokenAmount.fromRawAmount(token1, 0),
+        recipient: account,
+        chainId: chainId,
+      });
+
+      const txn: { to: string; data: string; value: string } = {
+        to: CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager ?? '',
+        data: calldata,
+        value,
+      };
+
+      const estimatedGasLimit = await library.getSigner().estimateGas(txn);
+
+      const newTxn = {
+        ...txn,
+        gasLimit: calculateGasMargin(estimatedGasLimit),
+      };
+
+      const response = await library.getSigner().sendTransaction(newTxn);
+
+      await waitForTransaction(response, 5);
+
+      addTransaction(response, {
+        summary:
+          'Collect' +
+          ' ' +
+          token0?.symbol +
+          'AND' +
+          ' ' +
+          token1?.symbol +
+          ' ' +
+          'Fees' +
+          ' ' +
+          CurrencyAmount.fromRawAmount(token0, 0).toExact() +
+          'AND' +
+          ' ' +
+          CurrencyAmount.fromRawAmount(token1, 0).toExact(),
+      });
+
+      return response;
+    } catch (err) {
+      const _err = err as any;
+      if (_err?.code !== 4001) {
+        console.error(_err);
+      }
     }
   };
 }
