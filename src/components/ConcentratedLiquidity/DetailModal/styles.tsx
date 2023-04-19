@@ -77,14 +77,14 @@ export const RightSection = styled(Box)`
   flex-direction: column;
 `;
 
-export const Root = styled(Box)`
+export const Root = styled(Box)<{ verticalPadding?: string }>`
   width: 100%;
   background-color: ${({ theme }) => theme.bg2};
   border-radius: 10px;
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 20px 30px;
+  padding: ${({ verticalPadding }) => (verticalPadding ? `${verticalPadding} 30px` : '20px 30px')};
   * {
     box-sizing: border-box;
   }

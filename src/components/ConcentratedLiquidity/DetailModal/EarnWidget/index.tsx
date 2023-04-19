@@ -1,9 +1,14 @@
+import { Token } from '@pangolindex/sdk';
+import mixpanel from 'mixpanel-browser';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
-import { useChainId } from 'src/hooks';
+import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useConcLiqPositionFeesHook } from 'src/hooks/concentratedLiquidity/hooks';
 import { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
+import { MixPanelEvents } from 'src/hooks/mixpanel';
+import { useConcentratedCollectEarnedFeesHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
+import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RemoveDrawer from './RemoveDrawer';
 import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styles';
 import { EarnWidgetProps } from './types';
@@ -12,9 +17,11 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
   const { position } = props;
   const { t } = useTranslation();
   const chainId = useChainId();
+  const { account } = usePangolinWeb3();
+  const { provider, library } = useLibrary();
   const useConcLiqPositionFees = useConcLiqPositionFeesHook[chainId];
   const [hash, setHash] = useState<string | undefined>();
-  const [attempting, setAttempting] = useState(false);
+  const [attempting, setAttempting] = useState<boolean>(false);
   function wrappedOnDismiss() {
     setHash(undefined);
     setAttempting(false);
@@ -30,6 +37,45 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
   const [feeValue0, feeValue1] = useConcLiqPositionFees(pool ?? undefined, position?.tokenId);
   const feeValueUpper = inverted ? feeValue0 : feeValue1;
   const feeValueLower = inverted ? feeValue1 : feeValue0;
+
+  // these currencies will match the feeValue{0,1} currencies for the purposes of fee collection
+  const currency0ForFeeCollectionPurposes = pool ? (unwrappedToken(pool.token0, chainId) as Token) : undefined;
+  const currency1ForFeeCollectionPurposes = pool ? (unwrappedToken(pool.token1, chainId) as Token) : undefined;
+  const canClaim = feeValue0 && feeValue1 && feeValue0.greaterThan('0') && feeValue1.greaterThan('0');
+
+  const collectFees = useConcentratedCollectEarnedFeesHook[chainId]();
+  const onClaim = async () => {
+    if (!chainId || !library || !account || !provider) return;
+    if (!currency0ForFeeCollectionPurposes || !currency1ForFeeCollectionPurposes) return;
+    try {
+      setAttempting(true);
+      const collectFeesResponse = await collectFees({
+        tokenId: position?.tokenId,
+        tokens: {
+          token0: currency0ForFeeCollectionPurposes,
+          token1: currency1ForFeeCollectionPurposes,
+        },
+        feeValues: {
+          feeValue0: feeValue0,
+          feeValue1: feeValue1,
+        },
+      });
+
+      setHash(collectFeesResponse?.hash as string);
+      mixpanel.track(MixPanelEvents.CLAIM_REWARDS, {
+        chainId: chainId,
+        token0: currency0ForFeeCollectionPurposes.symbol,
+        token1: currency1ForFeeCollectionPurposes.symbol,
+        tokenId: position?.tokenId,
+      });
+    } catch (err) {
+      const _err = err as any;
+
+      console.error(_err);
+    } finally {
+      setAttempting(false);
+    }
+  };
 
   return (
     <ClaimWrapper>
@@ -85,13 +131,8 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
           </Box>
 
           <Box my={'12px'}>
-            <Button
-              variant="primary"
-              onClick={() => {
-                console.log('onClick');
-              }}
-            >
-              {_error ?? t('earn.claimReward', { symbol: 'PNG' })}
+            <Button variant="primary" isDisabled={!canClaim} onClick={onClaim}>
+              {_error ?? t('earn.claimReward', { symbol: '' })}
             </Button>
           </Box>
         </Root>
@@ -99,6 +140,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
 
       <RemoveDrawer
         isOpen={isRemoveDrawerVisible}
+        position={position}
         onClose={() => {
           setShowRemoveDrawer(false);
         }}
