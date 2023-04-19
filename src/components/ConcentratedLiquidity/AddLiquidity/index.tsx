@@ -323,14 +323,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onDismiss={function (): void {
-        console.log('onDismiss Function not implemented.');
-      }}
-      overlayBG={theme.modalBG2}
-      closeOnClickOutside={true}
-    >
+    <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={true}>
       <Root>
         <Wrapper maximumHeight={height - 150}>
           <Box p={20}>

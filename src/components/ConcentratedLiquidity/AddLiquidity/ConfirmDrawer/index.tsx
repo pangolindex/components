@@ -44,7 +44,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
   const chainId = useChainId();
-  position?.pool?.token0;
+
   const currency0 = position?.pool?.token0 ? unwrappedToken(position?.pool?.token0, chainId) : undefined;
   const currency1 = position?.pool?.token1 ? unwrappedToken(position?.pool?.token1, chainId) : undefined;
 
