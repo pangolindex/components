@@ -412,7 +412,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
 
                     <InputValue>
                       <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
-                        Current {currency0?.symbol} Price:
+                        Current 1 {currency0?.symbol} Price:
                       </Text>
 
                       {price ? (

@@ -86,7 +86,7 @@ const PriceInput: React.FC<PriceInputProps> = (props) => {
       </PriceSection>
       <Box display={'flex'}>
         <Text color={'text16'} fontSize={'12px'} fontWeight={500}>
-          {tokenA} per {tokenB}
+          {tokenB} per {tokenA}
         </Text>
       </Box>
     </Wrapper>

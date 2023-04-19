@@ -18,6 +18,7 @@ import {
   tickToPrice,
 } from '@pangolindex/sdk';
 import { ReactNode, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
@@ -169,7 +170,7 @@ export interface DerivedMintInfo {
 export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-
+  const { t } = useTranslation();
   const {
     independentField,
     typedValue,
@@ -496,11 +497,15 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
 
   let errorMessage: string | undefined;
   if (!account) {
-    errorMessage = 'Connect Wallet';
+    errorMessage = t('mintHooks.connectWallet');
+  }
+
+  if (!currencies[Field.CURRENCY_A] || !currencies[Field.CURRENCY_B]) {
+    errorMessage = errorMessage ?? t('swapHooks.selectToken');
   }
 
   if (poolState === PoolState.INVALID) {
-    errorMessage = errorMessage ?? 'Invalid pair';
+    errorMessage = errorMessage ?? t('mintHooks.invalidPair');
   }
 
   if (invalidPrice) {
@@ -511,7 +516,7 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     (!parsedAmounts[Field.CURRENCY_A] && !depositADisabled) ||
     (!parsedAmounts[Field.CURRENCY_B] && !depositBDisabled)
   ) {
-    errorMessage = errorMessage ?? `Enter an amount`;
+    errorMessage = errorMessage ?? t('mintHooks.enterAmount');
   }
 
   const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts;
