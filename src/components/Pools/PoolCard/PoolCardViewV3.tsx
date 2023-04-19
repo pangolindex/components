@@ -82,6 +82,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
   const totalApr = (apr ?? 0) + extraAPR;
 
   const renderButton = () => {
+    // if multiplier is zero don't need to show compound button, because this farm not give rewards
     if (isStaking && JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0)))
       return (
         <ActionButon
