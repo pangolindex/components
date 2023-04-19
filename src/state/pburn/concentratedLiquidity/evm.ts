@@ -18,6 +18,7 @@ export function useConcentratedRemoveLiquidity() {
       !liquidityValue0 ||
       !liquidityValue1 ||
       !tokenId ||
+      !library ||
       !deadline ||
       !account ||
       !chainId ||

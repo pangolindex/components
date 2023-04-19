@@ -75,11 +75,13 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
                 <IncreasePosition />
               </Root>
             </Box>
-            <Box mt={'20px'}>
-              <Root>
-                <EarnWidget position={position} />
-              </Root>
-            </Box>
+            {position && !position.liquidity.isZero() && (
+              <Box mt={'20px'}>
+                <Root>
+                  <EarnWidget position={position} />
+                </Root>
+              </Box>
+            )}
             <Box mt={25}>{renderTabs()}</Box>
           </Box>
         </MobileWrapper>
@@ -91,9 +93,11 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
               <Root>
                 <IncreasePosition />
               </Root>
-              <Root verticalPadding={'30px'}>
-                <EarnWidget position={position} />
-              </Root>
+              {position && !position.liquidity.isZero() && (
+                <Root verticalPadding={'35px'}>
+                  <EarnWidget position={position} />
+                </Root>
+              )}
             </RightSection>
           </DetailsWrapper>
         </DesktopWrapper>

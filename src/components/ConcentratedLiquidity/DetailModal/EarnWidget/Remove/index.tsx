@@ -126,7 +126,7 @@ const Remove = ({ position }: RemoveProps) => {
           <>
             <Box flex={1}>
               <Box>
-                <Box display="flex" flexDirection="column">
+                <Box display="flex" flexDirection="column" style={{ gap: '12px' }}>
                   <TextInput
                     addonAfter={
                       <Box display="flex" alignItems="center">
