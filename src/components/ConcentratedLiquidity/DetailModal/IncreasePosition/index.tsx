@@ -18,7 +18,7 @@ import { useConcentratedAddLiquidityHook } from 'src/state/pwallet/concentratedL
 import { useDerivedPositionInfo } from 'src/state/pwallet/concentratedLiquidity/hooks/evm';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import OutofRangeWarning from '../../AddLiquidity/OutofRangeWarning';
+import OutofRangeWarning from '../../OutofRangeWarning';
 import {
   AddWrapper,
   ArrowWrapper,
