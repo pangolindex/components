@@ -17,7 +17,7 @@ import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { useConcentratedAddLiquidityHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
 import { useDerivedPositionInfo } from 'src/state/pwallet/concentratedLiquidity/hooks/evm';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import OutofRangeWarning from '../../OutofRangeWarning';
 import {
   AddWrapper,
@@ -36,6 +36,8 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
   const toggleWalletModal = useWalletModalToggle();
   const { position: positionDetails } = props;
   const chainId = useChainId();
+  const currency0 = positionDetails?.token0 ? unwrappedToken(positionDetails.token0, chainId) : undefined;
+  const currency1 = positionDetails?.token1 ? unwrappedToken(positionDetails.token1, chainId) : undefined;
   const { provider, library } = useLibrary();
 
   const deadline = useTransactionDeadline();
@@ -231,7 +233,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                   }}
                   showArrowIcon={false}
                   onTokenClick={() => {}}
-                  currency={positionDetails?.token0}
+                  currency={currency0}
                   labelColor={'text1'}
                   fontSize={16}
                   isNumeric={true}
@@ -241,9 +243,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                   addonLabel={
                     account && (
                       <Text color="text2" fontWeight={500} fontSize={12}>
-                        {!!positionDetails?.token0 && selectedCurrencyBalanceA
-                          ? selectedCurrencyBalanceA?.toSignificant(4)
-                          : ' -'}
+                        {!!currency0 && selectedCurrencyBalanceA ? selectedCurrencyBalanceA?.toSignificant(4) : ' -'}
                       </Text>
                     )
                   }
@@ -281,7 +281,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                   style={{ borderRadius: 4, alignItems: 'center' }}
                   showArrowIcon={false}
                   onTokenClick={() => {}}
-                  currency={positionDetails?.token1}
+                  currency={currency1}
                   labelColor={'text1'}
                   fontSize={16}
                   isNumeric={true}
@@ -290,9 +290,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                   addonLabel={
                     account && (
                       <Text color="text2" fontWeight={500} fontSize={12}>
-                        {!!positionDetails?.token1 && selectedCurrencyBalanceB
-                          ? selectedCurrencyBalanceB?.toSignificant(4)
-                          : ' -'}
+                        {!!currency1 && selectedCurrencyBalanceB ? selectedCurrencyBalanceB?.toSignificant(4) : ' -'}
                       </Text>
                     )
                   }
