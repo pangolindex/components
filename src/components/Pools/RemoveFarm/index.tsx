@@ -254,10 +254,9 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
                     isDisabled={Boolean(
                       stakingInfo.earnedAmount.equalTo('0') || stakingInfo.earnedAmount.lessThan('0'),
                     )}
+                    color={stakingInfo.earnedAmount.greaterThan('0') ? 'text1' : undefined}
                   >
-                    <Text color="text1">
-                      <Text color="text1">{t('sarCompound.compound')}</Text>
-                    </Text>
+                    {t('sarCompound.compound')}
                   </Button>
                 )}
                 {renderButton()}

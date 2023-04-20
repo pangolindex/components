@@ -234,7 +234,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
 
           <Stat
             title={`PGL`}
-            stat={noLiquidity ? '-' : `${numeral(liquidityMinted?.toSignificant(6)).format('0.00a')}`}
+            stat={noLiquidity ? '-' : `${numeral(liquidityMinted?.toFixed()).format('0.00a')}`}
             titlePosition="top"
             titleFontSize={14}
             statFontSize={[16, 20]}

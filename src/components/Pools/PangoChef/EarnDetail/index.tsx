@@ -1,4 +1,5 @@
 import { ChainId, TokenAmount } from '@pangolindex/sdk';
+import numeral from 'numeral';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
@@ -134,17 +135,19 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
                 <InnerWrapper key={index}>
                   <Box>
                     <Stat
-                      stat={`${extraTokenWeeklyRewardRate?.toSignificant(4, { groupSeparator: ',' }) ?? '-'} `}
+                      stat={numeral(extraTokenWeeklyRewardRate.toFixed(4)).format(`0.00a`)}
                       statFontSize={[20, 18]}
                       currency={reward?.token}
+                      toolTipText={`${extraTokenWeeklyRewardRate?.toSignificant(4, { groupSeparator: ',' }) ?? '-'} `}
                     />
                   </Box>
 
                   <Box>
                     <Stat
-                      stat={`${reward?.toFixed(Math.min(6, reward.token?.decimals)) ?? '0'}`}
+                      stat={numeral(reward?.toFixed(Math.min(4, reward.token?.decimals))).format('0.00a')}
                       statFontSize={[20, 18]}
                       currency={reward?.token}
+                      toolTipText={`${reward?.toFixed(Math.min(4, reward.token?.decimals)) ?? '0'}`}
                     />
                   </Box>
                 </InnerWrapper>

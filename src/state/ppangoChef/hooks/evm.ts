@@ -4,7 +4,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { CHAINS, ChainId, Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
+import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS, ZERO_FRACTION } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
@@ -26,7 +26,7 @@ import {
   useSingleContractMultipleData,
 } from '../../pmulticall/hooks';
 import { PangoChefCompoundData, PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables, WithdrawData } from '../types';
-import { calculateCompoundSlippage, calculateUserRewardRate } from '../utils';
+import { calculateCompoundSlippage, calculateUserAPR, calculateUserRewardRate } from '../utils';
 
 export function usePangoChefInfos() {
   const { account } = usePangolinWeb3();
@@ -302,10 +302,11 @@ export function usePangoChefInfos() {
 
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
-      const pairPrice = pairPrices[pair.liquidityToken.address];
+      const _pairPrice = pairPrices[pair?.liquidityToken?.address];
+      const pairPrice = _pairPrice ? _pairPrice.raw : ZERO_FRACTION;
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
-      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? new Fraction('0', '1');
+      const _totalStakedInWavax = pairPrice.multiply(totalStakedAmount?.raw) ?? ZERO_FRACTION;
 
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
@@ -350,8 +351,8 @@ export function usePangoChefInfos() {
               pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
                 .divide(
-                  pairPrice?.raw
-                    ?.multiply(pool?.valueVariables?.balance?.toString())
+                  pairPrice
+                    .multiply(pool?.valueVariables?.balance?.toString())
                     .multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent))),
                 )
                 .toSignificant(2),
@@ -382,10 +383,18 @@ export function usePangoChefInfos() {
         blockTime,
       );
 
+      const userApr = calculateUserAPR({
+        pairPrice,
+        pngPrice,
+        png,
+        userRewardRate,
+        stakedAmount: userTotalStakedAmount,
+      });
+
       farms.push({
         pid: pid,
         tokens: [pair.token0, pair.token1],
-        stakingRewardAddress: pangoChefContract?.address,
+        stakingRewardAddress: pangoChefContract?.address ?? '',
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         totalStakedInWavax: totalStakedInWavax,
@@ -409,8 +418,9 @@ export function usePangoChefInfos() {
         stakingApr: apr,
         pairPrice: pairPrice,
         poolType: pool.poolType,
-        poolRewardRate: rewardRate,
-      } as PangoChefInfo);
+        poolRewardRate: new Fraction(rewardRate.toString()),
+        userApr: userApr,
+      });
     }
     return farms;
   }, [
