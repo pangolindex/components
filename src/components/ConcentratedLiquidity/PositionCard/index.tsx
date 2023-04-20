@@ -3,11 +3,13 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, DoubleCurrencyLogo, Text } from 'src/components';
 import { Bound } from 'src/components/LiquidityChartRangeInput/types';
+import { useChainId } from 'src/hooks';
 import useIsTickAtLimit, {
   getPriceOrderingFromPositionForUI,
   usePool,
 } from 'src/hooks/concentratedLiquidity/hooks/common';
 import { formatTickPrice } from 'src/utils';
+import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import {
   BlackBox,
   BlackBoxContent,
@@ -25,7 +27,10 @@ import {
 import { PositionCardProps } from './types';
 
 const PositionCard: React.FC<PositionCardProps> = (props) => {
-  const { currency0, currency1, feeAmount, liquidity, onClick, tickLower, tickUpper } = props;
+  const { token0, token1, feeAmount, liquidity, onClick, tickLower, tickUpper } = props;
+  const chainId = useChainId();
+  const currency0 = token0 && unwrappedToken(token0, chainId);
+  const currency1 = token1 && unwrappedToken(token1, chainId);
   // construct Position from details returned
   const [, pool] = usePool(currency0 ?? undefined, currency1 ?? undefined, feeAmount);
   const position = useMemo(() => {
@@ -50,6 +55,7 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
     direction: Bound.UPPER,
   });
   const { t } = useTranslation();
+
   return (
     <>
       <DesktopWrapper>

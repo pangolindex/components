@@ -100,7 +100,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
             <RewardWrapper>
               <StatWrapper>
                 <Stat
-                  title={t('earn.unclaimedReward', { symbol: `${position?.token0?.symbol}` })}
+                  title={t('earn.unclaimedReward', { symbol: `${currency0ForFeeCollectionPurposes?.symbol}` })}
                   stat={feeValueUpper ? feeValueUpper?.toSignificant(4) : '-'}
                   titlePosition="top"
                   titleFontSize={12}
@@ -112,7 +112,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
 
               <StatWrapper>
                 <Stat
-                  title={t('earn.unclaimedReward', { symbol: `${position?.token1?.symbol}` })}
+                  title={t('earn.unclaimedReward', { symbol: `${currency1ForFeeCollectionPurposes?.symbol}` })}
                   stat={feeValueLower ? feeValueLower?.toSignificant(4) : '-'}
                   titlePosition="top"
                   titleFontSize={12}

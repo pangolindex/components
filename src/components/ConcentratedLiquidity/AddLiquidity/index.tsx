@@ -163,13 +163,8 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   );
 
   const handleToggle = useCallback(() => {
-    // if (!ticksAtLimit[Bound.LOWER] && !ticksAtLimit[Bound.UPPER]) {
     onSwitchCurrencies();
     onResettMintStateOnToggle();
-    // onLeftRangeInput((invertPrice ? priceLower : priceUpper?.invert())?.toSignificant(6) ?? '');
-    // onRightRangeInput((invertPrice ? priceUpper : priceLower?.invert())?.toSignificant(6) ?? '');
-    // onFieldAInput(formattedAmounts[Field.CURRENCY_B] ?? '');
-    // }
   }, [onSetFeeAmount, onLeftRangeInput, onRightRangeInput, onSwitchCurrencies]);
 
   const handleCurrencySelect = useCallback(
@@ -396,7 +391,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                       justifyContent="center"
                       alignItems="center"
                       padding="10px"
-                      bgColor="color7"
+                      bgColor="color3"
                       borderRadius="8px"
                       margin="auto"
                       flexGrow={1}
@@ -470,7 +465,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                   justifyContent="center"
                   alignItems="center"
                   padding="10px"
-                  bgColor="color7"
+                  bgColor="color3"
                   borderRadius="8px"
                   margin="auto"
                   flexGrow={1}
