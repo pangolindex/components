@@ -21,7 +21,7 @@ export const BlackWrapper = styled(Box)`
   justify-content: center;
   right: 0;
   top: 0;
-  background-color: ${({ theme }) => theme.concentratedLiquidity?.secondaryBgColor};
+  background-color: ${({ theme }) => theme.bg2};
 `;
 
 export const StyledBalanceMax = styled.button`
