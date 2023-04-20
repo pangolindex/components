@@ -38,6 +38,7 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
   const { priceLower, priceUpper } = getPriceOrderingFromPositionForUI(position);
   // check if price is within range
   const outOfRange: boolean = pool ? pool.tickCurrent < tickLower || pool.tickCurrent >= tickUpper : false;
+  const closed: boolean = liquidity.isZero();
   const minPrice = formatTickPrice({
     price: priceLower,
     atLimit: tickAtLimit,
@@ -72,7 +73,9 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
                 </BlackBox>
                 <BlackBox>
                   <BlackBoxContent color="color11" fontSize={18} fontWeight={500}>
-                    {outOfRange
+                    {closed
+                      ? t('common.closed')
+                      : outOfRange
                       ? t('concentratedLiquidity.positionCard.outOfRange')
                       : t('concentratedLiquidity.positionCard.inRange')}
                   </BlackBoxContent>

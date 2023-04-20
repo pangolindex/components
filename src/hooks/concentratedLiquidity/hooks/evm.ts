@@ -5,7 +5,6 @@ import {
   ChainId,
   ConcentratedPool,
   Currency,
-  CurrencyAmount,
   FeeAmount,
   JSBI,
   Token,
@@ -337,7 +336,7 @@ const MAX_UINT128 = BigNumber.from(2).pow(128).sub(1);
 export function useConcLiqPositionFees(
   pool?: ConcentratedPool,
   tokenId?: BigNumber,
-): [CurrencyAmount, CurrencyAmount] | [undefined, undefined] {
+): [TokenAmount, TokenAmount] | [undefined, undefined] {
   const chainId = useChainId();
   const positionManager = useConcLiqNFTPositionManagerContract(false);
   const tokenIdHexString = tokenId?.toHexString();
@@ -368,8 +367,8 @@ export function useConcLiqPositionFees(
   return useMemo(() => {
     if (pool && amounts) {
       return [
-        CurrencyAmount.fromRawAmount(unwrappedToken(pool.token0, chainId), amounts[0].toString()),
-        CurrencyAmount.fromRawAmount(unwrappedToken(pool.token1, chainId), amounts[1].toString()),
+        TokenAmount.fromRawAmount(unwrappedToken(pool.token0, chainId) as Token, amounts[0].toString()),
+        TokenAmount.fromRawAmount(unwrappedToken(pool.token1, chainId) as Token, amounts[1].toString()),
       ];
     } else {
       return [undefined, undefined];

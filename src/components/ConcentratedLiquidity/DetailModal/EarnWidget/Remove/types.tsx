@@ -1,7 +1,5 @@
 import { PositionDetails } from 'src/state/pwallet/concentratedLiquidity/types';
 
-export interface RemoveDrawerProps {
-  isOpen: boolean;
+export interface RemoveProps {
   position?: PositionDetails;
-  onClose: () => void;
 }

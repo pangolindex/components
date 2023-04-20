@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, FeeAmount, Position } from '@pangolindex/sdk';
+import { Currency, CurrencyAmount, FeeAmount, Position, Token, TokenAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { TokenReturnType } from 'src/hooks/tokens/constant';
 
@@ -47,4 +47,16 @@ export interface ConcAddLiquidityProps {
     CURRENCY_B?: Currency;
   };
   position?: Position;
+}
+
+export interface ConcentratedLiquidityCollectFeesProps {
+  tokenId?: BigNumber;
+  tokens: {
+    token0?: Token;
+    token1?: Token;
+  };
+  feeValues: {
+    feeValue0?: TokenAmount;
+    feeValue1?: TokenAmount;
+  };
 }
