@@ -143,7 +143,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
 
       setHash(response?.hash as string);
 
-      mixpanel.track(MixPanelEvents.ADD_LIQUIDITY, {
+      mixpanel.track(MixPanelEvents.INCREASE_LIQUIDITY, {
         chainId: chainId,
         tokenA: positionDetails?.token0?.symbol,
         tokenB: positionDetails?.token1?.symbol,
