@@ -1,6 +1,9 @@
+/* eslint-disable max-lines */
 import mixpanel from 'mixpanel-browser';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Lock } from 'react-feather';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import shuffle from 'src/assets/images/shuffle.svg';
 import { Box, Button, CurrencyInput, Loader, Stat, Text, TransactionCompleted } from 'src/components';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
@@ -15,7 +18,16 @@ import { useConcentratedAddLiquidityHook } from 'src/state/pwallet/concentratedL
 import { useDerivedPositionInfo } from 'src/state/pwallet/concentratedLiquidity/hooks/evm';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { AddWrapper, ArrowWrapper, ButtonWrapper, GridContainer, InformationBar, InputWrapper } from './styles';
+import OutofRangeWarning from '../../AddLiquidity/OutofRangeWarning';
+import {
+  AddWrapper,
+  ArrowWrapper,
+  BlackWrapper,
+  ButtonWrapper,
+  GridContainer,
+  InformationBar,
+  InputWrapper,
+} from './styles';
 import { IncreasePositionProps } from './types';
 
 const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
@@ -42,6 +54,8 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     noLiquidity,
     parsedAmounts,
     currencies,
+    depositADisabled,
+    depositBDisabled,
     position: derivedPosition,
   } = useDerivedMintInfo(existingPosition);
 
@@ -84,6 +98,8 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     }),
     [usdcValueCurrencyB],
   );
+
+  const theme = useContext(ThemeContext);
 
   const fiatOfLiquidity = useMemo(() => {
     if (currencyAFiat.data && currencyBFiat.data) {
@@ -172,6 +188,18 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
 
   return (
     <div>
+      {attempting && !hash && (
+        <BlackWrapper>
+          <Loader height={'auto'} size={100} label={` Adding...`} />
+        </BlackWrapper>
+      )}
+
+      {hash && (
+        <BlackWrapper>
+          <TransactionCompleted onClose={wrappedOnDismiss} submitText={t('pool.liquidityAdded')} />
+        </BlackWrapper>
+      )}
+
       <Text
         color="text1"
         fontSize={[22, 18]}
@@ -180,11 +208,18 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
       >
         {t('concentratedLiquidity.increasePosition.title')}
       </Text>
-      {!attempting && !hash && (
-        <div>
-          <AddWrapper>
-            <Box flex={1}>
-              <InputWrapper>
+
+      <div>
+        <AddWrapper>
+          <Box flex={1}>
+            <InputWrapper>
+              {depositADisabled ? (
+                <OutofRangeWarning
+                  label={`Token 1`}
+                  message={t('concentratedLiquidity.singleAssetDeposit')}
+                  addonLabel={<Lock size={18} color={theme?.textInput?.labelText} />}
+                />
+              ) : (
                 <CurrencyInput
                   label={`Token 1`}
                   value={formattedAmounts[Field.CURRENCY_A]}
@@ -213,20 +248,27 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                     )
                   }
                 />
+              )}
 
-                <Box
-                  width="100%"
-                  textAlign="center"
-                  alignItems="center"
-                  display={'flex'}
-                  justifyContent={'center'}
-                  mt={10}
-                >
-                  <ArrowWrapper>
-                    <img src={shuffle} alt="shuffle" />
-                  </ArrowWrapper>
-                </Box>
-
+              <Box
+                width="100%"
+                textAlign="center"
+                alignItems="center"
+                display={'flex'}
+                justifyContent={'center'}
+                mt={10}
+              >
+                <ArrowWrapper>
+                  <img src={shuffle} alt="shuffle" />
+                </ArrowWrapper>
+              </Box>
+              {depositBDisabled ? (
+                <OutofRangeWarning
+                  label={`Token 2`}
+                  message={t('concentratedLiquidity.singleAssetDeposit')}
+                  addonLabel={<Lock size={18} color={theme?.textInput?.labelText} />}
+                />
+              ) : (
                 <CurrencyInput
                   label={`Token 2`}
                   value={formattedAmounts[Field.CURRENCY_B]}
@@ -255,41 +297,37 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                     )
                   }
                 />
-              </InputWrapper>
+              )}
+            </InputWrapper>
+          </Box>
+        </AddWrapper>
+        <InformationBar>
+          <GridContainer>
+            <Box>
+              <Stat
+                title={`Dollar Worth:`}
+                stat={fiatOfLiquidity ? `$${fiatOfLiquidity.toFixed(2)}` : '-'}
+                titlePosition="top"
+                titleFontSize={12}
+                statFontSize={14}
+                titleColor="text8"
+              />
             </Box>
-          </AddWrapper>
-          <InformationBar>
-            <GridContainer>
-              <Box>
-                <Stat
-                  title={`Dollar Worth:`}
-                  stat={fiatOfLiquidity ? `$${fiatOfLiquidity.toFixed(2)}` : '-'}
-                  titlePosition="top"
-                  titleFontSize={12}
-                  statFontSize={14}
-                  titleColor="text8"
-                />
-              </Box>
 
-              <Box>
-                <Stat
-                  title={`Pool Share:`}
-                  stat={'-'}
-                  titlePosition="top"
-                  titleFontSize={12}
-                  statFontSize={14}
-                  titleColor="text8"
-                />
-              </Box>
-            </GridContainer>
-          </InformationBar>
-          <Box width="100%">{renderButton()}</Box>
-        </div>
-      )}
-
-      {attempting && !hash && <Loader size={100} label={` Adding...`} />}
-
-      {hash && <TransactionCompleted onClose={wrappedOnDismiss} submitText={t('pool.liquidityAdded')} />}
+            <Box>
+              <Stat
+                title={`Pool Share:`}
+                stat={'-'}
+                titlePosition="top"
+                titleFontSize={12}
+                statFontSize={14}
+                titleColor="text8"
+              />
+            </Box>
+          </GridContainer>
+        </InformationBar>
+        <Box width="100%">{renderButton()}</Box>
+      </div>
     </div>
   );
 };
