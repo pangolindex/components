@@ -36,7 +36,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
     statItems: [
       {
         title: 'Fee Rate',
-        stat: `%${position && position.fee / 10 ** 4}`,
+        stat: `${position && position.fee / 10 ** 4}%`,
       },
       {
         title: 'Swap Fee APR',
