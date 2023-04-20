@@ -417,7 +417,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
                   )
                 }
                 label={type === SpaceType.card ? balanceLabel : undefined}
-                disabled={userLiquidityUnstaked?.equalTo('0')}
+                disabled={userLiquidityUnstaked?.equalTo('0') ?? true}
               />
 
               <Box mt={type === 'card' ? '25px' : '0px'}>
@@ -429,6 +429,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
                   currentValue={type === 'card' ? stepIndex * 25 : stepIndex}
                   variant={type === 'card' ? 'box' : 'step'}
                   isPercentage={true}
+                  isDisabled={userLiquidityUnstaked?.equalTo('0') ?? true}
                 />
               </Box>
             </InputWrapper>

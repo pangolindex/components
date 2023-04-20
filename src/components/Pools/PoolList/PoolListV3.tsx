@@ -2,6 +2,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { BIG_INT_ZERO } from 'src/constants';
 import useDebounce from 'src/hooks/useDebounce';
 import { useGetSelectedPoolId, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
+import { usePangoChefUserExtraFarmsApr } from 'src/state/ppangoChef/hooks/common';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
 import { sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/utils';
@@ -35,21 +36,61 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
   const selectedPoolIndex = useGetSelectedPoolId();
   const updateSelectedPoolId = useUpdateSelectedPoolId();
 
+  const extraAPRs = usePangoChefUserExtraFarmsApr(stakingInfos);
+
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());
   }, []);
 
-  const sort = (farms: PangoChefInfo[]) => {
-    if (sortBy === SortingType.totalStakedInUsd) {
-      const sortedFarms = [...farms].sort(function (info_a, info_b) {
-        return info_a.totalStakedInUsd?.greaterThan(info_b.totalStakedInUsd ?? BIG_INT_ZERO) ? -1 : 1;
-      });
-      setStakingInfoData(sortedFarms);
-    } else if (sortBy === SortingType.totalApr) {
-      const sortedFarms = [...farms].sort((a, b) => (b?.stakingApr ?? 0) - (a?.stakingApr ?? 0));
-      setStakingInfoData(sortedFarms);
-    }
-  };
+  const sort = useCallback(
+    (farms: PangoChefInfo[]) => {
+      if (sortBy === SortingType.totalStakedInUsd) {
+        const stakedSortedFarms = [...farms]
+          .filter((farm) => farm.stakedAmount.greaterThan('0'))
+          .sort((a, b) => {
+            const yourStackedInUsdA = a.totalStakedInUsd
+              .multiply(a.stakedAmount)
+              .divide(!a.totalStakedAmount.equalTo('0') ? a.totalStakedAmount : '1');
+            const yourStackedInUsdB = b.totalStakedInUsd
+              .multiply(b.stakedAmount)
+              .divide(!b.totalStakedAmount?.equalTo('0') ? b.totalStakedAmount : '1');
+            return yourStackedInUsdA.greaterThan(yourStackedInUsdB) ? -1 : 1;
+          });
+
+        const sortedFarms = [...farms]
+          .filter((farm) => farm.stakedAmount.equalTo('0'))
+          .sort(function (info_a, info_b) {
+            return info_a.totalStakedInUsd?.greaterThan(info_b.totalStakedInUsd ?? BIG_INT_ZERO) ? -1 : 1;
+          });
+
+        setStakingInfoData([...stakedSortedFarms, ...sortedFarms]);
+      } else if (sortBy === SortingType.totalApr) {
+        const stakedSortedFarms = [...farms]
+          .filter((farm) => farm.stakedAmount.greaterThan('0'))
+          .sort((a, b) => {
+            const extraAprA = extraAPRs[a.pid] ?? 0;
+            const extraAprB = extraAPRs[b.pid] ?? 0;
+            const aprA = a.userApr + extraAprA;
+            const aprB = b.userApr + extraAprB;
+
+            return aprB - aprA;
+          });
+
+        const sortedFarms = [...farms]
+          .filter((farm) => farm.stakedAmount.equalTo('0'))
+          .sort((a, b) => {
+            const extraAprA = extraAPRs[a.pid] ?? 0;
+            const extraAprB = extraAPRs[b.pid] ?? 0;
+            const stakingAprA = a.stakingApr ?? 0;
+            const stakingAprB = b.stakingApr ?? 0;
+
+            return stakingAprB + extraAprB - (stakingAprA + extraAprA);
+          });
+        setStakingInfoData([...stakedSortedFarms, ...sortedFarms]);
+      }
+    },
+    [sortBy],
+  );
 
   useEffect(() => {
     if (stakingInfos?.length > 0) {
