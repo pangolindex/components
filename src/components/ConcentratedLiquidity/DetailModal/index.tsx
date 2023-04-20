@@ -72,7 +72,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
           <Box p={10}>
             <Box mt={'20px'}>
               <Root>
-                <IncreasePosition />
+                <IncreasePosition position={position} />
               </Root>
             </Box>
             {position && !position.liquidity.isZero() && (
@@ -91,7 +91,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
             <LeftSection>{renderTabs()}</LeftSection>
             <RightSection>
               <Root>
-                <IncreasePosition />
+                <IncreasePosition position={position} />
               </Root>
               {position && !position.liquidity.isZero() && (
                 <Root verticalPadding={'35px'}>

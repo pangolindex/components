@@ -39,6 +39,8 @@ export interface ConcAddLiquidityProps {
     CURRENCY_A?: CurrencyAmount;
     CURRENCY_B?: CurrencyAmount;
   };
+  tokenId?: BigNumber;
+  hasExistingPosition?: boolean;
   deadline: BigNumber | undefined;
   noLiquidity: boolean | undefined;
   allowedSlippage: number;

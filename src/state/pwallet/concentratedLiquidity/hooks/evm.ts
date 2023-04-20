@@ -196,7 +196,16 @@ export function useConcentratedAddLiquidity() {
   return async (data: ConcAddLiquidityProps) => {
     if (!chainId || !library || !account) return;
 
-    const { parsedAmounts, deadline, noLiquidity, allowedSlippage, currencies, position } = data;
+    const {
+      parsedAmounts,
+      deadline,
+      noLiquidity,
+      allowedSlippage,
+      currencies,
+      position,
+      hasExistingPosition,
+      tokenId,
+    } = data;
 
     const { CURRENCY_A: currencyA, CURRENCY_B: currencyB } = currencies;
 
@@ -205,29 +214,21 @@ export function useConcentratedAddLiquidity() {
         const useNative =
           currencyA === CAVAX[chainId] ? currencyA : currencyB === CAVAX[chainId] ? currencyB : undefined;
 
-        // const { calldata, value } =
-        //   hasExistingPosition && tokenId
-        //     ? NonfungiblePositionManager.addCallParameters(position, {
-        //         tokenId,
-        //         slippageTolerance: allowedSlippage,
-        //         deadline: deadline.toString(),
-        //         useNative: wrappedCurrency(useNative, chainId),
-        //       })
-        //     : NonfungiblePositionManager.addCallParameters(position, {
-        //         slippageTolerance: allowedSlippage,
-        //         recipient: account,
-        //         deadline: deadline.toString(),
-        //         useNative: wrappedCurrency(useNative, chainId),
-        //         createPool: noLiquidity,
-        //       });
-
-        const { calldata, value } = NonfungiblePositionManager.addCallParameters(position, {
-          slippageTolerance: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
-          recipient: account,
-          deadline: deadline.toString(),
-          useNative: wrappedCurrency(useNative, chainId),
-          createPool: noLiquidity,
-        });
+        const { calldata, value } =
+          hasExistingPosition && tokenId
+            ? NonfungiblePositionManager.addCallParameters(position, {
+                tokenId: tokenId?.toString(),
+                slippageTolerance: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
+                deadline: deadline.toString(),
+                useNative: wrappedCurrency(useNative, chainId),
+              })
+            : NonfungiblePositionManager.addCallParameters(position, {
+                slippageTolerance: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
+                recipient: account,
+                deadline: deadline.toString(),
+                useNative: wrappedCurrency(useNative, chainId),
+                createPool: noLiquidity,
+              });
 
         const txn: { to: string; data: string; value: string } = {
           to: CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager ?? '',
