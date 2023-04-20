@@ -6,8 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, DoubleCurrencyLogo, Loader, Stat, Text, TransactionCompleted } from 'src/components';
 import Drawer from 'src/components/Drawer';
+import { useChainId } from 'src/hooks';
 import { Bound, Field } from 'src/state/pmint/concentratedLiquidity/atom';
 import { formatTickPrice } from 'src/utils';
+import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { ErrorBox, ErrorWrapper, Footer, Header, Root, StateContainer } from './styled';
 
 interface Props {
@@ -41,11 +43,21 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
 
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
+  const chainId = useChainId();
 
-  const currency0 = currencies[Field.CURRENCY_A];
-  const currency1 = currencies[Field.CURRENCY_B];
+  const currency0 = position?.pool?.token0 ? unwrappedToken(position?.pool?.token0, chainId) : undefined;
+  const currency1 = position?.pool?.token1 ? unwrappedToken(position?.pool?.token1, chainId) : undefined;
 
-  const baseCurrency = currency0;
+  const baseCurrencyDefault = currencies[Field.CURRENCY_A];
+
+  const baseCurrency = baseCurrencyDefault
+    ? baseCurrencyDefault === currency0
+      ? currency0
+      : baseCurrencyDefault === currency1
+      ? currency1
+      : currency0
+    : currency0;
+
   const sorted = baseCurrency === currency0;
   const quoteCurrency = sorted ? currency1 : currency0;
 

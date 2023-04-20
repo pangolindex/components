@@ -103,6 +103,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     onStartPriceInput,
     onResetMintState,
     onSwitchCurrencies,
+    onResettMintStateOnToggle,
   } = useMintActionHandlers(noLiquidity);
 
   const isValid = !errorMessage && !invalidRange;
@@ -160,6 +161,11 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     },
     [onSetFeeAmount, onLeftRangeInput, onRightRangeInput],
   );
+
+  const handleToggle = useCallback(() => {
+    onSwitchCurrencies();
+    onResettMintStateOnToggle();
+  }, [onSetFeeAmount, onLeftRangeInput, onRightRangeInput, onSwitchCurrencies]);
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -323,14 +329,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onDismiss={function (): void {
-        console.log('onDismiss Function not implemented.');
-      }}
-      overlayBG={theme.modalBG2}
-      closeOnClickOutside={true}
-    >
+    <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={false}>
       <Root>
         <Wrapper maximumHeight={height - 150}>
           <Box p={20}>
@@ -343,7 +342,12 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
 
             {!hasExistingPosition && (
               <>
-                <SelectPair onTokenClick={onTokenClick} currency0={currency0} currency1={currency1} />
+                <SelectPair
+                  onTokenClick={onTokenClick}
+                  handleToggle={handleToggle}
+                  currency0={currency0}
+                  currency1={currency1}
+                />
 
                 <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
                   {t('concentratedLiquidity.addLiquidity.selectFeeTier')}
@@ -387,7 +391,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                       justifyContent="center"
                       alignItems="center"
                       padding="10px"
-                      bgColor="color7"
+                      bgColor="color3"
                       borderRadius="8px"
                       margin="auto"
                       flexGrow={1}
@@ -412,7 +416,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
 
                     <InputValue>
                       <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
-                        Current {currency0?.symbol} Price:
+                        Current 1 {currency0?.symbol} Price:
                       </Text>
 
                       {price ? (
@@ -461,7 +465,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                   justifyContent="center"
                   alignItems="center"
                   padding="10px"
-                  bgColor="color7"
+                  bgColor="color3"
                   borderRadius="8px"
                   margin="auto"
                   flexGrow={1}

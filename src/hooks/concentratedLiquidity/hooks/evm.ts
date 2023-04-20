@@ -320,10 +320,10 @@ export function useUnderlyingTokens(
     poolAddress,
   ]);
 
-  if (!token0 || !token1 || !fee) return [undefined, undefined];
-  if (!poolAddress) return [undefined, undefined];
-
   return useMemo(() => {
+    if (!token0 || !token1 || !fee || !poolAddress) {
+      return [undefined, undefined];
+    }
     const underlyingToken0 = token0result ? new TokenAmount(token0, token0result[0]) : undefined;
     const underlyingToken1 = token1result ? new TokenAmount(token1, token1result[0]) : undefined;
     return [underlyingToken0, underlyingToken1];

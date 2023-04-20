@@ -14,6 +14,7 @@ import useIsTickAtLimit, {
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
 import { formatTickPrice, useInverter } from 'src/utils';
+import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import PriceCard from './PriceCard';
 import { Information, NFT, PriceCards, PriceDetailAndNft, StateContainer, Wrapper } from './styles';
 import { DetailTabProps } from './types';
@@ -23,6 +24,10 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
   const chainId = useChainId();
+
+  const currency0 = position?.token0 ? unwrappedToken(position?.token0, chainId) : undefined;
+  const currency1 = position?.token1 ? unwrappedToken(position?.token1, chainId) : undefined;
+
   const useUnderlyingTokens = useUnderlyingTokensHook[chainId];
   const usePositionTokenURI = usePositionTokenURIHook[chainId];
   const metadata = usePositionTokenURI(position?.tokenId);
@@ -84,7 +89,7 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
     return amount0.add(amount1);
   }, [price0, price1, underlyingToken0, underlyingToken1]);
 
-  const currencyPair = position ? `${position?.token0?.symbol}/${position?.token1?.symbol}` : '';
+  const currencyPair = position ? `${currency0?.symbol}/${currency1?.symbol}` : '';
 
   const totalData = [
     {
@@ -94,14 +99,14 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
         : '-',
     },
     {
-      title: `Underlying  ${position?.token0?.symbol}`,
+      title: `Underlying  ${currency0?.symbol}`,
       stat: underlyingToken0 ? numeral(underlyingToken0?.toFixed(6)).format('0.00a') : '-',
-      currency: position?.token0,
+      currency: currency0,
     },
     {
-      title: `Underlying ${position?.token1?.symbol}`,
+      title: `Underlying ${currency1?.symbol}`,
       stat: underlyingToken1 ? numeral(underlyingToken1?.toFixed(6)).format('0.00a') : '-',
-      currency: position?.token1,
+      currency: currency1,
     },
   ];
 
@@ -113,14 +118,14 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
         : '-',
     },
     {
-      title: `Underlying ${position?.token0?.symbol}`,
+      title: `Underlying ${currency0?.symbol}`,
       stat: nativePosition?.amount0 ? numeral(nativePosition?.amount0?.toFixed(6)).format('0.00a') : '-',
-      currency: position?.token0,
+      currency: currency0,
     },
     {
-      title: `Underlying ${position?.token1?.symbol}`,
+      title: `Underlying ${currency1?.symbol}`,
       stat: nativePosition?.amount1 ? numeral(nativePosition?.amount1?.toFixed(6)).format('0.00a') : '-',
-      currency: position?.token1,
+      currency: currency1,
     },
   ];
 
@@ -157,13 +162,13 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
               title={'Min Price'}
               price={minPrice}
               currencyPair={currencyPair}
-              description={`Your position will be 100% ${position?.token1?.symbol} at this price.`}
+              description={`Your position will be 100% ${currency1?.symbol} at this price.`}
             />
             <PriceCard
               title={'Max Price'}
               price={maxPrice}
               currencyPair={currencyPair}
-              description={`Your position will be 100% ${position?.token0?.symbol} at this price.`}
+              description={`Your position will be 100% ${currency0?.symbol} at this price.`}
             />
           </PriceCards>
           <Box>

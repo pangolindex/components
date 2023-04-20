@@ -3,8 +3,8 @@ import { BigNumber } from 'ethers';
 import { TokenReturnType } from 'src/hooks/tokens/constant';
 
 export type PositionCardProps = {
-  currency0: TokenReturnType;
-  currency1: TokenReturnType;
+  token0: TokenReturnType;
+  token1: TokenReturnType;
   feeAmount: FeeAmount;
   tokenId: BigNumber;
   liquidity: BigNumber;

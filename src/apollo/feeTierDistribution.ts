@@ -58,7 +58,7 @@ export function useFeeTierDistributionQuery(
   const { data, isLoading, error } = useQuery<any>(
     ['get-fee-tier-distribution'],
     async () => {
-      if (!gqlClient) {
+      if (!gqlClient || !token0 || !token1) {
         return undefined;
       }
 

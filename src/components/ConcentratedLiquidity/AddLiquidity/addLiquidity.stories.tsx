@@ -1,4 +1,3 @@
-import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React, { useCallback, useState } from 'react';
 import { Button } from '../../Button';
@@ -16,18 +15,6 @@ export default {
     },
   },
   argTypes: {
-    currency0: {
-      name: 'Currency 0',
-      control: 'object',
-      type: { name: 'object', required: false },
-      description: 'Currency',
-    },
-    currency1: {
-      name: 'Currency 1',
-      control: 'object',
-      type: { name: 'object', required: false },
-      description: 'Currency',
-    },
     isOpen: {
       name: 'Is Open',
       control: 'boolean',
@@ -43,15 +30,6 @@ export default {
     },
   },
 };
-
-const currency0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
-const currency1 = new Token(
-  ChainId.AVALANCHE,
-  CHAINS[ChainId.AVALANCHE].contracts!.png,
-  18,
-  CHAINS[ChainId.AVALANCHE].png_symbol!,
-  'Pangolin',
-);
 
 const TemplateAddLiquidity: ComponentStory<typeof AddLiquidity> = (args: any) => {
   const [isAddLiquidityOpen, setAddLiquidityOpen] = useState<boolean>(false);
@@ -73,8 +51,6 @@ const TemplateAddLiquidity: ComponentStory<typeof AddLiquidity> = (args: any) =>
 
 export const Default = TemplateAddLiquidity.bind({});
 Default.args = {
-  currency0,
-  currency1,
   isOpen: true,
   onClose: () => {},
 } as Partial<AddLiquidityProps>;

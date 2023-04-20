@@ -1,4 +1,3 @@
-import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Inbox } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -38,16 +37,6 @@ const ConcentratedLiquidity = () => {
     value: MenuType[key],
   }));
 
-  // ------------------ MOCK DATA ------------------
-  const currency0 = new Token(ChainId.AVALANCHE, '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', 6, 'USDC', 'USD Coin');
-  const currency1 = new Token(
-    ChainId.AVALANCHE,
-    CHAINS[ChainId.AVALANCHE].contracts!.png,
-    18,
-    CHAINS[ChainId.AVALANCHE].png_symbol!,
-    'Pangolin',
-  );
-  // -----------------------------------------------
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());
   }, []);
@@ -164,8 +153,8 @@ const ConcentratedLiquidity = () => {
                   {finalPositions.map((position) => (
                     <PositionCard
                       key={position.tokenId.toString()}
-                      currency0={position.token0}
-                      currency1={position.token1}
+                      token0={position.token0}
+                      token1={position.token1}
                       feeAmount={position.fee}
                       tokenId={position.tokenId}
                       liquidity={position.liquidity}
@@ -211,14 +200,7 @@ const ConcentratedLiquidity = () => {
           onChangeDetailModalStatus(undefined);
         }}
       />
-      {addLiquidityIsOpen && (
-        <AddLiquidity
-          isOpen={addLiquidityIsOpen}
-          onClose={onChangeAddLiquidityStatus}
-          currency0={currency0}
-          currency1={currency1}
-        />
-      )}
+      {addLiquidityIsOpen && <AddLiquidity isOpen={addLiquidityIsOpen} onClose={onChangeAddLiquidityStatus} />}
     </PageWrapper>
   );
 };
