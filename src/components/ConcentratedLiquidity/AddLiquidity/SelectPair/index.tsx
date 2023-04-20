@@ -1,17 +1,17 @@
 import { Currency } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
-import { ChevronDown } from 'react-feather';
+import { ChevronDown, RefreshCcw } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, CurrencyLogo, Text } from 'src/components';
 import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
-import { Currencies, CurrencySelectWrapper } from './styles';
+import { ArrowWrapper, Currencies, CurrencySelectWrapper } from './styles';
 import { SelectPairProps } from './types';
 
 const SelectPair: React.FC<SelectPairProps> = (props) => {
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);
-  const { currency0, currency1, onTokenClick } = props;
+  const { currency0, currency1, onTokenClick, handleToggle } = props;
 
   function renderCurrency(currency: Currency | undefined) {
     if (!currency) {
@@ -33,9 +33,20 @@ const SelectPair: React.FC<SelectPairProps> = (props) => {
   }
   return (
     <Box>
-      <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
-        {t('concentratedLiquidity.selectPair.title')}
-      </Text>
+      <Box display={'flex'} justifyContent={'space-between'}>
+        <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
+          {t('concentratedLiquidity.selectPair.title')}
+        </Text>
+
+        {currency0 && currency1 && (
+          <Box textAlign="center" alignItems="center" display="flex" justifyContent={'center'}>
+            <ArrowWrapper onClick={handleToggle}>
+              <RefreshCcw size="16" color={theme.swapWidget?.interactiveColor} />
+            </ArrowWrapper>
+          </Box>
+        )}
+      </Box>
+
       <Currencies>
         <CurrencySelectWrapper
           onClick={() => {

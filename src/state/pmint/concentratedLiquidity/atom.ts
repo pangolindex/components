@@ -148,6 +148,17 @@ export const useMintStateAtom = () => {
     }
   }, [setMintState, mintState]);
 
+  const resetMintStateOnToggle = useCallback(() => {
+    setMintState((state) => ({
+      ...state,
+      typedValue: '',
+      feeAmount: undefined,
+      startPriceTypedValue: '',
+      leftRangeTypedValue: '',
+      rightRangeTypedValue: '',
+    }));
+  }, [setMintState]);
+
   return {
     mintState,
     resetMintState,
@@ -159,5 +170,6 @@ export const useMintStateAtom = () => {
     selectCurrency,
     setFeeAmount,
     switchCurrencies,
+    resetMintStateOnToggle,
   };
 };

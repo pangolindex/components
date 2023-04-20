@@ -22,3 +22,19 @@ export const CurrencySelectWrapper = styled(Box)`
   color: ${({ theme }) => theme.text4};
   cursor: pointer;
 `;
+
+export const ArrowWrapper = styled.div`
+  background-color: ${({ theme }) => theme.color13};
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+`;

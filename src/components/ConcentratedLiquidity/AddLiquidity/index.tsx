@@ -103,6 +103,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     onStartPriceInput,
     onResetMintState,
     onSwitchCurrencies,
+    onResettMintStateOnToggle,
   } = useMintActionHandlers(noLiquidity);
 
   const isValid = !errorMessage && !invalidRange;
@@ -160,6 +161,16 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     },
     [onSetFeeAmount, onLeftRangeInput, onRightRangeInput],
   );
+
+  const handleToggle = useCallback(() => {
+    // if (!ticksAtLimit[Bound.LOWER] && !ticksAtLimit[Bound.UPPER]) {
+    onSwitchCurrencies();
+    onResettMintStateOnToggle();
+    // onLeftRangeInput((invertPrice ? priceLower : priceUpper?.invert())?.toSignificant(6) ?? '');
+    // onRightRangeInput((invertPrice ? priceUpper : priceLower?.invert())?.toSignificant(6) ?? '');
+    // onFieldAInput(formattedAmounts[Field.CURRENCY_B] ?? '');
+    // }
+  }, [onSetFeeAmount, onLeftRangeInput, onRightRangeInput, onSwitchCurrencies]);
 
   const handleCurrencySelect = useCallback(
     (currency: Currency) => {
@@ -323,7 +334,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={true}>
+    <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={false}>
       <Root>
         <Wrapper maximumHeight={height - 150}>
           <Box p={20}>
@@ -336,7 +347,12 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
 
             {!hasExistingPosition && (
               <>
-                <SelectPair onTokenClick={onTokenClick} currency0={currency0} currency1={currency1} />
+                <SelectPair
+                  onTokenClick={onTokenClick}
+                  handleToggle={handleToggle}
+                  currency0={currency0}
+                  currency1={currency1}
+                />
 
                 <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
                   {t('concentratedLiquidity.addLiquidity.selectFeeTier')}
