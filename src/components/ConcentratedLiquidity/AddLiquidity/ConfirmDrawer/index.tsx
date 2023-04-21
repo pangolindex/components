@@ -66,9 +66,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
   const priceLower = sorted ? position?.token0PriceLower : position?.token0PriceUpper.invert();
   const priceUpper = sorted ? position?.token0PriceUpper : position?.token0PriceLower.invert();
 
-  const pendingText = `${t('pool.supplying')} ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
-    currencies[Field.CURRENCY_A]?.symbol
-  } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`;
+  const pendingText = `${t('pool.supplying')}`;
 
   function renderDetailConfirmContentButton() {
     return (
