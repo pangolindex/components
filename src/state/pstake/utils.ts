@@ -110,13 +110,13 @@ export function getExtraTokensWeeklyRewardRate(
   tokenMultiplier: JSBI | undefined,
 ) {
   const png = PNG[token.chainId];
-  const EXPOENT = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals));
+  const EXPONENT = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals));
 
   const rewardMultiplier = JSBI.BigInt(tokenMultiplier || 1);
 
   const unadjustedRewardPerWeek = JSBI.multiply(rewardMultiplier, rewardRatePerWeek?.raw);
 
-  const finalReward = JSBI.divide(unadjustedRewardPerWeek, EXPOENT);
+  const finalReward = JSBI.divide(unadjustedRewardPerWeek, EXPONENT);
 
   return new TokenAmount(token, finalReward);
 }

@@ -718,7 +718,7 @@ export function useGetPangoChefInfosViaSubgraph() {
 
       const pairPriceInEth = totalSupplyInETH.divide(totalSupplyAmount);
 
-      const expoent = png.decimals - lpToken.decimals;
+      const exponent = png.decimals - lpToken.decimals;
 
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / ((pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE) * 1e(png.decimals-lptoken.decimals))
       const apr =
@@ -729,7 +729,7 @@ export function useGetPangoChefInfosViaSubgraph() {
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
                 .divide(pairPriceInEth?.multiply(_farmTvl))
                 // here apr is in 10^(png.decimals - lpToken.decimals) so we needed to divide by 10^(png.decimals - lpToken.decimals) to keep it in simple form
-                .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent)))
+                .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(exponent)))
                 .toSignificant(2),
             );
 
