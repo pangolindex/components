@@ -587,7 +587,6 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
             isOpen={showConfirm}
             poolErrorMessage={errorMessage}
             currencies={currencies}
-            parsedAmounts={parsedAmounts}
             noLiquidity={noLiquidity}
             onAdd={onAdd}
             attemptingTxn={attemptingTxn}
