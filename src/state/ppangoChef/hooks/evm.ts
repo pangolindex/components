@@ -341,7 +341,7 @@ export function usePangoChefInfos() {
         );
       };
 
-      const expoent = png.decimals - pair?.liquidityToken.decimals;
+      const exponent = png.decimals - pair?.liquidityToken.decimals;
 
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
@@ -353,7 +353,7 @@ export function usePangoChefInfos() {
                 .divide(
                   pairPrice
                     .multiply(pool?.valueVariables?.balance?.toString())
-                    .multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent))),
+                    .multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(exponent))),
                 )
                 .toSignificant(2),
             );

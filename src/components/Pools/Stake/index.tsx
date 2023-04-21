@@ -27,8 +27,8 @@ import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import {
   useDerivedStakeInfo,
+  useExtraPendingRewards,
   useGetPoolDollerWorth,
-  useMinichefPendingRewards,
   useMinichefPools,
 } from 'src/state/pstake/hooks/common';
 import { DoubleSideStakingInfo, SpaceType } from 'src/state/pstake/types';
@@ -95,7 +95,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
     );
   }
 
-  const { rewardTokensAmount, rewardTokensMultiplier } = useMinichefPendingRewards(stakingInfo);
+  const { rewardTokensAmount, rewardTokensMultiplier } = useExtraPendingRewards(stakingInfo);
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 

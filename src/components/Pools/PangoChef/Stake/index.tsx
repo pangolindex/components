@@ -17,7 +17,7 @@ import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { usePangoChefStakeCallbackHook } from 'src/state/ppangoChef/hooks';
 import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/hooks/hedera';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useDerivedStakeInfo, useGetPoolDollerWorth, useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
+import { useDerivedStakeInfo, useExtraPendingRewards, useGetPoolDollerWorth } from 'src/state/pstake/hooks/common';
 import { SpaceType } from 'src/state/pstake/types';
 import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
@@ -76,7 +76,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
     );
   }
 
-  const { rewardTokensAmount, rewardTokensMultiplier } = useMinichefPendingRewards(stakingInfo);
+  const { rewardTokensAmount, rewardTokensMultiplier } = useExtraPendingRewards(stakingInfo);
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
