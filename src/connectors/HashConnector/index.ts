@@ -1,6 +1,6 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { hethers } from '@hashgraph/hethers';
-import { AccountId, Transaction, TransactionId } from '@hashgraph/sdk';
+import { AccountId, Client, Transaction, TransactionId } from '@hashgraph/sdk';
 import { ChainId } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
@@ -43,6 +43,7 @@ export class HashConnector extends AbstractConnector {
   private topic: string;
   private pairingString: string;
   private pairingData: HashConnectTypes.SavedPairingData | null = null;
+  private nodeAccountIds: AccountId[] = [new AccountId(3)];
 
   public availableExtension: boolean;
   public emittedActivateConnector: boolean;
@@ -75,6 +76,10 @@ export class HashConnector extends AbstractConnector {
     this.handleFoundIframeEvent = this.handleFoundIframeEvent.bind(this);
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
     this.init();
+
+    const client = this.chainId === ChainId.HEDERA_MAINNET ? Client.forMainnet() : Client.forTestnet();
+    // we get the client and the node ids provide by the .network to send this to transactions
+    this.nodeAccountIds = Object.values(client.network).filter((node) => node instanceof AccountId) as AccountId[];
   }
 
   public async init() {
@@ -239,7 +244,7 @@ export class HashConnector extends AbstractConnector {
   private makeBytes(transaction: Transaction, accountId: string) {
     const transactionId = TransactionId.generate(accountId);
     transaction.setTransactionId(transactionId);
-    transaction.setNodeAccountIds([new AccountId(3)]);
+    transaction.setNodeAccountIds(this.nodeAccountIds);
 
     transaction.freeze();
 
