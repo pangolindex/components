@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Currency, CurrencyAmount, Position } from '@pangolindex/sdk';
+import { Currency, Position } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,6 @@ interface Props {
   onClose: () => void;
   noLiquidity?: boolean;
   currencies: { [field in Field]?: Currency };
-  parsedAmounts: { [field in Field]?: CurrencyAmount };
   onAdd: () => void;
   position: Position | undefined;
   ticksAtLimit: { [bound: string]: boolean | undefined };
@@ -35,7 +34,6 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
     txHash,
     noLiquidity,
     currencies,
-    parsedAmounts,
     onAdd,
     position,
     ticksAtLimit,
