@@ -30,9 +30,9 @@ import {
 import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { CloseIcon } from 'src/theme/components';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import OutofRangeWarning from '../OutofRangeWarning';
 import ConfirmDrawer from './ConfirmDrawer';
 import FeeSelector from './FeeSelector';
-import OutofRangeWarning from './OutofRangeWarning';
 import PriceRange from './PriceRange';
 import SelectPair from './SelectPair';
 import {

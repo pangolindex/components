@@ -8,6 +8,22 @@ export const AddWrapper = styled(Box)`
   flex-direction: column;
 `;
 
+export const BlackWrapper = styled(Box)`
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+  position: absolute;
+  align-items: center;
+  pointer-events: all;
+  justify-content: center;
+  right: 0;
+  top: 0;
+  background-color: ${({ theme }) => theme.bg2};
+`;
+
 export const StyledBalanceMax = styled.button`
   height: 28px;
   background-color: ${({ theme }) => theme.bg2};

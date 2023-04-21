@@ -6,6 +6,7 @@ import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
+import { useMintActionHandlers } from 'src/state/pmint/concentratedLiquidity/hooks';
 import { useGetUserPositionsHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
 import { PositionDetails } from 'src/state/pwallet/concentratedLiquidity/types';
 import { Visible } from 'src/theme/components';
@@ -114,6 +115,8 @@ const ConcentratedLiquidity = () => {
     setAddLiquidityIsOpen(!addLiquidityIsOpen);
   }, [addLiquidityIsOpen]);
 
+  const { onResetMintState } = useMintActionHandlers(undefined);
+
   return (
     <PageWrapper>
       <GridContainer>
@@ -198,6 +201,7 @@ const ConcentratedLiquidity = () => {
         position={selectedPosition}
         onClose={() => {
           onChangeDetailModalStatus(undefined);
+          onResetMintState();
         }}
       />
       {addLiquidityIsOpen && <AddLiquidity isOpen={addLiquidityIsOpen} onClose={onChangeAddLiquidityStatus} />}
