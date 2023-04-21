@@ -1,7 +1,7 @@
 import { Position } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, DoubleCurrencyLogo, Text } from 'src/components';
+import { Box, Button, DoubleCurrencyLogo, Text, Tooltip } from 'src/components';
 import { Bound } from 'src/components/LiquidityChartRangeInput/types';
 import { useChainId } from 'src/hooks';
 import useIsTickAtLimit, {
@@ -27,7 +27,7 @@ import {
 import { PositionCardProps } from './types';
 
 const PositionCard: React.FC<PositionCardProps> = (props) => {
-  const { token0, token1, feeAmount, liquidity, onClick, tickLower, tickUpper } = props;
+  const { tokenId, token0, token1, feeAmount, liquidity, onClick, tickLower, tickUpper } = props;
   const chainId = useChainId();
   const currency0 = token0 && unwrappedToken(token0, chainId);
   const currency1 = token1 && unwrappedToken(token1, chainId);
@@ -72,20 +72,26 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
                     %{feeAmount / 10 ** 4}
                   </BlackBoxContent>
                 </BlackBox>
-                <BlackBox>
+                <BlackBox data-tip data-for={`positionStatus-${tokenId}`}>
                   <BlackBoxContent color="color11" fontSize={18} fontWeight={500}>
-                    {!liquidity?.isZero() ? t('common.open') : t('common.closed')}
+                    {!closed ? t('common.open') : t('common.closed')}
                   </BlackBoxContent>
+                  <Tooltip id={`positionStatus-${tokenId}`} effect="solid">
+                    {!closed ? 'Tooltip Open Content' : 'Tooltip Closed Content'}
+                  </Tooltip>
                 </BlackBox>
-                <BlackBox>
-                  <BlackBoxContent color="color11" fontSize={18} fontWeight={500}>
-                    {closed
-                      ? t('common.closed')
-                      : outOfRange
-                      ? t('concentratedLiquidity.positionCard.outOfRange')
-                      : t('concentratedLiquidity.positionCard.inRange')}
-                  </BlackBoxContent>
-                </BlackBox>
+                {!closed && (
+                  <BlackBox data-tip data-for={`positionRangeStatus-${tokenId}`}>
+                    <BlackBoxContent color="color11" fontSize={18} fontWeight={500}>
+                      {outOfRange
+                        ? t('concentratedLiquidity.positionCard.outOfRange')
+                        : t('concentratedLiquidity.positionCard.inRange')}
+                    </BlackBoxContent>
+                    <Tooltip id={`positionRangeStatus-${tokenId}`} effect="solid">
+                      {outOfRange ? 'Tooltip OutOfRange Content' : 'Tooltip InRange Content'}
+                    </Tooltip>
+                  </BlackBox>
+                )}
               </Data>
               <PriceWrapper>
                 <Box display={'flex'} flexDirection="column" alignItems={'flex-end'}>
