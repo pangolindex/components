@@ -69,7 +69,7 @@ export interface ApplicationState {
 
 const useSubgraphInitialState = {
   [ChainId.FUJI]: false,
-  [ChainId.AVALANCHE]: false,
+  [ChainId.AVALANCHE]: true,
   [ChainId.WAGMI]: false,
   [ChainId.COSTON]: false,
   [ChainId.SONGBIRD]: false,
