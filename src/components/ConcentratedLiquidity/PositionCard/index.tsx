@@ -77,7 +77,9 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
                     {!closed ? t('common.open') : t('common.closed')}
                   </BlackBoxContent>
                   <Tooltip id={`positionStatus-${tokenId}`} effect="solid">
-                    {!closed ? 'Tooltip Open Content' : 'Tooltip Closed Content'}
+                    {!closed
+                      ? t('concentratedLiquidity.positionCard.openTooltipContent')
+                      : t('concentratedLiquidity.positionCard.closedTooltipContent')}
                   </Tooltip>
                 </BlackBox>
                 {!closed && (
@@ -88,7 +90,9 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
                         : t('concentratedLiquidity.positionCard.inRange')}
                     </BlackBoxContent>
                     <Tooltip id={`positionRangeStatus-${tokenId}`} effect="solid">
-                      {outOfRange ? 'Tooltip OutOfRange Content' : 'Tooltip InRange Content'}
+                      {outOfRange
+                        ? t('concentratedLiquidity.positionCard.outOfRangeTooltipContent')
+                        : t('concentratedLiquidity.positionCard.inRangeTooltipContent')}
                     </Tooltip>
                   </BlackBox>
                 )}
