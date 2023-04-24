@@ -782,7 +782,11 @@
     "positionCard": {
       "outOfRange": "Out Of Range",
       "inRange": "In Range",
-      "seeDetails": "See Details"
+      "seeDetails": "See Details",
+      "outOfRangeTooltipContent": "The price of this pool is outside of your selected range. Your position is not currently earning fees.",
+      "inRangeTooltipContent": "The price of this pool is within your selected range. Your position is currently earning fees.",
+      "openTooltipContent": "This position is opened by the user.",
+      "closedTooltipContent": "This position is closed by the user."
     },
     "addLiquidity": {
       "selectFeeTier": "Select Fee Tier",

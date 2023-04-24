@@ -36,7 +36,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
     statItems: [
       {
         title: 'Fee Rate',
-        stat: `%${position && position.fee / 10 ** 4}`,
+        stat: `${position && position.fee / 10 ** 4}%`,
       },
       {
         title: 'Swap Fee APR',
@@ -58,14 +58,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
   );
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onDismiss={function (): void {
-        console.log('onDismiss Function not implemented.');
-      }}
-      overlayBG={theme.modalBG2}
-      closeOnClickOutside={true}
-    >
+    <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={true}>
       <>
         <MobileWrapper>
           <Header {...headerArgs} />

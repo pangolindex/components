@@ -101,7 +101,7 @@
     "poolRewards": "Pool-Belohnungen",
     "rewardsIn": "Belohnungen ein",
     "removeWarning": "Sie entfernen Liquidität aus diesem Pool. Diese Aktion gibt Ihnen Ihre Token zurück. Alternativ können Sie sich dafür entscheiden, Ihre Token zu farmen, um Belohnungen zu verdienen.",
-    "rewardClaimed" : "Your rewards claimed"
+    "rewardClaimed": "Your rewards claimed"
   },
   "menu": {
     "code": "Code",
@@ -173,7 +173,7 @@
     "selected": "ausgewählt",
     "select": "auswählen",
     "manageTokenLists": "Tokenlisten verwalten",
-    "listsSelected" :"lists selected"
+    "listsSelected": "lists selected"
   },
   "settings": {
     "areYouSure": "Bist du dir sicher?",
@@ -498,10 +498,10 @@
     "seeMore": "Mehr sehen",
     "seeLess": "Siehe Weniger",
     "orderPlaced": "{{ orderType }} auftrag erteilt.",
-    "selectToken" : "Select Token",
-    "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain",
-    "sendingTo" : "Sending to",
+    "selectToken": "Select Token",
+    "notFoundBalances": "Not found balances",
+    "notFoundToken": "Not found tokens on this chain",
+    "sendingTo": "Sending to",
     "invalidAddress": "Invalid Address",
     "addRecipient": "Add Recipient",
     "removeRecipient": "Remove Recipient",
@@ -655,7 +655,7 @@
     "staked": "Staked",
     "stakeSuccessMsg": "Your rewards have been staked.",
     "stakeYourReward": "Stake your rewards",
-    "stakePng" : "Stake your PNG token to share platform fees",
+    "stakePng": "Stake your PNG token to share platform fees",
     "unstaking": "Unstaking",
     "unstaked": "Unstaked",
     "unstakeYourReward": "You can unstake your rewards.",
@@ -669,7 +669,7 @@
     "couldNotWrap": "Konnte nicht umbrechen",
     "attemptingToConfirmApproval": "Bestätigungsversuch ohne Genehmigung oder Unterschrift. Bitte kontaktieren Sie den Support."
   },
-  "sarTitle":{
+  "sarTitle": {
     "addMore": "MEHR HINZUFÜGEN",
     "unstake": "EINE POSITION ABSETZEN",
     "compound": "VERBUNDENE BELOHNUNGEN",
@@ -782,7 +782,11 @@
     "positionCard": {
       "outOfRange": "Out Of Range",
       "inRange": "In Range",
-      "seeDetails": "See Details"
+      "seeDetails": "See Details",
+      "outOfRangeTooltipContent": "The price of this pool is outside of your selected range. Your position is not currently earning fees.",
+      "inRangeTooltipContent": "The price of this pool is within your selected range. Your position is currently earning fees.",
+      "openTooltipContent": "This position is opened by the user.",
+      "closedTooltipContent": "This position is closed by the user."
     },
     "addLiquidity": {
       "selectFeeTier": "Select Fee Tier",
@@ -825,7 +829,7 @@
     "selectCurrency": "Select a Currency",
     "search": "Search",
     "tableOfContent": "Table of Content",
-    "haveQuestion" :"Have Questions? Look Here:",
+    "haveQuestion": "Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
