@@ -20,7 +20,12 @@ import { NATIVE } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { SWAP_DEFAULT_CURRENCY } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
+import {
+  useConcentratedTradeExactIn,
+  useConcentratedTradeExactOut,
+  useTradeExactIn,
+  useTradeExactOut,
+} from 'src/hooks/Trades';
 import { useCurrency } from 'src/hooks/useCurrency';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
@@ -181,6 +186,20 @@ export function useDerivedSwapInfo(): {
     inputCurrency ?? undefined,
     !isExactIn ? parsedAmount : undefined,
   );
+
+  const { trade: bestConcentratedTradeExactIn, isLoading: isConcentratedLoadingIn } = useConcentratedTradeExactIn(
+    isExactIn ? parsedAmount : undefined,
+    outputCurrency ?? undefined,
+  );
+  const { trade: bestConcentratedTradeExactOut, isLoading: isConcentratedLoadingOut } = useConcentratedTradeExactOut(
+    inputCurrency ?? undefined,
+    !isExactIn ? parsedAmount : undefined,
+  );
+  console.log('isConcentratedLoadingIn', isConcentratedLoadingIn);
+  console.log('bestConcentratedTradeExactIn', bestConcentratedTradeExactIn);
+
+  console.log('isConcentratedLoadingOut', isConcentratedLoadingOut);
+  console.log('bestConcentratedTradeExactOut', bestConcentratedTradeExactOut);
 
   // get trade from univ3
   // v2BestTradeExactIn?.outputAmount > v3BestTradeExactIn?.outputAmount => take v2 trade

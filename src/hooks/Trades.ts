@@ -1,10 +1,22 @@
-import { Currency, CurrencyAmount, Pair, Percent, Token, Trade } from '@pangolindex/sdk';
+import {
+  ConcentratedPool,
+  ConcentratedTrade,
+  Currency,
+  CurrencyAmount,
+  FeeAmount,
+  Pair,
+  Percent,
+  Token,
+  Trade,
+} from '@pangolindex/sdk';
 import flatMap from 'lodash.flatmap';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BASES_TO_CHECK_TRADES_AGAINST, BIPS_BASE, CUSTOM_BASES } from 'src/constants/swap';
 import { PairState } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useChainId } from 'src/hooks';
+import { usePoolsHook } from 'src/hooks/concentratedLiquidity/hooks';
+import { PoolState } from 'src/hooks/concentratedLiquidity/hooks/types';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useDaasFeeInfo, useDaasFeeTo } from '../state/pswap/hooks/common';
 
@@ -130,4 +142,163 @@ export function useTradeExactOut(
     }
     return { trade: null, isLoading: true };
   }, [allowedPairs, isLoading, currencyIn, currencyAmountOut, feeTo, feeInfo]);
+}
+
+function useAllConcentratedCommonPools(
+  currencyA?: Currency,
+  currencyB?: Currency,
+): {
+  pools: ConcentratedPool[];
+  isLoading: boolean;
+} {
+  const chainId = useChainId();
+
+  const usePools = usePoolsHook[chainId];
+
+  const bases: Token[] = chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []; // eslint-disable-line react-hooks/exhaustive-deps
+
+  const [tokenA, tokenB] = chainId
+    ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
+    : [undefined, undefined];
+
+  const basePairs: [Token, Token][] = useMemo(
+    () =>
+      bases
+        .flatMap((base): [Token, Token][] => bases.map((otherBase) => [base, otherBase]))
+        // though redundant with the first filter below, that expression runs more often, so this is probably worthwhile
+        .filter(([t0, t1]) => !t0.equals(t1)),
+    [bases],
+  );
+
+  const allCurrencyCombinations = useMemo(
+    () =>
+      tokenA && tokenB
+        ? [
+            // the direct pair
+            [tokenA, tokenB] as [Token, Token],
+            // token A against all bases
+            ...bases.map((base): [Token, Token] => [tokenA, base]),
+            // token B against all bases
+            ...bases.map((base): [Token, Token] => [tokenB, base]),
+            // each base against all bases
+            ...basePairs,
+          ]
+            // filter out invalid pairs comprised of the same asset (e.g. WETH<>WETH)
+            .filter(([t0, t1]) => !t0.equals(t1))
+            // filter out duplicate pairs
+            .filter(([t0, t1], i, otherPairs) => {
+              // find the first index in the array at which there are the same 2 tokens as the current
+              const firstIndexInOtherPairs = otherPairs.findIndex(([t0Other, t1Other]) => {
+                return (t0.equals(t0Other) && t1.equals(t1Other)) || (t0.equals(t1Other) && t1.equals(t0Other));
+              });
+              // only accept the first occurrence of the same 2 tokens
+              return firstIndexInOtherPairs === i;
+            })
+            // optionally filter out some pairs for tokens with custom bases defined
+            .filter(([tokenA, tokenB]) => {
+              if (!chainId) return true;
+              const customBases = CUSTOM_BASES[chainId];
+
+              const customBasesA: Token[] | undefined = customBases?.[tokenA.address];
+              const customBasesB: Token[] | undefined = customBases?.[tokenB.address];
+
+              if (!customBasesA && !customBasesB) return true;
+
+              if (customBasesA && !customBasesA.find((base) => tokenB.equals(base))) return false;
+              if (customBasesB && !customBasesB.find((base) => tokenA.equals(base))) return false;
+
+              return true;
+            })
+        : [],
+    [tokenA, tokenB, bases, basePairs, chainId],
+  );
+
+  const allCurrencyCombinationsWithAllFees: [Token, Token, FeeAmount][] = useMemo(
+    () =>
+      allCurrencyCombinations.reduce<[Token, Token, FeeAmount][]>((list, [tokenA, tokenB]) => {
+        return list.concat([
+          [tokenA, tokenB, FeeAmount.LOW],
+          [tokenA, tokenB, FeeAmount.MEDIUM],
+          [tokenA, tokenB, FeeAmount.HIGH],
+        ]);
+      }, []),
+    [allCurrencyCombinations, chainId],
+  );
+
+  const pools = usePools(allCurrencyCombinationsWithAllFees);
+
+  return useMemo(() => {
+    return {
+      pools: pools
+        .filter((tuple): tuple is [PoolState.EXISTS, ConcentratedPool] => {
+          return tuple[0] === PoolState.EXISTS && tuple[1] !== null;
+        })
+        .map(([, pool]) => pool),
+      isLoading: pools.some(([state]) => state === PoolState.LOADING),
+    };
+  }, [pools]);
+}
+
+/**
+ * Returns the best trade for the exact amount of tokens in to the given token out
+ */
+export function useConcentratedTradeExactIn(
+  currencyAmountIn?: CurrencyAmount,
+  currencyOut?: Currency,
+): { trade: ConcentratedTrade | null; isLoading: boolean } {
+  const [tradeData, setTradeData] = useState<{ trade: ConcentratedTrade | null; isLoading: boolean }>({
+    trade: null,
+    isLoading: true,
+  });
+
+  const { pools: allowedPools, isLoading } = useAllConcentratedCommonPools(currencyAmountIn?.currency, currencyOut);
+
+  useEffect(() => {
+    const getBestTradeExactIn = async () => {
+      if (currencyAmountIn && currencyOut && allowedPools.length > 0 && !isLoading) {
+        const trade = await ConcentratedTrade.bestTradeExactIn(allowedPools, currencyAmountIn, currencyOut, {
+          maxHops: 3,
+          maxNumResults: 1,
+        })[0];
+
+        console.log('======trade in', trade);
+
+        setTradeData({ trade: trade, isLoading: isLoading });
+      }
+    };
+    getBestTradeExactIn();
+  }, [allowedPools, isLoading, currencyAmountIn, currencyOut]);
+  console.log('tradeData - in', tradeData);
+  return tradeData;
+}
+
+/**
+ * Returns the best trade for the token in to the exact amount of token out
+ */
+export function useConcentratedTradeExactOut(
+  currencyIn?: Currency,
+  currencyAmountOut?: CurrencyAmount,
+): { trade: ConcentratedTrade | null; isLoading: boolean } {
+  const [tradeData, setTradeData] = useState<{ trade: ConcentratedTrade | null; isLoading: boolean }>({
+    trade: null,
+    isLoading: true,
+  });
+
+  const { pools: allowedPools, isLoading } = useAllConcentratedCommonPools(currencyIn, currencyAmountOut?.currency);
+
+  useEffect(() => {
+    const getBestTradeExactOut = async () => {
+      if (currencyIn && currencyAmountOut && allowedPools.length > 0 && !isLoading) {
+        const trade = await ConcentratedTrade.bestTradeExactOut(allowedPools, currencyIn, currencyAmountOut, {
+          maxHops: 3,
+          maxNumResults: 1,
+        })[0];
+        console.log('======trade out', trade);
+        setTradeData({ trade: trade, isLoading: isLoading });
+      }
+    };
+    getBestTradeExactOut();
+  }, [allowedPools, isLoading, currencyIn, currencyAmountOut]);
+  console.log('tradeData -out', tradeData);
+  return tradeData;
 }
