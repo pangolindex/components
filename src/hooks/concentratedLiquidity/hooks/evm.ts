@@ -305,11 +305,8 @@ export function useUnderlyingTokens(
   token1?: TokenReturnType,
   fee?: FeeAmount,
 ): [TokenAmount | undefined, TokenAmount | undefined] {
-  const chainId = useChainId();
   const poolAddress =
-    token0 && token1 && fee
-      ? ConcentratedPool.getAddress(token0, token1, fee, undefined, undefined, chainId)
-      : undefined;
+    token0 && token1 && fee ? ConcentratedPool.getAddress(token0, token1, fee, undefined, undefined) : undefined;
 
   const token0Contract = useTokenContract(token0?.address, false);
   const token1Contract = useTokenContract(token1?.address, false);

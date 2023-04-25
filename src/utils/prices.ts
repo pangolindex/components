@@ -5,6 +5,7 @@ import {
   ALLOWED_PRICE_IMPACT_MEDIUM,
   BLOCKED_PRICE_IMPACT_NON_EXPERT,
 } from 'src/constants/swap';
+import { useChainId } from 'src/hooks';
 import { Field } from '../state/pswap/atom';
 import { basisPointsToPercent } from './index';
 
@@ -17,6 +18,7 @@ export function computeTradePriceBreakdown(trade?: Trade): {
   realizedLPFeeAmount?: CurrencyAmount;
   daasFeeAmount?: CurrencyAmount;
 } {
+  const chainId = useChainId();
   // for each hop in our trade, take away the x*y=k price impact from swap fees
   // the following example assumes swap fees of 0.3% but this is determined by the pair
   // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
@@ -44,13 +46,13 @@ export function computeTradePriceBreakdown(trade?: Trade): {
     trade &&
     (trade.inputAmount instanceof TokenAmount
       ? new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
-      : CurrencyAmount.ether(realizedLPFee.multiply(trade.inputAmount.raw).quotient));
+      : CurrencyAmount.ether(realizedLPFee.multiply(trade.inputAmount.raw).quotient, chainId));
 
   const feeAmount = !trade
     ? undefined
     : trade.outputAmount instanceof TokenAmount
     ? new TokenAmount(trade.outputAmount.token, trade.fee.multiply(trade.outputAmount.raw).quotient)
-    : CurrencyAmount.ether(trade.fee.multiply(trade.outputAmount.raw).quotient);
+    : CurrencyAmount.ether(trade.fee.multiply(trade.outputAmount.raw).quotient, chainId);
 
   return {
     priceImpactWithoutFee: priceImpactWithoutFeePercent,

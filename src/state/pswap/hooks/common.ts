@@ -182,6 +182,13 @@ export function useDerivedSwapInfo(): {
     !isExactIn ? parsedAmount : undefined,
   );
 
+  // get trade from univ3
+  // v2BestTradeExactIn?.outputAmount > v3BestTradeExactIn?.outputAmount => take v2 trade
+  // v2BestTradeExactIn?.outputAmount < v3BestTradeExactIn?.outputAmount => take v3 trade
+
+  // bestTradeExactOut?.inputAmount > v3BestTradeExactIn?.inputAmount => take v2 trade
+  // bestTradeExactOut?.inputAmount < v3BestTradeExactIn?.inputAmount => take v3 trade
+
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut;
 
   const currencyBalances = {

@@ -1,4 +1,4 @@
-import { BridgeChain, Chain, currencyEquals } from '@pangolindex/sdk';
+import { BridgeChain, Chain, Currency, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useTranslation } from 'react-i18next';
@@ -74,9 +74,12 @@ const SelectChainDrawer: React.FC<Props> = (props) => {
   const Row = useCallback(
     ({ data, index, style }) => {
       const chain: Chain = data?.[index];
-      const isSelected = Boolean(selectedChain && currencyEquals(selectedChain?.nativeCurrency, chain?.nativeCurrency));
+      const isSelected = Boolean(
+        selectedChain && currencyEquals(selectedChain?.nativeCurrency as Currency, chain?.nativeCurrency as Currency),
+      );
       const otherSelected = Boolean(
-        otherSelectedChain && currencyEquals(otherSelectedChain?.nativeCurrency, chain?.nativeCurrency),
+        otherSelectedChain &&
+          currencyEquals(otherSelectedChain?.nativeCurrency as Currency, chain?.nativeCurrency as Currency),
       );
 
       return chain ? (
