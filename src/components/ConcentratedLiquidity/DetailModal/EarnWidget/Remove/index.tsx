@@ -39,7 +39,7 @@ const Remove = ({ position }: RemoveProps) => {
 
   const [userSlippage] = useUserSlippageTolerance();
   const deadline = useTransactionDeadline();
-  const useConcentratedRemoveLiquidity = useConcentratedRemoveLiquidityHook[chainId]();
+  const removeLiquidity = useConcentratedRemoveLiquidityHook[chainId]();
 
   const onBurn = async () => {
     if (!chainId || !library || !account || !provider) return;
@@ -59,7 +59,7 @@ const Remove = ({ position }: RemoveProps) => {
     try {
       setAttempting(true);
 
-      const removeLiqResponse = await useConcentratedRemoveLiquidity({
+      const removeLiqResponse = await removeLiquidity({
         tokenId: position?.tokenId,
         positionSDK,
         liquidityPercentage,
@@ -119,7 +119,7 @@ const Remove = ({ position }: RemoveProps) => {
     );
   };
 
-  const removeLiquidity = () => {
+  const removeLiquidityContent = () => {
     return (
       <RemoveLiquidityWrapper>
         {!attempting && !hash && (
@@ -188,7 +188,7 @@ const Remove = ({ position }: RemoveProps) => {
 
   const renderRemoveContent = () => {
     if (!removed) {
-      return removeLiquidity();
+      return removeLiquidityContent();
     } else {
       return (
         <Box display="flex" justifyContent="center" alignItems="center" height="100%">
