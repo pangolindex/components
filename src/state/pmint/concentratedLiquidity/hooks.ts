@@ -17,15 +17,16 @@ import {
   priceToClosestTick,
   tickToPrice,
 } from '@pangolindex/sdk';
-import { ReactNode, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO } from 'src/constants';
+import { PairState, usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
 import { PoolState } from 'src/hooks/concentratedLiquidity/hooks/types';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { tryParseAmount } from 'src/state/pswap/hooks/common';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { wrappedCurrency, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
 import { useCurrencyBalances } from '../../pwallet/hooks/common';
 import { Bound, Field, initialState, useMintStateAtom } from './atom';
 import { getTickToPrice, tryParseTick } from './utils';
@@ -178,6 +179,9 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { t } = useTranslation();
+
+  const { onStartPriceInput } = useMintActionHandlers(undefined);
+
   const {
     independentField,
     typedValue,
@@ -229,6 +233,49 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     [Field.CURRENCY_A]: balances[0],
     [Field.CURRENCY_B]: balances[1],
   };
+
+  // try to find v2 pair for selected tokens to get Initial Start Price
+  const [pairState, pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]);
+
+  const pairExits = pairState === PairState.EXISTS;
+
+  useEffect(() => {
+    onStartPriceInput('');
+  }, [tokenA, tokenB]);
+
+  // v2 pair calculation
+  const v2PriceIndependentAmount: CurrencyAmount | undefined = tryParseAmount(
+    '1', // here we are statically keeping 1 to get 1 token price
+    currencies[independentField],
+    chainId,
+  );
+  const v2PriceDependentAmount: CurrencyAmount | undefined = useMemo(() => {
+    if (v2PriceIndependentAmount && pairExits) {
+      // we wrap the currencies just to get the price in terms of the other token
+      const wrappedIndependentAmount = wrappedCurrencyAmount(v2PriceIndependentAmount, chainId);
+
+      if (tokenA && tokenB && wrappedIndependentAmount && pair && chainId) {
+        const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA;
+        const dependentTokenAmount =
+          dependentField === Field.CURRENCY_B
+            ? pair.priceOf(tokenA, tokenB).quote(wrappedIndependentAmount, chainId)
+            : pair.priceOf(tokenB, tokenA).quote(wrappedIndependentAmount, chainId);
+        return dependentCurrency === CAVAX[chainId]
+          ? CurrencyAmount.ether(dependentTokenAmount.raw, chainId)
+          : dependentTokenAmount;
+      }
+      return undefined;
+    } else {
+      return undefined;
+    }
+  }, [pairExits, currencies, dependentField, v2PriceIndependentAmount, tokenA, chainId, tokenB, pair]);
+
+  useEffect(() => {
+    if (pairExits && v2PriceDependentAmount) {
+      onStartPriceInput(v2PriceDependentAmount?.toSignificant(6));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pairExits, v2PriceDependentAmount?.toSignificant(6)]);
 
   // pool
   const [poolState, pool] = usePool(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B], feeAmount);
