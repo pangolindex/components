@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Inbox } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Text } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useChainId } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
-import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useMintActionHandlers } from 'src/state/pmint/concentratedLiquidity/hooks';
 import { useGetUserPositionsHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
 import { PositionDetails } from 'src/state/pwallet/concentratedLiquidity/types';
@@ -17,14 +15,12 @@ import PositionList from './PositionList';
 import { SortingType } from './PositionList/types';
 import Sidebar from './Sidebar';
 import { MenuType } from './Sidebar/types';
-import { Cards, Content, ErrorContainer, GridContainer, MobileHeader, PageWrapper } from './styles';
+import { Cards, Content, GridContainer, MobileHeader, PageWrapper } from './styles';
 
 const ConcentratedLiquidity = () => {
   const { t } = useTranslation();
-  const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const useGetUserPositions = useGetUserPositionsHook[chainId];
-  const toggleWalletModal = useWalletModalToggle();
   const { positions, loading: positionsLoading } = useGetUserPositions();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
@@ -54,13 +50,17 @@ const ConcentratedLiquidity = () => {
     }
   };
 
-  const [openPositions, closedPositions] = positions?.reduce<[PositionDetails[], PositionDetails[]]>(
-    (acc, p) => {
-      acc[p.liquidity?.isZero() ? 1 : 0].push(p);
-      return acc;
-    },
-    [[], []],
-  ) ?? [[], []];
+  const [openPositions, closedPositions] = useMemo(() => {
+    return (
+      positions?.reduce<[PositionDetails[], PositionDetails[]]>(
+        (acc, p) => {
+          acc[p.liquidity?.isZero() ? 1 : 0].push(p);
+          return acc;
+        },
+        [[], []],
+      ) ?? [[], []]
+    );
+  }, [positions]);
 
   /**
    * It filters positions based on the active menu
@@ -140,7 +140,7 @@ const ConcentratedLiquidity = () => {
             </Visible>
             {positionsLoading ? (
               <Loader height={'auto'} size={100} />
-            ) : filteredPositions && filteredPositions.length > 0 ? (
+            ) : (
               <PositionList
                 setMenu={handleSetMenu}
                 activeMenu={activeMenu}
@@ -170,28 +170,6 @@ const ConcentratedLiquidity = () => {
                   ))}
                 </Cards>
               </PositionList>
-            ) : (
-              <ErrorContainer>
-                {account && finalPositions && finalPositions.length === 0 && (
-                  <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-                    <Inbox size={'121px'} />
-                    <Text pt={'25px'} pb={'25px'} color="color11" fontSize={[18, 22]} fontWeight={400}>
-                      {t('concentratedLiquidity.positionNotFound')}
-                    </Text>
-                  </Box>
-                )}
-                {!account && (
-                  <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-                    <Inbox size={'121px'} />
-                    <Text pt={'25px'} pb={'25px'} color="color11" fontSize={[22, 26]} fontWeight={400}>
-                      {t('concentratedLiquidity.positionNotExist')}
-                    </Text>
-                    <Button width={'300px'} variant="primary" onClick={toggleWalletModal}>
-                      {t('common.connectWallet')}
-                    </Button>
-                  </Box>
-                )}
-              </ErrorContainer>
             )}
           </Content>
         </Box>

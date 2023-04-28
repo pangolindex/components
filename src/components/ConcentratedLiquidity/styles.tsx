@@ -1,57 +1,48 @@
 import styled from 'styled-components';
 import { Box } from 'src/components';
 
-export const ErrorContainer = styled.div`
-  align-items: center;
+export const Cards = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin: auto;
-  padding: 0px 10px;
+  gap: 30px;
+  overflow-y: auto;
+  padding-bottom: 24px;
+  padding-top: 24px;
+  white-space: nowrap;
+  width: 100%;
 `;
 
-export const PageWrapper = styled(Box)`
+export const Content = styled(Box)`
+  background-color: ${({ theme }) => theme.color2};
+  display: grid;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    grid-template-rows: max-content auto;
+  `};
   width: 100%;
-  height: calc(100vh - 76px);
-  padding-bottom: 10px;
 `;
 
 export const GridContainer = styled(Box)`
   display: grid;
-  grid-template-columns: 100%;
   grid-gap: 12px;
-  padding: 50px 0px 0px;
+  grid-template-columns: 100%;
   height: 100%;
+  padding: 50px 0px 0px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 10px 0px 0px;
   `};
 `;
 
-export const Cards = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  padding-top: 24px;
-  padding-bottom: 24px;
-  overflow-y: auto;
-  white-space: nowrap;
-  width: 100%;
-`;
-
 export const MobileHeader = styled(Box)`
+  align-items: center;
   display: grid;
   flex-direction: row;
-  padding: 10px;
   grid-template-columns: max-content max-content;
   justify-content: space-between;
-  align-items: center;
+  padding: 10px;
 `;
 
-export const Content = styled(Box)`
-  display: grid;
+export const PageWrapper = styled(Box)`
+  height: calc(100vh - 76px);
+  padding-bottom: 10px;
   width: 100%;
-  background-color: ${({ theme }) => theme.color2};
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    grid-template-rows: max-content auto;
-  `};
 `;
