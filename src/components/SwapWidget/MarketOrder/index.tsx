@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
@@ -23,6 +22,7 @@ import { WrapType } from 'src/hooks/useWrapCallback/constant';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
 import { Field, LimitNewField } from 'src/state/pswap/atom';
+import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
 import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
@@ -101,6 +101,7 @@ const MarketOrder: React.FC<Props> = ({
   const useWrapCallback = useWrapCallbackHook[chainId];
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
   const useSwapCallback = useSwapCallbackHook[chainId];
+  const useGelatoLimitOrders = useGelatoLimitOrdersHook[chainId];
 
   const checkRecipientAddress = validateAddressMapping[chainId];
 

@@ -1,18 +1,22 @@
 import { formatUnits } from '@ethersproject/units';
-import { useGasOverhead, useGelatoLimitOrders, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
+import { useGasOverhead, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import { TokenAmount } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { INITIAL_ALLOWED_SLIPPAGE } from 'src/constants';
-import { usePangolinWeb3 } from 'src/hooks';
+import { useChainId } from 'src/hooks';
+import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
 import { Text } from '../../Text';
 import { ContentBox, DataBox, ValueText } from './styled';
 
 type Props = { trade: any };
 
 const LimitOrderDetailInfo: React.FC<Props> = ({ trade }) => {
-  const { chainId } = usePangolinWeb3();
+  const chainId = useChainId();
   const { t } = useTranslation();
+
+  const useGelatoLimitOrders = useGelatoLimitOrdersHook[chainId];
+
   const {
     derivedOrderInfo: { parsedAmounts, rawAmounts },
   } = useGelatoLimitOrders();
