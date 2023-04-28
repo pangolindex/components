@@ -47,11 +47,11 @@ const PoolsUI = () => {
   const superFarms = useMemo(() => {
     if (pangoChefStakingLength > 0) {
       return (pangoChefStakingInfos || [])?.filter(
-        (item: PangoChefInfo) => (item?.rewardTokensAddress?.length || 0) > 1,
+        (item: PangoChefInfo) => (item?.rewardTokensAddress?.length || 0) > 0,
       );
     }
     return (miniChefStakingInfos || []).filter(
-      (item: MinichefStakingInfo) => (item?.rewardTokensAddress?.length || 0) > 1,
+      (item: MinichefStakingInfo) => (item?.rewardTokensAddress?.length || 0) > 0,
     );
   }, [miniChefStakingInfos, pangoChefStakingInfos, pangoChefStakingLength]);
 

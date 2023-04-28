@@ -69,3 +69,9 @@ export function useUpdateSelectedPoolId(): (poolId: string | undefined) => void 
   const { setSelectedPooId } = useApplicationState();
   return useCallback((poolId: string | undefined) => setSelectedPooId(poolId), [setSelectedPooId]);
 }
+
+export function useShouldUseSubgraph(): boolean {
+  const chainId = useChainId();
+  const { useSubgraph } = useApplicationState();
+  return useSubgraph?.[chainId];
+}

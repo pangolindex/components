@@ -49,6 +49,7 @@ export const NEAR_LP_STORAGE_AMOUNT = '0.01';
 export const ONLY_ZEROS = /^0*\.?0*$/;
 export const BIGNUMBER_ZERO = BigNumber.from('0');
 export const PANGOCHEF_COMPOUND_SLIPPAGE = new Fraction('1', '50'); // 2% of slippage tolerange
+export const ZERO_FRACTION = new Fraction('0', '1');
 export const ONE_FRACTION = new Fraction('1');
 
 export const IS_IN_IFRAME = window.parent !== window;

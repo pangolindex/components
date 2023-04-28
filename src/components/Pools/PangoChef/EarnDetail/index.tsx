@@ -1,4 +1,5 @@
 import { ChainId, TokenAmount } from '@pangolindex/sdk';
+import numeral from 'numeral';
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
@@ -8,7 +9,7 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { useGetLockingPoolsForPoolIdHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
+import { useExtraPendingRewards } from 'src/state/pstake/hooks/common';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RemoveDrawer from '../../RemoveDrawer';
 import ClaimRewardV3 from '../ClaimReward';
@@ -28,7 +29,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
   const [isCompoundDrawerVisible, setShowCompoundDrawer] = useState(false);
   const [isRemoveDrawerVisible, setShowRemoveDrawer] = useState(false);
 
-  const { rewardTokensAmount, rewardTokensMultiplier } = useMinichefPendingRewards(stakingInfo);
+  const { rewardTokensAmount, rewardTokensMultiplier } = useExtraPendingRewards(stakingInfo);
 
   const useGetLockingPoolsForPoolId = useGetLockingPoolsForPoolIdHook[chainId];
 
@@ -85,7 +86,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           {t('dashboardPage.earned')}
         </Text>
 
-        {/* show unstak button */}
+        {/* show unstake button */}
         <Button
           variant="primary"
           width="100px"
@@ -134,17 +135,19 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
                 <InnerWrapper key={index}>
                   <Box>
                     <Stat
-                      stat={`${extraTokenWeeklyRewardRate?.toSignificant(4, { groupSeparator: ',' }) ?? '-'} `}
+                      stat={numeral(extraTokenWeeklyRewardRate.toFixed(4)).format(`0.00a`)}
                       statFontSize={[20, 18]}
                       currency={reward?.token}
+                      toolTipText={`${extraTokenWeeklyRewardRate?.toSignificant(4, { groupSeparator: ',' }) ?? '-'} `}
                     />
                   </Box>
 
                   <Box>
                     <Stat
-                      stat={`${reward?.toFixed(Math.min(6, reward.token?.decimals)) ?? '0'}`}
+                      stat={numeral(reward?.toFixed(Math.min(4, reward.token?.decimals))).format('0.00a')}
                       statFontSize={[20, 18]}
                       currency={reward?.token}
+                      toolTipText={`${reward?.toFixed(Math.min(4, reward.token?.decimals)) ?? '0'}`}
                     />
                   </Box>
                 </InnerWrapper>

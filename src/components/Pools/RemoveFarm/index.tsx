@@ -8,7 +8,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/hooks';
-import { useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
+import { useExtraPendingRewards, useGetRewardTokens } from 'src/state/pstake/hooks/common';
 import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
 import { useHederaPGLToken } from 'src/state/pwallet/hooks/hedera';
 import { hederaFn } from 'src/utils/hedera';
@@ -43,7 +43,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
 
   const chefType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
-  const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
+  const { rewardTokensAmount } = useExtraPendingRewards(stakingInfo);
   const rewardTokens = useGetRewardTokens(stakingInfo);
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
@@ -254,10 +254,9 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
                     isDisabled={Boolean(
                       stakingInfo.earnedAmount.equalTo('0') || stakingInfo.earnedAmount.lessThan('0'),
                     )}
+                    color={stakingInfo.earnedAmount.greaterThan('0') ? 'text1' : undefined}
                   >
-                    <Text color="text1">
-                      <Text color="text1">{t('sarCompound.compound')}</Text>
-                    </Text>
+                    {t('sarCompound.compound')}
                   </Button>
                 )}
                 {renderButton()}
