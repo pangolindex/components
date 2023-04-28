@@ -171,18 +171,17 @@ export const useSwapState = () => {
     ({ chainId }: { chainId: ChainId }) => {
       setSwapState((prev) => {
         let inputCurrencyId = prev[chainId]?.[Field.INPUT].currencyId;
-        let outputcurrencyId = prev[chainId]?.[Field.OUTPUT].currencyId;
+        const outputcurrencyId = prev[chainId]?.[Field.OUTPUT].currencyId;
         const currency = CAVAX[chainId];
+        const wrappedCurrency = WAVAX[chainId];
 
         // we need to change from hbar to whbar when if the field.input is hbar
-        if (hederaFn.isHederaChain(chainId) && inputCurrencyId === currency.symbol) {
-          const wrappedCurrency = WAVAX[chainId];
+        if (
+          hederaFn.isHederaChain(chainId) &&
+          inputCurrencyId === currency.symbol &&
+          outputcurrencyId !== wrappedCurrency.address
+        ) {
           inputCurrencyId = wrappedCurrency.address;
-
-          if (outputcurrencyId === wrappedCurrency.address) {
-            outputcurrencyId = inputCurrencyId;
-            inputCurrencyId = undefined;
-          }
         }
 
         return {
