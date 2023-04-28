@@ -138,35 +138,6 @@ export const useSwapState = () => {
     [setSwapState],
   );
 
-  const selectCurrency = useCallback(
-    ({ currencyId, field, chainId }: { currencyId: string; field: Field; chainId: ChainId }) => {
-      const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT;
-
-      if (currencyId === swapState[chainId][otherField].currencyId) {
-        // the case where we have to swap the order
-        setSwapState((prev) => ({
-          ...prev,
-          [chainId]: {
-            ...prev[chainId],
-            independentField: prev[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
-            [field]: { currencyId: currencyId },
-            [otherField]: { currencyId: prev[chainId]?.[field].currencyId },
-          },
-        }));
-      } else {
-        // the normal case
-        setSwapState((prev) => ({
-          ...prev,
-          [chainId]: {
-            ...prev[chainId],
-            [field]: { currencyId: currencyId },
-          },
-        }));
-      }
-    },
-    [setSwapState, swapState],
-  );
-
   const switchCurrencies = useCallback(
     ({ chainId }: { chainId: ChainId }) => {
       setSwapState((prev) => {
@@ -196,6 +167,27 @@ export const useSwapState = () => {
       });
     },
     [setSwapState],
+  );
+
+  const selectCurrency = useCallback(
+    ({ currencyId, field, chainId }: { currencyId: string; field: Field; chainId: ChainId }) => {
+      const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT;
+
+      if (currencyId === swapState[chainId][otherField].currencyId) {
+        // the case where we have to swap the order
+        switchCurrencies({ chainId });
+      } else {
+        // the normal case
+        setSwapState((prev) => ({
+          ...prev,
+          [chainId]: {
+            ...prev[chainId],
+            [field]: { currencyId: currencyId },
+          },
+        }));
+      }
+    },
+    [setSwapState, swapState],
   );
 
   const typeInput = useCallback(
