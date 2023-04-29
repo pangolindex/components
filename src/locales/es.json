@@ -101,7 +101,7 @@
     "poolRewards": "Recompensas de la piscina",
     "rewardsIn": "Recompensas en",
     "removeWarning": "Está eliminando liquidez de este grupo. Esta acción te devolverá tus tokens. Alternativamente, puede optar por apostar sus tokens en la granja para ganar recompensas.",
-    "rewardClaimed" : "Your rewards claimed"
+    "rewardClaimed": "Your rewards claimed"
   },
   "menu": {
     "code": "Código",
@@ -173,7 +173,7 @@
     "selected": "Seleccionado",
     "select": "Seleccionar",
     "manageTokenLists": "Administrar listas de tokens",
-    "listsSelected" :"lists selected"
+    "listsSelected": "lists selected"
   },
   "settings": {
     "areYouSure": "Estas seguro?",
@@ -498,10 +498,10 @@
     "seeMore": "Ver más",
     "seeLess": "Ver menos",
     "orderPlaced": "pedido de {{ orderType }} realizado.",
-    "selectToken" : "Select Token",
-    "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain",
-    "sendingTo" : "Sending to",
+    "selectToken": "Select Token",
+    "notFoundBalances": "Not found balances",
+    "notFoundToken": "Not found tokens on this chain",
+    "sendingTo": "Sending to",
     "invalidAddress": "Invalid Address",
     "addRecipient": "Add Recipient",
     "removeRecipient": "Remove Recipient",
@@ -655,7 +655,7 @@
     "staked": "Staked",
     "stakeSuccessMsg": "Your rewards have been staked.",
     "stakeYourReward": "Stake your rewards",
-    "stakePng" : "Stake your PNG token to share platform fees",
+    "stakePng": "Stake your PNG token to share platform fees",
     "unstaking": "Unstaking",
     "unstaked": "Unstaked",
     "unstakeYourReward": "You can unstake your rewards.",
@@ -669,7 +669,7 @@
     "couldNotWrap": "No se pudo envolver",
     "attemptingToConfirmApproval": "Intentando confirmar sin aprobación o firma. Comuníquese con soporte."
   },
-  "sarTitle":{
+  "sarTitle": {
     "addMore": "AÑADIR MÁS",
     "unstake": "QUITAR UNA POSICIÓN",
     "compound": "RECOMPENSAS COMPUESTAS",
@@ -790,7 +790,8 @@
     },
     "addLiquidity": {
       "selectFeeTier": "Select Fee Tier",
-      "fullRange": "Full Range"
+      "fullRange": "Full Range",
+      "feeTierTooltipContext": "Select your pool earnings percentage. Note that swaps favor lowest fee rates."
     },
     "selectPair": {
       "title": "Select Pair"
@@ -807,7 +808,8 @@
       "minPrice": "Min Price",
       "maxPrice": "Max Price",
       "currentPrice": "Current Price",
-      "startingPriceRange": "Set Starting Price"
+      "startingPriceRange": "Set Starting Price",
+      "infoContext": "The amount may adjust to fit tick size when setting a price range."
     },
     "increasePosition": {
       "title": "Increase Position"
@@ -829,7 +831,7 @@
     "selectCurrency": "Select a Currency",
     "search": "Search",
     "tableOfContent": "Table of Content",
-    "haveQuestion" :"Have Questions? Look Here:",
+    "haveQuestion": "Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
@@ -900,7 +902,7 @@
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
   },
-  "buy":{
+  "buy": {
     "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },

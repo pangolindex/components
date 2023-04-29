@@ -1,11 +1,11 @@
 /* eslint-disable max-lines */
 import { CHAINS, Currency, FeeAmount } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
-import { Lock } from 'react-feather';
+import { Info, Lock } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Modal, Text } from 'src/components';
+import { Box, Button, Modal, Text, Tooltip } from 'src/components';
 import LiquidityChartRangeInput from 'src/components/LiquidityChartRangeInput';
 import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
@@ -89,7 +89,6 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     depositBDisabled,
     parsedAmounts,
     errorMessage,
-    pricesAtLimit,
     position,
   } = useDerivedMintInfo(existingPosition);
 
@@ -190,8 +189,14 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const { [Bound.LOWER]: tickLower, [Bound.UPPER]: tickUpper } = ticks;
   const { [Bound.LOWER]: priceLower, [Bound.UPPER]: priceUpper } = pricesAtTicks;
 
-  const { getDecrementLower, getIncrementLower, getDecrementUpper, getIncrementUpper, getSetFullRange } =
-    useRangeHopCallbacks(currency0 ?? undefined, currency1 ?? undefined, feeAmount, tickLower, tickUpper, pool);
+  const { getDecrementLower, getIncrementLower, getDecrementUpper, getIncrementUpper } = useRangeHopCallbacks(
+    currency0 ?? undefined,
+    currency1 ?? undefined,
+    feeAmount,
+    tickLower,
+    tickUpper,
+    pool,
+  );
 
   async function onAdd() {
     if (!chainId || !library || !account || !provider) return;
@@ -242,19 +247,20 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     setAttemptingTxn(false);
   }, [txHash]);
 
-  const handleSetFullRange = useCallback(() => {
-    getSetFullRange();
+  // TODO: add back
+  // const handleSetFullRange = useCallback(() => {
+  //   getSetFullRange();
 
-    const minPrice = pricesAtLimit[Bound.LOWER];
-    const maxPrice = pricesAtLimit[Bound.UPPER];
-    if (minPrice) {
-      onLeftRangeInput(minPrice.toSignificant(5));
-    }
+  //   const minPrice = pricesAtLimit[Bound.LOWER];
+  //   const maxPrice = pricesAtLimit[Bound.UPPER];
+  //   if (minPrice) {
+  //     onLeftRangeInput(minPrice.toSignificant(5));
+  //   }
 
-    if (maxPrice) {
-      onRightRangeInput(maxPrice.toSignificant(5));
-    }
-  }, [getSetFullRange, pricesAtLimit, onLeftRangeInput, onRightRangeInput]);
+  //   if (maxPrice) {
+  //     onRightRangeInput(maxPrice.toSignificant(5));
+  //   }
+  // }, [getSetFullRange, pricesAtLimit, onLeftRangeInput, onRightRangeInput]);
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
@@ -349,9 +355,18 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                   currency1={currency1}
                 />
 
-                <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
-                  {t('concentratedLiquidity.addLiquidity.selectFeeTier')}
-                </Text>
+                <Tooltip id="selectFeeTier" effect="solid">
+                  {t('concentratedLiquidity.addLiquidity.feeTierTooltipContext')}
+                </Tooltip>
+
+                <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                  <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
+                    {t('concentratedLiquidity.addLiquidity.selectFeeTier')}
+                  </Text>
+                  <Box>
+                    <Info size={16} color={theme.white} data-tip data-for="selectFeeTier" />
+                  </Box>
+                </Box>
 
                 <FeeSelector
                   handleFeePoolSelect={handleFeePoolSelect}
@@ -453,13 +468,15 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                 ticksAtLimit={ticksAtLimit}
               />
 
-              {!noLiquidity && (
+              {/* TODO: add back */}
+              {/* {!noLiquidity && (
                 <Box mt={10} mb="5px">
                   <Button variant="outline" onClick={handleSetFullRange} color={theme.text10}>
                     {t('concentratedLiquidity.addLiquidity.fullRange')}
                   </Button>
                 </Box>
-              )}
+              )} */}
+
               {outOfRange ? (
                 <Box
                   display="flex"

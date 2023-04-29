@@ -790,7 +790,8 @@
     },
     "addLiquidity": {
       "selectFeeTier": "Select Fee Tier",
-      "fullRange": "Full Range"
+      "fullRange": "Full Range",
+      "feeTierTooltipContext": "Select your pool earnings percentage. Note that swaps favor lowest fee rates."
     },
     "selectPair": {
       "title": "Select Pair"
@@ -807,7 +808,8 @@
       "minPrice": "Min Price",
       "maxPrice": "Max Price",
       "currentPrice": "Current Price",
-      "startingPriceRange": "Set Starting Price"
+      "startingPriceRange": "Set Starting Price",
+      "infoContext": "The amount may adjust to fit tick size when setting a price range."
     },
     "increasePosition": {
       "title": "Increase Position"
@@ -900,7 +902,7 @@
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
   },
-  "buy":{
+  "buy": {
     "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },

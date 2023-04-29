@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { Info } from 'react-feather';
 import { useTranslation } from 'react-i18next';
-import { Box, Text } from 'src/components';
+import { ThemeContext } from 'styled-components';
+import { Box, Text, Tooltip } from 'src/components';
 import { useChainId } from 'src/hooks';
 import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -25,6 +27,7 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
   } = props;
   const { t } = useTranslation();
 
+  const theme = useContext(ThemeContext);
   const chainId = useChainId();
 
   const tokenA = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
@@ -37,9 +40,18 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
 
   return (
     <Box>
-      <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
-        {t('concentratedLiquidity.priceRange.title')}
-      </Text>
+      <Tooltip id="setPriceRange" effect="solid">
+        {t('concentratedLiquidity.priceRange.infoContext')}
+      </Tooltip>
+
+      <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
+        <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
+          {t('concentratedLiquidity.priceRange.title')}
+        </Text>
+        <Box>
+          <Info size={16} color={theme.white} data-tip data-for="setPriceRange" />
+        </Box>
+      </Box>
 
       <PriceInputs>
         <PriceInput
