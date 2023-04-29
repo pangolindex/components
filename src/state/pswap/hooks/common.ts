@@ -4,6 +4,7 @@ import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@ge
 import {
   CAVAX,
   ChainId,
+  ConcentratedTrade,
   Currency,
   CurrencyAmount,
   FACTORY_ADDRESS,
@@ -145,7 +146,7 @@ export function useDerivedSwapInfo(): {
   currencies: { [field in Field]?: Currency };
   currencyBalances: { [field in Field]?: CurrencyAmount };
   parsedAmount: CurrencyAmount | undefined;
-  v2Trade: Trade | undefined;
+  v2Trade: Trade | ConcentratedTrade | undefined;
   inputError?: string;
   v1Trade: Trade | undefined;
   isLoading: boolean;
@@ -177,38 +178,50 @@ export function useDerivedSwapInfo(): {
 
   const isExactIn: boolean = independentField === Field.INPUT;
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId);
+  const memoParsedAmount = useMemo(() => {
+    return tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId);
+  }, [typedValue, chainId, inputCurrency, outputCurrency, isExactIn]);
 
-  const { trade: bestTradeExactIn, isLoading: isLoadingIn } = useTradeExactIn(
+  const { trade: v2BestTradeExactIn, isLoading: isLoadingIn } = useTradeExactIn(
     isExactIn ? parsedAmount : undefined,
     outputCurrency ?? undefined,
   );
-  const { trade: bestTradeExactOut, isLoading: isLoadingOut } = useTradeExactOut(
+  const { trade: v2BestTradeExactOut, isLoading: isLoadingOut } = useTradeExactOut(
     inputCurrency ?? undefined,
     !isExactIn ? parsedAmount : undefined,
   );
 
-  const { trade: bestConcentratedTradeExactIn, isLoading: isConcentratedLoadingIn } = useConcentratedTradeExactIn(
-    isExactIn ? parsedAmount : undefined,
+  const { trade: bestElixirTradeExactIn, isLoading: isConcentratedLoadingIn } = useConcentratedTradeExactIn(
+    isExactIn ? memoParsedAmount : undefined,
     outputCurrency ?? undefined,
   );
-  const { trade: bestConcentratedTradeExactOut, isLoading: isConcentratedLoadingOut } = useConcentratedTradeExactOut(
+  const { trade: bestElixirTradeExactOut, isLoading: isConcentratedLoadingOut } = useConcentratedTradeExactOut(
     inputCurrency ?? undefined,
-    !isExactIn ? parsedAmount : undefined,
+    !isExactIn ? memoParsedAmount : undefined,
   );
-  console.log('isConcentratedLoadingIn', isConcentratedLoadingIn);
-  console.log('bestConcentratedTradeExactIn', bestConcentratedTradeExactIn);
 
-  console.log('isConcentratedLoadingOut', isConcentratedLoadingOut);
-  console.log('bestConcentratedTradeExactOut', bestConcentratedTradeExactOut);
+  // get trade from elixir pools
+  // v2BestTradeExactIn?.outputAmount > bestElixirTradeExactIn?.outputAmount => take v2 trade
+  // v2BestTradeExactIn?.outputAmount < bestElixirTradeExactIn?.outputAmount => take v3 trade
+  const bestTradeIn = v2BestTradeExactIn
+    ? bestElixirTradeExactIn?.outputAmount.greaterThan(v2BestTradeExactIn?.outputAmount)
+      ? bestElixirTradeExactIn
+      : v2BestTradeExactIn
+    : bestElixirTradeExactIn
+    ? bestElixirTradeExactIn
+    : undefined;
 
-  // get trade from univ3
-  // v2BestTradeExactIn?.outputAmount > v3BestTradeExactIn?.outputAmount => take v2 trade
-  // v2BestTradeExactIn?.outputAmount < v3BestTradeExactIn?.outputAmount => take v3 trade
+  // v2BestTradeExactOut?.inputAmount < bestElixirTradeExactOut?.inputAmount => take v2 trade
+  // v2BestTradeExactOut?.inputAmount > bestElixirTradeExactOut?.inputAmount => take v3 trade
+  const bestTradeOut = v2BestTradeExactOut
+    ? bestElixirTradeExactOut?.inputAmount.lessThan(v2BestTradeExactOut?.inputAmount)
+      ? bestElixirTradeExactOut
+      : v2BestTradeExactOut
+    : bestElixirTradeExactOut
+    ? bestElixirTradeExactOut
+    : undefined;
 
-  // bestTradeExactOut?.inputAmount > v3BestTradeExactIn?.inputAmount => take v2 trade
-  // bestTradeExactOut?.inputAmount < v3BestTradeExactIn?.inputAmount => take v3 trade
-
-  const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut;
+  const v2Trade = isExactIn ? bestTradeIn : bestTradeOut;
 
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],
@@ -243,8 +256,8 @@ export function useDerivedSwapInfo(): {
   } else {
     if (
       BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
-      (bestTradeExactIn && involvesAddress(bestTradeExactIn, formattedTo)) ||
-      (bestTradeExactOut && involvesAddress(bestTradeExactOut, formattedTo))
+      (v2BestTradeExactIn && involvesAddress(v2BestTradeExactIn, formattedTo)) ||
+      (v2BestTradeExactOut && involvesAddress(v2BestTradeExactOut, formattedTo))
     ) {
       inputError = inputError ?? t('swapHooks.invalidRecipient');
     }
@@ -274,7 +287,7 @@ export function useDerivedSwapInfo(): {
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance';
   }
 
-  const isLoading = isExactIn ? isLoadingIn : isLoadingOut;
+  const isLoading = isExactIn ? isLoadingIn || isConcentratedLoadingIn : isLoadingOut || isConcentratedLoadingOut;
 
   return {
     currencies,

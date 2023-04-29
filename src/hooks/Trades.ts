@@ -256,19 +256,17 @@ export function useConcentratedTradeExactIn(
   useEffect(() => {
     const getBestTradeExactIn = async () => {
       if (currencyAmountIn && currencyOut && allowedPools.length > 0 && !isLoading) {
-        const trade = await ConcentratedTrade.bestTradeExactIn(allowedPools, currencyAmountIn, currencyOut, {
+        const trades = await ConcentratedTrade.bestTradeExactIn(allowedPools, currencyAmountIn, currencyOut, {
           maxHops: 3,
           maxNumResults: 1,
-        })[0];
+        });
 
-        console.log('======trade in', trade);
-
-        setTradeData({ trade: trade, isLoading: isLoading });
+        const finalTrade = trades?.[0];
+        setTradeData({ trade: finalTrade, isLoading: isLoading });
       }
     };
     getBestTradeExactIn();
   }, [allowedPools, isLoading, currencyAmountIn, currencyOut]);
-  console.log('tradeData - in', tradeData);
   return tradeData;
 }
 
@@ -289,16 +287,16 @@ export function useConcentratedTradeExactOut(
   useEffect(() => {
     const getBestTradeExactOut = async () => {
       if (currencyIn && currencyAmountOut && allowedPools.length > 0 && !isLoading) {
-        const trade = await ConcentratedTrade.bestTradeExactOut(allowedPools, currencyIn, currencyAmountOut, {
+        const trades = await ConcentratedTrade.bestTradeExactOut(allowedPools, currencyIn, currencyAmountOut, {
           maxHops: 3,
           maxNumResults: 1,
-        })[0];
-        console.log('======trade out', trade);
-        setTradeData({ trade: trade, isLoading: isLoading });
+        });
+
+        const finalTrade = trades?.[0];
+        setTradeData({ trade: finalTrade, isLoading: isLoading });
       }
     };
     getBestTradeExactOut();
   }, [allowedPools, isLoading, currencyIn, currencyAmountOut]);
-  console.log('tradeData -out', tradeData);
   return tradeData;
 }

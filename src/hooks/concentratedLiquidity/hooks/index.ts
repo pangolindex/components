@@ -11,17 +11,18 @@ import {
   useConcLiqPositionFees,
   useFeeTierDistribution,
   usePoolTVL,
-  usePools,
+  usePoolsViaContract,
+  usePoolsViaSubgraph,
   usePositionTokenURI,
   useUnderlyingTokens,
 } from './evm';
 
 export type UsePoolsHookType = {
-  [chainId in ChainId]: typeof usePools | typeof useDummyPools;
+  [chainId in ChainId]: typeof usePoolsViaContract | typeof useDummyPools;
 };
 
 export const usePoolsHook: UsePoolsHookType = {
-  [ChainId.FUJI]: usePools,
+  [ChainId.FUJI]: usePoolsViaSubgraph,
   [ChainId.AVALANCHE]: useDummyPools,
   [ChainId.WAGMI]: useDummyPools,
   [ChainId.COSTON]: useDummyPools,

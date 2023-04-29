@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
-    "@pangolindex/sdk": "5.0.2-internal.581d34e",
+    "@pangolindex/sdk": "5.0.2-internal.b5415be",
     "@types/react-router-dom": "^5.3.3",
     "@web3-react/core": "6.0.9",
     "@web3-react/injected-connector": "6.0.7",

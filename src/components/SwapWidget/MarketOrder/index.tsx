@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import { ConcentratedTrade, CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -206,7 +206,7 @@ const MarketOrder: React.FC<Props> = ({
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
     showConfirm: boolean;
-    tradeToConfirm: Trade | undefined;
+    tradeToConfirm: Trade | ConcentratedTrade | undefined;
     attemptingTxn: boolean;
     swapErrorMessage: string | undefined;
     txHash: string | undefined;
@@ -233,7 +233,7 @@ const MarketOrder: React.FC<Props> = ({
   const noRoute = !route;
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(chainId, trade, allowedSlippage);
+  const [approval, approveCallback] = useApproveCallbackFromTrade(chainId, trade as Trade, allowedSlippage);
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
@@ -248,7 +248,11 @@ const MarketOrder: React.FC<Props> = ({
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT]);
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, recipient, allowedSlippage);
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
+    trade as Trade,
+    recipient,
+    allowedSlippage,
+  );
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade);
 
