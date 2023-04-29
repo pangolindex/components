@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, CurrencyAmount, JSBI, Token, TokenAmount, Trade, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
@@ -47,7 +48,6 @@ import TradeOption from '../TradeOption';
 import { DeprecatedWarning } from '../Warning';
 import confirmPriceImpactWithoutFee from '../confirmPriceImpactWithoutFee';
 import { ArrowWrapper, CurrencyInputTextBox, LinkStyledButton, PValue, Root, SwapWrapper } from './styled';
-import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
 
 interface Props {
   swapType: string;
