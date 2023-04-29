@@ -1,7 +1,8 @@
-import { CHAINS, NonfungiblePositionManager, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, NonfungiblePositionManager, Token, TokenAmount } from '@pangolindex/sdk';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin, waitForTransaction } from 'src/utils';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { RemoveConcentratedLiquidityProps } from '../types';
 
 export function useConcentratedRemoveLiquidity() {
@@ -29,8 +30,12 @@ export function useConcentratedRemoveLiquidity() {
     }
 
     try {
-      const expectedCurrencyOwed0 = feeValue0 ?? TokenAmount.fromRawAmount(liquidityValue0.token, 0);
-      const expectedCurrencyOwed1 = feeValue1 ?? TokenAmount.fromRawAmount(liquidityValue1.token, 0);
+      const expectedCurrencyOwed0 = feeValue0
+        ? TokenAmount.fromRawAmount(wrappedCurrency(feeValue0?.token, chainId) as Token, feeValue0.raw)
+        : TokenAmount.fromRawAmount(liquidityValue0.token, 0);
+      const expectedCurrencyOwed1 = feeValue1
+        ? TokenAmount.fromRawAmount(wrappedCurrency(feeValue1?.token, chainId) as Token, feeValue1.raw)
+        : TokenAmount.fromRawAmount(liquidityValue1.token, 0);
 
       const parameters = {
         tokenId: tokenId.toString(),

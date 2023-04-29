@@ -1,6 +1,16 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
-import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from '@pangolindex/sdk';
+import {
+  CHAINS,
+  ConcentratedTrade,
+  JSBI,
+  Percent,
+  Router,
+  SwapParameters,
+  SwapRouter,
+  Trade,
+  TradeType,
+} from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { INITIAL_ALLOWED_SLIPPAGE, ZERO_ADDRESS } from 'src/constants';
 import { BIPS_BASE } from 'src/constants/swap';
@@ -96,21 +106,29 @@ function useSwapCallArguments(
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
 export function useSwapCallback(
-  trade: Trade | undefined, // trade to execute, required
+  trade: Trade | ConcentratedTrade | undefined, // trade to execute, required
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account } = usePangolinWeb3();
+  const { library } = useLibrary();
   const chainId = useChainId();
+  const deadline = useTransactionDeadline();
 
-  const swapCalls = useSwapCallArguments(trade, allowedSlippage, recipientAddressOrName);
+  // this is only needed for v2 swao routing
+  // for elixir swap routing there is separate logic below
+  const swapCalls = useSwapCallArguments(
+    trade instanceof Trade ? trade : undefined,
+    allowedSlippage,
+    recipientAddressOrName,
+  );
   const addTransaction = useTransactionAdder();
 
   const { address: recipientAddress } = useENS(recipientAddressOrName);
   const recipient = recipientAddressOrName === null ? account : recipientAddress;
 
   return useMemo(() => {
-    if (!trade || !account || !chainId) {
+    if (!trade || !account || !chainId || !deadline) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' };
     }
     if (!recipient) {
@@ -126,6 +144,54 @@ export function useSwapCallback(
     return {
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
+        // if swap is using elixir pools then use different way to sign transaction
+        if (trade instanceof ConcentratedTrade) {
+          const { calldata, value } = SwapRouter.swapCallParameters(trade, {
+            deadline: deadline?.toString(),
+            recipient: account,
+            slippageTolerance: new Percent(JSBI.BigInt(allowedSlippage), BIPS_BASE),
+          });
+
+          const txn: { to: string; data: string; value: string } = {
+            to: CHAINS[chainId]?.contracts?.concentratedLiquidity?.swapRouter ?? '',
+            data: calldata,
+            value,
+          };
+
+          try {
+            const estimatedGasLimit = await library.getSigner().estimateGas(txn);
+
+            const swapTx = {
+              ...txn,
+              gasLimit: calculateGasMargin(estimatedGasLimit),
+            };
+
+            const response = await library.getSigner().sendTransaction(swapTx);
+
+            const inputSymbol = trade.inputAmount.currency.symbol;
+            const outputSymbol = trade.outputAmount.currency.symbol;
+            const inputAmount = trade.inputAmount.toSignificant(3);
+            const outputAmount = trade.outputAmount.toSignificant(3);
+            const swapTxMsg = `Swap ${inputAmount} ${inputSymbol} for ${outputAmount} ${outputSymbol}`;
+
+            addTransaction(response, {
+              summary: swapTxMsg,
+            });
+            console.log(response);
+
+            return response.hash;
+          } catch (error: any) {
+            // if the user rejected the tx, pass this along
+            if (error?.code === 4001) {
+              throw new Error('Transaction rejected.');
+            } else {
+              // otherwise, the error was unexpected and we need to convey that
+              console.error(`Swap failed`, error, calldata, value);
+              throw new Error(`Swap failed: ${error.message}`);
+            }
+          }
+        }
+
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
           swapCalls.map((call) => {
             const {

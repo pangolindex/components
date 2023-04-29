@@ -1,7 +1,7 @@
 import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
-import { CAVAX, ChainId, CurrencyAmount, TokenAmount, Trade } from '@pangolindex/sdk';
+import { CAVAX, CHAINS, ChainId, ConcentratedTrade, CurrencyAmount, TokenAmount, Trade } from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
@@ -98,12 +98,17 @@ export function useApproveCallback(
 }
 
 // wraps useApproveCallback in the context of a swap
-export function useApproveCallbackFromTrade(chainId: ChainId, trade?: Trade, allowedSlippage = 0) {
+export function useApproveCallbackFromTrade(chainId: ChainId, trade?: Trade | ConcentratedTrade, allowedSlippage = 0) {
   const [amountToApprove, routerAddress] = useMemo(() => {
     if (!chainId || !trade) return [undefined, undefined];
+    const elixirSwapRouter = CHAINS[chainId].contracts!.concentratedLiquidity?.swapRouter;
     return [
       computeSlippageAdjustedAmounts(trade, allowedSlippage)[Field.INPUT],
-      trade.feeTo === ZERO_ADDRESS ? ROUTER_ADDRESS[chainId] : ROUTER_DAAS_ADDRESS[chainId],
+      trade instanceof ConcentratedTrade
+        ? elixirSwapRouter
+        : trade.feeTo === ZERO_ADDRESS
+        ? ROUTER_ADDRESS[chainId]
+        : ROUTER_DAAS_ADDRESS[chainId],
     ];
   }, [trade, allowedSlippage]);
   return useApproveCallback(chainId, amountToApprove, routerAddress);

@@ -1,4 +1,4 @@
-import { Trade } from '@pangolindex/sdk';
+import { ConcentratedTrade, Trade } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
 import { ChevronRight } from 'react-feather';
 import { ThemeContext } from 'styled-components';
@@ -6,7 +6,7 @@ import { Box, CurrencyLogo, Text } from '../../';
 import { SwapRouteWrapper } from './styled';
 
 type Props = {
-  trade: Trade;
+  trade: Trade | ConcentratedTrade;
 };
 
 const SwapRoute: React.FC<Props> = ({ trade }) => {
