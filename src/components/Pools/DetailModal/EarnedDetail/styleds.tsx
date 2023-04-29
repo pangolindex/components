@@ -9,7 +9,7 @@ export const Wrapper = styled(Box)`
   background-color: ${({ theme }) => theme.bg2};
   margin-top: 10px;
   padding: 10px;
-  height: 295px;
+  min-height: 295px;
   display: flex;
   flex-direction: column;
   * {
