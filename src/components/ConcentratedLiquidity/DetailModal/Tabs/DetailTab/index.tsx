@@ -76,16 +76,16 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
   const price1 = useUSDCPrice(position?.token1 ?? undefined);
   const fiatValueOfLiquidity: CurrencyAmount | null = useMemo(() => {
     if (!price0 || !price1 || !nativePosition) return null;
-    const amount0 = price0.quote(nativePosition?.amount0);
-    const amount1 = price1.quote(nativePosition?.amount1);
+    const amount0 = price0.quote(nativePosition?.amount0, chainId);
+    const amount1 = price1.quote(nativePosition?.amount1, chainId);
     return amount0.add(amount1);
   }, [price0, price1, nativePosition]);
   const [underlyingToken0, underlyingToken1] = useUnderlyingTokens(position?.token0, position?.token1, position?.fee);
   const totalFiatValueOfPool: CurrencyAmount | null = useMemo(() => {
     if (!price0 || !price1 || !underlyingToken0 || !underlyingToken1) return null;
 
-    const amount0 = price0.quote(underlyingToken0);
-    const amount1 = price1.quote(underlyingToken1);
+    const amount0 = price0.quote(underlyingToken0, chainId);
+    const amount1 = price1.quote(underlyingToken1, chainId);
     return amount0.add(amount1);
   }, [price0, price1, underlyingToken0, underlyingToken1]);
 

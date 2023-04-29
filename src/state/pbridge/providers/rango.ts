@@ -108,7 +108,7 @@ export const getRangoRoutes: GetRoutes = async ({
                         toToken: step?.to?.symbol,
                       },
                       estimate: {
-                        toAmount: new TokenAmount(step?.to as Currency as Token, step?.expectedOutput).toFixed(4),
+                        toAmount: new TokenAmount(step?.to as unknown as Token, step?.expectedOutput).toFixed(4),
                       },
                     } as Step),
                 )
@@ -121,7 +121,7 @@ export const getRangoRoutes: GetRoutes = async ({
                     },
                     estimate: {
                       toAmount: new TokenAmount(
-                        rangoRouteRes?.route?.to as Currency as Token,
+                        rangoRouteRes?.route?.to as unknown as Token,
                         rangoRouteRes?.route?.outputAmount,
                       ).toFixed(4),
                     },

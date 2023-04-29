@@ -14,6 +14,7 @@ import {
   CHAINS,
   Chain,
   ChainId,
+  ConcentratedTrade,
   Currency,
   CurrencyAmount,
   Fraction,
@@ -523,7 +524,10 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, chainId: ChainId, 
  * @param tradeA trade A
  * @param tradeB trade B
  */
-export function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean {
+export function tradeMeaningfullyDiffers(
+  tradeA: Trade | ConcentratedTrade,
+  tradeB: Trade | ConcentratedTrade,
+): boolean {
   return (
     tradeA.tradeType !== tradeB.tradeType ||
     !currencyEquals(tradeA.inputAmount.currency, tradeB.inputAmount.currency) ||

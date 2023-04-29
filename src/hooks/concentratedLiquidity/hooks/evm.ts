@@ -7,12 +7,14 @@ import {
   Currency,
   FeeAmount,
   JSBI,
+  Tick,
   Token,
   TokenAmount,
   computePoolAddress,
 } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
+import { ElixirPool, ElixirTick, useElixirPools } from 'src/apollo/elixirPools';
 import { useFeeTierDistributionQuery } from 'src/apollo/feeTierDistribution';
 import { CONCENTRATE_POOL_STATE_INTERFACE } from 'src/constants/abis/concentratedPool';
 import { useChainId } from 'src/hooks';
@@ -73,6 +75,7 @@ class PoolCache {
     sqrtPriceX96: BigintIsh,
     liquidity: BigintIsh,
     tick: number,
+    ticks?: Array<ElixirTick>,
   ): ConcentratedPool {
     if (this.pools.length > this.MAX_ENTRIES) {
       this.pools = this.pools.slice(0, this.MAX_ENTRIES / 2);
@@ -89,13 +92,23 @@ class PoolCache {
     );
     if (found) return found;
 
-    const pool = new ConcentratedPool(tokenA, tokenB, fee, sqrtPriceX96, liquidity, tick);
+    let finalTicks: Array<Tick> = [];
+    if (ticks && ticks.length > 0) {
+      finalTicks = ticks
+        .sort((a, b) => Number.parseInt(a.tickIdx) - Number.parseInt(b.tickIdx))
+        .map(
+          ({ tickIdx, liquidityGross, liquidityNet }) =>
+            new Tick({ index: Number(tickIdx), liquidityGross, liquidityNet }),
+        );
+    }
+
+    const pool = new ConcentratedPool(tokenA, tokenB, fee, sqrtPriceX96, liquidity, tick, finalTicks);
     this.pools.unshift(pool);
     return pool;
   }
 }
 
-export function usePools(
+export function usePoolsViaContract(
   poolKeys: [Currency | undefined, Currency | undefined, FeeAmount | undefined][],
 ): [PoolState, ConcentratedPool | null][] {
   const chainId = useChainId();
@@ -154,6 +167,81 @@ export function usePools(
       }
     });
   }, [liquidities, poolKeys, slot0s, poolTokens]);
+}
+
+export function usePoolsViaSubgraph(
+  poolKeys: [Currency | undefined, Currency | undefined, FeeAmount | undefined][],
+): [PoolState, ConcentratedPool | null][] {
+  const chainId = useChainId();
+
+  const poolTokens: ([Token, Token, FeeAmount] | undefined)[] = useMemo(() => {
+    if (!chainId) return new Array(poolKeys.length);
+
+    return poolKeys.map(([currencyA, currencyB, feeAmount]) => {
+      if (currencyA && currencyB && feeAmount) {
+        const tokenA = wrappedCurrency(currencyA, chainId);
+        const tokenB = wrappedCurrency(currencyB, chainId);
+
+        if (!tokenA || !tokenB) return undefined;
+
+        if (tokenA.equals(tokenB)) return undefined;
+
+        return tokenA.sortsBefore(tokenB) ? [tokenA, tokenB, feeAmount] : [tokenB, tokenA, feeAmount];
+      }
+      return undefined;
+    });
+  }, [chainId, poolKeys]);
+
+  const poolAddresses: string[] = useMemo(() => {
+    const v3CoreFactoryAddress = chainId && CHAINS[chainId].contracts?.concentratedLiquidity?.factory;
+    if (!v3CoreFactoryAddress) return new Array(poolTokens.length);
+
+    return poolTokens.map((value) => value && PoolCache.getPoolAddress(v3CoreFactoryAddress, ...value, chainId));
+  }, [chainId, poolTokens]);
+
+  const { isLoading, data: elixirPools } = useElixirPools(poolAddresses);
+
+  const poolsMapping = (elixirPools || [])?.reduce((acc, item) => {
+    acc[item.id] = item;
+    return acc;
+  }, {} as { [address: string]: ElixirPool });
+
+  return useMemo(() => {
+    return poolKeys.map((_key, index) => {
+      const tokens = poolTokens[index];
+      if (!tokens) return [PoolState.INVALID, null];
+      const [token0, token1, fee] = tokens;
+      const address = poolAddresses[index];
+      const poolData = poolsMapping[address] || {};
+
+      const sqrtPrice = poolData.sqrtPrice;
+      const liquidity = poolData.liquidity;
+      if (!sqrtPrice) return [PoolState.INVALID, null];
+
+      if (!liquidity) return [PoolState.INVALID, null];
+
+      if (!tokens || !sqrtPrice || !liquidity) return [PoolState.INVALID, null];
+      if (isLoading) return [PoolState.LOADING, null];
+      if (!sqrtPrice || !liquidity) return [PoolState.NOT_EXISTS, null];
+      if (!sqrtPrice || sqrtPrice === '0') return [PoolState.NOT_EXISTS, null];
+
+      try {
+        const pool = PoolCache.getPool(
+          token0,
+          token1,
+          fee,
+          sqrtPrice,
+          liquidity,
+          Number(poolData.tick),
+          poolData.ticks,
+        );
+        return [PoolState.EXISTS, pool];
+      } catch (error) {
+        console.error('Error when constructing the pool', error);
+        return [PoolState.NOT_EXISTS, null];
+      }
+    });
+  }, [poolKeys, elixirPools, poolTokens]);
 }
 
 // maximum number of blocks past which we consider the data stale
@@ -305,11 +393,8 @@ export function useUnderlyingTokens(
   token1?: TokenReturnType,
   fee?: FeeAmount,
 ): [TokenAmount | undefined, TokenAmount | undefined] {
-  const chainId = useChainId();
   const poolAddress =
-    token0 && token1 && fee
-      ? ConcentratedPool.getAddress(token0, token1, fee, undefined, undefined, chainId)
-      : undefined;
+    token0 && token1 && fee ? ConcentratedPool.getAddress(token0, token1, fee, undefined, undefined) : undefined;
 
   const token0Contract = useTokenContract(token0?.address, false);
   const token1Contract = useTokenContract(token1?.address, false);
