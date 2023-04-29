@@ -6074,10 +6074,10 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@pangolindex/sdk@5.0.2-internal.b5415be":
-  version "5.0.2-internal.b5415be"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-5.0.2-internal.b5415be.tgz#9485552a2bd7cd6384bbad30276f9f35ce03304d"
-  integrity sha512-/hL+AySwSoz6tgJvmOILKgSVkITvCfmi9AnRE1SzzI39WOOSrBvgcBypwHUEc2xmxvvRALtQn//frPoGCyiC7Q==
+"@pangolindex/sdk@5.0.2-internal.13ec0ae":
+  version "5.0.2-internal.13ec0ae"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-5.0.2-internal.13ec0ae.tgz#b55a9425cee319912f417a8b7cf2a8310bb67c10"
+  integrity sha512-GHB1HLKswBo8I6d7rXoeH1XwPD0ALO1BexCxnDQbV7Tz/92YGWflsFZhCcwyWsQ4/1iqdOZm/tKEatm7wqtm/Q==
   dependencies:
     big.js "^5.2.2"
     decimal.js-light "^2.5.0"
