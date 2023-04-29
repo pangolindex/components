@@ -272,10 +272,10 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
 
   useEffect(() => {
     if (pairExits && v2PriceDependentAmount) {
-      onStartPriceInput(v2PriceDependentAmount?.toSignificant(6));
+      onStartPriceInput(v2PriceDependentAmount?.toSignificant(24));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pairExits, v2PriceDependentAmount?.toSignificant(6)]);
+  }, [pairExits, v2PriceDependentAmount?.toSignificant(24)]);
 
   // pool
   const [poolState, pool] = usePool(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B], feeAmount);
