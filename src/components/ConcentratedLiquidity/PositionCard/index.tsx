@@ -69,7 +69,7 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
                 </Text>
                 <BlackBox>
                   <BlackBoxContent color="color11" fontSize={18} fontWeight={500}>
-                    %{feeAmount / 10 ** 4}
+                    {feeAmount / 10 ** 4}%
                   </BlackBoxContent>
                 </BlackBox>
                 <BlackBox data-tip data-for={`positionStatus-${tokenId}`}>
