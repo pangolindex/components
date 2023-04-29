@@ -59,7 +59,7 @@ const LimitOrder: React.FC<Props> = ({
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const useToken = useTokenHook[chainId];
-  console.log(chainId);
+
   const useGelatoLimitOrders = useGelatoLimitOrdersHook[chainId];
   const theme = useContext(ThemeContext);
 
@@ -381,7 +381,7 @@ const LimitOrder: React.FC<Props> = ({
       } else {
         newCurrency.isToken = true;
       }
-      console.log({ newCurrency, onCurrencySelection });
+
       onCurrencySelection(type as any, newCurrency);
       // this is to update tokens on chart on token selection
       onSwapCurrencySelection(type as any, currency);
