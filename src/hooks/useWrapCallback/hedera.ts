@@ -36,13 +36,24 @@ export function useWrapHbarCallback(
   const addTransaction = useTransactionAdder();
 
   return useMemo(() => {
-    if (!chainId || !inputCurrency || !outputCurrency || !account) return NOT_APPLICABLE;
+    if (!chainId || !inputCurrency || !outputCurrency) return NOT_APPLICABLE;
+
+    const isWrap = inputCurrency === CAVAX[chainId] && currencyEquals(WAVAX[chainId], outputCurrency);
+    const isUnWrap = currencyEquals(WAVAX[chainId], inputCurrency) && outputCurrency === CAVAX[chainId];
+
+    if (!account && isWrap) {
+      return { wrapType: WrapType.WRAP, executing: false };
+    } else if (!account && isUnWrap) {
+      return { wrapType: WrapType.UNWRAP, executing: false };
+    } else if (!account) {
+      return NOT_APPLICABLE;
+    }
 
     let inputError = !typedValue ? t('swapHooks.enterAmount') : undefined;
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount);
 
-    if (inputCurrency === CAVAX[chainId] && currencyEquals(WAVAX[chainId], outputCurrency)) {
+    if (isWrap) {
       inputError =
         inputError ??
         (sufficientBalance ? undefined : t('swapHooks.insufficientBalance', { symbol: CAVAX[chainId].symbol }));
@@ -70,7 +81,7 @@ export function useWrapHbarCallback(
         inputError: inputError,
         executing: executing,
       };
-    } else if (currencyEquals(WAVAX[chainId], inputCurrency) && outputCurrency === CAVAX[chainId]) {
+    } else if (isUnWrap) {
       inputError =
         inputError ??
         (sufficientBalance ? undefined : t('swapHooks.insufficientBalance', { symbol: WAVAX[chainId].symbol }));
