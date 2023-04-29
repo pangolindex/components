@@ -49,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
             {t('concentratedLiquidity.sidebar.seeMore')}
           </Text>
 
-          <Link fontSize={14} color="primary" cursor="pointer" as="a" href="/pools">
+          <Link fontSize={14} color="primary" cursor="pointer" as="a" href="/pool/standard">
             {t('concentratedLiquidity.sidebar.goToFarm')}
           </Link>
         </Box>
