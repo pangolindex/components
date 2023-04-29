@@ -198,23 +198,23 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
   const currencyA = useCurrency(inputCurrencyId);
   const currencyB = useCurrency(outputCurrencyId);
 
-  // currencies
-  const currencies: { [field in Field]?: Currency } = useMemo(
-    () => ({
-      [Field.CURRENCY_A]: currencyA ?? undefined,
-      [Field.CURRENCY_B]: currencyB ?? undefined,
-    }),
-    [currencyA, currencyB],
-  );
+  const [currencies, tokenA, tokenB, baseToken] = useMemo(() => {
+    const wrapCurrency = (currency) => (currency ? wrappedCurrency(currency, chainId) : undefined);
 
-  // formatted with tokens
-  const [tokenA, tokenB, baseToken] = useMemo(() => {
-    const tokenA = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
-    const tokenB = currencyB ? wrappedCurrency(currencyB, chainId) : undefined;
+    const tokenA: Token | undefined = wrapCurrency(currencyA);
+    const tokenB: Token | undefined = wrapCurrency(currencyB);
 
-    const baseToken = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
+    const [finalTokenA, finalTokenB]: [Token | undefined, Token | undefined] =
+      tokenA && tokenB && tokenA.equals(tokenB) ? [tokenB, undefined] : [tokenA, tokenB];
 
-    return [tokenA, tokenB, baseToken];
+    const baseToken: Token | undefined = wrapCurrency(currencyA);
+
+    const currencies: { [field in Field]?: Currency | undefined } = {
+      [Field.CURRENCY_A]: (tokenA && tokenB && tokenA.equals(tokenB) ? currencyB : currencyA) ?? undefined,
+      [Field.CURRENCY_B]: (tokenA && tokenB && tokenA.equals(tokenB) ? undefined : currencyB) ?? undefined,
+    };
+
+    return [currencies, finalTokenA, finalTokenB, baseToken];
   }, [currencyA, currencyB]);
 
   const [token0, token1] = useMemo(

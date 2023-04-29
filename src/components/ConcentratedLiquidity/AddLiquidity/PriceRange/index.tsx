@@ -30,7 +30,7 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
   const tokenA = currencyA ? wrappedCurrency(currencyA, chainId) : undefined;
   const tokenB = currencyB ? wrappedCurrency(currencyB, chainId) : undefined;
 
-  const isSorted = tokenA && tokenB && tokenA.sortsBefore(tokenB);
+  const isSorted = tokenA && tokenB && !tokenA.equals(tokenB) && tokenA.sortsBefore(tokenB);
 
   const leftPrice = isSorted ? priceLower : priceUpper?.invert();
   const rightPrice = isSorted ? priceUpper : priceLower?.invert();
