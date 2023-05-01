@@ -78,21 +78,19 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
                   </BlackBoxContent>
                   <Tooltip id={`positionStatus-${tokenId}`} effect="solid">
                     {!closed
-                      ? t('concentratedLiquidity.positionCard.openTooltipContent')
-                      : t('concentratedLiquidity.positionCard.closedTooltipContent')}
+                      ? t('elixir.positionCard.openTooltipContent')
+                      : t('elixir.positionCard.closedTooltipContent')}
                   </Tooltip>
                 </BlackBox>
                 {!closed && (
                   <BlackBox data-tip data-for={`positionRangeStatus-${tokenId}`}>
                     <BlackBoxContent color="color11" fontSize={18} fontWeight={500}>
-                      {outOfRange
-                        ? t('concentratedLiquidity.positionCard.outOfRange')
-                        : t('concentratedLiquidity.positionCard.inRange')}
+                      {outOfRange ? t('elixir.positionCard.outOfRange') : t('elixir.positionCard.inRange')}
                     </BlackBoxContent>
                     <Tooltip id={`positionRangeStatus-${tokenId}`} effect="solid">
                       {outOfRange
-                        ? t('concentratedLiquidity.positionCard.outOfRangeTooltipContent')
-                        : t('concentratedLiquidity.positionCard.inRangeTooltipContent')}
+                        ? t('elixir.positionCard.outOfRangeTooltipContent')
+                        : t('elixir.positionCard.inRangeTooltipContent')}
                     </Tooltip>
                   </BlackBox>
                 )}
@@ -166,7 +164,7 @@ const PositionCard: React.FC<PositionCardProps> = (props) => {
           </PriceWrapper>
           <Box pt={'15px'}>
             <Button height="46px" variant="primary" borderRadius="4px" onClick={onClick}>
-              {t('concentratedLiquidity.positionCard.seeDetails')}
+              {t('elixir.positionCard.seeDetails')}
             </Button>
           </Box>
         </Panel>

@@ -11,10 +11,10 @@ export function FeeTierPercentageBadge({ feeAmount, distributions, poolState }: 
     <BlackBox mt={'5px'}>
       <Text color="color11" fontSize={'9px'} fontWeight={500}>
         {!distributions || poolState === PoolState.NOT_EXISTS || poolState === PoolState.INVALID
-          ? `${t('concentratedLiquidity.feeTier.notCreated')}`
+          ? `${t('elixir.feeTier.notCreated')}`
           : distributions[feeAmount] !== undefined
-          ? `${distributions[feeAmount]?.toFixed(0)}% ${t('concentratedLiquidity.feeTier.selectedPercentage')}`
-          : `${t('concentratedLiquidity.feeTier.noData')}`}
+          ? `${distributions[feeAmount]?.toFixed(0)}% ${t('elixir.feeTier.selectedPercentage')}`
+          : `${t('elixir.feeTier.noData')}`}
       </Text>
     </BlackBox>
   );

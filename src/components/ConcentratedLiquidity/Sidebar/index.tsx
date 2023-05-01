@@ -11,7 +11,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
   return (
     <SidebarWrapper>
       <Text color="color11" fontSize={[32, 28]} fontWeight={500} ml={20} mt={10}>
-        {t('concentratedLiquidity.sidebar.title')}
+        {t('elixir.sidebar.title')}
       </Text>
 
       <Menu>
@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
       <Box padding="8px" mb={10} ml="12px">
         <Box pb={'30px'}>
           <Text color="color11" fontSize={14} mb="5px">
-            {t('concentratedLiquidity.sidebar.wantToAddLiq')}
+            {t('elixir.sidebar.wantToAddLiq')}
           </Text>
 
           <Link
@@ -46,11 +46,11 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
         </Box>
         <Box>
           <Text color="color11" fontSize={14} mb="5px">
-            {t('concentratedLiquidity.sidebar.seeMore')}
+            {t('elixir.sidebar.seeMore')}
           </Text>
 
           <Link fontSize={14} color="primary" cursor="pointer" as="a" href="/pool/standard">
-            {t('concentratedLiquidity.sidebar.goToFarm')}
+            {t('elixir.sidebar.goToFarm')}
           </Link>
         </Box>
       </Box>

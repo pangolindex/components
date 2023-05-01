@@ -104,11 +104,11 @@ const FeeSelector: React.FC<FeeSelectorProps> = (props) => {
               {!feeAmount ? (
                 <>
                   <Text color="text1" fontSize={16} fontWeight={500}>
-                    {t('concentratedLiquidity.feeTier.feeTier')}
+                    {t('elixir.feeTier.feeTier')}
                   </Text>
 
                   <Text fontWeight={400} fontSize="12px" textAlign="left">
-                    {t('concentratedLiquidity.feeTier.earnFees')}
+                    {t('elixir.feeTier.earnFees')}
                   </Text>
                 </>
               ) : (

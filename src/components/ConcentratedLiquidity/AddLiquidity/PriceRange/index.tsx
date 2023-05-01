@@ -41,12 +41,12 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
   return (
     <Box>
       <Tooltip id="setPriceRange" effect="solid">
-        {t('concentratedLiquidity.priceRange.infoContext')}
+        {t('elixir.priceRange.infoContext')}
       </Tooltip>
 
       <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
         <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
-          {t('concentratedLiquidity.priceRange.title')}
+          {t('elixir.priceRange.title')}
         </Text>
         <Box>
           <Info size={16} color={theme.white} data-tip data-for="setPriceRange" />
@@ -64,7 +64,7 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
           incrementDisabled={ticksAtLimit[isSorted ? Bound.LOWER : Bound.UPPER]}
           feeAmount={feeAmount}
           label={leftPrice ? `${currencyB?.symbol}` : '-'}
-          title={t('concentratedLiquidity.priceRange.minPrice')}
+          title={t('elixir.priceRange.minPrice')}
           tokenA={currencyA?.symbol}
           tokenB={currencyB?.symbol}
         />
@@ -78,7 +78,7 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
           decrementDisabled={ticksAtLimit[isSorted ? Bound.UPPER : Bound.LOWER]}
           feeAmount={feeAmount}
           label={rightPrice ? `${currencyB?.symbol}` : '-'}
-          title={t('concentratedLiquidity.priceRange.maxPrice')}
+          title={t('elixir.priceRange.maxPrice')}
           tokenA={currencyA?.symbol}
           tokenB={currencyB?.symbol}
         />

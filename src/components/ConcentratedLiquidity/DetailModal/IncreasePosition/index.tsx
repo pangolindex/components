@@ -208,7 +208,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
         fontWeight={500}
         style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
       >
-        {t('concentratedLiquidity.increasePosition.title')}
+        {t('elixir.increasePosition.title')}
       </Text>
 
       <div>
@@ -218,7 +218,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
               {depositADisabled ? (
                 <OutofRangeWarning
                   label={`Token 1`}
-                  message={t('concentratedLiquidity.singleAssetDeposit')}
+                  message={t('elixir.singleAssetDeposit')}
                   addonLabel={<Lock size={18} color={theme?.textInput?.labelText} />}
                 />
               ) : (
@@ -265,7 +265,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
               {depositBDisabled ? (
                 <OutofRangeWarning
                   label={`Token 2`}
-                  message={t('concentratedLiquidity.singleAssetDeposit')}
+                  message={t('elixir.singleAssetDeposit')}
                   addonLabel={<Lock size={18} color={theme?.textInput?.labelText} />}
                 />
               ) : (

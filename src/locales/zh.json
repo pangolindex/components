@@ -760,7 +760,7 @@
     "decreaseWarning": "你的 apr 会减少，因为新的复合部分从 apr 0 开始，并且将在新旧部分之间取平均值。",
     "createStorageContract": "Create Storage Contract"
   },
-  "concentratedLiquidity": {
+  "elixir": {
     "menuTypes": {
       "allPositions": "All Positions",
       "openPositions": "Open Positions",

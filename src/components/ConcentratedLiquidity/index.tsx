@@ -131,7 +131,7 @@ const ConcentratedLiquidity = () => {
             <Visible upToSmall>
               <MobileHeader>
                 <Text color="color11" fontSize={[32, 28]} fontWeight={500}>
-                  {t('concentratedLiquidity.sidebar.title')}
+                  {t('elixir.sidebar.title')}
                 </Text>
                 <Button onClick={onChangeAddLiquidityStatus} padding="4px 6px" variant="primary">
                   {t('common.addLiquidity')}

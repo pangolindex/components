@@ -760,7 +760,7 @@
     "decreaseWarning": "Apr của bạn sẽ giảm vì phần phức hợp mới bắt đầu bằng apr 0 và trung bình sẽ được lấy giữa phần cũ và mới.",
     "createStorageContract": "Create Storage Contract"
   },
-  "concentratedLiquidity": {
+  "elixir": {
     "menuTypes": {
       "allPositions": "All Positions",
       "openPositions": "Open Positions",

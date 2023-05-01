@@ -760,7 +760,7 @@
     "decreaseWarning": "Your apr will decrease because the new compounded part starts with apr 0 and an average will be taken between the old and new part.",
     "createStorageContract": "Create Storage Contract"
   },
-  "concentratedLiquidity": {
+  "elixir": {
     "menuTypes": {
       "allPositions": "All Positions",
       "openPositions": "Open Positions",

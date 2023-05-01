@@ -356,12 +356,12 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                 />
 
                 <Tooltip id="selectFeeTier" effect="solid">
-                  {t('concentratedLiquidity.addLiquidity.feeTierTooltipContext')}
+                  {t('elixir.addLiquidity.feeTierTooltipContext')}
                 </Tooltip>
 
                 <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
                   <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
-                    {t('concentratedLiquidity.addLiquidity.selectFeeTier')}
+                    {t('elixir.addLiquidity.selectFeeTier')}
                   </Text>
                   <Box>
                     <Info size={16} color={theme.white} data-tip data-for="selectFeeTier" />
@@ -396,7 +396,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
               ) : (
                 <Box>
                   <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
-                    {t('concentratedLiquidity.priceRange.startingPriceRange')}
+                    {t('elixir.priceRange.startingPriceRange')}
                   </Text>
 
                   {noLiquidity && (
@@ -413,7 +413,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                       mb={10}
                     >
                       <Text fontSize={14} textAlign="left" color="text1" lineHeight={'20px'}>
-                        {t('concentratedLiquidity.initializedLiquidity')}
+                        {t('elixir.initializedLiquidity')}
                       </Text>
                     </Box>
                   )}
@@ -472,7 +472,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
               {/* {!noLiquidity && (
                 <Box mt={10} mb="5px">
                   <Button variant="outline" onClick={handleSetFullRange} color={theme.text10}>
-                    {t('concentratedLiquidity.addLiquidity.fullRange')}
+                    {t('elixir.addLiquidity.fullRange')}
                   </Button>
                 </Box>
               )} */}
@@ -491,7 +491,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                   mt={10}
                 >
                   <Text fontSize={14} textAlign="left" color="text1">
-                    {t('concentratedLiquidity.notEarnFee')}
+                    {t('elixir.notEarnFee')}
                   </Text>
                 </Box>
               ) : null}
@@ -509,7 +509,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                   mt={10}
                 >
                   <Text fontSize={14} textAlign="left" color="text1">
-                    {t('concentratedLiquidity.invalidPriceRange')}
+                    {t('elixir.invalidPriceRange')}
                   </Text>
                 </Box>
               ) : null}
@@ -522,7 +522,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                 {depositADisabled ? (
                   <OutofRangeWarning
                     label={`${t('common.from')}`}
-                    message={t('concentratedLiquidity.singleAssetDeposit')}
+                    message={t('elixir.singleAssetDeposit')}
                     addonLabel={<Lock size={18} color={theme?.textInput?.labelText} />}
                   />
                 ) : (
@@ -555,7 +555,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                 {depositBDisabled ? (
                   <OutofRangeWarning
                     label={`${t('common.to')}`}
-                    message={t('concentratedLiquidity.singleAssetDeposit')}
+                    message={t('elixir.singleAssetDeposit')}
                     addonLabel={<Lock size={18} color={theme?.textInput?.labelText} />}
                   />
                 ) : (

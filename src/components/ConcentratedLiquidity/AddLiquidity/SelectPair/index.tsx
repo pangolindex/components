@@ -35,7 +35,7 @@ const SelectPair: React.FC<SelectPairProps> = (props) => {
     <Box>
       <Box display={'flex'} justifyContent={'space-between'}>
         <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
-          {t('concentratedLiquidity.selectPair.title')}
+          {t('elixir.selectPair.title')}
         </Text>
 
         {currency0 && currency1 && (

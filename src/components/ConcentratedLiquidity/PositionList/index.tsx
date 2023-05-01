@@ -47,7 +47,7 @@ const PositionList: React.FC<PositionListProps> = (props) => {
           <Box display="flex" justifyContent="space-between" alignItems="center" mb={10}>
             <Box width="100%">
               <TextInput
-                placeholder={t('concentratedLiquidity.positionList.searchContent')}
+                placeholder={t('elixir.positionList.searchContent')}
                 onChange={handleSearch}
                 value={searchQuery}
                 id="token-search-input"
@@ -95,14 +95,14 @@ const PositionList: React.FC<PositionListProps> = (props) => {
               <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
                 <Inbox size={'121px'} />
                 <Text pt={'25px'} pb={'25px'} color="color11" fontSize={[18, 22]} fontWeight={400}>
-                  {t('concentratedLiquidity.positionNotFound')}
+                  {t('elixir.positionNotFound')}
                 </Text>
               </Box>
             ) : (
               <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
                 <Inbox size={'121px'} />
                 <Text pt={'25px'} pb={'25px'} color="color11" fontSize={[22, 26]} fontWeight={400}>
-                  {t('concentratedLiquidity.positionNotExist')}
+                  {t('elixir.positionNotExist')}
                 </Text>
                 <Button width={'300px'} variant="primary" onClick={toggleWalletModal}>
                   {t('common.connectWallet')}

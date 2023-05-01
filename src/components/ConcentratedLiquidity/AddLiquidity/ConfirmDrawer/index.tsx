@@ -111,9 +111,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
 
         <StateContainer>
           <Stat
-            title={`${t('concentratedLiquidity.priceRange.minPrice')} (${quoteCurrency?.symbol} / ${
-              baseCurrency?.symbol
-            })`}
+            title={`${t('elixir.priceRange.minPrice')} (${quoteCurrency?.symbol} / ${baseCurrency?.symbol})`}
             stat={formatTickPrice({
               price: priceLower,
               atLimit: ticksAtLimit,
@@ -127,9 +125,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
           />
 
           <Stat
-            title={`${t('concentratedLiquidity.priceRange.maxPrice')} (${quoteCurrency?.symbol} / ${
-              baseCurrency?.symbol
-            })`}
+            title={`${t('elixir.priceRange.maxPrice')} (${quoteCurrency?.symbol} / ${baseCurrency?.symbol})`}
             stat={formatTickPrice({
               price: priceUpper,
               atLimit: ticksAtLimit,
@@ -145,9 +141,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
 
         <StateContainer>
           <Stat
-            title={`${t('concentratedLiquidity.priceRange.currentPrice')} (${quoteCurrency?.symbol} / ${
-              baseCurrency?.symbol
-            })`}
+            title={`${t('elixir.priceRange.currentPrice')} (${quoteCurrency?.symbol} / ${baseCurrency?.symbol})`}
             stat={`${price ? price.toSignificant(5) : 0}`}
             titlePosition="top"
             titleFontSize={12}
@@ -157,7 +151,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
           />
 
           <Stat
-            title={t('concentratedLiquidity.feeTier.feeTier')}
+            title={t('elixir.feeTier.feeTier')}
             stat={`${(position?.pool?.fee ?? 0) / 10000}%`}
             titlePosition="top"
             titleFontSize={12}

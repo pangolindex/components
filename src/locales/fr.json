@@ -760,7 +760,7 @@
     "decreaseWarning": "Votre apr diminuera car la nouvelle partie composée commence par apr 0 et une moyenne sera prise entre l'ancienne et la nouvelle partie.",
     "createStorageContract": "Create Storage Contract"
   },
-  "concentratedLiquidity": {
+  "elixir": {
     "menuTypes": {
       "allPositions": "All Positions",
       "openPositions": "Open Positions",
