@@ -10,7 +10,7 @@ import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
+import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph, useRefetchPangoChefSubgraph } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { useTokensContract } from 'src/hooks/tokens/evm';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
@@ -453,6 +453,7 @@ export function useEVMPangoChefStakeCallback(
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
 
   const pangoChefContract = usePangoChefContract();
   return useMemo(() => {
@@ -467,6 +468,8 @@ export function useEVMPangoChefStakeCallback(
             addTransaction(response, {
               summary: t('earn.depositLiquidity'),
             });
+
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 
@@ -505,6 +508,7 @@ export function useEVMPangoChefClaimRewardCallback(
   const png = PNG[chainId];
 
   const addTransaction = useTransactionAdder();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
 
   const pangoChefContract = usePangoChefContract();
   return useMemo(() => {
@@ -520,6 +524,8 @@ export function useEVMPangoChefClaimRewardCallback(
             addTransaction(response, {
               summary: t('earn.claimAccumulated', { symbol: png.symbol }),
             });
+
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 
@@ -563,6 +569,7 @@ export function useEVMPangoChefWithdrawCallback(withdrawData: WithdrawData): {
   const pangoChefContract = usePangoChefContract();
 
   const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
   const contract = version && version <= 2 ? stakingContract : pangoChefContract;
 
   return useMemo(() => {
@@ -588,6 +595,7 @@ export function useEVMPangoChefWithdrawCallback(withdrawData: WithdrawData): {
               summary: t('earn.withdrawDepositedLiquidity'),
             });
             await refetchMinichefSubgraph();
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 
@@ -623,6 +631,7 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
 
   const { poolId, isPNGPool, amountToAdd } = compoundData;
 
@@ -665,6 +674,7 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
               summary: t('pangoChef.compoundTransactionSummary'),
             });
 
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 

@@ -140,8 +140,8 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
           />
           <SelectTokenDrawer
             isOpen={showSearch}
-            selectedCurrency={currency0}
-            otherSelectedCurrency={currency1}
+            selectedCurrency={activeField === Fields.TOKEN0 ? currency0 : currency1}
+            otherSelectedCurrency={activeField === Fields.TOKEN0 ? currency1 : currency0}
             onCurrencySelect={handleCurrencySelect}
             onClose={handleClose}
           />
