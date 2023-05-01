@@ -14,15 +14,8 @@ export function useLiFiSwapCurrencies() {
     let formattedCurrencies: BridgeCurrency[] = [];
 
     Object.entries(data?.tokens).forEach(([chainId, tokens]) => {
-      const chainTokens = tokens.map((token: Token) => {
-        return {
-          chainId: chainId,
-          decimals: token?.decimals,
-          symbol: token?.symbol,
-          name: token?.name,
-          logo: token?.logoURI,
-          address: token?.address,
-        };
+      const chainTokens: BridgeCurrency[] = tokens.map((token: Token) => {
+        return new BridgeCurrency(token?.address, chainId, token?.decimals, token?.symbol, token?.name, token?.logoURI);
       });
       formattedCurrencies = [...formattedCurrencies, ...chainTokens];
     });
@@ -38,14 +31,14 @@ export function useSquidCurrencies() {
     await squid.init();
     const tokens = squid.tokens as TokenData[];
     const formattedTokens: (BridgeCurrency | undefined)[] = tokens.map((token: TokenData) => {
-      return {
-        chainId: token?.chainId.toString(),
-        decimals: token?.decimals,
-        symbol: token?.symbol,
-        name: token?.name,
-        logo: token?.logoURI,
-        address: token?.address,
-      };
+      return new BridgeCurrency(
+        token?.address,
+        token?.chainId?.toString(),
+        token?.decimals,
+        token?.symbol,
+        token?.name,
+        token?.logoURI,
+      );
     });
     return formattedTokens.filter((chain) => chain !== undefined) as BridgeCurrency[];
   });
@@ -67,14 +60,14 @@ export function useRangoCurrencies() {
     const formattedTokens: BridgeCurrency[] = meta?.tokens
       .filter((token: RangoToken) => evmChainsNames?.includes(token.blockchain))
       .map((token: RangoToken) => {
-        return {
-          chainId: evmChainNameToId[token.blockchain] || token.blockchain,
-          decimals: token?.decimals,
-          symbol: token?.symbol,
-          name: token?.name,
-          logo: token?.image,
-          address: token?.address || ZERO_ADDRESS,
-        };
+        return new BridgeCurrency(
+          token?.address || ZERO_ADDRESS,
+          evmChainNameToId[token.blockchain] || token.blockchain,
+          token?.decimals,
+          token?.symbol,
+          token?.name,
+          token?.image,
+        );
       });
     return formattedTokens;
   });

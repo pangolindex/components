@@ -760,7 +760,7 @@
     "decreaseWarning": "Your apr will decrease because the new compounded part starts with apr 0 and an average will be taken between the old and new part.",
     "createStorageContract": "Create Storage Contract"
   },
-  "concentratedLiquidity": {
+  "elixir": {
     "menuTypes": {
       "allPositions": "All Positions",
       "openPositions": "Open Positions",
@@ -771,30 +771,56 @@
       "apr": "APR"
     },
     "sidebar": {
-      "title": "Pools V3",
+      "title": "Elixir",
       "seeMore": "Want to see classic pools",
       "goToFarm": "Go to farm page",
       "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
-      "searchContent": "Try searching for coin names…",
-      "poolNotExist": "You don’t have any open or closed positions to show."
+      "searchContent": "Try searching for coin names…"
+    },
+    "positionCard": {
+      "outOfRange": "Out Of Range",
+      "inRange": "In Range",
+      "seeDetails": "See Details",
+      "outOfRangeTooltipContent": "The price of this pool is outside of your selected range. Your position is not currently earning fees.",
+      "inRangeTooltipContent": "The price of this pool is within your selected range. Your position is currently earning fees.",
+      "openTooltipContent": "This position is opened by the user.",
+      "closedTooltipContent": "This position is closed by the user."
     },
     "addLiquidity": {
-      "selectFeeTier": "Select Fee Tier"
+      "selectFeeTier": "Select Fee Tier",
+      "fullRange": "Full Range",
+      "feeTierTooltipContext": "Select your pool earnings percentage. Note that swaps favor lowest fee rates."
     },
     "selectPair": {
       "title": "Select Pair"
     },
     "feeTier": {
-      "selectedPercentage": "select"
+      "feeTier": "Fee tier",
+      "selectedPercentage": "select",
+      "notCreated": "Not created",
+      "noData": "No Data",
+      "earnFees": "The % you will earn in fees."
     },
     "priceRange": {
-      "title": "Set Price Range"
+      "title": "Set Price Range",
+      "minPrice": "Min Price",
+      "maxPrice": "Max Price",
+      "currentPrice": "Current Price",
+      "startingPriceRange": "Set Starting Price",
+      "infoContext": "The amount may adjust to fit tick size when setting a price range.",
+      "fullRangeContext": "Click to choose full range"
     },
     "increasePosition": {
       "title": "Increase Position"
-    }
+    },
+    "positionNotFound": "You don’t have any open or closed positions to show.",
+    "positionNotExist": "Your active concentrated liquidity positions will appear here",
+    "invalidPriceRange": "Invalid range selected. The min price must be lower than the max price.",
+    "notEarnFee": "Your position will not earn fees or be used in trades until the market price moves into your range.",
+    "singleAssetDeposit": "The market price is outside your specified price range. Single-asset deposit only.",
+    "initializedLiquidity": "This pool must be initialized before you can add liquidity. To initialize, select a starting price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher than usual due to the initialization transaction."
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -911,6 +937,8 @@
     "poolRewards": "Pool Rewards",
     "yourStake": "Your Stake",
     "totalStake": "Total Stake",
-    "notFound": "Not found"
+    "notFound": "Not found",
+    "hide": "Hide",
+    "edit": "Edit"
   }
 }

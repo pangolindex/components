@@ -3,7 +3,7 @@ import { Box, TextInput } from 'src/components';
 
 export const PoolsWrapper = styled(Box)`
   width: 100%;
-  background-color: ${({ theme }) => theme.color8};
+  background-color: ${({ theme }) => theme.color2};
   padding: 10px;
   border-radius: 0px;
   overflow: hidden;

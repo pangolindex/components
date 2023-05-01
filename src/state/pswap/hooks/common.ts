@@ -6,6 +6,7 @@ import {
   ChainId,
   Currency,
   CurrencyAmount,
+  ElixirTrade,
   FACTORY_ADDRESS,
   JSBI,
   Price,
@@ -20,7 +21,7 @@ import { NATIVE } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { SWAP_DEFAULT_CURRENCY } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
+import { useElixirTradeExactIn, useElixirTradeExactOut, useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import { useCurrency } from 'src/hooks/useCurrency';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
@@ -140,7 +141,7 @@ export function useDerivedSwapInfo(): {
   currencies: { [field in Field]?: Currency };
   currencyBalances: { [field in Field]?: CurrencyAmount };
   parsedAmount: CurrencyAmount | undefined;
-  v2Trade: Trade | undefined;
+  v2Trade: Trade | ElixirTrade | undefined;
   inputError?: string;
   v1Trade: Trade | undefined;
   isLoading: boolean;
@@ -172,17 +173,50 @@ export function useDerivedSwapInfo(): {
 
   const isExactIn: boolean = independentField === Field.INPUT;
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId);
+  const memoParsedAmount = useMemo(() => {
+    return tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId);
+  }, [typedValue, chainId, inputCurrency, outputCurrency, isExactIn]);
 
-  const { trade: bestTradeExactIn, isLoading: isLoadingIn } = useTradeExactIn(
+  const { trade: v2BestTradeExactIn, isLoading: isLoadingIn } = useTradeExactIn(
     isExactIn ? parsedAmount : undefined,
     outputCurrency ?? undefined,
   );
-  const { trade: bestTradeExactOut, isLoading: isLoadingOut } = useTradeExactOut(
+  const { trade: v2BestTradeExactOut, isLoading: isLoadingOut } = useTradeExactOut(
     inputCurrency ?? undefined,
     !isExactIn ? parsedAmount : undefined,
   );
 
-  const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut;
+  const { trade: bestElixirTradeExactIn, isLoading: isElixirLoadingIn } = useElixirTradeExactIn(
+    isExactIn ? memoParsedAmount : undefined,
+    outputCurrency ?? undefined,
+  );
+  const { trade: bestElixirTradeExactOut, isLoading: isElixirLoadingOut } = useElixirTradeExactOut(
+    inputCurrency ?? undefined,
+    !isExactIn ? memoParsedAmount : undefined,
+  );
+
+  // get trade from elixir pools
+  // v2BestTradeExactIn?.outputAmount > bestElixirTradeExactIn?.outputAmount => take v2 trade
+  // v2BestTradeExactIn?.outputAmount < bestElixirTradeExactIn?.outputAmount => take v3 trade
+  const bestTradeIn = v2BestTradeExactIn
+    ? bestElixirTradeExactIn?.outputAmount.greaterThan(v2BestTradeExactIn?.outputAmount)
+      ? bestElixirTradeExactIn
+      : v2BestTradeExactIn
+    : bestElixirTradeExactIn
+    ? bestElixirTradeExactIn
+    : undefined;
+
+  // v2BestTradeExactOut?.inputAmount < bestElixirTradeExactOut?.inputAmount => take v2 trade
+  // v2BestTradeExactOut?.inputAmount > bestElixirTradeExactOut?.inputAmount => take v3 trade
+  const bestTradeOut = v2BestTradeExactOut
+    ? bestElixirTradeExactOut?.inputAmount.lessThan(v2BestTradeExactOut?.inputAmount)
+      ? bestElixirTradeExactOut
+      : v2BestTradeExactOut
+    : bestElixirTradeExactOut
+    ? bestElixirTradeExactOut
+    : undefined;
+
+  const v2Trade = isExactIn ? bestTradeIn : bestTradeOut;
 
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],
@@ -217,8 +251,8 @@ export function useDerivedSwapInfo(): {
   } else {
     if (
       BAD_RECIPIENT_ADDRESSES.indexOf(formattedTo) !== -1 ||
-      (bestTradeExactIn && involvesAddress(bestTradeExactIn, formattedTo)) ||
-      (bestTradeExactOut && involvesAddress(bestTradeExactOut, formattedTo))
+      (v2BestTradeExactIn && involvesAddress(v2BestTradeExactIn, formattedTo)) ||
+      (v2BestTradeExactOut && involvesAddress(v2BestTradeExactOut, formattedTo))
     ) {
       inputError = inputError ?? t('swapHooks.invalidRecipient');
     }
@@ -248,7 +282,7 @@ export function useDerivedSwapInfo(): {
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance';
   }
 
-  const isLoading = isExactIn ? isLoadingIn : isLoadingOut;
+  const isLoading = isExactIn ? isLoadingIn || isElixirLoadingIn : isLoadingOut || isElixirLoadingOut;
 
   return {
     currencies,

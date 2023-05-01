@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { Portal } from 'react-portal';
 import styled from 'styled-components';
+import { useEscapeKey } from 'src/hooks/useEscapeKey';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,6 +46,8 @@ export default function Modal({ isOpen, onDismiss, children, overlayBG, closeOnC
   }, [onDismiss]);
 
   useOnClickOutside(node, isOpen && closeOnClickOutside ? handleClose : undefined);
+
+  useEscapeKey(node, isOpen ? handleClose : undefined);
 
   return (
     <Portal>

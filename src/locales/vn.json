@@ -101,7 +101,7 @@
     "poolRewards": "Phần thưởng hồ bơi",
     "rewardsIn": "Phần thưởng trong",
     "removeWarning": "Bạn đang xóa thanh khoản khỏi nhóm này. Hành động này sẽ trả lại cho bạn các mã thông báo của bạn. Ngoài ra, bạn có thể chọn đặt cược mã thông báo của mình vào trang trại để kiếm phần thưởng.",
-    "rewardClaimed" : "Your rewards claimed"
+    "rewardClaimed": "Your rewards claimed"
   },
   "menu": {
     "code": "Mã",
@@ -173,7 +173,7 @@
     "selected": "Đã chọn",
     "select": "Chọn",
     "manageTokenLists": "Quản lý danh sách token",
-    "listsSelected" :"lists selected"
+    "listsSelected": "lists selected"
   },
   "settings": {
     "areYouSure": "Bạn chắc chắn chứ?",
@@ -386,7 +386,7 @@
     "noSeePoolJoined": "Bạn không tìm thấy bể mà bạn đã tham gia?",
     "migrateNow": "Chuyển đổi ngay bây giờ.",
     "importIt": "Nhập.",
-    "seeDetails":"XEM CHI TIẾT",
+    "seeDetails": "XEM CHI TIẾT",
     "totalLockedValue": "Tổng giá trị đã khóa",
     "yourLockedValue": "Giá trị đã khóa của bạn",
     "allFarms": "tất cả các trang trại",
@@ -483,7 +483,7 @@
     "comingSoon": "Sắp có",
     "connectWalletViewPortFolio": "Kết nối với ví để xem danh mục đầu tư của bạn.",
     "limitOrders": "Đơn hàng giới hạn",
-    "cancelOrder" : "Hủy đơn hàng",
+    "cancelOrder": "Hủy đơn hàng",
     "all": "TẤT CẢ",
     "open": "MỞ",
     "executed": "THỰC THI",
@@ -498,10 +498,10 @@
     "seeMore": "Xem thêm",
     "seeLess": "Thấy ít",
     "orderPlaced": "{{ orderType }} order placed",
-    "selectToken" : "Select Token",
-    "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain",
-    "sendingTo" : "Sending to",
+    "selectToken": "Select Token",
+    "notFoundBalances": "Not found balances",
+    "notFoundToken": "Not found tokens on this chain",
+    "sendingTo": "Sending to",
     "invalidAddress": "Invalid Address",
     "addRecipient": "Add Recipient",
     "removeRecipient": "Remove Recipient",
@@ -655,7 +655,7 @@
     "staked": "Staked",
     "stakeSuccessMsg": "Your rewards have been staked.",
     "stakeYourReward": "Stake your rewards",
-    "stakePng" : "Stake your PNG token to share platform fees",
+    "stakePng": "Stake your PNG token to share platform fees",
     "unstaking": "Unstaking",
     "unstaked": "Unstaked",
     "unstakeYourReward": "You can unstake your rewards.",
@@ -669,7 +669,7 @@
     "couldNotWrap": "Không thể quấn",
     "trytingToConfirmApproval": "Đang cố gắng xác nhận mà không cần phê duyệt hoặc chữ ký. Vui lòng liên hệ với bộ phận hỗ trợ."
   },
-  "sarTitle":{
+  "sarTitle": {
     "addMore": "BỔ SUNG THÊM",
     "unstake": "BỎ LỠ VỊ TRÍ",
     "compound": "PHẦN THƯỞNG HỢP LỆ",
@@ -760,7 +760,7 @@
     "decreaseWarning": "Apr của bạn sẽ giảm vì phần phức hợp mới bắt đầu bằng apr 0 và trung bình sẽ được lấy giữa phần cũ và mới.",
     "createStorageContract": "Create Storage Contract"
   },
-  "concentratedLiquidity": {
+  "elixir": {
     "menuTypes": {
       "allPositions": "All Positions",
       "openPositions": "Open Positions",
@@ -771,30 +771,56 @@
       "apr": "APR"
     },
     "sidebar": {
-      "title": "Pools V3",
+      "title": "Elixir",
       "seeMore": "Want to see classic pools",
       "goToFarm": "Go to farm page",
       "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
-      "searchContent": "Try searching for coin names…",
-      "poolNotExist": "You don’t have any open or closed positions to show."
+      "searchContent": "Try searching for coin names…"
+    },
+    "positionCard": {
+      "outOfRange": "Out Of Range",
+      "inRange": "In Range",
+      "seeDetails": "See Details",
+      "outOfRangeTooltipContent": "The price of this pool is outside of your selected range. Your position is not currently earning fees.",
+      "inRangeTooltipContent": "The price of this pool is within your selected range. Your position is currently earning fees.",
+      "openTooltipContent": "This position is opened by the user.",
+      "closedTooltipContent": "This position is closed by the user."
     },
     "addLiquidity": {
-      "selectFeeTier": "Select Fee Tier"
+      "selectFeeTier": "Select Fee Tier",
+      "fullRange": "Full Range",
+      "feeTierTooltipContext": "Select your pool earnings percentage. Note that swaps favor lowest fee rates."
     },
     "selectPair": {
       "title": "Select Pair"
     },
     "feeTier": {
-      "selectedPercentage": "select"
+      "feeTier": "Fee tier",
+      "selectedPercentage": "select",
+      "notCreated": "Not created",
+      "noData": "No Data",
+      "earnFees": "The % you will earn in fees."
     },
     "priceRange": {
-      "title": "Set Price Range"
+      "title": "Set Price Range",
+      "minPrice": "Min Price",
+      "maxPrice": "Max Price",
+      "currentPrice": "Current Price",
+      "startingPriceRange": "Set Starting Price",
+      "infoContext": "The amount may adjust to fit tick size when setting a price range.",
+      "fullRangeContext": "Click to choose full range"
     },
     "increasePosition": {
       "title": "Increase Position"
-    }
+    },
+    "positionNotFound": "You don’t have any open or closed positions to show.",
+    "positionNotExist": "Your active concentrated liquidity positions will appear here",
+    "invalidPriceRange": "Invalid range selected. The min price must be lower than the max price.",
+    "notEarnFee": "Your position will not earn fees or be used in trades until the market price moves into your range.",
+    "singleAssetDeposit": "The market price is outside your specified price range. Single-asset deposit only.",
+    "initializedLiquidity": "This pool must be initialized before you can add liquidity. To initialize, select a starting price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher than usual due to the initialization transaction."
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -806,7 +832,7 @@
     "selectCurrency": "Select a Currency",
     "search": "Search",
     "tableOfContent": "Table of Content",
-    "haveQuestion" :"Have Questions? Look Here:",
+    "haveQuestion": "Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
@@ -877,7 +903,7 @@
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
   },
-  "buy":{
+  "buy": {
     "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
@@ -911,6 +937,8 @@
     "poolRewards": "Pool Rewards",
     "yourStake": "Your Stake",
     "totalStake": "Total Stake",
-    "notFound": "Không tìm thấy"
+    "notFound": "Không tìm thấy",
+    "hide": "Hide",
+    "edit": "Edit"
   }
 }

@@ -4,7 +4,7 @@ import { Box, Text } from 'src/components';
 
 export const SidebarWrapper = styled(Box)`
   width: 100%;
-  background-color: ${({ theme }) => theme.color7};
+  background-color: ${({ theme }) => theme.color13};
   border-radius: 0px;
   height: auto;
   /* min-height: 100vh; */
