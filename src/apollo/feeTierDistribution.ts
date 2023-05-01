@@ -53,7 +53,7 @@ export function useFeeTierDistributionQuery(
   token1: string | undefined,
   interval: number,
 ): { error: any | undefined; isLoading: boolean; data: FeeTierDistribution } {
-  const gqlClient = useSubgraphClient(SubgraphEnum.ConcentratedLiquidity);
+  const gqlClient = useSubgraphClient(SubgraphEnum.Elixir);
 
   const { data, isLoading, error } = useQuery<any>(
     ['get-fee-tier-distribution'],

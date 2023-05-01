@@ -123,12 +123,12 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const [approvalA, approveACallback] = useApproveCallback(
     chainId,
     parsedAmounts[Field.CURRENCY_A],
-    CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager,
+    CHAINS[chainId]?.contracts?.elixir?.nftManager,
   );
   const [approvalB, approveBCallback] = useApproveCallback(
     chainId,
     parsedAmounts[Field.CURRENCY_B],
-    CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager,
+    CHAINS[chainId]?.contracts?.elixir?.nftManager,
   );
 
   const currency0 = currencies[Field.CURRENCY_A];

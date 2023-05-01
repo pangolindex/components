@@ -1,4 +1,4 @@
-import { ConcentratedTrade, Trade, TradeType } from '@pangolindex/sdk';
+import { ElixirTrade, Trade, TradeType } from '@pangolindex/sdk';
 import React, { useContext, useMemo } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { Trans, useTranslation } from 'react-i18next';
@@ -25,8 +25,8 @@ import {
 
 interface Props {
   isOpen: boolean;
-  trade: Trade | ConcentratedTrade;
-  originalTrade: Trade | ConcentratedTrade | undefined;
+  trade: Trade | ElixirTrade;
+  originalTrade: Trade | ElixirTrade | undefined;
   attemptingTxn: boolean;
   txHash: string | undefined;
   recipient: string | null;

@@ -40,7 +40,7 @@ export function useAllV3TicksQuery(
   poolAddress: string | undefined,
   skip: number,
 ): { error: any | undefined; loading: boolean; data: TicksData } {
-  const gqlClient = useSubgraphClient(SubgraphEnum.ConcentratedLiquidity);
+  const gqlClient = useSubgraphClient(SubgraphEnum.Elixir);
 
   const { data, isLoading, error } = useQuery<any>(
     ['get-all-v3-ticks', poolAddress],

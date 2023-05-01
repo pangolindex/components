@@ -1,6 +1,6 @@
 import {
-  ConcentratedPool,
   Currency,
+  ElixirPool,
   FeeAmount,
   JSBI,
   Position,
@@ -20,7 +20,7 @@ export function usePool(
   currencyA: Currency | undefined,
   currencyB: Currency | undefined,
   feeAmount: FeeAmount | undefined,
-): [PoolState, ConcentratedPool | null] {
+): [PoolState, ElixirPool | null] {
   const chainId = useChainId();
   const usePools = usePoolsHook[chainId];
 

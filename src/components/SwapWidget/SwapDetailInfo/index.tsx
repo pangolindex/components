@@ -1,4 +1,4 @@
-import { ConcentratedTrade, Percent, Trade, TradeType } from '@pangolindex/sdk';
+import { ElixirTrade, Percent, Trade, TradeType } from '@pangolindex/sdk';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from 'src/constants';
@@ -10,7 +10,7 @@ import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeve
 import { Text } from '../../Text';
 import { ContentBox, DataBox, ValueText } from './styled';
 
-type Props = { trade: Trade | ConcentratedTrade };
+type Props = { trade: Trade | ElixirTrade };
 
 const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
   const [allowedSlippage] = useUserSlippageTolerance();

@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 import {
   CAVAX,
-  ConcentratedPool,
   Currency,
   CurrencyAmount,
+  ElixirPool,
   FeeAmount,
   JSBI,
   Position,
@@ -149,7 +149,7 @@ export function useMintActionHandlers(noLiquidity: boolean | undefined): {
 }
 
 export interface DerivedMintInfo {
-  pool?: ConcentratedPool | null;
+  pool?: ElixirPool | null;
   poolState: PoolState;
   ticks: { [bound in Bound]?: number | undefined };
   price?: Price;
@@ -327,14 +327,14 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     if (tokenA && tokenB && feeAmount && price && !invalidPrice) {
       const currentTick = priceToClosestTick(price);
       const currentSqrt = TickMath.getSqrtRatioAtTick(currentTick);
-      return new ConcentratedPool(tokenA, tokenB, feeAmount, currentSqrt, JSBI.BigInt(0), currentTick, []);
+      return new ElixirPool(tokenA, tokenB, feeAmount, currentSqrt, JSBI.BigInt(0), currentTick, []);
     } else {
       return undefined;
     }
   }, [feeAmount, invalidPrice, price, tokenA, tokenB]);
 
   // if pool exists use it, if not use the mock pool
-  const poolForPosition: ConcentratedPool | undefined = pool ?? mockPool;
+  const poolForPosition: ElixirPool | undefined = pool ?? mockPool;
 
   // lower and upper limits in the tick space for `feeAmoun<Trans>
   const tickSpaceLimits = useMemo(
@@ -621,7 +621,7 @@ export function useRangeHopCallbacks(
   feeAmount: FeeAmount | undefined,
   tickLower: number | undefined,
   tickUpper: number | undefined,
-  pool?: ConcentratedPool | undefined | null,
+  pool?: ElixirPool | undefined | null,
 ) {
   const chainId = useChainId();
   const { setFullRangeValue } = useMintStateAtom();

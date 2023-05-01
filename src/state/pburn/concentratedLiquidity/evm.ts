@@ -55,7 +55,7 @@ export function useConcentratedRemoveLiquidity() {
       const { calldata, value } = NonfungiblePositionManager.removeCallParameters(positionSDK, parameters);
 
       const txn: { to: string; data: string; value: string } = {
-        to: CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager ?? '',
+        to: CHAINS[chainId]?.contracts?.elixir?.nftManager ?? '',
         data: calldata,
         value,
       };

@@ -1,7 +1,7 @@
 import {
   CHAINS,
-  ConcentratedPool,
   Currency,
+  ElixirPool,
   FeeAmount,
   JSBI,
   TICK_SPACINGS,
@@ -99,12 +99,12 @@ function useTicksFromTickLens(
 
   const poolAddress =
     tokenA && tokenB && feeAmount && poolState === PoolState.EXISTS
-      ? ConcentratedPool.getAddress(
+      ? ElixirPool.getAddress(
           tokenA,
           tokenB,
           feeAmount,
           undefined,
-          chainId ? CHAINS[chainId].contracts?.concentratedLiquidity?.factory : undefined,
+          chainId ? CHAINS[chainId].contracts?.elixir?.factory : undefined,
         )
       : undefined;
 
@@ -195,12 +195,12 @@ function useTicksFromSubgraph(
   const tokenB = wrappedCurrency(currencyB, chainId);
   const poolAddress =
     tokenA && tokenB && feeAmount
-      ? ConcentratedPool.getAddress(
+      ? ElixirPool.getAddress(
           tokenA,
           tokenB,
           feeAmount,
           undefined,
-          chainId ? CHAINS[chainId].contracts?.concentratedLiquidity?.factory : undefined,
+          chainId ? CHAINS[chainId].contracts?.elixir?.factory : undefined,
         )
       : undefined;
 

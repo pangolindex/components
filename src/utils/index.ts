@@ -14,9 +14,9 @@ import {
   CHAINS,
   Chain,
   ChainId,
-  ConcentratedTrade,
   Currency,
   CurrencyAmount,
+  ElixirTrade,
   Fraction,
   JSBI,
   NetworkType,
@@ -524,10 +524,7 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, chainId: ChainId, 
  * @param tradeA trade A
  * @param tradeB trade B
  */
-export function tradeMeaningfullyDiffers(
-  tradeA: Trade | ConcentratedTrade,
-  tradeB: Trade | ConcentratedTrade,
-): boolean {
+export function tradeMeaningfullyDiffers(tradeA: Trade | ElixirTrade, tradeB: Trade | ElixirTrade): boolean {
   return (
     tradeA.tradeType !== tradeB.tradeType ||
     !currencyEquals(tradeA.inputAmount.currency, tradeB.inputAmount.currency) ||

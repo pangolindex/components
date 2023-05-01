@@ -1,8 +1,8 @@
-import { ConcentratedPool } from '@pangolindex/sdk';
+import { ElixirPool } from '@pangolindex/sdk';
 import { PoolState, UsePositionTokenURIResult } from './types';
 
 export function useDummyPools() {
-  return [[PoolState.NOT_EXISTS, null]] as [PoolState, ConcentratedPool | null][];
+  return [[PoolState.NOT_EXISTS, null]] as [PoolState, ElixirPool | null][];
 }
 
 export function useDummyPoolTVL() {

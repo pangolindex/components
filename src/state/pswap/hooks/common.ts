@@ -4,9 +4,9 @@ import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@ge
 import {
   CAVAX,
   ChainId,
-  ConcentratedTrade,
   Currency,
   CurrencyAmount,
+  ElixirTrade,
   FACTORY_ADDRESS,
   JSBI,
   Price,
@@ -146,7 +146,7 @@ export function useDerivedSwapInfo(): {
   currencies: { [field in Field]?: Currency };
   currencyBalances: { [field in Field]?: CurrencyAmount };
   parsedAmount: CurrencyAmount | undefined;
-  v2Trade: Trade | ConcentratedTrade | undefined;
+  v2Trade: Trade | ElixirTrade | undefined;
   inputError?: string;
   v1Trade: Trade | undefined;
   isLoading: boolean;

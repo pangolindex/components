@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import {
   CHAINS,
-  ConcentratedTrade,
+  ElixirTrade,
   JSBI,
   Percent,
   Router,
@@ -106,7 +106,7 @@ function useSwapCallArguments(
 // returns a function that will execute a swap, if the parameters are all valid
 // and the user has approved the slippage adjusted input amount for the trade
 export function useSwapCallback(
-  trade: Trade | ConcentratedTrade | undefined, // trade to execute, required
+  trade: Trade | ElixirTrade | undefined, // trade to execute, required
   recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
@@ -145,7 +145,7 @@ export function useSwapCallback(
       state: SwapCallbackState.VALID,
       callback: async function onSwap(): Promise<string> {
         // if swap is using elixir pools then use different way to sign transaction
-        if (trade instanceof ConcentratedTrade) {
+        if (trade instanceof ElixirTrade) {
           const { calldata, value } = SwapRouter.swapCallParameters(trade, {
             deadline: deadline?.toString(),
             recipient: account,
@@ -153,7 +153,7 @@ export function useSwapCallback(
           });
 
           const txn: { to: string; data: string; value: string } = {
-            to: CHAINS[chainId]?.contracts?.concentratedLiquidity?.swapRouter ?? '',
+            to: CHAINS[chainId]?.contracts?.elixir?.swapRouter ?? '',
             data: calldata,
             value,
           };

@@ -1,7 +1,7 @@
 import {
   CAVAX,
   CHAINS,
-  ConcentratedPool,
+  ElixirPool,
   JSBI,
   NonfungiblePositionManager,
   Percent,
@@ -163,7 +163,7 @@ export function useGetUserPositions() {
 
 export function useDerivedPositionInfo(positionDetails: PositionDetails | undefined): {
   position: Position | undefined;
-  pool: ConcentratedPool | undefined;
+  pool: ElixirPool | undefined;
 } {
   const currency0 = useCurrency(positionDetails?.token0?.address);
   const currency1 = useCurrency(positionDetails?.token1?.address);
@@ -231,7 +231,7 @@ export function useConcentratedAddLiquidity() {
               });
 
         const txn: { to: string; data: string; value: string } = {
-          to: CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager ?? '',
+          to: CHAINS[chainId]?.contracts?.elixir?.nftManager ?? '',
           data: calldata,
           value,
         };
@@ -298,7 +298,7 @@ export function useConcentratedCollectEarnedFees() {
       const { calldata, value } = NonfungiblePositionManager.collectCallParameters(param);
 
       const txn: { to: string; data: string; value: string } = {
-        to: CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager ?? '',
+        to: CHAINS[chainId]?.contracts?.elixir?.nftManager ?? '',
         data: calldata,
         value,
       };

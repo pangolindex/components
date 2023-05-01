@@ -3,8 +3,8 @@ import {
   BigintIsh,
   CHAINS,
   ChainId,
-  ConcentratedPool,
   Currency,
+  ElixirPool,
   FeeAmount,
   JSBI,
   Tick,
@@ -14,7 +14,7 @@ import {
 } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
-import { ElixirPool, ElixirTick, useElixirPools } from 'src/apollo/elixirPools';
+import { ElixirPoolType, ElixirTick, useElixirPools } from 'src/apollo/elixirPools';
 import { useFeeTierDistributionQuery } from 'src/apollo/feeTierDistribution';
 import { CONCENTRATE_POOL_STATE_INTERFACE } from 'src/constants/abis/concentratedPool';
 import { useChainId } from 'src/hooks';
@@ -33,7 +33,7 @@ class PoolCache {
   private static MAX_ENTRIES = 128;
 
   // These are FIFOs, using unshift/pop. This makes recent entries faster to find.
-  private static pools: ConcentratedPool[] = [];
+  private static pools: ElixirPool[] = [];
   private static addresses: { key: string; address: string }[] = [];
 
   static getPoolAddress(
@@ -76,7 +76,7 @@ class PoolCache {
     liquidity: BigintIsh,
     tick: number,
     ticks?: Array<ElixirTick>,
-  ): ConcentratedPool {
+  ): ElixirPool {
     if (this.pools.length > this.MAX_ENTRIES) {
       this.pools = this.pools.slice(0, this.MAX_ENTRIES / 2);
     }
@@ -102,7 +102,7 @@ class PoolCache {
         );
     }
 
-    const pool = new ConcentratedPool(tokenA, tokenB, fee, sqrtPriceX96, liquidity, tick, finalTicks);
+    const pool = new ElixirPool(tokenA, tokenB, fee, sqrtPriceX96, liquidity, tick, finalTicks);
     this.pools.unshift(pool);
     return pool;
   }
@@ -110,7 +110,7 @@ class PoolCache {
 
 export function usePoolsViaContract(
   poolKeys: [Currency | undefined, Currency | undefined, FeeAmount | undefined][],
-): [PoolState, ConcentratedPool | null][] {
+): [PoolState, ElixirPool | null][] {
   const chainId = useChainId();
 
   const poolTokens: ([Token, Token, FeeAmount] | undefined)[] = useMemo(() => {
@@ -132,7 +132,7 @@ export function usePoolsViaContract(
   }, [chainId, poolKeys]);
 
   const poolAddresses: (string | undefined)[] = useMemo(() => {
-    const v3CoreFactoryAddress = chainId && CHAINS[chainId].contracts?.concentratedLiquidity?.factory;
+    const v3CoreFactoryAddress = chainId && CHAINS[chainId].contracts?.elixir?.factory;
     if (!v3CoreFactoryAddress) return new Array(poolTokens.length);
 
     return poolTokens.map((value) => value && PoolCache.getPoolAddress(v3CoreFactoryAddress, ...value, chainId));
@@ -171,7 +171,7 @@ export function usePoolsViaContract(
 
 export function usePoolsViaSubgraph(
   poolKeys: [Currency | undefined, Currency | undefined, FeeAmount | undefined][],
-): [PoolState, ConcentratedPool | null][] {
+): [PoolState, ElixirPool | null][] {
   const chainId = useChainId();
 
   const poolTokens: ([Token, Token, FeeAmount] | undefined)[] = useMemo(() => {
@@ -193,7 +193,7 @@ export function usePoolsViaSubgraph(
   }, [chainId, poolKeys]);
 
   const poolAddresses: string[] = useMemo(() => {
-    const v3CoreFactoryAddress = chainId && CHAINS[chainId].contracts?.concentratedLiquidity?.factory;
+    const v3CoreFactoryAddress = chainId && CHAINS[chainId].contracts?.elixir?.factory;
     if (!v3CoreFactoryAddress) return new Array(poolTokens.length);
 
     return poolTokens.map((value) => value && PoolCache.getPoolAddress(v3CoreFactoryAddress, ...value, chainId));
@@ -204,7 +204,7 @@ export function usePoolsViaSubgraph(
   const poolsMapping = (elixirPools || [])?.reduce((acc, item) => {
     acc[item.id] = item;
     return acc;
-  }, {} as { [address: string]: ElixirPool });
+  }, {} as { [address: string]: ElixirPoolType });
 
   return useMemo(() => {
     return poolKeys.map((_key, index) => {
@@ -394,7 +394,7 @@ export function useUnderlyingTokens(
   fee?: FeeAmount,
 ): [TokenAmount | undefined, TokenAmount | undefined] {
   const poolAddress =
-    token0 && token1 && fee ? ConcentratedPool.getAddress(token0, token1, fee, undefined, undefined) : undefined;
+    token0 && token1 && fee ? ElixirPool.getAddress(token0, token1, fee, undefined, undefined) : undefined;
 
   const token0Contract = useTokenContract(token0?.address, false);
   const token1Contract = useTokenContract(token1?.address, false);
@@ -419,7 +419,7 @@ const MAX_UINT128 = BigNumber.from(2).pow(128).sub(1);
 
 // compute current + counterfactual fees for a conc liq position
 export function useConcLiqPositionFees(
-  pool?: ConcentratedPool,
+  pool?: ElixirPool,
   tokenId?: BigNumber,
 ): [TokenAmount, TokenAmount] | [undefined, undefined] {
   const chainId = useChainId();

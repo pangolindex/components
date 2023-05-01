@@ -120,7 +120,7 @@ export function usePangoChefContract(): Contract | null {
 export function useConcLiqNFTPositionManagerContract(withSignerIfPossible?: boolean): Contract | null {
   const chainId = useChainId();
   return useContract(
-    chainId && CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager,
+    chainId && CHAINS[chainId]?.contracts?.elixir?.nftManager,
     NonFungiblePositionManager.abi,
     withSignerIfPossible,
   );
@@ -128,6 +128,6 @@ export function useConcLiqNFTPositionManagerContract(withSignerIfPossible?: bool
 
 export function useTickLensContract(): Contract | null {
   const chainId = useChainId();
-  const address = chainId ? CHAINS[chainId]?.contracts?.concentratedLiquidity?.tickLens : undefined;
+  const address = chainId ? CHAINS[chainId]?.contracts?.elixir?.tickLens : undefined;
   return useContract(address, TickLensABI.abi);
 }
