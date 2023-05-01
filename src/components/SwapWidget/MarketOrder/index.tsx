@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { CurrencyAmount, ElixirTrade, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import { CAVAX, CurrencyAmount, ElixirTrade, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +21,8 @@ import { useWrapCallbackHook } from 'src/hooks/useWrapCallback';
 import { WrapType } from 'src/hooks/useWrapCallback/constant';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
-import { Field } from 'src/state/pswap/atom';
+import { Field, LimitNewField } from 'src/state/pswap/atom';
+import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
 import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
@@ -100,6 +101,7 @@ const MarketOrder: React.FC<Props> = ({
   const useWrapCallback = useWrapCallbackHook[chainId];
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
   const useSwapCallback = useSwapCallbackHook[chainId];
+  const useGelatoLimitOrders = useGelatoLimitOrdersHook[chainId];
 
   const checkRecipientAddress = validateAddressMapping[chainId];
 
@@ -169,6 +171,10 @@ const MarketOrder: React.FC<Props> = ({
       };
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers(chainId);
+  const {
+    handlers: { handleCurrencySelection: onLimitCurrencySelection },
+  } = useGelatoLimitOrders();
+
   const isValid = !swapInputError;
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT;
 
@@ -348,6 +354,18 @@ const MarketOrder: React.FC<Props> = ({
         setSelectedPercentage(0);
       }
       onCurrencySelection(tokenDrawerType, currency);
+
+      // here need to add isToken because in Galato hook require this variable to select currency
+      const newCurrency = { ...currency };
+      if (currency?.symbol === CAVAX[chainId].symbol) {
+        newCurrency.isNative = true;
+      } else {
+        newCurrency.isToken = true;
+      }
+      onLimitCurrencySelection(
+        (tokenDrawerType === Field.INPUT ? LimitNewField.INPUT : LimitNewField.OUTPUT) as any,
+        newCurrency,
+      );
     },
     [tokenDrawerType, onCurrencySelection],
   );

@@ -20,6 +20,11 @@ export enum LimitNewField {
   PRICE = 'PRICE',
 }
 
+export enum LimitRate {
+  MUL = 'MUL',
+  DIV = 'DIV',
+}
+
 export interface FeeInfo {
   feePartner: number;
   feeProtocol: number;

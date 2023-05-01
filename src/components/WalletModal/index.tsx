@@ -145,7 +145,10 @@ const WalletModal: React.FC<WalletModalProps> = ({
     setWalletView(WALLET_VIEWS.PENDING);
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-    if (activationConnector instanceof WalletConnectConnector && activationConnector.walletConnectProvider?.wc?.uri) {
+    if (
+      activationConnector instanceof WalletConnectConnector &&
+      activationConnector.walletConnectProvider?.connector?.uri
+    ) {
       activationConnector.walletConnectProvider = undefined;
     }
 

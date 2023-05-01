@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -16,6 +15,7 @@ import { useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveC
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
 import { LimitField, LimitNewField } from 'src/state/pswap/atom';
+import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks/common';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
@@ -59,6 +59,8 @@ const LimitOrder: React.FC<Props> = ({
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const useToken = useTokenHook[chainId];
+
+  const useGelatoLimitOrders = useGelatoLimitOrdersHook[chainId];
   const theme = useContext(ThemeContext);
 
   const percentageValue = [25, 50, 75, 100];

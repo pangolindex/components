@@ -5,7 +5,7 @@ import { Box, Button, Stat, Text } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
+import { useExtraPendingRewards } from 'src/state/pstake/hooks/common';
 import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import ClaimDrawer from '../../ClaimDrawer';
 import RemoveDrawer from '../../RemoveDrawer';
@@ -23,7 +23,7 @@ const EarnedDetail = ({ stakingInfo, version }: EarnDetailProps) => {
   const [isClaimDrawerVisible, setShowClaimDrawer] = useState(false);
   const [isRemoveDrawerVisible, setShowRemoveDrawer] = useState(false);
 
-  const { rewardTokensAmount, rewardTokensMultiplier } = useMinichefPendingRewards(stakingInfo);
+  const { rewardTokensAmount, rewardTokensMultiplier } = useExtraPendingRewards(stakingInfo);
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 

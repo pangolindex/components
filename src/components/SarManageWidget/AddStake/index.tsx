@@ -1,6 +1,6 @@
 import { formatEther } from '@ethersproject/units';
 import numeral from 'numeral';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from 'src/components/Box';
 import { Button } from 'src/components/Button';
@@ -9,11 +9,11 @@ import { Stat } from 'src/components/Stat';
 import { Text } from 'src/components/Text';
 import { TextInput } from 'src/components/TextInput';
 import { ZERO_ADDRESS } from 'src/constants';
+import { SAR_STAKING_ADDRESS } from 'src/constants/address';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
-import { useHederaSarNFTContract } from 'src/hooks/useContract';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useDerivativeSarStakeHook } from 'src/state/psarstake/hooks';
 import { useSarStakeInfo } from 'src/state/psarstake/hooks/evm';
@@ -110,13 +110,23 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
       (approvalSubmitted && approval === ApprovalState.APPROVED));
 
   const isHedera = hederaFn.isHederaChain(chainId);
-  const sarNftContract = useHederaSarNFTContract();
+
+  const nftTokenAddress = useMemo(() => {
+    const sarContractAddress = SAR_STAKING_ADDRESS[chainId];
+
+    if (sarContractAddress && hederaFn.isHederaChain(chainId)) {
+      const sarContractId = hederaFn.hederaId(sarContractAddress ?? '');
+      const nftTokenId = hederaFn.contractToTokenId(sarContractId);
+      return hederaFn.idToAddress(nftTokenId);
+    }
+    return undefined;
+  }, [chainId]);
 
   const {
     associate: onAssociate,
     hederaAssociated: isHederaTokenAssociated,
     isLoading: isLoadingAssociate,
-  } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
+  } = useHederaTokenAssociated(nftTokenAddress, 'Pangolin Sar NFT');
 
   const renderButtons = () => {
     if (!account) {

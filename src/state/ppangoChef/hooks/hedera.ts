@@ -1,12 +1,12 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
-import { Fraction, JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { useSubgraphFarms, useSubgraphFarmsStakedAmount } from 'src/apollo/pangochef';
-import { BIGNUMBER_ZERO, BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
+import { BIGNUMBER_ZERO, BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS, ZERO_FRACTION } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
@@ -30,7 +30,7 @@ import {
   useSingleContractMultipleData,
 } from '../../pmulticall/hooks';
 import { PangoChefCompoundData, PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables, WithdrawData } from '../types';
-import { calculateCompoundSlippage, calculateUserRewardRate } from '../utils';
+import { calculateCompoundSlippage, calculateUserAPR, calculateUserRewardRate } from '../utils';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export function useHederaPangoChefInfos() {
@@ -311,11 +311,13 @@ export function useHederaPangoChefInfos() {
 
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
-      const pairPrice = pairPrices[pair?.liquidityToken?.address];
+      const _pairPrice = pairPrices[pair?.liquidityToken?.address];
+      const pairPrice = _pairPrice ? _pairPrice.raw : ZERO_FRACTION;
 
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
-      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? new Fraction('0', '1');
+      const _totalStakedInWavax = pairPrice.multiply(totalStakedAmount?.raw);
+
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
       // calculate the total staked amount in usd
@@ -364,7 +366,7 @@ export function useHederaPangoChefInfos() {
           : Number(
               pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
-                .divide(pairPrice?.raw?.multiply(pool?.valueVariables?.balance?.toString()))
+                .divide(pairPrice.multiply(pool?.valueVariables?.balance?.toString()))
                 // here apr is in 10^8 so we needed to divide by 10^8 to keep it in simple form
                 .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(8)))
                 .toSignificant(2),
@@ -395,10 +397,18 @@ export function useHederaPangoChefInfos() {
         blockTime,
       );
 
+      const userApr = calculateUserAPR({
+        pairPrice: pairPrice,
+        png,
+        pngPrice,
+        userRewardRate,
+        stakedAmount: userTotalStakedAmount,
+      });
+
       farms.push({
         pid: pid,
         tokens: [pair?.token0, pair?.token1],
-        stakingRewardAddress: pangoChefContract?.address,
+        stakingRewardAddress: pangoChefContract?.address ?? '',
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         totalStakedInWavax: totalStakedInWavax,
@@ -422,8 +432,9 @@ export function useHederaPangoChefInfos() {
         stakingApr: apr,
         pairPrice: pairPrice,
         poolType: pool.poolType,
-        poolRewardRate: rewardRate,
-      } as PangoChefInfo);
+        poolRewardRate: new Fraction(rewardRate.toString()),
+        userApr,
+      });
     }
 
     return farms;
@@ -617,7 +628,7 @@ export function useGetPangoChefInfosViaSubgraph() {
         pairToken1.name,
       );
 
-      const tokens = [token0, token1];
+      const tokens = [token0, token1] as [Token, Token];
       const dummyPair = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0'), chainId);
       const lpToken = dummyPair.liquidityToken;
 
@@ -706,9 +717,8 @@ export function useGetPangoChefInfosViaSubgraph() {
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
       const pairPriceInEth = totalSupplyInETH.divide(totalSupplyAmount);
-      const pairPrice = new Price(lpToken, wavax, pairPriceInEth?.denominator, pairPriceInEth?.numerator);
 
-      const expoent = png.decimals - lpToken.decimals;
+      const exponent = png.decimals - lpToken.decimals;
 
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / ((pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE) * 1e(png.decimals-lptoken.decimals))
       const apr =
@@ -719,7 +729,7 @@ export function useGetPangoChefInfosViaSubgraph() {
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
                 .divide(pairPriceInEth?.multiply(_farmTvl))
                 // here apr is in 10^(png.decimals - lpToken.decimals) so we needed to divide by 10^(png.decimals - lpToken.decimals) to keep it in simple form
-                .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent)))
+                .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(exponent)))
                 .toSignificant(2),
             );
 
@@ -775,10 +785,18 @@ export function useGetPangoChefInfosViaSubgraph() {
 
       const userRewardRate = calculateUserRewardRate(userValueVariables, poolValueVariables, rewardRate, blockTime);
 
+      const userApr = calculateUserAPR({
+        pngPrice,
+        png,
+        userRewardRate,
+        stakedAmount: userTotalStakedAmount,
+        pairPrice: pairPriceInEth,
+      });
+
       farms.push({
         pid: pid,
         tokens,
-        stakingRewardAddress: pangoChefContract?.address,
+        stakingRewardAddress: pangoChefContract?.address ?? '',
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         stakedAmount: userTotalStakedAmount,
@@ -801,10 +819,11 @@ export function useGetPangoChefInfosViaSubgraph() {
         lockCount: userInfo?.lockCount,
         userRewardRate: userRewardRate,
         stakingApr: apr,
-        pairPrice,
+        pairPrice: pairPriceInEth,
         poolType: PoolType.ERC20_POOL,
-        poolRewardRate: rewardRate,
-      } as PangoChefInfo);
+        poolRewardRate: new Fraction(rewardRate.toString()),
+        userApr: userApr,
+      });
     }
 
     return farms;
