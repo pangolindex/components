@@ -1,4 +1,5 @@
 import { TokenAmount } from '@pangolindex/sdk';
+import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Stat, Text } from 'src/components';
@@ -49,24 +50,26 @@ const EarnedDetail = ({ stakingInfo, version }: EarnDetailProps) => {
           <Box>
             <Stat
               title={t('dashboardPage.earned_weeklyIncome')}
-              stat={`${stakingInfo?.rewardRatePerWeek?.toSignificant(4, { groupSeparator: ',' }) ?? '-'}`}
+              stat={numeral(stakingInfo?.rewardRatePerWeek?.toFixed(2) ?? '0').format('0.00a')}
               titlePosition="top"
               titleFontSize={14}
               statFontSize={[20, 18]}
               titleColor="text2"
               currency={png}
+              toolTipText={`${stakingInfo?.rewardRatePerWeek?.toFixed(png.decimals) ?? '-'}`}
             />
           </Box>
 
           <Box>
             <Stat
               title={t('dashboardPage.earned_totalEarned')}
-              stat={`${earnedAmount?.toFixed(6) ?? '0'}`}
+              stat={`${earnedAmount?.toFixed(2) ?? '0'}`}
               titlePosition="top"
               titleFontSize={14}
               statFontSize={[20, 18]}
               titleColor="text2"
               currency={png}
+              toolTipText={`${earnedAmount?.toFixed(png.decimals) ?? '0'}`}
             />
           </Box>
         </InnerWrapper>
@@ -86,17 +89,19 @@ const EarnedDetail = ({ stakingInfo, version }: EarnDetailProps) => {
                 <InnerWrapper key={index}>
                   <Box>
                     <Stat
-                      stat={`${extraTokenWeeklyRewardRate?.toSignificant(4, { groupSeparator: ',' }) ?? '-'} `}
+                      stat={numeral(extraTokenWeeklyRewardRate?.toFixed(2)).format('0.00a')}
                       statFontSize={[20, 18]}
                       currency={reward?.token}
+                      toolTipText={`${extraTokenWeeklyRewardRate?.toFixed(reward?.token?.decimals ?? 2) ?? '0'} `}
                     />
                   </Box>
 
                   <Box>
                     <Stat
-                      stat={`${reward?.toFixed(Math.min(6, reward.token?.decimals)) ?? '0'}`}
+                      stat={numeral(reward.toFixed(2)).format('0.00a')}
                       statFontSize={[20, 18]}
                       currency={reward?.token}
+                      toolTipText={reward?.toFixed(reward.token?.decimals) ?? '0'}
                     />
                   </Box>
                 </InnerWrapper>
