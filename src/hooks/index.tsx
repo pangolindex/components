@@ -163,9 +163,10 @@ export function useLibrary(): { library: any; provider: any } {
 
 export const useRefetchMinichefSubgraph = () => {
   const { account } = usePangolinWeb3();
+  const chainId = useChainId();
   const queryClient = useQueryClient();
 
-  return async () => await queryClient.refetchQueries(['get-minichef-farms-v2', account]);
+  return async () => await queryClient.refetchQueries(['get-minichef-farms-v2', account, chainId]);
 };
 
 export function useRefetchPangoChefSubgraph() {
