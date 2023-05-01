@@ -195,7 +195,7 @@ export const defaultColors: Colors = {
       borderColor: oceanBlue,
     },
   },
-  concentratedLiquidity: {
+  elixir: {
     primaryBgColor: gray,
     secondaryBgColor: darkGray,
   },

@@ -9,7 +9,7 @@ export const Wrapper = styled.div`
   border-radius: 10px;
   padding: 25px 30px;
   row-gap: 8px;
-  background-color: ${({ theme }) => theme?.concentratedLiquidity?.primaryBgColor};
+  background-color: ${({ theme }) => theme?.elixir?.primaryBgColor};
 `;
 
 export const Description = styled(Text)`

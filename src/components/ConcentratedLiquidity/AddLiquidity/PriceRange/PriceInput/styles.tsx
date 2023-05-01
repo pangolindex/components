@@ -24,7 +24,7 @@ export const PriceSection = styled(Box)`
 export const BlackBox = styled(Box)<{ disabled?: boolean }>`
   opacity: ${({ disabled }) => (disabled ? '0.2' : '1')};
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'initial')};
-  background-color: ${({ theme }) => theme.concentratedLiquidity?.secondaryBgColor};
+  background-color: ${({ theme }) => theme.elixir?.secondaryBgColor};
   border-radius: 7px;
   display: flex;
   cursor: pointer;

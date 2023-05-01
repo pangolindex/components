@@ -29,7 +29,7 @@ export const Wrapper = styled(Box)<{ selected: boolean }>`
 `;
 
 export const BlackBox = styled(Box)`
-  background-color: ${({ theme }) => theme.concentratedLiquidity?.secondaryBgColor};
+  background-color: ${({ theme }) => theme.elixir?.secondaryBgColor};
   border-radius: 7px;
   display: flex;
   flex-direction: row;

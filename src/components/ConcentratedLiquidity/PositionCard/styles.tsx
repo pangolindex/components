@@ -37,7 +37,7 @@ export const HoverWrapper = styled.div`
 `;
 
 export const Card = styled.div`
-  background-color: ${({ theme }) => theme.concentratedLiquidity?.primaryBgColor};
+  background-color: ${({ theme }) => theme.elixir?.primaryBgColor};
   border-radius: 10px;
   padding: 32px;
   display: flex;
@@ -57,7 +57,7 @@ export const Row = styled(Box)`
 `;
 
 export const BlackBox = styled(Box)`
-  background-color: ${({ theme }) => theme.concentratedLiquidity?.secondaryBgColor};
+  background-color: ${({ theme }) => theme.elixir?.secondaryBgColor};
   border-radius: 7px;
   display: flex;
   flex-direction: row;
@@ -100,7 +100,7 @@ export const MobileWrapper = styled(Box)`
 `;
 
 export const Panel = styled(Box)`
-  background-color: ${({ theme }) => theme.concentratedLiquidity?.primaryBgColor};
+  background-color: ${({ theme }) => theme.elixir?.primaryBgColor};
   position: relative;
   width: 100%;
   height: 100%;

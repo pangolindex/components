@@ -141,7 +141,7 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
               width={'100%'}
               height={'100%'}
               viewBox="0 0 210 362"
-              backgroundColor={theme?.concentratedLiquidity?.primaryBgColor}
+              backgroundColor={theme?.elixir?.primaryBgColor}
               foregroundColor={theme?.primary}
               {...props}
             >
