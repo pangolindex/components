@@ -809,7 +809,8 @@
       "maxPrice": "Max Price",
       "currentPrice": "Current Price",
       "startingPriceRange": "Set Starting Price",
-      "infoContext": "The amount may adjust to fit tick size when setting a price range."
+      "infoContext": "The amount may adjust to fit tick size when setting a price range.",
+      "fullRangeContext": "Click to choose full range"
     },
     "increasePosition": {
       "title": "Increase Position"
