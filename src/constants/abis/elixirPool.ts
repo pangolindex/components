@@ -1,7 +1,7 @@
 import { Interface } from '@ethersproject/abi';
 
-import IPangolinV2PoolStateABI from './IPangolinV2PoolState.json';
+import IElixirPoolStateABI from './IElixirPoolState.json';
 
-const CONCENTRATE_POOL_STATE_INTERFACE = new Interface(IPangolinV2PoolStateABI);
+const ELIXIR_POOL_STATE_INTERFACE = new Interface(IElixirPoolStateABI);
 
-export { CONCENTRATE_POOL_STATE_INTERFACE };
+export { ELIXIR_POOL_STATE_INTERFACE };

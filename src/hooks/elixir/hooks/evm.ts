@@ -16,7 +16,7 @@ import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { ElixirPoolType, ElixirTick, useElixirPools } from 'src/apollo/elixirPools';
 import { useFeeTierDistributionQuery } from 'src/apollo/feeTierDistribution';
-import { CONCENTRATE_POOL_STATE_INTERFACE } from 'src/constants/abis/elixirPool';
+import { ELIXIR_POOL_STATE_INTERFACE } from 'src/constants/abis/elixirPool';
 import { useChainId } from 'src/hooks';
 import { TokenReturnType } from 'src/hooks/tokens/constant';
 import { useConcLiqNFTPositionManagerContract, useTokenContract } from 'src/hooks/useContract';
@@ -138,8 +138,8 @@ export function usePoolsViaContract(
     return poolTokens.map((value) => value && PoolCache.getPoolAddress(v3CoreFactoryAddress, ...value, chainId));
   }, [chainId, poolTokens]);
 
-  const slot0s = useMultipleContractSingleData(poolAddresses, CONCENTRATE_POOL_STATE_INTERFACE, 'slot0');
-  const liquidities = useMultipleContractSingleData(poolAddresses, CONCENTRATE_POOL_STATE_INTERFACE, 'liquidity');
+  const slot0s = useMultipleContractSingleData(poolAddresses, ELIXIR_POOL_STATE_INTERFACE, 'slot0');
+  const liquidities = useMultipleContractSingleData(poolAddresses, ELIXIR_POOL_STATE_INTERFACE, 'liquidity');
 
   return useMemo(() => {
     return poolKeys.map((_key, index) => {
