@@ -144,7 +144,7 @@ export function useTradeExactOut(
   }, [allowedPairs, isLoading, currencyIn, currencyAmountOut, feeTo, feeInfo]);
 }
 
-function useAllConcentratedCommonPools(
+function useAllElixirCommonPools(
   currencyA?: Currency,
   currencyB?: Currency,
 ): {
@@ -242,7 +242,7 @@ function useAllConcentratedCommonPools(
 /**
  * Returns the best trade for the exact amount of tokens in to the given token out
  */
-export function useConcentratedTradeExactIn(
+export function useElixirTradeExactIn(
   currencyAmountIn?: CurrencyAmount,
   currencyOut?: Currency,
 ): { trade: ElixirTrade | null; isLoading: boolean } {
@@ -251,7 +251,7 @@ export function useConcentratedTradeExactIn(
     isLoading: true,
   });
 
-  const { pools: allowedPools, isLoading } = useAllConcentratedCommonPools(currencyAmountIn?.currency, currencyOut);
+  const { pools: allowedPools, isLoading } = useAllElixirCommonPools(currencyAmountIn?.currency, currencyOut);
 
   useEffect(() => {
     const getBestTradeExactIn = async () => {
@@ -273,7 +273,7 @@ export function useConcentratedTradeExactIn(
 /**
  * Returns the best trade for the token in to the exact amount of token out
  */
-export function useConcentratedTradeExactOut(
+export function useElixirTradeExactOut(
   currencyIn?: Currency,
   currencyAmountOut?: CurrencyAmount,
 ): { trade: ElixirTrade | null; isLoading: boolean } {
@@ -282,7 +282,7 @@ export function useConcentratedTradeExactOut(
     isLoading: true,
   });
 
-  const { pools: allowedPools, isLoading } = useAllConcentratedCommonPools(currencyIn, currencyAmountOut?.currency);
+  const { pools: allowedPools, isLoading } = useAllElixirCommonPools(currencyIn, currencyAmountOut?.currency);
 
   useEffect(() => {
     const getBestTradeExactOut = async () => {

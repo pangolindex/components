@@ -5,7 +5,7 @@ export function useDummyGetUserPositions() {
   };
 }
 
-export function useDummyConcentratedPositionsFromTokenIds() {
+export function useDummyElixirPositionsFromTokenIds() {
   return {
     loading: false,
     positions: null,

@@ -24,17 +24,17 @@ export type PositionDetailsFromChain = PositionDetails & {
   fee: number;
 };
 
-export interface UseConcentratedPositionResults {
+export interface UseElixirPositionResults {
   loading: boolean;
   position: PositionDetailsFromChain | undefined;
 }
 
-export interface UseConcentratedPositionsResults {
+export interface UseElixirPositionsResults {
   loading: boolean;
   positions: PositionDetailsFromChain[] | undefined;
 }
 
-export interface ConcAddLiquidityProps {
+export interface ElixirAddLiquidityProps {
   parsedAmounts: {
     CURRENCY_A?: CurrencyAmount;
     CURRENCY_B?: CurrencyAmount;
@@ -51,7 +51,7 @@ export interface ConcAddLiquidityProps {
   position?: Position;
 }
 
-export interface ConcentratedLiquidityCollectFeesProps {
+export interface ElixirLiquidityCollectFeesProps {
   tokenId?: BigNumber;
   tokens: {
     token0?: Token;

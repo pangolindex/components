@@ -1,37 +1,37 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useConcentratedRemoveLiquidity } from './evm';
+import { useElixirRemoveLiquidity } from './evm';
 
-export type useConcentratedRemoveLiquidityHookType = {
-  [chainId in ChainId]: typeof useConcentratedRemoveLiquidity;
+export type useElixirRemoveLiquidityHookType = {
+  [chainId in ChainId]: typeof useElixirRemoveLiquidity;
 };
 
-export const useConcentratedRemoveLiquidityHook: useConcentratedRemoveLiquidityHookType = {
-  [ChainId.FUJI]: useConcentratedRemoveLiquidity,
-  [ChainId.AVALANCHE]: useConcentratedRemoveLiquidity,
-  [ChainId.WAGMI]: useConcentratedRemoveLiquidity,
-  [ChainId.COSTON]: useConcentratedRemoveLiquidity,
-  [ChainId.SONGBIRD]: useConcentratedRemoveLiquidity,
-  [ChainId.FLARE_MAINNET]: useConcentratedRemoveLiquidity,
-  [ChainId.HEDERA_TESTNET]: useConcentratedRemoveLiquidity,
-  [ChainId.HEDERA_MAINNET]: useConcentratedRemoveLiquidity,
-  [ChainId.NEAR_MAINNET]: useConcentratedRemoveLiquidity,
-  [ChainId.NEAR_TESTNET]: useConcentratedRemoveLiquidity,
-  [ChainId.COSTON2]: useConcentratedRemoveLiquidity,
-  [ChainId.EVMOS_TESTNET]: useConcentratedRemoveLiquidity,
-  [ChainId.EVMOS_MAINNET]: useConcentratedRemoveLiquidity,
-  [ChainId.ETHEREUM]: useConcentratedRemoveLiquidity,
-  [ChainId.POLYGON]: useConcentratedRemoveLiquidity,
-  [ChainId.FANTOM]: useConcentratedRemoveLiquidity,
-  [ChainId.XDAI]: useConcentratedRemoveLiquidity,
-  [ChainId.BSC]: useConcentratedRemoveLiquidity,
-  [ChainId.ARBITRUM]: useConcentratedRemoveLiquidity,
-  [ChainId.CELO]: useConcentratedRemoveLiquidity,
-  [ChainId.OKXCHAIN]: useConcentratedRemoveLiquidity,
-  [ChainId.VELAS]: useConcentratedRemoveLiquidity,
-  [ChainId.AURORA]: useConcentratedRemoveLiquidity,
-  [ChainId.CRONOS]: useConcentratedRemoveLiquidity,
-  [ChainId.FUSE]: useConcentratedRemoveLiquidity,
-  [ChainId.MOONRIVER]: useConcentratedRemoveLiquidity,
-  [ChainId.MOONBEAM]: useConcentratedRemoveLiquidity,
-  [ChainId.OP]: useConcentratedRemoveLiquidity,
+export const useElixirRemoveLiquidityHook: useElixirRemoveLiquidityHookType = {
+  [ChainId.FUJI]: useElixirRemoveLiquidity,
+  [ChainId.AVALANCHE]: useElixirRemoveLiquidity,
+  [ChainId.WAGMI]: useElixirRemoveLiquidity,
+  [ChainId.COSTON]: useElixirRemoveLiquidity,
+  [ChainId.SONGBIRD]: useElixirRemoveLiquidity,
+  [ChainId.FLARE_MAINNET]: useElixirRemoveLiquidity,
+  [ChainId.HEDERA_TESTNET]: useElixirRemoveLiquidity,
+  [ChainId.HEDERA_MAINNET]: useElixirRemoveLiquidity,
+  [ChainId.NEAR_MAINNET]: useElixirRemoveLiquidity,
+  [ChainId.NEAR_TESTNET]: useElixirRemoveLiquidity,
+  [ChainId.COSTON2]: useElixirRemoveLiquidity,
+  [ChainId.EVMOS_TESTNET]: useElixirRemoveLiquidity,
+  [ChainId.EVMOS_MAINNET]: useElixirRemoveLiquidity,
+  [ChainId.ETHEREUM]: useElixirRemoveLiquidity,
+  [ChainId.POLYGON]: useElixirRemoveLiquidity,
+  [ChainId.FANTOM]: useElixirRemoveLiquidity,
+  [ChainId.XDAI]: useElixirRemoveLiquidity,
+  [ChainId.BSC]: useElixirRemoveLiquidity,
+  [ChainId.ARBITRUM]: useElixirRemoveLiquidity,
+  [ChainId.CELO]: useElixirRemoveLiquidity,
+  [ChainId.OKXCHAIN]: useElixirRemoveLiquidity,
+  [ChainId.VELAS]: useElixirRemoveLiquidity,
+  [ChainId.AURORA]: useElixirRemoveLiquidity,
+  [ChainId.CRONOS]: useElixirRemoveLiquidity,
+  [ChainId.FUSE]: useElixirRemoveLiquidity,
+  [ChainId.MOONRIVER]: useElixirRemoveLiquidity,
+  [ChainId.MOONBEAM]: useElixirRemoveLiquidity,
+  [ChainId.OP]: useElixirRemoveLiquidity,
 };

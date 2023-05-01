@@ -3,15 +3,15 @@ import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin, waitForTransaction } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { RemoveConcentratedLiquidityProps } from '../types';
+import { RemoveElixirLiquidityProps } from '../types';
 
-export function useConcentratedRemoveLiquidity() {
+export function useElixirRemoveLiquidity() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { library } = useLibrary();
   const addTransaction = useTransactionAdder();
 
-  return async (data: RemoveConcentratedLiquidityProps) => {
+  return async (data: RemoveElixirLiquidityProps) => {
     const { tokenId, liquidities, feeValues, allowedSlippage, deadline, positionSDK, liquidityPercentage } = data;
     const { liquidityValue0, liquidityValue1 } = liquidities;
     const { feeValue0, feeValue1 } = feeValues;

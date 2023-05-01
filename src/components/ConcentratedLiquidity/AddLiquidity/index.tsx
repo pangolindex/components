@@ -22,10 +22,10 @@ import {
   useRangeHopCallbacks,
 } from 'src/state/pmint/concentratedLiquidity/hooks';
 import { useIsExpertMode, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { useConcentratedAddLiquidityHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
+import { useElixirAddLiquidityHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
 import {
-  useConcentratedPositionFromTokenId,
   useDerivedPositionInfo,
+  useElixirPositionFromTokenId,
 } from 'src/state/pwallet/concentratedLiquidity/hooks/evm';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { CloseIcon } from 'src/theme/components';
@@ -68,7 +68,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   // TODO check tokenId
   // const tokenId = '';
   // check for existing position if tokenId in url
-  const { position: existingPositionDetails, loading: positionLoading } = useConcentratedPositionFromTokenId(undefined);
+  const { position: existingPositionDetails, loading: positionLoading } = useElixirPositionFromTokenId(undefined);
   const hasExistingPosition = !!existingPositionDetails && !positionLoading;
   const { position: existingPosition } = useDerivedPositionInfo(existingPositionDetails);
 
@@ -116,7 +116,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const [allowedSlippage] = useUserSlippageTolerance(); // custom from users
   const [txHash, setTxHash] = useState<string>('');
   const mixpanel = useMixpanel();
-  const addLiquidity = useConcentratedAddLiquidityHook[chainId]();
+  const addLiquidity = useElixirAddLiquidityHook[chainId]();
   const useApproveCallback = useApproveCallbackHook[chainId];
 
   // check whether the user has approved the router on the tokens

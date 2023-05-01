@@ -14,7 +14,7 @@ import { BIPS_BASE } from 'src/constants/swap';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
 import { useTokensHook } from 'src/hooks/tokens';
-import { useConcLiqNFTPositionManagerContract } from 'src/hooks/useContract';
+import { useConcLiqNFTPositionManagerContract as useElixirNFTPositionManagerContract } from 'src/hooks/useContract';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
 import { useSingleCallResult, useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
@@ -22,19 +22,17 @@ import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin, waitForTransaction } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import {
-  ConcAddLiquidityProps,
-  ConcentratedLiquidityCollectFeesProps,
+  ElixirAddLiquidityProps,
+  ElixirLiquidityCollectFeesProps,
   PositionDetails,
-  UseConcentratedPositionResults,
-  UseConcentratedPositionsResults,
+  UseElixirPositionResults,
+  UseElixirPositionsResults,
 } from '../types';
-import { useConcentratedPositionsFromTokenIdsHook } from './index';
+import { useElixirPositionsFromTokenIdsHook } from './index';
 
 // It returns the positions based on the tokenIds.
-export function useConcentratedPositionsFromTokenIds(
-  tokenIds: BigNumber[] | undefined,
-): UseConcentratedPositionsResults {
-  const positionManager = useConcLiqNFTPositionManagerContract();
+export function useElixirPositionsFromTokenIds(tokenIds: BigNumber[] | undefined): UseElixirPositionsResults {
+  const positionManager = useElixirNFTPositionManagerContract();
   const inputs = useMemo(() => (tokenIds ? tokenIds.map((tokenId) => [BigNumber.from(tokenId)]) : []), [tokenIds]);
   const results = useSingleContractMultipleData(positionManager, 'positions', inputs);
 
@@ -72,12 +70,12 @@ export function useConcentratedPositionsFromTokenIds(
   };
 }
 
-export function useConcentratedPositionFromTokenId(tokenId: BigNumber | undefined): UseConcentratedPositionResults {
+export function useElixirPositionFromTokenId(tokenId: BigNumber | undefined): UseElixirPositionResults {
   const chainId = useChainId();
 
-  const useConcentratedPositionsFromTokenIds = useConcentratedPositionsFromTokenIdsHook[chainId];
+  const useElixirPositionsFromTokenIds = useElixirPositionsFromTokenIdsHook[chainId];
 
-  const position = useConcentratedPositionsFromTokenIds(tokenId ? [tokenId] : undefined);
+  const position = useElixirPositionsFromTokenIds(tokenId ? [tokenId] : undefined);
   return {
     loading: position.loading,
     position: position.positions?.[0],
@@ -87,7 +85,7 @@ export function useConcentratedPositionFromTokenId(tokenId: BigNumber | undefine
 // It return the positions of the user.
 export function useGetUserPositions() {
   const { account } = usePangolinWeb3();
-  const positionManager = useConcLiqNFTPositionManagerContract();
+  const positionManager = useElixirNFTPositionManagerContract();
 
   const chainId = useChainId();
   const useTokens = useTokensHook[chainId];
@@ -124,7 +122,7 @@ export function useGetUserPositions() {
     return [];
   }, [account, tokenIdResults]);
 
-  const { positions, loading: positionsLoading } = useConcentratedPositionsFromTokenIds(tokenIds);
+  const { positions, loading: positionsLoading } = useElixirPositionsFromTokenIds(tokenIds);
 
   const uniqueTokens = useMemo(() => {
     if (positions) {
@@ -187,13 +185,13 @@ export function useDerivedPositionInfo(positionDetails: PositionDetails | undefi
   };
 }
 
-export function useConcentratedAddLiquidity() {
+export function useElixirAddLiquidity() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { library } = useLibrary();
   const addTransaction = useTransactionAdder();
 
-  return async (data: ConcAddLiquidityProps) => {
+  return async (data: ElixirAddLiquidityProps) => {
     if (!chainId || !library || !account) return;
 
     const {
@@ -273,13 +271,13 @@ export function useConcentratedAddLiquidity() {
   };
 }
 
-export function useConcentratedCollectEarnedFees() {
+export function useElixirCollectEarnedFees() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { library } = useLibrary();
   const addTransaction = useTransactionAdder();
 
-  return async (data: ConcentratedLiquidityCollectFeesProps) => {
+  return async (data: ElixirLiquidityCollectFeesProps) => {
     const { tokenId, tokens, feeValues } = data;
     const { token0, token1 } = tokens;
     const { feeValue0, feeValue1 } = feeValues;

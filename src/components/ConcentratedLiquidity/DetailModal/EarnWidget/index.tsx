@@ -7,7 +7,7 @@ import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useConcLiqPositionFeesHook } from 'src/hooks/concentratedLiquidity/hooks';
 import { usePool } from 'src/hooks/concentratedLiquidity/hooks/common';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
-import { useConcentratedCollectEarnedFeesHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
+import { useElixirCollectEarnedFeesHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RemoveDrawer from './RemoveDrawer';
 import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styles';
@@ -43,7 +43,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
   const currency1ForFeeCollectionPurposes = pool ? (unwrappedToken(pool.token1, chainId) as Token) : undefined;
   const canClaim = feeValue0 && feeValue1 && feeValue0.greaterThan('0') && feeValue1.greaterThan('0');
 
-  const collectFees = useConcentratedCollectEarnedFeesHook[chainId]();
+  const collectFees = useElixirCollectEarnedFeesHook[chainId]();
   const onClaim = async () => {
     if (!chainId || !library || !account || !provider) return;
     if (!currency0ForFeeCollectionPurposes || !currency1ForFeeCollectionPurposes) return;

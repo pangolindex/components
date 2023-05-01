@@ -7,7 +7,7 @@ import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useConcentratedRemoveLiquidityHook } from 'src/state/pburn/concentratedLiquidity';
+import { useElixirRemoveLiquidityHook } from 'src/state/pburn/concentratedLiquidity';
 import { useDerivedBurnInfo } from 'src/state/pburn/concentratedLiquidity/common';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { ButtonWrapper, RemoveLiquidityWrapper, RemoveWrapper } from './styles';
@@ -39,7 +39,7 @@ const Remove = ({ position }: RemoveProps) => {
 
   const [userSlippage] = useUserSlippageTolerance();
   const deadline = useTransactionDeadline();
-  const removeLiquidity = useConcentratedRemoveLiquidityHook[chainId]();
+  const removeLiquidity = useElixirRemoveLiquidityHook[chainId]();
 
   const onBurn = async () => {
     if (!chainId || !library || !account || !provider) return;

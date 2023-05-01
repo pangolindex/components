@@ -21,12 +21,7 @@ import { NATIVE } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { SWAP_DEFAULT_CURRENCY } from 'src/constants/swap';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import {
-  useConcentratedTradeExactIn,
-  useConcentratedTradeExactOut,
-  useTradeExactIn,
-  useTradeExactOut,
-} from 'src/hooks/Trades';
+import { useElixirTradeExactIn, useElixirTradeExactOut, useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import { useCurrency } from 'src/hooks/useCurrency';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
@@ -191,11 +186,11 @@ export function useDerivedSwapInfo(): {
     !isExactIn ? parsedAmount : undefined,
   );
 
-  const { trade: bestElixirTradeExactIn, isLoading: isConcentratedLoadingIn } = useConcentratedTradeExactIn(
+  const { trade: bestElixirTradeExactIn, isLoading: isElixirLoadingIn } = useElixirTradeExactIn(
     isExactIn ? memoParsedAmount : undefined,
     outputCurrency ?? undefined,
   );
-  const { trade: bestElixirTradeExactOut, isLoading: isConcentratedLoadingOut } = useConcentratedTradeExactOut(
+  const { trade: bestElixirTradeExactOut, isLoading: isElixirLoadingOut } = useElixirTradeExactOut(
     inputCurrency ?? undefined,
     !isExactIn ? memoParsedAmount : undefined,
   );
@@ -287,7 +282,7 @@ export function useDerivedSwapInfo(): {
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance';
   }
 
-  const isLoading = isExactIn ? isLoadingIn || isConcentratedLoadingIn : isLoadingOut || isConcentratedLoadingOut;
+  const isLoading = isExactIn ? isLoadingIn || isElixirLoadingIn : isLoadingOut || isElixirLoadingOut;
 
   return {
     currencies,

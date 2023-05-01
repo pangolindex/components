@@ -14,7 +14,7 @@ import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/state/pmint/concentratedLiquidity/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { useConcentratedAddLiquidityHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
+import { useElixirAddLiquidityHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
 import { useDerivedPositionInfo } from 'src/state/pwallet/concentratedLiquidity/hooks/evm';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -117,7 +117,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     [independentField]: typedValue,
     [dependentField]: parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   };
-  const addLiquidity = useConcentratedAddLiquidityHook[chainId]();
+  const addLiquidity = useElixirAddLiquidityHook[chainId]();
 
   async function onIncrease() {
     if (!chainId || !library || !account || !provider) return;

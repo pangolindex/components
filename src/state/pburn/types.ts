@@ -1,7 +1,7 @@
 import { Percent, Position, TokenAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 
-export interface RemoveConcentratedLiquidityProps {
+export interface RemoveElixirLiquidityProps {
   tokenId?: BigNumber;
   liquidityPercentage?: Percent;
   liquidities: {
