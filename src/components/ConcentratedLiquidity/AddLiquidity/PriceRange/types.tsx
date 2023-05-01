@@ -1,5 +1,5 @@
 import { Currency, Price } from '@pangolindex/sdk';
-import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Bound } from 'src/state/pmint/elixir/atom';
 
 export type PriceRangeProps = {
   priceLower?: Price;

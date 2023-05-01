@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text } from 'src/components';
-import { PoolState } from 'src/hooks/concentratedLiquidity/hooks/types';
+import { PoolState } from 'src/hooks/elixir/hooks/types';
 import { BlackBox } from './styles';
 import { FeeTierPercentageBadgeProps } from './types';
 

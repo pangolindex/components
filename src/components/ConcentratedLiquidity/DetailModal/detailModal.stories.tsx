@@ -3,7 +3,7 @@ import { ComponentStory } from '@storybook/react';
 import { BigNumber } from 'ethers';
 import React, { useCallback, useState } from 'react';
 import { Button } from 'src';
-import { PositionDetails } from 'src/state/pwallet/concentratedLiquidity/types';
+import { PositionDetails } from 'src/state/pwallet/elixir/types';
 import { DetailModalProps } from './types';
 import DetailModal from '.';
 

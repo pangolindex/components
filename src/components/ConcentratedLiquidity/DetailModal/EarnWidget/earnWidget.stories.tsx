@@ -2,7 +2,7 @@ import { CHAINS, ChainId, FeeAmount, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import { BigNumber } from 'ethers';
 import React from 'react';
-import { PositionDetails } from 'src/state/pwallet/concentratedLiquidity/types';
+import { PositionDetails } from 'src/state/pwallet/elixir/types';
 import { EarnWidgetProps } from './types';
 import EarnWidget from '.';
 

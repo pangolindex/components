@@ -1,5 +1,5 @@
 import { Currency } from '@pangolindex/sdk';
-import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Field } from 'src/state/pmint/elixir/atom';
 
 export type SelectPairProps = {
   currency0?: Currency;

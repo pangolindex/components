@@ -8,7 +8,7 @@ import { ThemeContext } from 'styled-components';
 import { Loader, Text } from 'src/components';
 import { AutoColumn, ColumnCenter } from 'src/components/Column';
 import { useChainId } from 'src/hooks';
-import { useDensityChartData } from 'src/hooks/concentratedLiquidity/chart/evm';
+import { useDensityChartData } from 'src/hooks/elixir/chart/evm';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Chart } from './Chart';
 import { ChartWrapper } from './styles';

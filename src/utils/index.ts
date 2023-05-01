@@ -31,7 +31,7 @@ import {
 } from '@pangolindex/sdk';
 import { MetamaskError, ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
-import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Bound } from 'src/state/pmint/elixir/atom';
 import { hederaFn } from 'src/utils/hedera';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { wait } from './retry';

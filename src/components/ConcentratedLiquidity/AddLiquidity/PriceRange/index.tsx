@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Text, Tooltip } from 'src/components';
 import { useChainId } from 'src/hooks';
-import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Bound } from 'src/state/pmint/elixir/atom';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import PriceInput from './PriceInput';
 import { PriceInputs } from './styles';

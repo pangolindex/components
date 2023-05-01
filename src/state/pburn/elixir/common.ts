@@ -1,9 +1,9 @@
 import { Percent, Position, Token, TokenAmount } from '@pangolindex/sdk';
 import { useChainId } from 'src/hooks';
-import { useConcLiqPositionFeesHook } from 'src/hooks/concentratedLiquidity/hooks';
+import { useConcLiqPositionFeesHook } from 'src/hooks/elixir/hooks';
 import { useTokenHook } from 'src/hooks/tokens';
-import { useDerivedPositionInfo } from 'src/state/pwallet/concentratedLiquidity/hooks/evm';
-import { PositionDetails } from 'src/state/pwallet/concentratedLiquidity/types';
+import { useDerivedPositionInfo } from 'src/state/pwallet/elixir/hooks/evm';
+import { PositionDetails } from 'src/state/pwallet/elixir/types';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 
 export function useDerivedBurnInfo(

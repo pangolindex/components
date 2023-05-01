@@ -14,19 +14,16 @@ import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Bound, Field } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Bound, Field } from 'src/state/pmint/elixir/atom';
 import {
   useDerivedMintInfo,
   useMintActionHandlers,
   useMintState,
   useRangeHopCallbacks,
-} from 'src/state/pmint/concentratedLiquidity/hooks';
+} from 'src/state/pmint/elixir/hooks';
 import { useIsExpertMode, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { useElixirAddLiquidityHook } from 'src/state/pwallet/concentratedLiquidity/hooks';
-import {
-  useDerivedPositionInfo,
-  useElixirPositionFromTokenId,
-} from 'src/state/pwallet/concentratedLiquidity/hooks/evm';
+import { useElixirAddLiquidityHook } from 'src/state/pwallet/elixir/hooks';
+import { useDerivedPositionInfo, useElixirPositionFromTokenId } from 'src/state/pwallet/elixir/hooks/evm';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { CloseIcon } from 'src/theme/components';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';

@@ -4,10 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button, DoubleCurrencyLogo, Text, Tooltip } from 'src/components';
 import { Bound } from 'src/components/LiquidityChartRangeInput/types';
 import { useChainId } from 'src/hooks';
-import useIsTickAtLimit, {
-  getPriceOrderingFromPositionForUI,
-  usePool,
-} from 'src/hooks/concentratedLiquidity/hooks/common';
+import useIsTickAtLimit, { getPriceOrderingFromPositionForUI, usePool } from 'src/hooks/elixir/hooks/common';
 import { formatTickPrice } from 'src/utils';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import {

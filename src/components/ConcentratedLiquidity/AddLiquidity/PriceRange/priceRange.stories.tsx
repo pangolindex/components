@@ -1,7 +1,7 @@
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Bound } from 'src/state/pmint/elixir/atom';
 import { PriceRangeProps } from './types';
 import PriceRange from '.';
 

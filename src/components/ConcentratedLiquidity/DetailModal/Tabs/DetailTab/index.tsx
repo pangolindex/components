@@ -6,13 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
-import { usePositionTokenURIHook, useUnderlyingTokensHook } from 'src/hooks/concentratedLiquidity/hooks';
-import useIsTickAtLimit, {
-  getPriceOrderingFromPositionForUI,
-  usePool,
-} from 'src/hooks/concentratedLiquidity/hooks/common';
+import { usePositionTokenURIHook, useUnderlyingTokensHook } from 'src/hooks/elixir/hooks';
+import useIsTickAtLimit, { getPriceOrderingFromPositionForUI, usePool } from 'src/hooks/elixir/hooks/common';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
-import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Bound } from 'src/state/pmint/elixir/atom';
 import { formatTickPrice, useInverter } from 'src/utils';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import PriceCard from './PriceCard';

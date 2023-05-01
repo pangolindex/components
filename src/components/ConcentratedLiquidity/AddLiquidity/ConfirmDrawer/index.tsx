@@ -7,7 +7,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, Button, DoubleCurrencyLogo, Loader, Stat, Text, TransactionCompleted } from 'src/components';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
-import { Bound, Field } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Bound, Field } from 'src/state/pmint/elixir/atom';
 import { formatTickPrice } from 'src/utils';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { ErrorBox, ErrorWrapper, Footer, Header, Root, StateContainer } from './styled';

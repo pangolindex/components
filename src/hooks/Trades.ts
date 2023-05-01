@@ -15,8 +15,8 @@ import { BASES_TO_CHECK_TRADES_AGAINST, BIPS_BASE, CUSTOM_BASES } from 'src/cons
 import { PairState } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useChainId } from 'src/hooks';
-import { usePoolsHook } from 'src/hooks/concentratedLiquidity/hooks';
-import { PoolState } from 'src/hooks/concentratedLiquidity/hooks/types';
+import { usePoolsHook } from 'src/hooks/elixir/hooks';
+import { PoolState } from 'src/hooks/elixir/hooks/types';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useDaasFeeInfo, useDaasFeeTo } from '../state/pswap/hooks/common';
 

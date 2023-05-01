@@ -4,7 +4,7 @@ import { ChevronDown, RefreshCcw } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, CurrencyLogo, Text } from 'src/components';
-import { Field } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Field } from 'src/state/pmint/elixir/atom';
 import { ArrowWrapper, Currencies, CurrencySelectWrapper } from './styles';
 import { SelectPairProps } from './types';
 

@@ -12,7 +12,7 @@ import {
 } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useChainId } from 'src/hooks';
-import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Bound } from 'src/state/pmint/elixir/atom';
 import { PoolState } from './types';
 import { usePoolsHook } from './index';
 
