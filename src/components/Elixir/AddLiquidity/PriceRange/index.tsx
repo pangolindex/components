@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Info } from 'react-feather';
+import { Code, Info } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Text, Tooltip } from 'src/components';
@@ -20,6 +20,7 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
     getIncrementLower,
     getDecrementUpper,
     getIncrementUpper,
+    onClickFullRange,
     currencyA,
     currencyB,
     feeAmount,
@@ -44,12 +45,30 @@ const PriceRange: React.FC<PriceRangeProps> = (props) => {
         {t('elixir.priceRange.infoContext')}
       </Tooltip>
 
+      <Tooltip id="onClickFullRange" effect="solid">
+        {t('elixir.priceRange.fullRangeContext')}
+      </Tooltip>
+
       <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
         <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
           {t('elixir.priceRange.title')}
         </Text>
-        <Box>
+        <Box
+          display={'flex'}
+          flexDirection={'row'}
+          justifyContent={'center'}
+          alignItems={'center'}
+          style={{ gap: '5px' }}
+        >
           <Info size={16} color={theme.white} data-tip data-for="setPriceRange" />
+          <Code
+            style={{ cursor: 'pointer' }}
+            size={16}
+            color={theme.white}
+            data-tip
+            data-for="onClickFullRange"
+            onClick={onClickFullRange}
+          />
         </Box>
       </Box>
 

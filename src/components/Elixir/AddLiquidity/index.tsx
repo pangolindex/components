@@ -86,6 +86,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     depositBDisabled,
     parsedAmounts,
     errorMessage,
+    pricesAtLimit,
     position,
   } = useDerivedMintInfo(existingPosition);
 
@@ -186,14 +187,8 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   const { [Bound.LOWER]: tickLower, [Bound.UPPER]: tickUpper } = ticks;
   const { [Bound.LOWER]: priceLower, [Bound.UPPER]: priceUpper } = pricesAtTicks;
 
-  const { getDecrementLower, getIncrementLower, getDecrementUpper, getIncrementUpper } = useRangeHopCallbacks(
-    currency0 ?? undefined,
-    currency1 ?? undefined,
-    feeAmount,
-    tickLower,
-    tickUpper,
-    pool,
-  );
+  const { getDecrementLower, getIncrementLower, getDecrementUpper, getIncrementUpper, getSetFullRange } =
+    useRangeHopCallbacks(currency0 ?? undefined, currency1 ?? undefined, feeAmount, tickLower, tickUpper, pool);
 
   async function onAdd() {
     if (!chainId || !library || !account || !provider) return;
@@ -244,20 +239,19 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     setAttemptingTxn(false);
   }, [txHash]);
 
-  // TODO: add back
-  // const handleSetFullRange = useCallback(() => {
-  //   getSetFullRange();
+  const handleSetFullRange = useCallback(() => {
+    getSetFullRange();
 
-  //   const minPrice = pricesAtLimit[Bound.LOWER];
-  //   const maxPrice = pricesAtLimit[Bound.UPPER];
-  //   if (minPrice) {
-  //     onLeftRangeInput(minPrice.toSignificant(5));
-  //   }
+    const minPrice = pricesAtLimit[Bound.LOWER];
+    const maxPrice = pricesAtLimit[Bound.UPPER];
+    if (minPrice) {
+      onLeftRangeInput(minPrice.toSignificant(5));
+    }
 
-  //   if (maxPrice) {
-  //     onRightRangeInput(maxPrice.toSignificant(5));
-  //   }
-  // }, [getSetFullRange, pricesAtLimit, onLeftRangeInput, onRightRangeInput]);
+    if (maxPrice) {
+      onRightRangeInput(maxPrice.toSignificant(5));
+    }
+  }, [getSetFullRange, pricesAtLimit, onLeftRangeInput, onRightRangeInput]);
 
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
@@ -463,16 +457,8 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                 currencyB={currency1}
                 feeAmount={feeAmount}
                 ticksAtLimit={ticksAtLimit}
+                onClickFullRange={handleSetFullRange}
               />
-
-              {/* TODO: add back */}
-              {/* {!noLiquidity && (
-                <Box mt={10} mb="5px">
-                  <Button variant="outline" onClick={handleSetFullRange} color={theme.text10}>
-                    {t('elixir.addLiquidity.fullRange')}
-                  </Button>
-                </Box>
-              )} */}
 
               {outOfRange ? (
                 <Box

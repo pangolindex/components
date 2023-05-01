@@ -10,6 +10,7 @@ export type PriceRangeProps = {
   getIncrementUpper: () => string;
   onLeftRangeInput: (typedValue: string) => void;
   onRightRangeInput: (typedValue: string) => void;
+  onClickFullRange: () => void;
   currencyA?: Currency | null;
   currencyB?: Currency | null;
   feeAmount?: number;
