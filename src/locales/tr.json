@@ -760,7 +760,7 @@
     "decreaseWarning": "Yeni bileşik kısım 0 nisan ile başladığı için apr'ınız düşecek ve eski ile yeni kısım arasında bir ortalama alınacaktır.",
     "createStorageContract": "Create Storage Contract"
   },
-  "concentratedLiquidity": {
+  "elixir": {
     "menuTypes": {
       "allPositions": "Tüm Pozisyonlar",
       "openPositions": "Açık Pozisyonlar",

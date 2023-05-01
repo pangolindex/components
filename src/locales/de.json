@@ -760,7 +760,7 @@
     "decreaseWarning": "Ihr APR wird sinken, da der neue zusammengesetzte Teil mit APR 0 beginnt und ein Durchschnitt zwischen dem alten und dem neuen Teil genommen wird.",
     "createStorageContract": "Create Storage Contract"
   },
-  "concentratedLiquidity": {
+  "elixir": {
     "menuTypes": {
       "allPositions": "All Positions",
       "openPositions": "Open Positions",

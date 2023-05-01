@@ -144,7 +144,7 @@ export interface Colors {
     };
   };
 
-  concentratedLiquidity?: {
+  elixir?: {
     primaryBgColor?: Color;
     secondaryBgColor?: Color;
   };

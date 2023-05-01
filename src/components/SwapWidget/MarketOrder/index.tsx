@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { ConcentratedTrade, CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import { CurrencyAmount, ElixirTrade, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -206,7 +206,7 @@ const MarketOrder: React.FC<Props> = ({
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
     showConfirm: boolean;
-    tradeToConfirm: Trade | ConcentratedTrade | undefined;
+    tradeToConfirm: Trade | ElixirTrade | undefined;
     attemptingTxn: boolean;
     swapErrorMessage: string | undefined;
     txHash: string | undefined;

@@ -11,7 +11,7 @@ export type ElixirTick = {
   liquidityNet: string;
 };
 
-export type ElixirPool = {
+export type ElixirPoolType = {
   id: string;
   token0: {
     id: string;
@@ -72,17 +72,17 @@ export const useElixirPools = (poolAddresses: (string | undefined)[]) => {
   const poolsToFind = poolAddresses?.map((item) => item?.toLowerCase())?.filter((item) => !!item) as string[];
 
   const chainId = useChainId();
-  const gqlClient = useSubgraphClient(SubgraphEnum.ConcentratedLiquidity);
+  const gqlClient = useSubgraphClient(SubgraphEnum.Elixir);
   const validateAddress = validateAddressMapping[chainId];
   // get pairs from subgraph
-  return useQuery<ElixirPool[] | null>(['get-subgraph-elixir-pools', chainId, ...poolsToFind], async () => {
+  return useQuery<ElixirPoolType[] | null>(['get-subgraph-elixir-pools', chainId, ...poolsToFind], async () => {
     if (!gqlClient) {
       return null;
     }
     const data = await gqlClient.request(GET_ELIXIR_POOLS, { poolAddresses: poolsToFind });
 
     return (
-      (data?.pools as ElixirPool[])
+      (data?.pools as ElixirPoolType[])
         // convert addresses to checksum address
         ?.map((item) => ({ ...item, id: validateAddress(item.id) as string }))
         // only keep pairs that has id as string

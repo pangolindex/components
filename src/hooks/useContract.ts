@@ -14,8 +14,8 @@ import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderVi
 import SarStaking from 'src/constants/abis/sar.json';
 import WETH_ABI from 'src/constants/abis/weth.json';
 import { MINICHEF_ADDRESS, PANGOCHEF_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
-import NonFungiblePositionManager from 'src/constants/concentratedLiquidity/abis/nonfungiblePositionManager.json';
-import TickLensABI from 'src/constants/concentratedLiquidity/abis/tickLens.json';
+import NonFungiblePositionManager from 'src/constants/elixir/abis/nonfungiblePositionManager.json';
+import TickLensABI from 'src/constants/elixir/abis/tickLens.json';
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from 'src/constants/multicall';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
@@ -120,7 +120,7 @@ export function usePangoChefContract(): Contract | null {
 export function useConcLiqNFTPositionManagerContract(withSignerIfPossible?: boolean): Contract | null {
   const chainId = useChainId();
   return useContract(
-    chainId && CHAINS[chainId]?.contracts?.concentratedLiquidity?.nftManager,
+    chainId && CHAINS[chainId]?.contracts?.elixir?.nftManager,
     NonFungiblePositionManager.abi,
     withSignerIfPossible,
   );
@@ -128,6 +128,6 @@ export function useConcLiqNFTPositionManagerContract(withSignerIfPossible?: bool
 
 export function useTickLensContract(): Contract | null {
   const chainId = useChainId();
-  const address = chainId ? CHAINS[chainId]?.contracts?.concentratedLiquidity?.tickLens : undefined;
+  const address = chainId ? CHAINS[chainId]?.contracts?.elixir?.tickLens : undefined;
   return useContract(address, TickLensABI.abi);
 }

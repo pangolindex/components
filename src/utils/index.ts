@@ -14,9 +14,9 @@ import {
   CHAINS,
   Chain,
   ChainId,
-  ConcentratedTrade,
   Currency,
   CurrencyAmount,
+  ElixirTrade,
   Fraction,
   JSBI,
   NetworkType,
@@ -31,7 +31,7 @@ import {
 } from '@pangolindex/sdk';
 import { MetamaskError, ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
-import { Bound } from 'src/state/pmint/concentratedLiquidity/atom';
+import { Bound } from 'src/state/pmint/elixir/atom';
 import { hederaFn } from 'src/utils/hedera';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { wait } from './retry';
@@ -524,10 +524,7 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, chainId: ChainId, 
  * @param tradeA trade A
  * @param tradeB trade B
  */
-export function tradeMeaningfullyDiffers(
-  tradeA: Trade | ConcentratedTrade,
-  tradeB: Trade | ConcentratedTrade,
-): boolean {
+export function tradeMeaningfullyDiffers(tradeA: Trade | ElixirTrade, tradeB: Trade | ElixirTrade): boolean {
   return (
     tradeA.tradeType !== tradeB.tradeType ||
     !currencyEquals(tradeA.inputAmount.currency, tradeB.inputAmount.currency) ||

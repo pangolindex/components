@@ -35,11 +35,16 @@ export enum SubgraphEnum {
   Exchange = 'exchange',
   Pangochef = 'pangochef',
   Minichef = 'minichef',
-  ConcentratedLiquidity = 'concentratedLiquidity',
+  Elixir = 'elixir',
 }
 
 export const getSubgraphClient = (chainId: ChainId, subgraph: SubgraphEnum) => {
   let url = CHAINS[chainId]?.subgraph?.[subgraph];
+
+  // this is just for testing, not meant for production usage
+  // if (chainId === ChainId.FUJI) {
+  //   url = 'http://localhost:8000/subgraphs/name/fuji/pangolin-v3';
+  // }
 
   // workaround for now
   if (chainId === ChainId.HEDERA_MAINNET) {

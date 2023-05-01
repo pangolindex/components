@@ -1,8 +1,8 @@
 import {
-  ConcentratedPool,
-  ConcentratedTrade,
   Currency,
   CurrencyAmount,
+  ElixirPool,
+  ElixirTrade,
   FeeAmount,
   Pair,
   Percent,
@@ -15,8 +15,8 @@ import { BASES_TO_CHECK_TRADES_AGAINST, BIPS_BASE, CUSTOM_BASES } from 'src/cons
 import { PairState } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useChainId } from 'src/hooks';
-import { usePoolsHook } from 'src/hooks/concentratedLiquidity/hooks';
-import { PoolState } from 'src/hooks/concentratedLiquidity/hooks/types';
+import { usePoolsHook } from 'src/hooks/elixir/hooks';
+import { PoolState } from 'src/hooks/elixir/hooks/types';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useDaasFeeInfo, useDaasFeeTo } from '../state/pswap/hooks/common';
 
@@ -144,11 +144,11 @@ export function useTradeExactOut(
   }, [allowedPairs, isLoading, currencyIn, currencyAmountOut, feeTo, feeInfo]);
 }
 
-function useAllConcentratedCommonPools(
+function useAllElixirCommonPools(
   currencyA?: Currency,
   currencyB?: Currency,
 ): {
-  pools: ConcentratedPool[];
+  pools: ElixirPool[];
   isLoading: boolean;
 } {
   const chainId = useChainId();
@@ -230,7 +230,7 @@ function useAllConcentratedCommonPools(
   return useMemo(() => {
     return {
       pools: pools
-        .filter((tuple): tuple is [PoolState.EXISTS, ConcentratedPool] => {
+        .filter((tuple): tuple is [PoolState.EXISTS, ElixirPool] => {
           return tuple[0] === PoolState.EXISTS && tuple[1] !== null;
         })
         .map(([, pool]) => pool),
@@ -242,21 +242,21 @@ function useAllConcentratedCommonPools(
 /**
  * Returns the best trade for the exact amount of tokens in to the given token out
  */
-export function useConcentratedTradeExactIn(
+export function useElixirTradeExactIn(
   currencyAmountIn?: CurrencyAmount,
   currencyOut?: Currency,
-): { trade: ConcentratedTrade | null; isLoading: boolean } {
-  const [tradeData, setTradeData] = useState<{ trade: ConcentratedTrade | null; isLoading: boolean }>({
+): { trade: ElixirTrade | null; isLoading: boolean } {
+  const [tradeData, setTradeData] = useState<{ trade: ElixirTrade | null; isLoading: boolean }>({
     trade: null,
     isLoading: true,
   });
 
-  const { pools: allowedPools, isLoading } = useAllConcentratedCommonPools(currencyAmountIn?.currency, currencyOut);
+  const { pools: allowedPools, isLoading } = useAllElixirCommonPools(currencyAmountIn?.currency, currencyOut);
 
   useEffect(() => {
     const getBestTradeExactIn = async () => {
       if (currencyAmountIn && currencyOut && allowedPools.length > 0 && !isLoading) {
-        const trades = await ConcentratedTrade.bestTradeExactIn(allowedPools, currencyAmountIn, currencyOut, {
+        const trades = await ElixirTrade.bestTradeExactIn(allowedPools, currencyAmountIn, currencyOut, {
           maxHops: 3,
           maxNumResults: 1,
         });
@@ -273,21 +273,21 @@ export function useConcentratedTradeExactIn(
 /**
  * Returns the best trade for the token in to the exact amount of token out
  */
-export function useConcentratedTradeExactOut(
+export function useElixirTradeExactOut(
   currencyIn?: Currency,
   currencyAmountOut?: CurrencyAmount,
-): { trade: ConcentratedTrade | null; isLoading: boolean } {
-  const [tradeData, setTradeData] = useState<{ trade: ConcentratedTrade | null; isLoading: boolean }>({
+): { trade: ElixirTrade | null; isLoading: boolean } {
+  const [tradeData, setTradeData] = useState<{ trade: ElixirTrade | null; isLoading: boolean }>({
     trade: null,
     isLoading: true,
   });
 
-  const { pools: allowedPools, isLoading } = useAllConcentratedCommonPools(currencyIn, currencyAmountOut?.currency);
+  const { pools: allowedPools, isLoading } = useAllElixirCommonPools(currencyIn, currencyAmountOut?.currency);
 
   useEffect(() => {
     const getBestTradeExactOut = async () => {
       if (currencyIn && currencyAmountOut && allowedPools.length > 0 && !isLoading) {
-        const trades = await ConcentratedTrade.bestTradeExactOut(allowedPools, currencyIn, currencyAmountOut, {
+        const trades = await ElixirTrade.bestTradeExactOut(allowedPools, currencyIn, currencyAmountOut, {
           maxHops: 3,
           maxNumResults: 1,
         });
