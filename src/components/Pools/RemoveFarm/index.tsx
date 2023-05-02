@@ -21,9 +21,11 @@ interface RemoveFarmProps {
   onClose: () => void;
   // this prop will be used if user move away from first step
   onLoading?: (value: boolean) => void;
+  // percetage is the percetage removed
+  onComplete?: (percetage: number) => void;
   redirectToCompound?: () => void;
 }
-const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, redirectToCompound }: RemoveFarmProps) => {
+const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redirectToCompound }: RemoveFarmProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const [isRemoveLiquidityDrawerVisible, setShowRemoveLiquidityDrawer] = useState(false);
@@ -107,6 +109,10 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, redirectToCompou
       try {
         const hash = await withdrawCallback();
         setHash(hash);
+
+        if (onComplete) {
+          onComplete(100);
+        }
 
         mixpanel.track(MixPanelEvents.REMOVE_FARM, {
           chainId: chainId,

@@ -24,9 +24,11 @@ interface RemoveLiquidityProps {
   currencyB?: Currency;
   // this prop will be used if user move away from first step
   onLoading?: (value: boolean) => void;
+  // percetage is the percetage removed
+  onComplete?: (percetage: number) => void;
 }
 
-const RemoveLiquidity = ({ currencyA, currencyB, onLoading }: RemoveLiquidityProps) => {
+const RemoveLiquidity = ({ currencyA, currencyB, onLoading, onComplete }: RemoveLiquidityProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { library } = useLibrary();
@@ -144,6 +146,10 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoading }: RemoveLiquidityPro
       const response = await removeLiquidity(removeData);
 
       setHash(response?.hash);
+
+      if (onComplete) {
+        onComplete(percetage);
+      }
 
       mixpanel.track(MixPanelEvents.REMOVE_LIQUIDITY, {
         chainId: chainId,
