@@ -270,7 +270,7 @@ export class HashConnector extends AbstractConnector {
     };
 
     const res = await this.instance.sendTransaction(this.topic, transactionToSend);
-
+    console.log('Transaction response', { response: res });
     const receipt = res?.response as TransactionResponse;
     if (res.success) {
       return {
