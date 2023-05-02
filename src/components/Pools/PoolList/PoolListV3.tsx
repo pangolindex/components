@@ -137,8 +137,9 @@ const PoolListV3: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
       onChangeSortBy={setSortBy}
       sortBy={sortBy}
       searchQuery={searchQuery}
-      isLoading={(stakingInfoData?.length === 0 && !searchQuery) || poolCardsLoading}
-      doesNotPoolExist={stakingInfoData?.length === 0 && !poolCardsLoading}
+      isLoading={(stakingInfos?.length === 0 && !searchQuery) || poolCardsLoading}
+      doesNotPoolExist={stakingInfos?.length === 0}
+      notFoundPools={stakingInfoData?.length === 0}
       selectedPool={selectedPool}
     >
       {stakingInfoData.map((stakingInfo) => (

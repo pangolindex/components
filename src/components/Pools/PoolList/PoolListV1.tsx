@@ -139,8 +139,9 @@ const PoolListV1: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
       sortBy={sortBy}
       searchQuery={searchQuery}
       isLoading={stakingInfos?.length === 0 || poolCardsLoading}
-      doesNotPoolExist={poolCards?.length === 0 && !poolCardsLoading}
+      doesNotPoolExist={stakingInfos?.length === 0}
       selectedPool={selectedPool}
+      notFoundPools={poolCards?.length === 0}
     >
       {filteredPoolCards}
     </PoolCardListView>
