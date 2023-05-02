@@ -1,5 +1,15 @@
 /* eslint-disable max-lines */
-import { CAVAX, CurrencyAmount, ElixirTrade, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import {
+  CAVAX,
+  CurrencyAmount,
+  ElixirTrade,
+  JSBI,
+  Token,
+  TokenAmount,
+  Trade,
+  WAVAX,
+  currencyEquals,
+} from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { useTranslation } from 'react-i18next';
