@@ -216,11 +216,6 @@ export function usePoolsViaSubgraph(
 
       const sqrtPrice = poolData.sqrtPrice;
       const liquidity = poolData.liquidity;
-      if (!sqrtPrice) return [PoolState.INVALID, null];
-
-      if (!liquidity) return [PoolState.INVALID, null];
-
-      if (!tokens || !sqrtPrice || !liquidity) return [PoolState.INVALID, null];
       if (isLoading) return [PoolState.LOADING, null];
       if (!sqrtPrice || !liquidity) return [PoolState.NOT_EXISTS, null];
       if (!sqrtPrice || sqrtPrice === '0') return [PoolState.NOT_EXISTS, null];
