@@ -1,4 +1,3 @@
-import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, Token, Trade, TradeType } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
@@ -7,6 +6,7 @@ import { ThemeContext } from 'styled-components';
 import Drawer from 'src/components/Drawer';
 import { useChainId } from 'src/hooks';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
+import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
 import { getEtherscanLink, isAddress, shortenAddress } from 'src/utils';
 import { computeFiatValuePriceImpact } from 'src/utils/computeFiatValuePriceImpact';
 import { Box, Button, CurrencyLogo, Loader, Text } from '../../';
@@ -45,6 +45,9 @@ const ConfirmLimitOrderDrawer: React.FC<Props> = (props) => {
   const chainId = useChainId();
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
+
+  const useGelatoLimitOrders = useGelatoLimitOrdersHook[chainId];
+
   const {
     derivedOrderInfo: { price, parsedAmounts },
   } = useGelatoLimitOrders();

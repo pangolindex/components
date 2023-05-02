@@ -1,3 +1,5 @@
+import { TransactionResponse } from '@ethersproject/providers';
+import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
 import { ChainId } from '@pangolindex/sdk';
 import { useGelatoLimitOrderList } from './common';
 
@@ -37,4 +39,89 @@ export const useGelatoLimitOrdersListHook: UseGelatoLimitOrdersListHookType = {
   [ChainId.MOONRIVER]: useDummyGelatoLimitOrdersList,
   [ChainId.MOONBEAM]: useDummyGelatoLimitOrdersList,
   [ChainId.OP]: useDummyGelatoLimitOrdersList,
+};
+
+const useDummyGelatoLimitOrders = () => ({
+  handlers: {
+    handleLimitOrderSubmission: () => ({} as Promise<TransactionResponse>),
+    handleLimitOrderCancellation: () => ({} as Promise<TransactionResponse>),
+    handleInput: () => {},
+    handleCurrencySelection: () => {},
+    handleSwitchTokens: () => {},
+    handleRateType: () => {},
+  },
+  derivedOrderInfo: {
+    currencies: {
+      input: undefined,
+      output: undefined,
+    },
+    currencyBalances: {
+      input: undefined,
+      output: undefined,
+    },
+    inputError: undefined,
+    trade: undefined,
+    parsedAmounts: {
+      input: undefined,
+      output: undefined,
+    },
+    formattedAmounts: {
+      input: '0',
+      output: '0',
+      price: '0',
+    },
+    rawAmounts: {
+      input: undefined,
+      output: undefined,
+    },
+    price: undefined,
+  },
+  orderState: {
+    independentField: 'INPUT' as any,
+    typedValue: '0',
+    inputValue: undefined,
+    INPUT: {
+      currencyId: undefined,
+    },
+    OUTPUT: {
+      currencyId: undefined,
+    },
+    recipient: null,
+    rateType: 'MUL' as any,
+  },
+});
+
+export type useGelatoLimitiOrdersHookType = {
+  [chainId in ChainId]: typeof useGelatoLimitOrders | typeof useDummyGelatoLimitOrders;
+};
+
+export const useGelatoLimitOrdersHook: useGelatoLimitiOrdersHookType = {
+  [ChainId.AVALANCHE]: useGelatoLimitOrders,
+  [ChainId.FUJI]: useDummyGelatoLimitOrders,
+  [ChainId.WAGMI]: useDummyGelatoLimitOrders,
+  [ChainId.COSTON]: useDummyGelatoLimitOrders,
+  [ChainId.SONGBIRD]: useDummyGelatoLimitOrders,
+  [ChainId.FLARE_MAINNET]: useDummyGelatoLimitOrders,
+  [ChainId.HEDERA_TESTNET]: useDummyGelatoLimitOrders,
+  [ChainId.HEDERA_MAINNET]: useDummyGelatoLimitOrders,
+  [ChainId.NEAR_MAINNET]: useDummyGelatoLimitOrders,
+  [ChainId.NEAR_TESTNET]: useDummyGelatoLimitOrders,
+  [ChainId.COSTON2]: useDummyGelatoLimitOrders,
+  [ChainId.EVMOS_TESTNET]: useDummyGelatoLimitOrders,
+  [ChainId.EVMOS_MAINNET]: useDummyGelatoLimitOrders,
+  [ChainId.ETHEREUM]: useGelatoLimitOrders,
+  [ChainId.POLYGON]: useGelatoLimitOrders,
+  [ChainId.FANTOM]: useGelatoLimitOrders,
+  [ChainId.XDAI]: useGelatoLimitOrders,
+  [ChainId.BSC]: useGelatoLimitOrders,
+  [ChainId.ARBITRUM]: useGelatoLimitOrders,
+  [ChainId.CELO]: useDummyGelatoLimitOrders,
+  [ChainId.OKXCHAIN]: useDummyGelatoLimitOrders,
+  [ChainId.VELAS]: useDummyGelatoLimitOrders,
+  [ChainId.AURORA]: useDummyGelatoLimitOrders,
+  [ChainId.CRONOS]: useGelatoLimitOrders,
+  [ChainId.FUSE]: useDummyGelatoLimitOrders,
+  [ChainId.MOONRIVER]: useGelatoLimitOrders,
+  [ChainId.MOONBEAM]: useGelatoLimitOrders,
+  [ChainId.OP]: useGelatoLimitOrders,
 };

@@ -12,7 +12,7 @@ import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, usePangolinWeb3, useRefetchPangoChefSubgraph } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { useTokensContract } from 'src/hooks/tokens/evm';
 import { usePangoChefContract } from 'src/hooks/useContract';
@@ -939,6 +939,7 @@ export function useHederaPangoChefStakeCallback(
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
 
   return useMemo(() => {
     if (!poolId || !account || !chainId || !amount) {
@@ -960,6 +961,8 @@ export function useHederaPangoChefStakeCallback(
             addTransaction(response, {
               summary: t('earn.depositLiquidity'),
             });
+
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 
@@ -995,7 +998,9 @@ export function useHederaPangoChefClaimRewardCallback(
   const { t } = useTranslation();
 
   const addTransaction = useTransactionAdder();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
   const png = PNG[chainId];
+
   return useMemo(() => {
     if (!poolId || !account || !chainId || !poolType) {
       return { callback: null, error: 'Missing dependencies' };
@@ -1018,6 +1023,8 @@ export function useHederaPangoChefClaimRewardCallback(
             addTransaction(response, {
               summary: t('earn.claimAccumulated', { symbol: png.symbol }),
             });
+
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 
@@ -1051,7 +1058,9 @@ export function useHederaPangoChefWithdrawCallback(withdrawData: WithdrawData): 
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
   const { poolId, stakedAmount } = withdrawData;
+
   return useMemo(() => {
     if (!account || !chainId || !poolId || !stakedAmount) {
       return { callback: null, error: 'Missing dependencies' };
@@ -1072,6 +1081,7 @@ export function useHederaPangoChefWithdrawCallback(withdrawData: WithdrawData): 
             addTransaction(response, {
               summary: t('earn.withdrawDepositedLiquidity'),
             });
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 
@@ -1105,6 +1115,7 @@ export function useHederaPangoChefCompoundCallback(compoundData: PangoChefCompou
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
   const pangoChefContract = usePangoChefContract();
 
   const { poolId, isPNGPool, amountToAdd } = compoundData;
@@ -1136,6 +1147,8 @@ export function useHederaPangoChefCompoundCallback(compoundData: PangoChefCompou
             addTransaction(response, {
               summary: t('pangoChef.compoundTransactionSummary'),
             });
+
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 
