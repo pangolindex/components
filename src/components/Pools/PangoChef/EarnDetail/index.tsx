@@ -77,7 +77,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
     return lockingPairs.length > 0 && !!stakingInfo?.lockCount && stakingInfo?.lockCount > 0;
   }
 
-  const isFarmLocked = getIfFarmLocked();
+  const isFarmLocked =  false;//getIfFarmLocked();
 
   return (
     <Wrapper>
