@@ -326,7 +326,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
 
   return (
     <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={false}>
-      <Wrapper maximumHeight={height - 150}>
+      <Wrapper isTokenListActive={isCurrencyDrawerOpen} maximumHeight={height - 150}>
         <Box p={20}>
           <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
             <Text color="text1" fontSize={[32, 28]} fontWeight={500} mt={10} mb={12}>

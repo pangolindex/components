@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { Box, CurrencyInput, TextInput } from 'src/components';
 
-export const Wrapper = styled(Box)<{ maximumHeight: number }>`
+export const Wrapper = styled(Box)<{ maximumHeight: number; isTokenListActive: boolean }>`
   max-height: ${({ maximumHeight }) => maximumHeight}px;
   width: 470px;
-  overflow: auto;
+  overflow: ${({ isTokenListActive }) => (isTokenListActive ? 'hidden' : 'auto')};
   border-radius: 10px;
   position: relative;
 
