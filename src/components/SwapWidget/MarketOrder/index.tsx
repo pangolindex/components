@@ -1,5 +1,15 @@
 /* eslint-disable max-lines */
-import { CAVAX, CurrencyAmount, ElixirTrade, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import {
+  CAVAX,
+  CurrencyAmount,
+  ElixirTrade,
+  JSBI,
+  Token,
+  TokenAmount,
+  Trade,
+  WAVAX,
+  currencyEquals,
+} from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +43,7 @@ import {
 import { useHederaSwapTokenAssociated } from 'src/state/pswap/hooks/hedera';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { isTokenOnList, validateAddressMapping } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -352,7 +363,16 @@ const MarketOrder: React.FC<Props> = ({
       if (tokenDrawerType === Field.INPUT) {
         setApprovalSubmitted(false); // reset 2 step UI for approvals
         setSelectedPercentage(0);
+
+        if (
+          hederaFn.isHederaChain(chainId) &&
+          currencies[Field.OUTPUT] === CAVAX[chainId] &&
+          !currencyEquals(currency, WAVAX[chainId])
+        ) {
+          onCurrencySelection(Field.OUTPUT, WAVAX[chainId]);
+        }
       }
+
       onCurrencySelection(tokenDrawerType, currency);
 
       // here need to add isToken because in Galato hook require this variable to select currency
@@ -695,6 +715,7 @@ const MarketOrder: React.FC<Props> = ({
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={tokenDrawerType === Field.INPUT ? inputCurrency : outputCurrency}
           otherSelectedCurrency={tokenDrawerType === Field.INPUT ? outputCurrency : inputCurrency}
+          seletedField={tokenDrawerType}
         />
       )}
 
