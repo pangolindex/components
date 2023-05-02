@@ -38,7 +38,6 @@ const Remove = ({ stakingInfo, version, onClose, redirectToCompound }: WithdrawP
 
   function onComplete(percetage: number, type: REMOVE_TYPE) {
     if (percetage >= 100) {
-      setShowRemoveTab(false);
       // if remove all from farm it will show the liquidity tab
       if (type === REMOVE_TYPE.FARM) {
         setRemoveType(REMOVE_TYPE.LIQUIDITY);
