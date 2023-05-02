@@ -41,7 +41,6 @@ import {
   InputText,
   InputValue,
   InputWrapper,
-  Root,
   Wrapper,
 } from './styles';
 import { AddLiquidityProps } from './types';
@@ -327,251 +326,247 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
 
   return (
     <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={false}>
-      <Root>
-        <Wrapper maximumHeight={height - 150}>
-          <Box p={20}>
-            <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
-              <Text color="text1" fontSize={[32, 28]} fontWeight={500} mt={10} mb={12}>
-                {t('common.addLiquidity')}
-              </Text>
-              <CloseIcon onClick={onClose} color={theme.text1} />
-            </Box>
+      <Wrapper maximumHeight={height - 150}>
+        <Box p={20}>
+          <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
+            <Text color="text1" fontSize={[32, 28]} fontWeight={500} mt={10} mb={12}>
+              {t('common.addLiquidity')}
+            </Text>
+            <CloseIcon onClick={onClose} color={theme.text1} />
+          </Box>
 
-            {!hasExistingPosition && (
-              <>
-                <SelectPair
-                  onTokenClick={onTokenClick}
-                  handleToggle={handleToggle}
-                  currency0={currency0}
-                  currency1={currency1}
-                />
-
-                <Tooltip id="selectFeeTier" effect="solid">
-                  {t('elixir.addLiquidity.feeTierTooltipContext')}
-                </Tooltip>
-
-                <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
-                  <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
-                    {t('elixir.addLiquidity.selectFeeTier')}
-                  </Text>
-                  <Box>
-                    <Info size={16} color={theme.white} data-tip data-for="selectFeeTier" />
-                  </Box>
-                </Box>
-
-                <FeeSelector
-                  handleFeePoolSelect={handleFeePoolSelect}
-                  disabled={!currency0 || !currency1}
-                  feeAmount={feeAmount}
-                  currency0={currency0}
-                  currency1={currency1}
-                />
-              </>
-            )}
-            <DynamicSection disabled={!feeAmount || invalidPool}>
-              {!noLiquidity ? (
-                <Box margin={'40px auto 30px auto'}>
-                  <LiquidityChartRangeInput
-                    currency0={currency0}
-                    currency1={currency1}
-                    feeAmount={feeAmount}
-                    ticksAtLimit={ticksAtLimit}
-                    price={price ? parseFloat((invertPrice ? price.invert() : price).toSignificant(8)) : undefined}
-                    priceLower={priceLower}
-                    priceUpper={priceUpper}
-                    onLeftRangeInput={onLeftRangeInput}
-                    onRightRangeInput={onRightRangeInput}
-                    interactive={!hasExistingPosition}
-                  />
-                </Box>
-              ) : (
-                <Box>
-                  <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
-                    {t('elixir.priceRange.startingPriceRange')}
-                  </Text>
-
-                  {noLiquidity && (
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      justifyContent="center"
-                      alignItems="center"
-                      padding="10px"
-                      bgColor="color3"
-                      borderRadius="8px"
-                      margin="auto"
-                      flexGrow={1}
-                      mb={10}
-                    >
-                      <Text fontSize={14} textAlign="left" color="text1" lineHeight={'20px'}>
-                        {t('elixir.initializedLiquidity')}
-                      </Text>
-                    </Box>
-                  )}
-
-                  <InputWrapper>
-                    <InputText
-                      value={startPriceTypedValue}
-                      onChange={(value: any) => {
-                        onStartPriceInput(value);
-                      }}
-                      fontSize={24}
-                      isNumeric={true}
-                      placeholder="0.00"
-                    />
-
-                    <InputValue>
-                      <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
-                        Current 1 {currency0?.symbol} Price:
-                      </Text>
-
-                      {price ? (
-                        <Box display="flex" justifyContent="center" alignItems="center">
-                          <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
-                            {invertPrice
-                              ? price?.invert()?.toSignificant(24).substring(0, 24)
-                              : price?.toSignificant(24).substring(0, 24)}
-                          </Text>{' '}
-                          <span style={{ marginLeft: '4px' }}>{currency1?.symbol}</span>
-                        </Box>
-                      ) : (
-                        '-'
-                      )}
-                    </InputValue>
-                  </InputWrapper>
-                </Box>
-              )}
-            </DynamicSection>
-
-            <DynamicSection disabled={!feeAmount || invalidPool || (noLiquidity && !startPriceTypedValue)}>
-              <PriceRange
-                priceLower={priceLower}
-                priceUpper={priceUpper}
-                getDecrementLower={getDecrementLower}
-                getIncrementLower={getIncrementLower}
-                getDecrementUpper={getDecrementUpper}
-                getIncrementUpper={getIncrementUpper}
-                onLeftRangeInput={onLeftRangeInput}
-                onRightRangeInput={onRightRangeInput}
-                currencyA={currency0}
-                currencyB={currency1}
-                feeAmount={feeAmount}
-                ticksAtLimit={ticksAtLimit}
-                onClickFullRange={handleSetFullRange}
+          {!hasExistingPosition && (
+            <>
+              <SelectPair
+                onTokenClick={onTokenClick}
+                handleToggle={handleToggle}
+                currency0={currency0}
+                currency1={currency1}
               />
 
-              {outOfRange ? (
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  padding="10px"
-                  bgColor="color3"
-                  borderRadius="8px"
-                  margin="auto"
-                  flexGrow={1}
-                  mt={10}
-                >
-                  <Text fontSize={14} textAlign="left" color="text1">
-                    {t('elixir.notEarnFee')}
-                  </Text>
-                </Box>
-              ) : null}
-              {invalidRange ? (
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  padding="10px"
-                  bgColor="color7"
-                  borderRadius="8px"
-                  margin="auto"
-                  flexGrow={1}
-                  mt={10}
-                >
-                  <Text fontSize={14} textAlign="left" color="text1">
-                    {t('elixir.invalidPriceRange')}
-                  </Text>
-                </Box>
-              ) : null}
-            </DynamicSection>
+              <Tooltip id="selectFeeTier" effect="solid">
+                {t('elixir.addLiquidity.feeTierTooltipContext')}
+              </Tooltip>
 
-            <DynamicSection
-              disabled={tickLower === undefined || tickUpper === undefined || invalidPool || invalidRange}
-            >
-              <CurrencyInputs>
-                {depositADisabled ? (
-                  <OutofRangeWarning
-                    label={`${t('common.from')}`}
-                    message={t('elixir.singleAssetDeposit')}
-                    addonLabel={<Lock size={18} color={theme?.textInput?.labelText} />}
-                  />
-                ) : (
-                  <CurrencyInputTextBox
-                    label={`${t('common.from')}`}
-                    value={formattedAmounts[Field.CURRENCY_A]}
+              <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
+                  {t('elixir.addLiquidity.selectFeeTier')}
+                </Text>
+                <Box>
+                  <Info size={16} color={theme.white} data-tip data-for="selectFeeTier" />
+                </Box>
+              </Box>
+
+              <FeeSelector
+                handleFeePoolSelect={handleFeePoolSelect}
+                disabled={!currency0 || !currency1}
+                feeAmount={feeAmount}
+                currency0={currency0}
+                currency1={currency1}
+              />
+            </>
+          )}
+          <DynamicSection disabled={!feeAmount || invalidPool}>
+            {!noLiquidity ? (
+              <Box margin={'40px auto 30px auto'}>
+                <LiquidityChartRangeInput
+                  currency0={currency0}
+                  currency1={currency1}
+                  feeAmount={feeAmount}
+                  ticksAtLimit={ticksAtLimit}
+                  price={price ? parseFloat((invertPrice ? price.invert() : price).toSignificant(8)) : undefined}
+                  priceLower={priceLower}
+                  priceUpper={priceUpper}
+                  onLeftRangeInput={onLeftRangeInput}
+                  onRightRangeInput={onRightRangeInput}
+                  interactive={!hasExistingPosition}
+                />
+              </Box>
+            ) : (
+              <Box>
+                <Text color="text1" fontSize={18} fontWeight={500} mt={10} mb={'6px'}>
+                  {t('elixir.priceRange.startingPriceRange')}
+                </Text>
+
+                {noLiquidity && (
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    padding="10px"
+                    bgColor="color3"
+                    borderRadius="8px"
+                    margin="auto"
+                    flexGrow={1}
+                    mb={10}
+                  >
+                    <Text fontSize={14} textAlign="left" color="text1" lineHeight={'20px'}>
+                      {t('elixir.initializedLiquidity')}
+                    </Text>
+                  </Box>
+                )}
+
+                <InputWrapper>
+                  <InputText
+                    value={startPriceTypedValue}
                     onChange={(value: any) => {
-                      onFieldAInput(value);
+                      onStartPriceInput(value);
                     }}
-                    buttonStyle={{
-                      cursor: 'default',
-                    }}
-                    showArrowIcon={false}
-                    onTokenClick={() => {}}
-                    currency={currency0}
                     fontSize={24}
                     isNumeric={true}
                     placeholder="0.00"
-                    id="add-liquidity-currency-input"
-                    addonLabel={
-                      account && (
-                        <Text color="text2" fontWeight={500} fontSize={12}>
-                          {!!currency0 && selectedCurrencyBalanceA ? selectedCurrencyBalanceA?.toSignificant(4) : ' -'}
-                        </Text>
-                      )
-                    }
                   />
-                )}
 
-                {depositBDisabled ? (
-                  <OutofRangeWarning
-                    label={`${t('common.to')}`}
-                    message={t('elixir.singleAssetDeposit')}
-                    addonLabel={<Lock size={18} color={theme?.textInput?.labelText} />}
-                  />
-                ) : (
-                  <CurrencyInputTextBox
-                    label={`${t('common.to')}`}
-                    value={formattedAmounts[Field.CURRENCY_B]}
-                    onChange={(value: any) => {
-                      onFieldBInput(value);
-                    }}
-                    buttonStyle={{
-                      cursor: 'default',
-                    }}
-                    showArrowIcon={false}
-                    onTokenClick={() => {}}
-                    currency={currency1}
-                    fontSize={24}
-                    isNumeric={true}
-                    placeholder="0.00"
-                    id="swap-currency-input"
-                    addonLabel={
-                      account && (
-                        <Text color="text2" fontWeight={500} fontSize={12}>
-                          {!!currency1 && selectedCurrencyBalanceB ? selectedCurrencyBalanceB?.toSignificant(4) : ' -'}
-                        </Text>
-                      )
-                    }
-                  />
-                )}
-              </CurrencyInputs>
-            </DynamicSection>
-            {renderButton()}
-          </Box>
-        </Wrapper>
+                  <InputValue>
+                    <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
+                      Current 1 {currency0?.symbol} Price:
+                    </Text>
+
+                    {price ? (
+                      <Box display="flex" justifyContent="center" alignItems="center">
+                        <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
+                          {invertPrice
+                            ? price?.invert()?.toSignificant(24).substring(0, 24)
+                            : price?.toSignificant(24).substring(0, 24)}
+                        </Text>{' '}
+                        <span style={{ marginLeft: '4px' }}>{currency1?.symbol}</span>
+                      </Box>
+                    ) : (
+                      '-'
+                    )}
+                  </InputValue>
+                </InputWrapper>
+              </Box>
+            )}
+          </DynamicSection>
+
+          <DynamicSection disabled={!feeAmount || invalidPool || (noLiquidity && !startPriceTypedValue)}>
+            <PriceRange
+              priceLower={priceLower}
+              priceUpper={priceUpper}
+              getDecrementLower={getDecrementLower}
+              getIncrementLower={getIncrementLower}
+              getDecrementUpper={getDecrementUpper}
+              getIncrementUpper={getIncrementUpper}
+              onLeftRangeInput={onLeftRangeInput}
+              onRightRangeInput={onRightRangeInput}
+              currencyA={currency0}
+              currencyB={currency1}
+              feeAmount={feeAmount}
+              ticksAtLimit={ticksAtLimit}
+              onClickFullRange={handleSetFullRange}
+            />
+
+            {outOfRange ? (
+              <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                padding="10px"
+                bgColor="color3"
+                borderRadius="8px"
+                margin="auto"
+                flexGrow={1}
+                mt={10}
+              >
+                <Text fontSize={14} textAlign="left" color="text1">
+                  {t('elixir.notEarnFee')}
+                </Text>
+              </Box>
+            ) : null}
+            {invalidRange ? (
+              <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                padding="10px"
+                bgColor="color7"
+                borderRadius="8px"
+                margin="auto"
+                flexGrow={1}
+                mt={10}
+              >
+                <Text fontSize={14} textAlign="left" color="text1">
+                  {t('elixir.invalidPriceRange')}
+                </Text>
+              </Box>
+            ) : null}
+          </DynamicSection>
+
+          <DynamicSection disabled={tickLower === undefined || tickUpper === undefined || invalidPool || invalidRange}>
+            <CurrencyInputs>
+              {depositADisabled ? (
+                <OutofRangeWarning
+                  label={`${t('common.from')}`}
+                  message={t('elixir.singleAssetDeposit')}
+                  addonLabel={<Lock size={18} color={theme?.textInput?.labelText} />}
+                />
+              ) : (
+                <CurrencyInputTextBox
+                  label={`${t('common.from')}`}
+                  value={formattedAmounts[Field.CURRENCY_A]}
+                  onChange={(value: any) => {
+                    onFieldAInput(value);
+                  }}
+                  buttonStyle={{
+                    cursor: 'default',
+                  }}
+                  showArrowIcon={false}
+                  onTokenClick={() => {}}
+                  currency={currency0}
+                  fontSize={24}
+                  isNumeric={true}
+                  placeholder="0.00"
+                  id="add-liquidity-currency-input"
+                  addonLabel={
+                    account && (
+                      <Text color="text2" fontWeight={500} fontSize={12}>
+                        {!!currency0 && selectedCurrencyBalanceA ? selectedCurrencyBalanceA?.toSignificant(4) : ' -'}
+                      </Text>
+                    )
+                  }
+                />
+              )}
+
+              {depositBDisabled ? (
+                <OutofRangeWarning
+                  label={`${t('common.to')}`}
+                  message={t('elixir.singleAssetDeposit')}
+                  addonLabel={<Lock size={18} color={theme?.textInput?.labelText} />}
+                />
+              ) : (
+                <CurrencyInputTextBox
+                  label={`${t('common.to')}`}
+                  value={formattedAmounts[Field.CURRENCY_B]}
+                  onChange={(value: any) => {
+                    onFieldBInput(value);
+                  }}
+                  buttonStyle={{
+                    cursor: 'default',
+                  }}
+                  showArrowIcon={false}
+                  onTokenClick={() => {}}
+                  currency={currency1}
+                  fontSize={24}
+                  isNumeric={true}
+                  placeholder="0.00"
+                  id="swap-currency-input"
+                  addonLabel={
+                    account && (
+                      <Text color="text2" fontWeight={500} fontSize={12}>
+                        {!!currency1 && selectedCurrencyBalanceB ? selectedCurrencyBalanceB?.toSignificant(4) : ' -'}
+                      </Text>
+                    )
+                  }
+                />
+              )}
+            </CurrencyInputs>
+          </DynamicSection>
+          {renderButton()}
+        </Box>
 
         {isCurrencyDrawerOpen && (
           <SelectTokenDrawer
@@ -598,7 +593,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
             ticksAtLimit={ticksAtLimit}
           />
         )}
-      </Root>
+      </Wrapper>
     </Modal>
   );
 };
