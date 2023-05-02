@@ -76,8 +76,8 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
     // for rest of chains, we need check the lockCount too
     return lockingPairs.length > 0 && !!stakingInfo?.lockCount && stakingInfo?.lockCount > 0;
   }
-
-  const isFarmLocked =  false;//getIfFarmLocked();
+  console.info(getIfFarmLocked);
+  const isFarmLocked = false; //getIfFarmLocked();
 
   return (
     <Wrapper>
