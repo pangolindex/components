@@ -282,7 +282,13 @@ export function useDerivedSwapInfo(): {
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance';
   }
 
-  const isLoading = isExactIn ? isLoadingIn || isElixirLoadingIn : isLoadingOut || isElixirLoadingOut;
+  const isLoading = isExactIn
+    ? v2Trade instanceof ElixirTrade
+      ? isElixirLoadingIn
+      : isLoadingIn
+    : v2Trade instanceof ElixirTrade
+    ? isElixirLoadingOut
+    : isLoadingOut;
 
   return {
     currencies,
