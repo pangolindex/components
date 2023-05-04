@@ -1,11 +1,9 @@
 import styled from 'styled-components';
 import { Box, CurrencyInput, TextInput } from 'src/components';
 
-export const Wrapper = styled(Box)<{ maximumHeight: number; isTokenListActive: boolean }>`
+export const Wrapper = styled(Box)<{ maximumHeight: number; isOverflowHidden: boolean }>`
   max-height: ${({ maximumHeight }) => maximumHeight}px;
-  width: 470px;
-  overflow: ${({ isTokenListActive }) => (isTokenListActive ? 'hidden' : 'auto')};
-  border-radius: 10px;
+  overflow: ${({ isOverflowHidden }) => (isOverflowHidden ? 'hidden' : 'auto')};
   position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -15,6 +13,17 @@ export const Wrapper = styled(Box)<{ maximumHeight: number; isTokenListActive: b
     width: 100% !important;
     height: 100% !important;
   `};
+`;
+
+export const Root = styled(Box)`
+  width: 470px;
+  border-radius: 10px;
+  overflow: hidden;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: 100% !important;
+    height: 100% !important;
+  `};
+  position: relative;
 `;
 
 export const CurrencyInputTextBox = styled(CurrencyInput)`
