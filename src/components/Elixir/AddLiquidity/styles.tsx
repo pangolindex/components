@@ -1,25 +1,29 @@
 import styled from 'styled-components';
 import { Box, CurrencyInput, TextInput } from 'src/components';
 
-export const Root = styled(Box)`
-  width: 100%;
-  max-width: 470px;
-  border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-`;
-export const Wrapper = styled(Box)<{ maximumHeight: number }>`
-  position: relative;
-  width: 100%;
-  overflow: auto;
-  height: 100%;
+export const Wrapper = styled(Box)<{ maximumHeight: number; isOverflowHidden: boolean }>`
   max-height: ${({ maximumHeight }) => maximumHeight}px;
+  overflow: ${({ isOverflowHidden }) => (isOverflowHidden ? 'hidden' : 'auto')};
+  position: relative;
 
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    height: 100%;
-    width: 100%;
-    max-height: 100%;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    display: block;
+    overflow: scroll;
+    max-height: 100% !important;
+    width: 100% !important;
+    height: 100% !important;
   `};
+`;
+
+export const Root = styled(Box)`
+  width: 470px;
+  border-radius: 10px;
+  overflow: hidden;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: 100% !important;
+    height: 100% !important;
+  `};
+  position: relative;
 `;
 
 export const CurrencyInputTextBox = styled(CurrencyInput)`
