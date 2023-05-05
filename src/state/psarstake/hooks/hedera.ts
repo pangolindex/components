@@ -3,11 +3,15 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Fraction, JSBI } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
+import { useSubgraphPositions, useSubgraphStakingContractInfo } from 'src/apollo/singleStake';
+import { BIGNUMBER_ZERO } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useHederaSarNFTContract, useSarStakingContract } from 'src/hooks/useContract';
+import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
+import { calculateUserRewardRate } from 'src/state/ppangoChef/utils';
 import { existSarContract } from 'src/utils';
 import { hederaFn } from 'src/utils/hedera';
 import { useSingleCallResult, useSingleContractMultipleData } from '../../pmulticall/hooks';
@@ -463,6 +467,8 @@ export function useHederaSarPositions() {
 
   const balanceState = useSingleCallResult(sarNFTcontract, 'balanceOf', [account ?? undefined]);
 
+  const shouldUseSubgraph = useShouldUseSubgraph();
+
   const {
     data,
     isLoading: isLoadingIndexes,
@@ -477,7 +483,7 @@ export function useHederaSarPositions() {
       const _nftURIs: (string | undefined)[] = [];
 
       nfts.forEach((nft) => {
-        _nftsIndexes.push([nft.serial_number.toString()]);
+        _nftsIndexes.push([`0x${nft.serial_number.toString(16)}`]);
         // the metadata from this endpoint is returned in encoded in base64
         _nftURIs.push(Buffer.from(nft.metadata, 'base64').toString());
       });
@@ -492,11 +498,27 @@ export function useHederaSarPositions() {
   const nftsIndexes = data?.nftsIndexes;
   const nftsURIs = data?.nftsURIs;
 
+  const positionsIds = (nftsIndexes || []).map((nftIndex) => nftIndex[0]);
+  const {
+    data: subgraphPositions,
+    isLoading: isLoadingSubgraph,
+    isRefetching: isRefetchingSubgraph,
+  } = useSubgraphPositions(shouldUseSubgraph ? positionsIds : []);
+  const {
+    data: subgraphStakingContractInfo,
+    isLoading: isLoadingContractInfo,
+    isRefetching: isRefetchingContractInfo,
+  } = useSubgraphStakingContractInfo();
+
   // get the staked amount for each position
-  const positionsAmountState = useSingleContractMultipleData(sarStakingContract, 'positions', nftsIndexes ?? []);
+  const positionsAmountState = useSingleContractMultipleData(
+    !shouldUseSubgraph ? sarStakingContract : undefined,
+    'positions',
+    nftsIndexes ?? [],
+  );
   // get the reward rate for each position
   const positionsRewardRateState = useSingleContractMultipleData(
-    sarStakingContract,
+    !shouldUseSubgraph ? sarStakingContract : undefined,
     'positionRewardRate',
     nftsIndexes ?? [],
   );
@@ -531,15 +553,27 @@ export function useHederaSarPositions() {
       isRefetchingIndexes;
     // first moments loading is false and valid is false then is loading the query is true
     const isValid = isValidAmounts && isValidRewardRates && isValidPendingRewards;
-
     const error = existErrorAmount || existErrorRewardRate || existErrorPendingReward;
 
-    if (error || !account || !existSarContract(chainId) || (!!nftsIndexes && nftsIndexes.length === 0)) {
+    if (
+      (!shouldUseSubgraph && error) ||
+      !account ||
+      !existSarContract(chainId) ||
+      (!!nftsIndexes && nftsIndexes.length === 0) ||
+      (shouldUseSubgraph && (!subgraphPositions || !subgraphStakingContractInfo || subgraphPositions?.length == 0))
+    ) {
       return { positions: [] as Position[], isLoading: false };
     }
 
     // if is loading or exist error or not exist account return empty array
-    if (isLoading || !isValid || !nftsIndexes || !nftsURIs) {
+    if (
+      (!shouldUseSubgraph && isLoading) ||
+      (shouldUseSubgraph &&
+        (isLoadingSubgraph || isLoadingContractInfo || isRefetchingContractInfo || isRefetchingSubgraph)) ||
+      !isValid ||
+      !nftsIndexes ||
+      !nftsURIs
+    ) {
       return { positions: [] as Position[], isLoading: true };
     }
 
@@ -553,22 +587,64 @@ export function useHederaSarPositions() {
       return JSON.parse(nftUri) as URI;
     });
 
-    return formatPosition(
-      _nftsURIs,
-      nftsIndexes,
-      positionsAmountState,
-      positionsRewardRateState,
-      positionsPedingRewardsState,
-      blockTimestamp ?? 0,
-      chainId,
+    const subgraphValueVariables = (subgraphPositions || [])?.map((position) => ({
+      balance: BigNumber.from(position.balance),
+      sumOfEntryTimes: BigNumber.from(position.sumOfEntryTimes),
+    }));
+    const contractValueVariables = (positionsAmountState || [])?.map((position) => position.result?.valueVariables);
+
+    const valuesVariables = shouldUseSubgraph ? subgraphValueVariables : contractValueVariables;
+
+    const contractPositionsRewardRates: BigNumber[] = positionsRewardRateState.map((callState) =>
+      callState.result ? callState.result?.[0] : BIGNUMBER_ZERO,
     );
+
+    const subgraphRewardRates = (subgraphPositions || [])?.map((position) => {
+      const userValuesVariables = {
+        balance: BigNumber.from(position.balance),
+        sumOfEntryTimes: BigNumber.from(position.sumOfEntryTimes),
+      };
+      const totalValueVariables = {
+        balance: BigNumber.from(subgraphStakingContractInfo ? subgraphStakingContractInfo.balance : 0),
+        sumOfEntryTimes: BigNumber.from(subgraphStakingContractInfo ? subgraphStakingContractInfo.sumOfEntryTimes : 0),
+      };
+      const totalRewardRate = BigNumber.from(subgraphStakingContractInfo ? subgraphStakingContractInfo.rewardRate : 0);
+
+      const positionRewardRate = calculateUserRewardRate(
+        userValuesVariables,
+        totalValueVariables,
+        totalRewardRate,
+        blockTimestamp,
+      );
+      return BigNumber.from(!positionRewardRate.equalTo(0) ? positionRewardRate.toFixed(0) : 0);
+    });
+
+    const rewardRates = shouldUseSubgraph ? subgraphRewardRates : contractPositionsRewardRates;
+
+    const pedingsRewards: BigNumber[] = positionsPedingRewardsState.map((callState) =>
+      callState.result ? callState.result?.[0] : BIGNUMBER_ZERO,
+    );
+
+    const formatedPositions = formatPosition({
+      nftsURIs: _nftsURIs,
+      nftsIndexes,
+      valuesVariables,
+      rewardRates,
+      pedingsRewards,
+      blockTimestamp: blockTimestamp ?? 0,
+      chainId,
+    });
+
+    return { positions: formatedPositions, isLoadin: false };
   }, [
     account,
     positionsAmountState,
     positionsRewardRateState,
+    positionsPedingRewardsState,
     nftsURIs,
     nftsIndexes,
     isLoadingIndexes,
     isRefetchingIndexes,
+    subgraphPositions,
   ]);
 }

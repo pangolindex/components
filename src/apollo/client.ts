@@ -36,6 +36,7 @@ export enum SubgraphEnum {
   Pangochef = 'pangochef',
   Minichef = 'minichef',
   Elixir = 'elixir',
+  SingleStaking = 'singleStaking',
 }
 
 export const getSubgraphClient = (chainId: ChainId, subgraph: SubgraphEnum) => {
