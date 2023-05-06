@@ -484,18 +484,6 @@ export function useSarPositions() {
 
     // if is loading or exist error or not exist account return empty array
     if ((!shouldUseSubgraph && isLoading) || (shouldUseSubgraph && isLoadingSubgraph) || !isValid || !nftsIndexes) {
-      console.log({
-        nftsIndexes,
-        isLoading,
-        isAllFetchedURI,
-        isAllFetchedAmount,
-        isAllFetchedRewardRate,
-        isAllFetchedPendingReward,
-        isLoadingIndexes,
-        isRefetchingIndexes,
-        isValid,
-        nftsURIsState,
-      });
       return { positions: [] as Position[], isLoading: true };
     }
 
