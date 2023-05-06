@@ -50,8 +50,8 @@ export function useSubgraphPositions(positionsIds: string[]) {
   return useQuery<SubgraphPostion[]>(
     ['get-subgraph-staking-position', chainId, positionsIds],
     async () => {
-      if (!gqlClient) {
-        return null;
+      if (!gqlClient || positionsIds.length === 0) {
+        return undefined;
       }
       const data = await gqlClient.request(GET_STAKING_POSITIONS, {
         positionsIds: positionsIds,
@@ -72,7 +72,7 @@ export function useSubgraphStakingContractInfo() {
     ['get-subgraph-staking-info', chainId],
     async () => {
       if (!gqlClient) {
-        return null;
+        return undefined;
       }
       const data = await gqlClient.request(GET_STAKING_INFO);
       return data?.singleSideStakings?.[0];

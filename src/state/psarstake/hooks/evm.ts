@@ -2,13 +2,17 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { TokenAmount } from '@pangolindex/sdk';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useQuery } from 'react-query';
+import { useSubgraphPositions, useSubgraphStakingContractInfo } from 'src/apollo/singleStake';
 import { BIGNUMBER_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useSarStakingContract } from 'src/hooks/useContract';
+import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
+import { calculateUserRewardRate } from 'src/state/ppangoChef/utils';
 import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
 import { useSingleCallResult, useSingleContractMultipleData } from '../../pmulticall/hooks';
 import { Position, URI } from '../types';
@@ -362,17 +366,21 @@ export function useSarPositions() {
 
   const sarStakingContract = useSarStakingContract();
 
-  const [nftsIndexes, setNftsIndexes] = useState<string[][] | undefined>();
+  const shouldUseSubgraph = useShouldUseSubgraph();
 
-  useEffect(() => {
-    const getNftsIndexes = async () => {
-      if (!sarStakingContract) return;
+  const {
+    data: nftsIndexes,
+    isLoading: isLoadingIndexes,
+    isRefetching: isRefetchingIndexes,
+  } = useQuery(
+    ['get-nfts-indexes', sarStakingContract?.address, chainId, account],
+    async () => {
+      if (!sarStakingContract) return [] as string[][];
 
       const balance: BigNumber = await sarStakingContract.balanceOf(account);
 
       if (balance.isZero()) {
-        setNftsIndexes([] as string[][]);
-        return;
+        return [] as string[][];
       }
 
       // get all positions ids
@@ -382,21 +390,36 @@ export function useSarPositions() {
         balance.sub(1).toHexString(),
       );
 
-      const _nftsIndexes = indexes?.map((index) => {
+      return indexes?.map((index) => {
         return [index.toHexString()];
       });
+    },
+    {
+      refetchInterval: 1000 * 60 * 1, // 1 minute
+    },
+  );
 
-      setNftsIndexes(_nftsIndexes);
-    };
-
-    getNftsIndexes();
-  }, [sarStakingContract]);
+  const positionsIds = (nftsIndexes || []).map((nftIndex) => nftIndex[0]);
+  const {
+    data: subgraphPositions,
+    isLoading: isLoadingSubgraphPositions,
+    isRefetching: isRefetchingSubgraphPositions,
+  } = useSubgraphPositions(shouldUseSubgraph ? positionsIds : []);
+  const {
+    data: subgraphStakingContractInfo,
+    isLoading: isLoadingContractInfo,
+    isRefetching: isRefetchingContractInfo,
+  } = useSubgraphStakingContractInfo();
 
   // get the staked amount for each position
-  const positionsAmountState = useSingleContractMultipleData(sarStakingContract, 'positions', nftsIndexes ?? []);
+  const positionsAmountState = useSingleContractMultipleData(
+    !shouldUseSubgraph ? sarStakingContract : undefined,
+    'positions',
+    nftsIndexes ?? [],
+  );
   // get the reward rate for each position
   const positionsRewardRateState = useSingleContractMultipleData(
-    sarStakingContract,
+    !shouldUseSubgraph ? sarStakingContract : undefined,
     'positionRewardRate',
     nftsIndexes ?? [],
   );
@@ -430,18 +453,49 @@ export function useSarPositions() {
     const existErrorPendingReward = positionsPedingRewardsState.some((result) => result.error);
     const isValidPendingRewards = positionsPedingRewardsState.every((result) => result.valid);
 
-    const isLoading = !isAllFetchedURI || !isAllFetchedAmount || !isAllFetchedRewardRate || !isAllFetchedPendingReward;
+    const isLoading =
+      !isAllFetchedURI ||
+      !isAllFetchedAmount ||
+      !isAllFetchedRewardRate ||
+      !isAllFetchedPendingReward ||
+      isLoadingIndexes ||
+      isRefetchingIndexes;
     // first moments loading is false and valid is false then is loading the query is true
     const isValid = isValidURIs && isValidAmounts && isValidRewardRates && isValidPendingRewards;
 
     const error = existErrorURI || existErrorAmount || existErrorRewardRate || existErrorPendingReward;
 
-    if (error || !account || !existSarContract(chainId) || (!!nftsIndexes && nftsIndexes.length === 0)) {
+    const isLoadingSubgraph =
+      isLoadingIndexes ||
+      isRefetchingIndexes ||
+      isLoadingSubgraphPositions ||
+      isLoadingContractInfo ||
+      isRefetchingContractInfo ||
+      isRefetchingSubgraphPositions;
+
+    if (
+      (!shouldUseSubgraph && error) ||
+      !account ||
+      !existSarContract(chainId) ||
+      (!!nftsIndexes && nftsIndexes.length === 0)
+    ) {
       return { positions: [] as Position[], isLoading: false };
     }
 
     // if is loading or exist error or not exist account return empty array
-    if (isLoading || !isValid || !nftsIndexes) {
+    if ((!shouldUseSubgraph && isLoading) || (shouldUseSubgraph && isLoadingSubgraph) || !isValid || !nftsIndexes) {
+      console.log({
+        nftsIndexes,
+        isLoading,
+        isAllFetchedURI,
+        isAllFetchedAmount,
+        isAllFetchedRewardRate,
+        isAllFetchedPendingReward,
+        isLoadingIndexes,
+        isRefetchingIndexes,
+        isValid,
+        nftsURIsState,
+      });
       return { positions: [] as Position[], isLoading: true };
     }
 
@@ -456,14 +510,69 @@ export function useSarPositions() {
       return undefined;
     });
 
-    return formatPosition(
+    const subgraphValueVariables = (subgraphPositions || [])?.map((position) => ({
+      balance: BigNumber.from(position.balance),
+      sumOfEntryTimes: BigNumber.from(position.sumOfEntryTimes),
+    }));
+    const contractValueVariables = (positionsAmountState || [])?.map((position) => position.result?.valueVariables);
+
+    const valuesVariables = shouldUseSubgraph ? subgraphValueVariables : contractValueVariables;
+
+    const contractPositionsRewardRates: BigNumber[] = positionsRewardRateState.map((callState) =>
+      callState.result ? callState.result?.[0] : BIGNUMBER_ZERO,
+    );
+
+    const subgraphRewardRates = (subgraphPositions || [])?.map((position) => {
+      const userValuesVariables = {
+        balance: BigNumber.from(position.balance),
+        sumOfEntryTimes: BigNumber.from(position.sumOfEntryTimes),
+      };
+      const totalValueVariables = {
+        balance: BigNumber.from(subgraphStakingContractInfo ? subgraphStakingContractInfo.balance : 0),
+        sumOfEntryTimes: BigNumber.from(subgraphStakingContractInfo ? subgraphStakingContractInfo.sumOfEntryTimes : 0),
+      };
+      const totalRewardRate = BigNumber.from(subgraphStakingContractInfo ? subgraphStakingContractInfo.rewardRate : 0);
+
+      const positionRewardRate = calculateUserRewardRate(
+        userValuesVariables,
+        totalValueVariables,
+        totalRewardRate,
+        blockTimestamp,
+      );
+      return BigNumber.from(!positionRewardRate.equalTo(0) ? positionRewardRate.toFixed(0) : 0);
+    });
+
+    const rewardRates = shouldUseSubgraph ? subgraphRewardRates : contractPositionsRewardRates;
+
+    const pedingsRewards: BigNumber[] = positionsPedingRewardsState.map((callState) =>
+      callState.result ? callState.result?.[0] : BIGNUMBER_ZERO,
+    );
+
+    return formatPosition({
       nftsURIs,
       nftsIndexes,
-      positionsAmountState,
-      positionsRewardRateState,
-      positionsPedingRewardsState,
-      Number(blockTimestamp ?? 0),
+      valuesVariables,
+      rewardRates,
+      pedingsRewards,
+      blockTimestamp: blockTimestamp ?? 0,
       chainId,
-    );
-  }, [account, positionsAmountState, positionsRewardRateState, nftsURIsState, nftsIndexes]);
+    });
+  }, [
+    shouldUseSubgraph,
+    account,
+    sarStakingContract,
+    positionsAmountState,
+    positionsRewardRateState,
+    positionsPedingRewardsState,
+    nftsURIsState,
+    nftsIndexes,
+    subgraphPositions,
+    subgraphStakingContractInfo,
+    isLoadingIndexes,
+    isRefetchingIndexes,
+    isLoadingSubgraphPositions,
+    isLoadingContractInfo,
+    isRefetchingContractInfo,
+    isRefetchingSubgraphPositions,
+  ]);
 }
