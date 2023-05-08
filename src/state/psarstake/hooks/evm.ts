@@ -492,7 +492,7 @@ export function useSarPositionsViaContracts() {
       callState.result ? callState.result?.[0] : BIGNUMBER_ZERO,
     );
 
-    return formatPosition({
+    const formatedPositions = formatPosition({
       nftsURIs,
       nftsIndexes,
       valuesVariables,
@@ -501,6 +501,8 @@ export function useSarPositionsViaContracts() {
       blockTimestamp: blockTimestamp ?? 0,
       chainId,
     });
+
+    return { positions: formatedPositions, isLoading: false };
   }, [
     account,
     sarStakingContract,
@@ -619,7 +621,7 @@ export function useSarPositionsViaSubgraph() {
       callState.result ? callState.result?.[0] : BIGNUMBER_ZERO,
     );
 
-    return formatPosition({
+    const formatedPositions = formatPosition({
       nftsURIs,
       nftsIndexes,
       valuesVariables,
@@ -628,6 +630,8 @@ export function useSarPositionsViaSubgraph() {
       blockTimestamp: blockTimestamp ?? 0,
       chainId,
     });
+
+    return { positions: formatedPositions, isLoading: false };
   }, [
     ,
     account,
