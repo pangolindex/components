@@ -1,6 +1,6 @@
-import { BigNumber } from '@ethersproject/bignumber';
 import { CurrencyAmount, Fraction, JSBI, Price, Token, TokenAmount } from '@pangolindex/sdk';
-import { ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE, ZERO_FRACTION } from 'src/constants';
+import { BigNumber } from 'ethers';
+import { BIGNUMBER_ZERO, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE } from 'src/constants';
 import { ValueVariables } from './types';
 
 /**
@@ -32,7 +32,7 @@ export function calculateUserRewardRate(
   blockTime?: number,
 ) {
   if (!blockTime) {
-    return ZERO_FRACTION;
+    return BIGNUMBER_ZERO;
   }
 
   const userBalance = userValueVariables.balance || BigNumber.from(0);
@@ -42,16 +42,14 @@ export function calculateUserRewardRate(
   const poolSumOfEntryTimes = poolValueVariables.sumOfEntryTimes || BigNumber.from(0);
 
   if (userBalance.isZero() || poolBalance.isZero()) {
-    return ZERO_FRACTION;
+    return BIGNUMBER_ZERO;
   }
 
   const blockTimestamp = BigNumber.from(blockTime.toString());
   const userValue = blockTimestamp.mul(userBalance).sub(userSumOfEntryTimes);
   const poolValue = blockTimestamp.mul(poolBalance).sub(poolSumOfEntryTimes);
 
-  return userValue.lte(0) || poolValue.lte(0)
-    ? ZERO_FRACTION
-    : new Fraction(poolRewardRate?.mul(userValue).toString(), poolValue.toString());
+  return userValue.lte(0) || poolValue.lte(0) ? BIGNUMBER_ZERO : poolRewardRate?.mul(userValue).div(poolValue);
 }
 
 interface CalculateAprArgs {
