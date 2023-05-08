@@ -157,7 +157,7 @@ export function formatPosition(args: {
       .div(balance.isZero() ? 1 : balance);
 
     if (!valueVariables || !rewardRate || !pendingRewards) {
-      return {} as Position;
+      return undefined;
     }
 
     const _uri =
@@ -174,7 +174,7 @@ export function formatPosition(args: {
     } as Position;
   });
   // remove the empty positions
-  return positions;
+  return positions.filter((position) => !!position) as Position[];
 }
 
 export function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiquidityStaked?: TokenAmount) {
