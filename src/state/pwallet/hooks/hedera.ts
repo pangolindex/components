@@ -4,7 +4,8 @@ import { CAVAX, ChainId, Currency, JSBI, Pair, Token, TokenAmount, WAVAX } from 
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueries, useQuery, useQueryClient } from 'react-query';
-import { usePair, usePairsContract } from 'src/data/Reserves';
+import { usePair } from 'src/data/Reserves';
+import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useGetAllHederaAssociatedTokens, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useBlockNumber } from 'src/state/papplication/hooks';
@@ -325,6 +326,8 @@ export function useHederaRemoveLiquidity(pair?: Pair | null | undefined) {
 export function useGetHederaUserLP() {
   const chainId = useChainId();
 
+  const usePairs = usePairsHook[chainId];
+
   // get all pairs
   const trackedTokenPairs = useTrackedTokenPairs();
 
@@ -387,7 +390,7 @@ export function useGetHederaUserLP() {
     [pglTokenAddresses, allTokensAddress, pairTokens],
   );
 
-  const allPairs = usePairsContract(filterPairTokens);
+  const allPairs = usePairs(filterPairTokens);
 
   const checkedAllPairs = useMemo(
     () => allPairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair)),
