@@ -633,7 +633,6 @@ export function useSarPositionsViaSubgraph() {
 
     return { positions: formatedPositions, isLoading: false };
   }, [
-    ,
     account,
     sarStakingContract,
     positionsPedingRewardsState,
