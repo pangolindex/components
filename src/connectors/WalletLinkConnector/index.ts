@@ -30,7 +30,7 @@ export class WalletLinkConnector extends AbstractConnector {
     this.url = url;
     this.appName = appName;
     this.appLogoUrl = appLogoUrl;
-    this.darkMode = darkMode || false;
+    this.darkMode = darkMode ?? false;
 
     this.handleChainChanged = this.handleChainChanged.bind(this);
     this.handleAccountsChanged = this.handleAccountsChanged.bind(this);

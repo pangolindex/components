@@ -66,14 +66,14 @@ export default function WalletModal({
   const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 250);
 
   const chains = useMemo(() => {
-    const _chains = supportedChains || SUPPORTED_CHAINS;
+    const _chains = supportedChains ?? SUPPORTED_CHAINS;
     return _chains
       .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
       .filter((chain) => chain.mainnet === mainnet);
   }, [supportedChains, mainnet]);
 
   const wallets = useMemo(() => {
-    const memoWallets = supportedWallets || SUPPORTED_WALLETS;
+    const memoWallets = supportedWallets ?? SUPPORTED_WALLETS;
     // if you use custom wallets we need to populate the state with these
     // wallets so we can deactivate it in the network selection component
     setWallets(memoWallets);

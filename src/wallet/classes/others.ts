@@ -53,7 +53,7 @@ export class GnosisSafeWallet extends Wallet {
 export class CoinbaseWallet extends Wallet {
   private isCbWalletDappBrowser = window?.ethereum?.isCoinbaseWallet;
   private isWalletlink = !!window?.WalletLinkProvider || !!window?.walletLinkExtension;
-  private isCbWallet = this.isCbWalletDappBrowser || this.isWalletlink;
+  private isCbWallet = this.isCbWalletDappBrowser ?? this.isWalletlink;
 
   constructor() {
     super({
