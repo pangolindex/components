@@ -106,7 +106,7 @@ export default function WalletModal({
     setPendingError(false);
     setPendingWallet(walletKey); // set for wallet view
 
-    function onError(error: unknown) {
+    async function onError(error: unknown) {
       setPendingError(true);
       console.error(error);
     }

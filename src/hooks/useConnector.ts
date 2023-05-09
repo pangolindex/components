@@ -105,14 +105,14 @@ export function useEagerConnect(tryToActive: boolean) {
     if (!triedSafe && previusWallet === gnosisSafeWallet) {
       const loadedInSafe = await gnosisSafe.isSafeApp();
       if (loadedInSafe) {
-        gnosisSafeWallet.tryActivation(activate, undefined, () => setTriedSafe(true));
+        await gnosisSafeWallet.tryActivation(activate, undefined, async () => setTriedSafe(true));
       } else {
         setTriedSafe(true);
       }
     } else if (previusWallet?.connector?.isAuthorized) {
       const isAuthorized = await previusWallet.connector.isAuthorized();
       if (isAuthorized) {
-        await previusWallet.tryActivation(activate, undefined, () => {
+        await previusWallet.tryActivation(activate, undefined, async () => {
           updateWallet(null);
           setTried(true);
         });

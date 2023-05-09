@@ -43,7 +43,7 @@ import {
 import { useHederaSwapTokenAssociated } from 'src/state/pswap/hooks/hedera';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { isTokenOnList, validateAddressMapping } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -365,7 +365,7 @@ const MarketOrder: React.FC<Props> = ({
         setSelectedPercentage(0);
 
         if (
-          hederaFn.isHederaChain(chainId) &&
+          Hedera.isHederaChain(chainId) &&
           currencies[Field.OUTPUT] === CAVAX[chainId] &&
           !currencyEquals(currency, WAVAX[chainId])
         ) {

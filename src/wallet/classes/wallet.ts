@@ -69,14 +69,20 @@ export abstract class Wallet {
    * @param onSuccess function to execute on success
    * @param onError function to exeute on error
    */
-  async tryActivation(activate: activeFunctionType, onSuccess?: () => void, onError?: (error: unknown) => void) {
+  async tryActivation(
+    activate: activeFunctionType,
+    onSuccess?: () => void,
+    onError?: (error: unknown) => Promise<void>,
+  ) {
     try {
       await activate(this.connector, undefined, true);
       onSuccess && onSuccess();
       walletEvent.emit(WalletEvents.CONNECTED, this);
       this.wallletIsActive = true;
     } catch (error) {
-      onError && onError(error);
+      if (onError) {
+        await onError(error);
+      }
     }
   }
 
