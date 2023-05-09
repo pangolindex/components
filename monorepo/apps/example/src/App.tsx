@@ -1,8 +1,14 @@
-import { Loader } from "@pangolindex/core";
-import "./App.css";
+import { Button } from '@pangolindex/core';
+import './App.css';
 
 function App() {
-  return <Loader size={100} />;
+  return (
+    <>
+      <Button type="button" variant="primary" loading={true}>
+        Test
+      </Button>
+    </>
+  );
 }
 
 export default App;
