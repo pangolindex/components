@@ -58,10 +58,18 @@ export const walletlink = new WalletLinkConnector({
   appLogoUrl: 'https://raw.githubusercontent.com/pangolindex/interface/master/public/images/384x384_App_Icon.png',
 });
 
+const rpcs = SUPPORTED_EVM_CHAINS_ID.reduce((acc, chainId) => {
+  const rpc: string | undefined = CHAINS[chainId]?.rpc_uri;
+
+  if (rpc) {
+    acc[chainId] = rpc;
+  }
+  return acc;
+}, {} as { [chainId in number]: string });
+
 export const walletconnect = new WalletConnectConnector({
-  rpc: {
-    [ChainId.AVALANCHE]: AVALANCHE_MAINNET.rpc_uri,
-  },
+  rpc: rpcs,
+  supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
   qrcode: true,
   bridge: 'https://bridge.walletconnect.org',
 });
