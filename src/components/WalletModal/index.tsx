@@ -1,4 +1,5 @@
 import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
+import { UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector';
 import { useWeb3React } from '@web3-react/core';
 import React, { useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
@@ -10,6 +11,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
 import useDebounce from 'src/hooks/useDebounce';
 import { useApplicationState } from 'src/state/papplication/atom';
+import { useUserAtom } from 'src/state/puser/atom';
 import { MEDIA_WIDTHS } from 'src/theme';
 import { wait } from 'src/utils/retry';
 import { changeNetwork, getWalletKey } from 'src/utils/wallet';
@@ -48,6 +50,7 @@ export default function WalletModal({
   const { activate, deactivate, connector } = useWeb3React();
 
   const { setWallets } = useApplicationState();
+  const { userState } = useUserAtom();
 
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);
@@ -101,17 +104,31 @@ export default function WalletModal({
     setPendingWallet(null);
   }
 
-  async function onConnect(wallet: Wallet) {
+  function onWalletClick(wallet: Wallet) {
     const walletKey = getWalletKey(wallet, wallets);
     setPendingError(false);
     setPendingWallet(walletKey); // set for wallet view
+  }
 
-    async function onError(error: unknown) {
+  async function onConnect(wallet: Wallet) {
+    setPendingError(false);
+
+    async function onError(error: any) {
       setPendingError(true);
       console.error(error);
+      if (error instanceof UserRejectedRequestError || error?.code === 4001) {
+        const previousWallet = userState.wallet ? wallets[userState.wallet] : undefined;
+        if (previousWallet && previousWallet !== wallet) {
+          // this is just a fallback when user rejects the request
+          // because the @web3-react remove the chainid account and libarary from state
+          // and this just to reconnect the previus wallet again
+          previousWallet?.tryActivation(activate);
+        }
+      }
     }
 
     function onSuccess() {
+      const walletKey = getWalletKey(wallet, wallets);
       localStorage.setItem('lastConnectedChainId', selectedChainId.toString());
 
       setPendingError(false);
@@ -121,7 +138,7 @@ export default function WalletModal({
       closeModal();
     }
 
-    if (wallet.installed() && !wallet.isActive) {
+    if (wallet.installed()) {
       //if wallet is active deactivate it
       if (connector) {
         deactivate();
@@ -199,7 +216,7 @@ export default function WalletModal({
                   {filteredWallets.map((wallet, index) => {
                     if (!wallet.showWallet()) return null;
                     return (
-                      <WalletButton variant="plain" onClick={() => onConnect(wallet)} key={index}>
+                      <WalletButton variant="plain" onClick={() => onWalletClick(wallet)} key={index}>
                         <StyledLogo srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
                         <Text color="text1" fontSize="12px" fontWeight={600}>
                           {wallet.name}

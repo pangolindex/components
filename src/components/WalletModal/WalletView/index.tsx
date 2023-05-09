@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core';
-import React, { useContext } from 'react';
-import { AlertCircle, ArrowLeft, Download, LogOut } from 'react-feather';
+import React, { useCallback, useContext, useState } from 'react';
+import { AlertCircle, ArrowLeft, Download, LogIn, LogOut } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Text } from 'src/components';
 import { Wallet } from 'src/wallet/classes/wallet';
@@ -20,14 +20,24 @@ export default function WalletView({
   const { deactivate } = useWeb3React();
   const theme = useContext(ThemeContext);
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const isInstalled = wallet.installed();
+
   function onDisconnect() {
     wallet.disconnect();
     deactivate();
     onBack();
   }
 
-  function getContent() {
-    if (!wallet.installed()) {
+  async function onWalletConnect() {
+    setIsLoading(true);
+    await onConnect(wallet);
+    setIsLoading(false);
+  }
+
+  const getContent = useCallback(() => {
+    if (!isInstalled) {
       return (
         <Link href={wallet.href ?? undefined} target="_blank">
           <Download color={theme.primary} />
@@ -40,7 +50,7 @@ export default function WalletView({
 
     if (error) {
       return (
-        <ErrorButton variant="outline" onClick={() => onConnect(wallet)}>
+        <ErrorButton variant="outline" onClick={onWalletConnect}>
           <AlertCircle color={theme.red1} />
           <Text color="red1" marginLeft="5px">
             Error Try Again
@@ -58,13 +68,22 @@ export default function WalletView({
       );
     }
 
+    if (isLoading) {
+      return (
+        <Box display="flex" marginTop="20px" alignItems="center">
+          <Loader size="24px" />
+          <Text color="text1">Initializing...</Text>
+        </Box>
+      );
+    }
+
     return (
-      <Box display="flex" marginTop="20px" alignItems="center">
-        <Loader size="24px" />
-        <Text color="text1">Initializing...</Text>
-      </Box>
+      <Button variant="primary" onClick={onWalletConnect} width="max-content" padding="10px">
+        <LogIn />
+        <Text marginLeft="5px">Connect Wallet</Text>
+      </Button>
     );
-  }
+  }, [isInstalled, error, wallet.isActive, isLoading]);
 
   return (
     <Wrapper>
