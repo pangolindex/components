@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@pangolindex/locales';
 import Select, { MenuPlacement, MultiValue, OptionsOrGroups, SingleValue } from 'react-select';
 import { ThemeContext } from 'styled-components';
 import { Option } from './types';

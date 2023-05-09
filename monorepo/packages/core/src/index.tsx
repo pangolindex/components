@@ -14,3 +14,7 @@ export { default as Logo } from './Logo';
 export { default as Tooltip } from './Tooltip';
 export { default as Steps, Step } from './Steps';
 export { NumberOptions } from './NumberOptions';
+export { default as CloseButton } from './CloseButton';
+export { DoubleCurrencyLogo } from './DoubleCurrencyLogo';
+export { CurrencyInput } from './CurrencyInput';
+export { default as CurrencyLogo } from './CurrencyLogo';
