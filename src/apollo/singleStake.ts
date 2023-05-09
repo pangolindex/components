@@ -42,6 +42,7 @@ const GET_STAKING_INFO = gql`
 /**
  * This hook return informations of a position
  * @param positionsIds array of the positions if in hex format (0x1, 0x2, ...)
+ * @returns Return useQuery result, where the data field is an array of objects with data of a position
  */
 export function useSubgraphSarPositions(positionsIds: string[]) {
   const chainId = useChainId();

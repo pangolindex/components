@@ -402,7 +402,10 @@ export function useSarNftsIds() {
   return { nftsIndexes, isLoading, isRefetching };
 }
 
-// Returns a list of user positions
+/**
+ * This hook get the user positions from SAR Single Stake via contract calls
+ * @returns Return if is loading and an array with alls positions of an user
+ */
 export function useSarPositionsViaContracts() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -516,6 +519,10 @@ export function useSarPositionsViaContracts() {
   ]);
 }
 
+/**
+ * This hook get the user positions from SAR Single Stake via subgraph
+ * @returns Return if is loading and an array with alls positions of an user
+ */
 export function useSarPositionsViaSubgraph() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -651,7 +658,7 @@ export function useSarPositionsViaSubgraph() {
 
 /**
  * its wrapper hook to check which hook need to use based on subgraph on off
- * @returns if is loading and an arrayn with sar Postions
+ * @returns if is loading and an array with sar Postions
  */
 export function useSarPositions() {
   const shouldUseSubgraph = useShouldUseSubgraph();

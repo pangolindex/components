@@ -492,7 +492,10 @@ export function useHederaSarNftsIds() {
   return { data, isLoading, isRefetching };
 }
 
-// Returns a list of user positions
+/**
+ * This hooks get the user positions from SAR Single Stake via contract calls
+ * @returns Return if is loading and an array with alls positions of an user
+ */
 export function useHederaSarPositionsViaContract() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -598,6 +601,10 @@ export function useHederaSarPositionsViaContract() {
   ]);
 }
 
+/**
+ * This hooks get the user positions from SAR Single Stake via subgraph
+ * @returns Return if is loading and an array with alls positions of an user
+ */
 export function useHederaSarPositionsViaSubgraph() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
