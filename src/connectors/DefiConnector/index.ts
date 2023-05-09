@@ -1,3 +1,4 @@
+import { UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
 import warning from 'tiny-warning';
@@ -13,14 +14,6 @@ export class NoEthereumProviderError extends Error {
     super();
     this.name = this.constructor.name;
     this.message = 'No Ethereum provider was found on window.xfi.ethereum.';
-  }
-}
-
-export class UserRejectedRequestError extends Error {
-  public constructor() {
-    super();
-    this.name = this.constructor.name;
-    this.message = 'The user rejected the request.';
   }
 }
 

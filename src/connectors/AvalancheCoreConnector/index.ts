@@ -16,14 +16,6 @@ export class NoAvalancheCoreError extends Error {
   }
 }
 
-export class UserRejectedRequestError extends Error {
-  public constructor() {
-    super();
-    this.name = this.constructor.name;
-    this.message = 'The user rejected the request.';
-  }
-}
-
 export class AvalancheCoreConnector extends AbstractConnector {
   private provider!: any;
 
