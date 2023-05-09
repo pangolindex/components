@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Fraction, JSBI } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { useSubgraphPositions, useSubgraphStakingContractInfo } from 'src/apollo/singleStake';
+import { useSubgraphSarPositions, useSubgraphStakingContractInfo } from 'src/apollo/singleStake';
 import { BIGNUMBER_ZERO } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
@@ -614,7 +614,7 @@ export function useHederaSarPositionsViaSubgraph() {
     data: subgraphPositions,
     isLoading: isLoadingSubgraph,
     isRefetching: isRefetchingSubgraph,
-  } = useSubgraphPositions(positionsIds);
+  } = useSubgraphSarPositions(positionsIds);
   const {
     data: subgraphStakingContractInfo,
     isLoading: isLoadingContractInfo,

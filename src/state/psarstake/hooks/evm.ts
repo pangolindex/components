@@ -4,7 +4,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { useSubgraphPositions, useSubgraphStakingContractInfo } from 'src/apollo/singleStake';
+import { useSubgraphSarPositions, useSubgraphStakingContractInfo } from 'src/apollo/singleStake';
 import { BIGNUMBER_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
@@ -529,7 +529,7 @@ export function useSarPositionsViaSubgraph() {
     data: subgraphPositions,
     isLoading: isLoadingSubgraphPositions,
     isRefetching: isRefetchingSubgraphPositions,
-  } = useSubgraphPositions(positionsIds);
+  } = useSubgraphSarPositions(positionsIds);
   const {
     data: subgraphStakingContractInfo,
     isLoading: isLoadingContractInfo,
