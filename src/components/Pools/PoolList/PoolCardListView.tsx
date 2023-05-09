@@ -38,6 +38,7 @@ export interface PoolCardListViewProps {
   doesNotPoolExist: boolean;
   children: React.ReactNode;
   selectedPool: DoubleSideStakingInfo;
+  notFoundPools: boolean;
 }
 
 const PoolCardListView = ({
@@ -51,6 +52,7 @@ const PoolCardListView = ({
   onChangeSortBy,
   isLoading,
   doesNotPoolExist,
+  notFoundPools,
   children,
   selectedPool,
 }: PoolCardListViewProps) => {
@@ -118,7 +120,7 @@ const PoolCardListView = ({
               />
             </MobileGridContainer>
           </Box>
-          {doesNotPoolExist && searchQuery ? (
+          {searchQuery && notFoundPools ? (
             <Box textAlign="center" color="color4">
               {t('pool.noFarms')}
             </Box>

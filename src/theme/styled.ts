@@ -144,7 +144,7 @@ export interface Colors {
     };
   };
 
-  concentratedLiquidity?: {
+  elixir?: {
     primaryBgColor?: Color;
     secondaryBgColor?: Color;
   };
@@ -213,6 +213,7 @@ export interface Colors {
   color10: Color;
   color11: Color;
   color12: Color;
+  color13: Color;
 }
 
 export interface Grids {

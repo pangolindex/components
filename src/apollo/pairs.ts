@@ -73,20 +73,26 @@ export const useSubgraphPairs = (pairAddresses: (string | undefined)[]) => {
   const gqlClient = useSubgraphClient(SubgraphEnum.Exchange);
   const validateAddress = validateAddressMapping[chainId];
   // get pairs from subgraph
-  return useQuery<SubgraphPair[] | null>(['get-subgraph-pairs', chainId, ...pairsToFind], async () => {
-    if (!gqlClient) {
-      return null;
-    }
-    const data = await gqlClient.request(GET_PAIRS, { pairAddresses: pairsToFind });
+  return useQuery<SubgraphPair[] | null>(
+    ['get-subgraph-pairs', chainId, ...pairsToFind],
+    async () => {
+      if (!gqlClient) {
+        return null;
+      }
+      const data = await gqlClient.request(GET_PAIRS, { pairAddresses: pairsToFind });
 
-    return (
-      (data?.pairs as SubgraphPair[])
-        // convert addresses to checksum address
-        ?.map((item) => ({ ...item, id: validateAddress(item.id) as string }))
-        // only keep pairs that has id as string
-        // because validateAddress returns string if valid address
-        // and return false if invalid address, so we want to remove those invalid address tokens
-        ?.filter((item) => typeof item.id === 'string')
-    );
-  });
+      return (
+        (data?.pairs as SubgraphPair[])
+          // convert addresses to checksum address
+          ?.map((item) => ({ ...item, id: validateAddress(item.id) as string }))
+          // only keep pairs that has id as string
+          // because validateAddress returns string if valid address
+          // and return false if invalid address, so we want to remove those invalid address tokens
+          ?.filter((item) => typeof item.id === 'string')
+      );
+    },
+    {
+      refetchInterval: 2 * 60 * 1000,
+    },
+  );
 };

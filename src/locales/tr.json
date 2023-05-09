@@ -760,7 +760,7 @@
     "decreaseWarning": "Yeni bileşik kısım 0 nisan ile başladığı için apr'ınız düşecek ve eski ile yeni kısım arasında bir ortalama alınacaktır.",
     "createStorageContract": "Create Storage Contract"
   },
-  "concentratedLiquidity": {
+  "elixir": {
     "menuTypes": {
       "allPositions": "Tüm Pozisyonlar",
       "openPositions": "Açık Pozisyonlar",
@@ -771,14 +771,56 @@
       "apr": "APR"
     },
     "sidebar": {
-      "title": "Havuzlar V3",
+      "title": "Elixir",
       "seeMore": "Klasik havuzları görmek mi istiyorsunuz",
-      "goToFarm": "Çiftlik sayfasına git"
+      "goToFarm": "Çiftlik sayfasına git",
+      "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
-      "searchContent": "Token adını aramayı deneyin…",
-      "poolNotExist": "Gösterilecek açık veya kapalı pozisyonunuz yok."
-    }
+      "searchContent": "Token adını aramayı deneyin…"
+    },
+    "positionCard": {
+      "outOfRange": "Out Of Range",
+      "inRange": "In Range",
+      "seeDetails": "See Details",
+      "outOfRangeTooltipContent": "The price of this pool is outside of your selected range. Your position is not currently earning fees.",
+      "inRangeTooltipContent": "The price of this pool is within your selected range. Your position is currently earning fees.",
+      "openTooltipContent": "This position is opened by the user.",
+      "closedTooltipContent": "This position is closed by the user."
+    },
+    "addLiquidity": {
+      "selectFeeTier": "Select Fee Tier",
+      "fullRange": "Full Range",
+      "feeTierTooltipContext": "Select your pool earnings percentage. Note that swaps favor lowest fee rates."
+    },
+    "selectPair": {
+      "title": "Select Pair"
+    },
+    "feeTier": {
+      "feeTier": "Fee tier",
+      "selectedPercentage": "select",
+      "notCreated": "Not created",
+      "noData": "No Data",
+      "earnFees": "The % you will earn in fees."
+    },
+    "priceRange": {
+      "title": "Set Price Range",
+      "minPrice": "Min Price",
+      "maxPrice": "Max Price",
+      "currentPrice": "Current Price",
+      "startingPriceRange": "Set Starting Price",
+      "infoContext": "The amount may adjust to fit tick size when setting a price range.",
+      "fullRangeContext": "Click to choose full range"
+    },
+    "increasePosition": {
+      "title": "Increase Position"
+    },
+    "positionNotFound": "Gösterilecek açık veya kapalı pozisyonunuz yok.",
+    "positionNotExist": "Your active concentrated liquidity positions will appear here",
+    "invalidPriceRange": "Invalid range selected. The min price must be lower than the max price.",
+    "notEarnFee": "Your position will not earn fees or be used in trades until the market price moves into your range.",
+    "singleAssetDeposit": "The market price is outside your specified price range. Single-asset deposit only.",
+    "initializedLiquidity": "This pool must be initialized before you can add liquidity. To initialize, select a starting price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher than usual due to the initialization transaction."
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -848,6 +890,11 @@
   "dropdown": {
     "select": "Seç"
   },
+  "liquidityChartRangeInput": {
+    "uninitialized": "Your position will appear here.",
+    "error": "Liquidity data not available.",
+    "noData": "There is no liquidity data."
+  },
   "portfolio": {
     "portfolioAllChain": "Portfolio Value in All Chains",
     "connectToseePortfolio": "Connect a wallet to see your Portfolio",
@@ -861,6 +908,23 @@
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
   "common": {
+    "addLiquidity": "Add Liquidity",
+    "noLiquidity": "No liquidity found.",
+    "from": "From",
+    "to": "To",
+    "remove": "Remove",
+    "connectWallet": "Connect Wallet",
+    "approving": "Approving",
+    "approve": "Approve",
+    "approved": "Approved",
+    "output": "Output",
+    "amount": "Amount",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity",
+    "earned": "Earned",
+    "poolRewards": "Pool Rewards",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
     "loading": "Loading",
     "search": "Search",
     "required": "Required",
@@ -873,6 +937,8 @@
     "min": "Min",
     "open": "Açık",
     "closed": "Kapalı",
-    "notFound": "Bulunamadı"
+    "notFound": "Bulunamadı",
+    "hide": "Hide",
+    "edit": "Edit"
   }
 }

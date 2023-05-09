@@ -1,4 +1,5 @@
 import { CHAINS, ChefType, Token } from '@pangolindex/sdk';
+import numeral from 'numeral';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
@@ -8,7 +9,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/hooks';
-import { useGetRewardTokens, useMinichefPendingRewards } from 'src/state/pstake/hooks/common';
+import { useExtraPendingRewards, useGetRewardTokens } from 'src/state/pstake/hooks/common';
 import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
 import { useHederaPGLToken } from 'src/state/pwallet/hooks/hedera';
 import { Hedera } from 'src/utils/hedera';
@@ -43,7 +44,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
 
   const chefType = CHAINS[chainId].contracts?.mini_chef?.type ?? ChefType.MINI_CHEF_V2;
 
-  const { rewardTokensAmount } = useMinichefPendingRewards(stakingInfo);
+  const { rewardTokensAmount } = useExtraPendingRewards(stakingInfo);
   const rewardTokens = useGetRewardTokens(stakingInfo);
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
@@ -83,10 +84,12 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
     hederaAssociated: isHederaTokenAssociated,
   } = useHederaTokenAssociated(notAssociateTokens?.[0]?.address, notAssociateTokens?.[0]?.symbol);
 
+  const stakedAmount = stakingInfo?.stakedAmount;
+
   const { callback: withdrawCallback, error: withdrawCallbackError } = useWithdrawCallback({
     version,
     poolId: chefType === ChefType.MINI_CHEF ? undefined : (stakingInfo as MinichefStakingInfo)?.pid,
-    stakedAmount: stakingInfo?.stakedAmount,
+    stakedAmount: stakedAmount,
     stakingRewardAddress: stakingInfo?.stakingRewardAddress,
   });
 
@@ -103,7 +106,7 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
   }
 
   async function onWithdraw() {
-    if (stakingInfo?.stakedAmount && withdrawCallback) {
+    if (stakedAmount && withdrawCallback) {
       setAttempting(true);
 
       try {
@@ -181,12 +184,17 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
                     <StatWrapper>
                       <Stat
                         title={t('earn.depositedToken', { symbol: 'PGL' })}
-                        stat={stakingInfo?.stakedAmount?.toSignificant(4)}
+                        stat={numeral(
+                          stakedAmount?.toFixed(
+                            stakedAmount?.greaterThan('0') && stakedAmount?.token?.decimals > 1 ? 2 : undefined,
+                          ),
+                        ).format('0.00a')}
                         titlePosition="top"
                         titleFontSize={12}
                         statFontSize={[20, 18]}
                         titleColor="text1"
                         statAlign="center"
+                        toolTipText={stakedAmount?.toExact()}
                       />
                     </StatWrapper>
                   )}
@@ -194,12 +202,17 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
                     <StatWrapper>
                       <Stat
                         title={t('earn.unclaimedReward', { symbol: png.symbol })}
-                        stat={earnedAmount?.toSignificant(4)}
+                        stat={numeral(
+                          earnedAmount?.toFixed(
+                            earnedAmount?.greaterThan('0') && earnedAmount?.token?.decimals > 1 ? 2 : undefined,
+                          ),
+                        ).format('0.00a')}
                         titlePosition="top"
                         titleFontSize={12}
                         statFontSize={[20, 18]}
                         titleColor="text1"
                         statAlign="center"
+                        toolTipText={earnedAmount?.toExact()}
                       />
                     </StatWrapper>
                   )}
@@ -254,10 +267,9 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
                     isDisabled={Boolean(
                       stakingInfo.earnedAmount.equalTo('0') || stakingInfo.earnedAmount.lessThan('0'),
                     )}
+                    color={stakingInfo.earnedAmount.greaterThan('0') ? 'text1' : undefined}
                   >
-                    <Text color="text1">
-                      <Text color="text1">{t('sarCompound.compound')}</Text>
-                    </Text>
+                    {t('sarCompound.compound')}
                   </Button>
                 )}
                 {renderButton()}

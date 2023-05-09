@@ -17,17 +17,22 @@ import {
   ChainId,
   Currency,
   CurrencyAmount,
+  ElixirTrade,
   Fraction,
   JSBI,
   NetworkType,
+  NumberType,
   Percent,
+  Price,
   Token,
   TokenAmount,
   Trade,
   currencyEquals,
+  formatPrice,
 } from '@pangolindex/sdk';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
+import { Bound } from 'src/state/pmint/elixir/atom';
 import { TokenAddressMap } from '../state/plists/hooks';
 import { Hedera } from './hedera';
 import { wait } from './retry';
@@ -316,6 +321,32 @@ export function getTokenComparator(balances: {
   };
 }
 
+export const useInverter = ({
+  priceLower,
+  priceUpper,
+  quote,
+  base,
+  invert,
+}: {
+  priceLower?: Price;
+  priceUpper?: Price;
+  quote?: Token;
+  base?: Token;
+  invert?: boolean;
+}): {
+  priceLower?: Price;
+  priceUpper?: Price;
+  quote?: Token;
+  base?: Token;
+} => {
+  return {
+    priceUpper: invert ? priceLower?.invert() : priceUpper,
+    priceLower: invert ? priceUpper?.invert() : priceLower,
+    quote: invert ? base : quote,
+    base: invert ? quote : base,
+  };
+};
+
 export function filterTokenOrChain(
   data: (BridgeCurrency | Token | Chain | BridgeChain)[],
   search: string,
@@ -455,7 +486,7 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, chainId: ChainId, 
  * @param tradeA trade A
  * @param tradeB trade B
  */
-export function tradeMeaningfullyDiffers(tradeA: Trade, tradeB: Trade): boolean {
+export function tradeMeaningfullyDiffers(tradeA: Trade | ElixirTrade, tradeB: Trade | ElixirTrade): boolean {
   return (
     tradeA.tradeType !== tradeB.tradeType ||
     !currencyEquals(tradeA.inputAmount.currency, tradeB.inputAmount.currency) ||
@@ -550,4 +581,28 @@ export function decimalToFraction(number: number): Fraction {
 
 export function capitalizeWord(word = '') {
   return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+}
+
+export function formatTickPrice({
+  price,
+  atLimit,
+  direction,
+  placeholder,
+  numberType,
+}: {
+  price: Price | undefined;
+  atLimit: { [bound in Bound]?: boolean | undefined };
+  direction: Bound;
+  placeholder?: string;
+  numberType?: NumberType;
+}) {
+  if (atLimit[direction]) {
+    return direction === Bound.LOWER ? '0' : '∞';
+  }
+
+  if (!price && placeholder !== undefined) {
+    return placeholder;
+  }
+
+  return formatPrice(price, numberType ?? NumberType.TokenNonTx);
 }

@@ -21,6 +21,7 @@ export interface StatProps {
   statAlign?: 'center' | 'right' | 'left';
   showAnalytics?: boolean;
   toolTipText?: string;
+  statfontWeight?: string;
 }
 
 const Stat = ({
@@ -35,6 +36,7 @@ const Stat = ({
   statAlign,
   showAnalytics = false,
   toolTipText,
+  statfontWeight,
 }: StatProps) => {
   const chainId = useChainId();
   const token = currency instanceof Currency && currency instanceof Token ? currency : WAVAX[chainId];
@@ -74,7 +76,13 @@ const Stat = ({
         mt={titlePosition === 'top' ? '8px' : '0px'}
         mb={titlePosition === 'bottom' ? '8px' : '0px'}
       >
-        <Text color={statColor || 'text1'} fontSize={statFontSize || 16} data-tip data-for={id}>
+        <Text
+          color={statColor || 'text1'}
+          fontSize={statFontSize || 16}
+          data-tip
+          data-for={id}
+          fontWeight={statfontWeight || 500}
+        >
           {stat}
         </Text>
         {currency && (

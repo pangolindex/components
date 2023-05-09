@@ -18,8 +18,6 @@ export interface EarnProps {
 type StakingInfoByPid = { [pid: string]: MinichefStakingInfo };
 
 const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activeMenu, menuItems }) => {
-  const [poolCardsLoading] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
@@ -99,8 +97,9 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
       onChangeSortBy={setSortBy}
       sortBy={sortBy}
       searchQuery={searchQuery}
-      isLoading={(stakingInfoData?.length === 0 && !searchQuery) || poolCardsLoading}
-      doesNotPoolExist={stakingInfoData?.length === 0 && !poolCardsLoading}
+      isLoading={stakingInfos?.length === 0 && !searchQuery}
+      doesNotPoolExist={stakingInfos?.length === 0}
+      notFoundPools={stakingInfoData?.length === 0}
       selectedPool={selectedPool}
     >
       {stakingInfoData.map((stakingInfo) => (

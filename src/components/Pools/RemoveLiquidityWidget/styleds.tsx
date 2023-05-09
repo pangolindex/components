@@ -8,7 +8,7 @@ export const Wrapper = styled(Box)`
   background-color: ${({ theme }) => theme.color2};
   margin-top: 10px;
   padding: 10px;
-  height: 250px;
+  height: 270px;
   display: flex;
   flex-direction: column;
   gap: 10px;

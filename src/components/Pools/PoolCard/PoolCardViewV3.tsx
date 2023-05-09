@@ -1,12 +1,11 @@
-import { CHAINS, Fraction, Token } from '@pangolindex/sdk';
-import { BigNumber } from 'ethers';
+import { CHAINS, Fraction, JSBI, Token } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Drawer, RewardTokens, Stat, Text } from 'src/components';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks/common';
+import { usePangoChefExtraFarmApr } from 'src/state/ppangoChef/hooks/common';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -62,8 +61,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
 
   const isLiquidity = Boolean(userPgl?.greaterThan('0'));
 
-  const isSuperFarm =
-    version > 1 ? (rewardTokens || [])?.length > 1 : (stakingInfo?.rewardTokensAddress || [])?.length > 1;
+  const isSuperFarm = (stakingInfo?.rewardTokensAddress || [])?.length > 0;
 
   const redirectToFarmDrawer = () => {
     setShowFarmDrawer(true);
@@ -71,23 +69,21 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
   };
 
   const farmApr = stakingInfo?.stakingApr;
-  const earnedAmount = stakingInfo?.earnedAmount;
 
-  const userApr = useUserPangoChefAPR(isStaking ? stakingInfo : undefined);
+  const userApr = stakingInfo.userApr;
 
   const userRewardRate = stakingInfo?.userRewardRate;
   const rewardRate = isStaking ? userRewardRate : stakingInfo?.poolRewardRate;
-  const balance = BigNumber.from(
-    isStaking ? userStakedAmount.raw.toString() : stakingInfo?.totalStakedAmount.raw.toString(),
-  );
+  const balance = isStaking ? userStakedAmount : stakingInfo?.totalStakedAmount;
 
   const extraAPR = usePangoChefExtraFarmApr(rewardTokens, rewardRate, balance, stakingInfo);
   const apr = isStaking ? userApr : farmApr;
 
-  const totalApr = Number(apr ?? 0) + extraAPR;
+  const totalApr = (apr ?? 0) + extraAPR;
 
   const renderButton = () => {
-    if (isStaking && Boolean(earnedAmount.greaterThan('0')))
+    // if multiplier is zero don't need to show compound button, because this farm not give rewards
+    if (isStaking && JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0)))
       return (
         <ActionButon
           variant="plain"
@@ -167,7 +163,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
 
           <Stat
             title={isStaking ? `${t('pool.yourAPR')}` : `${t('pool.averageAPR')}`}
-            stat={apr ? `${numeral(totalApr).format('0a')}%` : '-'}
+            stat={apr !== undefined ? `${numeral(totalApr).format('0a')}%` : '-'}
             titlePosition="top"
             titleFontSize={[16, 14]}
             statFontSize={[24, 18]}

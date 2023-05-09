@@ -101,7 +101,7 @@
     "poolRewards": "Pool-Belohnungen",
     "rewardsIn": "Belohnungen ein",
     "removeWarning": "Sie entfernen Liquidität aus diesem Pool. Diese Aktion gibt Ihnen Ihre Token zurück. Alternativ können Sie sich dafür entscheiden, Ihre Token zu farmen, um Belohnungen zu verdienen.",
-    "rewardClaimed" : "Your rewards claimed"
+    "rewardClaimed": "Your rewards claimed"
   },
   "menu": {
     "code": "Code",
@@ -173,7 +173,7 @@
     "selected": "ausgewählt",
     "select": "auswählen",
     "manageTokenLists": "Tokenlisten verwalten",
-    "listsSelected" :"lists selected"
+    "listsSelected": "lists selected"
   },
   "settings": {
     "areYouSure": "Bist du dir sicher?",
@@ -498,10 +498,10 @@
     "seeMore": "Mehr sehen",
     "seeLess": "Siehe Weniger",
     "orderPlaced": "{{ orderType }} auftrag erteilt.",
-    "selectToken" : "Select Token",
-    "notFoundBalances" : "Not found balances",
-    "notFoundToken" : "Not found tokens on this chain",
-    "sendingTo" : "Sending to",
+    "selectToken": "Select Token",
+    "notFoundBalances": "Not found balances",
+    "notFoundToken": "Not found tokens on this chain",
+    "sendingTo": "Sending to",
     "invalidAddress": "Invalid Address",
     "addRecipient": "Add Recipient",
     "removeRecipient": "Remove Recipient",
@@ -655,7 +655,7 @@
     "staked": "Staked",
     "stakeSuccessMsg": "Your rewards have been staked.",
     "stakeYourReward": "Stake your rewards",
-    "stakePng" : "Stake your PNG token to share platform fees",
+    "stakePng": "Stake your PNG token to share platform fees",
     "unstaking": "Unstaking",
     "unstaked": "Unstaked",
     "unstakeYourReward": "You can unstake your rewards.",
@@ -669,7 +669,7 @@
     "couldNotWrap": "Konnte nicht umbrechen",
     "attemptingToConfirmApproval": "Bestätigungsversuch ohne Genehmigung oder Unterschrift. Bitte kontaktieren Sie den Support."
   },
-  "sarTitle":{
+  "sarTitle": {
     "addMore": "MEHR HINZUFÜGEN",
     "unstake": "EINE POSITION ABSETZEN",
     "compound": "VERBUNDENE BELOHNUNGEN",
@@ -760,7 +760,7 @@
     "decreaseWarning": "Ihr APR wird sinken, da der neue zusammengesetzte Teil mit APR 0 beginnt und ein Durchschnitt zwischen dem alten und dem neuen Teil genommen wird.",
     "createStorageContract": "Create Storage Contract"
   },
-  "concentratedLiquidity": {
+  "elixir": {
     "menuTypes": {
       "allPositions": "All Positions",
       "openPositions": "Open Positions",
@@ -771,14 +771,56 @@
       "apr": "APR"
     },
     "sidebar": {
-      "title": "Pools V3",
+      "title": "Elixir",
       "seeMore": "Want to see classic pools",
-      "goToFarm": "Go to farm page"
+      "goToFarm": "Go to farm page",
+      "wantToAddLiq": "Want to add liquidity"
     },
     "positionList": {
-      "searchContent": "Try searching for coin names…",
-      "poolNotExist": "You don’t have any open or closed positions to show."
-    }
+      "searchContent": "Try searching for coin names…"
+    },
+    "positionCard": {
+      "outOfRange": "Out Of Range",
+      "inRange": "In Range",
+      "seeDetails": "See Details",
+      "outOfRangeTooltipContent": "The price of this pool is outside of your selected range. Your position is not currently earning fees.",
+      "inRangeTooltipContent": "The price of this pool is within your selected range. Your position is currently earning fees.",
+      "openTooltipContent": "This position is opened by the user.",
+      "closedTooltipContent": "This position is closed by the user."
+    },
+    "addLiquidity": {
+      "selectFeeTier": "Select Fee Tier",
+      "fullRange": "Full Range",
+      "feeTierTooltipContext": "Select your pool earnings percentage. Note that swaps favor lowest fee rates."
+    },
+    "selectPair": {
+      "title": "Select Pair"
+    },
+    "feeTier": {
+      "feeTier": "Fee tier",
+      "selectedPercentage": "select",
+      "notCreated": "Not created",
+      "noData": "No Data",
+      "earnFees": "The % you will earn in fees."
+    },
+    "priceRange": {
+      "title": "Set Price Range",
+      "minPrice": "Min Price",
+      "maxPrice": "Max Price",
+      "currentPrice": "Current Price",
+      "startingPriceRange": "Set Starting Price",
+      "infoContext": "The amount may adjust to fit tick size when setting a price range.",
+      "fullRangeContext": "Click to choose full range"
+    },
+    "increasePosition": {
+      "title": "Increase Position"
+    },
+    "positionNotFound": "You don’t have any open or closed positions to show.",
+    "positionNotExist": "Your active concentrated liquidity positions will appear here",
+    "invalidPriceRange": "Invalid range selected. The min price must be lower than the max price.",
+    "notEarnFee": "Your position will not earn fees or be used in trades until the market price moves into your range.",
+    "singleAssetDeposit": "The market price is outside your specified price range. Single-asset deposit only.",
+    "initializedLiquidity": "This pool must be initialized before you can add liquidity. To initialize, select a starting price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher than usual due to the initialization transaction."
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -790,7 +832,7 @@
     "selectCurrency": "Select a Currency",
     "search": "Search",
     "tableOfContent": "Table of Content",
-    "haveQuestion" :"Have Questions? Look Here:",
+    "haveQuestion": "Have Questions? Look Here:",
     "bridgeCard": {
       "advancedOptions": "Advanced Options",
       "title": "Cross Chain",
@@ -848,6 +890,11 @@
   "dropdown": {
     "select": "Select"
   },
+  "liquidityChartRangeInput": {
+    "uninitialized": "Your position will appear here.",
+    "error": "Liquidity data not available.",
+    "noData": "There is no liquidity data."
+  },
   "portfolio": {
     "portfolioAllChain": "Portfolio Value in All Chains",
     "connectToseePortfolio": "Connect a wallet to see your Portfolio",
@@ -856,7 +903,7 @@
     "hideYourBalance": "Hide Your Balance",
     "showYourBalance": "Show Your Balance"
   },
-  "buy":{
+  "buy": {
     "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
@@ -873,6 +920,25 @@
     "min": "Min",
     "open": "Open",
     "closed": "Closed",
-    "notFound": "Nicht gefunden"
+    "addLiquidity": "Add Liquidity",
+    "noLiquidity": "No liquidity found.",
+    "from": "From",
+    "to": "To",
+    "remove": "Remove",
+    "connectWallet": "Connect Wallet",
+    "approving": "Approving",
+    "approve": "Approve",
+    "approved": "Approved",
+    "output": "Output",
+    "amount": "Amount",
+    "removedLiquidity": "Removed Liquidity",
+    "removingLiquidity": "Removing Liquidity",
+    "earned": "Earned",
+    "poolRewards": "Pool Rewards",
+    "yourStake": "Your Stake",
+    "totalStake": "Total Stake",
+    "notFound": "Nicht gefunden",
+    "hide": "Hide",
+    "edit": "Edit"
   }
 }

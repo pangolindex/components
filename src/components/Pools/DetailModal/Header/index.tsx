@@ -1,12 +1,12 @@
 import { CHAINS, ChefType } from '@pangolindex/sdk';
-import { BigNumber } from 'ethers';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, DoubleCurrencyLogo, RewardTokens, Stat, Text } from 'src/components';
+import { ZERO_FRACTION } from 'src/constants';
 import { useChainId } from 'src/hooks';
-import { usePangoChefExtraFarmApr, useUserPangoChefAPR } from 'src/state/ppangoChef/hooks/common';
+import { usePangoChefExtraFarmApr } from 'src/state/ppangoChef/hooks/common';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useGetRewardTokens } from 'src/state/pstake/hooks/common';
 import { DoubleSideStakingInfo } from 'src/state/pstake/types';
@@ -37,18 +37,14 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
 
   const isStaking = Boolean(stakingInfo?.stakedAmount?.greaterThan('0'));
 
-  const _userApr = useUserPangoChefAPR(
-    cheftType === ChefType.PANGO_CHEF && isStaking ? (stakingInfo as PangoChefInfo) : undefined,
-  );
-
   const userRewardRate =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.userRewardRate : BigNumber.from(0);
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.userRewardRate : ZERO_FRACTION;
 
-  const poolBalance = BigNumber.from(stakingInfo.totalStakedAmount.raw.toString());
+  const poolBalance = stakingInfo?.totalStakedAmount;
   const poolRewardRate =
-    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.poolRewardRate : BigNumber.from(0);
+    cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.poolRewardRate : ZERO_FRACTION;
 
-  const userBalance = BigNumber.from(stakingInfo.stakedAmount.raw.toString());
+  const userBalance = stakingInfo.stakedAmount;
 
   const extraFarmAPR = usePangoChefExtraFarmApr(
     rewardTokens,
@@ -68,12 +64,14 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
     const swapFeeAPR = stakingInfo?.swapFeeApr || 0;
     // for rest we get the data from contract calls if exist, else put 0 for this data
     if (cheftType === ChefType.PANGO_CHEF) {
+      const userApr = (stakingInfo as PangoChefInfo).userApr;
+
       return {
         totalApr: stakingAPR + swapFeeAPR + extraFarmAPR,
         stakingApr: stakingAPR + extraFarmAPR,
         swapFeeApr: swapFeeAPR,
         extraFarmApr: extraFarmAPR,
-        userApr: Number(_userApr) + extraUserAPR,
+        userApr: Number(userApr) + extraUserAPR,
       };
     }
     return {

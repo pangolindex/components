@@ -4,6 +4,7 @@ import { useSubgraphTokens } from 'src/apollo/tokens';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PairState, usePair } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
+import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
 import { decimalToFraction } from 'src/utils';
 import { Hedera } from 'src/utils/hedera';
 import { useTokensCurrencyPriceHook } from './multiChainsHooks';
@@ -15,7 +16,7 @@ import { useChainId } from '.';
  * @param tokens array of tokens to get the price in wrapped gas coin
  * @returns object where the key is the address of the token and the value is the Price
  */
-export function useTokensCurrencyPrice(tokens: (Token | undefined)[]): { [x: string]: Price } {
+export function useTokensCurrencyPriceContract(tokens: (Token | undefined)[]): { [x: string]: Price } {
   const chainId = useChainId();
 
   const usePairs = usePairsHook[chainId];
@@ -145,6 +146,18 @@ export function useTokenCurrencyPriceSubgraph(token: Token | undefined): Price {
 }
 
 /**
+ * its wrapper hook to check which hook need to use based on subgraph on off
+ * @param tokens
+ * @returns
+ */
+export function useTokensCurrencyPrice(tokens: (Token | undefined)[]) {
+  const shouldUseSubgraph = useShouldUseSubgraph();
+  const useHook = shouldUseSubgraph ? useTokensCurrencyPriceSubgraph : useTokensCurrencyPriceContract;
+  const res = useHook(tokens);
+  return res;
+}
+
+/**
  * Returns the tokens price in relation to gas coin hbar
  *
  * @param tokens array of tokens to get the price in wrapped gas coin
@@ -191,7 +204,7 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
   const tokensPrices = useTokensCurrencyPrice(uniqueTokens);
 
   return useMemo(() => {
-    const pairsPrices: { [key: string]: Price } = {};
+    const pairsPrices: { [key: string]: Price | undefined } = {};
     for (let index = 0; index < pairs.length; index++) {
       const { pair, totalSupply } = pairs[index];
       const token0 = pair.token0;

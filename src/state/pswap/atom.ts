@@ -1,6 +1,7 @@
-import { ChainId } from '@pangolindex/sdk';
+import { CAVAX, ChainId, WAVAX } from '@pangolindex/sdk';
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
+import { hederaFn } from 'src/utils/hedera';
 import { ZERO_ADDRESS } from '../../constants';
 
 export enum Field {
@@ -18,6 +19,11 @@ export enum LimitNewField {
   INPUT = 'INPUT',
   OUTPUT = 'OUTPUT',
   PRICE = 'PRICE',
+}
+
+export enum LimitRate {
+  MUL = 'MUL',
+  DIV = 'DIV',
 }
 
 export interface FeeInfo {
@@ -137,21 +143,44 @@ export const useSwapState = () => {
     [setSwapState],
   );
 
+  const switchCurrencies = useCallback(
+    ({ chainId }: { chainId: ChainId }) => {
+      setSwapState((prev) => {
+        let inputCurrencyId = prev[chainId]?.[Field.INPUT].currencyId;
+        const outputcurrencyId = prev[chainId]?.[Field.OUTPUT].currencyId;
+        const currency = CAVAX[chainId];
+        const wrappedCurrency = WAVAX[chainId];
+
+        // we need to change from hbar to whbar when if the field.input is hbar
+        if (
+          hederaFn.isHederaChain(chainId) &&
+          inputCurrencyId === currency.symbol &&
+          outputcurrencyId !== wrappedCurrency.address
+        ) {
+          inputCurrencyId = wrappedCurrency.address;
+        }
+
+        return {
+          ...prev,
+          [chainId]: {
+            ...prev[chainId],
+            independentField: prev[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
+            [Field.INPUT]: { currencyId: outputcurrencyId },
+            [Field.OUTPUT]: { currencyId: inputCurrencyId },
+          },
+        };
+      });
+    },
+    [setSwapState],
+  );
+
   const selectCurrency = useCallback(
     ({ currencyId, field, chainId }: { currencyId: string; field: Field; chainId: ChainId }) => {
       const otherField = field === Field.INPUT ? Field.OUTPUT : Field.INPUT;
 
       if (currencyId === swapState[chainId][otherField].currencyId) {
         // the case where we have to swap the order
-        setSwapState((prev) => ({
-          ...prev,
-          [chainId]: {
-            ...prev[chainId],
-            independentField: prev[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
-            [field]: { currencyId: currencyId },
-            [otherField]: { currencyId: prev[chainId]?.[field].currencyId },
-          },
-        }));
+        switchCurrencies({ chainId });
       } else {
         // the normal case
         setSwapState((prev) => ({
@@ -164,21 +193,6 @@ export const useSwapState = () => {
       }
     },
     [setSwapState, swapState],
-  );
-
-  const switchCurrencies = useCallback(
-    ({ chainId }: { chainId: ChainId }) => {
-      setSwapState((prev) => ({
-        ...prev,
-        [chainId]: {
-          ...prev[chainId],
-          independentField: prev[chainId]?.independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT,
-          [Field.INPUT]: { currencyId: prev[chainId]?.[Field.OUTPUT].currencyId },
-          [Field.OUTPUT]: { currencyId: prev[chainId]?.[Field.INPUT].currencyId },
-        },
-      }));
-    },
-    [setSwapState],
   );
 
   const typeInput = useCallback(

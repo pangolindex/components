@@ -4,15 +4,15 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { CHAINS, ChainId, Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
+import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS, ZERO_FRACTION } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG, USDC } from 'src/constants/tokens';
-import { PairState, usePair, usePairs } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
+import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
+import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph, useRefetchPangoChefSubgraph } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
-import { useTokens } from 'src/hooks/tokens/evm';
+import { useTokensContract } from 'src/hooks/tokens/evm';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
@@ -26,7 +26,7 @@ import {
   useSingleContractMultipleData,
 } from '../../pmulticall/hooks';
 import { PangoChefCompoundData, PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables, WithdrawData } from '../types';
-import { calculateCompoundSlippage, calculateUserRewardRate } from '../utils';
+import { calculateCompoundSlippage, calculateUserAPR, calculateUserRewardRate } from '../utils';
 
 export function usePangoChefInfos() {
   const { account } = usePangolinWeb3();
@@ -139,8 +139,8 @@ export function usePangoChefInfos() {
     return tokens1State.map((result) => (result?.result && result?.result?.length > 0 ? result?.result[0] : null));
   }, [tokens1State]);
 
-  const tokens0 = useTokens(tokens0Adrr);
-  const tokens1 = useTokens(tokens1Adrr);
+  const tokens0 = useTokensContract(tokens0Adrr);
+  const tokens1 = useTokensContract(tokens1Adrr);
 
   const tokensPairs = useMemo(() => {
     if (tokens0 && tokens1 && tokens0?.length === tokens1?.length) {
@@ -157,7 +157,7 @@ export function usePangoChefInfos() {
   }, [tokens0, tokens1]);
 
   // get the pairs for each pool
-  const pairs = usePairs(tokensPairs);
+  const pairs = usePairsContract(tokensPairs);
 
   const pairAddresses = useMemo(() => {
     return pairs.map(([, pair]) => pair?.liquidityToken?.address);
@@ -302,10 +302,11 @@ export function usePangoChefInfos() {
 
       const pendingRewards = new TokenAmount(png, JSBI.BigInt(userPendingRewardState?.result?.[0] ?? 0));
 
-      const pairPrice = pairPrices[pair.liquidityToken.address];
+      const _pairPrice = pairPrices[pair?.liquidityToken?.address];
+      const pairPrice = _pairPrice ? _pairPrice.raw : ZERO_FRACTION;
       const pngPrice = avaxPngPair.priceOf(png, wavax);
 
-      const _totalStakedInWavax = pairPrice?.raw?.multiply(totalStakedAmount?.raw) ?? new Fraction('0', '1');
+      const _totalStakedInWavax = pairPrice.multiply(totalStakedAmount?.raw) ?? ZERO_FRACTION;
 
       const currencyPriceFraction = decimalToFraction(currencyPrice);
 
@@ -340,19 +341,19 @@ export function usePangoChefInfos() {
         );
       };
 
-      const expoent = png.decimals - pair?.liquidityToken.decimals;
+      const exponent = png.decimals - pair?.liquidityToken.decimals;
 
       // poolAPR = poolRewardRate(POOL_ID) * 365 days * 100 * PNG_PRICE / (pools(POOL_ID).valueVariables.balance * STAKING_TOKEN_PRICE)
       const apr =
-        pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0')
+        pool?.valueVariables?.balance.isZero() || pairPrice?.equalTo('0') || !pairPrice
           ? 0
           : Number(
               pngPrice?.raw
                 .multiply(rewardRate.mul(365 * 86400 * 100).toString())
                 .divide(
-                  pairPrice?.raw
-                    ?.multiply(pool?.valueVariables?.balance?.toString())
-                    .multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(expoent))),
+                  pairPrice
+                    .multiply(pool?.valueVariables?.balance?.toString())
+                    .multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(exponent))),
                 )
                 .toSignificant(2),
             );
@@ -375,17 +376,27 @@ export function usePangoChefInfos() {
 
       const weight = poolsRewardInfoState.result?.weight;
 
-      const userRewardRate = calculateUserRewardRate(
+      const _userRewardRate = calculateUserRewardRate(
         userInfo?.valueVariables,
         pool.valueVariables,
         rewardRate,
         blockTime,
       );
 
+      const userRewardRate = new Fraction(_userRewardRate.toString(), '1');
+
+      const userApr = calculateUserAPR({
+        pairPrice,
+        pngPrice,
+        png,
+        userRewardRate: userRewardRate,
+        stakedAmount: userTotalStakedAmount,
+      });
+
       farms.push({
         pid: pid,
         tokens: [pair.token0, pair.token1],
-        stakingRewardAddress: pangoChefContract?.address,
+        stakingRewardAddress: pangoChefContract?.address ?? '',
         totalStakedAmount: totalStakedAmount,
         totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], BIG_INT_ZERO),
         totalStakedInWavax: totalStakedInWavax,
@@ -394,7 +405,7 @@ export function usePangoChefInfos() {
         isPeriodFinished: rewardRate.isZero(),
         periodFinish: undefined,
         rewardsAddress: pool.rewarder,
-        rewardTokensAddress: [png.address, ...(rewardTokensState?.result?.[0] || [])],
+        rewardTokensAddress: [...(rewardTokensState?.result?.[0] || [])],
         rewardTokensMultiplier: rewardMultipliers,
         totalRewardRatePerSecond: totalRewardRatePerSecond,
         totalRewardRatePerWeek: totalRewardRatePerWeek,
@@ -409,8 +420,9 @@ export function usePangoChefInfos() {
         stakingApr: apr,
         pairPrice: pairPrice,
         poolType: pool.poolType,
-        poolRewardRate: rewardRate,
-      } as PangoChefInfo);
+        poolRewardRate: new Fraction(rewardRate.toString()),
+        userApr: userApr,
+      });
     }
     return farms;
   }, [
@@ -443,6 +455,7 @@ export function useEVMPangoChefStakeCallback(
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
 
   const pangoChefContract = usePangoChefContract();
   return useMemo(() => {
@@ -457,6 +470,8 @@ export function useEVMPangoChefStakeCallback(
             addTransaction(response, {
               summary: t('earn.depositLiquidity'),
             });
+
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 
@@ -495,6 +510,7 @@ export function useEVMPangoChefClaimRewardCallback(
   const png = PNG[chainId];
 
   const addTransaction = useTransactionAdder();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
 
   const pangoChefContract = usePangoChefContract();
   return useMemo(() => {
@@ -510,6 +526,8 @@ export function useEVMPangoChefClaimRewardCallback(
             addTransaction(response, {
               summary: t('earn.claimAccumulated', { symbol: png.symbol }),
             });
+
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 
@@ -553,6 +571,7 @@ export function useEVMPangoChefWithdrawCallback(withdrawData: WithdrawData): {
   const pangoChefContract = usePangoChefContract();
 
   const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
   const contract = version && version <= 2 ? stakingContract : pangoChefContract;
 
   return useMemo(() => {
@@ -578,6 +597,7 @@ export function useEVMPangoChefWithdrawCallback(withdrawData: WithdrawData): {
               summary: t('earn.withdrawDepositedLiquidity'),
             });
             await refetchMinichefSubgraph();
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 
@@ -613,6 +633,7 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
+  const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
 
   const { poolId, isPNGPool, amountToAdd } = compoundData;
 
@@ -655,6 +676,7 @@ export function useEVMPangoChefCompoundCallback(compoundData: PangoChefCompoundD
               summary: t('pangoChef.compoundTransactionSummary'),
             });
 
+            await refetchPangochefSubgraph();
             return response.hash;
           }
 
