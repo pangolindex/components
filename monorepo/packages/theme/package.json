@@ -1,0 +1,25 @@
+{
+  "name": "@pangolindex/theme",
+  "version": "0.0.0",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint *.ts*",
+    "dev": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.5",
+    "@types/react-dom": "^18.2.4",
+    "@types/styled-components": "5.1.15",
+    "@types/styled-system": "5.1.13",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "*",
+    "react": "^18.2.0",
+    "tsconfig": "*",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "styled-components": "5.3.3",
+    "styled-system": "5.1.5"
+  }
+}
