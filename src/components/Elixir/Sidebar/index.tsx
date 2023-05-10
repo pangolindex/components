@@ -49,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
             {t('elixir.sidebar.seeMore')}
           </Text>
 
-          <Link fontSize={14} color="primary" cursor="pointer" as="a" href="/pool/standard">
+          <Link fontSize={14} color="primary" cursor="pointer" as="a" href="pool/standard">
             {t('elixir.sidebar.goToFarm')}
           </Link>
         </Box>
