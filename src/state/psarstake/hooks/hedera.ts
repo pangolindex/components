@@ -700,7 +700,7 @@ export function useHederaSarPositionsViaSubgraph() {
         totalRewardRate,
         blockTimestamp,
       );
-      return BigNumber.from(!positionRewardRate.equalTo(0) ? positionRewardRate.toFixed(0) : 0);
+      return positionRewardRate;
     });
 
     const pendingsRewards: BigNumber[] = positionsPedingRewardsState.map((callState) =>
