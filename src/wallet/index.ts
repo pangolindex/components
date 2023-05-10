@@ -36,7 +36,7 @@ export const rabbyWallet = new InjectedWallet({
 
 export const talismanWallet = new TalismanWallet();
 export const bitkeepWallet = new BitKeepWallet();
-export const avalanhceCoreWallet = new AvalancheCoreWallet();
+export const avalancheCoreWallet = new AvalancheCoreWallet();
 
 export const xDefiWallet = new XDefiWallet();
 export const nearWallet = new NearWallet();
@@ -53,7 +53,7 @@ export const SUPPORTED_WALLETS: { [key: string]: Wallet } = {
   RABBY: rabbyWallet,
   TALISMAN: talismanWallet,
   BITKEEP: bitkeepWallet,
-  AVALANCHECORE: avalanhceCoreWallet,
+  AVALANCHECORE: avalancheCoreWallet,
   XDEFI: xDefiWallet,
   NEAR: nearWallet,
   HASH_CONNECT: hashPack,
