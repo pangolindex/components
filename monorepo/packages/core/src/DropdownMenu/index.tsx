@@ -116,7 +116,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       }}
       {...(menuPlacement && { menuPlacement })}
       defaultValue={defaultValue}
-      placeholder={placeHolder || t('dropdown.select')}
+      placeholder={placeHolder || t('dropdown.select') as string}
       isMulti={isMulti}
       isSearchable={isSearchable}
       styles={colourStyles}
