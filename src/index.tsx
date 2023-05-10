@@ -164,27 +164,12 @@ export * as Tokens from './constants/tokens';
 export * from '@gelatonetwork/limit-orders-react';
 
 // wallet misc
-export { AvalancheCoreWallet, BitKeepWallet, InjectedWallet, TalismanWallet } from './wallet/classes/injected';
-export { HashPackWallet, NearWallet, XDefiWallet } from './wallet/classes/nonInjected';
-export { CoinbaseWallet, GnosisSafeWallet, WalletConnect } from './wallet/classes/others';
-export { Wallet as WalletClass } from './wallet/classes/wallet';
-export {
-  SUPPORTED_CHAINS,
-  SUPPORTED_WALLETS,
-  avalanhceCoreWallet,
-  bitkeepWallet,
-  coinbaseWallet,
-  gnosisSafeWallet,
-  hashPack,
-  hashPackTestnet,
-  injectWallet,
-  metamask,
-  nearWallet,
-  rabbyWallet,
-  talismanWallet,
-  walletConnect,
-  xDefiWallet,
-} from './wallet';
+export * from './wallet/classes/injected';
+export * from './wallet/classes/nonInjected';
+export * from './wallet/classes/others';
+export { Wallet as Pangolin_Wallet, WalletEvents, walletEvent } from './wallet/classes/wallet';
+export type { PangolinConnector, activeFunctionType } from './wallet/classes/wallet';
+export * from './wallet';
 
 export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, DoubleSideStaking, Position, PangoChefInfo };
 
