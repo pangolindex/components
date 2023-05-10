@@ -64,3 +64,17 @@ export const SUPPORTED_WALLETS: { [key: string]: Wallet } = {
 };
 
 export const SUPPORTED_CHAINS = Object.values(CHAINS);
+
+export {
+  AvalancheCoreWallet,
+  BitKeepWallet,
+  InjectedWallet,
+  TalismanWallet,
+  HashPackWallet,
+  NearWallet,
+  XDefiWallet,
+  CoinbaseWallet,
+  GnosisSafeWallet,
+  WalletConnect,
+  Wallet,
+};

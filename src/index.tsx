@@ -30,6 +30,7 @@ import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
+import { useApplicationState } from 'src/state/papplication/atom';
 import ApplicationUpdater from 'src/state/papplication/updater';
 import { useCoinGeckoTokenData } from 'src/state/pcoingecko/hooks';
 import ListsUpdater from 'src/state/plists/updater';
@@ -75,6 +76,33 @@ import { useSarStakeInfo } from './state/psarstake/hooks/evm';
 import { Position } from './state/psarstake/types';
 import SwapUpdater from './state/pswap/updater';
 import { default as ThemeProvider } from './theme';
+import {
+  AvalancheCoreWallet,
+  BitKeepWallet,
+  CoinbaseWallet,
+  GnosisSafeWallet,
+  HashPackWallet,
+  InjectedWallet,
+  NearWallet,
+  SUPPORTED_CHAINS,
+  TalismanWallet,
+  Wallet as WalletClass,
+  WalletConnect,
+  XDefiWallet,
+  avalanhceCoreWallet,
+  bitkeepWallet,
+  coinbaseWallet,
+  gnosisSafeWallet,
+  hashPack,
+  hashPackTestnet,
+  injectWallet,
+  metamask,
+  nearWallet,
+  rabbyWallet,
+  talismanWallet,
+  walletConnect,
+  xDefiWallet,
+} from './wallet';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -106,9 +134,9 @@ export function PangolinProvider({
   // try to eagerly connect to a wallet, if it exists and has granted access already
   const triedEager = useEagerConnect(tryToActiveEager);
 
-  // active the network connector  only when no error, active
+  // active the network connector only when no error, active
   // and user not provide library, account and chainId
-  // and tried to connect to preveius wallet
+  // and tried to connect to previous wallet
   useEffect(() => {
     if (triedEager && !active && !error && !active && !library && !account) {
       activate(network);
@@ -210,6 +238,7 @@ export {
   useTokenContract,
   useContract,
   useApproveCallbackHook,
+  useApplicationState,
 };
 
 // misc
@@ -236,4 +265,33 @@ export {
   listVersionLabel,
   splitQuery,
   ApprovalState as TransactionApprovalState,
+};
+
+// wallet misc
+export {
+  AvalancheCoreWallet,
+  BitKeepWallet,
+  InjectedWallet,
+  TalismanWallet,
+  HashPackWallet,
+  NearWallet,
+  XDefiWallet,
+  CoinbaseWallet,
+  GnosisSafeWallet,
+  WalletConnect,
+  WalletClass,
+  injectWallet,
+  metamask,
+  rabbyWallet,
+  talismanWallet,
+  bitkeepWallet,
+  avalanhceCoreWallet,
+  xDefiWallet,
+  nearWallet,
+  hashPack,
+  hashPackTestnet,
+  gnosisSafeWallet,
+  coinbaseWallet,
+  walletConnect,
+  SUPPORTED_CHAINS,
 };
