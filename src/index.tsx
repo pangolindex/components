@@ -164,19 +164,13 @@ export * as Tokens from './constants/tokens';
 export * from '@gelatonetwork/limit-orders-react';
 
 // wallet misc
+export { AvalancheCoreWallet, BitKeepWallet, InjectedWallet, TalismanWallet } from './wallet/classes/injected';
+export { HashPackWallet, NearWallet, XDefiWallet } from './wallet/classes/nonInjected';
+export { CoinbaseWallet, GnosisSafeWallet, WalletConnect } from './wallet/classes/others';
+export { Wallet as WalletClass } from './wallet/classes/wallet';
 export {
-  AvalancheCoreWallet,
-  BitKeepWallet,
-  CoinbaseWallet,
-  GnosisSafeWallet,
-  HashPackWallet,
-  InjectedWallet,
-  NearWallet,
   SUPPORTED_CHAINS,
-  TalismanWallet,
-  Wallet as WalletClass,
-  WalletConnect,
-  XDefiWallet,
+  SUPPORTED_WALLETS,
   avalanhceCoreWallet,
   bitkeepWallet,
   coinbaseWallet,
