@@ -376,18 +376,20 @@ export function usePangoChefInfos() {
 
       const weight = poolsRewardInfoState.result?.weight;
 
-      const userRewardRate = calculateUserRewardRate(
+      const _userRewardRate = calculateUserRewardRate(
         userInfo?.valueVariables,
         pool.valueVariables,
         rewardRate,
         blockTime,
       );
 
+      const userRewardRate = new Fraction(_userRewardRate.toString(), '1');
+
       const userApr = calculateUserAPR({
         pairPrice,
         pngPrice,
         png,
-        userRewardRate,
+        userRewardRate: userRewardRate,
         stakedAmount: userTotalStakedAmount,
       });
 

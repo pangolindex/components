@@ -390,12 +390,14 @@ export function useHederaPangoChefInfos() {
 
       const weight = poolsRewardInfoState.result?.weight;
 
-      const userRewardRate = calculateUserRewardRate(
+      const _userRewardRate = calculateUserRewardRate(
         userInfo?.valueVariables,
         pool.valueVariables,
         rewardRate,
         blockTime,
       );
+
+      const userRewardRate = new Fraction(_userRewardRate.toString(), '1');
 
       const userApr = calculateUserAPR({
         pairPrice: pairPrice,
@@ -783,7 +785,9 @@ export function useGetPangoChefInfosViaSubgraph() {
         sumOfEntryTimes: onchainSumOfEntry && onchainSumOfEntry.gt(0) ? onchainSumOfEntry : subgraphUserSumOfEntry,
       };
 
-      const userRewardRate = calculateUserRewardRate(userValueVariables, poolValueVariables, rewardRate, blockTime);
+      const _userRewardRate = calculateUserRewardRate(userValueVariables, poolValueVariables, rewardRate, blockTime);
+
+      const userRewardRate = new Fraction(_userRewardRate.toString(), '1');
 
       const userApr = calculateUserAPR({
         pngPrice,
