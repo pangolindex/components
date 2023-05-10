@@ -76,33 +76,6 @@ import { useSarStakeInfo } from './state/psarstake/hooks/evm';
 import { Position } from './state/psarstake/types';
 import SwapUpdater from './state/pswap/updater';
 import { default as ThemeProvider } from './theme';
-import {
-  AvalancheCoreWallet,
-  BitKeepWallet,
-  CoinbaseWallet,
-  GnosisSafeWallet,
-  HashPackWallet,
-  InjectedWallet,
-  NearWallet,
-  SUPPORTED_CHAINS,
-  TalismanWallet,
-  Wallet as WalletClass,
-  WalletConnect,
-  XDefiWallet,
-  avalanhceCoreWallet,
-  bitkeepWallet,
-  coinbaseWallet,
-  gnosisSafeWallet,
-  hashPack,
-  hashPackTestnet,
-  injectWallet,
-  metamask,
-  nearWallet,
-  rabbyWallet,
-  talismanWallet,
-  walletConnect,
-  xDefiWallet,
-} from './wallet';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -180,7 +153,6 @@ export function PangolinProvider({
 }
 
 export * from './constants';
-export { SUPPORTED_WALLETS } from './wallet';
 export { ROUTER_ADDRESS, MINICHEF_ADDRESS } from './constants/address';
 export { TIMEFRAME, SwapTypes } from './constants/swap';
 export * from './connectors';
@@ -190,6 +162,36 @@ export { ApplicationModal } from './state/papplication/atom';
 export * as Tokens from './constants/tokens';
 
 export * from '@gelatonetwork/limit-orders-react';
+
+// wallet misc
+export {
+  AvalancheCoreWallet,
+  BitKeepWallet,
+  CoinbaseWallet,
+  GnosisSafeWallet,
+  HashPackWallet,
+  InjectedWallet,
+  NearWallet,
+  SUPPORTED_CHAINS,
+  TalismanWallet,
+  Wallet as WalletClass,
+  WalletConnect,
+  XDefiWallet,
+  avalanhceCoreWallet,
+  bitkeepWallet,
+  coinbaseWallet,
+  gnosisSafeWallet,
+  hashPack,
+  hashPackTestnet,
+  injectWallet,
+  metamask,
+  nearWallet,
+  rabbyWallet,
+  talismanWallet,
+  walletConnect,
+  xDefiWallet,
+} from './wallet';
+
 export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, DoubleSideStaking, Position, PangoChefInfo };
 
 // components
@@ -265,33 +267,4 @@ export {
   listVersionLabel,
   splitQuery,
   ApprovalState as TransactionApprovalState,
-};
-
-// wallet misc
-export {
-  AvalancheCoreWallet,
-  BitKeepWallet,
-  InjectedWallet,
-  TalismanWallet,
-  HashPackWallet,
-  NearWallet,
-  XDefiWallet,
-  CoinbaseWallet,
-  GnosisSafeWallet,
-  WalletConnect,
-  WalletClass,
-  injectWallet,
-  metamask,
-  rabbyWallet,
-  talismanWallet,
-  bitkeepWallet,
-  avalanhceCoreWallet,
-  xDefiWallet,
-  nearWallet,
-  hashPack,
-  hashPackTestnet,
-  gnosisSafeWallet,
-  coinbaseWallet,
-  walletConnect,
-  SUPPORTED_CHAINS,
 };
