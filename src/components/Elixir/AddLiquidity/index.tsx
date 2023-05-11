@@ -443,7 +443,13 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
               )}
             </DynamicSection>
 
-            <DynamicSection disabled={!feeAmount || invalidPool || (noLiquidity && !startPriceTypedValue)}>
+            <DynamicSection
+              disabled={
+                !feeAmount ||
+                invalidPool ||
+                (noLiquidity && (!startPriceTypedValue || parseFloat(startPriceTypedValue) === 0))
+              }
+            >
               <PriceRange
                 priceLower={priceLower}
                 priceUpper={priceUpper}
