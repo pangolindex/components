@@ -34,3 +34,4 @@ export { default as RewardTokens } from './RewardTokens';
 export { CountdownCounter } from './CountdownCounter';
 export { RadioButton } from './RadioButton';
 export { RadioButtonGroup } from './RadioButtonGroup';
+export { NewsWidget } from './NewsWidget';
