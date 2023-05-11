@@ -139,15 +139,18 @@ export function formatPosition(args: {
   valuesVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber }[];
   rewardRates: BigNumber[];
   pendingsRewards: BigNumber[];
+  lastUpdates: BigNumber[];
   blockTimestamp: number;
   chainId: ChainId;
 }) {
-  const { nftsURIs, nftsIndexes, valuesVariables, rewardRates, pendingsRewards, blockTimestamp, chainId } = args;
+  const { nftsURIs, nftsIndexes, valuesVariables, rewardRates, pendingsRewards, lastUpdates, blockTimestamp, chainId } =
+    args;
 
   const positions: (Position | undefined)[] = nftsURIs.map((uri, index) => {
     const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined = valuesVariables[index];
     const rewardRate = rewardRates[index];
     const pendingRewards = pendingsRewards[index];
+    const lastUpdate = lastUpdates[index];
     const id = nftsIndexes[index][0];
     const balance = valueVariables?.balance ?? BigNumber.from(0);
     const apr = rewardRate
@@ -171,6 +174,7 @@ export function formatPosition(args: {
       rewardRate: rewardRate,
       uri: _uri,
       pendingRewards: pendingRewards,
+      lastUpdate: lastUpdate,
     } as Position;
   });
   // remove the empty positions
