@@ -326,7 +326,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={false}>
+    <Modal zIndex={99} isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={false}>
       <Root>
         <Wrapper isOverflowHidden={isCurrencyDrawerOpen || showConfirm} maximumHeight={height - 150}>
           <Box p={20}>
