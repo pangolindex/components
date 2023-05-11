@@ -1,9 +1,9 @@
 import { Token } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
-import { Box } from '../Box';
-import CurrencyLogo from '../CurrencyLogo';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
+import { Box } from '../Box';
+import CurrencyLogo from '../CurrencyLogo';
 import { RewardTokensProps } from './types';
 
 const RewardTokens = ({ showNativeRewardToken = true, rewardTokens = [], size = 24 }: RewardTokensProps) => {

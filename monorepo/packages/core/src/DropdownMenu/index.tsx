@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
 import { useTranslation } from '@pangolindex/locales';
+import React, { useContext } from 'react';
 import Select, { MenuPlacement, MultiValue, OptionsOrGroups, SingleValue } from 'react-select';
 import { ThemeContext } from 'styled-components';
 import { Option } from './types';
@@ -116,7 +116,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       }}
       {...(menuPlacement && { menuPlacement })}
       defaultValue={defaultValue}
-      placeholder={placeHolder || t('dropdown.select') as string}
+      placeholder={placeHolder || (t('dropdown.select') as string)}
       isMulti={isMulti}
       isSearchable={isSearchable}
       styles={colourStyles}

@@ -4,7 +4,8 @@
   "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint *.ts*",
+    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx",
     "dev": "tsc -w"
   },
   "devDependencies": {

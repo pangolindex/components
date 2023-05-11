@@ -1,5 +1,5 @@
-import React from 'react';
 import { useTranslation } from '@pangolindex/locales';
+import React from 'react';
 import { Box, NumberOptions, Text, TextInput } from '../';
 import { InputOptions } from './styled';
 

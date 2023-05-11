@@ -3,8 +3,8 @@ import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/images/circleTick.svg';
 import { Box } from '../Box';
 import { Button } from '../Button';
-import { Text } from '../Text';
 import { CloseIcon } from '../CloseIcon';
+import { Text } from '../Text';
 import { Root } from './styled';
 
 export interface TransactionCompletedProps {

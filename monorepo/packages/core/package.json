@@ -5,7 +5,8 @@
   "module": "lib/esm/index.js",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint *.ts*",
+    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx",
     "build": "rollup --config",
     "dev": "yarn run build -- --watch",
     "storybook": "storybook dev -p 6006",

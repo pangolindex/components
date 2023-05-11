@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import { Loading, LogoIcon } from "src/Icons";
-import { Box } from "src/Box";
-import { Text } from "src/Text";
+import React from 'react';
+import styled from 'styled-components';
+import { Box } from 'src/Box';
+import { Loading, LogoIcon } from 'src/Icons';
+import { Text } from 'src/Text';
 
 const PendingWrapper = styled.div<{ height: string | number }>`
   display: flex;
@@ -21,21 +21,9 @@ const Loader: React.FC<Props> = (props) => {
   const { size, label, height } = props;
 
   return (
-    <PendingWrapper height={height || "100%"}>
-      <Box
-        mb={"15px"}
-        display="flex"
-        alignItems="center"
-        flexDirection="column"
-      >
-        <Box
-          width={size}
-          height={size}
-          position="relative"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
+    <PendingWrapper height={height || '100%'}>
+      <Box mb={'15px'} display="flex" alignItems="center" flexDirection="column">
+        <Box width={size} height={size} position="relative" display="flex" alignItems="center" justifyContent="center">
           <Loading />
 
           <Box position="absolute">
@@ -43,13 +31,7 @@ const Loader: React.FC<Props> = (props) => {
           </Box>
         </Box>
         {label && (
-          <Text
-            color="loader.text"
-            fontWeight={500}
-            fontSize={20}
-            textAlign="center"
-            mt={10}
-          >
+          <Text color="loader.text" fontWeight={500} fontSize={20} textAlign="center" mt={10}>
             {label}
           </Text>
         )}

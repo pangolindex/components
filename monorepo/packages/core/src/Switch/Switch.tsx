@@ -1,6 +1,6 @@
+import { useTheme } from '@pangolindex/theme';
 import React from 'react';
 import ReactSwitch from 'react-switch';
-import { useTheme } from '@pangolindex/theme';
 import { SwitchProps } from './types';
 
 // here we need to do some hack, because react-switch package is still in commonjs

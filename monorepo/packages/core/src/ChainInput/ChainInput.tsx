@@ -1,6 +1,6 @@
+import { useTranslation } from '@pangolindex/locales';
 import * as React from 'react';
 import { ChevronDown } from 'react-feather';
-import { useTranslation } from '@pangolindex/locales';
 import { Box } from '../Box';
 import { Aligner, ChainLogo, ChainSelect, StyledTokenName } from './styles';
 import { ChainInputProps } from './types';

@@ -1,5 +1,5 @@
-import { Box } from '../Box';
 import styled from 'styled-components';
+import { Box } from '../Box';
 
 export const Hidden = styled(Box)<{
   upToExtraSmall?: boolean;

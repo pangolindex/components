@@ -11,11 +11,9 @@
     "resolveJsonModule": true,
     "target": "es5",
     "skipLibCheck": true,
-
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports" : true, 
     "isolatedModules": true,
-
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

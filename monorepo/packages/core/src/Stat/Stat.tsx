@@ -1,15 +1,15 @@
 import { Currency, Token, WAVAX } from '@pangolindex/sdk';
+import { ThemeColorsType } from '@pangolindex/theme';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';
 import AnalyticsIcon from 'src/assets/images/analytics.svg';
+import { ANALYTICS_PAGE } from 'src/constants';
+import { useChainId } from 'src/hooks';
 import { Box } from '../Box';
 import CurrencyLogo from '../CurrencyLogo';
 import { Text } from '../Text';
 import Tooltip from '../Tooltip';
-import { ANALYTICS_PAGE } from 'src/constants';
-import { useChainId } from 'src/hooks';
-import { ThemeColorsType } from '@pangolindex/theme';
 import { AnalyticsLink } from './styled';
 
 export interface StatProps {

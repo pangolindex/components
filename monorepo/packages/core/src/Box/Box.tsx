@@ -1,3 +1,4 @@
+import { ThemeColorsType } from '@pangolindex/theme';
 import get from 'lodash.get';
 import styled from 'styled-components';
 import {
@@ -14,7 +15,6 @@ import {
   space,
   typography,
 } from 'styled-system';
-import { ThemeColorsType } from '@pangolindex/theme';
 
 export interface Props {
   color?: ThemeColorsType;
