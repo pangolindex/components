@@ -35,3 +35,4 @@ export { CountdownCounter } from './CountdownCounter';
 export { RadioButton } from './RadioButton';
 export { RadioButtonGroup } from './RadioButtonGroup';
 export { NewsWidget } from './NewsWidget';
+export { ExternalLink } from './ExternalLink';
