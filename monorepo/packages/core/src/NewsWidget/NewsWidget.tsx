@@ -12,6 +12,7 @@ const queryClient = new QueryClient({
 });
 
 export default function NewsWidget() {
+  console.log('test');
   return (
     <QueryClientProvider client={queryClient}>
       <NewsSection />
