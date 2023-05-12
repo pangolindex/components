@@ -18,7 +18,7 @@ export type UsePairsHookType = {
 
 export const usePairsHook: UsePairsHookType = {
   [ChainId.FUJI]: usePairsContract,
-  [ChainId.AVALANCHE]: usePairsContract,
+  [ChainId.AVALANCHE]: usePairs,
   [ChainId.WAGMI]: usePairsContract,
   [ChainId.COSTON]: usePairsContract,
   [ChainId.SONGBIRD]: usePairsContract,

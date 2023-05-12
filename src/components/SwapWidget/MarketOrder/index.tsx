@@ -1,5 +1,15 @@
 /* eslint-disable max-lines */
-import { CurrencyAmount, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import {
+  CAVAX,
+  CurrencyAmount,
+  ElixirTrade,
+  JSBI,
+  Token,
+  TokenAmount,
+  Trade,
+  WAVAX,
+  currencyEquals,
+} from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +31,8 @@ import { useWrapCallbackHook } from 'src/hooks/useWrapCallback';
 import { WrapType } from 'src/hooks/useWrapCallback/constant';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
-import { Field } from 'src/state/pswap/atom';
+import { Field, LimitNewField } from 'src/state/pswap/atom';
+import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
 import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
@@ -32,6 +43,7 @@ import {
 import { useHederaSwapTokenAssociated } from 'src/state/pswap/hooks/hedera';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { isTokenOnList, validateAddressMapping } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -100,6 +112,7 @@ const MarketOrder: React.FC<Props> = ({
   const useWrapCallback = useWrapCallbackHook[chainId];
   const useApproveCallbackFromTrade = useApproveCallbackFromTradeHook[chainId];
   const useSwapCallback = useSwapCallbackHook[chainId];
+  const useGelatoLimitOrders = useGelatoLimitOrdersHook[chainId];
 
   const checkRecipientAddress = validateAddressMapping[chainId];
 
@@ -169,6 +182,10 @@ const MarketOrder: React.FC<Props> = ({
       };
 
   const { onSwitchTokens, onCurrencySelection, onUserInput, onChangeRecipient } = useSwapActionHandlers(chainId);
+  const {
+    handlers: { handleCurrencySelection: onLimitCurrencySelection },
+  } = useGelatoLimitOrders();
+
   const isValid = !swapInputError;
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT;
 
@@ -206,7 +223,7 @@ const MarketOrder: React.FC<Props> = ({
   // modal and loading
   const [{ showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash }, setSwapState] = useState<{
     showConfirm: boolean;
-    tradeToConfirm: Trade | undefined;
+    tradeToConfirm: Trade | ElixirTrade | undefined;
     attemptingTxn: boolean;
     swapErrorMessage: string | undefined;
     txHash: string | undefined;
@@ -233,7 +250,7 @@ const MarketOrder: React.FC<Props> = ({
   const noRoute = !route;
 
   // check whether the user has approved the router on the input token
-  const [approval, approveCallback] = useApproveCallbackFromTrade(chainId, trade, allowedSlippage);
+  const [approval, approveCallback] = useApproveCallbackFromTrade(chainId, trade as Trade, allowedSlippage);
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
@@ -248,7 +265,11 @@ const MarketOrder: React.FC<Props> = ({
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT]);
 
   // the callback to execute the swap
-  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(trade, recipient, allowedSlippage);
+  const { callback: swapCallback, error: swapCallbackError } = useSwapCallback(
+    trade as Trade,
+    recipient,
+    allowedSlippage,
+  );
 
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade);
 
@@ -342,8 +363,29 @@ const MarketOrder: React.FC<Props> = ({
       if (tokenDrawerType === Field.INPUT) {
         setApprovalSubmitted(false); // reset 2 step UI for approvals
         setSelectedPercentage(0);
+
+        if (
+          hederaFn.isHederaChain(chainId) &&
+          currencies[Field.OUTPUT] === CAVAX[chainId] &&
+          !currencyEquals(currency, WAVAX[chainId])
+        ) {
+          onCurrencySelection(Field.OUTPUT, WAVAX[chainId]);
+        }
       }
+
       onCurrencySelection(tokenDrawerType, currency);
+
+      // here need to add isToken because in Galato hook require this variable to select currency
+      const newCurrency = { ...currency };
+      if (currency?.symbol === CAVAX[chainId].symbol) {
+        newCurrency.isNative = true;
+      } else {
+        newCurrency.isToken = true;
+      }
+      onLimitCurrencySelection(
+        (tokenDrawerType === Field.INPUT ? LimitNewField.INPUT : LimitNewField.OUTPUT) as any,
+        newCurrency,
+      );
     },
     [tokenDrawerType, onCurrencySelection],
   );
@@ -673,6 +715,7 @@ const MarketOrder: React.FC<Props> = ({
           onCurrencySelect={onCurrencySelect}
           selectedCurrency={tokenDrawerType === Field.INPUT ? inputCurrency : outputCurrency}
           otherSelectedCurrency={tokenDrawerType === Field.INPUT ? outputCurrency : inputCurrency}
+          seletedField={tokenDrawerType}
         />
       )}
 

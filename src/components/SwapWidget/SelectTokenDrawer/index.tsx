@@ -1,4 +1,5 @@
-import { CAVAX, ChainId, Currency, Token, currencyEquals } from '@pangolindex/sdk';
+import { CAVAX, ChainId, Currency, Token, WAVAX, currencyEquals } from '@pangolindex/sdk';
+import deepEqual from 'deep-equal';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useTranslation } from 'react-i18next';
@@ -10,8 +11,10 @@ import { useTokenHook } from 'src/hooks/tokens';
 import { useAllTokens } from 'src/hooks/useAllTokens';
 import usePrevious from 'src/hooks/usePrevious';
 import { useSelectedListInfo } from 'src/state/plists/hooks';
+import { Field } from 'src/state/pswap/atom';
 import { useAddUserToken } from 'src/state/puser/hooks';
 import { filterTokenOrChain, isAddress } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import { Box, Text, TextInput } from '../../';
 import { useTokenComparator } from '../SearchModal/sorting';
 import TokenListDrawer from '../TokenListDrawer';
@@ -24,6 +27,7 @@ interface Props {
   onCurrencySelect: (currency: Currency) => void;
   selectedCurrency?: Currency;
   otherSelectedCurrency?: Currency;
+  seletedField?: Field;
 }
 
 const currencyKey = (columnIndex: number, rowIndex: number, data: Currency[], chainId: ChainId): string => {
@@ -38,7 +42,7 @@ const currencyKey = (columnIndex: number, rowIndex: number, data: Currency[], ch
 };
 
 const SelectTokenDrawer: React.FC<Props> = (props) => {
-  const { isOpen, onClose, onCurrencySelect, otherSelectedCurrency, selectedCurrency } = props;
+  const { isOpen, onClose, onCurrencySelect, otherSelectedCurrency, selectedCurrency, seletedField } = props;
   const chainId = useChainId();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isTokenListOpen, setIsTokenListOpen] = useState<boolean>(false);
@@ -99,12 +103,26 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   }, [filteredTokens, searchQuery, searchToken, tokenComparator]);
 
   const currencies = useMemo(() => {
+    const currency = CAVAX[chainId];
+    const wrappedCurrency = WAVAX[chainId];
+    // for hedera we need to remove HBAR and put WBAR in first position
+    if (
+      hederaFn.isHederaChain(chainId) &&
+      seletedField === Field.OUTPUT &&
+      !deepEqual(otherSelectedCurrency, currency) &&
+      otherSelectedCurrency instanceof Token &&
+      !wrappedCurrency.equals(otherSelectedCurrency)
+    ) {
+      const _tokens = filteredSortedTokens.filter((token) => token !== currency && !wrappedCurrency.equals(token));
+      return [wrappedCurrency, ..._tokens];
+    }
+
     if (searchQuery === '') {
       // remove Currency from array and add in first position
       const _tokens = filteredSortedTokens.filter((token) => token !== CAVAX[chainId]);
       // Need to check when implement near
       // return CHAINS[chainId]?.evm ? [CAVAX[chainId], ..._tokens] : [..._tokens];
-      return [CAVAX[chainId], ..._tokens];
+      return [currency, ..._tokens];
     }
     return filteredSortedTokens;
   }, [filteredSortedTokens, chainId]);
@@ -238,6 +256,7 @@ export default memo(SelectTokenDrawer, (prevProps, nextProps) => {
     prevProps.isOpen === nextProps.isOpen &&
     prevProps.onClose === nextProps.onClose &&
     prevProps.onCurrencySelect === nextProps.onCurrencySelect &&
+    prevProps.seletedField == nextProps.seletedField &&
     (!!prevProps.selectedCurrency && !!nextProps.selectedCurrency
       ? prevProps.selectedCurrency.symbol === nextProps.selectedCurrency.symbol
       : true) &&

@@ -117,6 +117,7 @@ export const theme = {
   color10: eerieBlack,
   color11: white,
   color12: darkSilver,
+  color13: darkGunmetal,
 
   swapWidget: {
     primary: white,

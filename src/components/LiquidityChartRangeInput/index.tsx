@@ -7,9 +7,12 @@ import { batch } from 'react-redux';
 import { ThemeContext } from 'styled-components';
 import { Loader, Text } from 'src/components';
 import { AutoColumn, ColumnCenter } from 'src/components/Column';
+import { useChainId } from 'src/hooks';
+import { useDensityChartData } from 'src/hooks/elixir/chart/evm';
+import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Chart } from './Chart';
 import { ChartWrapper } from './styles';
-import { Bound, ChartEntry, FeeAmount, LiquidityChartRangeInputProps, ZOOM_LEVELS } from './types';
+import { Bound, FeeAmount, LiquidityChartRangeInputProps, ZOOM_LEVELS } from './types';
 
 function InfoBox({ message, icon }: { message?: ReactNode; icon: ReactNode }) {
   return (
@@ -40,47 +43,17 @@ const LiquidityChartRangeInput: React.FC<LiquidityChartRangeInputProps> = (props
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
 
-  // ------------------ MockData ------------------
-  const isSorted = true;
-  const isLoading = false;
-  const error = null;
-  const formattedData: ChartEntry[] = [
-    {
-      activeLiquidity: 50,
-      price0: 0.1,
-    },
-    {
-      activeLiquidity: 40,
-      price0: 4,
-    },
-    {
-      activeLiquidity: 30,
-      price0: 5,
-    },
-    {
-      activeLiquidity: 20,
-      price0: 6,
-    },
-    {
-      activeLiquidity: 40,
-      price0: 9,
-    },
-    {
-      activeLiquidity: 56,
-      price0: 15,
-    },
-    {
-      activeLiquidity: 98,
-      price0: 25,
-    },
-    {
-      activeLiquidity: 70,
-      price0: 30,
-    },
-  ];
-  const leftPrice = 0.1;
-  const rightPrice = 20;
-  // ----------------------------------------------
+  const chainId = useChainId();
+  const tokenA = wrappedCurrency(currency0, chainId);
+  const tokenB = wrappedCurrency(currency1, chainId);
+
+  const isSorted = tokenA && tokenB && !tokenA.equals(tokenB) && tokenA?.sortsBefore(tokenB);
+
+  const { isLoading, error, formattedData } = useDensityChartData({
+    currencyA: currency0,
+    currencyB: currency1,
+    feeAmount,
+  });
 
   const onBrushDomainChangeEnded = useCallback(
     (domain: [number, number], mode: string | undefined) => {
@@ -114,8 +87,18 @@ const LiquidityChartRangeInput: React.FC<LiquidityChartRangeInputProps> = (props
 
   const interactiveStatus = interactive && Boolean(formattedData?.length);
 
+  // const brushDomain: [number, number] | undefined = useMemo(() => {
+
+  //   return leftPrice && rightPrice ? [leftPrice, rightPrice] : undefined;
+  // }, [isSorted, priceLower, priceUpper]);
+
   const brushDomain: [number, number] | undefined = useMemo(() => {
-    return leftPrice && rightPrice ? [leftPrice, rightPrice] : undefined;
+    const leftPrice = isSorted ? priceLower : priceUpper?.invert();
+    const rightPrice = isSorted ? priceUpper : priceLower?.invert();
+
+    return leftPrice && rightPrice
+      ? [parseFloat(leftPrice?.toSignificant(6)), parseFloat(rightPrice?.toSignificant(6))]
+      : undefined;
   }, [isSorted, priceLower, priceUpper]);
 
   const brushLabelValue = useCallback(

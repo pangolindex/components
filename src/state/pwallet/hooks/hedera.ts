@@ -3,8 +3,9 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { CAVAX, ChainId, Currency, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQueries, useQuery } from 'react-query';
-import { usePair, usePairsContract } from 'src/data/Reserves';
+import { useQueries, useQuery, useQueryClient } from 'react-query';
+import { usePair } from 'src/data/Reserves';
+import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useGetAllHederaAssociatedTokens, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useBlockNumber } from 'src/state/papplication/hooks';
@@ -13,6 +14,7 @@ import { Field as AddField } from 'src/state/pmint/atom';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateSlippageAmount, getRouterContract, isAddress } from 'src/utils';
 import { HederaTokenMetadata, hederaFn } from 'src/utils/hedera';
+import { wait } from 'src/utils/retry';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useTrackedTokenPairs } from '../../puser/hooks';
 import { AddLiquidityProps, AttemptToApproveProps, CreatePoolProps, RemoveLiquidityProps } from '../types';
@@ -324,6 +326,8 @@ export function useHederaRemoveLiquidity(pair?: Pair | null | undefined) {
 export function useGetHederaUserLP() {
   const chainId = useChainId();
 
+  const usePairs = usePairsHook[chainId];
+
   // get all pairs
   const trackedTokenPairs = useTrackedTokenPairs();
 
@@ -386,7 +390,7 @@ export function useGetHederaUserLP() {
     [pglTokenAddresses, allTokensAddress, pairTokens],
   );
 
-  const allPairs = usePairsContract(filterPairTokens);
+  const allPairs = usePairs(filterPairTokens);
 
   const checkedAllPairs = useMemo(
     () => allPairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair)),
@@ -421,6 +425,8 @@ export function useHederaCreatePair() {
   const { account } = usePangolinWeb3();
   const addTransaction = useTransactionAdder();
 
+  const queryClient = useQueryClient();
+
   return async (data: CreatePoolProps) => {
     if (!chainId || !account) return;
 
@@ -438,6 +444,11 @@ export function useHederaCreatePair() {
     });
 
     if (response) {
+      // wait 1 second to update the chain/subgraph with new pair
+      await wait(1000);
+      // refetch pairs to fetch new pair and remove the create pair message
+      await queryClient.refetchQueries({ queryKey: ['get-subgraph-pairs', chainId] });
+
       addTransaction(response, {
         summary: `Pair created for ${tokenA.symbol} and ${tokenB.symbol}`,
       });

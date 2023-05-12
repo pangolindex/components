@@ -136,7 +136,7 @@ export function useDerivedBurnInfo(
   }
 
   if (!parsedAmounts[Field.LIQUIDITY] || !parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
-    if (typedValue !== '0') {
+    if (typedValue !== '0' && typedValue.length > 0) {
       error = error ?? t('stakeHooks.insufficientBalance', { symbol: 'PGL' });
     } else {
       error = error ?? t('burnHooks.enterAmount');

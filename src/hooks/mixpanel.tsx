@@ -6,6 +6,7 @@ export enum MixPanelEvents {
   SWAP = 'Swap',
   NEWS = 'Interacted with News',
   ADD_LIQUIDITY = 'Added Liquidity',
+  INCREASE_LIQUIDITY = 'Increased Liquidity',
   REMOVE_LIQUIDITY = 'Removed Liquidity',
   ADD_FARM = 'Added to farm',
   REMOVE_FARM = 'Removed from farm',

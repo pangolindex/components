@@ -27,8 +27,8 @@ import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import {
   useDerivedStakeInfo,
+  useExtraPendingRewards,
   useGetPoolDollerWorth,
-  useMinichefPendingRewards,
   useMinichefPools,
 } from 'src/state/pstake/hooks/common';
 import { DoubleSideStakingInfo, SpaceType } from 'src/state/pstake/types';
@@ -95,7 +95,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
     );
   }
 
-  const { rewardTokensAmount, rewardTokensMultiplier } = useMinichefPendingRewards(stakingInfo);
+  const { rewardTokensAmount, rewardTokensMultiplier } = useExtraPendingRewards(stakingInfo);
 
   const isSuperFarm = (rewardTokensAmount || [])?.length > 0;
 
@@ -417,7 +417,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
                   )
                 }
                 label={type === SpaceType.card ? balanceLabel : undefined}
-                disabled={userLiquidityUnstaked?.equalTo('0')}
+                disabled={userLiquidityUnstaked?.equalTo('0') ?? true}
               />
 
               <Box mt={type === 'card' ? '25px' : '0px'}>
@@ -429,6 +429,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
                   currentValue={type === 'card' ? stepIndex * 25 : stepIndex}
                   variant={type === 'card' ? 'box' : 'step'}
                   isPercentage={true}
+                  isDisabled={userLiquidityUnstaked?.equalTo('0') ?? true}
                 />
               </Box>
             </InputWrapper>

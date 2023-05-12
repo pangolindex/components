@@ -135,7 +135,7 @@ export const defaultColors: Colors = {
     text: quickSilver,
     labelText: quickSilver,
     placeholderText: quickSilver,
-    backgroundColor: white,
+    backgroundColor: platinum,
   },
 
   currencySelect: {
@@ -195,7 +195,7 @@ export const defaultColors: Colors = {
       borderColor: oceanBlue,
     },
   },
-  concentratedLiquidity: {
+  elixir: {
     primaryBgColor: gray,
     secondaryBgColor: darkGray,
   },
@@ -259,6 +259,7 @@ export const defaultColors: Colors = {
   color10: white,
   color11: white,
   color12: platinum,
+  color13: platinum,
 };
 
 export const defaultTheme: DefaultTheme = {
