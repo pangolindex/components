@@ -390,9 +390,11 @@ export function useSarNftsIds() {
         balance.sub(1).toHexString(),
       );
 
-      return indexes?.map((index) => {
-        return [index.toHexString()];
-      });
+      return indexes
+        ?.map((index) => {
+          return [index.toHexString()];
+        })
+        .sort((a, b) => Number(a) - Number(b));
     },
     {
       refetchInterval: 1000 * 60 * 1, // 1 minute
@@ -531,7 +533,6 @@ export function useSarPositionsViaSubgraph() {
   const { nftsIndexes, isLoading: isLoadingIndexes, isRefetching: isRefetchingIndexes } = useSarNftsIds();
 
   const positionsIds = (nftsIndexes || []).map((nftIndex) => nftIndex[0]);
-
   const {
     data: subgraphPositions,
     isLoading: isLoadingSubgraphPositions,
@@ -584,9 +585,11 @@ export function useSarPositionsViaSubgraph() {
     }
 
     // if is loading or exist error or not exist account return empty array
-    if (isLoading || !isValid || !nftsIndexes) {
+    if (isLoading || !isValid || !nftsIndexes || !subgraphPositions) {
       return { positions: [] as Position[], isLoading: true };
     }
+
+    subgraphPositions.sort((a, b) => Number(a.id) - Number(b.id));
 
     // we need to decode the base64 uri to get the real uri
     const nftsURIs = nftsURIsState.map((value) => {
@@ -599,12 +602,12 @@ export function useSarPositionsViaSubgraph() {
       return undefined;
     });
 
-    const valuesVariables = (subgraphPositions || [])?.map((position) => ({
+    const valuesVariables = subgraphPositions?.map((position) => ({
       balance: BigNumber.from(position.balance),
       sumOfEntryTimes: BigNumber.from(position.sumOfEntryTimes),
     }));
 
-    const rewardRates = (subgraphPositions || [])?.map((position) => {
+    const rewardRates = subgraphPositions?.map((position) => {
       const userValuesVariables = {
         balance: BigNumber.from(position.balance),
         sumOfEntryTimes: BigNumber.from(position.sumOfEntryTimes),
