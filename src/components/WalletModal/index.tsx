@@ -41,9 +41,13 @@ export default function WalletModal({
   supportedWallets,
   supportedChains,
 }: WalletModalProps) {
+  const { chainId } = useWeb3React();
+
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedChainId, setSelectedChainId] = useState(mainnet ? ChainId.AVALANCHE : ChainId.FUJI);
+  const [selectedChainId, setSelectedChainId] = useState(
+    chainId ? chainId : mainnet ? ChainId.AVALANCHE : ChainId.FUJI,
+  );
   const [pendingWallet, setPendingWallet] = useState<string | null>(null);
   const [pendingError, setPendingError] = useState<boolean>(false);
 
