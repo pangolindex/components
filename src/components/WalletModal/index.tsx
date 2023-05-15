@@ -200,7 +200,7 @@ export default function WalletModal({
                       key={index}
                     >
                       {selectedChainId === chain.chain_id ? <Bookmark /> : null}
-                      <StyledLogo srcs={[chain.logo ?? '']} alt={`${chain.name} Logo`} />
+                      <StyledLogo title={chain.name} srcs={[chain.logo ?? '']} alt={`${chain.name} Logo`} />
                     </ChainButton>
                   ))}
                 </ChainFrame>
@@ -221,7 +221,7 @@ export default function WalletModal({
                     if (!wallet.showWallet()) return null;
                     return (
                       <WalletButton variant="plain" onClick={() => onWalletClick(wallet)} key={index}>
-                        <StyledLogo srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
+                        <StyledLogo title={wallet.name} srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
                         <Text color="text1" fontSize="12px" fontWeight={600}>
                           {wallet.name}
                         </Text>
