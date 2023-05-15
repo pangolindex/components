@@ -74,7 +74,7 @@ const PriceInput: React.FC<PriceInputProps> = (props) => {
           onChange={(val) => {
             setLocalValue(val);
           }}
-          isNumeric={true}
+          isNumeric={localValue !== '∞'}
           placeholder="0.00"
         />
 
