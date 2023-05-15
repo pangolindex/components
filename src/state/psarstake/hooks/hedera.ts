@@ -3,12 +3,16 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Fraction, JSBI } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
+import { useSubgraphSarPositions, useSubgraphStakingContractInfo } from 'src/apollo/singleStake';
+import { BIGNUMBER_ZERO } from 'src/constants';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useHederaFn } from 'src/hooks/useConnector';
 import { useHederaSarNFTContract, useSarStakingContract } from 'src/hooks/useContract';
+import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
+import { calculateUserRewardRate } from 'src/state/ppangoChef/utils';
 import { existSarContract } from 'src/utils';
 import { useSingleCallResult, useSingleContractMultipleData } from '../../pmulticall/hooks';
 import { Position, URI } from '../types';
@@ -465,23 +469,19 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
   );
 }
 
-// Returns a list of user positions
-export function useHederaSarPositions() {
+/**
+ * This hook return a list of id of an account
+ * @returns Return an objetct with nfts id in hex string (0x1, 0x2, 0x3, ...) and nfts uris
+ */
+export function useHederaSarNftsIds() {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
-  const sarStakingContract = useSarStakingContract();
   const sarNFTcontract = useHederaSarNFTContract();
   const hederaFn = useHederaFn();
 
-  const balanceState = useSingleCallResult(sarNFTcontract, 'balanceOf', [account ?? undefined]);
-
-  const {
-    data,
-    isLoading: isLoadingIndexes,
-    isRefetching: isRefetchingIndexes,
-  } = useQuery(
-    ['hedera-nft-index', account, sarNFTcontract?.address, balanceState?.result?.[0]?.toString()],
+  const { data, isLoading, isRefetching } = useQuery(
+    ['hedera-nft-index', account, chainId, sarNFTcontract?.address],
     async () => {
       if (!sarNFTcontract) return { nftsIndexes: [], nftsURIs: [] };
 
@@ -489,8 +489,10 @@ export function useHederaSarPositions() {
       const _nftsIndexes: string[][] = [];
       const _nftURIs: (string | undefined)[] = [];
 
+      nfts.sort((a, b) => a.serial_number - b.serial_number);
+
       nfts.forEach((nft) => {
-        _nftsIndexes.push([nft.serial_number.toString()]);
+        _nftsIndexes.push([`0x${nft.serial_number.toString(16)}`]);
         // the metadata from this endpoint is returned in encoded in base64
         _nftURIs.push(Buffer.from(nft.metadata, 'base64').toString());
       });
@@ -501,6 +503,21 @@ export function useHederaSarPositions() {
       cacheTime: 60 * 1 * 1000, // 1 minute
     },
   );
+
+  return { data, isLoading, isRefetching };
+}
+
+/**
+ * This hooks get the user positions from SAR Single Stake via contract calls
+ * @returns Return if is loading and an array with alls positions of an user
+ */
+export function useHederaSarPositionsViaContract() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+
+  const sarStakingContract = useSarStakingContract();
+
+  const { data, isLoading: isLoadingIndexes, isRefetching: isRefetchingIndexes } = useHederaSarNftsIds();
 
   const nftsIndexes = data?.nftsIndexes;
   const nftsURIs = data?.nftsURIs;
@@ -542,9 +559,9 @@ export function useHederaSarPositions() {
       !isAllFetchedPendingReward ||
       isLoadingIndexes ||
       isRefetchingIndexes;
+
     // first moments loading is false and valid is false then is loading the query is true
     const isValid = isValidAmounts && isValidRewardRates && isValidPendingRewards;
-
     const error = existErrorAmount || existErrorRewardRate || existErrorPendingReward;
 
     if (error || !account || !existSarContract(chainId) || (!!nftsIndexes && nftsIndexes.length === 0)) {
@@ -566,22 +583,174 @@ export function useHederaSarPositions() {
       return JSON.parse(nftUri) as URI;
     });
 
-    return formatPosition(
-      _nftsURIs,
-      nftsIndexes,
-      positionsAmountState,
-      positionsRewardRateState,
-      positionsPedingRewardsState,
-      blockTimestamp ?? 0,
-      chainId,
+    const valuesVariables = (positionsAmountState || [])?.map((position) => position.result?.valueVariables);
+
+    const rewardRates: BigNumber[] = positionsRewardRateState.map((callState) =>
+      callState.result ? callState.result?.[0] : BIGNUMBER_ZERO,
     );
+
+    const pendingsRewards: BigNumber[] = positionsPedingRewardsState.map((callState) =>
+      callState.result ? callState.result?.[0] : BIGNUMBER_ZERO,
+    );
+
+    const formatedPositions = formatPosition({
+      nftsURIs: _nftsURIs,
+      nftsIndexes,
+      valuesVariables,
+      rewardRates,
+      pendingsRewards,
+      blockTimestamp: blockTimestamp ?? 0,
+      chainId,
+    });
+
+    return { positions: formatedPositions, isLoading: false };
   }, [
     account,
     positionsAmountState,
     positionsRewardRateState,
+    positionsPedingRewardsState,
     nftsURIs,
     nftsIndexes,
     isLoadingIndexes,
     isRefetchingIndexes,
   ]);
+}
+
+/**
+ * This hooks get the user positions from SAR Single Stake via subgraph
+ * @returns Return if is loading and an array with alls positions of an user
+ */
+export function useHederaSarPositionsViaSubgraph() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+
+  const sarStakingContract = useSarStakingContract();
+
+  const { data, isLoading: isLoadingIndexes, isRefetching: isRefetchingIndexes } = useHederaSarNftsIds();
+
+  const nftsIndexes = data?.nftsIndexes;
+  const nftsURIs = data?.nftsURIs;
+
+  const positionsIds = (nftsIndexes || []).map((nftIndex) => nftIndex[0]);
+  const {
+    data: subgraphPositions,
+    isLoading: isLoadingSubgraph,
+    isRefetching: isRefetchingSubgraph,
+  } = useSubgraphSarPositions(positionsIds);
+  const {
+    data: subgraphStakingContractInfo,
+    isLoading: isLoadingContractInfo,
+    isRefetching: isRefetchingContractInfo,
+  } = useSubgraphStakingContractInfo();
+
+  const positionsPedingRewardsState = useSingleContractMultipleData(
+    sarStakingContract,
+    'positionPendingRewards',
+    nftsIndexes ?? [],
+  );
+
+  const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
+  const blockTimestamp = useGetBlockTimestamp();
+
+  return useMemo(() => {
+    const isAllFetchedPendingReward = positionsPedingRewardsState.every((result) => !result.loading);
+    const isValidPendingRewards = positionsPedingRewardsState.every((result) => result.valid);
+
+    const isLoading =
+      !isAllFetchedPendingReward ||
+      isLoadingIndexes ||
+      isRefetchingIndexes ||
+      isLoadingSubgraph ||
+      isLoadingContractInfo ||
+      isRefetchingContractInfo ||
+      isRefetchingSubgraph;
+
+    // first moments loading is false and valid is false then is loading the query is true
+    const isValid = isValidPendingRewards;
+
+    if (
+      !account ||
+      !existSarContract(chainId) ||
+      (!!nftsIndexes && nftsIndexes.length === 0) ||
+      !subgraphStakingContractInfo ||
+      (subgraphPositions && subgraphPositions.length == 0)
+    ) {
+      return { positions: [] as Position[], isLoading: false };
+    }
+
+    // if is loading or exist error or not exist account return empty array
+    if (isLoading || !isValid || !nftsIndexes || !nftsURIs || !subgraphPositions) {
+      return { positions: [] as Position[], isLoading: true };
+    }
+
+    // we need to decode the base64 uri to get the real uri
+    const _nftsURIs = nftsURIs.map((uri) => {
+      if (!uri || uri.length === 0) {
+        return undefined;
+      }
+      //need to remove the data:application/json;base64, to decode the base64
+      const nftUri = Buffer.from(uri.replace('data:application/json;base64,', ''), 'base64').toString();
+      return JSON.parse(nftUri) as URI;
+    });
+
+    subgraphPositions.sort((a, b) => Number(a.id) - Number(b.id));
+
+    const valuesVariables = subgraphPositions.map((position) => ({
+      balance: BigNumber.from(position.balance),
+      sumOfEntryTimes: BigNumber.from(position.sumOfEntryTimes),
+    }));
+
+    const rewardRates = subgraphPositions.map((position) => {
+      const userValuesVariables = {
+        balance: BigNumber.from(position.balance),
+        sumOfEntryTimes: BigNumber.from(position.sumOfEntryTimes),
+      };
+      const totalValueVariables = {
+        balance: BigNumber.from(subgraphStakingContractInfo ? subgraphStakingContractInfo.balance : 0),
+        sumOfEntryTimes: BigNumber.from(subgraphStakingContractInfo ? subgraphStakingContractInfo.sumOfEntryTimes : 0),
+      };
+      const totalRewardRate = BigNumber.from(subgraphStakingContractInfo ? subgraphStakingContractInfo.rewardRate : 0);
+
+      const positionRewardRate = calculateUserRewardRate(
+        userValuesVariables,
+        totalValueVariables,
+        totalRewardRate,
+        blockTimestamp,
+      );
+      return positionRewardRate;
+    });
+
+    const pendingsRewards: BigNumber[] = positionsPedingRewardsState.map((callState) =>
+      callState.result ? callState.result?.[0] : BIGNUMBER_ZERO,
+    );
+
+    const formatedPositions = formatPosition({
+      nftsURIs: _nftsURIs,
+      nftsIndexes,
+      valuesVariables,
+      rewardRates,
+      pendingsRewards,
+      blockTimestamp: blockTimestamp ?? 0,
+      chainId,
+    });
+
+    return { positions: formatedPositions, isLoading: false };
+  }, [
+    account,
+    positionsPedingRewardsState,
+    nftsURIs,
+    nftsIndexes,
+    isLoadingIndexes,
+    isRefetchingIndexes,
+    subgraphPositions,
+  ]);
+}
+
+export function useHederaSarPositions() {
+  const shouldUseSubgraph = useShouldUseSubgraph();
+
+  const useHook = shouldUseSubgraph ? useHederaSarPositionsViaSubgraph : useHederaSarPositionsViaContract;
+
+  const res = useHook();
+  return res;
 }

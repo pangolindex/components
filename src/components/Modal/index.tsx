@@ -5,8 +5,8 @@ import { useEscapeKey } from 'src/hooks/useEscapeKey';
 import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StyledDialogOverlay = styled.div<{ background?: string; isOpen: boolean }>`
-  z-index: 999;
+const StyledDialogOverlay = styled.div<{ background?: string; isOpen: boolean; zIndex: number }>`
+  z-index: ${({ zIndex }) => zIndex};
   background-color: transparent;
   overflow: hidden;
   display: ${({ isOpen }) => (!isOpen ? 'none' : 'flex')};
@@ -37,9 +37,17 @@ interface ModalProps {
   children?: React.ReactNode;
   overlayBG?: string;
   closeOnClickOutside?: boolean;
+  zIndex?: number;
 }
 
-export default function Modal({ isOpen, onDismiss, children, overlayBG, closeOnClickOutside = true }: ModalProps) {
+export default function Modal({
+  isOpen,
+  onDismiss,
+  children,
+  overlayBG,
+  closeOnClickOutside = true,
+  zIndex = 999,
+}: ModalProps) {
   const node = useRef<HTMLDivElement>();
   const handleClose = useCallback(() => {
     onDismiss();
@@ -51,7 +59,7 @@ export default function Modal({ isOpen, onDismiss, children, overlayBG, closeOnC
 
   return (
     <Portal>
-      <StyledDialogOverlay isOpen={isOpen} background={overlayBG}>
+      <StyledDialogOverlay isOpen={isOpen} background={overlayBG} zIndex={zIndex}>
         {isOpen && <Container ref={node as any}>{children}</Container>}
       </StyledDialogOverlay>
     </Portal>

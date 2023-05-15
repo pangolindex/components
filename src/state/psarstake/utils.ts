@@ -13,7 +13,6 @@ import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
 import { useSarStakingContract } from 'src/hooks/useContract';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
-import { CallState } from '../pmulticall/hooks';
 import { useDerivedStakeInfo } from '../pstake/hooks/common';
 import { tryParseAmount } from '../pswap/hooks/common';
 import { useTransactionAdder } from '../ptransactions/hooks';
@@ -134,20 +133,21 @@ export function useDefaultSarStake() {
  * @param positionsPedingRewardsState The array of call state with peding amount of each position
  * @returns Returns the Array of Positions
  */
-export function formatPosition(
-  nftsURIs: (URI | undefined)[],
-  nftsIndexes: string[][],
-  positionsAmountState: CallState[],
-  positionsRewardRateState: CallState[],
-  positionsPedingRewardsState: CallState[],
-  blockTimestamp: number,
-  chainId: ChainId,
-) {
+export function formatPosition(args: {
+  nftsURIs: (URI | undefined)[];
+  nftsIndexes: string[][];
+  valuesVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber }[];
+  rewardRates: BigNumber[];
+  pendingsRewards: BigNumber[];
+  blockTimestamp: number;
+  chainId: ChainId;
+}) {
+  const { nftsURIs, nftsIndexes, valuesVariables, rewardRates, pendingsRewards, blockTimestamp, chainId } = args;
+
   const positions: (Position | undefined)[] = nftsURIs.map((uri, index) => {
-    const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
-      positionsAmountState[index].result?.valueVariables;
-    const rewardRate = positionsRewardRateState[index].result?.[0];
-    const pendingRewards = positionsPedingRewardsState[index].result?.[0];
+    const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined = valuesVariables[index];
+    const rewardRate = rewardRates[index];
+    const pendingRewards = pendingsRewards[index];
     const id = nftsIndexes[index][0];
     const balance = valueVariables?.balance ?? BigNumber.from(0);
     const apr = rewardRate
@@ -157,7 +157,7 @@ export function formatPosition(
       .div(balance.isZero() ? 1 : balance);
 
     if (!valueVariables || !rewardRate || !pendingRewards) {
-      return {} as Position;
+      return undefined;
     }
 
     const _uri =
@@ -174,7 +174,7 @@ export function formatPosition(
     } as Position;
   });
   // remove the empty positions
-  return { positions: positions.filter((position) => !!position) as Position[], isLoading: false };
+  return positions.filter((position) => !!position) as Position[];
 }
 
 export function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiquidityStaked?: TokenAmount) {
