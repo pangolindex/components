@@ -8,7 +8,7 @@ export interface LogoProps {
   alt?: string;
   className?: string;
   style?: any;
-  title: string;
+  title?: string;
 }
 
 const Logo = ({ srcs, alt, ...rest }: LogoProps) => {
