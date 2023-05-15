@@ -220,7 +220,15 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   1% slippage we have to hard code, otherwise any tx changing the reserve amounts in the pool would make it revert.
   also even after an hour or so, the rewards keep consantly increase, so 0% slippage would never work. 
   */
-  if (!earnedAmount.divide(userRewardRate.equalTo('0') ? '1' : userRewardRate).greaterThan(JSBI.BigInt(30 * 55))) {
+  if (
+    !earnedAmount
+      .divide(
+        userRewardRate.equalTo('0')
+          ? '1'
+          : userRewardRate.divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals))),
+      )
+      .greaterThan(JSBI.BigInt(30 * 55))
+  ) {
     _error = _error ?? t('pangoChef.highVolalityWarning');
   }
 
