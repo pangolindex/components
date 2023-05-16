@@ -15,7 +15,7 @@ import PositionList from './PositionList';
 import { SortingType } from './PositionList/types';
 import Sidebar from './Sidebar';
 import { MenuType } from './Sidebar/types';
-import { Cards, Content, GridContainer, MobileHeader, PageWrapper } from './styles';
+import { Cards, Content, GridContainer, Link, MobileHeader, PageWrapper } from './styles';
 
 const Elixir = () => {
   const { t } = useTranslation();
@@ -119,6 +119,11 @@ const Elixir = () => {
 
   return (
     <PageWrapper>
+      <Visible upToSmall>
+        <Link fontSize={14} color="white" cursor="pointer" as="a" href="/#/pool/standard">
+          {t('elixir.checkClassicFarms')}
+        </Link>
+      </Visible>
       <GridContainer>
         <Box display="flex" position={'relative'} height="100%">
           <Sidebar

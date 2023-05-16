@@ -237,7 +237,7 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
   // try to find v2 pair for selected tokens to get Initial Start Price
   const [pairState, pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]);
 
-  const pairExits = pairState === PairState.EXISTS;
+  const pairExist = pairState === PairState.EXISTS;
 
   useEffect(() => {
     onStartPriceInput('');
@@ -250,7 +250,7 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     chainId,
   );
   const v2PriceDependentAmount: CurrencyAmount | undefined = useMemo(() => {
-    if (v2PriceIndependentAmount && pairExits) {
+    if (v2PriceIndependentAmount && pairExist) {
       // we wrap the currencies just to get the price in terms of the other token
       const wrappedIndependentAmount = wrappedCurrencyAmount(v2PriceIndependentAmount, chainId);
 
@@ -268,14 +268,14 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     } else {
       return undefined;
     }
-  }, [pairExits, currencies, dependentField, v2PriceIndependentAmount, tokenA, chainId, tokenB, pair]);
+  }, [pairExist, currencies, dependentField, v2PriceIndependentAmount, tokenA, chainId, tokenB, pair]);
 
   useEffect(() => {
-    if (pairExits && v2PriceDependentAmount) {
+    if (pairExist && v2PriceDependentAmount) {
       onStartPriceInput(v2PriceDependentAmount?.toSignificant(24));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pairExits, v2PriceDependentAmount?.toSignificant(24)]);
+  }, [pairExist, v2PriceDependentAmount?.toSignificant(24)]);
 
   // pool
   const [poolState, pool] = usePool(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B], feeAmount);
@@ -633,6 +633,7 @@ export function useRangeHopCallbacks(
   // const tokenB = useMemo(() => quoteCurrency?.wrapped, [quoteCurrency]);
 
   const getDecrementLower = useCallback(() => {
+    console.log('getDecrementLower Girdi');
     if (tokenA && tokenB && typeof tickLower === 'number' && feeAmount) {
       const newPrice = tickToPrice(tokenA, tokenB, tickLower - TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
@@ -646,6 +647,7 @@ export function useRangeHopCallbacks(
   }, [tokenA, tokenB, tickLower, feeAmount, pool]);
 
   const getIncrementLower = useCallback(() => {
+    console.log('getIncrementLower Girdi');
     if (tokenA && tokenB && typeof tickLower === 'number' && feeAmount) {
       const newPrice = tickToPrice(tokenA, tokenB, tickLower + TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
@@ -659,6 +661,7 @@ export function useRangeHopCallbacks(
   }, [tokenA, tokenB, tickLower, feeAmount, pool]);
 
   const getDecrementUpper = useCallback(() => {
+    console.log('getDecrementUpper Girdi');
     if (tokenA && tokenB && typeof tickUpper === 'number' && feeAmount) {
       const newPrice = tickToPrice(tokenA, tokenB, tickUpper - TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
@@ -672,6 +675,7 @@ export function useRangeHopCallbacks(
   }, [tokenA, tokenB, tickUpper, feeAmount, pool]);
 
   const getIncrementUpper = useCallback(() => {
+    console.log('getIncrementUpper Girdi');
     if (tokenA && tokenB && typeof tickUpper === 'number' && feeAmount) {
       const newPrice = tickToPrice(tokenA, tokenB, tickUpper + TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);

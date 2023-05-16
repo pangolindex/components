@@ -241,14 +241,17 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
 
   const handleSetFullRange = useCallback(() => {
     getSetFullRange();
-
+    console.log('BILAL: pricesAtLimit', pricesAtLimit, pricesAtTicks);
+    console.log('HEYYY: ticksAtLimit: ', ticksAtLimit);
     const minPrice = pricesAtLimit[Bound.LOWER];
     const maxPrice = pricesAtLimit[Bound.UPPER];
     if (minPrice) {
+      console.log('minPrice: ', minPrice.toSignificant(5));
       onLeftRangeInput(minPrice.toSignificant(5));
     }
 
     if (maxPrice) {
+      console.log('maxPrice: ', maxPrice.toSignificant(5));
       onRightRangeInput(maxPrice.toSignificant(5));
     }
   }, [getSetFullRange, pricesAtLimit, onLeftRangeInput, onRightRangeInput]);
