@@ -15,5 +15,6 @@ export interface Position {
   apr: BigNumber;
   rewardRate: BigNumber;
   pendingRewards: BigNumber;
+  lastUpdate: BigNumber;
   uri: URI;
 }

@@ -128,9 +128,12 @@ export function useDefaultSarStake() {
  * Format the onchain data for all useSarPositions hooks
  * @param nftsURIs Array of the nft URI
  * @param nftsIndexes Array of array of the nft id `[[0x1], [0x2], [0x3]...]`
- * @param positionsAmountState The array of call state with staked amount of each position
- * @param positionsRewardRateState The array of call state with reward rate of each position
- * @param positionsPedingRewardsState The array of call state with peding amount of each position
+ * @param valuesVariables The array of call values variables of each position
+ * @param rewardRates The array with reward rate of each position
+ * @param pendingsRewards The array with pending rewards amount of each position
+ * @param lastUpdates The array with last update time of each position
+ * @param blockTimestamp The timestamp of the last block
+ * @param chainId Chain id
  * @returns Returns the Array of Positions
  */
 export function formatPosition(args: {
@@ -139,15 +142,18 @@ export function formatPosition(args: {
   valuesVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber }[];
   rewardRates: BigNumber[];
   pendingsRewards: BigNumber[];
+  lastUpdates: BigNumber[];
   blockTimestamp: number;
   chainId: ChainId;
 }) {
-  const { nftsURIs, nftsIndexes, valuesVariables, rewardRates, pendingsRewards, blockTimestamp, chainId } = args;
+  const { nftsURIs, nftsIndexes, valuesVariables, rewardRates, pendingsRewards, lastUpdates, blockTimestamp, chainId } =
+    args;
 
   const positions: (Position | undefined)[] = nftsURIs.map((uri, index) => {
     const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined = valuesVariables[index];
     const rewardRate = rewardRates[index];
     const pendingRewards = pendingsRewards[index];
+    const lastUpdate = lastUpdates[index];
     const id = nftsIndexes[index][0];
     const balance = valueVariables?.balance ?? BigNumber.from(0);
     const apr = rewardRate
@@ -171,6 +177,7 @@ export function formatPosition(args: {
       rewardRate: rewardRate,
       uri: _uri,
       pendingRewards: pendingRewards,
+      lastUpdate: lastUpdate,
     } as Position;
   });
   // remove the empty positions
