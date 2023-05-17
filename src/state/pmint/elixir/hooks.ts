@@ -633,7 +633,6 @@ export function useRangeHopCallbacks(
   // const tokenB = useMemo(() => quoteCurrency?.wrapped, [quoteCurrency]);
 
   const getDecrementLower = useCallback(() => {
-    console.log('getDecrementLower Girdi');
     if (tokenA && tokenB && typeof tickLower === 'number' && feeAmount) {
       const newPrice = tickToPrice(tokenA, tokenB, tickLower - TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
@@ -647,7 +646,6 @@ export function useRangeHopCallbacks(
   }, [tokenA, tokenB, tickLower, feeAmount, pool]);
 
   const getIncrementLower = useCallback(() => {
-    console.log('getIncrementLower Girdi');
     if (tokenA && tokenB && typeof tickLower === 'number' && feeAmount) {
       const newPrice = tickToPrice(tokenA, tokenB, tickLower + TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
@@ -661,7 +659,6 @@ export function useRangeHopCallbacks(
   }, [tokenA, tokenB, tickLower, feeAmount, pool]);
 
   const getDecrementUpper = useCallback(() => {
-    console.log('getDecrementUpper Girdi');
     if (tokenA && tokenB && typeof tickUpper === 'number' && feeAmount) {
       const newPrice = tickToPrice(tokenA, tokenB, tickUpper - TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
@@ -675,7 +672,6 @@ export function useRangeHopCallbacks(
   }, [tokenA, tokenB, tickUpper, feeAmount, pool]);
 
   const getIncrementUpper = useCallback(() => {
-    console.log('getIncrementUpper Girdi');
     if (tokenA && tokenB && typeof tickUpper === 'number' && feeAmount) {
       const newPrice = tickToPrice(tokenA, tokenB, tickUpper + TICK_SPACINGS[feeAmount]);
       return newPrice.toSignificant(5, undefined, Rounding.ROUND_UP);
