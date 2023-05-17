@@ -1,7 +1,7 @@
 import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector';
 import { useWeb3React } from '@web3-react/core';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -40,11 +40,13 @@ export default function WalletModal({
   onWalletConnect,
   supportedWallets,
   supportedChains,
+  initialChainId,
 }: WalletModalProps) {
   const { chainId } = useWeb3React();
 
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+
   const [selectedChainId, setSelectedChainId] = useState(
     chainId ? chainId : mainnet ? ChainId.AVALANCHE : ChainId.FUJI,
   );
@@ -52,6 +54,19 @@ export default function WalletModal({
   const [pendingError, setPendingError] = useState<boolean>(false);
 
   const { activate, deactivate, connector } = useWeb3React();
+
+  // if network selection change chain it will update selectedChain
+  useEffect(() => {
+    if (initialChainId) {
+      setSelectedChainId(initialChainId);
+    }
+  }, [initialChainId]);
+
+  useEffect(() => {
+    const element = document.getElementById(selectedChainId?.toString());
+
+    element?.scrollIntoView();
+  }, []);
 
   const { setWallets } = useApplicationState();
   const { userState } = useUserAtom();
@@ -67,7 +82,17 @@ export default function WalletModal({
 
   function handleChainType(value: NETWORK_TYPE) {
     setMainnet(value === NETWORK_TYPE.MAINNET);
-    setSelectedChainId(value === NETWORK_TYPE.MAINNET ? ChainId.AVALANCHE : ChainId.FUJI);
+    // when we switch the network type if already chainId selected it will be same
+    const finalChainId = initialChainId ?? chainId;
+    if (
+      finalChainId &&
+      ((value === NETWORK_TYPE.MAINNET && CHAINS[finalChainId]?.mainnet) ||
+        (value === NETWORK_TYPE.TESTNET && !CHAINS[finalChainId]?.mainnet))
+    ) {
+      setSelectedChainId(finalChainId);
+    } else {
+      setSelectedChainId(value === NETWORK_TYPE.MAINNET ? ChainId.AVALANCHE : ChainId.FUJI);
+    }
   }
 
   const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 250);
@@ -198,6 +223,7 @@ export default function WalletModal({
                       width="68px"
                       onClick={() => setSelectedChainId(chain.chain_id ?? ChainId.AVALANCHE)}
                       key={index}
+                      id={`${chain.chain_id}`}
                     >
                       {selectedChainId === chain.chain_id ? <Bookmark /> : null}
                       <StyledLogo title={chain.name} srcs={[chain.logo ?? '']} alt={`${chain.name} Logo`} />
