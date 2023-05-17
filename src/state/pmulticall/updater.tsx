@@ -12,7 +12,7 @@ import { Call, MulticallState, parseCallKey, useMulticallAtom } from './atom';
 // chunk calls so we do not exceed the gas limit
 const CALL_CHUNK_SIZE = 500;
 // for Hedera chain multicall not working with lots of calls because of gas limits, so reducing it down to less chunk size
-const HEDERA_CALL_CHUNK_SIZE = 20;
+const HEDERA_CALL_CHUNK_SIZE = 10;
 
 /**
  * Fetches a chunk of calls, enforcing a minimum block number constraint

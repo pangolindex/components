@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box } from 'src/components';
+import { Box, Text } from 'src/components';
 
 export const Cards = styled.div`
   display: flex;
@@ -10,6 +10,20 @@ export const Cards = styled.div`
   padding-top: 24px;
   white-space: nowrap;
   width: 100%;
+`;
+
+export const Link = styled(Text)`
+  border: none;
+  text-decoration: none;
+  background: none;
+
+  cursor: pointer;
+  color: ${({ theme }) => theme.white};
+  font-weight: 500;
+
+  :hover {
+    text-decoration: underline;
+  }
 `;
 
 export const Content = styled(Box)`

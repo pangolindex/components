@@ -32,7 +32,7 @@ export function usePangoChefExtraFarmApr(
     | undefined
   )[];
 
-  const multipliers = stakingInfo.rewardTokensMultiplier;
+  const multipliers = stakingInfo?.rewardTokensMultiplier;
 
   const pairPrice: Fraction | undefined = stakingInfo.pairPrice;
 
