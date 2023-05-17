@@ -44,7 +44,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
   const poolRewardRate =
     cheftType === ChefType.PANGO_CHEF ? (stakingInfo as PangoChefInfo)?.poolRewardRate : ZERO_FRACTION;
 
-  const userBalance = stakingInfo.stakedAmount;
+  const userBalance = stakingInfo?.stakedAmount;
 
   const extraFarmAPR = usePangoChefExtraFarmApr(
     rewardTokens,

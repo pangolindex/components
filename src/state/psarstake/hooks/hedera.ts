@@ -466,6 +466,8 @@ export function useHederaSarNftsIds() {
       const _nftsIndexes: string[][] = [];
       const _nftURIs: (string | undefined)[] = [];
 
+      nfts.sort((a, b) => a.serial_number - b.serial_number);
+
       nfts.forEach((nft) => {
         _nftsIndexes.push([`0x${nft.serial_number.toString(16)}`]);
         // the metadata from this endpoint is returned in encoded in base64
@@ -656,7 +658,7 @@ export function useHederaSarPositionsViaSubgraph() {
     }
 
     // if is loading or exist error or not exist account return empty array
-    if (isLoading || !isValid || !nftsIndexes || !nftsURIs) {
+    if (isLoading || !isValid || !nftsIndexes || !nftsURIs || !subgraphPositions) {
       return { positions: [] as Position[], isLoading: true };
     }
 
@@ -670,12 +672,14 @@ export function useHederaSarPositionsViaSubgraph() {
       return JSON.parse(nftUri) as URI;
     });
 
-    const valuesVariables = (subgraphPositions || [])?.map((position) => ({
+    subgraphPositions.sort((a, b) => Number(a.id) - Number(b.id));
+
+    const valuesVariables = subgraphPositions.map((position) => ({
       balance: BigNumber.from(position.balance),
       sumOfEntryTimes: BigNumber.from(position.sumOfEntryTimes),
     }));
 
-    const rewardRates = (subgraphPositions || [])?.map((position) => {
+    const rewardRates = subgraphPositions.map((position) => {
       const userValuesVariables = {
         balance: BigNumber.from(position.balance),
         sumOfEntryTimes: BigNumber.from(position.sumOfEntryTimes),
