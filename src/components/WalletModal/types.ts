@@ -7,4 +7,5 @@ export type WalletModalProps = {
   onWalletConnect: (wallet: string | null) => void;
   supportedWallets?: typeof SUPPORTED_WALLETS;
   supportedChains?: Chain[];
+  initialChainId?: number;
 };

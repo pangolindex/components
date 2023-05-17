@@ -1,5 +1,4 @@
 import { CHAINS, Chain } from '@pangolindex/sdk';
-import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
@@ -7,23 +6,16 @@ import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
-import { network } from 'src/connectors';
-import { useChainId } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
-import { useApplicationState } from 'src/state/papplication/atom';
-import { changeNetwork } from 'src/utils/wallet';
 import ChainItem from './ChainItem';
 import { ChainsList, Frame, Inputs, Wrapper } from './styled';
 import { NETWORK_TYPE, NetworkProps } from './types';
 
-export default function NetworkSelection({ open, closeModal }: NetworkProps) {
-  const { activate, connector, deactivate } = useWeb3React();
-  const chainId = useChainId();
+export default function NetworkSelection({ open, closeModal, onSelectChain }: NetworkProps) {
   const { t } = useTranslation();
+
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-
-  const { wallets } = useApplicationState();
 
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());
@@ -57,19 +49,7 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
   }
 
   async function onChainClick(chain: Chain) {
-    function onSuccess() {
-      closeModal();
-    }
-
-    await changeNetwork({
-      chain,
-      chainId,
-      wallets: Object.values(wallets),
-      activate,
-      deactivate,
-      callBack: onSuccess,
-      connector: connector ?? network,
-    });
+    onSelectChain(chain);
   }
 
   return (

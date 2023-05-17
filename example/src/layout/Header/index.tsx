@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { HeaderFrame, MenuLink, Menuwrapper } from './styled';
 import { useWeb3React } from '@web3-react/core';
 import {
@@ -12,13 +12,16 @@ import {
 } from '@components/index';
 import { useChainId } from '@components/hooks/index';
 import Logo from '../Logo';
-import { CHAINS, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, TokenAmount, Chain } from '@pangolindex/sdk';
 
 export default function Header() {
   const context = useWeb3React();
   const { account } = context;
   const chainId = useChainId();
   const [open, setOpen] = useState<boolean>(false);
+
+  const [selectedChain, setSelectedChain] = useState<Chain | undefined>(undefined);
+
   const [openNetworkSelection, setOpenNetworkSelection] = useState<boolean>(false);
   const [showTokenInfoModal, setShowTokenInfoModal] = useState<boolean>(false);
   const shortenAddress = shortenAddressMapping[chainId];
@@ -36,6 +39,15 @@ export default function Header() {
   function closeWalletModal() {
     setOpen(true);
   }
+
+  const handleSelectChain = useCallback(
+    (chain: Chain) => {
+      setOpenNetworkSelection(false);
+      setSelectedChain(chain);
+      setOpen(true);
+    },
+    [setOpenNetworkSelection, setSelectedChain, setOpen],
+  );
 
   return (
     <HeaderFrame>
@@ -78,12 +90,14 @@ export default function Header() {
         onWalletConnect={() => {
           setOpen(false);
         }}
+        initialChainId={selectedChain?.chain_id}
       />
       <NetworkSelection
         open={openNetworkSelection}
         closeModal={() => {
           setOpenNetworkSelection(false);
         }}
+        onSelectChain={handleSelectChain}
       />
       <TokenInfoModal
         open={showTokenInfoModal}
