@@ -273,16 +273,14 @@
     "viewExplorer": "View on explorer"
   },
   "walletModal": {
-    "wrongNetwork": "Wrong Network",
-    "errorConnecting": "Error connecting",
-    "pleaseConnectAvalanche": "Please connect to the appropriate Avalanche network.",
-    "switchAvalanche": "Switch to Avalanche Chain",
-    "errorConnectingRefresh": "Error connecting. Try refreshing the page.",
+    "errorConnecting": "Error connecting, try again.",
     "connectToWallet": "Connect to a wallet",
-    "newToAvalanche": "New to Avalanche? ",
-    "learnMoreWallet": "Learn more about setting up a wallet",
+    "connectWallet": "Connect Wallet",
+    "disconnect": "Disconnect",
     "initializing": "Initializing...",
-    "tryAgain": "Try Again"
+    "tryAgain": "Try Again",
+    "pleaseInstall": "Please Install.",
+    "trySearchChains": "Try searching for chains"
   },
   "web3ReactManager": {
     "unknownError": "Oops! An unknown error occurred. Please refresh the page, or visit from another browser or device."

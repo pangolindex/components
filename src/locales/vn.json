@@ -273,16 +273,14 @@
     "viewExplorer": "Xem trên explorer"
   },
   "walletModal": {
-    "wrongNetwork": "Sai mạng lưới",
-    "errorConnecting": "Kết nỗi xảy ra lỗi",
-    "pleaseConnectAvalanche": "Vui lòng kết nối với mạng Avalanche thích hợp.",
-    "switchAvalanche": "Chuyển sang chuỗi Avalanche",
-    "errorConnectingRefresh": "Lỗi khi kết nối.Thử làm mới trang",
-    "connectToWallet": "Kết nối tới một ví",
-    "newToAvalanche": "Bạn mới sử dụng Avalanche? ",
-    "learnMoreWallet": "Tìm hiểu thêm về cách thiết lập ví",
+    "errorConnecting": "Lỗi kết nối, hãy thử lại.",
+    "connectToWallet": "Kết nối với ví",
+    "connectWallet": "Kết nối ví",
+    "disconnect": "Ngắt kết nối",
     "initializing": "Đang khởi tạo...",
-    "tryAgain": "Thử lại"
+    "tryAgain": "Thử lại",
+    "pleaseInstall": "Xin vui lòng cài đặt.",
+    "trySearchChains": "Hãy thử tìm kiếm chuỗi"
   },
   "web3ReactManager": {
     "unknownError": "Oops! Đã xảy ra lỗi không xác định. Vui lòng làm mới trang hoặc truy cập từ trình duyệt hoặc thiết bị khác. "

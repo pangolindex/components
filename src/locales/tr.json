@@ -273,16 +273,14 @@
     "viewExplorer": "Gezginde görüntüle"
   },
   "walletModal": {
-    "wrongNetwork": "Yanlış Ağ",
-    "errorConnecting": "Bağlantı hatası",
-    "pleaseConnectAvalanche": "Lütfen doğru Avalanche ağına bağlanın.",
-    "switchAvalanche": "Avalanche Chain’e Geç",
-    "errorConnectingRefresh": "Bağlantı hatası. Sayfayı yenilemeyi deneyin.",
-    "connectToWallet": "Cüzdanı Bağla",
-    "newToAvalanche": "İlk kez mi Avalanche kullanıyorsunuz?",
-    "learnMoreWallet": "Cüzdan oluşturma hakkında daha fazla bilgi edinin",
+    "errorConnecting": "Bağlantı hatası, tekrar deneyin.",
+    "connectToWallet": "Bir cüzdana bağlanın",
+    "connectWallet": "Cüzdanı Bağla",
+    "disconnect": "Bağlantıyı kes",
     "initializing": "Başlatılıyor...",
-    "tryAgain": "Tekrar Deneyin"
+    "tryAgain": "Tekrar deneyin",
+    "pleaseInstall": "Lütfen yükleyin.",
+    "trySearchChains": "Ağı aramayı deneyin"
   },
   "web3ReactManager": {
     "unknownError": "Beklenmedik bir hata oluştu. Lütfen sayfayı yenileyin veya başka bir tarayıcıdan/cihazdan tekrar deneyin."

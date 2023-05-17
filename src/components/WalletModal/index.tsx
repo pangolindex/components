@@ -179,7 +179,7 @@ export default function WalletModal({
             addonAfter={<Search color={theme.text1} size={28} />}
             onChange={handleSearch}
             value={searchQuery}
-            placeholder="Try searching for chains"
+            placeholder={t('walletModal.trySearchChains')}
           />
           <ToggleButtons
             options={[NETWORK_TYPE.MAINNET, NETWORK_TYPE.TESTNET]}

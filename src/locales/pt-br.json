@@ -273,16 +273,14 @@
     "viewExplorer": "Ver no explorador"
   },
   "walletModal": {
-    "wrongNetwork": "Rede errada",
-    "errorConnecting": "Erro ao conectar",
-    "pleaseConnectAvalanche": "Por favor, conecte-se à rede de avalanche apropriada.",
-    "switchAvalanche": "Mude para Avalanche Chain",
-    "errorConnectingRefresh": "Erro ao conectar. Tente atualizar a página.",
-    "connectToWallet": "Conectar a uma carteira",
-    "newToAvalanche": "Novo na Avalanche? ",
-    "learnMoreWallet": "Saiba mais sobre como configurar uma carteira",
+    "errorConnecting": "Erro ao connector, tente novamente.",
+    "connectToWallet": "Conecte a uma carteira",
+    "connectWallet": "Conectar Carteira",
+    "disconnect": "Desconectar",
     "initializing": "Inicializando...",
-    "tryAgain": "Tente novamente"
+    "tryAgain": "Tente novamente",
+    "pleaseInstall": "Por favor installe.",
+    "trySearchChains": "Tente procurar por chains"
   },
   "web3ReactManager": {
     "unknownError": "Oops! Ocorreu um erro desconhecido. Por favor, atualize a página ou visite de outro navegador ou dispositivo."

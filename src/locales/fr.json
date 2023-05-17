@@ -273,16 +273,14 @@
     "viewExplorer": "Voir sur l'explorateur"
   },
   "walletModal": {
-    "wrongNetwork": "Mauvais réseau",
-    "errorConnecting": "Erreur de connexion",
-    "pleaseConnectAvalanche": "Veuillez vous connecter au réseau Avalanche approprié.",
-    "switchAvalanche": "Passer à la chaîne Avalanche",
-    "errorConnectingRefresh": "Erreur de connexion. Essayez de rafraîchir la page.",
-    "connectToWallet": "Se connecter à un portefeuille",
-    "newToAvalanche": "Nouveau sur Avalanche ? ",
-    "learnMoreWallet": "En savoir plus sur la création d'un portefeuille",
+    "errorConnecting": "Erreur de connexion, réessayez.",
+    "connectToWallet": "Connectez-vous à un portefeuille",
+    "connectWallet": "Connecter le portefeuille",
+    "disconnect": "Déconnecter",
     "initializing": "Initialisation...",
-    "tryAgain": "Essayez à nouveau"
+    "tryAgain": "Essayer à nouveau",
+    "pleaseInstall": "Se il vous plaît installer.",
+    "trySearchChains": "Essayez de rechercher des chaînes"
   },
   "web3ReactManager": {
     "unknownError": "Oups ! Une erreur inconnue s'est produite. Veuillez rafraîchir la page ou la visiter à partir d'un autre navigateur ou appareil."

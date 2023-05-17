@@ -1,6 +1,7 @@
 import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useContext, useState } from 'react';
 import { AlertCircle, ArrowLeft, Download, LogIn, LogOut } from 'react-feather';
+import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Text } from 'src/components';
 import { Wallet } from 'src/wallet/classes/wallet';
@@ -19,6 +20,8 @@ export default function WalletView({
 }) {
   const { deactivate } = useWeb3React();
   const theme = useContext(ThemeContext);
+
+  const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,7 +45,7 @@ export default function WalletView({
         <Link href={wallet.href ?? undefined} target="_blank">
           <Download color={theme.primary} />
           <Text color="text1" marginLeft="5px">
-            Please Install
+            {t('walletModal.pleaseInstall')}
           </Text>
         </Link>
       );
@@ -53,7 +56,7 @@ export default function WalletView({
         <ErrorButton variant="outline" onClick={onWalletConnect}>
           <AlertCircle color={theme.red1} />
           <Text color="red1" marginLeft="5px">
-            Error Try Again
+            {t('walletModal.errorConnecting')}
           </Text>
         </ErrorButton>
       );
@@ -63,7 +66,7 @@ export default function WalletView({
       return (
         <Button variant="primary" onClick={onDisconnect} width="max-content" padding="10px">
           <LogOut />
-          <Text marginLeft="5px">Disconnect</Text>
+          <Text marginLeft="5px">{t('walletModal.disconnect')}</Text>
         </Button>
       );
     }
@@ -72,7 +75,7 @@ export default function WalletView({
       return (
         <Box display="flex" marginTop="20px" alignItems="center">
           <Loader size="24px" />
-          <Text color="text1">Initializing...</Text>
+          <Text color="text1">{t('walletModal.initializing')}</Text>
         </Box>
       );
     }
@@ -80,7 +83,7 @@ export default function WalletView({
     return (
       <Button variant="primary" onClick={onWalletConnect} width="max-content" padding="10px">
         <LogIn />
-        <Text marginLeft="5px">Connect Wallet</Text>
+        <Text marginLeft="5px">{t('walletModal.connectWallet')}</Text>
       </Button>
     );
   }, [isInstalled, error, wallet.isActive, isLoading]);
