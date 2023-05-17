@@ -1,7 +1,7 @@
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { Near, WalletConnection, keyStores } from 'near-api-js';
-import { JsonRpcProvider } from 'near-api-js/lib/providers';
 
 export interface NearConfigType {
   networkId: string;
