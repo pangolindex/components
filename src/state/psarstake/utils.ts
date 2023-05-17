@@ -128,9 +128,12 @@ export function useDefaultSarStake() {
  * Format the onchain data for all useSarPositions hooks
  * @param nftsURIs Array of the nft URI
  * @param nftsIndexes Array of array of the nft id `[[0x1], [0x2], [0x3]...]`
- * @param positionsAmountState The array of call state with staked amount of each position
- * @param positionsRewardRateState The array of call state with reward rate of each position
- * @param positionsPedingRewardsState The array of call state with peding amount of each position
+ * @param valuesVariables The array of call values variables of each position
+ * @param rewardRates The array with reward rate of each position
+ * @param pendingsRewards The array with pending rewards amount of each position
+ * @param lastUpdates The array with last update time of each position
+ * @param blockTimestamp The timestamp of the last block
+ * @param chainId Chain id
  * @returns Returns the Array of Positions
  */
 export function formatPosition(args: {
