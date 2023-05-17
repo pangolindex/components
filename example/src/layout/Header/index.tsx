@@ -66,7 +66,7 @@ export default function Header() {
             {chain.name}
           </Button>
           <Button variant="primary" onClick={closeWalletModal} width="200px" height="40px">
-            {account ? `Connected ${shortenAddress(account)}` : 'Connect Wallet'}
+            {account ? `Connected ${shortenAddress(account, chainId)}` : 'Connect Wallet'}
           </Button>
         </Box>
       </Box>

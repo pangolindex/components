@@ -386,7 +386,7 @@ export function filterTokenOrChain(
 // this mapping is useful for transforming address before displaying it on UI
 // for EVM chain this is shortening the address to fit it in UI
 // for Hedera chain this is converting address to Hedera Account Id
-export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+export const shortenAddressMapping: { [chainId in ChainId]: (address: string, chainId: ChainId) => string | false } = {
   [ChainId.FUJI]: shortenAddress,
   [ChainId.AVALANCHE]: shortenAddress,
   [ChainId.WAGMI]: shortenAddress,
@@ -420,13 +420,15 @@ export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => stri
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALANCHE, chars = 4): string {
   const parsed = isEvmChain(chainId) ? isAddress(address) : address;
+  console.log({ parsed, chainId });
   if (!parsed) {
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
   return `${parsed.substring(0, chars)}...${parsed.substring(parsed.length - chars)}`;
 }
 
-export function shortenHederaAddress(address: string) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function shortenHederaAddress(address: string, _chainId: ChainId) {
   return hethers.utils.asAccountString(address);
 }
 
