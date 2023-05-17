@@ -237,7 +237,7 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
   // try to find v2 pair for selected tokens to get Initial Start Price
   const [pairState, pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]);
 
-  const pairExits = pairState === PairState.EXISTS;
+  const pairExist = pairState === PairState.EXISTS;
 
   useEffect(() => {
     onStartPriceInput('');
@@ -250,7 +250,7 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     chainId,
   );
   const v2PriceDependentAmount: CurrencyAmount | undefined = useMemo(() => {
-    if (v2PriceIndependentAmount && pairExits) {
+    if (v2PriceIndependentAmount && pairExist) {
       // we wrap the currencies just to get the price in terms of the other token
       const wrappedIndependentAmount = wrappedCurrencyAmount(v2PriceIndependentAmount, chainId);
 
@@ -268,14 +268,14 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     } else {
       return undefined;
     }
-  }, [pairExits, currencies, dependentField, v2PriceIndependentAmount, tokenA, chainId, tokenB, pair]);
+  }, [pairExist, currencies, dependentField, v2PriceIndependentAmount, tokenA, chainId, tokenB, pair]);
 
   useEffect(() => {
-    if (pairExits && v2PriceDependentAmount) {
+    if (pairExist && v2PriceDependentAmount) {
       onStartPriceInput(v2PriceDependentAmount?.toSignificant(24));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pairExits, v2PriceDependentAmount?.toSignificant(24)]);
+  }, [pairExist, v2PriceDependentAmount?.toSignificant(24)]);
 
   // pool
   const [poolState, pool] = usePool(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B], feeAmount);

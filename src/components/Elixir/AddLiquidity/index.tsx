@@ -241,7 +241,6 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
 
   const handleSetFullRange = useCallback(() => {
     getSetFullRange();
-
     const minPrice = pricesAtLimit[Bound.LOWER];
     const maxPrice = pricesAtLimit[Bound.UPPER];
     if (minPrice) {
