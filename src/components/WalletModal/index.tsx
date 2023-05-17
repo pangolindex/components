@@ -1,4 +1,4 @@
-import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
+import { CHAINS, ChainId } from '@pangolindex/sdk';
 import { UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector';
 import { useWeb3React } from '@web3-react/core';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -177,9 +177,8 @@ export default function WalletModal({
       await wallet.tryActivation(activate, onSuccess, onError);
 
       const chain = CHAINS[selectedChainId];
-      if (wallet.isActive && chain.network_type === NetworkType.EVM) {
+      if (wallet.isActive) {
         await changeNetwork({
-          chainId: selectedChainId,
           connector: wallet.connector,
           wallets: Object.values(wallets),
           chain,

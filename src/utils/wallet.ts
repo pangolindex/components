@@ -35,7 +35,6 @@ export function getInstalledEvmWallet(wallets: Wallet[]) {
 /**
  * This function request the wallet provider to change the chain
  * @param chain Chain to be changed
- * @param chainId active chain id
  * @param connector The connector, injected, haspack, etc. Instance of AbstractConnector
  * @param wallets array of wallets used in app
  * @param callBack Callback function to executed on success
@@ -44,14 +43,22 @@ export function getInstalledEvmWallet(wallets: Wallet[]) {
  */
 export async function changeNetwork(args: {
   chain: Chain;
-  chainId: ChainId;
   connector: AbstractConnector;
   wallets: Wallet[];
   callBack?: () => void;
   activate: activeFunctionType;
   deactivate: () => void;
 }) {
-  const { chain, chainId, connector, wallets, callBack, deactivate, activate } = args;
+  const { chain, connector, wallets, callBack, deactivate, activate } = args;
+
+  const chainId = await connector.getChainId().then((chainId) => {
+    return Number(chainId);
+  });
+
+  // avoid unecessary change network to same connected network
+  if (chain.chain_id === chainId) {
+    return;
+  }
 
   if (connector instanceof NetworkConnector) {
     connector.changeChain(chain.chain_id ?? 43114);
@@ -60,7 +67,7 @@ export async function changeNetwork(args: {
 
   const connectedChain = CHAINS[chainId];
   let deactivatedWallet = false;
-  // we need to deactivate the web3react when user chanve for another chain type or
+  // we need to deactivate the web3react when user change for another chain type or
   // when user want to change to any hedera network
   if (connectedChain.network_type !== chain.network_type || chain.network_type === NetworkType.HEDERA) {
     deactivate();
