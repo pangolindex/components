@@ -4,7 +4,7 @@ import * as React from 'react';
 export type NetworkProps = {
   open: boolean;
   closeModal: () => void;
-  onSelectChain: (chain: Chain) => void;
+  onToogleWalletModal: (chain: Chain) => void;
 };
 
 export enum NETWORK_TYPE {

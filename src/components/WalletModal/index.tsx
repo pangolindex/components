@@ -62,16 +62,10 @@ export default function WalletModal({
       // if network selection change chain it will update selectedChain
       setSelectedChainId(initialChainId);
 
-      // here we cvan select networktype based on chain selected from Networkselection
+      // here we can select networktype based on chain selected from Networkselection
       setMainnet(CHAINS[initialChainId]?.mainnet);
 
-      //when chain was change and wallet already connected so it will be first disconnect
-      if (userState?.wallet) {
-        const wallet = wallets[userState?.wallet];
-        if (wallet.isActive) {
-          wallet?.disconnect();
-        }
-      }
+      setPendingWallet(null);
     }
   }, [initialChainId]);
 
@@ -113,8 +107,8 @@ export default function WalletModal({
 
   const wallets = useMemo(() => {
     const memoWallets = supportedWallets ?? SUPPORTED_WALLETS;
-    // if you use custom wallets we need to populate the state with these
-    // wallets so we can deactivate it in the network selection component
+    // if you use custom wallets we need to populate the app state with these
+    // wallets so we can access it in another part of the app
     setWallets(memoWallets);
     return memoWallets;
   }, [supportedWallets]);

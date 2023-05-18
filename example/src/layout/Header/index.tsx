@@ -97,7 +97,7 @@ export default function Header() {
         closeModal={() => {
           setOpenNetworkSelection(false);
         }}
-        onSelectChain={handleSelectChain}
+        onToogleWalletModal={handleSelectChain}
       />
       <TokenInfoModal
         open={showTokenInfoModal}
