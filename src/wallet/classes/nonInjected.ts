@@ -68,7 +68,7 @@ export class HashPackWallet extends Wallet {
       connector.changeConfig(chainId);
     }
 
-    super.tryActivation({ activate, onSuccess, onError });
+    await super.tryActivation({ activate, onSuccess, onError });
   }
 
   public installed(): boolean {
