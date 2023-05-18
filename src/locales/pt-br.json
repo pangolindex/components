@@ -280,7 +280,8 @@
     "initializing": "Inicializando...",
     "tryAgain": "Tente novamente",
     "pleaseInstall": "Por favor installe.",
-    "trySearchChains": "Tente procurar por chains"
+    "trySearchChains": "Tente procurar por chains",
+    "notFound": "Não foram encontradas carteiras."
   },
   "web3ReactManager": {
     "unknownError": "Oops! Ocorreu um erro desconhecido. Por favor, atualize a página ou visite de outro navegador ou dispositivo."

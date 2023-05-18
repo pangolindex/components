@@ -280,7 +280,8 @@
     "initializing": "Initializing...",
     "tryAgain": "Try Again",
     "pleaseInstall": "Please Install.",
-    "trySearchChains": "Try searching for chains"
+    "trySearchChains": "Try searching for chains",
+    "notFound": "No wallets found."
   },
   "web3ReactManager": {
     "unknownError": "Oops! An unknown error occurred. Please refresh the page, or visit from another browser or device."

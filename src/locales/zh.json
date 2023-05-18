@@ -280,7 +280,8 @@
     "initializing": "正在初始化...",
     "tryAgain": "再试一次",
     "pleaseInstall": "请安装。",
-    "trySearchChains": "尝试搜索连锁店"
+    "trySearchChains": "尝试搜索连锁店",
+    "notFound": "找不到钱包。"
   },
   "web3ReactManager": {
     "unknownError": "哎呀！出现未知错误。请刷新页面，或从其他浏览器或设备访问。"

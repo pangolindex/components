@@ -34,7 +34,8 @@ export abstract class Wallet {
    * @param href Link of the wallet website
    * @param icon Link of the wallet icon
    * @param description Breef description of wallet
-   * @param supportedChains Array of NetworkType that this chain supports
+   * @param supportedChains Array of NetworkType that this wallet support
+   * @param supportedChainsId Array of Chain ids that this wallet support
    */
   constructor(args: {
     connector: PangolinConnector;

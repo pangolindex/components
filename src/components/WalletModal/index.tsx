@@ -115,13 +115,20 @@ export default function WalletModal({
 
   const filteredWallets = useMemo(() => {
     const selectedChain = CHAINS[selectedChainId];
-    // adding additional wallets in wallets mapping
+    // return  an array with filtered wallets
+    // if selected chain by user supports this wallet (have same network type)
+    // and name of wallet includes the search name
+    // and should show the wallet
+    // case exist array of supported chain id in wallet  check this too
     return Object.values(wallets)
       .filter((wallet) => {
+        // if selected chain by user supports this wallet and
         const bool = Boolean(
           wallet.supportedChains.includes(selectedChain.network_type) &&
-            wallet.name.toLowerCase().includes(debouncedSearchQuery),
+            wallet.name.toLowerCase().includes(debouncedSearchQuery) &&
+            wallet.showWallet(),
         );
+
         if (!wallet.supportedChainsId) {
           return bool;
         }
@@ -242,20 +249,27 @@ export default function WalletModal({
                 height="100%"
                 renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
               >
-                <WalletFrame>
-                  {filteredWallets.map((wallet, index) => {
-                    if (!wallet.showWallet()) return null;
-                    return (
-                      <WalletButton variant="plain" onClick={() => onWalletClick(wallet)} key={index}>
-                        <StyledLogo title={wallet.name} srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
-                        <Text color="text1" fontSize="12px" fontWeight={600}>
-                          {wallet.name}
-                        </Text>
-                        {wallet.isActive ? <GreenCircle /> : null}
-                      </WalletButton>
-                    );
-                  })}
-                </WalletFrame>
+                {filteredWallets.length === 0 ? (
+                  <Box width="100%">
+                    <Text color="text1" textAlign="center">
+                      {t('walletModal.notFound')}
+                    </Text>
+                  </Box>
+                ) : (
+                  <WalletFrame>
+                    {filteredWallets.map((wallet, index) => {
+                      return (
+                        <WalletButton variant="plain" onClick={() => onWalletClick(wallet)} key={index}>
+                          <StyledLogo title={wallet.name} srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
+                          <Text color="text1" fontSize="12px" fontWeight={600}>
+                            {wallet.name}
+                          </Text>
+                          {wallet.isActive ? <GreenCircle /> : null}
+                        </WalletButton>
+                      );
+                    })}
+                  </WalletFrame>
+                )}
               </Scrollbars>
             )}
           </Box>
