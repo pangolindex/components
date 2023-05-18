@@ -124,8 +124,6 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
     }
   };
 
-  console.log('stakingInfo', stakingInfo);
-
   return (
     <Panel>
       <Box display="flex" alignItems="center" justifyContent="space-between">
