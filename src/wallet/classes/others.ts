@@ -35,15 +35,19 @@ export class GnosisSafeWallet extends Wallet {
     return this.isInSafe;
   }
 
-  override async tryActivation(
-    activate: activeFunctionType,
-    onSuccess?: () => void,
-    onError?: (error: unknown) => Promise<void>,
-  ) {
+  override async tryActivation({
+    activate,
+    onSuccess,
+    onError,
+  }: {
+    activate: activeFunctionType;
+    onSuccess?: () => void;
+    onError?: (error: unknown) => Promise<void>;
+  }) {
     if (!this.triedSafe) {
       const loadedSafe = await (this.connector as SafeAppConnector).isSafeApp();
       if (loadedSafe) {
-        await super.tryActivation(activate, onSuccess, onError);
+        await super.tryActivation({ activate, onSuccess, onError });
       }
       this.triedSafe = true;
     }

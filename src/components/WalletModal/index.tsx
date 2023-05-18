@@ -152,7 +152,7 @@ export default function WalletModal({
           // this is just a fallback when user rejects the request
           // because the @web3-react remove the chainid account and libarary from state
           // and this just to reconnect the previus wallet again
-          previousWallet?.tryActivation(activate);
+          previousWallet?.tryActivation({ activate });
         }
       }
     }
@@ -175,7 +175,7 @@ export default function WalletModal({
         await wait(500);
       }
 
-      await wallet.tryActivation(activate, onSuccess, onError);
+      await wallet.tryActivation({ activate, onSuccess, onError, chainId: selectedChainId });
 
       const chain = CHAINS[selectedChainId];
       if (wallet.isActive) {

@@ -13,7 +13,7 @@ import {
 } from '@hashgraph/sdk';
 import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
-import { HashConnector, mainnetHashConnect, testnetHashConnect } from 'src/connectors';
+import { HashConnector, hashConnect } from 'src/connectors';
 import { PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
 
 export const TRANSACTION_MAX_FEES = {
@@ -299,12 +299,12 @@ export class Hedera {
   }
 
   get client(): Client {
-    const chainId = this.hashConnect.getChainId();
+    const chainId = this.hashConnect.activeChainId;
     return chainId === ChainId.HEDERA_MAINNET ? Client.forMainnet() : Client.forTestnet();
   }
 
   get HEDERA_API_BASE_URL(): string {
-    const chainId = this.hashConnect.getChainId();
+    const chainId = this.hashConnect.activeChainId;
     return chainId === ChainId.HEDERA_MAINNET
       ? `https://mainnet-public.mirrornode.hedera.com`
       : `https://testnet.mirrornode.hedera.com`;
@@ -1096,7 +1096,6 @@ export class Hedera {
   }
 }
 
-export const mainnetHederaFn = new Hedera(mainnetHashConnect);
-export const testnetHederaFn = new Hedera(testnetHashConnect);
+export const hederaFn = new Hedera(hashConnect);
 
 /* eslint-enable max-lines */

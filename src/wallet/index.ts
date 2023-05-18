@@ -3,7 +3,6 @@ import { isMobile } from 'react-device-detect';
 import injectWalletIcon from 'src/assets/images/inject-wallet.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
 import rabbyIcon from 'src/assets/images/rabby.svg';
-import { mainnetHashConnect, testnetHashConnect } from 'src/connectors';
 import { AvalancheCoreWallet, BitKeepWallet, InjectedWallet, TalismanWallet } from './classes/injected';
 import { HashPackWallet, NearWallet, XDefiWallet } from './classes/nonInjected';
 import { CoinbaseWallet, GnosisSafeWallet, WalletConnect } from './classes/others';
@@ -40,8 +39,7 @@ export const avalancheCoreWallet = new AvalancheCoreWallet();
 
 export const xDefiWallet = new XDefiWallet();
 export const nearWallet = new NearWallet();
-export const hashPack = new HashPackWallet(mainnetHashConnect, [ChainId.HEDERA_MAINNET]);
-export const hashPackTestnet = new HashPackWallet(testnetHashConnect, [ChainId.HEDERA_TESTNET]);
+export const hashPack = new HashPackWallet([ChainId.HEDERA_MAINNET, ChainId.HEDERA_TESTNET]);
 
 export const gnosisSafeWallet = new GnosisSafeWallet();
 export const coinbaseWallet = new CoinbaseWallet();
@@ -57,7 +55,6 @@ export const SUPPORTED_WALLETS: { [key: string]: Wallet } = {
   XDEFI: xDefiWallet,
   //NEAR: nearWallet,
   HASH_CONNECT: hashPack,
-  HASH_CONNECT_TESTNET: hashPackTestnet,
   GNOSISSAFE: gnosisSafeWallet,
   WALLET_LINK: coinbaseWallet,
   WALLET_CONNECT: walletConnect,

@@ -2,8 +2,8 @@ import { ChainId, NetworkType } from '@pangolindex/sdk';
 import hashIcon from 'src/assets/images/hashConnect.png';
 import nearIcon from 'src/assets/images/near.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
-import { HashConnector, near, xDefi } from 'src/connectors';
-import { Wallet } from './wallet';
+import { HashConnector, hashConnect, near, xDefi } from 'src/connectors';
+import { Wallet, activeFunctionType } from './wallet';
 
 export class XDefiWallet extends Wallet {
   constructor() {
@@ -39,9 +39,9 @@ export class NearWallet extends Wallet {
   }
 }
 export class HashPackWallet extends Wallet {
-  constructor(connector: HashConnector, supportedChainsId: ChainId[]) {
+  constructor(supportedChainsId: ChainId[]) {
     super({
-      connector,
+      connector: hashConnect,
       name: 'HashPack Wallet',
       href: 'https://www.hashpack.app/',
       icon: hashIcon,
@@ -51,7 +51,27 @@ export class HashPackWallet extends Wallet {
     });
   }
 
-  installed(): boolean {
+  public override async tryActivation({
+    activate,
+    onSuccess,
+    onError,
+    chainId,
+  }: {
+    activate: activeFunctionType;
+    onSuccess?: () => void;
+    onError?: (error: unknown) => Promise<void>;
+    chainId?: ChainId;
+  }) {
+    const connector = this.connector as HashConnector;
+    const connectorChainId = await connector.getChainId();
+    if (chainId && chainId !== connectorChainId) {
+      connector.changeConfig(chainId);
+    }
+
+    super.tryActivation({ activate, onSuccess, onError });
+  }
+
+  public installed(): boolean {
     return true;
   }
 }

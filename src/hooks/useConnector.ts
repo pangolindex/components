@@ -8,7 +8,7 @@ import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnecto
 import { IS_IN_IFRAME } from 'src/constants';
 import { useApplicationState } from 'src/state/papplication/atom';
 import { useUserAtom } from 'src/state/puser/atom';
-import { mainnetHederaFn, testnetHederaFn } from 'src/utils/hedera';
+import { hederaFn } from 'src/utils/hedera';
 import { disconnectWallets, getWalletKey } from 'src/utils/wallet';
 import { SUPPORTED_WALLETS, gnosisSafeWallet, hashPack, injectWallet } from 'src/wallet';
 import { Wallet, WalletEvents, walletEvent } from 'src/wallet/classes/wallet';
@@ -19,11 +19,7 @@ export function useHederaFn() {
   const chainId = useChainId();
 
   return useMemo(() => {
-    if (chainId === ChainId.HEDERA_TESTNET) {
-      return testnetHederaFn;
-    }
-
-    return mainnetHederaFn;
+    return hederaFn;
   }, [chainId]);
 }
 
@@ -92,7 +88,7 @@ export function useEagerConnect(tryToActive: boolean) {
             setTried(true);
           }
         }
-        await injectWallet.tryActivation(activate, undefined, onError);
+        await injectWallet.tryActivation({ activate, onError });
         setTried(true);
       } catch (error) {}
     } else {
@@ -105,16 +101,19 @@ export function useEagerConnect(tryToActive: boolean) {
     if (!triedSafe && previusWallet === gnosisSafeWallet) {
       const loadedInSafe = await gnosisSafe.isSafeApp();
       if (loadedInSafe) {
-        await gnosisSafeWallet.tryActivation(activate, undefined, async () => setTriedSafe(true));
+        await gnosisSafeWallet.tryActivation({ activate, onError: async () => setTriedSafe(true) });
       } else {
         setTriedSafe(true);
       }
     } else if (previusWallet?.connector?.isAuthorized) {
       const isAuthorized = await previusWallet.connector.isAuthorized();
       if (isAuthorized) {
-        await previusWallet.tryActivation(activate, undefined, async () => {
-          updateWallet(null);
-          setTried(true);
+        await previusWallet.tryActivation({
+          activate,
+          onError: async () => {
+            updateWallet(null);
+            setTried(true);
+          },
         });
       } else {
         updateWallet(null);
@@ -158,8 +157,11 @@ export function useEagerConnect(tryToActive: boolean) {
     // Here when load in iframe  we need to internally activate connector to connect account
     const emitterFnForActivateConnector = (isIframeEventFound: boolean) => {
       console.log('received hashpack emit event ACTIVATE_CONNECTOR in provider', isIframeEventFound);
-      hashPack.tryActivation(activate, () => {
-        updateWallet('HASH_CONNECT');
+      hashPack.tryActivation({
+        activate,
+        onSuccess: () => {
+          updateWallet('HASH_CONNECT');
+        },
       });
     };
 

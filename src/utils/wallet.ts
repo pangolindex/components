@@ -1,8 +1,9 @@
 import { CHAINS, Chain, ChainId, NetworkType } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import deepEqual from 'deep-equal';
+import { HashConnector } from 'src/connectors';
 import { NetworkConnector } from 'src/connectors/NetworkConnector';
-import { hashPack, hashPackTestnet, injectWallet } from 'src/wallet';
+import { injectWallet } from 'src/wallet';
 import { Wallet, activeFunctionType } from 'src/wallet/classes/wallet';
 import { wait } from './retry';
 
@@ -69,7 +70,7 @@ export async function changeNetwork(args: {
   let deactivatedWallet = false;
   // we need to deactivate the web3react when user change for another chain type or
   // when user want to change to any hedera network
-  if (connectedChain.network_type !== chain.network_type || chain.network_type === NetworkType.HEDERA) {
+  if (connectedChain.network_type !== chain.network_type) {
     deactivate();
     deactivatedWallet = true;
     await wait(500);
@@ -86,7 +87,7 @@ export async function changeNetwork(args: {
           for (let index = 0; index < evmWallets.length; index++) {
             try {
               const wallet = evmWallets[index];
-              await wallet.tryActivation(activate);
+              await wallet.tryActivation({ activate });
               walletProvider = await wallet.connector.getProvider();
               // break the loop when user accepts the wallet connection
               if (walletProvider) {
@@ -140,11 +141,8 @@ export async function changeNetwork(args: {
         }
       }
     case NetworkType.HEDERA:
-      if (chain.chain_id === ChainId.HEDERA_MAINNET) {
-        await hashPack.tryActivation(activate);
-        callBack && callBack();
-      } else {
-        await hashPackTestnet.tryActivation(activate);
+      if (connector instanceof HashConnector) {
+        await connector.changeChain(chain.chain_id ?? ChainId.HEDERA_MAINNET);
         callBack && callBack();
       }
       return;

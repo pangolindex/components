@@ -16,7 +16,7 @@ export interface WalletInfo {
   isEVM?: boolean;
 }
 
-export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any, chainId: ChainId) => any } = {
+export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } = {
   [ChainId.FUJI]: CommonEVMProvider,
   [ChainId.AVALANCHE]: CommonEVMProvider,
   [ChainId.WAGMI]: CommonEVMProvider,

@@ -1,4 +1,4 @@
-import { NetworkType } from '@pangolindex/sdk';
+import { ChainId, NetworkType } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import EventEmitter from 'eventemitter3';
 import { isMobile } from 'react-device-detect';
@@ -69,11 +69,16 @@ export abstract class Wallet {
    * @param onSuccess function to execute on success
    * @param onError function to exeute on error
    */
-  async tryActivation(
-    activate: activeFunctionType,
-    onSuccess?: () => void,
-    onError?: (error: unknown) => Promise<void>,
-  ) {
+  async tryActivation({
+    activate,
+    onSuccess,
+    onError,
+  }: {
+    activate: activeFunctionType;
+    onSuccess?: () => void;
+    onError?: (error: unknown) => Promise<void>;
+    chainId?: ChainId;
+  }) {
     try {
       await activate(this.connector, undefined, true);
       onSuccess && onSuccess();

@@ -33,6 +33,23 @@ const APP_METADATA: HashConnectTypes.AppMetadata = {
   icon: 'https://raw.githubusercontent.com/pangolindex/tokens/main/assets/43114/0x60781C2586D68229fde47564546784ab3fACA982/logo_48.png',
 };
 
+export const mainnetHederaConfig = {
+  networkId: 'mainnet',
+  chainId: ChainId.HEDERA_MAINNET,
+  contractId: 'contract -id',
+} as const;
+
+export const testnetHederaConfig = {
+  networkId: 'testnet',
+  chainId: ChainId.HEDERA_TESTNET,
+  contractId: 'contract -id',
+} as const;
+
+export const CONFIG_MAPPING = {
+  [ChainId.HEDERA_MAINNET]: mainnetHederaConfig,
+  [ChainId.HEDERA_TESTNET]: testnetHederaConfig,
+};
+
 export class HashConnector extends AbstractConnector {
   private provider!: JsonRpcProvider;
   private chainId!: ChainId.HEDERA_MAINNET | ChainId.HEDERA_TESTNET;
@@ -61,7 +78,13 @@ export class HashConnector extends AbstractConnector {
     //create the hashconnect instance
     this.instance = new HashConnect();
 
-    this.chainId = args?.config?.chainId;
+    const lastConnectedChainId = Number(localStorage.getItem('lastConnectedChainId'));
+    if (lastConnectedChainId === ChainId.HEDERA_MAINNET || lastConnectedChainId === ChainId.HEDERA_TESTNET) {
+      this.chainId = lastConnectedChainId;
+    } else {
+      this.chainId = args?.config?.chainId;
+    }
+
     this.normalizeChainId = args?.normalizeChainId;
     this.normalizeAccount = args?.normalizeAccount;
     this.network = args?.config?.networkId;
@@ -76,9 +99,7 @@ export class HashConnector extends AbstractConnector {
     this.handleFoundIframeEvent = this.handleFoundIframeEvent.bind(this);
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
 
-    const client = this.chainId === ChainId.HEDERA_MAINNET ? Client.forMainnet() : Client.forTestnet();
-    // we get the client and the node ids provide by the .network to send this to transactions
-    this.nodeAccountIds = Object.values(client.network).filter((node) => node instanceof AccountId) as AccountId[];
+    this.changeClient();
   }
 
   public async init() {
@@ -141,11 +162,22 @@ export class HashConnector extends AbstractConnector {
     this.instance.connectionStatusChangeEvent.off(this.handleConnectionStatusChangeEvent.bind(this));
   }
 
-  public getChainId(): number | string | any {
-    if (this.pairingData) {
-      return this.chainId;
-    }
-    return null;
+  /**
+   * This function change the clint of connector
+   * When change the chain we need to change the client too
+   */
+  private changeClient() {
+    const client = this.chainId === ChainId.HEDERA_MAINNET ? Client.forMainnet() : Client.forTestnet();
+    // we get the client and the node ids provide by the .network to send this to transactions
+    this.nodeAccountIds = Object.values(client.network).filter((node) => node instanceof AccountId) as AccountId[];
+  }
+
+  public async getChainId() {
+    return this.chainId;
+  }
+
+  public get activeChainId() {
+    return this.chainId;
   }
 
   public async getProvider() {
@@ -222,16 +254,17 @@ export class HashConnector extends AbstractConnector {
       this.pairingData = null;
       this.topic = '';
       this.pairingString = '';
-      this.emitDeactivate();
     }
   }
 
   public deactivate() {
     this._close();
+    this.emitDeactivate();
   }
 
   public async close() {
     this._close();
+    this.emitDeactivate();
   }
 
   public async isAuthorized(): Promise<boolean> {
@@ -298,5 +331,40 @@ export class HashConnector extends AbstractConnector {
       return signer;
     }
     return null;
+  }
+
+  /**
+   * This function change the config of connector to chain config
+   * @param chainId Chaind id to get config
+   */
+  public changeConfig(chainId: ChainId) {
+    if (chainId !== ChainId.HEDERA_MAINNET && chainId !== ChainId.HEDERA_TESTNET) {
+      return;
+    }
+
+    const config = CONFIG_MAPPING[chainId];
+    this.chainId = chainId;
+    this.network = config.networkId;
+
+    this.changeClient();
+  }
+
+  public async changeChain(chainId: ChainId) {
+    // need to clear the vars and some data from local storage before change chain
+    this._close();
+
+    this.changeConfig(chainId);
+
+    localStorage.setItem('lastConnectedChainId', chainId.toString());
+
+    // hashconnect don't use same values (pairingData and private key) because user can
+    // select another wallet or don't have a wallet with this private key in another chain
+    // so we need to request new connection ever to change the chain
+    await this.activate();
+
+    const accountId = this.pairingData?.accountIds?.[0];
+    const address = accountId ? this.toAddress(accountId) : null;
+
+    this.emitUpdate({ chainId, account: address });
   }
 }

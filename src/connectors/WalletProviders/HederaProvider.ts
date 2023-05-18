@@ -1,9 +1,6 @@
-import { ChainId } from '@pangolindex/sdk';
-import { mainnetHederaFn, testnetHederaFn } from 'src/utils/hedera';
+import { hederaFn } from 'src/utils/hedera';
 
-export const HederaProvider = (provider: any, chainId: ChainId) => {
-  const hederaFn = chainId === ChainId.HEDERA_TESTNET ? testnetHederaFn : mainnetHederaFn;
-
+export const HederaProvider = (provider: any) => {
   if (provider) {
     const getTransactionReceipt = async (transactionId: string) => {
       try {
