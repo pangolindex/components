@@ -55,18 +55,25 @@ export default function WalletModal({
 
   const { activate, deactivate, connector } = useWeb3React();
 
-  // if network selection change chain it will update selectedChain
+  // this useEffect only run when we set initialChainId
+  // as of now initialChainId will be set when user comes from NetworkSelection modal to WalletModal
   useEffect(() => {
     if (initialChainId) {
+      // if network selection change chain it will update selectedChain
       setSelectedChainId(initialChainId);
+
+      // here we cvan select networktype based on chain selected from Networkselection
+      setMainnet(CHAINS[initialChainId]?.mainnet);
+
+      //when chain was change and wallet already connected so it will be first disconnect
+      if (userState?.wallet) {
+        const wallet = wallets[userState?.wallet];
+        if (wallet.isActive) {
+          wallet?.disconnect();
+        }
+      }
     }
   }, [initialChainId]);
-
-  useEffect(() => {
-    const element = document.getElementById(selectedChainId?.toString());
-
-    element?.scrollIntoView();
-  }, []);
 
   const { setWallets } = useApplicationState();
   const { userState } = useUserAtom();
