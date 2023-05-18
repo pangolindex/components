@@ -3,8 +3,7 @@ import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { Hedera } from 'src/utils/hedera';
-import { useHederaFn } from '../useConnector';
+import { Hedera, hederaFn } from 'src/utils/hedera';
 
 /**
  * to get all hedera associated tokens
@@ -15,8 +14,6 @@ export function useGetAllHederaAssociatedTokens(dependancies = [] as any[]) {
   const chainId = useChainId();
 
   const { account } = usePangolinWeb3();
-
-  const hederaFn = useHederaFn();
 
   const response = useQuery(
     ['check-hedera-token-associated', account, ...dependancies],
@@ -56,8 +53,6 @@ export function useHederaTokenAssociated(
   const [loading, setLoading] = useState(false);
 
   const { data: tokens, isLoading, refetch } = useGetAllHederaAssociatedTokens();
-
-  const hederaFn = useHederaFn();
 
   const currencyId = address ? hederaFn.hederaId(address) : '';
 
@@ -100,8 +95,6 @@ export function useGetHederaTokenNotAssociated(tokens: Array<Token> | undefined)
   const { account } = usePangolinWeb3();
 
   const { data, isLoading } = useGetAllHederaAssociatedTokens();
-
-  const hederaFn = useHederaFn();
 
   return useMemo(() => {
     if (!tokens) {

@@ -8,20 +8,10 @@ import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnecto
 import { IS_IN_IFRAME } from 'src/constants';
 import { useApplicationState } from 'src/state/papplication/atom';
 import { useUserAtom } from 'src/state/puser/atom';
-import { hederaFn } from 'src/utils/hedera';
 import { disconnectWallets, getWalletKey } from 'src/utils/wallet';
 import { SUPPORTED_WALLETS, gnosisSafeWallet, hashPack, injectWallet } from 'src/wallet';
 import { Wallet, WalletEvents, walletEvent } from 'src/wallet/classes/wallet';
 import { MixPanelEvents, useMixpanel } from './mixpanel';
-import { useChainId } from '.';
-
-export function useHederaFn() {
-  const chainId = useChainId();
-
-  return useMemo(() => {
-    return hederaFn;
-  }, [chainId]);
-}
 
 /**
  * This function tries to activate an already connected wallet

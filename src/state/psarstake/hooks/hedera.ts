@@ -9,18 +9,16 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
-import { useHederaFn } from 'src/hooks/useConnector';
 import { useHederaSarNFTContract, useSarStakingContract } from 'src/hooks/useContract';
 import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
 import { calculateUserRewardRate } from 'src/state/ppangoChef/utils';
 import { existSarContract } from 'src/utils';
+import { hederaFn } from 'src/utils/hedera';
 import { useSingleContractMultipleData } from '../../pmulticall/hooks';
 import { Position, URI } from '../types';
 import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from '../utils';
 
 export function useHederaExchangeRate() {
-  const hederaFn = useHederaFn();
-
   return useQuery(
     'get-hedera-exchange-rate',
     async () => {
@@ -43,9 +41,6 @@ function useHederaSarRent(position: Position | undefined | null) {
 
   const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
   const blockTimestamp = useGetBlockTimestamp();
-
-  const hederaFn = useHederaFn();
-
   const { data: exchangeRate, isLoading } = useHederaExchangeRate();
 
   /*
@@ -115,8 +110,6 @@ export function useDerivativeHederaSarStake(position?: Position | null) {
   const tinyRentAddMore = useHederaSarRent(position);
 
   const { hederaAssociated: isAssociated } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
-
-  const hederaFn = useHederaFn();
 
   const queryClient = useQueryClient();
 
@@ -245,8 +238,6 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
 
   const tinyRent = useHederaSarRent(position);
 
-  const hederaFn = useHederaFn();
-
   const sarNftContract = useHederaSarNFTContract();
   const queryClient = useQueryClient();
 
@@ -338,7 +329,6 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
   const rent = useHederaSarRent(position);
 
   const sarNftContract = useHederaSarNFTContract();
-  const hederaFn = useHederaFn();
 
   const queryClient = useQueryClient();
   const onCompound = async () => {
@@ -408,7 +398,6 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
   const rent = useHederaSarRent(position);
 
   const sarNftContract = useHederaSarNFTContract();
-  const hederaFn = useHederaFn();
 
   const queryClient = useQueryClient();
 
@@ -468,7 +457,6 @@ export function useHederaSarNftsIds() {
   const chainId = useChainId();
 
   const sarNFTcontract = useHederaSarNFTContract();
-  const hederaFn = useHederaFn();
 
   const { data, isLoading, isRefetching } = useQuery(
     ['hedera-nft-index', account, chainId, sarNFTcontract?.address],

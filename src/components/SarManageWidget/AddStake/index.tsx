@@ -14,14 +14,13 @@ import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
-import { useHederaFn } from 'src/hooks/useConnector';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useDerivativeSarStakeHook } from 'src/state/psarstake/hooks';
 import { useSarStakeInfo } from 'src/state/psarstake/hooks/evm';
 import { Position } from 'src/state/psarstake/types';
 import { useTokenBalanceHook } from 'src/state/pwallet/hooks';
 import { getBuyUrl } from 'src/utils';
-import { Hedera } from 'src/utils/hedera';
+import { Hedera, hederaFn } from 'src/utils/hedera';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import Title from '../Title';
@@ -52,8 +51,6 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
   const toggleWalletModal = useWalletModalToggle();
 
   const useDerivativeSarStake = useDerivativeSarStakeHook[chainId];
-
-  const hederaFn = useHederaFn();
 
   const {
     attempting,

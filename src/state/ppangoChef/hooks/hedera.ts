@@ -15,7 +15,6 @@ import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3, useRefetchPangoChefSubgraph } from 'src/hooks';
 import { useLastBlockTimestampHook } from 'src/hooks/block';
 import { useTokensContract } from 'src/hooks/tokens/evm';
-import { useHederaFn } from 'src/hooks/useConnector';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
@@ -23,7 +22,7 @@ import { getExtraTokensWeeklyRewardRate } from 'src/state/pstake/utils';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks/hedera';
 import { decimalToFraction } from 'src/utils';
-import { Hedera } from 'src/utils/hedera';
+import { Hedera, hederaFn } from 'src/utils/hedera';
 import { useShouldUseSubgraph } from '../../papplication/hooks';
 import {
   useMultipleContractSingleData,
@@ -868,8 +867,6 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
   const pangoChefContract = usePangoChefContract();
   const addTransaction = useTransactionAdder();
 
-  const hederaFn = useHederaFn();
-
   // get on chain data
   const { data: userStorageAddress, refetch } = useQuery(
     ['hedera-pangochef-user-storage', account],
@@ -948,8 +945,6 @@ export function useHederaPangoChefStakeCallback(
   const addTransaction = useTransactionAdder();
   const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
 
-  const hederaFn = useHederaFn();
-
   return useMemo(() => {
     if (!poolId || !account || !chainId || !amount) {
       return { callback: null, error: 'Missing dependencies' };
@@ -1007,8 +1002,6 @@ export function useHederaPangoChefClaimRewardCallback(
   const { t } = useTranslation();
 
   const addTransaction = useTransactionAdder();
-
-  const hederaFn = useHederaFn();
 
   const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
   const png = PNG[chainId];
@@ -1070,7 +1063,6 @@ export function useHederaPangoChefWithdrawCallback(withdrawData: WithdrawData): 
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
-  const hederaFn = useHederaFn();
   const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
   const { poolId, stakedAmount } = withdrawData;
 
@@ -1128,7 +1120,6 @@ export function useHederaPangoChefCompoundCallback(compoundData: PangoChefCompou
   const chainId = useChainId();
   const { t } = useTranslation();
   const addTransaction = useTransactionAdder();
-  const hederaFn = useHederaFn();
   const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
   const pangoChefContract = usePangoChefContract();
 

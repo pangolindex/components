@@ -8,13 +8,12 @@ import { usePair } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useGetAllHederaAssociatedTokens, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
-import { useHederaFn } from 'src/hooks/useConnector';
 import { useBlockNumber } from 'src/state/papplication/hooks';
 import { Field } from 'src/state/pburn/atom';
 import { Field as AddField } from 'src/state/pmint/atom';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateSlippageAmount, getRouterContract, isAddress } from 'src/utils';
-import { Hedera, HederaTokenMetadata } from 'src/utils/hedera';
+import { Hedera, HederaTokenMetadata, hederaFn } from 'src/utils/hedera';
 import { wait } from 'src/utils/retry';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useTrackedTokenPairs } from '../../puser/hooks';
@@ -30,7 +29,6 @@ export function useHederaBalance(
   const [hederaBalance, setHederaBalance] = useState<{ [address: string]: TokenAmount | undefined }>();
 
   const hederaToken = WAVAX[chainId];
-  const hederaFn = useHederaFn();
 
   useEffect(() => {
     async function checkHederaBalance() {
@@ -57,8 +55,6 @@ export function useHederaTokenBalances(
   tokens?: (Token | undefined)[],
 ): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
   const latestBlockNumber = useBlockNumber();
-
-  const hederaFn = useHederaFn();
 
   const validatedTokens: Token[] = useMemo(
     () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
@@ -164,7 +160,6 @@ export function useHederaAddLiquidity() {
   const chainId = useChainId();
   const { library } = useLibrary();
   const addTransaction = useTransactionAdder();
-  const hederaFn = useHederaFn();
 
   return async (data: AddLiquidityProps) => {
     if (!chainId || !library || !account) return;
@@ -250,7 +245,6 @@ export function useHederaRemoveLiquidity(pair?: Pair | null | undefined) {
   const { library } = useLibrary();
   const addTransaction = useTransactionAdder();
   const { t } = useTranslation();
-  const hederaFn = useHederaFn();
 
   const removeLiquidity = async (data: RemoveLiquidityProps) => {
     if (!chainId || !library || !account || !pair) return;
@@ -336,7 +330,6 @@ export function useGetHederaUserLP() {
 
   // get all pairs
   const trackedTokenPairs = useTrackedTokenPairs();
-  const hederaFn = useHederaFn();
 
   // make lp address wise Tokens
   const pairTokens = useMemo(() => {
@@ -431,7 +424,6 @@ export function useHederaCreatePair() {
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
   const addTransaction = useTransactionAdder();
-  const hederaFn = useHederaFn();
 
   const queryClient = useQueryClient();
 
@@ -529,8 +521,6 @@ export function fetchHederaTokenMetaData(tokenAddress: string | undefined, heder
  * @returns object with key is the address and the value is the metadata
  */
 export function useHederaTokensMetaData(addresses: (string | undefined)[]) {
-  const hederaFn = useHederaFn();
-
   const queries = useMemo(() => {
     return addresses.map((address) => ({
       queryKey: ['get-hedera-token-metadata', address],
@@ -563,7 +553,6 @@ export const useHederaPGLToken = (
   currencyB: Currency | undefined,
 ): [Token | undefined, Token | undefined] => {
   const chainId = useChainId();
-  const hederaFn = useHederaFn();
 
   const [pglToken, setPglToken] = useState<Token | undefined>(undefined);
   const [, pair] = usePair(currencyA, currencyB);
@@ -588,7 +577,6 @@ export const useHederaPGLToken = (
 
 export const useHederaPGLTokens = (pairs?: (Pair | undefined)[]): [Token | undefined, Token | undefined][] => {
   const chainId = useChainId();
-  const hederaFn = useHederaFn();
 
   const queryParameter = useMemo(() => {
     return (
@@ -632,7 +620,6 @@ export const useHederaPGLTokenAddresses = (
   liquidityAddresses?: (string | undefined)[],
 ): { [liquidityAddress: string]: string | undefined } => {
   const chainId = useChainId();
-  const hederaFn = useHederaFn();
 
   const queryParameter = useMemo(() => {
     return (
@@ -683,7 +670,6 @@ export function useHederaPGLAssociated(
 
 export const useHederaPairContractEVMAddresses = (lpTokenAddress?: string[]): string[] => {
   const chainId = useChainId();
-  const hederaFn = useHederaFn();
 
   const lpTokenContracts = useMemo(() => {
     return (lpTokenAddress || []).map((lpAddress) => {
