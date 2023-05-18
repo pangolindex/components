@@ -64,8 +64,19 @@ export const OptionButton = styled.div`
   color: ${({ theme }) => theme.black};
 `;
 
+export const ExpireButton = styled.div`
+  font-weight: 500;
+  width: fit-content;
+  white-space: nowrap;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background-color: ${({ theme }) => theme.venetianRed};
+  font-size: 13px;
+  color: ${({ theme }) => theme.white};
+`;
+
 export const OptionsWrapper = styled.div`
   display: grid;
   grid-template-columns: auto auto auto auto;
-  grid-gap: 10px;
+  grid-gap: 5px;
 `;
