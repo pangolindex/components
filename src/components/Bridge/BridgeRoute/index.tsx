@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button, Text } from 'src/components';
 import { useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
 import { BridgePrioritizations, BridgeStep, Step } from 'src/state/pbridge/types';
+import { Hidden, Visible } from 'src/theme/components';
 import { Information, Informations, Route, StepDetail } from './styles';
 import { BridgeRouteProps } from './types';
 
@@ -40,7 +41,14 @@ const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
             onSelectRoute();
           }}
         >
-          {selected ? t('bridge.bridgeRoute.selected') : t('bridge.bridgeRoute.clickToSelect')}
+          {selected ? (
+            t('bridge.bridgeRoute.selected')
+          ) : (
+            <div>
+              <Hidden upToSmall>{t('bridge.bridgeRoute.clickToSelect')}</Hidden>
+              <Visible upToSmall>{t('common.select')}</Visible>
+            </div>
+          )}
         </Button>
       </Box>
       <div>
