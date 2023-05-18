@@ -256,10 +256,10 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
 
       if (tokenA && tokenB && wrappedIndependentAmount && pair && chainId) {
         const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA;
-        const dependentTokenAmount =
-          dependentField === Field.CURRENCY_B
-            ? pair.priceOf(tokenA, tokenB).quote(wrappedIndependentAmount, chainId)
-            : pair.priceOf(tokenB, tokenA).quote(wrappedIndependentAmount, chainId);
+        const pairPrice =
+          dependentField === Field.CURRENCY_B ? pair.priceOf(tokenA, tokenB) : pair.priceOf(tokenB, tokenA);
+        if (pairPrice.equalTo(0)) return undefined;
+        const dependentTokenAmount = pairPrice.quote(wrappedIndependentAmount, chainId);
         return dependentCurrency === CAVAX[chainId]
           ? CurrencyAmount.ether(dependentTokenAmount.raw, chainId)
           : dependentTokenAmount;

@@ -9,7 +9,8 @@ export default {
   parameters: {
     docs: {
       description: {
-        component: 'This is the main component of the bridge page.',
+        component:
+          "This is the main component of the bridge page. We employ three libraries (3rd Li.Fi, Rango, Squid) to manage the transaction process, a choice necessitated by our system's requirements. Upon clicking the 'Swap' button, the system automatically selects the corresponding BridgeProvider transaction library. Subsequently, we are integrated into the respective third-party library's stream. Any delays that may occur during this process are attributable to these third-party libraries.",
       },
     },
   },
