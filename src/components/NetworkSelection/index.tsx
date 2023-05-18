@@ -1,4 +1,4 @@
-import { CHAINS, Chain } from '@pangolindex/sdk';
+import { Chain } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
@@ -12,6 +12,7 @@ import { usePangolinWeb3 } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
 import { useApplicationState } from 'src/state/papplication/atom';
 import { changeNetwork } from 'src/utils/wallet';
+import { SUPPORTED_CHAINS } from 'src/wallet';
 import ChainItem from './ChainItem';
 import { ChainsList, Frame, Inputs, Wrapper } from './styled';
 import { NETWORK_TYPE, NetworkProps } from './types';
@@ -39,7 +40,7 @@ export default function NetworkSelection({ open, closeModal, onToogleWalletModal
   const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 250);
 
   const chains = useMemo(() => {
-    const seletectedChainsType = Object.values(CHAINS).filter((chain) => chain.mainnet === mainnet);
+    const seletectedChainsType = SUPPORTED_CHAINS.filter((chain) => chain.mainnet === mainnet);
 
     if (debouncedSearchQuery.length === 0) return seletectedChainsType;
 
