@@ -58,6 +58,13 @@ export class AvalancheCoreConnector extends AbstractConnector {
       throw new NoAvalancheCoreError();
     }
 
+    if (window?.avalanche?.on) {
+      window?.avalanche.on('chainChanged', this.handleChainChanged);
+      window?.avalanche.on('accountsChanged', this.handleAccountsChanged);
+      window?.avalanche.on('close', this.handleClose);
+      window?.avalanche.on('networkChanged', this.handleNetworkChanged);
+    }
+
     // try to activate + get account via eth_requestAccounts
     let account;
     try {
@@ -144,7 +151,12 @@ export class AvalancheCoreConnector extends AbstractConnector {
   }
 
   public deactivate() {
-    console.log('Deactivated');
+    if (window?.avalanche && window?.avalanche?.removeListener) {
+      window?.avalanche.removeListener('chainChanged', this.handleChainChanged);
+      window?.avalanche.removeListener('accountsChanged', this.handleAccountsChanged);
+      window?.avalanche.removeListener('close', this.handleClose);
+      window?.avalanche.removeListener('networkChanged', this.handleNetworkChanged);
+    }
   }
 
   public async isAuthorized(): Promise<boolean> {
