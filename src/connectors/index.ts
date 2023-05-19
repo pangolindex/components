@@ -74,8 +74,18 @@ export const walletconnect = new WalletConnectConnector({
   bridge: 'https://bridge.walletconnect.org',
 });
 
+export const SUPPORTED_XDEFI_CHAINS = [
+  ChainId.ETHEREUM,
+  ChainId.AURORA,
+  ChainId.BSC,
+  ChainId.POLYGON,
+  ChainId.ARBITRUM,
+  ChainId.CRONOS,
+  ChainId.AVALANCHE,
+  ChainId.FANTOM,
+];
 export const xDefi = new DefiConnector({
-  supportedChainIds: [1, ChainId.AVALANCHE, ChainId.WAGMI, ChainId.COSTON, ChainId.SONGBIRD, ChainId.FLARE_MAINNET],
+  supportedChainIds: SUPPORTED_XDEFI_CHAINS,
 });
 
 export const bitKeep = new BitKeepConnector({
@@ -134,7 +144,7 @@ export const hashConnect = new HashConnector({
 });
 
 export const avalancheCore = new AvalancheCoreConnector({
-  supportedChainIds: [43113, 43114],
+  supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
 export { NearConnector, HashConnector };

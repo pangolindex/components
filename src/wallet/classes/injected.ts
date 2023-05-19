@@ -1,8 +1,8 @@
-import { NetworkType } from '@pangolindex/sdk';
+import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import avalancheCoreIcon from 'src/assets/images/avalancheCore.svg';
 import bitKeepIcon from 'src/assets/images/bitkeep.svg';
 import talismanIcon from 'src/assets/images/talisman.svg';
-import { avalancheCore, bitKeep, injected, talisman } from 'src/connectors';
+import { SUPPORTED_EVM_CHAINS_ID, avalancheCore, bitKeep, injected, talisman } from 'src/connectors';
 import { Wallet } from './wallet';
 
 export class InjectedWallet extends Wallet {
@@ -64,6 +64,9 @@ export class BitKeepWallet extends Wallet {
       icon: bitKeepIcon,
       description: 'Easy-to-use browser extension.',
       supportedChains: [NetworkType.EVM],
+      supportedChainsId: SUPPORTED_EVM_CHAINS_ID.filter(
+        (chainId) => ![ChainId.SONGBIRD, ChainId.FLARE_MAINNET].includes(chainId) && CHAINS[chainId]?.mainnet,
+      ), // not show bitkeep in chains above because bitkeep not support it
     });
   }
 

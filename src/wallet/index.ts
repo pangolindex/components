@@ -1,8 +1,9 @@
-import { ALL_CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
+import { ALL_CHAINS, CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { isMobile } from 'react-device-detect';
 import injectWalletIcon from 'src/assets/images/inject-wallet.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
 import rabbyIcon from 'src/assets/images/rabby.svg';
+import { SUPPORTED_EVM_CHAINS_ID } from 'src/connectors';
 import { AvalancheCoreWallet, BitKeepWallet, InjectedWallet, TalismanWallet } from './classes/injected';
 import { HashPackWallet, NearWallet, XDefiWallet } from './classes/nonInjected';
 import { CoinbaseWallet, GnosisSafeWallet, WalletConnect } from './classes/others';
@@ -30,6 +31,7 @@ export const rabbyWallet = new InjectedWallet({
   icon: rabbyIcon,
   description: 'Easy-to-use browser extension.',
   supportedChains: [NetworkType.EVM],
+  supportedChainsId: SUPPORTED_EVM_CHAINS_ID.filter((chainId) => CHAINS[chainId]?.mainnet),
   walletKey: 'isRabby',
 });
 

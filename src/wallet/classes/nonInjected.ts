@@ -2,7 +2,7 @@ import { ChainId, NetworkType } from '@pangolindex/sdk';
 import hashIcon from 'src/assets/images/hashConnect.png';
 import nearIcon from 'src/assets/images/near.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
-import { HashConnector, hashConnect, near, xDefi } from 'src/connectors';
+import { HashConnector, SUPPORTED_XDEFI_CHAINS, hashConnect, near, xDefi } from 'src/connectors';
 import { Wallet, activeFunctionType } from './wallet';
 
 export class XDefiWallet extends Wallet {
@@ -14,6 +14,7 @@ export class XDefiWallet extends Wallet {
       icon: xDefiIcon,
       description: 'One wallet for all your Crypto.',
       supportedChains: [NetworkType.EVM],
+      supportedChainsId: SUPPORTED_XDEFI_CHAINS,
     });
   }
 
@@ -38,6 +39,7 @@ export class NearWallet extends Wallet {
     return true;
   }
 }
+
 export class HashPackWallet extends Wallet {
   constructor(supportedChainsId: ChainId[]) {
     super({
