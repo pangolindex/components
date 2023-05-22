@@ -145,7 +145,7 @@ const GovernanceList = () => {
                   id={p.id}
                   title={p.title}
                   status={p.status as ProposalStates}
-                  to={`/vote/${p.id}`}
+                  to={`/#/vote/${p.id}`}
                   key={p.id}
                 />
               );
