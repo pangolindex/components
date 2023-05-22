@@ -59,7 +59,7 @@ export const VoteButton = styled(Button)`
   `};
 `;
 
-export const Number = styled(Text)`
+export const NumberId = styled(Text)`
   font-size: 22px;
   line-height: 42px;
   margin-right: 21px;

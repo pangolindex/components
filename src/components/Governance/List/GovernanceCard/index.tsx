@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { StyledLink } from 'src/theme';
-import { Card, CardButtons, CardTitle, DetailsButton, Number, Title, VoteButton } from './styleds';
+import { Card, CardButtons, CardTitle, DetailsButton, NumberId, Title, VoteButton } from './styleds';
 
 export type ProposalStates =
   | 'pending'
@@ -40,7 +40,7 @@ const GovernanceCard = ({ id, title, to, status }: GovernanceCardProps) => {
   return (
     <Card>
       <CardTitle>
-        <Number>{id}.</Number>
+        <NumberId>{id}.</NumberId>
         <Title>{title}</Title>
       </CardTitle>
       <CardButtons>
