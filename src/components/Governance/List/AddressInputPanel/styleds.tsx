@@ -63,6 +63,6 @@ export const Wrapper = styled(Box)`
   width: 100%;
   display: flex;
   padding: 0;
-  align-items: center
+  align-items: center;
   justify-content: space-between;
 `;

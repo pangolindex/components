@@ -312,7 +312,7 @@ export const useTheme = () => {
   return theme;
 };
 
-const StyledLink = styled.a`
+export const StyledLink = styled.a`
   text-decoration: none;
   cursor: pointer;
   color: ${({ theme }) => theme.primary};

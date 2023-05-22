@@ -49,7 +49,7 @@ export default function App() {
             <Route path="elixir" element={<ElixirUI />} />
             <Route path="bridge" element={<Bridge />} />
             <Route path="sar" element={<SarStake />} />
-            <Route path="governance" element={<Governance />} />
+            <Route path="vote" element={<Governance />} />
             <Route path="vote/:id" element={<GovernanceDetailV2 />} />
             <Route path="*" element={<Swap />} />
           </Route>

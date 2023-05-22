@@ -58,8 +58,8 @@ export default function Header() {
             Stake v2
           </MenuLink>
 
-          <MenuLink id="governance" to="/governance">
-           Governance
+          <MenuLink id="vote" to="/vote">
+            Governance
           </MenuLink>
         </Menuwrapper>
         <Box display="grid" style={{ gap: '10px', gridAutoFlow: 'column' }}>

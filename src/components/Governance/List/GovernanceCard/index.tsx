@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { ExternalLink } from 'src/theme';
+import { StyledLink } from 'src/theme';
 import { Card, CardButtons, CardTitle, DetailsButton, Number, Title, VoteButton } from './styleds';
 
 export type ProposalStates =
@@ -44,9 +44,9 @@ const GovernanceCard = ({ id, title, to, status }: GovernanceCardProps) => {
         <Title>{title}</Title>
       </CardTitle>
       <CardButtons>
-        <ExternalLink target="_parent" href={to} style={{ width: '100%', textDecoration: 'none' }}>
+        <StyledLink href={to} style={{ width: '100%', textDecoration: 'none' }}>
           <DetailsButton variant="outline">{t('votePage.details')}</DetailsButton>
-        </ExternalLink>
+        </StyledLink>
         <VoteButton variant="primary" color={(btnColors as any)[status]} backgroundColor={(bgColors as any)[status]}>
           {status}
         </VoteButton>

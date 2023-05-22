@@ -88,7 +88,7 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
       />
       <ProposalInfo gap="24px" justify="start">
         <Wrapper>
-          <ArrowWrapper href={'/vote'} target="_self">
+          <ArrowWrapper href={'/vote'}>
             <ArrowLeft size={20} /> {t('votePage.backToProposals')}
           </ArrowWrapper>
           {proposalData && <ProposalStatus status={proposalData?.status ?? ''}>{proposalData?.status}</ProposalStatus>}

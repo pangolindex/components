@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Box } from 'src/components';
 import { AutoColumn } from 'src/components/Column';
-import { ExternalLink } from 'src/theme';
+import { StyledLink } from 'src/theme';
 
 export const PageWrapper = styled(AutoColumn)`
   width: 100%;
@@ -15,7 +15,7 @@ export const ProposalInfo = styled(AutoColumn)`
   width: 100%;
 `;
 
-export const ArrowWrapper = styled(ExternalLink)`
+export const ArrowWrapper = styled(StyledLink)`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -140,7 +140,7 @@ export const Wrapper = styled(Box)`
   width: 100%;
   display: flex;
   padding: 0;
-  align-items: center
+  align-items: center;
   justify-content: space-between;
 `;
 
@@ -148,6 +148,6 @@ export const ButtonWrapper = styled(Box)`
   width: fit-content;
   display: flex;
   padding: 0;
-  align-items: center
+  align-items: center;
   justify-content: space-between;
 `;
