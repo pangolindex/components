@@ -228,7 +228,10 @@ export default function WalletModal({
                     <ChainButton
                       variant="plain"
                       width="68px"
-                      onClick={() => setSelectedChainId(chain.chain_id ?? ChainId.AVALANCHE)}
+                      onClick={() => {
+                        setSelectedChainId(chain.chain_id ?? ChainId.AVALANCHE);
+                        setPendingWallet(null);
+                      }}
                       key={index}
                       id={`${chain.chain_id}`}
                     >
