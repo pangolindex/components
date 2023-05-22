@@ -24,6 +24,8 @@ export type PopupContent =
 export enum ApplicationModal {
   WALLET,
   POOL_DETAIL,
+  DELEGATE,
+  VOTE,
 }
 
 export type PopupList = Array<{ key: string; show: boolean; content: PopupContent; removeAfterMs: number | null }>;

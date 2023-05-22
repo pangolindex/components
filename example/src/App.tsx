@@ -7,6 +7,8 @@ import Pool from './pages/Pool';
 import Bridge from './pages/Bridge';
 import SarStake from './pages/SarSingleStake';
 import ElixirUI from './pages/Elixir';
+import Governance from './pages/Governance';
+import GovernanceDetailV2 from './pages/GovernanceDetail';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -47,6 +49,8 @@ export default function App() {
             <Route path="elixir" element={<ElixirUI />} />
             <Route path="bridge" element={<Bridge />} />
             <Route path="sar" element={<SarStake />} />
+            <Route path="governance" element={<Governance />} />
+            <Route path="vote/:id" element={<GovernanceDetailV2 />} />
             <Route path="*" element={<Swap />} />
           </Route>
         </Routes>
