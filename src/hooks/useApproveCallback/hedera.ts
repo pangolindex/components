@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
-import { useTokenAllowance } from 'src/data/Allowances';
+import { useHederaTokenAllowance } from 'src/data/Allowances';
 import { useHederaTotalSupply } from 'src/data/TotalSupply';
 import { Field } from 'src/state/pswap/atom';
 import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransactions/hooks';
@@ -38,7 +38,7 @@ export function useHederaApproveCallback(
 
   const token = amountToken?.symbol === 'PGL' && !isLoading && data ? data : amountToken;
 
-  const currentAllowance = useTokenAllowance(token, account ?? undefined, spender);
+  const currentAllowance = useHederaTokenAllowance(token, account ?? undefined, spender);
   const pendingApproval = useHasPendingApproval(token?.address, spender);
 
   const tokenSupply = useHederaTotalSupply(token);
