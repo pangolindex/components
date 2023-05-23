@@ -194,10 +194,10 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
               <Text fontWeight={800} fontSize={22} lineHeight="33px" color="text1">
                 {t('votePage.details')}
               </Text>
-              {proposalData?.details?.map((d, i) => {
+              {proposalData?.details?.map((d, index) => {
                 return (
-                  <DetailText key={i}>
-                    {i + 1}: {linkIfAddress(d.target)}.{d.functionSig}(
+                  <DetailText key={index}>
+                    {index + 1}: {linkIfAddress(d.target)}.{d.functionSig}(
                     {d.callData.split(',').map((content, j) => {
                       return (
                         <span key={j}>

@@ -183,7 +183,7 @@ export function useDataFromEventLogs() {
       allProposals.every((proposal) => !proposal.loading) &&
       !formattedEvents
     ) {
-      fetchData();
+      fetchData().catch((error) => console.error(error));
     }
   }, [library, govContract, proposalCount, allProposals, formattedEvents, chainId]);
 
@@ -204,7 +204,7 @@ const getAllProposalData = async (chainId: ChainId, id?: string) => {
       fetchPolicy: 'cache-first',
     };
 
-    if (!!id) {
+    if (id) {
       queryData['variables'] = { where: { id: id } };
     }
     const result = await governanceClient.query(queryData);
@@ -280,7 +280,7 @@ export function useGetProposalsViaSubgraph(id?: string) {
           const details = (proposal?.targets || []).map((target: string, i: number) => {
             const signature = proposal?.signatures[i];
 
-            const [name, types] = signature?.substr(0, signature?.length - 1).split('(');
+            const [name, types] = signature?.substr(0, signature?.length - 1)?.split('(');
 
             const calldata = proposal?.calldatas[i];
 
@@ -314,7 +314,8 @@ export function useGetProposalsViaSubgraph(id?: string) {
         setAllProposalsData(allData);
       }
     }
-    checkForChartData();
+
+    checkForChartData().catch((error) => console.error(error));
   }, [id, chainId]);
 
   return allProposalsData;
