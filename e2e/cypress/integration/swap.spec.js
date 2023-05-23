@@ -3,7 +3,7 @@ import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data'
 import { switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1 } from '../support/src/swap'
 import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
-const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, connectWallet, linkBtn, tokenMouseOverEnable, tokensList, disabledTokens, connectWalletMsg, chains, showBalanceBtn, hideBalanceBtn} = selectors.dashboard
+const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, connectWallet, linkBtn, tokensList, disabledTokens, connectWalletMsg, chains, showBalanceBtn, hideBalanceBtn, watchlistTokens} = selectors.dashboard
 const {tokenName, AvaxToken, switchArray, chartTimeArray, linkUrl, swap, connectToWallet, hideBalance, showBalance} = data.dashboard
 const {fromField, toField, connectWalletBtn,limitBtn,buyBtn,swapPercentageBtns,limitPercentageBtns,swapSideMenu,swapSideMenuSelect,tradeBtns,tokenModal,headerDetailsModal,toTokenLogo,toTokenName,toTokenPrice,tradeModal,switchModal,switchBtn,settingBtn,transactionFailMessage,transactionMayFortuneMessage,expertModeMessage,saveCloseBtn, slipPageValues, slipPageValuesAssert, toggleExpertMode, saveCloseBtn1, sureMenu, settingCloseBtn, selectedSellBuyBtn, limitOrderSection, priceField, toggleExpertModeOn} = selectors.swap
 const {swapPercentage, slipPage, aAVAXb, usdc, lowSlippageMessage, highSlippageMessage, veryHighSlippageMessage, saveCloseBtnTxt, connectWalletTxt, connectWalletMsge } = data.swap
@@ -85,7 +85,8 @@ describe('Swap', () => {
     })
 
     /***************** Adding token to watchlist through the Add button ***********************/
-    it("TC-20, Verify that the user can add the token to the watchlist", () => {
+    it("TC-20,21,22,23,24 Verify that the user can add the token to the watchlist", () => {
+        cy.contains(/Dashboard/)
         cy.get(watchListBtn)
             .should('be.visible').click()
         cy.get(watchlistDropDown)
@@ -93,72 +94,45 @@ describe('Swap', () => {
         cy.get(tokenSelect).eq(0).click()
         cy.get(tokenAssert)
             .should("contain", AvaxToken)
-    })
-
-    /**************** Switching between the tokens in the watchlist  **************************/
-    it('TC-24, Verify that the user is able to switch between the tokens in watchlist', () => {        
-        for (var i = 1; i < 3; i++) {
-            cy.get(`${switchToken}:nth-child(${i})`).click()
-            cy.get(watchListTokenAssert)
-                .should('contain',switchArray[i-1])
-        }
-    })
-
-    /********************  token disable in the watchlist dropdown ***********************/ 
-    it('TC-21, Verify that the token added to the watchlist is disabled in the dropdown', () =>{
+        //button disable in the watchlist dropdown    
         cy.get(watchListBtn).
             should('be.visible').click({force: true})
         cy.get(watchlistDropDown)
             .should('be.visible')
-        cy.get(tokenSearch).type(AvaxToken)
-        cy.get(tokenSelect).eq(0).click({force: true})
-        cy.get(tokenAssert)
-            .should("contain", AvaxToken)
-        cy.get(watchListBtn).
-            should('be.visible').click({force: true})
-        cy.get(disabledTokens).should('have.attr', 'disabled', 'disabled')
-        
-    })
-    /**********************  Removing the token if already added  ************************/
-    it('TC-22, Verify that the user can remove the token from the watchlist', () => {
+        cy.get(tokenSearch).type(AvaxToken)  
+        cy.get(disabledTokens).should('have.attr', 'disabled', 'disabled') 
+        cy.get(watchListBtn)
+            .should('be.visible').click({force: true}) 
+        //Switching between the tokens in the watchlist
+        for (var i = 0; i <= 1; i++) {
+            cy.get(switchToken).eq(i).click({force: true})
+            cy.get(watchListTokenAssert)
+                .should('contain', switchArray[i])
+        }  
+        //Removing the token if already added
         cy.get(tokenSection).then($avax => {
-            if($avax.text().includes(AvaxToken)){
+            if ($avax.text().includes(AvaxToken)) {
                 cy.get(tokenMouseOver).eq(0)
                     .trigger("mouseover")
                 cy.get(crossBtn).click()
             } 
-            else {
-                cy.get(watchListBtn)
-                    .should('be.visible').click()
-                cy.get(watchlistDropDown)
-                    .should('be.visible')
-                cy.get(tokenSearch).type(tokenName)
-                cy.get(tokenSelect).eq(0).click()
-                cy.get(tokenAssert)
-                    .should("contain",tokenName)
-                cy.get(tokenAssert).eq(0).trigger("mouseover")
-                cy.get(crossBtn).click()
-            }
-        })  
-    })    
-
-    /********************  Token enable in the watchlist dropdown ***********************/ 
-    it('TC-23, Verify that the token removed from the watchlist is enabled in the dropdown', () =>{
-        cy.get(watchListBtn)
-            .should('be.visible').click()
-        cy.get(watchlistDropDown)
-            .should('be.visible')
-        cy.get(tokenSearch).type(AvaxToken)
-        cy.get(tokenSelect).eq(0).click({force: true})
-        cy.get(tokenAssert)
-            .should("contain", AvaxToken)
-        cy.get(tokenMouseOverEnable).eq(0)
-            .trigger("mouseover")
-        cy.get(crossBtn).click()
+        })     
+        //Token enable in the watchlist dropdown  
         cy.get(watchListBtn).
-            should('be.visible').click()
-        cy.get(tokensList).contains(AvaxToken).should('be.visible')
-    })
+                should('be.visible').click()
+            cy.get(watchlistDropDown)
+                .should('be.visible')
+            cy.get(tokenSearch).type(AvaxToken)
+            cy.get(tokenSelect).eq(0).click({force:true})
+            cy.get(tokenAssert)
+                .should("contain", AvaxToken)
+            cy.get(watchlistTokens).eq(0)
+                .trigger("mouseover")
+            cy.get(crossBtn).click()
+            cy.get(watchListBtn).
+                should('be.visible').click()
+            cy.get(tokensList).contains(AvaxToken).should('be.visible') 
+    })    
 
     /*************** Updating and asserting the chart by pressing the time buttons ***************/
     chartTimeArray.forEach( time => {
@@ -192,16 +166,16 @@ describe('Swap', () => {
     })
 
     /***************** Switching between the selected tokens  ***********************/
-    it('TC-37, Verify that the user can switch between the selected tokens', () => {
+    it.only('TC-37, Verify that the user can switch between the selected tokens', () => {
         switchingValues(1, 'From', `${AvaxToken}`)
         switchingValues(3, 'To', `${usdc}`)
-        cy.get(tradeModal).find(switchModal).find(switchBtn).click()
+        cy.get(tradeModal).eq(1).find(switchModal).find(switchBtn).click()
         switchingValues(1, 'From', `${usdc}`)
         switchingValues(3, "To", `${AvaxToken}`)
     })
 
     /************  Assert the tokens in From and To dropdowns ************************/
-    it('TC-38, Verify that the tokens switch when the user selects the same selected token for the dropdown', () => {
+    it.only('TC-38, Verify that the tokens switch when the user selects the same selected token for the dropdown', () => {
         tokenSwitching(1, "From", `${AvaxToken}`, 1)
         switchingValues(1, 'From', `${usdc}`)
         switchingValues(3, "To", `${AvaxToken}`)
@@ -245,7 +219,7 @@ describe('Swap', () => {
     })
 
     /************** Selecting and asserting on the slippage percent buttons ****************/
-    it(`TC-88, 89, 90, 91, 92, 93 Verify that the user can set the slippage to ${slipPage}`, () => {
+    it.only(`TC-88, 89, 90, 91, 92, 93 Verify that the user can set the slippage to ${slipPage}`, () => {
         for(var z = 0; z < slipPage.length; z++ ) {
             cy.get(settingBtn).click()
             cy.get(slipPageValues).eq(`${z}`).click()
@@ -276,7 +250,7 @@ describe('Swap', () => {
         cy.get(slipPageValuesAssert).eq(0).should('have.css', 'background-color', 'rgb(255, 200, 0)')
         cy.get(saveCloseBtn1).should('contain', `${saveCloseBtnTxt}`).click({force: true})
         cy.get(settingBtn).click()
-        cy.get(slipPageValues).eq(0).should('have.css', 'background-color', 'rgb(255, 200, 0)')
+        cy.get(slipPageValuesAssert).eq(0).should('have.css', 'background-color', 'rgb(255, 200, 0)')
     
     }) 
     

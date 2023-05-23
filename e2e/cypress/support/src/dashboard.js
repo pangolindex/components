@@ -1,5 +1,5 @@
 import selectors from '../../fixtures/selectors.json'
-const {newsBtn, newsLinks1,newsNextBtn, linksSideMenu, linksSideMenuExp, socialMediaLinks } = selectors.dashboard
+const {newsBtn, newsLinks1,newsNextBtn, linksSideMenu, linksSideMenuExp, socialMediaLinks, sideMenuCollapse, sideMenuExpand } = selectors.dashboard
 function newsLinks(startPoint, endPoint, link, assertMsg) {
     cy.get(newsBtn).then(news => {
         for(var i = startPoint; i < endPoint; i++){
@@ -14,11 +14,11 @@ function newsLinks(startPoint, endPoint, link, assertMsg) {
 }
 
 function socialLinks(iteration, socialLinkArray) {
-    cy.get(linksSideMenu).should(visible => {
+    cy.get(sideMenuCollapse).should(visible => {
         expect(visible).to.be.visible
     }).then(sidemenu => {
         cy.get(sidemenu).trigger('mouseover')
-        cy.get(linksSideMenuExp).should('be.visible')
+        cy.get(sideMenuExpand).should('be.visible')
     })
     cy.get(socialMediaLinks).eq(iteration).invoke('removeAttr', 'target').then ( test => {
         if(iteration === 1) {

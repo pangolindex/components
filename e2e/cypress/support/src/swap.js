@@ -14,7 +14,7 @@ function switchingValues (selectIter, headerAssert, token) {
 function tokenDisable (iter, value, token, toTokon) {
     switchingValues(iter, value, token)
     cy.get('div[class="sc-eCYdqJ fEptdj"] div[class="sc-eCYdqJ jqkPHT"] ~ div[class="sc-eCYdqJ sc-gKXOVf fEptdj cjBzGg"] button.open-currency-select-button').eq(toTokon).click()
-    cy.get('div[class="sc-bdxVC htyzVf"]').should('have.attr','disabled')
+    cy.get('div[class="sc-eCYdqJ sc-iNFqmR fEptdj hMCpHj"]').should('have.attr','disabled')
 }
 function tokenSwitching (iter, value, token, toTokon) {
     switchingValues(iter, value, token)
