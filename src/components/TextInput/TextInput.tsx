@@ -35,6 +35,11 @@ const TextInput: React.FC<TextInputProps> = (props) => {
           autoComplete={autoComplete}
           ref={(ref) => getRef(ref)}
           type={isNumeric ? 'number' : 'text'}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              (e.target as HTMLInputElement).blur();
+            }
+          }}
           onChange={(e) => {
             const value = e.target.value;
 
