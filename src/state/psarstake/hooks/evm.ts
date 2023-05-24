@@ -47,7 +47,7 @@ export function useSarStakeInfo() {
  * @param positionId Id of a Position
  * @returns Return some utils functions for stake more or create a new Position
  */
-export function useDerivativeSarStake(positionId?: BigNumber) {
+export function useDerivativeSarStake(position?: Position | null) {
   const {
     account,
     addTransaction,
@@ -83,7 +83,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
     setAttempting(true);
     try {
       let response: TransactionResponse;
-      if (!positionId) {
+      if (!position) {
         const estimatedGas = await sarStakingContract.estimateGas.mint(`0x${parsedAmount.raw.toString(16)}`);
         // create a new position
         response = await sarStakingContract.mint(`0x${parsedAmount.raw.toString(16)}`, {
@@ -91,11 +91,11 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
         });
       } else {
         const estimatedGas = await sarStakingContract.estimateGas.stake(
-          positionId.toHexString(),
+          position.id.toHexString(),
           `0x${parsedAmount.raw.toString(16)}`,
         );
         // adding more png to an existing position
-        response = await sarStakingContract.stake(positionId.toHexString(), `0x${parsedAmount.raw.toString(16)}`, {
+        response = await sarStakingContract.stake(position.id.toHexString(), `0x${parsedAmount.raw.toString(16)}`, {
           gasLimit: calculateGasMargin(estimatedGas),
         });
       }
@@ -106,7 +106,7 @@ export function useDerivativeSarStake(positionId?: BigNumber) {
       setHash(response.hash);
       mixpanel.track(MixPanelEvents.SAR_STAKE, {
         chainId: chainId,
-        isNewPosition: !positionId,
+        isNewPosition: !position,
       });
     } catch (err) {
       // we only care if the error is something _other_ than the user rejected the tx
@@ -417,7 +417,7 @@ export function useSarPositionsViaContracts() {
   const { nftsIndexes, isLoading: isLoadingIndexes, isRefetching: isRefetchingIndexes } = useSarNftsIds();
 
   // get the staked amount for each position
-  const positionsAmountState = useSingleContractMultipleData(sarStakingContract, 'positions', nftsIndexes ?? []);
+  const positionsInfosState = useSingleContractMultipleData(sarStakingContract, 'positions', nftsIndexes ?? []);
   // get the reward rate for each position
   const positionsRewardRateState = useSingleContractMultipleData(
     sarStakingContract,
@@ -442,9 +442,9 @@ export function useSarPositionsViaContracts() {
     const existErrorURI = nftsURIsState.some((result) => result.error);
     const isValidURIs = nftsURIsState.every((result) => result.valid);
 
-    const isAllFetchedAmount = positionsAmountState.every((result) => !result.loading);
-    const existErrorAmount = positionsAmountState.some((result) => result.error);
-    const isValidAmounts = positionsAmountState.every((result) => result.valid);
+    const isAllFetchedInfos = positionsInfosState.every((result) => !result.loading);
+    const existErrorInfos = positionsInfosState.some((result) => result.error);
+    const isValidInfos = positionsInfosState.every((result) => result.valid);
 
     const isAllFetchedRewardRate = positionsRewardRateState.every((result) => !result.loading);
     const existErrorRewardRate = positionsRewardRateState.some((result) => result.error);
@@ -456,16 +456,16 @@ export function useSarPositionsViaContracts() {
 
     const isLoading =
       !isAllFetchedURI ||
-      !isAllFetchedAmount ||
+      !isAllFetchedInfos ||
       !isAllFetchedRewardRate ||
       !isAllFetchedPendingReward ||
       isLoadingIndexes ||
       isRefetchingIndexes;
 
     // first moments loading is false and valid is false then is loading the query is true
-    const isValid = isValidURIs && isValidAmounts && isValidRewardRates && isValidPendingRewards;
+    const isValid = isValidURIs && isValidInfos && isValidRewardRates && isValidPendingRewards;
 
-    const error = existErrorURI || existErrorAmount || existErrorRewardRate || existErrorPendingReward;
+    const error = existErrorURI || existErrorInfos || existErrorRewardRate || existErrorPendingReward;
 
     if (error || !account || !existSarContract(chainId) || (!!nftsIndexes && nftsIndexes.length === 0)) {
       return { positions: [] as Position[], isLoading: false };
@@ -487,7 +487,8 @@ export function useSarPositionsViaContracts() {
       return undefined;
     });
 
-    const valuesVariables = (positionsAmountState || [])?.map((position) => position.result?.valueVariables);
+    const valuesVariables = positionsInfosState.map((position) => position.result?.valueVariables);
+    const lastUpdates = positionsInfosState.map((position) => BigNumber.from(position.result?.lastUpdate));
 
     const rewardRates: BigNumber[] = positionsRewardRateState.map((callState) =>
       callState.result ? callState.result?.[0] : BIGNUMBER_ZERO,
@@ -503,6 +504,7 @@ export function useSarPositionsViaContracts() {
       valuesVariables,
       rewardRates,
       pendingsRewards,
+      lastUpdates,
       blockTimestamp: blockTimestamp ?? 0,
       chainId,
     });
@@ -511,7 +513,7 @@ export function useSarPositionsViaContracts() {
   }, [
     account,
     sarStakingContract,
-    positionsAmountState,
+    positionsInfosState,
     positionsRewardRateState,
     positionsPedingRewardsState,
     nftsURIsState,
@@ -631,12 +633,15 @@ export function useSarPositionsViaSubgraph() {
       callState.result ? callState.result?.[0] : BIGNUMBER_ZERO,
     );
 
+    const lastUpdates: BigNumber[] = (subgraphPositions || [])?.map((position) => BigNumber.from(position.lastUpdate));
+
     const formatedPositions = formatPosition({
       nftsURIs,
       nftsIndexes,
       valuesVariables,
       rewardRates,
       pendingsRewards,
+      lastUpdates,
       blockTimestamp: blockTimestamp ?? 0,
       chainId,
     });

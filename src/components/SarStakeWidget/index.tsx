@@ -61,7 +61,7 @@ export default function SarManageWidget() {
     wrappedOnDismiss,
     handleMax,
     onStake,
-  } = useDerivativeSarStake(position?.id);
+  } = useDerivativeSarStake(position);
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
