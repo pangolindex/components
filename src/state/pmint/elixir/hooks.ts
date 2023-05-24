@@ -234,7 +234,7 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     [Field.CURRENCY_B]: balances[1],
   };
 
-  // try to find v2 pair for selected tokens to get Initial Start Price
+  // try to find standart-pool pair for selected tokens to get Initial Start Price
   const [pairState, pair] = usePair(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]);
 
   const pairExist = pairState === PairState.EXISTS;
@@ -243,16 +243,16 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     onStartPriceInput('');
   }, [tokenA, tokenB]);
 
-  // v2 pair calculation
-  const v2PriceIndependentAmount: CurrencyAmount | undefined = tryParseAmount(
+  // standart-pool pair calculation
+  const standartPoolPriceIndependentAmount: CurrencyAmount | undefined = tryParseAmount(
     '1', // here we are statically keeping 1 to get 1 token price
     currencies[independentField],
     chainId,
   );
-  const v2PriceDependentAmount: CurrencyAmount | undefined = useMemo(() => {
-    if (v2PriceIndependentAmount && pairExist) {
+  const standartPoolPriceDependentAmount: CurrencyAmount | undefined = useMemo(() => {
+    if (standartPoolPriceIndependentAmount && pairExist) {
       // we wrap the currencies just to get the price in terms of the other token
-      const wrappedIndependentAmount = wrappedCurrencyAmount(v2PriceIndependentAmount, chainId);
+      const wrappedIndependentAmount = wrappedCurrencyAmount(standartPoolPriceIndependentAmount, chainId);
 
       if (tokenA && tokenB && wrappedIndependentAmount && pair && chainId) {
         const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA;
@@ -268,14 +268,14 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
     } else {
       return undefined;
     }
-  }, [pairExist, currencies, dependentField, v2PriceIndependentAmount, tokenA, chainId, tokenB, pair]);
+  }, [pairExist, currencies, dependentField, standartPoolPriceIndependentAmount, tokenA, chainId, tokenB, pair]);
 
   useEffect(() => {
-    if (pairExist && v2PriceDependentAmount) {
-      onStartPriceInput(v2PriceDependentAmount?.toSignificant(24));
+    if (pairExist && standartPoolPriceDependentAmount && !startPriceTypedValue) {
+      onStartPriceInput(standartPoolPriceDependentAmount?.toSignificant(24));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pairExist, v2PriceDependentAmount?.toSignificant(24)]);
+  }, [pairExist, standartPoolPriceDependentAmount?.toSignificant(24)]);
 
   // pool
   const [poolState, pool] = usePool(currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B], feeAmount);
