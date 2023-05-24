@@ -121,10 +121,10 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
     if (value === 100) {
       setTypedValue((userLiquidityUnstaked as TokenAmount).toExact());
     } else {
-      const newAmount = (userLiquidityUnstaked as TokenAmount)
-        .multiply(JSBI.BigInt(value))
-        .divide(JSBI.BigInt(100)) as TokenAmount;
-      setTypedValue(newAmount?.toFixed(0));
+      const lpToken = userLiquidityUnstaked.token;
+      const newAmount = userLiquidityUnstaked.multiply(JSBI.BigInt(value)).divide(JSBI.BigInt(100)) as TokenAmount;
+      console.log({ decimals: lpToken.decimals });
+      setTypedValue(newAmount?.toFixed(lpToken.decimals));
     }
   };
 
