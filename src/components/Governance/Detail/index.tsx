@@ -10,7 +10,9 @@ import { AutoColumn } from 'src/components/Column';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { ProposalData, useGetProposalDetail, useUserDelegatee, useUserVotes } from 'src/state/governance/hooks';
+import { useGetProposalDetailViaSubgraph } from 'src/state/governance/hooks/common';
+import { useUserDelegatee, useUserVotes } from 'src/state/governance/hooks/evm';
+import { ProposalData } from 'src/state/governance/types';
 import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { ExternalLink } from 'src/theme';
 import { getEtherscanLink, isAddress } from 'src/utils';
@@ -40,7 +42,7 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
   const { t } = useTranslation();
 
   // get data for this specific proposal
-  const proposalData: ProposalData | undefined = useGetProposalDetail(id as string);
+  const proposalData: ProposalData | undefined = useGetProposalDetailViaSubgraph(id as string);
 
   // update support based on button interactions
   const [support, setSupport] = useState<boolean>(true);
@@ -86,6 +88,17 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
         proposalId={proposalData?.id}
         support={support}
       />
+      {/* <Button
+        variant="primary"
+        padding="8px"
+        borderRadius="8px"
+        onClick={() => {
+          setSupport(false);
+          setShowModal(true);
+        }}
+      >
+        {t('votePage.voteAgainst')}
+      </Button> */}
       <ProposalInfo gap="24px" justify="start">
         <Wrapper>
           <ArrowWrapper href={'/#/vote'}>

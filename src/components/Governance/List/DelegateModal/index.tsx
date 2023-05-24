@@ -6,7 +6,7 @@ import { AutoColumn } from 'src/components/Column';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3, usePngSymbol } from 'src/hooks';
 import useENS from 'src/hooks/useENS';
-import { useDelegateCallback } from 'src/state/governance/hooks';
+import { useDelegateCallback } from 'src/state/governance/hooks/evm';
 import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import AddressInputPanel from '../AddressInputPanel';
 import { LoadingView, SubmittedView } from '../ModalViews';
