@@ -40,15 +40,15 @@ export function useHederaTokenAllowance(token?: Token, owner?: string, spender?:
       const tokenId = hederaFn.hederaId(token.address);
       const ownerId = hederaFn.hederaId(owner);
       const spenderId = hederaFn.hederaId(spender);
-      console.log('aqui');
+
       const response = await hederaFn.call<{ allowances: HederaAllowanceInfo[]; links: { next: string | null } }>({
         url: `/api/v1/accounts/${ownerId}/allowances/tokens?spender.id=${spenderId}&token.id=${tokenId}`,
         method: 'GET',
       });
-      console.log('response', response);
+
       const allowances = response.allowances;
 
-      return new TokenAmount(token, allowances[0].amount_granted);
+      return new TokenAmount(token, allowances?.[0]?.amount_granted ?? 0);
     },
     {
       refetchInterval: isApprovingInfinite ? false : 1000 * 60 * 2,
