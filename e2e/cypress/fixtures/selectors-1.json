@@ -3,9 +3,9 @@
     "connectWallet": "#connect-wallet",
     "connectMetamask": "#connect-METAMASK",
     "connected": ".sc-ibxdXY UfbkG css-8visvh",
-    "gasToken": "div[class='sc-fUiULZ hiTwEo css-8visvh']",
-    "walletAddress": "p[class='sc-gTKrkG SxnXT']",
-    "nativeToken": "div[class='sc-lmyUgd sc-dvHJEY ezuSDu dEgrhv']",
+    "gasToken": "div[class='sc-KOysk jgZOSk css-8visvh']",
+    "walletAddress": "p[class='sc-skzID iUSsre']",
+    "nativeToken": "div[class='sc-fkaoMN sc-brCNBY gdBKaw iYmHQd']",
     "nativeTokenDeatils": "div[class='sc-iqHYmW fznvqs']",
     "nativeTokenLogo": "img[class='sc-ezredP iPgjFG']",
     "nativeTokenBalance": "div[class='sc-iqHYmW buqNus']",
@@ -20,12 +20,12 @@
     "showBalanceBtn": "div[class='sc-iqHYmW ehuBYI']",
     "copyAddress": "button[class='sc-fpqIQw sc-lavCMz dSJKFS gMkWzI']",
     "copiedAddress": "span[class='sc-djEslu hqRRlV']",
-    "networkName": "div[class='sc-bdfBQB sc-eUZRJm sc-kSFiwb sc-hIPkLu deOOZW eQtpRs cgWkoy eeVVLA']",
-    "mainnets": "div[class='sc-iqHYmW fqpLOW']",
+    "networkName": "div[class='sc-bdfBQB sc-gqpkzb sc-cxRJom sc-jmdVzn deOOZW lkMxae dYEqPF idnTVW']",
+    "networks": "div[class='sc-iqHYmW fqpLOW']",
     "swapSideMenu": "a[id='swap']",
     "dashboardSideMenu": "a[id='dashboard']",
     "testnetBtn": "div[class='sc-iBaQBe KqBsY']",
-    "stakeV2SideMenu": "a[id='stakev2']"
+    "airdropSideMenu": "a[id='airdrop']"
   },
   "swap": {
     "yourPortfolio":"div[class='sc-iqHYmW gRfDiM']",
@@ -38,7 +38,7 @@
     "tokensToSwap":"span[class='sc-jJEKmz dAlckP token-symbol-container']",
     "selectTokens":"div[class='sc-iqHYmW ktkHFj']",
     "selectTokensValue":"div[class='sc-iqHYmW sc-igsIFi jlVtaV fampJt']",
-    "selectTokensMenuClose":"div[class='sc-cBcsCo bBKenh']",
+    "selectTokensMenuClose":"div[class='sc-bVa-dBP fXmCTu']",
     "fromInput":"[id='swap-currency-input']",
     "toInput":"[id='swap-currency-output']",
     "swapBtn":"button[id='swap-button']",
@@ -61,7 +61,10 @@
     "transactionAppear":"div[class='sc-vevmX hhNvhu css-gp5dfh']",
     "accountMenuCloseSwap":"div[class='sc-frSLGL gwAoMj']",
     "notification":"[class='sc-vevmX feuMhN css-1a92al5']",
-    "notificationViewOnExplorer":"a[class='sc-eeKVJR iQUPrY']"
+    "notificationViewOnExplorer":"a[class='sc-eeKVJR iQUPrY']",
+    "transactionRejected":"div[div[class='sc-iqHYmW flqkxK']",
+    "dismissBtn":"button[class='sc-fubCzh fUmmJu']",
+    "trade":"div[class='sc-iqHYmW cgZRQ']"
 
   }
 

@@ -331,5 +331,18 @@ describe('Dashboard', () => {
         cy.get(connectWalletMsg).should("contain", connectToWalletMsg)
     })
 
+            // //Total Amount Invested in the chains
+        // cy.get(totalAmount).contains("Total Amount Invested").should('be.visible')
+        // cy.get(amountInchains).should('not.be.empty');
+        // cy.get(hideBalanceBtn).contains("Hide Your Balance").click()
+        // cy.get(sterics).contains("*").should('be.visible')
+        // cy.get(showBalanceBtn).contains("Show Your Balance").click()
+        // cy.get(amountInchains).should('not.be.empty');
+        //Copy the wallet address
+        // cy.get(walletAddress).contains('0x33...8C60').click()
+        // cy.get(copyAddress).contains("Copy Address").click() 
+        // cy.get(copiedAddress).contains("Copied").should('be.visible')
+
+
 })
 

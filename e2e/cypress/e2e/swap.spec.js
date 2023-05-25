@@ -335,4 +335,23 @@ describe('Swap', () => {
         
     })
 
+    
+    // it('Your Portfolio', () => {
+    //     //Total Amount Invested in the chains
+    //     cy.visit('/swap')
+    //     cy.get(swapSideMenu).click()
+    //     cy.get(yourPortfolio).contains("Your Portfolio").should('be.visible')
+    //     cy.get(amountInChainsSwap).should('not.be.empty');
+    //     cy.get(hideBalanceBtnSwap).contains("Hide Your Balance").click()
+    //     cy.get(stericsSwap).contains("*").should('be.visible')
+    //     cy.get(showBalanceBtnSwap).contains("Show Your Balance").click()
+    //     cy.get(amountInChainsSwap).should('not.be.empty');
+    //     //Tokens along balances
+    //     cy.get(tokensInChainsSwap).should('be.visible')
+    //     cy.get(amountInTokensSwap).should('not.be.empty')
+    // })
+      //Token chain
+        // cy.get(toTokenChain).contains("WAVAX").should('be.visible');    
+        // cy.get(toTokenChain).contains("PNG").should('be.visible');    
+        // cy.get(toTokenChain).contains("USDC").should('be.visible'); 
 })
