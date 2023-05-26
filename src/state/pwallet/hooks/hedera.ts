@@ -557,14 +557,14 @@ export const useHederaPGLToken = (
 
   const pairToken = pair?.liquidityToken;
 
-  const { data } = useQuery(
+  const { data: pglToken } = useQuery(
     ['get-pgl-token', pairToken?.address, hederaFn.HEDERA_API_BASE_URL],
     fetchHederaPGLToken(pairToken, chainId),
   );
 
   // here pglToken is the token where we can call methods like totalSupply, allowance etc
   // pair?.liquidityToken is the token with pair contract address where we can call methods like getReserves etc
-  return [data, pairToken];
+  return [pglToken, pairToken];
 };
 
 export const useHederaPGLTokens = (pairs?: (Pair | undefined)[]): [Token | undefined, Token | undefined][] => {
