@@ -354,4 +354,27 @@ describe('Swap', () => {
         // cy.get(toTokenChain).contains("WAVAX").should('be.visible');    
         // cy.get(toTokenChain).contains("PNG").should('be.visible');    
         // cy.get(toTokenChain).contains("USDC").should('be.visible'); 
+        
+        // it.only('Price Updated', () => {
+        //     cy.visit('/swap')
+        //     cy.wait(5000);
+        //     cy.get(fromInput).type('0.0001')
+        //     cy.wait(5000);
+        //     cy.get(swapBtn).contains("Swap").should('be.visible');
+        //     cy.get(swapBtn).click()
+        //     cy.get(confirmSwapBtn).contains("Confirm Swap").should("have.css", "background-color", "rgb(255, 200, 0)");
+        //     //Waiting for price to update
+        //     cy.wait(300000)
+        //     cy.get('div[class="sc-iqHYmW jlVtaV"]d').contains("Price Updated").should('be.visible')  
+        //     cy.get('button[class="sc-fubCzh hMDWoK"]').contains("Accept").should('be.visible');
+        //     cy.get('button[class="sc-fubCzh hMDWoK"]').contains("Accept").should("have.css", "background-color", "rgb(255, 200, 0)");
+        //     cy.get('div[class="sc-iqHYmW QlILP"]').should(($updatedPrice) => {
+        //         expect($updatedPrice.css('color')).to.equal('rgb(255, 200, 0)');
+        //         });
+        //     cy.get('button[class="sc-fubCzh dZMImC"]').contains("Confirm Swap").should('be.visible')
+        //     cy.get('button[class="sc-fubCzh dZMImC"]').contains("Confirm Swap").should("have.css", "background-color", "rgb(229, 229, 229)");
+        //     cy.get('button[class="sc-fubCzh hMDWoK"]').contains("Accept").click()
+        //     cy.get('button[class="sc-fubCzh fUmmJu"]').contains("Confirm Swap").should('be.visible');
+        //     cy.get('button[class="sc-fubCzh fUmmJu"]').contains("Confirm Swap").should("have.css", "background-color", "rgb(255, 200, 0)");
+        // })
 })

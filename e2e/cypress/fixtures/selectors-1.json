@@ -60,11 +60,16 @@
     "clearAll":"button[class='sc-fpqIQw dSJKFS']",
     "transactionAppear":"div[class='sc-vevmX hhNvhu css-gp5dfh']",
     "accountMenuCloseSwap":"div[class='sc-frSLGL gwAoMj']",
-    "notification":"[class='sc-vevmX feuMhN css-1a92al5']",
-    "notificationViewOnExplorer":"a[class='sc-eeKVJR iQUPrY']",
-    "transactionRejected":"div[div[class='sc-iqHYmW flqkxK']",
+    "notification":"[class='sc-bYAVqI lgjEmN css-1a92al5']",
+    "notificationViewOnExplorer":"a[class='sc-gJnOmN bxAWqC']",
+    "transactionRejected":"div[class='sc-iqHYmW flqkxK']",
     "dismissBtn":"button[class='sc-fubCzh fUmmJu']",
-    "trade":"div[class='sc-iqHYmW cgZRQ']"
+    "trade":"div[class='sc-iqHYmW cgZRQ']",
+    "limitBtn":"div[class='sc-iBaQBe KqBsY']",
+    "selectTokenBtn":"span[class='sc-jJEKmz jysvvD token-symbol-container']",
+    "priceField":"input[class='sc-dQoVA cBTceE sc-eLgNKc jWrmCf']",
+    "sellTokenDetails":"div[class='sc-iqHYmW eoCjyj']",
+    "sellTokenDetailsValues":"div[class='sc-iqHYmW sc-cOajNj YUTNa fQiDUE']"
 
   }
 

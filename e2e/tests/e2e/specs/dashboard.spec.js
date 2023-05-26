@@ -56,7 +56,7 @@ describe('Dashboard', () => {
             }
             cy.get(swapSideMenu).click()
             cy.get(dashboardSideMenu).click()
-            cy.wait(10000)
+            cy.wait(15000)
             cy.get(gasToken).invoke('text').should('contain', gasTokenArr[i]);
         } ;
     })
@@ -73,9 +73,12 @@ describe('Dashboard', () => {
             //After switching, the Network name, native token and the gas token in the menu will change to the chain specific ones
             cy.get(networkName).should('have.attr', 'title', testnetNetworkNameArr[i + 1]).should('be.visible')
             cy.get(nativeToken).invoke('text').should('contain', testnetNativeTokenArr[i]);
-            cy.wait(15000)
             cy.get(airdropSideMenu).click()
+            cy.wait(10000)
             cy.get(dashboardSideMenu).click()
+            if(i == 3){
+                cy.wait(40000);
+            }
             cy.get(gasToken).invoke('text').should('contain', testnetGasTokenArr[i]);
         } 
 

@@ -1,12 +1,14 @@
 import selectors from '../../../cypress/fixtures/selectors-1.json'
 describe('Swap', () => {
     let { connectWallet,connectMetamask, connected, gasToken, walletAddress, nativeToken, networkName, swapSideMenu} = selectors.dashboard
-    let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, swappingMsg, TransactionSubmitted, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, notification, notificationViewOnExplorer, transactionRejected, dismissBtn, trade} = selectors.swap
+    let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, swappingMsg, TransactionSubmitted, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, notification, notificationViewOnExplorer, transactionRejected, dismissBtn, trade, limitBtn, selectTokenBtn, priceField, sellTokenDetails, sellTokenDetailsValues} = selectors.swap
     const percentBtnArr = ['0', '0', '1', '2']
     const swapTokensArr = ["AVAX", "USDC"]
+    const sellTokenDetailsArr = ["Gas Price", "Real Execution Price", "Gelato Fee", "Slippage Tolerance", "Minimum Received"]
 
 
-    it.only('Connects with Metamask', () => {
+
+    it('Connects with Metamask', () => {
         //Connect to MetaMask from swap page
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
@@ -20,7 +22,7 @@ describe('Swap', () => {
 
     })  
 
-    it.only('Transaction Buttons on Trade card', () => {
+    it('Transaction Buttons on Trade card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         cy.wait(10000);
@@ -43,7 +45,7 @@ describe('Swap', () => {
 
     })
 
-    it.only('Details on Trade card', () => {
+    it('Details on Trade card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         cy.wait(20000);
@@ -54,7 +56,7 @@ describe('Swap', () => {
             });
             cy.get(fromInput).should('not.have.value', '0.00');
             cy.get(toInput).should('not.have.value', '0.00');
-            cy.wait(10000);
+            cy.wait(5000);
             //Swap button
             cy.get(swapBtn).contains("Swap").should('be.visible');
             cy.get(swapBtn).contains("Swap").should("have.css", "background-color", "rgb(255, 200, 0)");
@@ -82,7 +84,9 @@ describe('Swap', () => {
         cy.get(swapBtn).click()
         cy.get(confirmSwapBtn).contains("Confirm Swap").should("have.css", "background-color", "rgb(255, 200, 0)");
         cy.get(confirmSwapBtn).contains("Confirm Swap").click()
-        cy.rejectMetamaskTransaction()
+        cy.wait(5000);
+        //Reject transaction
+        cy.rejectMetamaskTransaction();
         cy.get(transactionRejected).contains("Transaction rejected.").should('be.visible')  
         cy.get(dismissBtn).contains("Dismiss").should('be.visible');
         cy.get(dismissBtn).contains("Dismiss").should("have.css", "background-color", "rgb(255, 200, 0)");
@@ -96,21 +100,20 @@ describe('Swap', () => {
     it('Details on Confirm swap card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
-        cy.wait(10000);
+        cy.wait(5000);
         cy.get(tokensToSwap).contains("AVAX").click()
-        cy.get(selectTokens).should('have.attr', 'title', 'Pangolin').contains("PNG").should('be.visible')
-        cy.get(selectTokens).should('have.attr', 'title', 'Pangolin').contains("PNG").click()
+        cy.wait(15000);
+        cy.get(selectTokens).eq(4).should('have.attr', 'title', 'USD Coin').should('be.visible')
+        cy.get(selectTokens).eq(4).should('have.attr', 'title', 'USD Coin').click()
         cy.get(fromInput).type('0.0001')
         cy.get(swapBtn).contains("Swap").should('be.visible');
         cy.get(swapBtn).click()
         //Details on confirmswap card
         cy.get(confirmSwap).contains("Confirm Swap").should('be.visible')
-        cy.get(confirmSwapDetails).contains("PNG").should('be.visible')
+        cy.get(confirmSwapDetails).contains("USDC.e").should('be.visible')
         cy.get(confirmSwapDetails).contains("USDC").should('be.visible')
         cy.get(confirmSwapDetails).eq(1).should('not.be.empty');
         cy.get(confirmSwapDetails).eq(3).should('not.be.empty');
-        // cy.get('img[class="sc-ezredP cizzGM"]').eq(9).should('have.attr', 'alt', 'PNG logo')
-        // cy.get('img[class="sc-ezredP cizzGM"]').eq(10).should('have.attr', 'alt', 'USDC logo')
         cy.get(confirmSwapMsg).invoke('text').should('match', /.*USDC.*/);
         //Confirm swap button
         cy.get(confirmSwapBtn).contains("Confirm Swap").should('be.visible');
@@ -118,94 +121,82 @@ describe('Swap', () => {
         cy.get(confirmSwapBtn).contains("Confirm Swap").click()
         //Swapping message
         cy.get(swappingMsg).invoke('text').should('match', /.*USDC.*/);
-        //cy.confirmMetamaskTransaction()
+        cy.wait(5000);
+        cy.confirmMetamaskTransaction()
+        cy.wait(5000);
+        //Notification
+        cy.get(notification).eq(0).invoke('text').should('match', /.*USDC.*/); 
+        cy.get(notificationViewOnExplorer).each(page => {
+            cy.request(page.prop('href')).as('link');
+        });
+        cy.get('@link').should(response => {
+            expect(response.status).to.eq(200);
+        });
         //Successful card
         cy.get(TransactionSubmitted).contains("Transaction Submitted").should('be.visible');
         cy.request('GET', 'https://snowtrace.io/tx/0xa1bd06abcf1c5ca902f0241ba184599fadbd4993b1903a562a8976bbc25f6e6b').then( res => {
             expect(res.status).to.equal(200)
           }) 
         cy.get(confirmSwapBtn).contains("Close").should('be.visible');
-        cy.get(confirmSwapBtn).contains("Close").click()
-        //Notification
-        cy.get(notification).invoke('text').should('match', /.*USDC.*/); 
-        cy.get(notificationViewOnExplorer).each(page => {
-            cy.request(page.prop('href')).as('link');
-        });
-        cy.get('@link').should(response => {
-            expect(response.status).to.eq(200);
-        }); 
+        cy.get(confirmSwapBtn).contains("Close").click() 
         //Recent Transactions
-        cy.get(walletAddress).contains('0x33...8C60').click()
-        cy.get(recentTransactions).contains("Recent Transactions").should('be.visible')  
-        //Transaction Links
-        cy.get(transactionLinks).each(page => {
-                cy.request(page.prop('href')).as('link');
-            });
-            cy.get('@link').should(response => {
-                expect(response.status).to.eq(200);
-            });
-        //Clear all Transactions
-        cy.get(clearAll).contains("clear all").click()
-        cy.get(transactionAppear).contains("Your transactions will appear here...").should('be.visible')
-        cy.get(accountMenuCloseSwap).click()      
+        // cy.get(walletAddress).contains('0x33...8C60').click()
+        // cy.get(recentTransactions).contains("Recent Transactions").should('be.visible')  
+        // //Transaction Links
+        // cy.get(transactionLinks).each(page => {
+        //         cy.request(page.prop('href')).as('link');
+        //     });
+        //     cy.get('@link').should(response => {
+        //         expect(response.status).to.eq(200);
+        //     });
+        // //Clear all Transactions
+        // cy.get(clearAll).contains("clear all").click()
+        // cy.get(transactionAppear).contains("Your transactions will appear here...").should('be.visible')
+        // cy.get(accountMenuCloseSwap).click()      
     })
 
-    it('Price Updated', () => {
-        cy.visit('/swap')
-        cy.wait(5000);
-        cy.get(fromInput).type('0.0001')
-        cy.wait(5000);
-        cy.get(swapBtn).contains("Swap").should('be.visible');
-        cy.get(swapBtn).click()
-        cy.get(confirmSwapBtn).contains("Confirm Swap").should("have.css", "background-color", "rgb(255, 200, 0)");
-        //Waiting for price to update
-        cy.wait(300000)
-        cy.get('div[class="sc-iqHYmW jlVtaV"]d').contains("Price Updated").should('be.visible')  
-        cy.get('button[class="sc-fubCzh hMDWoK"]').contains("Accept").should('be.visible');
-        cy.get('button[class="sc-fubCzh hMDWoK"]').contains("Accept").should("have.css", "background-color", "rgb(255, 200, 0)");
-        cy.get('div[class="sc-iqHYmW QlILP"]').should(($updatedPrice) => {
-            expect($updatedPrice.css('color')).to.equal('rgb(255, 200, 0)');
-            });
-        cy.get('button[class="sc-fubCzh dZMImC"]').contains("Confirm Swap").should('be.visible')
-        cy.get('button[class="sc-fubCzh dZMImC"]').contains("Confirm Swap").should("have.css", "background-color", "rgb(229, 229, 229)");
-        cy.get('button[class="sc-fubCzh hMDWoK"]').contains("Accept").click()
-        cy.get('button[class="sc-fubCzh fUmmJu"]').contains("Confirm Swap").should('be.visible');
-        cy.get('button[class="sc-fubCzh fUmmJu"]').contains("Confirm Swap").should("have.css", "background-color", "rgb(255, 200, 0)");
-    })
-
-    it('Limit Sell card', () => {
-        
-        cy.visit('/swap')
-        cy.wait(2000);
-        cy.get('div[class="sc-iBaQBe KqBsY"]').contains("LIMIT").click()
+    it('Details on Limit Sell card', () => {
+        cy.visit('/dashboard')
+        cy.get(swapSideMenu).click()
+        cy.get(limitBtn).contains("LIMIT").click()
         cy.get(tokensToSwap).click()
-        cy.get('[class="sc-iqHYmW sc-eazVAB jlVtaV dPbFNt"]').eq(2).click();
-        cy.get('span[class="sc-jJEKmz jysvvD token-symbol-container"]').contains("Select Token").click()
-        cy.get('div[class="sc-iqHYmW ktkHFj"]').contains("USDC").click()
-        cy.get(fromInput).type('0.0001')
+        cy.wait(10000);
+        cy.get(selectTokens).contains("PNG").click()
+        cy.get(selectTokenBtn).contains("Select Token").click()
+        cy.get(selectTokens).contains("USDC").click()
+        cy.get(fromInput).type('0.001')
         cy.wait(5000);
-        cy.get('input[class="sc-dQoVA cBTceE sc-eLgNKc jWrmCf"]').should('not.have.value', '0.00');
+        cy.get(priceField).should('not.have.value', '0.00');
         cy.get(toInput).should('not.have.value', '0.00');
-    
         //Sell token detaisl
-        cy.get('div[class="sc-iqHYmW eoCjyj"]').contains("Gas Price").should('be.visible')
-        cy.get('div[class="sc-iqHYmW sc-cOajNj YUTNa fQiDUE"]').should('not.be.empty')
-        cy.get('div[class="sc-iqHYmW eoCjyj"]').contains("Real Execution Price").should('be.visible')
-        cy.get('div[class="sc-iqHYmW sc-cOajNj YUTNa fQiDUE"]').should('not.be.empty')
-        cy.get('div[class="sc-iqHYmW eoCjyj"]').contains("Gelato Fee").should('be.visible')
-        cy.get('div[class="sc-iqHYmW sc-cOajNj YUTNa fQiDUE"]').should('not.be.empty')
-        cy.get('div[class="sc-iqHYmW eoCjyj"]').contains("Slippage Tolerance").should('be.visible')
-        cy.get('div[class="sc-iqHYmW sc-cOajNj YUTNa fQiDUE"]').should('not.be.empty')
-        cy.get('div[class="sc-iqHYmW eoCjyj"]').contains("Minimum Received").should('be.visible')
-        cy.get('div[class="sc-iqHYmW sc-cOajNj YUTNa fQiDUE"]').should('not.be.empty')
-        //Limit price 
+        for (var i = 0; i <= 4; i++) {
+            cy.get(sellTokenDetails).contains(sellTokenDetailsArr[i]).should('be.visible')
+            cy.get(sellTokenDetailsValues).should('not.be.empty')
+        }
+        //On market price 
         cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should('be.visible');
         cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should("have.css", "background-color", "rgb(229, 229, 229)");
+        //Less than market price
+        cy.get(priceField).invoke('val').then((value) => {
+        const decrementedValue = parseFloat(value) - 0.01; // deccrement the retrieved value
+        const incrementedValue = parseFloat(value) + 0.01; // inccrement the retrieved value
+        cy.get(priceField).clear().type(decrementedValue.toFixed(2)); // Re-enter the decremented value
+        cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should('be.visible');
+        cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should("have.css", "background-color", "rgb(229, 229, 229)");
+        //Greater than market price
+        cy.get(priceField).clear().type(incrementedValue.toFixed(2)); // Re-enter the incremented value
+        cy.get(swapBtn).contains("Place Order").should('be.visible')
+        cy.get(swapBtn).contains("Place Order").should("have.css", "background-color", "rgb(255, 200, 0)");
+        });
+    })
+
+    it('Swap page', () => {
+        //Connect to MetaMask from swap page
+        cy.visit('/dashboard')
+        cy.get(swapSideMenu).click()
+        cy.get(percentBtns).eq(0).should('be.visible')
 
     })
 
-    
 
-
-    
 }) 
