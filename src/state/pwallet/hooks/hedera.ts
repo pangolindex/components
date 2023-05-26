@@ -523,7 +523,7 @@ export function fetchHederaTokenMetaData(tokenAddress: string | undefined) {
 export function useHederaTokensMetaData(addresses: (string | undefined)[]) {
   const queries = useMemo(() => {
     return addresses.map((address) => ({
-      queryKey: ['get-hedera-token-metadata', address],
+      queryKey: ['get-hedera-token-metadata', address, hederaFn.HEDERA_API_BASE_URL],
       queryFn: fetchHederaTokenMetaData(address),
     }));
   }, [addresses]);
@@ -553,23 +553,18 @@ export const useHederaPGLToken = (
   currencyB: Currency | undefined,
 ): [Token | undefined, Token | undefined] => {
   const chainId = useChainId();
-
-  const [pglToken, setPglToken] = useState<Token | undefined>(undefined);
   const [, pair] = usePair(currencyA, currencyB);
 
   const pairToken = pair?.liquidityToken;
 
-  const { isLoading, data } = useQuery(['get-pgl-token', pairToken?.address], fetchHederaPGLToken(pairToken, chainId));
-
-  useEffect(() => {
-    if (!isLoading && !!data) {
-      setPglToken(data);
-    }
-  }, [isLoading, data]);
+  const { data: pglToken } = useQuery(
+    ['get-pgl-token', pairToken?.address, hederaFn.HEDERA_API_BASE_URL],
+    fetchHederaPGLToken(pairToken, chainId),
+  );
 
   // here pglToken is the token where we can call methods like totalSupply, allowance etc
   // pair?.liquidityToken is the token with pair contract address where we can call methods like getReserves etc
-  return [pglToken, pair?.liquidityToken];
+  return [pglToken, pairToken];
 };
 
 export const useHederaPGLTokens = (pairs?: (Pair | undefined)[]): [Token | undefined, Token | undefined][] => {
@@ -580,7 +575,7 @@ export const useHederaPGLTokens = (pairs?: (Pair | undefined)[]): [Token | undef
       pairs?.map((pair) => {
         const pairToken = pair?.liquidityToken;
         return {
-          queryKey: ['get-pgl-token', pairToken?.address],
+          queryKey: ['get-pgl-token', pairToken?.address, hederaFn.HEDERA_API_BASE_URL],
           queryFn: fetchHederaPGLToken(pairToken, chainId),
         };
       }) ?? []
@@ -622,7 +617,7 @@ export const useHederaPGLTokenAddresses = (
     return (
       liquidityAddresses?.map((address) => {
         return {
-          queryKey: ['get-pgl-token-address', address],
+          queryKey: ['get-pgl-token-address', address, hederaFn.HEDERA_API_BASE_URL],
           queryFn: fetchHederaPGLTokenAddress(address),
         };
       }) ?? []
@@ -679,7 +674,7 @@ export const useHederaPairContractEVMAddresses = (lpTokenAddress?: string[]): st
     return (
       lpTokenContracts?.map((address) => {
         return {
-          queryKey: ['get-pgl-token-evm-address', address],
+          queryKey: ['get-pgl-token-evm-address', address, hederaFn.HEDERA_API_BASE_URL],
           queryFn: () => hederaFn.getContractData(address),
         };
       }) ?? []
