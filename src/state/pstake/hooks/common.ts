@@ -1,4 +1,5 @@
 import { CHAINS, ChefType, CurrencyAmount, JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
+import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
@@ -8,7 +9,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTokensHook } from 'src/hooks/tokens';
 import { useMiniChefContract, useRewardViaMultiplierContract } from 'src/hooks/useContract';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
-import { useSingleCallResult, useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
+import { useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { tryParseAmount } from 'src/state/pswap/hooks/common';
 import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -87,15 +88,17 @@ export function useExtraPendingRewards(miniChefStaking: DoubleSideStakingInfo | 
   }, [getRewardMultipliersRes, miniChefStaking]);
   const earnedAmountStr = earnedAmount ? JSBI.BigInt(earnedAmount?.raw).toString() : JSBI.BigInt(0).toString();
 
-  const pendingTokensParams = useMemo(() => [[0, account as string, earnedAmountStr]], [account, earnedAmountStr]);
-  const pendingTokensRes = useSingleContractMultipleData(
+  const pendingTokensParams = useMemo(() => [0, account as string, earnedAmountStr], [account, earnedAmountStr]);
+  const pendingTokensRes = useSingleCallResult(
     rewardContract,
     'pendingTokens',
     account ? pendingTokensParams : emptyArr,
   );
 
-  const isLoading = pendingTokensRes?.[0]?.loading;
-  const _rewardTokens = useTokens(rewardTokensAddress);
+  const isLoading = pendingTokensRes.loading;
+  const _rewardTokens = useTokens(
+    (miniChefStaking as MinichefStakingInfo)?.rewardTokens ? undefined : rewardTokensAddress,
+  );
 
   const rewardTokens = useMemo(() => {
     const stakingInfo = miniChefStaking as MinichefStakingInfo;
@@ -105,13 +108,30 @@ export function useExtraPendingRewards(miniChefStaking: DoubleSideStakingInfo | 
     return _rewardTokens;
   }, [_rewardTokens, miniChefStaking]);
 
-  const rewardAmounts = pendingTokensRes?.[0]?.result?.amounts || emptyArr; // eslint-disable-line react-hooks/exhaustive-deps
+  const rewardAmounts: BigNumber[] = pendingTokensRes.result?.amounts || emptyArr; // eslint-disable-line react-hooks/exhaustive-deps
+  const rewardTokensAddressRes: string[] = pendingTokensRes.result?.tokens || emptyArr;
 
   const rewardTokensAmount = useMemo(() => {
-    if (!rewardTokens) return emptyArr;
+    if (!rewardTokens || rewardAmounts.length === 0 || !rewardTokensAddressRes || rewardTokensAddressRes.length === 0) {
+      return emptyArr;
+    }
 
-    return rewardTokens.map((rewardToken, index) => new TokenAmount(rewardToken as Token, rewardAmounts[index] || 0));
-  }, [rewardAmounts, rewardTokens]);
+    // remove null and undefined from array
+    return (rewardTokens.filter((token) => token instanceof Token) as Token[]).map((rewardToken) => {
+      const index = rewardTokensAddressRes
+        .map((address) => address.toLowerCase())
+        .indexOf(rewardToken?.address?.toLowerCase());
+
+      // does not have the address of this token in the address array of the contract response
+      if (index < 0 || index > rewardAmounts.length) {
+        return new TokenAmount(rewardToken, 0);
+      }
+
+      const amount = rewardAmounts[index];
+
+      return new TokenAmount(rewardToken, amount.toString());
+    });
+  }, [rewardAmounts, rewardTokens, rewardTokensAddressRes]);
 
   useEffect(() => {
     if (!isLoading) {
