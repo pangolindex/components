@@ -32,7 +32,6 @@ interface HederaAllowanceInfo {
 
 export function useHederaTokenAllowance(token?: Token, owner?: string, spender?: string): TokenAmount | undefined {
   const isApprovingInfinite = useIsApprovingInfinite();
-  console.log({ token, owner, spender });
   const { data } = useQuery(
     ['get-hedera-token-allowance', token?.address, owner, spender],
     async () => {
