@@ -137,14 +137,14 @@ export function useTickLensContract(): Contract | null {
 
 export function useGovernanceContract(): Contract | null {
   const chainId = useChainId();
-  const address = chainId ? CHAINS[chainId]?.contracts?.governor : undefined;
+  const address = chainId ? CHAINS[chainId]?.contracts?.governor?.address : undefined;
 
   return useContract(address, GovernorAlpha.abi, true);
 }
 
 export function useHederaGovernanceContract(): Contract | null {
   const chainId = useChainId();
-  const address = chainId ? CHAINS[chainId]?.contracts?.governor : undefined;
+  const address = chainId ? CHAINS[chainId]?.contracts?.governor?.address : undefined;
 
   return useContract(address, HederaGovernorABI.abi, true);
 }

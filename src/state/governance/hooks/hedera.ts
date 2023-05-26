@@ -121,10 +121,6 @@ export function useHederaVoteCallback(): {
   const addTransaction = useTransactionAdder();
 
   const voteCallback = async (proposalId: string | undefined, support: boolean, nftId?: BigNumber) => {
-    console.log('proposalId', proposalId);
-    console.log('support', support);
-    console.log('nftId', nftId);
-
     if (!account || !govContract || !proposalId || !nftId) return;
 
     try {

@@ -1,6 +1,6 @@
-import { JSBI, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, GovernanceType, JSBI, TokenAmount } from '@pangolindex/sdk';
 import { DateTime } from 'luxon';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
@@ -13,6 +13,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useGetProposalDetailViaSubgraph } from 'src/state/governance/hooks/common';
 import { useUserDelegatee, useUserVotes } from 'src/state/governance/hooks/evm';
 import { ProposalData } from 'src/state/governance/types';
+import { useSarPositionsHook } from 'src/state/psarstake/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { ExternalLink } from 'src/theme';
 import { getEtherscanLink, isAddress } from 'src/utils';
@@ -50,6 +51,19 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
   // modal for casting votes
   const [showModal, setShowModal] = useState<boolean>(false);
 
+  //sar nft
+  const useSarPositions = useSarPositionsHook[chainId];
+  const { positions, isLoading } = useSarPositions();
+
+  // sort by balance
+  const filteredPositions = useMemo(
+    () =>
+      positions
+        ?.filter((position) => !position.balance.isZero())
+        .sort((a, b) => Number(b.balance.sub(a.balance).toString())), // remove zero balances and sort by balance
+    [positions],
+  );
+
   // get and format date from data
   const startTimestamp: number | undefined = proposalData?.startTime;
   const endTimestamp: number | undefined = proposalData?.endTime;
@@ -68,9 +82,22 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
   const availableVotes: TokenAmount | undefined = useUserVotes();
   const uniBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? PNG[chainId] : undefined);
   const userDelegatee: string | undefined = useUserDelegatee();
-  const showUnlockVoting = Boolean(
-    uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS,
-  );
+
+  const showUnlockVoting =
+    CHAINS[chainId]?.contracts?.governor?.type === GovernanceType.SAR_NFT
+      ? filteredPositions?.length === 0
+      : Boolean(uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS);
+
+  const checkDateValidation = endDate && endDate > now && startDate && startDate <= now;
+
+  const checkAvailableVotes =
+    CHAINS[chainId]?.contracts?.governor?.type === GovernanceType.STANDARD &&
+    availableVotes &&
+    JSBI.greaterThan(availableVotes?.raw, JSBI.BigInt(0));
+
+  const checkForV1 = !showUnlockVoting && checkAvailableVotes && checkDateValidation;
+
+  const checkForV2 = !showUnlockVoting && checkDateValidation;
 
   // show links in propsoal details if content is an address
   const linkIfAddress = (content: string) => {
@@ -87,18 +114,10 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
         onDismiss={() => setShowModal(false)}
         proposalId={proposalData?.id}
         support={support}
+        filteredPositions={filteredPositions}
+        nftLoading={isLoading}
       />
-      {/* <Button
-        variant="primary"
-        padding="8px"
-        borderRadius="8px"
-        onClick={() => {
-          setSupport(false);
-          setShowModal(true);
-        }}
-      >
-        {t('votePage.voteAgainst')}
-      </Button> */}
+
       <ProposalInfo gap="24px" justify="start">
         <Wrapper>
           <ArrowWrapper href={'/#/vote'}>
@@ -130,14 +149,7 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
             </Text>
           </Wrapper>
         </AutoColumn>
-
-        {!showUnlockVoting &&
-        availableVotes &&
-        JSBI.greaterThan(availableVotes?.raw, JSBI.BigInt(0)) &&
-        endDate &&
-        endDate > now &&
-        startDate &&
-        startDate <= now ? (
+        {checkForV1 || checkForV2 ? (
           <ButtonWrapper style={{ width: '100%', gap: '12px' }}>
             <Button
               variant="primary"
@@ -165,6 +177,7 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
         ) : (
           ''
         )}
+
         <CardWrapper>
           <StyledDataCard>
             <CardSection>

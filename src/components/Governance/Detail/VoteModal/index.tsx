@@ -1,11 +1,12 @@
-import { TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, GovernanceType, TokenAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import React, { useContext, useState } from 'react';
 import { ArrowUpCircle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Loader, Modal, SarNFTPortfolio, Text } from 'src/components';
+import { Box, Button, Loader, Modal, Text } from 'src/components';
 import { AutoColumn } from 'src/components/Column';
+import Portfolio from 'src/components/SarNFTPortfolio/Portfolio';
 import { useChainId } from 'src/hooks';
 import { useVoteCallbackHook } from 'src/state/governance/hooks';
 import { useUserVotes } from 'src/state/governance/hooks/evm';
@@ -13,7 +14,6 @@ import { Position } from 'src/state/psarstake/types';
 import { ExternalLink } from 'src/theme';
 import { CloseIcon } from 'src/theme/components';
 import { getEtherscanLink } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
 import { ConfirmOrLoadingWrapper, ConfirmedIcon, ContentWrapper, Wrapper } from './styleds';
 
 interface VoteModalProps {
@@ -21,9 +21,18 @@ interface VoteModalProps {
   onDismiss: () => void;
   support: boolean; // if user is for or against proposal
   proposalId: string | undefined; // id for the proposal to vote on
+  filteredPositions: Position[];
+  nftLoading?: boolean;
 }
 
-export default function VoteModal({ isOpen, onDismiss, proposalId, support }: VoteModalProps) {
+export default function VoteModal({
+  isOpen,
+  onDismiss,
+  proposalId,
+  support,
+  filteredPositions,
+  nftLoading,
+}: VoteModalProps) {
   const chainId = useChainId();
 
   const useVoteCallback = useVoteCallbackHook[chainId];
@@ -67,32 +76,27 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support }: Vo
     // if callback not returned properly ignore
     if (!voteCallback) return;
 
-    console.log('proposalId', proposalId);
-    console.log('support', support);
-    console.log('selectedPosition', selectedPosition);
-
     // try delegation and store hash
-    // const _hash = await voteCallback(proposalId, support, selectedPosition?.id)?.catch((error) => {
-    //   setAttempting(false);
-    //   console.log(error);
-    // });
+    const _hash = await voteCallback(proposalId, support, selectedPosition?.id)?.catch((error) => {
+      setAttempting(false);
+      console.log(error);
+    });
 
-    // if (_hash) {
-    //   setHash(_hash);
-    // }
+    if (_hash) {
+      setHash(_hash);
+    }
   }
 
-  const renderModalBody = (chainId) => {
-    if (hederaFn.isHederaChain(chainId)) {
-      // TODO Condition
+  const renderModalBody = () => {
+    if (CHAINS[chainId]?.contracts?.governor?.type === GovernanceType.SAR_NFT) {
       return (
         <Box>
           <Text fontSize={24} fontWeight={500} color="text1">
-            Choose NFT's to Vote: {support ? t('vote.for') : t('vote.against')}
+            Choose NFTs to Vote: {support ? t('vote.for') : t('vote.against')}
           </Text>
-          <SarNFTPortfolio onSelectPosition={onSelectPosition} />
+          <Portfolio positions={filteredPositions} onSelectPosition={onSelectPosition} allowSorting={false} />
 
-          <Button variant={support ? 'confirm' : 'primary'} onClick={onVote}>
+          <Button variant="primary" onClick={onVote} isDisabled={!selectedPosition}>
             <Text fontWeight={500} fontSize={20} color="white">
               {t('vote.vote')} {support ? t('vote.for') : t('vote.against')} {t('vote.proposal')} {proposalId}
             </Text>
@@ -119,13 +123,18 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support }: Vo
 
   return (
     <Modal isOpen={isOpen} onDismiss={wrappedOndismiss}>
-      <ConfirmOrLoadingWrapper>
+      <ConfirmOrLoadingWrapper type={CHAINS[chainId]?.contracts?.governor?.type}>
         <Wrapper>
           <div />
 
           <CloseIcon onClick={wrappedOndismiss} color={theme.text3} />
         </Wrapper>
-        {!attempting && !hash && <>{renderModalBody(chainId)}</>}
+        {!attempting && !hash && !nftLoading && <>{renderModalBody()}</>}
+        {nftLoading && (
+          <Box>
+            <Loader size={100} label={`${t('common.loading')}...`} />{' '}
+          </Box>
+        )}
         {attempting && !hash && (
           <Box>
             <Loader size={100} label={`${t('vote.submittingVote')}...`} />

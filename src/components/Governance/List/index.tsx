@@ -84,7 +84,7 @@ const GovernanceList = () => {
             {t('votePage.governanceVotes')}
           </Text>
         </About>
-        {chain.contracts?.governor ? (
+        {chain?.contracts?.governor ? (
           <>
             <WrapSmall style={{ justifyContent: 'flex-end', marginTop: '8px' }}>
               {showUnlockVoting ? (
