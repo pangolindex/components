@@ -259,8 +259,10 @@ const MarketOrder: React.FC<Props> = ({
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true);
+    } else if (approval !== ApprovalState.APPROVED) {
+      setApprovalSubmitted(false);
     }
-  }, [approval, approvalSubmitted]);
+  }, [approval]);
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT]);
 

@@ -177,7 +177,6 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
         ) : (
           ''
         )}
-
         <CardWrapper>
           <StyledDataCard>
             <CardSection>
