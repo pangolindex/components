@@ -1,11 +1,12 @@
 /* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
+import { useSarNftAllProposalData } from './common';
 import { useDummyAllProposalData, useDummyVoteCallback } from './dummy';
 import { useAllProposalData, useVoteCallback } from './evm';
-import { useHederaAllProposalData, useHederaVoteCallback } from './hedera';
+import { useHederaVoteCallback } from './hedera';
 
 export type UseAllProposalDataHookType = {
-  [chainId in ChainId]: typeof useHederaAllProposalData | typeof useAllProposalData | typeof useDummyAllProposalData;
+  [chainId in ChainId]: typeof useSarNftAllProposalData | typeof useAllProposalData | typeof useDummyAllProposalData;
 };
 
 export const useAllProposalDataHook: UseAllProposalDataHookType = {
@@ -15,7 +16,7 @@ export const useAllProposalDataHook: UseAllProposalDataHookType = {
   [ChainId.COSTON]: useDummyAllProposalData,
   [ChainId.SONGBIRD]: useDummyAllProposalData,
   [ChainId.FLARE_MAINNET]: useDummyAllProposalData,
-  [ChainId.HEDERA_TESTNET]: useHederaAllProposalData,
+  [ChainId.HEDERA_TESTNET]: useSarNftAllProposalData,
   [ChainId.HEDERA_MAINNET]: useDummyAllProposalData,
   [ChainId.NEAR_MAINNET]: useDummyAllProposalData,
   [ChainId.NEAR_TESTNET]: useDummyAllProposalData,

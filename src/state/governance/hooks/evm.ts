@@ -93,7 +93,7 @@ export function useDataFromEventLogs() {
           description: eventParsed.description,
           details: eventParsed.targets.map((target: string, i: number) => {
             const signature = eventParsed.signatures[i];
-            const [name, types] = signature.substr(0, signature.length - 1).split('(');
+            const [name, types] = signature.substr(0, signature.length - 1).split('(') || [];
 
             const calldata = eventParsed.calldatas[i];
             const decoded = utils.defaultAbiCoder.decode(types.split(','), calldata);
@@ -221,7 +221,7 @@ export function useDelegateCallback(): (delegatee: string | undefined) => undefi
 }
 
 export function useVoteCallback(): {
-  voteCallback: (proposalId: string | undefined, support: boolean) => undefined | Promise<string> | undefined;
+  voteCallback: (proposalId: string | undefined, support: boolean) => undefined | Promise<string>;
 } {
   const { account } = usePangolinWeb3();
 
