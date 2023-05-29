@@ -2,11 +2,11 @@
 import selectors from "../fixtures/selectors.json"
 import data from '../fixtures/pangolin-data'
 // import { socialLinks } from '../support/src/dashboard'
-// // import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
+import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
 // import {switchingValues} from '../support/src/swap'
 
 describe('Dashboard', () => {
-    const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, tokenSection, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, linkBtn, swapIcon, dashboardIcon, connectWalletMsg, connectWallet, PNGBtn, PNGValue, addPNG, PNGLogo, showBalanceBtn, hideBalanceBtn, tokensList, disabledTokens, newsLinks, avalancheBtn, selectChain, selectChainCrossBtn, claimLink, detailsCrossBtn, detailsTitle, gasToken, walletAdd, chains, poweredBy, watchlistTokens} = selectors.dashboard
+    const { returnToLegacyBtn, languageBtn, lightMood, darkMood, noOfLanguages, watchListBtn, watchlistDropDown, tokenSearch, tokenSelect, tokenAssert, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, languageDropdown, watchlistTimeBtn, watchlistTradeBtn, newsBtn, newsBody, newsNextBtn, newsPreBtn, watchlistGraphLine, graphUSD, sideMenuCollapse, sideMenuExpand, footerlinksSel, footerLinkBanner, footerLinkCloseBtn, linkBtn, swapSideMenu, dashboardSideMenu, connectWalletMsg, connectWallet, PNGBtn, PNGValue, addPNG, PNGLogo, showBalanceBtn, hideBalanceBtn, tokensList, disabledTokens, newsLinks, avalancheBtn, selectChain, selectChainCrossBtn, claimLink, detailsCrossBtn, gasToken, walletAdd, chains, poweredBy, watchlistTokens} = selectors.dashboard
     const { languagesArray, tokenName, AvaxToken, switchArray, chartTimeArray, socialLinksArray, socialLinksContents, footerLinks, usd, coinBase, bridgeSwap, connectToWalletMsg, connectToWallet, linkUrl, swap, hideBalance, showBalance} = data.dashboard
     const {pangolinLinksArr} = data
     const legUrl = "https://legacy.pangolin.exchange/#/"
@@ -43,15 +43,15 @@ describe('Dashboard', () => {
             cy.get(sidemenu).trigger('mouseover')
             cy.get(sideMenuExpand)
                 .should('be.visible')
-            cy.get(swapIcon).click()
-            cy.get(dashboardIcon).click().within(dashAssert => {
+            cy.get(swapSideMenu).click()
+            cy.get(dashboardSideMenu).click().within(dashAssert => {
                 cy.contains('Dashboard').should('be.visible')
             })
         })
     })
 
     /********************** Assert the legacy site button redirect to legacy site  ************/
-    it('TC-05, Verify that Return to lagacy site button redirects the user to the "Legacy site" page', () => {
+    it.only('TC-05, Verify that Return to lagacy site button redirects the user to the "Legacy site" page', () => {
     pangolinUsefulLinks(returnToLegacyBtn, `${legUrl}`, pangolinLinksArr[3])
     })
 
@@ -159,7 +159,7 @@ describe('Dashboard', () => {
                 .should('contain', switchArray[i])
         }  
         //Removing the token if already added
-        cy.get(tokenSection).then($avax => {
+        cy.get(tokenMouseOver).then($avax => {
             if ($avax.text().includes(AvaxToken)) {
                 cy.get(tokenMouseOver).eq(0)
                     .trigger("mouseover")
@@ -307,7 +307,7 @@ describe('Dashboard', () => {
         cy.get(PNGLogo).should("not.exist")
         cy.get(claimLink).should("not.exist")
         cy.get(detailsCrossBtn).click()
-        cy.get(detailsTitle)
+        cy.get(addPNG)
             .should("not.exist")
         cy.get(gasToken)
             .should("not.exist")

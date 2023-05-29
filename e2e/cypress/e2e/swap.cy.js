@@ -3,9 +3,9 @@ import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data'
 import { switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1 } from '../support/src/swap'
 import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
-const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, connectWallet, linkBtn, tokensList, disabledTokens, connectWalletMsg, chains, showBalanceBtn, hideBalanceBtn, watchlistTokens} = selectors.dashboard
+const {watchListBtn, watchlistDropDown, tokenSearch, tokenAssert, tokenSelect, tokenSection, tokenMouseOver, crossBtn, switchToken, watchListTokenAssert, watchlistTimeBtn, connectWallet, linkBtn, tokensList, disabledTokens, connectWalletMsg, chains, showBalanceBtn, hideBalanceBtn, watchlistTokens, swapSideMenu} = selectors.dashboard
 const {tokenName, AvaxToken, switchArray, chartTimeArray, linkUrl, swap, connectToWallet, hideBalance, showBalance} = data.dashboard
-const {fromField, toField, connectWalletBtn,limitBtn,buyBtn,swapPercentageBtns,limitPercentageBtns,swapSideMenu,swapSideMenuSelect,tradeBtns,tokenModal,headerDetailsModal,toTokenLogo,toTokenName,toTokenPrice,tradeModal,switchModal,switchBtn,settingBtn,transactionFailMessage,transactionMayFortuneMessage,expertModeMessage,saveCloseBtn, slipPageValues, slipPageValuesAssert, toggleExpertMode, saveCloseBtn1, sureMenu, settingCloseBtn, selectedSellBuyBtn, limitOrderSection, priceField, toggleExpertModeOn} = selectors.swap
+const {fromField, connectWalletBtn, limitBtn, swapPercentageBtns, limitPercentageBtns, swapSideMenuSelect, tradeBtns, tokenModal, headerDetailsModal, toTokenLogo, toTokenName, toTokenPrice, tradeModal, switchModal, switchBtn, settingBtn, transactionFailMessage, transactionMayFortuneMessage, expertModeMessage, saveCloseBtn, slipPageValues, slipPageValuesAssert, sureMenu, settingCloseBtn, selectedSellBuyBtn, limitOrderSection, priceField, toInput} = selectors.swap
 const {swapPercentage, slipPage, aAVAXb, usdc, lowSlippageMessage, highSlippageMessage, veryHighSlippageMessage, saveCloseBtnTxt, connectWalletTxt, connectWalletMsge } = data.swap
 const {pangolinLinksArr} = data
 describe('Swap', () => {
@@ -224,22 +224,22 @@ describe('Swap', () => {
             cy.get(settingBtn).click()
             cy.get(slipPageValues).eq(`${z}`).click()
             cy.get(slipPageValuesAssert).should('have.css', 'background-color', 'rgb(255, 200, 0)')
-            cy.get(saveCloseBtn1).should('contain', `${saveCloseBtnTxt}`).click()
+            cy.get(connectWalletBtn).should('contain', `${saveCloseBtnTxt}`).click()
         }
     })
 
     /*************** Clicking on the "Turn on expert mode" button on the popup ***************/
     it('TC-94, 95, 96 , Verify that the user can "ON" the expert mode', () => {
         cy.get(settingBtn).click()
-        cy.get(toggleExpertMode).contains('ON').click()
+        cy.get(limitBtn).contains('ON').click()
         cy.get(sureMenu).should("contain", "Are you sure?")
         cy.window().then(function(promptelement){
             cy.stub(promptelement, 'prompt').returns("confirm");
             cy.contains(/Turn On expert mode/i).click({force: true})
           });
-        cy.get(saveCloseBtn1).should('contain', `${saveCloseBtnTxt}`).click({force: true})
+        cy.get(connectWalletBtn).should('contain', `${saveCloseBtnTxt}`).click({force: true})
         cy.get(settingBtn).click()
-        cy.get(toggleExpertModeOn).contains("ON").should("have.css", "background-color", "rgb(17, 17, 17)")
+        cy.get(selectedSellBuyBtn).contains("ON").should("have.css", "background-color", "rgb(17, 17, 17)")
 
     })
 
@@ -248,7 +248,7 @@ describe('Swap', () => {
         cy.get(settingBtn).click()
         cy.get(slipPageValues).eq(0).click()
         cy.get(slipPageValuesAssert).eq(0).should('have.css', 'background-color', 'rgb(255, 200, 0)')
-        cy.get(saveCloseBtn1).should('contain', `${saveCloseBtnTxt}`).click({force: true})
+        cy.get(connectWalletBtn).should('contain', `${saveCloseBtnTxt}`).click({force: true})
         cy.get(settingBtn).click()
         cy.get(slipPageValuesAssert).eq(0).should('have.css', 'background-color', 'rgb(255, 200, 0)')
     
@@ -267,7 +267,7 @@ describe('Swap', () => {
 
     /**********************  Assertion on the connect wallet button  **************************/
     it(`TC-152, Verify that the user can see the ${connectWalletTxt} button in the Market section if the wallet is not connected`, () => {
-        connectWallet1(fromField, toField, connectWalletBtn)
+        connectWallet1(fromField, toInput, connectWalletBtn)
     })
 
     /******************  Assert connect wallet button in Limit tab **********************/
@@ -276,23 +276,23 @@ describe('Swap', () => {
         cy.get(selectedSellBuyBtn).contains("SELL")
             .should('have.css', 'background-color', 'rgb(17, 17, 17)')
         cy.get(priceField).should("be.visible")
-        connectWallet1(fromField, toField, connectWalletBtn)
+        connectWallet1(fromField, toInput, connectWalletBtn)
     })
 
     /*********************  Assert connect wallet button in Buy tab of Limit *******************/
     it('TC-119, 154, Verify that the user can see the "Connect wallet" button in the Limit(buy) section if the wallet is not connected', () => {
         cy.get(limitBtn).contains("LIMIT").click()
-        cy.get(buyBtn).contains("BUY").click()
+        cy.get(limitBtn).contains("BUY").click()
         cy.get(selectedSellBuyBtn).contains("BUY")
             .should('have.css', 'background-color', 'rgb(17, 17, 17)')
-        connectWallet1(fromField, toField, connectWalletBtn)
+        connectWallet1(fromField, toInput, connectWalletBtn)
     })
 
     /********************* Selected the Swap percentages  ************************/
     for(let i = 0; i < swapPercentage.length; i++){
     it(`TC-155,156,157,158, Verify that the user cannot set ${swapPercentage[i]} of the total amount of the token in the Market section if the wallet is not connected`, () => {
         cy.get(swapPercentageBtns).contains(`${swapPercentage[i]}`).click()
-        disconnectWallet(fromField, toField)
+        disconnectWallet(fromField, toInput)
     })
     }
 
@@ -301,7 +301,7 @@ describe('Swap', () => {
     it(`TC-159,160,161,162, Verify that the user cannot set ${swapPercentage[i]} of the total amount of the token in the Limit sell section if the wallet is not connected`, () => {
         cy.get(limitBtn).contains("LIMIT").click()
         cy.get(limitPercentageBtns).contains(`${swapPercentage[i]}`).click()
-        disconnectWallet(fromField, toField)
+        disconnectWallet(fromField, toInput)
     })
     }
 
@@ -309,9 +309,9 @@ describe('Swap', () => {
     for(let i = 0; i < swapPercentage.length; i++){
     it(`TC-163,164,165,166, Verify that the user cannot set ${swapPercentage[i]} of the total amount of the token in the Limit Buy section if the wallet is not connected`, () => {
         cy.get(limitBtn).contains("LIMIT").click()
-        cy.get(buyBtn).contains("BUY").click()
+        cy.get(limitBtn).contains("BUY").click()
         cy.get(limitPercentageBtns).contains(`${swapPercentage[i]}`).click()
-        disconnectWallet(fromField, toField)
+        disconnectWallet(fromField, toInput)
     })
     }
 

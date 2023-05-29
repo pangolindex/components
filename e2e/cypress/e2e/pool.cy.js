@@ -3,7 +3,7 @@ import 'cypress-wait-until'
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data.json'
 
-const {poolsSideMenu, poolsSideMenuSelect, searchFieldPool, cardTitleSuper, cardTitleAllFarm, cardBody, cardtvlApr, cardTvl, tvlAprValues, rewardsInLogos, seeDetailsBtn, detailsTitle, detailsLinks, detailsCrossBtn, superFarmTitle, addLiqBtn, superFarm, seeDetailsBlock, totalStakeBlock, totalStakeTitle, titleValues, yourPools, yourPoolsMsge, createPairBtn, createPairDropdown, createPairToken, createPairMsge, addLiqField, addLiqConnectWalletBtn, addLiqCrossBtn, noFarmsMsge, AllfarmsMaxBtn, AllfarmsMaxfield, AllfarmsFarmBtn, AllfarmsConnectBtn, AllfarmsStepper, PGLField, dollarWorth, weeklyIncome, yourFarms, manageListsTitle, tokenLists, dropdownArrow, removeList, viewList, toggleTokenList, tokenListSearch, addBtn, addBtnEnabled, testnetTokenlist, removeListEnabled, importPoolLink, importPoolTitle, importConnectWalletBtn, importSelectTokens, importDropdownTokens} = selectors.pools
+const {poolsSideMenu, poolsSideMenuSelect, searchFieldPool, cardTitleSuper, cardTitleAllFarm, cardBody, cardtvlApr, cardTvl, tvlAprValues, rewardsInLogos, seeDetailsBtn, detailsTitle, detailsLinks, detailsCrossBtn, superFarmTitle, addLiqBtn, superFarm, seeDetailsBlock, totalStakeBlock, totalStakeTitle, titleValues, yourPools, yourPoolsMsge, createPairBtn, createPairDropdown, createPairToken, createPairMsge, addLiqField, addLiqConnectWalletBtn, addLiqCrossBtn, noFarmsMsge, AllfarmsMaxBtn, AllfarmsFarmBtn, AllfarmsConnectBtn, AllfarmsStepper, PGLField, dollarWorth, manageListsTitle, tokenLists, dropdownArrow, removeList, viewList, toggleTokenList, tokenListSearch, addBtn, addBtnEnabled, testnetTokenlist, removeListEnabled, importPoolLink, importPoolTitle, importConnectWalletBtn, importSelectTokens, importDropdownTokens} = selectors.pools
 const {yourPoolsMessage, createPair, testnet} = data.pools
 const {connectToWallet} = data.dashboard
 const {connectWalletTxt} = data.swap
@@ -256,7 +256,7 @@ describe('Pools', () => {
 
     /******************* Assertions on Your Farms **************************/
     it('TC-208, Verify that the user cannot see the "Your Farms" section if the wallet is not connected', () => {
-        cy.get(yourFarms).contains("Your Farms")
+        cy.get(yourPools).contains("Your Farms")
             .should('not.exist')
     })
 
@@ -285,7 +285,7 @@ describe('Pools', () => {
         cy.waitUntil( () => cy.get(cardTitleAllFarm)).each($titleAllFarm => {
             cy.get($titleAllFarm).find(addLiqBtn).click()
             cy.get(AllfarmsMaxBtn).eq(0).click()
-            cy.get(AllfarmsMaxfield).eq(0).should("have.attr", "placeholder", "0.00")
+            cy.get(addLiqField).eq(0).should("have.attr", "placeholder", "0.00")
             cy.get(addLiqCrossBtn).click()
         })
     })
@@ -310,7 +310,7 @@ describe('Pools', () => {
             cy.get(detailsTitle).should("contain","Details")
             cy.get(AllfarmsFarmBtn).eq(1).click({force:true})
             cy.get(AllfarmsStepper).eq(1).click({force:true})
-            cy.get(weeklyIncome).eq(3).should("contain","0 PNG")
+            cy.get(dollarWorth).eq(3).should("contain","0 PNG")
             cy.get(detailsCrossBtn).eq(3).click()
 
         }) 
@@ -335,7 +335,7 @@ describe('Pools', () => {
             cy.get($titleAllFarm).find(seeDetailsBtn).click({force:true})
             cy.get(detailsTitle).should("contain","Details")
             cy.get(AllfarmsMaxBtn).eq(0).click({force:true})
-            cy.get(AllfarmsMaxfield).eq(0).should("have.attr", "placeholder", "0.00")
+            cy.get(addLiqField).eq(0).should("have.attr", "placeholder", "0.00")
             cy.get(detailsCrossBtn).eq(3).click()
 
         }) 

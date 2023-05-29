@@ -1,4 +1,4 @@
-import selectors from '../../../cypress/fixtures/selectors-1.json'
+import selectors from '../../../cypress/fixtures/selectors.json'
 describe('Dashboard', () => {
     let { connectWallet,connectMetamask, connected, gasToken, walletAddress, nativeToken, nativeTokenDeatils, nativeTokenLogo, nativeTokenBalance, detailsMenuClose, networkName, networks, swapSideMenu, dashboardSideMenu, testnetBtn, airdropSideMenu} = selectors.dashboard
     const networkNameArr = ["Avalanche", "Flare", "Songbird", "Evmos"]
@@ -9,7 +9,7 @@ describe('Dashboard', () => {
     const testnetGasTokenArr = ["cFLR", "tEVMOS", "WGMI", "AVAX"]
     const nativeTokenDeatilsArr = ["Balance", "Unclaimed", "PNG price", "PNG in circulation", "Total Supply"]
 
-    it.only('Connect to Metamask', () => {
+    it('Connect to Metamask', () => {
         cy.visit('/dashboard')
         //MetaMask connection
         cy.get(connectWallet).click();
