@@ -1105,7 +1105,7 @@ class Hedera {
   public castVote(castVoteData: CastVoteData) {
     const { proposalId, support, nftId, chainId, account } = castVoteData;
 
-    const governorId = CHAINS[chainId]?.contracts?.governor;
+    const governorId = CHAINS[chainId]?.contracts?.governor?.address;
     const contractId = governorId ? this.hederaId(governorId) : '';
     const accountId = account ? this.hederaId(account) : '';
     const maxGas = TRANSACTION_MAX_FEES.CAST_VOTE;
@@ -1119,10 +1119,9 @@ class Hedera {
       .setFunction(
         'castVote',
         new ContractFunctionParameters()
-
-          .addUint256(proposalId as any)
+          .addUint256(Number(proposalId as any))
           .addBool(support)
-          .addUint256(nftId as any),
+          .addUint256(Number(nftId as any)),
       );
 
     return hashConnect.sendTransaction(transaction, accountId);
