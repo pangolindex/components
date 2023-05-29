@@ -29,6 +29,7 @@ export const PartnerLogos = styled(Box)`
   align-items: center;
   gap: 30px;
   padding: 30px;
+  flex-wrap: wrap;
 `;
 
 export const Transactions = styled(Box)`
