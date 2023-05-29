@@ -57,7 +57,7 @@ export function useGetProposalsViaSubgraph(id?: string) {
           const details = (proposal?.targets || []).map((target: string, i: number) => {
             const signature = proposal?.signatures[i];
 
-            const [name, types] = signature?.substr(0, signature?.length - 1)?.split('(');
+            const [name, types] = signature?.substr(0, signature?.length - 1)?.split('(') || [];
 
             const calldata = proposal?.calldatas[i];
 
