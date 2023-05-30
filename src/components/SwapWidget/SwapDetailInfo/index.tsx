@@ -31,7 +31,7 @@ const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
     : '-';
 
   const lpFeeAmount = realizedLPFeeAmount
-    ? `${realizedLPFeeAmount.toSignificant(4)} ${trade.inputAmount.currency.symbol}`
+    ? `${Number(realizedLPFeeAmount.toSignificant(4)).toFixed(4)} ${trade.inputAmount.currency.symbol}`
     : '-';
   const totalFee = realizedLPFee
     ? `${realizedLPFee.add(new Percent(feeInfo.feeTotal.toString(), BIPS_BASE)).multiply('100').toSignificant(4)}%`
