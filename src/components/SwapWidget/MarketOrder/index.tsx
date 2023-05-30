@@ -365,7 +365,7 @@ const MarketOrder: React.FC<Props> = ({
       if (tokenDrawerType === Field.INPUT) {
         setApprovalSubmitted(false); // reset 2 step UI for approvals
         setSelectedPercentage(0);
-
+        handleTypeInput('');
         if (
           hederaFn.isHederaChain(chainId) &&
           currencies[Field.OUTPUT] === CAVAX[chainId] &&
