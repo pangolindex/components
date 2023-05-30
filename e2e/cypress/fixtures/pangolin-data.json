@@ -33,7 +33,14 @@
     "linkUrl": "https://info.pangolin.exchange/#/token/0x60781C2586D68229fde47564546784ab3fACA982",
     "swap": "https://dev.pangolin.exchange/#/swap",
     "hideBalance": "Hide Your Balance",
-    "showBalance": "Show Your Balance"
+    "showBalance": "Show Your Balance",
+    "networkNameArr": ["Avalanche", "Flare", "Songbird", "Evmos"],
+    "nativeTokenArr": ["PNG","PFL", "PSB"],
+    "gasTokenArr": ["AVAX", "FLR", "SGB", "EVMOS"],
+    "testnetNetworkNameArr": ["Avalanche", "Coston", "Evmos Testnet", "Wagmi", "Avalanche Fuji"],
+    "testnetNativeTokenArr": ["PCT", "evmPNG", "wagmiPNG", "fujiPNG"],
+    "testnetGasTokenArr": ["cFLR", "tEVMOS", "WGMI", "AVAX"],
+    "nativeTokenDeatilsArr": ["Balance", "Unclaimed", "price", "in circulation", "Total Supply"]
   },
   "swap": {
     "aAVAXb": "aAVAXb",
