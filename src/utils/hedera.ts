@@ -1121,7 +1121,7 @@ class Hedera {
         new ContractFunctionParameters()
           .addUint256(Number(proposalId as any))
           .addBool(support)
-          .addUint256(Number(nftId as any)),
+          .addInt64(nftId as any),
       );
 
     return hashConnect.sendTransaction(transaction, accountId);
