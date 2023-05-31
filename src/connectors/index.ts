@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
-import { ALL_CHAINS, ChainId } from '@pangolindex/sdk';
+import { ALL_CHAINS, CHAINS, ChainId } from '@pangolindex/sdk';
 import { InjectedConnector } from '@pangolindex/web3-react-injected-connector';
 import { TalismanConnector } from '@talismn/web3react-v6-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
@@ -62,11 +62,15 @@ export const walletlink = new WalletLinkConnector({
 });
 
 export const walletconnect = new WalletConnectConnector({
+  infuraId: undefined,
   rpc: {
-    [ChainId.AVALANCHE]: NETWORK_URL,
+    [ChainId.AVALANCHE]: CHAINS[ChainId.AVALANCHE].rpc_uri,
+    [ChainId.SONGBIRD]: CHAINS[ChainId.SONGBIRD].rpc_uri,
+    [ChainId.FLARE_MAINNET]: CHAINS[ChainId.FLARE_MAINNET].rpc_uri,
   },
   qrcode: true,
   bridge: 'https://bridge.walletconnect.org',
+  supportedChainIds: [ChainId.AVALANCHE, ChainId.SONGBIRD, ChainId.FLARE_MAINNET],
 });
 
 export const xDefi = new DefiConnector({
