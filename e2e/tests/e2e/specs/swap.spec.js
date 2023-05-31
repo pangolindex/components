@@ -1,14 +1,17 @@
 import selectors from '../../../cypress/fixtures/selectors.json'
+import data from '../../../cypress/fixtures/pangolin-data.json'
+import { nativeDetails } from '../../../cypress/src/dashboard'
+import { tradeDetailsftn } from '../../../cypress/src/swap'
+import { selectTokensftn } from '../../../cypress/src/swap'
+import { confirmTradeDetailsftn } from '../../../cypress/src/swap'
+import { confirmBtnftn } from '../../../cypress/src/swap'
+
+let { connectWallet,connectMetamask, connected, swapSideMenu, testnetBtn, walletAddress} = selectors.dashboard
+let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, tradeDetails, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, swappingMsg, TransactionSubmitted, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, notification, notificationViewOnExplorer, transactionRejected, selectTokenBtn, priceField, sellTokenDetailsValues, limitPrice, tokenBalances} = selectors.swap
+let { percentBtnArr, swapTokensArr, sellTokenDetailsArr} = data.swap
+
 describe('Swap', () => {
-    let { connectWallet,connectMetamask, connected, gasToken, walletAddress, nativeToken, networkName, swapSideMenu, testnetBtn} = selectors.dashboard
-    let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, swappingMsg, TransactionSubmitted, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, notification, notificationViewOnExplorer, transactionRejected, selectTokenBtn, priceField, sellTokenDetailsValues, limitPrice, tokenBalances} = selectors.swap
-    const percentBtnArr = ['0', '0', '1', '2']
-    const swapTokensArr = ["AVAX", "USDC"]
-    const sellTokenDetailsArr = ["Gas Price", "Real Execution Price", "Gelato Fee", "Slippage Tolerance", "Minimum Received"]
-
-
-
-    it('Connects with Metamask', () => {
+    it.only('Connects with Metamask', () => {
         //Connect to MetaMask from swap page
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
@@ -16,10 +19,7 @@ describe('Swap', () => {
         cy.get(connectMetamask).click();
         cy.get(connected).should("not.be.empty");         
         //After switching, the Network name (Avalanche), native token (PNG) and the gas token (AVAX) in the menu will change to the chain specific ones
-        cy.get(networkName).should('have.attr', 'title', 'Avalanche').should('be.visible')
-        cy.get(nativeToken).invoke('text').should('contain', 'PNG');
-        cy.get(gasToken).invoke('text').should('contain', 'AVAX');
-
+        nativeDetails(0)
     })  
 
     it('Transaction Buttons on Trade card', () => {
@@ -64,10 +64,12 @@ describe('Swap', () => {
         }
     })
 
-    it('Details on Trade card', () => {
+    it.only('Details on Trade card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
-        cy.wait(20000);
+        //Select tokens by their titles
+        selectTokensftn("Pangolin", "TetherToken")
+        //percent buttons
         for (var i = 0; i <= 3; i++) {
             cy.get(percentBtns).eq(percentBtnArr[i]).click();
             cy.get(percentBtnActive).should(($element) => {
@@ -76,75 +78,54 @@ describe('Swap', () => {
             cy.get(fromInput).should('not.have.value', '0.00');
             cy.get(toInput).should('not.have.value', '0.00');
             cy.wait(5000);
+            //see details by tokens name
+            tradeDetailsftn("PNG","USDt")
             //Swap button
             cy.get(swapBtn).contains("Swap").should('be.visible');
             cy.get(swapBtn).contains("Swap").should("have.css", "background-color", "rgb(255, 200, 0)");
-        }            
-        //Trade details
-        cy.get(tradeDetails).contains("Minimum Received").should('be.visible');
-        cy.get(tradeDetailsValues).should('contain', 'USDC');
-        cy.get(tradeDetails).contains("Price Impact").should('be.visible');
-        cy.get(tradeDetails).contains("Liquidity Provider Fee").should('be.visible');
-        cy.get(tradeDetailsValues).should('contain', 'AVAX');
-        cy.get(tradeDetailsValues).eq(0).should('not.be.empty');
-        cy.get(tradeDetailsValues).eq(1).should('not.be.empty');
-        cy.get(toEstimated).contains("To (estimated)").should('be.visible'); 
-        cy.get(unitPrice).contains("Price").should('be.visible');
-        cy.get(unitPrice).contains("USDC").should('be.visible');
-         
+        }               
     })
 
-    it('Reject Transaction', () => {
+    it.only('Reject Transaction', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
-        cy.wait(10000);
-        cy.get(fromInput).type('0.0001')
+        selectTokensftn("Pangolin", "TetherToken")
+        tradeDetailsftn("PNG","USDt")
         cy.get(swapBtn).contains("Swap").should('be.visible');
         cy.get(swapBtn).click()
-        cy.get(confirmSwapBtn).contains("Confirm Swap").should("have.css", "background-color", "rgb(255, 200, 0)");
-        cy.get(confirmSwapBtn).contains("Confirm Swap").click()
+        confirmTradeDetailsftn("USDt")
+        //Confirm swap button
+        confirmBtnftn("Confirm Swap")
         cy.wait(5000);
         //Reject transaction
         cy.rejectMetamaskTransaction();
         cy.get(transactionRejected).contains("Transaction rejected.").should('be.visible')  
-        cy.get(confirmSwapBtn).contains("Dismiss").should('be.visible');
-        cy.get(confirmSwapBtn).contains("Dismiss").should("have.css", "background-color", "rgb(255, 200, 0)");
-        cy.get(confirmSwapBtn).contains("Dismiss").click()
+        //Dismiss button
+        confirmBtnftn("Dismiss")
         cy.get(confirmSwapDetails).contains("Trade").should('be.visible')  
         //Swap button
         cy.get(swapBtn).contains("Swap").should('be.visible');
         cy.get(swapBtn).contains("Swap").should("have.css", "background-color", "rgb(255, 200, 0)");
     })
 
-    it('Details on Confirm swap card', () => {
+    it.only('Details on Confirm swap card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
-        cy.wait(5000);
-        cy.get(tokensToSwap).contains("AVAX").click()
-        cy.wait(15000);
-        cy.get(selectTokens).eq(2).should('have.attr', 'title', 'Pangolin').should('be.visible')
-        cy.get(selectTokens).eq(2).should('have.attr', 'title', 'Pangolin').click()
-        cy.get(fromInput).type('0.0001')
+        selectTokensftn("Pangolin", "TetherToken")
+        tradeDetailsftn("PNG","USDt")
         cy.get(swapBtn).contains("Swap").should('be.visible');
         cy.get(swapBtn).click()
         //Details on confirmswap card
-        cy.get(confirmSwap).contains("Confirm Swap").should('be.visible')
-        cy.get(confirmSwapDetails).contains("PNG").should('be.visible')
-        cy.get(confirmSwapDetails).contains("USDC").should('be.visible')
-        cy.get(confirmSwapDetails).eq(1).should('not.be.empty');
-        cy.get(confirmSwapDetails).eq(3).should('not.be.empty');
-        cy.get(confirmSwapMsg).invoke('text').should('match', /.*USDC.*/);
+        confirmTradeDetailsftn("USDt")
         //Confirm swap button
-        // cy.get(confirmSwapBtn).contains("Confirm Swap").should('be.visible');
-        // cy.get(confirmSwapBtn).contains("Confirm Swap").should("have.css", "background-color", "rgb(255, 200, 0)");
-        // cy.get(confirmSwapBtn).contains("Confirm Swap").click()
+        // confirmBtnftn("Confirm Swap")
         // //Swapping message
-        // cy.get(swappingMsg).invoke('text').should('match', /.*USDC.*/);
+        // cy.get(swappingMsg).invoke('text').should('match', /.*USDt.*/);
         // cy.wait(5000);
         // //cy.confirmMetamaskTransaction()
         // cy.wait(5000);
         // //Notification
-        // cy.get(notification).eq(0).invoke('text').should('match', /.*USDC.*/); 
+        // cy.get(notification).eq(0).invoke('text').should('match', /.*USDt.*/); 
         // cy.get(notificationViewOnExplorer).each(page => {
         //     cy.request(page.prop('href')).as('link');
         // });
@@ -156,8 +137,7 @@ describe('Swap', () => {
         // cy.request('GET', 'https://snowtrace.io/tx/0xa1bd06abcf1c5ca902f0241ba184599fadbd4993b1903a562a8976bbc25f6e6b').then( res => {
         //     expect(res.status).to.equal(200)
         //   }) 
-        // cy.get(confirmSwapBtn).contains("Close").should('be.visible');
-        // cy.get(confirmSwapBtn).contains("Close").click() 
+        // confirmBtnftn("Close")
         // cy.get(confirmSwapDetails).contains("Trade").should('be.visible')  
         //Recent Transactions
         // cy.get(walletAddress).contains('0x33...8C60').click()

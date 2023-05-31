@@ -1,5 +1,7 @@
-import selectors from '../../fixtures/selectors.json'
-const {newsBtn, newsLinks1,newsNextBtn, linksSideMenu, linksSideMenuExp, socialMediaLinks, sideMenuCollapse, sideMenuExpand } = selectors.dashboard
+import selectors from '../fixtures/selectors.json'
+import data from '../fixtures/pangolin-data.json'
+let { newsBtn, newsLinks1,newsNextBtn, linksSideMenu, linksSideMenuExp, socialMediaLinks, sideMenuCollapse, sideMenuExpand, walletAddress, nativeToken, nativeTokenLogo, nativeTokenDeatils, nativeTokenBalance, detailsMenuClose, gasToken } = selectors.dashboard
+let { nativeTokenArr, gasTokenArr, nativeTokenDeatilsArr} = data.dashboard
 function newsLinks(startPoint, endPoint, link, assertMsg) {
     cy.get(newsBtn).then(news => {
         for(var i = startPoint; i < endPoint; i++){
@@ -32,4 +34,32 @@ function socialLinks(iteration, socialLinkArray) {
     })
     
 }
-export {newsLinks, socialLinks}
+
+function nativeDetails(native){
+    cy.wait(10000)
+    cy.get(walletAddress).contains('0x33...8C60');
+    cy.get(walletAddress).invoke('text').should('equal', '0x33...8C60');
+    //Native token details
+    cy.get(nativeToken).invoke('text').should('contain', nativeTokenArr[native]);
+    cy.get(nativeToken).contains(nativeTokenArr[native]).click()
+    cy.get(nativeTokenLogo, { timeout: 20000 }).should('be.visible')
+    cy.get(nativeTokenDeatils).should('not.be.empty');
+    cy.get(nativeTokenLogo).should('have.attr', 'alt', `${nativeTokenArr[native]} logo`)
+    cy.get(nativeTokenBalance, { timeout: 20000 }).should('be.visible')
+    cy.get(nativeTokenBalance).should('not.be.empty');
+    for (var i = 0; i <= 4; i++) {
+        cy.wait(10000)
+        cy.get(nativeTokenDeatils).contains(nativeTokenDeatilsArr[i]).should('be.visible')
+    }
+    cy.get(detailsMenuClose).click()
+    cy.get(gasToken, { timeout: 50000 }).invoke('text').should('contain', gasTokenArr[native]);
+    //Showing status connected
+    // cy.get(walletAddress).contains('0x33...8C60').click()
+    // cy.request('GET', 'https://snowtrace.io/address/0x33CCa68A49B348ec247E0d1216936B5eF5638C60').then( res => {
+    //     expect(res.status).to.equal(200)
+    // cy.get(changeBtn).contains("Change").click()
+    // cy.get(walletConnected).should("have.css", "background-color", "rgb(64, 68, 79)")
+    // cy.get(accountMenuClose).click() 
+
+}
+export {newsLinks, socialLinks, nativeDetails}

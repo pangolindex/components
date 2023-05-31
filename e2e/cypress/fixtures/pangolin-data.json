@@ -35,11 +35,9 @@
     "hideBalance": "Hide Your Balance",
     "showBalance": "Show Your Balance",
     "networkNameArr": ["Avalanche", "Flare", "Songbird", "Evmos"],
-    "nativeTokenArr": ["PNG","PFL", "PSB"],
-    "gasTokenArr": ["AVAX", "FLR", "SGB", "EVMOS"],
+    "nativeTokenArr": ["PNG","PFL", "PSB", "PCT", "evmPNG", "wagmiPNG", "fujiPNG"],
+    "gasTokenArr": ["AVAX", "FLR", "SGB", "cFLR", "tEVMOS", "WGMI", "AVAX", "EVMOS"],
     "testnetNetworkNameArr": ["Avalanche", "Coston", "Evmos Testnet", "Wagmi", "Avalanche Fuji"],
-    "testnetNativeTokenArr": ["PCT", "evmPNG", "wagmiPNG", "fujiPNG"],
-    "testnetGasTokenArr": ["cFLR", "tEVMOS", "WGMI", "AVAX"],
     "nativeTokenDeatilsArr": ["Balance", "Unclaimed", "price", "in circulation", "Total Supply"]
   },
   "swap": {
@@ -52,7 +50,10 @@
     "slipPage": ["0.1%", "0.5%", "1%", "60", "300", "600"],
     "saveCloseBtnTxt": "Save & Close",
     "connectWalletTxt": "Connect Wallet",
-    "connectWalletMsge": "Connect a wallet to see your portfolio"
+    "connectWalletMsge": "Connect a wallet to see your portfolio",
+    "percentBtnArr": ["0", "0", "1", "2"],
+    "swapTokensArr": ["AVAX", "USDC"],
+    "sellTokenDetailsArr": ["Gas Price", "Real Execution Price", "Gelato Fee", "Slippage Tolerance", "Minimum Received"]
   },
   "pangolinLinksArr": ["Pangolin Analytics", "Pangolin Governance - Vote with your PNG", "Core Web: A Better Way to Connect to Web3", "Pangolin"],
   "vote": {
