@@ -1,4 +1,4 @@
-import { JSBI } from '@pangolindex/sdk';
+import { CHAINS, GovernanceType, JSBI } from '@pangolindex/sdk';
 import { ethers, utils } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { NFT_PROPOSAL, getAllProposalData } from 'src/apollo/vote';
@@ -76,9 +76,15 @@ export function useGetProposalsViaSubgraph(id?: string) {
             description: proposal?.description || 'No description.',
             proposer: proposal?.proposer,
             status: getProposalState({ ...proposal }) ?? 'Undetermined',
-            forCount: proposal?.forVotes ? parseFloat(ethers.utils.formatUnits(proposal?.forVotes.toString(), 18)) : 0,
+            forCount: proposal?.forVotes
+              ? CHAINS[chainId]?.contracts?.governor?.type === GovernanceType.SAR_NFT
+                ? parseFloat(proposal?.forVotes.toString())
+                : parseFloat(ethers.utils.formatUnits(proposal?.forVotes.toString(), 18))
+              : 0,
             againstCount: proposal?.againstVotes
-              ? parseFloat(ethers.utils.formatUnits(proposal?.againstVotes.toString(), 18))
+              ? CHAINS[chainId]?.contracts?.governor?.type === GovernanceType.SAR_NFT
+                ? parseFloat(proposal?.againstVotes.toString())
+                : parseFloat(ethers.utils.formatUnits(proposal?.againstVotes.toString(), 18))
               : 0,
             startTime: parseInt(proposal?.startTime?.toString()),
             endTime: parseInt(proposal?.endTime?.toString()),
@@ -122,6 +128,7 @@ export function useProposalCount(): number | undefined {
 
 // get data for all past and active proposals
 export function useSarNftAllProposalData() {
+  const chainId = useChainId();
   const proposalCount = useProposalCount();
   const govContract = useSarNftGovernanceContract();
   const govAssistantContract = useSarNftGovernanceAssistantContract();
@@ -191,8 +198,14 @@ export function useSarNftAllProposalData() {
           title: description?.split(/# |\n/g)[1] || 'Untitled',
           description: description || 'No description.',
           status: enumerateProposalState(allProposalStates[i]?.result?.[0]) ?? 'Undetermined',
-          forCount: parseFloat(ethers.utils.formatUnits(allProposals[i]?.result?.forVotes.toString(), 18)),
-          againstCount: parseFloat(ethers.utils.formatUnits(allProposals[i]?.result?.againstVotes.toString(), 18)),
+          forCount:
+            CHAINS[chainId]?.contracts?.governor?.type === GovernanceType.SAR_NFT
+              ? parseFloat(allProposals[i]?.result?.forVotes.toString())
+              : parseFloat(ethers.utils.formatUnits(allProposals[i]?.result?.forVotes.toString(), 18)),
+          againstCount:
+            CHAINS[chainId]?.contracts?.governor?.type === GovernanceType.SAR_NFT
+              ? parseFloat(allProposals[i]?.result?.againstVotes.toString())
+              : parseFloat(ethers.utils.formatUnits(allProposals[i]?.result?.againstVotes.toString(), 18)),
           startTime: parseInt(allProposals[i]?.result?.startTime?.toString()),
           endTime: parseInt(allProposals[i]?.result?.endTime?.toString()),
           startBlock: parseInt(allProposals[i]?.result?.startBlock?.toString()),

@@ -1119,7 +1119,7 @@ class Hedera {
       .setFunction(
         'castVote',
         new ContractFunctionParameters()
-          .addUint256(Number(proposalId as any))
+          .addUint64(proposalId as any)
           .addBool(support)
           .addInt64(nftId as any),
       );
