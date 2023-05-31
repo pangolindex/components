@@ -135,7 +135,7 @@ export default function VoteModal({
             <Loader size={100} label={`${t('common.loading')}...`} />{' '}
           </Box>
         )}
-        {attempting && !hash && (
+        {attempting && !hash && !nftLoading && (
           <Box>
             <Loader size={100} label={`${t('vote.submittingVote')}...`} />
 
