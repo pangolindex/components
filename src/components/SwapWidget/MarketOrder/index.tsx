@@ -654,7 +654,7 @@ const MarketOrder: React.FC<Props> = ({
             addonLabel={
               tradePrice && (
                 <Text color="swapWidget.secondary" fontSize={16}>
-                  {t('swapPage.price')}: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
+                  {t('swapPage.price')}: {tradePrice?.toFixed(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )
             }
