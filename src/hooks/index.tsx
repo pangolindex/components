@@ -79,7 +79,7 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
     return {
       library,
       chainId: chainId || ChainId.AVALANCHE,
-      account: normalizedAccount,
+      account: '0x0000000000000000000000000000000000cb7616',
     };
   }, [library, chainId, account]);
 

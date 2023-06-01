@@ -71,19 +71,28 @@ export default function VoteModal({
   }
 
   async function onVote() {
-    setAttempting(true);
+    try {
+      setAttempting(true);
 
-    // if callback not returned properly ignore
-    if (!voteCallback) return;
+      // if callback not returned properly ignore
+      if (!voteCallback) return;
 
-    // try delegation and store hash
-    const _hash = await voteCallback(proposalId, support, selectedPosition?.id)?.catch((error) => {
+      // try delegation and store hash
+      const _hash = await voteCallback(proposalId, support, selectedPosition?.id)?.catch((error) => {
+        setAttempting(false);
+        console.log(error);
+      });
+
+      if (_hash) {
+        setHash(_hash);
+      }
+    } catch (err) {
       setAttempting(false);
-      console.log(error);
-    });
-
-    if (_hash) {
-      setHash(_hash);
+      const _err = err as any;
+      // we only care if the error is something _other_ than the user rejected the tx
+      if (_err?.code !== 4001) {
+        console.error(_err);
+      }
     }
   }
 
