@@ -69,6 +69,10 @@ export default function Header() {
           <MenuLink id="bridge" to="/sar">
             Stake v2
           </MenuLink>
+
+          <MenuLink id="vote" to="/vote">
+            Governance
+          </MenuLink>
         </Menuwrapper>
         <Box display="grid" style={{ gap: '10px', gridAutoFlow: 'column' }}>
           <Button variant="primary" onClick={toggleTokenInfoModal} padding="10px" height="40px">

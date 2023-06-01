@@ -820,7 +820,8 @@
     "notEarnFee": "Your position will not earn fees or be used in trades until the market price moves into your range.",
     "singleAssetDeposit": "The market price is outside your specified price range. Single-asset deposit only.",
     "initializedLiquidity": "This pool must be initialized before you can add liquidity. To initialize, select a starting price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher than usual due to the initialization transaction.",
-    "checkClassicFarms": "< Check Classic Farms"
+    "checkClassicFarms": "< Check Classic Farms",
+    "auditWarning": "ELIXIR LIQUIDITY CONTRACTS ARE IN BETA AND UNAUDITED. USE AT YOUR OWN RISK"
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -939,6 +940,7 @@
     "totalStake": "Total Stake",
     "notFound": "Nicht gefunden",
     "hide": "Hide",
-    "edit": "Edit"
+    "edit": "Edit",
+    "select": "Select"
   }
 }

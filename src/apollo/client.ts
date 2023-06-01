@@ -31,6 +31,19 @@ export const getBlockSubgraphApolloClient = (chainId: ChainId) => {
   }
 };
 
+export const getGovernanceSubgraphApolloClient = (chainId: ChainId) => {
+  const url = CHAINS[chainId]?.subgraph?.governance;
+
+  if (url) {
+    return new ApolloClient({
+      link: new HttpLink({
+        uri: url,
+      }),
+      cache: new InMemoryCache(),
+    });
+  }
+};
+
 export enum SubgraphEnum {
   Exchange = 'exchange',
   Pangochef = 'pangochef',

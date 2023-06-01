@@ -3,6 +3,7 @@ import MiniChefV2 from '@pangolindex/exchange-contracts/artifacts/contracts/mini
 import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
 import Png from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-token/Png.sol/Png.json';
 import StakingRewards from '@pangolindex/exchange-contracts/artifacts/contracts/staking-rewards/StakingRewards.sol/StakingRewards.json';
+import GovernorAlpha from '@pangolindex/governance/artifacts/contracts/GovernorAlpha.sol/GovernorAlpha.json';
 import { CHAINS, ChainId, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { ZERO_ADDRESS } from 'src/constants';
@@ -130,4 +131,11 @@ export function useTickLensContract(): Contract | null {
   const chainId = useChainId();
   const address = chainId ? CHAINS[chainId]?.contracts?.elixir?.tickLens : undefined;
   return useContract(address, TickLensABI.abi);
+}
+
+export function useGovernanceContract(): Contract | null {
+  const chainId = useChainId();
+  const address = chainId ? CHAINS[chainId]?.contracts?.governor : undefined;
+
+  return useContract(address, GovernorAlpha.abi, true);
 }

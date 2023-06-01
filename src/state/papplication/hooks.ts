@@ -75,3 +75,7 @@ export function useShouldUseSubgraph(): boolean {
   const { useSubgraph } = useApplicationState();
   return useSubgraph?.[chainId];
 }
+
+export function useToggleDelegateModal(): () => void {
+  return useToggleModal(ApplicationModal.DELEGATE);
+}

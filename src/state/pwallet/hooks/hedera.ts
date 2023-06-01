@@ -13,7 +13,7 @@ import { Field } from 'src/state/pburn/atom';
 import { Field as AddField } from 'src/state/pmint/atom';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateSlippageAmount, getRouterContract, isAddress } from 'src/utils';
-import { Hedera, HederaTokenMetadata, hederaFn } from 'src/utils/hedera';
+import { HederaTokenMetadata, hederaFn } from 'src/utils/hedera';
 import { wait } from 'src/utils/retry';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useTrackedTokenPairs } from '../../puser/hooks';
@@ -458,7 +458,7 @@ export function useHederaCreatePair() {
   };
 }
 
-export const fetchHederaPGLTokenAddress = (pairTokenAddress: string | undefined, hederaFn: Hedera) => async () => {
+export const fetchHederaPGLTokenAddress = (pairTokenAddress: string | undefined) => async () => {
   try {
     if (!pairTokenAddress) {
       return undefined;
@@ -478,7 +478,7 @@ export const fetchHederaPGLTokenAddress = (pairTokenAddress: string | undefined,
   }
 };
 
-export const fetchHederaPGLToken = (pairToken: Token | undefined, chainId: ChainId, hederaFn: Hedera) => async () => {
+export const fetchHederaPGLToken = (pairToken: Token | undefined, chainId: ChainId) => async () => {
   try {
     if (!pairToken) {
       return undefined;
@@ -498,7 +498,7 @@ export const fetchHederaPGLToken = (pairToken: Token | undefined, chainId: Chain
   }
 };
 
-export function fetchHederaTokenMetaData(tokenAddress: string | undefined, hederaFn: Hedera) {
+export function fetchHederaTokenMetaData(tokenAddress: string | undefined) {
   async function fetch() {
     try {
       if (!tokenAddress) {
@@ -523,8 +523,8 @@ export function fetchHederaTokenMetaData(tokenAddress: string | undefined, heder
 export function useHederaTokensMetaData(addresses: (string | undefined)[]) {
   const queries = useMemo(() => {
     return addresses.map((address) => ({
-      queryKey: ['get-hedera-token-metadata', address],
-      queryFn: fetchHederaTokenMetaData(address, hederaFn),
+      queryKey: ['get-hedera-token-metadata', address, hederaFn.HEDERA_API_BASE_URL],
+      queryFn: fetchHederaTokenMetaData(address),
     }));
   }, [addresses]);
 
@@ -553,26 +553,18 @@ export const useHederaPGLToken = (
   currencyB: Currency | undefined,
 ): [Token | undefined, Token | undefined] => {
   const chainId = useChainId();
-
-  const [pglToken, setPglToken] = useState<Token | undefined>(undefined);
   const [, pair] = usePair(currencyA, currencyB);
 
   const pairToken = pair?.liquidityToken;
 
-  const { isLoading, data } = useQuery(
-    ['get-pgl-token', pairToken?.address],
-    fetchHederaPGLToken(pairToken, chainId, hederaFn),
+  const { data: pglToken } = useQuery(
+    ['get-pgl-token', pairToken?.address, hederaFn.HEDERA_API_BASE_URL],
+    fetchHederaPGLToken(pairToken, chainId),
   );
-
-  useEffect(() => {
-    if (!isLoading && !!data) {
-      setPglToken(data);
-    }
-  }, [isLoading, data]);
 
   // here pglToken is the token where we can call methods like totalSupply, allowance etc
   // pair?.liquidityToken is the token with pair contract address where we can call methods like getReserves etc
-  return [pglToken, pair?.liquidityToken];
+  return [pglToken, pairToken];
 };
 
 export const useHederaPGLTokens = (pairs?: (Pair | undefined)[]): [Token | undefined, Token | undefined][] => {
@@ -583,8 +575,8 @@ export const useHederaPGLTokens = (pairs?: (Pair | undefined)[]): [Token | undef
       pairs?.map((pair) => {
         const pairToken = pair?.liquidityToken;
         return {
-          queryKey: ['get-pgl-token', pairToken?.address],
-          queryFn: fetchHederaPGLToken(pairToken, chainId, hederaFn),
+          queryKey: ['get-pgl-token', pairToken?.address, hederaFn.HEDERA_API_BASE_URL],
+          queryFn: fetchHederaPGLToken(pairToken, chainId),
         };
       }) ?? []
     );
@@ -625,8 +617,8 @@ export const useHederaPGLTokenAddresses = (
     return (
       liquidityAddresses?.map((address) => {
         return {
-          queryKey: ['get-pgl-token-address', address],
-          queryFn: fetchHederaPGLTokenAddress(address, hederaFn),
+          queryKey: ['get-pgl-token-address', address, hederaFn.HEDERA_API_BASE_URL],
+          queryFn: fetchHederaPGLTokenAddress(address),
         };
       }) ?? []
     );
@@ -682,7 +674,7 @@ export const useHederaPairContractEVMAddresses = (lpTokenAddress?: string[]): st
     return (
       lpTokenContracts?.map((address) => {
         return {
-          queryKey: ['get-pgl-token-evm-address', address],
+          queryKey: ['get-pgl-token-evm-address', address, hederaFn.HEDERA_API_BASE_URL],
           queryFn: () => hederaFn.getContractData(address),
         };
       }) ?? []

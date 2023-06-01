@@ -1,10 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { CAVAX, ChainId, CurrencyAmount, JSBI, TokenAmount, Trade } from '@pangolindex/sdk';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
-import { useTokenAllowance } from 'src/data/Allowances';
+import { useHederaTokenAllowance } from 'src/data/Allowances';
 import { useHederaTotalSupply } from 'src/data/TotalSupply';
 import { Field } from 'src/state/pswap/atom';
 import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransactions/hooks';
@@ -12,6 +12,7 @@ import { useIsApprovingInfinite } from 'src/state/puser/hooks';
 import { fetchHederaPGLToken } from 'src/state/pwallet/hooks/hedera';
 import { hederaFn } from 'src/utils/hedera';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
+import { wait } from 'src/utils/retry';
 import { usePangolinWeb3 } from '../index';
 import { ApprovalState } from './constant';
 
@@ -22,6 +23,7 @@ export function useHederaApproveCallback(
   spender?: string,
 ): [ApprovalState, () => Promise<void>] {
   const { account } = usePangolinWeb3();
+  const [isPendingApprove, setIsPendingApprove] = useState(false);
 
   const amountToken = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined;
 
@@ -36,7 +38,7 @@ export function useHederaApproveCallback(
 
   const token = amountToken?.symbol === 'PGL' && !isLoading && data ? data : amountToken;
 
-  const currentAllowance = useTokenAllowance(token, account ?? undefined, spender);
+  const currentAllowance = useHederaTokenAllowance(token, account ?? undefined, spender);
   const pendingApproval = useHasPendingApproval(token?.address, spender);
 
   const tokenSupply = useHederaTotalSupply(token);
@@ -50,7 +52,7 @@ export function useHederaApproveCallback(
 
     // amountToApprove will be defined if currentAllowance is
     if (currentAllowance.lessThan(amountToApprove)) {
-      if (pendingApproval) {
+      if (pendingApproval || isPendingApprove) {
         return ApprovalState.PENDING;
       } else {
         return ApprovalState.NOT_APPROVED;
@@ -58,7 +60,7 @@ export function useHederaApproveCallback(
     } else {
       return ApprovalState.APPROVED;
     }
-  }, [amountToApprove, currentAllowance, pendingApproval, spender]);
+  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, spender]);
 
   const addTransaction = useTransactionAdder();
 
@@ -93,6 +95,7 @@ export function useHederaApproveCallback(
     const approveAmount = approvingInfinite ? tokenSupply?.raw.toString() : _amount;
 
     try {
+      setIsPendingApprove(true);
       const response = await hederaFn.spendingApproval({
         tokenAddress: token.address,
         spender: spender,
@@ -109,8 +112,23 @@ export function useHederaApproveCallback(
     } catch (error) {
       console.debug('Failed to approve token', error);
       throw error;
+    } finally {
+      // we wait 1 second to be able to update the state with all the transactions,
+      // because as we set isPendingApprove to false, the pendingApproval still hasn't
+      // had time to be true and ends up returning ApprovalState.NOT_APPROVED
+      await wait(1000);
+      setIsPendingApprove(false);
     }
-  }, [approvalState, token, amountToApprove, spender, addTransaction, approvingInfinite, tokenSupply]);
+  }, [
+    approvalState,
+    token,
+    amountToApprove,
+    spender,
+    addTransaction,
+    setIsPendingApprove,
+    approvingInfinite,
+    tokenSupply,
+  ]);
 
   return [approvalState, approve];
 }
