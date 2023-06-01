@@ -47,8 +47,8 @@ function nativeDetails(native){
     cy.get(nativeTokenLogo).should('have.attr', 'alt', `${nativeTokenArr[native]} logo`)
     cy.get(nativeTokenBalance, { timeout: 20000 }).should('be.visible')
     cy.get(nativeTokenBalance).should('not.be.empty');
+    cy.wait(10000)
     for (var i = 0; i <= 4; i++) {
-        cy.wait(10000)
         cy.get(nativeTokenDeatils).contains(nativeTokenDeatilsArr[i]).should('be.visible')
     }
     cy.get(detailsMenuClose).click()

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@synthetixio/synpress": "^1.2.0",
+    "caniuse-lite": "^1.0.30001346",
     "env-cmd": "^10.1.0",
     "xpath": "^0.0.32"
   }

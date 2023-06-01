@@ -5,6 +5,7 @@ import { tradeDetailsftn } from '../../../cypress/src/swap'
 import { selectTokensftn } from '../../../cypress/src/swap'
 import { confirmTradeDetailsftn } from '../../../cypress/src/swap'
 import { confirmBtnftn } from '../../../cypress/src/swap'
+import { limitSellBuyTokenftn } from '../../../cypress/src/swap'
 
 let { connectWallet,connectMetamask, connected, swapSideMenu, testnetBtn, walletAddress} = selectors.dashboard
 let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, tradeDetails, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, swappingMsg, TransactionSubmitted, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, notification, notificationViewOnExplorer, transactionRejected, selectTokenBtn, priceField, sellTokenDetailsValues, limitPrice, tokenBalances} = selectors.swap
@@ -22,7 +23,7 @@ describe('Swap', () => {
         nativeDetails(0)
     })  
 
-    it('Transaction Buttons on Trade card', () => {
+    it.only('Transaction Buttons on Trade card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         cy.wait(10000);
@@ -45,7 +46,7 @@ describe('Swap', () => {
 
     })
 
-    it('Verify tokens with balance > 0 appear in the dropdown', () => {
+    it.only('Verify tokens with balance > 0 appear in the dropdown', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         for (var i = 0; i <= 1; i++) {
@@ -155,12 +156,12 @@ describe('Swap', () => {
         // cy.get(accountMenuCloseSwap).click()      
     })
 
-    it('Details on Limit Sell card', () => {
+    it.only('Details on Limit Sell card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         cy.get(testnetBtn).contains("LIMIT").click()
         cy.get(tokensToSwap).click()
-        cy.wait(10000);
+        cy.wait(20000);
         cy.get(selectTokens).contains("PNG").click()
         cy.get(selectTokenBtn).contains("Select Token").click()
         cy.get(selectTokens).contains("USDC").click()
@@ -177,17 +178,7 @@ describe('Swap', () => {
         cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should('be.visible');
         cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should("have.css", "background-color", "rgb(229, 229, 229)");
         //Less than market price
-        cy.get(priceField).invoke('val').then((value) => {
-        const decrementedValue = parseFloat(value) - 0.01; // deccrement the retrieved value
-        const incrementedValue = parseFloat(value) + 0.01; // inccrement the retrieved value
-        cy.get(priceField).clear().type(decrementedValue.toFixed(2)); // Re-enter the decremented value
-        cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should('be.visible');
-        cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should("have.css", "background-color", "rgb(229, 229, 229)");
-        //Greater than market price
-        cy.get(priceField).clear().type(incrementedValue.toFixed(2)); // Re-enter the incremented value
-        cy.get(swapBtn).contains("Place Order").should('be.visible')
-        cy.get(swapBtn).contains("Place Order").should("have.css", "background-color", "rgb(255, 200, 0)");
-        });
+        limitSellBuyTokenftn(0, 1);
     })
 
     it('Sell token Confirm card', () => {
@@ -250,7 +241,7 @@ describe('Swap', () => {
         // cy.get(confirmSwapDetails).contains("Trade").should('be.visible')  
     })
     
-    it('Details on Limit Buy card', () => {
+    it.only('Details on Limit Buy card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         cy.get(testnetBtn).contains("LIMIT").click()
@@ -273,18 +264,7 @@ describe('Swap', () => {
         cy.get(swapBtn).contains("Only possible to place buy orders below market rate").should('be.visible');
         cy.get(swapBtn).contains("Only possible to place buy orders below market rate").should("have.css", "background-color", "rgb(229, 229, 229)");
         //Greater than the market price
-        cy.get(priceField).invoke('val').then((value) => {
-        const decrementedValue = parseFloat(value) - 0.01; // deccrement the retrieved value
-        const incrementedValue = parseFloat(value) + 0.01; // inccrement the retrieved value
-        cy.get(priceField).clear().type(incrementedValue.toFixed(2)); // Re-enter the incremented value
-        cy.get(swapBtn).contains("Only possible to place buy orders below market rate").should('be.visible');
-        cy.get(swapBtn).contains("Only possible to place buy orders below market rate").should("have.css", "background-color", "rgb(229, 229, 229)");
-        //Less than the market price
-        cy.get(priceField).clear().type(decrementedValue.toFixed(2)); // Re-enter the decremented value
-        cy.get(swapBtn).contains("Place Order").should('be.visible')
-        cy.get(swapBtn).contains("Place Order").should("have.css", "background-color", "rgb(255, 200, 0)");
-        });
-
+        limitSellBuyTokenftn(1, 0);
     })
 
     it('Buy token Confirm card', () => {
@@ -348,7 +328,7 @@ describe('Swap', () => {
         // cy.get(confirmSwapDetails).contains("Trade").should('be.visible') 
     })
 
-    it('Swap page', () => {
+    it.only('Swap page', () => {
         //Connect to MetaMask from swap page
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()

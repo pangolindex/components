@@ -1,5 +1,5 @@
 import selectors from '../fixtures/selectors.json'
-let {settingBtn, slippageField, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, tokensToSwap, selectTokens, fromInput, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn} = selectors.swap
+let {settingBtn, slippageField, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, tokensToSwap, selectTokens, fromInput, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, priceField, swapBtn} = selectors.swap
 function switchingValues (selectIter, headerAssert, token) {
     cy.get('div[class="sc-eCYdqJ sc-dkdnUF fEptdj gilYEX"] div[class="sc-eCYdqJ fEptdj"]').within( $banner => {
         cy.wrap($banner).find(`div[class="sc-eCYdqJ fEptdj"]:nth-child(${selectIter})`).within( fromToken => {
@@ -82,6 +82,29 @@ function confirmBtnftn (btnName){
     cy.get(confirmSwapBtn).contains(btnName).click()
     
 }
+function limitSellBuyTokenftn(x, y) {
+    cy.get(priceField).invoke('val').then((value) => {
+        const decrementedValue = parseFloat(value) - 0.01; // deccrement the retrieved value
+        const incrementedValue = parseFloat(value) + 0.01; // inccrement the retrieved value
+        const limitArr = [decrementedValue, incrementedValue]
+        cy.get(priceField).clear().type(limitArr[x].toFixed(2)); // Re-enter the value
+        if (x === 0) {
+            cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should('be.visible');
+            cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should("have.css", "background-color", "rgb(229, 229, 229)");
+        }
+        else if (x === 1) {
+            cy.get(swapBtn).contains("Only possible to place buy orders below market rate").should('be.visible');
+            cy.get(swapBtn).contains("Only possible to place buy orders below market rate").should("have.css", "background-color", "rgb(229, 229, 229)");
+          }
+        else {
+            cy.get(swapBtn).contains("Invalid condition").should('not.exist');
+          }
+        //Greater than market 
+        cy.get(priceField).clear().type(limitArr[y].toFixed(2)); // Re-enter the incremented value
+        cy.get(swapBtn).contains("Place Order").should('be.visible')
+        cy.get(swapBtn).contains("Place Order").should("have.css", "background-color", "rgb(255, 200, 0)");
+        });
+}
 
 
-export {switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1, tradeDetailsftn, selectTokensftn, confirmTradeDetailsftn, confirmBtnftn}
+export {switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1, tradeDetailsftn, selectTokensftn, confirmTradeDetailsftn, confirmBtnftn, limitSellBuyTokenftn}
