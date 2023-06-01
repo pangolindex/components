@@ -343,6 +343,7 @@ export function useCoinGeckoSearchTokens(coinText: string): {
       return response?.data?.coins || [];
     },
     {
+      staleTime: 1000 * 60 * 20, // 20 minutes
       enabled: coinText.length > 0,
     },
   );
