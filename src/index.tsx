@@ -101,20 +101,20 @@ export function PangolinProvider({
   theme?: any;
   mixpanelToken?: string;
 }) {
-  const { active, error, activate } = useWeb3React();
+  const { active, error, activate, connector } = useWeb3React();
 
   const tryToActiveEager = !library || !account;
   // try to eagerly connect to a wallet, if it exists and has granted access already
-  const triedEager = useEagerConnect(tryToActiveEager);
+  useEagerConnect(tryToActiveEager);
 
   // active the network connector only when no error, active
   // and user not provide library, account and chainId
   // and tried to connect to previous wallet
   useEffect(() => {
-    if (triedEager && !active && !error && !active && !library && !account) {
+    if ((!active || !connector) && !error) {
       activate(network);
     }
-  }, [triedEager, active, error, activate, active, library, account, chainId]);
+  }, [active, error, activate, active]);
 
   useWalletUpdater();
 
