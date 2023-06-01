@@ -1,4 +1,4 @@
-import { ALL_CHAINS, CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
+import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { isMobile } from 'react-device-detect';
 import injectWalletIcon from 'src/assets/images/inject-wallet.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
@@ -62,4 +62,6 @@ export const SUPPORTED_WALLETS: { [key: string]: Wallet } = {
   WALLET_CONNECT: walletConnect,
 };
 
-export const SUPPORTED_CHAINS = ALL_CHAINS.filter((chain) => chain.pangolin_is_live || chain.supported_by_bridge);
+export const SUPPORTED_CHAINS = Object.values(CHAINS).filter(
+  (chain) => chain.pangolin_is_live || chain.supported_by_bridge,
+);
