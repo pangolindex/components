@@ -83,7 +83,7 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
   const uniBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? PNG[chainId] : undefined);
   const userDelegatee: string | undefined = useUserDelegatee();
 
-  const showUnlockVoting =
+  const notAllowedToVote =
     CHAINS[chainId]?.contracts?.governor?.type === GovernanceType.SAR_NFT
       ? filteredPositions?.length === 0
       : Boolean(uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS);
@@ -95,9 +95,9 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
     availableVotes &&
     JSBI.greaterThan(availableVotes?.raw, JSBI.BigInt(0));
 
-  const checkForV1 = !showUnlockVoting && checkAvailableVotes && checkDateValidation;
+  const checkForV1 = !notAllowedToVote && checkAvailableVotes && checkDateValidation;
 
-  const checkForV2 = !showUnlockVoting && checkDateValidation;
+  const checkForV2 = !notAllowedToVote && checkDateValidation;
 
   // show links in propsoal details if content is an address
   const linkIfAddress = (content: string) => {

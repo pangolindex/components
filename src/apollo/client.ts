@@ -32,6 +32,7 @@ export const getBlockSubgraphApolloClient = (chainId: ChainId) => {
 };
 
 export const getGovernanceSubgraphApolloClient = (chainId: ChainId) => {
+  console.log('chainId', chainId);
   //const url = CHAINS[chainId]?.subgraph?.governance;
   const url = 'https://4631-122-182-179-131.ngrok-free.app/subgraphs/name/governor';
 

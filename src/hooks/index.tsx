@@ -8,7 +8,7 @@ import { hashConnect, network } from 'src/connectors';
 import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
 import { PROVIDER_MAPPING } from 'src/constants/wallets';
 import { useApplicationState } from 'src/state/papplication/atom';
-import { isAddress } from 'src/utils';
+// import { isAddress } from 'src/utils';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -71,10 +71,10 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   }, []);
 
   const state = useMemo(() => {
-    let normalizedAccount;
-    if (chainId) {
-      normalizedAccount = CHAINS?.[chainId as ChainId]?.evm ? isAddress(account) : account;
-    }
+    // let normalizedAccount;
+    // if (chainId) {
+    //   normalizedAccount = CHAINS?.[chainId as ChainId]?.evm ? isAddress(account) : account;
+    // }
 
     return {
       library,
