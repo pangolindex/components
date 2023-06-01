@@ -2,7 +2,7 @@
 import { CHAINS, ChainId, Currency, Token } from '@pangolindex/sdk';
 import axios, { AxiosResponse } from 'axios';
 import { useEffect, useMemo, useState } from 'react';
-import { useQueries, useQuery } from 'react-query';
+import { UseQueryResult, useQueries, useQuery } from 'react-query';
 import { COINGECKO_CURRENCY_ID, COINGECKO_TOKENS_MAPPING, COINGEKO_BASE_URL } from 'src/constants/coingecko';
 import { useChainId } from 'src/hooks';
 import { CoingeckoWatchListState, useCoingeckoWatchList } from './atom';
@@ -323,5 +323,47 @@ export function useCoinGeckoTokens(): CoingeckoWatchListState {
   }, [Object.values(apiTokens || []).length]);
 
   return currencies;
+}
+
+/**
+ * its use for search token based on text
+ * @param coinText
+ * @returns [id: string]: CoingeckoWatchListToken
+ */
+export function useCoinGeckoSearchTokens(coinText: string): {
+  [id: string]: CoingeckoWatchListToken;
+} {
+  const { data: searchTokens, isLoading } = useQuery<Array<CoingeckoTokenData>>(
+    ['coingeckoSearchTokens', coinText],
+    async () => {
+      if (coinText.length === 0) {
+        return undefined;
+      }
+      const response: AxiosResponse = await coingeckoAPI.get(`search?query=${coinText}`);
+      return response?.data?.coins || [];
+    },
+    {
+      enabled: coinText.length > 0,
+    },
+  );
+
+  const coinIds = ((!isLoading && searchTokens) || []).map((item) => item.id);
+  const page = 1;
+
+  const results: UseQueryResult = useQuery(
+    ['get-coingecko-token-data', page, coinIds.join(',')],
+    fetchCoinMarketData(page, coinIds.join(',')),
+    {
+      enabled: coinIds?.length > 0,
+    },
+  );
+
+  const apiTokens = useMemo(() => {
+    const toknesData = results?.data as MarketCoinsAPIResponse[];
+
+    return makeCoingeckoTokenData(toknesData);
+  }, [results]);
+
+  return apiTokens;
 }
 /* eslint-enable max-lines */

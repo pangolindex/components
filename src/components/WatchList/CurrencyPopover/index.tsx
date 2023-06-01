@@ -5,14 +5,15 @@ import { Box, TextInput } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
 import usePrevious from 'src/hooks/usePrevious';
-import { CoingeckoWatchListToken } from 'src/state/pcoingecko/hooks';
+import { CoingeckoWatchListState } from 'src/state/pcoingecko/atom';
+import { CoingeckoWatchListToken, useCoinGeckoSearchTokens } from 'src/state/pcoingecko/hooks';
 import { useWatchlist } from 'src/state/pwatchlists/atom';
 import CurrencyRow from './CurrencyRow';
 import { AddInputWrapper, CurrencyList, PopoverContainer } from './styled';
 
 interface Props {
   getRef?: (ref: any) => void;
-  coins: Array<CoingeckoWatchListToken>;
+  coins: CoingeckoWatchListState;
   isOpen: boolean;
   onSelectCurrency: (currency: CoingeckoWatchListToken) => void;
 }
@@ -49,10 +50,15 @@ const CurrencyPopover: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const currencies = useMemo(
-    () => coins.filter((coin) => coin.symbol.toLowerCase().includes(debouncedSearchQuery.toLowerCase())),
-    [coins, debouncedSearchQuery],
-  );
+  // fetch currencies if only typed a text
+  const searchCurrencies = useCoinGeckoSearchTokens(debouncedSearchQuery.length >= 0 ? debouncedSearchQuery : '');
+
+  const currencies = useMemo(() => {
+    const searchCoins = Object.assign(coins, searchCurrencies);
+    return Object.values(searchCoins).filter((coin) =>
+      coin.symbol.toLowerCase().includes(debouncedSearchQuery.toLowerCase()),
+    );
+  }, [coins, searchCurrencies, debouncedSearchQuery]);
 
   const mixpanel = useMixpanel();
 
@@ -64,7 +70,7 @@ const CurrencyPopover: React.FC<Props> = ({
   );
 
   const Row = useCallback(
-    ({ data, index }) => {
+    ({ data, index }: { data: CoingeckoWatchListToken[]; index: number }) => {
       const item: CoingeckoWatchListToken = data?.[index];
       const isSelected = allWatchlistCurrencies.find(({ id }) => id === item?.id) ? true : false;
 
