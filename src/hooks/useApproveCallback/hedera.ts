@@ -30,7 +30,7 @@ export function useHederaApproveCallback(
   //Here for Hedera chain we need to pass fungibal token for get TokenAllowance so need to convert
   const { isLoading, data } = useQuery(
     ['get-pgl-token', amountToken?.address],
-    fetchHederaPGLToken(amountToken, chainId, hederaFn),
+    fetchHederaPGLToken(amountToken, chainId),
     {
       enabled: amountToken?.symbol === 'PGL',
     },
