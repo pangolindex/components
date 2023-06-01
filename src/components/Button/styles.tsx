@@ -72,7 +72,6 @@ export const Root = styled.button<ButtonProps>`
   align-items: center;
   cursor: pointer;
   position: relative;
-  z-index: 1;
   text-decoration: none;
   box-sizing: border-box;
 

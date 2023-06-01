@@ -365,7 +365,7 @@ const MarketOrder: React.FC<Props> = ({
       if (tokenDrawerType === Field.INPUT) {
         setApprovalSubmitted(false); // reset 2 step UI for approvals
         setSelectedPercentage(0);
-
+        handleTypeInput('');
         if (
           hederaFn.isHederaChain(chainId) &&
           currencies[Field.OUTPUT] === CAVAX[chainId] &&
@@ -654,7 +654,7 @@ const MarketOrder: React.FC<Props> = ({
             addonLabel={
               tradePrice && (
                 <Text color="swapWidget.secondary" fontSize={16}>
-                  {t('swapPage.price')}: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
+                  {t('swapPage.price')}: {tradePrice?.toFixed(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )
             }
