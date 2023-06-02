@@ -125,7 +125,8 @@ export class HashConnector extends AbstractConnector {
     // we need to check this.initData too, because it call deactivate and deactivate call clearConnectionsAndData
     // clearConnectionsAndData emit the HashConnectConnectionState.Disconnected and it cause a infinite loop
     if (state === HashConnectConnectionState.Disconnected && this.initData) {
-      this.deactivate();
+      this._close();
+      this.emitDeactivate();
     }
   }
 
@@ -141,8 +142,11 @@ export class HashConnector extends AbstractConnector {
   private handlePairingEvent(data) {
     console.log('pangolin hashconnect handlePairingEvent', data);
     this.pairingData = data.pairingData!;
-    const accountId = this.pairingData?.accountIds?.[0];
-    if (accountId) {
+
+    if (this.pairingData?.accountIds?.length === 0 || !this.pairingData?.accountIds) {
+      this.emitDeactivate();
+    } else {
+      const accountId = this.pairingData?.accountIds?.[0];
       this.emitUpdate({ account: this.toAddress(accountId) });
     }
   }
@@ -163,7 +167,7 @@ export class HashConnector extends AbstractConnector {
   }
 
   /**
-   * This function change the clint of connector
+   * This function change the client of connector
    * When change the chain we need to change the client too
    */
   private changeClient() {
@@ -222,7 +226,7 @@ export class HashConnector extends AbstractConnector {
       this.topic = this.initData.topic;
       this.pairingString = this.initData.pairingString;
     }
-
+    console.debug('HASHPACK PAIRING STRING', this.pairingString);
     this.provider = await this.getProvider();
     const accountId = await this.getAccount();
     return { chainId: this.chainId, provider: this.provider, account: accountId };
@@ -259,12 +263,10 @@ export class HashConnector extends AbstractConnector {
 
   public deactivate() {
     this._close();
-    this.emitDeactivate();
   }
 
   public async close() {
     this._close();
-    this.emitDeactivate();
   }
 
   public async isAuthorized(): Promise<boolean> {
