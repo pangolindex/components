@@ -205,7 +205,7 @@ export class HashConnector extends AbstractConnector {
 
     // hashpack uses local storage to save some information, as we are using the same connector
     // for testnet and mainnnet we need to clean this local storage whenever we change chains
-    const chainIdConneted = localStorage.getItem('hashconnectedChainId');
+    const chainIdConneted = localStorage.getItem('lastConnectedChainId');
     if (chainIdConneted && chainIdConneted !== this.chainId.toString()) {
       localStorage.removeItem('hashconnectData');
       await this.init();
