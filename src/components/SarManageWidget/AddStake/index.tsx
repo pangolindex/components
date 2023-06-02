@@ -66,7 +66,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
     wrappedOnDismiss,
     handleMax,
     onStake,
-  } = useDerivativeSarStake(selectedPosition?.id);
+  } = useDerivativeSarStake(selectedPosition);
 
   const oldBalance = selectedPosition?.balance;
   const newBalance = oldBalance?.add((parsedAmount?.raw ?? 0).toString()).add(selectedPosition?.pendingRewards ?? 0);

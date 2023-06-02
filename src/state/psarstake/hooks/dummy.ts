@@ -16,7 +16,7 @@ export function useDummySarPositions(): {
   };
 }
 
-export function useDummyDerivativeSarStake() {
+export function useDummyDerivativeSarStake(position?: Position | null) {
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
 

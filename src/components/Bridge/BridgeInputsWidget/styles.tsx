@@ -7,4 +7,8 @@ export const Currencies = styled(Box)`
   grid-template-columns: 0.5fr 0.5fr;
   grid-gap: 5px;
   padding-bottom: 20px;
+
+  & > * {
+    overflow: hidden;
+  }
 `;

@@ -2,7 +2,7 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, CHAINS, ChainId, CurrencyAmount, ElixirTrade, TokenAmount, Trade } from '@pangolindex/sdk';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { useTokenAllowance } from 'src/data/Allowances';
@@ -11,6 +11,7 @@ import { useHasPendingApproval, useTransactionAdder } from 'src/state/ptransacti
 import { useIsApprovingInfinite } from 'src/state/puser/hooks';
 import { calculateGasMargin, waitForTransaction } from 'src/utils';
 import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
+import { wait } from 'src/utils/retry';
 import { useChainId, usePangolinWeb3 } from '../index';
 import { useTokenContract } from '../useContract';
 import { ApprovalState } from './constant';
@@ -22,6 +23,7 @@ export function useApproveCallback(
   spender?: string,
 ): [ApprovalState, () => Promise<void>] {
   const { account } = usePangolinWeb3();
+  const [isPendingApprove, setIsPendingApprove] = useState(false);
 
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined;
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender);
@@ -35,12 +37,16 @@ export function useApproveCallback(
     if (!currentAllowance) return ApprovalState.UNKNOWN;
 
     // amountToApprove will be defined if currentAllowance is
-    return currentAllowance.lessThan(amountToApprove)
-      ? pendingApproval
-        ? ApprovalState.PENDING
-        : ApprovalState.NOT_APPROVED
-      : ApprovalState.APPROVED;
-  }, [amountToApprove, currentAllowance, pendingApproval, spender]);
+    if (currentAllowance.lessThan(amountToApprove)) {
+      if (pendingApproval || isPendingApprove) {
+        return ApprovalState.PENDING;
+      } else {
+        return ApprovalState.NOT_APPROVED;
+      }
+    } else {
+      return ApprovalState.APPROVED;
+    }
+  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, spender]);
 
   const tokenContract = useTokenContract(token?.address);
   const addTransaction = useTransactionAdder();
@@ -80,6 +86,7 @@ export function useApproveCallback(
     });
 
     try {
+      setIsPendingApprove(true);
       const response: TransactionResponse = await tokenContract.approve(spender, approveAmount, {
         gasLimit: calculateGasMargin(estimatedGas),
       });
@@ -91,8 +98,23 @@ export function useApproveCallback(
     } catch (error) {
       console.debug('Failed to approve token', error);
       throw error;
+    } finally {
+      // we wait 1 second to be able to update the state with all the transactions,
+      // because as we set isPendingApprove to false, the pendingApproval still hasn't
+      // had time to be true and ends up returning ApprovalState.NOT_APPROVED
+      await wait(1000);
+      setIsPendingApprove(false);
     }
-  }, [approvalState, token, tokenContract, amountToApprove, spender, addTransaction, approvingInfinite]);
+  }, [
+    approvalState,
+    token,
+    tokenContract,
+    amountToApprove,
+    spender,
+    addTransaction,
+    setIsPendingApprove,
+    approvingInfinite,
+  ]);
 
   return [approvalState, approve];
 }

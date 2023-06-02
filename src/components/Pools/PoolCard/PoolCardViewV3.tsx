@@ -3,6 +3,7 @@ import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, DoubleCurrencyLogo, Drawer, RewardTokens, Stat, Text } from 'src/components';
+import { BIG_INT_ZERO } from 'src/constants';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePangoChefExtraFarmApr } from 'src/state/ppangoChef/hooks/common';
@@ -16,6 +17,7 @@ import {
   ActionButon,
   DetailButton,
   Divider,
+  ExpireButton,
   InnerWrapper,
   OptionButton,
   OptionsWrapper,
@@ -130,11 +132,19 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
             {currency0.symbol}-{currency1.symbol}
           </Text>
 
-          {isSuperFarm && (
-            <OptionsWrapper>
-              <OptionButton>Super farm</OptionButton>
-            </OptionsWrapper>
-          )}
+          <Box display="flex" alignItems="center">
+            {isSuperFarm && (
+              <OptionsWrapper>
+                <OptionButton>Super farm</OptionButton>
+              </OptionsWrapper>
+            )}
+
+            {!JSBI.greaterThan(stakingInfo.multiplier, BIG_INT_ZERO) && (
+              <OptionsWrapper>
+                <ExpireButton>Expired</ExpireButton>
+              </OptionsWrapper>
+            )}
+          </Box>
         </Box>
 
         <DoubleCurrencyLogo size={48} currency0={currency0} currency1={currency1} />

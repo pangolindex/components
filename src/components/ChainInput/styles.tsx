@@ -31,7 +31,7 @@ export const Aligner = styled.span<{ active?: boolean }>`
 
 export const StyledTokenName = styled.span<{ active?: boolean }>`
   ${({ active }) => (active ? '  margin: 0 0.25rem 0 0.75rem;' : '  margin: 0 0.25rem 0 0.25rem;')}
-  font-size:  16px;
+  font-size:  ${({ active }) => (active ? '20px' : '16px')};
   color: inherit;
 `;
 

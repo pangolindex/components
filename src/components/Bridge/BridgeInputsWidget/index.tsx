@@ -53,7 +53,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           buttonStyle={{
             backgroundColor: theme.bridge?.primaryBgColor,
             color: theme.bridge?.text,
-            padding: '1rem 1.1rem',
+            padding: '1rem 1rem',
             width: '100%',
           }}
           onChainClick={onChangeChainDrawerStatus}
@@ -63,13 +63,12 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
           buttonStyle={{
             backgroundColor: theme.bridge?.primaryBgColor,
             color: theme.bridge?.text,
-            padding: '1rem 1.1rem',
+            padding: '1rem 1rem',
             width: '100%',
           }}
           alternativeLogoSrc={currency?.logo}
           onTokenClick={onChangeTokenDrawerStatus}
           isShowTextInput={false}
-          fontSize={24}
           currency={currency as Currency}
           id="swap-currency-input"
         />

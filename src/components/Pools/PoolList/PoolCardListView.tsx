@@ -61,17 +61,17 @@ const PoolCardListView = ({
   const theme = useContext(ThemeContext);
 
   const renderPoolCardListView = () => {
-    if (isLoading && !searchQuery)
-      return (
-        <LoadingWrapper>
-          <Loader size={100} />
-        </LoadingWrapper>
-      );
-    else if (doesNotPoolExist && !searchQuery) {
+    if (doesNotPoolExist) {
       return (
         <Box textAlign="center" color="color4">
           {t('earnPage.noActiveRewards')}
         </Box>
+      );
+    } else if (isLoading && !searchQuery) {
+      return (
+        <LoadingWrapper>
+          <Loader size={100} />
+        </LoadingWrapper>
       );
     } else {
       return (

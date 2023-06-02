@@ -13,7 +13,6 @@ import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
 import { useSarStakingContract } from 'src/hooks/useContract';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
-import { CallState } from '../pmulticall/hooks';
 import { useDerivedStakeInfo } from '../pstake/hooks/common';
 import { tryParseAmount } from '../pswap/hooks/common';
 import { useTransactionAdder } from '../ptransactions/hooks';
@@ -129,25 +128,32 @@ export function useDefaultSarStake() {
  * Format the onchain data for all useSarPositions hooks
  * @param nftsURIs Array of the nft URI
  * @param nftsIndexes Array of array of the nft id `[[0x1], [0x2], [0x3]...]`
- * @param positionsAmountState The array of call state with staked amount of each position
- * @param positionsRewardRateState The array of call state with reward rate of each position
- * @param positionsPedingRewardsState The array of call state with peding amount of each position
+ * @param valuesVariables The array of call values variables of each position
+ * @param rewardRates The array with reward rate of each position
+ * @param pendingsRewards The array with pending rewards amount of each position
+ * @param lastUpdates The array with last update time of each position
+ * @param blockTimestamp The timestamp of the last block
+ * @param chainId Chain id
  * @returns Returns the Array of Positions
  */
-export function formatPosition(
-  nftsURIs: (URI | undefined)[],
-  nftsIndexes: string[][],
-  positionsAmountState: CallState[],
-  positionsRewardRateState: CallState[],
-  positionsPedingRewardsState: CallState[],
-  blockTimestamp: number,
-  chainId: ChainId,
-) {
+export function formatPosition(args: {
+  nftsURIs: (URI | undefined)[];
+  nftsIndexes: string[][];
+  valuesVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber }[];
+  rewardRates: BigNumber[];
+  pendingsRewards: BigNumber[];
+  lastUpdates: BigNumber[];
+  blockTimestamp: number;
+  chainId: ChainId;
+}) {
+  const { nftsURIs, nftsIndexes, valuesVariables, rewardRates, pendingsRewards, lastUpdates, blockTimestamp, chainId } =
+    args;
+
   const positions: (Position | undefined)[] = nftsURIs.map((uri, index) => {
-    const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined =
-      positionsAmountState[index].result?.valueVariables;
-    const rewardRate = positionsRewardRateState[index].result?.[0];
-    const pendingRewards = positionsPedingRewardsState[index].result?.[0];
+    const valueVariables: { balance: BigNumber; sumOfEntryTimes: BigNumber } | undefined = valuesVariables[index];
+    const rewardRate = rewardRates[index];
+    const pendingRewards = pendingsRewards[index];
+    const lastUpdate = lastUpdates[index];
     const id = nftsIndexes[index][0];
     const balance = valueVariables?.balance ?? BigNumber.from(0);
     const apr = rewardRate
@@ -157,7 +163,7 @@ export function formatPosition(
       .div(balance.isZero() ? 1 : balance);
 
     if (!valueVariables || !rewardRate || !pendingRewards) {
-      return {} as Position;
+      return undefined;
     }
 
     const _uri =
@@ -171,10 +177,11 @@ export function formatPosition(
       rewardRate: rewardRate,
       uri: _uri,
       pendingRewards: pendingRewards,
+      lastUpdate: lastUpdate,
     } as Position;
   });
   // remove the empty positions
-  return { positions: positions.filter((position) => !!position) as Position[], isLoading: false };
+  return positions.filter((position) => !!position) as Position[];
 }
 
 export function useUnstakeParseAmount(typedValue: string, stakingToken: Token, userLiquidityStaked?: TokenAmount) {

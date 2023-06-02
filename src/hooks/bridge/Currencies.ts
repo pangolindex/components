@@ -15,7 +15,7 @@ export function useLiFiSwapCurrencies() {
 
     Object.entries(data?.tokens).forEach(([chainId, tokens]) => {
       const chainTokens: BridgeCurrency[] = tokens.map((token: Token) => {
-        return new BridgeCurrency(token?.address, chainId, token?.decimals, token?.symbol, token?.name, token?.logoURI);
+        return new BridgeCurrency(token?.address, chainId, token?.decimals, token?.logoURI, token?.symbol, token?.name);
       });
       formattedCurrencies = [...formattedCurrencies, ...chainTokens];
     });
@@ -35,9 +35,9 @@ export function useSquidCurrencies() {
         token?.address,
         token?.chainId?.toString(),
         token?.decimals,
+        token?.logoURI,
         token?.symbol,
         token?.name,
-        token?.logoURI,
       );
     });
     return formattedTokens.filter((chain) => chain !== undefined) as BridgeCurrency[];
@@ -64,9 +64,9 @@ export function useRangoCurrencies() {
           token?.address || ZERO_ADDRESS,
           evmChainNameToId[token.blockchain] || token.blockchain,
           token?.decimals,
+          token?.image,
           token?.symbol,
           token?.name,
-          token?.image,
         );
       });
     return formattedTokens;

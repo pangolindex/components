@@ -96,10 +96,10 @@ export function useDerivedMintInfo(
   // amounts
   const independentAmount: CurrencyAmount | undefined = tryParseAmount(
     typedValue,
-
     currencies[independentField],
     chainId,
   );
+
   const dependentAmount: CurrencyAmount | undefined = useMemo(() => {
     if (noLiquidity) {
       if (otherTypedValue && currencies[dependentField]) {
@@ -112,13 +112,17 @@ export function useDerivedMintInfo(
       const [tokenA, tokenB] = [wrappedCurrencyA, wrappedCurrencyB];
       if (tokenA && tokenB && wrappedIndependentAmount && pair && chainId) {
         const dependentCurrency = dependentField === Field.CURRENCY_B ? currencyB : currencyA;
-        const dependentTokenAmount =
-          dependentField === Field.CURRENCY_B
-            ? pair.priceOf(tokenA, tokenB).quote(wrappedIndependentAmount, chainId)
-            : pair.priceOf(tokenB, tokenA).quote(wrappedIndependentAmount, chainId);
-        return dependentCurrency === CAVAX[chainId]
-          ? CurrencyAmount.ether(dependentTokenAmount.raw, chainId)
-          : dependentTokenAmount;
+        try {
+          const dependentTokenAmount =
+            dependentField === Field.CURRENCY_B
+              ? pair.priceOf(tokenA, tokenB).quote(wrappedIndependentAmount, chainId)
+              : pair.priceOf(tokenB, tokenA).quote(wrappedIndependentAmount, chainId);
+          return dependentCurrency === CAVAX[chainId]
+            ? CurrencyAmount.ether(dependentTokenAmount.raw, chainId)
+            : dependentTokenAmount;
+        } catch {
+          return undefined;
+        }
       }
       return undefined;
     } else {
