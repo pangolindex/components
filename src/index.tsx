@@ -105,16 +105,16 @@ export function PangolinProvider({
 
   const tryToActiveEager = !library || !account;
   // try to eagerly connect to a wallet, if it exists and has granted access already
-  useEagerConnect(tryToActiveEager);
+  const triedEager = useEagerConnect(tryToActiveEager);
 
-  // active the network connector only when no error, active
-  // and user not provide library, account and chainId
+  // active the network connector only when no error,
+  // and not is active or there is not connector
   // and tried to connect to previous wallet
   useEffect(() => {
-    if ((!active || !connector) && !error) {
+    if (triedEager && (!active || !connector) && !error) {
       activate(network);
     }
-  }, [active, error, activate, active]);
+  }, [triedEager, connector, active, error, activate]);
 
   useWalletUpdater();
 
