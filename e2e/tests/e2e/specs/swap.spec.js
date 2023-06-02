@@ -6,6 +6,9 @@ import { selectTokensftn } from '../../../cypress/src/swap'
 import { confirmTradeDetailsftn } from '../../../cypress/src/swap'
 import { confirmBtnftn } from '../../../cypress/src/swap'
 import { limitSellBuyTokenftn } from '../../../cypress/src/swap'
+import { limitSellBuyConfirmDetailsftn } from '../../../cypress/src/swap'
+import { notificationftn } from '../../../cypress/src/swap'
+import { successfulCardftn } from '../../../cypress/src/swap'
 
 let { connectWallet,connectMetamask, connected, swapSideMenu, testnetBtn, walletAddress} = selectors.dashboard
 let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, tradeDetails, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, swappingMsg, TransactionSubmitted, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, notification, notificationViewOnExplorer, transactionRejected, selectTokenBtn, priceField, sellTokenDetailsValues, limitPrice, tokenBalances} = selectors.swap
@@ -23,7 +26,7 @@ describe('Swap', () => {
         nativeDetails(0)
     })  
 
-    it.only('Transaction Buttons on Trade card', () => {
+    it('Transaction Buttons on Trade card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         cy.wait(10000);
@@ -46,7 +49,7 @@ describe('Swap', () => {
 
     })
 
-    it.only('Verify tokens with balance > 0 appear in the dropdown', () => {
+    it('Verify tokens with balance > 0 appear in the dropdown', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         for (var i = 0; i <= 1; i++) {
@@ -65,7 +68,7 @@ describe('Swap', () => {
         }
     })
 
-    it.only('Details on Trade card', () => {
+    it('Details on Trade card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         //Select tokens by their titles
@@ -87,7 +90,7 @@ describe('Swap', () => {
         }               
     })
 
-    it.only('Reject Transaction', () => {
+    it('Reject Transaction', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         selectTokensftn("Pangolin", "TetherToken")
@@ -109,7 +112,7 @@ describe('Swap', () => {
         cy.get(swapBtn).contains("Swap").should("have.css", "background-color", "rgb(255, 200, 0)");
     })
 
-    it.only('Details on Confirm swap card', () => {
+    it('Details on Confirm swap card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         selectTokensftn("Pangolin", "TetherToken")
@@ -126,20 +129,9 @@ describe('Swap', () => {
         // //cy.confirmMetamaskTransaction()
         // cy.wait(5000);
         // //Notification
-        // cy.get(notification).eq(0).invoke('text').should('match', /.*USDt.*/); 
-        // cy.get(notificationViewOnExplorer).each(page => {
-        //     cy.request(page.prop('href')).as('link');
-        // });
-        // cy.get('@link').should(response => {
-        //     expect(response.status).to.eq(200);
-        // });
+        notificationftn("USDt")
         // //Successful card
-        // cy.get(TransactionSubmitted).contains("Transaction Submitted").should('be.visible');
-        // cy.request('GET', 'https://snowtrace.io/tx/0xa1bd06abcf1c5ca902f0241ba184599fadbd4993b1903a562a8976bbc25f6e6b').then( res => {
-        //     expect(res.status).to.equal(200)
-        //   }) 
-        // confirmBtnftn("Close")
-        // cy.get(confirmSwapDetails).contains("Trade").should('be.visible')  
+        successfulCardftn()  
         //Recent Transactions
         // cy.get(walletAddress).contains('0x33...8C60').click()
         // cy.get(recentTransactions).contains("Recent Transactions").should('be.visible')  
@@ -156,7 +148,7 @@ describe('Swap', () => {
         // cy.get(accountMenuCloseSwap).click()      
     })
 
-    it.only('Details on Limit Sell card', () => {
+    it('Details on Limit Sell card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         cy.get(testnetBtn).contains("LIMIT").click()
@@ -194,29 +186,10 @@ describe('Swap', () => {
         cy.wait(5000);
         cy.get(priceField).should('not.have.value', '0.00');
         cy.get(toInput).should('not.have.value', '0.00');
-        cy.get(priceField).invoke('val').then((value) => {
-        const incrementedValue = parseFloat(value) + 0.01; // inccrement the retrieved value
-        cy.get(priceField).clear().type(incrementedValue.toFixed(2)); // Re-enter the incremented value
-        cy.get(swapBtn).contains("Place Order").should('be.visible')
+        limitSellBuyTokenftn(0, 1);
         cy.get(swapBtn).contains("Place Order").click()
-        });
         //confirm card
-        cy.get(confirmSwap).contains("Confirm Order").should('be.visible')
-        cy.get(confirmSwapDetails).contains("PNG").should('be.visible')
-        cy.get(confirmSwapDetails).contains("USDC").should('be.visible')
-        cy.get(confirmSwapDetails).should('not.be.empty')
-        cy.get(limitPrice).contains("Limit Price").should('be.visible')
-        cy.get(limitPrice).eq(1).invoke('text').then((text) => {
-          const pattern = /1\s+USDC\s+=\s+\d+(\.\d+)?\s+PNG/;
-          expect(text).to.match(pattern);
-        });
-        //switching limit price
-        cy.get(limitPrice).contains("Limit Price").click()
-        cy.get(limitPrice).eq(1).invoke('text').then((textUpdated) => {
-            const patternUpdated = /1\s+PNG\s+=\s+\d+(\.\d+)?\s+USDC/;
-            expect(textUpdated).to.match(patternUpdated);
-        })
-        cy.get(limitPrice).eq(2).should('contain', '0x33...8C60')
+        limitSellBuyConfirmDetailsftn("PNG", "USDC")
         // //Executing on higher limit price
         // cy.get(confirmSwapBtn).contains("Confirm Order").click()
         // cy.get(swappingMsg).invoke('text').should('match', /\bPNG\b.*\bUSDC\b/);
@@ -224,24 +197,12 @@ describe('Swap', () => {
         // cy.confirmMetamaskTransaction()
         // cy.wait(5000);
         // //Notification
-        // cy.get(notification).eq(0).should("contain", "Sell order placed."); 
-        // cy.get(notificationViewOnExplorer).each(page => {
-        //     cy.request(page.prop('href')).as('link');
-        // });
-        // cy.get('@link').should(response => {
-        //     expect(response.status).to.eq(200);
-        // });
+        notificationftn("Sell order placed.")
         // //Successful card
-        // cy.get(TransactionSubmitted).contains("Transaction Submitted").should('be.visible');
-        // cy.request('GET', 'https://snowtrace.io/tx/0xf5690d13de39a1a03c597836bf9120f7b456bf00529466b8a22c9862c0d876f9').then( res => {
-        //     expect(res.status).to.equal(200)
-        //   }) 
-        // cy.get(confirmSwapBtn).contains("Close").should('be.visible');
-        // cy.get(confirmSwapBtn).contains("Close").click() 
-        // cy.get(confirmSwapDetails).contains("Trade").should('be.visible')  
+        successfulCardftn()  
     })
     
-    it.only('Details on Limit Buy card', () => {
+    it('Details on Limit Buy card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         cy.get(testnetBtn).contains("LIMIT").click()
@@ -281,29 +242,10 @@ describe('Swap', () => {
         cy.wait(5000);
         cy.get(priceField).should('not.have.value', '0.00');
         cy.get(toInput).should('not.have.value', '0.00');
-        cy.get(priceField).invoke('val').then((value) => {
-        const decrementedValue = parseFloat(value) - 0.01; // deccrement the retrieved value
-        cy.get(priceField).clear().type(decrementedValue.toFixed(2)); // Re-enter the decremented value
-        cy.get(swapBtn).contains("Place Order").should('be.visible')
+        limitSellBuyTokenftn(1, 0);
         cy.get(swapBtn).contains("Place Order").click()
-        });
         //confirm card
-        cy.get(confirmSwap).contains("Confirm Order").should('be.visible')
-        cy.get(confirmSwapDetails).contains("PNG").should('be.visible')
-        cy.get(confirmSwapDetails).contains("USDC").should('be.visible')
-        cy.get(confirmSwapDetails).should('not.be.empty')
-        cy.get(limitPrice).contains("Limit Price").should('be.visible')
-        cy.get(limitPrice).eq(1).invoke('text').then((text) => {
-          const pattern = /1\s+USDC\s+=\s+\d+(\.\d+)?\s+PNG/;
-          expect(text).to.match(pattern);
-        });
-        //switching limit price
-        cy.get(limitPrice).contains("Limit Price").click()
-        cy.get(limitPrice).eq(1).invoke('text').then((textUpdated) => {
-            const patternUpdated = /1\s+PNG\s+=\s+\d+(\.\d+)?\s+USDC/;
-            expect(textUpdated).to.match(patternUpdated);
-        })
-        cy.get(limitPrice).eq(2).should('contain', '0x33...8C60')
+        limitSellBuyConfirmDetailsftn("PNG", "USDC")
         // //Executing on lower limit price
         // cy.get(confirmSwapBtn).contains("Confirm Order").click()
         // cy.get(swappingMsg).invoke('text').should('match', /\bPNG\b.*\bUSDC\b/);
@@ -311,21 +253,9 @@ describe('Swap', () => {
         // cy.confirmMetamaskTransaction()
         // cy.wait(5000);
         // //Notification
-        // cy.get(notification).eq(0).should("contain", "Sell order placed."); 
-        // cy.get(notificationViewOnExplorer).each(page => {
-        //     cy.request(page.prop('href')).as('link');
-        // });
-        // cy.get('@link').should(response => {
-        //     expect(response.status).to.eq(200);
-        // });
+        notificationftn("Sell order placed.")
         // //Successful card
-        // cy.get(TransactionSubmitted).contains("Transaction Submitted").should('be.visible');
-        // cy.request('GET', 'https://snowtrace.io/tx/0xf5690d13de39a1a03c597836bf9120f7b456bf00529466b8a22c9862c0d876f9').then( res => {
-        //     expect(res.status).to.equal(200)
-        //   }) 
-        // cy.get(confirmSwapBtn).contains("Close").should('be.visible');
-        // cy.get(confirmSwapBtn).contains("Close").click() 
-        // cy.get(confirmSwapDetails).contains("Trade").should('be.visible') 
+        successfulCardftn()
     })
 
     it.only('Swap page', () => {

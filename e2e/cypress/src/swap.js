@@ -1,5 +1,6 @@
 import selectors from '../fixtures/selectors.json'
-let {settingBtn, slippageField, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, tokensToSwap, selectTokens, fromInput, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, priceField, swapBtn} = selectors.swap
+let {settingBtn, slippageField, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, tokensToSwap, selectTokens, fromInput, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, priceField, swapBtn, limitPrice, TransactionSubmitted, transactionLinks} = selectors.swap
+
 function switchingValues (selectIter, headerAssert, token) {
     cy.get('div[class="sc-eCYdqJ sc-dkdnUF fEptdj gilYEX"] div[class="sc-eCYdqJ fEptdj"]').within( $banner => {
         cy.wrap($banner).find(`div[class="sc-eCYdqJ fEptdj"]:nth-child(${selectIter})`).within( fromToken => {
@@ -11,22 +12,26 @@ function switchingValues (selectIter, headerAssert, token) {
         })
     })
 }
+
 function tokenDisable (iter, value, token, toTokon) {
     switchingValues(iter, value, token)
     cy.get('div[class="sc-eCYdqJ fEptdj"] div[class="sc-eCYdqJ jqkPHT"] ~ div[class="sc-eCYdqJ sc-gKXOVf fEptdj cjBzGg"] button.open-currency-select-button').eq(toTokon).click()
     cy.get('div[class="sc-eCYdqJ sc-iNFqmR fEptdj hMCpHj"]').should('have.attr','disabled')
 }
+
 function tokenSwitching (iter, value, token, toTokon) {
     switchingValues(iter, value, token)
     cy.get('div[class="sc-eCYdqJ fEptdj"] div[class="sc-eCYdqJ jqkPHT"] ~ div[class="sc-eCYdqJ sc-gKXOVf fEptdj cjBzGg"] button.open-currency-select-button').eq(toTokon).click()
     cy.get('div[class="sc-jSMfEi icpGcW"]').contains('AVAX').click()
 }
+
 function slippage(type, selector, message){
     cy.get(settingBtn).click()
     cy.get('div[class="sc-jSMfEi bjuyXL"]').should("contain","Settings")
     cy.get(slippageField).eq(0).clear().type(type)
     cy.get(selector).should('have.text', message)
 }
+
 function disconnectWallet (fromSelector, toSelector){
     cy.get(fromSelector).should(fromValue => {
         // From field
@@ -38,6 +43,7 @@ function disconnectWallet (fromSelector, toSelector){
         expect(toValue).have.attr('placeholder','0.00')
     })
 }
+
 function connectWallet1 (fromSelector, toSelector, connectWalletBtnSel) {
     disconnectWallet(fromSelector, toSelector)
     cy.get(connectWalletBtnSel).should(enterAmountBtn => {
@@ -45,6 +51,30 @@ function connectWallet1 (fromSelector, toSelector, connectWalletBtnSel) {
         expect(enterAmountBtn).have.css('background-color','rgb(255, 200, 0)')
     })
 }
+
+function notificationftn(msg) {
+    const regexPattern = new RegExp(`.*${msg}.*`);
+    cy.get(notification).eq(0).should("contain", regexPattern);
+    cy.get(notificationViewOnExplorer).each(page => {
+      cy.request(page.prop('href')).as('link');
+    });
+    cy.get('@link').should(response => {
+      expect(response.status).to.eq(200);
+    });
+}
+
+function successfulCardftn(){
+        cy.get(TransactionSubmitted).contains("Transaction Submitted").should('be.visible');
+        cy.get(transactionLinks).each(page => {
+            cy.request(page.prop('href')).as('link');
+        });
+        cy.get('@link').should(response => {
+            expect(response.status).to.eq(200);
+        });
+        confirmBtnftn("Close")
+        cy.get(confirmSwapDetails).contains("Trade").should('be.visible') 
+}
+
 function tradeDetailsftn (fromToken, toTokon) {
     cy.get(tradeDetails).contains("Minimum Received").should('be.visible');
     cy.get(tradeDetailsValues).should('contain', toTokon);
@@ -57,6 +87,7 @@ function tradeDetailsftn (fromToken, toTokon) {
     cy.get(unitPrice).contains("Price").should('be.visible');
     cy.get(unitPrice).contains(toTokon).should('be.visible'); 
 }
+
 function selectTokensftn (fromTokenTitle, toTokenTitle){
     cy.get(tokensToSwap).eq(0).contains("AVAX").click()
     cy.wait(15000)
@@ -67,6 +98,7 @@ function selectTokensftn (fromTokenTitle, toTokenTitle){
     cy.get(selectTokens).eq(7).should('have.attr', 'title', toTokenTitle).click()
     cy.get(fromInput).type('0.001')
 }
+
 function confirmTradeDetailsftn (toTokenTitle){
     cy.get(confirmSwap).contains("Confirm Swap").should('be.visible')
     cy.get(confirmSwapDetails).contains("PNG").should('be.visible')
@@ -76,12 +108,14 @@ function confirmTradeDetailsftn (toTokenTitle){
     const regexPattern = new RegExp(`.*${toTokenTitle}.*`);
     cy.get(confirmSwapMsg).invoke('text').should('match', regexPattern);
 }
+
 function confirmBtnftn (btnName){
     cy.get(confirmSwapBtn).contains(btnName).should('be.visible');
     cy.get(confirmSwapBtn).contains(btnName).should("have.css", "background-color", "rgb(255, 200, 0)");
     cy.get(confirmSwapBtn).contains(btnName).click()
     
 }
+
 function limitSellBuyTokenftn(x, y) {
     cy.get(priceField).invoke('val').then((value) => {
         const decrementedValue = parseFloat(value) - 0.01; // deccrement the retrieved value
@@ -106,5 +140,28 @@ function limitSellBuyTokenftn(x, y) {
         });
 }
 
+function limitSellBuyConfirmDetailsftn(token1, token2) {
+    // Confirm card
+    cy.get(confirmSwap).contains("Confirm Order").should('be.visible')
+    cy.get(confirmSwapDetails).contains(token1).should('be.visible')
+    cy.get(confirmSwapDetails).contains(token2).should('be.visible')
+    cy.get(confirmSwapDetails).should('not.be.empty')
+  
+    // Validate limit price
+    cy.get(limitPrice).contains("Limit Price").should('be.visible')
+    cy.get(limitPrice).eq(1).invoke('text').then((text) => {
+      const pattern = new RegExp(`1\\s+${token2}\\s+=\\s+\\d+(\\.\\d+)?\\s+${token1}`);
+      expect(text).to.match(pattern);
+    });
+  
+    // Switching limit price
+    cy.get(limitPrice).contains("Limit Price").click()
+    cy.get(limitPrice).eq(1).invoke('text').then((textUpdated) => {
+      const patternUpdated = new RegExp(`1\\s+${token1}\\s+=\\s+\\d+(\\.\\d+)?\\s+${token2}`);
+      expect(textUpdated).to.match(patternUpdated);
+    })
+  
+    cy.get(limitPrice).eq(2).should('contain', '0x33...8C60')
+  }
 
-export {switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1, tradeDetailsftn, selectTokensftn, confirmTradeDetailsftn, confirmBtnftn, limitSellBuyTokenftn}
+export {switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1, tradeDetailsftn, selectTokensftn, confirmTradeDetailsftn, confirmBtnftn, limitSellBuyTokenftn, limitSellBuyConfirmDetailsftn, notificationftn,successfulCardftn}
