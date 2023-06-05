@@ -36,7 +36,7 @@ export default function Header() {
     setShowTokenInfoModal((prev) => !prev);
   };
 
-  function closeWalletModal() {
+  function openWalletModal() {
     setOpen(true);
   }
 
@@ -81,7 +81,7 @@ export default function Header() {
           <Button variant="primary" onClick={closeNetworkSelection} padding="10px" height="40px">
             {chain.name}
           </Button>
-          <Button variant="primary" onClick={closeWalletModal} width="200px" height="40px">
+          <Button variant="primary" onClick={openWalletModal} width="200px" height="40px">
             {account ? `Connected ${shortenAddress(account, chainId)}` : 'Connect Wallet'}
           </Button>
         </Box>

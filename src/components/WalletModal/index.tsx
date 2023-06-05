@@ -198,7 +198,7 @@ export default function WalletModal({
   }
 
   return (
-    <Modal isOpen={open} onDismiss={closeModal}>
+    <Modal isOpen={open} onDismiss={closeModal} closeOnClickOutside={false}>
       <Wrapper>
         <Header>
           <Text color="text1" fontSize="24px" fontWeight={700}>
