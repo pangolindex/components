@@ -1,6 +1,6 @@
-import { JSBI, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, GovernanceType, JSBI, TokenAmount } from '@pangolindex/sdk';
 import { DateTime } from 'luxon';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
@@ -10,7 +10,10 @@ import { AutoColumn } from 'src/components/Column';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { ProposalData, useGetProposalDetail, useUserDelegatee, useUserVotes } from 'src/state/governance/hooks';
+import { useGetProposalDetailViaSubgraph } from 'src/state/governance/hooks/common';
+import { useUserDelegatee, useUserVotes } from 'src/state/governance/hooks/evm';
+import { ProposalData } from 'src/state/governance/types';
+import { useSarPositionsHook } from 'src/state/psarstake/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { ExternalLink } from 'src/theme';
 import { getEtherscanLink, isAddress } from 'src/utils';
@@ -40,13 +43,26 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
   const { t } = useTranslation();
 
   // get data for this specific proposal
-  const proposalData: ProposalData | undefined = useGetProposalDetail(id as string);
+  const proposalData: ProposalData | undefined = useGetProposalDetailViaSubgraph(id as string);
 
   // update support based on button interactions
   const [support, setSupport] = useState<boolean>(true);
 
   // modal for casting votes
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  //sar nft
+  const useSarPositions = useSarPositionsHook[chainId];
+  const { positions, isLoading } = useSarPositions();
+
+  // sort by balance
+  const filteredPositions = useMemo(
+    () =>
+      positions
+        ?.filter((position) => !position.balance.isZero())
+        .sort((a, b) => Number(b.balance.sub(a.balance).toString())), // remove zero balances and sort by balance
+    [positions],
+  );
 
   // get and format date from data
   const startTimestamp: number | undefined = proposalData?.startTime;
@@ -66,9 +82,22 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
   const availableVotes: TokenAmount | undefined = useUserVotes();
   const uniBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? PNG[chainId] : undefined);
   const userDelegatee: string | undefined = useUserDelegatee();
-  const showUnlockVoting = Boolean(
-    uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS,
-  );
+
+  const notAllowedToVote =
+    CHAINS[chainId]?.contracts?.governor?.type === GovernanceType.SAR_NFT
+      ? filteredPositions?.length === 0
+      : Boolean(uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS);
+
+  const checkDateValidation = endDate && endDate > now && startDate && startDate <= now;
+
+  const checkAvailableVotes =
+    CHAINS[chainId]?.contracts?.governor?.type === GovernanceType.STANDARD &&
+    availableVotes &&
+    JSBI.greaterThan(availableVotes?.raw, JSBI.BigInt(0));
+
+  const checkForV1 = !notAllowedToVote && checkAvailableVotes && checkDateValidation;
+
+  const checkForV2 = !notAllowedToVote && checkDateValidation;
 
   // show links in propsoal details if content is an address
   const linkIfAddress = (content: string) => {
@@ -85,7 +114,10 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
         onDismiss={() => setShowModal(false)}
         proposalId={proposalData?.id}
         support={support}
+        filteredPositions={filteredPositions}
+        nftLoading={isLoading}
       />
+
       <ProposalInfo gap="24px" justify="start">
         <Wrapper>
           <ArrowWrapper href={'/#/vote'}>
@@ -117,14 +149,7 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
             </Text>
           </Wrapper>
         </AutoColumn>
-
-        {!showUnlockVoting &&
-        availableVotes &&
-        JSBI.greaterThan(availableVotes?.raw, JSBI.BigInt(0)) &&
-        endDate &&
-        endDate > now &&
-        startDate &&
-        startDate <= now ? (
+        {checkForV1 || checkForV2 ? (
           <ButtonWrapper style={{ width: '100%', gap: '12px' }}>
             <Button
               variant="primary"

@@ -1,83 +1,19 @@
-/* eslint-disable max-lines */
 import { TransactionResponse } from '@ethersproject/providers';
 import GOV from '@pangolindex/governance/artifacts/contracts/GovernorAlpha.sol/GovernorAlpha.json';
-import { ChainId, JSBI, TokenAmount } from '@pangolindex/sdk';
+import { ChainId, TokenAmount } from '@pangolindex/sdk';
 import { ethers, utils } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { useCallback, useEffect, useState } from 'react';
 import { GET_BLOCK } from 'src/apollo/block';
-import { getBlockSubgraphApolloClient, getGovernanceSubgraphApolloClient } from 'src/apollo/client';
-import { GET_PROPOSALS } from 'src/apollo/vote';
+import { getBlockSubgraphApolloClient } from 'src/apollo/client';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useGovernanceContract, usePngContract } from 'src/hooks/useContract';
 import { useSingleCallResult, useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin } from 'src/utils';
-
-interface ProposalDetail {
-  target: string;
-  functionSig: string;
-  callData: string;
-}
-
-export interface ProposalData {
-  id: string;
-  title: string;
-  description: string;
-  proposer: string;
-  status: string;
-  forCount: number;
-  againstCount: number;
-  startTime: number;
-  endTime: number;
-  startBlock?: number;
-  details: ProposalDetail[];
-  canceled?: boolean;
-  executed?: boolean;
-  eta?: number;
-}
-
-export enum ProposalState {
-  pending = 'pending',
-  active = 'active',
-  canceled = 'canceled',
-  defeated = 'defeated',
-  succeeded = 'succeeded',
-  queued = 'queued',
-  expired = 'expired',
-  executed = 'executed',
-}
-
-const enumerateProposalState = (state: number) => {
-  const proposalStates = ['pending', 'active', 'canceled', 'defeated', 'succeeded', 'queued', 'expired', 'executed'];
-  return proposalStates[state];
-};
-
-const getProposalState = (proposal: ProposalData) => {
-  const currentTimestamp = () => Math.floor(Date.now() / 1000);
-
-  if (proposal.canceled) {
-    return ProposalState.canceled;
-  } else if (currentTimestamp() <= proposal.startTime) {
-    return ProposalState.pending;
-  } else if (currentTimestamp() <= proposal.endTime) {
-    return ProposalState.active;
-  } else if (
-    proposal.againstCount &&
-    JSBI.lessThanOrEqual(JSBI.BigInt(proposal.forCount), JSBI.BigInt(proposal?.againstCount || 0))
-  ) {
-    return ProposalState.defeated;
-  } else if (proposal.eta === 0) {
-    return ProposalState.succeeded;
-  } else if (proposal.executed) {
-    return ProposalState.executed;
-    // } else if (block.timestamp >= add256(proposal.eta, timelock.GRACE_PERIOD())) {
-    //     return ProposalState.expired;
-  } else {
-    return ProposalState.queued;
-  }
-};
+import { ProposalData } from '../types';
+import { enumerateProposalState } from './common';
 
 // get count of all proposals made
 export function useProposalCount(): number | undefined {
@@ -157,7 +93,7 @@ export function useDataFromEventLogs() {
           description: eventParsed.description,
           details: eventParsed.targets.map((target: string, i: number) => {
             const signature = eventParsed.signatures[i];
-            const [name, types] = signature.substr(0, signature.length - 1).split('(');
+            const [name, types] = signature.substr(0, signature.length - 1).split('(') || [];
 
             const calldata = eventParsed.calldatas[i];
             const decoded = utils.defaultAbiCoder.decode(types.split(','), calldata);
@@ -189,33 +125,6 @@ export function useDataFromEventLogs() {
 
   return formattedEvents;
 }
-
-const getAllProposalData = async (chainId: ChainId, id?: string) => {
-  const governanceClient = getGovernanceSubgraphApolloClient(chainId);
-  if (!governanceClient) {
-    return null;
-  }
-
-  let data = [] as Array<any>;
-
-  try {
-    const queryData: any = {
-      query: GET_PROPOSALS,
-      fetchPolicy: 'cache-first',
-    };
-
-    if (id) {
-      queryData['variables'] = { where: { id: id } };
-    }
-    const result = await governanceClient.query(queryData);
-
-    data = result?.data?.proposals;
-  } catch (e) {
-    console.log(e);
-  }
-
-  return data;
-};
 
 // get data for all past and active proposals
 export function useAllProposalData() {
@@ -264,71 +173,6 @@ export function useAllProposalData() {
   } else {
     return [];
   }
-}
-
-// get data for all past and active proposals
-export function useGetProposalsViaSubgraph(id?: string) {
-  const chainId = useChainId();
-  const [allProposalsData, setAllProposalsData] = useState<Array<ProposalData>>([]);
-
-  useEffect(() => {
-    async function checkForChartData() {
-      const allProposals = await getAllProposalData(chainId, id);
-
-      if (allProposals) {
-        const allData = allProposals.map((proposal) => {
-          const details = (proposal?.targets || []).map((target: string, i: number) => {
-            const signature = proposal?.signatures[i];
-
-            const [name, types] = signature?.substr(0, signature?.length - 1)?.split('(');
-
-            const calldata = proposal?.calldatas[i];
-
-            const decoded = utils.defaultAbiCoder.decode(types.split(','), calldata);
-
-            return {
-              target,
-              functionSig: name,
-              callData: decoded.join(', '),
-            };
-          });
-
-          return {
-            id: proposal?.id.toString(),
-            title: proposal?.description?.split(/# |\n/g)[1] || 'Untitled',
-            description: proposal?.description || 'No description.',
-            proposer: proposal?.proposer,
-            status:
-              getProposalState({ ...proposal, forCount: proposal?.forVotes, againstCount: proposal?.againstVotes }) ??
-              'Undetermined',
-            forCount: proposal?.forVotes ? parseFloat(ethers.utils.formatUnits(proposal?.forVotes.toString(), 18)) : 0,
-            againstCount: proposal?.againstVotes
-              ? parseFloat(ethers.utils.formatUnits(proposal?.againstVotes.toString(), 18))
-              : 0,
-            startTime: parseInt(proposal?.startTime?.toString()),
-            endTime: parseInt(proposal?.endTime?.toString()),
-            details: details,
-          };
-        });
-
-        setAllProposalsData(allData);
-      }
-    }
-
-    checkForChartData().catch((error) => console.error(error));
-  }, [id, chainId]);
-
-  return allProposalsData;
-}
-
-export function useProposalData(id: string): ProposalData | undefined {
-  const allProposalData = useAllProposalData();
-  return allProposalData?.find((p) => p.id === id);
-}
-
-export function useGetProposalDetail(id: string): ProposalData | undefined {
-  const allProposalData = useGetProposalsViaSubgraph(id);
-  return allProposalData?.find((p: ProposalData) => p.id === id);
 }
 
 // get the users delegatee if it exists
@@ -403,4 +247,3 @@ export function useVoteCallback(): {
   );
   return { voteCallback };
 }
-/* eslint-enable max-lines */

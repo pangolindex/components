@@ -5,7 +5,9 @@ import { Box, Loader, Text } from 'src/components';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChain, useChainId, usePangolinWeb3, usePngSymbol } from 'src/hooks';
-import { ProposalData, useGetProposalsViaSubgraph, useUserDelegatee, useUserVotes } from 'src/state/governance/hooks';
+import { useGetProposalsViaSubgraph } from 'src/state/governance/hooks/common';
+import { useUserDelegatee, useUserVotes } from 'src/state/governance/hooks/evm';
+import { ProposalData } from 'src/state/governance/types';
 import { ApplicationModal } from 'src/state/papplication/atom';
 import { useModalOpen, useToggleDelegateModal } from 'src/state/papplication/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
@@ -82,7 +84,7 @@ const GovernanceList = () => {
             {t('votePage.governanceVotes')}
           </Text>
         </About>
-        {chain.contracts?.governor ? (
+        {chain?.contracts?.governor ? (
           <>
             <WrapSmall style={{ justifyContent: 'flex-end', marginTop: '8px' }}>
               {showUnlockVoting ? (
