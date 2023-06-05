@@ -148,7 +148,8 @@
     "sureMenu": "div[class='sc-jSMfEi VYIOq']",
     "settingCloseBtn": "button[class='sc-gsnTZi iQnbrR']",
     "selectedSellBuyBtn": "div[class='sc-jdAMXn kYPARr']",
-    "limitOrderSection": "div[class='sc-jSMfEi jPrZZL']"
+    "limitOrderSection": "div[class='sc-jSMfEi jPrZZL']",
+    "buyBtn":"div[class='sc-iBaQBe KqBsY']"
   },
   "pangolinLinks":{
     "chart": "[id='charts']",

@@ -9,13 +9,14 @@ import { limitSellBuyTokenftn } from '../../../cypress/src/swap'
 import { limitSellBuyConfirmDetailsftn } from '../../../cypress/src/swap'
 import { notificationftn } from '../../../cypress/src/swap'
 import { successfulCardftn } from '../../../cypress/src/swap'
+import { limitSellBuyTradeDetailsftn } from '../../../cypress/src/swap'
 
 let { connectWallet,connectMetamask, connected, swapSideMenu, testnetBtn, walletAddress} = selectors.dashboard
-let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, tradeDetails, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, swappingMsg, TransactionSubmitted, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, notification, notificationViewOnExplorer, transactionRejected, selectTokenBtn, priceField, sellTokenDetailsValues, limitPrice, tokenBalances} = selectors.swap
+let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, tradeDetails, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, swappingMsg, TransactionSubmitted, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, notification, notificationViewOnExplorer, transactionRejected, selectTokenBtn, priceField, sellTokenDetailsValues, limitPrice, tokenBalances, buyBtn} = selectors.swap
 let { percentBtnArr, swapTokensArr, sellTokenDetailsArr} = data.swap
 
 describe('Swap', () => {
-    it.only('Connects with Metamask', () => {
+    it('Connects with Metamask', () => {
         //Connect to MetaMask from swap page
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
@@ -122,30 +123,31 @@ describe('Swap', () => {
         //Details on confirmswap card
         confirmTradeDetailsftn("USDt")
         //Confirm swap button
-        // confirmBtnftn("Confirm Swap")
+        confirmBtnftn("Confirm Swap")
         // //Swapping message
-        // cy.get(swappingMsg).invoke('text').should('match', /.*USDt.*/);
-        // cy.wait(5000);
-        // //cy.confirmMetamaskTransaction()
-        // cy.wait(5000);
-        // //Notification
+        cy.get(swappingMsg).invoke('text').should('match', /.*USDt.*/);
+        cy.wait(5000);
+        cy.confirmMetamaskTransaction()
+        cy.wait(5000);
+        //Notification
         notificationftn("USDt")
-        // //Successful card
+        //Successful card
+        cy.wait(5000);
         successfulCardftn()  
         //Recent Transactions
-        // cy.get(walletAddress).contains('0x33...8C60').click()
-        // cy.get(recentTransactions).contains("Recent Transactions").should('be.visible')  
-        // //Transaction Links
-        // cy.get(transactionLinks).each(page => {
-        //         cy.request(page.prop('href')).as('link');
-        //     });
-        //     cy.get('@link').should(response => {
-        //         expect(response.status).to.eq(200);
-        //     });
-        // //Clear all Transactions
-        // cy.get(clearAll).contains("clear all").click()
-        // cy.get(transactionAppear).contains("Your transactions will appear here...").should('be.visible')
-        // cy.get(accountMenuCloseSwap).click()      
+        cy.get(walletAddress).contains('0x33...8C60').click()
+        cy.get(recentTransactions).contains("Recent Transactions").should('be.visible')  
+        //Transaction Links
+        cy.get(transactionLinks).each(page => {
+                cy.request(page.prop('href')).as('link');
+            });
+            cy.get('@link').should(response => {
+                expect(response.status).to.eq(200);
+            });
+        //Clear all Transactions
+        cy.get(clearAll).contains("clear all").click()
+        cy.get(transactionAppear).contains("Your transactions will appear here...").should('be.visible')
+        cy.get(accountMenuCloseSwap).click()      
     })
 
     it('Details on Limit Sell card', () => {
@@ -162,10 +164,7 @@ describe('Swap', () => {
         cy.get(priceField).should('not.have.value', '0.00');
         cy.get(toInput).should('not.have.value', '0.00');
         //Sell token detaisl
-        for (var i = 0; i <= 4; i++) {
-            cy.get(tradeDetails).contains(sellTokenDetailsArr[i]).should('be.visible')
-            cy.get(sellTokenDetailsValues).should('not.be.empty')
-        }
+        limitSellBuyTradeDetailsftn()
         //On market price 
         cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should('be.visible');
         cy.get(swapBtn).contains("Only possible to place sell orders above market rate").should("have.css", "background-color", "rgb(229, 229, 229)");
@@ -190,15 +189,16 @@ describe('Swap', () => {
         cy.get(swapBtn).contains("Place Order").click()
         //confirm card
         limitSellBuyConfirmDetailsftn("PNG", "USDC")
-        // //Executing on higher limit price
-        // cy.get(confirmSwapBtn).contains("Confirm Order").click()
-        // cy.get(swappingMsg).invoke('text').should('match', /\bPNG\b.*\bUSDC\b/);
-        // cy.wait(5000);
-        // cy.confirmMetamaskTransaction()
-        // cy.wait(5000);
-        // //Notification
+        //Executing on higher limit price
+        cy.get(confirmSwapBtn).contains("Confirm Order").click()
+        cy.get(swappingMsg).invoke('text').should('match', /\bPNG\b.*\bUSDC\b/);
+        cy.wait(5000);
+        cy.confirmMetamaskTransaction()
+        cy.wait(5000);
+        //Notification
         notificationftn("Sell order placed.")
-        // //Successful card
+        cy.wait(5000);
+        //Successful card
         successfulCardftn()  
     })
     
@@ -206,21 +206,18 @@ describe('Swap', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         cy.get(testnetBtn).contains("LIMIT").click()
-        cy.get('div[class="sc-iBaQBe KqBsY"]').contains("BUY").click()
+        cy.get(buyBtn).contains("BUY").click()
         cy.get(tokensToSwap).click()
         cy.wait(20000);
         cy.get(selectTokens).contains("PNG").click()
         cy.get(selectTokenBtn).contains("Select Token").click()
         cy.get(selectTokens).contains("USDC").click()
-        cy.get(fromInput).type('10')
+        cy.get(fromInput).type('4')
         cy.wait(5000);
         cy.get(priceField).should('not.have.value', '0.00');
         cy.get(toInput).should('not.have.value', '0.00');
         //buy token detaisl
-        for (var i = 0; i <= 4; i++) {
-            cy.get(tradeDetails).contains(sellTokenDetailsArr[i]).should('be.visible')
-            cy.get(sellTokenDetailsValues).should('not.be.empty')
-        }
+        limitSellBuyTradeDetailsftn()
         //On market price 
         cy.get(swapBtn).contains("Only possible to place buy orders below market rate").should('be.visible');
         cy.get(swapBtn).contains("Only possible to place buy orders below market rate").should("have.css", "background-color", "rgb(229, 229, 229)");
@@ -232,13 +229,13 @@ describe('Swap', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         cy.get(testnetBtn).contains("LIMIT").click()
-        cy.get('div[class="sc-iBaQBe KqBsY"]').contains("BUY").click()
+        cy.get(buyBtn).contains("BUY").click()
         cy.get(tokensToSwap).click()
         cy.wait(20000);
         cy.get(selectTokens).contains("PNG").click()
         cy.get(selectTokenBtn).contains("Select Token").click()
         cy.get(selectTokens).contains("USDC").click()
-        cy.get(fromInput).type('10')
+        cy.get(fromInput).type('5')
         cy.wait(5000);
         cy.get(priceField).should('not.have.value', '0.00');
         cy.get(toInput).should('not.have.value', '0.00');
@@ -246,19 +243,20 @@ describe('Swap', () => {
         cy.get(swapBtn).contains("Place Order").click()
         //confirm card
         limitSellBuyConfirmDetailsftn("PNG", "USDC")
-        // //Executing on lower limit price
-        // cy.get(confirmSwapBtn).contains("Confirm Order").click()
-        // cy.get(swappingMsg).invoke('text').should('match', /\bPNG\b.*\bUSDC\b/);
-        // cy.wait(5000);
-        // cy.confirmMetamaskTransaction()
-        // cy.wait(5000);
-        // //Notification
+        //Executing on lower limit price
+        cy.get(confirmSwapBtn).contains("Confirm Order").click()
+        cy.get(swappingMsg).invoke('text').should('match', /\bPNG\b.*\bUSDC\b/);
+        cy.wait(5000);
+        cy.confirmMetamaskTransaction()
+        cy.wait(5000);
+        //Notification
         notificationftn("Sell order placed.")
+        cy.wait(5000);
         // //Successful card
         successfulCardftn()
     })
 
-    it.only('Swap page', () => {
+    it('Swap page', () => {
         //Connect to MetaMask from swap page
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()

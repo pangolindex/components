@@ -1,6 +1,8 @@
 import selectors from '../fixtures/selectors.json'
-let {settingBtn, slippageField, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, tokensToSwap, selectTokens, fromInput, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, priceField, swapBtn, limitPrice, TransactionSubmitted, transactionLinks} = selectors.swap
+import data from '../fixtures/pangolin-data.json'
 
+let {settingBtn, slippageField, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, tokensToSwap, selectTokens, fromInput, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, priceField, swapBtn, limitPrice, TransactionSubmitted, transactionLinks, notification, notificationViewOnExplorer, sellTokenDetailsValues} = selectors.swap
+let { sellTokenDetailsArr} = data.swap
 function switchingValues (selectIter, headerAssert, token) {
     cy.get('div[class="sc-eCYdqJ sc-dkdnUF fEptdj gilYEX"] div[class="sc-eCYdqJ fEptdj"]').within( $banner => {
         cy.wrap($banner).find(`div[class="sc-eCYdqJ fEptdj"]:nth-child(${selectIter})`).within( fromToken => {
@@ -54,7 +56,7 @@ function connectWallet1 (fromSelector, toSelector, connectWalletBtnSel) {
 
 function notificationftn(msg) {
     const regexPattern = new RegExp(`.*${msg}.*`);
-    cy.get(notification).eq(0).should("contain", regexPattern);
+    cy.get(notification).contains(regexPattern).should('be.visible')
     cy.get(notificationViewOnExplorer).each(page => {
       cy.request(page.prop('href')).as('link');
     });
@@ -91,8 +93,8 @@ function tradeDetailsftn (fromToken, toTokon) {
 function selectTokensftn (fromTokenTitle, toTokenTitle){
     cy.get(tokensToSwap).eq(0).contains("AVAX").click()
     cy.wait(15000)
-    cy.get(selectTokens).eq(2).should('have.attr', 'title', fromTokenTitle).should('be.visible', { timeout: 30000 })
-    cy.get(selectTokens).eq(2).should('have.attr', 'title', fromTokenTitle).click()
+    cy.get(selectTokens).eq(1).should('have.attr', 'title', fromTokenTitle).should('be.visible', { timeout: 30000 })
+    cy.get(selectTokens).eq(1).should('have.attr', 'title', fromTokenTitle).click()
     cy.get(tokensToSwap).eq(1).contains("USDC").click()
     cy.get(selectTokens).eq(7).should('have.attr', 'title', toTokenTitle).should('be.visible', { timeout: 30000 })
     cy.get(selectTokens).eq(7).should('have.attr', 'title', toTokenTitle).click()
@@ -140,6 +142,13 @@ function limitSellBuyTokenftn(x, y) {
         });
 }
 
+function limitSellBuyTradeDetailsftn() {
+    for (var i = 0; i <= 4; i++) {
+        cy.get(tradeDetails).contains(sellTokenDetailsArr[i]).should('be.visible')
+        cy.get(sellTokenDetailsValues).should('not.be.empty')
+    }
+}
+
 function limitSellBuyConfirmDetailsftn(token1, token2) {
     // Confirm card
     cy.get(confirmSwap).contains("Confirm Order").should('be.visible')
@@ -164,4 +173,4 @@ function limitSellBuyConfirmDetailsftn(token1, token2) {
     cy.get(limitPrice).eq(2).should('contain', '0x33...8C60')
   }
 
-export {switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1, tradeDetailsftn, selectTokensftn, confirmTradeDetailsftn, confirmBtnftn, limitSellBuyTokenftn, limitSellBuyConfirmDetailsftn, notificationftn,successfulCardftn}
+export {switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1, tradeDetailsftn, selectTokensftn, confirmTradeDetailsftn, confirmBtnftn, limitSellBuyTokenftn, limitSellBuyConfirmDetailsftn, notificationftn,successfulCardftn, limitSellBuyTradeDetailsftn}
