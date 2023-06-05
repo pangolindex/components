@@ -102,8 +102,13 @@ export default function WalletModal({
     const _chains = supportedChains ?? SUPPORTED_CHAINS;
     return _chains
       .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
-      .filter((chain) => chain.mainnet === mainnet);
-  }, [supportedChains, mainnet]);
+      .filter(
+        (chain) =>
+          chain.mainnet === mainnet &&
+          (chain.name.toLowerCase().includes(debouncedSearchQuery) ||
+            chain.symbol.toLowerCase().includes(debouncedSearchQuery)),
+      );
+  }, [supportedChains, mainnet, debouncedSearchQuery]);
 
   const wallets = useMemo(() => {
     const memoWallets = supportedWallets ?? SUPPORTED_WALLETS;
@@ -123,11 +128,7 @@ export default function WalletModal({
     return Object.values(wallets)
       .filter((wallet) => {
         // if selected chain by user supports this wallet and
-        const bool = Boolean(
-          wallet.supportedChains.includes(selectedChain.network_type) &&
-            wallet.name.toLowerCase().includes(debouncedSearchQuery) &&
-            wallet.showWallet(),
-        );
+        const bool = Boolean(wallet.supportedChains.includes(selectedChain.network_type) && wallet.showWallet());
 
         if (!wallet.supportedChainsId) {
           return bool;

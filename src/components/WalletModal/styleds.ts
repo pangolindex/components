@@ -11,6 +11,7 @@ export const Wrapper = styled(Box)`
   position: relative;
 
   max-width: 40dvw;
+  min-height: 375px;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
     height: 100dvh;
