@@ -34,6 +34,7 @@ export const TRANSACTION_MAX_FEES = {
   WITHDRAW: 300000,
   COMPOUND: 550000,
   NFT_MINT: 800000,
+  CAST_VOTE: 3000000,
 };
 export interface HederaTokenMetadata {
   id: string;
@@ -285,6 +286,14 @@ export interface CompoundData {
   account: string;
   chainId: ChainId;
   contract: Contract;
+}
+
+export interface CastVoteData {
+  proposalId: string | undefined;
+  support: boolean;
+  nftId: string;
+  chainId: ChainId;
+  account: string;
 }
 
 export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & { positionId: string };
@@ -1089,6 +1098,31 @@ class Hedera {
       .setGas(maxGas)
       .setPayableAmount(Hbar.fromString('0'))
       .setFunctionParameters(params);
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public castVote(castVoteData: CastVoteData) {
+    const { proposalId, support, nftId, chainId, account } = castVoteData;
+
+    const governorId = CHAINS[chainId]?.contracts?.governor?.address;
+    const contractId = governorId ? this.hederaId(governorId) : '';
+    const accountId = account ? this.hederaId(account) : '';
+    const maxGas = TRANSACTION_MAX_FEES.CAST_VOTE;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the router contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas)
+      //Set the contract function to call
+      .setFunction(
+        'castVote',
+        new ContractFunctionParameters()
+          .addUint64(proposalId as any)
+          .addBool(support)
+          .addInt64(nftId as any),
+      );
 
     return hashConnect.sendTransaction(transaction, accountId);
   }
