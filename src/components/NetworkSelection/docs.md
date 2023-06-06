@@ -1,8 +1,15 @@
-This component handle how change chain of a connected connector in `@web-react`.
+This component handle how change chain of a connected connector in `@web3-react/core`.
+
+packages required
+``` 
+@web3-react/core >= 6.0.0 < 8.0.0
+@ethersproject/providers  
+```
+
 
 ### How to use
 
-Wrap your react with `Web3ReactProvider` and `PangolinProvider`.
+Wrap your react react app with `Web3ReactProvider` and `PangolinProvider`.
 
 ```tsx
 // index.tsx

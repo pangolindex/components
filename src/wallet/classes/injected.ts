@@ -9,6 +9,17 @@ export class InjectedWallet extends Wallet {
   readonly walletKey?: string;
   readonly conditionToShowWallet?: () => boolean;
 
+  /**
+   * @param connector The connector in AbstractConnector object
+   * @param name Name of wallet
+   * @param href Link of the wallet website
+   * @param icon Link of the wallet icon
+   * @param description Breef description of wallet
+   * @param supportedChains Array of NetworkType that this wallet support
+   * @param supportedChainsId Array of Chain ids that this wallet support
+   * @param walletKey The key in window.ethereum that identifies whether this wallet is active
+   * @param conditionToShowWallet Function that will be executed to show the wallet
+   */
   constructor(args: {
     name: string;
     href: string | null;
