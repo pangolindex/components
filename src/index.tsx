@@ -66,8 +66,9 @@ import { splitQuery } from 'src/utils/query';
 import uriToHttp from 'src/utils/uriToHttp';
 import { unwrappedToken, wrappedCurrency, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
 import { network } from './connectors';
+import { NetworkContextName } from './constants';
 import { MixPanelEvents, MixPanelProvider, useMixpanel } from './hooks/mixpanel';
-import { useEagerConnect, useWalletUpdater } from './hooks/useConnector';
+import { useActiveWeb3React, useEagerConnect, useWalletUpdater } from './hooks/useConnector';
 import i18n, { availableLanguages } from './i18n';
 import { galetoStore } from './state';
 import { PangoChefInfo } from './state/ppangoChef/types';
@@ -101,7 +102,8 @@ export function PangolinProvider({
   theme?: any;
   mixpanelToken?: string;
 }) {
-  const { active, error, activate, connector } = useWeb3React();
+  const { active, error, connector } = useWeb3React();
+  const { activate: activeNetwork } = useWeb3React(NetworkContextName);
 
   const tryToActiveEager = !library || !account;
   // try to eagerly connect to a wallet, if it exists and has granted access already
@@ -112,9 +114,9 @@ export function PangolinProvider({
   // and tried to connect to previous wallet
   useEffect(() => {
     if (triedEager && (!active || !connector) && !error) {
-      activate(network);
+      activeNetwork(network);
     }
-  }, [triedEager, connector, active, error, activate]);
+  }, [triedEager, connector, active, error, activeNetwork]);
 
   useWalletUpdater();
 
@@ -220,6 +222,7 @@ export {
   useContract,
   useApproveCallbackHook,
   useApplicationState,
+  useActiveWeb3React,
 };
 
 // misc

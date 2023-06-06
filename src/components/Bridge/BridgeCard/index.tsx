@@ -12,7 +12,6 @@ import {
   SQUID,
   // THORSWAP,
 } from '@pangolindex/sdk';
-import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { useTranslation } from 'react-i18next';
@@ -36,6 +35,7 @@ import { injected } from 'src/connectors';
 import { useChainId, useLibrary } from 'src/hooks';
 import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
+import { useActiveWeb3React } from 'src/hooks/useConnector';
 import useDebounce from 'src/hooks/useDebounce';
 import { useApplicationState } from 'src/state/papplication/atom';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
@@ -74,7 +74,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
   const theme = useContext(ThemeContext);
 
   const bridges = BRIDGES.map((bridge: Bridge) => ({ label: bridge.name, value: bridge.id }));
-  const { activate, deactivate, connector } = useWeb3React();
+  const { activate, deactivate, connector } = useActiveWeb3React();
 
   const [isChainDrawerOpen, setIsChainDrawerOpen] = useState(false);
   const [isCurrencyDrawerOpen, setIsCurrencyDrawerOpen] = useState(false);

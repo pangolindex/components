@@ -1,17 +1,44 @@
+import { Web3Provider } from '@ethersproject/providers';
 import { AVALANCHE_MAINNET, ChainId } from '@pangolindex/sdk';
+import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useFirstMountState } from 'react-use';
 import { gnosisSafe } from 'src/connectors';
 import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
-import { IS_IN_IFRAME } from 'src/constants';
+import { IS_IN_IFRAME, NetworkContextName } from 'src/constants';
 import { useApplicationState } from 'src/state/papplication/atom';
 import { useUserAtom } from 'src/state/puser/atom';
 import { disconnectWallets, getWalletKey } from 'src/utils/wallet';
 import { SUPPORTED_WALLETS, gnosisSafeWallet, hashPack, injectWallet } from 'src/wallet';
 import { Wallet, WalletEvents, walletEvent } from 'src/wallet/classes/wallet';
 import { MixPanelEvents, useMixpanel } from './mixpanel';
+
+interface Web3ReactContextInterface<T = any> {
+  activate: (connector: AbstractConnector, onError?: (error: Error) => void, throwErrors?: boolean) => Promise<void>;
+  setError: (error: Error) => void;
+  deactivate: () => void;
+  connector?: AbstractConnector;
+  library?: T;
+  chainId?: number;
+  account?: null | string;
+  active: boolean;
+  error?: Error;
+}
+
+/**
+ * This hook return the active web3-react context
+ *
+ * Is active network context or any context
+ *
+ * @returns return the active web3-react context
+ */
+export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
+  const context = useWeb3React<Web3Provider>();
+  const contextNetwork = useWeb3React<Web3Provider>(NetworkContextName);
+  return context.active ? context : contextNetwork;
+}
 
 /**
  * This function tries to activate an already connected wallet

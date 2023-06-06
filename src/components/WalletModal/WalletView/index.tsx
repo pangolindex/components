@@ -1,9 +1,9 @@
-import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useContext, useState } from 'react';
 import { AlertCircle, ArrowLeft, Download, LogIn, LogOut } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Text } from 'src/components';
+import { useActiveWeb3React } from 'src/hooks/useConnector';
 import { Wallet } from 'src/wallet/classes/wallet';
 import { BackButton, ErrorButton, Frame, Link, Loader, StyledLogo, Wrapper } from './styles';
 
@@ -18,7 +18,7 @@ export default function WalletView({
   onBack: () => void;
   onConnect: (wallet: Wallet) => Promise<void>;
 }) {
-  const { deactivate } = useWeb3React();
+  const { deactivate } = useActiveWeb3React();
   const theme = useContext(ThemeContext);
 
   const { t } = useTranslation();

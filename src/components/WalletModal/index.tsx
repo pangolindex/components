@@ -9,6 +9,7 @@ import { useMedia } from 'react-use';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
+import { usePangolinWeb3 } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
 import { useApplicationState } from 'src/state/papplication/atom';
 import { useUserAtom } from 'src/state/puser/atom';
@@ -42,7 +43,7 @@ export default function WalletModal({
   supportedChains,
   initialChainId,
 }: WalletModalProps) {
-  const { chainId } = useWeb3React();
+  const { chainId } = usePangolinWeb3();
 
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');

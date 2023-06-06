@@ -1,5 +1,4 @@
 import { Chain } from '@pangolindex/sdk';
-import { useWeb3React } from '@web3-react/core';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
@@ -9,6 +8,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
 import { NetworkConnector } from 'src/connectors/NetworkConnector';
 import { usePangolinWeb3 } from 'src/hooks';
+import { useActiveWeb3React } from 'src/hooks/useConnector';
 import useDebounce from 'src/hooks/useDebounce';
 import { useApplicationState } from 'src/state/papplication/atom';
 import { changeNetwork } from 'src/utils/wallet';
@@ -20,7 +20,7 @@ import { NETWORK_TYPE, NetworkProps } from './types';
 export default function NetworkSelection({ open, closeModal, onToogleWalletModal }: NetworkProps) {
   const { t } = useTranslation();
   const { account } = usePangolinWeb3();
-  const { connector, activate, deactivate } = useWeb3React();
+  const { connector, activate, deactivate } = useActiveWeb3React();
 
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');

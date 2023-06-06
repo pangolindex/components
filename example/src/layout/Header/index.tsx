@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { HeaderFrame, MenuLink, Menuwrapper } from './styled';
-import { useWeb3React } from '@web3-react/core';
 import {
   Button,
   WalletModal,
@@ -9,13 +8,14 @@ import {
   TokenInfoModal,
   Tokens,
   shortenAddressMapping,
+  useActiveWeb3React,
 } from '@components/index';
 import { useChainId } from '@components/hooks/index';
 import Logo from '../Logo';
 import { CHAINS, TokenAmount, Chain } from '@pangolindex/sdk';
 
 export default function Header() {
-  const context = useWeb3React();
+  const context = useActiveWeb3React();
   const { account } = context;
   const chainId = useChainId();
   const [open, setOpen] = useState<boolean>(false);
