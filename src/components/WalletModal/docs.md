@@ -3,7 +3,6 @@ This component handles connection with wallets.
 packages required
 ```
 @web3-react/core >= 6.0.0 < 8.0.0
-@ethersproject/providers  
 ```
 
 ## How to use
@@ -12,8 +11,7 @@ Wrap your react app with `Web3ReactProvider` and `PangolinProvider`.
 
 ```tsx
 // index.tsx
-import { PangolinProvider } from '@pangolindex/components';
-import { Web3Provider } from '@ethersproject/providers';
+import { PangolinProvider, NetworkContextName, useActiveWeb3React } from '@pangolindex/components';
 import { Web3ReactProvider, useWeb3React } from '@web3-react/core';
 import App from './App';
 
@@ -23,8 +21,10 @@ function getLibrary(provider: any): Web3Provider {
   return library;
 }
 
+const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
+
 const AppProvider = () => {
-  const { library, account, chainId } = useWeb3React<Web3Provider>();
+  const { library, account, chainId } = useActiveWeb3React();
 
   return (
     <PangolinProvider library={library} chainId={chainId} account={account ?? undefined} theme={theme as any}>
@@ -36,7 +36,9 @@ const AppProvider = () => {
 ReactDOM.render(
   <React.StrictMode>
     <Web3ReactProvider getLibrary={getLibrary}>
-      <AppProvider />
+      <Web3ProviderNetwork getLibrary={getLibrary}>
+        <AppProvider />
+      </Web3ProviderNetwork>
     </Web3ReactProvider>
   </React.StrictMode>,
   document.getElementById('root'),
