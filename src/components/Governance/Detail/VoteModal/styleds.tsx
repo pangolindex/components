@@ -9,9 +9,10 @@ export const ContentWrapper = styled(AutoColumn)`
 
 export const ConfirmOrLoadingWrapper = styled.div<{ type?: GovernanceType }>`
   width: ${({ type }) => (type === GovernanceType.SAR_NFT ? '1080px' : '100%')};
-  overflow: auto;
+  overflow-y: auto;
   border-radius: 10px;
   padding: 24px;
+  max-height: 500px;
   ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 100%;
   `};
