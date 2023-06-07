@@ -3,8 +3,7 @@ import gql from 'graphql-tag';
 import { useQuery } from 'react-query';
 import { NEWS_API_URL } from 'src/constants';
 import { useChainId } from 'src/hooks';
-
-const news_api_key = process.env.VITE_NEWS_KEY;
+import { useHasuraKey } from 'src/hooks/hasura';
 
 export interface News {
   id: number;
@@ -24,19 +23,21 @@ const GET_NEWS = gql`
   }
 `;
 
-const gqlClient = new GraphQLClient(NEWS_API_URL, {
-  headers: {
-    'x-hasura-admin-secret': news_api_key ?? '',
-  },
-});
-
 export function useGetNews() {
   const chainId = useChainId();
+
+  const hasuraAPIKey = useHasuraKey();
+
+  const gqlClient = new GraphQLClient(NEWS_API_URL, {
+    headers: {
+      'x-hasura-admin-secret': hasuraAPIKey ?? '',
+    },
+  });
 
   return useQuery(
     ['getNews', chainId],
     async () => {
-      if (!news_api_key) return;
+      if (!hasuraAPIKey) return;
 
       const data = await gqlClient.request<{ pangolin_news: News[] }>(GET_NEWS);
 

@@ -63,6 +63,7 @@ import { parseENSAddress } from 'src/utils/parseENSAddress';
 import { splitQuery } from 'src/utils/query';
 import uriToHttp from 'src/utils/uriToHttp';
 import { unwrappedToken, wrappedCurrency, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
+import { HasuraContext } from './hooks/hasura';
 import { MixPanelEvents, MixPanelProvider, useMixpanel } from './hooks/mixpanel';
 import i18n, { availableLanguages } from './i18n';
 import { galetoStore } from './state';
@@ -82,50 +83,57 @@ const queryClient = new QueryClient({
   },
 });
 
+interface Config {
+  mixpanelToken?: string;
+  hasuraApiKey?: string;
+}
+
 export function PangolinProvider({
   chainId = ChainId.AVALANCHE,
   library,
   children,
   account,
   theme,
-  mixpanelToken,
+  config,
 }: {
   chainId: number | undefined;
   library: any | undefined;
   account: string | undefined;
   children?: React.ReactNode;
   theme?: any;
-  mixpanelToken?: string;
+  config?: Config;
 }) {
   const ethersLibrary = library && !library?._isProvider ? new Web3Provider(library) : library;
 
   return (
     <PangolinWeb3Provider chainId={chainId} library={library} account={account} key={chainId}>
-      <MixPanelProvider mixpanelToken={mixpanelToken}>
-        <ThemeProvider theme={theme}>
-          <QueryClientProvider client={queryClient}>
-            <ListsUpdater />
-            <ApplicationUpdater />
-            <MulticallUpdater />
-            <TransactionUpdater />
-            <SwapUpdater />
-            {isEvmChain(chainId) && CHAINS[chainId]?.supported_by_gelato ? (
-              <Provider store={galetoStore}>
-                <GelatoProvider
-                  library={ethersLibrary}
-                  chainId={chainId}
-                  account={account ?? undefined}
-                  useDefaultTheme={false}
-                  handler={'pangolin'}
-                >
-                  {children}
-                </GelatoProvider>
-              </Provider>
-            ) : (
-              children
-            )}
-          </QueryClientProvider>
-        </ThemeProvider>
+      <MixPanelProvider mixpanelToken={config?.mixpanelToken}>
+        <HasuraContext.Provider value={config?.hasuraApiKey}>
+          <ThemeProvider theme={theme}>
+            <QueryClientProvider client={queryClient}>
+              <ListsUpdater />
+              <ApplicationUpdater />
+              <MulticallUpdater />
+              <TransactionUpdater />
+              <SwapUpdater />
+              {isEvmChain(chainId) && CHAINS[chainId]?.supported_by_gelato ? (
+                <Provider store={galetoStore}>
+                  <GelatoProvider
+                    library={ethersLibrary}
+                    chainId={chainId}
+                    account={account ?? undefined}
+                    useDefaultTheme={false}
+                    handler={'pangolin'}
+                  >
+                    {children}
+                  </GelatoProvider>
+                </Provider>
+              ) : (
+                children
+              )}
+            </QueryClientProvider>
+          </ThemeProvider>
+        </HasuraContext.Provider>
       </MixPanelProvider>
     </PangolinWeb3Provider>
   );
