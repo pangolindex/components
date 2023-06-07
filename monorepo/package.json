@@ -12,9 +12,13 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@pangolindex/sdk": "5.2.0-rc.0",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "prettier": "^2.5.1",
     "turbo": "latest"
+  },
+  "peerDependencies": {
+    "@pangolindex/sdk": ">=2.0.1"
   }
 }
