@@ -100,8 +100,8 @@ export default function VoteModal({
     if (CHAINS[chainId]?.contracts?.governor?.type === GovernanceType.SAR_NFT) {
       return (
         <Box>
-          <Text fontSize={24} fontWeight={500} color="text1">
-            Choose NFTs to Vote: {support ? t('vote.for') : t('vote.against')}
+          <Text fontSize={24} fontWeight={500} color="text1" pb={10}>
+            Choose NFTs to Vote: {support ? t('vote.for').toUpperCase() : t('vote.against').toUpperCase()}
           </Text>
           <Portfolio positions={filteredPositions} onSelectPosition={onSelectPosition} allowSorting={false} />
 
