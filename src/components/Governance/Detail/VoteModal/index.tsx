@@ -101,7 +101,7 @@ export default function VoteModal({
       return (
         <Box>
           <Text fontSize={24} fontWeight={500} color="text1" pb={10}>
-            Choose NFTs to Vote: {support ? t('vote.for') : t('vote.against')}
+            Choose NFTs to Vote: {support ? t('vote.for').toUpperCase() : t('vote.against').toUpperCase()}
           </Text>
           <Portfolio positions={filteredPositions} onSelectPosition={onSelectPosition} allowSorting={false} />
 
