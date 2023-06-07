@@ -155,7 +155,11 @@ export default function WalletModal({
     async function onError(error: any) {
       setPendingError(true);
       console.error(error);
-      if (error instanceof UserRejectedRequestError || error?.code === 4001) {
+      if (
+        error instanceof UserRejectedRequestError ||
+        error?.code === 4001 ||
+        error?.message?.includes('The user rejected the request')
+      ) {
         const previousWallet = userState.wallet ? wallets[userState.wallet] : undefined;
         if (previousWallet && previousWallet !== wallet) {
           // this is just a fallback when user rejects the request
