@@ -1,3 +1,5 @@
+import useParsedQueryString from 'src/hooks/useParsedQueryString';
+import { useOnClickOutside } from 'src/useOnClickOutside';
 import { useChainId, useLibrary, usePangolinWeb3 } from './provider';
 import { useApproveCallbackFromTradeHook, useApproveCallbackHook } from './useApproveCallback';
 import { ApprovalState } from './useApproveCallback/constant';
@@ -23,6 +25,10 @@ export {
   useENS,
   useDebounce,
   useDummyHook,
+  useOnClickOutside,
+  useParsedQueryString,
 };
 
 export { ApprovalState };
+
+export * from './useContract';

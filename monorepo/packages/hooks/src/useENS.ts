@@ -1,4 +1,4 @@
-import { isAddress } from '../utils';
+import { isAddress } from '@pangolindex/utils';
 
 /**
  * Given a name or address, does a lookup to resolve to an address and name

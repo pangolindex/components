@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { CHAINS, ChainId, ChefType, StakingType, WAVAX } from '@pangolindex/sdk';
-import { PNG } from './tokens';
 import { ZERO_ADDRESS } from './common';
+import { PNG } from './tokens';
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: CHAINS[ChainId.FUJI].contracts!.router,

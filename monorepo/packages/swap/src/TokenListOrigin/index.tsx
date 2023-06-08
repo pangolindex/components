@@ -1,5 +1,5 @@
+import { parseENSAddress } from '@pangolindex/utils';
 import React, { useMemo } from 'react';
-import { parseENSAddress } from 'src/utils/parseENSAddress';
 
 function TokenListOrigin({ listUrl }: { listUrl: string }) {
   const ensName = useMemo(() => parseENSAddress(listUrl)?.ensName, [listUrl]);

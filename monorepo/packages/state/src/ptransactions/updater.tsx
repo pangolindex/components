@@ -1,7 +1,7 @@
+import { useChainId, useDummyHook, useLibrary } from '@pangolindex/hooks';
 import { ChainId } from '@pangolindex/sdk';
+import { nearFn } from '@pangolindex/utils';
 import { useEffect } from 'react';
-import { nearFn } from 'src/utils/near';
-import { useChainId, useLibrary, useDummyHook } from '@pangolindex/hooks';
 import { useAddPopup, useBlockNumber } from '../papplication/hooks';
 import { AddTransactionDetails, TransactionDetails, useTransactionState } from './atom';
 

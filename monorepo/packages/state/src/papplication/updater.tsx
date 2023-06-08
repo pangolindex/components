@@ -1,7 +1,7 @@
+import { useChainId, useDebounce, useLibrary, usePangolinWeb3 } from '@pangolindex/hooks';
 import { ChainId } from '@pangolindex/sdk';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useChainId, useLibrary, usePangolinWeb3, useDebounce } from '@pangolindex/hooks';
 import { useLastBlockHook } from 'src/hooks/block';
 import { useApplicationState } from './atom';
 

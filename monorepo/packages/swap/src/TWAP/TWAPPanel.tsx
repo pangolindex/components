@@ -1,11 +1,11 @@
-import React, { Suspense, useCallback, useContext } from 'react';
-import { ThemeContext } from 'styled-components';
-import { Loader } from '@pangolindex/core';
 import { ZERO_ADDRESS } from '@pangolindex/constants';
-import { SwapTypes } from 'src/constants';
+import { Loader } from '@pangolindex/core';
 import { useChainId, usePangolinWeb3 } from '@pangolindex/hooks';
-import { useAllTokens } from 'src/hooks/useAllTokens';
 import { useWalletModalToggle } from '@pangolindex/state';
+import React, { Suspense, useCallback, useContext } from 'react';
+import { useAllTokens } from 'src/hooks/useAllTokens';
+import { ThemeContext } from 'styled-components';
+import { SwapTypes } from 'src/constants';
 import { Field } from 'src/state/pswap/atom';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks/common';
 import SelectTokenDrawer from '../SelectTokenDrawer';

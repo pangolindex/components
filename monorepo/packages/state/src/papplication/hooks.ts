@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from 'react';
 import { useChainId } from '@pangolindex/hooks';
+import { useCallback, useMemo } from 'react';
 import { ApplicationModal, PopupContent, PopupList, useApplicationState } from './atom';
 
 export function useBlockNumber(): number | undefined {

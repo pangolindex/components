@@ -1,8 +1,8 @@
 import { parseUnits } from '@ethersproject/units';
 import { NEAR_API_BASE_URL, USDCe } from '@pangolindex/constants';
 import { Currency, Price, TokenAmount } from '@pangolindex/sdk';
+import { wrappedCurrency } from '@pangolindex/utils';
 import { useEffect, useMemo, useState } from 'react';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useChainId } from '../index';
 
 export function useNearUSDCPrice(currency?: Currency): Price | undefined {

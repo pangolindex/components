@@ -1,9 +1,9 @@
 import { Contract } from '@ethersproject/contracts';
-import { useEffect, useMemo } from 'react';
-import { useChainId, useLibrary } from '@pangolindex/hooks';
+import { getRouterContractDaaS } from '@pangolindex//utils';
 import { ZERO_ADDRESS } from '@pangolindex/constants';
-import { getRouterContractDaaS } from '../../utils';
+import { useChainId, useLibrary } from '@pangolindex/hooks';
 import { NEVER_RELOAD, useSingleCallResult } from '@pangolindex/state';
+import { useEffect, useMemo } from 'react';
 import { useSwapState } from './atom';
 
 export default function Updater(): null {

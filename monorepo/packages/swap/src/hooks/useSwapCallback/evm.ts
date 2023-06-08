@@ -1,5 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
+import { INITIAL_ALLOWED_SLIPPAGE, ZERO_ADDRESS } from '@pangolindex/constants';
+import { useChainId, useENS, useLibrary, usePangolinWeb3, useTransactionDeadline } from '@pangolindex/hooks';
 import {
   CHAINS,
   ElixirTrade,
@@ -11,14 +13,18 @@ import {
   Trade,
   TradeType,
 } from '@pangolindex/sdk';
+import { useTransactionAdder } from '@pangolindex/state';
 import { useMemo } from 'react';
-import { INITIAL_ALLOWED_SLIPPAGE, ZERO_ADDRESS } from '@pangolindex/constants';
+import {
+  calculateGasMargin,
+  getRouterContract,
+  getRouterContractDaaS,
+  isAddress,
+  isZero,
+  shortenAddress,
+} from 'src/utils';
 import { BIPS_BASE } from 'src/constants';
 import { useDaasFeeTo } from 'src/state/pswap/hooks/common';
-import { useTransactionAdder } from '@pangolindex/state';
-import { calculateGasMargin, getRouterContract, getRouterContractDaaS, isAddress, shortenAddress } from 'src/utils';
-import isZero from 'src/utils/isZero';
-import { useChainId, useLibrary, usePangolinWeb3, useTransactionDeadline, useENS } from '@pangolindex/hooks';
 import { Version } from '../useToggledVersion';
 import { SwapCallbackState } from './constant';
 

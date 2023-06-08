@@ -4,6 +4,13 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner, TransactionResponse, Web3Provider } from '@ethersproject/providers';
+import {
+  MetamaskError,
+  ROUTER_ADDRESS,
+  ROUTER_DAAS_ADDRESS,
+  SAR_STAKING_ADDRESS,
+  ZERO_ADDRESS,
+} from '@pangolindex/constants';
 import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouter.sol/IPangolinRouter.json';
 import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
@@ -29,16 +36,9 @@ import {
   currencyEquals,
   formatPrice,
 } from '@pangolindex/sdk';
-import {
-  MetamaskError,
-  ZERO_ADDRESS,
-  ROUTER_ADDRESS,
-  ROUTER_DAAS_ADDRESS,
-  SAR_STAKING_ADDRESS,
-} from '@pangolindex/constants';
 import { Bound } from 'src/state/pmint/elixir/atom';
-import { hederaFn } from './hedera';
 import { TokenAddressMap } from '../state/plists/hooks';
+import { hederaFn } from './hedera';
 import { wait } from './retry';
 
 // returns the checksummed address if the address is valid, otherwise returns false

@@ -1,6 +1,6 @@
+import { Box, Text } from '@pangolindex/core';
 import { opacify } from 'polished';
 import styled from 'styled-components';
-import { Box, Text } from '@pangolindex/core';
 
 export const CurrencyList = styled.div`
   display: flex;

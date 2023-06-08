@@ -1,9 +1,8 @@
 import { USDC } from '@pangolindex/constants';
 import { ChainId, Currency, Price } from '@pangolindex/sdk';
+import { decimalToFraction, wrappedCurrency } from '@pangolindex/utils';
 import { useMemo } from 'react';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
-import { decimalToFraction } from 'src/utils';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useTokenCurrencyPrice } from '../useCurrencyPrice';
 
 export function useSongBirdUSDPrice(currency?: Currency): Price | undefined {

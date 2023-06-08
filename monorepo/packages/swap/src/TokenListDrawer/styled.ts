@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Box, Text } from '@pangolindex/core';
+import styled from 'styled-components';
 
 export const Warning = styled(Box)`
   padding: 10px 20px;

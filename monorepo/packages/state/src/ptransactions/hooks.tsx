@@ -1,6 +1,6 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { useCallback, useMemo } from 'react';
 import { useChainId, usePangolinWeb3 } from '@pangolindex/hooks';
+import { useCallback, useMemo } from 'react';
 import { TransactionDetails, useTransactionState } from './atom';
 
 type TransactionOnlyWithHash = Pick<TransactionResponse, 'hash'>;

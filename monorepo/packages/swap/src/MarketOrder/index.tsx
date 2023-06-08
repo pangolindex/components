@@ -1,4 +1,13 @@
 /* eslint-disable max-lines */
+import { DEFAULT_TOKEN_LISTS_SELECTED, TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from '@pangolindex/constants';
+import { Box, Button, Text, TextInput } from '@pangolindex/core';
+import useENS, {
+  ApprovalState,
+  useApproveCallbackFromTradeHook,
+  useChainId,
+  usePangolinWeb3,
+} from '@pangolindex/hooks';
+import { useTranslation } from '@pangolindex/locales';
 import {
   CAVAX,
   CurrencyAmount,
@@ -10,23 +19,20 @@ import {
   WAVAX,
   currencyEquals,
 } from '@pangolindex/sdk';
+import { useExpertModeManager, useUserSlippageTolerance, useWalletModalToggle } from '@pangolindex/state';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
-import { useTranslation } from '@pangolindex/locales';
-import { ThemeContext } from 'styled-components';
-import { ZERO_ADDRESS, TRUSTED_TOKEN_ADDRESSES, DEFAULT_TOKEN_LISTS_SELECTED } from '@pangolindex/constants';
-import { SwapTypes } from 'src/constants';
-import { useChainId, usePangolinWeb3, ApprovalState, useApproveCallbackFromTradeHook } from '@pangolindex/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks';
 import { useTokenHook } from 'src/hooks/tokens';
 import { useCurrency } from 'src/hooks/useCurrency';
-import useENS from 'src/hooks/useENS';
+import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
+import { isTokenOnList, validateAddressMapping, hederaFn, unwrappedToken, wrappedCurrency } from '@pangolindex/utils';
+import { ThemeContext } from 'styled-components';
+import { SwapTypes } from 'src/constants';
 import { useSwapCallbackHook } from 'src/hooks/useSwapCallback';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { useWrapCallbackHook } from 'src/hooks/useWrapCallback';
 import { WrapType } from 'src/hooks/useWrapCallback/constant';
-import { useWalletModalToggle, useExpertModeManager, useUserSlippageTolerance } from '@pangolindex/state';
-import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
 import { Field, LimitNewField } from 'src/state/pswap/atom';
 import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
 import {
@@ -37,12 +43,8 @@ import {
   useSwapState,
 } from 'src/state/pswap/hooks/common';
 import { useHederaSwapTokenAssociated } from 'src/state/pswap/hooks/hedera';
-import { isTokenOnList, validateAddressMapping } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
-import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { Box, Button, Text, TextInput } from '@pangolindex/core';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
 import SelectTokenDrawer from '../SelectTokenDrawer';
 import SwapSettingsDrawer from '../Settings';

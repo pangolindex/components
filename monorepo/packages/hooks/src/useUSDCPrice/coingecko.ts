@@ -1,10 +1,9 @@
 import { parseUnits } from '@ethersproject/units';
 import { USDC } from '@pangolindex/constants';
 import { Currency, Price } from '@pangolindex/sdk';
+import { decimalToFraction, wrappedCurrency } from '@pangolindex/utils';
 import { useMemo } from 'react';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
-import { decimalToFraction } from 'src/utils';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { useTokenCurrencyPriceHook } from '../multiChainsHooks';
 import { useChainId } from '../provider';
 

@@ -20,6 +20,7 @@
     "@pangolindex/theme": "*",
     "@pangolindex/constants": "*",
     "@pangolindex/state": "*",
+    "@pangolindex/utils": "*",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
     "@rollup/plugin-url": "^7.0.0",

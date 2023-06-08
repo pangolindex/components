@@ -1,12 +1,12 @@
 import { formatUnits } from '@ethersproject/units';
 import { useGasOverhead, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
+import { INITIAL_ALLOWED_SLIPPAGE } from '@pangolindex/constants';
+import { Text } from '@pangolindex/core';
+import { useChainId } from '@pangolindex/hooks';
+import { useTranslation } from '@pangolindex/locales';
 import { TokenAmount } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
-import { useTranslation } from '@pangolindex/locales';
-import { INITIAL_ALLOWED_SLIPPAGE } from '@pangolindex/constants';
-import { useChainId } from '@pangolindex/hooks';
 import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
-import { Text } from '@pangolindex/core';
 import { ContentBox, DataBox, ValueText } from './styled';
 
 type Props = { trade: any };

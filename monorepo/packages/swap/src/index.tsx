@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { ZERO_ADDRESS } from '@pangolindex/constants';
+import React, { useState } from 'react';
 import { SwapTypes } from 'src/constants';
 import LimitOrder from './LimitOrder';
 import MarketOrder from './MarketOrder';

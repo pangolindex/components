@@ -1,13 +1,13 @@
+import { Box, Button, CurrencyLogo, Drawer, Loader, Text } from '@pangolindex/core';
+import { useChainId, useUSDCPrice } from '@pangolindex/hooks';
+import { useTranslation } from '@pangolindex/locales';
 import { CAVAX, Token, Trade, TradeType } from '@pangolindex/sdk';
+import { getEtherscanLink, isAddress, shortenAddress } from '@pangolindex/utils';
+import { computeFiatValuePriceImpact } from 'src/utils/computeFiatValuePriceImpact';
 import React, { useCallback, useContext, useState } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
-import { useTranslation } from '@pangolindex/locales';
 import { ThemeContext } from 'styled-components';
-import { useChainId, useUSDCPrice } from '@pangolindex/hooks';
 import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
-import { getEtherscanLink, isAddress, shortenAddress } from 'src/utils';
-import { computeFiatValuePriceImpact } from 'src/utils/computeFiatValuePriceImpact';
-import { Box, Button, CurrencyLogo, Loader, Text, Drawer } from '@pangolindex/core';
 import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
 import { FiatValue } from './FiateValue';
 import {

@@ -1,7 +1,7 @@
 import { Token, TokenAmount } from '@pangolindex/sdk';
 import { useIsApprovingInfinite } from '@pangolindex/state';
+import { hederaFn } from '@pangolindex/utils';
 import { useQuery } from 'react-query';
-import { hederaFn } from 'src/utils/hedera';
 
 interface HederaAllowanceInfo {
   owner: string;

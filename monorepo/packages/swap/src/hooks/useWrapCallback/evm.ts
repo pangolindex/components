@@ -1,12 +1,11 @@
+import { useChainId, usePangolinWeb3, useWETHContract } from '@pangolindex/hooks';
+import { useTranslation } from '@pangolindex/locales';
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
+import { useTransactionAdder } from '@pangolindex/state';
 import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { Field } from 'src/state/pswap/atom';
 import { tryParseAmount, useSwapActionHandlers } from 'src/state/pswap/hooks/common';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
-import { useChainId, usePangolinWeb3 } from '@pangolindex/hooks';
-import { useWETHContract } from '../useContract';
 import { NOT_APPLICABLE, WrapType } from './constant';
 
 /**

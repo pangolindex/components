@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Box, CurrencyInput, TextInput } from '@pangolindex/core';
+import styled from 'styled-components';
 
 export const Root = styled(Box)`
   width: 100%;

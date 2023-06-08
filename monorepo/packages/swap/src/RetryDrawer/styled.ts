@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Box } from '@pangolindex/core';
+import styled from 'styled-components';
 
 export const DataBox = styled(Box)`
   align-items: center;

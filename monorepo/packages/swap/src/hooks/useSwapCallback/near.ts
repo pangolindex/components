@@ -1,12 +1,12 @@
 import { parseUnits } from '@ethersproject/units';
+import { INITIAL_ALLOWED_SLIPPAGE, ONE_YOCTO_NEAR } from '@pangolindex/constants';
+import { useChainId, useLibrary, usePangolinWeb3 } from '@pangolindex/hooks';
 import { Token, Trade } from '@pangolindex/sdk';
+import { useTransactionAdder } from '@pangolindex/state';
+import { FunctionCallOptions, Transaction, nearFn } from '@pangolindex/utils';
 import { useMemo } from 'react';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS } from 'src/connectors';
-import { INITIAL_ALLOWED_SLIPPAGE, ONE_YOCTO_NEAR } from '@pangolindex/constants';
 import { useGetNearPoolId } from 'src/data/Reserves';
-import { useTransactionAdder } from '@pangolindex/state';
-import { FunctionCallOptions, Transaction, nearFn } from 'src/utils/near';
-import { useChainId, useLibrary, usePangolinWeb3 } from '@pangolindex/hooks';
 import { SwapCallbackState } from './constant';
 
 export function useNearSwapCallback(

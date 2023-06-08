@@ -1,7 +1,7 @@
 import { Token, TokenAmount } from '@pangolindex/sdk';
 import { useSingleCallResult } from '@pangolindex/state';
 import { useMemo } from 'react';
-import { useTokenContract } from '../hooks/useContract';
+import { useTokenContract } from '../useContract';
 
 export function useTokenAllowance(token?: Token, owner?: string, spender?: string): TokenAmount | undefined {
   const contract = useTokenContract(token?.address, false);

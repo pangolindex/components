@@ -1,6 +1,9 @@
 /* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
 import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
+import { NATIVE, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from '@pangolindex/constants';
+import { useChainId, usePangolinWeb3, useParsedQueryString } from '@pangolindex/hooks';
+import { useTranslation } from '@pangolindex/locales';
 import {
   CAVAX,
   ChainId,
@@ -14,20 +17,20 @@ import {
   TokenAmount,
   Trade,
 } from '@pangolindex/sdk';
+import { useUserSlippageTolerance } from '@pangolindex/state';
+import {
+  computeSlippageAdjustedAmounts,
+  isAddress,
+  isEvmChain,
+  validateAddressMapping,
+  wrappedCurrency,
+} from '@pangolindex/utils';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { NATIVE, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from '@pangolindex/constants';
-import { SWAP_DEFAULT_CURRENCY } from 'src/constants';
-import { useChainId, usePangolinWeb3 } from '@pangolindex/hooks';
-import { useElixirTradeExactIn, useElixirTradeExactOut, useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import { useCurrency } from 'src/hooks/useCurrency';
-import useParsedQueryString from 'src/hooks/useParsedQueryString';
+import { SWAP_DEFAULT_CURRENCY } from 'src/constants';
+import { useElixirTradeExactIn, useElixirTradeExactOut, useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
-import { isAddress, isEvmChain, validateAddressMapping } from 'src/utils';
-import { computeSlippageAdjustedAmounts } from 'src/utils/prices';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { useUserSlippageTolerance } from '@pangolindex/state';
 import { useCurrencyBalances } from '../../pwallet/hooks/common';
 import { DefaultSwapState, FeeInfo, Field, SwapParams, useSwapState as useSwapStateAtom } from '../atom';
 

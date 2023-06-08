@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { PNG } from '@pangolindex/constants';
 import { ChainId, Token, TokenAmount } from '@pangolindex/sdk';
 import { useSingleCallResult } from '@pangolindex/state';
-import { useTokenContract } from '../hooks/useContract';
+import { useTokenContract } from '../useContract';
 
 // returns undefined if input token is undefined, or fails to get token contract,
 // or contract total supply cannot be fetched

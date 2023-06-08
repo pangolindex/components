@@ -2,13 +2,13 @@ import { ExternalProvider, Web3Provider as Web3ProviderEthers } from '@etherspro
 import { PROVIDER_MAPPING } from '@pangolindex/constants';
 import { ALL_CHAINS, CHAINS, ChainId } from '@pangolindex/sdk';
 import { useApplicationState } from '@pangolindex/state';
+import { isAddress } from '@pangolindex/utils';
 import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
 import { useQueryClient } from 'react-query';
 import { hashConnect, network } from 'src/connectors';
 import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
-import { isAddress } from 'src/utils';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;

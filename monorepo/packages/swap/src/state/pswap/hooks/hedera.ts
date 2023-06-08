@@ -1,8 +1,8 @@
-import { CAVAX } from '@pangolindex/sdk';
 import { useChainId } from '@pangolindex/hooks';
+import { CAVAX } from '@pangolindex/sdk';
+import { wrappedCurrency } from '@pangolindex/utils';
 import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useCurrency } from 'src/hooks/useCurrency';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Field } from '../atom';
 import { useSwapState } from './common';
 

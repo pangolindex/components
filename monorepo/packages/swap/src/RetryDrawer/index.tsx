@@ -1,5 +1,5 @@
+import { Box, Drawer, Text } from '@pangolindex/core';
 import React from 'react';
-import { Box, Text, Drawer } from '@pangolindex/core';
 import { Divider } from './styled';
 
 interface Props {

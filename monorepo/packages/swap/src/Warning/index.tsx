@@ -1,5 +1,5 @@
-import React from 'react';
 import { Box, Text } from '@pangolindex/core';
+import React from 'react';
 import { AutoColumn, ConvertLink, StyledWarningIcon, WarningWrapper } from './styled';
 
 export function DeprecatedWarning() {

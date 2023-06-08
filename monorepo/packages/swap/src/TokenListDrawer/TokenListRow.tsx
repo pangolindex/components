@@ -1,11 +1,11 @@
+import { Box, Switch, Text } from '@pangolindex/core';
+import { useOnClickOutside } from '@pangolindex/hooks';
+import { useTranslation } from '@pangolindex/locales';
 import React, { useCallback, useRef, useState } from 'react';
 import { ChevronDown } from 'react-feather';
-import { useTranslation } from '@pangolindex/locales';
-import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import { useListsStateAtom } from 'src/state/plists/atom';
 import { useSelectedListUrl } from 'src/state/plists/hooks';
 import listVersionLabel from 'src/utils/listVersionLabel';
-import { Box, Switch, Text } from '@pangolindex/core';
 import TokenListOrigin from '../TokenListOrigin';
 import { DownArrow, ListLogo, PopoverContainer, RowRoot, Separator, ViewLink } from './styled';
 

@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from '@pangolindex/locales';
-import { Box, Button, Drawer, NumberOptions, ToggleButtons, TextInput, Text, SlippageInput } from '@pangolindex/core';
 import { DEFAULT_DEADLINE_FROM_NOW } from '@pangolindex/constants';
+import { Box, Button, Drawer, NumberOptions, SlippageInput, Text, TextInput, ToggleButtons } from '@pangolindex/core';
+import { useTranslation } from '@pangolindex/locales';
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from '@pangolindex/state';
+import React, { useCallback, useEffect, useState } from 'react';
 import WarningModal from './WarningModal';
 import { Frame, InputOptions } from './styled';
 

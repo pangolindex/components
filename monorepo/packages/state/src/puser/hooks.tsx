@@ -1,9 +1,9 @@
+import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '@pangolindex//constants';
+import { usePangolinWeb3 } from '@pangolindex/hooks';
 import { ChainId, Pair, Token } from '@pangolindex/sdk';
 import flatMap from 'lodash.flatmap';
 import { useCallback, useMemo } from 'react';
-import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '@pangolindex//constants';
 import { useAllTokens } from 'src/hooks/useAllTokens';
-import { usePangolinWeb3 } from '@pangolindex/hooks';
 import { SerializedPair, SerializedToken, useUserAtom } from './atom';
 
 function serializeToken(token: Token): SerializedToken {

@@ -1,7 +1,7 @@
+import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '@pangolindex/constants';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { useCallback } from 'react';
-import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '@pangolindex/constants';
 
 export interface SerializedToken {
   chainId: number;
