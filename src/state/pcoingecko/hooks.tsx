@@ -293,11 +293,12 @@ export function useCoinGeckoTokens(): CoingeckoWatchListState {
   const { currencies, addCoingeckoTokens } = useCoingeckoWatchList();
 
   const queryParameter = [] as any;
-  const totalPages = 2;
+  const totalPages = 8;
   for (let page = 1; page <= totalPages; page++) {
     queryParameter.push({
       queryKey: ['get-coingecko-token-data', page],
       queryFn: fetchCoinMarketData(page),
+      staleTime: 1000 * 60 * 20, // 20 minutes
     });
   }
 
@@ -323,6 +324,7 @@ export function useCoinGeckoTokens(): CoingeckoWatchListState {
 
   return currencies;
 }
+
 /**
  * its use for search token based on text
  * @param coinText
@@ -334,10 +336,14 @@ export function useCoinGeckoSearchTokens(coinText: string): {
   const { data: searchTokens, isLoading } = useQuery<Array<CoingeckoTokenData>>(
     ['coingeckoSearchTokens', coinText],
     async () => {
+      if (coinText.length === 0) {
+        return undefined;
+      }
       const response: AxiosResponse = await coingeckoAPI.get(`search?query=${coinText}`);
       return response?.data?.coins || [];
     },
     {
+      staleTime: 1000 * 60 * 20, // 20 minutes
       enabled: coinText.length > 0,
     },
   );
