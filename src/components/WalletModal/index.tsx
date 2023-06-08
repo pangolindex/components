@@ -84,6 +84,7 @@ export default function WalletModal({
 
   function handleChainType(value: NETWORK_TYPE) {
     setMainnet(value === NETWORK_TYPE.MAINNET);
+    setPendingWallet(null);
     // when we switch the network type if already chainId selected it will be same
     const finalChainId = initialChainId ?? chainId;
     if (
