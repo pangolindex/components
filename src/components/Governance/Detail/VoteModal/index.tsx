@@ -1,7 +1,7 @@
 import { CHAINS, GovernanceType, TokenAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import React, { useContext, useState } from 'react';
-import { ArrowUpCircle } from 'react-feather';
+import { AlertTriangle, ArrowUpCircle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Loader, Modal, Text } from 'src/components';
@@ -14,7 +14,7 @@ import { Position } from 'src/state/psarstake/types';
 import { ExternalLink } from 'src/theme';
 import { CloseIcon } from 'src/theme/components';
 import { getEtherscanLink } from 'src/utils';
-import { ConfirmOrLoadingWrapper, ConfirmedIcon, ContentWrapper, Wrapper } from './styleds';
+import { ConfirmOrLoadingWrapper, ConfirmedIcon, ContentWrapper, ErrorBox, ErrorWrapper, Wrapper } from './styleds';
 
 interface VoteModalProps {
   isOpen: boolean;
@@ -34,6 +34,8 @@ export default function VoteModal({
   nftLoading,
 }: VoteModalProps) {
   const chainId = useChainId();
+
+  const [voteErrorMessage, setVoteErrorMessage] = useState<string | undefined>(undefined);
 
   const useVoteCallback = useVoteCallbackHook[chainId];
 
@@ -67,6 +69,7 @@ export default function VoteModal({
   function wrappedOndismiss() {
     setHash(undefined);
     setAttempting(false);
+    setVoteErrorMessage(undefined);
     onDismiss();
   }
 
@@ -85,10 +88,15 @@ export default function VoteModal({
 
       if (_hash) {
         setHash(_hash);
+      } else {
+        setAttempting(false);
+        setVoteErrorMessage('Some went wrong');
       }
-    } catch (err) {
+    } catch (err: any) {
       setAttempting(false);
       const _err = err as any;
+
+      setVoteErrorMessage(err?.message);
       // we only care if the error is something _other_ than the user rejected the tx
       if (_err?.code !== 4001) {
         console.error(_err);
@@ -138,7 +146,7 @@ export default function VoteModal({
 
           <CloseIcon onClick={wrappedOndismiss} color={theme.text3} />
         </Wrapper>
-        {!attempting && !hash && !nftLoading && <>{renderModalBody()}</>}
+        {!attempting && !hash && !nftLoading && !voteErrorMessage && <>{renderModalBody()}</>}
         {nftLoading && (
           <Box>
             <Loader size={100} label={`${t('common.loading')}...`} />{' '}
@@ -175,6 +183,20 @@ export default function VoteModal({
               )}
             </AutoColumn>
           </Box>
+        )}
+
+        {voteErrorMessage && (
+          <ErrorWrapper>
+            <ErrorBox>
+              <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
+              <Text fontWeight={500} fontSize={[16, 14]} color={'red1'} style={{ textAlign: 'center', width: '85%' }}>
+                Some went Wrong
+              </Text>
+            </ErrorBox>
+            <Button variant="primary" onClick={wrappedOndismiss}>
+              {t('transactionConfirmation.dismiss')}
+            </Button>
+          </ErrorWrapper>
         )}
       </ConfirmOrLoadingWrapper>
     </Modal>
