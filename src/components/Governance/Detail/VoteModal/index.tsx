@@ -90,7 +90,7 @@ export default function VoteModal({
         setHash(_hash);
       } else {
         setAttempting(false);
-        setVoteErrorMessage('Some went wrong');
+        setVoteErrorMessage('Something went wrong');
       }
     } catch (err: any) {
       setAttempting(false);
@@ -190,7 +190,7 @@ export default function VoteModal({
             <ErrorBox>
               <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
               <Text fontWeight={500} fontSize={[16, 14]} color={'red1'} style={{ textAlign: 'center', width: '85%' }}>
-                Some went Wrong
+                Something went wrong
               </Text>
             </ErrorBox>
             <Button variant="primary" onClick={wrappedOndismiss}>
