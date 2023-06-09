@@ -23,7 +23,7 @@ export type UsePoolsHookType = {
 
 export const usePoolsHook: UsePoolsHookType = {
   [ChainId.FUJI]: usePoolsViaSubgraph,
-  [ChainId.AVALANCHE]: usePoolsViaContract, //TODO:
+  [ChainId.AVALANCHE]: usePoolsViaSubgraph,
   [ChainId.WAGMI]: useDummyPools,
   [ChainId.COSTON]: useDummyPools,
   [ChainId.SONGBIRD]: useDummyPools,
