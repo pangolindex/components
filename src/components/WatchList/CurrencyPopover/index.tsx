@@ -70,14 +70,14 @@ const CurrencyPopover: React.FC<Props> = ({
   );
 
   const Row = useCallback(
-    ({ data, index }: { data: CoingeckoWatchListToken[]; index: number }) => {
+    ({ data, index, style }: { data: CoingeckoWatchListToken[]; index: number; style: any }) => {
       const item: CoingeckoWatchListToken = data?.[index];
       const isSelected = allWatchlistCurrencies.find(({ id }) => id === item?.id) ? true : false;
 
       return (
         <CurrencyRow
           key={item?.id}
-          style={{}}
+          style={style}
           currency={item}
           isSelected={isSelected}
           onSelect={(address) => {
