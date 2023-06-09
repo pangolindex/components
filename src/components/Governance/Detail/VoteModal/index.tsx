@@ -81,11 +81,7 @@ export default function VoteModal({
       if (!voteCallback) return;
 
       // try delegation and store hash
-      const _hash = await voteCallback(proposalId, support, selectedPosition?.id)?.catch((error) => {
-        setAttempting(false);
-        console.log(error);
-      });
-
+      const _hash = await voteCallback(proposalId, support, selectedPosition?.id);
       if (_hash) {
         setHash(_hash);
       } else {
@@ -190,7 +186,7 @@ export default function VoteModal({
             <ErrorBox>
               <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
               <Text fontWeight={500} fontSize={[16, 14]} color={'red1'} style={{ textAlign: 'center', width: '85%' }}>
-                Something went wrong
+                {voteErrorMessage || 'Something went wrong'}
               </Text>
             </ErrorBox>
             <Button variant="primary" onClick={wrappedOndismiss}>
