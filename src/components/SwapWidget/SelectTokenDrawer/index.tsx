@@ -14,7 +14,7 @@ import { useSelectedListInfo } from 'src/state/plists/hooks';
 import { Field } from 'src/state/pswap/atom';
 import { useAddUserToken } from 'src/state/puser/hooks';
 import { filterTokenOrChain, isAddress } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import { Box, Text, TextInput } from '../../';
 import { useTokenComparator } from '../SearchModal/sorting';
 import TokenListDrawer from '../TokenListDrawer';
@@ -107,7 +107,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     const wrappedCurrency = WAVAX[chainId];
     // for hedera we need to remove HBAR and put WBAR in first position
     if (
-      hederaFn.isHederaChain(chainId) &&
+      Hedera.isHederaChain(chainId) &&
       seletedField === Field.OUTPUT &&
       !deepEqual(otherSelectedCurrency, currency) &&
       otherSelectedCurrency instanceof Token &&

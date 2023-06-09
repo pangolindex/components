@@ -1,7 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
-import React from 'react';
+import { useWeb3React } from '@web3-react/core';
+import React, { useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
@@ -29,6 +30,7 @@ import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
+import { useApplicationState } from 'src/state/papplication/atom';
 import ApplicationUpdater from 'src/state/papplication/updater';
 import { useCoinGeckoTokenData } from 'src/state/pcoingecko/hooks';
 import ListsUpdater from 'src/state/plists/updater';
@@ -63,8 +65,11 @@ import { parseENSAddress } from 'src/utils/parseENSAddress';
 import { splitQuery } from 'src/utils/query';
 import uriToHttp from 'src/utils/uriToHttp';
 import { unwrappedToken, wrappedCurrency, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
+import { network } from './connectors';
+import { NetworkContextName } from './constants';
 import { HasuraContext } from './hooks/hasura';
 import { MixPanelEvents, MixPanelProvider, useMixpanel } from './hooks/mixpanel';
+import { useActiveWeb3React, useEagerConnect, useWalletUpdater } from './hooks/useConnector';
 import i18n, { availableLanguages } from './i18n';
 import { galetoStore } from './state';
 import { PangoChefInfo } from './state/ppangoChef/types';
@@ -103,6 +108,24 @@ export function PangolinProvider({
   theme?: any;
   config?: Config;
 }) {
+  const { active, error, connector } = useWeb3React();
+  const { activate: activeNetwork } = useWeb3React(NetworkContextName);
+
+  const tryToActiveEager = !library || !account;
+  // try to eagerly connect to a wallet, if it exists and has granted access already
+  const triedEager = useEagerConnect(tryToActiveEager);
+
+  // active the network connector only when no error,
+  // and not is active or there is not connector
+  // and tried to connect to previous wallet
+  useEffect(() => {
+    if (triedEager && (!active || !connector) && !error) {
+      activeNetwork(network);
+    }
+  }, [triedEager, connector, active, error, activeNetwork]);
+
+  useWalletUpdater();
+
   const ethersLibrary = library && !library?._isProvider ? new Web3Provider(library) : library;
 
   return (
@@ -140,7 +163,6 @@ export function PangolinProvider({
 }
 
 export * from './constants';
-export { SUPPORTED_WALLETS } from './constants/wallets';
 export { ROUTER_ADDRESS, MINICHEF_ADDRESS } from './constants/address';
 export { TIMEFRAME, SwapTypes } from './constants/swap';
 export * from './connectors';
@@ -150,6 +172,15 @@ export { ApplicationModal } from './state/papplication/atom';
 export * as Tokens from './constants/tokens';
 
 export * from '@gelatonetwork/limit-orders-react';
+
+// wallet misc
+export * from './wallet/classes/injected';
+export * from './wallet/classes/nonInjected';
+export * from './wallet/classes/others';
+export { Wallet as Pangolin_Wallet, WalletEvents, walletEvent } from './wallet/classes/wallet';
+export type { PangolinConnector, activeFunctionType } from './wallet/classes/wallet';
+export * from './wallet';
+
 export type { LimitOrderInfo, MinichefStakingInfo, DoubleSideStakingInfo, DoubleSideStaking, Position, PangoChefInfo };
 
 // components
@@ -198,6 +229,8 @@ export {
   useTokenContract,
   useContract,
   useApproveCallbackHook,
+  useApplicationState,
+  useActiveWeb3React,
 };
 
 // misc

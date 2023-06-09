@@ -1,7 +1,6 @@
-import React from 'react';
 import { hederaFn } from 'src/utils/hedera';
 
-export const HederaProvider = (provider) => {
+export const HederaProvider = (provider: any) => {
   if (provider) {
     const getTransactionReceipt = async (transactionId: string) => {
       try {

@@ -1,528 +1,290 @@
-/* eslint-disable max-lines */
-import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
-import { AbstractConnector } from '@web3-react/abstract-connector';
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { CHAINS, ChainId } from '@pangolindex/sdk';
+import { UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector';
+import { useWeb3React } from '@web3-react/core';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { isMobile } from 'react-device-detect';
+import { Search } from 'react-feather';
 import { useTranslation } from 'react-i18next';
-import { Button } from 'src/components/Button';
-import { avalancheCore, bitKeep, gnosisSafe, hashConnect, injected, talisman, xDefi } from 'src/connectors';
-import { IS_IN_IFRAME } from 'src/constants';
-import { AVALANCHE_CHAIN_PARAMS, SUPPORTED_WALLETS, WalletInfo } from 'src/constants/wallets';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-// import { AppState, useSelector } from 'src/state';
-import { Box, Modal, ToggleButtons } from '../../';
-import Option from './Option';
-import PendingView from './PendingView';
+import { useMedia } from 'react-use';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { ThemeContext } from 'styled-components';
+import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
+import { usePangolinWeb3 } from 'src/hooks';
+import useDebounce from 'src/hooks/useDebounce';
+import { useApplicationState } from 'src/state/papplication/atom';
+import { useUserAtom } from 'src/state/puser/atom';
+import { MEDIA_WIDTHS } from 'src/theme';
+import { wait } from 'src/utils/retry';
+import { changeNetwork, getWalletKey } from 'src/utils/wallet';
+import { SUPPORTED_CHAINS, SUPPORTED_WALLETS } from 'src/wallet';
+import { Wallet } from 'src/wallet/classes/wallet';
+import { NETWORK_TYPE } from '../NetworkSelection/types';
+import WalletView from './WalletView';
 import {
-  CloseButton,
-  ContentWrapper,
-  HeaderRow,
-  HoverText,
-  ModalWrapper,
-  OptionGrid,
-  UpperSection,
+  Bookmark,
+  ChainButton,
+  ChainFrame,
+  GreenCircle,
+  Header,
+  Inputs,
+  Separator,
+  StyledLogo,
+  WalletButton,
+  WalletFrame,
   Wrapper,
-} from './styles';
+} from './styleds';
 import { WalletModalProps } from './types';
 
-enum CHAIN_TYPE {
-  EVM_CHAINS = 'EVM CHAINS',
-  NON_EVM_CHAINS = 'NON-EVM CHAINS',
-}
-
-const WALLET_VIEWS = {
-  OPTIONS: 'options',
-  OPTIONS_SECONDARY: 'options_secondary',
-  ACCOUNT: 'account',
-  PENDING: 'pending',
-};
-
-const getConnectorKey = (connector: AbstractConnector) =>
-  Object.keys(SUPPORTED_WALLETS).find((key) => SUPPORTED_WALLETS[key].connector === connector) ?? null;
-
-const WalletModal: React.FC<WalletModalProps> = ({
+export default function WalletModal({
   open,
   closeModal,
-  background,
-  shouldShowBackButton,
   onWalletConnect,
-  onClickBack,
-}) => {
-  // important that these are destructed from the account-specific web3-react context
-  const { connector, activate, error: web3Error } = useWeb3React();
-  const { t } = useTranslation();
-  const [walletType, setWalletType] = useState(CHAIN_TYPE.EVM_CHAINS as string);
+  supportedWallets,
+  supportedChains,
+  initialChainId,
+}: WalletModalProps) {
+  const { chainId } = usePangolinWeb3();
 
-  const [walletView, setWalletView] = useState('');
+  const [mainnet, setMainnet] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>();
-  const [selectedOption, setSelectedOption] = useState<WalletInfo | undefined>();
+  const [selectedChainId, setSelectedChainId] = useState(
+    chainId ? chainId : mainnet ? ChainId.AVALANCHE : ChainId.FUJI,
+  );
+  const [pendingWallet, setPendingWallet] = useState<string | null>(null);
+  const [pendingError, setPendingError] = useState<boolean>(false);
 
-  const [pendingError, setPendingError] = useState<boolean>();
+  const { activate, deactivate, connector } = useWeb3React();
 
-  const [triedSafe, setTriedSafe] = useState<boolean>(!IS_IN_IFRAME);
-
-  // const availableHashpack = useSelector((state: AppState) => state?.papplication?.isAvailableHashpack);
-
-  const walletModalOpen = open;
-
-  const walletOptions = useMemo(() => {
-    if (walletType === CHAIN_TYPE.EVM_CHAINS) {
-      return Object.keys(SUPPORTED_WALLETS)
-        .filter((key) => SUPPORTED_WALLETS[key].isEVM)
-        .reduce((obj, key) => {
-          obj[key] = SUPPORTED_WALLETS[key];
-          return obj;
-        }, {});
-    } else {
-      return Object.keys(SUPPORTED_WALLETS)
-        .filter((key) => !SUPPORTED_WALLETS[key].isEVM)
-        .reduce((obj, key) => {
-          obj[key] = SUPPORTED_WALLETS[key];
-          return obj;
-        }, {});
-    }
-  }, [walletType]);
-
-  const addAvalancheNetwork = useCallback(() => {
-    connector?.getProvider().then((provider) => {
-      provider
-        ?.request({
-          method: 'wallet_addEthereumChain',
-          params: [AVALANCHE_CHAIN_PARAMS],
-        })
-        .then(() => {
-          onWalletConnect(getConnectorKey(connector));
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-    });
-  }, [connector]);
-
-  // always reset to account view
+  // this useEffect only run when we set initialChainId
+  // as of now initialChainId will be set when user comes from NetworkSelection modal to WalletModal
   useEffect(() => {
-    const name = Object.keys(SUPPORTED_WALLETS).find((key) => SUPPORTED_WALLETS[key].connector === connector);
-    if (name) {
-      const activeOption = SUPPORTED_WALLETS[name];
+    if (initialChainId) {
+      // if network selection change chain it will update selectedChain
+      setSelectedChainId(initialChainId);
 
-      if (activeOption && !activeOption?.isEVM) {
-        setWalletType(CHAIN_TYPE.NON_EVM_CHAINS);
-      } else {
-        setWalletType(CHAIN_TYPE.EVM_CHAINS);
-      }
+      // here we can select networktype based on chain selected from Networkselection
+      setMainnet(CHAINS[initialChainId]?.mainnet);
+
+      setPendingWallet(null);
     }
+  }, [initialChainId]);
 
-    if (walletModalOpen) {
-      setPendingError(false);
-      setWalletView('');
-    }
-  }, [walletModalOpen]);
+  const { setWallets } = useApplicationState();
+  const { userState } = useUserAtom();
 
-  const mixpanel = useMixpanel();
+  const { t } = useTranslation();
+  const theme = useContext(ThemeContext);
 
-  const isMetamask = window.ethereum && window.ethereum.isMetaMask;
-  const isTalisman = window.ethereum && window.ethereum.isTalisman;
-  const isRabby = window.ethereum && window.ethereum.isRabby;
-  const isCbWalletDappBrowser = window?.ethereum?.isCoinbaseWallet;
-  const isWalletlink = !!window?.WalletLinkProvider || !!window?.walletLinkExtension;
-  const isCbWallet = isCbWalletDappBrowser || isWalletlink;
-  const isAvalancheCore = window.avalanche && window.avalanche.isAvalanche;
-  const isBitKeep = window.isBitKeep && !!window.bitkeep.ethereum;
+  const isMobile = useMedia(`(max-width: ${MEDIA_WIDTHS.upToSmall}px)`);
 
-  const tryActivation = async (
-    activationConnector: AbstractConnector | SafeAppConnector | undefined,
-    option: WalletInfo | undefined,
-  ) => {
-    const name = Object.keys(walletOptions).find((key) => walletOptions[key].connector === activationConnector);
+  function handleSearch(value: any) {
+    setSearchQuery(value);
+  }
 
-    // log selected wallet
-    setPendingWallet(connector); // set wallet for pending view
-    setSelectedOption(option);
-    setWalletView(WALLET_VIEWS.PENDING);
-
-    // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
+  function handleChainType(value: NETWORK_TYPE) {
+    setMainnet(value === NETWORK_TYPE.MAINNET);
+    setPendingWallet(null);
+    // when we switch the network type if already chainId selected it will be same
+    const finalChainId = initialChainId ?? chainId;
     if (
-      activationConnector instanceof WalletConnectConnector &&
-      activationConnector.walletConnectProvider?.connector?.uri
+      finalChainId &&
+      ((value === NETWORK_TYPE.MAINNET && CHAINS[finalChainId]?.mainnet) ||
+        (value === NETWORK_TYPE.TESTNET && !CHAINS[finalChainId]?.mainnet))
     ) {
-      activationConnector.walletConnectProvider = undefined;
+      setSelectedChainId(finalChainId);
+    } else {
+      setSelectedChainId(value === NETWORK_TYPE.MAINNET ? ChainId.AVALANCHE : ChainId.FUJI);
+    }
+  }
+
+  const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 250);
+
+  const chains = useMemo(() => {
+    const _chains = supportedChains ?? SUPPORTED_CHAINS;
+    return _chains
+      .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
+      .filter(
+        (chain) =>
+          chain.mainnet === mainnet &&
+          (chain.name.toLowerCase().includes(debouncedSearchQuery) ||
+            chain.symbol.toLowerCase().includes(debouncedSearchQuery)),
+      );
+  }, [supportedChains, mainnet, debouncedSearchQuery]);
+
+  const wallets = useMemo(() => {
+    const memoWallets = supportedWallets ?? SUPPORTED_WALLETS;
+    // if you use custom wallets we need to populate the app state with these
+    // wallets so we can access it in another part of the app
+    setWallets(memoWallets);
+    return memoWallets;
+  }, [supportedWallets]);
+
+  const filteredWallets = useMemo(() => {
+    const selectedChain = CHAINS[selectedChainId];
+    // return  an array with filtered wallets
+    // if selected chain by user supports this wallet (have same network type)
+    // and name of wallet includes the search name
+    // and should show the wallet
+    // case exist array of supported chain id in wallet  check this too
+    return Object.values(wallets)
+      .filter((wallet) => {
+        // if selected chain by user supports this wallet and
+        const bool = Boolean(wallet.supportedChains.includes(selectedChain.network_type) && wallet.showWallet());
+
+        if (!wallet.supportedChainsId) {
+          return bool;
+        }
+        return bool && wallet.supportedChainsId.includes(selectedChain.chain_id ?? NaN);
+      })
+      .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
+  }, [wallets, selectedChainId, debouncedSearchQuery]);
+
+  function onBack() {
+    setPendingWallet(null);
+  }
+
+  function onWalletClick(wallet: Wallet) {
+    const walletKey = getWalletKey(wallet, wallets);
+    setPendingError(false);
+    setPendingWallet(walletKey); // set for wallet view
+  }
+
+  async function onConnect(wallet: Wallet) {
+    setPendingError(false);
+
+    async function onError(error: any) {
+      setPendingError(true);
+      console.error(error);
+      if (
+        error instanceof UserRejectedRequestError ||
+        error?.code === 4001 ||
+        error?.message?.includes('The user rejected the request')
+      ) {
+        const previousWallet = userState.wallet ? wallets[userState.wallet] : undefined;
+        if (previousWallet && previousWallet !== wallet) {
+          // this is just a fallback when user rejects the request
+          // because the @web3-react remove the chainid account and libarary from state
+          // and this just to reconnect the previus wallet again
+          previousWallet?.tryActivation({ activate });
+        }
+      }
     }
 
-    if (!triedSafe && activationConnector instanceof SafeAppConnector) {
-      activationConnector.isSafeApp().then((loadedInSafe) => {
-        if (loadedInSafe) {
-          activate(activationConnector, undefined, true)
-            .then(() => {
-              onWalletConnect(getConnectorKey(activationConnector));
-              mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
-                wallet_name: option?.name?.toLowerCase() ?? name?.toLowerCase(),
-                source: 'pangolin-components',
-              });
-            })
-            .catch(() => {
-              setTriedSafe(true);
-            });
-        }
-        setTriedSafe(true);
-      });
-    } else if (activationConnector) {
-      activate(activationConnector, undefined, true)
-        .then(() => {
-          if (isCbWallet) {
-            addAvalancheNetwork();
-          }
-          onWalletConnect(getConnectorKey(activationConnector));
-          mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
-            wallet_name: option?.name ?? name?.toLowerCase(),
-          });
-        })
-        .catch((error) => {
-          if (error instanceof UnsupportedChainIdError) {
-            activate(activationConnector); // a little janky...can't use setError because the connector isn't set
-          } else {
-            setPendingError(true);
-          }
+    function onSuccess() {
+      const walletKey = getWalletKey(wallet, wallets);
+      localStorage.setItem('lastConnectedChainId', selectedChainId.toString());
+
+      setPendingError(false);
+      setPendingWallet(null);
+
+      onWalletConnect(walletKey);
+      closeModal();
+    }
+
+    if (wallet.installed()) {
+      //if wallet is active deactivate it
+      if (connector) {
+        deactivate();
+        await wait(500);
+      }
+
+      await wallet.tryActivation({ activate, onSuccess, onError, chainId: selectedChainId });
+
+      const chain = CHAINS[selectedChainId];
+      if (wallet.isActive) {
+        await changeNetwork({
+          connector: wallet.connector,
+          wallets: Object.values(wallets),
+          chain,
+          activate,
+          deactivate,
         });
+      }
     }
-  };
-
-  function getActiveOption(): WalletInfo | undefined {
-    if (connector === injected) {
-      if (isRabby) {
-        return SUPPORTED_WALLETS.RABBY;
-      } else if (isTalisman) {
-        return SUPPORTED_WALLETS.TALISMAN;
-      } else if (isBitKeep) {
-        return SUPPORTED_WALLETS.BITKEEP;
-      } else if (isMetamask) {
-        return SUPPORTED_WALLETS.METAMASK;
-      } else if (isAvalancheCore) {
-        return SUPPORTED_WALLETS.AVALANCHECORE;
-      }
-      return SUPPORTED_WALLETS.INJECTED;
-    }
-    const name = Object.keys(walletOptions).find((key) => walletOptions[key].connector === connector);
-    if (name) {
-      return walletOptions[name];
-    }
-    return undefined;
-  }
-
-  //get wallets user can switch too, depending on device/browser
-  function getOptions() {
-    const isXDEFI = window.ethereum && window.ethereum.isXDEFI;
-    const activeOption = getActiveOption();
-
-    return Object.keys(walletOptions).map((key) => {
-      const option = walletOptions[key];
-      // check for mobile options
-      if (isMobile) {
-        if (!window.web3 && !window.ethereum && option.mobile) {
-          return (
-            <Option
-              onClick={() => {
-                option.connector !== connector && !option.href && tryActivation(option.connector, option);
-              }}
-              id={`connect-${key}`}
-              key={key}
-              active={activeOption && option.name === activeOption.name}
-              color={option.color}
-              link={option.href}
-              header={option.name}
-              subheader={null}
-              icon={option.iconName}
-            />
-          );
-        }
-        return null;
-      }
-
-      // overwrite injected when needed
-      if (option.connector === injected) {
-        if (option.name === 'Rabby Wallet') {
-          if (!isRabby) {
-            return (
-              <Option
-                id={`connect-${key}`}
-                key={key}
-                color={'#7a7cff'}
-                header={'Install Rabby Wallet'}
-                subheader={null}
-                link={'https://rabby.io/'}
-                icon={option.iconName}
-              />
-            );
-          }
-        }
-
-        // don't show injected if there's no injected provider
-        if (!(window.web3 || window.ethereum)) {
-          if (option.name === 'MetaMask') {
-            return (
-              <Option
-                id={`connect-${key}`}
-                key={key}
-                color={'#E8831D'}
-                header={'Install Metamask'}
-                subheader={null}
-                link={'https://metamask.io/'}
-                icon={option.iconName}
-              />
-            );
-          } else {
-            return null; //dont want to return install twice
-          }
-        }
-        // don't return metamask if injected provider isn't metamask
-        else if (option.name === 'MetaMask' && !isMetamask) {
-          return null;
-        }
-
-        // likewise for generic
-        else if (option.name === 'Injected' && isMetamask) {
-          return null;
-        }
-      }
-
-      // overwrite injected when needed
-      else if (option.connector === bitKeep) {
-        if (!isBitKeep) {
-          return (
-            <Option
-              id={`connect-${key}`}
-              key={key}
-              color={'#7a7cff'}
-              header={'Install BitKeep'}
-              subheader={null}
-              link={'https://bitkeep.com/'}
-              icon={option.iconName}
-            />
-          );
-        }
-      } else if (option.connector === xDefi) {
-        // don't show injected if there's no injected provider
-
-        if (!window.xfi) {
-          if (option.name === 'XDEFI Wallet') {
-            return (
-              <Option
-                id={`connect-${key}`}
-                key={key}
-                color={'#315CF5'}
-                header={'Install XDEFI Wallet'}
-                subheader={null}
-                link={'https://www.xdefi.io/'}
-                icon={option.iconName}
-              />
-            );
-          } else {
-            return null; //dont want to return install twice
-          }
-        }
-
-        // likewise for generic
-        else if (option.name === 'Injected' && (isMetamask || isXDEFI)) {
-          return null;
-        }
-      } else if (option.connector === talisman) {
-        // provide talisman install link if not installed
-        if (!window.talismanEth) {
-          return (
-            <Option
-              id={`connect-${key}`}
-              key={key}
-              color={option.color}
-              header={'Install Talisman'}
-              subheader={null}
-              link={'https://talisman.xyz'}
-              icon={option.iconName}
-            />
-          );
-        }
-      } else if (option.connector === hashConnect) {
-        // provide hashpack install link if not installed
-        // TODO: for now hide "Install Hashpack" option and always allow user to connect to
-        // "Hashpack". this is workaround for users who has hashpack install but couldn't connect
-        // to install as they are always seeing "Install Hashpack" button
-        // if (!availableHashpack) {
-        //   return (
-        //     <Option
-        //       id={`connect-${key}`}
-        //       key={key}
-        //       color={option.color}
-        //       header={'Install Hashpack'}
-        //       subheader={null}
-        //       link={'https://www.hashpack.app/download'}
-        //       icon={option.iconName}
-        //     />
-        //   );
-        // }
-      }
-
-      // overwrite avalanche when needed
-      else if (option.connector === avalancheCore) {
-        // don't show avalanche if there's no avalanche provider
-
-        if (!window.avalanche) {
-          if (option.name === 'Avalanche Core Wallet') {
-            return (
-              <Option
-                id={`connect-${key}`}
-                key={key}
-                color={'#E8831D'}
-                header={'Install Avalanche Core Wallet'}
-                subheader={null}
-                link={'https://chrome.google.com/webstore/detail/core/agoakfejjabomempkjlepdflaleeobhb'}
-                icon={option.iconName}
-              />
-            );
-          } else {
-            return null; //dont want to return install twice
-          }
-        }
-      }
-
-      // Not show Gnosis Safe option without Gnosis Interface
-      if (option.connector === gnosisSafe && !IS_IN_IFRAME) {
-        return null;
-      }
-
-      // return rest of options
-      return (
-        !isMobile &&
-        !option.mobileOnly && (
-          <Option
-            id={`connect-${key}`}
-            onClick={() => {
-              option.connector !== connector && !option.href && tryActivation(option.connector, option);
-            }}
-            key={key}
-            active={activeOption && option.name === activeOption.name}
-            color={option.color}
-            link={option.href}
-            header={option.name}
-            subheader={null} //use option.descriptio to bring back multi-line
-            icon={option.iconName}
-          />
-        )
-      );
-    });
-  }
-
-  const renderHeader = () => {
-    if (web3Error) {
-      return (
-        <HeaderRow>{web3Error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}</HeaderRow>
-      );
-    } else if (walletView === WALLET_VIEWS.PENDING || shouldShowBackButton) {
-      return (
-        <HeaderRow>
-          <HoverText
-            onClick={() => {
-              if (onClickBack && shouldShowBackButton) {
-                onClickBack();
-              } else {
-                setPendingError(false);
-                setWalletView('');
-              }
-            }}
-          >
-            {t('common.back')}
-          </HoverText>
-        </HeaderRow>
-      );
-    } else {
-      return (
-        <HeaderRow>
-          <HoverText>{t('walletModal.connectToWallet')}</HoverText>
-        </HeaderRow>
-      );
-    }
-  };
-
-  const renderContent = () => {
-    const isXDEFI = window.xfi && window.xfi.ethereum && window.xfi.ethereum.isXDEFI;
-    const supportsAddNetwork = isMetamask || isCbWallet || isXDEFI || isTalisman || isBitKeep;
-
-    if (web3Error) {
-      return (
-        <ContentWrapper>
-          {web3Error instanceof UnsupportedChainIdError ? (
-            <>
-              <h5> {t('walletModal.pleaseConnectAvalanche')}</h5>
-              {supportsAddNetwork && (
-                <Button variant="primary" onClick={addAvalancheNetwork}>
-                  {t('walletModal.switchAvalanche')}
-                </Button>
-              )}
-            </>
-          ) : (
-            `${t('walletModal.errorConnectingRefresh')}`
-          )}
-        </ContentWrapper>
-      );
-    } else {
-      return (
-        <ContentWrapper>
-          {walletView === WALLET_VIEWS.PENDING ? (
-            <PendingView
-              option={selectedOption}
-              connector={pendingWallet}
-              error={pendingError}
-              setPendingError={setPendingError}
-              tryActivation={tryActivation}
-            />
-          ) : (
-            <>
-              <Box mt="5px" width="100%" mb="5px">
-                <ToggleButtons
-                  options={[CHAIN_TYPE.EVM_CHAINS, CHAIN_TYPE.NON_EVM_CHAINS]}
-                  value={walletType}
-                  onChange={(value) => {
-                    setWalletType(value);
-                  }}
-                />
-              </Box>
-              <Box height="300px">
-                <Scrollbars>
-                  <OptionGrid>{getOptions()}</OptionGrid>
-                </Scrollbars>
-              </Box>
-            </>
-          )}
-        </ContentWrapper>
-      );
-    }
-  };
-
-  function getModalContent() {
-    return (
-      <UpperSection>
-        <ModalWrapper>
-          {renderHeader()}
-
-          <CloseButton onClick={closeModal} />
-        </ModalWrapper>
-
-        {renderContent()}
-      </UpperSection>
-    );
   }
 
   return (
-    <Modal
-      isOpen={walletModalOpen}
-      onDismiss={() => {
-        closeModal();
-      }}
-    >
-      <Wrapper background={background}>{getModalContent()}</Wrapper>
+    <Modal isOpen={open} onDismiss={closeModal} closeOnClickOutside={false}>
+      <Wrapper>
+        <Header>
+          <Text color="text1" fontSize="24px" fontWeight={700}>
+            {t('walletModal.connectToWallet')}
+          </Text>
+          <CloseButton onClick={closeModal} size="24px" />
+        </Header>
+        <Inputs>
+          <TextInput
+            addonAfter={<Search color={theme.text1} size={28} />}
+            onChange={handleSearch}
+            value={searchQuery}
+            placeholder={t('walletModal.trySearchChains')}
+          />
+          <ToggleButtons
+            options={[NETWORK_TYPE.MAINNET, NETWORK_TYPE.TESTNET]}
+            value={mainnet === true ? NETWORK_TYPE.MAINNET : NETWORK_TYPE.TESTNET}
+            onChange={handleChainType}
+          />
+        </Inputs>
+        <Box display="flex" flexGrow={1}>
+          <AutoSizer disableWidth style={{ height: 'max-content' }}>
+            {({ height }) => (
+              <Scrollbars autoHeight autoHeightMin={48} autoHeightMax={isMobile ? height : 358}>
+                <ChainFrame>
+                  {chains.map((chain, index) => (
+                    <ChainButton
+                      variant="plain"
+                      width="68px"
+                      onClick={() => {
+                        setSelectedChainId(chain.chain_id ?? ChainId.AVALANCHE);
+                        setPendingWallet(null);
+                      }}
+                      key={index}
+                      id={`${chain.chain_id}`}
+                    >
+                      {selectedChainId === chain.chain_id ? <Bookmark /> : null}
+                      <StyledLogo title={chain.name} srcs={[chain.logo ?? '']} alt={`${chain.name} Logo`} />
+                    </ChainButton>
+                  ))}
+                </ChainFrame>
+              </Scrollbars>
+            )}
+          </AutoSizer>
+          <Separator />
+          <Box flexGrow={1} overflowX="hidden">
+            {pendingWallet ? (
+              <WalletView wallet={wallets[pendingWallet]} error={pendingError} onBack={onBack} onConnect={onConnect} />
+            ) : (
+              <Scrollbars
+                height="100%"
+                renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
+              >
+                {filteredWallets.length === 0 ? (
+                  <Box width="100%">
+                    <Text color="text1" textAlign="center">
+                      {t('walletModal.notFound')}
+                    </Text>
+                  </Box>
+                ) : (
+                  <WalletFrame>
+                    {filteredWallets.map((wallet, index) => {
+                      return (
+                        <WalletButton variant="plain" onClick={() => onWalletClick(wallet)} key={index}>
+                          <StyledLogo title={wallet.name} srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
+                          <Text color="text1" fontSize="12px" fontWeight={600}>
+                            {wallet.name}
+                          </Text>
+                          {wallet.isActive ? <GreenCircle /> : null}
+                        </WalletButton>
+                      );
+                    })}
+                  </WalletFrame>
+                )}
+              </Scrollbars>
+            )}
+          </Box>
+        </Box>
+      </Wrapper>
     </Modal>
   );
-};
-export default WalletModal;
-/* eslint-enable max-lines */
+}

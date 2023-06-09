@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { HeaderFrame, MenuLink, Menuwrapper } from './styled';
-import { useWeb3React } from '@web3-react/core';
 import {
   Button,
   WalletModal,
@@ -9,16 +8,20 @@ import {
   TokenInfoModal,
   Tokens,
   shortenAddressMapping,
+  useActiveWeb3React,
 } from '@components/index';
 import { useChainId } from '@components/hooks/index';
 import Logo from '../Logo';
-import { CHAINS, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, TokenAmount, Chain } from '@pangolindex/sdk';
 
 export default function Header() {
-  const context = useWeb3React();
+  const context = useActiveWeb3React();
   const { account } = context;
   const chainId = useChainId();
   const [open, setOpen] = useState<boolean>(false);
+
+  const [selectedChain, setSelectedChain] = useState<Chain | undefined>(undefined);
+
   const [openNetworkSelection, setOpenNetworkSelection] = useState<boolean>(false);
   const [showTokenInfoModal, setShowTokenInfoModal] = useState<boolean>(false);
   const shortenAddress = shortenAddressMapping[chainId];
@@ -33,9 +36,18 @@ export default function Header() {
     setShowTokenInfoModal((prev) => !prev);
   };
 
-  function closeWalletModal() {
+  function openWalletModal() {
     setOpen(true);
   }
+
+  const handleSelectChain = useCallback(
+    (chain: Chain) => {
+      setOpenNetworkSelection(false);
+      setSelectedChain(chain);
+      setOpen(true);
+    },
+    [setOpenNetworkSelection, setSelectedChain, setOpen],
+  );
 
   return (
     <HeaderFrame>
@@ -69,8 +81,8 @@ export default function Header() {
           <Button variant="primary" onClick={closeNetworkSelection} padding="10px" height="40px">
             {chain.name}
           </Button>
-          <Button variant="primary" onClick={closeWalletModal} width="200px" height="40px">
-            {account ? `Connected ${shortenAddress(account)}` : 'Connect Wallet'}
+          <Button variant="primary" onClick={openWalletModal} width="200px" height="40px">
+            {account ? `Connected ${shortenAddress(account, chainId)}` : 'Connect Wallet'}
           </Button>
         </Box>
       </Box>
@@ -82,12 +94,14 @@ export default function Header() {
         onWalletConnect={() => {
           setOpen(false);
         }}
+        initialChainId={selectedChain?.chain_id}
       />
       <NetworkSelection
         open={openNetworkSelection}
         closeModal={() => {
           setOpenNetworkSelection(false);
         }}
+        onToogleWalletModal={handleSelectChain}
       />
       <TokenInfoModal
         open={showTokenInfoModal}

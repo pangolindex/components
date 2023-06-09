@@ -1,6 +1,6 @@
 import { ChainData, Squid } from '@0xsquid/sdk';
 import LIFI from '@lifi/sdk';
-import { ChainType, EVMChain } from '@lifi/types';
+import { EVMChain } from '@lifi/types';
 import { BridgeChain, LIFI as LIFIBridge, NetworkType, RANGO, SQUID } from '@pangolindex/sdk';
 import {
   BlockchainMeta as RangoChainMeta,
@@ -24,16 +24,16 @@ export function useLiFiSwapChains() {
         name: chain?.name,
         chain_id: chain?.id,
         mainnet: chain?.mainnet,
-        evm: chain?.chainType === ChainType.EVM,
         pangolin_is_live: false,
         tracked_by_debank: false,
         supported_by_gelato: false,
+        supported_by_bridge: chain?.mainnet, // only if chain is mainnet
         supported_by_twap: false,
         rpc_uri: chain?.metamask?.rpcUrls[0],
         symbol: chain?.metamask?.nativeCurrency?.symbol,
         nativeCurrency: chain?.metamask?.nativeCurrency,
         logo: chain?.logoURI,
-      };
+      } as BridgeChain;
     });
     return formattedChains;
   });
@@ -61,16 +61,16 @@ export function useSquidChains() {
         name: chain?.chainName.charAt(0).toLocaleUpperCase() + chain?.chainName.slice(1),
         chain_id: chain?.chainId,
         mainnet: true,
-        evm: chain?.chainType === 'evm',
         pangolin_is_live: false,
         tracked_by_debank: false,
         supported_by_gelato: false,
+        supported_by_bridge: true,
         supported_by_twap: false,
         rpc_uri: chain.rpc,
         symbol: chain?.nativeCurrency?.symbol,
         nativeCurrency: chain?.nativeCurrency,
         logo: chain?.nativeCurrency?.icon,
-      };
+      } as BridgeChain;
     });
     return formattedChains.filter((chain) => chain !== undefined) as BridgeChain[];
   });
@@ -97,12 +97,13 @@ export function useRangoChains() {
         pangolin_is_live: false,
         tracked_by_debank: false,
         supported_by_gelato: false,
+        supported_by_bridge: true,
         supported_by_twap: false,
         rpc_uri: chain.info.rpcUrls[0],
         symbol: chain.info.nativeCurrency.symbol,
         nativeCurrency: chain.info.nativeCurrency,
         logo: chain.logo,
-      };
+      } as BridgeChain;
     });
     return formattedChains;
   });

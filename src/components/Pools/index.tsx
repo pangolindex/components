@@ -6,7 +6,6 @@ import { usePangoChefInfosHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { useMinichefStakingInfosHook } from 'src/state/pstake/hooks';
 import { MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
-import { isEvmChain } from 'src/utils';
 import { Box } from '../Box';
 import Pool from './Pool';
 import Sidebar, { MenuType } from './Sidebar';
@@ -125,25 +124,26 @@ const PoolsUI = () => {
             }}
           />
 
-          {(activeMenu === MenuType.allFarm || activeMenu === MenuType.yourFarm || activeMenu === MenuType.superFarm) &&
-            isEvmChain(chainId) && (
-              <Pool
-                type={
-                  activeMenu === MenuType.allFarm
-                    ? PoolType.all
-                    : activeMenu === MenuType.superFarm
-                    ? PoolType.superFarms
-                    : PoolType.own
-                }
-                version={version}
-                stakingInfoV1={[]}
-                miniChefStakingInfo={miniChefStakingInfos}
-                pangoChefStakingInfo={pangoChefStakingInfos}
-                activeMenu={activeMenu}
-                setMenu={handleSetMenu}
-                menuItems={menuItems}
-              />
-            )}
+          {(activeMenu === MenuType.allFarm ||
+            activeMenu === MenuType.yourFarm ||
+            activeMenu === MenuType.superFarm) && (
+            <Pool
+              type={
+                activeMenu === MenuType.allFarm
+                  ? PoolType.all
+                  : activeMenu === MenuType.superFarm
+                  ? PoolType.superFarms
+                  : PoolType.own
+              }
+              version={version}
+              stakingInfoV1={[]}
+              miniChefStakingInfo={miniChefStakingInfos}
+              pangoChefStakingInfo={pangoChefStakingInfos}
+              activeMenu={activeMenu}
+              setMenu={handleSetMenu}
+              menuItems={menuItems}
+            />
+          )}
           {activeMenu === MenuType.yourPool && (
             <Wallet activeMenu={activeMenu} setMenu={handleSetMenu} menuItems={menuItems} />
           )}

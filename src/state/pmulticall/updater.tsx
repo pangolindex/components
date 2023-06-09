@@ -1,7 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { useEffect, useMemo, useRef } from 'react';
 import { useChainId } from 'src/hooks';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import { useMulticallContract } from '../../hooks/useContract';
 import useDebounce from '../../hooks/useDebounce';
 import chunkArray from '../../utils/chunkArray';
@@ -138,7 +138,7 @@ export default function Updater(): null {
     if (outdatedCallKeys.length === 0) return;
     const calls = outdatedCallKeys.map((key) => parseCallKey(key));
 
-    const chunkSize = hederaFn.isHederaChain(chainId) ? HEDERA_CALL_CHUNK_SIZE : CALL_CHUNK_SIZE;
+    const chunkSize = Hedera.isHederaChain(chainId) ? HEDERA_CALL_CHUNK_SIZE : CALL_CHUNK_SIZE;
 
     const chunkedCalls = chunkArray(calls, chunkSize);
 
