@@ -281,7 +281,8 @@
     "tryAgain": "Essayer à nouveau",
     "pleaseInstall": "Se il vous plaît installer.",
     "trySearchChains": "Essayez de rechercher des chaînes",
-    "notFound": "Aucun portefeuille trouvé."
+    "noWalletFound": "Aucun portefeuille trouvé.",
+    "noChainsFound": "Aucune chaîne trouvée."
   },
   "web3ReactManager": {
     "unknownError": "Oups ! Une erreur inconnue s'est produite. Veuillez rafraîchir la page ou la visiter à partir d'un autre navigateur ou appareil."

@@ -281,7 +281,8 @@
     "tryAgain": "Versuchen Sie es erneut",
     "pleaseInstall": "Bitte installiere.",
     "trySearchChains": "Versuchen Sie nach Ketten zu suchen",
-    "notFound": "Keine Wallets gefunden."
+    "noWalletFound": "Keine Wallets gefunden.",
+    "noChainsFound": "Keine Ketten gefunden."
   },
   "web3ReactManager": {
     "unknownError": "Ups! Ein unbekannter Fehler ist aufgetreten. Bitte aktualisiere die Seite, oder ruf die Seite von einem anderen Browser oder Gerät auf."

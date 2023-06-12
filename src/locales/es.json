@@ -281,7 +281,8 @@
     "tryAgain": "Intentar otra vez",
     "pleaseInstall": "Por favor instale.",
     "trySearchChains": "Intenta buscar cadenas",
-    "notFound": "No se encontraron carteras."
+    "noWalletFound": "No se encontraron carteras.",
+    "noChainsFound": "No se encontraron cadenas."
   },
   "web3ReactManager": {
     "unknownError": "Oops! Ha ocurrido un error desconocido. Por favor, recarga la página, o utilice otro navegador o dispositivo."

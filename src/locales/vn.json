@@ -281,7 +281,8 @@
     "tryAgain": "Thử lại",
     "pleaseInstall": "Xin vui lòng cài đặt.",
     "trySearchChains": "Hãy thử tìm kiếm chuỗi",
-    "notFound": "Không tìm thấy ví."
+    "noWalletFound": "Không tìm thấy ví.",
+    "noChainsFound": "Không tìm thấy chuỗi."
   },
   "web3ReactManager": {
     "unknownError": "Oops! Đã xảy ra lỗi không xác định. Vui lòng làm mới trang hoặc truy cập từ trình duyệt hoặc thiết bị khác. "

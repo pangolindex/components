@@ -226,64 +226,75 @@ export default function WalletModal({
             onChange={handleChainType}
           />
         </Inputs>
-        <Box display="flex" flexGrow={1}>
-          <AutoSizer disableWidth style={{ height: 'max-content' }}>
-            {({ height }) => (
-              <Scrollbars autoHeight autoHeightMin={48} autoHeightMax={isMobile ? height : 358}>
-                <ChainFrame>
-                  {chains.map((chain, index) => (
-                    <ChainButton
-                      variant="plain"
-                      width="68px"
-                      onClick={() => {
-                        setSelectedChainId(chain.chain_id ?? ChainId.AVALANCHE);
-                        setPendingWallet(null);
-                      }}
-                      key={index}
-                      id={`${chain.chain_id}`}
-                    >
-                      {selectedChainId === chain.chain_id ? <Bookmark /> : null}
-                      <StyledLogo title={chain.name} srcs={[chain.logo ?? '']} alt={`${chain.name} Logo`} />
-                    </ChainButton>
-                  ))}
-                </ChainFrame>
-              </Scrollbars>
-            )}
-          </AutoSizer>
-          <Separator />
-          <Box flexGrow={1} overflowX="hidden">
-            {pendingWallet ? (
-              <WalletView wallet={wallets[pendingWallet]} error={pendingError} onBack={onBack} onConnect={onConnect} />
-            ) : (
-              <Scrollbars
-                height="100%"
-                renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
-              >
-                {filteredWallets.length === 0 ? (
-                  <Box width="100%">
-                    <Text color="text1" textAlign="center">
-                      {t('walletModal.notFound')}
-                    </Text>
-                  </Box>
-                ) : (
-                  <WalletFrame>
-                    {filteredWallets.map((wallet, index) => {
-                      return (
-                        <WalletButton variant="plain" onClick={() => onWalletClick(wallet)} key={index}>
-                          <StyledLogo title={wallet.name} srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
-                          <Text color="text1" fontSize="12px" fontWeight={600}>
-                            {wallet.name}
-                          </Text>
-                          {wallet.isActive ? <GreenCircle /> : null}
-                        </WalletButton>
-                      );
-                    })}
-                  </WalletFrame>
+        {chains.length === 0 ? (
+          <Text textAlign="center">{t('walletModal.noChainsFound')}</Text>
+        ) : (
+          <>
+            <Box display="flex" flexGrow={1}>
+              <AutoSizer disableWidth style={{ height: 'max-content' }}>
+                {({ height }) => (
+                  <Scrollbars autoHeight autoHeightMin={48} autoHeightMax={isMobile ? height : 358}>
+                    <ChainFrame>
+                      {chains.map((chain, index) => (
+                        <ChainButton
+                          variant="plain"
+                          width="68px"
+                          onClick={() => {
+                            setSelectedChainId(chain.chain_id ?? ChainId.AVALANCHE);
+                            setPendingWallet(null);
+                          }}
+                          key={index}
+                          id={`${chain.chain_id}`}
+                        >
+                          {selectedChainId === chain.chain_id ? <Bookmark /> : null}
+                          <StyledLogo title={chain.name} srcs={[chain.logo ?? '']} alt={`${chain.name} Logo`} />
+                        </ChainButton>
+                      ))}
+                    </ChainFrame>
+                  </Scrollbars>
                 )}
-              </Scrollbars>
-            )}
-          </Box>
-        </Box>
+              </AutoSizer>
+              <Separator />
+              <Box flexGrow={1} overflowX="hidden">
+                {pendingWallet ? (
+                  <WalletView
+                    wallet={wallets[pendingWallet]}
+                    error={pendingError}
+                    onBack={onBack}
+                    onConnect={onConnect}
+                  />
+                ) : (
+                  <Scrollbars
+                    height="100%"
+                    renderView={(props) => <div {...props} style={{ ...props.style, overflowX: 'hidden' }} />}
+                  >
+                    {filteredWallets.length === 0 ? (
+                      <Box width="100%">
+                        <Text color="text1" textAlign="center">
+                          {t('walletModal.noWalletFound')}
+                        </Text>
+                      </Box>
+                    ) : (
+                      <WalletFrame>
+                        {filteredWallets.map((wallet, index) => {
+                          return (
+                            <WalletButton variant="plain" onClick={() => onWalletClick(wallet)} key={index}>
+                              <StyledLogo title={wallet.name} srcs={[wallet.icon]} alt={`${wallet.name} Logo`} />
+                              <Text color="text1" fontSize="12px" fontWeight={600}>
+                                {wallet.name}
+                              </Text>
+                              {wallet.isActive ? <GreenCircle /> : null}
+                            </WalletButton>
+                          );
+                        })}
+                      </WalletFrame>
+                    )}
+                  </Scrollbars>
+                )}
+              </Box>
+            </Box>
+          </>
+        )}
       </Wrapper>
     </Modal>
   );
