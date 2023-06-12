@@ -13,7 +13,7 @@ export type UseGetUserPositionsHookType = {
 
 export const useGetUserPositionsHook: UseGetUserPositionsHookType = {
   [ChainId.FUJI]: useGetUserPositions,
-  [ChainId.AVALANCHE]: useDummyGetUserPositions,
+  [ChainId.AVALANCHE]: useGetUserPositions,
   [ChainId.WAGMI]: useDummyGetUserPositions,
   [ChainId.COSTON]: useDummyGetUserPositions,
   [ChainId.SONGBIRD]: useDummyGetUserPositions,
@@ -48,7 +48,7 @@ export type UseElixirPositionsFromTokenIdsHookType = {
 
 export const useElixirPositionsFromTokenIdsHook: UseElixirPositionsFromTokenIdsHookType = {
   [ChainId.FUJI]: useElixirPositionsFromTokenIds,
-  [ChainId.AVALANCHE]: useDummyElixirPositionsFromTokenIds,
+  [ChainId.AVALANCHE]: useElixirPositionsFromTokenIds,
   [ChainId.WAGMI]: useDummyElixirPositionsFromTokenIds,
   [ChainId.COSTON]: useDummyElixirPositionsFromTokenIds,
   [ChainId.SONGBIRD]: useDummyElixirPositionsFromTokenIds,
