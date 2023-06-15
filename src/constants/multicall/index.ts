@@ -30,6 +30,7 @@ const MULTICALL_NETWORKS: { [chainId in ChainId]: string } = {
   [ChainId.MOONRIVER]: '',
   [ChainId.MOONBEAM]: '',
   [ChainId.OP]: '',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: '',
 };
 
 export { MULTICALL_ABI, MULTICALL_NETWORKS };

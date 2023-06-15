@@ -77,6 +77,10 @@ export const SWAP_DEFAULT_CURRENCY = {
     inputCurrency: 'EVMOS',
     outputCurrency: '',
   },
+  [ChainId.SKALE_BELLATRIX_TESTNET]: {
+    inputCurrency: WAVAX[ChainId.SKALE_BELLATRIX_TESTNET].address,
+    outputCurrency: '',
+  },
 };
 
 // used to construct intermediary pairs for trading
@@ -121,6 +125,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.OP]: [],
   [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
   [ChainId.EVMOS_MAINNET]: [WAVAX[ChainId.EVMOS_MAINNET]],
+  [ChainId.SKALE_BELLATRIX_TESTNET]: [WAVAX[ChainId.SKALE_BELLATRIX_TESTNET]],
 };
 
 export const TIMEFRAME = [
