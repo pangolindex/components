@@ -66,6 +66,21 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     position: derivedPosition,
   } = useDerivedMintInfo(existingPosition);
 
+  const shouldDisableAddLiquidity: boolean = useMemo(() => {
+    // If depositA is not disabled, check if its parsedAmount is greater than 0
+    if (!depositADisabled && parsedAmounts[Field.CURRENCY_A]) {
+      return false;
+    }
+
+    // If depositB is not disabled, check if its parsedAmount is greater than 0
+    if (!depositBDisabled && parsedAmounts[Field.CURRENCY_B]) {
+      return false;
+    }
+
+    // If neither condition above is met, disable the addLiquidity button
+    return true;
+  }, [depositADisabled, depositBDisabled, parsedAmounts]);
+
   const { independentField, typedValue } = useMintState();
   const { onFieldAInput, onFieldBInput, onCurrencySelection, onSetFeeAmount, onResetMintState } =
     useMintActionHandlers(noLiquidity);
@@ -167,7 +182,13 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     } else {
       return (
         <ButtonWrapper>
-          <Button height="46px" variant="primary" borderRadius="4px" onClick={onIncrease}>
+          <Button
+            isDisabled={shouldDisableAddLiquidity}
+            height="46px"
+            variant="primary"
+            borderRadius="4px"
+            onClick={onIncrease}
+          >
             {t('common.addLiquidity')}
           </Button>
         </ButtonWrapper>
