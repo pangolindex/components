@@ -1,5 +1,5 @@
 import React from 'react';
-import { AirdropType, CHAINS, ChainId, SONGBIRD_CANARY, FLARE_MAINNET } from '@pangolindex/sdk';
+import { ChainId, SONGBIRD_CANARY, FLARE_MAINNET } from '@pangolindex/sdk';
 import { PNG } from '@components/constants/tokens';
 import { getTokenLogoURL } from '@components/utils/getTokenLogoURL';
 import { Frame } from './styleds';
