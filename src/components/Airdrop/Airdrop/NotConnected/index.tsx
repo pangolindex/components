@@ -17,7 +17,7 @@ export default function NotConnected({ title, token, logo }: Props) {
   const { t } = useTranslation();
   return (
     <Wrapper>
-      <Title title={title || `Claim ${token.symbol}`} logo={logo} />
+      <Title title={title ?? `Claim ${token.symbol}`} logo={logo} />
       <Box display="flex" alignItems="center" justifyContent="center" minHeight="150px" flex={1}>
         <Text fontSize={16} fontWeight={500} lineHeight="18px" color="text10">
           Let&apos;s check if you are eligible!
