@@ -122,6 +122,7 @@ export function usePangoChefContract(): Contract | null {
 
 export function useConcLiqNFTPositionManagerContract(withSignerIfPossible?: boolean): Contract | null {
   const chainId = useChainId();
+  console.log('WHAT:: ', CHAINS[chainId]?.contracts?.elixir?.nftManager);
   return useContract(
     chainId && CHAINS[chainId]?.contracts?.elixir?.nftManager,
     NonFungiblePositionManager.abi,

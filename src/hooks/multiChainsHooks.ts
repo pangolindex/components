@@ -51,6 +51,7 @@ export const useTokensCurrencyPriceHook: UseTokensCurrencyPriceHookType = {
   [ChainId.MOONRIVER]: useDummyTokensCurrencyPrice,
   [ChainId.MOONBEAM]: useDummyTokensCurrencyPrice,
   [ChainId.OP]: useDummyTokensCurrencyPrice,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyTokensCurrencyPrice,
 };
 
 export type UseTokenCurrencyPriceType = {
@@ -89,5 +90,6 @@ export const useTokenCurrencyPriceHook: UseTokenCurrencyPriceType = {
   [ChainId.MOONRIVER]: useDummyTokenCurrencyPrice,
   [ChainId.MOONBEAM]: useDummyTokenCurrencyPrice,
   [ChainId.OP]: useDummyTokenCurrencyPrice,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyTokenCurrencyPrice,
 };
 /* eslint-enable max-lines */

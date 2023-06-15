@@ -39,6 +39,7 @@ export const useAllProposalDataHook: UseAllProposalDataHookType = {
   [ChainId.MOONRIVER]: useDummyAllProposalData,
   [ChainId.MOONBEAM]: useDummyAllProposalData,
   [ChainId.OP]: useDummyAllProposalData,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyAllProposalData,
 };
 
 export type UseVoteCallbackHookType = {
@@ -75,4 +76,5 @@ export const useVoteCallbackHook: UseVoteCallbackHookType = {
   [ChainId.MOONRIVER]: useDummyVoteCallback,
   [ChainId.MOONBEAM]: useDummyVoteCallback,
   [ChainId.OP]: useDummyVoteCallback,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyVoteCallback,
 };
