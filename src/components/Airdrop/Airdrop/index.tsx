@@ -7,11 +7,11 @@ import { useClaimAirdrop, useMerkledropClaimedAmounts, useMerkledropProof } from
 import { getChainByNumber } from 'src/utils';
 import Title from '../Title';
 import { Wrapper } from '../styleds';
+import ChangeChain from './ChangeChain';
 import AlreadyClaimed from './Claimed';
 import ConfirmDrawer from './ConfirmDrawer';
+import NotConnected from './NotConnected';
 import NotEligible from './NotEligible';
-import ChangeChain from './changeChain';
-import NotConnected from './notConnected';
 
 interface Props {
   /** Airdrop Contract address */

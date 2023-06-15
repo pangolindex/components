@@ -1,8 +1,8 @@
 import { Token } from '@pangolindex/sdk';
 import React from 'react';
 import { Box, Text } from 'src/components';
-import Title from '../Title';
-import { TextBottomWrapper, Wrapper } from '../styleds';
+import Title from '../../Title';
+import { TextBottomWrapper, Wrapper } from '../../styleds';
 
 interface Props {
   subtitle?: string;

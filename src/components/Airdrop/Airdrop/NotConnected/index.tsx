@@ -3,8 +3,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Text } from 'src/components';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import Title from '../Title';
-import { Wrapper } from '../styleds';
+import Title from '../../Title';
+import { Wrapper } from '../../styleds';
 
 interface Props {
   title?: string;

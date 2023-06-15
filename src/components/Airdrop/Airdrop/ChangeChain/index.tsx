@@ -1,4 +1,4 @@
-import { AVALANCHE_MAINNET } from '@pangolindex/sdk';
+import { Chain } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { Box, Button, Text } from 'src/components';
@@ -6,34 +6,34 @@ import { network } from 'src/connectors';
 import { useActiveWeb3React } from 'src/hooks/useConnector';
 import { useApplicationState } from 'src/state/papplication/atom';
 import { changeNetwork } from 'src/utils/wallet';
-import Title from '../Title';
-import { TextBottomWrapper, Wrapper } from '../styleds';
+import Title from '../../Title';
+import { Wrapper } from '../../styleds';
 
 interface Props {
-  subtitle?: string;
+  chain: Chain;
   logo: string;
 }
 
-export default function AlreadyClaimed({ subtitle, logo }: Props) {
+export default function ChangeChain({ chain, logo }: Props) {
   const { connector } = useActiveWeb3React();
   const { activate, deactivate } = useWeb3React();
   const { wallets } = useApplicationState();
 
   return (
     <Wrapper>
-      <Title title="You Already Claimed" subtitle={subtitle} logo={logo} />
-      <Box display="flex" alignItems="center" justifyContent="center" minHeight="150px">
+      <Title title={`Change to ${chain?.name}`} logo={logo} />
+      <Box display="flex" alignItems="center" justifyContent="center" minHeight="120px" flex={1}>
         <Text fontSize={16} fontWeight={500} color="text1">
-          If you think there is a problem contact us via discord.
+          Go to {chain.name} to see if you are eligible!
         </Text>
       </Box>
       <Button
-        variant="primary"
-        color="black"
         height="46px"
+        color="black"
+        variant="primary"
         onClick={() =>
           changeNetwork({
-            chain: AVALANCHE_MAINNET,
+            chain,
             connector: connector ?? network,
             wallets: Object.values(wallets),
             activate,
@@ -41,13 +41,8 @@ export default function AlreadyClaimed({ subtitle, logo }: Props) {
           })
         }
       >
-        GO BACK TO AVALANCHE
+        GO TO {chain.name.toUpperCase()}
       </Button>
-      <TextBottomWrapper>
-        <Text fontSize={14} fontWeight={500} color="text8">
-          Haven’t I seen you before?
-        </Text>
-      </TextBottomWrapper>
     </Wrapper>
   );
 }
