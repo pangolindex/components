@@ -1,6 +1,6 @@
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data.json'
-let { newsBtn, newsLinks1,newsNextBtn, linksSideMenu, linksSideMenuExp, socialMediaLinks, sideMenuCollapse, sideMenuExpand, walletAddress, nativeToken, nativeTokenLogo, nativeTokenDeatils, nativeTokenBalance, detailsMenuClose, gasToken, changeBtn, walletConnected, accountMenuClose } = selectors.dashboard
+let { newsBtn, newsLinks1,newsNextBtn, linksSideMenu, linksSideMenuExp, socialMediaLinks, sideMenuCollapse, sideMenuExpand, walletAddress, nativeToken, nativeTokenLogo, nativeTokenDeatils, nativeTokenBalance, detailsMenuClose, gasToken, changeBtn, walletConnected, accountMenuClose, connectToWallet, connectWallet, connectToMetamask, connected } = selectors.dashboard
 let { nativeTokenArr, gasTokenArr, nativeTokenDeatilsArr} = data.dashboard
 function newsLinks(startPoint, endPoint, link, assertMsg) {
     cy.get(newsBtn).then(news => {
@@ -58,8 +58,15 @@ function nativeDetails(native){
     cy.request('GET', 'https://snowtrace.io/address/0x33CCa68A49B348ec247E0d1216936B5eF5638C60').then( res => {
         expect(res.status).to.equal(200)
     cy.get(changeBtn).contains("Change").click()
-    cy.get(walletConnected).should("have.css", "background-color", "rgb(64, 68, 79)")
+    cy.get(walletConnected).should("have.css", "background-color", "rgb(39, 174, 96)")
     cy.get(accountMenuClose).click() 
     })
 }
-export {newsLinks, socialLinks, nativeDetails}
+
+function connectWalletftn(){
+    cy.get(connectToWallet).click();
+    cy.get(connectToMetamask).contains("Metamask").click();
+    cy.get(connectWallet).click()
+    cy.get(connected).should("not.be.empty");
+}
+export {newsLinks, socialLinks, nativeDetails, connectWalletftn}

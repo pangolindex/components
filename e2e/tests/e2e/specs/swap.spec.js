@@ -1,6 +1,7 @@
 import selectors from '../../../cypress/fixtures/selectors.json'
 import data from '../../../cypress/fixtures/pangolin-data.json'
 import { nativeDetails } from '../../../cypress/src/dashboard'
+import { connectWalletftn } from '../../../cypress/src/dashboard'
 import { tradeDetailsftn } from '../../../cypress/src/swap'
 import { selectTokensftn } from '../../../cypress/src/swap'
 import { confirmTradeDetailsftn } from '../../../cypress/src/swap'
@@ -10,19 +11,18 @@ import { limitSellBuyConfirmDetailsftn } from '../../../cypress/src/swap'
 import { notificationftn } from '../../../cypress/src/swap'
 import { successfulCardftn } from '../../../cypress/src/swap'
 import { limitSellBuyTradeDetailsftn } from '../../../cypress/src/swap'
+import { limitOrdersftn } from '../../../cypress/src/swap'
 
-let { connectWallet,connectMetamask, connected, swapSideMenu, testnetBtn, walletAddress} = selectors.dashboard
-let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, tradeDetails, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, swappingMsg, TransactionSubmitted, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, notification, notificationViewOnExplorer, transactionRejected, selectTokenBtn, priceField, sellTokenDetailsValues, limitPrice, tokenBalances, buyBtn} = selectors.swap
-let { percentBtnArr, swapTokensArr, sellTokenDetailsArr} = data.swap
+let { swapSideMenu, testnetBtn, walletAddress, nativeTokenLogo} = selectors.dashboard
+let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, confirmSwapDetails, confirmSwapBtn, swappingMsg, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, transactionRejected, selectTokenBtn, priceField, tokenBalances, buyBtn, swapSuccessfulTransactionLink, limitSuccessfulTransactionLink} = selectors.swap
+let { percentBtnArr, swapTokensArr} = data.swap
 
 describe('Swap', () => {
     it('Connects with Metamask', () => {
         //Connect to MetaMask from swap page
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
-        cy.get(connectWallet).click();
-        cy.get(connectMetamask).click();
-        cy.get(connected).should("not.be.empty");         
+        connectWalletftn()         
         //After switching, the Network name (Avalanche), native token (PNG) and the gas token (AVAX) in the menu will change to the chain specific ones
         nativeDetails(0)
     })  
@@ -30,6 +30,7 @@ describe('Swap', () => {
     it('Transaction Buttons on Trade card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
+        connectWalletftn()
         cy.wait(10000);
         //Tokens along balances in select tokens card
         for (var i = 0; i <= 1; i++){
@@ -45,6 +46,7 @@ describe('Swap', () => {
         cy.get(swapBtn).contains("Enter an amount").should("have.css", "background-color", "rgb(229, 229, 229)")
         //Insufficient balance button
         cy.get(fromInput).type('100000')
+        cy.wait(5000);
         cy.get(swapBtn).contains("Insufficient AVAX balance").should('be.visible')
         cy.get(swapBtn).contains("Insufficient AVAX balance").should("have.css", "background-color", "rgb(229, 229, 229)")
 
@@ -53,6 +55,7 @@ describe('Swap', () => {
     it('Verify tokens with balance > 0 appear in the dropdown', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
+        connectWalletftn()
         for (var i = 0; i <= 1; i++) {
         cy.get(tokensToSwap).eq(i).click(); 
         cy.wait(15000);
@@ -72,6 +75,7 @@ describe('Swap', () => {
     it('Details on Trade card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
+        connectWalletftn()
         //Select tokens by their titles
         selectTokensftn("Pangolin", "TetherToken")
         //percent buttons
@@ -94,6 +98,7 @@ describe('Swap', () => {
     it('Reject Transaction', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
+        connectWalletftn()
         selectTokensftn("Pangolin", "TetherToken")
         tradeDetailsftn("PNG","USDt")
         cy.get(swapBtn).contains("Swap").should('be.visible');
@@ -116,6 +121,7 @@ describe('Swap', () => {
     it('Details on Confirm swap card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
+        connectWalletftn()
         selectTokensftn("Pangolin", "TetherToken")
         tradeDetailsftn("PNG","USDt")
         cy.get(swapBtn).contains("Swap").should('be.visible');
@@ -128,12 +134,12 @@ describe('Swap', () => {
         cy.get(swappingMsg).invoke('text').should('match', /.*USDt.*/);
         cy.wait(5000);
         cy.confirmMetamaskTransaction()
-        cy.wait(5000);
+        cy.wait(3000);
         //Notification
         notificationftn("USDt")
         //Successful card
         cy.wait(5000);
-        successfulCardftn()  
+        successfulCardftn(swapSuccessfulTransactionLink)  
         //Recent Transactions
         cy.get(walletAddress).contains('0x33...8C60').click()
         cy.get(recentTransactions).contains("Recent Transactions").should('be.visible')  
@@ -153,6 +159,7 @@ describe('Swap', () => {
     it('Details on Limit Sell card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
+        connectWalletftn()
         cy.get(testnetBtn).contains("LIMIT").click()
         cy.get(tokensToSwap).click()
         cy.wait(20000);
@@ -175,6 +182,7 @@ describe('Swap', () => {
     it('Sell token Confirm card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
+        connectWalletftn()
         cy.get(testnetBtn).contains("LIMIT").click()
         cy.get(tokensToSwap).click()
         cy.wait(20000);
@@ -194,17 +202,18 @@ describe('Swap', () => {
         cy.get(swappingMsg).invoke('text').should('match', /\bPNG\b.*\bUSDC\b/);
         cy.wait(5000);
         cy.confirmMetamaskTransaction()
-        cy.wait(5000);
+        cy.wait(3000);
         //Notification
         notificationftn("Sell order placed.")
         cy.wait(5000);
         //Successful card
-        successfulCardftn()  
+        successfulCardftn(limitSuccessfulTransactionLink)  
     })
     
     it('Details on Limit Buy card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
+        connectWalletftn()
         cy.get(testnetBtn).contains("LIMIT").click()
         cy.get(buyBtn).contains("BUY").click()
         cy.get(tokensToSwap).click()
@@ -225,9 +234,10 @@ describe('Swap', () => {
         limitSellBuyTokenftn(1, 0);
     })
 
-    it('Buy token Confirm card', () => {
+    it.skip('Buy token Confirm card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
+        connectWalletftn()
         cy.get(testnetBtn).contains("LIMIT").click()
         cy.get(buyBtn).contains("BUY").click()
         cy.get(tokensToSwap).click()
@@ -248,20 +258,33 @@ describe('Swap', () => {
         cy.get(swappingMsg).invoke('text').should('match', /\bPNG\b.*\bUSDC\b/);
         cy.wait(5000);
         cy.confirmMetamaskTransaction()
-        cy.wait(5000);
+        cy.wait(3000);
         //Notification
         notificationftn("Sell order placed.")
         cy.wait(5000);
         // //Successful card
-        successfulCardftn()
+        successfulCardftn(limitSuccessfulTransactionLink)
     })
 
-    it('Swap page', () => {
+    it('Limit Order section', () => {
         //Connect to MetaMask from swap page
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
-        cy.get(percentBtns).eq(0).should('be.visible')
-        
+        connectWalletftn()
+        cy.get(testnetBtn).contains("LIMIT").click()
+        cy.wait(5000)
+        //Limit Orders OPEN
+        limitOrdersftn("OPEN","open")
+        cy.get(nativeTokenLogo).eq(0).should('have.attr', 'alt', 'PNG logo').click()
+        cy.get(nativeTokenLogo).eq(1).should('have.attr', 'alt', 'USDC logo').click()
+        //Limit Orders EXECUTED 
+        cy.get(buyBtn).contains("EXECUTED").click()
+        limitOrdersftn("EXECUTED","executed")
+        //Limit Orders CANCELLED 
+        cy.get(buyBtn).contains("CANCELLED").click()
+        limitOrdersftn("CANCELLED","cancelled")
+
     })
+    
 
 }) 

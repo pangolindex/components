@@ -1,8 +1,8 @@
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data.json'
 
-let {settingBtn, slippageField, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, tokensToSwap, selectTokens, fromInput, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, priceField, swapBtn, limitPrice, TransactionSubmitted, transactionLinks, notification, notificationViewOnExplorer, sellTokenDetailsValues} = selectors.swap
-let { sellTokenDetailsArr} = data.swap
+let {settingBtn, slippageField, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, tokensToSwap, selectTokens, fromInput, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, priceField, swapBtn, limitPrice, TransactionSubmitted, transactionLinks, notification, notificationViewOnExplorer, sellTokenDetailsValues, openBtn, openOrders, openOrdersSwitch, openOrderSwitched, limitOrderDetails, amountInTokensSwap} = selectors.swap
+let { sellTokenDetailsArr, limitOrderDetailsArr} = data.swap
 function switchingValues (selectIter, headerAssert, token) {
     cy.get('div[class="sc-eCYdqJ sc-dkdnUF fEptdj gilYEX"] div[class="sc-eCYdqJ fEptdj"]').within( $banner => {
         cy.wrap($banner).find(`div[class="sc-eCYdqJ fEptdj"]:nth-child(${selectIter})`).within( fromToken => {
@@ -65,9 +65,9 @@ function notificationftn(msg) {
     });
 }
 
-function successfulCardftn(){
+function successfulCardftn(explorerLink){
         cy.get(TransactionSubmitted).contains("Transaction Submitted").should('be.visible');
-        cy.get(transactionLinks).each(page => {
+        cy.get(explorerLink).each(page => {
             cy.request(page.prop('href')).as('link');
         });
         cy.get('@link').should(response => {
@@ -98,7 +98,7 @@ function selectTokensftn (fromTokenTitle, toTokenTitle){
     cy.get(tokensToSwap).eq(1).contains("USDC").click()
     cy.get(selectTokens).eq(7).should('have.attr', 'title', toTokenTitle).should('be.visible', { timeout: 30000 })
     cy.get(selectTokens).eq(7).should('have.attr', 'title', toTokenTitle).click()
-    cy.get(fromInput).type('0.001')
+    cy.get(fromInput).type('0.01')
 }
 
 function confirmTradeDetailsftn (toTokenTitle){
@@ -173,4 +173,18 @@ function limitSellBuyConfirmDetailsftn(token1, token2) {
     cy.get(limitPrice).eq(2).should('contain', '0x33...8C60')
   }
 
-export {switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1, tradeDetailsftn, selectTokensftn, confirmTradeDetailsftn, confirmBtnftn, limitSellBuyTokenftn, limitSellBuyConfirmDetailsftn, notificationftn,successfulCardftn, limitSellBuyTradeDetailsftn}
+function limitOrdersftn(navBtn,status){
+    cy.get(confirmSwapDetails).eq(2).contains("Limit Orders").should('be.visible')
+    cy.get(openBtn).eq(2).contains(navBtn).should("have.css", "background-color", "rgb(17, 17, 17)")
+    cy.get(openOrders).eq(0).should('contain', status);
+    cy.get(openOrdersSwitch).eq(0).click()
+    cy.get(openOrderSwitched).should('be.visible')
+    //Limit Order Details 
+    for (var i = 0; i <= 3; i++){
+        cy.get(limitOrderDetails).eq(i + 9).contains(limitOrderDetailsArr[i]).should('be.visible')
+    }
+    cy.get(amountInTokensSwap).should("not.be.empty");
+    cy.get(amountInTokensSwap).eq(3).contains(status).should('be.visible')
+}
+
+export {switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1, tradeDetailsftn, selectTokensftn, confirmTradeDetailsftn, confirmBtnftn, limitSellBuyTokenftn, limitSellBuyConfirmDetailsftn, notificationftn,successfulCardftn, limitSellBuyTradeDetailsftn, limitOrdersftn}

@@ -34,10 +34,10 @@
     "swap": "https://dev.pangolin.exchange/#/swap",
     "hideBalance": "Hide Your Balance",
     "showBalance": "Show Your Balance",
-    "networkNameArr": ["Avalanche", "Flare", "Songbird", "Evmos"],
-    "nativeTokenArr": ["PNG","PFL", "PSB", "PCT", "evmPNG", "wagmiPNG", "fujiPNG"],
-    "gasTokenArr": ["AVAX", "FLR", "SGB", "cFLR", "tEVMOS", "WGMI", "AVAX", "EVMOS"],
-    "testnetNetworkNameArr": ["Avalanche", "Coston", "Evmos Testnet", "Wagmi", "Avalanche Fuji"],
+    "networkNameArr": ["Avalanche", "Flare", "Songbird", "Evmos", "Avalanche"],
+    "nativeTokenArr": ["PNG","PFL", "PSB", "x", "PNG", "PCT", "evmPNG", "wagmiPNG", "fujiPNG", "PNG"],
+    "gasTokenArr": ["AVAX", "FLR", "SGB", "EVMOS", "AVAX", "cFLR", "tEVMOS", "WGMI", "AVAX", "AVAX"],
+    "testnetNetworkNameArr": ["Avalanche", "Coston", "Evmos Testnet", "Wagmi", "Avalanche Fuji", "Avalanche"],
     "nativeTokenDeatilsArr": ["Balance", "Unclaimed", "price", "in circulation", "Total Supply"]
   },
   "swap": {
@@ -53,7 +53,8 @@
     "connectWalletMsge": "Connect a wallet to see your portfolio",
     "percentBtnArr": ["0", "0", "1", "2"],
     "swapTokensArr": ["AVAX", "USDC"],
-    "sellTokenDetailsArr": ["Gas Price", "Real Execution Price", "Gelato Fee", "Slippage Tolerance", "Minimum Received"]
+    "sellTokenDetailsArr": ["Gas Price", "Real Execution Price", "Gelato Fee", "Slippage Tolerance", "Minimum Received"],
+    "limitOrderDetailsArr": ["Input Amount", "Output Amount", "Price", "Status"]
   },
   "pangolinLinksArr": ["Pangolin Analytics", "Pangolin Governance - Vote with your PNG", "Core Web: A Better Way to Connect to Web3", "Pangolin"],
   "vote": {
