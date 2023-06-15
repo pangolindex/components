@@ -25,7 +25,7 @@ export const Wrapper = styled(Box)`
   border-radius: 7px;
   padding: 1em;
   width: 100%;
-  height: 100%;
+  min-height: 310px;
   position: relative;
   overflow: hidden;
   display: flex;

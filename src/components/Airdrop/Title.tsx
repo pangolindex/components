@@ -24,7 +24,7 @@ export default function Title({ color, title, subtitle, logo }: Props) {
             </Text>
           )}
         </Box>
-        <StyledLogo src={logo} size={'50px'} />
+        <StyledLogo src={logo} size={'48px'} />
       </TitleWrapper>
       <Separator />
     </>
