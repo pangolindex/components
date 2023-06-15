@@ -21,7 +21,7 @@ interface Props {
   logo: string;
 }
 
-export function ConfirmDrawer({
+export default function ConfirmDrawer({
   isOpen,
   attemptingTxn,
   errorMessage,
@@ -131,5 +131,3 @@ export function ConfirmDrawer({
     </Drawer>
   );
 }
-
-export default ConfirmDrawer;
