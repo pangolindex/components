@@ -871,7 +871,7 @@ class Hedera {
 
     const error = new Error('Unpredictable HBAR amount to pay rent');
     try {
-      if (Number(rent) === 0) {
+      if (Number(rent) < 0) {
         throw error;
       }
     } catch {
@@ -913,7 +913,7 @@ class Hedera {
 
     const error = new Error('Unpredictable HBAR amount to pay rent');
     try {
-      if (Number(rent) === 0) {
+      if (Number(rent) < 0) {
         throw error;
       }
     } catch {
@@ -947,7 +947,7 @@ class Hedera {
 
     const error = new Error('Unpredictable HBAR amount to pay rent');
     try {
-      if (Number(rent) === 0) {
+      if (Number(rent) < 0) {
         throw error;
       }
     } catch {
