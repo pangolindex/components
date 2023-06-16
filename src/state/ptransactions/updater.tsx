@@ -141,7 +141,7 @@ const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
   [ChainId.MOONRIVER]: false,
   [ChainId.MOONBEAM]: false,
   [ChainId.OP]: false,
-  [ChainId.SKALE_BELLATRIX_TESTNET]: false,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: true,
 };
 
 export default function Updater(): null {
