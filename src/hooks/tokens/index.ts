@@ -37,7 +37,7 @@ export const useTokenHook: UseTokenHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
-  [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyHook,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useToken,
 };
 
 export type UseTokensHookType = {
@@ -78,5 +78,5 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
-  [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyHook,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useTokensContract,
 };
