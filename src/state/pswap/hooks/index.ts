@@ -125,5 +125,5 @@ export const useGelatoLimitOrdersHook: useGelatoLimitiOrdersHookType = {
   [ChainId.MOONRIVER]: useGelatoLimitOrders,
   [ChainId.MOONBEAM]: useGelatoLimitOrders,
   [ChainId.OP]: useGelatoLimitOrders,
-  [ChainId.SKALE_BELLATRIX_TESTNET]: useGelatoLimitOrders,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyGelatoLimitOrders,
 };

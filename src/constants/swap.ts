@@ -79,7 +79,7 @@ export const SWAP_DEFAULT_CURRENCY = {
   },
   [ChainId.SKALE_BELLATRIX_TESTNET]: {
     inputCurrency: WAVAX[ChainId.SKALE_BELLATRIX_TESTNET].address,
-    outputCurrency: '',
+    outputCurrency: PNG[ChainId.SKALE_BELLATRIX_TESTNET].address,
   },
 };
 
@@ -125,7 +125,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.OP]: [],
   [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET], PNG[ChainId.EVMOS_TESTNET]],
   [ChainId.EVMOS_MAINNET]: [WAVAX[ChainId.EVMOS_MAINNET]],
-  [ChainId.SKALE_BELLATRIX_TESTNET]: [WAVAX[ChainId.SKALE_BELLATRIX_TESTNET]],
+  [ChainId.SKALE_BELLATRIX_TESTNET]: [WAVAX[ChainId.SKALE_BELLATRIX_TESTNET], PNG[ChainId.SKALE_BELLATRIX_TESTNET]],
 };
 
 export const TIMEFRAME = [
