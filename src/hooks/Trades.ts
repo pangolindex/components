@@ -263,6 +263,8 @@ export function useElixirTradeExactIn(
 
         const finalTrade = trades?.[0];
         setTradeData({ trade: finalTrade, isLoading: isLoading });
+      } else {
+        setTradeData({ trade: null, isLoading: isLoading });
       }
     };
     getBestTradeExactIn();
@@ -294,6 +296,8 @@ export function useElixirTradeExactOut(
 
         const finalTrade = trades?.[0];
         setTradeData({ trade: finalTrade, isLoading: isLoading });
+      } else {
+        setTradeData({ trade: null, isLoading: isLoading });
       }
     };
     getBestTradeExactOut();
