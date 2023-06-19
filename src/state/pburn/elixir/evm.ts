@@ -78,6 +78,7 @@ export function useElixirRemoveLiquidity() {
           liquidityValue0?.toExact() +
           ' ' +
           liquidityValue0.currency?.symbol +
+          ' ' +
           'AND' +
           ' ' +
           liquidityValue1?.toExact() +
@@ -87,6 +88,7 @@ export function useElixirRemoveLiquidity() {
           'Fees' +
           ' ' +
           parameters?.collectOptions?.expectedCurrencyOwed0?.toExact() +
+          ' ' +
           'AND' +
           ' ' +
           parameters?.collectOptions?.expectedCurrencyOwed1?.toExact(),

@@ -317,6 +317,7 @@ export function useElixirCollectEarnedFees() {
           'Collect' +
           ' ' +
           token0?.symbol +
+          ' ' +
           'AND' +
           ' ' +
           token1?.symbol +
@@ -324,6 +325,7 @@ export function useElixirCollectEarnedFees() {
           'Fees' +
           ' ' +
           param?.expectedCurrencyOwed0?.toExact() +
+          ' ' +
           'AND' +
           ' ' +
           param?.expectedCurrencyOwed1?.toExact(),
