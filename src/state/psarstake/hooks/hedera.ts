@@ -36,7 +36,7 @@ export function useHederaExchangeRate() {
  * @param positionId The id of position
  * Returns rent value in tiny bars
  */
-function useHederaSarRent(position: Position | undefined | null) {
+export function useHederaSarRent(position: Position | undefined | null) {
   const chainId = useChainId();
 
   const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
@@ -107,7 +107,6 @@ export function useDerivativeHederaSarStake(position?: Position | null) {
   const sarNftContract = useHederaSarNFTContract();
 
   const { data: exchangeRate, isLoading: isloadingExchangeRate } = useHederaExchangeRate();
-  const tinyRentAddMore = useHederaSarRent(position);
 
   const { hederaAssociated: isAssociated } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
@@ -117,23 +116,15 @@ export function useDerivativeHederaSarStake(position?: Position | null) {
     if (!sarStakingContract || !parsedAmount || !account || !exchangeRate || !isAssociated) {
       return;
     }
-    if (!!position && !tinyRentAddMore) {
-      return;
-    }
     setAttempting(true);
     try {
-      // we need to send 0.1$ in hbar amount to mint
-      const tinyCents = hederaFn.convertHBarToTinyBars('10'); // 10 cents = 0.1$
-      const tinyRent = hederaFn.tinyCentsToTinyBars(tinyCents, exchangeRate.current_rate);
-      const rent = !position ? tinyRent : tinyRentAddMore;
-
       const response = await hederaFn.sarStake({
         methodName: !position ? 'mint' : 'stake',
         amount: parsedAmount.raw.toString(),
         chainId: chainId,
         account: account,
         positionId: position?.id?.toString(),
-        rent: rent ?? '0',
+        rent: '0',
       });
 
       if (response) {
@@ -198,7 +189,6 @@ export function useDerivativeHederaSarStake(position?: Position | null) {
       isAssociated,
       exchangeRate,
       isloadingExchangeRate,
-      tinyRentAddMore,
       approveCallback,
       onUserInput,
       handleMax,
@@ -236,13 +226,11 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
     wrappedOnDismiss,
   } = useDefaultSarUnstake(position);
 
-  const tinyRent = useHederaSarRent(position);
-
   const sarNftContract = useHederaSarNFTContract();
   const queryClient = useQueryClient();
 
   const onUnstake = async () => {
-    if (!sarStakingContract || !parsedAmount || !position || !account || !tinyRent) {
+    if (!sarStakingContract || !parsedAmount || !position || !account) {
       return;
     }
     setAttempting(true);
@@ -252,7 +240,7 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
         amount: parsedAmount.raw.toString(),
         chainId: chainId,
         account: account,
-        rent: tinyRent,
+        rent: '0',
         positionId: position.id.toString(),
       });
       if (response) {
@@ -301,7 +289,6 @@ export function useDerivativeHederaSarUnstake(position: Position | null) {
       error,
       account,
       sarStakingContract,
-      tinyRent,
       onUserInput,
       handleMax,
       position,
@@ -326,13 +313,11 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
 
   const chainId = useChainId();
 
-  const rent = useHederaSarRent(position);
-
   const sarNftContract = useHederaSarNFTContract();
 
   const queryClient = useQueryClient();
   const onCompound = async () => {
-    if (!sarStakingContract || !position || !account || !rent) {
+    if (!sarStakingContract || !position || !account) {
       return;
     }
     setAttempting(true);
@@ -342,7 +327,7 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
           account: account,
           chainId: chainId,
           positionId: position.id.toString(),
-          rent: rent,
+          rent: '0',
         },
         'compound',
       );
@@ -374,7 +359,7 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
       wrappedOnDismiss,
       onCompound,
     }),
-    [sarStakingContract, attempting, hash, account, rent, position],
+    [sarStakingContract, attempting, hash, account, position],
   );
 }
 
@@ -395,14 +380,12 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
 
   const chainId = useChainId();
 
-  const rent = useHederaSarRent(position);
-
   const sarNftContract = useHederaSarNFTContract();
 
   const queryClient = useQueryClient();
 
   const onClaim = async () => {
-    if (!sarStakingContract || !position || !account || !rent) {
+    if (!sarStakingContract || !position || !account) {
       return;
     }
     setAttempting(true);
@@ -412,7 +395,7 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
           account: account,
           chainId: chainId,
           positionId: position.id.toString(),
-          rent: rent,
+          rent: '0',
         },
         'harvest',
       );
@@ -444,7 +427,7 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
       wrappedOnDismiss,
       onClaim,
     }),
-    [sarStakingContract, attempting, hash, account, rent, position],
+    [sarStakingContract, attempting, hash, account, position],
   );
 }
 
