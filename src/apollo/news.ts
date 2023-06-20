@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
 import { NEWS_API_URL } from 'src/constants';
 import { useChainId } from 'src/hooks';
