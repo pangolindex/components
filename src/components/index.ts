@@ -50,4 +50,4 @@ export { default as Bridge } from './Bridge';
 export { default as CloseButton } from './CloseButton';
 export { TokenInfo, TokenInfoModal } from './TokenInfo';
 export * from './Governance';
-export { Airdrop, ComingSoon } from './Airdrop';
+export { Airdrop, ComingSoon, HederaAirdrop } from './Airdrop';
