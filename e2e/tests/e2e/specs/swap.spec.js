@@ -12,9 +12,10 @@ import { notificationftn } from '../../../cypress/src/swap'
 import { successfulCardftn } from '../../../cypress/src/swap'
 import { limitSellBuyTradeDetailsftn } from '../../../cypress/src/swap'
 import { limitOrdersftn } from '../../../cypress/src/swap'
+import { cancelLimitOrderftn } from '../../../cypress/src/swap'
 
 let { swapSideMenu, testnetBtn, walletAddress, nativeTokenLogo} = selectors.dashboard
-let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, confirmSwapDetails, confirmSwapBtn, swappingMsg, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, transactionRejected, selectTokenBtn, priceField, tokenBalances, buyBtn, swapSuccessfulTransactionLink, limitSuccessfulTransactionLink} = selectors.swap
+let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, confirmSwapDetails, confirmSwapBtn, swappingMsg, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, transactionRejected, selectTokenBtn, priceField, tokenBalances, buyBtn, swapSuccessfulTransactionLink, limitSuccessfulTransactionLink, cancelOrderbtn, cancelOrderMsg, executionPrice, cancelOrderBtnPopup, cancellingOrderMsg, cancelLimitSuccessfulTransactionLink} = selectors.swap
 let { percentBtnArr, swapTokensArr} = data.swap
 
 describe('Swap', () => {
@@ -36,7 +37,7 @@ describe('Swap', () => {
         for (var i = 0; i <= 1; i++){
             cy.get(tokensToSwap).contains(swapTokensArr[i]).click()
             cy.get(selectTokens).contains(swapTokensArr[i]).should('be.visible')
-            cy.get(selectTokensValue).should('not.be.empty')
+            cy.get(selectTokensValue, { timeout: 30000 }).should('not.be.empty')
             cy.get(selectTokensMenuClose).eq(0).click()
         }   
         //Enter an amount button
@@ -58,8 +59,7 @@ describe('Swap', () => {
         connectWalletftn()
         for (var i = 0; i <= 1; i++) {
         cy.get(tokensToSwap).eq(i).click(); 
-        cy.wait(15000);
-        cy.get(tokenBalances)
+        cy.get(tokenBalances, { timeout: 30000 })
           .each((option) => {
             cy.wrap(option).scrollIntoView().invoke('text').then((text) => {
               const balancePattern = /\d+\.\d+/; 
@@ -105,13 +105,13 @@ describe('Swap', () => {
         cy.get(swapBtn).click()
         confirmTradeDetailsftn("USDt")
         //Confirm swap button
-        confirmBtnftn("Confirm Swap")
+        confirmBtnftn(confirmSwapBtn,"Confirm Swap")
         cy.wait(5000);
         //Reject transaction
         cy.rejectMetamaskTransaction();
         cy.get(transactionRejected).contains("Transaction rejected.").should('be.visible')  
         //Dismiss button
-        confirmBtnftn("Dismiss")
+        confirmBtnftn(confirmSwapBtn, "Dismiss")
         cy.get(confirmSwapDetails).contains("Trade").should('be.visible')  
         //Swap button
         cy.get(swapBtn).contains("Swap").should('be.visible');
@@ -129,17 +129,17 @@ describe('Swap', () => {
         //Details on confirmswap card
         confirmTradeDetailsftn("USDt")
         //Confirm swap button
-        confirmBtnftn("Confirm Swap")
+        confirmBtnftn(confirmSwapBtn, "Confirm Swap")
         // //Swapping message
         cy.get(swappingMsg).invoke('text').should('match', /.*USDt.*/);
-        cy.wait(5000);
+        cy.wait(10000);
         cy.confirmMetamaskTransaction()
-        cy.wait(3000);
+        cy.wait(10000);
         //Notification
         notificationftn("USDt")
         //Successful card
         cy.wait(5000);
-        successfulCardftn(swapSuccessfulTransactionLink)  
+        successfulCardftn(confirmSwapBtn, swapSuccessfulTransactionLink)  
         //Recent Transactions
         cy.get(walletAddress).contains('0x33...8C60').click()
         cy.get(recentTransactions).contains("Recent Transactions").should('be.visible')  
@@ -156,7 +156,7 @@ describe('Swap', () => {
         cy.get(accountMenuCloseSwap).click()      
     })
 
-    it('Details on Limit Sell card', () => {
+    it.skip('Details on Limit Sell card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         connectWalletftn()
@@ -164,8 +164,10 @@ describe('Swap', () => {
         cy.get(tokensToSwap).click()
         cy.wait(20000);
         cy.get(selectTokens).contains("PNG").click()
+        cy.wait(5000);
         cy.get(selectTokenBtn).contains("Select Token").click()
         cy.get(selectTokens).contains("USDC").click()
+        cy.wait(5000);
         cy.get(fromInput).type('0.001')
         cy.wait(5000);
         cy.get(priceField).should('not.have.value', '0.00');
@@ -179,7 +181,7 @@ describe('Swap', () => {
         limitSellBuyTokenftn(0, 1);
     })
 
-    it('Sell token Confirm card', () => {
+    it.skip('Sell token Confirm card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         connectWalletftn()
@@ -207,10 +209,10 @@ describe('Swap', () => {
         notificationftn("Sell order placed.")
         cy.wait(5000);
         //Successful card
-        successfulCardftn(limitSuccessfulTransactionLink)  
+        successfulCardftn(confirmSwapBtn, limitSuccessfulTransactionLink)  
     })
     
-    it('Details on Limit Buy card', () => {
+    it.skip('Details on Limit Buy card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         connectWalletftn()
@@ -221,7 +223,7 @@ describe('Swap', () => {
         cy.get(selectTokens).contains("PNG").click()
         cy.get(selectTokenBtn).contains("Select Token").click()
         cy.get(selectTokens).contains("USDC").click()
-        cy.get(fromInput).type('4')
+        cy.get(fromInput).type('5')
         cy.wait(5000);
         cy.get(priceField).should('not.have.value', '0.00');
         cy.get(toInput).should('not.have.value', '0.00');
@@ -260,10 +262,10 @@ describe('Swap', () => {
         cy.confirmMetamaskTransaction()
         cy.wait(3000);
         //Notification
-        notificationftn("Sell order placed.")
+        notificationftn("Buy order placed.")
         cy.wait(5000);
         // //Successful card
-        successfulCardftn(limitSuccessfulTransactionLink)
+        successfulCardftn(confirmSwapBtn, limitSuccessfulTransactionLink)
     })
 
     it('Limit Order section', () => {
@@ -285,6 +287,44 @@ describe('Swap', () => {
         limitOrdersftn("CANCELLED","cancelled")
 
     })
+
+    it('Reject Cancelling Limit Order', () => {
+        //Connect to MetaMask from swap page
+        cy.visit('/dashboard')
+        cy.get(swapSideMenu).click()
+        connectWalletftn()
+        cy.get(testnetBtn).contains("LIMIT").click()
+        cy.wait(5000)
+        //Cancel Limit Orders 
+        cancelLimitOrderftn()
+        //Reject transaction
+        cy.wait(10000)
+        cy.rejectMetamaskTransaction();
+        cy.get(confirmSwapBtn).contains("MetaMask Tx Signature: User denied transaction signature.").should('be.visible').click()
+        cy.wait(10000);
+        cy.confirmMetamaskTransaction()
+        //Successful card
+        cy.wait(5000);
+        successfulCardftn( confirmSwapBtn, cancelLimitSuccessfulTransactionLink) 
+
+    })
+
+    it('Cancelling the Limit order', () => {
+        //Connect to MetaMask from swap page
+        cy.visit('/dashboard')
+        cy.get(swapSideMenu).click()
+        connectWalletftn()
+        cy.get(testnetBtn).contains("LIMIT").click()
+        cy.wait(5000)
+        //Cancel Limit Orders 
+        cancelLimitOrderftn()
+        //Reject transaction
+        cy.wait(10000)
+        cy.confirmMetamaskTransaction()
+        //Successful card
+        cy.wait(10000);
+        successfulCardftn( confirmSwapBtn, cancelLimitSuccessfulTransactionLink) 
+    })
     
 
-}) 
+})

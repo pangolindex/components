@@ -38,7 +38,7 @@
     "nativeTokenArr": ["PNG","PFL", "PSB", "x", "PNG", "PCT", "evmPNG", "wagmiPNG", "fujiPNG", "PNG"],
     "gasTokenArr": ["AVAX", "FLR", "SGB", "EVMOS", "AVAX", "cFLR", "tEVMOS", "WGMI", "AVAX", "AVAX"],
     "testnetNetworkNameArr": ["Avalanche", "Coston", "Evmos Testnet", "Wagmi", "Avalanche Fuji", "Avalanche"],
-    "nativeTokenDeatilsArr": ["Balance", "Unclaimed", "price", "in circulation", "Total Supply"]
+    "nativeTokenDeatilsArr": ["Balance", "Unclaimed", "price", "Total Supply"]
   },
   "swap": {
     "aAVAXb": "aAVAXb",

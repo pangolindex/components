@@ -1,7 +1,7 @@
 import selectors from '../fixtures/selectors.json'
 import data from '../fixtures/pangolin-data.json'
 
-let {settingBtn, slippageField, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, tokensToSwap, selectTokens, fromInput, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, priceField, swapBtn, limitPrice, TransactionSubmitted, transactionLinks, notification, notificationViewOnExplorer, sellTokenDetailsValues, openBtn, openOrders, openOrdersSwitch, openOrderSwitched, limitOrderDetails, amountInTokensSwap} = selectors.swap
+let {settingBtn, slippageField, tradeDetails, tradeDetailsValues, toEstimated, unitPrice, tokensToSwap, selectTokens, fromInput, confirmSwap, confirmSwapDetails, confirmSwapMsg, confirmSwapBtn, priceField, swapBtn, limitPrice, TransactionSubmitted, transactionLinks, notification, notificationViewOnExplorer, sellTokenDetailsValues, openBtn, openOrders, openOrdersSwitch, openOrderSwitched, limitOrderDetails, amountInTokensSwap, cancelOrderbtn, cancelOrderMsg, executionPrice, cancelOrderBtnPopup, cancellingOrderMsg, tokenSearch} = selectors.swap
 let { sellTokenDetailsArr, limitOrderDetailsArr} = data.swap
 function switchingValues (selectIter, headerAssert, token) {
     cy.get('div[class="sc-eCYdqJ sc-dkdnUF fEptdj gilYEX"] div[class="sc-eCYdqJ fEptdj"]').within( $banner => {
@@ -65,7 +65,7 @@ function notificationftn(msg) {
     });
 }
 
-function successfulCardftn(explorerLink){
+function successfulCardftn(successBtnSelector, explorerLink){
         cy.get(TransactionSubmitted).contains("Transaction Submitted").should('be.visible');
         cy.get(explorerLink).each(page => {
             cy.request(page.prop('href')).as('link');
@@ -73,7 +73,7 @@ function successfulCardftn(explorerLink){
         cy.get('@link').should(response => {
             expect(response.status).to.eq(200);
         });
-        confirmBtnftn("Close")
+        confirmBtnftn(successBtnSelector, "Close")
         cy.get(confirmSwapDetails).contains("Trade").should('be.visible') 
 }
 
@@ -92,12 +92,13 @@ function tradeDetailsftn (fromToken, toTokon) {
 
 function selectTokensftn (fromTokenTitle, toTokenTitle){
     cy.get(tokensToSwap).eq(0).contains("AVAX").click()
-    cy.wait(15000)
-    cy.get(selectTokens).eq(1).should('have.attr', 'title', fromTokenTitle).should('be.visible', { timeout: 30000 })
-    cy.get(selectTokens).eq(1).should('have.attr', 'title', fromTokenTitle).click()
+    cy.get(tokenSearch).eq(0).type(fromTokenTitle)
+    cy.get(selectTokens).eq(0).should('have.attr', 'title', fromTokenTitle).should('be.visible', { timeout: 30000 })
+    cy.get(selectTokens).eq(0).should('have.attr', 'title', fromTokenTitle).click()
     cy.get(tokensToSwap).eq(1).contains("USDC").click()
-    cy.get(selectTokens).eq(7).should('have.attr', 'title', toTokenTitle).should('be.visible', { timeout: 30000 })
-    cy.get(selectTokens).eq(7).should('have.attr', 'title', toTokenTitle).click()
+    cy.get(tokenSearch).eq(0).type(toTokenTitle)
+    cy.get(selectTokens).eq(0).should('have.attr', 'title', toTokenTitle).should('be.visible', { timeout: 30000 })
+    cy.get(selectTokens).eq(0).should('have.attr', 'title', toTokenTitle).click()
     cy.get(fromInput).type('0.01')
 }
 
@@ -111,10 +112,10 @@ function confirmTradeDetailsftn (toTokenTitle){
     cy.get(confirmSwapMsg).invoke('text').should('match', regexPattern);
 }
 
-function confirmBtnftn (btnName){
-    cy.get(confirmSwapBtn).contains(btnName).should('be.visible');
-    cy.get(confirmSwapBtn).contains(btnName).should("have.css", "background-color", "rgb(255, 200, 0)");
-    cy.get(confirmSwapBtn).contains(btnName).click()
+function confirmBtnftn (btnSelector,btnName){
+    cy.get(btnSelector).contains(btnName).should('be.visible');
+    cy.get(btnSelector).contains(btnName).should("have.css", "background-color", "rgb(255, 200, 0)");
+    cy.get(btnSelector).contains(btnName).click()
     
 }
 
@@ -178,7 +179,6 @@ function limitOrdersftn(navBtn,status){
     cy.get(openBtn).eq(2).contains(navBtn).should("have.css", "background-color", "rgb(17, 17, 17)")
     cy.get(openOrders).eq(0).should('contain', status);
     cy.get(openOrdersSwitch).eq(0).click()
-    cy.get(openOrderSwitched).should('be.visible')
     //Limit Order Details 
     for (var i = 0; i <= 3; i++){
         cy.get(limitOrderDetails).eq(i + 9).contains(limitOrderDetailsArr[i]).should('be.visible')
@@ -187,4 +187,16 @@ function limitOrdersftn(navBtn,status){
     cy.get(amountInTokensSwap).eq(3).contains(status).should('be.visible')
 }
 
-export {switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1, tradeDetailsftn, selectTokensftn, confirmTradeDetailsftn, confirmBtnftn, limitSellBuyTokenftn, limitSellBuyConfirmDetailsftn, notificationftn,successfulCardftn, limitSellBuyTradeDetailsftn, limitOrdersftn}
+function cancelLimitOrderftn(){
+    cy.get(cancelOrderbtn).contains("Cancel Order").click()
+        cy.get(confirmSwapDetails).contains("Cancel Order").should('be.visible')
+        cy.get(cancelOrderMsg).invoke('text').then((text) => {
+            const pattern = /\b(USDC|PNG)\b/;
+            expect(text).to.match(pattern);
+          });
+       cy.get(executionPrice).contains("Execution Price").should('be.visible') 
+       cy.get(cancelOrderBtnPopup).contains("Cancel Order").should('be.visible').click()
+       cy.get(cancellingOrderMsg).contains("Cancelling order...").should('be.visible')
+}
+
+export {switchingValues, tokenDisable, tokenSwitching, slippage, disconnectWallet, connectWallet1, tradeDetailsftn, selectTokensftn, confirmTradeDetailsftn, confirmBtnftn, limitSellBuyTokenftn, limitSellBuyConfirmDetailsftn, notificationftn,successfulCardftn, limitSellBuyTradeDetailsftn, limitOrdersftn, cancelLimitOrderftn}

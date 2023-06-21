@@ -66,14 +66,8 @@ describe('Dashboard', () => {
             } 
             //After switching, the Network name, native token and the gas token in the menu will change to the chain specific ones
             cy.get(networkName).should('have.attr', 'title', testnetNetworkNameArr[i + 1]).should('be.visible')
-            if(i != 1 ){
-                nativeDetails(i + 5)
-            }
-            else{
-            cy.get(walletAddress).contains('0x33...8C60');
-            cy.get(walletAddress).invoke('text').should('equal', '0x33...8C60');
-            cy.get(gasToken, { timeout: 50000 }).invoke('text').should('contain', gasTokenArr[i + 2]);
-            }
+            nativeDetails(i + 5)
+         
         } 
 
     })

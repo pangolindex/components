@@ -48,7 +48,7 @@ function nativeDetails(native){
     cy.get(nativeTokenBalance, { timeout: 20000 }).should('be.visible')
     cy.get(nativeTokenBalance).should('not.be.empty');
     cy.wait(10000)
-    for (var i = 0; i <= 4; i++) {
+    for (var i = 0; i <= 3; i++) {
         cy.get(nativeTokenDeatils).contains(nativeTokenDeatilsArr[i]).should('be.visible')
     }
     cy.get(detailsMenuClose).click()
