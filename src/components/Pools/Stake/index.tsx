@@ -129,6 +129,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
   const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
 
   const onChangePercentage = (value: number) => {
+    setSignatureData(null);
     if (!userLiquidityUnstaked) {
       setTypedValue('0');
       return;
