@@ -36,7 +36,7 @@ export function useRegistrationCompliantContract(withSignerIfPossible?: boolean)
 export default function HederaAirdrop({ token, logo }: Props) {
   const [recipient, setRecipient] = useState<string | undefined>(undefined);
   const [recipientEvmAddress, setRecipientEvmAddress] = useState<string | undefined>(undefined);
-  const MESSAGE_SIGNATURE = `By signing this transaction, I hereby acknowledge that I am not a US resident or citizen. (Citizens or residents of the United States of America are not allowed to the ${token?.symbol} token airdrop due to applicable law.)`;
+  const MESSAGE_SIGNATURE = `By signing this transaction, I hereby acknowledge that I am not a US resident or citizen. (Citizens or residents of the United States of America are not allowed to the token airdrop due to applicable law.)`;
 
   const [hash, setHash] = useState<string | null>(null);
   const [attempting, setAttempting] = useState<boolean>(false);
