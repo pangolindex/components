@@ -21,7 +21,7 @@ import { changeNetwork } from 'src/utils/wallet';
 import Title from '../Title';
 import { Wrapper } from '../styleds';
 import RegistrationCompliant from './abis/registrationCompliant.json';
-import { ErrorBox } from './styles';
+import { ErrorBox, Link } from './styles';
 
 interface Props {
   token: Token;
@@ -162,9 +162,16 @@ export default function HederaAirdrop({ token, logo }: Props) {
         {!account ? t('common.connectWallet') : 'CONNECT TO FUJI'}
       </Button>
     ) : (
-      <Button isDisabled={!recipient || !isHederaAccountValid} variant="primary" onClick={onRegister}>
-        Register
-      </Button>
+      <Box>
+        <Button isDisabled={!recipient || !isHederaAccountValid} variant="primary" onClick={onRegister}>
+          Register
+        </Button>
+        <Text textAlign={'center'}>
+          <Link fontSize={14} pt={'5px'} as={'a'} target="_blank" href="https://core.app/tools/testnet-faucet/?token=C">
+            Click here for gas
+          </Link>
+        </Text>
+      </Box>
     );
   };
 
@@ -193,10 +200,10 @@ export default function HederaAirdrop({ token, logo }: Props) {
     return (
       <Box>
         <Text fontSize={16} fontWeight={500} lineHeight="24px" color="text10" textAlign="center">
-          Enter your Hedera address to register for airdrop
+          Enter your Mainnet Hedera address to register for airdrop
         </Text>
         <TextInput
-          placeholder={t('bridge.bridgeInputsWidget.walletAddress')}
+          placeholder={`Mainnet ${t('bridge.bridgeInputsWidget.walletAddress')}`}
           value={recipient || ''}
           required
           onChange={(value) => {
