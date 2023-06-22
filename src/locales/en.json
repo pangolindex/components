@@ -273,16 +273,16 @@
     "viewExplorer": "View on explorer"
   },
   "walletModal": {
-    "wrongNetwork": "Wrong Network",
-    "errorConnecting": "Error connecting",
-    "pleaseConnectAvalanche": "Please connect to the appropriate Avalanche network.",
-    "switchAvalanche": "Switch to Avalanche Chain",
-    "errorConnectingRefresh": "Error connecting. Try refreshing the page.",
+    "errorConnecting": "Error connecting, try again.",
     "connectToWallet": "Connect to a wallet",
-    "newToAvalanche": "New to Avalanche? ",
-    "learnMoreWallet": "Learn more about setting up a wallet",
+    "connectWallet": "Connect Wallet",
+    "disconnect": "Disconnect",
     "initializing": "Initializing...",
-    "tryAgain": "Try Again"
+    "tryAgain": "Try Again",
+    "pleaseInstall": "Please Install.",
+    "trySearchChains": "Try searching for chains",
+    "noWalletFound": "No wallets found.",
+    "noChainsFound": "No chains found."
   },
   "web3ReactManager": {
     "unknownError": "Oops! An unknown error occurred. Please refresh the page, or visit from another browser or device."
@@ -821,7 +821,8 @@
     "notEarnFee": "Your position will not earn fees or be used in trades until the market price moves into your range.",
     "singleAssetDeposit": "The market price is outside your specified price range. Single-asset deposit only.",
     "initializedLiquidity": "This pool must be initialized before you can add liquidity. To initialize, select a starting price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher than usual due to the initialization transaction.",
-    "checkClassicFarms": "< Check Classic Farms"
+    "checkClassicFarms": "< Check Classic Farms",
+    "auditWarning": "ELIXIR LIQUIDITY CONTRACTS ARE IN BETA AND UNAUDITED. USE AT YOUR OWN RISK"
   },
   "bridge": {
     "selectChain": "Select Chain",

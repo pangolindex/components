@@ -1,5 +1,7 @@
+import { CHAINS } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { BIG_INT_ZERO } from 'src/constants';
+import { useChainId } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
 import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
@@ -18,6 +20,7 @@ export interface EarnProps {
 type StakingInfoByPid = { [pid: string]: MinichefStakingInfo };
 
 const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activeMenu, menuItems }) => {
+  const chainId = useChainId();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
@@ -27,6 +30,9 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
   const [selectedPoolIndex, setSelectedPoolIndex] = useState('');
 
   const togglePoolDetailModal = usePoolDetailnModalToggle();
+
+  const chain = CHAINS[chainId];
+  const existContract = Boolean(chain.contracts!.mini_chef && chain.contracts!.mini_chef!.active);
 
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());
@@ -98,7 +104,7 @@ const PoolListV2: React.FC<EarnProps> = ({ version, stakingInfos, setMenu, activ
       sortBy={sortBy}
       searchQuery={searchQuery}
       isLoading={stakingInfos?.length === 0 && !searchQuery}
-      doesNotPoolExist={stakingInfos?.length === 0}
+      doesNotPoolExist={!existContract}
       notFoundPools={stakingInfoData?.length === 0}
       selectedPool={selectedPool}
     >

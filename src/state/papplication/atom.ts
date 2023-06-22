@@ -3,6 +3,7 @@ import { TokenList } from '@pangolindex/token-lists';
 import { atom, useAtom } from 'jotai';
 import { nanoid } from 'nanoid';
 import { useCallback } from 'react';
+import { SUPPORTED_WALLETS } from 'src/wallet';
 
 export type PopupContent =
   | {
@@ -36,6 +37,7 @@ export interface ApplicationState {
   readonly openModal: ApplicationModal | null;
   readonly selectedPoolId: string | undefined;
   readonly isAvailableHashpack: boolean;
+  readonly wallets: typeof SUPPORTED_WALLETS;
 
   readonly useSubgraph: {
     [ChainId.FUJI]: boolean;
@@ -105,6 +107,7 @@ const popupListAtom = atom<ApplicationState['popupList']>([]);
 const openModalAtom = atom<ApplicationState['openModal']>(null);
 const selectedPoolIdAtom = atom<ApplicationState['selectedPoolId']>(undefined);
 const isAvailableHashpackAtom = atom<ApplicationState['isAvailableHashpack']>(false);
+const walletsAtom = atom<ApplicationState['wallets']>(SUPPORTED_WALLETS);
 const useSubgraphAtom = atom<ApplicationState['useSubgraph']>(useSubgraphInitialState);
 
 export function useApplicationState() {
@@ -113,6 +116,7 @@ export function useApplicationState() {
   const [openModal, setOpenModal] = useAtom(openModalAtom);
   const [selectedPoolId, setSelectedPooId] = useAtom(selectedPoolIdAtom);
   const [isAvailableHashpack, setAvailableHashpack] = useAtom(isAvailableHashpackAtom);
+  const [wallets, setWallets] = useAtom(walletsAtom);
 
   const [useSubgraph, setUseSubgraph] = useAtom(useSubgraphAtom);
 
@@ -169,11 +173,13 @@ export function useApplicationState() {
     selectedPoolId,
     openModal,
     popupList,
+    wallets,
     useSubgraph,
     updateBlockNumber,
     setAvailableHashpack,
     setSelectedPooId,
     setOpenModal,
+    setWallets,
     addPopup,
     removePopup,
     setUseSubgraph,

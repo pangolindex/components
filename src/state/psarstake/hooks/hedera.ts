@@ -41,7 +41,6 @@ export function useHederaSarRent(position: Position | undefined | null) {
 
   const useGetBlockTimestamp = useLastBlockTimestampHook[chainId];
   const blockTimestamp = useGetBlockTimestamp();
-
   const { data: exchangeRate, isLoading } = useHederaExchangeRate();
 
   /*
@@ -315,6 +314,7 @@ export function useDerivativeHederaSarCompound(position: Position | null) {
   const chainId = useChainId();
 
   const sarNftContract = useHederaSarNFTContract();
+
   const queryClient = useQueryClient();
   const onCompound = async () => {
     if (!sarStakingContract || !position || !account) {
@@ -381,6 +381,7 @@ export function useDerivativeHederaSarClaim(position: Position | null) {
   const chainId = useChainId();
 
   const sarNftContract = useHederaSarNFTContract();
+
   const queryClient = useQueryClient();
 
   const onClaim = async () => {

@@ -43,7 +43,7 @@ import {
 import { useHederaSwapTokenAssociated } from 'src/state/pswap/hooks/hedera';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { isTokenOnList, validateAddressMapping } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -259,8 +259,10 @@ const MarketOrder: React.FC<Props> = ({
   useEffect(() => {
     if (approval === ApprovalState.PENDING) {
       setApprovalSubmitted(true);
+    } else if (approval !== ApprovalState.APPROVED) {
+      setApprovalSubmitted(false);
     }
-  }, [approval, approvalSubmitted]);
+  }, [approval]);
 
   const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(chainId, currencyBalances[Field.INPUT]);
 
@@ -363,9 +365,9 @@ const MarketOrder: React.FC<Props> = ({
       if (tokenDrawerType === Field.INPUT) {
         setApprovalSubmitted(false); // reset 2 step UI for approvals
         setSelectedPercentage(0);
-
+        handleTypeInput('');
         if (
-          hederaFn.isHederaChain(chainId) &&
+          Hedera.isHederaChain(chainId) &&
           currencies[Field.OUTPUT] === CAVAX[chainId] &&
           !currencyEquals(currency, WAVAX[chainId])
         ) {
@@ -652,7 +654,7 @@ const MarketOrder: React.FC<Props> = ({
             addonLabel={
               tradePrice && (
                 <Text color="swapWidget.secondary" fontSize={16}>
-                  {t('swapPage.price')}: {tradePrice?.toSignificant(6)} {tradePrice?.quoteCurrency?.symbol}
+                  {t('swapPage.price')}: {tradePrice?.toFixed(6)} {tradePrice?.quoteCurrency?.symbol}
                 </Text>
               )
             }

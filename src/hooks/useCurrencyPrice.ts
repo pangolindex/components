@@ -6,7 +6,7 @@ import { PairState, usePair } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
 import { decimalToFraction } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import { useTokensCurrencyPriceHook } from './multiChainsHooks';
 import { useChainId } from '.';
 
@@ -213,7 +213,7 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
       // make sure to fix it asap
       // here specifically for hedera we are checking 1 PGL price little different
       // this is mainly due to hedera PGL has 0 decimals and its creating weird edge cases
-      if (hederaFn.isHederaChain(chainId)) {
+      if (Hedera.isHederaChain(chainId)) {
         const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
         const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
         const reserve0 = pair?.reserve0;

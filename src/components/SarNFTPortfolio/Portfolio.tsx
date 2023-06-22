@@ -15,9 +15,10 @@ import { Frame, StyledSVG } from './styleds';
 interface Props {
   positions: Position[];
   onSelectPosition: (position: Position | null) => void;
+  allowSorting?: boolean;
 }
 
-export default function Portfolio({ positions, onSelectPosition }: Props) {
+export default function Portfolio({ positions, onSelectPosition, allowSorting = true }: Props) {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
@@ -129,20 +130,23 @@ export default function Portfolio({ positions, onSelectPosition }: Props) {
 
   return (
     <Box display="flex" flexDirection="column" width="100%">
-      <Box display="flex" justifyContent="end" mb="20px">
-        <DropdownMenu
-          placeHolder={`${t('sarPortfolio.sortBy')}:`}
-          onSelect={onSelect}
-          defaultValue={selectedOption}
-          isMulti={false}
-          options={[
-            { label: t('sarPortfolio.apr'), value: 'apr' },
-            { label: t('sarPortfolio.amount'), value: 'amount' },
-            { label: t('sarPortfolio.newest'), value: 'newest' },
-            { label: t('sarPortfolio.oldest'), value: 'oldest' },
-          ]}
-        />
-      </Box>
+      {allowSorting && (
+        <Box display="flex" justifyContent="end" mb="20px">
+          <DropdownMenu
+            placeHolder={`${t('sarPortfolio.sortBy')}:`}
+            onSelect={onSelect}
+            defaultValue={selectedOption}
+            isMulti={false}
+            options={[
+              { label: t('sarPortfolio.apr'), value: 'apr' },
+              { label: t('sarPortfolio.amount'), value: 'amount' },
+              { label: t('sarPortfolio.newest'), value: 'newest' },
+              { label: t('sarPortfolio.oldest'), value: 'oldest' },
+            ]}
+          />
+        </Box>
+      )}
+
       <Box display="flex" flexDirection="column" flexGrow={1}>
         <Frame ref={node}>{renderItems()}</Frame>
         <Pagination pageCount={pageCount} onPageChange={handlePageClick} forcePage={page} />

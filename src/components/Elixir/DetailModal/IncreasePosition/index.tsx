@@ -38,6 +38,12 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
   const chainId = useChainId();
   const currency0 = positionDetails?.token0 ? unwrappedToken(positionDetails.token0, chainId) : undefined;
   const currency1 = positionDetails?.token1 ? unwrappedToken(positionDetails.token1, chainId) : undefined;
+
+  const currencies = {
+    [Field.CURRENCY_A]: currency0,
+    [Field.CURRENCY_B]: currency1,
+  };
+
   const { provider, library } = useLibrary();
 
   const deadline = useTransactionDeadline();
@@ -55,26 +61,32 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     dependentField,
     noLiquidity,
     parsedAmounts,
-    currencies,
     depositADisabled,
     depositBDisabled,
     position: derivedPosition,
   } = useDerivedMintInfo(existingPosition);
 
+  const shouldDisableAddLiquidity: boolean = useMemo(() => {
+    // If depositA is not disabled, check if its parsedAmount is greater than 0
+    if (!depositADisabled && parsedAmounts[Field.CURRENCY_A]) {
+      return false;
+    }
+
+    // If depositB is not disabled, check if its parsedAmount is greater than 0
+    if (!depositBDisabled && parsedAmounts[Field.CURRENCY_B]) {
+      return false;
+    }
+
+    // If neither condition above is met, disable the addLiquidity button
+    return true;
+  }, [depositADisabled, depositBDisabled, parsedAmounts]);
+
   const { independentField, typedValue } = useMintState();
   const { onFieldAInput, onFieldBInput, onCurrencySelection, onSetFeeAmount, onResetMintState } =
     useMintActionHandlers(noLiquidity);
 
-  const selectedCurrencyBalanceA = useCurrencyBalance(
-    chainId,
-    account ?? undefined,
-    positionDetails?.token0 ?? undefined,
-  );
-  const selectedCurrencyBalanceB = useCurrencyBalance(
-    chainId,
-    account ?? undefined,
-    positionDetails?.token1 ?? undefined,
-  );
+  const selectedCurrencyBalanceA = useCurrencyBalance(chainId, account ?? undefined, currency0 ?? undefined);
+  const selectedCurrencyBalanceB = useCurrencyBalance(chainId, account ?? undefined, currency1 ?? undefined);
 
   const useUSDCPrice = useUSDCPriceHook[chainId];
 
@@ -170,7 +182,13 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     } else {
       return (
         <ButtonWrapper>
-          <Button height="46px" variant="primary" borderRadius="4px" onClick={onIncrease}>
+          <Button
+            isDisabled={shouldDisableAddLiquidity}
+            height="46px"
+            variant="primary"
+            borderRadius="4px"
+            onClick={onIncrease}
+          >
             {t('common.addLiquidity')}
           </Button>
         </ButtonWrapper>

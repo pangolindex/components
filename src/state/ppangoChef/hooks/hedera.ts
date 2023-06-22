@@ -22,7 +22,7 @@ import { getExtraTokensWeeklyRewardRate } from 'src/state/pstake/utils';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks/hedera';
 import { decimalToFraction } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera, hederaFn } from 'src/utils/hedera';
 import { useShouldUseSubgraph } from '../../papplication/hooks';
 import {
   useMultipleContractSingleData,
@@ -878,7 +878,7 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
         return undefined;
       }
     },
-    { enabled: Boolean(pangoChefContract) && Boolean(account) && hederaFn.isHederaChain(chainId) },
+    { enabled: Boolean(pangoChefContract) && Boolean(account) && Hedera.isHederaChain(chainId) },
   );
 
   // we need on chain fallback
@@ -917,7 +917,7 @@ export function useHederaPangochefContractCreateCallback(): [boolean, () => Prom
     }
   }, [account, chainId, addTransaction]);
 
-  if (!hederaFn.isHederaChain(chainId)) {
+  if (!Hedera.isHederaChain(chainId)) {
     return [
       false,
       () => {
@@ -1002,6 +1002,7 @@ export function useHederaPangoChefClaimRewardCallback(
   const { t } = useTranslation();
 
   const addTransaction = useTransactionAdder();
+
   const refetchPangochefSubgraph = useRefetchPangoChefSubgraph();
   const png = PNG[chainId];
 

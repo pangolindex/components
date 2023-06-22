@@ -1,8 +1,7 @@
-import { NoEthereumProviderError } from '@pangolindex/web3-react-injected-connector';
+import { NoEthereumProviderError, UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
 import warning from 'tiny-warning';
-import { UserRejectedRequestError } from '../DefiConnector';
 
 export class BitKeepConnector extends AbstractConnector {
   constructor(kwargs: AbstractConnectorArguments) {

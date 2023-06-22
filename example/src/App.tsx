@@ -9,6 +9,7 @@ import SarStake from './pages/SarSingleStake';
 import ElixirUI from './pages/Elixir';
 import Governance from './pages/Governance';
 import GovernanceDetailV2 from './pages/GovernanceDetail';
+import AirdropUI from './pages/Airdrop';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -51,6 +52,7 @@ export default function App() {
             <Route path="sar" element={<SarStake />} />
             <Route path="vote" element={<Governance />} />
             <Route path="vote/:id" element={<GovernanceDetailV2 />} />
+            <Route path="airdrop" element={<AirdropUI />} />
             <Route path="*" element={<Swap />} />
           </Route>
         </Routes>

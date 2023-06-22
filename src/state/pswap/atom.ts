@@ -1,7 +1,7 @@
 import { CAVAX, ChainId, WAVAX } from '@pangolindex/sdk';
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import { ZERO_ADDRESS } from '../../constants';
 
 export enum Field {
@@ -153,7 +153,7 @@ export const useSwapState = () => {
 
         // we need to change from hbar to whbar when if the field.input is hbar
         if (
-          hederaFn.isHederaChain(chainId) &&
+          Hedera.isHederaChain(chainId) &&
           inputCurrencyId === currency.symbol &&
           outputcurrencyId !== wrappedCurrency.address
         ) {

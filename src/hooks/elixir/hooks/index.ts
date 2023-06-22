@@ -23,7 +23,7 @@ export type UsePoolsHookType = {
 
 export const usePoolsHook: UsePoolsHookType = {
   [ChainId.FUJI]: usePoolsViaSubgraph,
-  [ChainId.AVALANCHE]: useDummyPools,
+  [ChainId.AVALANCHE]: usePoolsViaSubgraph,
   [ChainId.WAGMI]: useDummyPools,
   [ChainId.COSTON]: useDummyPools,
   [ChainId.SONGBIRD]: useDummyPools,
@@ -58,7 +58,7 @@ export type UsePoolTVLHookType = {
 
 export const usePoolTVLHook: UsePoolTVLHookType = {
   [ChainId.FUJI]: usePoolTVL,
-  [ChainId.AVALANCHE]: useDummyPoolTVL,
+  [ChainId.AVALANCHE]: usePoolTVL,
   [ChainId.WAGMI]: useDummyPoolTVL,
   [ChainId.COSTON]: useDummyPoolTVL,
   [ChainId.SONGBIRD]: useDummyPoolTVL,
@@ -93,7 +93,7 @@ export type UseFeeTierDistributionHookType = {
 
 export const useFeeTierDistributionHook: UseFeeTierDistributionHookType = {
   [ChainId.FUJI]: useFeeTierDistribution,
-  [ChainId.AVALANCHE]: useDummyFeeTierDistribution,
+  [ChainId.AVALANCHE]: useFeeTierDistribution,
   [ChainId.WAGMI]: useDummyFeeTierDistribution,
   [ChainId.COSTON]: useDummyFeeTierDistribution,
   [ChainId.SONGBIRD]: useDummyFeeTierDistribution,
@@ -128,7 +128,7 @@ export type UseUnderlyingTokensHookType = {
 
 export const useUnderlyingTokensHook: UseUnderlyingTokensHookType = {
   [ChainId.FUJI]: useUnderlyingTokens,
-  [ChainId.AVALANCHE]: useDummyUnderlyingTokens,
+  [ChainId.AVALANCHE]: useUnderlyingTokens,
   [ChainId.WAGMI]: useDummyUnderlyingTokens,
   [ChainId.COSTON]: useDummyUnderlyingTokens,
   [ChainId.SONGBIRD]: useDummyUnderlyingTokens,
@@ -163,7 +163,7 @@ export type UseConcLiqPositionFeesHookType = {
 
 export const useConcLiqPositionFeesHook: UseConcLiqPositionFeesHookType = {
   [ChainId.FUJI]: useConcLiqPositionFees,
-  [ChainId.AVALANCHE]: useDummyConcLiqPositionFees,
+  [ChainId.AVALANCHE]: useConcLiqPositionFees,
   [ChainId.WAGMI]: useDummyConcLiqPositionFees,
   [ChainId.COSTON]: useDummyConcLiqPositionFees,
   [ChainId.SONGBIRD]: useDummyConcLiqPositionFees,
@@ -198,7 +198,7 @@ export type UsePositionTokenURIHookType = {
 
 export const usePositionTokenURIHook: UsePositionTokenURIHookType = {
   [ChainId.FUJI]: usePositionTokenURI,
-  [ChainId.AVALANCHE]: useDummyPositionTokenURI,
+  [ChainId.AVALANCHE]: usePositionTokenURI,
   [ChainId.WAGMI]: useDummyPositionTokenURI,
   [ChainId.COSTON]: useDummyPositionTokenURI,
   [ChainId.SONGBIRD]: useDummyPositionTokenURI,

@@ -23,7 +23,6 @@ const WatchList: React.FC<Props> = ({ coinChartVisible = true }) => {
 
   const allTokens = useCoinGeckoTokens();
   const { t } = useTranslation();
-  const coins = Object.values(allTokens || {});
   const selectedCurrencies = useSelectedCurrencyLists();
   const theme = useContext(ThemeContext);
 
@@ -134,7 +133,7 @@ const WatchList: React.FC<Props> = ({ coinChartVisible = true }) => {
           {open && (
             <CurrencyPopover
               getRef={(ref: HTMLInputElement) => ((popoverRef as any).current = ref)}
-              coins={coins}
+              coins={allTokens}
               isOpen={open}
               onSelectCurrency={(currency: CoingeckoWatchListToken) => {
                 setSelectedToken(currency);
