@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FixedSizeList } from 'react-window';
-import { Box, TextInput } from 'src/components';
+import { Box, Text, TextInput } from 'src/components';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import useDebounce from 'src/hooks/useDebounce';
 import usePrevious from 'src/hooks/usePrevious';
@@ -111,16 +111,22 @@ const CurrencyPopover: React.FC<Props> = ({
       </Box>
 
       <CurrencyList>
-        <FixedSizeList
-          height={135}
-          width="100%"
-          itemCount={currencies.length}
-          itemSize={56}
-          itemData={currencies}
-          itemKey={(index, data) => data[index].id}
-        >
-          {Row}
-        </FixedSizeList>
+        {currencies.length === 0 ? (
+          <Text color="text1" textAlign="center">
+            {t('common.notFound')}
+          </Text>
+        ) : (
+          <FixedSizeList
+            height={135}
+            width="100%"
+            itemCount={currencies.length}
+            itemSize={56}
+            itemData={currencies}
+            itemKey={(index, data) => data[index].id}
+          >
+            {Row}
+          </FixedSizeList>
+        )}
       </CurrencyList>
     </PopoverContainer>
   );
