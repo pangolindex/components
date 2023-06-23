@@ -44,15 +44,15 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
   }, [hash, onSelectPosition]);
 
   const handleConfirm = useCallback(() => {
-    onClaim();
-  }, [onClaim]);
+    if (!attempting) {
+      setOpenDrawer(true);
+      onClaim();
+    }
+  }, [onClaim, attempting]);
 
   useEffect(() => {
     if (openDrawer && !attempting && !hash && !claimError) {
       handleConfirmDismiss();
-    }
-    if (!openDrawer && attempting) {
-      setOpenDrawer(true);
     }
   }, [attempting]);
 
@@ -63,7 +63,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
 
   const pendingRewards = selectedPosition?.pendingRewards ?? BigNumber.from('0');
 
-  const renderButton = () => {
+  const renderButton = useCallback(() => {
     let error: string | undefined;
     if (!selectedPosition) {
       error = t('sarStakeMore.choosePosition');
@@ -75,12 +75,12 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
         <Button variant="primary" onClick={() => onChange(Options.COMPOUND)} isDisabled={pendingRewards.isZero()}>
           {t('sarCompound.compound')}
         </Button>
-        <Button variant="primary" onClick={handleConfirm} isDisabled={!!error}>
+        <Button variant="primary" onClick={handleConfirm} isDisabled={!!error || attempting}>
           {error ?? t('sarClaim.claim')}
         </Button>
       </Buttons>
     );
-  };
+  }, [pendingRewards, selectedPosition, attempting]);
 
   return (
     <Box>
