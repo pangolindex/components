@@ -93,21 +93,33 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
    *  @returns {boolean} - Returns true if the user has enough balance, false otherwise.
    */
   const isEnoughBalance = useMemo(() => {
-    // If there is a balance for both selected currencies and deposits are available.
-    if (selectedCurrencyBalanceA && selectedCurrencyBalanceB && !areDepositsNotAvailable) {
-      // If the deposit for currency A is enabled and the parsed amount does not exceed the user's balance.
-      // And, if the deposit for currency B is enabled and the parsed amount does not exceed the user's balance.
+    // Initialize flags based on whether deposits are disabled
+    let isCurrencyAEnough = depositADisabled;
+    let isCurrencyBEnough = depositBDisabled;
+
+    // Check if balances for both currencies, parsedAmounts and deposits are available
+    if (selectedCurrencyBalanceA && selectedCurrencyBalanceB && !areDepositsNotAvailable && parsedAmounts) {
+      // Check if parsed amount for A doesn't exceed user's balance for A
       if (
-        !depositADisabled &&
+        !isCurrencyAEnough &&
         parsedAmounts[Field.CURRENCY_A] &&
-        !parsedAmounts[Field.CURRENCY_A].greaterThan(selectedCurrencyBalanceA) &&
-        !depositBDisabled &&
+        !parsedAmounts[Field.CURRENCY_A]?.greaterThan(selectedCurrencyBalanceA)
+      ) {
+        isCurrencyAEnough = true;
+      }
+
+      // Check if parsed amount for B doesn't exceed user's balance for B
+      if (
+        !isCurrencyBEnough &&
         parsedAmounts[Field.CURRENCY_B] &&
-        !parsedAmounts[Field.CURRENCY_B].greaterThan(selectedCurrencyBalanceB)
-      )
-        return true; // There is enough balance for both currencies.
+        !parsedAmounts[Field.CURRENCY_B]?.greaterThan(selectedCurrencyBalanceB)
+      ) {
+        isCurrencyBEnough = true;
+      }
     }
-    return false; // There isn't enough balance or deposits are not available.
+
+    // Return true only if there is enough balance for both currency A and currency B
+    return isCurrencyAEnough && isCurrencyBEnough;
   }, [selectedCurrencyBalanceA, selectedCurrencyBalanceB, parsedAmounts, areDepositsNotAvailable]);
 
   const { independentField, typedValue } = useMintState();
