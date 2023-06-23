@@ -66,14 +66,20 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     position: derivedPosition,
   } = useDerivedMintInfo(existingPosition);
 
-  const shouldDisableAddLiquidity: boolean = useMemo(() => {
-    // If depositA is not disabled, check if its parsedAmount is greater than 0
-    if (!depositADisabled && parsedAmounts[Field.CURRENCY_A]) {
-      return false;
-    }
+  const selectedCurrencyBalanceA = useCurrencyBalance(chainId, account ?? undefined, currency0 ?? undefined);
+  const selectedCurrencyBalanceB = useCurrencyBalance(chainId, account ?? undefined, currency1 ?? undefined);
 
-    // If depositB is not disabled, check if its parsedAmount is greater than 0
-    if (!depositBDisabled && parsedAmounts[Field.CURRENCY_B]) {
+  /**
+   * `areDepositsNotAvailable` determines if the "Add Liquidity" button should be disabled.
+   * It returns `false` when either `CURRENCY_A` or `CURRENCY_B` deposit field is enabled
+   * and contains a parsed amount. Otherwise, it returns `true`, disabling the button.
+   */
+  const areDepositsNotAvailable: boolean = useMemo(() => {
+    // If depositA or depositB are not disabled, check if its parsedAmount is greater than 0
+    if (
+      (!depositADisabled && parsedAmounts[Field.CURRENCY_A]) ||
+      (!depositBDisabled && parsedAmounts[Field.CURRENCY_B])
+    ) {
       return false;
     }
 
@@ -81,12 +87,32 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     return true;
   }, [depositADisabled, depositBDisabled, parsedAmounts]);
 
+  /**
+   *  This function determines if the user has enough balance of selected currencies to perform a transaction.
+   *  It uses React's useMemo hook to optimize performance by memorizing the result, until the dependencies change.
+   *  @returns {boolean} - Returns true if the user has enough balance, false otherwise.
+   */
+  const isEnoughBalance = useMemo(() => {
+    // If there is a balance for both selected currencies and deposits are available.
+    if (selectedCurrencyBalanceA && selectedCurrencyBalanceB && !areDepositsNotAvailable) {
+      // If the deposit for currency A is enabled and the parsed amount does not exceed the user's balance.
+      // And, if the deposit for currency B is enabled and the parsed amount does not exceed the user's balance.
+      if (
+        !depositADisabled &&
+        parsedAmounts[Field.CURRENCY_A] &&
+        !parsedAmounts[Field.CURRENCY_A].greaterThan(selectedCurrencyBalanceA) &&
+        !depositBDisabled &&
+        parsedAmounts[Field.CURRENCY_B] &&
+        !parsedAmounts[Field.CURRENCY_B].greaterThan(selectedCurrencyBalanceB)
+      )
+        return true; // There is enough balance for both currencies.
+    }
+    return false; // There isn't enough balance or deposits are not available.
+  }, [selectedCurrencyBalanceA, selectedCurrencyBalanceB, parsedAmounts, areDepositsNotAvailable]);
+
   const { independentField, typedValue } = useMintState();
   const { onFieldAInput, onFieldBInput, onCurrencySelection, onSetFeeAmount, onResetMintState } =
     useMintActionHandlers(noLiquidity);
-
-  const selectedCurrencyBalanceA = useCurrencyBalance(chainId, account ?? undefined, currency0 ?? undefined);
-  const selectedCurrencyBalanceB = useCurrencyBalance(chainId, account ?? undefined, currency1 ?? undefined);
 
   const useUSDCPrice = useUSDCPriceHook[chainId];
 
@@ -183,13 +209,17 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
       return (
         <ButtonWrapper>
           <Button
-            isDisabled={shouldDisableAddLiquidity}
+            isDisabled={areDepositsNotAvailable || !isEnoughBalance}
             height="46px"
             variant="primary"
             borderRadius="4px"
             onClick={onIncrease}
           >
-            {t('common.addLiquidity')}
+            {areDepositsNotAvailable
+              ? t('common.enterAmount')
+              : isEnoughBalance
+              ? t('common.addLiquidity')
+              : t('common.insufficientBalance')}
           </Button>
         </ButtonWrapper>
       );
