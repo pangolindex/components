@@ -45,7 +45,6 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
 
   const handleConfirm = useCallback(() => {
     if (!attempting) {
-      setOpenDrawer(true);
       onClaim();
     }
   }, [onClaim, attempting]);
@@ -53,6 +52,9 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
   useEffect(() => {
     if (openDrawer && !attempting && !hash && !claimError) {
       handleConfirmDismiss();
+    }
+    if (!openDrawer && attempting) {
+      setOpenDrawer(true);
     }
   }, [attempting]);
 
@@ -76,7 +78,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
           {t('sarCompound.compound')}
         </Button>
         <Button variant="primary" onClick={handleConfirm} isDisabled={!!error || attempting}>
-          {error ?? t('sarClaim.claim')}
+          {error ? error : attempting ? t('common.loading') : t('sarClaim.claim')}
         </Button>
       </Buttons>
     );
