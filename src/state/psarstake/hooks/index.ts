@@ -82,6 +82,7 @@ export const useSarPositionsHook: useSarPositionsType = {
   [ChainId.OP]: useDummySarPositions,
   [ChainId.EVMOS_TESTNET]: useSarPositions,
   [ChainId.EVMOS_MAINNET]: useDummySarPositions,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useSarPositions,
 };
 
 export const useDerivativeSarStakeHook: useDerivativeSarStakeType = {
@@ -113,6 +114,7 @@ export const useDerivativeSarStakeHook: useDerivativeSarStakeType = {
   [ChainId.OP]: useDummyDerivativeSarStake,
   [ChainId.EVMOS_TESTNET]: useDerivativeSarStake,
   [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarStake,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDerivativeSarStake,
 };
 
 export const useDerivativeSarUnstakeHook: useDerivativeSarUnstakeType = {
@@ -144,6 +146,7 @@ export const useDerivativeSarUnstakeHook: useDerivativeSarUnstakeType = {
   [ChainId.OP]: useDummyDerivativeSarUnstake,
   [ChainId.EVMOS_TESTNET]: useDerivativeSarUnstake,
   [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarUnstake,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDerivativeSarUnstake,
 };
 
 export const useDerivativeSarClaimHook: useDerivativeSarClaimType = {
@@ -175,6 +178,7 @@ export const useDerivativeSarClaimHook: useDerivativeSarClaimType = {
   [ChainId.OP]: useDummyDerivativeSarClaim,
   [ChainId.EVMOS_TESTNET]: useDerivativeSarClaim,
   [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarClaim,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDerivativeSarClaim,
 };
 
 export const useDerivativeSarCompoundHook: useDerivativeSarCompoundType = {
@@ -206,4 +210,5 @@ export const useDerivativeSarCompoundHook: useDerivativeSarCompoundType = {
   [ChainId.OP]: useDummyDerivativeSarCompound,
   [ChainId.EVMOS_TESTNET]: useDerivativeSarCompound,
   [ChainId.EVMOS_MAINNET]: useDummyDerivativeSarCompound,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDerivativeSarCompound,
 };

@@ -115,6 +115,7 @@ const initialState: SwapState = {
   [ChainId.MOONRIVER]: initialValue,
   [ChainId.MOONBEAM]: initialValue,
   [ChainId.OP]: initialValue,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: initialValue,
 };
 
 const swapStateAtom = atom<SwapState>(initialState);

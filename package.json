@@ -4,7 +4,7 @@
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "engines": {
-    "node": ">=14.x.x <=16.x.x"
+    "node": ">=18.x.x <=20.x.x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -128,7 +128,7 @@
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
     "@pangolindex/governance": "1.2.0",
-    "@pangolindex/sdk": "5.2.0",
+    "@pangolindex/sdk": "5.2.0-rc.5-internal.110e44d",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.5",

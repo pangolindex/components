@@ -56,6 +56,7 @@ export const usePangoChefInfosHook: UsePangoChefInfosHookType = {
   [ChainId.OP]: useDummyPangoChefInfos,
   [ChainId.EVMOS_TESTNET]: usePangoChefInfos,
   [ChainId.EVMOS_MAINNET]: useDummyPangoChefInfos,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: usePangoChefInfos,
 };
 
 export type UsePangoChefStakeCallbackHookType = {
@@ -94,6 +95,7 @@ export const usePangoChefStakeCallbackHook: UsePangoChefStakeCallbackHookType = 
   [ChainId.OP]: useDummyPangoChefCallback,
   [ChainId.EVMOS_TESTNET]: useEVMPangoChefStakeCallback,
   [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useEVMPangoChefStakeCallback,
 };
 
 export type UsePangoChefClaimRewardCallbackHookType = {
@@ -132,6 +134,7 @@ export const usePangoChefClaimRewardCallbackHook: UsePangoChefClaimRewardCallbac
   [ChainId.OP]: useDummyPangoChefCallback,
   [ChainId.EVMOS_TESTNET]: useEVMPangoChefClaimRewardCallback,
   [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useEVMPangoChefClaimRewardCallback,
 };
 
 export type UsePangoChefWithdrawCallbackHookType = {
@@ -170,6 +173,7 @@ export const usePangoChefWithdrawCallbackHook: UsePangoChefWithdrawCallbackHookT
   [ChainId.OP]: useDummyPangoChefCallback,
   [ChainId.EVMOS_TESTNET]: useEVMPangoChefWithdrawCallback,
   [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useEVMPangoChefWithdrawCallback,
 };
 
 export type UsePangoChefCompoundCallbackHookType = {
@@ -208,6 +212,7 @@ export const usePangoChefCompoundCallbackHook: UsePangoChefCompoundCallbackHookT
   [ChainId.OP]: useDummyPangoChefCallback,
   [ChainId.EVMOS_TESTNET]: useEVMPangoChefCompoundCallback,
   [ChainId.EVMOS_MAINNET]: useDummyPangoChefCallback,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useEVMPangoChefCompoundCallback,
 };
 
 export type UseGetLockingPoolsForPoolIdHookType = {
@@ -246,4 +251,5 @@ export const useGetLockingPoolsForPoolIdHook: UseGetLockingPoolsForPoolIdHookTyp
   [ChainId.OP]: useDummyIsLockingPoolZero,
   [ChainId.EVMOS_TESTNET]: useDummyIsLockingPoolZero,
   [ChainId.EVMOS_MAINNET]: useDummyIsLockingPoolZero,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyIsLockingPoolZero,
 };
