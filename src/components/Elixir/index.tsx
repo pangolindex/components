@@ -26,7 +26,7 @@ const Elixir = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
-  const [activeMenu, setMenu] = useState<string>(MenuType.allPools);
+  const [activeMenu, setMenu] = useState<string>(MenuType.topPools);
   const [detailModalIsOpen, setDetailModalIsOpen] = useState<boolean>(false);
   const [addLiquidityIsOpen, setAddLiquidityIsOpen] = useState<boolean>(false);
   const [selectedPosition, setSelectedPosition] = useState<PositionDetails | undefined>(undefined);
@@ -145,10 +145,10 @@ const Elixir = () => {
               </MobileHeader>
             </Visible>
 
-            {activeMenu === MenuType.allPools && (
+            {activeMenu === MenuType.topPools && (
               <PoolList setMenu={handleSetMenu} activeMenu={activeMenu} menuItems={menuItems} />
             )}
-            {activeMenu !== MenuType.allPools && (
+            {activeMenu !== MenuType.topPools && (
               <>
                 {positionsLoading ? (
                   <Loader height={'auto'} size={100} />

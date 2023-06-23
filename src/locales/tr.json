@@ -762,7 +762,7 @@
   },
   "elixir": {
     "menuTypes": {
-      "allPools": "All Pools",
+      "topPools": "Top Pools",
       "allPositions": "Tüm Pozisyonlar",
       "openPositions": "Açık Pozisyonlar",
       "closedPositions": "Kapalı Pozisyonlar"

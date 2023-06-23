@@ -45,7 +45,7 @@ const menuItems: Array<{ label: string; value: string }> = Object.keys(MenuType)
 }));
 
 const TemplatePositionList: ComponentStory<typeof PoolList> = (args: any) => {
-  const [activeMenu, setMenu] = useState<string>(MenuType.allPools);
+  const [activeMenu, setMenu] = useState<string>(MenuType.topPools);
 
   return (
     <Box>

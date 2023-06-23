@@ -1,6 +1,6 @@
-import { ElixirPool } from '@pangolindex/sdk';
+import { Currency, ElixirPool } from '@pangolindex/sdk';
 
 export type PoolCardProps = {
   pool: ElixirPool;
-  onClick: () => void;
+  onClick: (currency0: Currency, currency1: Currency) => void;
 };

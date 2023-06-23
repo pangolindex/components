@@ -239,11 +239,11 @@ export function usePoolsViaSubgraph(
   }, [poolKeys, elixirPools, poolTokens]);
 }
 
-export function useAllPoolsViaSubgraph(): [PoolState, ElixirPool | null][] {
+export function useAllPoolsViaSubgraph(): { isLoading: boolean; allPools: [PoolState, ElixirPool | null][] } {
   const chainId = useChainId();
   const { isLoading, data: elixirPools } = useElixirPools();
 
-  return useMemo(() => {
+  const allPools: [PoolState, ElixirPool | null][] = useMemo(() => {
     return (elixirPools || []).map((poolData) => {
       const token0 = new Token(
         chainId,
@@ -283,7 +283,9 @@ export function useAllPoolsViaSubgraph(): [PoolState, ElixirPool | null][] {
         return [PoolState.NOT_EXISTS, null];
       }
     });
-  }, [elixirPools, chainId]);
+  }, [elixirPools, chainId, isLoading]);
+
+  return { isLoading, allPools };
 }
 
 // maximum number of blocks past which we consider the data stale

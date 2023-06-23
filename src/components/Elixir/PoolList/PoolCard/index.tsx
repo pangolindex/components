@@ -1,7 +1,11 @@
-import React from 'react';
+import { CurrencyAmount, Fraction } from '@pangolindex/sdk';
+import numeral from 'numeral';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, DoubleCurrencyLogo, Text } from 'src/components';
+import { Box, Button, DoubleCurrencyLogo, Text, Tooltip } from 'src/components';
 import { useChainId } from 'src/hooks';
+import { useUnderlyingTokensHook } from 'src/hooks/elixir/hooks';
+import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import {
   BlackBox,
@@ -26,11 +30,25 @@ const PoolCard: React.FC<PoolCardProps> = (props) => {
 
   const { t } = useTranslation();
 
+  const useUnderlyingTokens = useUnderlyingTokensHook[chainId];
+  const useUSDCPrice = useUSDCPriceHook[chainId];
+  const price0 = useUSDCPrice(pool?.token0 ?? undefined);
+  const price1 = useUSDCPrice(pool?.token1 ?? undefined);
+
+  const [underlyingToken0, underlyingToken1] = useUnderlyingTokens(pool?.token0, pool?.token1, pool?.fee);
+  const totalFiatValueOfPool: CurrencyAmount | null = useMemo(() => {
+    if (!price0 || !price1 || !underlyingToken0 || !underlyingToken1) return null;
+
+    const amount0 = price0.quote(underlyingToken0, chainId);
+    const amount1 = price1.quote(underlyingToken1, chainId);
+    return amount0.add(amount1);
+  }, [price0, price1, underlyingToken0, underlyingToken1]);
+
   return (
     <>
       <DesktopWrapper>
         <HoverWrapper>
-          <Card onClick={onClick}>
+          <Card>
             <Row>
               <Data>
                 {currency0 && currency1 && <DoubleCurrencyLogo size={48} currency0={currency0} currency1={currency1} />}
@@ -42,12 +60,30 @@ const PoolCard: React.FC<PoolCardProps> = (props) => {
                     {Number(pool?.fee) / 10 ** 4}%
                   </BlackBoxContent>
                 </BlackBox>
-                <BlackBox>
+                <BlackBox data-tip data-for={`pool-card`}>
                   <BlackBoxContent color="color11" fontSize={18} fontWeight={500}>
-                    {pool?.liquidity?.toString()}
+                    {totalFiatValueOfPool?.greaterThan(new Fraction('1', '100'))
+                      ? numeral(totalFiatValueOfPool?.toFixed(2)).format('$0.00a')
+                      : '-'}
                   </BlackBoxContent>
+
+                  <Tooltip id={`pool-card`} effect="solid">
+                    {t('elixir.totalValueLocked')}
+                  </Tooltip>
                 </BlackBox>
               </Data>
+
+              <Box display={'flex'} flexDirection="column" alignItems={'flex-end'}>
+                <Button
+                  onClick={() => {
+                    onClick(currency0, currency1);
+                  }}
+                  padding="4px 6px"
+                  variant="primary"
+                >
+                  {t('common.addLiquidity')}
+                </Button>
+              </Box>
             </Row>
           </Card>
         </HoverWrapper>
@@ -65,10 +101,16 @@ const PoolCard: React.FC<PoolCardProps> = (props) => {
                   <OptionButton>
                     <Text>{Number(pool?.fee) / 10 ** 4}%</Text>
                   </OptionButton>
-                  <BlackBox>
+                  <BlackBox data-tip data-for={`pool-card`}>
                     <Text p={'2px 6px'} textAlign={'center'} color={'color11'}>
-                      {pool?.liquidity?.toString()}
+                      {totalFiatValueOfPool?.greaterThan(new Fraction('1', '100'))
+                        ? numeral(totalFiatValueOfPool?.toFixed(2)).format('$0.00a')
+                        : '-'}
                     </Text>
+
+                    <Tooltip id={`pool-card`} effect="solid">
+                      {t('elixir.totalValueLocked')}
+                    </Tooltip>
                   </BlackBox>
                 </OptionsWrapper>
               </Box>
@@ -78,8 +120,15 @@ const PoolCard: React.FC<PoolCardProps> = (props) => {
           </Box>
 
           <Box pt={'15px'}>
-            <Button height="46px" variant="primary" borderRadius="4px" onClick={onClick}>
-              {t('elixir.positionCard.seeDetails')}
+            <Button
+              height="46px"
+              variant="primary"
+              borderRadius="4px"
+              onClick={() => {
+                onClick(currency0, currency1);
+              }}
+            >
+              {t('common.addLiquidity')}
             </Button>
           </Box>
         </Panel>

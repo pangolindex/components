@@ -11,6 +11,22 @@ export const ErrorContainer = styled.div`
   padding: 0px 10px;
 `;
 
+export const LoaderWrapper = styled(Box)`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  padding-right: 200px; // sidebar width
+  pointer-events: all;
+  position: absolute;
+  width: 100%;
+  z-index: 999;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding-right: 0px;
+  `};
+`;
+
 export const MobileGridContainer = styled(Box)`
   display: none;
   ${({ theme }) => theme.mediaWidth.upToSmall`

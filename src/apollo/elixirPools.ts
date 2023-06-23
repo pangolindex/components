@@ -33,8 +33,8 @@ export type ElixirPoolType = {
 };
 
 export const GET_ELIXIR_POOLS = gql`
-  query pools($where: Pool_filter) {
-    pools(where: $where) {
+  query pools($where: Pool_filter, $first: Int) {
+    pools(first: $first, orderBy: liquidity, orderDirection: desc, where: $where) {
       id
       token0 {
         id
@@ -82,7 +82,10 @@ export const useElixirPools = (poolAddresses?: (string | undefined)[]) => {
     if (!gqlClient) {
       return null;
     }
-    const data = await gqlClient.request(GET_ELIXIR_POOLS, { where: poolsToFind ? { id_in: poolsToFind } : {} });
+    const data = await gqlClient.request(GET_ELIXIR_POOLS, {
+      where: poolsToFind ? { id_in: poolsToFind } : {},
+      first: poolsToFind ? undefined : 10,
+    });
 
     return (
       (data?.pools as ElixirPoolType[])

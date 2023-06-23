@@ -1,19 +1,21 @@
-import { ElixirPool, JSBI } from '@pangolindex/sdk';
+import { Currency, ElixirPool, JSBI } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Inbox, Search } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, DropdownMenu, Text, TextInput } from 'src/components';
+import { Box, Button, DropdownMenu, Loader, Text, TextInput } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
-import { usePangolinWeb3 } from 'src/hooks';
 import { useAllPoolsViaSubgraph } from 'src/hooks/elixir/hooks/evm';
 import { PoolState } from 'src/hooks/elixir/hooks/types';
 import useDebounce from 'src/hooks/useDebounce';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
+import { Field } from 'src/state/pmint/elixir/atom';
+import { useMintActionHandlers } from 'src/state/pmint/elixir/hooks';
 import { Hidden } from 'src/theme/components';
+import AddLiquidity from '../AddLiquidity';
 import PoolCard from './PoolCard';
-import { Cards, ErrorContainer, MobileGridContainer, PanelWrapper, PoolsWrapper } from './styles';
+import { Cards, ErrorContainer, LoaderWrapper, MobileGridContainer, PanelWrapper, PoolsWrapper } from './styles';
 import { PoolListProps, SortingType } from './types';
 
 const PoolList: React.FC<PoolListProps> = (props) => {
@@ -23,7 +25,11 @@ const PoolList: React.FC<PoolListProps> = (props) => {
   const [sortBy, setSortBy] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
-  const pools = useAllPoolsViaSubgraph();
+  const [addLiquidityIsOpen, setAddLiquidityIsOpen] = useState<boolean>(false);
+
+  const { onCurrencySelection } = useMintActionHandlers(true);
+
+  const { isLoading, allPools: pools } = useAllPoolsViaSubgraph();
 
   const allPools = useMemo(() => {
     const farms: ElixirPool[] = [];
@@ -89,22 +95,61 @@ const PoolList: React.FC<PoolListProps> = (props) => {
     return (pools || [])?.filter((item: ElixirPool) => JSBI.greaterThan(item?.liquidity, BIG_INT_ZERO));
   }, [allPools, debouncedSearchQuery, sortBy]);
 
+  const onOpenAddLiquidityModal = useCallback(
+    (currency0: Currency, currency1: Currency) => {
+      onCurrencySelection(Field.CURRENCY_A, currency0);
+      onCurrencySelection(Field.CURRENCY_B, currency1);
+      setAddLiquidityIsOpen(!addLiquidityIsOpen);
+    },
+    [addLiquidityIsOpen],
+  );
+
+  const onCloseAddLiquidityModal = useCallback(() => {
+    setAddLiquidityIsOpen(!addLiquidityIsOpen);
+  }, [addLiquidityIsOpen]);
+
   return (
     <PoolsWrapper>
-      <>
-        <Box>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={10}>
-            <Box width="100%">
-              <TextInput
-                placeholder={t('elixir.positionList.searchContent')}
-                onChange={handleSearch}
-                value={searchQuery}
-                id="token-search-input"
-                addonAfter={<Search style={{ marginTop: '5px' }} color={theme.text2} size={20} />}
-              />
+      {isLoading ? (
+        <LoaderWrapper>
+          <Loader height={'auto'} size={100} />
+        </LoaderWrapper>
+      ) : (
+        <>
+          <Box>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={10}>
+              <Box width="100%">
+                <TextInput
+                  placeholder={t('elixir.positionList.searchContent')}
+                  onChange={handleSearch}
+                  value={searchQuery}
+                  id="token-search-input"
+                  addonAfter={<Search style={{ marginTop: '5px' }} color={theme.text2} size={20} />}
+                />
+              </Box>
+              <Hidden upToSmall={true}>
+                <Box ml={10}>
+                  <DropdownMenu
+                    placeHolder={t('common.sortBy')}
+                    options={sortOptions}
+                    defaultValue={sortBy}
+                    onSelect={(value) => {
+                      setSortBy(value as string);
+                    }}
+                    height="54px"
+                  />
+                </Box>
+              </Hidden>
             </Box>
-            <Hidden upToSmall={true}>
-              <Box ml={10}>
+            <MobileGridContainer>
+              <DropdownMenu
+                options={menuItems}
+                defaultValue={activeMenu}
+                onSelect={(value) => {
+                  setMenu(value as string);
+                }}
+              />
+              <Box display={'flex'} justifyContent={'flex-end'}>
                 <DropdownMenu
                   placeHolder={t('common.sortBy')}
                   options={sortOptions}
@@ -112,57 +157,38 @@ const PoolList: React.FC<PoolListProps> = (props) => {
                   onSelect={(value) => {
                     setSortBy(value as string);
                   }}
-                  height="54px"
+                  isSearchable={false}
                 />
               </Box>
-            </Hidden>
+            </MobileGridContainer>
           </Box>
-          <MobileGridContainer>
-            <DropdownMenu
-              options={menuItems}
-              defaultValue={activeMenu}
-              onSelect={(value) => {
-                setMenu(value as string);
-              }}
-            />
-            <Box display={'flex'} justifyContent={'flex-end'}>
-              <DropdownMenu
-                placeHolder={t('common.sortBy')}
-                options={sortOptions}
-                defaultValue={sortBy}
-                onSelect={(value) => {
-                  setSortBy(value as string);
-                }}
-                isSearchable={false}
-              />
-            </Box>
-          </MobileGridContainer>
-        </Box>
-        {finalPools?.length === 0 ? (
-          <ErrorContainer>
-            <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-              <Inbox size={'121px'} />
-              <Text pt={'25px'} pb={'25px'} color="color11" fontSize={[22, 26]} fontWeight={400}>
-                {t('common.notFound')}
-              </Text>
-              <Button width={'300px'} variant="primary" onClick={toggleWalletModal}>
-                {t('common.connectWallet')}
-              </Button>
-            </Box>
-          </ErrorContainer>
-        ) : (
-          <Scrollbars>
-            <PanelWrapper>
-              {' '}
-              <Cards>
-                {finalPools.map((pool, i) => (
-                  <PoolCard key={i} pool={pool} onClick={() => {}} />
-                ))}
-              </Cards>
-            </PanelWrapper>
-          </Scrollbars>
-        )}
-      </>
+          {finalPools?.length === 0 ? (
+            <ErrorContainer>
+              <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+                <Inbox size={'121px'} />
+                <Text pt={'25px'} pb={'25px'} color="color11" fontSize={[22, 26]} fontWeight={400}>
+                  {t('common.notFound')}
+                </Text>
+                <Button width={'300px'} variant="primary" onClick={toggleWalletModal}>
+                  {t('common.connectWallet')}
+                </Button>
+              </Box>
+            </ErrorContainer>
+          ) : (
+            <Scrollbars>
+              <PanelWrapper>
+                {' '}
+                <Cards>
+                  {finalPools.map((pool, i) => (
+                    <PoolCard key={i} pool={pool} onClick={onOpenAddLiquidityModal} />
+                  ))}
+                </Cards>
+              </PanelWrapper>
+            </Scrollbars>
+          )}
+        </>
+      )}
+      {addLiquidityIsOpen && <AddLiquidity isOpen={addLiquidityIsOpen} onClose={onCloseAddLiquidityModal} />}
     </PoolsWrapper>
   );
 };
