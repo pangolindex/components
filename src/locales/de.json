@@ -762,6 +762,7 @@
   },
   "elixir": {
     "menuTypes": {
+      "allPools": "All Pools",
       "allPositions": "All Positions",
       "openPositions": "Open Positions",
       "closedPositions": "Closed Positions"

@@ -10,6 +10,7 @@ import { PositionDetails } from 'src/state/pwallet/elixir/types';
 import { Visible } from 'src/theme/components';
 import AddLiquidity from './AddLiquidity';
 import DetailModal from './DetailModal';
+import PoolList from './PoolList';
 import PositionCard from './PositionCard';
 import PositionList from './PositionList';
 import { SortingType } from './PositionList/types';
@@ -25,7 +26,7 @@ const Elixir = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
-  const [activeMenu, setMenu] = useState<string>(MenuType.allPositions);
+  const [activeMenu, setMenu] = useState<string>(MenuType.allPools);
   const [detailModalIsOpen, setDetailModalIsOpen] = useState<boolean>(false);
   const [addLiquidityIsOpen, setAddLiquidityIsOpen] = useState<boolean>(false);
   const [selectedPosition, setSelectedPosition] = useState<PositionDetails | undefined>(undefined);
@@ -143,38 +144,46 @@ const Elixir = () => {
                 </Button>
               </MobileHeader>
             </Visible>
-            {positionsLoading ? (
-              <Loader height={'auto'} size={100} />
-            ) : (
-              <PositionList
-                setMenu={handleSetMenu}
-                activeMenu={activeMenu}
-                menuItems={menuItems}
-                handleSearch={handleSearch}
-                onChangeSortBy={setSortBy}
-                sortBy={sortBy}
-                searchQuery={searchQuery}
-                isLoading={false}
-                doesNotPoolExist={finalPositions?.length === 0}
-              >
-                <Cards>
-                  {finalPositions.map((position) => (
-                    <PositionCard
-                      key={position.tokenId.toString()}
-                      token0={position.token0}
-                      token1={position.token1}
-                      feeAmount={position.fee}
-                      tokenId={position.tokenId}
-                      liquidity={position.liquidity}
-                      tickLower={position.tickLower}
-                      tickUpper={position.tickUpper}
-                      onClick={() => {
-                        onChangeDetailModalStatus(position);
-                      }}
-                    />
-                  ))}
-                </Cards>
-              </PositionList>
+
+            {activeMenu === MenuType.allPools && (
+              <PoolList setMenu={handleSetMenu} activeMenu={activeMenu} menuItems={menuItems} />
+            )}
+            {activeMenu !== MenuType.allPools && (
+              <>
+                {positionsLoading ? (
+                  <Loader height={'auto'} size={100} />
+                ) : (
+                  <PositionList
+                    setMenu={handleSetMenu}
+                    activeMenu={activeMenu}
+                    menuItems={menuItems}
+                    handleSearch={handleSearch}
+                    onChangeSortBy={setSortBy}
+                    sortBy={sortBy}
+                    searchQuery={searchQuery}
+                    isLoading={false}
+                    doesNotPoolExist={finalPositions?.length === 0}
+                  >
+                    <Cards>
+                      {finalPositions.map((position) => (
+                        <PositionCard
+                          key={position.tokenId.toString()}
+                          token0={position.token0}
+                          token1={position.token1}
+                          feeAmount={position.fee}
+                          tokenId={position.tokenId}
+                          liquidity={position.liquidity}
+                          tickLower={position.tickLower}
+                          tickUpper={position.tickUpper}
+                          onClick={() => {
+                            onChangeDetailModalStatus(position);
+                          }}
+                        />
+                      ))}
+                    </Cards>
+                  </PositionList>
+                )}
+              </>
             )}
           </Content>
         </Box>

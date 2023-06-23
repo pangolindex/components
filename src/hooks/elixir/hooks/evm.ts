@@ -239,6 +239,53 @@ export function usePoolsViaSubgraph(
   }, [poolKeys, elixirPools, poolTokens]);
 }
 
+export function useAllPoolsViaSubgraph(): [PoolState, ElixirPool | null][] {
+  const chainId = useChainId();
+  const { isLoading, data: elixirPools } = useElixirPools();
+
+  return useMemo(() => {
+    return (elixirPools || []).map((poolData) => {
+      const token0 = new Token(
+        chainId,
+        poolData?.token0?.id,
+        Number(poolData?.token0?.decimals),
+        poolData?.token0?.symbol,
+        poolData?.token0?.name,
+      );
+
+      const token1 = new Token(
+        chainId,
+        poolData?.token1?.id,
+        Number(poolData?.token1?.decimals),
+        poolData?.token1?.symbol,
+        poolData?.token1?.name,
+      );
+
+      const sqrtPrice = poolData.sqrtPrice;
+      const liquidity = poolData.liquidity;
+      if (isLoading) return [PoolState.LOADING, null];
+      if (!sqrtPrice || !liquidity) return [PoolState.NOT_EXISTS, null];
+      if (!sqrtPrice || sqrtPrice === '0') return [PoolState.NOT_EXISTS, null];
+
+      try {
+        const pool = PoolCache.getPool(
+          token0,
+          token1,
+          Number(poolData?.feeTier),
+          sqrtPrice,
+          liquidity,
+          Number(poolData.tick),
+          poolData.ticks,
+        );
+        return [PoolState.EXISTS, pool];
+      } catch (error) {
+        console.error('Error when constructing the pool', error);
+        return [PoolState.NOT_EXISTS, null];
+      }
+    });
+  }, [elixirPools, chainId]);
+}
+
 // maximum number of blocks past which we consider the data stale
 const MAX_DATA_BLOCK_AGE = 20;
 
