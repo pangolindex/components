@@ -4,6 +4,7 @@ import { PNG } from '@components/constants/tokens';
 import { getTokenLogoURL } from '@components/utils/getTokenLogoURL';
 import { Frame } from './styleds';
 import { Airdrop, ComingSoon } from '@components/components';
+import { AirdropType } from '@pangolindex/sdk';
 
 const activeAirdrops = [
   {
@@ -17,6 +18,12 @@ const activeAirdrops = [
     type: FLARE_MAINNET!.contracts!.airdrop!.type,
     token: PNG[ChainId.FLARE_MAINNET],
     logo: getTokenLogoURL(PNG[ChainId.FLARE_MAINNET].address, ChainId.FLARE_MAINNET, 48),
+  },
+  {
+    contractAddress: "0x0000000000000000000000000000000000e2a10f",
+    type: AirdropType.MERKLE,
+    token: PNG[ChainId.HEDERA_TESTNET],
+    logo: getTokenLogoURL(PNG[ChainId.HEDERA_TESTNET].address, ChainId.HEDERA_TESTNET, 48),
   },
 ];
 

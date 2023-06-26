@@ -13,6 +13,7 @@ import {
 } from '@hashgraph/sdk';
 import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
+import { ethers } from 'ethers';
 import { HashConnector, hashConnect } from 'src/connectors';
 import { PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
 
@@ -294,6 +295,13 @@ export interface CastVoteData {
   nftId: string;
   chainId: ChainId;
   account: string;
+}
+
+export interface ClaimAirdropData {
+  address: string;
+  account: string;
+  amount: string;
+  proof: string[];
 }
 
 export type SarUnstakeData = Omit<SarStakeData, 'methodName' | 'positionId'> & { positionId: string };
@@ -1124,6 +1132,29 @@ export class Hedera {
           .addUint64(proposalId as any)
           .addBool(support)
           .addInt64(nftId as any),
+      );
+
+    return hashConnect.sendTransaction(transaction, accountId);
+  }
+
+  public claimAirdrop(claimData: ClaimAirdropData) {
+    const { address, account, amount, proof } = claimData;
+
+    const contractId = address ? this.hederaId(address) : '';
+    const accountId = account ? this.hederaId(account) : '';
+    const maxGas = TRANSACTION_MAX_FEES.UNWRAP_WHBAR;
+
+    const transaction = new ContractExecuteTransaction()
+      //Set the ID of the router contract
+      .setContractId(contractId)
+      //Set the gas for the contract call
+      .setGas(maxGas)
+      //Set the contract function to call
+      .setFunction(
+        'claim',
+        new ContractFunctionParameters()
+          .addUint96(amount as any)
+          .addBytes32Array(proof.map((p) => ethers.utils.arrayify(p))),
       );
 
     return hashConnect.sendTransaction(transaction, accountId);
