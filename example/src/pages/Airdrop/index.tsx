@@ -1,10 +1,9 @@
 import React from 'react';
-import { ChainId, SONGBIRD_CANARY, FLARE_MAINNET } from '@pangolindex/sdk';
+import { ChainId, SONGBIRD_CANARY, FLARE_MAINNET, AirdropType } from '@pangolindex/sdk';
 import { PNG } from '@components/constants/tokens';
 import { getTokenLogoURL } from '@components/utils/getTokenLogoURL';
 import { Frame } from './styleds';
 import { Airdrop, ComingSoon } from '@components/components';
-import { AirdropType } from '@pangolindex/sdk';
 
 const activeAirdrops = [
   {
