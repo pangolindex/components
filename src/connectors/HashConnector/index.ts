@@ -81,13 +81,14 @@ export class HashConnector extends AbstractConnector {
     const lastConnectedChainId = Number(localStorage.getItem('lastConnectedChainId'));
     if (lastConnectedChainId === ChainId.HEDERA_MAINNET || lastConnectedChainId === ChainId.HEDERA_TESTNET) {
       this.chainId = lastConnectedChainId;
+      this.network = lastConnectedChainId === ChainId.HEDERA_MAINNET ? 'mainnet' : 'testnet';
     } else {
       this.chainId = args?.config?.chainId;
+      this.network = args?.config?.networkId;
     }
 
     this.normalizeChainId = args?.normalizeChainId;
     this.normalizeAccount = args?.normalizeAccount;
-    this.network = args?.config?.networkId;
     this.availableExtension = false;
     this.topic = '';
     this.pairingString = '';
@@ -100,6 +101,7 @@ export class HashConnector extends AbstractConnector {
     this.handleConnectionStatusChangeEvent = this.handleConnectionStatusChangeEvent.bind(this);
 
     this.changeClient();
+    this.init();
   }
 
   public async init() {
