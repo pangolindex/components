@@ -37,4 +37,5 @@ export const useWrapCallbackHook: UseWrapCallbackHookType = {
   [ChainId.MOONRIVER]: useWrapCallback,
   [ChainId.MOONBEAM]: useWrapCallback,
   [ChainId.OP]: useWrapCallback,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useWrapCallback,
 };

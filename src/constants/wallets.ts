@@ -46,6 +46,7 @@ export const PROVIDER_MAPPING: { [chainId in ChainId]: (provider: any) => any } 
   [ChainId.OP]: CommonEVMProvider,
   [ChainId.EVMOS_TESTNET]: CommonEVMProvider,
   [ChainId.EVMOS_MAINNET]: CommonEVMProvider,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: CommonEVMProvider,
 };
 
 export const AVALANCHE_CHAIN_PARAMS = {

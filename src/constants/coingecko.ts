@@ -45,4 +45,5 @@ export const COINGECKO_CURRENCY_ID: { [chainId in ChainId]: string | undefined }
   [ChainId.OP]: 'ethereum', // optimism use eth as default coin
   [ChainId.EVMOS_TESTNET]: undefined,
   [ChainId.EVMOS_MAINNET]: 'evmos',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: undefined,
 };

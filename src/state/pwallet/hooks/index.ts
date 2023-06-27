@@ -66,6 +66,7 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.MOONRIVER]: useTokenBalances,
   [ChainId.MOONBEAM]: useTokenBalances,
   [ChainId.OP]: useTokenBalances,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useTokenBalances,
 };
 
 export type UseTokenBalanceHookType = {
@@ -105,6 +106,7 @@ export const useTokenBalanceHook: UseTokenBalanceHookType = {
   [ChainId.OP]: useDummyHook,
   [ChainId.EVMOS_TESTNET]: useTokenBalance,
   [ChainId.EVMOS_MAINNET]: useTokenBalance,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useTokenBalance,
 };
 
 export type UsePairBalanceHookType = {
@@ -141,6 +143,7 @@ export const usePairBalanceHook: UsePairBalanceHookType = {
   [ChainId.MOONRIVER]: useEVMPairBalance,
   [ChainId.MOONBEAM]: useEVMPairBalance,
   [ChainId.OP]: useEVMPairBalance,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useEVMPairBalance,
 };
 
 export type UseAccountBalanceHookType = {
@@ -177,6 +180,7 @@ export const useAccountBalanceHook: UseAccountBalanceHookType = {
   [ChainId.OP]: useETHBalances,
   [ChainId.EVMOS_TESTNET]: useETHBalances,
   [ChainId.EVMOS_MAINNET]: useETHBalances,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useETHBalances,
 };
 
 export type UseAddLiquidityHookType = {
@@ -213,6 +217,7 @@ export const useAddLiquidityHook: UseAddLiquidityHookType = {
   [ChainId.MOONRIVER]: useAddLiquidity,
   [ChainId.MOONBEAM]: useAddLiquidity,
   [ChainId.OP]: useAddLiquidity,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useAddLiquidity,
 };
 
 export type UseRemoveLiquidityHookType = {
@@ -249,6 +254,7 @@ export const useRemoveLiquidityHook: UseRemoveLiquidityHookType = {
   [ChainId.MOONRIVER]: useRemoveLiquidity,
   [ChainId.MOONBEAM]: useRemoveLiquidity,
   [ChainId.OP]: useRemoveLiquidity,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useRemoveLiquidity,
 };
 
 export type UseGetUserLPHookType = {
@@ -289,6 +295,7 @@ export const useGetUserLPHook: UseGetUserLPHookType = {
   [ChainId.MOONRIVER]: useGetUserLP,
   [ChainId.MOONBEAM]: useGetUserLP,
   [ChainId.OP]: useGetUserLP,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useGetUserLP,
 };
 
 export type UseCreatePairHookType = {
@@ -332,5 +339,6 @@ export const useCreatePairHook: UseCreatePairHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyCreatePair,
 };
 /* eslint-enable max-lines */
