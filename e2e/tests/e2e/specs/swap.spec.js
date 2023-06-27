@@ -14,17 +14,25 @@ import { limitSellBuyTradeDetailsftn } from '../../../cypress/src/swap'
 import { limitOrdersftn } from '../../../cypress/src/swap'
 import { cancelLimitOrderftn } from '../../../cypress/src/swap'
 
-let { swapSideMenu, testnetBtn, walletAddress, nativeTokenLogo} = selectors.dashboard
-let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, confirmSwapDetails, confirmSwapBtn, swappingMsg, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, transactionRejected, selectTokenBtn, priceField, tokenBalances, buyBtn, swapSuccessfulTransactionLink, limitSuccessfulTransactionLink, cancelOrderbtn, cancelOrderMsg, executionPrice, cancelOrderBtnPopup, cancellingOrderMsg, cancelLimitSuccessfulTransactionLink} = selectors.swap
+let { swapSideMenu, testnetBtn, walletAddress, nativeTokenLogo, connectToWallet, connectToMetamask, connectWallet,connected, tokenSearch} = selectors.dashboard
+let { tokensToSwap, selectTokens, selectTokensValue, selectTokensMenuClose, fromInput, toInput, swapBtn, percentBtns, percentBtnActive, confirmSwapDetails, confirmSwapBtn, swappingMsg, recentTransactions, transactionLinks, clearAll, transactionAppear, accountMenuCloseSwap, transactionRejected, selectTokenBtn, priceField, tokenBalances, buyBtn, swapSuccessfulTransactionLink, limitSuccessfulTransactionLink, cancelLimitSuccessfulTransactionLink} = selectors.swap
 let { percentBtnArr, swapTokensArr} = data.swap
 
+//To run each file
+//npx  env-cmd -f .env npx synpress run --spec 'tests/e2e/specs/swap.spec.js' -cf synpress.json
 describe('Swap', () => {
     it('Connects with Metamask', () => {
-        //Connect to MetaMask from swap page
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
-        connectWalletftn()         
-        //After switching, the Network name (Avalanche), native token (PNG) and the gas token (AVAX) in the menu will change to the chain specific ones
+        //MetaMask connection
+        cy.get(connectToWallet).click();
+        cy.get(connectToMetamask).contains("Metamask").click();
+        cy.get(connectWallet).click()
+        cy.switchToMetamaskWindow();
+        cy.acceptMetamaskAccess().should("be.true");
+        cy.switchToCypressWindow();
+        cy.get(connected).should("not.be.empty");        
+        //After connecting, the Network name (Avalanche), native token (PNG) and the gas token (AVAX) in the menu will change to the chain specific ones
         nativeDetails(0)
     })  
 
@@ -156,18 +164,17 @@ describe('Swap', () => {
         cy.get(accountMenuCloseSwap).click()      
     })
 
-    it.skip('Details on Limit Sell card', () => {
+    it('Details on Limit Sell card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         connectWalletftn()
         cy.get(testnetBtn).contains("LIMIT").click()
         cy.get(tokensToSwap).click()
-        cy.wait(20000);
+        cy.get(tokenSearch).eq(0).type("PNG")
         cy.get(selectTokens).contains("PNG").click()
-        cy.wait(5000);
         cy.get(selectTokenBtn).contains("Select Token").click()
+        cy.get(tokenSearch).eq(0).type("USDC")
         cy.get(selectTokens).contains("USDC").click()
-        cy.wait(5000);
         cy.get(fromInput).type('0.001')
         cy.wait(5000);
         cy.get(priceField).should('not.have.value', '0.00');
@@ -181,15 +188,16 @@ describe('Swap', () => {
         limitSellBuyTokenftn(0, 1);
     })
 
-    it.skip('Sell token Confirm card', () => {
+    it('Sell token Confirm card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         connectWalletftn()
         cy.get(testnetBtn).contains("LIMIT").click()
         cy.get(tokensToSwap).click()
-        cy.wait(20000);
+        cy.get(tokenSearch).eq(0).type("PNG")
         cy.get(selectTokens).contains("PNG").click()
         cy.get(selectTokenBtn).contains("Select Token").click()
+        cy.get(tokenSearch).eq(0).type("USDC")
         cy.get(selectTokens).contains("USDC").click()
         cy.get(fromInput).type('0.001')
         cy.wait(5000);
@@ -212,16 +220,17 @@ describe('Swap', () => {
         successfulCardftn(confirmSwapBtn, limitSuccessfulTransactionLink)  
     })
     
-    it.skip('Details on Limit Buy card', () => {
+    it('Details on Limit Buy card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         connectWalletftn()
         cy.get(testnetBtn).contains("LIMIT").click()
         cy.get(buyBtn).contains("BUY").click()
         cy.get(tokensToSwap).click()
-        cy.wait(20000);
+        cy.get(tokenSearch).eq(0).type("PNG")
         cy.get(selectTokens).contains("PNG").click()
         cy.get(selectTokenBtn).contains("Select Token").click()
+        cy.get(tokenSearch).eq(0).type("USDC")
         cy.get(selectTokens).contains("USDC").click()
         cy.get(fromInput).type('5')
         cy.wait(5000);
@@ -236,16 +245,17 @@ describe('Swap', () => {
         limitSellBuyTokenftn(1, 0);
     })
 
-    it.skip('Buy token Confirm card', () => {
+    it('Buy token Confirm card', () => {
         cy.visit('/dashboard')
         cy.get(swapSideMenu).click()
         connectWalletftn()
         cy.get(testnetBtn).contains("LIMIT").click()
         cy.get(buyBtn).contains("BUY").click()
         cy.get(tokensToSwap).click()
-        cy.wait(20000);
+        cy.get(tokenSearch).eq(0).type("PNG")
         cy.get(selectTokens).contains("PNG").click()
         cy.get(selectTokenBtn).contains("Select Token").click()
+        cy.get(tokenSearch).eq(0).type("USDC")
         cy.get(selectTokens).contains("USDC").click()
         cy.get(fromInput).type('5')
         cy.wait(5000);

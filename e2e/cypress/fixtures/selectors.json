@@ -4,14 +4,14 @@
     "connectToMetamask": "div[class='sc-iqHYmW jsRmqq']",
     "connectWallet":"button[class='sc-fubCzh exdHlk']",
     "connected": ".sc-ibxdXY UfbkG css-8visvh",
-    "gasToken": "div[class='sc-jmdVzn kYCKo css-8visvh']",
-    "walletAddress": "p[class='sc-kLjoBy hBytEM']",
-    "nativeToken": "div[class='sc-gdKWnS sc-fkaoMN djcPdi ixgCNr']",
+    "gasToken": "div[class='sc-cXGEIS gVAxCC css-8visvh']",
+    "walletAddress": "p[class='sc-bvJpEl eEfCOq']",
+    "nativeToken": "div[class='sc-NGuuG sc-jmdVzn jGHUkW dFKmPi']",
     "nativeTokenDeatils": "div[class='sc-iqHYmW fznvqs']",
-    "nativeTokenLogo": "img[class='sc-ezredP iPgjFG']",
+    "nativeTokenLogo": "[class='sc-kEjbQP sc-VhHcL iqcNnm eeNTYy'] img[class='sc-ezredP iPgjFG']",
     "nativeTokenBalance": "div[class='sc-iqHYmW buqNus']",
     "detailsMenuClose": "svg[class='sc-kOtXPA cEoheH']",
-    "changeBtn": "button[class='sc-fubCzh fBmMeN sc-jtazFa sc-iYXQCk sc-eSBXJh bKlgKv gZFcTV imQxVR']",
+    "changeBtn": "button[class='sc-fubCzh fBmMeN sc-dHhxQd sc-hHdtSz sc-kiEqrO gqwtAw repgZ jPLMyI']",
     "walletConnected": "div[class='sc-gYhhMS kUMVn']",
     "accountMenuClose": "svg[class='sc-kOtXPA cEoheH']",
     "totalAmount": "div[class='sc-iqHYmW iPElRN']",
@@ -116,8 +116,8 @@
     "clearAll":"button[class='sc-gJnOmN dDjmVt']",
     "transactionAppear":"div[class='sc-fIUAFO henkdw css-gp5dfh']",
     "accountMenuCloseSwap":"div[class='sc-kEjbQP sc-iMyPae iqcNnm ekaUlm']",
-    "notification":"[class='sc-fIUAFO itZXRL css-1a92al5']",
-    "notificationViewOnExplorer":"a[class='sc-hiAVnf jKUipH']",
+    "notification":"[class='sc-iYXQCk NcoRw css-1a92al5']",
+    "notificationViewOnExplorer":"a[class='sc-fUiULZ cEFGA']",
     "transactionRejected":"div[class='sc-iqHYmW flqkxK']",
     "selectTokenBtn":"span[class='sc-jJEKmz jysvvD token-symbol-container']",
     "priceField":"input[class='sc-dQoVA cBTceE sc-eLgNKc jWrmCf']",
@@ -211,7 +211,8 @@
     "stakeSideMenuSelect": "div[class='sc-gqPbQI ikudoI'] a"
 },
 "pools":{
-    "poolsSideMenu": "div[class='sc-gqPbQI ikudoI']",
+    "poolsSideMenu": "[id='pool']",
+    "standardSideMenu":"[id='standard']",
     "poolsSideMenuSelect": "div[class='sc-gqPbQI ikudoI'] a",
     "searchFieldPool": "#token-search-input",
     "cardTitleSuper": "div[class='sc-jSMfEi jPrZZL']",
@@ -263,7 +264,19 @@
     "importPoolTitle": "div[class='sc-jSMfEi cKdnJn']",
     "importConnectWalletBtn": "div[class='sc-jSMfEi RXmdt']",
     "importSelectTokens": "div[class='sc-jSMfEi bNwKAa']",
-    "importDropdownTokens": "div[class='sc-bdxVC hZpdoX']"
-}
+    "importDropdownTokens": "div[class='sc-bdxVC hZpdoX']",
+    "createPair": "div[class='sc-iqHYmW iCNRDR']",
+    "createPairToken1": "div[class='sc-iqHYmW fnmIdP']",
+    "createPairToken2": "div[class='sc-iqHYmW dusRLR']",
+    "createAddBtn": "button[class='sc-eZuRTN gZWUcp']",
+    "createAddTitle": "div[class='sc-iqHYmW bFmqvA']",
+    "createAddTokenValues": "div[class='sc-iqHYmW iNMdSu']",
+    "createAddConfirmBtn": "button[class='sc-fubCzh jZKmXf']",
+    "createAddMaxBtn": "button[class='sc-BXpxD iUCTxs']",
+    "createAddAmountField": "input[class='sc-dQoVA hYbnKV']",
+    "createAddSupplyBtn": "button[class='sc-fubCzh gsRRav']",
+    "createAddTokenNamesValues": "div[class='sc-iqHYmW kfPvZs']",
+    "createAddOutputMsg": "div[class='sc-iqHYmW sc-gUUBao gtjCqr fFynoI']"
+  }
 
 }

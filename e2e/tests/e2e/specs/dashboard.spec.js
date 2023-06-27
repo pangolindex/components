@@ -5,6 +5,9 @@ import { connectWalletftn } from '../../../cypress/src/dashboard'
 
 let { connectWallet,connectToMetamask,connectToWallet, connected, gasToken, walletAddress, networkName, networks, testnetBtn} = selectors.dashboard
 let { networkNameArr, gasTokenArr, testnetNetworkNameArr} = data.dashboard
+
+//To run each file
+//npx  env-cmd -f .env npx synpress run --spec 'tests/e2e/specs/dashboard.spec.js' -cf synpress.json
 describe('Dashboard', () => {
     it('Connect to Metamask', () => {
         cy.visit('/dashboard')

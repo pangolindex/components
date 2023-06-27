@@ -56,7 +56,7 @@ function connectWallet1 (fromSelector, toSelector, connectWalletBtnSel) {
 
 function notificationftn(msg) {
     const regexPattern = new RegExp(`.*${msg}.*`);
-    cy.get(notification).contains(regexPattern).should('be.visible')
+    cy.get(notification, { timeout: 30000 }).contains(regexPattern).should('be.visible')
     cy.get(notificationViewOnExplorer).each(page => {
       cy.request(page.prop('href')).as('link');
     });
