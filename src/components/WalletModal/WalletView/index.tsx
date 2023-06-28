@@ -1,11 +1,12 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AlertCircle, ArrowLeft, Download, LogIn, LogOut } from 'react-feather';
 import { useTranslation } from 'react-i18next';
+import QRCode from 'react-qr-code';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, Text } from 'src/components';
 import { useActiveWeb3React } from 'src/hooks/useConnector';
 import { Wallet } from 'src/wallet/classes/wallet';
-import { BackButton, ErrorButton, Frame, Link, Loader, StyledLogo, Wrapper } from './styles';
+import { BackButton, ErrorButton, Frame, Link, Loader, QRCodeBox, StyledLogo, Wrapper } from './styles';
 
 export default function WalletView({
   wallet,
@@ -24,8 +25,15 @@ export default function WalletView({
   const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [qrCodeUri, setQRCodeUri] = useState<string | null>(null);
 
   const isInstalled = wallet.installed();
+
+  useEffect(() => {
+    if (wallet.connector.onQRCodeURI) {
+      wallet.connector.onQRCodeURI(setQRCodeUri);
+    }
+  }, []);
 
   function onDisconnect() {
     wallet.disconnect();
@@ -73,9 +81,16 @@ export default function WalletView({
 
     if (isLoading) {
       return (
-        <Box display="flex" marginTop="20px" alignItems="center">
-          <Loader size="24px" />
-          <Text color="text1">{t('walletModal.initializing')}</Text>
+        <Box display="flex" marginTop="20px" alignItems="center" flexDirection="column" style={{ gap: 20 }}>
+          {qrCodeUri ? (
+            <QRCodeBox>
+              <QRCode value={qrCodeUri} />
+            </QRCodeBox>
+          ) : null}
+          <Box display="flex" alignItems="center">
+            <Loader size="24px" />
+            <Text color="text1">{t('walletModal.initializing')}</Text>
+          </Box>
         </Box>
       );
     }
@@ -86,7 +101,7 @@ export default function WalletView({
         <Text marginLeft="5px">{t('walletModal.connectWallet')}</Text>
       </Button>
     );
-  }, [isInstalled, error, wallet.isActive, isLoading]);
+  }, [isInstalled, error, wallet.isActive, isLoading, qrCodeUri]);
 
   return (
     <Wrapper>

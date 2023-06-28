@@ -3,7 +3,6 @@ import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
 import { ALL_CHAINS, AVALANCHE_MAINNET, CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { InjectedConnector } from '@pangolindex/web3-react-injected-connector';
 import { TalismanConnector } from '@talismn/web3react-v6-connector';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { AvalancheCoreConnector } from './AvalancheCoreConnector';
 import { BitKeepConnector } from './BitKeepConnector';
 import { DefiConnector } from './DefiConnector';
@@ -56,22 +55,6 @@ export const walletlink = new WalletLinkConnector({
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
   appName: 'Pangolin',
   appLogoUrl: 'https://raw.githubusercontent.com/pangolindex/interface/master/public/images/384x384_App_Icon.png',
-});
-
-const rpcs = SUPPORTED_EVM_CHAINS_ID.reduce((acc, chainId) => {
-  const rpc: string | undefined = CHAINS[chainId]?.rpc_uri;
-
-  if (rpc) {
-    acc[chainId] = rpc;
-  }
-  return acc;
-}, {} as { [chainId in number]: string });
-
-export const walletconnect = new WalletConnectConnector({
-  rpc: rpcs,
-  supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
-  qrcode: true,
-  bridge: 'https://bridge.walletconnect.org',
 });
 
 export const SUPPORTED_XDEFI_CHAINS = [

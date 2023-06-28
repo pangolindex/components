@@ -182,3 +182,46 @@ export default function Example(){
   );
 }
 ```
+
+## How to use WalletConnet
+
+You neew do import `WalletConnectWallet` and create a new oject and add it on supportedWallets mapping 
+
+```tsx
+import { WalletConnectWallet } from "@pangolindex/components";
+
+const walletConnect = new WalletConnectWallet({
+  rpcMap: rpcs,
+  projectId: "walletconnnect project id here",
+  metadata: {
+    name: '',
+    description: '',
+    url:'',
+    icons: [''],
+  },
+});
+
+
+export default function Example(){
+  const [open, setOpen] = useState(false);
+
+  const supportedWallets = {
+    WALLET_CONNECT: walletConnect,
+  };
+
+  return (
+    <div>
+      <WalletModal
+        open={open}
+        closeModal={() => {
+          setOpen(false);
+        }}
+        onWalletConnect={() => {
+          setOpen(false);
+        }}
+        supportedWallets={supportedWallets}
+      />
+    </div>
+  );
+}
+```
