@@ -10,6 +10,7 @@ import { HashConnector, mainnetHederaConfig } from './HashConnector';
 import { NearConnector } from './NearConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
+import { WalletConnectConnector } from './WalletConnectConnector';
 import { WalletLinkConnector } from './WalletLinkConnector';
 
 export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter(
@@ -130,4 +131,4 @@ export const avalancheCore = new AvalancheCoreConnector({
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
-export { NearConnector, HashConnector };
+export { NearConnector, HashConnector, WalletConnectConnector };
