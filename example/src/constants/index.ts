@@ -24,7 +24,7 @@ if (walletConnectProjectId) {
     projectId: walletConnectProjectId,
     metadata: {
       name: 'Pangolin',
-      description: 'Pangolin Wallet Modal',
+      description: 'Pangolin Dapp',
       url: window.location.host,
       icons: ['https://raw.githubusercontent.com/pangolindex/interface/master/public/images/384x384_App_Icon.png'],
     },
