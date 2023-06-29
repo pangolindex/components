@@ -185,7 +185,7 @@ export default function Example(){
 
 ## How to use WalletConnet
 
-You neew do import `WalletConnectWallet` and create a new oject and add it on supportedWallets mapping 
+You need do import `WalletConnectWallet` and create a new object and add it on supportedWallets mapping 
 
 ```tsx
 import { WalletConnectWallet } from "@pangolindex/components";

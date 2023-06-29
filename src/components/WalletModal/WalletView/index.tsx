@@ -33,7 +33,7 @@ export default function WalletView({
     if (wallet.connector.onQRCodeURI) {
       wallet.connector.onQRCodeURI(setQRCodeUri);
     }
-  }, []);
+  }, [wallet]);
 
   function onDisconnect() {
     wallet.disconnect();

@@ -27,7 +27,7 @@ export class WalletConnectConnector extends AbstractConnector {
     this.handleAccountsChanged = this.handleAccountsChanged.bind(this);
     this.handleDisconnect = this.handleDisconnect.bind(this);
 
-    if ((this.config.projectId, length > 0)) {
+    if (this.config.projectId.length > 0) {
       this.init();
     }
   }
@@ -89,9 +89,10 @@ export class WalletConnectConnector extends AbstractConnector {
       const accounts = await this.provider!.enable();
       account = accounts[0];
     } catch (error) {
-      console.error(error);
       if ((error as any).code === 4001) {
         throw new UserRejectedRequestError();
+      } else {
+        throw error;
       }
     }
 
@@ -134,7 +135,7 @@ export class WalletConnectConnector extends AbstractConnector {
 
   public onQRCodeURI(setQRCode: (uri: string) => void) {
     if (this.provider) {
-      this.provider!.once('display_uri', (uri) => {
+      this.provider.on('display_uri', (uri) => {
         setQRCode(uri);
       });
     }

@@ -1,11 +1,14 @@
-import { SUPPORTED_EVM_CHAINS_ID, WalletConnectWallet } from '@components/index';
-import { SUPPORTED_WALLETS } from '@components/wallet';
-import { Wallet } from '@components/wallet/classes/wallet';
+import {
+  SUPPORTED_EVM_CHAINS_ID,
+  PangolinWalletConnectWallet,
+  SUPPORTED_WALLETS,
+  PangolinWallet,
+} from '@components/index';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 
 const walletConnectProjectId = import.meta.env.VITE_WALLETCONNECT_PROJECTID;
 
-export const supportedWallets: { [key: string]: Wallet } = {
+export const supportedWallets: { [key: string]: PangolinWallet } = {
   ...SUPPORTED_WALLETS,
 };
 
@@ -19,7 +22,7 @@ if (walletConnectProjectId) {
     return acc;
   }, {} as { [chainId in number]: string });
 
-  const walletConnectWallet = new WalletConnectWallet({
+  const walletConnectWallet = new PangolinWalletConnectWallet({
     rpcMap: rpcs,
     projectId: walletConnectProjectId,
     metadata: {
