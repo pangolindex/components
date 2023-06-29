@@ -33,8 +33,8 @@ export type ElixirPoolType = {
 };
 
 export const GET_ELIXIR_POOLS = gql`
-  query pools($poolAddresses: [String]) {
-    pools(where: { id_in: $poolAddresses }) {
+  query pools($where: Pool_filter, $first: Int) {
+    pools(first: $first, orderBy: liquidity, orderDirection: desc, where: $where) {
       id
       token0 {
         id
@@ -67,19 +67,25 @@ export const GET_ELIXIR_POOLS = gql`
  * @param poolAddresses array of pool address
  * @returns list of elixir pools
  */
-export const useElixirPools = (poolAddresses: (string | undefined)[]) => {
+export const useElixirPools = (poolAddresses?: (string | undefined)[]) => {
+  let poolsToFind: string[] | undefined = undefined;
   // we need to convert addresses to lowercase as subgraph has lowercase addresses
-  const poolsToFind = poolAddresses?.map((item) => item?.toLowerCase())?.filter((item) => !!item) as string[];
+  poolsToFind =
+    poolAddresses && (poolAddresses?.map((item) => item?.toLowerCase())?.filter((item) => !!item) as string[]);
 
   const chainId = useChainId();
   const gqlClient = useSubgraphClient(SubgraphEnum.Elixir);
   const validateAddress = validateAddressMapping[chainId];
+
   // get pairs from subgraph
-  return useQuery<ElixirPoolType[] | null>(['get-subgraph-elixir-pools', chainId, ...poolsToFind], async () => {
+  return useQuery<ElixirPoolType[] | null>(['get-subgraph-elixir-pools', chainId], async () => {
     if (!gqlClient) {
       return null;
     }
-    const data = await gqlClient.request(GET_ELIXIR_POOLS, { poolAddresses: poolsToFind });
+    const data = await gqlClient.request(GET_ELIXIR_POOLS, {
+      where: poolsToFind ? { id_in: poolsToFind } : {},
+      first: poolsToFind ? undefined : 10,
+    });
 
     return (
       (data?.pools as ElixirPoolType[])

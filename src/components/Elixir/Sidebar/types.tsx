@@ -6,6 +6,7 @@ export type SidebarProps = {
 };
 
 export enum MenuType {
+  topPools = 'topPools',
   allPositions = 'allPositions',
   openPositions = 'openPositions',
   closedPositions = 'closedPositions',

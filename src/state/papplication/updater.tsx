@@ -121,6 +121,7 @@ const updaterMapping: { [chainId in ChainId]: () => null } = {
   [ChainId.MOONRIVER]: EvmApplicationUpdater,
   [ChainId.MOONBEAM]: EvmApplicationUpdater,
   [ChainId.OP]: EvmApplicationUpdater,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: EvmApplicationUpdater,
 };
 
 export default function ApplicationUpdater() {
