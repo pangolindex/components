@@ -103,6 +103,13 @@ export const PNG: { [chainId in ChainId]: Token } = {
   [ChainId.MOONRIVER]: new Token(ChainId.MOONRIVER, ZERO_ADDRESS, 18, '', ''),
   [ChainId.MOONBEAM]: new Token(ChainId.MOONBEAM, ZERO_ADDRESS, 18, '', ''),
   [ChainId.OP]: new Token(ChainId.OP, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.SKALE_BELLATRIX_TESTNET]: new Token(
+    ChainId.SKALE_BELLATRIX_TESTNET,
+    CHAINS[ChainId.SKALE_BELLATRIX_TESTNET].contracts!.png,
+    18,
+    CHAINS[ChainId.SKALE_BELLATRIX_TESTNET].png_symbol,
+    'Pangolin Skale Testnet',
+  ),
 };
 
 export const DAIe: { [chainId in ChainId]: Token } = {
@@ -140,6 +147,7 @@ export const DAIe: { [chainId in ChainId]: Token } = {
   [ChainId.MOONRIVER]: new Token(ChainId.MOONRIVER, ZERO_ADDRESS, 18, '', ''),
   [ChainId.MOONBEAM]: new Token(ChainId.MOONBEAM, ZERO_ADDRESS, 18, '', ''),
   [ChainId.OP]: new Token(ChainId.OP, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.SKALE_BELLATRIX_TESTNET]: new Token(ChainId.SKALE_BELLATRIX_TESTNET, ZERO_ADDRESS, 18, '', ''),
 };
 
 export const USDCe: { [chainId in ChainId]: Token } = {
@@ -177,6 +185,7 @@ export const USDCe: { [chainId in ChainId]: Token } = {
   [ChainId.MOONRIVER]: new Token(ChainId.MOONRIVER, ZERO_ADDRESS, 18, '', ''),
   [ChainId.MOONBEAM]: new Token(ChainId.MOONBEAM, ZERO_ADDRESS, 18, '', ''),
   [ChainId.OP]: new Token(ChainId.OP, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.SKALE_BELLATRIX_TESTNET]: new Token(ChainId.SKALE_BELLATRIX_TESTNET, ZERO_ADDRESS, 18, '', ''),
 };
 
 export const USDC: { [chainId in ChainId]: Token } = {
@@ -220,6 +229,7 @@ export const USDC: { [chainId in ChainId]: Token } = {
   [ChainId.MOONRIVER]: new Token(ChainId.MOONRIVER, ZERO_ADDRESS, 18, '', ''),
   [ChainId.MOONBEAM]: new Token(ChainId.MOONBEAM, ZERO_ADDRESS, 18, '', ''),
   [ChainId.OP]: new Token(ChainId.OP, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.SKALE_BELLATRIX_TESTNET]: new Token(ChainId.SKALE_BELLATRIX_TESTNET, ZERO_ADDRESS, 18, '', ''),
 };
 
 export const USDTe: { [chainId in ChainId]: Token } = {
@@ -263,6 +273,7 @@ export const USDTe: { [chainId in ChainId]: Token } = {
   [ChainId.MOONRIVER]: new Token(ChainId.MOONRIVER, ZERO_ADDRESS, 18, '', ''),
   [ChainId.MOONBEAM]: new Token(ChainId.MOONBEAM, ZERO_ADDRESS, 18, '', ''),
   [ChainId.OP]: new Token(ChainId.OP, ZERO_ADDRESS, 18, '', ''),
+  [ChainId.SKALE_BELLATRIX_TESTNET]: new Token(ChainId.SKALE_BELLATRIX_TESTNET, ZERO_ADDRESS, 18, '', ''),
 };
 
 /* eslint-enable max-lines */

@@ -3,7 +3,7 @@ import { ChainId, SONGBIRD_CANARY, FLARE_MAINNET, AirdropType, HEDERA_MAINNET } 
 import { PNG } from '@components/constants/tokens';
 import { getTokenLogoURL } from '@components/utils/getTokenLogoURL';
 import { Frame } from './styleds';
-import { Airdrop, ComingSoon } from '@components/components';
+import { Airdrop, ClosedRegistration, ComingSoon } from '@components/components';
 
 const activeAirdrops = [
   {
@@ -55,6 +55,10 @@ export default function AirdropUI() {
       {ComingSoonAirdrops.map((airdrop, index) => (
         <ComingSoon {...airdrop} key={`${index}-${airdrop.token.address}`} />
       ))}
+      <ClosedRegistration
+        token={PNG[ChainId.HEDERA_TESTNET]}
+        logo={getTokenLogoURL(PNG[ChainId.HEDERA_TESTNET].address, ChainId.HEDERA_TESTNET, 48)}
+      />
     </Frame>
   );
 }

@@ -95,6 +95,7 @@ export const validateAddressMapping: { [chainId in ChainId]: (value: any) => str
   [ChainId.OP]: isDummyAddress,
   [ChainId.EVMOS_TESTNET]: isAddress,
   [ChainId.EVMOS_MAINNET]: isAddress,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: isAddress,
 };
 
 export const checkAddressNetworkBaseMapping: {
@@ -136,6 +137,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].blockExplorerUrls?.[0] || '',
   [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET].blockExplorerUrls?.[0] || '',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: CHAINS[ChainId.SKALE_BELLATRIX_TESTNET].blockExplorerUrls?.[0] || '',
 };
 
 const transactionPath: { [chainId in ChainId]: string } = {
@@ -167,6 +169,7 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'tx',
   [ChainId.EVMOS_MAINNET]: 'tx',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: 'tx',
 };
 
 const addressPath: { [chainId in ChainId]: string } = {
@@ -198,6 +201,7 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'address',
   [ChainId.EVMOS_MAINNET]: 'address',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: 'address',
 };
 
 const blockPath: { [chainId in ChainId]: string } = {
@@ -229,6 +233,7 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'block',
   [ChainId.EVMOS_MAINNET]: 'block',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: 'block',
 };
 
 const tokenPath: { [chainId in ChainId]: string } = {
@@ -260,6 +265,7 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'token',
   [ChainId.EVMOS_MAINNET]: 'token',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: 'token',
 };
 
 export function getEtherscanLink(
@@ -415,6 +421,7 @@ export const shortenAddressMapping: { [chainId in ChainId]: (address: string, ch
   [ChainId.OP]: shortenAddress,
   [ChainId.EVMOS_TESTNET]: shortenAddress,
   [ChainId.EVMOS_MAINNET]: shortenAddress,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: shortenAddress,
 };
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
