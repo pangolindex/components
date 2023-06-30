@@ -1,12 +1,14 @@
-import { AVALANCHE_MAINNET, AirdropType, Chain, Token, TokenAmount } from '@pangolindex/sdk';
+import { AVALANCHE_MAINNET, AirdropType, Chain, NetworkType, Token, TokenAmount } from '@pangolindex/sdk';
 import { formatUnits } from 'ethers/lib/utils';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Button, Loader, Text, Tooltip } from 'src/components';
 import { usePangolinWeb3 } from 'src/hooks';
+import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useClaimAirdrop, useMerkledropClaimedAmounts, useMerkledropProof } from 'src/state/airdrop/hooks';
 import { getChainByNumber } from 'src/utils';
 import Title from '../Title';
 import { Wrapper } from '../styleds';
+import Associate from './Associate';
 import ChangeChain from './ChangeChain';
 import AlreadyClaimed from './Claimed';
 import ConfirmDrawer from './ConfirmDrawer';
@@ -46,6 +48,11 @@ export default function Airdrop({ contractAddress, type, title, logo, token, cha
 
   const airdropChain = chain ? chain : getChainByNumber(token.chainId);
 
+  const { hederaAssociated: isAssociated } = useHederaTokenAssociated(
+    airdropChain?.network_type === NetworkType.HEDERA ? token.address : undefined,
+    token.symbol,
+  );
+
   const handleConfirmDismiss = useCallback(() => {
     onDimiss();
     setOpenDrawer(false);
@@ -60,6 +67,13 @@ export default function Airdrop({ contractAddress, type, title, logo, token, cha
     }
   }, [handleConfirmDismiss, attempting, error, hash, openDrawer]);
 
+  if (!account) {
+    return <NotConnected title={title} logo={logo} token={token} />;
+  }
+  if (chainId !== token.chainId) {
+    return <ChangeChain logo={logo} chain={airdropChain ?? AVALANCHE_MAINNET} />;
+  }
+
   if (isLoading || isLoadingProof) {
     return (
       <Wrapper>
@@ -68,11 +82,8 @@ export default function Airdrop({ contractAddress, type, title, logo, token, cha
     );
   }
 
-  if (!account) {
-    return <NotConnected title={title} logo={logo} token={token} />;
-  }
-  if (chainId !== token.chainId) {
-    return <ChangeChain logo={logo} chain={airdropChain ?? AVALANCHE_MAINNET} />;
+  if (airdropChain?.network_type === NetworkType.HEDERA && !isAssociated) {
+    return <Associate title={title} logo={logo} token={token} />;
   }
 
   if (claimAmount.lessThan('0') || claimAmount.equalTo('0')) {

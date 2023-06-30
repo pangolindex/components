@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChainId, SONGBIRD_CANARY, FLARE_MAINNET } from '@pangolindex/sdk';
+import { ChainId, SONGBIRD_CANARY, FLARE_MAINNET, HEDERA_MAINNET } from '@pangolindex/sdk';
 import { PNG } from '@components/constants/tokens';
 import { getTokenLogoURL } from '@components/utils/getTokenLogoURL';
 import { Frame } from './styleds';
@@ -17,6 +17,12 @@ const activeAirdrops = [
     type: FLARE_MAINNET!.contracts!.airdrop!.type,
     token: PNG[ChainId.FLARE_MAINNET],
     logo: getTokenLogoURL(PNG[ChainId.FLARE_MAINNET].address, ChainId.FLARE_MAINNET, 48),
+  },
+  {
+    contractAddress: HEDERA_MAINNET!.contracts!.airdrop!.address,
+    type: HEDERA_MAINNET!.contracts!.airdrop!.type,
+    token: PNG[ChainId.HEDERA_MAINNET],
+    logo: getTokenLogoURL(PNG[ChainId.HEDERA_MAINNET].address, ChainId.HEDERA_MAINNET, 48),
   },
 ];
 
