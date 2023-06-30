@@ -123,11 +123,17 @@ export default function NetworkSelection({ open, closeModal, onToogleWalletModal
         </Inputs>
         <Wrapper>
           <Scrollbars autoHeight autoHeightMin={125} autoHeightMax={calcHeightMax()}>
-            <ChainsList>
-              {chains.map((chain) => {
-                return <ChainItem key={chain.chain_id ?? 43114} chain={chain} onClick={() => onChainClick(chain)} />;
-              })}
-            </ChainsList>
+            {chains.length === 0 ? (
+              <Text color="text1" textAlign="center">
+                {t('walletModal.noChainsFound')}
+              </Text>
+            ) : (
+              <ChainsList>
+                {chains.map((chain) => {
+                  return <ChainItem key={chain.chain_id ?? 43114} chain={chain} onClick={() => onChainClick(chain)} />;
+                })}
+              </ChainsList>
+            )}
           </Scrollbars>
         </Wrapper>
       </Frame>
