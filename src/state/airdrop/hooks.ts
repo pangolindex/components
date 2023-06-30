@@ -1,14 +1,14 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { AirdropType, Token, TokenAmount } from '@pangolindex/sdk';
-import { useWeb3React } from '@web3-react/core';
+import { AirdropType, NetworkType, Token, TokenAmount } from '@pangolindex/sdk';
 import axios from 'axios';
 import { BigNumber } from 'ethers';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useChainId, useLibrary, usePngSymbol } from 'src/hooks';
+import { useChainId, useLibrary, usePangolinWeb3, usePngSymbol } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import { hederaFn } from 'src/utils/hedera';
 import { useContract } from '../../hooks/useContract';
-import { calculateGasMargin, waitForTransaction } from '../../utils';
+import { calculateGasMargin, getChainByNumber, waitForTransaction } from '../../utils';
 import { useTransactionAdder } from '../ptransactions/hooks';
 import { airdropAbiMapping } from './contants';
 
@@ -30,7 +30,7 @@ export function useMerkledropContract(address: string, type: AirdropType) {
  * @returns TokenAmount, amount claimed
  */
 export function useMerkledropClaimedAmounts(airdropAddress: string, token: Token) {
-  const { account } = useWeb3React();
+  const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
   const merkledropContract = useMerkledropContract(airdropAddress, AirdropType.MERKLE);
@@ -50,7 +50,7 @@ export function useMerkledropClaimedAmounts(airdropAddress: string, token: Token
  * @returns The proof, the root and the claim amount
  */
 export function useMerkledropProof(airdropAddress: string, token: Token) {
-  const { account } = useWeb3React();
+  const { account } = usePangolinWeb3();
   const chainId = useChainId();
 
   return useQuery(
@@ -67,6 +67,9 @@ export function useMerkledropProof(airdropAddress: string, token: Token) {
         // TODO: update this url to dynamically
         const response = await axios.get(
           `https://static.pangolin.exchange/merkle-drop/${chainId}/${airdropAddress.toLocaleLowerCase()}/${account.toLocaleLowerCase()}.json`,
+          {
+            timeout: 1000,
+          },
         );
         if (response.status !== 200) {
           return {
@@ -118,7 +121,7 @@ interface ClaimAirdropReturn {
  * @returns Functions to make the claim process
  */
 export function useClaimAirdrop(airdropAddress: string, airdropType: AirdropType, token: Token): ClaimAirdropReturn {
-  const { account } = useWeb3React();
+  const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { provider } = useLibrary();
   const pngSymbol = usePngSymbol();
@@ -165,12 +168,28 @@ export function useClaimAirdrop(airdropAddress: string, airdropType: AirdropType
 
         args.push(signature);
       }
+      const chain = getChainByNumber(chainId);
 
-      const estimedGas = await merkledropContract.estimateGas.claim(...args);
-      const response: TransactionResponse = await merkledropContract.claim(...args, {
-        gasLimit: calculateGasMargin(estimedGas),
-      });
-      await waitForTransaction(response, 3);
+      let response: { hash: string } | null = null;
+      if (chain?.network_type === NetworkType.EVM) {
+        const estimedGas = await merkledropContract.estimateGas.claim(...args);
+        const _response: TransactionResponse = await merkledropContract.claim(...args, {
+          gasLimit: calculateGasMargin(estimedGas),
+        });
+        await waitForTransaction(_response, 3);
+        response = _response;
+      } else if (chain?.network_type === NetworkType.HEDERA) {
+        response = await hederaFn.claimAirdrop({
+          account,
+          address: merkledropContract.address,
+          amount: data.amount.raw.toString(),
+          proof: data.proof,
+        });
+      }
+
+      if (!response) {
+        throw new Error('Error in sending transaction,');
+      }
 
       addTransaction(response, {
         summary: summary,
