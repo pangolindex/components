@@ -105,7 +105,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
           </Text>
           <Tooltip id="earnedAmount" effect="solid" backgroundColor={theme.primary}>
             <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
-              {earnedAmount.toSignificant(6)} {png.symbol}
+              {earnedAmount.toFixed(Math.min(8, earnedAmount.token?.decimals))} {png.symbol}
             </Text>
           </Tooltip>
           <Text color="text1" fontSize="16px" fontWeight={700} textAlign="center" data-tip data-for="earnedAmount">
@@ -138,7 +138,10 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
                       stat={numeral(extraTokenWeeklyRewardRate.toFixed(4)).format(`0.00a`)}
                       statFontSize={[20, 18]}
                       currency={reward?.token}
-                      toolTipText={`${extraTokenWeeklyRewardRate?.toSignificant(4, { groupSeparator: ',' }) ?? '-'} `}
+                      toolTipText={`${
+                        extraTokenWeeklyRewardRate?.toFixed(Math.min(8, extraTokenWeeklyRewardRate?.token?.decimals)) ??
+                        '-'
+                      } `}
                     />
                   </Box>
 
@@ -147,7 +150,7 @@ const EarnedDetailV3 = ({ stakingInfo, version }: EarnDetailProps) => {
                       stat={numeral(reward?.toFixed(Math.min(4, reward.token?.decimals))).format('0.00a')}
                       statFontSize={[20, 18]}
                       currency={reward?.token}
-                      toolTipText={`${reward?.toFixed(Math.min(4, reward.token?.decimals)) ?? '0'}`}
+                      toolTipText={`${reward?.toFixed(Math.min(8, reward.token?.decimals)) ?? '0'}`}
                     />
                   </Box>
                 </InnerWrapper>
