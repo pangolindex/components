@@ -191,7 +191,13 @@ export class HashConnector extends AbstractConnector {
     if (this.chainId === ChainId.HEDERA_TESTNET) {
       url = `https://hedera-testnet-rpc.pangolin.network/`;
     }
-    return new JsonRpcProvider(`${url}`);
+    return new JsonRpcProvider(
+      { url, timeout: 5000 },
+      {
+        chainId: this.chainId,
+        name: 'Hedera',
+      },
+    );
   }
 
   public async activate(): Promise<any> {
