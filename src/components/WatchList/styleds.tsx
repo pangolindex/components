@@ -9,6 +9,9 @@ export const WatchListRoot = styled(Box)`
   background-color: ${({ theme }) => theme.color2};
   display: flex;
   flex-direction: column;
+  min-height: 200px;
+  min-width: 280px;
+  flex-wrap: wrap;
 `;
 export const DesktopWatchList = styled(Box)`
   display: flex;
@@ -118,7 +121,7 @@ export const NoDataWrapper = styled(Box)`
   justify-content: center;
   text-align: center;
   flex: 1;
-  min-width: 280px;
+  flex-wrap: wrap;
   max-width: 400px;
   color: ${({ theme }) => theme.text1};
   margin: auto;
