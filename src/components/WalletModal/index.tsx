@@ -1,4 +1,4 @@
-import { CHAINS, ChainId } from '@pangolindex/sdk';
+import { CHAINS, Chain, ChainId } from '@pangolindex/sdk';
 import { UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector';
 import { useWeb3React } from '@web3-react/core';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -100,17 +100,32 @@ export default function WalletModal({
 
   const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 250);
 
-  const chains = useMemo(() => {
+  const sortedChains = useMemo(() => {
     const _chains = supportedChains ?? SUPPORTED_CHAINS;
-    return _chains
-      .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
-      .filter(
-        (chain) =>
-          chain.mainnet === mainnet &&
-          (chain.name.toLowerCase().includes(debouncedSearchQuery) ||
-            chain.symbol.toLowerCase().includes(debouncedSearchQuery)),
-      );
-  }, [supportedChains, mainnet, debouncedSearchQuery]);
+    return _chains.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
+  }, [supportedChains, SUPPORTED_CHAINS]);
+
+  const chains = useMemo(() => {
+    const [liveChains, notLiveChains] = sortedChains.reduce(
+      (acc, chain) => {
+        const [liveChains, notLiveChains] = acc;
+        if (chain.pangolin_is_live) {
+          liveChains.push(chain);
+          return acc;
+        }
+        notLiveChains.push(chain);
+        return acc;
+      },
+      [[], []] as [Chain[], Chain[]],
+    );
+
+    return [...liveChains, ...notLiveChains].filter(
+      (chain) =>
+        chain.mainnet === mainnet &&
+        (chain.name.toLowerCase().includes(debouncedSearchQuery) ||
+          chain.symbol.toLowerCase().includes(debouncedSearchQuery)),
+    );
+  }, [sortedChains, mainnet, debouncedSearchQuery]);
 
   const wallets = useMemo(() => {
     const memoWallets = supportedWallets ?? SUPPORTED_WALLETS;
@@ -138,7 +153,7 @@ export default function WalletModal({
         return bool && wallet.supportedChainsId.includes(selectedChain.chain_id ?? NaN);
       })
       .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
-  }, [wallets, selectedChainId, debouncedSearchQuery]);
+  }, [wallets, selectedChainId]);
 
   function onBack() {
     setPendingWallet(null);

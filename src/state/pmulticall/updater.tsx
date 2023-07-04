@@ -1,6 +1,8 @@
 import { Contract } from '@ethersproject/contracts';
+import { ChainId, NetworkType } from '@pangolindex/sdk';
 import { useEffect, useMemo, useRef } from 'react';
 import { useChainId } from 'src/hooks';
+import { getChainByNumber } from 'src/utils';
 import { Hedera } from 'src/utils/hedera';
 import { useMulticallContract } from '../../hooks/useContract';
 import useDebounce from '../../hooks/useDebounce';
@@ -12,7 +14,7 @@ import { Call, MulticallState, parseCallKey, useMulticallAtom } from './atom';
 // chunk calls so we do not exceed the gas limit
 const CALL_CHUNK_SIZE = 500;
 // for Hedera chain multicall not working with lots of calls because of gas limits, so reducing it down to less chunk size
-const HEDERA_CALL_CHUNK_SIZE = 10;
+const HEDERA_CALL_CHUNK_SIZE = 30;
 
 /**
  * Fetches a chunk of calls, enforcing a minimum block number constraint
@@ -24,12 +26,17 @@ async function fetchChunk(
   multicallContract: Contract,
   chunk: Call[],
   minBlockNumber: number,
+  chainId: ChainId,
 ): Promise<{ results: string[]; blockNumber: number }> {
   console.debug('Fetching chunk', multicallContract, chunk, minBlockNumber);
+  const chain = getChainByNumber(chainId);
   let resultsBlockNumber, returnData;
   try {
     [resultsBlockNumber, returnData] = await multicallContract.aggregate(
       chunk.map((obj) => [obj.address, obj.callData]),
+      {
+        gasLimit: chain?.network_type === NetworkType.HEDERA ? 15_000_000 : 8_000_000,
+      },
     );
   } catch (error) {
     console.debug('Failed to fetch chunk inside retry', error);
@@ -155,7 +162,7 @@ export default function Updater(): null {
     cancellations.current = {
       blockNumber: latestBlockNumber,
       cancellations: chunkedCalls.map((chunk, index) => {
-        const { cancel, promise } = retry(() => fetchChunk(multicallContract, chunk, latestBlockNumber), {
+        const { cancel, promise } = retry(() => fetchChunk(multicallContract, chunk, latestBlockNumber, chainId), {
           n: Infinity,
           minWait: 2500,
           maxWait: 3500,

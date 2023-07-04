@@ -187,11 +187,17 @@ export class HashConnector extends AbstractConnector {
   }
 
   public async getProvider() {
-    let url = `https://mainnet.hashio.io/api`;
+    let url = `https://hedera-mainnet-rpc.pangolin.network/`;
     if (this.chainId === ChainId.HEDERA_TESTNET) {
-      url = `https://testnet.hashio.io/api`;
+      url = `https://hedera-testnet-rpc.pangolin.network/`;
     }
-    return new JsonRpcProvider(`${url}`);
+    return new JsonRpcProvider(
+      { url, timeout: 5000 },
+      {
+        chainId: this.chainId,
+        name: 'Hedera',
+      },
+    );
   }
 
   public async activate(): Promise<any> {

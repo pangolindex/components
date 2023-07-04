@@ -50,7 +50,7 @@ export const usePoolsHook: UsePoolsHookType = {
   [ChainId.MOONRIVER]: useDummyPools,
   [ChainId.MOONBEAM]: useDummyPools,
   [ChainId.OP]: useDummyPools,
-  [ChainId.SKALE_BELLATRIX_TESTNET]: usePoolsViaContract,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: usePoolsViaSubgraph,
 };
 
 export type UsePoolTVLHookType = {

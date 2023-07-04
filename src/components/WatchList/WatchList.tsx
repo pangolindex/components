@@ -90,7 +90,7 @@ const WatchList: React.FC<Props> = ({ coinChartVisible = true }) => {
       return (
         <NoDataWrapper>
           {t('common.noDataAvailable')}
-          <Box display="flex" alignItems="center" color="text1" justifyContent="center" mt={2}>
+          <Box display="flex" alignItems="center" color="text1" justifyContent="center" flexWrap="wrap" mt={2}>
             {t('swapPage.addTokenWatchlist')}{' '}
             <Box mx={2}>
               <Button
