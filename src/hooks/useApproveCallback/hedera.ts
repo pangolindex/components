@@ -61,7 +61,7 @@ export function useHederaApproveCallback(
     } else {
       return ApprovalState.APPROVED;
     }
-  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, spender]);
+  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, isApproved, spender]);
 
   const addTransaction = useTransactionAdder();
 

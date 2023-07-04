@@ -47,7 +47,7 @@ export function useApproveCallback(
     } else {
       return ApprovalState.APPROVED;
     }
-  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, spender]);
+  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, isApproved, spender]);
 
   const tokenContract = useTokenContract(token?.address);
   const addTransaction = useTransactionAdder();
