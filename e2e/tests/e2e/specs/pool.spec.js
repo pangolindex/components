@@ -5,14 +5,17 @@ import { notificationftn } from '../../../cypress/src/swap'
 import { selectTokensPoolftn } from '../../../cypress/src/pool'
 import { pairDetailsCardftn } from '../../../cypress/src/pool'
 import { createEnterValuesftn } from '../../../cypress/src/pool'
+import { selectTokensImportPoolftn } from '../../../cypress/src/pool'
+import { importTokenDetailsftn } from '../../../cypress/src/pool'
 
 let { connectToWallet, connectToMetamask, connectWallet, connected } = selectors.dashboard
-let { poolsSideMenu, standardSideMenu, createPair, createAddTitle } = selectors.pools
+let { poolsSideMenu, standardSideMenu, createPair, createAddTitle, noLiquidityBtn, poolSections } = selectors.pools
+
 
 //To run each file
 //npx  env-cmd -f .env npx synpress run --spec 'tests/e2e/specs/pool.spec.js' -cf synpress.json
 describe('pool standard', () => {
-    it('Connects with Metamask', () => {
+    it.only('Connects with Metamask', () => {
         //Connect to MetaMask from pool page
         cy.visit('/dashboard')
         cy.get(poolsSideMenu).click()
@@ -26,7 +29,7 @@ describe('pool standard', () => {
         cy.switchToCypressWindow();
         cy.get(connected).should("not.be.empty");        
         //After connecting, the Network name (Avalanche), native token (PNG) and the gas token (AVAX) in the menu will change to the chain specific ones
-        nativeDetails(0)  
+        //nativeDetails(0)  
     }) 
 
     it('Details on Create a pair card', () => {
@@ -108,5 +111,39 @@ describe('pool standard', () => {
         notificationftn("Added")
         // //Successful card
         //successfulCardftn(confirmSwapBtn, limitSuccessfulTransactionLink)
+    })
+
+    it.only('Import pool card', () => {
+        //Connect to MetaMask from pool page
+        cy.visit('/dashboard')
+        cy.get(poolsSideMenu).click()
+        cy.get(standardSideMenu).click()
+        //MetaMask connection
+        connectWalletftn()
+        //Add Liquidity
+        cy.get(createPair).contains("Import it.").click()
+        cy.get(createAddTitle).contains("Import Pool").should('be.visible')
+        //selecting tokens having no pool
+        selectTokensImportPoolftn("PNG", "USDt")
+        cy.wait(10000)
+        cy.get(noLiquidityBtn).contains("You don't have liquidity in this pool yet.").should('be.visible')
+    })
+
+    it.only('Pool found details', () => {
+        //Connect to MetaMask from pool page
+        cy.visit('/dashboard')
+        cy.get(poolsSideMenu).click()
+        cy.get(standardSideMenu).click()
+        //MetaMask connection
+        connectWalletftn()
+        //Add Liquidity
+        cy.get(createPair).contains("Import it.").click()
+        cy.get(createAddTitle).contains("Import Pool").should('be.visible')
+        //selecting tokens having no pool
+        selectTokensImportPoolftn("PNG", "GRELF")
+        cy.wait(10000)
+        importTokenDetailsftn("PNG", "GRELF")
+        cy.get(poolSections).eq(3).contains("Your Pools").should("have.css", "color", "rgb(255, 200, 0)")
+
     })
 })

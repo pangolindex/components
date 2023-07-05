@@ -1,6 +1,8 @@
 import selectors from '../fixtures/selectors.json'
+
 let { tokenSearch, selectTokens, toEstimated, amountInTokensSwap, confirmSwap, toTokenChain, swappingMsg } = selectors.swap
-let { createPairToken1, createPairToken2, createAddTokenValues, createAddConfirmBtn, createAddMaxBtn, createAddOutputMsg, createAddBtn, createAddAmountField, createAddSupplyBtn, createAddTokenNamesValues } = selectors.pools
+let { createPairToken1, createPairToken2, createAddTokenValues, createAddConfirmBtn, createAddMaxBtn, createAddOutputMsg, createAddBtn, createAddAmountField, createAddSupplyBtn, createAddTokenNamesValues, importToken1, importSelectToken, poolFound, importTokenLogo, importTokenName, importTokenDetails, importTokenValues, importManageBtn } = selectors.pools
+
 function selectTokensPoolftn(token1, token2, pairBtn ) {
     cy.get(createPairToken1).eq(0).click()
     cy.get(tokenSearch).eq(0).should('have.attr', 'placeholder', 'Search').type(token1);
@@ -10,6 +12,15 @@ function selectTokensPoolftn(token1, token2, pairBtn ) {
     cy.get(selectTokens).contains(token2).click()
     cy.get(createAddBtn, { timeout: 30000 }).should('contain', pairBtn).click()
 
+}
+
+function selectTokensImportPoolftn(token1, token2) {
+  cy.get(importToken1).eq(0).click()
+  cy.get(tokenSearch).eq(0).should('have.attr', 'placeholder', 'Search').type(token1);
+  cy.get(selectTokens).contains(token1).click()
+  cy.get(importSelectToken).contains("Select a token").click()
+  cy.get(tokenSearch).eq(1).should('have.attr', 'placeholder', 'Search').type(token2);
+  cy.get(selectTokens).contains(token2).click()
 }
 
 function pairDetailsCardftn() {
@@ -22,6 +33,26 @@ function pairDetailsCardftn() {
     cy.get(amountInTokensSwap).eq(i).invoke('text').should('match', /\d+/);
     cy.get(createAddAmountField).eq(i).invoke('val').should('match', /\d+/);
     }
+}
+
+function importTokenDetailsftn(token1, token2) {
+  cy.get(poolFound).contains("Pool Found!").should('be.visible');
+  cy.get(importTokenLogo).eq(0).should('have.attr', 'alt', `${token1} logo`);
+  cy.get(importTokenLogo).eq(1).should('have.attr', 'alt', `${token2} logo`);
+  cy.get(importTokenName).should(($div) => {
+    expect($div).to.contain(token1);
+    expect($div).to.contain('/');
+    expect($div).to.contain(token2);
+  });
+
+  const poolFoundArr = ["PGL", "Your pool share:", token1, token2];
+  for (let i = 0; i < poolFoundArr.length; i++) {
+    cy.get(importTokenDetails).contains(poolFoundArr[i]).should('be.visible');
+    cy.get(importTokenValues).eq(i).should('not.be.empty');
+  }
+
+  cy.get(importManageBtn).contains("Manage").click();
+  cy.get(importManageBtn).contains("Manage").should('be.visible');
 }
 
 function createEnterValuesftn(cardName, supplyBtn, token1, token2) {
@@ -45,4 +76,4 @@ function createEnterValuesftn(cardName, supplyBtn, token1, token2) {
     cy.get(createAddSupplyBtn).eq(1).should('contain', supplyBtn).click();
     cy.get(swappingMsg).contains(new RegExp(`^Supplying \\d+\\.\\d+ ${token1} and \\d+\\.\\d+ ${token2}$`)).should('be.visible');
   }
-export{selectTokensPoolftn, pairDetailsCardftn, createEnterValuesftn}
+export{selectTokensPoolftn, pairDetailsCardftn, createEnterValuesftn, selectTokensImportPoolftn, importTokenDetailsftn}
