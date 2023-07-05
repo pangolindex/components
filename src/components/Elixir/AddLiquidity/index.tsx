@@ -428,10 +428,10 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                         <Box display="flex" justifyContent="center" alignItems="center">
                           <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
                             {invertPrice
-                              ? price?.invert()?.toSignificant(24).substring(0, 24)
-                              : price?.toSignificant(24).substring(0, 24)}
+                              ? price?.invert()?.toSignificant(12).substring(0, 12)
+                              : price?.toSignificant(12).substring(0, 12)}
                           </Text>{' '}
-                          <span style={{ marginLeft: '4px' }}>{currency1?.symbol}</span>
+                          <span style={{ fontSize: '14px', marginLeft: '4px' }}>{currency1?.symbol}</span>
                         </Box>
                       ) : (
                         '-'
