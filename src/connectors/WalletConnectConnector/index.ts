@@ -1,3 +1,4 @@
+import { ChainId } from '@pangolindex/sdk';
 import { UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector';
 import WalletProvider, { EthereumProvider } from '@walletconnect/ethereum-provider';
 import { AbstractConnector } from '@web3-react/abstract-connector';
@@ -42,7 +43,7 @@ export class WalletConnectConnector extends AbstractConnector {
 
     this.provider = await EthereumProvider.init({
       projectId: this.config.projectId,
-      chains: [43114],
+      chains: [ChainId.ETHEREUM],
       optionalChains: supportedChainIds,
       showQrModal: false,
       rpcMap: rpcMap,
