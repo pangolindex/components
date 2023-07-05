@@ -7,3 +7,4 @@ out
 storybook-static
 .yalc
 yalc.lock
+/e2e/.env
