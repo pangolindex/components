@@ -221,7 +221,12 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
 
       {hash && (
         <BlackWrapper>
-          <TransactionCompleted onClose={wrappedOnDismiss} submitText={t('pool.liquidityAdded')} />
+          <TransactionCompleted
+            buttonText={t('common.close')}
+            isShowButtton={true}
+            onButtonClick={wrappedOnDismiss}
+            submitText={t('pool.liquidityAdded')}
+          />
         </BlackWrapper>
       )}
 

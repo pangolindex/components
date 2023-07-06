@@ -169,7 +169,14 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
 
       {attempting && !hash && <Loader size={100} label={` ${t('sarClaim.claiming')}...`} />}
 
-      {hash && <TransactionCompleted onClose={wrappedOnDismiss} submitText={t('earn.rewardClaimed')} />}
+      {hash && (
+        <TransactionCompleted
+          buttonText={t('common.close')}
+          isShowButtton={true}
+          onButtonClick={wrappedOnDismiss}
+          submitText={t('earn.rewardClaimed')}
+        />
+      )}
     </ClaimWrapper>
   );
 };
