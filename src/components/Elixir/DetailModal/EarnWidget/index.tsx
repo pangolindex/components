@@ -46,7 +46,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
   // these currencies will match the feeValue{0,1} currencies for the purposes of fee collection
   const currency0ForFeeCollectionPurposes = pool ? (unwrappedToken(pool.token0, chainId) as Token) : undefined;
   const currency1ForFeeCollectionPurposes = pool ? (unwrappedToken(pool.token1, chainId) as Token) : undefined;
-  const canClaim = (feeValue0 && feeValue0.greaterThan('0')) || (feeValue1 && feeValue1.greaterThan('0'));
+  const canClaim = (feeValue0?.greaterThan?.('0') ?? false) || (feeValue1?.greaterThan?.('0') ?? false);
 
   const collectFees = useElixirCollectEarnedFeesHook[chainId]();
   const onClaim = async () => {
