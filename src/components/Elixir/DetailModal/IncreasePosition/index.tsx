@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import mixpanel from 'mixpanel-browser';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Lock } from 'react-feather';
+import { AlertTriangle, Lock } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import shuffle from 'src/assets/images/shuffle.svg';
@@ -24,6 +24,8 @@ import {
   ArrowWrapper,
   BlackWrapper,
   ButtonWrapper,
+  ErrorBox,
+  ErrorWrapper,
   GridContainer,
   InformationBar,
   InputWrapper,
@@ -51,9 +53,11 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
 
   const [hash, setHash] = useState<string | undefined>();
   const [attempting, setAttempting] = useState<boolean>(false);
+  const [error, setError] = useState<string | undefined>();
   function wrappedOnDismiss() {
     setHash(undefined);
     setAttempting(false);
+    setError(undefined);
   }
 
   const { position: existingPosition } = useDerivedPositionInfo(positionDetails);
@@ -154,18 +158,19 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
       const response = await addLiquidity(addData);
 
       setHash(response?.hash as string);
-
-      mixpanel.track(MixPanelEvents.INCREASE_LIQUIDITY, {
-        chainId: chainId,
-        tokenA: positionDetails?.token0?.symbol,
-        tokenB: positionDetails?.token1?.symbol,
-        tokenA_Address: wrappedCurrency(positionDetails?.token0, chainId)?.address,
-        tokenB_Address: wrappedCurrency(positionDetails?.token1, chainId)?.address,
-      });
+      if (response?.hash) {
+        mixpanel.track(MixPanelEvents.INCREASE_LIQUIDITY, {
+          chainId: chainId,
+          tokenA: positionDetails?.token0?.symbol,
+          tokenB: positionDetails?.token1?.symbol,
+          tokenA_Address: wrappedCurrency(positionDetails?.token0, chainId)?.address,
+          tokenB_Address: wrappedCurrency(positionDetails?.token1, chainId)?.address,
+        });
+      }
       onResetMintState();
     } catch (err) {
-      const _err = err as any;
-
+      const _err = typeof err === 'string' ? new Error(err) : (err as any);
+      setError(_err?.message);
       console.error(_err);
     } finally {
       setAttempting(false);
@@ -208,7 +213,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
 
   return (
     <div>
-      {attempting && !hash && (
+      {attempting && !hash && !error && (
         <BlackWrapper>
           <Loader height={'auto'} size={100} label={` Adding...`} />
         </BlackWrapper>
@@ -217,6 +222,24 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
       {hash && (
         <BlackWrapper>
           <TransactionCompleted onClose={wrappedOnDismiss} submitText={t('pool.liquidityAdded')} />
+        </BlackWrapper>
+      )}
+
+      {error && (
+        <BlackWrapper>
+          <ErrorWrapper>
+            <ErrorBox>
+              <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
+              <Text fontWeight={500} fontSize={16} color={'red1'} textAlign="center" style={{ width: '85%' }}>
+                {error}
+              </Text>
+            </ErrorBox>
+            <ButtonWrapper>
+              <Button height="46px" variant="primary" borderRadius="4px" onClick={wrappedOnDismiss}>
+                {t('transactionConfirmation.dismiss')}
+              </Button>
+            </ButtonWrapper>
+          </ErrorWrapper>
         </BlackWrapper>
       )}
 
