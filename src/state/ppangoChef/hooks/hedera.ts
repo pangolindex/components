@@ -176,7 +176,16 @@ export function useHederaPangoChefInfos() {
 
   const pglTokenAddresses = useHederaPGLTokenAddresses(pairAddresses);
 
-  const allPglTokenAddress = useMemo(() => Object.values(pglTokenAddresses ?? {}), [pglTokenAddresses]);
+  const allPglTokenAddress = useMemo(
+    () =>
+      pairAddresses.map((pairAddress) => {
+        if (pairAddress) {
+          return pglTokenAddresses[pairAddress];
+        }
+        return undefined;
+      }),
+    [pglTokenAddresses, pairAddresses],
+  );
 
   const pairTotalSuppliesState = useMultipleContractSingleData(allPglTokenAddress, ERC20_INTERFACE, 'totalSupply');
 
