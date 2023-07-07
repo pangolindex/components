@@ -2,6 +2,7 @@ import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useSubgraphTokens } from 'src/apollo/tokens';
 import { ZERO_ADDRESS } from 'src/constants';
+import { PNG, USDC } from 'src/constants/tokens';
 import { PairState, usePair } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
@@ -22,35 +23,96 @@ export function useTokensCurrencyPriceContract(tokens: (Token | undefined)[]): {
   const usePairs = usePairsHook[chainId];
 
   const currency = WAVAX[chainId];
+  const usdc = USDC[chainId];
+  const png = PNG[chainId];
 
   // remove currency if exist e remove undefined
-  const filteredTokens = tokens.filter((token) => !!token && !token.equals(currency)) as Token[];
+  const filteredTokens = useMemo(
+    () => tokens.filter((token) => !!token && !token.equals(currency)) as Token[],
+    [tokens],
+  );
 
-  const _pairs: [Token, Token][] = filteredTokens.map((token) => [token, currency]);
+  const _pairs: [Token, Token][] = useMemo(() => filteredTokens.map((token) => [token, currency]), [filteredTokens]);
 
   const pairs = usePairs(_pairs);
 
-  const prices: { [x: string]: Price } = {};
-
-  // if exist currency, add to object with price 1
-  const existCurrency = Boolean(tokens.find((token) => !!token && token.equals(currency)));
-  if (existCurrency) {
-    prices[currency.address] = new Price(currency, currency, '1', '1');
-  }
-
-  return useMemo(() => {
+  const [usdcPairsTokens, pngPairsTokens] = useMemo(() => {
+    const _usdcPairs: [Token, Token][] = [];
+    const _pngPairs: [Token, Token][] = [];
     pairs.forEach(([pairState, pair], index) => {
       const token = filteredTokens[index];
-      // if not exist pair, return 0 for price of this token
-      if (pairState !== PairState.EXISTS || !pair) {
-        prices[token.address] = new Price(token, currency, '1', '0'); // 0
-      } else {
-        const tokenCurrencyPrice = pair.priceOf(token, currency);
-        prices[token.address] = tokenCurrencyPrice;
+      // if not exist pair or the price is 0 put to array to fetch this token
+      if (pairState === PairState.NOT_EXISTS || !pair || !pair.priceOf(token, currency).greaterThan('0')) {
+        _usdcPairs.push([token, usdc]);
+        _pngPairs.push([token, png]);
       }
     });
-    return prices;
-  }, [pairs, prices, filteredTokens]);
+    return [_usdcPairs, _pngPairs];
+  }, [filteredTokens, pairs]);
+
+  const usdcPairs = usePairs(usdcPairsTokens);
+  const pngPairs = usePairs(pngPairsTokens);
+  const [pngPairState, usdcPairState] = usePairs([
+    [currency, png],
+    [currency, usdc],
+  ]);
+
+  return useMemo(() => {
+    const _prices: { [x: string]: Price } = {};
+    // if exist currency, add to object with price 1
+    const existCurrency = Boolean(tokens.find((token) => !!token && token.equals(currency)));
+    if (existCurrency) {
+      _prices[currency.address] = new Price(currency, currency, '1', '1');
+    }
+
+    for (let index = 0; index < pairs.length; index++) {
+      const [pairState, pair] = pairs[index];
+      const token = filteredTokens[index];
+      // if not exist pair, return 0 for price of this token
+      if (pairState === PairState.LOADING) {
+        _prices[token.address] = new Price(token, currency, '1', '0'); // 0
+      } else if (pair && pairState === PairState.EXISTS && pair.priceOf(token, currency).greaterThan('0')) {
+        const tokenCurrencyPrice = pair.priceOf(token, currency);
+        _prices[token.address] = tokenCurrencyPrice;
+      } else {
+        // if the pair not exist we need to check the token/PNG and token/USDC
+        // to check if is posible to get the price
+        const tokenUSDCPair = usdcPairs.find(([, _usdcPair]) => _usdcPair?.involvesToken(token));
+        const tokenPNGPair = pngPairs.find(([, _pngPair]) => _pngPair?.involvesToken(token));
+        if (
+          tokenUSDCPair &&
+          tokenUSDCPair[0] === PairState.EXISTS &&
+          tokenUSDCPair[1] &&
+          usdcPairState[0] === PairState.EXISTS &&
+          usdcPairState[1]
+        ) {
+          const _usdcPair = usdcPairState[1];
+          const _tokenUSDCPair = tokenUSDCPair[1];
+          const usdcWrappedPrice = _usdcPair.priceOf(usdc, currency);
+          const tokenUSDCPrice = _tokenUSDCPair.priceOf(token, usdc);
+          const finalPrice = tokenUSDCPrice.multiply(usdcWrappedPrice);
+          _prices[token.address] = new Price(token, currency, finalPrice.denominator, finalPrice.numerator);
+        } else if (
+          tokenPNGPair &&
+          tokenPNGPair[0] === PairState.EXISTS &&
+          tokenPNGPair[1] &&
+          pngPairState[0] === PairState.EXISTS &&
+          pngPairState[1]
+        ) {
+          const _pngPair = pngPairState[1];
+          const _tokenPNGPair = pngPairState[1];
+          const pngWrappedPrice = _pngPair.priceOf(usdc, currency);
+          const tokenPNGPrice = _tokenPNGPair.priceOf(token, png);
+          const finalPrice = tokenPNGPrice.multiply(pngWrappedPrice);
+          _prices[token.address] = new Price(token, currency, finalPrice.denominator, finalPrice.numerator);
+        } else {
+          _prices[token.address] = new Price(token, currency, '1', '0');
+        }
+      }
+    }
+
+    return _prices;
+  }, [pairs, tokens, filteredTokens]);
 }
 
 /**
