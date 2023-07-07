@@ -7,7 +7,6 @@ import { PairState, usePair } from 'src/data/Reserves';
 import { usePairsHook } from 'src/data/multiChainsHooks';
 import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
 import { decimalToFraction } from 'src/utils';
-import { Hedera } from 'src/utils/hedera';
 import { useTokensCurrencyPriceHook } from './multiChainsHooks';
 import { useChainId } from '.';
 
@@ -244,24 +243,28 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
   const useTokensCurrencyPrice = useTokensCurrencyPriceHook[chainId];
   const currency = WAVAX[chainId];
 
-  // Have the same size
-  const tokens0 = pairs.map(({ pair }) => pair.token0);
-  const tokens1 = pairs.map(({ pair }) => pair.token1);
+  const uniqueTokens = useMemo(() => {
+    // Have the same size
+    const tokens0 = pairs.map(({ pair }) => pair.token0);
+    const tokens1 = pairs.map(({ pair }) => pair.token1);
 
-  const uniqueTokens: Token[] = [];
-  const map = new Map();
-  for (let index = 0; index < tokens0.length; index++) {
-    const token0 = tokens0[index];
-    const token1 = tokens1[index];
-    if (!map.has(token0.address)) {
-      map.set(token0.address, true);
-      uniqueTokens.push(token0);
+    const _uniqueTokens: Token[] = [];
+    const map = new Map();
+    for (let index = 0; index < tokens0.length; index++) {
+      const token0 = tokens0[index];
+      const token1 = tokens1[index];
+      if (!map.has(token0.address)) {
+        map.set(token0.address, true);
+        _uniqueTokens.push(token0);
+      }
+      if (!map.has(token1.address)) {
+        map.set(token1.address, true);
+        _uniqueTokens.push(token1);
+      }
     }
-    if (!map.has(token1.address)) {
-      map.set(token1.address, true);
-      uniqueTokens.push(token1);
-    }
-  }
+
+    return _uniqueTokens;
+  }, [pairs]);
 
   const tokensPrices = useTokensCurrencyPrice(uniqueTokens);
 
@@ -271,43 +274,21 @@ export function usePairsCurrencyPrice(pairs: { pair: Pair; totalSupply: TokenAmo
       const { pair, totalSupply } = pairs[index];
       const token0 = pair.token0;
       const token1 = pair.token1;
-      // TODO: this is really for short term, ugly code
-      // make sure to fix it asap
-      // here specifically for hedera we are checking 1 PGL price little different
-      // this is mainly due to hedera PGL has 0 decimals and its creating weird edge cases
-      if (Hedera.isHederaChain(chainId)) {
-        const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
-        const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
-        const reserve0 = pair?.reserve0;
-        const reserve1 = pair?.reserve1;
-        // reserve0 * token0PriceInEth + reserve1 * token1PriceInEth => tvlInEth
-        const tvlInEth = reserve0.multiply(token0Price).add(reserve1.multiply(token1Price));
-        // tvlInEth / totalSupply => 1 PGL price in ETH
-        const pairPriceFraction = tvlInEth.divide(totalSupply.raw);
-        const pairPrice = new Price(currency, currency, pairPriceFraction.denominator, pairPriceFraction.numerator);
-        pairsPrices[pair.liquidityToken.address] = pairPrice;
-        continue;
-      }
 
-      // for all other chains except hedera
-      // continue with below logic
       const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
       const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
 
-      //here we need to do for totalSupply token decimal bcoz chain wise need to get ONE_Token
-      const ONE_TOKEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(totalSupply?.token?.decimals));
+      const token0Amount = pair.reserve0;
+      const token1Amount = pair.reserve1;
 
-      let token0Amount: TokenAmount = new TokenAmount(token0, '0');
-      let token1Amount: TokenAmount = new TokenAmount(token1, '0');
-      if (JSBI.greaterThan(totalSupply.raw, ONE_TOKEN) || JSBI.equal(totalSupply.raw, ONE_TOKEN)) {
-        [token0Amount, token1Amount] = pair.getLiquidityValues(
-          totalSupply,
-          new TokenAmount(pair.liquidityToken, ONE_TOKEN),
-        );
-      }
-      const token0PairPrice = token0Amount.multiply(token0Price);
-      const token1PairPrice = token1Amount.multiply(token1Price);
-      const _pairPrice = token0PairPrice.add(token1PairPrice);
+      const token0PairPrice = token0Amount
+        .multiply(token0Price)
+        .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(currency.decimals - token0.decimals)));
+      const token1PairPrice = token1Amount
+        .multiply(token1Price)
+        .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(currency.decimals - token1.decimals)));
+
+      const _pairPrice = token0PairPrice.add(token1PairPrice).divide(totalSupply);
       const pairPrice = new Price(pair.liquidityToken, currency, _pairPrice.denominator, _pairPrice.numerator);
       pairsPrices[pair.liquidityToken.address] = pairPrice;
     }
@@ -341,20 +322,18 @@ export function usePairCurrencyPrice(pair: { pair: Pair | null; totalSupply: Tok
     const token0Price = tokensPrices[token0.address] ?? new Price(token0, currency, '1', '0');
     const token1Price = tokensPrices[token1.address] ?? new Price(token1, currency, '1', '0');
 
-    let token0Amount: TokenAmount = new TokenAmount(token0, '0');
-    let token1Amount: TokenAmount = new TokenAmount(token1, '0');
-    const ONE_TOKEN = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(totalSupply?.token?.decimals));
-    if (JSBI.greaterThan(totalSupply.raw, ONE_TOKEN) || JSBI.equal(totalSupply?.raw, ONE_TOKEN)) {
-      [token0Amount, token1Amount] = _pair.getLiquidityValues(
-        totalSupply,
-        new TokenAmount(_pair.liquidityToken, ONE_TOKEN),
-      );
-    }
+    const token0Amount = _pair.reserve0;
+    const token1Amount = _pair.reserve1;
 
-    const token0PairPrice = token0Amount.multiply(token0Price);
-    const token1PairPrice = token1Amount.multiply(token1Price);
+    const token0PairPrice = token0Amount
+      .multiply(token0Price)
+      .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(currency.decimals - token0.decimals)));
+    const token1PairPrice = token1Amount
+      .multiply(token1Price)
+      .divide(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(currency.decimals - token1.decimals)));
 
-    const _pairPrice = token0PairPrice.add(token1PairPrice);
+    const _pairPrice = token0PairPrice.add(token1PairPrice).divide(totalSupply);
+
     return new Price(_pair.liquidityToken, currency, _pairPrice.denominator, _pairPrice.numerator);
   }, [token0, token1, tokensPrices, _pair, totalSupply]);
 }
