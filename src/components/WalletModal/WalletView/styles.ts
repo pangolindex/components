@@ -58,3 +58,9 @@ export const ErrorButton = styled(Button)`
     opacity: 0.8;
   }
 `;
+
+export const QRCodeBox = styled(Box)`
+  border-radius: 4px;
+  background-color: ${({ theme }) => theme.white};
+  padding: 10px;
+`;

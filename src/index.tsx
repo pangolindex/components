@@ -174,10 +174,27 @@ export * as Tokens from './constants/tokens';
 export * from '@gelatonetwork/limit-orders-react';
 
 // wallet misc
-export * from './wallet/classes/injected';
-export * from './wallet/classes/nonInjected';
-export * from './wallet/classes/others';
-export { Wallet as Pangolin_Wallet, WalletEvents, walletEvent } from './wallet/classes/wallet';
+export {
+  AvalancheCoreWallet as PangolinAvalancheCoreWallet,
+  BitKeepWallet as PangolinBitKeepWallet,
+  InjectedWallet as PangolinInjectedWallet,
+  TalismanWallet as PangolinTalismanWallet,
+} from './wallet/classes/injected';
+export {
+  HashPackWallet as PangolinHashPackWallet,
+  NearWallet as PangolinNearWallet,
+  XDefiWallet as PangolinXDefiWallet,
+} from './wallet/classes/nonInjected';
+export {
+  CoinbaseWallet as PangolinCoinbaseWallet,
+  GnosisSafeWallet as PangolinGnosisSafeWallet,
+  WalletConnectWallet as PangolinWalletConnectWallet,
+} from './wallet/classes/others';
+export {
+  Wallet as PangolinWallet,
+  WalletEvents as PangolinWalletEvents,
+  walletEvent as pangolinWalletEvent,
+} from './wallet/classes/wallet';
 export type { PangolinConnector, activeFunctionType } from './wallet/classes/wallet';
 export * from './wallet';
 

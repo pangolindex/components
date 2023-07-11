@@ -236,5 +236,5 @@ export function useWalletUpdater() {
       console.debug('Removing Wallet Events');
       walletEvent.off(WalletEvents.CONNECTED, onConnect);
     };
-  }, []);
+  }, [wallets]);
 }

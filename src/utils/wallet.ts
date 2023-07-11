@@ -135,6 +135,7 @@ export async function changeNetwork(args: {
               },
             ],
           });
+          callBack && callBack();
           return;
         } catch {
           return;
