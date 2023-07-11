@@ -2,7 +2,7 @@
 import selectors from "../fixtures/selectors.json"
 import data from '../fixtures/pangolin-data'
 // import { socialLinks } from '../support/src/dashboard'
-import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
+// import { pangolinUsefulLinks } from '../support/src/PangolinUsefulLinks'
 // import {switchingValues} from '../support/src/swap'
 
 describe('Dashboard', () => {

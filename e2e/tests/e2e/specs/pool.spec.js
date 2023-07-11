@@ -13,7 +13,7 @@ let { poolsSideMenu, standardSideMenu, createPair, createAddTitle, noLiquidityBt
 
 
 //To run each file
-//npx  env-cmd -f .env npx synpress run --spec 'tests/e2e/specs/pool.spec.js' -cf synpress.json
+//npx  env-cmd -f env/.env npx synpress run --spec 'tests/e2e/specs/pool.spec.js' -cf synpress.json
 describe('pool standard', () => {
     it.only('Connects with Metamask', () => {
         //Connect to MetaMask from pool page
@@ -29,7 +29,7 @@ describe('pool standard', () => {
         cy.switchToCypressWindow();
         cy.get(connected).should("not.be.empty");        
         //After connecting, the Network name (Avalanche), native token (PNG) and the gas token (AVAX) in the menu will change to the chain specific ones
-        //nativeDetails(0)  
+        nativeDetails(0)  
     }) 
 
     it('Details on Create a pair card', () => {
@@ -113,7 +113,7 @@ describe('pool standard', () => {
         //successfulCardftn(confirmSwapBtn, limitSuccessfulTransactionLink)
     })
 
-    it.only('Import pool card', () => {
+    it('Import pool card', () => {
         //Connect to MetaMask from pool page
         cy.visit('/dashboard')
         cy.get(poolsSideMenu).click()
@@ -129,7 +129,7 @@ describe('pool standard', () => {
         cy.get(noLiquidityBtn).contains("You don't have liquidity in this pool yet.").should('be.visible')
     })
 
-    it.only('Pool found details', () => {
+    it('Pool found details', () => {
         //Connect to MetaMask from pool page
         cy.visit('/dashboard')
         cy.get(poolsSideMenu).click()

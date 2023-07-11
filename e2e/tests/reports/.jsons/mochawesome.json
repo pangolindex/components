@@ -1,0 +1,143 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 3,
+    "pending": 0,
+    "failures": 0,
+    "start": "2023-07-11T04:02:11.141Z",
+    "end": "2023-07-11T04:08:12.018Z",
+    "duration": 360877,
+    "testsRegistered": 3,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "37cd72c9-879f-4a40-883d-929bee28439e",
+      "title": "",
+      "fullFile": "tests/e2e/specs/dashboard.spec.js",
+      "file": "tests/e2e/specs/dashboard.spec.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "1fc8ddb2-afba-4b1f-b05b-40275737b521",
+          "title": "Dashboard",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Connect to Metamask",
+              "fullTitle": "Dashboard Connect to Metamask",
+              "timedOut": null,
+              "duration": 54881,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/dashboard'); // MetaMask connection\ncy.get(connectToWallet).click();\ncy.get(connectToMetamask).contains(\"Metamask\").click();\ncy.get(connectWallet).click();\ncy.switchToMetamaskWindow();\ncy.acceptMetamaskAccess().should(\"be.true\");\ncy.switchToCypressWindow(); // Verify successful connection\ncy.get(connected).should(\"not.be.empty\"); // Verify changed network details\n(0, _dashboard.nativeDetails)(0);",
+              "err": {},
+              "uuid": "4c1ce9bf-f5fb-4771-ae43-96043dea8bf6",
+              "parentUUID": "1fc8ddb2-afba-4b1f-b05b-40275737b521",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Switch to Mainnets",
+              "fullTitle": "Dashboard Switch to Mainnets",
+              "timedOut": null,
+              "duration": 135341,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/');\n(0, _dashboard.connectWalletftn)(); // Switching to the Mainnets\nfor (let i = 0; i < networkNameArr.length - 1; i++) {\n  // Switch to the next network\n  cy.get(networkName).should('have.attr', 'title', networkNameArr[i]).click();\n  cy.get(networks).contains(networkNameArr[i + 1]).click();\n  cy.wait(2000); // Allow Metamask to add or switch networks\n  if (i === networkNameArr.length - 2) {\n    cy.allowMetamaskToSwitchNetwork();\n  } else {\n    cy.allowMetamaskToAddAndSwitchNetwork();\n  } // Verify the switched network details\n\n  cy.get(networkName).should('have.attr', 'title', networkNameArr[i + 1]).should('be.visible'); // Verify native details based on the network\n  if (i !== networkNameArr.length - 3) {\n    (0, _dashboard.nativeDetails)(i + 1);\n  } else {\n    cy.get(walletAddress).contains('0xa0...b166').invoke('text').should('equal', '0xa0...b166');\n    cy.get(gasToken, {\n      timeout: 50000\n    }).invoke('text').should('contain', gasTokenArr[i + 1]);\n  }\n}",
+              "err": {},
+              "uuid": "bea6a72a-a4d3-4352-b8cc-888d44132685",
+              "parentUUID": "1fc8ddb2-afba-4b1f-b05b-40275737b521",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Switch to Testnets",
+              "fullTitle": "Dashboard Switch to Testnets",
+              "timedOut": null,
+              "duration": 170400,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/');\n(0, _dashboard.connectWalletftn)(); // Switching to the Testnets\nfor (let i = 0; i < testnetNetworkNameArr.length - 1; i++) {\n  // Switch to the next testnet\n  cy.get(networkName).should('have.attr', 'title', testnetNetworkNameArr[i]).click();\n  if (i !== testnetNetworkNameArr.length - 2) {\n    cy.get(testnetBtn).contains(\"Testnet\").click();\n  }\n  cy.get(networks).contains(testnetNetworkNameArr[i + 1]).click();\n  cy.wait(2000); // Allow Metamask to add or switch networks\n  if (i === testnetNetworkNameArr.length - 2) {\n    cy.allowMetamaskToSwitchNetwork();\n  } else {\n    cy.allowMetamaskToAddAndSwitchNetwork();\n  } // Verify the switched testnet details\n\n  cy.get(networkName).should('have.attr', 'title', testnetNetworkNameArr[i + 1]).should('be.visible');\n  (0, _dashboard.nativeDetails)(i + 5);\n}",
+              "err": {},
+              "uuid": "66c1d274-7345-4bdb-9ad1-c6a5997970f1",
+              "parentUUID": "1fc8ddb2-afba-4b1f-b05b-40275737b521",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "4c1ce9bf-f5fb-4771-ae43-96043dea8bf6",
+            "bea6a72a-a4d3-4352-b8cc-888d44132685",
+            "66c1d274-7345-4bdb-9ad1-c6a5997970f1"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 360622,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "tests\\reports\\.jsons",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

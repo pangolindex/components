@@ -1,9 +1,10 @@
 {
   "devDependencies": {
-    "cypress": "^10.11.0"
+    "cypress": "^10.11.0",
+    "cypress-mochawesome-reporter": "^3.5.1"
   },
   "scripts": {
-    "test": "env-cmd -f .env npx synpress run -cf synpress.json",
+    "test": "env-cmd -f env/.env npx synpress run -cf synpress.json",
     "withoutWallet": "npx cypress run --spec './tests/e2e/specs/integration/Dashboard.spec.js'"
   },
   "dependencies": {

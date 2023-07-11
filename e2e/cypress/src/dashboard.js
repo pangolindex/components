@@ -36,9 +36,9 @@ function socialLinks(iteration, socialLinkArray) {
 }
 
 function nativeDetails(native){
-    cy.wait(10000)
-    cy.get(walletAddress).contains('0x33...8C60');
-    cy.get(walletAddress).invoke('text').should('equal', '0x33...8C60');
+    cy.wait(5000)
+    cy.get(walletAddress).contains('0xa0...b166');
+    cy.get(walletAddress).invoke('text').should('equal', '0xa0...b166');
     //Native token details
     cy.get(nativeToken).invoke('text').should('contain', nativeTokenArr[native]);
     cy.get(nativeToken).contains(nativeTokenArr[native]).click()
@@ -47,14 +47,14 @@ function nativeDetails(native){
     cy.get(nativeTokenLogo).should('have.attr', 'alt', `${nativeTokenArr[native]} logo`)
     cy.get(nativeTokenBalance, { timeout: 20000 }).should('be.visible')
     cy.get(nativeTokenBalance).should('not.be.empty');
-    cy.wait(10000)
+    cy.wait(5000)
     for (var i = 0; i <= 3; i++) {
         cy.get(nativeTokenDeatils).contains(nativeTokenDeatilsArr[i]).should('be.visible')
     }
     cy.get(detailsMenuClose).click()
     cy.get(gasToken, { timeout: 50000 }).invoke('text').should('contain', gasTokenArr[native]);
     //Showing status connected
-    cy.get(walletAddress).contains('0x33...8C60').click()
+    cy.get(walletAddress).contains('0xa0...b166').click()
     cy.request('GET', 'https://snowtrace.io/address/0x33CCa68A49B348ec247E0d1216936B5eF5638C60').then( res => {
         expect(res.status).to.equal(200)
     cy.get(changeBtn).contains("Change").click()
