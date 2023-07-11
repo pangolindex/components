@@ -66,14 +66,20 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     position: derivedPosition,
   } = useDerivedMintInfo(existingPosition);
 
-  const shouldDisableAddLiquidity: boolean = useMemo(() => {
-    // If depositA is not disabled, check if its parsedAmount is greater than 0
-    if (!depositADisabled && parsedAmounts[Field.CURRENCY_A]) {
-      return false;
-    }
+  const selectedCurrencyBalanceA = useCurrencyBalance(chainId, account ?? undefined, currency0 ?? undefined);
+  const selectedCurrencyBalanceB = useCurrencyBalance(chainId, account ?? undefined, currency1 ?? undefined);
 
-    // If depositB is not disabled, check if its parsedAmount is greater than 0
-    if (!depositBDisabled && parsedAmounts[Field.CURRENCY_B]) {
+  /**
+   * `areDepositsNotAvailable` determines if the "Add Liquidity" button should be disabled.
+   * It returns `false` when either `CURRENCY_A` or `CURRENCY_B` deposit field is enabled
+   * and contains a parsed amount. Otherwise, it returns `true`, disabling the button.
+   */
+  const areDepositsNotAvailable: boolean = useMemo(() => {
+    // If depositA or depositB are not disabled, check if its parsedAmount is greater than 0
+    if (
+      (!depositADisabled && parsedAmounts[Field.CURRENCY_A]) ||
+      (!depositBDisabled && parsedAmounts[Field.CURRENCY_B])
+    ) {
       return false;
     }
 
@@ -81,12 +87,44 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     return true;
   }, [depositADisabled, depositBDisabled, parsedAmounts]);
 
+  /**
+   *  This function determines if the user has enough balance of selected currencies to perform a transaction.
+   *  It uses React's useMemo hook to optimize performance by memorizing the result, until the dependencies change.
+   *  @returns {boolean} - Returns true if the user has enough balance, false otherwise.
+   */
+  const isEnoughBalance = useMemo(() => {
+    // Initialize flags based on whether deposits are disabled
+    let isCurrencyAEnough = depositADisabled;
+    let isCurrencyBEnough = depositBDisabled;
+
+    // Check if balances for both currencies, parsedAmounts and deposits are available
+    if (selectedCurrencyBalanceA && selectedCurrencyBalanceB && !areDepositsNotAvailable && parsedAmounts) {
+      // Check if parsed amount for A doesn't exceed user's balance for A
+      if (
+        !isCurrencyAEnough &&
+        parsedAmounts[Field.CURRENCY_A] &&
+        !parsedAmounts[Field.CURRENCY_A]?.greaterThan(selectedCurrencyBalanceA)
+      ) {
+        isCurrencyAEnough = true;
+      }
+
+      // Check if parsed amount for B doesn't exceed user's balance for B
+      if (
+        !isCurrencyBEnough &&
+        parsedAmounts[Field.CURRENCY_B] &&
+        !parsedAmounts[Field.CURRENCY_B]?.greaterThan(selectedCurrencyBalanceB)
+      ) {
+        isCurrencyBEnough = true;
+      }
+    }
+
+    // Return true only if there is enough balance for both currency A and currency B
+    return isCurrencyAEnough && isCurrencyBEnough;
+  }, [selectedCurrencyBalanceA, selectedCurrencyBalanceB, parsedAmounts, areDepositsNotAvailable]);
+
   const { independentField, typedValue } = useMintState();
   const { onFieldAInput, onFieldBInput, onCurrencySelection, onSetFeeAmount, onResetMintState } =
     useMintActionHandlers(noLiquidity);
-
-  const selectedCurrencyBalanceA = useCurrencyBalance(chainId, account ?? undefined, currency0 ?? undefined);
-  const selectedCurrencyBalanceB = useCurrencyBalance(chainId, account ?? undefined, currency1 ?? undefined);
 
   const useUSDCPrice = useUSDCPriceHook[chainId];
 
@@ -183,13 +221,17 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
       return (
         <ButtonWrapper>
           <Button
-            isDisabled={shouldDisableAddLiquidity}
+            isDisabled={areDepositsNotAvailable || !isEnoughBalance}
             height="46px"
             variant="primary"
             borderRadius="4px"
             onClick={onIncrease}
           >
-            {t('common.addLiquidity')}
+            {areDepositsNotAvailable
+              ? t('common.enterAmount')
+              : isEnoughBalance
+              ? t('common.addLiquidity')
+              : t('common.insufficientBalance')}
           </Button>
         </ButtonWrapper>
       );
