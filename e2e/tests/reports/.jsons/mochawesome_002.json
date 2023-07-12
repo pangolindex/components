@@ -1,0 +1,219 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 7,
+    "passes": 7,
+    "pending": 0,
+    "failures": 0,
+    "start": "2023-07-12T11:30:33.246Z",
+    "end": "2023-07-12T11:42:04.898Z",
+    "duration": 691652,
+    "testsRegistered": 7,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "38cd44ba-78e8-433b-8f62-a38696f8bdc1",
+      "title": "",
+      "fullFile": "tests/e2e/specs/pool.spec.js",
+      "file": "tests/e2e/specs/pool.spec.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "5d65b258-c1f7-4f70-ac36-727902564108",
+          "title": "pool standard",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Connects with Metamask",
+              "fullTitle": "pool standard Connects with Metamask",
+              "timedOut": null,
+              "duration": 62070,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/dashboard');\ncy.get(poolsSideMenu).click();\ncy.get(standardSideMenu).click(); //MetaMask connection\ncy.get(connectToWallet).click();\ncy.get(connectToMetamask).contains(\"Metamask\").click();\ncy.get(connectWallet).click(); // Switch to Metamask window and accept access\ncy.switchToMetamaskWindow();\ncy.acceptMetamaskAccess().should(\"be.true\");\ncy.switchToCypressWindow(); // Verify successful connection\ncy.get(connected).should(\"not.be.empty\"); // Verify changed network details\n(0, _dashboard.nativeDetails)(0);",
+              "err": {},
+              "uuid": "26172eb9-8823-45e5-a6d1-1696c279cb7d",
+              "parentUUID": "5d65b258-c1f7-4f70-ac36-727902564108",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Details on Create a pair card",
+              "fullTitle": "pool standard Details on Create a pair card",
+              "timedOut": null,
+              "duration": 55750,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/dashboard');\ncy.get(poolsSideMenu).click();\ncy.get(standardSideMenu).click(); //MetaMask connection\n(0, _dashboard.connectWalletftn)(); //Create a pair\ncy.get(createPair).contains(\"Create a pair\").click(); //select tokens that have no pair\n(0, _pool.selectTokensPoolftn)(\"GRELF\", \"AKITAX\", \"Create a pair\"); //create a pair card\ncy.get(createAddTitle).contains(\"Create a pair\").should('be.visible'); //Create a pair card details\n(0, _pool.pairDetailsCardftn)();",
+              "err": {},
+              "uuid": "abdb97b7-397a-4c8a-81de-624952bd87de",
+              "parentUUID": "5d65b258-c1f7-4f70-ac36-727902564108",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "You are creating a pool card",
+              "fullTitle": "pool standard You are creating a pool card",
+              "timedOut": null,
+              "duration": 147413,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/dashboard');\ncy.get(poolsSideMenu).click();\ncy.get(standardSideMenu).click(); //MetaMask connection\n(0, _dashboard.connectWalletftn)(); //Creating the pair\ncy.get(createPair).contains(\"Create a pair\").click(); //select tokens that have no pair\n(0, _pool.selectTokensPoolftn)(\"GRELF\", \"AKITAX\", \"Create a pair\"); //entering values\n//You are creating a pool card\n(0, _pool.createEnterValuesftn)(\"You are creating a pool\", \"Create Pool & Supply\", \"GRELF\", \"AKITAX\"); //Approve transaction\ncy.confirmMetamaskTransaction();\ncy.wait(10000); //Notification\n(0, _swap.notificationftn)(\"Added\"); // //Successful card\n// successfulCardftn(confirmSwapBtn, limitSuccessfulTransactionLink)",
+              "err": {},
+              "uuid": "84c7b997-8740-448e-8527-15f3be3aefdf",
+              "parentUUID": "5d65b258-c1f7-4f70-ac36-727902564108",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Details on Add liquidity card",
+              "fullTitle": "pool standard Details on Add liquidity card",
+              "timedOut": null,
+              "duration": 70138,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/dashboard');\ncy.get(poolsSideMenu).click();\ncy.get(standardSideMenu).click(); //MetaMask connection\n(0, _dashboard.connectWalletftn)(); //Add Liquidity\ncy.get(createPair).contains(\"Create a pair\").click(); //select tokens that have a pair\n(0, _pool.selectTokensPoolftn)(\"GRELF\", \"ZOO\", \"Add Liquidity\"); //Add liquidity card\ncy.get(createAddTitle).contains(\"Add liquidity\").should('be.visible');\n(0, _pool.pairDetailsCardftn)();",
+              "err": {},
+              "uuid": "c5d6b6c1-465d-4d1f-ae91-57603b75f9b3",
+              "parentUUID": "5d65b258-c1f7-4f70-ac36-727902564108",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "You will receive card",
+              "fullTitle": "pool standard You will receive card",
+              "timedOut": null,
+              "duration": 250515,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/dashboard');\ncy.get(poolsSideMenu).click();\ncy.get(standardSideMenu).click(); //MetaMask connection\n(0, _dashboard.connectWalletftn)(); //Adding Liquidity\ncy.get(createPair).contains(\"Create a pair\").click(); //selecting tokens\n(0, _pool.selectTokensPoolftn)(\"GRELF\", \"ZOO\", \"Add Liquidity\"); //Add liquidity card\ncy.get(createAddTitle).contains(\"Add liquidity\").should('be.visible'); //entering values\n//You will receive card\n(0, _pool.createEnterValuesftn)(\"You will receive\", \"Confirm Supply\", \"GRELF\", \"ZOO\"); //Approve transaction\ncy.confirmMetamaskTransaction();\ncy.wait(10000); //Notification\n(0, _swap.notificationftn)(\"Added\"); // //Successful card\n//successfulCardftn(confirmSwapBtn, limitSuccessfulTransactionLink)",
+              "err": {},
+              "uuid": "9ced32d9-855c-4ed1-8ee1-a146005b0c71",
+              "parentUUID": "5d65b258-c1f7-4f70-ac36-727902564108",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Import pool card",
+              "fullTitle": "pool standard Import pool card",
+              "timedOut": null,
+              "duration": 52288,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/dashboard');\ncy.get(poolsSideMenu).click();\ncy.get(standardSideMenu).click(); //MetaMask connection\n(0, _dashboard.connectWalletftn)(); //Add Liquidity\ncy.get(createPair).contains(\"Import it.\").click();\ncy.get(createAddTitle).contains(\"Import Pool\").should('be.visible'); //selecting tokens having no pool\n(0, _pool.selectTokensImportPoolftn)(\"GRELF\", \"USDt\");\ncy.wait(10000);\ncy.get(noLiquidityBtn).contains(\"You don't have liquidity in this pool yet.\").should('be.visible');",
+              "err": {},
+              "uuid": "ed8db598-b436-4511-bc92-0806a4db4797",
+              "parentUUID": "5d65b258-c1f7-4f70-ac36-727902564108",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Pool found details",
+              "fullTitle": "pool standard Pool found details",
+              "timedOut": null,
+              "duration": 50859,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/dashboard');\ncy.get(poolsSideMenu).click();\ncy.get(standardSideMenu).click(); //MetaMask connection\n(0, _dashboard.connectWalletftn)(); //Add Liquidity\ncy.get(createPair).contains(\"Import it.\").click();\ncy.get(createAddTitle).contains(\"Import Pool\").should('be.visible'); //selecting tokens having no pool\n(0, _pool.selectTokensImportPoolftn)(\"ZOO\", \"GRELF\");\ncy.wait(10000);\n(0, _pool.importTokenDetailsftn)(\"ZOO\", \"GRELF\");\ncy.get(poolSections).eq(3).contains(\"Your Pools\").should(\"have.css\", \"color\", \"rgb(255, 200, 0)\");",
+              "err": {},
+              "uuid": "e603c7be-a774-4b56-9e7d-53707e0e0554",
+              "parentUUID": "5d65b258-c1f7-4f70-ac36-727902564108",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "26172eb9-8823-45e5-a6d1-1696c279cb7d",
+            "abdb97b7-397a-4c8a-81de-624952bd87de",
+            "84c7b997-8740-448e-8527-15f3be3aefdf",
+            "c5d6b6c1-465d-4d1f-ae91-57603b75f9b3",
+            "9ced32d9-855c-4ed1-8ee1-a146005b0c71",
+            "ed8db598-b436-4511-bc92-0806a4db4797",
+            "e603c7be-a774-4b56-9e7d-53707e0e0554"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 689033,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "tests\\reports\\.jsons",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.2.0"
+    }
+  }
+}

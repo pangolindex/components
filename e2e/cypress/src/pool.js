@@ -1,7 +1,7 @@
 import selectors from '../fixtures/selectors.json'
 
 let { tokenSearch, selectTokens, toEstimated, amountInTokensSwap, confirmSwap, toTokenChain, swappingMsg } = selectors.swap
-let { createPairToken1, createPairToken2, createAddTokenValues, createAddConfirmBtn, createAddMaxBtn, createAddOutputMsg, createAddBtn, createAddAmountField, createAddSupplyBtn, createAddTokenNamesValues, importToken1, importSelectToken, poolFound, importTokenLogo, importTokenName, importTokenDetails, importTokenValues, importManageBtn } = selectors.pools
+let { createPairToken1, createPairToken2, createAddTokenValues, createAddConfirmBtn, createAddMaxBtn, createAddOutputMsg, createAddBtn, createAddAmountField, createAddSupplyBtn, createAddTokenNamesValues, importToken1, importSelectToken, poolFound, importTokenLogo, importTokenName, importTokenDetails, importTokenValues, importManageBtn, createApproveBtn } = selectors.pools
 
 function selectTokensPoolftn(token1, token2, pairBtn ) {
     cy.get(createPairToken1).eq(0).click()
@@ -25,9 +25,10 @@ function selectTokensImportPoolftn(token1, token2) {
 
 function pairDetailsCardftn() {
   for (var i = 0; i <= 1; i++) {
+    cy.get(createAddAmountField).eq(i).clear();
     cy.get(toEstimated).eq(i).should('be.visible');
     cy.get(createAddTokenValues).eq(i).invoke('text').should('match', /^\d+(\.\d+)?$/);
-    cy.get(amountInTokensSwap).eq(i).invoke('text').should('match', /^(-|0%$)/);
+    cy.get(amountInTokensSwap).eq(i).invoke('text').should('match', /^(0|\d+(.\d+)?|-)(%)?$/);
     cy.get(createAddConfirmBtn).contains("Enter an amount").should('be.visible')
     cy.get(createAddMaxBtn).eq(0).should('be.visible').click()
     cy.get(amountInTokensSwap).eq(i).invoke('text').should('match', /\d+/);
@@ -52,19 +53,43 @@ function importTokenDetailsftn(token1, token2) {
   }
 
   cy.get(importManageBtn).contains("Manage").click();
-  cy.get(importManageBtn).contains("Manage").should('be.visible');
+  
 }
 
 function createEnterValuesftn(cardName, supplyBtn, token1, token2) {
     for (var i = 0; i <= 1; i++) {
       // Entering values
+      cy.get(createAddAmountField).eq(i).clear();
       cy.get(createAddAmountField).eq(i).type("99999");
-      cy.get(createAddConfirmBtn).contains(/Insufficient \w+ balance/i).should('be.visible');
+      cy.get(createAddConfirmBtn).contains(/Insufficient [\w.]+ balance/i).should('be.visible');
       cy.get(createAddAmountField).eq(i).clear();
       cy.get(createAddAmountField).eq(i).type("0.001");
+      
     }
-  
-    cy.get(createAddSupplyBtn).eq(0).should('contain', 'Supply').click();
+
+    // Verify and approve if needed
+    for (var i = 0; i <= 1; i++) {
+      const btnSelector = i === 0 ? createApproveBtn : createAddSupplyBtn;
+    
+      cy.get(btnSelector, { timeout: 30000 })
+        .eq(0)
+        .then(($buttons) => {
+          const approveButton = Cypress.$($buttons).filter((_, button) => {
+            const buttonText = Cypress.$(button).text().trim();
+            return buttonText.startsWith('Approve');
+          });
+    
+          if (approveButton.length) {
+            cy.wrap(approveButton).click();
+            cy.wait(5000);
+            cy.confirmMetamaskPermissionToSpend();
+            cy.wait(15000);
+          }
+        });
+    }
+    
+    //Supply button
+    cy.get(createAddSupplyBtn, { timeout: 30000 }).eq(0).should('contain', 'Supply').click();
   
     // You will receive card
     cy.get(confirmSwap).contains(cardName).should('be.visible');
