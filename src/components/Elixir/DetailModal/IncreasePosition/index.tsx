@@ -222,6 +222,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
       {hash && (
         <BlackWrapper>
           <TransactionCompleted
+            rootStyle={{ width: '100%' }}
             buttonText={t('common.close')}
             isShowButtton={true}
             onButtonClick={wrappedOnDismiss}

@@ -203,6 +203,7 @@ const Remove = ({ position }: RemoveProps) => {
       {hash && (
         <BlackWrapper>
           <TransactionCompleted
+            rootStyle={{ width: '100%' }}
             buttonText={t('common.close')}
             submitText={t('common.removedLiquidity')}
             isShowButtton={true}
