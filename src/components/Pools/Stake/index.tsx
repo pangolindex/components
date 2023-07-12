@@ -511,7 +511,11 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
             <Button
               variant={approval === ApprovalState.APPROVED || signatureData !== null ? 'confirm' : 'primary'}
               onClick={onAttemptToApprove}
-              isDisabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
+              isDisabled={
+                approval !== ApprovalState.NOT_APPROVED ||
+                signatureData !== null ||
+                !JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0))
+              }
               loading={attempting && !hash}
               loadingText={t('migratePage.loading')}
             >
@@ -520,7 +524,11 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
 
             <Button
               variant="primary"
-              isDisabled={!!error || (signatureData === null && approval !== ApprovalState.APPROVED)}
+              isDisabled={
+                !!error ||
+                (signatureData === null && approval !== ApprovalState.APPROVED) ||
+                !JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0))
+              }
               onClick={onStake}
               loading={attempting && !hash}
               loadingText={t('migratePage.loading')}
