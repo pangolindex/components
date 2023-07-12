@@ -930,6 +930,8 @@
     "to": "To",
     "remove": "Remove",
     "connectWallet": "Connect Wallet",
+    "enterAmount": "输入金额",
+    "insufficientBalance": "{{ symbol }}余额不足",
     "approving": "Approving",
     "approve": "Approve",
     "approved": "Approved",

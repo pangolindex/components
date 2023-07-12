@@ -68,22 +68,29 @@ export function useBridgeActionHandlers(): {
 
   const onCurrencySelection = useCallback(
     (field: CurrencyField, currency: BridgeCurrency) => {
+      typeAmount({ field, typedValue: '0' });
+
       selectCurrency({
         field,
         currencyId: currency?.symbol || '',
       });
     },
-    [selectCurrency],
+    [selectCurrency, typeAmount],
   );
 
   const onChainSelection = useCallback(
     (field: ChainField, chain: Chain) => {
+      selectCurrency({
+        currencyId: '',
+        field,
+      });
+
       selectChain({
         field,
         chainId: chain ? chain.id : '',
       });
     },
-    [selectChain],
+    [selectChain, selectCurrency],
   );
 
   const onSwitchTokens = useCallback(() => {

@@ -13,6 +13,7 @@ import {
 import { useChainId } from '@components/hooks/index';
 import Logo from '../Logo';
 import { CHAINS, TokenAmount, Chain } from '@pangolindex/sdk';
+import { supportedWallets } from '../../constants';
 
 export default function Header() {
   const context = useActiveWeb3React();
@@ -98,6 +99,7 @@ export default function Header() {
           setOpen(false);
         }}
         initialChainId={selectedChain?.chain_id}
+        supportedWallets={supportedWallets}
       />
       <NetworkSelection
         open={openNetworkSelection}

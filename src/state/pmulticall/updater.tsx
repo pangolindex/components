@@ -29,15 +29,18 @@ async function fetchChunk(
   chainId: ChainId,
 ): Promise<{ results: string[]; blockNumber: number }> {
   console.debug('Fetching chunk', multicallContract, chunk, minBlockNumber);
+
   const chain = getChainByNumber(chainId);
+  const args: any = [chunk.map((obj) => [obj.address, obj.callData])];
+  if (chain?.network_type === NetworkType.HEDERA) {
+    args.push({
+      gasLimit: 15_000_000,
+    });
+  }
+
   let resultsBlockNumber, returnData;
   try {
-    [resultsBlockNumber, returnData] = await multicallContract.aggregate(
-      chunk.map((obj) => [obj.address, obj.callData]),
-      {
-        gasLimit: chain?.network_type === NetworkType.HEDERA ? 15_000_000 : 8_000_000,
-      },
-    );
+    [resultsBlockNumber, returnData] = await multicallContract.aggregate(...args);
   } catch (error) {
     console.debug('Failed to fetch chunk inside retry', error);
     throw error;

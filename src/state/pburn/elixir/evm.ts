@@ -73,7 +73,7 @@ export function useElixirRemoveLiquidity() {
 
       addTransaction(response, {
         summary:
-          'Remove' +
+          'Removed' +
           ' ' +
           liquidityValue0?.toExact() +
           ' ' +
@@ -83,7 +83,7 @@ export function useElixirRemoveLiquidity() {
           ' ' +
           liquidityValue1?.toExact() +
           ' ' +
-          liquidityValue0.currency?.symbol +
+          liquidityValue1.currency?.symbol +
           ' ' +
           'Fees' +
           ' ' +

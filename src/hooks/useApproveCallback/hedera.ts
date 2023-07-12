@@ -24,6 +24,7 @@ export function useHederaApproveCallback(
 ): [ApprovalState, () => Promise<void>] {
   const { account } = usePangolinWeb3();
   const [isPendingApprove, setIsPendingApprove] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
 
   const amountToken = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined;
 
@@ -51,7 +52,7 @@ export function useHederaApproveCallback(
     if (!currentAllowance) return ApprovalState.UNKNOWN;
 
     // amountToApprove will be defined if currentAllowance is
-    if (currentAllowance.lessThan(amountToApprove)) {
+    if (currentAllowance.lessThan(amountToApprove) || !isApproved) {
       if (pendingApproval || isPendingApprove) {
         return ApprovalState.PENDING;
       } else {
@@ -60,7 +61,7 @@ export function useHederaApproveCallback(
     } else {
       return ApprovalState.APPROVED;
     }
-  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, spender]);
+  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, isApproved, spender]);
 
   const addTransaction = useTransactionAdder();
 
@@ -108,6 +109,7 @@ export function useHederaApproveCallback(
           summary: 'Approved ' + amountToApprove.currency.symbol,
           approval: { tokenAddress: token.address, spender: spender },
         });
+        setIsApproved(true);
       }
     } catch (error) {
       console.debug('Failed to approve token', error);
