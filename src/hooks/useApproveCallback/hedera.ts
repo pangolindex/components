@@ -51,14 +51,14 @@ export function useHederaApproveCallback(
     if (!currentAllowance) return ApprovalState.UNKNOWN;
 
     // amountToApprove will be defined if currentAllowance is
-    if (currentAllowance.lessThan(amountToApprove)) {
+    if (!currentAllowance.lessThan(amountToApprove)) {
+      return ApprovalState.APPROVED;
+    } else {
       if (pendingApproval || isPendingApprove) {
         return ApprovalState.PENDING;
       } else {
         return ApprovalState.NOT_APPROVED;
       }
-    } else {
-      return ApprovalState.APPROVED;
     }
   }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, spender]);
 
