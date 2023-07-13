@@ -57,8 +57,6 @@ export function useHederaApproveCallback(
       } else {
         return ApprovalState.NOT_APPROVED;
       }
-    } else {
-      return ApprovalState.APPROVED;
     }
   }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, spender]);
 
