@@ -261,8 +261,8 @@ export function useElixirAddLiquidity() {
       }
     } catch (err) {
       const _err = err as any;
-      // we only care if the error is something _other_ than the user rejected the tx
       if (_err?.code !== 4001) {
+        console.error(_err);
         throw new Error('User Rejected Transaction');
       }
       throw _err;
@@ -337,7 +337,9 @@ export function useElixirCollectEarnedFees() {
       const _err = err as any;
       if (_err?.code !== 4001) {
         console.error(_err);
+        throw new Error('User Rejected Transaction');
       }
+      throw _err;
     }
   };
 }

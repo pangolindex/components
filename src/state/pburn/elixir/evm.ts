@@ -99,7 +99,9 @@ export function useElixirRemoveLiquidity() {
       const _err = err as any;
       if (_err?.code !== 4001) {
         console.error(_err);
+        throw new Error('User Rejected Transaction');
       }
+      throw _err;
     }
   };
 }

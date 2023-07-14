@@ -25,3 +25,17 @@ export const StatWrapper = styled(Box)`
   justify-content: center;
   align-items: center;
 `;
+
+export const ErrorWrapper = styled(Box)`
+  // display: grid;
+  // grid-template-rows: minmax(100px, auto) max-content;
+  height: 100%;
+  padding: 10px;
+`;
+
+export const ErrorBox = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
