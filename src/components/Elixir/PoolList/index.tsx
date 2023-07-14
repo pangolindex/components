@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, DropdownMenu, Loader, Text, TextInput } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
+import { usePangolinWeb3 } from 'src/hooks';
 import { useAllPoolsViaSubgraph } from 'src/hooks/elixir/hooks/evm';
 import { PoolState } from 'src/hooks/elixir/hooks/types';
 import useDebounce from 'src/hooks/useDebounce';
@@ -19,6 +20,7 @@ import { Cards, ErrorContainer, LoaderWrapper, MobileGridContainer, PanelWrapper
 import { PoolListProps, SortingType } from './types';
 
 const PoolList: React.FC<PoolListProps> = (props) => {
+  const { account } = usePangolinWeb3();
   const { t } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -169,9 +171,11 @@ const PoolList: React.FC<PoolListProps> = (props) => {
                 <Text pt={'25px'} pb={'25px'} color="color11" fontSize={[22, 26]} fontWeight={400}>
                   {t('common.notFound')}
                 </Text>
-                <Button width={'300px'} variant="primary" onClick={toggleWalletModal}>
-                  {t('common.connectWallet')}
-                </Button>
+                {!account && (
+                  <Button width={'300px'} variant="primary" onClick={toggleWalletModal}>
+                    {t('common.connectWallet')}
+                  </Button>
+                )}
               </Box>
             </ErrorContainer>
           ) : (
