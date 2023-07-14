@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { CAVAX, ChainId, CurrencyAmount, JSBI, TokenAmount, Trade } from '@pangolindex/sdk';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
@@ -43,6 +43,13 @@ export function useHederaApproveCallback(
   const pendingApproval = useHasPendingApproval(token?.address, spender);
 
   const tokenSupply = useHederaTotalSupply(token);
+
+  // it's a fallback case the user approve a amount small of the requested by interface
+  useEffect(() => {
+    if (currentAllowance && amountToApprove && currentAllowance.lessThan(amountToApprove)) {
+      setIsApproved(false);
+    }
+  }, [currentAllowance]);
 
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
