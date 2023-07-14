@@ -1,6 +1,9 @@
-import { ElixirTrade, Percent, Trade, TradeType } from '@pangolindex/sdk';
-import React from 'react';
+import { ElixirTrade, Fraction, Percent, Trade, TradeType } from '@pangolindex/sdk';
+import _uniqueId from 'lodash/uniqueId';
+import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
+import Tooltip from 'src/components/Tooltip';
 import { INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from 'src/constants';
 import { BIPS_BASE } from 'src/constants/swap';
 import { Field } from 'src/state/pswap/atom';
@@ -16,6 +19,7 @@ const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
   const [allowedSlippage] = useUserSlippageTolerance();
   const [feeInfo] = useDaasFeeInfo();
   const { t } = useTranslation();
+  const theme = useContext(ThemeContext);
   const { priceImpactWithoutFee, realizedLPFee, realizedLPFeeAmount } = computeTradePriceBreakdown(trade);
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT;
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage);
@@ -37,15 +41,26 @@ const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
     ? `${realizedLPFee.add(new Percent(feeInfo.feeTotal.toString(), BIPS_BASE)).multiply('100').toSignificant(4)}%`
     : '-';
 
-  const renderRow = (label: string, value: string, showSeverity?: boolean) => {
+  const renderRow = (label: string, value: string, showSeverity?: boolean, tooltipText?: string) => {
+    const id = _uniqueId('swap-tip-detail-');
     return (
       <DataBox key={label}>
         <Text color="swapWidget.secondary" fontSize={14}>
           {label}
         </Text>
 
-        <ValueText fontSize={14} severity={showSeverity ? warningSeverity(priceImpactWithoutFee) : -1}>
+        <ValueText
+          fontSize={14}
+          severity={showSeverity ? warningSeverity(priceImpactWithoutFee) : -1}
+          data-tip={!!tooltipText}
+          data-for={id}
+        >
           {value}
+          {tooltipText && (
+            <Tooltip id={id} effect="solid" backgroundColor={theme.primary}>
+              <Text color="eerieBlack">{tooltipText}</Text>
+            </Tooltip>
+          )}
         </ValueText>
       </DataBox>
     );
@@ -59,7 +74,12 @@ const SwapDetailInfo: React.FC<Props> = ({ trade }) => {
       {renderRow(`${t('swap.priceImpact')}`, priceImpact, true)}
       {feeInfo?.feeTotal > 0
         ? renderRow(`${t('swap.totalFee')}`, totalFee)
-        : renderRow(`${t('swap.liquidityProviderFee')}`, lpFeeAmount)}
+        : renderRow(
+            `${t('swap.liquidityProviderFee')}`,
+            lpFeeAmount,
+            false,
+            realizedLPFeeAmount?.lessThan(new Fraction(1, 10000)) ? realizedLPFeeAmount?.toExact() : undefined,
+          )}
     </ContentBox>
   );
 };
