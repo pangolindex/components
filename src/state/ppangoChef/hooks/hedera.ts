@@ -5,7 +5,7 @@ import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { useSubgraphFarms, useSubgraphFarmsStakedAmount } from 'src/apollo/pangochef';
+import { PangochefFarmReward, useSubgraphFarms, useSubgraphFarmsStakedAmount } from 'src/apollo/pangochef';
 import { BIGNUMBER_ZERO, BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS, ZERO_FRACTION } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
@@ -18,6 +18,7 @@ import { useTokensContract } from 'src/hooks/tokens/evm';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
+import { useGetExtraPendingRewards } from 'src/state/pstake/hooks/common';
 import { getExtraTokensWeeklyRewardRate } from 'src/state/pstake/utils';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/state/pwallet/hooks/hedera';
@@ -115,13 +116,6 @@ export function useHederaPangoChefInfos() {
       return undefined;
     });
   }, [pools]);
-
-  const rewardsTokensState = useMultipleContractSingleData(
-    rewardsAddresses,
-    REWARDER_VIA_MULTIPLIER_INTERFACE,
-    'getRewardTokens',
-    [],
-  );
 
   const rewardsMultipliersState = useMultipleContractSingleData(
     rewardsAddresses,
@@ -245,6 +239,8 @@ export function useHederaPangoChefInfos() {
     !shouldCreateStorage && userInfoInput ? userInfoInput : [],
   );
 
+  const extraPendingTokensRewardsState = useGetExtraPendingRewards(rewardsAddresses, userPendingRewardsState);
+
   const wavax = WAVAX[chainId];
   const [avaxPngPairState, avaxPngPair] = usePair(wavax, png);
 
@@ -277,11 +273,14 @@ export function useHederaPangoChefInfos() {
       const userInfoState = userInfosState[index];
       const token0State = tokens0State[index];
       const token1State = tokens1State[index];
-      const rewardTokensState = rewardsTokensState[index];
       const rewardMultipliersState = rewardsMultipliersState[index];
       const userPendingRewardState = userPendingRewardsState[index];
       const pairTotalSupplyState = pairTotalSuppliesState[index];
       const [pairState, pair] = pairs?.[index] || [];
+      const extraPendingTokensRewardState = extraPendingTokensRewardsState[index];
+      const extraPendingTokensRewards = extraPendingTokensRewardState?.result as
+        | { amounts: BigNumber[]; tokens: string[] }
+        | undefined;
 
       // if is loading or not exist pair continue
       if (
@@ -290,7 +289,7 @@ export function useHederaPangoChefInfos() {
         userInfoState?.loading ||
         token0State?.loading ||
         token1State?.loading ||
-        rewardTokensState?.loading ||
+        extraPendingTokensRewardState?.loading ||
         rewardMultipliersState?.loading ||
         userPendingRewardState?.loading ||
         pairTotalSupplyState?.loading ||
@@ -416,6 +415,18 @@ export function useHederaPangoChefInfos() {
         stakedAmount: userTotalStakedAmount,
       });
 
+      const { rewardTokensAddress, extraPendingRewards } = (extraPendingTokensRewards?.amounts ?? []).reduce(
+        (memo, rewardAmount, index) => {
+          memo.rewardTokensAddress.push(extraPendingTokensRewards?.tokens?.[index] ?? '');
+          memo.extraPendingRewards.push(rewardAmount.toString());
+          return memo;
+        },
+        {
+          rewardTokensAddress: [] as string[],
+          extraPendingRewards: [] as string[],
+        },
+      );
+
       farms.push({
         pid: pid,
         tokens: [pair?.token0, pair?.token1],
@@ -428,7 +439,7 @@ export function useHederaPangoChefInfos() {
         isPeriodFinished: rewardRate.isZero(),
         periodFinish: undefined,
         rewardsAddress: pool.rewarder,
-        rewardTokensAddress: [png.address, ...(rewardTokensState?.result?.[0] || [])],
+        rewardTokensAddress: rewardTokensAddress,
         rewardTokensMultiplier: rewardMultipliers,
         totalRewardRatePerSecond: totalRewardRatePerSecond,
         totalRewardRatePerWeek: totalRewardRatePerWeek,
@@ -442,9 +453,9 @@ export function useHederaPangoChefInfos() {
         userRewardRate: userRewardRate,
         stakingApr: apr,
         pairPrice: pairPrice,
-        poolType: pool.poolType,
         poolRewardRate: new Fraction(rewardRate.toString()),
         userApr,
+        extraPendingRewards: extraPendingRewards,
       });
     }
 
@@ -457,7 +468,7 @@ export function useHederaPangoChefInfos() {
     userInfosState,
     tokens0State,
     tokens1State,
-    rewardsTokensState,
+    extraPendingTokensRewardsState,
     pairTotalSuppliesState,
     userPendingRewardsState,
     pairs,
@@ -572,6 +583,18 @@ export function useGetPangoChefInfosViaSubgraph() {
     !shouldCreateStorage && userInfoInput ? userInfoInput : [],
   );
 
+  const rewardsAddresses = useMemo(() => {
+    const _rewardsAddresses: (string | undefined)[] = [];
+    for (let index = 0; index < allFarms.length; index++) {
+      const farm = allFarms[index];
+      const rewarderAddress = farm.rewarder.id.split('-')[0];
+      _rewardsAddresses.push(rewarderAddress !== ZERO_ADDRESS ? rewarderAddress : undefined);
+    }
+    return _rewardsAddresses;
+  }, [allFarms]);
+
+  const extraPendingTokensRewardsState = useGetExtraPendingRewards(rewardsAddresses, userPendingRewardsState);
+
   return useMemo(() => {
     if (!chainId || !png || !allFarms?.length) return [];
 
@@ -581,10 +604,16 @@ export function useGetPangoChefInfosViaSubgraph() {
 
       const userPendingRewardState = userPendingRewardsState[index];
       const userInfo = userInfos[index];
+      const extraPendingTokensRewardState = extraPendingTokensRewardsState[index];
+      const extraPendingTokensRewards = extraPendingTokensRewardState?.result as
+        | { amounts: BigNumber[]; tokens: string[] }
+        | undefined;
 
       // if is loading or not exist pair continue
       if (
         !farm.pair || // skip pull with pair null because it is relayer
+        extraPendingTokensRewardState?.loading ||
+        userPendingRewardState?.loading ||
         avaxPngPairState == PairState.LOADING ||
         !avaxPngPair
       ) {
@@ -597,11 +626,23 @@ export function useGetPangoChefInfosViaSubgraph() {
       const pair = farm?.pair;
       const multiplier = JSBI.BigInt(farm?.weight);
 
-      const { rewardTokensAddress, rewardTokens, rewardMultipliers } = rewards.reduce(
-        (memo, rewardToken) => {
-          const tokenObj = rewardToken.token;
-          const _address = getAddress(tokenObj.id);
-          const _token = new Token(chainId, _address, Number(tokenObj.decimals), tokenObj.symbol, tokenObj.name);
+      const { rewardTokensAddress, rewardTokens, rewardMultipliers, extraPendingRewards } = (
+        extraPendingTokensRewards?.amounts ?? []
+      ).reduce(
+        (memo, rewardAmount, index) => {
+          const address: string = extraPendingTokensRewards?.tokens?.[index] ?? '';
+          // we need to use find because subgraph don't return in the same order of contract
+          // eg: contract return [token0, token1], subgraph return [token1, token0]
+          const rewardToken = rewards.find(
+            (reward) => reward.token.id === address.toLowerCase(),
+          ) as PangochefFarmReward; // we can do this because have same tokens
+          const _token = new Token(
+            chainId,
+            address,
+            Number(rewardToken.token.decimals),
+            rewardToken.token.symbol,
+            rewardToken.token.name,
+          );
           const _multiplier = JSBI.BigInt(rewardToken?.multiplier.toString());
 
           // remove png from rewards
@@ -609,15 +650,17 @@ export function useGetPangoChefInfosViaSubgraph() {
             return memo;
           }
 
-          memo.rewardTokensAddress.push(_address);
+          memo.rewardTokensAddress.push(address);
           memo.rewardTokens.push(_token);
           memo.rewardMultipliers.push(_multiplier);
+          memo.extraPendingRewards.push(rewardAmount.toString());
           return memo;
         },
         {
           rewardTokensAddress: [] as string[],
           rewardTokens: [] as Token[],
           rewardMultipliers: [] as JSBI[],
+          extraPendingRewards: [] as string[],
         },
       );
 
@@ -833,9 +876,9 @@ export function useGetPangoChefInfosViaSubgraph() {
         userRewardRate: userRewardRate,
         stakingApr: apr,
         pairPrice: pairPriceInEth,
-        poolType: PoolType.ERC20_POOL,
         poolRewardRate: new Fraction(rewardRate.toString()),
         userApr: userApr,
+        extraPendingRewards: extraPendingRewards,
       });
     }
 
@@ -850,6 +893,7 @@ export function useGetPangoChefInfosViaSubgraph() {
     userInfosState,
     allPoolsIds,
     blockTime,
+    extraPendingTokensRewardsState,
   ]);
 }
 

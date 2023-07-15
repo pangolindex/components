@@ -3,13 +3,14 @@ import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
+import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
 import { PNG } from 'src/constants/tokens';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTokensHook } from 'src/hooks/tokens';
 import { useMiniChefContract, useRewardViaMultiplierContract } from 'src/hooks/useContract';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
-import { useSingleCallResult } from 'src/state/pmulticall/hooks';
+import { CallState, useMultipleContractMultipleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
 import { tryParseAmount } from 'src/state/pswap/hooks/common';
 import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -257,4 +258,29 @@ export function useGetRewardTokens(stakingInfo: DoubleSideStakingInfo) {
     }
     return rewardTokens;
   }, [_rewardTokens, cheftType, stakingInfo]);
+}
+
+export function useGetExtraPendingRewards(
+  rewardsAddresses: (string | undefined)[],
+  userPendingRewardsState: CallState[],
+) {
+  const { account } = usePangolinWeb3();
+
+  const pendingTokensParams = useMemo(() => {
+    const params: [0, string, string][] = [];
+    for (let index = 0; index < rewardsAddresses.length; index++) {
+      const userPendingRewardRes = userPendingRewardsState[index]?.result as BigNumber | undefined;
+      params.push([0, account ?? ZERO_ADDRESS, userPendingRewardRes ? userPendingRewardRes.toString() : '0']);
+    }
+    return params;
+  }, [account, userPendingRewardsState]);
+
+  const extraPendingTokensRewardsState = useMultipleContractMultipleData(
+    rewardsAddresses,
+    REWARDER_VIA_MULTIPLIER_INTERFACE,
+    'pendingTokens',
+    pendingTokensParams,
+  );
+
+  return extraPendingTokensRewardsState;
 }

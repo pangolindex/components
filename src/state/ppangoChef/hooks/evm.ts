@@ -16,7 +16,7 @@ import { useTokensContract } from 'src/hooks/tokens/evm';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
-import { useMinichefPools } from 'src/state/pstake/hooks/common';
+import { useGetExtraPendingRewards, useMinichefPools } from 'src/state/pstake/hooks/common';
 import { getExtraTokensWeeklyRewardRate } from 'src/state/pstake/utils';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin, decimalToFraction, waitForTransaction } from 'src/utils';
@@ -106,13 +106,6 @@ export function usePangoChefInfos() {
       return undefined;
     });
   }, [pools]);
-
-  const rewardsTokensState = useMultipleContractSingleData(
-    rewardsAddresses,
-    REWARDER_VIA_MULTIPLIER_INTERFACE,
-    'getRewardTokens',
-    [],
-  );
 
   const rewardsMultipliersState = useMultipleContractSingleData(
     rewardsAddresses,
@@ -226,6 +219,8 @@ export function usePangoChefInfos() {
     userInfoInput ?? [],
   );
 
+  const extraPendingTokensRewardsState = useGetExtraPendingRewards(rewardsAddresses, userPendingRewardsState);
+
   const wavax = WAVAX[chainId];
   const [avaxPngPairState, avaxPngPair] = usePair(wavax, png);
 
@@ -259,24 +254,27 @@ export function usePangoChefInfos() {
       const userInfoState = userInfosState[index];
       const token0State = tokens0State[index];
       const token1State = tokens1State[index];
-      const rewardTokensState = rewardsTokensState[index];
       const rewardMultipliersState = rewardsMultipliersState[index];
       const userPendingRewardState = userPendingRewardsState[index];
       const pairTotalSupplyState = pairTotalSuppliesState[index];
       const [pairState, pair] = pairs[index];
+      const extraPendingTokensRewardState = extraPendingTokensRewardsState[index];
+      const extraPendingTokensRewards = extraPendingTokensRewardState?.result as
+        | { amounts: BigNumber[]; tokens: string[] }
+        | undefined;
 
       // if is loading or not exist pair continue
       if (
-        poolState.loading ||
-        poolRewardRateState.loading ||
-        poolsRewardInfoState.loading ||
-        userInfoState.loading ||
-        token0State.loading ||
-        token1State.loading ||
-        rewardTokensState.loading ||
-        rewardMultipliersState.loading ||
-        userPendingRewardState.loading ||
-        pairTotalSupplyState.loading ||
+        poolState?.loading ||
+        poolRewardRateState?.loading ||
+        poolsRewardInfoState?.loading ||
+        userInfoState?.loading ||
+        token0State?.loading ||
+        token1State?.loading ||
+        extraPendingTokensRewardState?.loading ||
+        rewardMultipliersState?.loading ||
+        userPendingRewardState?.loading ||
+        pairTotalSupplyState?.loading ||
         pairState === PairState.LOADING ||
         avaxPngPairState == PairState.LOADING ||
         !pair ||
@@ -393,6 +391,18 @@ export function usePangoChefInfos() {
         stakedAmount: userTotalStakedAmount,
       });
 
+      const { rewardTokensAddress, extraPendingRewards } = (extraPendingTokensRewards?.amounts ?? []).reduce(
+        (memo, rewardAmount, index) => {
+          memo.rewardTokensAddress.push(extraPendingTokensRewards?.tokens?.[index] ?? '');
+          memo.extraPendingRewards.push(rewardAmount.toString());
+          return memo;
+        },
+        {
+          rewardTokensAddress: [] as string[],
+          extraPendingRewards: [] as string[],
+        },
+      );
+
       farms.push({
         pid: pid,
         tokens: [pair.token0, pair.token1],
@@ -405,7 +415,7 @@ export function usePangoChefInfos() {
         isPeriodFinished: rewardRate.isZero(),
         periodFinish: undefined,
         rewardsAddress: pool.rewarder,
-        rewardTokensAddress: [...(rewardTokensState?.result?.[0] || [])],
+        rewardTokensAddress: rewardTokensAddress,
         rewardTokensMultiplier: rewardMultipliers,
         totalRewardRatePerSecond: totalRewardRatePerSecond,
         totalRewardRatePerWeek: totalRewardRatePerWeek,
@@ -419,9 +429,9 @@ export function usePangoChefInfos() {
         userRewardRate: userRewardRate,
         stakingApr: apr,
         pairPrice: pairPrice,
-        poolType: pool.poolType,
         poolRewardRate: new Fraction(rewardRate.toString()),
         userApr: userApr,
+        extraPendingRewards: extraPendingRewards,
       });
     }
     return farms;
@@ -433,7 +443,7 @@ export function usePangoChefInfos() {
     userInfosState,
     tokens0State,
     tokens1State,
-    rewardsTokensState,
+    extraPendingTokensRewardsState,
     pairTotalSuppliesState,
     userPendingRewardsState,
     pairs,
