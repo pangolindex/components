@@ -43,8 +43,9 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
     if (chainId) {
       if (isEvmChain(chainId) && isAddress(account)) {
         normalizedAccount = getAddress(account as string);
+      } else {
+        normalizedAccount = account;
       }
-      normalizedAccount = account;
     }
 
     return {
