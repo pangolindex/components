@@ -22,9 +22,13 @@ const PoolV3: React.FC<Props> = ({ type, setMenu, activeMenu, menuItems, pangoCh
           JSBI.greaterThan(stakingInfo.multiplier, BIG_INT_ZERO),
         );
       case PoolType.own:
-        // return all farms with staked amount greater than 0
+        // return all farms with staked amount greater than 0 or user have pending rewards on farm
         return (pangoChefStakingInfos || []).filter((stakingInfo) => {
-          return Boolean(stakingInfo.stakedAmount.greaterThan('0'));
+          return Boolean(
+            stakingInfo.stakedAmount.greaterThan('0') ||
+              stakingInfo.earnedAmount.greaterThan('0') ||
+              stakingInfo.extraPendingRewards.some((pendingRewards) => JSBI.greaterThan(pendingRewards, BIG_INT_ZERO)),
+          );
         });
       case PoolType.superFarms:
         // return all farms with reward tokens address greater than 0 and with weight (multipler) greater than 0
