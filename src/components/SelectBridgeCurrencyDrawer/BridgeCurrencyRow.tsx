@@ -1,5 +1,6 @@
 import { BridgeCurrency } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
+import { HelpCircle } from 'react-feather';
 import { Text } from '..';
 import { BridgeCurrencyLogo, BridgeCurrencyRowRoot } from './styled';
 
@@ -20,7 +21,11 @@ const BridgeCurrencyRow: React.FC<Props> = (props) => {
 
   return (
     <BridgeCurrencyRowRoot style={style} onClick={handleSelect} disabled={isSelected} selected={otherSelected}>
-      <BridgeCurrencyLogo src={bridgeCurrency?.logo} size={24} />
+      {bridgeCurrency?.logo && bridgeCurrency?.logo?.length > 0 ? (
+        <BridgeCurrencyLogo src={bridgeCurrency?.logo} size={24} />
+      ) : (
+        <HelpCircle size={24} style={{ marginRight: '10px' }} />
+      )}
       <Text color="bridge.text" fontSize={14} title={bridgeCurrency?.name}>
         {bridgeCurrency?.symbol}
       </Text>
