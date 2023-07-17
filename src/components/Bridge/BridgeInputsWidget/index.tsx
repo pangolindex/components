@@ -81,7 +81,7 @@ const BridgeInputsWidget: React.FC<BridgeInputsWidgetProps> = (props) => {
       </Tooltip>
       <TextInput
         isNumeric={true}
-        value={amount?.toExact() ?? ''}
+        value={amount?.toExact()}
         onChange={(value: any) => {
           handleInput(value);
         }}
