@@ -394,12 +394,12 @@ export function usePangoChefInfos() {
       const { rewardTokensAddress, extraPendingRewards } = (extraPendingTokensRewards?.amounts ?? []).reduce(
         (memo, rewardAmount, index) => {
           memo.rewardTokensAddress.push(extraPendingTokensRewards?.tokens?.[index] ?? '');
-          memo.extraPendingRewards.push(rewardAmount.toString());
+          memo.extraPendingRewards.push(JSBI.BigInt(rewardAmount.toString()));
           return memo;
         },
         {
           rewardTokensAddress: [] as string[],
-          extraPendingRewards: [] as string[],
+          extraPendingRewards: [] as JSBI[],
         },
       );
 

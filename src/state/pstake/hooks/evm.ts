@@ -355,12 +355,12 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
         const { rewardTokensAddress, extraPendingRewards } = (extraPendingTokensRewards?.amounts ?? []).reduce(
           (memo, rewardAmount: BigNumber, index) => {
             memo.rewardTokensAddress.push(extraPendingTokensRewards?.tokens?.[index] ?? '');
-            memo.extraPendingRewards.push(rewardAmount.toString());
+            memo.extraPendingRewards.push(JSBI.BigInt(rewardAmount.toString()));
             return memo;
           },
           {
             rewardTokensAddress: [] as string[],
-            extraPendingRewards: [] as string[],
+            extraPendingRewards: [] as JSBI[],
           },
         );
 
@@ -634,14 +634,14 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
           memo.rewardTokensAddress.push(address);
           memo.rewardTokens.push(_token);
           memo.rewardMultipliers.push(_multiplier);
-          memo.extraPendingRewards.push(rewardAmount.toString());
+          memo.extraPendingRewards.push(JSBI.BigInt(rewardAmount.toString()));
           return memo;
         },
         {
           rewardTokensAddress: [] as string[],
           rewardTokens: [] as Token[],
           rewardMultipliers: [] as JSBI[],
-          extraPendingRewards: [] as string[],
+          extraPendingRewards: [] as JSBI[],
         },
       );
 

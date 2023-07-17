@@ -418,12 +418,12 @@ export function useHederaPangoChefInfos() {
       const { rewardTokensAddress, extraPendingRewards } = (extraPendingTokensRewards?.amounts ?? []).reduce(
         (memo, rewardAmount, index) => {
           memo.rewardTokensAddress.push(extraPendingTokensRewards?.tokens?.[index] ?? '');
-          memo.extraPendingRewards.push(rewardAmount.toString());
+          memo.extraPendingRewards.push(JSBI.BigInt(rewardAmount.toString()));
           return memo;
         },
         {
           rewardTokensAddress: [] as string[],
-          extraPendingRewards: [] as string[],
+          extraPendingRewards: [] as JSBI[],
         },
       );
 
@@ -653,14 +653,14 @@ export function useGetPangoChefInfosViaSubgraph() {
           memo.rewardTokensAddress.push(address);
           memo.rewardTokens.push(_token);
           memo.rewardMultipliers.push(_multiplier);
-          memo.extraPendingRewards.push(rewardAmount.toString());
+          memo.extraPendingRewards.push(JSBI.BigInt(rewardAmount.toString()));
           return memo;
         },
         {
           rewardTokensAddress: [] as string[],
           rewardTokens: [] as Token[],
           rewardMultipliers: [] as JSBI[],
-          extraPendingRewards: [] as string[],
+          extraPendingRewards: [] as JSBI[],
         },
       );
 
