@@ -20,6 +20,7 @@ import { Cards, ErrorContainer, LoaderWrapper, MobileGridContainer, PanelWrapper
 import { PoolListProps, SortingType } from './types';
 
 const PoolList: React.FC<PoolListProps> = (props) => {
+  const { account } = usePangolinWeb3();
   const { t } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState<string>('');

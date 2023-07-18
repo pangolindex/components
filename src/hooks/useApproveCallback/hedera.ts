@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { CAVAX, ChainId, CurrencyAmount, JSBI, TokenAmount, Trade } from '@pangolindex/sdk';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
@@ -44,6 +44,13 @@ export function useHederaApproveCallback(
 
   const tokenSupply = useHederaTotalSupply(token);
 
+  // it's a fallback case the user approve a amount small of the requested by interface
+  useEffect(() => {
+    if (currentAllowance && amountToApprove && currentAllowance.lessThan(amountToApprove)) {
+      setIsApproved(false);
+    }
+  }, [currentAllowance]);
+
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN;
@@ -52,14 +59,14 @@ export function useHederaApproveCallback(
     if (!currentAllowance) return ApprovalState.UNKNOWN;
 
     // amountToApprove will be defined if currentAllowance is
-    if (currentAllowance.lessThan(amountToApprove) || !isApproved) {
+    if (!currentAllowance.lessThan(amountToApprove) || isApproved) {
+      return ApprovalState.APPROVED;
+    } else {
       if (pendingApproval || isPendingApprove) {
         return ApprovalState.PENDING;
       } else {
         return ApprovalState.NOT_APPROVED;
       }
-    } else {
-      return ApprovalState.APPROVED;
     }
   }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, isApproved, spender]);
 

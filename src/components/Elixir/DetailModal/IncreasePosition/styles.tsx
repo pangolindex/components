@@ -13,6 +13,7 @@ export const BlackWrapper = styled(Box)`
   width: 100%;
   height: 100%;
   display: flex;
+  padding: 20px 30px;
   flex-direction: column;
   z-index: 999;
   position: absolute;
@@ -79,4 +80,19 @@ export const ButtonWrapper = styled(Box)`
   display: flex;
   padding: 0;
   align-items: center;
+`;
+
+export const ErrorWrapper = styled(Box)`
+  display: grid;
+  grid-template-rows: minmax(100px, auto) max-content;
+  height: 100%;
+  padding: 10px;
+`;
+
+export const ErrorBox = styled(Box)`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 `;

@@ -285,7 +285,9 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
           <Button
             variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
             onClick={onAttemptToApprove}
-            isDisabled={approval !== ApprovalState.NOT_APPROVED}
+            isDisabled={
+              approval !== ApprovalState.NOT_APPROVED || !JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0))
+            }
             loading={attempting && !hash}
             loadingText={t('migratePage.loading')}
           >
@@ -294,7 +296,13 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
 
           <Button
             variant="primary"
-            isDisabled={!!error || approval !== ApprovalState.APPROVED || !!stakeCallbackError || shouldCreateStorage}
+            isDisabled={
+              !!error ||
+              approval !== ApprovalState.APPROVED ||
+              !!stakeCallbackError ||
+              shouldCreateStorage ||
+              !JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0))
+            }
             onClick={onConfirm}
             loading={attempting && !hash}
             loadingText={t('migratePage.loading')}
