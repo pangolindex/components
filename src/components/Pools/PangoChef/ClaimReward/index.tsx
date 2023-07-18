@@ -19,6 +19,7 @@ export interface ClaimProps {
   onClose: () => void;
   redirectToCompound: () => void;
 }
+('  ');
 const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -58,7 +59,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
     hederaAssociated: isHederaTokenAssociated,
   } = useHederaTokenAssociated(notAssociateTokens?.[0]?.address, notAssociateTokens?.[0]?.symbol);
 
-  const { callback: claimRewardCallback } = useClaimRewardCallback(stakingInfo.pid, stakingInfo.poolType);
+  const { callback: claimRewardCallback } = useClaimRewardCallback(stakingInfo.pid);
 
   function wrappedOnDismiss() {
     setHash(undefined);

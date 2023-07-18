@@ -1046,10 +1046,10 @@ export function useHederaPangoChefStakeCallback(
  * @param poolType
  * @returns callback and error
  */
-export function useHederaPangoChefClaimRewardCallback(
-  poolId: string | null,
-  poolType: PoolType,
-): { callback: null | (() => Promise<string>); error: string | null } {
+export function useHederaPangoChefClaimRewardCallback(poolId: string | null): {
+  callback: null | (() => Promise<string>);
+  error: string | null;
+} {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { t } = useTranslation();
@@ -1060,20 +1060,18 @@ export function useHederaPangoChefClaimRewardCallback(
   const png = PNG[chainId];
 
   return useMemo(() => {
-    if (!poolId || !account || !chainId || !poolType) {
+    if (!poolId || !account || !chainId) {
       return { callback: null, error: 'Missing dependencies' };
     }
 
     return {
       callback: async function onClaimReward(): Promise<string> {
         try {
-          const method = poolType === PoolType.RELAYER_POOL ? 'claim' : 'harvest';
-
           const args = {
             poolId,
             account,
             chainId,
-            methodName: method,
+            methodName: 'harvest',
           };
           const response = await hederaFn.claimReward(args);
 
@@ -1100,7 +1098,7 @@ export function useHederaPangoChefClaimRewardCallback(
       },
       error: null,
     };
-  }, [poolId, account, chainId, poolType, addTransaction]);
+  }, [poolId, account, chainId, addTransaction]);
 }
 
 /**

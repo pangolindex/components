@@ -509,10 +509,10 @@ export function useEVMPangoChefStakeCallback(
  * @param poolType
  * @returns callback and error
  */
-export function useEVMPangoChefClaimRewardCallback(
-  poolId: string | null,
-  poolType: PoolType,
-): { callback: null | (() => Promise<string>); error: string | null } {
+export function useEVMPangoChefClaimRewardCallback(poolId: string | null): {
+  callback: null | (() => Promise<string>);
+  error: string | null;
+} {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { t } = useTranslation();
@@ -528,9 +528,8 @@ export function useEVMPangoChefClaimRewardCallback(
       callback: async function onClaimReward(): Promise<string> {
         try {
           if (!pangoChefContract) return '';
-          const method = poolType === PoolType.RELAYER_POOL ? 'claim' : 'harvest';
 
-          const response: TransactionResponse = await pangoChefContract[method](poolId);
+          const response: TransactionResponse = await pangoChefContract.harvest(poolId);
           await waitForTransaction(response, 1);
           if (response) {
             addTransaction(response, {
@@ -556,7 +555,7 @@ export function useEVMPangoChefClaimRewardCallback(
       },
       error: null,
     };
-  }, [poolId, account, chainId, poolType, addTransaction, pangoChefContract]);
+  }, [poolId, account, chainId, addTransaction, pangoChefContract]);
 }
 
 /**
