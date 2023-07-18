@@ -1,6 +1,7 @@
 import { ChainId } from '@pangolindex/sdk';
 import { TokenList } from '@pangolindex/token-lists';
 import { atom, useAtom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import { nanoid } from 'nanoid';
 import { useCallback } from 'react';
 import { SUPPORTED_WALLETS } from 'src/wallet';
@@ -108,7 +109,11 @@ const openModalAtom = atom<ApplicationState['openModal']>(null);
 const selectedPoolIdAtom = atom<ApplicationState['selectedPoolId']>(undefined);
 const isAvailableHashpackAtom = atom<ApplicationState['isAvailableHashpack']>(false);
 const walletsAtom = atom<ApplicationState['wallets']>(SUPPORTED_WALLETS);
-const useSubgraphAtom = atom<ApplicationState['useSubgraph']>(useSubgraphInitialState);
+const subgraphLocalstorageKey = 'subgraph_pangolin_storage';
+const useSubgraphAtom = atomWithStorage<ApplicationState['useSubgraph']>(
+  subgraphLocalstorageKey,
+  useSubgraphInitialState,
+);
 
 export function useApplicationState() {
   const [blockNumbers, setBlockNumbers] = useAtom(blockNumbersAtom);
