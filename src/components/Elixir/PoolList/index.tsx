@@ -26,7 +26,6 @@ const PoolList: React.FC<PoolListProps> = (props) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
-  const { account } = usePangolinWeb3();
 
   const [addLiquidityIsOpen, setAddLiquidityIsOpen] = useState<boolean>(false);
 

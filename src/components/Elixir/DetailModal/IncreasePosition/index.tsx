@@ -247,7 +247,10 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
             approvalB === ApprovalState.PENDING) && (
             <ButtonWrapper>
               {approvalA !== ApprovalState.APPROVED && (
-                <Box width={approvalB !== ApprovalState.APPROVED ? '48%' : '100%'}>
+                <Box
+                  width={approvalB !== ApprovalState.APPROVED ? '48%' : '100%'}
+                  pr={approvalB === ApprovalState.APPROVED ? '5px' : '0px'}
+                >
                   <Button
                     variant="primary"
                     onClick={approveACallback}
@@ -257,7 +260,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                     loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_A]?.symbol}`}
                     height="46px"
                   >
-                    {`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_A]?.symbol}
+                    <Text fontSize={12}>{`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_A]?.symbol}</Text>
                   </Button>
                 </Box>
               )}
@@ -272,7 +275,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                     loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_B]?.symbol}`}
                     height="46px"
                   >
-                    {`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_B]?.symbol}
+                    <Text fontSize={12}>{`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_B]?.symbol}</Text>
                   </Button>
                 </Box>
               )}
