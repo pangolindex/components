@@ -19,7 +19,6 @@ export interface ClaimProps {
   onClose: () => void;
   redirectToCompound: () => void;
 }
-('  ');
 const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
