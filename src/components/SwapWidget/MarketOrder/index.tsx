@@ -499,7 +499,10 @@ const MarketOrder: React.FC<Props> = ({
         </Button>
       );
     }
-    if ((isLoadingSwap && !swapInputError) || (userHasSpecifiedInputOutput && approval === ApprovalState.UNKNOWN)) {
+    if (
+      (isLoadingSwap && !swapInputError) ||
+      (userHasSpecifiedInputOutput && trade && approval === ApprovalState.UNKNOWN)
+    ) {
       return (
         <Button variant="primary" isDisabled>
           {t('common.loading')}
