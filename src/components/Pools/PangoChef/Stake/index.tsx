@@ -280,6 +280,7 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
         </>
       );
     } else {
+      console.log({ approval });
       return (
         <Buttons>
           <Button
@@ -287,12 +288,11 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
             onClick={onAttemptToApprove}
             isDisabled={
               approval !== ApprovalState.NOT_APPROVED ||
-              !(
-                JSBI.greaterThan(stakingInfo.multiplier, BIG_INT_ZERO) &&
-                stakingInfo.extraPendingRewards.some((pendigRewards) => JSBI.greaterThan(pendigRewards, BIG_INT_ZERO))
-              )
+              (JSBI.equal(stakingInfo.multiplier, BIG_INT_ZERO) &&
+                stakingInfo.extraPendingRewards.length > 0 &&
+                stakingInfo.extraPendingRewards.some((pendigRewards) => JSBI.equal(pendigRewards, BIG_INT_ZERO)))
             }
-            loading={attempting && !hash}
+            loading={approval === ApprovalState.PENDING}
             loadingText={t('migratePage.loading')}
           >
             {t('earn.approve')}
@@ -305,10 +305,9 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
               approval !== ApprovalState.APPROVED ||
               !!stakeCallbackError ||
               shouldCreateStorage ||
-              !(
-                JSBI.greaterThan(stakingInfo.multiplier, BIG_INT_ZERO) &&
-                stakingInfo.extraPendingRewards.some((pendigRewards) => JSBI.greaterThan(pendigRewards, BIG_INT_ZERO))
-              )
+              (JSBI.equal(stakingInfo.multiplier, BIG_INT_ZERO) &&
+                stakingInfo.extraPendingRewards.length > 0 &&
+                stakingInfo.extraPendingRewards.some((pendigRewards) => JSBI.equal(pendigRewards, BIG_INT_ZERO)))
             }
             onClick={onConfirm}
             loading={attempting && !hash}

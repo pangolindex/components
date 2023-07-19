@@ -514,12 +514,11 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
               isDisabled={
                 approval !== ApprovalState.NOT_APPROVED ||
                 signatureData !== null ||
-                !(
-                  JSBI.greaterThan(stakingInfo.multiplier, BIG_INT_ZERO) &&
-                  (stakingInfo as MinichefStakingInfo).extraPendingRewards?.some((pendigRewards) =>
-                    JSBI.greaterThan(pendigRewards, BIG_INT_ZERO),
-                  )
-                )
+                (JSBI.equal(stakingInfo?.multiplier, BIG_INT_ZERO) &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.length > 0 &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.some((pendigRewards) =>
+                    JSBI.equal(pendigRewards, BIG_INT_ZERO),
+                  ))
               }
               loading={attempting && !hash}
               loadingText={t('migratePage.loading')}
@@ -532,12 +531,11 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
               isDisabled={
                 !!error ||
                 (signatureData === null && approval !== ApprovalState.APPROVED) ||
-                !(
-                  JSBI.greaterThan(stakingInfo.multiplier, BIG_INT_ZERO) &&
-                  (stakingInfo as MinichefStakingInfo).extraPendingRewards?.some((pendigRewards) =>
-                    JSBI.greaterThan(pendigRewards, BIG_INT_ZERO),
-                  )
-                )
+                (JSBI.equal(stakingInfo?.multiplier, BIG_INT_ZERO) &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.length > 0 &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.some((pendigRewards) =>
+                    JSBI.equal(pendigRewards, BIG_INT_ZERO),
+                  ))
               }
               onClick={onStake}
               loading={attempting && !hash}
