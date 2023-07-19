@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { CHAINS } from '@pangolindex/sdk';
 import mixpanel from 'mixpanel-browser';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, Lock } from 'react-feather';
@@ -8,6 +9,8 @@ import shuffle from 'src/assets/images/shuffle.svg';
 import { Box, Button, CurrencyInput, Loader, Stat, Text, TransactionCompleted } from 'src/components';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
+import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
@@ -72,6 +75,19 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
 
   const selectedCurrencyBalanceA = useCurrencyBalance(chainId, account ?? undefined, currency0 ?? undefined);
   const selectedCurrencyBalanceB = useCurrencyBalance(chainId, account ?? undefined, currency1 ?? undefined);
+
+  const useApproveCallback = useApproveCallbackHook[chainId];
+
+  const [approvalA, approveACallback] = useApproveCallback(
+    chainId,
+    parsedAmounts[Field.CURRENCY_A],
+    CHAINS[chainId]?.contracts?.elixir?.nftManager,
+  );
+  const [approvalB, approveBCallback] = useApproveCallback(
+    chainId,
+    parsedAmounts[Field.CURRENCY_B],
+    CHAINS[chainId]?.contracts?.elixir?.nftManager,
+  );
 
   /**
    * `areDepositsNotAvailable` determines if the "Add Liquidity" button should be disabled.
@@ -225,8 +241,53 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     } else {
       return (
         <ButtonWrapper>
+          {(approvalA === ApprovalState.NOT_APPROVED ||
+            approvalA === ApprovalState.PENDING ||
+            approvalB === ApprovalState.NOT_APPROVED ||
+            approvalB === ApprovalState.PENDING) && (
+            <ButtonWrapper>
+              {approvalA !== ApprovalState.APPROVED && (
+                <Box
+                  width={approvalB !== ApprovalState.APPROVED ? '48%' : '100%'}
+                  pr={approvalB === ApprovalState.APPROVED ? '5px' : '0px'}
+                >
+                  <Button
+                    variant="primary"
+                    onClick={approveACallback}
+                    isDisabled={approvalA === ApprovalState.PENDING}
+                    width={'100%'}
+                    loading={approvalA === ApprovalState.PENDING}
+                    loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_A]?.symbol}`}
+                    height="46px"
+                  >
+                    <Text fontSize={12}>{`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_A]?.symbol}</Text>
+                  </Button>
+                </Box>
+              )}
+              {approvalB !== ApprovalState.APPROVED && (
+                <Box width={approvalA !== ApprovalState.APPROVED ? '48%' : '100%'} pr={'5px'}>
+                  <Button
+                    variant="primary"
+                    onClick={approveBCallback}
+                    isDisabled={approvalB === ApprovalState.PENDING}
+                    width={'100%'}
+                    loading={approvalB === ApprovalState.PENDING}
+                    loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_B]?.symbol}`}
+                    height="46px"
+                  >
+                    <Text fontSize={12}>{`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_B]?.symbol}</Text>
+                  </Button>
+                </Box>
+              )}
+            </ButtonWrapper>
+          )}
           <Button
-            isDisabled={areDepositsNotAvailable || !isEnoughBalance}
+            isDisabled={
+              (approvalA !== ApprovalState.APPROVED && !depositADisabled) ||
+              (approvalB !== ApprovalState.APPROVED && !depositBDisabled) ||
+              areDepositsNotAvailable ||
+              !isEnoughBalance
+            }
             height="46px"
             variant="primary"
             borderRadius="4px"
