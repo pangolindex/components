@@ -5,7 +5,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, CoinDescription } from 'src/components';
 import StatDetail from 'src/components/Pools/DetailModal/StatDetail';
-import { ANALYTICS_PAGE } from 'src/constants';
+import { ANALYTICS_PAGE_MAPPING } from 'src/constants';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { convertCoingeckoTokens } from 'src/state/pcoingecko/hooks';
@@ -46,6 +46,8 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
   const currency1 = tokenB ? unwrappedToken(tokenB, chainId) : undefined;
   const yourLiquidity = liquidityInUSD ? `${numeral(liquidityInUSD).format('$0.00a')}` : '-';
 
+  const analyticsPageUrl = ANALYTICS_PAGE_MAPPING[chainId];
+
   // converts the tokens to another token to fix the description and remove duplicate description
   const getCoinDescriptions = () => {
     const _tokenA = !(currency0 instanceof Token) ? currency0 : convertCoingeckoTokens(tokenA);
@@ -78,7 +80,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
           pair={pair}
           totalAmount={`${totalStakedInUsd}`}
           pgl={stakingInfo?.totalStakedAmount}
-          link={`${ANALYTICS_PAGE}/#/pair/${pair?.liquidityToken.address}`}
+          link={`${analyticsPageUrl}/#/pair/${pair?.liquidityToken.address}`}
         />
 
         {userPgl?.greaterThan('0') && (
@@ -90,7 +92,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
               pair={pair}
               totalAmount={yourLiquidity}
               pgl={userPgl}
-              link={`${ANALYTICS_PAGE}/#/account/${account}`}
+              link={`${analyticsPageUrl}/#/account/${account}`}
             />
           </Box>
         )}
@@ -104,7 +106,7 @@ const Details: React.FC<Props> = ({ stakingInfo }) => {
               pair={pair}
               totalAmount={`${numeral((yourStakeInUsd as Fraction)?.toFixed(2)).format('$0.00a')}`}
               pgl={stakingInfo?.stakedAmount}
-              link={`${ANALYTICS_PAGE}/#/account/${account}`}
+              link={`${analyticsPageUrl}/#/account/${account}`}
             />
           </Box>
         )}

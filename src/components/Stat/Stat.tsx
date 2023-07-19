@@ -4,7 +4,7 @@ import React, { useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';
 import AnalyticsIcon from 'src/assets/images/analytics.svg';
 import { Box, CurrencyLogo, Text, Tooltip } from 'src/components';
-import { ANALYTICS_PAGE } from 'src/constants';
+import { ANALYTICS_PAGE_MAPPING } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import { ThemeColorsType } from 'src/theme';
 import { AnalyticsLink } from './styled';
@@ -45,6 +45,8 @@ const Stat = ({
 
   const theme = useContext(ThemeContext);
 
+  const analyticsPageUrl = ANALYTICS_PAGE_MAPPING[chainId];
+
   function getAlignment() {
     if (statAlign === 'center') {
       return 'center';
@@ -63,7 +65,7 @@ const Stat = ({
             {title}
           </Text>
           {showAnalytics && (
-            <AnalyticsLink href={`${ANALYTICS_PAGE}/#/token/${token.address}`} target="_blank">
+            <AnalyticsLink href={`${analyticsPageUrl}/#/token/${token.address}`} target="_blank">
               <img src={AnalyticsIcon} alt="analytics-icon" />
             </AnalyticsLink>
           )}
