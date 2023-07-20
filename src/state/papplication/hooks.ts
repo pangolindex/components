@@ -25,6 +25,24 @@ export function useWalletModalToggle(): () => void {
   return useToggleModal(ApplicationModal.WALLET);
 }
 
+/**
+ * This hook open the wallet modal with a selected chain
+ * @returns function to open the modal where the chainId is the id of seleted chain
+ */
+export function useWalletModalToggleWithChainId(): (chainId: number | undefined) => void {
+  const open = useModalOpen(ApplicationModal.WALLET);
+  const { setOpenModal } = useApplicationState();
+  const { setWalletModalChainId } = useApplicationState();
+
+  return useCallback(
+    (chainId: number | undefined) => {
+      setWalletModalChainId(chainId);
+      setOpenModal(chainId && !open ? ApplicationModal.WALLET : null);
+    },
+    [setWalletModalChainId, setOpenModal, open],
+  );
+}
+
 export function usePoolDetailnModalToggle(): () => void {
   return useToggleModal(ApplicationModal.POOL_DETAIL);
 }

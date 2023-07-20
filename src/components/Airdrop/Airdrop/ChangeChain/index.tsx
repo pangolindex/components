@@ -6,7 +6,7 @@ import { network } from 'src/connectors';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useActiveWeb3React } from 'src/hooks/useConnector';
 import { useApplicationState } from 'src/state/papplication/atom';
-import { useWalletModalToggle } from 'src/state/papplication/hooks';
+import { useWalletModalToggleWithChainId } from 'src/state/papplication/hooks';
 import { onChangeNetwork } from 'src/utils/wallet';
 import Title from '../../Title';
 import { Wrapper } from '../../styleds';
@@ -20,19 +20,23 @@ export default function ChangeChain({ chain, logo }: Props) {
   const { connector, activate, deactivate } = useActiveWeb3React();
   const { account } = usePangolinWeb3();
   const { wallets } = useApplicationState();
-  const toggleWalletModal = useWalletModalToggle();
+  const toggleWalletModalId = useWalletModalToggleWithChainId();
 
   const onChainClick = useCallback(async () => {
+    const onToogleWalletModal = () => {
+      toggleWalletModalId(chain.chain_id);
+    };
+
     await onChangeNetwork({
       chain,
       account,
       activate,
       deactivate,
-      onToogleWalletModal: toggleWalletModal,
+      onToogleWalletModal,
       connector: connector ?? network,
       wallets: Object.values(wallets),
     });
-  }, [account, connector, wallets, activate, deactivate, toggleWalletModal]);
+  }, [account, connector, wallets, activate, deactivate, toggleWalletModalId]);
 
   return (
     <Wrapper>

@@ -70,6 +70,8 @@ export interface ApplicationState {
     [ChainId.EVMOS_TESTNET]: boolean;
     [ChainId.EVMOS_MAINNET]: boolean;
   };
+
+  readonly walletModalChainId: number | undefined;
 }
 
 const useSubgraphInitialState = {
@@ -114,6 +116,7 @@ const useSubgraphAtom = atomWithStorage<ApplicationState['useSubgraph']>(
   subgraphLocalstorageKey,
   useSubgraphInitialState,
 );
+const walletModalChainIdAtom = atom<ApplicationState['walletModalChainId']>(undefined);
 
 export function useApplicationState() {
   const [blockNumbers, setBlockNumbers] = useAtom(blockNumbersAtom);
@@ -124,6 +127,7 @@ export function useApplicationState() {
   const [wallets, setWallets] = useAtom(walletsAtom);
 
   const [useSubgraph, setUseSubgraph] = useAtom(useSubgraphAtom);
+  const [walletModalChainId, setWalletModalChainId] = useAtom(walletModalChainIdAtom);
 
   const updateBlockNumber = useCallback(
     ({ chainId, blockNumber }: { chainId: number; blockNumber: number }) => {
@@ -180,6 +184,7 @@ export function useApplicationState() {
     popupList,
     wallets,
     useSubgraph,
+    walletModalChainId,
     updateBlockNumber,
     setAvailableHashpack,
     setSelectedPooId,
@@ -188,5 +193,6 @@ export function useApplicationState() {
     addPopup,
     removePopup,
     setUseSubgraph,
+    setWalletModalChainId,
   };
 }

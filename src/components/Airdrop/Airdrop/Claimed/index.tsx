@@ -1,11 +1,11 @@
-import { AVALANCHE_MAINNET } from '@pangolindex/sdk';
+import { AVALANCHE_MAINNET, ChainId } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import { Box, Button, Text } from 'src/components';
 import { network } from 'src/connectors';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useActiveWeb3React } from 'src/hooks/useConnector';
 import { useApplicationState } from 'src/state/papplication/atom';
-import { useWalletModalToggle } from 'src/state/papplication/hooks';
+import { useWalletModalToggleWithChainId } from 'src/state/papplication/hooks';
 import { onChangeNetwork } from 'src/utils/wallet';
 import Title from '../../Title';
 import { TextBottomWrapper, Wrapper } from '../../styleds';
@@ -19,9 +19,13 @@ export default function AlreadyClaimed({ subtitle, logo }: Props) {
   const { connector, activate, deactivate } = useActiveWeb3React();
   const { account } = usePangolinWeb3();
   const { wallets } = useApplicationState();
-  const onToogleWalletModal = useWalletModalToggle();
+  const onToogleWalletModalWithId = useWalletModalToggleWithChainId();
 
   const onChainClick = useCallback(async () => {
+    const onToogleWalletModal = () => {
+      onToogleWalletModalWithId(ChainId.AVALANCHE);
+    };
+
     await onChangeNetwork({
       account,
       activate,
@@ -31,7 +35,7 @@ export default function AlreadyClaimed({ subtitle, logo }: Props) {
       connector: connector ?? network,
       wallets: Object.values(wallets),
     });
-  }, [account, connector, wallets, activate, deactivate, onToogleWalletModal]);
+  }, [account, connector, wallets, activate, deactivate, onToogleWalletModalWithId]);
 
   return (
     <Wrapper>
