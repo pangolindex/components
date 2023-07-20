@@ -6217,7 +6217,7 @@
     chance "^1.1.8"
     dotenv "^14.2.0"
 
-"@pangolindex/governance@1.2.0":
+"@pangolindex/governance@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@pangolindex/governance/-/governance-1.2.0.tgz#ef471636dab83d62ba414be6420ecacae07c74d2"
   integrity sha512-+O2itZPNGSdcL9aAfzDghWqO337tY7H2qw8BadlMgbJq/OaTNEyALT9tgNwg9Y9xucsekOt/pB6MuyzpEboVbg==
