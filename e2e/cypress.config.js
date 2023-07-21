@@ -1,4 +1,4 @@
-const { defineConfig } = require('cypress')
+const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
   // setupNodeEvents can be defined in either
@@ -11,7 +11,7 @@ module.exports = defineConfig({
       //   /* ... */
       // })
     },
-    baseUrl: "https://dev.pangolin.exchange/#",
+    baseUrl: 'https://dev.pangolin.exchange/#',
     supportFile: false,
   },
-})
+});
