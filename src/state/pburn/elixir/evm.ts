@@ -68,30 +68,30 @@ export function useElixirRemoveLiquidity() {
       };
 
       const response = await library.getSigner().sendTransaction(newTxn);
-
+      console.log(liquidityValue0?.toExact(), liquidityValue0?.toSignificant(3));
       await waitForTransaction(response, 5);
 
       addTransaction(response, {
         summary:
-          'Removed' +
-          ' ' +
-          liquidityValue0?.toExact() +
-          ' ' +
-          liquidityValue0.currency?.symbol +
-          ' ' +
-          'AND' +
-          ' ' +
-          liquidityValue1?.toExact() +
-          ' ' +
-          liquidityValue1.currency?.symbol +
-          ' ' +
-          'Fees' +
-          ' ' +
-          parameters?.collectOptions?.expectedCurrencyOwed0?.toExact() +
-          ' ' +
-          'AND' +
-          ' ' +
-          parameters?.collectOptions?.expectedCurrencyOwed1?.toExact(),
+          'Removed' + ' ' + liquidityValue0 &&
+          parseFloat(liquidityValue0.toSignificant(6)) / 100 +
+            ' ' +
+            liquidityValue0.currency?.symbol +
+            ' ' +
+            'AND' +
+            ' ' +
+            liquidityValue1 &&
+          parseFloat(liquidityValue1.toSignificant(6)) / 100 +
+            ' ' +
+            liquidityValue1.currency?.symbol +
+            ' ' +
+            'Fees' +
+            ' ' +
+            parameters?.collectOptions?.expectedCurrencyOwed0?.toExact() +
+            ' ' +
+            'AND' +
+            ' ' +
+            parameters?.collectOptions?.expectedCurrencyOwed1?.toExact(),
       });
 
       return response;
