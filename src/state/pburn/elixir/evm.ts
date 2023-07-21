@@ -68,7 +68,6 @@ export function useElixirRemoveLiquidity() {
       };
 
       const response = await library.getSigner().sendTransaction(newTxn);
-      console.log(liquidityValue0?.toExact(), liquidityValue0?.toSignificant(3));
       await waitForTransaction(response, 5);
 
       addTransaction(response, {

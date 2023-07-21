@@ -29,7 +29,7 @@ const Elixir = () => {
   const [activeMenu, setMenu] = useState<string>(MenuType.topPools);
   const [detailModalIsOpen, setDetailModalIsOpen] = useState<boolean>(false);
   const [addLiquidityIsOpen, setAddLiquidityIsOpen] = useState<boolean>(false);
-  const [selectedPosition, setSelectedPosition] = useState<PositionDetails | undefined>(undefined);
+  const [selectedPositionTokenId, setSelectedPositionTokenId] = useState<string | undefined>(undefined);
   const menuItems: Array<{ label: string; value: string }> = Object.keys(MenuType).map((key) => ({
     label: t(`elixir.menuTypes.${MenuType[key]}`),
     value: MenuType[key],
@@ -97,6 +97,32 @@ const Elixir = () => {
     return positions;
   }, [filteredPositions, debouncedSearchQuery, sortBy]);
 
+  const selectedPosition = useMemo(() => {
+    if (!finalPositions) {
+      // If finalPositions is undefined, there's no selected position
+      return undefined;
+    } else {
+      // If the selected position no longer exists in the final positions, clear the selection
+      const selectedPositionExists = finalPositions.some(
+        (position) => position.tokenId.toString() === selectedPositionTokenId,
+      );
+
+      if (!selectedPositionExists) {
+        return undefined;
+      } else {
+        // If selectedPosition still exists but its data might have changed
+        // Find the new data from finalPositions and update selectedPosition
+        const newSelectedPosition = finalPositions.find(
+          (position) => position.tokenId.toString() === selectedPositionTokenId,
+        );
+
+        if (newSelectedPosition) {
+          return newSelectedPosition;
+        }
+      }
+    }
+  }, [finalPositions, selectedPositionTokenId]); // selectedPositionTokenId is a new state you'll need to create.
+
   const handleSetMenu = useCallback(
     (value: string) => {
       setMenu(value);
@@ -107,7 +133,7 @@ const Elixir = () => {
   const onChangeDetailModalStatus = useCallback(
     (position: PositionDetails | undefined) => {
       setDetailModalIsOpen(!detailModalIsOpen);
-      setSelectedPosition(position);
+      setSelectedPositionTokenId(position?.tokenId.toString());
     },
     [detailModalIsOpen],
   );

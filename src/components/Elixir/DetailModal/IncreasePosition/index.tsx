@@ -251,7 +251,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     if (positionDetails?.fee) {
       onSetFeeAmount(positionDetails?.fee);
     }
-  }, [positionDetails]);
+  }, []);
 
   return (
     <div>
