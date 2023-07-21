@@ -31,8 +31,7 @@ export function useWalletModalToggle(): () => void {
  */
 export function useWalletModalToggleWithChainId(): (chainId: number | undefined) => void {
   const open = useModalOpen(ApplicationModal.WALLET);
-  const { setOpenModal } = useApplicationState();
-  const { setWalletModalChainId } = useApplicationState();
+  const { setOpenModal, setWalletModalChainId } = useApplicationState();
 
   return useCallback(
     (chainId: number | undefined) => {
