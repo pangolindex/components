@@ -2,7 +2,7 @@ import { Currency, JSBI, Pair, Percent } from '@pangolindex/sdk';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, DoubleCurrencyLogo, Stat, Text } from 'src/components';
-import { BIG_INT_ZERO } from 'src/constants';
+import { BIG_INT_ZERO, ONE_BIPS } from 'src/constants';
 import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { usePairBalanceHook } from 'src/state/pwallet/hooks';
@@ -44,6 +44,15 @@ const PositionCard = ({ pair, onManagePoolsClick }: PositionCardProps) => {
     JSBI.greaterThanOrEqual(totalPoolTokens.raw, userPoolBalance.raw)
       ? pair.getLiquidityValues(totalPoolTokens, userPoolBalance, { feeOn: false })
       : [undefined, undefined];
+
+  function getShareOfPool() {
+    if (poolTokenPercentage?.lessThan(ONE_BIPS)) {
+      return '<0.001%';
+    } else {
+      return `${poolTokenPercentage?.toFixed(4) ?? 0}%`;
+    }
+  }
+
   return (
     <Wrapper>
       <Text fontSize={16} color="oceanBlue">
@@ -81,7 +90,7 @@ const PositionCard = ({ pair, onManagePoolsClick }: PositionCardProps) => {
         <Box>
           <Stat
             title={t('positionCard.poolShare')}
-            stat={`${poolTokenPercentage ? poolTokenPercentage.toFixed(6) + '%' : '-'}`}
+            stat={`${poolTokenPercentage ? getShareOfPool() : '-'}`}
             titlePosition="top"
             titleFontSize={14}
             statFontSize={[20, 16]}

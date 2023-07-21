@@ -58,7 +58,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
   );
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={true}>
+    <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={false}>
       <>
         <MobileWrapper>
           <Header {...headerArgs} />

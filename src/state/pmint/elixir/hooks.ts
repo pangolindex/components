@@ -570,7 +570,7 @@ export function useDerivedMintInfo(existingPosition?: Position): DerivedMintInfo
   }
 
   if (poolState === PoolState.INVALID) {
-    errorMessage = errorMessage ?? t('mintHooks.invalidPair');
+    errorMessage = errorMessage ?? (feeAmount ? t('mintHooks.invalidPair') : t('elixir.addLiquidity.selectFeeTier'));
   }
 
   if (invalidPrice) {

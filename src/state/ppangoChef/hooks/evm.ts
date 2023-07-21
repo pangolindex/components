@@ -42,9 +42,10 @@ export function usePangoChefInfos() {
   const poolLenght: BigNumber | undefined = useSingleCallResult(pangoChefContract, 'poolsLength').result?.[0];
 
   // create array with length of pools
-  const allPoolsIds = new Array(Number(poolLenght ? poolLenght.toString() : 0))
-    .fill(0)
-    .map((_, index) => [index.toString()]);
+  const allPoolsIds = useMemo(
+    () => new Array(Number(poolLenght ? poolLenght.toString() : 0)).fill(0).map((_, index) => [index.toString()]),
+    [poolLenght],
+  );
 
   const poolsState = useSingleContractMultipleData(pangoChefContract, 'pools', allPoolsIds);
   // format the data to Pool type

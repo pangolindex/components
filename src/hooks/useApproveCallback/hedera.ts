@@ -2,6 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { CAVAX, ChainId, CurrencyAmount, JSBI, TokenAmount, Trade } from '@pangolindex/sdk';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
+import { totalSupply } from 'src/components/TokenInfo/storiesConstants';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { useHederaTokenAllowance } from 'src/data/Allowances';
@@ -58,6 +59,11 @@ export function useHederaApproveCallback(
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance) return ApprovalState.UNKNOWN;
 
+    // if the current allowance ir greather or equal than total supply we need to re-approve
+    if (!currentAllowance.lessThan(totalSupply)) {
+      return ApprovalState.NOT_APPROVED;
+    }
+
     // amountToApprove will be defined if currentAllowance is
     if (!currentAllowance.lessThan(amountToApprove) || isApproved) {
       return ApprovalState.APPROVED;
@@ -68,7 +74,7 @@ export function useHederaApproveCallback(
         return ApprovalState.NOT_APPROVED;
       }
     }
-  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, isApproved, spender]);
+  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, isApproved, spender, totalSupply]);
 
   const addTransaction = useTransactionAdder();
 

@@ -119,8 +119,8 @@ const RemoveFarm = ({ stakingInfo, version, onClose, onLoading, onComplete, redi
 
         mixpanel.track(MixPanelEvents.REMOVE_FARM, {
           chainId: chainId,
-          tokenA: token0,
-          tokenB: token1,
+          tokenA: token0.symbol,
+          tokenB: token1.symbol,
           tokenA_Address: token0.address,
           tokenB_Address: token1.address,
           farmType: FARM_TYPE[version]?.toLowerCase(),
