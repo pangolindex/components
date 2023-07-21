@@ -1,6 +1,7 @@
-import { CHAINS, ChefType } from '@pangolindex/sdk';
+import { CHAINS, ChefType, JSBI } from '@pangolindex/sdk';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import { usePangoChefInfosHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
@@ -46,11 +47,13 @@ const PoolsUI = () => {
   const superFarms = useMemo(() => {
     if (pangoChefStakingLength > 0) {
       return (pangoChefStakingInfos || [])?.filter(
-        (item: PangoChefInfo) => (item?.rewardTokensAddress?.length || 0) > 0,
+        (item: PangoChefInfo) =>
+          (item?.rewardTokensAddress?.length || 0) > 0 && JSBI.greaterThan(item.multiplier, BIG_INT_ZERO),
       );
     }
     return (miniChefStakingInfos || []).filter(
-      (item: MinichefStakingInfo) => (item?.rewardTokensAddress?.length || 0) > 0,
+      (item: MinichefStakingInfo) =>
+        (item?.rewardTokensAddress?.length || 0) > 0 && JSBI.greaterThan(item.multiplier, BIG_INT_ZERO),
     );
   }, [miniChefStakingInfos, pangoChefStakingInfos, pangoChefStakingLength]);
 
