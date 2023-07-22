@@ -58,7 +58,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
     hederaAssociated: isHederaTokenAssociated,
   } = useHederaTokenAssociated(notAssociateTokens?.[0]?.address, notAssociateTokens?.[0]?.symbol);
 
-  const { callback: claimRewardCallback } = useClaimRewardCallback(stakingInfo.pid, stakingInfo.poolType);
+  const { callback: claimRewardCallback } = useClaimRewardCallback(stakingInfo.pid);
 
   function wrappedOnDismiss() {
     setHash(undefined);
@@ -80,8 +80,8 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
           chainId: chainId,
           tokenA: tokenA?.symbol,
           tokenb: tokenB?.symbol,
-          tokenA_Address: tokenA?.symbol,
-          tokenB_Address: tokenB?.symbol,
+          tokenA_Address: tokenA?.address,
+          tokenB_Address: tokenB?.address,
           pid: stakingInfo.pid,
           farmType: FARM_TYPE[3]?.toLowerCase(),
         });

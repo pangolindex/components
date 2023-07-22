@@ -82,7 +82,7 @@ export default function Example(){
 - [XDEFI](https://www.xdefi.io/)
 - [Safe Wallet](https://safe.global/)
 - [Coinbase Wallet](https://www.coinbase.com/wallet)
-- [WalletConnect](https://walletconnect.com/)
+- [WalletConnect](https://walletconnect.com/) (need extra steps [see bellow](#how-to-add-custom-chains))
 
 #### Supported Chains by default
 
@@ -91,14 +91,14 @@ The component supports wallets where it is in the[ CHAINS mapping in the sdk](ht
 
 ## How to add custom wallets
 
-You need extends the ```Wallet class``` and edit the methods or you can use an existing wallet in our components.
+You need extends the ```PangolinWallet class``` and edit the methods or you can use an existing wallet in our components.
 
 **The supportedWallets parameter will override the default supported wallets above**
 
 ```tsx
-import { Pangolin_Wallet, InjectedWallet } from "@pangolindex/components";
+import { PangolinWallet, PangolinInjectedWallet } from "@pangolindex/components";
 
-class CustomWallet extends Pangolin_Wallet{
+class CustomWallet extends PangolinWallet{
   constructor() {
     super({
       connector: walletConnector, // AbstractConnector from @web3-react/abstract-connector
@@ -112,7 +112,7 @@ class CustomWallet extends Pangolin_Wallet{
   }
 }
 
-const customInjected = new InjectedWallet({
+const customInjected = new PangolinInjectedWallet({
   name: 'custom injected',
   href: 'web site url',
   icon: 'icon ',
@@ -177,6 +177,49 @@ export default function Example(){
           setOpen(false);
         }}
         supportedChains={supportedChains}
+      />
+    </div>
+  );
+}
+```
+
+## How to use WalletConnet
+
+You need do import `PangolinWalletConnectWallet` and create a new object and add it on supportedWallets mapping 
+
+```tsx
+import { PangolinWalletConnectWallet } from "@pangolindex/components";
+
+const walletConnect = new PangolinWalletConnectWallet({
+  rpcMap: rpcs,
+  projectId: "walletconnnect project id here",
+  metadata: {
+    name: '',
+    description: '',
+    url:'',
+    icons: [''],
+  },
+});
+
+
+export default function Example(){
+  const [open, setOpen] = useState(false);
+
+  const supportedWallets = {
+    WALLET_CONNECT: walletConnect,
+  };
+
+  return (
+    <div>
+      <WalletModal
+        open={open}
+        closeModal={() => {
+          setOpen(false);
+        }}
+        onWalletConnect={() => {
+          setOpen(false);
+        }}
+        supportedWallets={supportedWallets}
       />
     </div>
   );

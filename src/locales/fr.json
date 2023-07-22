@@ -930,6 +930,8 @@
     "to": "To",
     "remove": "Remove",
     "connectWallet": "Connect Wallet",
+    "enterAmount": "Entrer un montant",
+    "insufficientBalance": "Solde en {{ symbol }} insuffisant",
     "approving": "Approving",
     "approve": "Approve",
     "approved": "Approved",

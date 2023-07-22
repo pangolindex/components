@@ -48,14 +48,29 @@ react-dom
 
 ## Getting started
 
-In your main file wrap your app with `PangolinProvider`:
+In your main file wrap your app with `PangolinProvider` and `Web3ReactProvider`:
+
+Use version **6.0.9** of `@web3-react/core` package.
 
 ```tsx
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { PangolinProvider } from '@pangolindex/components';
+import { NetworkContextName, PangolinProvider } from '@pangolindex/components';
+import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core';
+
+const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
+
+function getLibrary(provider: any): Web3Provider {
+  try {
+    const library = new Web3Provider(provider, 'any')
+    library.pollingInterval = 15000
+    return library
+  } catch (error) {
+    return provider
+  }
+}
 
 // library -> web3.js provider
 // chainId -> chain id with which user is connected
@@ -63,9 +78,13 @@ import { PangolinProvider } from '@pangolindex/components';
 // theme -> optional ( refer Theme guide to customize it )
 ReactDOM.render(
   <React.StrictMode>
-    <PangolinProvider library={library} chainId={chainId} account={account} theme={theme}>
-      <App />
-    </PangolinProvider>
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Web3ProviderNetwork getLibrary={getLibrary}>
+        <PangolinProvider library={library} chainId={chainId} account={account} theme={theme}>
+          <App />
+        </PangolinProvider>
+      </Web3ProviderNetwork>
+    </Web3ReactProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 );

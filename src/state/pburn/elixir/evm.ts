@@ -73,7 +73,7 @@ export function useElixirRemoveLiquidity() {
 
       addTransaction(response, {
         summary:
-          'Remove' +
+          'Removed' +
           ' ' +
           liquidityValue0?.toExact() +
           ' ' +
@@ -83,7 +83,7 @@ export function useElixirRemoveLiquidity() {
           ' ' +
           liquidityValue1?.toExact() +
           ' ' +
-          liquidityValue0.currency?.symbol +
+          liquidityValue1.currency?.symbol +
           ' ' +
           'Fees' +
           ' ' +
@@ -99,7 +99,9 @@ export function useElixirRemoveLiquidity() {
       const _err = err as any;
       if (_err?.code !== 4001) {
         console.error(_err);
+        throw new Error('User Rejected Transaction');
       }
+      throw _err;
     }
   };
 }

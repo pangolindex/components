@@ -5,7 +5,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput, Tooltip } from 'src/components';
-import { FARM_TYPE } from 'src/constants';
+import { BIG_INT_ZERO, FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
@@ -137,8 +137,8 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
 
           mixpanel.track(MixPanelEvents.ADD_FARM, {
             chainId: chainId,
-            tokenA: token0,
-            tokenB: token1,
+            tokenA: token0.symbol,
+            tokenB: token1.symbol,
             tokenA_Address: token0.address,
             tokenB_Address: token1.address,
             farmType: FARM_TYPE[3]?.toLowerCase(),
@@ -280,13 +280,19 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
         </>
       );
     } else {
+      console.log({ approval });
       return (
         <Buttons>
           <Button
             variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
             onClick={onAttemptToApprove}
-            isDisabled={approval !== ApprovalState.NOT_APPROVED}
-            loading={attempting && !hash}
+            isDisabled={
+              approval !== ApprovalState.NOT_APPROVED ||
+              (JSBI.equal(stakingInfo.multiplier, BIG_INT_ZERO) &&
+                stakingInfo.extraPendingRewards.length > 0 &&
+                stakingInfo.extraPendingRewards.some((pendigRewards) => JSBI.equal(pendigRewards, BIG_INT_ZERO)))
+            }
+            loading={approval === ApprovalState.PENDING}
             loadingText={t('migratePage.loading')}
           >
             {t('earn.approve')}
@@ -294,7 +300,15 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
 
           <Button
             variant="primary"
-            isDisabled={!!error || approval !== ApprovalState.APPROVED || !!stakeCallbackError || shouldCreateStorage}
+            isDisabled={
+              !!error ||
+              approval !== ApprovalState.APPROVED ||
+              !!stakeCallbackError ||
+              shouldCreateStorage ||
+              (JSBI.equal(stakingInfo.multiplier, BIG_INT_ZERO) &&
+                stakingInfo.extraPendingRewards.length > 0 &&
+                stakingInfo.extraPendingRewards.some((pendigRewards) => JSBI.equal(pendigRewards, BIG_INT_ZERO)))
+            }
             onClick={onConfirm}
             loading={attempting && !hash}
             loadingText={t('migratePage.loading')}

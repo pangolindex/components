@@ -6,7 +6,7 @@ import rabbyIcon from 'src/assets/images/rabby.svg';
 import { SUPPORTED_EVM_CHAINS_ID } from 'src/connectors';
 import { AvalancheCoreWallet, BitKeepWallet, InjectedWallet, TalismanWallet } from './classes/injected';
 import { HashPackWallet, NearWallet, XDefiWallet } from './classes/nonInjected';
-import { CoinbaseWallet, GnosisSafeWallet, WalletConnect } from './classes/others';
+import { CoinbaseWallet, GnosisSafeWallet } from './classes/others';
 import { Wallet } from './classes/wallet';
 
 export const injectWallet = new InjectedWallet({
@@ -45,7 +45,6 @@ export const hashPack = new HashPackWallet([ChainId.HEDERA_MAINNET, ChainId.HEDE
 
 export const gnosisSafeWallet = new GnosisSafeWallet();
 export const coinbaseWallet = new CoinbaseWallet();
-export const walletConnect = new WalletConnect();
 
 export const SUPPORTED_WALLETS: { [key: string]: Wallet } = {
   INJECTED: injectWallet,
@@ -59,7 +58,6 @@ export const SUPPORTED_WALLETS: { [key: string]: Wallet } = {
   HASH_CONNECT: hashPack,
   GNOSISSAFE: gnosisSafeWallet,
   WALLET_LINK: coinbaseWallet,
-  WALLET_CONNECT: walletConnect,
 };
 
 export const SUPPORTED_CHAINS = Object.values(CHAINS).filter(

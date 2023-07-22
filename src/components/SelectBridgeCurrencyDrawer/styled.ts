@@ -24,6 +24,7 @@ export const BridgeCurrencyRowRoot = styled.div<{ disabled: boolean; selected: b
   grid-gap: 16px;
   align-items: center;
   padding: 10px 30px;
+  overflow: hidden;
 
   &:hover {
     background-color: ${({ theme, disabled }) =>

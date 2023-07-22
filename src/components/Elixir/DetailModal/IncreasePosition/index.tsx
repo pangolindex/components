@@ -1,13 +1,16 @@
 /* eslint-disable max-lines */
+import { CHAINS } from '@pangolindex/sdk';
 import mixpanel from 'mixpanel-browser';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Lock } from 'react-feather';
+import { AlertTriangle, Lock } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import shuffle from 'src/assets/images/shuffle.svg';
 import { Box, Button, CurrencyInput, Loader, Stat, Text, TransactionCompleted } from 'src/components';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
+import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
+import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
@@ -24,6 +27,8 @@ import {
   ArrowWrapper,
   BlackWrapper,
   ButtonWrapper,
+  ErrorBox,
+  ErrorWrapper,
   GridContainer,
   InformationBar,
   InputWrapper,
@@ -51,9 +56,11 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
 
   const [hash, setHash] = useState<string | undefined>();
   const [attempting, setAttempting] = useState<boolean>(false);
+  const [error, setError] = useState<string | undefined>();
   function wrappedOnDismiss() {
     setHash(undefined);
     setAttempting(false);
+    setError(undefined);
   }
 
   const { position: existingPosition } = useDerivedPositionInfo(positionDetails);
@@ -66,14 +73,33 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     position: derivedPosition,
   } = useDerivedMintInfo(existingPosition);
 
-  const shouldDisableAddLiquidity: boolean = useMemo(() => {
-    // If depositA is not disabled, check if its parsedAmount is greater than 0
-    if (!depositADisabled && parsedAmounts[Field.CURRENCY_A]) {
-      return false;
-    }
+  const selectedCurrencyBalanceA = useCurrencyBalance(chainId, account ?? undefined, currency0 ?? undefined);
+  const selectedCurrencyBalanceB = useCurrencyBalance(chainId, account ?? undefined, currency1 ?? undefined);
 
-    // If depositB is not disabled, check if its parsedAmount is greater than 0
-    if (!depositBDisabled && parsedAmounts[Field.CURRENCY_B]) {
+  const useApproveCallback = useApproveCallbackHook[chainId];
+
+  const [approvalA, approveACallback] = useApproveCallback(
+    chainId,
+    parsedAmounts[Field.CURRENCY_A],
+    CHAINS[chainId]?.contracts?.elixir?.nftManager,
+  );
+  const [approvalB, approveBCallback] = useApproveCallback(
+    chainId,
+    parsedAmounts[Field.CURRENCY_B],
+    CHAINS[chainId]?.contracts?.elixir?.nftManager,
+  );
+
+  /**
+   * `areDepositsNotAvailable` determines if the "Add Liquidity" button should be disabled.
+   * It returns `false` when either `CURRENCY_A` or `CURRENCY_B` deposit field is enabled
+   * and contains a parsed amount. Otherwise, it returns `true`, disabling the button.
+   */
+  const areDepositsNotAvailable: boolean = useMemo(() => {
+    // If depositA or depositB are not disabled, check if its parsedAmount is greater than 0
+    if (
+      (!depositADisabled && parsedAmounts[Field.CURRENCY_A]) ||
+      (!depositBDisabled && parsedAmounts[Field.CURRENCY_B])
+    ) {
       return false;
     }
 
@@ -81,12 +107,44 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     return true;
   }, [depositADisabled, depositBDisabled, parsedAmounts]);
 
+  /**
+   *  This function determines if the user has enough balance of selected currencies to perform a transaction.
+   *  It uses React's useMemo hook to optimize performance by memorizing the result, until the dependencies change.
+   *  @returns {boolean} - Returns true if the user has enough balance, false otherwise.
+   */
+  const isEnoughBalance = useMemo(() => {
+    // Initialize flags based on whether deposits are disabled
+    let isCurrencyAEnough = depositADisabled;
+    let isCurrencyBEnough = depositBDisabled;
+
+    // Check if balances for both currencies, parsedAmounts and deposits are available
+    if (selectedCurrencyBalanceA && selectedCurrencyBalanceB && !areDepositsNotAvailable && parsedAmounts) {
+      // Check if parsed amount for A doesn't exceed user's balance for A
+      if (
+        !isCurrencyAEnough &&
+        parsedAmounts[Field.CURRENCY_A] &&
+        !parsedAmounts[Field.CURRENCY_A]?.greaterThan(selectedCurrencyBalanceA)
+      ) {
+        isCurrencyAEnough = true;
+      }
+
+      // Check if parsed amount for B doesn't exceed user's balance for B
+      if (
+        !isCurrencyBEnough &&
+        parsedAmounts[Field.CURRENCY_B] &&
+        !parsedAmounts[Field.CURRENCY_B]?.greaterThan(selectedCurrencyBalanceB)
+      ) {
+        isCurrencyBEnough = true;
+      }
+    }
+
+    // Return true only if there is enough balance for both currency A and currency B
+    return isCurrencyAEnough && isCurrencyBEnough;
+  }, [selectedCurrencyBalanceA, selectedCurrencyBalanceB, parsedAmounts, areDepositsNotAvailable]);
+
   const { independentField, typedValue } = useMintState();
   const { onFieldAInput, onFieldBInput, onCurrencySelection, onSetFeeAmount, onResetMintState } =
     useMintActionHandlers(noLiquidity);
-
-  const selectedCurrencyBalanceA = useCurrencyBalance(chainId, account ?? undefined, currency0 ?? undefined);
-  const selectedCurrencyBalanceB = useCurrencyBalance(chainId, account ?? undefined, currency1 ?? undefined);
 
   const useUSDCPrice = useUSDCPriceHook[chainId];
 
@@ -154,18 +212,19 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
       const response = await addLiquidity(addData);
 
       setHash(response?.hash as string);
-
-      mixpanel.track(MixPanelEvents.INCREASE_LIQUIDITY, {
-        chainId: chainId,
-        tokenA: positionDetails?.token0?.symbol,
-        tokenB: positionDetails?.token1?.symbol,
-        tokenA_Address: wrappedCurrency(positionDetails?.token0, chainId)?.address,
-        tokenB_Address: wrappedCurrency(positionDetails?.token1, chainId)?.address,
-      });
+      if (response?.hash) {
+        mixpanel.track(MixPanelEvents.INCREASE_LIQUIDITY, {
+          chainId: chainId,
+          tokenA: positionDetails?.token0?.symbol,
+          tokenB: positionDetails?.token1?.symbol,
+          tokenA_Address: wrappedCurrency(positionDetails?.token0, chainId)?.address,
+          tokenB_Address: wrappedCurrency(positionDetails?.token1, chainId)?.address,
+        });
+      }
       onResetMintState();
     } catch (err) {
-      const _err = err as any;
-
+      const _err = typeof err === 'string' ? new Error(err) : (err as any);
+      setError(_err?.message);
       console.error(_err);
     } finally {
       setAttempting(false);
@@ -182,14 +241,63 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     } else {
       return (
         <ButtonWrapper>
+          {(approvalA === ApprovalState.NOT_APPROVED ||
+            approvalA === ApprovalState.PENDING ||
+            approvalB === ApprovalState.NOT_APPROVED ||
+            approvalB === ApprovalState.PENDING) && (
+            <ButtonWrapper>
+              {approvalA !== ApprovalState.APPROVED && (
+                <Box
+                  width={approvalB !== ApprovalState.APPROVED ? '48%' : '100%'}
+                  pr={approvalB === ApprovalState.APPROVED ? '5px' : '0px'}
+                >
+                  <Button
+                    variant="primary"
+                    onClick={approveACallback}
+                    isDisabled={approvalA === ApprovalState.PENDING}
+                    width={'100%'}
+                    loading={approvalA === ApprovalState.PENDING}
+                    loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_A]?.symbol}`}
+                    height="46px"
+                  >
+                    <Text fontSize={12}>{`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_A]?.symbol}</Text>
+                  </Button>
+                </Box>
+              )}
+              {approvalB !== ApprovalState.APPROVED && (
+                <Box width={approvalA !== ApprovalState.APPROVED ? '48%' : '100%'} pr={'5px'}>
+                  <Button
+                    variant="primary"
+                    onClick={approveBCallback}
+                    isDisabled={approvalB === ApprovalState.PENDING}
+                    width={'100%'}
+                    loading={approvalB === ApprovalState.PENDING}
+                    loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_B]?.symbol}`}
+                    height="46px"
+                  >
+                    <Text fontSize={12}>{`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_B]?.symbol}</Text>
+                  </Button>
+                </Box>
+              )}
+            </ButtonWrapper>
+          )}
           <Button
-            isDisabled={shouldDisableAddLiquidity}
+            isDisabled={
+              (approvalA !== ApprovalState.APPROVED && !depositADisabled) ||
+              (approvalB !== ApprovalState.APPROVED && !depositBDisabled) ||
+              areDepositsNotAvailable ||
+              !isEnoughBalance
+            }
             height="46px"
             variant="primary"
             borderRadius="4px"
             onClick={onIncrease}
           >
-            {t('common.addLiquidity')}
+            {areDepositsNotAvailable
+              ? t('common.enterAmount')
+              : isEnoughBalance
+              ? t('common.addLiquidity')
+              : t('common.insufficientBalance')}
           </Button>
         </ButtonWrapper>
       );
@@ -208,7 +316,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
 
   return (
     <div>
-      {attempting && !hash && (
+      {attempting && !hash && !error && (
         <BlackWrapper>
           <Loader height={'auto'} size={100} label={` Adding...`} />
         </BlackWrapper>
@@ -216,7 +324,31 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
 
       {hash && (
         <BlackWrapper>
-          <TransactionCompleted onClose={wrappedOnDismiss} submitText={t('pool.liquidityAdded')} />
+          <TransactionCompleted
+            rootStyle={{ width: '100%' }}
+            buttonText={t('common.close')}
+            isShowButtton={true}
+            onButtonClick={wrappedOnDismiss}
+            submitText={t('pool.liquidityAdded')}
+          />
+        </BlackWrapper>
+      )}
+
+      {error && (
+        <BlackWrapper>
+          <ErrorWrapper>
+            <ErrorBox>
+              <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
+              <Text fontWeight={500} fontSize={16} color={'red1'} textAlign="center" style={{ width: '85%' }}>
+                {error}
+              </Text>
+            </ErrorBox>
+            <ButtonWrapper>
+              <Button height="46px" variant="primary" borderRadius="4px" onClick={wrappedOnDismiss}>
+                {t('transactionConfirmation.dismiss')}
+              </Button>
+            </ButtonWrapper>
+          </ErrorWrapper>
         </BlackWrapper>
       )}
 

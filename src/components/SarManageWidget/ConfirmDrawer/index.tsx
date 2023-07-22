@@ -7,7 +7,7 @@ import { Drawer } from 'src/components';
 import { usePangolinWeb3 } from 'src/hooks';
 import { getEtherscanLink } from 'src/utils';
 import { Box, Button, Loader, Text } from '../../..';
-import { ErrorBox, ErrorWrapper, Link, SubmittedWrapper } from './styled';
+import { ErrorBox, ErrorText, ErrorWrapper, Link, SubmittedWrapper } from './styled';
 
 interface Props {
   isOpen: boolean;
@@ -42,12 +42,10 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
   const PendingContent = <Loader size={100} label={pendingMessage} />;
 
   const ErroContent = (
-    <ErrorWrapper paddingX="30px" paddingBottom="30px">
+    <ErrorWrapper paddingX="30px" paddingY="30px">
       <ErrorBox>
         <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
-        <Text fontWeight={500} fontSize={16} color={'red1'} textAlign="center" style={{ width: '85%' }}>
-          {errorMessage}
-        </Text>
+        <ErrorText>{errorMessage}</ErrorText>
       </ErrorBox>
       <Button variant="primary" onClick={onClose}>
         {t('transactionConfirmation.dismiss')}

@@ -2,7 +2,7 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, CHAINS, ChainId, CurrencyAmount, ElixirTrade, TokenAmount, Trade } from '@pangolindex/sdk';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { useTokenAllowance } from 'src/data/Allowances';
@@ -24,10 +24,18 @@ export function useApproveCallback(
 ): [ApprovalState, () => Promise<void>] {
   const { account } = usePangolinWeb3();
   const [isPendingApprove, setIsPendingApprove] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
 
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined;
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender);
   const pendingApproval = useHasPendingApproval(token?.address, spender);
+
+  // it's a fallback case the user approve a amount small of the requested by interface
+  useEffect(() => {
+    if (currentAllowance && amountToApprove && currentAllowance.lessThan(amountToApprove)) {
+      setIsApproved(false);
+    }
+  }, [currentAllowance]);
 
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
@@ -37,16 +45,16 @@ export function useApproveCallback(
     if (!currentAllowance) return ApprovalState.UNKNOWN;
 
     // amountToApprove will be defined if currentAllowance is
-    if (currentAllowance.lessThan(amountToApprove)) {
+    if (!currentAllowance.lessThan(amountToApprove) || isApproved) {
+      return ApprovalState.APPROVED;
+    } else {
       if (pendingApproval || isPendingApprove) {
         return ApprovalState.PENDING;
       } else {
         return ApprovalState.NOT_APPROVED;
       }
-    } else {
-      return ApprovalState.APPROVED;
     }
-  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, spender]);
+  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, isApproved, spender]);
 
   const tokenContract = useTokenContract(token?.address);
   const addTransaction = useTransactionAdder();
@@ -95,6 +103,7 @@ export function useApproveCallback(
         summary: 'Approved ' + amountToApprove.currency.symbol,
         approval: { tokenAddress: token.address, spender: spender },
       });
+      setIsApproved(true);
     } catch (error) {
       console.debug('Failed to approve token', error);
       throw error;

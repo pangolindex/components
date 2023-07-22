@@ -1,3 +1,4 @@
+import { getAddress } from '@ethersproject/address';
 import { ExternalProvider, Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { ALL_CHAINS, CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
@@ -38,9 +39,13 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   account,
 }: Web3ProviderProps) => {
   const state = useMemo(() => {
-    let normalizedAccount;
+    let normalizedAccount: typeof account;
     if (chainId) {
-      normalizedAccount = isEvmChain(chainId) ? isAddress(account) : account;
+      if (isEvmChain(chainId) && isAddress(account)) {
+        normalizedAccount = getAddress(account as string);
+      } else {
+        normalizedAccount = account;
+      }
     }
 
     return {

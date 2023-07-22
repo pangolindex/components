@@ -82,7 +82,7 @@ export default function Claim({ selectedOption, selectedPosition, onChange, onSe
         </Button>
       </Buttons>
     );
-  }, [pendingRewards, selectedPosition, attempting]);
+  }, [pendingRewards, selectedPosition, attempting, handleConfirm]);
 
   return (
     <Box>

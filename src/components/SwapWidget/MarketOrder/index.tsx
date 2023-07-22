@@ -189,7 +189,7 @@ const MarketOrder: React.FC<Props> = ({
 
   const whbar = WAVAX[chainId];
   const whbarContract = hederaFn.tokenToContractId(hederaFn.hederaId(whbar.address));
-  const [approvalWrappeState, onApproveWrapped] = useHederaApproveCallback(
+  const [approvalWrappedState, onApproveWrapped] = useHederaApproveCallback(
     chainId,
     Hedera.isHederaChain(chainId) ? parsedAmount : undefined,
     Hedera.isHederaChain(chainId) ? whbarContract : undefined,
@@ -474,19 +474,25 @@ const MarketOrder: React.FC<Props> = ({
         <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
           <Box mr="10px" width="100%">
             <Button
-              variant={approvalWrappeState === ApprovalState.APPROVED ? 'confirm' : 'primary'}
+              variant={approvalWrappedState === ApprovalState.APPROVED ? 'confirm' : 'primary'}
               onClick={() => onApproveWrapped()}
-              isDisabled={approvalWrappeState !== ApprovalState.NOT_APPROVED || approvalSubmitted}
-              loading={approvalWrappeState === ApprovalState.PENDING}
+              isDisabled={approvalWrappedState !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+              loading={approvalWrappedState === ApprovalState.PENDING}
               loadingText={t('swapPage.approving')}
             >
-              {approvalWrappeState === ApprovalState.APPROVED
+              {approvalWrappedState === ApprovalState.APPROVED
                 ? `${t('swapPage.approved')}`
                 : `${t('swapPage.approve')} ` + currencies[Field.INPUT]?.symbol}
             </Button>
           </Box>
 
-          <Button variant="primary" isDisabled={Boolean(wrapInputError) || Boolean(executing)} onClick={handleWrap}>
+          <Button
+            variant="primary"
+            isDisabled={
+              Boolean(wrapInputError) || Boolean(executing) || approvalWrappedState !== ApprovalState.APPROVED
+            }
+            onClick={handleWrap}
+          >
             {renderWrapButtonText()}
           </Button>
         </Box>
@@ -499,7 +505,10 @@ const MarketOrder: React.FC<Props> = ({
         </Button>
       );
     }
-    if (isLoadingSwap && !swapInputError) {
+    if (
+      (isLoadingSwap && !swapInputError) ||
+      (userHasSpecifiedInputOutput && trade && approval === ApprovalState.UNKNOWN)
+    ) {
       return (
         <Button variant="primary" isDisabled>
           {t('common.loading')}

@@ -34,13 +34,17 @@ export function useMerkledropClaimedAmounts(airdropAddress: string, token: Token
   const chainId = useChainId();
 
   const merkledropContract = useMerkledropContract(airdropAddress, AirdropType.MERKLE);
-  return useQuery(['claimed-airdrop-amount', merkledropContract?.address, account, chainId], async () => {
-    if (!account || !merkledropContract) {
-      return new TokenAmount(token, '0');
-    }
-    const claimedAmount: BigNumber = await merkledropContract.claimedAmounts(account);
-    return new TokenAmount(token, claimedAmount.toString());
-  });
+  return useQuery(
+    ['claimed-airdrop-amount', merkledropContract?.address, account, chainId],
+    async () => {
+      if (!account || !merkledropContract) {
+        return new TokenAmount(token, '0');
+      }
+      const claimedAmount: BigNumber = await merkledropContract.claimedAmounts(account);
+      return new TokenAmount(token, claimedAmount.toString());
+    },
+    { enabled: chainId === token.chainId },
+  );
 }
 
 /**
@@ -51,10 +55,10 @@ export function useMerkledropClaimedAmounts(airdropAddress: string, token: Token
  */
 export function useMerkledropProof(airdropAddress: string, token: Token) {
   const { account } = usePangolinWeb3();
-  const chainId = useChainId();
+  const chainId = token.chainId;
 
   return useQuery(
-    ['MerkledropProof', account, chainId, airdropAddress],
+    ['MerkledropProof', account, chainId, airdropAddress, token.address],
     async () => {
       if (!account)
         return {

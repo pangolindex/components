@@ -1,7 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { CAVAX, ChainId, CurrencyAmount, JSBI, TokenAmount, Trade } from '@pangolindex/sdk';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
+import { totalSupply } from 'src/components/TokenInfo/storiesConstants';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { useHederaTokenAllowance } from 'src/data/Allowances';
@@ -24,6 +25,7 @@ export function useHederaApproveCallback(
 ): [ApprovalState, () => Promise<void>] {
   const { account } = usePangolinWeb3();
   const [isPendingApprove, setIsPendingApprove] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
 
   const amountToken = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined;
 
@@ -43,6 +45,13 @@ export function useHederaApproveCallback(
 
   const tokenSupply = useHederaTotalSupply(token);
 
+  // it's a fallback case the user approve a amount small of the requested by interface
+  useEffect(() => {
+    if (currentAllowance && amountToApprove && currentAllowance.lessThan(amountToApprove)) {
+      setIsApproved(false);
+    }
+  }, [currentAllowance]);
+
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN;
@@ -50,8 +59,13 @@ export function useHederaApproveCallback(
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance) return ApprovalState.UNKNOWN;
 
+    // if the current allowance ir greather or equal than total supply we need to re-approve
+    if (!currentAllowance.lessThan(totalSupply)) {
+      return ApprovalState.NOT_APPROVED;
+    }
+
     // amountToApprove will be defined if currentAllowance is
-    if (!currentAllowance.lessThan(amountToApprove)) {
+    if (!currentAllowance.lessThan(amountToApprove) || isApproved) {
       return ApprovalState.APPROVED;
     } else {
       if (pendingApproval || isPendingApprove) {
@@ -60,7 +74,7 @@ export function useHederaApproveCallback(
         return ApprovalState.NOT_APPROVED;
       }
     }
-  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, spender]);
+  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, isApproved, spender, totalSupply]);
 
   const addTransaction = useTransactionAdder();
 
@@ -108,6 +122,7 @@ export function useHederaApproveCallback(
           summary: 'Approved ' + amountToApprove.currency.symbol,
           approval: { tokenAddress: token.address, spender: spender },
         });
+        setIsApproved(true);
       }
     } catch (error) {
       console.debug('Failed to approve token', error);

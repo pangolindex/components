@@ -4,7 +4,8 @@ import { isMobile } from 'react-device-detect';
 import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
-import { gnosisSafe, walletconnect, walletlink } from 'src/connectors';
+import { gnosisSafe, walletlink } from 'src/connectors';
+import { WalletConnectConnector, WalletConnectConnectorArguments } from 'src/connectors/WalletConnectConnector';
 import { IS_IN_IFRAME } from 'src/constants';
 import { Wallet, activeFunctionType } from './wallet';
 
@@ -79,10 +80,17 @@ export class CoinbaseWallet extends Wallet {
   }
 }
 
-export class WalletConnect extends Wallet {
-  constructor() {
+export class WalletConnectWallet extends Wallet {
+  /**
+   *
+   * @param projectId Your projectId from WalletConnect
+   * @param rpcMap Supported chains mapping with rpc url
+   * @param metadata Your project metadata
+   */
+  constructor(config: WalletConnectConnectorArguments) {
+    const walletconnectConnector = new WalletConnectConnector(config);
     super({
-      connector: walletconnect,
+      connector: walletconnectConnector,
       name: 'WalletConnect',
       href: 'https://walletconnect.com/',
       icon: walletConnectIcon,

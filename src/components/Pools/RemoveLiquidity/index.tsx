@@ -266,7 +266,10 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoading, onComplete }: Remove
                   addonLabel={
                     account && (
                       <Text color="text2" fontWeight={500} fontSize={14}>
-                        {!!userLiquidity ? t('currencyInputPanel.balance') + userLiquidity?.toSignificant(6) : ' -'}
+                        {!!userLiquidity
+                          ? t('currencyInputPanel.balance') +
+                            userLiquidity?.toFixed(Math.min(2, userLiquidity.token.decimals))
+                          : '-'}
                       </Text>
                     )
                   }

@@ -9,7 +9,10 @@ export type activeFunctionType = (
   throwErrors?: boolean,
 ) => Promise<void>;
 
-export type PangolinConnector = AbstractConnector & { isAuthorized?: () => Promise<boolean> };
+export type PangolinConnector = AbstractConnector & {
+  isAuthorized?: () => Promise<boolean>;
+  onQRCodeURI?: (setQRCode: (uri: string) => void) => void;
+};
 
 export const walletEvent = new EventEmitter();
 
@@ -27,7 +30,6 @@ export abstract class Wallet {
   readonly supportedChains: NetworkType[];
   readonly supportedChainsId: number[] | undefined;
   private wallletIsActive = false;
-
   /**
    * @param connector The connector in AbstractConnector object
    * @param name Name of wallet

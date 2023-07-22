@@ -133,7 +133,7 @@ export const GET_FARMS_STAKED = gql`
 `;
 
 /**
- * this hook is useful to get information for pangochef famrs  from subgraph
+ * this hook is useful to get information for pangochef farms  from subgraph
  * @param
  * @returns list farms
  */
