@@ -280,7 +280,6 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
         </>
       );
     } else {
-      console.log({ approval });
       return (
         <Buttons>
           <Button
