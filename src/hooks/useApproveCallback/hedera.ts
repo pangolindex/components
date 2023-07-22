@@ -58,7 +58,7 @@ export function useHederaApproveCallback(
     // we might not have enough data to know whether or not we need to approve
     if (!currentAllowance || !tokenSupply) return ApprovalState.UNKNOWN;
 
-    // if the current allowance ir greather than total supply we need to re-approve
+    // if the current allowance is greather than total supply we need to re-approve
     if (tokenSupply.lessThan(currentAllowance)) {
       return ApprovalState.NOT_APPROVED;
     }
