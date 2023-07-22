@@ -79,6 +79,8 @@ export interface MinichefStakingInfo extends DoubleSideStakingInfo {
   rewardTokens?: Array<Token>;
   // farm id
   pid: string;
+  // array of extra pending rewards (super farms)
+  extraPendingRewards: JSBI[];
 }
 
 export interface DoubleSideStaking {

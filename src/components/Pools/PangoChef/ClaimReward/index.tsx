@@ -58,7 +58,7 @@ const ClaimRewardV3 = ({ stakingInfo, onClose, redirectToCompound }: ClaimProps)
     hederaAssociated: isHederaTokenAssociated,
   } = useHederaTokenAssociated(notAssociateTokens?.[0]?.address, notAssociateTokens?.[0]?.symbol);
 
-  const { callback: claimRewardCallback } = useClaimRewardCallback(stakingInfo.pid, stakingInfo.poolType);
+  const { callback: claimRewardCallback } = useClaimRewardCallback(stakingInfo.pid);
 
   function wrappedOnDismiss() {
     setHash(undefined);

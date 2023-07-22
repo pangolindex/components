@@ -32,7 +32,6 @@ export interface PangoChefInfo extends MinichefStakingInfo {
   userValueVariables: ValueVariables;
   userRewardRate: Fraction;
   pairPrice: Fraction;
-  poolType: PoolType;
   poolRewardRate: Fraction;
   lockCount: number | undefined;
   userApr: number;

@@ -15,7 +15,7 @@ import {
   TextInput,
   TransactionCompleted,
 } from 'src/components';
-import { FARM_TYPE } from 'src/constants';
+import { BIG_INT_ZERO, FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
@@ -31,7 +31,7 @@ import {
   useGetPoolDollerWorth,
   useMinichefPools,
 } from 'src/state/pstake/hooks/common';
-import { DoubleSideStakingInfo, SpaceType } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo, MinichefStakingInfo, SpaceType } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { waitForTransaction } from 'src/utils';
@@ -514,7 +514,11 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
               isDisabled={
                 approval !== ApprovalState.NOT_APPROVED ||
                 signatureData !== null ||
-                !JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0))
+                (JSBI.equal(stakingInfo?.multiplier, BIG_INT_ZERO) &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.length > 0 &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.some((pendigRewards) =>
+                    JSBI.equal(pendigRewards, BIG_INT_ZERO),
+                  ))
               }
               loading={attempting && !hash}
               loadingText={t('migratePage.loading')}
@@ -527,7 +531,11 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
               isDisabled={
                 !!error ||
                 (signatureData === null && approval !== ApprovalState.APPROVED) ||
-                !JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0))
+                (JSBI.equal(stakingInfo?.multiplier, BIG_INT_ZERO) &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.length > 0 &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.some((pendigRewards) =>
+                    JSBI.equal(pendigRewards, BIG_INT_ZERO),
+                  ))
               }
               onClick={onStake}
               loading={attempting && !hash}

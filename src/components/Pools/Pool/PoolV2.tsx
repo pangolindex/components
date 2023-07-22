@@ -21,9 +21,13 @@ const PoolV2: React.FC<Props> = ({ type, setMenu, activeMenu, menuItems, miniChe
           JSBI.greaterThan(stakingInfo.multiplier, BIG_INT_ZERO),
         );
       case PoolType.own:
-        // return all farms with staked amount greater than 0
+        // return all farms with staked amount greater than 0 or user have pending rewards on farm
         return (miniChefStakingInfo || []).filter((stakingInfo) => {
-          return Boolean(stakingInfo.stakedAmount.greaterThan('0'));
+          return Boolean(
+            stakingInfo.stakedAmount.greaterThan('0') ||
+              stakingInfo.earnedAmount.greaterThan('0') ||
+              stakingInfo.extraPendingRewards.some((pendingRewards) => JSBI.greaterThan(pendingRewards, BIG_INT_ZERO)),
+          );
         });
       case PoolType.superFarms:
         // return all farms with reward tokens address greater than 1 and with weight (multipler) greater than 0

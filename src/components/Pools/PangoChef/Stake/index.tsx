@@ -5,7 +5,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput, Tooltip } from 'src/components';
-import { FARM_TYPE } from 'src/constants';
+import { BIG_INT_ZERO, FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
@@ -280,15 +280,19 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
         </>
       );
     } else {
+      console.log({ approval });
       return (
         <Buttons>
           <Button
             variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
             onClick={onAttemptToApprove}
             isDisabled={
-              approval !== ApprovalState.NOT_APPROVED || !JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0))
+              approval !== ApprovalState.NOT_APPROVED ||
+              (JSBI.equal(stakingInfo.multiplier, BIG_INT_ZERO) &&
+                stakingInfo.extraPendingRewards.length > 0 &&
+                stakingInfo.extraPendingRewards.some((pendigRewards) => JSBI.equal(pendigRewards, BIG_INT_ZERO)))
             }
-            loading={attempting && !hash}
+            loading={approval === ApprovalState.PENDING}
             loadingText={t('migratePage.loading')}
           >
             {t('earn.approve')}
@@ -301,7 +305,9 @@ const Stake = ({ onComplete, type, stakingInfo, combinedApr }: StakeProps) => {
               approval !== ApprovalState.APPROVED ||
               !!stakeCallbackError ||
               shouldCreateStorage ||
-              !JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0))
+              (JSBI.equal(stakingInfo.multiplier, BIG_INT_ZERO) &&
+                stakingInfo.extraPendingRewards.length > 0 &&
+                stakingInfo.extraPendingRewards.some((pendigRewards) => JSBI.equal(pendigRewards, BIG_INT_ZERO)))
             }
             onClick={onConfirm}
             loading={attempting && !hash}
