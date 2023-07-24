@@ -1,11 +1,12 @@
-import { AVALANCHE_MAINNET } from '@pangolindex/sdk';
-import { useWeb3React } from '@web3-react/core';
-import React from 'react';
+import { AVALANCHE_MAINNET, ChainId } from '@pangolindex/sdk';
+import React, { useCallback } from 'react';
 import { Box, Button, Text } from 'src/components';
 import { network } from 'src/connectors';
+import { usePangolinWeb3 } from 'src/hooks';
 import { useActiveWeb3React } from 'src/hooks/useConnector';
 import { useApplicationState } from 'src/state/papplication/atom';
-import { changeNetwork } from 'src/utils/wallet';
+import { useWalletModalToggleWithChainId } from 'src/state/papplication/hooks';
+import { onChangeNetwork } from 'src/utils/wallet';
 import Title from '../../Title';
 import { TextBottomWrapper, Wrapper } from '../../styleds';
 
@@ -15,9 +16,26 @@ interface Props {
 }
 
 export default function AlreadyClaimed({ subtitle, logo }: Props) {
-  const { connector } = useActiveWeb3React();
-  const { activate, deactivate } = useWeb3React();
+  const { connector, activate, deactivate } = useActiveWeb3React();
+  const { account } = usePangolinWeb3();
   const { wallets } = useApplicationState();
+  const onToogleWalletModalWithId = useWalletModalToggleWithChainId();
+
+  const onChainClick = useCallback(async () => {
+    const onToogleWalletModal = () => {
+      onToogleWalletModalWithId(ChainId.AVALANCHE);
+    };
+
+    await onChangeNetwork({
+      account,
+      activate,
+      deactivate,
+      onToogleWalletModal,
+      chain: AVALANCHE_MAINNET,
+      connector: connector ?? network,
+      wallets: Object.values(wallets),
+    });
+  }, [account, connector, wallets, activate, deactivate, onToogleWalletModalWithId]);
 
   return (
     <Wrapper>
@@ -27,20 +45,7 @@ export default function AlreadyClaimed({ subtitle, logo }: Props) {
           If you think there is a problem contact us via discord.
         </Text>
       </Box>
-      <Button
-        variant="primary"
-        color="black"
-        height="46px"
-        onClick={() =>
-          changeNetwork({
-            chain: AVALANCHE_MAINNET,
-            connector: connector ?? network,
-            wallets: Object.values(wallets),
-            activate,
-            deactivate,
-          })
-        }
-      >
+      <Button variant="primary" color="black" height="46px" onClick={onChainClick}>
         GO BACK TO AVALANCHE
       </Button>
       <TextBottomWrapper>

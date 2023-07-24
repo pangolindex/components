@@ -155,3 +155,69 @@ export async function changeNetwork(args: {
       return;
   }
 }
+
+/**
+ * This function handle the chain change, if wallet not support this change open the wallet modal
+ * @param chain Chain to be changed
+ * @param wallets array of wallets used in app
+ * @param connector The connector, injected, haspack, etc. Instance of AbstractConnector
+ * @param account
+ * @param activate function provide by @web3/react to active the connector
+ * @param deactivate function provide by @web3/react to deactive the connector
+ * @param onToogleWalletModal function to open wallet modal
+ */
+export async function onChangeNetwork({
+  chain,
+  wallets,
+  connector,
+  account,
+  activate,
+  deactivate,
+  onToogleWalletModal,
+}: {
+  chain: Chain;
+  wallets: Wallet[];
+  connector: AbstractConnector;
+  account: string | null | undefined;
+  activate: activeFunctionType;
+  deactivate: () => void;
+  onToogleWalletModal: (chain: Chain) => void;
+}) {
+  const activeWallet = wallets.find((wallet) => wallet.isActive);
+
+  // if there is no wallet active or an account in app state we can change the chain
+  // because the connector is NetworkConnector and we can change chain of it
+  if ((!activeWallet || !account) && connector instanceof NetworkConnector) {
+    await changeNetwork({
+      chain,
+      connector,
+      wallets,
+      activate,
+      deactivate,
+    });
+    return;
+  }
+
+  // if don't have active wallet or a connector
+  // or the active wallet don't support this chain
+  // we need to open the wallet modal to select a chain
+  if (
+    !activeWallet ||
+    !connector ||
+    !activeWallet.supportedChains.includes(chain.network_type) ||
+    (!!activeWallet.supportedChainsId && !activeWallet.supportedChainsId.includes(chain.chain_id ?? 0))
+  ) {
+    onToogleWalletModal(chain);
+    return;
+  }
+
+  // if wallet support this chain we can request to wallet and
+  // connector to change the chain
+  await changeNetwork({
+    chain,
+    connector,
+    wallets,
+    activate,
+    deactivate,
+  });
+}
