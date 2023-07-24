@@ -241,6 +241,12 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     setAttemptingTxn(false);
   }, [txHash]);
 
+  const handleCloseDrawer = useCallback(() => {
+    onResetMintState();
+    handleDismissConfirmation();
+    onClose();
+  }, [onClose]);
+
   const handleSetFullRange = useCallback(() => {
     getSetFullRange();
     const minPrice = pricesAtLimit[Bound.LOWER];
@@ -601,6 +607,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
             attemptingTxn={attemptingTxn}
             txHash={txHash}
             onClose={handleDismissConfirmation}
+            onComplete={handleCloseDrawer}
             position={position}
             ticksAtLimit={ticksAtLimit}
           />
