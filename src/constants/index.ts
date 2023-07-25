@@ -26,8 +26,8 @@ export const RANGO_API_KEY = '6165008b-282e-446f-acf8-13c2b06d0775';
 // one basis point
 export const ONE_BIPS = new Percent(JSBI.BigInt(1), JSBI.BigInt(10000));
 
-// used to ensure the user doesn't send so much ETH so they end up with <.01
-export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)); // .01 ETH
+// used to ensure the user doesn't send so much ETH so they end up with <.000001
+export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(12)); // .000001 ETH
 export type LogoSize = 24 | 48;
 
 export const SQUID_API = 'https://api.0xsquid.com';
