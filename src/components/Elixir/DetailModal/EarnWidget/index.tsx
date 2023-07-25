@@ -4,7 +4,7 @@ import React, { useContext, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
+import { Box, Button, Loader, Stat, Text, Tooltip, TransactionCompleted } from 'src/components';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useConcLiqPositionFeesHook } from 'src/hooks/elixir/hooks';
 import { usePool } from 'src/hooks/elixir/hooks/common';
@@ -119,10 +119,17 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
         <Root>
           <Box mt={'6px'} flex="1" display="flex" flexDirection="column" justifyContent="center">
             <RewardWrapper>
-              <StatWrapper>
+              {feeValueUpper && currency0ForFeeCollectionPurposes && (
+                <Tooltip id="unclaimedReward-1" effect="solid" backgroundColor={theme.primary}>
+                  <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+                    {feeValueUpper?.toFixed(Math.min(8, currency0ForFeeCollectionPurposes?.decimals))}
+                  </Text>
+                </Tooltip>
+              )}
+              <StatWrapper data-tip data-for="unclaimedReward-1">
                 <Stat
                   title={t('earn.unclaimedReward', { symbol: `${currency0ForFeeCollectionPurposes?.symbol}` })}
-                  stat={feeValueUpper ? feeValueUpper?.toSignificant(4) : '-'}
+                  stat={feeValueUpper ? feeValueUpper?.toFixed(2) : '-'}
                   titlePosition="top"
                   titleFontSize={12}
                   statFontSize={[24, 18]}
@@ -130,11 +137,18 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
                   statAlign="center"
                 />
               </StatWrapper>
-
-              <StatWrapper>
+              {feeValueLower && currency1ForFeeCollectionPurposes && (
+                <Tooltip id="unclaimedReward-2" effect="solid" backgroundColor={theme.primary}>
+                  <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+                    {currency1ForFeeCollectionPurposes &&
+                      feeValueLower?.toFixed(Math.min(8, currency1ForFeeCollectionPurposes?.decimals))}
+                  </Text>
+                </Tooltip>
+              )}
+              <StatWrapper data-tip data-for="unclaimedReward-2">
                 <Stat
                   title={t('earn.unclaimedReward', { symbol: `${currency1ForFeeCollectionPurposes?.symbol}` })}
-                  stat={feeValueLower ? feeValueLower?.toSignificant(4) : '-'}
+                  stat={feeValueLower ? feeValueLower?.toFixed(2) : '-'}
                   titlePosition="top"
                   titleFontSize={12}
                   statFontSize={[24, 18]}
