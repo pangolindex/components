@@ -390,6 +390,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                   style={{ borderRadius: 4, alignItems: 'center' }}
                   placeholder="0.00"
                   id="add-liquidity-currency-input"
+                  disabled={!selectedCurrencyBalanceA}
                   addonLabel={
                     account && (
                       <Text color="text2" fontWeight={500} fontSize={12}>
@@ -437,6 +438,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                   isNumeric={true}
                   placeholder="0.00"
                   id="swap-currency-input"
+                  disabled={!selectedCurrencyBalanceB}
                   addonLabel={
                     account && (
                       <Text color="text2" fontWeight={500} fontSize={12}>
