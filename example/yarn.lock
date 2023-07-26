@@ -572,10 +572,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@pangolindex/sdk@5.3.1":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-5.3.1.tgz#8543f24cfe3cfc030cfb46466fcd2ada520a36f6"
-  integrity sha512-eAkzg0InbDU6UTfxAcl2gFM68fVTzJfKi7eVsQNB3HwG9Uzfnh9fwVsimjraRWLykMXqVvVVWfWOXcqmdQn5lw==
+"@pangolindex/sdk@5.3.2-internal.af30aca":
+  version "5.3.2-internal.af30aca"
+  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-5.3.2-internal.af30aca.tgz#7a4c4c602de024796f09d87461a73c6d35f1a8f8"
+  integrity sha512-OnTI1XljSKUeXJSfT7T6+I8PICWNDFAYlLHoryJZ+Squx9d1h5CPUMJcScw2VHeIf5KAwWAy5SB9KRk28w0mKQ==
   dependencies:
     big.js "^5.2.2"
     decimal.js-light "^2.5.0"
