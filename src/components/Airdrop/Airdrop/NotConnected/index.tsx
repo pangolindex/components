@@ -2,7 +2,7 @@ import { Token } from '@pangolindex/sdk';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Text } from 'src/components';
-import { useWalletModalToggle } from 'src/state/papplication/hooks';
+import { useWalletModalToggleWithChainId } from 'src/state/papplication/hooks';
 import Title from '../../Title';
 import { Wrapper } from '../../styleds';
 
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export default function NotConnected({ title, token, logo }: Props) {
-  const toggleWalletModal = useWalletModalToggle();
+  const toggleWalletModal = useWalletModalToggleWithChainId();
   const { t } = useTranslation();
   return (
     <Wrapper>
@@ -23,7 +23,7 @@ export default function NotConnected({ title, token, logo }: Props) {
           Let&apos;s check if you are eligible!
         </Text>
       </Box>
-      <Button variant="primary" color="black" height="46px" onClick={toggleWalletModal}>
+      <Button variant="primary" color="black" height="46px" onClick={() => toggleWalletModal(token.chainId)}>
         {t('swapPage.connectWallet')}
       </Button>
     </Wrapper>

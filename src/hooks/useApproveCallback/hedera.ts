@@ -1,8 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { CAVAX, ChainId, CurrencyAmount, JSBI, TokenAmount, Trade } from '@pangolindex/sdk';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import { totalSupply } from 'src/components/TokenInfo/storiesConstants';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { useHederaTokenAllowance } from 'src/data/Allowances';
@@ -45,22 +44,15 @@ export function useHederaApproveCallback(
 
   const tokenSupply = useHederaTotalSupply(token);
 
-  // it's a fallback case the user approve a amount small of the requested by interface
-  useEffect(() => {
-    if (currentAllowance && amountToApprove && currentAllowance.lessThan(amountToApprove)) {
-      setIsApproved(false);
-    }
-  }, [currentAllowance]);
-
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN;
     if (amountToApprove.currency === CAVAX[chainId]) return ApprovalState.APPROVED;
     // we might not have enough data to know whether or not we need to approve
-    if (!currentAllowance) return ApprovalState.UNKNOWN;
+    if (!currentAllowance || !tokenSupply) return ApprovalState.UNKNOWN;
 
-    // if the current allowance ir greather or equal than total supply we need to re-approve
-    if (!currentAllowance.lessThan(totalSupply)) {
+    // if the current allowance is greather than total supply we need to re-approve
+    if (tokenSupply.lessThan(currentAllowance)) {
       return ApprovalState.NOT_APPROVED;
     }
 
@@ -74,7 +66,7 @@ export function useHederaApproveCallback(
         return ApprovalState.NOT_APPROVED;
       }
     }
-  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, isApproved, spender, totalSupply]);
+  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, isApproved, spender, tokenSupply]);
 
   const addTransaction = useTransactionAdder();
 

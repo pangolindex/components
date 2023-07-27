@@ -30,7 +30,11 @@ const PoolsUI = () => {
   const ownminiChefStakingInfos = useMemo(
     () =>
       (miniChefStakingInfos || []).filter((stakingInfo: MinichefStakingInfo) => {
-        return Boolean(stakingInfo.stakedAmount.greaterThan('0'));
+        return Boolean(
+          stakingInfo.stakedAmount.greaterThan('0') ||
+            stakingInfo.earnedAmount.greaterThan('0') ||
+            stakingInfo.extraPendingRewards.some((pendingRewards) => JSBI.greaterThan(pendingRewards, BIG_INT_ZERO)),
+        );
       }),
     [miniChefStakingInfos],
   );
@@ -38,7 +42,11 @@ const PoolsUI = () => {
   const ownPangoCheftStakingInfo = useMemo(
     () =>
       (pangoChefStakingInfos || []).filter((stakingInfo: MinichefStakingInfo) => {
-        return Boolean(stakingInfo.stakedAmount.greaterThan('0'));
+        return Boolean(
+          stakingInfo.stakedAmount.greaterThan('0') ||
+            stakingInfo.earnedAmount.greaterThan('0') ||
+            stakingInfo.extraPendingRewards.some((pendingRewards) => JSBI.greaterThan(pendingRewards, BIG_INT_ZERO)),
+        );
       }),
     [pangoChefStakingInfos],
   );

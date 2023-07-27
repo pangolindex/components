@@ -6,12 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
-import { NetworkConnector } from 'src/connectors/NetworkConnector';
+import { network } from 'src/connectors';
 import { usePangolinWeb3 } from 'src/hooks';
 import { useActiveWeb3React } from 'src/hooks/useConnector';
 import useDebounce from 'src/hooks/useDebounce';
 import { useApplicationState } from 'src/state/papplication/atom';
-import { changeNetwork } from 'src/utils/wallet';
+import { onChangeNetwork } from 'src/utils/wallet';
 import { SUPPORTED_CHAINS } from 'src/wallet';
 import ChainItem from './ChainItem';
 import { ChainsList, Frame, Inputs, Wrapper } from './styled';
@@ -59,46 +59,20 @@ export default function NetworkSelection({ open, closeModal, onToogleWalletModal
     return maxHeight <= 0 ? 125 : maxHeight;
   }
 
-  async function onChainClick(chain: Chain) {
-    const walletsArray = Object.values(wallets);
-    const activeWallet = walletsArray.find((wallet) => wallet.isActive);
-
-    // if there is no wallet active or an account in app state we can change the chain
-    // because the connector is NetworkConnector and we can change chain of it
-    if ((!activeWallet || !account) && connector instanceof NetworkConnector) {
-      await changeNetwork({
+  const onChainClick = useCallback(
+    async (chain: Chain) => {
+      await onChangeNetwork({
         chain,
-        connector,
-        wallets: walletsArray,
+        account,
         activate,
         deactivate,
+        onToogleWalletModal,
+        connector: connector ?? network,
+        wallets: Object.values(wallets),
       });
-      return;
-    }
-
-    // if don't have active wallet or a connector
-    // or the active wallet don't support this chain
-    // we need to open the wallet modal to select a chain
-    if (
-      !activeWallet ||
-      !connector ||
-      !activeWallet.supportedChains.includes(chain.network_type) ||
-      (!!activeWallet.supportedChainsId && !activeWallet.supportedChainsId.includes(chain.chain_id ?? 0))
-    ) {
-      onToogleWalletModal(chain);
-      return;
-    }
-
-    // if wallet support this chain we can request to wallet and
-    // connector to change the chain
-    await changeNetwork({
-      chain,
-      connector,
-      wallets: walletsArray,
-      activate,
-      deactivate,
-    });
-  }
+    },
+    [account, connector, wallets, activate, deactivate, onToogleWalletModal],
+  );
 
   return (
     <Modal isOpen={open} onDismiss={closeModal}>

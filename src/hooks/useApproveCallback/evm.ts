@@ -2,7 +2,7 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, CHAINS, ChainId, CurrencyAmount, ElixirTrade, TokenAmount, Trade } from '@pangolindex/sdk';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ZERO_ADDRESS } from 'src/constants';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS } from 'src/constants/address';
 import { useTokenAllowance } from 'src/data/Allowances';
@@ -29,13 +29,6 @@ export function useApproveCallback(
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined;
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender);
   const pendingApproval = useHasPendingApproval(token?.address, spender);
-
-  // it's a fallback case the user approve a amount small of the requested by interface
-  useEffect(() => {
-    if (currentAllowance && amountToApprove && currentAllowance.lessThan(amountToApprove)) {
-      setIsApproved(false);
-    }
-  }, [currentAllowance]);
 
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {

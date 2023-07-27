@@ -259,6 +259,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                     loading={approvalA === ApprovalState.PENDING}
                     loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_A]?.symbol}`}
                     height="46px"
+                    borderRadius="4px"
                   >
                     <Text fontSize={12}>{`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_A]?.symbol}</Text>
                   </Button>
@@ -274,6 +275,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
                     loading={approvalB === ApprovalState.PENDING}
                     loadingText={`${t('swapPage.approving')} ${currencies[Field.CURRENCY_B]?.symbol}`}
                     height="46px"
+                    borderRadius="4px"
                   >
                     <Text fontSize={12}>{`${t('addLiquidity.approve')} ` + currencies[Field.CURRENCY_B]?.symbol}</Text>
                   </Button>
@@ -312,7 +314,7 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
     if (positionDetails?.fee) {
       onSetFeeAmount(positionDetails?.fee);
     }
-  }, [positionDetails]);
+  }, []);
 
   return (
     <div>
