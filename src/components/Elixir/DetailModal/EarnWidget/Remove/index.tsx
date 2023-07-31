@@ -82,6 +82,7 @@ const Remove = ({ position }: RemoveProps) => {
       setHash(removeLiqResponse?.hash as string);
 
       if (removeLiqResponse?.hash) {
+        setPercentage(0);
         mixpanel.track(MixPanelEvents.REMOVE_LIQUIDITY, {
           chainId: chainId,
           token0: liquidityValue0?.currency?.symbol,

@@ -122,7 +122,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
               {feeValueUpper && currency0ForFeeCollectionPurposes && (
                 <Tooltip id="unclaimedReward-1" effect="solid" backgroundColor={theme.primary}>
                   <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
-                    {feeValueUpper?.toFixed(Math.min(8, currency0ForFeeCollectionPurposes?.decimals))}
+                    {feeValueUpper?.toSignificant(8)}
                   </Text>
                 </Tooltip>
               )}
@@ -140,8 +140,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
               {feeValueLower && currency1ForFeeCollectionPurposes && (
                 <Tooltip id="unclaimedReward-2" effect="solid" backgroundColor={theme.primary}>
                   <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
-                    {currency1ForFeeCollectionPurposes &&
-                      feeValueLower?.toFixed(Math.min(8, currency1ForFeeCollectionPurposes?.decimals))}
+                    {feeValueLower?.toSignificant(8)}
                   </Text>
                 </Tooltip>
               )}
