@@ -207,7 +207,7 @@ function limitSellBuyTokenftn(x, y) {
 }
 
 function limitSellBuyTradeDetailsftn() {
-  for (var i = 0; i <= 4; i++) {
+  for (let i = 0; i <= 4; i++) {
     cy.get(tradeDetails).contains(sellTokenDetailsArr[i]).should('be.visible');
     cy.get(sellTokenDetailsValues).should('not.be.empty');
   }
@@ -254,7 +254,7 @@ function limitOrdersftn(navBtn, status, logo1, logo2) {
   cy.get(confirmSwapDetails).eq(2).contains('Limit Orders').should('be.visible');
   cy.get(limitTokensLogo).eq(0).should('have.attr', 'alt', `${logo1} logo`).click();
   cy.get(limitTokensLogo).eq(1).should('have.attr', 'alt', `${logo2} logo`).click();
-  for (var i = 0; i <= 3; i++) {
+  for (let i = 0; i <= 3; i++) {
     cy.get(limitOrderDetails)
       .eq(i + 9)
       .contains(limitOrderDetailsArr[i])
@@ -317,7 +317,7 @@ function selectLimitTokensftn(token1, token2, amount, buy) {
 }
 
 function approveftn(check) {
-  cy.get(approveBtn, { timeout: 30000 }).then(($buttons) => {
+  cy.get(approveBtn).then(($buttons) => {
     const approveButton = Cypress.$($buttons).filter((_, button) => {
       const buttonText = Cypress.$(button).text().trim();
       return buttonText.startsWith('Approve');
@@ -326,7 +326,7 @@ function approveftn(check) {
     if (approveButton.length) {
       // Token approval is required, perform approval process
       cy.wrap(approveButton).click();
-      cy.wait(5000); // Wait for the approval process to complete
+      cy.wait(2000); // Wait for the approval process to complete
       if (check === 0) {
         cy.confirmMetamaskPermissionToSpend();
       } else if (check === 1) {
@@ -353,6 +353,41 @@ function enterAmountBtnftn() {
   }
 }
 
+function swapButtonftn() {
+  cy.get(swapBtn)
+    .invoke('text')
+    .then((text) => {
+      cy.get(swapBtn).should('be.visible');
+
+      if (text === 'Swap') {
+        cy.get(swapBtn).then(($element) => {
+          const backgroundColor = Cypress.$($element).css('background-color');
+          if (backgroundColor === 'rgb(229, 229, 229)') {
+            approveftn(0);
+          }
+          cy.get(swapBtn).contains('Swap').should('have.css', 'background-color', 'rgb(255, 200, 0)');
+        });
+      } else if (text === 'Swap  Anyway') {
+        cy.get(swapBtn).contains('Swap Anyway').should('have.css', 'background-color', 'rgb(255, 200, 0)');
+        cy.log('Please change the input values. Test terminated: Price Impact High.');
+        cy.wrap().then(() => {
+          throw new Error('Please change the input values. Test terminated: Price Impact High.');
+        });
+      } else if (text === 'Price Impact High') {
+        cy.get(swapBtn).contains('Price Impact High').should('have.css', 'background-color', 'rgb(229, 229, 229)');
+        cy.log('Please change the input values. Test terminated: Price Impact High.');
+        cy.wrap().then(() => {
+          throw new Error('Please change the input values. Test terminated: Price Impact High.');
+        });
+      } else {
+        cy.log('Please change the input values. Test terminated: Price Impact High.');
+        cy.wrap().then(() => {
+          throw new Error('Please change the input values. Test terminated: Price Impact High.');
+        });
+      }
+    });
+}
+
 export {
   switchingValues,
   tokenDisable,
@@ -374,4 +409,5 @@ export {
   selectLimitTokensftn,
   approveftn,
   enterAmountBtnftn,
+  swapButtonftn,
 };

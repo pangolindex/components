@@ -15,7 +15,7 @@ Cypress.Commands.add('assignWindows', () => {
   return cy.task('assignWindows');
 });
 
-Cypress.Commands.add('assignActiveTabName', tabName => {
+Cypress.Commands.add('assignActiveTabName', (tabName) => {
   return cy.task('assignActiveTabName', tabName);
 });
 
@@ -41,81 +41,63 @@ Cypress.Commands.add('switchToMetamaskNotification', () => {
 
 // metamask commands
 
-Cypress.Commands.add('addMetamaskNetwork', network => {
+Cypress.Commands.add('addMetamaskNetwork', (network) => {
   return cy.task('addMetamaskNetwork', network);
 });
 
-Cypress.Commands.add('changeMetamaskNetwork', network => {
+Cypress.Commands.add('changeMetamaskNetwork', (network) => {
   return cy.task('changeMetamaskNetwork', network);
 });
 
-Cypress.Commands.add('importMetamaskAccount', privateKey => {
+Cypress.Commands.add('importMetamaskAccount', (privateKey) => {
   return cy.task('importMetamaskAccount', privateKey);
 });
 
-Cypress.Commands.add('createMetamaskAccount', accountName => {
+Cypress.Commands.add('createMetamaskAccount', (accountName) => {
   return cy.task('createMetamaskAccount', accountName);
 });
 
-Cypress.Commands.add('switchMetamaskAccount', accountNameOrAccountNumber => {
+Cypress.Commands.add('switchMetamaskAccount', (accountNameOrAccountNumber) => {
   return cy.task('switchMetamaskAccount', accountNameOrAccountNumber);
 });
 
 Cypress.Commands.add('getMetamaskWalletAddress', () => {
-  cy.task('getMetamaskWalletAddress').then(address => {
+  cy.task('getMetamaskWalletAddress').then((address) => {
     return address;
   });
 });
 
-Cypress.Commands.add(
-  'activateAdvancedGasControlInMetamask',
-  (skipSetup = false) => {
-    return cy.task('activateAdvancedGasControlInMetamask', skipSetup);
-  },
-);
+Cypress.Commands.add('activateAdvancedGasControlInMetamask', (skipSetup = false) => {
+  return cy.task('activateAdvancedGasControlInMetamask', skipSetup);
+});
 
 Cypress.Commands.add('activateShowHexDataInMetamask', (skipSetup = false) => {
   return cy.task('activateShowHexDataInMetamask', skipSetup);
 });
 
-Cypress.Commands.add(
-  'activateTestnetConversionInMetamask',
-  (skipSetup = false) => {
-    return cy.task('activateTestnetConversionInMetamask', skipSetup);
-  },
-);
+Cypress.Commands.add('activateTestnetConversionInMetamask', (skipSetup = false) => {
+  return cy.task('activateTestnetConversionInMetamask', skipSetup);
+});
 
-Cypress.Commands.add(
-  'activateShowTestnetNetworksInMetamask',
-  (skipSetup = false) => {
-    return cy.task('activateShowTestnetNetworksInMetamask', skipSetup);
-  },
-);
+Cypress.Commands.add('activateShowTestnetNetworksInMetamask', (skipSetup = false) => {
+  return cy.task('activateShowTestnetNetworksInMetamask', skipSetup);
+});
 
 Cypress.Commands.add('activateCustomNonceInMetamask', (skipSetup = false) => {
   return cy.task('activateCustomNonceInMetamask', skipSetup);
 });
 
-Cypress.Commands.add(
-  'activateDismissBackupReminderInMetamask',
-  (skipSetup = false) => {
-    return cy.task('activateDismissBackupReminderInMetamask', skipSetup);
-  },
-);
+Cypress.Commands.add('activateDismissBackupReminderInMetamask', (skipSetup = false) => {
+  return cy.task('activateDismissBackupReminderInMetamask', skipSetup);
+});
 
-Cypress.Commands.add(
-  'activateEthSignRequestsInMetamask',
-  (skipSetup = false) => {
-    return cy.task('activateEthSignRequestsInMetamask', skipSetup);
-  },
-);
+Cypress.Commands.add('activateEthSignRequestsInMetamask', (skipSetup = false) => {
+  return cy.task('activateEthSignRequestsInMetamask', skipSetup);
+});
 
-Cypress.Commands.add(
-  'activateImprovedTokenAllowanceInMetamask',
-  (skipSetup = false) => {
-    return cy.task('activateImprovedTokenAllowanceInMetamask', skipSetup);
-  },
-);
+Cypress.Commands.add('activateImprovedTokenAllowanceInMetamask', (skipSetup = false) => {
+  return cy.task('activateImprovedTokenAllowanceInMetamask', skipSetup);
+});
 
 Cypress.Commands.add('resetMetamaskAccount', () => {
   return cy.task('resetMetamaskAccount');
@@ -161,7 +143,7 @@ Cypress.Commands.add('confirmMetamaskDataSignatureRequest', () => {
   return cy.task('confirmMetamaskDataSignatureRequest');
 });
 
-Cypress.Commands.add('importMetamaskToken', tokenConfig => {
+Cypress.Commands.add('importMetamaskToken', (tokenConfig) => {
   return cy.task('importMetamaskToken', tokenConfig);
 });
 
@@ -173,22 +155,19 @@ Cypress.Commands.add('rejectMetamaskAddToken', () => {
   return cy.task('rejectMetamaskAddToken');
 });
 
-Cypress.Commands.add(
-  'confirmMetamaskPermissionToSpend',
-  (spendLimit = '999999999999999999') => {
-    return cy.task('confirmMetamaskPermissionToSpend', spendLimit);
-  },
-);
+Cypress.Commands.add('confirmMetamaskPermissionToSpend', (spendLimit = '999999999999999999') => {
+  return cy.task('confirmMetamaskPermissionToSpend', spendLimit);
+});
 
 Cypress.Commands.add('rejectMetamaskPermissionToSpend', () => {
   return cy.task('rejectMetamaskPermissionToSpend');
 });
 
-Cypress.Commands.add('acceptMetamaskAccess', options => {
+Cypress.Commands.add('acceptMetamaskAccess', (options) => {
   return cy.task('acceptMetamaskAccess', options);
 });
 
-Cypress.Commands.add('confirmMetamaskTransaction', gasConfig => {
+Cypress.Commands.add('confirmMetamaskTransaction', (gasConfig) => {
   return cy.task('confirmMetamaskTransaction', gasConfig);
 });
 
@@ -196,7 +175,7 @@ Cypress.Commands.add('rejectMetamaskTransaction', () => {
   return cy.task('rejectMetamaskTransaction');
 });
 
-Cypress.Commands.add('allowMetamaskToAddNetwork', waitForEvent => {
+Cypress.Commands.add('allowMetamaskToAddNetwork', (waitForEvent) => {
   return cy.task('allowMetamaskToAddNetwork', { waitForEvent });
 });
 
@@ -221,7 +200,7 @@ Cypress.Commands.add('unlockMetamask', (password = 'Tester@1234') => {
 });
 
 Cypress.Commands.add('fetchMetamaskWalletAddress', () => {
-  cy.task('fetchMetamaskWalletAddress').then(address => {
+  cy.task('fetchMetamaskWalletAddress').then((address) => {
     return address;
   });
 });
@@ -250,11 +229,11 @@ Cypress.Commands.add('getNetwork', () => {
 });
 
 // Etherscan commands
-Cypress.Commands.add('etherscanGetTransactionStatus', txid => {
+Cypress.Commands.add('etherscanGetTransactionStatus', (txid) => {
   return cy.task('etherscanGetTransactionStatus', { txid }, { timeout: 30000 });
 });
 
-Cypress.Commands.add('etherscanWaitForTxSuccess', txid => {
+Cypress.Commands.add('etherscanWaitForTxSuccess', (txid) => {
   return cy.task('etherscanWaitForTxSuccess', { txid }, { timeout: 120000 });
 });
 
@@ -272,10 +251,10 @@ Cypress.Commands.add('waitForResources', (resources = []) => {
       const resourcesLoaded = cy
         .state('window')
         .performance.getEntriesByType('resource')
-        .filter(r => !['script', 'xmlhttprequest'].includes(r.initiatorType));
+        .filter((r) => !['script', 'xmlhttprequest'].includes(r.initiatorType));
 
-      const allFilesFound = resources.every(resource => {
-        const found = resourcesLoaded.filter(resourceLoaded => {
+      const allFilesFound = resources.every((resource) => {
+        const found = resourcesLoaded.filter((resourceLoaded) => {
           return resourceLoaded.name.includes(resource.name);
         });
         if (found.length === 0) {
@@ -323,8 +302,7 @@ Cypress.Commands.add(
     const bounding = subject[0].getBoundingClientRect();
 
     const rightBoundOfWindow = viewportWidth;
-    const boundingRightLessThanOrEqualRightBoundOfWindow =
-      bounding.right <= rightBoundOfWindow;
+    const boundingRightLessThanOrEqualRightBoundOfWindow = bounding.right <= rightBoundOfWindow;
 
     expect(bounding.top).to.be.at.least(0);
     expect(bounding.left).to.be.at.least(0);
@@ -338,19 +316,13 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'isWithinViewport',
   { prevSubject: true },
-  (
-    subject,
-    viewportWidth = Cypress.config(`viewportWidth`),
-    viewportHeight = Cypress.config(`viewportHeight`),
-  ) => {
+  (subject, viewportWidth = Cypress.config(`viewportWidth`), viewportHeight = Cypress.config(`viewportHeight`)) => {
     const bounding = subject[0].getBoundingClientRect();
 
     const rightBoundOfWindow = viewportWidth;
-    const boundingRightLessThanOrEqualRightBoundOfWindow =
-      bounding.right <= rightBoundOfWindow;
+    const boundingRightLessThanOrEqualRightBoundOfWindow = bounding.right <= rightBoundOfWindow;
     const bottomBoundOfWindow = viewportHeight;
-    const boundingBottomLessThanOrEqualBottomBoundOfWindow =
-      bounding.bottom <= bottomBoundOfWindow;
+    const boundingBottomLessThanOrEqualBottomBoundOfWindow = bounding.bottom <= bottomBoundOfWindow;
 
     expect(bounding.top).to.be.at.least(0);
     expect(bounding.left).to.be.at.least(0);

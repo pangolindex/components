@@ -41,11 +41,12 @@
     "nativeTokenDeatilsArr": ["Balance", "Unclaimed", "price", "Total Supply"]
   },
   "swap": {
+    "gasTokenName": "AVAX",
     "fromToken": "PNG",
-    "toToken":"USDt",
+    "toToken":"USDC",
+    "swapValue":"0.001",
     "sellTokenValue":"0.001",
     "buyTokenValue":"5",
-    "swapValue":"0.001",
     "aAVAXb": "aAVAXb",
     "usdc": "USDC",
     "lowSlippageMessage": "Your transaction may fail",
@@ -74,6 +75,15 @@
     "haveQs": "HAVE QUESTIONS?"
   },
   "pools": {
+    "createPairToken1": "KTE",
+    "createPairToken2": "AAVE.e",
+    "addliquidityToken1": "PNG",
+    "addliquidityToken2": "USDC.e",
+    "addliquidityValue": "0.0001",
+    "noPoolToken1": "DON",
+    "noPoolToken2": "KTE",
+    "poolFoundToken1": "USDC",
+    "poolFoundToken2": "USDC.e",
     "yourPoolsMessage": "Connect to a wallet to view your liquidity.",
     "createPair": "Create a pair",
     "testnet": "https://gist.githubusercontent.com/SarjuHansaliya/2ad20cfa278b024a8d0dbbacb4259c01/raw/851983d69875ec01710491804cb675059b0870c3/near_tokens_testnet.json",

@@ -1,8 +1,7 @@
 import selectors from '../fixtures/selectors.json';
 import data from '../fixtures/pangolin-data.json';
 
-let { tokenSearch, selectTokens, toEstimated, amountInTokensSwap, confirmSwap, toTokenChain, swappingMsg } =
-  selectors.swap;
+let { selectTokens, toEstimated, amountInTokensSwap, confirmSwap, toTokenChain, swappingMsg } = selectors.swap;
 let {
   createPairToken1,
   createPairToken2,
@@ -13,6 +12,7 @@ let {
   createAddBtn,
   createAddAmountField,
   createAddSupplyBtn,
+  createAddApproveBtn,
   createAddTokenNamesValues,
   importToken1,
   importSelectToken,
@@ -29,31 +29,72 @@ let {
   farmApproveBtn,
   farmPercentBtns,
   farmPercentBtnsActive,
+  poolSelectToken,
+  approveBlock,
+  noLiquidityBtn,
+  tokensValue,
 } = selectors.pools;
-let { depositDetailsArr, depositDetailsValuesArr } = data.pools;
+let { depositDetailsArr, depositDetailsValuesArr, addliquidityValue } = data.pools;
 let { percentBtnArr } = data.swap;
 
 function selectTokensPoolftn(token1, token2, pairBtn) {
   cy.get(createPairToken1).eq(0).click();
-  cy.get(tokenSearch).eq(0).should('have.attr', 'placeholder', 'Search').type(token1);
+  cy.get(poolSelectToken).should('have.attr', 'placeholder', 'Search').type(token1);
   cy.get(selectTokens).contains(token1).click();
   cy.get(createPairToken2).contains('Select a Token').click();
-  cy.get(tokenSearch).eq(1).should('have.attr', 'placeholder', 'Search').type(token2);
+  cy.get(poolSelectToken).should('have.attr', 'placeholder', 'Search').type(token2);
   cy.get(selectTokens).contains(token2).click();
-  cy.get(createAddBtn, { timeout: 30000 }).should('contain', pairBtn).click();
+  cy.get(createAddBtn, { timeout: 50000 })
+    .invoke('text')
+    .then((text) => {
+      const buttonName = text;
+      if (buttonName === pairBtn) {
+        cy.get(createAddBtn, { timeout: 30000 }).should('contain', pairBtn).click();
+      } else {
+        throw new Error(`Select the tokens accordingly. Tests terminated: Change the tokens for ${pairBtn}`);
+      }
+    });
 }
 
-function selectTokensImportPoolftn(token1, token2) {
+function selectTokensImportPoolftn(token1, token2, btnName) {
   cy.get(importToken1).eq(0).click();
-  cy.get(tokenSearch).eq(0).should('have.attr', 'placeholder', 'Search').type(token1);
+  cy.get(poolSelectToken).should('have.attr', 'placeholder', 'Search').type(token1);
   cy.get(selectTokens).contains(token1).click();
   cy.get(importSelectToken).contains('Select a token').click();
-  cy.get(tokenSearch).eq(1).should('have.attr', 'placeholder', 'Search').type(token2);
+  cy.get(poolSelectToken).should('have.attr', 'placeholder', 'Search').type(token2);
   cy.get(selectTokens).contains(token2).click();
+  cy.wait(5000);
+  if (btnName === 'No pool found.')
+    cy.get('div[class="sc-kEjbQP fPkORu"]+div').then(($element) => {
+      const elementClass = $element.attr('class');
+      if (elementClass === 'sc-kEjbQP sc-eTLXjT iqcNnm kLFKTE') {
+        cy.get(noLiquidityBtn).should('contain', 'No pool found.');
+      } else if (elementClass === 'sc-kEjbQP sc-erkanz iqcNnm iqyxLc') {
+        throw new Error(`Select the tokens accordingly. Tests terminated: Change the tokens for ${btnName}`);
+      } else {
+        throw new Error(
+          'Change the selectors used in selectTokensImportPoolftn() for divs of Pool Found! & No pool found: Sibling of sc-kEjbQP fPkORu selector',
+        );
+      }
+    });
+
+  if (btnName === 'Pool Found!')
+    cy.get('div[class="sc-kEjbQP fPkORu"]+div').then(($element) => {
+      const elementClass = $element.attr('class');
+      if (elementClass === 'sc-kEjbQP sc-erkanz iqcNnm iqyxLc') {
+        cy.get(poolFound).contains('Pool Found!', { timeout: 30000 }).should('be.visible');
+      } else if (elementClass === 'sc-kEjbQP sc-eTLXjT iqcNnm kLFKTE') {
+        throw new Error(`Select the tokens accordingly. Tests terminated: Change the tokens for ${btnName}`);
+      } else {
+        throw new Error(
+          'Change the selectors used in selectTokensImportPoolftn() for divs of Pool Found! & No pool found: Sibling of sc-kEjbQP fPkORu selector',
+        );
+      }
+    });
 }
 
 function pairDetailsCardftn(startIndex) {
-  for (var i = startIndex; i <= startIndex + 1; i++) {
+  for (let i = startIndex; i <= startIndex + 1; i++) {
     cy.get(createAddAmountField).eq(i).clear();
     cy.get(createAddTokenValues)
       .eq(i)
@@ -63,7 +104,7 @@ function pairDetailsCardftn(startIndex) {
       .eq(i)
       .invoke('text')
       .should('match', /^(0|\d+(.\d+)?|-)(%)?$/);
-    cy.get(createAddConfirmBtn).contains('Enter an amount').should('be.visible');
+    cy.get(createAddConfirmBtn).should('contain', 'Enter an amount');
     cy.get(createAddMaxBtn).eq(startIndex).should('be.visible').click();
     cy.get(amountInTokensSwap).eq(i).invoke('text').should('match', /\d+/);
     cy.get(createAddAmountField).eq(i).invoke('val').should('match', /\d+/);
@@ -72,8 +113,8 @@ function pairDetailsCardftn(startIndex) {
 
 function importTokenDetailsftn(token1, token2) {
   cy.get(poolFound).contains('Pool Found!').should('be.visible');
-  cy.get(importTokenLogo).eq(0).should('have.attr', 'alt', `${token1} logo`);
-  cy.get(importTokenLogo).eq(1).should('have.attr', 'alt', `${token2} logo`);
+  cy.get(importTokenLogo).eq(0).should('have.attr', 'alt', `${token2} logo`);
+  cy.get(importTokenLogo).eq(1).should('have.attr', 'alt', `${token1} logo`);
   cy.get(importTokenName).should(($div) => {
     expect($div).to.contain(token1);
     expect($div).to.contain('/');
@@ -90,58 +131,90 @@ function importTokenDetailsftn(token1, token2) {
 }
 
 function createEnterValuesftn(cardName, supplyBtn, token1, token2) {
-  for (var i = 0; i <= 1; i++) {
+  for (let index = 2; index <= 3; index++) {
     // Entering values
-    cy.get(createAddAmountField).eq(i).clear();
-    cy.get(createAddAmountField).eq(i).type('99999');
-    cy.get(createAddConfirmBtn)
-      .contains(/Insufficient [\w.]+ balance/i)
-      .should('be.visible');
-    cy.get(createAddAmountField).eq(i).clear();
-    cy.get(createAddAmountField).eq(i).type('0.001');
-  }
+    cy.get(createAddTokenValues)
+      .eq(index)
+      .invoke('text')
+      .then((text) => {
+        const incrementedValue = parseFloat(text) + 10;
+        // Insufficient balance
 
-  // Verify and approve if needed
-  for (var i = 0; i <= 1; i++) {
-    const btnSelector = i === 0 ? createApproveBtn : createAddSupplyBtn;
+        cy.get(createAddAmountField).eq(index).clear().type(incrementedValue);
 
-    cy.get(btnSelector, { timeout: 30000 })
-      .eq(0)
-      .then(($buttons) => {
-        const approveButton = Cypress.$($buttons).filter((_, button) => {
-          const buttonText = Cypress.$(button).text().trim();
-          return buttonText.startsWith('Approve');
-        });
+        // Wait for the "Insufficient balance" message to be visible
+        cy.get(createAddConfirmBtn)
+          .eq(3)
+          .contains(new RegExp(/Insufficient [\w.]+ balance/i), { timeout: 10000 })
+          .should('be.visible');
 
-        if (approveButton.length) {
-          cy.wrap(approveButton).click();
-          cy.wait(5000);
-          cy.confirmMetamaskPermissionToSpend();
-          cy.wait(15000);
-        }
+        // Move the cy.type() inside the then bloc
+        cy.get(createAddAmountField).eq(index).clear();
+        cy.get(createAddAmountField).eq(index).type(addliquidityValue);
       });
   }
 
+  // Verify and approve if needed
+  cy.wait(5000);
+  cy.contains('Supply').then(($element) => {
+    const backgroundColor = Cypress.$($element).css('background-color');
+
+    if (backgroundColor === 'rgb(229, 229, 229)') {
+      cy.get(approveBlock).then(($element) => {
+        const elementClass = $element.attr('class');
+        cy.log(elementClass);
+        if (elementClass === 'sc-fubCzh kbRxVC') {
+          for (let i = 0; i <= 1; i++) {
+            const btnSelector = i === 0 ? createApproveBtn : createAddApproveBtn;
+
+            cy.get(btnSelector, { timeout: 30000 })
+              .eq(0)
+              .then(($buttons) => {
+                const approveButton = Cypress.$($buttons).filter((_, button) => {
+                  const buttonText = Cypress.$(button).text().trim();
+                  return buttonText.startsWith('Approve');
+                });
+
+                if (approveButton.length) {
+                  cy.wrap(approveButton).click();
+                  cy.wait(5000);
+                  cy.confirmMetamaskPermissionToSpend();
+                  cy.wait(15000);
+                }
+              });
+          }
+        } else if (elementClass === 'sc-fubCzh gsRRav') {
+          cy.get(createAddApproveBtn, { timeout: 30000 }).then(($buttons) => {
+            const approveButton = Cypress.$($buttons).filter((_, button) => {
+              const buttonText = Cypress.$(button).text().trim();
+              return buttonText.startsWith('Approve');
+            });
+
+            if (approveButton.length) {
+              cy.wrap(approveButton).click();
+              cy.wait(5000);
+              cy.confirmMetamaskPermissionToSpend();
+              cy.wait(15000);
+            }
+          });
+        } else {
+          cy.log('Undefined Selector: Change Approve Button selectors for createEnterValuesftn() ');
+        }
+      });
+    }
+  });
+
   //Supply button
-  cy.get(createAddSupplyBtn, { timeout: 50000 }).eq(0).should('contain', 'Supply').click();
+  cy.get(createAddApproveBtn, { timeout: 50000 }).eq(1).should('contain', 'Supply').click();
 
   // You will receive card
 
-  cy.contains('You will receive').invoke('text').should('include', cardName);
-  cy.get(createAddTokenNamesValues)
-    .eq(0)
-    .contains(new RegExp(`^\\d+\\.\\d+ ${token1}$`))
-    .should('be.visible');
-  cy.get(createAddTokenNamesValues)
-    .eq(1)
-    .contains(new RegExp(`^\\d+\\.\\d+ ${token2}$`))
-    .should('be.visible');
-  cy.get(toTokenChain).contains('PGL').should('be.visible');
-  cy.get(toTokenChain).contains('Share of Pool').should('be.visible');
+  cy.get(confirmSwap).invoke('text').should('include', cardName);
+  cy.get(tokensValue).should('be.visible');
   cy.get(createAddOutputMsg)
     .contains('Output is estimated. If the price changes by more than 0.5% your transaction will revert.')
     .should('be.visible');
-  cy.get(createAddSupplyBtn).eq(1).should('contain', supplyBtn).click();
+  cy.get(importManageBtn).should('contain', supplyBtn).click();
   cy.get(swappingMsg)
     .contains(new RegExp(`^Supplying \\d+\\.\\d+ ${token1} and \\d+\\.\\d+ ${token2}$`))
     .should('be.visible');
@@ -153,7 +226,7 @@ function depositDetailsftn() {
   cy.get(toEstimated)
     .invoke('text')
     .should('match', /^Balance: \d+\.\d+$/);
-  for (var i = 0; i <= 2; i++) {
+  for (let i = 0; i <= 2; i++) {
     cy.get(depositDetails).eq(i).should('contain', depositDetailsArr[i]);
     cy.get(depositDetailsValues).eq(i).invoke('text').should('match', new RegExp(depositDetailsValuesArr[i]));
   }

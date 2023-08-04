@@ -82,7 +82,8 @@
     "walletAdd": "#web3-status-connected",
     "chains": "div[class='sc-eCYdqJ sc-jmnVvD fEptdj jwrNk']",
     "poweredBy": "a[class='sc-gqjmRU cGBnKx']",
-    "watchlistTokens": "div[class='sc-eCYdqJ sc-gUAEMC fEptdj doTaHD']"
+    "watchlistTokens": "div[class='sc-eCYdqJ sc-gUAEMC fEptdj doTaHD']",
+    "accountViewOnExplorer": "a[class='sc-bJydfK krUCeB sc-fkaoMN isOSBI']"
   },
   "swap": {
     "yourPortfolio":"div[class='sc-iqHYmW gRfDiM']",
@@ -92,7 +93,7 @@
     "tokensToSwap":"span[class='sc-jJEKmz dAlckP token-symbol-container']",
     "selectTokens":"div[class='sc-iqHYmW ktkHFj']",
     "selectTokensValue":"div[class='sc-iqHYmW sc-dvHJEY jlVtaV ktxpsa']",
-    "selectTokensMenuClose":"div[class='sc-bYAVqI NVEtg']",
+    "selectTokensMenuClose":"div[class='sc-hWgmdx hXcQwh']",
     "fromInput":"[id='swap-currency-input']",
     "toInput":"[id='swap-currency-output']",
     "swapBtn":"button[id='swap-button']",
@@ -227,7 +228,6 @@
     "cardTvl": "div[class='sc-eCYdqJ hdyZpf']",
     "tvlAprValues": "div[class='sc-eCYdqJ fCMSgH']",
     "rewardsInLogos": "~ div[class='sc-eCYdqJ iLmnGI'] img[class='sc-ivTmOn htFfaf']",
-    "seeDetailsBtn": "~ div[class='sc-eCYdqJ sc-hlqNbq fEptdj jMOesB'] button.eduyxG",
     "detailsTitle": "div[class='sc-eCYdqJ sc-eyCGVO fEptdj jNAbZy']",
     "detailsLinks": "a[class='sc-bczRLJ kbxJQv']",
     "detailsCrossBtn": "svg[class='sc-bhVIhj gLGxRa']",
@@ -279,10 +279,11 @@
     "createAddConfirmBtn": "button[class='sc-fubCzh jZKmXf']",
     "createAddMaxBtn": "button[class='sc-biOYyE kkWCgb']",
     "createAddAmountField": "input[class='sc-dQoVA hYbnKV']",
-    "createAddSupplyBtn": "button[class='sc-fubCzh gsRRav']",
+    "createAddSupplyBtn": "//button[text()='Supply']",
+    "createAddApproveBtn": "button[class='sc-fubCzh gsRRav']",
     "createAddTokenNamesValues": "div[class='sc-iqHYmW kfPvZs']",
-    "createAddOutputMsg": "div[class='sc-iqHYmW sc-hJxDiT gtjCqr iAambo']",
-    "noLiquidityBtn": "div[class='sc-iqHYmW gliMve']",
+    "createAddOutputMsg": "div[class='sc-iqHYmW sc-hJxDiT fANpbN iAambo']",
+    "noLiquidityBtn": "div[class='sc-kEjbQP geUTtC'] div",
     "poolSections": "div[class='sc-iqHYmW sc-kMOjPS cwoXeE chWJKM']",
     "importToken1": "div[class='sc-iqHYmW gYRGfD']",
     "importSelectToken": "div[class='sc-iqHYmW eBgUIh']",
@@ -300,7 +301,11 @@
     "farmPGL": "input[class='sc-dQoVA cBTceE']",
     "farmApproveBtn": "button[class='sc-fubCzh caPrxJ']",
     "farmPercentBtns": "div[class='sc-kEjbQP sc-bsipwG iqcNnm iPIkyV']",
-    "farmPercentBtnsActive": "div[class='sc-kEjbQP sc-bsipwG iqcNnm iUzpJn']"
+    "farmPercentBtnsActive": "div[class='sc-kEjbQP sc-bsipwG iqcNnm iUzpJn']",
+    "poolSelectToken": "input[placeholder='Search']",
+    "approveBlock": "div[class='sc-kEjbQP sc-gfaqzF iqcNnm cTyZlD'] button",
+    "seeDetailsBtn": "button[class='sc-fubCzh dURGXD sc-koaBrS sc-kTaRPZ kkpfcs djthjz']",
+    "tokensValue": "div[class='sc-iqHYmW lKEyD']"
   }
 
 }

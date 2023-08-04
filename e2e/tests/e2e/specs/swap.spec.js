@@ -1,6 +1,6 @@
 import selectors from '../../../cypress/fixtures/selectors.json';
 import data from '../../../cypress/fixtures/pangolin-data.json';
-import { connectWalletftn } from '../../../cypress/src/dashboard';
+import { connectWalletftn, checkTokenBalanceftn } from '../../../cypress/src/dashboard';
 import {
   tradeDetailsftn,
   selectTokensftn,
@@ -14,8 +14,8 @@ import {
   limitOrdersftn,
   cancelLimitOrderftn,
   selectLimitTokensftn,
-  approveftn,
   enterAmountBtnftn,
+  swapButtonftn,
 } from '../../../cypress/src/swap';
 
 let { swapSideMenu, walletAddress } = selectors.dashboard;
@@ -50,6 +50,11 @@ let { percentBtnArr, fromToken, toToken, sellTokenValue, buyTokenValue, swapValu
 //To run each file
 //npx  env-cmd -f env/.env npx synpress run --spec 'tests/e2e/specs/swap.spec.js' -cf synpress.json
 describe('Swap', () => {
+  before(() => {
+    //cheking the from token and gas token balances
+    checkTokenBalanceftn();
+  });
+
   it('Transaction Buttons on Trade card', () => {
     cy.visit('/');
 
@@ -141,13 +146,10 @@ describe('Swap', () => {
 
       // See details by token names
       tradeDetailsftn(fromToken, toToken);
-
-      // Verify and approve if needed
-      approveftn(0);
+      cy.get(swapBtn, { timeout: 50000 }).should('be.visible');
 
       // Swap button
-      cy.get(swapBtn, { timeout: 30000 }).contains('Swap').should('be.visible');
-      cy.get(swapBtn, { timeout: 30000 }).contains('Swap').should('have.css', 'background-color', 'rgb(255, 200, 0)');
+      swapButtonftn();
     }
 
     //disconnecting wallet
@@ -168,12 +170,10 @@ describe('Swap', () => {
 
     // See details by token names
     tradeDetailsftn(fromToken, toToken);
-
-    // Verify and approve if needed
-    approveftn(0);
+    cy.get(swapBtn, { timeout: 50000 }).should('be.visible');
 
     // Swap button
-    cy.get(swapBtn).contains('Swap').should('be.visible');
+    swapButtonftn();
     cy.get(swapBtn).click();
 
     //confirm details
@@ -213,12 +213,10 @@ describe('Swap', () => {
 
     // See details by token names
     tradeDetailsftn(fromToken, toToken);
-
-    // Verify and approve if needed
-    approveftn(0);
+    cy.get(swapBtn, { timeout: 50000 }).should('be.visible');
 
     // Swap button
-    cy.get(swapBtn).contains('Swap').should('be.visible');
+    swapButtonftn();
     cy.get(swapBtn).click();
 
     //confirm details

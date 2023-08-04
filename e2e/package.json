@@ -1,7 +1,8 @@
 {
   "devDependencies": {
     "cypress": "^10.11.0",
-    "cypress-mochawesome-reporter": "^3.5.1"
+    "cypress-mochawesome-reporter": "^3.5.1",
+    "cypress-xpath": "^2.0.1"
   },
   "scripts": {
     "test": "env-cmd -f env/.env npx synpress run -cf synpress.json",
