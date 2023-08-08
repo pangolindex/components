@@ -163,6 +163,17 @@ export interface Colors {
     informationBoxesBackgroundColor?: Color;
   };
 
+  ortege?: {
+    primaryBgColor?: Color;
+    secondaryBgColor?: Color;
+    text?: Color;
+    infoIconColor?: Color;
+    routeInfoColor?: Color;
+    transferKeyColor?: Color;
+    loaderCloseIconColor?: Color;
+    informationBoxesBackgroundColor?: Color;
+  };
+
   tabs?: {
     tabColor?: Color;
     tabListColor?: Color;

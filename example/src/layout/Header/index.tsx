@@ -73,6 +73,10 @@ export default function Header() {
           <MenuLink id="bridge" to="/bridge">
             Bridge
           </MenuLink>
+
+          <MenuLink id="ortege" to="/ortege">
+            Ortege
+          </MenuLink>
           <MenuLink id="bridge" to="/sar">
             Stake v2
           </MenuLink>

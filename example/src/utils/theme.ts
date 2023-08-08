@@ -206,6 +206,17 @@ export const theme = {
     loaderCloseIconColor: mustardYellow,
     informationBoxesBackgroundColor: chineseBlack,
   },
+
+  ortege: {
+    primaryBgColor: eerieBlack,
+    secondaryBgColor: chineseBlack,
+    text: white,
+    infoIconColor: white,
+    routeInfoColor: darkSilver,
+    transferKeyColor: darkSilver,
+    loaderCloseIconColor: mustardYellow,
+    informationBoxesBackgroundColor: chineseBlack,
+  },
   tabs: {
     tabColor: darkSilver,
     tabListColor: white,

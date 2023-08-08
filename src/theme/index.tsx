@@ -214,6 +214,17 @@ export const defaultColors: Colors = {
     loaderCloseIconColor: mustardYellow,
     informationBoxesBackgroundColor: chineseBlack,
   },
+
+  ortege: {
+    primaryBgColor: white,
+    secondaryBgColor: ghostWhite,
+    text: black,
+    infoIconColor: black,
+    routeInfoColor: platinum,
+    transferKeyColor: quickSilver,
+    loaderCloseIconColor: mustardYellow,
+    informationBoxesBackgroundColor: chineseBlack,
+  },
   tabs: {
     tabColor: quickSilver,
     tabListColor: black,

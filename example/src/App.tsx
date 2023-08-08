@@ -10,6 +10,7 @@ import ElixirUI from './pages/Elixir';
 import Governance from './pages/Governance';
 import GovernanceDetailV2 from './pages/GovernanceDetail';
 import AirdropUI from './pages/Airdrop';
+import OrtegeUI from './pages/Ortege';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="pool" element={<Pool />} />
             <Route path="elixir" element={<ElixirUI />} />
             <Route path="bridge" element={<Bridge />} />
+            <Route path="ortege" element={<OrtegeUI />} />
             <Route path="sar" element={<SarStake />} />
             <Route path="vote" element={<Governance />} />
             <Route path="vote/:id" element={<GovernanceDetailV2 />} />

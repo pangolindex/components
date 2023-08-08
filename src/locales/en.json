@@ -911,6 +911,13 @@
     "redirectCoinbasePay": "You will be redirected to Coinbase Pay shortly, if not please click below button",
     "useCoinbasePay": "To use Coinbase Pay first you need to connect your wallet to Pangolin dApp. Please proceed by clicking button below."
   },
+  "ortege": {
+    "ortegeCard": {
+      "sendTokens": "Send Tokens",
+      "token": "Token",
+      "self": "Self"
+    }
+  },
   "common": {
     "loading": "Loading",
     "search": "Search",
