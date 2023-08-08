@@ -34,7 +34,7 @@ export function usePangoChefExtraFarmApr(
 
   const multipliers = stakingInfo?.rewardTokensMultiplier;
 
-  const pairPrice: Fraction | undefined = stakingInfo.pairPrice;
+  const pairPrice: Fraction | undefined = stakingInfo?.pairPrice;
 
   const png = PNG[chainId];
   const tokensPrices = useTokensCurrencyPrice(_rewardTokens);

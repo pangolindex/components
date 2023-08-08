@@ -23,7 +23,7 @@ import { MULTICALL_ABI, MULTICALL_NETWORKS } from 'src/constants/multicall';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { getContract } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera, hederaFn } from 'src/utils/hedera';
 
 // returns null on errors
 export function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -98,7 +98,7 @@ export function useHederaSarNFTContract() {
 
   let nftTokenAddress: string | undefined = undefined;
 
-  if (sarContractAddress && hederaFn.isHederaChain(chainId)) {
+  if (sarContractAddress && Hedera.isHederaChain(chainId)) {
     const sarContractId = hederaFn.hederaId(sarContractAddress ?? '');
     const nftTokenId = hederaFn.contractToTokenId(sarContractId);
     nftTokenAddress = hederaFn.idToAddress(nftTokenId);

@@ -105,6 +105,7 @@ const PoolCardViewV3 = ({ stakingInfo, onClickViewDetail, version, rewardTokens 
           backgroundColor="color2"
           color="text1"
           height="45px"
+          isDisabled={!JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0))}
         >
           {t('header.farm')}
         </ActionButon>

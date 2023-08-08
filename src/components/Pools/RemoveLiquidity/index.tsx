@@ -15,7 +15,6 @@ import { Field, useBurnStateAtom } from 'src/state/pburn/atom';
 import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/state/pburn/hooks';
 import { useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { useRemoveLiquidityHook } from 'src/state/pwallet/hooks';
-import { isEvmChain } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { ButtonWrapper, RemoveWrapper } from './styleds';
 
@@ -210,22 +209,20 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoading, onComplete }: Remove
     } else {
       return (
         <ButtonWrapper>
-          {isEvmChain(chainId) && (
-            <Box mr="5px" width="100%">
-              <Button
-                variant={getApproveButtonVariant()}
-                onClick={() => {
-                  onAttemptToApprove({ parsedAmounts, deadline, approveCallback });
-                }}
-                isDisabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
-                loading={attempting && !hash}
-                loadingText={t('removeLiquidity.approving')}
-                height="46px"
-              >
-                {getApproveButtonText()}
-              </Button>
-            </Box>
-          )}
+          <Box mr="5px" width="100%">
+            <Button
+              variant={getApproveButtonVariant()}
+              onClick={() => {
+                onAttemptToApprove({ parsedAmounts, deadline, approveCallback });
+              }}
+              isDisabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
+              loading={attempting && !hash}
+              loadingText={t('removeLiquidity.approving')}
+              height="46px"
+            >
+              {getApproveButtonText()}
+            </Button>
+          </Box>
 
           <Box width="100%">
             <Button
@@ -269,7 +266,10 @@ const RemoveLiquidity = ({ currencyA, currencyB, onLoading, onComplete }: Remove
                   addonLabel={
                     account && (
                       <Text color="text2" fontWeight={500} fontSize={14}>
-                        {!!userLiquidity ? t('currencyInputPanel.balance') + userLiquidity?.toSignificant(6) : ' -'}
+                        {!!userLiquidity
+                          ? t('currencyInputPanel.balance') +
+                            userLiquidity?.toFixed(Math.min(2, userLiquidity.token.decimals))
+                          : '-'}
                       </Text>
                     )
                   }

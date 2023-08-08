@@ -10,6 +10,7 @@ import { PositionDetails } from 'src/state/pwallet/elixir/types';
 import { Visible } from 'src/theme/components';
 import AddLiquidity from './AddLiquidity';
 import DetailModal from './DetailModal';
+import PoolList from './PoolList';
 import PositionCard from './PositionCard';
 import PositionList from './PositionList';
 import { SortingType } from './PositionList/types';
@@ -25,10 +26,10 @@ const Elixir = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
-  const [activeMenu, setMenu] = useState<string>(MenuType.allPositions);
+  const [activeMenu, setMenu] = useState<string>(MenuType.topPools);
   const [detailModalIsOpen, setDetailModalIsOpen] = useState<boolean>(false);
   const [addLiquidityIsOpen, setAddLiquidityIsOpen] = useState<boolean>(false);
-  const [selectedPosition, setSelectedPosition] = useState<PositionDetails | undefined>(undefined);
+  const [selectedPositionTokenId, setSelectedPositionTokenId] = useState<string | undefined>(undefined);
   const menuItems: Array<{ label: string; value: string }> = Object.keys(MenuType).map((key) => ({
     label: t(`elixir.menuTypes.${MenuType[key]}`),
     value: MenuType[key],
@@ -96,6 +97,32 @@ const Elixir = () => {
     return positions;
   }, [filteredPositions, debouncedSearchQuery, sortBy]);
 
+  const selectedPosition = useMemo(() => {
+    if (!finalPositions) {
+      // If finalPositions is undefined, there's no selected position
+      return undefined;
+    } else {
+      // If the selected position no longer exists in the final positions, clear the selection
+      const selectedPositionExists = finalPositions.some(
+        (position) => position.tokenId.toString() === selectedPositionTokenId,
+      );
+
+      if (!selectedPositionExists) {
+        return undefined;
+      } else {
+        // If selectedPosition still exists but its data might have changed
+        // Find the new data from finalPositions and update selectedPosition
+        const newSelectedPosition = finalPositions.find(
+          (position) => position.tokenId.toString() === selectedPositionTokenId,
+        );
+
+        if (newSelectedPosition) {
+          return newSelectedPosition;
+        }
+      }
+    }
+  }, [finalPositions, selectedPositionTokenId]); // selectedPositionTokenId is a new state you'll need to create.
+
   const handleSetMenu = useCallback(
     (value: string) => {
       setMenu(value);
@@ -106,7 +133,7 @@ const Elixir = () => {
   const onChangeDetailModalStatus = useCallback(
     (position: PositionDetails | undefined) => {
       setDetailModalIsOpen(!detailModalIsOpen);
-      setSelectedPosition(position);
+      setSelectedPositionTokenId(position?.tokenId.toString());
     },
     [detailModalIsOpen],
   );
@@ -143,38 +170,46 @@ const Elixir = () => {
                 </Button>
               </MobileHeader>
             </Visible>
-            {positionsLoading ? (
-              <Loader height={'auto'} size={100} />
-            ) : (
-              <PositionList
-                setMenu={handleSetMenu}
-                activeMenu={activeMenu}
-                menuItems={menuItems}
-                handleSearch={handleSearch}
-                onChangeSortBy={setSortBy}
-                sortBy={sortBy}
-                searchQuery={searchQuery}
-                isLoading={false}
-                doesNotPoolExist={finalPositions?.length === 0}
-              >
-                <Cards>
-                  {finalPositions.map((position) => (
-                    <PositionCard
-                      key={position.tokenId.toString()}
-                      token0={position.token0}
-                      token1={position.token1}
-                      feeAmount={position.fee}
-                      tokenId={position.tokenId}
-                      liquidity={position.liquidity}
-                      tickLower={position.tickLower}
-                      tickUpper={position.tickUpper}
-                      onClick={() => {
-                        onChangeDetailModalStatus(position);
-                      }}
-                    />
-                  ))}
-                </Cards>
-              </PositionList>
+
+            {activeMenu === MenuType.topPools && (
+              <PoolList setMenu={handleSetMenu} activeMenu={activeMenu} menuItems={menuItems} />
+            )}
+            {activeMenu !== MenuType.topPools && (
+              <>
+                {positionsLoading ? (
+                  <Loader height={'auto'} size={100} />
+                ) : (
+                  <PositionList
+                    setMenu={handleSetMenu}
+                    activeMenu={activeMenu}
+                    menuItems={menuItems}
+                    handleSearch={handleSearch}
+                    onChangeSortBy={setSortBy}
+                    sortBy={sortBy}
+                    searchQuery={searchQuery}
+                    isLoading={false}
+                    doesNotPoolExist={finalPositions?.length === 0}
+                  >
+                    <Cards>
+                      {finalPositions.map((position) => (
+                        <PositionCard
+                          key={position.tokenId.toString()}
+                          token0={position.token0}
+                          token1={position.token1}
+                          feeAmount={position.fee}
+                          tokenId={position.tokenId}
+                          liquidity={position.liquidity}
+                          tickLower={position.tickLower}
+                          tickUpper={position.tickUpper}
+                          onClick={() => {
+                            onChangeDetailModalStatus(position);
+                          }}
+                        />
+                      ))}
+                    </Cards>
+                  </PositionList>
+                )}
+              </>
             )}
           </Content>
         </Box>

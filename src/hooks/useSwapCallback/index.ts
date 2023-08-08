@@ -37,4 +37,5 @@ export const useSwapCallbackHook: UseSwapCallbackHookType = {
   [ChainId.MOONRIVER]: useSwapCallback,
   [ChainId.MOONBEAM]: useSwapCallback,
   [ChainId.OP]: useSwapCallback,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useSwapCallback,
 };

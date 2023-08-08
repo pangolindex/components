@@ -261,10 +261,11 @@ export function useElixirAddLiquidity() {
       }
     } catch (err) {
       const _err = err as any;
-      // we only care if the error is something _other_ than the user rejected the tx
       if (_err?.code !== 4001) {
         console.error(_err);
+        throw new Error('User Rejected Transaction');
       }
+      throw _err;
     } finally {
       // This is intentional
     }
@@ -317,6 +318,7 @@ export function useElixirCollectEarnedFees() {
           'Collect' +
           ' ' +
           token0?.symbol +
+          ' ' +
           'AND' +
           ' ' +
           token1?.symbol +
@@ -324,6 +326,7 @@ export function useElixirCollectEarnedFees() {
           'Fees' +
           ' ' +
           param?.expectedCurrencyOwed0?.toExact() +
+          ' ' +
           'AND' +
           ' ' +
           param?.expectedCurrencyOwed1?.toExact(),
@@ -334,7 +337,9 @@ export function useElixirCollectEarnedFees() {
       const _err = err as any;
       if (_err?.code !== 4001) {
         console.error(_err);
+        throw new Error('User Rejected Transaction');
       }
+      throw _err;
     }
   };
 }

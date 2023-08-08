@@ -253,6 +253,8 @@ export function useElixirTradeExactIn(
 
   const { pools: allowedPools, isLoading } = useAllElixirCommonPools(currencyAmountIn?.currency, currencyOut);
 
+  const emptyTradeData = useMemo(() => ({ trade: null, isLoading }), [isLoading]);
+
   useEffect(() => {
     const getBestTradeExactIn = async () => {
       if (currencyAmountIn && currencyOut && allowedPools.length > 0 && !isLoading) {
@@ -263,6 +265,8 @@ export function useElixirTradeExactIn(
 
         const finalTrade = trades?.[0];
         setTradeData({ trade: finalTrade, isLoading: isLoading });
+      } else {
+        setTradeData(emptyTradeData);
       }
     };
     getBestTradeExactIn();
@@ -284,6 +288,8 @@ export function useElixirTradeExactOut(
 
   const { pools: allowedPools, isLoading } = useAllElixirCommonPools(currencyIn, currencyAmountOut?.currency);
 
+  const emptyTradeData = useMemo(() => ({ trade: null, isLoading }), [isLoading]);
+
   useEffect(() => {
     const getBestTradeExactOut = async () => {
       if (currencyIn && currencyAmountOut && allowedPools.length > 0 && !isLoading) {
@@ -294,6 +300,8 @@ export function useElixirTradeExactOut(
 
         const finalTrade = trades?.[0];
         setTradeData({ trade: finalTrade, isLoading: isLoading });
+      } else {
+        setTradeData(emptyTradeData);
       }
     };
     getBestTradeExactOut();

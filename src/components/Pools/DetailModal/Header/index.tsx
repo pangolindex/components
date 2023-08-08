@@ -64,7 +64,7 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
     const swapFeeAPR = stakingInfo?.swapFeeApr || 0;
     // for rest we get the data from contract calls if exist, else put 0 for this data
     if (cheftType === ChefType.PANGO_CHEF) {
-      const userApr = (stakingInfo as PangoChefInfo).userApr;
+      const userApr = (stakingInfo as PangoChefInfo)?.userApr ?? 0;
 
       return {
         totalApr: stakingAPR + swapFeeAPR + extraFarmAPR,

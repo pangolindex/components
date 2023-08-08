@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import { SubgraphEnum, useSubgraphClient } from './client';
 import { SubgraphToken } from './tokens';
 
@@ -133,7 +133,7 @@ export const GET_FARMS_STAKED = gql`
 `;
 
 /**
- * this hook is useful to get information for pangochef famrs  from subgraph
+ * this hook is useful to get information for pangochef farms  from subgraph
  * @param
  * @returns list farms
  */
@@ -177,7 +177,7 @@ export function useSubgraphFarmsStakedAmount() {
     },
     {
       refetchInterval: 1000 * 60 * 1, // 1 minutes
-      enabled: hederaFn.isHederaChain(chainId) && Boolean(account),
+      enabled: Hedera.isHederaChain(chainId) && Boolean(account),
     },
   );
 }

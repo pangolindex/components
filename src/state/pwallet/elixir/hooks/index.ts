@@ -13,7 +13,7 @@ export type UseGetUserPositionsHookType = {
 
 export const useGetUserPositionsHook: UseGetUserPositionsHookType = {
   [ChainId.FUJI]: useGetUserPositions,
-  [ChainId.AVALANCHE]: useDummyGetUserPositions,
+  [ChainId.AVALANCHE]: useGetUserPositions,
   [ChainId.WAGMI]: useDummyGetUserPositions,
   [ChainId.COSTON]: useDummyGetUserPositions,
   [ChainId.SONGBIRD]: useDummyGetUserPositions,
@@ -40,6 +40,7 @@ export const useGetUserPositionsHook: UseGetUserPositionsHookType = {
   [ChainId.MOONRIVER]: useDummyGetUserPositions,
   [ChainId.MOONBEAM]: useDummyGetUserPositions,
   [ChainId.OP]: useDummyGetUserPositions,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useGetUserPositions,
 };
 
 export type UseElixirPositionsFromTokenIdsHookType = {
@@ -48,7 +49,7 @@ export type UseElixirPositionsFromTokenIdsHookType = {
 
 export const useElixirPositionsFromTokenIdsHook: UseElixirPositionsFromTokenIdsHookType = {
   [ChainId.FUJI]: useElixirPositionsFromTokenIds,
-  [ChainId.AVALANCHE]: useDummyElixirPositionsFromTokenIds,
+  [ChainId.AVALANCHE]: useElixirPositionsFromTokenIds,
   [ChainId.WAGMI]: useDummyElixirPositionsFromTokenIds,
   [ChainId.COSTON]: useDummyElixirPositionsFromTokenIds,
   [ChainId.SONGBIRD]: useDummyElixirPositionsFromTokenIds,
@@ -75,6 +76,7 @@ export const useElixirPositionsFromTokenIdsHook: UseElixirPositionsFromTokenIdsH
   [ChainId.MOONRIVER]: useDummyElixirPositionsFromTokenIds,
   [ChainId.MOONBEAM]: useDummyElixirPositionsFromTokenIds,
   [ChainId.OP]: useDummyElixirPositionsFromTokenIds,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useElixirPositionsFromTokenIds,
 };
 
 export type UseElixirAddLiquidityHookType = {
@@ -110,6 +112,7 @@ export const useElixirAddLiquidityHook: UseElixirAddLiquidityHookType = {
   [ChainId.MOONRIVER]: useElixirAddLiquidity,
   [ChainId.MOONBEAM]: useElixirAddLiquidity,
   [ChainId.OP]: useElixirAddLiquidity,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useElixirAddLiquidity,
 };
 
 export type UseElixirCollectEarnedFeesHookType = {
@@ -145,4 +148,5 @@ export const useElixirCollectEarnedFeesHook: UseElixirCollectEarnedFeesHookType 
   [ChainId.MOONRIVER]: useElixirCollectEarnedFees,
   [ChainId.MOONBEAM]: useElixirCollectEarnedFees,
   [ChainId.OP]: useElixirCollectEarnedFees,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useElixirCollectEarnedFees,
 };

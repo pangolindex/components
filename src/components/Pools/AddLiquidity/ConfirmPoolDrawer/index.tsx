@@ -16,6 +16,7 @@ import {
   TransactionCompleted,
 } from 'src/components';
 import Drawer from 'src/components/Drawer';
+import { ONE_BIPS } from 'src/constants';
 import { Field } from 'src/state/pmint/atom';
 import { SpaceType } from 'src/state/pstake/types';
 import { useHederaPGLAssociated } from 'src/state/pwallet/hooks/hedera';
@@ -78,6 +79,14 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
   const pendingText = `${t('pool.supplying')} ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
     currencies[Field.CURRENCY_A]?.symbol
   } and ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`;
+
+  function getShareOfPool() {
+    if (poolTokenPercentage?.lessThan(ONE_BIPS)) {
+      return '<0.001%';
+    } else {
+      return `${poolTokenPercentage?.toFixed(4) ?? 0}%`;
+    }
+  }
 
   function renderAssociatButton() {
     return (
@@ -199,7 +208,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
             </Text>
 
             <Text fontSize="14px" color="text1" ml="10px">
-              {noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%
+              {noLiquidity ? '100%' : getShareOfPool()}
             </Text>
           </Box>
         </Box>
@@ -249,7 +258,7 @@ const ConfirmSwapDrawer: React.FC<Props> = (props) => {
 
           <Stat
             title={t('addLiquidity.shareOfPool')}
-            stat={`${noLiquidity ? '100' : poolTokenPercentage?.toFixed(6)}%`}
+            stat={noLiquidity ? '100%' : getShareOfPool()}
             titlePosition="top"
             titleFontSize={14}
             statFontSize={[16, 20]}

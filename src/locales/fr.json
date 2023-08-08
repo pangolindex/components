@@ -273,16 +273,16 @@
     "viewExplorer": "Voir sur l'explorateur"
   },
   "walletModal": {
-    "wrongNetwork": "Mauvais réseau",
-    "errorConnecting": "Erreur de connexion",
-    "pleaseConnectAvalanche": "Veuillez vous connecter au réseau Avalanche approprié.",
-    "switchAvalanche": "Passer à la chaîne Avalanche",
-    "errorConnectingRefresh": "Erreur de connexion. Essayez de rafraîchir la page.",
-    "connectToWallet": "Se connecter à un portefeuille",
-    "newToAvalanche": "Nouveau sur Avalanche ? ",
-    "learnMoreWallet": "En savoir plus sur la création d'un portefeuille",
+    "errorConnecting": "Erreur de connexion, réessayez.",
+    "connectToWallet": "Connectez-vous à un portefeuille",
+    "connectWallet": "Connecter le portefeuille",
+    "disconnect": "Déconnecter",
     "initializing": "Initialisation...",
-    "tryAgain": "Essayez à nouveau"
+    "tryAgain": "Essayer à nouveau",
+    "pleaseInstall": "Se il vous plaît installer.",
+    "trySearchChains": "Essayez de rechercher des chaînes",
+    "noWalletFound": "Aucun portefeuille trouvé.",
+    "noChainsFound": "Aucune chaîne trouvée."
   },
   "web3ReactManager": {
     "unknownError": "Oups ! Une erreur inconnue s'est produite. Veuillez rafraîchir la page ou la visiter à partir d'un autre navigateur ou appareil."
@@ -762,6 +762,7 @@
   },
   "elixir": {
     "menuTypes": {
+      "topPools": "Top Pools",
       "allPositions": "All Positions",
       "openPositions": "Open Positions",
       "closedPositions": "Closed Positions"
@@ -822,7 +823,8 @@
     "singleAssetDeposit": "The market price is outside your specified price range. Single-asset deposit only.",
     "initializedLiquidity": "This pool must be initialized before you can add liquidity. To initialize, select a starting price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher than usual due to the initialization transaction.",
     "checkClassicFarms": "< Check Classic Farms",
-    "auditWarning": "ELIXIR LIQUIDITY CONTRACTS ARE IN BETA AND UNAUDITED. USE AT YOUR OWN RISK"
+    "auditWarning": "ELIXIR LIQUIDITY CONTRACTS ARE IN BETA AND UNAUDITED. USE AT YOUR OWN RISK",
+    "totalValueLocked": "Total Value Locked"
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -928,6 +930,8 @@
     "to": "To",
     "remove": "Remove",
     "connectWallet": "Connect Wallet",
+    "enterAmount": "Entrer un montant",
+    "insufficientBalance": "Solde en {{ symbol }} insuffisant",
     "approving": "Approving",
     "approve": "Approve",
     "approved": "Approved",

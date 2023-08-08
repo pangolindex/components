@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { HeaderFrame, MenuLink, Menuwrapper } from './styled';
-import { useWeb3React } from '@web3-react/core';
 import {
   Button,
   WalletModal,
@@ -9,16 +8,28 @@ import {
   TokenInfoModal,
   Tokens,
   shortenAddressMapping,
+  useActiveWeb3React,
+  useApplicationState,
+  useWalletModalToggleWithChainId,
+  ApplicationModal,
+  useModalOpen,
+  useWalletModalToggle,
 } from '@components/index';
 import { useChainId } from '@components/hooks/index';
 import Logo from '../Logo';
-import { CHAINS, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, TokenAmount, Chain } from '@pangolindex/sdk';
+import { supportedWallets } from '../../constants';
 
 export default function Header() {
-  const context = useWeb3React();
+  const context = useActiveWeb3React();
   const { account } = context;
   const chainId = useChainId();
-  const [open, setOpen] = useState<boolean>(false);
+
+  const walletModalOpen = useModalOpen(ApplicationModal.WALLET);
+  const onToogleWalletModal = useWalletModalToggleWithChainId();
+  const onOpenWalletModal = useWalletModalToggle();
+  const { walletModalChainId } = useApplicationState();
+
   const [openNetworkSelection, setOpenNetworkSelection] = useState<boolean>(false);
   const [showTokenInfoModal, setShowTokenInfoModal] = useState<boolean>(false);
   const shortenAddress = shortenAddressMapping[chainId];
@@ -33,9 +44,17 @@ export default function Header() {
     setShowTokenInfoModal((prev) => !prev);
   };
 
-  function closeWalletModal() {
-    setOpen(true);
-  }
+  const handleSelectChain = useCallback(
+    (chain: Chain) => {
+      setOpenNetworkSelection(false);
+      onToogleWalletModal(chain.chain_id);
+    },
+    [setOpenNetworkSelection, onToogleWalletModal],
+  );
+
+  const closeWalletModal = useCallback(() => {
+    onToogleWalletModal(undefined);
+  }, [onToogleWalletModal]);
 
   return (
     <HeaderFrame>
@@ -61,6 +80,9 @@ export default function Header() {
           <MenuLink id="vote" to="/vote">
             Governance
           </MenuLink>
+          <MenuLink id="airdrop" to="/airdrop">
+            Airdrop
+          </MenuLink>
         </Menuwrapper>
         <Box display="grid" style={{ gap: '10px', gridAutoFlow: 'column' }}>
           <Button variant="primary" onClick={toggleTokenInfoModal} padding="10px" height="40px">
@@ -69,25 +91,24 @@ export default function Header() {
           <Button variant="primary" onClick={closeNetworkSelection} padding="10px" height="40px">
             {chain.name}
           </Button>
-          <Button variant="primary" onClick={closeWalletModal} width="200px" height="40px">
-            {account ? `Connected ${shortenAddress(account)}` : 'Connect Wallet'}
+          <Button variant="primary" onClick={onOpenWalletModal} width="200px" height="40px">
+            {account ? `Connected ${shortenAddress(account, chainId)}` : 'Connect Wallet'}
           </Button>
         </Box>
       </Box>
       <WalletModal
-        open={open}
-        closeModal={() => {
-          setOpen(false);
-        }}
-        onWalletConnect={() => {
-          setOpen(false);
-        }}
+        open={walletModalOpen}
+        closeModal={closeWalletModal}
+        onWalletConnect={closeWalletModal}
+        initialChainId={walletModalChainId}
+        supportedWallets={supportedWallets}
       />
       <NetworkSelection
         open={openNetworkSelection}
         closeModal={() => {
           setOpenNetworkSelection(false);
         }}
+        onToogleWalletModal={handleSelectChain}
       />
       <TokenInfoModal
         open={showTokenInfoModal}

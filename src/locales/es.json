@@ -273,16 +273,16 @@
     "viewExplorer": "Ver en el explorador"
   },
   "walletModal": {
-    "wrongNetwork": "Red errónea",
-    "errorConnecting": "Error al conectar",
-    "pleaseConnectAvalanche": "Por favor, conéctese a la red de Avalanche correcta.",
-    "switchAvalanche": "Cambie a la Avalanche Chain",
-    "errorConnectingRefresh": "Error conectando. Pruebe a recargar la página.",
-    "connectToWallet": "Connect to a wallet",
-    "newToAvalanche": "Nuevo en Avalanche? ",
-    "learnMoreWallet": "Descubre más sobre como configurar una cartera",
-    "initializing": "Inicializanddo...",
-    "tryAgain": "Prueba otra vez"
+    "errorConnecting": "Error al conectar, inténtalo de nuevo.",
+    "connectToWallet": "Conectarse a una cartera",
+    "connectWallet": "Conectar cartera",
+    "disconnect": "Desconectar",
+    "initializing": "Inicializando...",
+    "tryAgain": "Intentar otra vez",
+    "pleaseInstall": "Por favor instale.",
+    "trySearchChains": "Intenta buscar cadenas",
+    "noWalletFound": "No se encontraron carteras.",
+    "noChainsFound": "No se encontraron cadenas."
   },
   "web3ReactManager": {
     "unknownError": "Oops! Ha ocurrido un error desconocido. Por favor, recarga la página, o utilice otro navegador o dispositivo."
@@ -389,8 +389,8 @@
     "seeDetails": "VER DETALLES",
     "totalLockedValue": "Valor bloqueado total",
     "yourLockedValue": "Su valor bloqueado",
-    "allPools": "Todas las Farms",
-    "yourFars": "Tus Farms",
+    "allFarms": "Todas las Farms",
+    "yourFarms": "Tus Farms",
     "yourPools": "Tus Pools",
     "noFarms": "No se encontraron farms.",
     "visitWebsite": "Visit Website",
@@ -762,6 +762,7 @@
   },
   "elixir": {
     "menuTypes": {
+      "topPools": "Top Pools",
       "allPositions": "All Positions",
       "openPositions": "Open Positions",
       "closedPositions": "Closed Positions"
@@ -822,7 +823,8 @@
     "singleAssetDeposit": "The market price is outside your specified price range. Single-asset deposit only.",
     "initializedLiquidity": "This pool must be initialized before you can add liquidity. To initialize, select a starting price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher than usual due to the initialization transaction.",
     "checkClassicFarms": "< Check Classic Farms",
-    "auditWarning": "ELIXIR LIQUIDITY CONTRACTS ARE IN BETA AND UNAUDITED. USE AT YOUR OWN RISK"
+    "auditWarning": "ELIXIR LIQUIDITY CONTRACTS ARE IN BETA AND UNAUDITED. USE AT YOUR OWN RISK",
+    "totalValueLocked": "Total Value Locked"
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -928,6 +930,8 @@
     "to": "To",
     "remove": "Remove",
     "connectWallet": "Connect Wallet",
+    "enterAmount": "Introduzca una cantidad",
+    "insufficientBalance": "Saldo en {{ symbol }} insuficiente",
     "approving": "Approving",
     "approve": "Approve",
     "approved": "Approved",

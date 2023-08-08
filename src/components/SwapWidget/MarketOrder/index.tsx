@@ -23,6 +23,7 @@ import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useTokenHook } from 'src/hooks/tokens';
 import { useApproveCallbackFromTradeHook } from 'src/hooks/useApproveCallback';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
+import { useHederaApproveCallback } from 'src/hooks/useApproveCallback/hedera';
 import { useCurrency } from 'src/hooks/useCurrency';
 import useENS from 'src/hooks/useENS';
 import { useSwapCallbackHook } from 'src/hooks/useSwapCallback';
@@ -43,7 +44,7 @@ import {
 import { useHederaSwapTokenAssociated } from 'src/state/pswap/hooks/hedera';
 import { useExpertModeManager, useUserSlippageTolerance } from 'src/state/puser/hooks';
 import { isTokenOnList, validateAddressMapping } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera, hederaFn } from 'src/utils/hedera';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
@@ -185,6 +186,14 @@ const MarketOrder: React.FC<Props> = ({
   const {
     handlers: { handleCurrencySelection: onLimitCurrencySelection },
   } = useGelatoLimitOrders();
+
+  const whbar = WAVAX[chainId];
+  const whbarContract = hederaFn.tokenToContractId(hederaFn.hederaId(whbar.address));
+  const [approvalWrappedState, onApproveWrapped] = useHederaApproveCallback(
+    chainId,
+    Hedera.isHederaChain(chainId) ? parsedAmount : undefined,
+    Hedera.isHederaChain(chainId) ? whbarContract : undefined,
+  );
 
   const isValid = !swapInputError;
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT;
@@ -367,7 +376,7 @@ const MarketOrder: React.FC<Props> = ({
         setSelectedPercentage(0);
         handleTypeInput('');
         if (
-          hederaFn.isHederaChain(chainId) &&
+          Hedera.isHederaChain(chainId) &&
           currencies[Field.OUTPUT] === CAVAX[chainId] &&
           !currencyEquals(currency, WAVAX[chainId])
         ) {
@@ -460,7 +469,35 @@ const MarketOrder: React.FC<Props> = ({
         </Button>
       );
     }
+    if (showWrap && Hedera.isHederaChain(chainId) && wrapType === WrapType.UNWRAP) {
+      return (
+        <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+          <Box mr="10px" width="100%">
+            <Button
+              variant={approvalWrappedState === ApprovalState.APPROVED ? 'confirm' : 'primary'}
+              onClick={() => onApproveWrapped()}
+              isDisabled={approvalWrappedState !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+              loading={approvalWrappedState === ApprovalState.PENDING}
+              loadingText={t('swapPage.approving')}
+            >
+              {approvalWrappedState === ApprovalState.APPROVED
+                ? `${t('swapPage.approved')}`
+                : `${t('swapPage.approve')} ` + currencies[Field.INPUT]?.symbol}
+            </Button>
+          </Box>
 
+          <Button
+            variant="primary"
+            isDisabled={
+              Boolean(wrapInputError) || Boolean(executing) || approvalWrappedState !== ApprovalState.APPROVED
+            }
+            onClick={handleWrap}
+          >
+            {renderWrapButtonText()}
+          </Button>
+        </Box>
+      );
+    }
     if (showWrap) {
       return (
         <Button variant="primary" isDisabled={Boolean(wrapInputError) || Boolean(executing)} onClick={handleWrap}>
@@ -468,7 +505,10 @@ const MarketOrder: React.FC<Props> = ({
         </Button>
       );
     }
-    if (isLoadingSwap && !swapInputError) {
+    if (
+      (isLoadingSwap && !swapInputError) ||
+      (userHasSpecifiedInputOutput && trade && approval === ApprovalState.UNKNOWN)
+    ) {
       return (
         <Button variant="primary" isDisabled>
           {t('common.loading')}

@@ -31,15 +31,19 @@ import {
   Text,
 } from 'src/components';
 import { Option } from 'src/components/DropdownMenu/types';
+import { injected } from 'src/connectors';
 import { useChainId, useLibrary } from 'src/hooks';
 import { useBridgeChains } from 'src/hooks/bridge/Chains';
 import { useBridgeCurrencies } from 'src/hooks/bridge/Currencies';
+import { useActiveWeb3React } from 'src/hooks/useConnector';
 import useDebounce from 'src/hooks/useDebounce';
+import { useApplicationState } from 'src/state/papplication/atom';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { ChainField, CurrencyField, TransactionStatus } from 'src/state/pbridge/atom';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
-import { changeNetwork, checkAddressNetworkBaseMapping } from 'src/utils';
+import { checkAddressNetworkBaseMapping } from 'src/utils';
 import { maxAmountSpend } from 'src/utils/maxAmountSpend';
+import { changeNetwork } from 'src/utils/wallet';
 import BridgeInputsWidget from '../BridgeInputsWidget';
 import {
   ArrowWrapper,
@@ -70,6 +74,8 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
   const theme = useContext(ThemeContext);
 
   const bridges = BRIDGES.map((bridge: Bridge) => ({ label: bridge.name, value: bridge.id }));
+  const { activate, deactivate, connector } = useActiveWeb3React();
+
   const [isChainDrawerOpen, setIsChainDrawerOpen] = useState(false);
   const [isCurrencyDrawerOpen, setIsCurrencyDrawerOpen] = useState(false);
   const [activeBridges, setActiveBridges] = useState<MultiValue<Option>>(bridges);
@@ -89,6 +95,8 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
   const currencyHook = useBridgeCurrencies();
   const sdkChainId = useChainId();
   const [drawerType, setDrawerType] = useState(ChainField.FROM);
+
+  const { wallets } = useApplicationState();
 
   const { library } = useLibrary();
 
@@ -172,7 +180,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
       inputCurrency &&
       outputCurrency &&
       toChain &&
-      (toChain?.evm || (!toChain?.evm && isToAddress(recipient, toChain)))
+      (toChain?.network_type === NetworkType.EVM || isToAddress(recipient, toChain))
     ) {
       onChangeRouteLoaderStatus();
       getRoutes({
@@ -321,9 +329,16 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
           <Button
             variant="primary"
             onClick={() => {
-              fromChain && changeNetwork(fromChain as Chain);
+              fromChain &&
+                changeNetwork({
+                  chain: fromChain as Chain,
+                  wallets: Object.values(wallets),
+                  activate,
+                  deactivate,
+                  connector: connector ?? injected,
+                });
             }}
-            isDisabled={!fromChain || (!toChain?.evm && !recipient)}
+            isDisabled={!fromChain || (toChain?.network_type === NetworkType.EVM && !recipient)}
           >
             {fromChain ? t('bridge.bridgeCard.switchChain') : t('bridge.bridgeCard.selectChain')}
           </Button>
@@ -385,7 +400,9 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
         <SelectChainDrawer
           isOpen={isChainDrawerOpen}
           // We can't show non-evm chains here. Because we don't have non-evm chain wallet integration yet. (in Bridge wise.)
-          chains={drawerType === ChainField.FROM ? chainList?.filter((x) => x.evm) : chainList}
+          chains={
+            drawerType === ChainField.FROM ? chainList?.filter((x) => x.network_type === NetworkType.EVM) : chainList
+          }
           onClose={onChangeChainDrawerStatus}
           onChainSelect={onChainSelect}
           selectedChain={drawerType === ChainField.FROM ? fromChain : toChain}

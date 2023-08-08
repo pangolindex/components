@@ -46,6 +46,7 @@ export const usePairsHook: UsePairsHookType = {
   [ChainId.MOONRIVER]: usePairsContract,
   [ChainId.MOONBEAM]: usePairsContract,
   [ChainId.OP]: usePairsContract,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: usePairsContract,
 };
 
 export type UseTokenAllowanceHookType = {
@@ -81,6 +82,7 @@ export const useTokenAllowanceHook: UseTokenAllowanceHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useTokenAllowance,
 };
 
 export type UseTotalSupplyHookType = {
@@ -125,6 +127,7 @@ export const useTotalSupplyHook: UseTotalSupplyHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useTotalSupply,
 };
 
 export type UsePairTotalSupplyHookType = {
@@ -170,4 +173,5 @@ export const usePairTotalSupplyHook: UsePairTotalSupplyHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useEvmPairTotalSupply,
 };
