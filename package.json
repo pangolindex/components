@@ -57,6 +57,7 @@
     "@pangolindex/web3-react-injected-connector": "1.0.2",
     "@reduxjs/toolkit": "1.8.0",
     "@talismn/web3react-v6-connector": "6.0.1",
+    "@tanstack/react-table": "^8.9.3",
     "@types/react-paginate": "^7.1.1",
     "@walletconnect/ethereum-provider": "2.8.6",
     "@walletconnect/modal": "2.5.9",
