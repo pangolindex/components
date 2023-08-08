@@ -44,8 +44,6 @@ export function useApproveCallback(
       if (pendingApproval || isPendingApprove) {
         return ApprovalState.PENDING;
       } else {
-        if (currentAllowance.lessThan(amountToApprove)) {
-        }
         return ApprovalState.NOT_APPROVED;
       }
     }
