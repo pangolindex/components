@@ -19,6 +19,7 @@ export function useApproveCallback(
 ): [ApprovalState, () => Promise<void>] {
   const { account } = usePangolinWeb3();
   const [isPendingApprove, setIsPendingApprove] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
 
   const token = amountToApprove instanceof TokenAmount ? amountToApprove.token : undefined;
   const currentAllowance = useTokenAllowance(token, account ?? undefined, spender);
@@ -32,16 +33,16 @@ export function useApproveCallback(
     if (!currentAllowance) return ApprovalState.UNKNOWN;
 
     // amountToApprove will be defined if currentAllowance is
-    if (currentAllowance.lessThan(amountToApprove)) {
+    if (!currentAllowance.lessThan(amountToApprove) || isApproved) {
+      return ApprovalState.APPROVED;
+    } else {
       if (pendingApproval || isPendingApprove) {
         return ApprovalState.PENDING;
       } else {
         return ApprovalState.NOT_APPROVED;
       }
-    } else {
-      return ApprovalState.APPROVED;
     }
-  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, spender]);
+  }, [amountToApprove, currentAllowance, pendingApproval, isPendingApprove, isApproved, spender]);
 
   const tokenContract = useTokenContract(token?.address);
   const addTransaction = useTransactionAdder();
@@ -90,6 +91,7 @@ export function useApproveCallback(
         summary: 'Approved ' + amountToApprove.currency.symbol,
         approval: { tokenAddress: token.address, spender: spender },
       });
+      setIsApproved(true);
     } catch (error) {
       console.debug('Failed to approve token', error);
       throw error;

@@ -3,6 +3,7 @@ import { useChainId } from '@pangolindex/hooks';
 import { useTranslation } from '@pangolindex/locales';
 import { CAVAX, ChainId, Currency, Token, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { useAddUserToken } from '@pangolindex/state';
+import { Hedera } from '@pangolindex/utils';
 import deepEqual from 'deep-equal';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
@@ -13,7 +14,6 @@ import { useAllTokens } from 'src/hooks/useAllTokens';
 import usePrevious from 'src/hooks/usePrevious';
 import { useSelectedListInfo } from 'src/state/plists/hooks';
 import { filterTokenOrChain, isAddress } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
 import { Field } from 'src/state/pswap/atom';
 import { useTokenComparator } from '../SearchModal/sorting';
 import TokenListDrawer from '../TokenListDrawer';
@@ -106,7 +106,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
     const wrappedCurrency = WAVAX[chainId];
     // for hedera we need to remove HBAR and put WBAR in first position
     if (
-      hederaFn.isHederaChain(chainId) &&
+      Hedera.isHederaChain(chainId) &&
       seletedField === Field.OUTPUT &&
       !deepEqual(otherSelectedCurrency, currency) &&
       otherSelectedCurrency instanceof Token &&

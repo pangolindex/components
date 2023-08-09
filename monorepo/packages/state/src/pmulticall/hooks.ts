@@ -216,6 +216,49 @@ export function useMultipleContractSingleData(
   }, [fragment, results, contractInterface, latestBlockNumber]);
 }
 
+/**
+ * This hook return the result of calls to multiple contracts with multiples inputs
+ * @param addresses Contracts Addresses
+ * @param contractInterface Contract interface from ethers
+ * @param methodName Contract method name to query
+ * @param callInputs Input of each call
+ * @param options Options, eg blocks per fetch
+ * @returns Array of callstate with result, isloading and error
+ */
+export function useMultipleContractMultipleData(
+  addresses: (string | undefined)[],
+  contractInterface: Interface,
+  methodName: string,
+  callInputs?: OptionalMethodInputs[],
+  options?: ListenerOptions,
+): CallState[] {
+  const fragment = useMemo(() => contractInterface.getFunction(methodName), [contractInterface, methodName]);
+
+  const calls = useMemo(
+    () =>
+      fragment && callInputs && callInputs.length > 0 && addresses && addresses.length > 0
+        ? callInputs.map<Call | undefined>((input, index) => {
+            const address = addresses[index];
+            return address && input
+              ? {
+                  address: address,
+                  callData: contractInterface.encodeFunctionData(fragment, input),
+                }
+              : undefined;
+          })
+        : [],
+    [callInputs, contractInterface, fragment],
+  );
+
+  const results = useCallsData(calls, options);
+
+  const latestBlockNumber = useBlockNumber();
+
+  return useMemo(() => {
+    return results.map((result) => toCallState(result, contractInterface, fragment, latestBlockNumber));
+  }, [fragment, results, contractInterface, latestBlockNumber]);
+}
+
 export function useSingleCallResult(
   contract: Contract | null | undefined,
   methodName: string,

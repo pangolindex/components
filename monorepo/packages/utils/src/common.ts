@@ -4,13 +4,8 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { JsonRpcSigner, TransactionResponse, Web3Provider } from '@ethersproject/providers';
-import {
-  MetamaskError,
-  ROUTER_ADDRESS,
-  ROUTER_DAAS_ADDRESS,
-  SAR_STAKING_ADDRESS,
-  ZERO_ADDRESS,
-} from '@pangolindex/constants';
+import { hethers } from '@hashgraph/hethers';
+import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from '@pangolindex/constants';
 import IPangolinRouter from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouter.sol/IPangolinRouter.json';
 import IPangolinRouterSupportingFees from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-periphery/interfaces/IPangolinRouterSupportingFees.sol/IPangolinRouterSupportingFees.json';
 import {
@@ -27,19 +22,17 @@ import {
   Fraction,
   JSBI,
   NetworkType,
-  NumberType,
   Percent,
   Price,
   Token,
   TokenAmount,
   Trade,
   currencyEquals,
-  formatPrice,
 } from '@pangolindex/sdk';
-import { Bound } from 'src/state/pmint/elixir/atom';
 import { TokenAddressMap } from '../state/plists/hooks';
-import { hederaFn } from './hedera';
+import { Hedera } from './hedera';
 import { wait } from './retry';
+// import { Bound } from 'src/state/pmint/elixir/atom';  TODO: when add elixir
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -77,8 +70,8 @@ export const validateAddressMapping: { [chainId in ChainId]: (value: any) => str
   [ChainId.COSTON]: isAddress,
   [ChainId.SONGBIRD]: isAddress,
   [ChainId.FLARE_MAINNET]: isAddress,
-  [ChainId.HEDERA_TESTNET]: hederaFn.isAddressValid,
-  [ChainId.HEDERA_MAINNET]: hederaFn.isAddressValid,
+  [ChainId.HEDERA_TESTNET]: Hedera.isAddressValid,
+  [ChainId.HEDERA_MAINNET]: Hedera.isAddressValid,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
   [ChainId.COSTON2]: isAddress,
@@ -99,13 +92,17 @@ export const validateAddressMapping: { [chainId in ChainId]: (value: any) => str
   [ChainId.OP]: isDummyAddress,
   [ChainId.EVMOS_TESTNET]: isAddress,
   [ChainId.EVMOS_MAINNET]: isAddress,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: isAddress,
 };
 
 export const checkAddressNetworkBaseMapping: {
   [networkType in NetworkType]: (value: any, bridgeChain: BridgeChain) => string | false;
 } = {
-  [NetworkType.EVM]: isDummyAddress,
+  [NetworkType.EVM]: isAddress,
   [NetworkType.COSMOS]: isCosmosAddress,
+  [NetworkType.HEDERA]: isDummyAddress,
+  [NetworkType.NEAR]: isDummyAddress,
+  [NetworkType.SUBNET]: isAddress,
 };
 
 const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
@@ -137,6 +134,7 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].blockExplorerUrls?.[0] || '',
   [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET].blockExplorerUrls?.[0] || '',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: CHAINS[ChainId.SKALE_BELLATRIX_TESTNET].blockExplorerUrls?.[0] || '',
 };
 
 const transactionPath: { [chainId in ChainId]: string } = {
@@ -168,6 +166,7 @@ const transactionPath: { [chainId in ChainId]: string } = {
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'tx',
   [ChainId.EVMOS_MAINNET]: 'tx',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: 'tx',
 };
 
 const addressPath: { [chainId in ChainId]: string } = {
@@ -199,6 +198,7 @@ const addressPath: { [chainId in ChainId]: string } = {
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'address',
   [ChainId.EVMOS_MAINNET]: 'address',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: 'address',
 };
 
 const blockPath: { [chainId in ChainId]: string } = {
@@ -230,6 +230,7 @@ const blockPath: { [chainId in ChainId]: string } = {
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'block',
   [ChainId.EVMOS_MAINNET]: 'block',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: 'block',
 };
 
 const tokenPath: { [chainId in ChainId]: string } = {
@@ -261,6 +262,7 @@ const tokenPath: { [chainId in ChainId]: string } = {
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: 'token',
   [ChainId.EVMOS_MAINNET]: 'token',
+  [ChainId.SKALE_BELLATRIX_TESTNET]: 'token',
 };
 
 export function getEtherscanLink(
@@ -283,52 +285,6 @@ export function getEtherscanLink(
     case 'address':
     default: {
       return `${prefix}/${addressPath[chainId]}/${data}`;
-    }
-  }
-}
-
-const walletProvider = () => {
-  if (window.xfi && window.xfi.ethereum) {
-    return window.xfi.ethereum;
-  } else if (window.bitkeep && window.isBitKeep) {
-    return window.bitkeep.ethereum;
-  }
-  return window.ethereum;
-};
-
-export async function changeNetwork(chain: Chain, action?: () => void) {
-  const { ethereum } = window;
-
-  if (ethereum) {
-    try {
-      await walletProvider().request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: `0x${chain?.chain_id?.toString(16)}` }],
-      });
-      action && action();
-    } catch (error) {
-      // This error code indicates that the chain has not been added to MetaMask.
-      const metamask = error as MetamaskError;
-      if (metamask.code === 4902) {
-        try {
-          await walletProvider().request({
-            method: 'wallet_addEthereumChain',
-            params: [
-              {
-                chainName: chain.name,
-                chainId: `0x${chain?.chain_id?.toString(16)}`,
-                //nativeCurrency: chain.nativeCurrency,
-                rpcUrls: [chain.rpc_uri],
-                blockExplorerUrls: chain.blockExplorerUrls,
-                iconUrls: chain.logo,
-                nativeCurrency: chain.nativeCurrency,
-              },
-            ],
-          });
-        } catch (_error) {
-          return;
-        }
-      }
     }
   }
 }
@@ -433,15 +389,15 @@ export function filterTokenOrChain(
 // this mapping is useful for transforming address before displaying it on UI
 // for EVM chain this is shortening the address to fit it in UI
 // for Hedera chain this is converting address to Hedera Account Id
-export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => string | false } = {
+export const shortenAddressMapping: { [chainId in ChainId]: (address: string, chainId: ChainId) => string | false } = {
   [ChainId.FUJI]: shortenAddress,
   [ChainId.AVALANCHE]: shortenAddress,
   [ChainId.WAGMI]: shortenAddress,
   [ChainId.COSTON]: shortenAddress,
   [ChainId.SONGBIRD]: shortenAddress,
   [ChainId.FLARE_MAINNET]: shortenAddress,
-  [ChainId.HEDERA_TESTNET]: hederaFn.hederaId,
-  [ChainId.HEDERA_MAINNET]: hederaFn.hederaId,
+  [ChainId.HEDERA_TESTNET]: shortenHederaAddress,
+  [ChainId.HEDERA_MAINNET]: shortenHederaAddress,
   [ChainId.NEAR_MAINNET]: shortenAddress,
   [ChainId.NEAR_TESTNET]: shortenAddress,
   [ChainId.COSTON2]: shortenAddress,
@@ -462,6 +418,7 @@ export const shortenAddressMapping: { [chainId in ChainId]: (value: any) => stri
   [ChainId.OP]: shortenAddress,
   [ChainId.EVMOS_TESTNET]: shortenAddress,
   [ChainId.EVMOS_MAINNET]: shortenAddress,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: shortenAddress,
 };
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
@@ -471,6 +428,11 @@ export function shortenAddress(address: string, chainId: ChainId = ChainId.AVALA
     throw Error(`Invalid 'address' parameter '${address}'.`);
   }
   return `${parsed.substring(0, chars)}...${parsed.substring(parsed.length - chars)}`;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function shortenHederaAddress(address: string, _chainId: ChainId) {
+  return hethers.utils.asAccountString(address);
 }
 
 // add 10%
@@ -596,11 +558,10 @@ export function scrollElementIntoView(element: HTMLElement | null, behavior?: 's
   }
 }
 
-export function isEvmChain(chainId: ChainId = ChainId.AVALANCHE): boolean {
-  if (CHAINS[chainId]?.evm) {
-    return true;
-  }
-  return false;
+export function isEvmChain(chainId: ChainId | undefined): boolean {
+  if (!chainId) return false;
+
+  return CHAINS[chainId]?.network_type === NetworkType.EVM;
 }
 
 // http://jsfiddle.net/5QrhQ/5/
@@ -627,26 +588,27 @@ export function capitalizeWord(word = '') {
   return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
 
-export function formatTickPrice({
-  price,
-  atLimit,
-  direction,
-  placeholder,
-  numberType,
-}: {
-  price: Price | undefined;
-  atLimit: { [bound in Bound]?: boolean | undefined };
-  direction: Bound;
-  placeholder?: string;
-  numberType?: NumberType;
-}) {
-  if (atLimit[direction]) {
-    return direction === Bound.LOWER ? '0' : '∞';
-  }
+// TODO: when add elixir
+// export function formatTickPrice({
+//   price,
+//   atLimit,
+//   direction,
+//   placeholder,
+//   numberType,
+// }: {
+//   price: Price | undefined;
+//   atLimit: { [bound in Bound]?: boolean | undefined };
+//   direction: Bound;
+//   placeholder?: string;
+//   numberType?: NumberType;
+// }) {
+//   if (atLimit[direction]) {
+//     return direction === Bound.LOWER ? '0' : '∞';
+//   }
 
-  if (!price && placeholder !== undefined) {
-    return placeholder;
-  }
+//   if (!price && placeholder !== undefined) {
+//     return placeholder;
+//   }
 
-  return formatPrice(price, numberType ?? NumberType.TokenNonTx);
-}
+//   return formatPrice(price, numberType ?? NumberType.TokenNonTx);
+// }

@@ -1,5 +1,5 @@
-import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import { useOnClickOutside } from 'src/useOnClickOutside';
+import useParsedQueryString from 'src/useParsedQueryString';
 import { useChainId, useLibrary, usePangolinWeb3 } from './provider';
 import { useApproveCallbackFromTradeHook, useApproveCallbackHook } from './useApproveCallback';
 import { ApprovalState } from './useApproveCallback/constant';
@@ -7,6 +7,7 @@ import { useApproveCallback } from './useApproveCallback/evm';
 import useDebounce from './useDebounce';
 import useDummyHook from './useDummyHook';
 import useENS from './useENS';
+import { useEscapeKey } from './useEscapeKey';
 import useTransactionDeadline from './useTransactionDeadline';
 import { useUSDCPriceHook } from './useUSDCPrice';
 import { useUSDCPrice } from './useUSDCPrice/evm';
@@ -27,6 +28,7 @@ export {
   useDummyHook,
   useOnClickOutside,
   useParsedQueryString,
+  useEscapeKey,
 };
 
 export { ApprovalState };

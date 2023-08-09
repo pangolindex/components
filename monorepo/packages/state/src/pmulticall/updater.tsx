@@ -1,6 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { useChainId, useDebounce, useMulticallContract } from '@pangolindex/hooks';
-import { CancelledError, RetryableError, chunkArray, hederaFn, retry } from '@pangolindex/utils';
+import { ChainId, NetworkType } from '@pangolindex/sdk';
+import { CancelledError, Hedera, RetryableError, chunkArray, getChainByNumber, retry } from '@pangolindex/utils';
 import { useEffect, useMemo, useRef } from 'react';
 import { useBlockNumber } from '../papplication/hooks';
 import { Call, MulticallState, parseCallKey, useMulticallAtom } from './atom';
@@ -8,7 +9,7 @@ import { Call, MulticallState, parseCallKey, useMulticallAtom } from './atom';
 // chunk calls so we do not exceed the gas limit
 const CALL_CHUNK_SIZE = 500;
 // for Hedera chain multicall not working with lots of calls because of gas limits, so reducing it down to less chunk size
-const HEDERA_CALL_CHUNK_SIZE = 10;
+const HEDERA_CALL_CHUNK_SIZE = 30;
 
 /**
  * Fetches a chunk of calls, enforcing a minimum block number constraint
@@ -20,13 +21,21 @@ async function fetchChunk(
   multicallContract: Contract,
   chunk: Call[],
   minBlockNumber: number,
+  chainId: ChainId,
 ): Promise<{ results: string[]; blockNumber: number }> {
   console.debug('Fetching chunk', multicallContract, chunk, minBlockNumber);
+
+  const chain = getChainByNumber(chainId);
+  const args: any = [chunk.map((obj) => [obj.address, obj.callData])];
+  if (chain?.network_type === NetworkType.HEDERA) {
+    args.push({
+      gasLimit: 15_000_000,
+    });
+  }
+
   let resultsBlockNumber, returnData;
   try {
-    [resultsBlockNumber, returnData] = await multicallContract.aggregate(
-      chunk.map((obj) => [obj.address, obj.callData]),
-    );
+    [resultsBlockNumber, returnData] = await multicallContract.aggregate(...args);
   } catch (error) {
     console.debug('Failed to fetch chunk inside retry', error);
     throw error;
@@ -134,7 +143,7 @@ export default function Updater(): null {
     if (outdatedCallKeys.length === 0) return;
     const calls = outdatedCallKeys.map((key) => parseCallKey(key));
 
-    const chunkSize = hederaFn.isHederaChain(chainId) ? HEDERA_CALL_CHUNK_SIZE : CALL_CHUNK_SIZE;
+    const chunkSize = Hedera.isHederaChain(chainId) ? HEDERA_CALL_CHUNK_SIZE : CALL_CHUNK_SIZE;
 
     const chunkedCalls = chunkArray(calls, chunkSize);
 
@@ -151,7 +160,7 @@ export default function Updater(): null {
     cancellations.current = {
       blockNumber: latestBlockNumber,
       cancellations: chunkedCalls.map((chunk, index) => {
-        const { cancel, promise } = retry(() => fetchChunk(multicallContract, chunk, latestBlockNumber), {
+        const { cancel, promise } = retry(() => fetchChunk(multicallContract, chunk, latestBlockNumber, chainId), {
           n: Infinity,
           minWait: 2500,
           maxWait: 3500,

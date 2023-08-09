@@ -35,4 +35,5 @@ export const useTokenAllowanceHook: UseTokenAllowanceHookType = {
   [ChainId.MOONRIVER]: useDummyHook,
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useTokenAllowance,
 };

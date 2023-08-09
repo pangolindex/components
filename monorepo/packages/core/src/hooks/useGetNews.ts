@@ -1,60 +1,49 @@
-import { AVALANCHE_MAINNET } from '@pangolindex/sdk';
-import axios from 'axios';
-import qs from 'qs';
+import { useChainId } from '@pangolindex/hooks';
+import { GraphQLClient } from 'graphql-request';
+import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
-import { DIRECTUS_URL_NEWS } from 'src/constants';
-import { useChainId } from 'src/hooks';
-import { getChainByNumber } from 'src/utils';
+import { NEWS_API_URL } from 'src/constants';
+import { useHasuraKey } from 'src/hooks/hasura';
 
 export interface News {
   id: number;
   title: string;
-  content: string;
-  createdAt: Date;
-  updatedAt: Date | null;
-  chains: string[];
+  article: string;
+  network_id: number | null;
 }
 
-// Get News in Pangolin Strapi api
+const GET_NEWS = gql`
+  query News {
+    pangolin_news(order_by: { id: desc }) {
+      article
+      id
+      network_id
+      title
+    }
+  }
+`;
+
 export function useGetNews() {
   const chainId = useChainId();
-  const chain = getChainByNumber(chainId) ?? AVALANCHE_MAINNET;
 
-  const query = qs.stringify(
-    {
-      sort: ['-date_created'],
-      filter: {
-        status: {
-          _eq: 'published',
-        },
-      },
+  const hasuraAPIKey = useHasuraKey();
+
+  const gqlClient = new GraphQLClient(NEWS_API_URL, {
+    headers: {
+      'x-hasura-admin-secret': hasuraAPIKey ?? '',
     },
-    {
-      encodeValuesOnly: true,
-    },
-  );
+  });
 
   return useQuery(
-    ['getNews', chain.id],
+    ['getNews', chainId],
     async () => {
-      const response = await axios.get(`${DIRECTUS_URL_NEWS}/items/news?${query}`, {
-        timeout: 60000,
-      });
-      const data = response.data;
-      const news: News[] = data?.data?.map((element: any) => {
-        return {
-          id: element?.id,
-          title: element?.title,
-          content: element?.content,
-          createdAt: new Date(element?.date_created),
-          updatedAt: !element?.date_updated ? null : new Date(element?.date_updated),
-          chains: element?.chain,
-        } as News;
-      });
+      if (!hasuraAPIKey) return;
 
-      return news.filter(
-        (element) => element.chains.includes(chain.symbol.toLocaleUpperCase()) || element.chains.includes('all'),
-      );
+      const data = await gqlClient.request<{ pangolin_news: News[] }>(GET_NEWS);
+
+      const news = data?.pangolin_news;
+
+      return news.filter((element) => element.network_id === chainId || element.network_id === null);
     },
     {
       cacheTime: 60 * 60 * 1000, // 1 hour

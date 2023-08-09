@@ -22,7 +22,6 @@ export const CurrencyRoot = styled(Box)<{ disabled: boolean; selected: boolean }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px 20px;
   background-color: ${({ theme }) => theme.color3};
   border-radius: 8px;
 
@@ -36,7 +35,10 @@ export const CurrencyRoot = styled(Box)<{ disabled: boolean; selected: boolean }
 
 export const Balance = styled(Text)`
   justify-self: flex-end;
-  white-space: nowrap;
+  text-align: center;
+  word-break: break-all;
+  width: 100%;
+  hyphens: manual;
 `;
 
 export const ManageList = styled.div`

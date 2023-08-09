@@ -39,6 +39,8 @@ export interface UserState {
       [key: string]: SerializedPair;
     };
   };
+  // previus wallet connected by user
+  wallet: string | null;
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -54,6 +56,7 @@ export const initialState: UserState = {
   userShowBalances: true,
   userApproveInfinite: true,
   pairs: {},
+  wallet: null,
 };
 
 const localstorageKey = 'user_pangolin';
@@ -171,6 +174,19 @@ export function useUserAtom() {
     [setUserState],
   );
 
+  // storage lasted connected wallet in state
+  const updateWallet = useCallback(
+    (wallet: string | null) => {
+      setUserState((state) => {
+        return {
+          ...state,
+          wallet,
+        };
+      });
+    },
+    [setUserState],
+  );
+
   return {
     userState,
     updateUserSlippageTolerance,
@@ -178,6 +194,7 @@ export function useUserAtom() {
     updateUserDeadline,
     updateUserShowBalances,
     updateUserApproveInfinite,
+    updateWallet,
     addSerializedToken,
     removeSerializedToken,
     addSerializedPair,

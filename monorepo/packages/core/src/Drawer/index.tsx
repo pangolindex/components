@@ -4,7 +4,7 @@ import { ThemeContext } from 'styled-components';
 import { Box, Text } from '../';
 import { CloseCircle, DrawerContent, DrawerRoot } from './styled';
 
-interface DrawerProps {
+export interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;
   children?: React.ReactNode;

@@ -24,7 +24,9 @@
     "@ethersproject/constants": "5.6.1",
     "@ethersproject/contracts": "5.6.2",
     "@ethersproject/providers": "5.6.8",
+    "@hashgraph/hethers": "1.2.2",
     "@pangolindex/exchange-contracts": "2.1.7",
-    "ethers": "5.6.4"
+    "ethers": "5.6.4",
+    "lru-cache": "7.13.2"
   }
 }

@@ -6,7 +6,6 @@ import { useTranslation } from '@pangolindex/locales';
 import { CAVAX, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import { useTransactionAdder, useUserSlippageTolerance, useWalletModalToggle } from '@pangolindex/state';
 import { capitalizeWord, unwrappedToken } from '@pangolindex/utils';
-import { wrappedGelatoCurrency } from 'src/utils/wrappedGelatoCurrency';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
@@ -20,6 +19,7 @@ import { useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveC
 import { LimitField, LimitNewField } from 'src/state/pswap/atom';
 import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
 import { useSwapActionHandlers } from 'src/state/pswap/hooks/common';
+import { wrappedGelatoCurrency } from 'src/utils/wrappedGelatoCurrency';
 import ConfirmLimitOrderDrawer from '../ConfirmLimitOrderDrawer';
 import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
 import SelectTokenDrawer from '../SelectTokenDrawer';

@@ -107,6 +107,7 @@ const txCheckerMapping: { [chainId in ChainId]: (params: TxCheckerProps) => void
   [ChainId.OP]: useDummyHook,
   [ChainId.EVMOS_TESTNET]: txChecker,
   [ChainId.EVMOS_MAINNET]: txChecker,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: txChecker,
 };
 
 const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
@@ -139,6 +140,7 @@ const shouldCheckMapping: { [chainId in ChainId]: boolean } = {
   [ChainId.MOONRIVER]: false,
   [ChainId.MOONBEAM]: false,
   [ChainId.OP]: false,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: true,
 };
 
 export default function Updater(): null {

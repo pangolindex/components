@@ -3,11 +3,11 @@ import { useChainId, useUSDCPrice } from '@pangolindex/hooks';
 import { useTranslation } from '@pangolindex/locales';
 import { CAVAX, Token, Trade, TradeType } from '@pangolindex/sdk';
 import { getEtherscanLink, isAddress, shortenAddress } from '@pangolindex/utils';
-import { computeFiatValuePriceImpact } from 'src/utils/computeFiatValuePriceImpact';
 import React, { useCallback, useContext, useState } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
+import { computeFiatValuePriceImpact } from 'src/utils/computeFiatValuePriceImpact';
 import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
 import { FiatValue } from './FiateValue';
 import {

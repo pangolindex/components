@@ -20,13 +20,20 @@ import {
   currencyEquals,
 } from '@pangolindex/sdk';
 import { useExpertModeManager, useUserSlippageTolerance, useWalletModalToggle } from '@pangolindex/state';
+import {
+  Hedera,
+  hederaFn,
+  isTokenOnList,
+  unwrappedToken,
+  validateAddressMapping,
+  wrappedCurrency,
+} from '@pangolindex/utils';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { MixPanelEvents, useMixpanel } from 'src/hooks';
 import { useTokenHook } from 'src/hooks/tokens';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
-import { isTokenOnList, validateAddressMapping, hederaFn, unwrappedToken, wrappedCurrency } from '@pangolindex/utils';
 import { ThemeContext } from 'styled-components';
 import { SwapTypes } from 'src/constants';
 import { useSwapCallbackHook } from 'src/hooks/useSwapCallback';
@@ -43,7 +50,6 @@ import {
   useSwapState,
 } from 'src/state/pswap/hooks/common';
 import { useHederaSwapTokenAssociated } from 'src/state/pswap/hooks/hedera';
-import { maxAmountSpend } from 'src/utils/maxAmountSpend';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
 import SelectTokenDrawer from '../SelectTokenDrawer';
@@ -182,6 +188,14 @@ const MarketOrder: React.FC<Props> = ({
   const {
     handlers: { handleCurrencySelection: onLimitCurrencySelection },
   } = useGelatoLimitOrders();
+
+  const whbar = WAVAX[chainId];
+  const whbarContract = hederaFn.tokenToContractId(hederaFn.hederaId(whbar.address));
+  const [approvalWrappedState, onApproveWrapped] = useHederaApproveCallback(
+    chainId,
+    Hedera.isHederaChain(chainId) ? parsedAmount : undefined,
+    Hedera.isHederaChain(chainId) ? whbarContract : undefined,
+  );
 
   const isValid = !swapInputError;
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT;
@@ -364,7 +378,7 @@ const MarketOrder: React.FC<Props> = ({
         setSelectedPercentage(0);
         handleTypeInput('');
         if (
-          hederaFn.isHederaChain(chainId) &&
+          Hedera.isHederaChain(chainId) &&
           currencies[Field.OUTPUT] === CAVAX[chainId] &&
           !currencyEquals(currency, WAVAX[chainId])
         ) {
@@ -457,7 +471,35 @@ const MarketOrder: React.FC<Props> = ({
         </Button>
       );
     }
+    if (showWrap && Hedera.isHederaChain(chainId) && wrapType === WrapType.UNWRAP) {
+      return (
+        <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
+          <Box mr="10px" width="100%">
+            <Button
+              variant={approvalWrappedState === ApprovalState.APPROVED ? 'confirm' : 'primary'}
+              onClick={() => onApproveWrapped()}
+              isDisabled={approvalWrappedState !== ApprovalState.NOT_APPROVED || approvalSubmitted}
+              loading={approvalWrappedState === ApprovalState.PENDING}
+              loadingText={t('swapPage.approving')}
+            >
+              {approvalWrappedState === ApprovalState.APPROVED
+                ? `${t('swapPage.approved')}`
+                : `${t('swapPage.approve')} ` + currencies[Field.INPUT]?.symbol}
+            </Button>
+          </Box>
 
+          <Button
+            variant="primary"
+            isDisabled={
+              Boolean(wrapInputError) || Boolean(executing) || approvalWrappedState !== ApprovalState.APPROVED
+            }
+            onClick={handleWrap}
+          >
+            {renderWrapButtonText()}
+          </Button>
+        </Box>
+      );
+    }
     if (showWrap) {
       return (
         <Button variant="primary" isDisabled={Boolean(wrapInputError) || Boolean(executing)} onClick={handleWrap}>
@@ -465,7 +507,10 @@ const MarketOrder: React.FC<Props> = ({
         </Button>
       );
     }
-    if (isLoadingSwap && !swapInputError) {
+    if (
+      (isLoadingSwap && !swapInputError) ||
+      (userHasSpecifiedInputOutput && trade && approval === ApprovalState.UNKNOWN)
+    ) {
       return (
         <Button variant="primary" isDisabled>
           {t('common.loading')}

@@ -1,6 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
-import Drawer from '.';
+import Drawer, { DrawerProps } from '.';
 
 export default {
   component: Drawer,
@@ -35,4 +35,9 @@ const TemplateSimpleDrawer: ComponentStory<typeof Drawer> = () => {
   );
 };
 
-export const Simple = TemplateSimpleDrawer.bind({});
+export const Default = TemplateSimpleDrawer.bind({});
+
+Default.args = {
+  isOpen: false,
+  onClose: () => {},
+} as Partial<DrawerProps>;

@@ -1,3 +1,4 @@
+import { useChainId } from '@pangolindex/hooks';
 import { CurrencyAmount, ElixirTrade, Fraction, JSBI, Percent, Pool, TokenAmount, Trade } from '@pangolindex/sdk';
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
@@ -5,10 +6,9 @@ import {
   ALLOWED_PRICE_IMPACT_MEDIUM,
   BLOCKED_PRICE_IMPACT_NON_EXPERT,
 } from 'src/constants';
-import { useChainId } from '@pangolindex/hooks';
 
 const ONE_HUNDRED_PERCENT = new Percent(JSBI.BigInt(1000), JSBI.BigInt(1000));
-//TODO Seperate 2 function 
+//TODO Seperate 2 function
 // computes price breakdown for the trade
 export function computeTradePriceBreakdown(trade?: Trade | ElixirTrade): {
   priceImpactWithoutFee?: Percent;

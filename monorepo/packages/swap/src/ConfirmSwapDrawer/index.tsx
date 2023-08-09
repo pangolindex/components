@@ -3,11 +3,11 @@ import { usePangolinWeb3 } from '@pangolindex/hooks';
 import { Trans, useTranslation } from '@pangolindex/locales';
 import { ElixirTrade, Trade, TradeType } from '@pangolindex/sdk';
 import { computeSlippageAdjustedAmounts, getEtherscanLink, tradeMeaningfullyDiffers } from '@pangolindex/utils';
-import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import React, { useContext, useMemo } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { Field } from 'src/state/pswap/atom';
+import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import SwapDetailInfo from '../SwapDetailInfo';
 import {
   ErrorBox,

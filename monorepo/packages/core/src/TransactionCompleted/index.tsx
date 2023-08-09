@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/images/circleTick.svg';
 import { Box } from '../Box';
+import { BoxProps } from '../Box/Box';
 import { Button } from '../Button';
 import { CloseIcon } from '../CloseIcon';
 import { Text } from '../Text';
@@ -14,6 +15,7 @@ export interface TransactionCompletedProps {
   isShowButtton?: boolean;
   onButtonClick?: () => void;
   buttonText?: string;
+  rootStyle?: BoxProps;
 }
 
 const TransactionCompleted = ({
@@ -23,10 +25,11 @@ const TransactionCompleted = ({
   isShowButtton,
   onButtonClick,
   buttonText,
+  rootStyle,
 }: TransactionCompletedProps) => {
   const theme = useContext(ThemeContext);
   return (
-    <Root>
+    <Root {...rootStyle}>
       {showCloseIcon && (
         <Box display="flex" justifyContent="flex-end">
           <CloseIcon onClick={() => onClose && onClose()} color={theme.text4} />

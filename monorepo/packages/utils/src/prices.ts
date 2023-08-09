@@ -1,4 +1,4 @@
-import { CurrencyAmount, ElixirTrade, JSBI, Percent, Trade } from '@pangolindex/sdk';
+import { CurrencyAmount, ElixirTrade, Trade } from '@pangolindex/sdk';
 import { Field } from '../state/pswap/atom';
 import { basisPointsToPercent } from './index';
 

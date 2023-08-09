@@ -11,7 +11,7 @@ import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { News, useGetNews } from 'src/hooks/useGetNews';
 import { Box } from '../Box';
 import { Loader } from '../Loader';
-import { ArrowWrapper, NewsContent, NewsDate, NewsTitle, NewsWrapper, SlickNext, TitleWrapper } from './styleds';
+import { ArrowWrapper, NewsContent, NewsTitle, NewsWrapper, SlickNext, TitleWrapper } from './styleds';
 import { NewsProps } from './types';
 // import 'slick-carousel/slick/slick.css';
 // import 'slick-carousel/slick/slick-theme.css';
@@ -57,7 +57,7 @@ const NewsSection: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
   return (
     <NewsWrapper img={Earth}>
       <TitleWrapper>
-        <NewsTitle> {t('dashboardPage.news') as string}</NewsTitle>
+        <NewsTitle> {t('dashboardPage.news')}</NewsTitle>
         <ArrowWrapper>
           <SlickNext onClick={handleNewsBack} style={{ right: 60 }}>
             <ArrowLeft size={20} style={{ minWidth: 24 }} />
@@ -106,16 +106,10 @@ const NewsSection: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
                           },
                         }}
                       >
-                        {element.content}
+                        {element.article}
                       </ReactMarkdown>
                     </Scrollbars>
                   </NewsContent>
-                  <NewsDate>
-                    {element?.updatedAt
-                      ? element?.updatedAt?.toLocaleTimeString()
-                      : element?.createdAt.toLocaleTimeString()}
-                    , {element.updatedAt ? element?.updatedAt?.toDateString() : element?.createdAt.toDateString()}
-                  </NewsDate>
                 </div>
               ))}
           </Slider>

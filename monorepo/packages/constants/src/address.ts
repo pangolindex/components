@@ -32,6 +32,7 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.OP]: '',
   [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET].contracts!.router,
   [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET].contracts!.router,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: CHAINS[ChainId.SKALE_BELLATRIX_TESTNET].contracts!.router,
 };
 
 export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
@@ -63,6 +64,7 @@ export const ROUTER_DAAS_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.OP]: ZERO_ADDRESS,
   [ChainId.EVMOS_TESTNET]: CHAINS[ChainId.EVMOS_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
   [ChainId.EVMOS_MAINNET]: CHAINS[ChainId.EVMOS_MAINNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: CHAINS[ChainId.SKALE_BELLATRIX_TESTNET]?.contracts?.router_daas ?? ZERO_ADDRESS,
 };
 
 const getMiniChefAddress = (chainId: ChainId) => {
@@ -102,6 +104,7 @@ export const MINICHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.OP]: undefined,
   [ChainId.EVMOS_TESTNET]: getMiniChefAddress(ChainId.EVMOS_TESTNET),
   [ChainId.EVMOS_MAINNET]: undefined,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: getMiniChefAddress(ChainId.SKALE_BELLATRIX_TESTNET),
 };
 
 const getPangoChefAddress = (chainId: ChainId) => {
@@ -141,6 +144,7 @@ export const PANGOCHEF_ADDRESS: { [chainId in ChainId]: string | undefined } = {
   [ChainId.OP]: undefined,
   [ChainId.EVMOS_TESTNET]: getPangoChefAddress(ChainId.EVMOS_TESTNET),
   [ChainId.EVMOS_MAINNET]: undefined,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: getPangoChefAddress(ChainId.SKALE_BELLATRIX_TESTNET),
 };
 
 // these tokens can be directly linked to (via url params) in the swap page without prompting a warning
@@ -173,6 +177,10 @@ export const TRUSTED_TOKEN_ADDRESSES: { readonly [chainId in ChainId]: string[] 
   [ChainId.OP]: [],
   [ChainId.EVMOS_TESTNET]: [WAVAX[ChainId.EVMOS_TESTNET].address, PNG[ChainId.EVMOS_TESTNET].address],
   [ChainId.EVMOS_MAINNET]: [WAVAX[ChainId.EVMOS_MAINNET].address],
+  [ChainId.SKALE_BELLATRIX_TESTNET]: [
+    WAVAX[ChainId.SKALE_BELLATRIX_TESTNET].address,
+    PNG[ChainId.SKALE_BELLATRIX_TESTNET].address,
+  ],
 };
 
 const getSarAddress = (chainId: ChainId) => {
@@ -208,6 +216,7 @@ export const SAR_STAKING_ADDRESS: { [chainId in ChainId]: string | undefined } =
   [ChainId.OP]: undefined,
   [ChainId.EVMOS_TESTNET]: getSarAddress(ChainId.EVMOS_TESTNET),
   [ChainId.EVMOS_MAINNET]: undefined,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: getSarAddress(ChainId.SKALE_BELLATRIX_TESTNET),
 };
 
 /* eslint-enable max-lines */

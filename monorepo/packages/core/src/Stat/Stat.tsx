@@ -1,11 +1,11 @@
+import { useChainId } from '@pangolindex/hooks';
 import { Currency, Token, WAVAX } from '@pangolindex/sdk';
 import { ThemeColorsType } from '@pangolindex/theme';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';
 import AnalyticsIcon from 'src/assets/images/analytics.svg';
-import { ANALYTICS_PAGE } from 'src/constants';
-import { useChainId } from 'src/hooks';
+import { ANALYTICS_PAGE_MAPPING } from 'src/constants';
 import { Box } from '../Box';
 import CurrencyLogo from '../CurrencyLogo';
 import { Text } from '../Text';
@@ -48,6 +48,8 @@ const Stat = ({
 
   const theme = useContext(ThemeContext);
 
+  const analyticsPageUrl = ANALYTICS_PAGE_MAPPING[chainId];
+
   function getAlignment() {
     if (statAlign === 'center') {
       return 'center';
@@ -66,7 +68,7 @@ const Stat = ({
             {title}
           </Text>
           {showAnalytics && (
-            <AnalyticsLink href={`${ANALYTICS_PAGE}/#/token/${token.address}`} target="_blank">
+            <AnalyticsLink href={`${analyticsPageUrl}/#/token/${token.address}`} target="_blank">
               <img src={AnalyticsIcon} alt="analytics-icon" />
             </AnalyticsLink>
           )}
