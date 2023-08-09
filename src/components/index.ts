@@ -12,6 +12,7 @@ export { RadioButtonGroup } from './RadioButtonGroup';
 export { DoubleCurrencyLogo } from './DoubleCurrencyLogo';
 export { default as Logo } from './Logo';
 export { CurrencyInput } from './CurrencyInput';
+export { default as DataTable } from './DataTable';
 export { ChainInput } from './ChainInput';
 export { default as RewardTokens } from './RewardTokens';
 export { default as Tooltip } from './Tooltip';
