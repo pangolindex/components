@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev --concurrency=13",
+    "dev": "turbo run dev --concurrency=15",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
