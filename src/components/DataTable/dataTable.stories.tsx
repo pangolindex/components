@@ -74,7 +74,7 @@ Default.args = {
   columns: dummyColumns,
   debugTable: false,
   styleOverrideTable: 'background: #ffffff;',
-  styleOverrideTD: undefined,
-  styleOverrideTH: undefined,
-  styleOverrideTR: undefined,
+  styleOverrideTD: 'color: blue; padding: 10px;',
+  styleOverrideTH: 'color: red; font-weight: bold; border-bottom: 2px solid black;',
+  styleOverrideTR: 'background: #f2f2f2;',
 };

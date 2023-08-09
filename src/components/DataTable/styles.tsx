@@ -47,7 +47,7 @@ export const StyledTD = styled.td<{ styleOverride?: string }>`
     border-right: none;
   }
   border-bottom: 1px solid ${({ theme }) => theme.dataTable?.primaryColor};
-  background-color: ${(props) =>
+  ${(props) =>
     props.styleOverride &&
     css`
       ${props.styleOverride}
