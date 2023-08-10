@@ -1,4 +1,4 @@
-import { parseENSAddress } from '@pangolindex/utils';
+import { parseENSAddress } from '@pangolindex/shared';
 import React, { useMemo } from 'react';
 
 function TokenListOrigin({ listUrl }: { listUrl: string }) {

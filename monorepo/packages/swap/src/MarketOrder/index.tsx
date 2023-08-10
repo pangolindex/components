@@ -1,13 +1,20 @@
 /* eslint-disable max-lines */
-import { DEFAULT_TOKEN_LISTS_SELECTED, TRUSTED_TOKEN_ADDRESSES, ZERO_ADDRESS } from '@pangolindex/constants';
-import { Box, Button, Text, TextInput } from '@pangolindex/core';
-import useENS, {
-  ApprovalState,
-  useApproveCallbackFromTradeHook,
+import {
+  DEFAULT_TOKEN_LISTS_SELECTED,
+  TRUSTED_TOKEN_ADDRESSES,
+  ZERO_ADDRESS,
   useChainId,
   usePangolinWeb3,
-} from '@pangolindex/hooks';
-import { useTranslation } from '@pangolindex/locales';
+  useTranslation,
+  Hedera,
+  hederaFn,
+  isTokenOnList,
+  unwrappedToken,
+  validateAddressMapping,
+  wrappedCurrency,
+} from '@pangolindex/shared';
+import { Box, Button, Text, TextInput } from '@pangolindex/core';
+import useENS, { ApprovalState, useApproveCallbackFromTradeHook } from '@pangolindex/hooks';
 import {
   CAVAX,
   CurrencyAmount,
@@ -20,14 +27,6 @@ import {
   currencyEquals,
 } from '@pangolindex/sdk';
 import { useExpertModeManager, useUserSlippageTolerance, useWalletModalToggle } from '@pangolindex/state';
-import {
-  Hedera,
-  hederaFn,
-  isTokenOnList,
-  unwrappedToken,
-  validateAddressMapping,
-  wrappedCurrency,
-} from '@pangolindex/utils';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { MixPanelEvents, useMixpanel } from 'src/hooks';

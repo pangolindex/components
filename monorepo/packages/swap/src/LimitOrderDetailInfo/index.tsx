@@ -1,9 +1,7 @@
 import { formatUnits } from '@ethersproject/units';
 import { useGasOverhead, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
-import { INITIAL_ALLOWED_SLIPPAGE } from '@pangolindex/constants';
+import { INITIAL_ALLOWED_SLIPPAGE, useChainId, useTranslation } from '@pangolindex/shared';
 import { Text } from '@pangolindex/core';
-import { useChainId } from '@pangolindex/hooks';
-import { useTranslation } from '@pangolindex/locales';
 import { TokenAmount } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
 import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';

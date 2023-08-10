@@ -1,8 +1,7 @@
 import { Box, Button, CurrencyLogo, Drawer, Loader, Text } from '@pangolindex/core';
-import { useChainId, useUSDCPrice } from '@pangolindex/hooks';
-import { useTranslation } from '@pangolindex/locales';
+import { useUSDCPrice } from '@pangolindex/hooks';
+import { useTranslation, useChainId, getEtherscanLink, isAddress, shortenAddress } from '@pangolindex/shared';
 import { CAVAX, Token, Trade, TradeType } from '@pangolindex/sdk';
-import { getEtherscanLink, isAddress, shortenAddress } from '@pangolindex/utils';
 import React, { useCallback, useContext, useState } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';

@@ -1,4 +1,4 @@
-import { ZERO_ADDRESS } from '@pangolindex/constants';
+import { ZERO_ADDRESS } from '@pangolindex/shared';
 import React, { useState } from 'react';
 import { SwapTypes } from 'src/constants';
 import LimitOrder from './LimitOrder';

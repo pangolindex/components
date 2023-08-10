@@ -1,9 +1,16 @@
 import { parseUnits } from '@ethersproject/units';
-import { INITIAL_ALLOWED_SLIPPAGE, ONE_YOCTO_NEAR } from '@pangolindex/constants';
-import { useChainId, useLibrary, usePangolinWeb3 } from '@pangolindex/hooks';
+import {
+  INITIAL_ALLOWED_SLIPPAGE,
+  ONE_YOCTO_NEAR,
+  useChainId,
+  useLibrary,
+  usePangolinWeb3,
+  FunctionCallOptions,
+  Transaction,
+  nearFn,
+} from '@pangolindex/shared';
 import { Token, Trade } from '@pangolindex/sdk';
 import { useTransactionAdder } from '@pangolindex/state';
-import { FunctionCallOptions, Transaction, nearFn } from '@pangolindex/utils';
 import { useMemo } from 'react';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS } from 'src/connectors';
 import { useGetNearPoolId } from 'src/data/Reserves';

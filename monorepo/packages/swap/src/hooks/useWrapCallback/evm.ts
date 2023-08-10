@@ -1,5 +1,5 @@
-import { useChainId, usePangolinWeb3, useWETHContract } from '@pangolindex/hooks';
-import { useTranslation } from '@pangolindex/locales';
+import { useWETHContract } from '@pangolindex/hooks';
+import { useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { useTransactionAdder } from '@pangolindex/state';
 import { useMemo, useState } from 'react';

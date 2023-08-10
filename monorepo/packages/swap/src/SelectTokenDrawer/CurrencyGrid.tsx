@@ -1,5 +1,5 @@
 import { CurrencyLogo, Text } from '@pangolindex/core';
-import { useChainId, usePangolinWeb3 } from '@pangolindex/hooks';
+import { useChainId, usePangolinWeb3 } from '@pangolindex/shared';
 import { Currency } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import { LoaderIcon } from 'src/components/Icons';

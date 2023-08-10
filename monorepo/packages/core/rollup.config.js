@@ -15,7 +15,7 @@ let plugins = [
   externals({
     // we dont want to put below packages in rollup->externals
     // meaning, we want to include them in the final build
-    exclude: ['@pangolindex/theme', '@pangolindex/locales'],
+    exclude: [],
   }),
   peerDepsExternal(),
   includePaths({

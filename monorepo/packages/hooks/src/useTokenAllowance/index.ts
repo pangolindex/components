@@ -1,5 +1,5 @@
 import { ChainId } from '@pangolindex/sdk';
-import useDummyHook from '../useDummyHook';
+import { useDummyHook } from '@pangolindex/shared';
 import { useTokenAllowance } from './evm';
 
 export type UseTokenAllowanceHookType = {

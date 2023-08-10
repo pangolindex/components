@@ -1,4 +1,4 @@
-import { DAIe, PNG, USDC, USDCe, USDTe } from '@pangolindex/constants';
+import { DAIe, PNG, USDC, USDCe, USDTe } from '@pangolindex/shared';
 import { ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
 
 // a list of tokens by chain

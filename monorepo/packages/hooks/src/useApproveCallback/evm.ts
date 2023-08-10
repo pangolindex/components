@@ -11,11 +11,11 @@ import {
   usePangolinWeb3,
   wait,
   waitForTransaction,
+  useTokenContract
 } from '@pangolindex/shared';
 import { useHasPendingApproval, useIsApprovingInfinite, useTransactionAdder } from '@pangolindex/state';
 import { useCallback, useMemo, useState } from 'react';
 import { useTokenAllowance } from 'src/useTokenAllowance/evm';
-import { useTokenContract } from '../useContract';
 import { ApprovalState } from './constant';
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns

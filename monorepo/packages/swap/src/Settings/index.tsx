@@ -1,6 +1,5 @@
-import { DEFAULT_DEADLINE_FROM_NOW } from '@pangolindex/constants';
+import { DEFAULT_DEADLINE_FROM_NOW, useTranslation } from '@pangolindex/shared';
 import { Box, Button, Drawer, NumberOptions, SlippageInput, Text, TextInput, ToggleButtons } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/locales';
 import { useExpertModeManager, useUserDeadline, useUserSlippageTolerance } from '@pangolindex/state';
 import React, { useCallback, useEffect, useState } from 'react';
 import WarningModal from './WarningModal';

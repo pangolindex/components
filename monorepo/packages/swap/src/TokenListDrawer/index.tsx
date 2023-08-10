@@ -1,6 +1,5 @@
 import { Box, Button, Drawer, Text, TextInput } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/locales';
-import { parseENSAddress, uriToHttp } from '@pangolindex/utils';
+import { useTranslation, parseENSAddress, uriToHttp } from '@pangolindex/shared';
 import React, { useCallback, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';

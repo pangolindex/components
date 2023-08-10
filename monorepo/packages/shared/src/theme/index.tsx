@@ -296,10 +296,10 @@ type ThemeProviderProps = {
   theme: Partial<DefaultTheme>;
 };
 
-export default function ThemeProvider({ children, theme }: ThemeProviderProps) {
+export const ThemeProvider = ({ children, theme }: ThemeProviderProps) => {
   const finalTheme = merge({}, defaultTheme, theme || {});
   return <StyledComponentsThemeProvider theme={finalTheme}>{children}</StyledComponentsThemeProvider>;
-}
+};
 
 export const useTheme = () => {
   const theme = useContext(ThemeContext);

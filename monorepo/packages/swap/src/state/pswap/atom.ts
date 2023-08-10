@@ -1,6 +1,5 @@
-import { ZERO_ADDRESS } from '@pangolindex/constants';
+import { ZERO_ADDRESS, Hedera } from '@pangolindex/shared';
 import { CAVAX, ChainId, WAVAX } from '@pangolindex/sdk';
-import { Hedera } from '@pangolindex/utils';
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
 

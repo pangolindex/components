@@ -11,7 +11,6 @@ import {
   HbarUnit,
   TokenAssociateTransaction,
 } from '@hashgraph/sdk';
-import { PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from '@pangolindex/constants';
 import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { ethers } from 'ethers';
@@ -19,6 +18,7 @@ import { ethers } from 'ethers';
 // @ts-expect-error because this code we enable after wallet package done
 // TODO: when add wallet package
 import { HashConnector, hashConnect } from 'src/connectors';
+import { PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from '../constants';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,

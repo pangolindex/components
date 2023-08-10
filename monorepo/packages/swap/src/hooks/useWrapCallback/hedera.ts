@@ -1,8 +1,6 @@
-import { useChainId, usePangolinWeb3 } from '@pangolindex/hooks';
-import { useTranslation } from '@pangolindex/locales';
+import { useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { useTransactionAdder } from '@pangolindex/state';
-import { hederaFn } from '@pangolindex/utils';
 import { useMemo, useState } from 'react';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { Field } from 'src/state/pswap/atom';

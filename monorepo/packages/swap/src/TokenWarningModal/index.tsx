@@ -1,7 +1,6 @@
 import { Box, Button, CurrencyLogo, ExternalLink, Modal, Text } from '@pangolindex/core';
-import { usePangolinWeb3 } from '@pangolindex/hooks';
+import { usePangolinWeb3, getEtherscanLink, shortenAddress } from '@pangolindex/shared';
 import { Token } from '@pangolindex/sdk';
-import { getEtherscanLink, shortenAddress } from '@pangolindex/utils';
 import React, { useCallback, useMemo, useState } from 'react';
 import { AutoColumn } from 'src/components/Column';
 import { useAllTokens } from 'src/hooks/useAllTokens';

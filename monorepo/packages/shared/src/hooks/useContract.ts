@@ -1,16 +1,10 @@
 import { Contract } from '@ethersproject/contracts';
 import { WAVAX } from '@pangolindex/sdk';
-import {
-  ERC20_ABI,
-  MULTICALL_ABI,
-  MULTICALL_NETWORKS,
-  WETH_ABI,
-  ZERO_ADDRESS,
-  getContract,
-  useLibrary,
-  usePangolinWeb3,
-} from '@pangolindex/shared';
 import { useMemo } from 'react';
+import { ERC20_ABI, MULTICALL_ABI, WETH_ABI } from 'src/abis';
+import { MULTICALL_NETWORKS, ZERO_ADDRESS } from 'src/constants';
+import { useLibrary, usePangolinWeb3 } from 'src/provider';
+import { getContract } from 'src/utils';
 
 // returns null on errors
 export function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {

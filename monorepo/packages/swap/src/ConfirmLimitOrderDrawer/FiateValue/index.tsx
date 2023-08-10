@@ -1,6 +1,6 @@
 import { Text } from '@pangolindex/core';
 import { CurrencyAmount, Percent } from '@pangolindex/sdk';
-import { warningSeverity } from '@pangolindex/utils';
+import { warningSeverity } from 'src/utils/prices';
 import React, { useContext, useMemo } from 'react';
 import { ThemeContext } from 'styled-components';
 

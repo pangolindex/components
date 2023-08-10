@@ -23,6 +23,7 @@
     "@ethersproject/providers": "5.6.8",
     "@ethersproject/units": "5.6.1",
     "@pangolindex/shared": "*",
+    "@pangolindex/state": "*",
     "ethers": "5.6.4",
     "react-query": "3.39.0"
   }

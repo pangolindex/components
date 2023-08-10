@@ -1,10 +1,15 @@
-import { INITIAL_ALLOWED_SLIPPAGE, ONE_BIPS } from '@pangolindex/constants';
+import {
+  INITIAL_ALLOWED_SLIPPAGE,
+  ONE_BIPS,
+  useTranslation,
+  computeSlippageAdjustedAmounts,
+} from '@pangolindex/shared';
+import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
+import React, { useContext } from 'react';
+import { ThemeContext } from 'styled-components';
 import { Text } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/locales';
 import { ElixirTrade, Percent, Trade, TradeType } from '@pangolindex/sdk';
 import { useUserSlippageTolerance } from '@pangolindex/state';
-import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '@pangolindex/utils';
-import React from 'react';
 import { BIPS_BASE } from 'src/constants';
 import { Field } from 'src/state/pswap/atom';
 import { useDaasFeeInfo } from 'src/state/pswap/hooks/common';

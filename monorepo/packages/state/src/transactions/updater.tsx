@@ -1,6 +1,5 @@
-import { useDummyHook } from '@pangolindex/hooks';
 import { ChainId } from '@pangolindex/sdk';
-import { useChainId, nearFn, useLibrary } from '@pangolindex/shared';
+import { nearFn, useChainId, useDummyHook, useLibrary } from '@pangolindex/shared';
 import { useEffect } from 'react';
 import { useAddPopup, useBlockNumber } from '../application/hooks';
 import { AddTransactionDetails, TransactionDetails, useTransactionState } from './atom';

@@ -1,6 +1,5 @@
-import { ZERO_ADDRESS } from '@pangolindex/constants';
 import { Loader } from '@pangolindex/core';
-import { useChainId, usePangolinWeb3 } from '@pangolindex/hooks';
+import { useChainId, usePangolinWeb3, ZERO_ADDRESS } from '@pangolindex/shared';
 import { useWalletModalToggle } from '@pangolindex/state';
 import React, { Suspense, useCallback, useContext } from 'react';
 import { useAllTokens } from 'src/hooks/useAllTokens';

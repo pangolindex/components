@@ -1,4 +1,4 @@
-import { usePangolinWeb3, BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '@pangolindex//shared';
+import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS, usePangolinWeb3 } from '@pangolindex//shared';
 import { ChainId, Pair, Token } from '@pangolindex/sdk';
 import flatMap from 'lodash.flatmap';
 import { useCallback, useMemo } from 'react';

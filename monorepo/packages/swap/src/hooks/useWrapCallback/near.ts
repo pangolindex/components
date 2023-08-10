@@ -1,7 +1,6 @@
-import { useChainId, usePangolinWeb3 } from '@pangolindex/hooks';
+import { useChainId, usePangolinWeb3, Transaction, nearFn } from '@pangolindex/shared';
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { useTransactionAdder } from '@pangolindex/state';
-import { Transaction, nearFn } from '@pangolindex/utils';
 import { parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';
 import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';

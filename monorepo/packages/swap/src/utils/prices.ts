@@ -1,4 +1,4 @@
-import { useChainId } from '@pangolindex/hooks';
+import { useChainId } from '@pangolindex/shared';
 import { CurrencyAmount, ElixirTrade, Fraction, JSBI, Percent, Pool, TokenAmount, Trade } from '@pangolindex/sdk';
 import {
   ALLOWED_PRICE_IMPACT_HIGH,

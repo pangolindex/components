@@ -1,7 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { getRouterContractDaaS } from '@pangolindex//utils';
-import { ZERO_ADDRESS } from '@pangolindex/constants';
-import { useChainId, useLibrary } from '@pangolindex/hooks';
+import { ZERO_ADDRESS, getRouterContractDaaS, useChainId, useLibrary } from '@pangolindex/shared';
 import { NEVER_RELOAD, useSingleCallResult } from '@pangolindex/state';
 import { useEffect, useMemo } from 'react';
 import { useSwapState } from './atom';
