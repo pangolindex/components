@@ -1,6 +1,5 @@
 import { useOnClickOutside } from 'src/useOnClickOutside';
 import useParsedQueryString from 'src/useParsedQueryString';
-import { useChainId, useLibrary, usePangolinWeb3 } from './provider';
 import { useApproveCallbackFromTradeHook, useApproveCallbackHook } from './useApproveCallback';
 import { ApprovalState } from './useApproveCallback/constant';
 import { useApproveCallback } from './useApproveCallback/evm';
@@ -14,9 +13,6 @@ import { useUSDCPrice } from './useUSDCPrice/evm';
 
 // hooks
 export {
-  usePangolinWeb3,
-  useChainId,
-  useLibrary,
   useUSDCPrice,
   useUSDCPriceHook,
   useApproveCallbackHook,

@@ -1,4 +1,4 @@
-import { useChainId } from '@pangolindex/hooks';
+import { useChainId } from '@pangolindex/shared';
 import { GraphQLClient } from 'graphql-request';
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';

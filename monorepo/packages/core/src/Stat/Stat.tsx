@@ -1,6 +1,5 @@
-import { useChainId } from '@pangolindex/hooks';
 import { Currency, Token, WAVAX } from '@pangolindex/sdk';
-import { ThemeColorsType } from '@pangolindex/theme';
+import { ThemeColorsType, useChainId } from '@pangolindex/shared';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';

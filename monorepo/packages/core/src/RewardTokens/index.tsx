@@ -1,6 +1,5 @@
-import { PNG } from '@pangolindex/constants';
-import { useChainId } from '@pangolindex/hooks';
 import { Token } from '@pangolindex/sdk';
+import { PNG, useChainId } from '@pangolindex/shared';
 import React, { useMemo } from 'react';
 import { Box } from '../Box';
 import CurrencyLogo from '../CurrencyLogo';

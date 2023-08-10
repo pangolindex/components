@@ -1,4 +1,4 @@
-import { useTranslation } from '@pangolindex/locales';
+import { useTranslation } from '@pangolindex/shared';
 import React, { useContext, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { ArrowLeft, ArrowRight } from 'react-feather';

@@ -1,4 +1,4 @@
-import { useTranslation } from '@pangolindex/locales';
+import { useTranslation } from '@pangolindex/shared';
 import React, { useContext } from 'react';
 import Select, { MenuPlacement, MultiValue, OptionsOrGroups, SingleValue } from 'react-select';
 import { ThemeContext } from 'styled-components';
@@ -116,7 +116,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       }}
       {...(menuPlacement && { menuPlacement })}
       defaultValue={defaultValue}
-      placeholder={placeHolder || (t('dropdown.select') as string)}
+      placeholder={placeHolder || t('dropdown.select')}
       isMulti={isMulti}
       isSearchable={isSearchable}
       styles={colourStyles}
