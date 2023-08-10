@@ -1,18 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
-import {
-  INITIAL_ALLOWED_SLIPPAGE,
-  ZERO_ADDRESS,
-  useLibrary,
-  usePangolinWeb3,
-  useChainId,
-  calculateGasMargin,
-  getRouterContract,
-  getRouterContractDaaS,
-  isAddress,
-  isZero,
-  shortenAddress,
-} from '@pangolindex/shared';
 import { useENS, useTransactionDeadline } from '@pangolindex/hooks';
 import {
   CHAINS,
@@ -25,6 +12,19 @@ import {
   Trade,
   TradeType,
 } from '@pangolindex/sdk';
+import {
+  INITIAL_ALLOWED_SLIPPAGE,
+  ZERO_ADDRESS,
+  calculateGasMargin,
+  getRouterContract,
+  getRouterContractDaaS,
+  isAddress,
+  isZero,
+  shortenAddress,
+  useChainId,
+  useLibrary,
+  usePangolinWeb3,
+} from '@pangolindex/shared';
 import { useTransactionAdder } from '@pangolindex/state';
 import { useMemo } from 'react';
 import { BIPS_BASE } from 'src/constants';

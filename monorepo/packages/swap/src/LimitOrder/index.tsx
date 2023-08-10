@@ -1,15 +1,15 @@
 /* eslint-disable max-lines */
-import {
-  NATIVE,
-  useTranslation,
-  useChainId,
-  usePangolinWeb3,
-  capitalizeWord,
-  unwrappedToken,
-} from '@pangolindex/shared';
 import { Box, Button, Text, ToggleButtons } from '@pangolindex/core';
 import { ApprovalState } from '@pangolindex/hooks';
 import { CAVAX, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
+import {
+  NATIVE,
+  capitalizeWord,
+  unwrappedToken,
+  useChainId,
+  usePangolinWeb3,
+  useTranslation,
+} from '@pangolindex/shared';
 import { useTransactionAdder, useUserSlippageTolerance, useWalletModalToggle } from '@pangolindex/state';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';

@@ -1,18 +1,18 @@
+import { Text } from '@pangolindex/core';
+import { ElixirTrade, Percent, Trade, TradeType } from '@pangolindex/sdk';
 import {
   INITIAL_ALLOWED_SLIPPAGE,
   ONE_BIPS,
-  useTranslation,
   computeSlippageAdjustedAmounts,
+  useTranslation,
 } from '@pangolindex/shared';
-import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
+import { useUserSlippageTolerance } from '@pangolindex/state';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
-import { Text } from '@pangolindex/core';
-import { ElixirTrade, Percent, Trade, TradeType } from '@pangolindex/sdk';
-import { useUserSlippageTolerance } from '@pangolindex/state';
 import { BIPS_BASE } from 'src/constants';
 import { Field } from 'src/state/pswap/atom';
 import { useDaasFeeInfo } from 'src/state/pswap/hooks/common';
+import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { ContentBox, DataBox, ValueText } from './styled';
 
 type Props = { trade: Trade | ElixirTrade };

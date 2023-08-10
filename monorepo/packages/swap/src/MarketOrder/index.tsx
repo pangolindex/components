@@ -1,18 +1,4 @@
 /* eslint-disable max-lines */
-import {
-  DEFAULT_TOKEN_LISTS_SELECTED,
-  TRUSTED_TOKEN_ADDRESSES,
-  ZERO_ADDRESS,
-  useChainId,
-  usePangolinWeb3,
-  useTranslation,
-  Hedera,
-  hederaFn,
-  isTokenOnList,
-  unwrappedToken,
-  validateAddressMapping,
-  wrappedCurrency,
-} from '@pangolindex/shared';
 import { Box, Button, Text, TextInput } from '@pangolindex/core';
 import useENS, { ApprovalState, useApproveCallbackFromTradeHook } from '@pangolindex/hooks';
 import {
@@ -26,6 +12,20 @@ import {
   WAVAX,
   currencyEquals,
 } from '@pangolindex/sdk';
+import {
+  DEFAULT_TOKEN_LISTS_SELECTED,
+  Hedera,
+  TRUSTED_TOKEN_ADDRESSES,
+  ZERO_ADDRESS,
+  hederaFn,
+  isTokenOnList,
+  unwrappedToken,
+  useChainId,
+  usePangolinWeb3,
+  useTranslation,
+  validateAddressMapping,
+  wrappedCurrency,
+} from '@pangolindex/shared';
 import { useExpertModeManager, useUserSlippageTolerance, useWalletModalToggle } from '@pangolindex/state';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';

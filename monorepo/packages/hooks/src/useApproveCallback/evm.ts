@@ -9,9 +9,9 @@ import {
   calculateGasMargin,
   computeSlippageAdjustedAmounts,
   usePangolinWeb3,
+  useTokenContract,
   wait,
   waitForTransaction,
-  useTokenContract
 } from '@pangolindex/shared';
 import { useHasPendingApproval, useIsApprovingInfinite, useTransactionAdder } from '@pangolindex/state';
 import { useCallback, useMemo, useState } from 'react';

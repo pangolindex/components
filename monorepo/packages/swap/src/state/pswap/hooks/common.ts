@@ -1,19 +1,6 @@
 /* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
 import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
-import {
-  NATIVE,
-  ROUTER_ADDRESS,
-  ROUTER_DAAS_ADDRESS,
-  useChainId,
-  usePangolinWeb3,
-  useTranslation,
-  computeSlippageAdjustedAmounts,
-  isAddress,
-  isEvmChain,
-  validateAddressMapping,
-  wrappedCurrency,
-} from '@pangolindex/shared';
 import { useParsedQueryString } from '@pangolindex/hooks';
 import {
   CAVAX,
@@ -28,6 +15,19 @@ import {
   TokenAmount,
   Trade,
 } from '@pangolindex/sdk';
+import {
+  NATIVE,
+  ROUTER_ADDRESS,
+  ROUTER_DAAS_ADDRESS,
+  computeSlippageAdjustedAmounts,
+  isAddress,
+  isEvmChain,
+  useChainId,
+  usePangolinWeb3,
+  useTranslation,
+  validateAddressMapping,
+  wrappedCurrency,
+} from '@pangolindex/shared';
 import { useUserSlippageTolerance } from '@pangolindex/state';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';

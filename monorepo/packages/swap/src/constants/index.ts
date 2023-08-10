@@ -1,5 +1,5 @@
-import { DAIe, PNG, USDC, USDCe, USDTe } from '@pangolindex/shared';
 import { ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
+import { DAIe, PNG, USDC, USDCe, USDTe } from '@pangolindex/shared';
 
 // a list of tokens by chain
 type ChainTokenList = {

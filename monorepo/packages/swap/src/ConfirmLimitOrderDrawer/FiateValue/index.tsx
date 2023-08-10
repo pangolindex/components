@@ -1,8 +1,8 @@
 import { Text } from '@pangolindex/core';
 import { CurrencyAmount, Percent } from '@pangolindex/sdk';
-import { warningSeverity } from 'src/utils/prices';
 import React, { useContext, useMemo } from 'react';
 import { ThemeContext } from 'styled-components';
+import { warningSeverity } from 'src/utils/prices';
 
 export function FiatValue({
   fiatValue,

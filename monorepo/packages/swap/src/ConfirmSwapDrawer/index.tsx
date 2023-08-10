@@ -1,13 +1,13 @@
 import { Box, Button, CurrencyLogo, Drawer, Loader, Text } from '@pangolindex/core';
+import { ElixirTrade, Trade, TradeType } from '@pangolindex/sdk';
 import {
   Trans,
-  useTranslation,
-  usePangolinWeb3,
   computeSlippageAdjustedAmounts,
   getEtherscanLink,
   tradeMeaningfullyDiffers,
+  usePangolinWeb3,
+  useTranslation,
 } from '@pangolindex/shared';
-import { ElixirTrade, Trade, TradeType } from '@pangolindex/sdk';
 import React, { useContext, useMemo } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';

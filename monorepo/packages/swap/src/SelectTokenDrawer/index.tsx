@@ -1,6 +1,6 @@
 import { Box, Drawer, Text, TextInput } from '@pangolindex/core';
-import { useChainId, useTranslation, Hedera } from '@pangolindex/shared';
 import { CAVAX, ChainId, Currency, Token, WAVAX, currencyEquals } from '@pangolindex/sdk';
+import { Hedera, useChainId, useTranslation } from '@pangolindex/shared';
 import { useAddUserToken } from '@pangolindex/state';
 import deepEqual from 'deep-equal';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';

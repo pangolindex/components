@@ -1,5 +1,5 @@
 import { CAVAX } from '@pangolindex/sdk';
-import { wrappedCurrency, useChainId } from '@pangolindex/shared';
+import { useChainId, wrappedCurrency } from '@pangolindex/shared';
 import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { Field } from '../atom';

@@ -1,15 +1,15 @@
 import { parseUnits } from '@ethersproject/units';
+import { Token, Trade } from '@pangolindex/sdk';
 import {
+  FunctionCallOptions,
   INITIAL_ALLOWED_SLIPPAGE,
   ONE_YOCTO_NEAR,
+  Transaction,
+  nearFn,
   useChainId,
   useLibrary,
   usePangolinWeb3,
-  FunctionCallOptions,
-  Transaction,
-  nearFn,
 } from '@pangolindex/shared';
-import { Token, Trade } from '@pangolindex/sdk';
 import { useTransactionAdder } from '@pangolindex/state';
 import { useMemo } from 'react';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS } from 'src/connectors';

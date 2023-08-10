@@ -1,5 +1,5 @@
-import { useChainId, usePangolinWeb3, Transaction, nearFn } from '@pangolindex/shared';
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
+import { Transaction, nearFn, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
 import { useTransactionAdder } from '@pangolindex/state';
 import { parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';
