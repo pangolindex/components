@@ -1,9 +1,15 @@
 import { Contract } from '@ethersproject/contracts';
-import { ERC20_ABI, MULTICALL_ABI, WETH_ABI } from '@pangolindex/abis';
-import { MULTICALL_NETWORKS, ZERO_ADDRESS } from '@pangolindex/constants';
-import { useLibrary, usePangolinWeb3 } from '@pangolindex/hooks';
 import { WAVAX } from '@pangolindex/sdk';
-import { getContract } from '@pangolindex/utils';
+import {
+  ERC20_ABI,
+  MULTICALL_ABI,
+  MULTICALL_NETWORKS,
+  WETH_ABI,
+  ZERO_ADDRESS,
+  getContract,
+  useLibrary,
+  usePangolinWeb3,
+} from '@pangolindex/shared';
 import { useMemo } from 'react';
 
 // returns null on errors

@@ -1,9 +1,7 @@
-import { USDCe } from '@pangolindex/constants';
 import { ChainId, Currency, JSBI, Price, WAVAX, currencyEquals } from '@pangolindex/sdk';
-import { wrappedCurrency } from '@pangolindex/utils';
+import { USDCe, useChainId, wrappedCurrency } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { PairState, usePairsContract } from 'src/data/Reserves';
-import { useChainId } from '../provider';
 
 /**
  * Returns the price in USDC of the input currency

@@ -1,15 +1,21 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, ZERO_ADDRESS } from '@pangolindex/constants';
 import { CAVAX, ChainId, CurrencyAmount, JSBI, TokenAmount, Trade } from '@pangolindex/sdk';
+import {
+  Field,
+  ROUTER_ADDRESS,
+  ROUTER_DAAS_ADDRESS,
+  ZERO_ADDRESS,
+  computeSlippageAdjustedAmounts,
+  hederaFn,
+  usePangolinWeb3,
+  wait,
+} from '@pangolindex/shared';
 import { useHasPendingApproval, useIsApprovingInfinite, useTransactionAdder } from '@pangolindex/state';
-import { computeSlippageAdjustedAmounts, hederaFn, wait } from '@pangolindex/utils';
 import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import { Field } from 'src/state/pswap/atom';
 import { fetchHederaPGLToken } from 'src/state/pwallet/hooks/hedera';
 import { useHederaTokenAllowance } from 'src/useTokenAllowance/hedera';
 import { useHederaTotalSupply } from 'src/useTotalSupply/hedera';
-import { usePangolinWeb3 } from '../index';
 import { ApprovalState } from './constant';
 
 // returns a variable indicating the state of the approval and a function which approves if necessary or early returns

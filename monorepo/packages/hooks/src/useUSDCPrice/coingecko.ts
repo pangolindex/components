@@ -1,11 +1,9 @@
 import { parseUnits } from '@ethersproject/units';
-import { USDC } from '@pangolindex/constants';
 import { Currency, Price } from '@pangolindex/sdk';
-import { decimalToFraction, wrappedCurrency } from '@pangolindex/utils';
+import { USDC, decimalToFraction, useChainId, wrappedCurrency } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
 import { useTokenCurrencyPriceHook } from '../multiChainsHooks';
-import { useChainId } from '../provider';
 
 /**
  * this hook which is used to fetch token price in usd

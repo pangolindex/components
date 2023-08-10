@@ -1,13 +1,20 @@
 import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
-import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, ZERO_ADDRESS } from '@pangolindex/constants';
 import { CAVAX, CHAINS, ChainId, CurrencyAmount, ElixirTrade, TokenAmount, Trade } from '@pangolindex/sdk';
+import {
+  Field,
+  ROUTER_ADDRESS,
+  ROUTER_DAAS_ADDRESS,
+  ZERO_ADDRESS,
+  calculateGasMargin,
+  computeSlippageAdjustedAmounts,
+  usePangolinWeb3,
+  wait,
+  waitForTransaction,
+} from '@pangolindex/shared';
 import { useHasPendingApproval, useIsApprovingInfinite, useTransactionAdder } from '@pangolindex/state';
-import { calculateGasMargin, computeSlippageAdjustedAmounts, wait, waitForTransaction } from '@pangolindex/utils';
 import { useCallback, useMemo, useState } from 'react';
-import { Field } from 'src/state/pswap/atom';
 import { useTokenAllowance } from 'src/useTokenAllowance/evm';
-import { usePangolinWeb3 } from '../provider';
 import { useTokenContract } from '../useContract';
 import { ApprovalState } from './constant';
 

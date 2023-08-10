@@ -1,9 +1,9 @@
 import { FunctionFragment, Interface } from '@ethersproject/abi';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
-import { useChainId } from '@pangolindex/hooks';
+import { useChainId } from '@pangolindex/shared';
 import { useEffect, useMemo } from 'react';
-import { useBlockNumber } from '../papplication/hooks';
+import { useBlockNumber } from '../application/hooks';
 import { Call, ListenerOptions, parseCallKey, toCallKey, useMulticallAtom } from './atom';
 
 export interface Result extends ReadonlyArray<any> {

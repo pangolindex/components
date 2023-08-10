@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { PNG } from '@pangolindex/constants';
 import { ChainId, Token, TokenAmount } from '@pangolindex/sdk';
+import { PNG } from '@pangolindex/shared';
 import { useSingleCallResult } from '@pangolindex/state';
 import { useTokenContract } from '../useContract';
 

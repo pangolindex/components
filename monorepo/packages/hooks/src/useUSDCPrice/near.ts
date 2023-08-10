@@ -1,9 +1,7 @@
 import { parseUnits } from '@ethersproject/units';
-import { NEAR_API_BASE_URL, USDCe } from '@pangolindex/constants';
 import { Currency, Price, TokenAmount } from '@pangolindex/sdk';
-import { wrappedCurrency } from '@pangolindex/utils';
+import { NEAR_API_BASE_URL, USDCe, useChainId, wrappedCurrency } from '@pangolindex/shared';
 import { useEffect, useMemo, useState } from 'react';
-import { useChainId } from '../index';
 
 export function useNearUSDCPrice(currency?: Currency): Price | undefined {
   const [result, setResult] = useState<string>('');

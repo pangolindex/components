@@ -1,4 +1,4 @@
-import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '@pangolindex/constants';
+import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '@pangolindex/shared';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { useCallback } from 'react';

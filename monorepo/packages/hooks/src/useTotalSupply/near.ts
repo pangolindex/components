@@ -1,6 +1,5 @@
-import { useChainId } from '@pangolindex/hooks';
 import { Pair, Token, TokenAmount } from '@pangolindex/sdk';
-import { nearFn } from '@pangolindex/utils';
+import { nearFn , useChainId} from '@pangolindex/shared';
 import { useEffect, useMemo, useState } from 'react';
 
 export function useNearTotalSupply(tokenOrPair?: Token | Pair): TokenAmount | undefined {

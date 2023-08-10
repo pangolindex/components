@@ -1,9 +1,9 @@
 import { Contract } from '@ethersproject/contracts';
-import { useChainId, useDebounce, useMulticallContract } from '@pangolindex/hooks';
+import { useDebounce, useMulticallContract } from '@pangolindex/hooks';
 import { ChainId, NetworkType } from '@pangolindex/sdk';
-import { CancelledError, Hedera, RetryableError, chunkArray, getChainByNumber, retry } from '@pangolindex/utils';
+import { useChainId, CancelledError, Hedera, RetryableError, chunkArray, getChainByNumber, retry } from '@pangolindex/shared';
 import { useEffect, useMemo, useRef } from 'react';
-import { useBlockNumber } from '../papplication/hooks';
+import { useBlockNumber } from '../application/hooks';
 import { Call, MulticallState, parseCallKey, useMulticallAtom } from './atom';
 
 // chunk calls so we do not exceed the gas limit

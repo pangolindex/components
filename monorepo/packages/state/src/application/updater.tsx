@@ -1,4 +1,5 @@
-import { useChainId, useDebounce, useLibrary, usePangolinWeb3 } from '@pangolindex/hooks';
+import { useChainId, useLibrary, usePangolinWeb3 } from '@pangolindex/shared';
+import { useDebounce } from '@pangolindex/hooks';
 import { ChainId } from '@pangolindex/sdk';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';

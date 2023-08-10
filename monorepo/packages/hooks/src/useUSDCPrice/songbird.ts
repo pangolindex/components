@@ -1,6 +1,5 @@
-import { USDC } from '@pangolindex/constants';
 import { ChainId, Currency, Price } from '@pangolindex/sdk';
-import { decimalToFraction, wrappedCurrency } from '@pangolindex/utils';
+import { USDC, decimalToFraction, wrappedCurrency } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
 import { useTokenCurrencyPrice } from '../useCurrencyPrice';
