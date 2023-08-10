@@ -29,7 +29,7 @@ import {
   Trade,
   currencyEquals,
 } from '@pangolindex/sdk';
-import { TokenAddressMap } from '../state/plists/hooks';
+import { TokenAddressMap } from '../types';
 import { Hedera } from './hedera';
 import { wait } from './retry';
 // import { Bound } from 'src/state/pmint/elixir/atom';  TODO: when add elixir

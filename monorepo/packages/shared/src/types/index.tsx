@@ -25,3 +25,8 @@ export class WrappedTokenInfo extends Token {
 export type TokenAddressMap = Readonly<{
   [chainId in ChainId]: Readonly<{ [tokenAddress: string]: WrappedTokenInfo }>;
 }>;
+
+export enum Field {
+  INPUT = 'INPUT',
+  OUTPUT = 'OUTPUT',
+}

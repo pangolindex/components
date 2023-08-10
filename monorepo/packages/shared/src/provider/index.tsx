@@ -1,14 +1,18 @@
+import { getAddress } from '@ethersproject/address';
 import { ExternalProvider, Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { ALL_CHAINS, CHAINS, ChainId } from '@pangolindex/sdk';
-import { useApplicationState } from '@pangolindex/state';
 import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
-import { PROVIDER_MAPPING } from '../constants';
-import { isAddress } from '../utils';
-// TODO : Move Wallet Package
-// import { hashConnect, network } from 'src/connectors';
-// import { HashConnectEvents, hashconnectEvent } from 'src/connectors/HashConnector';
+
+// @ts-expect-error because this code we enable after wallet package done
+// TODO: when add wallet package
+import { network } from 'src/connectors';
+
+// @ts-expect-error because this code we enable after wallet package done
+// TODO: when add wallet package
+import { PROVIDER_MAPPING } from 'src/constants/wallets';
+import { isAddress, isEvmChain } from '../utils';
 
 interface Web3State {
   library: Web3ProviderEthers | undefined;
@@ -39,42 +43,14 @@ export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
   chainId,
   account,
 }: Web3ProviderProps) => {
-  const { setAvailableHashpack } = useApplicationState();
-
-  const { activate } = useWeb3React();
-
-  // TODO: Wallet package
-  // this is special case for hashpack wallet
-  // we need to listen for
-  // 1. hashpack wallet installed or not event and we are storing this boolean to redux so that
-  // 2. if user open pangolin in dApp browser then we need to manually calls ACTIVATE_CONNECTOR
-  // in walletModal we can re-render as value updates
-  // useEffect(() => {
-  //   const emitterFn = (isHashpackAvailable: boolean) => {
-  //     console.log('received hashpack emit event CHECK_EXTENSION in provider', isHashpackAvailable);
-  //     setAvailableHashpack(true);
-  //   };
-  //   hashconnectEvent.on(HashConnectEvents.CHECK_EXTENSION, emitterFn);
-
-  //   // Here when load in iframe  we need to internally activate connector to connect account
-  //   const emitterFnForActivateConnector = (isIframeEventFound: boolean) => {
-  //     console.log('received hashpack emit event ACTIVATE_CONNECTOR in provider', isIframeEventFound);
-  //     activate(hashConnect);
-  //   };
-  //   hashconnectEvent.once(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
-
-  //   return () => {
-  //     console.log('removing hashpack CHECK_EXTENSION event listener');
-  //     hashconnectEvent.off(HashConnectEvents.CHECK_EXTENSION, emitterFn);
-  //     console.log('removing hashpack ACTIVATE_CONNECTOR event listener');
-  //     hashconnectEvent.off(HashConnectEvents.ACTIVATE_CONNECTOR, emitterFnForActivateConnector);
-  //   };
-  // }, []);
-
   const state = useMemo(() => {
-    let normalizedAccount;
+    let normalizedAccount: typeof account;
     if (chainId) {
-      normalizedAccount = CHAINS?.[chainId as ChainId]?.evm ? isAddress(account) : account;
+      if (isEvmChain(chainId) && isAddress(account)) {
+        normalizedAccount = getAddress(account as string);
+      } else {
+        normalizedAccount = account;
+      }
     }
 
     return {
@@ -104,6 +80,11 @@ export const useChainId = () => {
 
 export const useChain = (chainId: number) => {
   return ALL_CHAINS.filter((chain) => chain.chain_id === chainId)[0];
+};
+
+export const usePngSymbol = () => {
+  const { chainId } = usePangolinWeb3();
+  return CHAINS[chainId || ChainId.AVALANCHE].png_symbol!;
 };
 
 // library -> web3.js/eip-1993/ethers provider
@@ -156,7 +137,8 @@ export function useLibrary(): { library: any; provider: any } {
       }
 
       const finalEthersLibrary = ethersConnectorProvider || ethersUserProvidedLibrary || ethersDefaultProvider;
-      const extendedWeb3Provider = finalEthersLibrary && (PROVIDER_MAPPING as any)[chainId]?.(finalEthersLibrary);
+      const extendedWeb3Provider =
+        finalEthersLibrary && (PROVIDER_MAPPING as any)[chainId]?.(finalEthersLibrary, chainId);
 
       setResult({ library: finalEthersLibrary, provider: extendedWeb3Provider });
     }

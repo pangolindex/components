@@ -15,6 +15,9 @@ import { PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from '@pangoli
 import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { ethers } from 'ethers';
+
+// @ts-expect-error because this code we enable after wallet package done
+// TODO: when add wallet package
 import { HashConnector, hashConnect } from 'src/connectors';
 
 export const TRANSACTION_MAX_FEES = {

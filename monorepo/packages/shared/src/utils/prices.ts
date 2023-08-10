@@ -1,6 +1,6 @@
 import { CurrencyAmount, ElixirTrade, Trade } from '@pangolindex/sdk';
-import { Field } from '../state/pswap/atom';
-import { basisPointsToPercent } from './index';
+import { Field } from '../types';
+import { basisPointsToPercent } from './common';
 
 // computes the minimum amount out and maximum amount in for a trade given a user specified allowed slippage in bips
 export function computeSlippageAdjustedAmounts(

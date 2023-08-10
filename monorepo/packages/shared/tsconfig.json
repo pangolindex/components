@@ -5,6 +5,6 @@
     "outDir": "lib",
     "rootDir": "src"
   },
-  "include": ["src", "types.d.ts"],
+  "include": ["src", "./src/**/*.ts", "./src/**/*.tsx", "./index.d.ts"],
   "exclude": ["dist", "build", "lib", "node_modules"]
 }
