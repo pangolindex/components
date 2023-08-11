@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Box, Button, Logo } from '@pangolindex/core';
+import styled from 'styled-components';
 
 export const Wrapper = styled(Box)`
   display: flex;

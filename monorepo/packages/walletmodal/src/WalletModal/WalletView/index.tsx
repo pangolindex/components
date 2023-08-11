@@ -1,10 +1,10 @@
+import { Box, Button, Text } from '@pangolindex/core';
+import { useTranslation } from '@pangolindex/shared';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AlertCircle, ArrowLeft, Download, LogIn, LogOut } from 'react-feather';
-import { useTranslation } from '@pangolindex/shared';
 import QRCode from 'react-qr-code';
-import { ThemeContext } from 'styled-components';
-import { Box, Button, Text } from '@pangolindex/core';
 import { useActiveWeb3React } from 'src/hooks/useConnector'; // TODO fix the package
+import { ThemeContext } from 'styled-components';
 import { Wallet } from 'src/wallet/classes/wallet';
 import { BackButton, ErrorButton, Frame, Link, Loader, QRCodeBox, StyledLogo, Wrapper } from './styles';
 

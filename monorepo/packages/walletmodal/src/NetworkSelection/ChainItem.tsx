@@ -1,6 +1,6 @@
-import React from 'react';
 import { Text } from '@pangolindex/core';
 import { Chain } from '@pangolindex/sdk';
+import React from 'react';
 import { Item, StyledLogo } from './styled';
 
 interface Props {

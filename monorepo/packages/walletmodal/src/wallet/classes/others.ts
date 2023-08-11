@@ -1,12 +1,12 @@
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
 import { NetworkType } from '@pangolindex/sdk';
+import { IS_IN_IFRAME } from '@pangolindex/shared';
 import { isMobile } from 'react-device-detect';
-import coinbaseWalletIcon from 'src/assets/svg/coinbaseWalletIcon.svg';
-import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
-import walletConnectIcon from 'src/assets/svg/walletConnectIcon.svg';
 import { gnosisSafe, walletlink } from 'src/connectors'; // TODO FIX
 import { WalletConnectConnector, WalletConnectConnectorArguments } from 'src/connectors/WalletConnectConnector'; // TODO FIX
-import { IS_IN_IFRAME } from '@pangolindex/shared';
+import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
+import coinbaseWalletIcon from 'src/assets/svg/coinbaseWalletIcon.svg';
+import walletConnectIcon from 'src/assets/svg/walletConnectIcon.svg';
 import { Wallet, activeFunctionType } from './wallet';
 
 export class GnosisSafeWallet extends Wallet {

@@ -1,7 +1,7 @@
+import { Button } from '@pangolindex/core';
+import { usePangolinWeb3 } from '@pangolindex/shared';
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
-import { usePangolinWeb3 } from '@pangolindex/shared';
-import { Button } from '@pangolindex/core';
 import Docs from './docs.md';
 import { argTypes } from './storiesConstants';
 import WalletModal from '.';

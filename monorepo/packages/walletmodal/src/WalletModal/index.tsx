@@ -1,4 +1,7 @@
+import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@pangolindex/core';
 import { CHAINS, Chain, ChainId } from '@pangolindex/sdk';
+import { MEDIA_WIDTHS, useDebounce, usePangolinWeb3, useTranslation, wait } from '@pangolindex/shared';
+import { useApplicationState, useUserAtom } from '@pangolindex/state';
 import { UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector'; // TODO FIX
 import { useWeb3React } from '@web3-react/core';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -7,9 +10,6 @@ import { Search } from 'react-feather';
 import { useMedia } from 'react-use';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { ThemeContext } from 'styled-components';
-import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@pangolindex/core';
-import { usePangolinWeb3, useDebounce, useTranslation, MEDIA_WIDTHS, wait } from '@pangolindex/shared';
-import { useApplicationState, useUserAtom } from '@pangolindex/state';
 import { changeNetwork, getWalletKey } from 'src/utils';
 import { SUPPORTED_CHAINS, SUPPORTED_WALLETS } from 'src/wallet';
 import { Wallet } from 'src/wallet/classes/wallet';
