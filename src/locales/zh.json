@@ -273,16 +273,16 @@
     "viewExplorer": "在资源管理器上查看"
   },
   "walletModal": {
-    "wrongNetwork": "错误的网络",
-    "errorConnecting": "连接错误",
-    "pleaseConnectAvalanche": "请连接到适当的 Avalanche 网络。",
-    "switchAvalanche": "切换到 Avalanche 链",
-    "errorConnectingRefresh": "连接错误。尝试刷新页面。",
+    "errorConnecting": "连接错误，请重试。",
     "connectToWallet": "连接到钱包",
-    "newToAvalanche": "Avalanche 的新手? ",
-    "learnMoreWallet": "了解有关设置钱包的更多信息",
-    "initializing": "初始化...",
-    "tryAgain": "再试一次"
+    "connectWallet": "连接钱包",
+    "disconnect": "断开",
+    "initializing": "正在初始化...",
+    "tryAgain": "再试一次",
+    "pleaseInstall": "请安装。",
+    "trySearchChains": "尝试搜索连锁店",
+    "noWalletFound": "找不到钱包。",
+    "noChainsFound": "找不到链。"
   },
   "web3ReactManager": {
     "unknownError": "哎呀！出现未知错误。请刷新页面，或从其他浏览器或设备访问。"
@@ -762,6 +762,7 @@
   },
   "elixir": {
     "menuTypes": {
+      "topPools": "Top Pools",
       "allPositions": "All Positions",
       "openPositions": "Open Positions",
       "closedPositions": "Closed Positions"
@@ -822,7 +823,8 @@
     "singleAssetDeposit": "The market price is outside your specified price range. Single-asset deposit only.",
     "initializedLiquidity": "This pool must be initialized before you can add liquidity. To initialize, select a starting price for the pool. Then, enter your liquidity price range and deposit amount. Gas fees will be higher than usual due to the initialization transaction.",
     "checkClassicFarms": "< Check Classic Farms",
-    "auditWarning": "ELIXIR LIQUIDITY CONTRACTS ARE IN BETA AND UNAUDITED. USE AT YOUR OWN RISK"
+    "auditWarning": "ELIXIR LIQUIDITY CONTRACTS ARE IN BETA AND UNAUDITED. USE AT YOUR OWN RISK",
+    "totalValueLocked": "Total Value Locked"
   },
   "bridge": {
     "selectChain": "Select Chain",
@@ -928,6 +930,8 @@
     "to": "To",
     "remove": "Remove",
     "connectWallet": "Connect Wallet",
+    "enterAmount": "输入金额",
+    "insufficientBalance": "{{ symbol }}余额不足",
     "approving": "Approving",
     "approve": "Approve",
     "approved": "Approved",

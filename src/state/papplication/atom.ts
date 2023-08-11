@@ -1,8 +1,10 @@
 import { ChainId } from '@pangolindex/sdk';
 import { TokenList } from '@pangolindex/token-lists';
 import { atom, useAtom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import { nanoid } from 'nanoid';
 import { useCallback } from 'react';
+import { SUPPORTED_WALLETS } from 'src/wallet';
 
 export type PopupContent =
   | {
@@ -36,6 +38,7 @@ export interface ApplicationState {
   readonly openModal: ApplicationModal | null;
   readonly selectedPoolId: string | undefined;
   readonly isAvailableHashpack: boolean;
+  readonly wallets: typeof SUPPORTED_WALLETS;
 
   readonly useSubgraph: {
     [ChainId.FUJI]: boolean;
@@ -67,6 +70,8 @@ export interface ApplicationState {
     [ChainId.EVMOS_TESTNET]: boolean;
     [ChainId.EVMOS_MAINNET]: boolean;
   };
+
+  readonly walletModalChainId: number | undefined;
 }
 
 const useSubgraphInitialState = {
@@ -105,7 +110,13 @@ const popupListAtom = atom<ApplicationState['popupList']>([]);
 const openModalAtom = atom<ApplicationState['openModal']>(null);
 const selectedPoolIdAtom = atom<ApplicationState['selectedPoolId']>(undefined);
 const isAvailableHashpackAtom = atom<ApplicationState['isAvailableHashpack']>(false);
-const useSubgraphAtom = atom<ApplicationState['useSubgraph']>(useSubgraphInitialState);
+const walletsAtom = atom<ApplicationState['wallets']>(SUPPORTED_WALLETS);
+const subgraphLocalstorageKey = 'subgraph_pangolin_storage';
+const useSubgraphAtom = atomWithStorage<ApplicationState['useSubgraph']>(
+  subgraphLocalstorageKey,
+  useSubgraphInitialState,
+);
+const walletModalChainIdAtom = atom<ApplicationState['walletModalChainId']>(undefined);
 
 export function useApplicationState() {
   const [blockNumbers, setBlockNumbers] = useAtom(blockNumbersAtom);
@@ -113,8 +124,10 @@ export function useApplicationState() {
   const [openModal, setOpenModal] = useAtom(openModalAtom);
   const [selectedPoolId, setSelectedPooId] = useAtom(selectedPoolIdAtom);
   const [isAvailableHashpack, setAvailableHashpack] = useAtom(isAvailableHashpackAtom);
+  const [wallets, setWallets] = useAtom(walletsAtom);
 
   const [useSubgraph, setUseSubgraph] = useAtom(useSubgraphAtom);
+  const [walletModalChainId, setWalletModalChainId] = useAtom(walletModalChainIdAtom);
 
   const updateBlockNumber = useCallback(
     ({ chainId, blockNumber }: { chainId: number; blockNumber: number }) => {
@@ -169,13 +182,17 @@ export function useApplicationState() {
     selectedPoolId,
     openModal,
     popupList,
+    wallets,
     useSubgraph,
+    walletModalChainId,
     updateBlockNumber,
     setAvailableHashpack,
     setSelectedPooId,
     setOpenModal,
+    setWallets,
     addPopup,
     removePopup,
     setUseSubgraph,
+    setWalletModalChainId,
   };
 }

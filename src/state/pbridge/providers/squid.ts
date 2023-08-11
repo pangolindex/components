@@ -32,7 +32,6 @@ export const getSquidRoutes: GetRoutes = async ({
         ?.replace('0x0000000000000000000000000000000000000000', '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE') || '',
     ...((recipient || fromAddress) && { toAddress: recipient || fromAddress || '' }),
     slippage: parseFloat(slipLimit),
-    enableForecall: true,
     quoteOnly: recipient || fromAddress ? false : true,
   };
 

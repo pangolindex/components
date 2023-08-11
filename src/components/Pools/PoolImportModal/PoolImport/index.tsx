@@ -35,11 +35,12 @@ const PoolImport = ({ currency0, currency1, openTokenDrawer, setActiveField, onM
 
   const [pairState, pair] = usePair(currency0 ?? undefined, currency1 ?? undefined);
   const addPair = usePairAdder();
+
   useEffect(() => {
     if (pair) {
       addPair(pair);
     }
-  }, [pair, addPair]);
+  }, [pair?.liquidityToken?.address, addPair]);
 
   const validPairNoLiquidity: boolean =
     pairState === PairState.NOT_EXISTS ||

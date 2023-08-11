@@ -1,23 +1,21 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
-import { ALL_CHAINS, ChainId } from '@pangolindex/sdk';
+import { ALL_CHAINS, AVALANCHE_MAINNET, CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { InjectedConnector } from '@pangolindex/web3-react-injected-connector';
 import { TalismanConnector } from '@talismn/web3react-v6-connector';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { AvalancheCoreConnector } from './AvalancheCoreConnector';
 import { BitKeepConnector } from './BitKeepConnector';
 import { DefiConnector } from './DefiConnector';
-import { HashConnector } from './HashConnector';
+import { HashConnector, mainnetHederaConfig } from './HashConnector';
 import { NearConnector } from './NearConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
+import { WalletConnectConnector } from './WalletConnectConnector';
+import { WalletLinkConnector } from './WalletLinkConnector';
 
-export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter((chain) => chain.pangolin_is_live && chain.evm).map(
-  (chain) => chain.chain_id ?? 43114,
-);
-
-const NETWORK_URL = 'https://api.avax.network/ext/bc/C/rpc';
+export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter(
+  (chain) => (chain.pangolin_is_live || chain.supported_by_bridge) && chain?.network_type === NetworkType.EVM,
+).map((chain) => chain.chain_id ?? 43114);
 
 // Near Exchnage Contract
 export const NEAR_EXCHANGE_CONTRACT_ADDRESS = {
@@ -25,15 +23,14 @@ export const NEAR_EXCHANGE_CONTRACT_ADDRESS = {
   [ChainId.NEAR_TESTNET]: 'png-exchange-v1.testnet',
 };
 
-export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? ChainId.AVALANCHE.toString());
-
-if (typeof NETWORK_URL === 'undefined') {
-  throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`);
-}
+const urls = Object.entries(CHAINS).reduce((acc, [key, chain]) => {
+  acc[key] = chain.rpc_uri;
+  return acc;
+}, {} as { [x in string]: string });
 
 export const network = new NetworkConnector({
-  urls: { [NETWORK_CHAIN_ID]: NETWORK_URL },
-  defaultChainId: NETWORK_CHAIN_ID,
+  urls: urls,
+  defaultChainId: ChainId.AVALANCHE,
 });
 
 let networkLibrary: Web3Provider | undefined;
@@ -55,22 +52,24 @@ export const gnosisSafe = new SafeAppConnector({
 });
 
 export const walletlink = new WalletLinkConnector({
-  url: NETWORK_URL,
+  url: AVALANCHE_MAINNET.rpc_uri,
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
   appName: 'Pangolin',
   appLogoUrl: 'https://raw.githubusercontent.com/pangolindex/interface/master/public/images/384x384_App_Icon.png',
 });
 
-export const walletconnect = new WalletConnectConnector({
-  rpc: {
-    [ChainId.AVALANCHE]: NETWORK_URL,
-  },
-  qrcode: true,
-  bridge: 'https://bridge.walletconnect.org',
-});
-
+export const SUPPORTED_XDEFI_CHAINS = [
+  ChainId.ETHEREUM,
+  ChainId.AURORA,
+  ChainId.BSC,
+  ChainId.POLYGON,
+  ChainId.ARBITRUM,
+  ChainId.CRONOS,
+  ChainId.AVALANCHE,
+  ChainId.FANTOM,
+];
 export const xDefi = new DefiConnector({
-  supportedChainIds: [1, ChainId.AVALANCHE, ChainId.WAGMI, ChainId.COSTON, ChainId.SONGBIRD, ChainId.FLARE_MAINNET],
+  supportedChainIds: SUPPORTED_XDEFI_CHAINS,
 });
 
 export const bitKeep = new BitKeepConnector({
@@ -122,42 +121,14 @@ export const near = new NearConnector({
   config: getNearConfig('testnet'),
 });
 
-function getHederaMainnetConfig() {
-  return {
-    networkId: 'mainnet',
-    chainId: ChainId.HEDERA_MAINNET,
-    contractId: 'contract -id',
-  };
-}
-
-// TODO: set configuration dynemically as per env
-function getHederaConfig(env = 'testnet') {
-  switch (env) {
-    case 'production':
-    case 'mainnet':
-      return getHederaMainnetConfig();
-
-    case 'testnet':
-      return {
-        networkId: 'testnet',
-        chainId: ChainId.HEDERA_TESTNET,
-        contractId: 'contract -id',
-      };
-    default:
-      return getHederaMainnetConfig();
-  }
-}
-
-// TODO: this approach is only for short term, review this later
-const hederaNetwork = localStorage.getItem('hedera_network') ?? 'mainnet';
 export const hashConnect = new HashConnector({
   normalizeChainId: false,
   normalizeAccount: false,
-  config: getHederaConfig(hederaNetwork),
+  config: mainnetHederaConfig,
 });
 
 export const avalancheCore = new AvalancheCoreConnector({
-  supportedChainIds: [43113, 43114],
+  supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
-export { NearConnector, HashConnector };
+export { NearConnector, HashConnector, WalletConnectConnector };

@@ -3,7 +3,7 @@ import { ConnectorUpdate } from '@web3-react/types';
 import invariant from 'tiny-invariant';
 
 interface NetworkConnectorArguments {
-  urls: { [chainId: number]: string };
+  urls: { [chainId: string]: string };
   defaultChainId?: number;
 }
 
@@ -146,6 +146,11 @@ export class NetworkConnector extends AbstractConnector {
   private readonly providers: { [chainId: number]: MiniRpcProvider };
   private currentChainId: number;
 
+  /**
+   *
+   * @param urls Array with urls of RPC of each chain
+   * @param defaultChainId Default chain to connect
+   */
   constructor({ urls, defaultChainId }: NetworkConnectorArguments) {
     invariant(defaultChainId || Object.keys(urls).length === 1, 'defaultChainId is a required argument with >1 url');
     super({ supportedChainIds: Object.keys(urls).map((k): number => Number(k)) });
@@ -180,5 +185,10 @@ export class NetworkConnector extends AbstractConnector {
 
   public deactivate() {
     return;
+  }
+
+  public changeChain(chainId: number) {
+    this.currentChainId = chainId;
+    this.emitUpdate({ chainId });
   }
 }

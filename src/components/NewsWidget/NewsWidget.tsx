@@ -6,15 +6,13 @@ import ReactMarkdown from 'react-markdown';
 import Slider, { Settings } from 'react-slick';
 import remarkGfm from 'remark-gfm';
 import { ThemeContext } from 'styled-components';
+import { News, useGetNews } from 'src/apollo/news';
 import Earth from 'src/assets/images/earth.png';
 import { Box } from 'src/components/Box';
 import { Loader } from 'src/components/Loader';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { News, useGetNews } from 'src/state/pnews/hooks';
-import { ArrowWrapper, NewsContent, NewsDate, NewsSection, NewsTitle, SlickNext, TitleWrapper } from './styleds';
+import { ArrowWrapper, NewsContent, NewsSection, NewsTitle, SlickNext, TitleWrapper } from './styleds';
 import { NewsProps } from './types';
-// import 'slick-carousel/slick/slick.css';
-// import 'slick-carousel/slick/slick-theme.css';
 
 const NewsFeedSettings: Settings = {
   dots: false,
@@ -106,16 +104,10 @@ const NewsWidget: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
                           },
                         }}
                       >
-                        {element.content}
+                        {element.article}
                       </ReactMarkdown>
                     </Scrollbars>
                   </NewsContent>
-                  <NewsDate>
-                    {element?.updatedAt
-                      ? element?.updatedAt?.toLocaleTimeString()
-                      : element?.createdAt.toLocaleTimeString()}
-                    , {element.updatedAt ? element?.updatedAt?.toDateString() : element?.createdAt.toDateString()}
-                  </NewsDate>
                 </div>
               ))}
           </Slider>

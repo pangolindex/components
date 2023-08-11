@@ -21,7 +21,7 @@ import { usePangoChefCompoundCallbackHook } from 'src/state/ppangoChef/hooks';
 import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { calculateCompoundSlippage } from 'src/state/ppangoChef/utils';
 import { useAccountBalanceHook, useTokenBalancesHook } from 'src/state/pwallet/hooks';
-import { hederaFn } from 'src/utils/hedera';
+import { Hedera } from 'src/utils/hedera';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root, WarningMessageWrapper } from './styleds';
 
@@ -107,7 +107,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
   // if is png pool and not is wrapped token as second token (eg PNG/USDC, PSB/SDOOD)
   // or for hedera chain we want to consider pbar-whbar pool instead of pbar-hbar pool
   // so for hedera also we want to go into if condition
-  if ((isPNGPool && !isWrappedCurrencyPool) || (isPNGPool && hederaFn.isHederaChain(chainId))) {
+  if ((isPNGPool && !isWrappedCurrencyPool) || (isPNGPool && Hedera.isHederaChain(chainId))) {
     // need to calculate the token price in png, for this we using the token price on currency and png price on currency
     const token = token0.equals(png) ? token1 : token0;
     const tokenBalance = tokensBalances[token.address];
@@ -130,7 +130,7 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
       amount: numeral(amountToAdd.toFixed(2)).format('0.00a'),
       symbol: token.symbol,
     });
-  } else if (!hederaFn.isHederaChain(chainId)) {
+  } else if (!Hedera.isHederaChain(chainId)) {
     // for anothers chains we can send gas coin
     amountToAdd = CurrencyAmount.ether(
       pngPrice.equalTo('0') || earnedAmount.equalTo('0') ? '0' : pngPrice.raw.multiply(earnedAmount.raw).toFixed(0),
@@ -252,8 +252,8 @@ const CompoundV3 = ({ stakingInfo, onClose }: CompoundProps) => {
           chainId: chainId,
           tokenA: tokenA?.symbol,
           tokenb: tokenB?.symbol,
-          tokenA_Address: tokenA?.symbol,
-          tokenB_Address: tokenB?.symbol,
+          tokenA_Address: tokenA?.address,
+          tokenB_Address: tokenB?.address,
           pid: stakingInfo.pid,
           farmType: FARM_TYPE[3]?.toLowerCase(),
         });

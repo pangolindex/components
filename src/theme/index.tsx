@@ -235,6 +235,9 @@ export const defaultColors: Colors = {
     pathColor: green1,
     styledLine: black,
   },
+  dataTable: {
+    primaryColor: gray,
+  },
 
   primary: philippineYellow,
   mustardYellow,

@@ -16,14 +16,6 @@ export class NoAvalancheCoreError extends Error {
   }
 }
 
-export class UserRejectedRequestError extends Error {
-  public constructor() {
-    super();
-    this.name = this.constructor.name;
-    this.message = 'The user rejected the request.';
-  }
-}
-
 export class AvalancheCoreConnector extends AbstractConnector {
   private provider!: any;
 
@@ -64,6 +56,13 @@ export class AvalancheCoreConnector extends AbstractConnector {
   public async activate(): Promise<ConnectorUpdate> {
     if (!this.provider) {
       throw new NoAvalancheCoreError();
+    }
+
+    if (window?.avalanche?.on) {
+      window?.avalanche.on('chainChanged', this.handleChainChanged);
+      window?.avalanche.on('accountsChanged', this.handleAccountsChanged);
+      window?.avalanche.on('close', this.handleClose);
+      window?.avalanche.on('networkChanged', this.handleNetworkChanged);
     }
 
     // try to activate + get account via eth_requestAccounts
@@ -152,7 +151,12 @@ export class AvalancheCoreConnector extends AbstractConnector {
   }
 
   public deactivate() {
-    console.log('Deactivated');
+    if (window?.avalanche && window?.avalanche?.removeListener) {
+      window?.avalanche.removeListener('chainChanged', this.handleChainChanged);
+      window?.avalanche.removeListener('accountsChanged', this.handleAccountsChanged);
+      window?.avalanche.removeListener('close', this.handleClose);
+      window?.avalanche.removeListener('networkChanged', this.handleNetworkChanged);
+    }
   }
 
   public async isAuthorized(): Promise<boolean> {

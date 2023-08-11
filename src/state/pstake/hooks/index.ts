@@ -38,4 +38,5 @@ export const useMinichefStakingInfosHook: UseMinichefStakingInfosHookType = {
   [ChainId.OP]: useDummyMinichefHook,
   [ChainId.EVMOS_TESTNET]: useDummyMinichefHook,
   [ChainId.EVMOS_MAINNET]: useDummyMinichefHook,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyMinichefHook,
 };

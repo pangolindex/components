@@ -188,6 +188,10 @@ export interface Colors {
     styledLine?: Color;
   };
 
+  dataTable: {
+    primaryColor?: Color;
+  };
+
   primary: Color;
   mustardYellow: Color;
   eerieBlack: Color;

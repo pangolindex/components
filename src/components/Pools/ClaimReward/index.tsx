@@ -69,8 +69,8 @@ const ClaimReward = ({ stakingInfo, version, onClose }: ClaimProps) => {
           chainId: chainId,
           tokenA: tokenA?.symbol,
           tokenb: tokenB?.symbol,
-          tokenA_Address: tokenA?.symbol,
-          tokenB_Address: tokenB?.symbol,
+          tokenA_Address: tokenA?.address,
+          tokenB_Address: tokenB?.address,
           pid: pid,
           farmType: FARM_TYPE[version]?.toLowerCase(),
         });

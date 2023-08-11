@@ -85,7 +85,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     depositADisabled,
     depositBDisabled,
     parsedAmounts,
-    errorMessage,
+    errorMessage, // Real-time field base error message
     pricesAtLimit,
     position,
   } = useDerivedMintInfo(existingPosition);
@@ -108,6 +108,7 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
   // modal and loading
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [attemptingTxn, setAttemptingTxn] = useState<boolean>(false);
+  const [error, setError] = useState<string | undefined>(undefined); // txn error
 
   // txn values
   const deadline = useTransactionDeadline(); // custom from users settings
@@ -209,20 +210,20 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
       };
 
       const response = await addLiquidity(addData);
-
       setTxHash(response?.hash as string);
-
-      mixpanel.track(MixPanelEvents.ADD_LIQUIDITY, {
-        chainId: chainId,
-        tokenA: currency0?.symbol,
-        tokenB: currency1?.symbol,
-        tokenA_Address: wrappedCurrency(currency0, chainId)?.address,
-        tokenB_Address: wrappedCurrency(currency1, chainId)?.address,
-      });
-      onResetMintState();
+      if (response?.hash) {
+        mixpanel.track(MixPanelEvents.ADD_LIQUIDITY, {
+          chainId: chainId,
+          tokenA: currency0?.symbol,
+          tokenB: currency1?.symbol,
+          tokenA_Address: wrappedCurrency(currency0, chainId)?.address,
+          tokenB_Address: wrappedCurrency(currency1, chainId)?.address,
+        });
+        onResetMintState();
+      }
     } catch (err) {
       const _err = err as any;
-
+      setError(_err?.message);
       console.error(_err);
     } finally {
       setAttemptingTxn(false);
@@ -235,9 +236,16 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
     // if (txHash) {
     //   onFieldAInput('', pairAddress);
     // }
+    setError(undefined);
     setTxHash('');
     setAttemptingTxn(false);
   }, [txHash]);
+
+  const handleCloseDrawer = useCallback(() => {
+    onResetMintState();
+    handleDismissConfirmation();
+    onClose();
+  }, [onClose]);
 
   const handleSetFullRange = useCallback(() => {
     getSetFullRange();
@@ -428,10 +436,10 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
                         <Box display="flex" justifyContent="center" alignItems="center">
                           <Text fontSize={14} style={{ fontWeight: 500 }} textAlign="left" color="text1">
                             {invertPrice
-                              ? price?.invert()?.toSignificant(24).substring(0, 24)
-                              : price?.toSignificant(24).substring(0, 24)}
+                              ? price?.invert()?.toSignificant(12).substring(0, 12)
+                              : price?.toSignificant(12).substring(0, 12)}
                           </Text>{' '}
-                          <span style={{ marginLeft: '4px' }}>{currency1?.symbol}</span>
+                          <span style={{ fontSize: '14px', marginLeft: '4px' }}>{currency1?.symbol}</span>
                         </Box>
                       ) : (
                         '-'
@@ -592,13 +600,14 @@ const AddLiquidity: React.FC<AddLiquidityProps> = (props) => {
         {showConfirm && (
           <ConfirmDrawer
             isOpen={showConfirm}
-            poolErrorMessage={errorMessage}
+            poolErrorMessage={errorMessage || error}
             currencies={currencies}
             noLiquidity={noLiquidity}
             onAdd={onAdd}
             attemptingTxn={attemptingTxn}
             txHash={txHash}
             onClose={handleDismissConfirmation}
+            onComplete={handleCloseDrawer}
             position={position}
             ticksAtLimit={ticksAtLimit}
           />

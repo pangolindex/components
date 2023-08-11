@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { SubgraphEnum, getSubgraphClient } from 'src/apollo/client';
 import { GET_MINICHEF } from 'src/apollo/minichef';
-import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_TWO, BIG_INT_ZERO, ONE_TOKEN } from 'src/constants';
+import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_TWO, BIG_INT_ZERO, ONE_TOKEN, ZERO_ADDRESS } from 'src/constants';
 import ERC20_INTERFACE from 'src/constants/abis/erc20';
 import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
@@ -22,7 +22,7 @@ import {
   useSingleCallResult,
   useSingleContractMultipleData,
 } from '../../pmulticall/hooks';
-import { DoubleSideStaking, MinichefFarm, MinichefStakingInfo, MinichefV2 } from '../types';
+import { DoubleSideStaking, MinichefFarmReward, MinichefStakingInfo, MinichefV2 } from '../types';
 import {
   AprResult,
   calculateTotalStakedAmountInAvax,
@@ -31,7 +31,7 @@ import {
   getExtraTokensWeeklyRewardRate,
   tokenComparator,
 } from '../utils';
-import { useMinichefPools } from './common';
+import { useGetExtraPendingRewards, useMinichefPools } from './common';
 
 export function useMichefFarmsAprs(pids: string[]) {
   const chainId = useChainId();
@@ -171,13 +171,6 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
     return rewarders.map((reward) => reward?.result?.[0]);
   }, [rewarders]);
 
-  const rewardTokensAddresses = useMultipleContractSingleData(
-    rewardsAddresses,
-    REWARDER_VIA_MULTIPLIER_INTERFACE,
-    'getRewardTokens',
-    [],
-  );
-
   const rewardTokensMultipliers = useMultipleContractSingleData(
     rewardsAddresses,
     REWARDER_VIA_MULTIPLIER_INTERFACE,
@@ -191,6 +184,8 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
   const usdPriceTmp = useUSDCPrice(WAVAX[chainId]);
   const usdPrice = CHAINS[chainId]?.mainnet ? usdPriceTmp : undefined;
 
+  const extraPendingTokensRewardsState = useGetExtraPendingRewards(rewardsAddresses, pendingRewards);
+
   return useMemo(() => {
     if (!chainId || !PNG[chainId]) return [];
 
@@ -201,9 +196,12 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
       const userPoolInfo = userInfos[index];
       const [pairState, pair] = pairs[index];
       const pendingRewardInfo = pendingRewards[index];
-      const rewardTokensAddress = rewardTokensAddresses[index];
       const rewardTokensMultiplier = rewardTokensMultipliers[index];
       const rewardsAddress = rewardsAddresses[index];
+      const extraPendingTokensRewardState = extraPendingTokensRewardsState[index];
+      const extraPendingTokensRewards = extraPendingTokensRewardState?.result as
+        | { amounts: BigNumber[]; tokens: string[] }
+        | undefined;
 
       if (
         pairTotalSupplyState?.loading === false &&
@@ -216,7 +214,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
         rewardPerSecond &&
         totalAllocPoint &&
         rewardsExpiration?.[0] &&
-        rewardTokensAddress?.loading === false
+        extraPendingTokensRewardState?.loading === false
       ) {
         if (
           balanceState?.error ||
@@ -234,7 +232,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
         const token0 = pair?.token0;
         const token1 = pair?.token1;
 
-        const tokens = [token0, token1].sort(tokenComparator);
+        const tokens = [token0, token1].sort(tokenComparator) as [Token, Token];
 
         const dummyPair = new Pair(new TokenAmount(tokens[0], '0'), new TokenAmount(tokens[1], '0'), chainId);
         const lpToken = dummyPair.liquidityToken;
@@ -354,9 +352,21 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
 
         const farmApr = farmsAprs?.[pid] ?? dummyApr;
 
+        const { rewardTokensAddress, extraPendingRewards } = (extraPendingTokensRewards?.amounts ?? []).reduce(
+          (memo, rewardAmount: BigNumber, index) => {
+            memo.rewardTokensAddress.push(extraPendingTokensRewards?.tokens?.[index] ?? '');
+            memo.extraPendingRewards.push(JSBI.BigInt(rewardAmount.toString()));
+            return memo;
+          },
+          {
+            rewardTokensAddress: [] as string[],
+            extraPendingRewards: [] as JSBI[],
+          },
+        );
+
         memo.push({
           pid,
-          stakingRewardAddress: MINICHEF_ADDRESS[chainId],
+          stakingRewardAddress: MINICHEF_ADDRESS[chainId] ?? '',
           tokens,
           earnedAmount,
           rewardRatePerWeek: userRewardRatePerWeek,
@@ -365,18 +375,19 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
           stakedAmount,
           totalStakedAmount,
           totalStakedInWavax,
-          totalStakedInUsd,
+          totalStakedInUsd: totalStakedInUsd ?? new TokenAmount(USDC[chainId], '0'),
           multiplier,
           periodFinish: periodFinishMs > 0 ? new Date(periodFinishMs) : undefined,
           isPeriodFinished,
           getHypotheticalWeeklyRewardRate,
           getExtraTokensWeeklyRewardRate,
-          rewardTokensAddress: [...(rewardTokensAddress?.result?.[0] || [])],
+          rewardTokensAddress: rewardTokensAddress,
           rewardTokensMultiplier: [BigNumber.from(1), ...(rewardTokensMultiplier?.result?.[0] || [])],
           rewardsAddress,
           swapFeeApr: farmApr.swapFeeApr,
           stakingApr: farmApr.stakingApr,
           combinedApr: farmApr.combinedApr,
+          extraPendingRewards,
         });
       }
 
@@ -398,7 +409,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
     balances,
     usdPrice,
     pairAddresses,
-    rewardTokensAddresses,
+    extraPendingTokensRewardsState,
     rewardsAddresses,
     rewardTokensMultipliers,
     poolMap,
@@ -432,7 +443,12 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
   const results = useMiniChefSubgraphData();
 
   const minichefData = results?.data?.[0];
-  const farms = minichefData?.farms;
+
+  const farms = useMemo(() => {
+    if (!minichefData?.farms?.length) return [];
+
+    return minichefData?.farms;
+  }, [minichefData, results?.isLoading, results?.isError]);
 
   const chainId = useChainId();
   const png = PNG[chainId];
@@ -463,14 +479,36 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
     userInfoInput ? userInfoInput : [],
   );
 
+  const rewardsAddresses = useMemo(() => {
+    const _rewardsAddresses: (string | undefined)[] = [];
+    for (let index = 0; index < farms.length; index++) {
+      const farm = farms[index];
+      const rewarderAddress = farm.rewarder.id.split('-')[0];
+      _rewardsAddresses.push(rewarderAddress !== ZERO_ADDRESS ? rewarderAddress : undefined);
+    }
+    return _rewardsAddresses;
+  }, [farms]);
+
+  const extraPendingTokensRewardsState = useGetExtraPendingRewards(rewardsAddresses, userPendingRewardsState);
+
   return useMemo(() => {
     if (!chainId || !png || !farms?.length) return [];
 
-    return farms.reduce(function (memo, farm: MinichefFarm, index) {
+    const _farms: MinichefStakingInfo[] = [];
+    for (let index = 0; index < farms.length; index++) {
+      const farm = farms[index];
+      const extraPendingTokensRewardState = extraPendingTokensRewardsState[index];
+      const extraPendingTokensRewards = extraPendingTokensRewardState?.result as
+        | { amounts: BigNumber[]; tokens: string[] }
+        | undefined;
+
       const userPendingRewardState = userPendingRewardsState[index];
       const rewardsAddress = farm?.rewarderAddress;
 
-      const rewardsAddresses = farm.rewarder.rewards;
+      // if is loading or not exist pair continue
+      if (extraPendingTokensRewardState?.loading || userPendingRewardState?.loading) {
+        continue;
+      }
 
       const pair = farm.pair;
 
@@ -570,11 +608,22 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
 
       const pid = farm?.pid;
 
-      const { rewardTokensAddress, rewardTokens, rewardMultipliers } = rewardsAddresses.reduce(
-        (memo, rewardToken) => {
-          const tokenObj = rewardToken.token;
-          const _address = getAddress(tokenObj.id);
-          const _token = new Token(chainId, _address, Number(tokenObj.decimals), tokenObj.symbol, tokenObj.name);
+      const rewards = farm.rewarder.rewards;
+      const { rewardTokensAddress, rewardTokens, rewardMultipliers, extraPendingRewards } = (
+        extraPendingTokensRewards?.amounts ?? []
+      ).reduce(
+        (memo, rewardAmount, index) => {
+          const address: string = extraPendingTokensRewards?.tokens?.[index] ?? '';
+          // we need to use find because subgraph don't return in the same order of contract
+          // eg: contract return [token0, token1], subgraph return [token1, token0]
+          const rewardToken = rewards.find((reward) => reward.token.id === address.toLowerCase()) as MinichefFarmReward; // we can do this because have same tokens
+          const _token = new Token(
+            chainId,
+            address,
+            Number(rewardToken.token.decimals),
+            rewardToken.token.symbol,
+            rewardToken.token.name,
+          );
           const _multiplier = JSBI.BigInt(rewardToken?.multiplier.toString());
 
           // remove png from rewards
@@ -582,15 +631,17 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
             return memo;
           }
 
-          memo.rewardTokensAddress.push(_address);
+          memo.rewardTokensAddress.push(address);
           memo.rewardTokens.push(_token);
           memo.rewardMultipliers.push(_multiplier);
+          memo.extraPendingRewards.push(JSBI.BigInt(rewardAmount.toString()));
           return memo;
         },
         {
           rewardTokensAddress: [] as string[],
           rewardTokens: [] as Token[],
           rewardMultipliers: [] as JSBI[],
+          extraPendingRewards: [] as JSBI[],
         },
       );
 
@@ -614,8 +665,8 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
 
       const farmApr = farmsAprs?.[pid] ?? dummyApr;
 
-      memo.push({
-        stakingRewardAddress: MINICHEF_ADDRESS[chainId] || '',
+      _farms.push({
+        stakingRewardAddress: MINICHEF_ADDRESS[chainId] ?? '',
         pid,
         tokens,
         multiplier,
@@ -638,10 +689,11 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
         swapFeeApr: farmApr.swapFeeApr,
         stakingApr: farmApr.stakingApr,
         combinedApr: farmApr.combinedApr,
+        extraPendingRewards,
       });
+    }
 
-      return memo;
-    }, [] as MinichefStakingInfo[]);
+    return _farms;
   }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms, farmsAprs, userPendingRewardsState]);
 };
 

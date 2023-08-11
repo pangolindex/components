@@ -1,35 +1,19 @@
-import React, { useEffect } from 'react';
-import { Web3Provider } from '@ethersproject/providers';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import './normalize.css';
 import App from './App';
-import { useWeb3React, Web3ReactProvider } from '@web3-react/core';
-import { injected, PangolinProvider } from '@components/index';
+import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core';
+import { NetworkContextName, PangolinProvider, useActiveWeb3React } from '@components/index';
 import getLibrary from './utils/getLibrary';
 import { theme } from './utils/theme';
 import { BrowserRouter } from 'react-router-dom';
-import { isMobile } from 'react-device-detect';
+
+const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
 
 const AppProvider = () => {
-  const { library, account, chainId, activate } = useWeb3React<Web3Provider>();
-
-  useEffect(() => {
-    const activeMobile = async () => {
-      if ((window as any).ethereum) {
-        try {
-          await activate(injected, undefined, true);
-        } catch (error) {
-          return;
-        }
-      }
-    };
-    if (isMobile) {
-      activeMobile();
-    }
-  }, []);
-
+  const { library, account, chainId } = useActiveWeb3React();
   return (
-    <PangolinProvider library={library} chainId={chainId} account={account as string} theme={theme as any}>
+    <PangolinProvider library={library} chainId={chainId} account={account ?? undefined} theme={theme as any}>
       <BrowserRouter>
         <App />
       </BrowserRouter>
@@ -40,7 +24,9 @@ const AppProvider = () => {
 ReactDOM.render(
   <React.StrictMode>
     <Web3ReactProvider getLibrary={getLibrary}>
-      <AppProvider />
+      <Web3ProviderNetwork getLibrary={getLibrary}>
+        <AppProvider />
+      </Web3ProviderNetwork>
     </Web3ReactProvider>
   </React.StrictMode>,
   document.getElementById('root'),

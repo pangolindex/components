@@ -40,6 +40,7 @@ export const useApproveCallbackFromTradeHook: UseApproveCallbackFromTradeHookTyp
   [ChainId.MOONRIVER]: useApproveCallbackFromTrade,
   [ChainId.MOONBEAM]: useApproveCallbackFromTrade,
   [ChainId.OP]: useApproveCallbackFromTrade,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useApproveCallbackFromTrade,
 };
 
 export type UseApproveCallbackHookType = {
@@ -76,4 +77,5 @@ export const useApproveCallbackHook: UseApproveCallbackHookType = {
   [ChainId.MOONRIVER]: useApproveCallback,
   [ChainId.MOONBEAM]: useApproveCallback,
   [ChainId.OP]: useApproveCallback,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useApproveCallback,
 };

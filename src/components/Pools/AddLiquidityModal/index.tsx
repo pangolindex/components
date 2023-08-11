@@ -161,7 +161,7 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
   }
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2}>
+    <Modal isOpen={isOpen} onDismiss={onClose} overlayBG={theme.modalBG2} closeOnClickOutside={false}>
       <Wrapper>
         <Box p={10} display="flex" justifyContent="space-between" alignItems="center" width="100%">
           <Text color="text1" fontSize={[24, 18]} fontWeight={500}>
