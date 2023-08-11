@@ -1,8 +1,7 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useChainId, useDebounce, useLibrary, usePangolinWeb3 } from '@pangolindex/shared';
+import { useChainId, useDebounce, useLastBlockHook, useLibrary, usePangolinWeb3 } from '@pangolindex/shared';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { useLastBlockHook } from 'src/hooks/block';
 import { useApplicationState } from './atom';
 
 const NearApplicationUpdater = () => {

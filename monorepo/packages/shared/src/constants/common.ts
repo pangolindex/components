@@ -38,6 +38,7 @@ export const DIRECTUS_URL_NEWS = `https://pangolin.directus.app`;
 export const OPEN_API_DEBANK = 'https://api.debank.com/';
 export const LANDING_PAGE = 'https://pangolin.exchange';
 export const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
+export const NEWS_API_URL = `https://pangolin.hasura.app/v1/graphql`;
 export const ONE_YOCTO_NEAR = '0.000000000000000000000001';
 export const NEAR_STORAGE_PER_TOKEN = '0.005';
 export const NEAR_STORAGE_TO_REGISTER_WITH_FT = '0.1';

@@ -6,3 +6,4 @@ export * from './utils';
 export * from './locales';
 export * from './theme';
 export * from './hooks';
+export * from './graphql';

@@ -1,9 +1,8 @@
-import { useChainId } from '@pangolindex/shared';
 import { GraphQLClient } from 'graphql-request';
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
 import { NEWS_API_URL } from 'src/constants';
-import { useHasuraKey } from 'src/hooks/hasura';
+import { useChainId, useHasuraKey } from 'src/provider';
 
 export interface News {
   id: number;

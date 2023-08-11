@@ -4,6 +4,8 @@ import { atom, useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { nanoid } from 'nanoid';
 import { useCallback } from 'react';
+// @ts-expect-error because this code we enable after wallet package done
+// TODO: when add wallet package
 import { SUPPORTED_WALLETS } from 'src/wallet';
 
 export type PopupContent =

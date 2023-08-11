@@ -1,3 +1,3 @@
-export default function useDummyHook() {
+export function useDummyHook() {
   return undefined;
 }

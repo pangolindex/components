@@ -1,4 +1,4 @@
-import { useTranslation } from '@pangolindex/shared';
+import { MixPanelEvents, News, useGetNews, useMixpanel, useTranslation } from '@pangolindex/shared';
 import React, { useContext, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { ArrowLeft, ArrowRight } from 'react-feather';
@@ -7,8 +7,6 @@ import Slider, { Settings } from 'react-slick';
 import remarkGfm from 'remark-gfm';
 import { ThemeContext } from 'styled-components';
 import Earth from 'src/assets/images/earth.png';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { News, useGetNews } from 'src/hooks/useGetNews';
 import { Box } from '../Box';
 import { Loader } from '../Loader';
 import { ArrowWrapper, NewsContent, NewsTitle, NewsWrapper, SlickNext, TitleWrapper } from './styleds';

@@ -3,7 +3,6 @@ import { ChainId } from '@pangolindex/sdk';
 export type LogoSize = 24 | 48;
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 export const PANGOLIN_TOKENS_REPO_RAW_BASE_URL = `https://raw.githubusercontent.com/pangolindex/tokens`;
-export const NEWS_API_URL = `https://pangolin.hasura.app/v1/graphql`;
 
 export const ANALYTICS_PAGE_MAPPING: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: '',
