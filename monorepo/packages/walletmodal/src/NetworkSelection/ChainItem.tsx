@@ -1,6 +1,6 @@
 import { Chain } from '@pangolindex/sdk';
 import React from 'react';
-import { Text } from 'src/components';
+import { Text } from '@pangolindex/core';
 import { Item, StyledLogo } from './styled';
 
 interface Props {

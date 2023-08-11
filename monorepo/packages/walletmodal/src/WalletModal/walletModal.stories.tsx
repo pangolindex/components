@@ -2,15 +2,25 @@ import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
 import { usePangolinWeb3 } from 'src/hooks';
 import { Button } from '../Button';
+import Docs from './docs.md';
+import { argTypes } from './storiesConstants';
 import WalletModal from '.';
 
 export default {
   component: WalletModal,
   title: 'DeFi Helpers/WalletModal',
+  argTypes: argTypes,
+  parameters: {
+    docs: {
+      description: {
+        component: Docs,
+      },
+    },
+  },
 };
 
-const SampleWallet: ComponentStory<typeof WalletModal> = () => {
-  const [open, setOpen] = useState<boolean>(true);
+const TemplateWalletModal: ComponentStory<typeof WalletModal> = (args: any) => {
+  const [open, setOpen] = useState<boolean>(args.open);
   const { account } = usePangolinWeb3();
 
   return (
@@ -26,9 +36,10 @@ const SampleWallet: ComponentStory<typeof WalletModal> = () => {
         onWalletConnect={() => {
           setOpen(false);
         }}
+        initialChainId={args.initialChainId}
       />
     </div>
   );
 };
 
-export const Wallet = SampleWallet.bind({});
+export const Default = TemplateWalletModal.bind({});
