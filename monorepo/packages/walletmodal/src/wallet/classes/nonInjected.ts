@@ -1,6 +1,6 @@
 import { ChainId, NetworkType } from '@pangolindex/sdk';
 import hashIcon from 'src/assets/images/hashConnect.png';
-import nearIcon from 'src/assets/images/near.svg';
+import nearIcon from 'src/assets/svg/near.svg';
 import xDefiIcon from 'src/assets/images/xDefi.png';
 import { HashConnector, SUPPORTED_XDEFI_CHAINS, hashConnect, near, xDefi } from 'src/connectors'; // TODO FIX
 import { Wallet, activeFunctionType } from './wallet';
