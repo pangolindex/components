@@ -1,8 +1,7 @@
+import { useEscapeKey, useOnClickOutside } from '@pangolindex/shared';
 import React, { useCallback, useRef } from 'react';
 import { Portal } from 'react-portal';
 import styled from 'styled-components';
-import { useEscapeKey } from 'src/hooks/useEscapeKey';
-import { useOnClickOutside } from 'src/hooks/useOnClickOutside';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledDialogOverlay = styled.div<{ background?: string; isOpen: boolean }>`

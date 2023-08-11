@@ -1,7 +1,7 @@
 import { Currency, Token } from '@pangolindex/sdk';
+import { useChainId } from '@pangolindex/shared';
 import React, { useMemo } from 'react';
 import { LogoSize } from 'src/constants';
-import { useChainId } from 'src/hooks';
 import { getTokenLogoURL } from '../utils/getTokenLogoURL';
 import { StyledLogo } from './styles';
 

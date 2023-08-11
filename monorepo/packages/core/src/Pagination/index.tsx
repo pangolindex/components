@@ -3,13 +3,13 @@ import { ChevronLeft, ChevronRight } from 'react-feather';
 import { Box } from '../Box';
 import { Paginate } from './styleds';
 
-interface Props {
+export interface PaginationProps {
   pageCount: number;
   forcePage?: number;
   onPageChange: (selectedItem: { selected: number }) => void;
 }
 
-export default function Pagination({ pageCount, forcePage, onPageChange }: Props) {
+export default function Pagination({ pageCount, forcePage, onPageChange }: PaginationProps) {
   return (
     <Box display="flex" justifyContent="center" alignItems="center">
       <Paginate

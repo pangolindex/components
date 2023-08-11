@@ -1,4 +1,4 @@
-import { useTheme } from '@pangolindex/theme';
+import { useTheme } from '@pangolindex/shared';
 import React from 'react';
 import ReactSwitch from 'react-switch';
 import { SwitchProps } from './types';

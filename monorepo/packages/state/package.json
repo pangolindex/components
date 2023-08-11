@@ -1,0 +1,29 @@
+{
+  "name": "@pangolindex/state",
+  "version": "0.0.0",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx",
+    "dev": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.5",
+    "@types/react-dom": "^18.2.4",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "*",
+    "react": "^18.2.0",
+    "tsconfig": "*",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "@ethersproject/abi": "5.6.4",
+    "@ethersproject/bignumber": "5.6.2",
+    "@ethersproject/contracts": "5.6.2",
+    "@pangolindex/shared": "*",
+    "jotai": "2.0.3",
+    "lodash.flatmap": "4.5.0",
+    "react-query": "3.39.0"
+  }
+}

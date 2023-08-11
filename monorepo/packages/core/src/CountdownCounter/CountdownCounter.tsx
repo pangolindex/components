@@ -1,7 +1,7 @@
+import { useInterval } from '@pangolindex/shared';
 import React, { useContext, useEffect } from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { ThemeContext } from 'styled-components';
-import useInterval from 'src/hooks/useInterval';
 import { CountdownCounterProps } from './types';
 
 const CountdownCounter: React.FC<CountdownCounterProps> = (props) => {

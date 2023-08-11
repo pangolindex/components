@@ -1,4 +1,4 @@
-import { useTranslation } from '@pangolindex/locales';
+import { useTranslation } from '@pangolindex/shared';
 import React from 'react';
 import { Box, NumberOptions, Text, TextInput } from '../';
 import { InputOptions } from './styled';
@@ -19,13 +19,13 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
   const { t } = useTranslation();
   return (
     <Box height="90px">
-      {showTitle && <Text color="swapWidget.secondary">{t('settings.slippage') as string}</Text>}
+      {showTitle && <Text color="swapWidget.secondary">{t('settings.slippage')}</Text>}
       <InputOptions>
         <TextInput
           value={slippageTolerance}
           addonAfter={
             <Box bgColor="swapWidget.detailsBackground" paddingX="10px" paddingY="4px" borderRadius={4}>
-              <Text color="swapWidget.secondary">{t('settings.percent') as string}</Text>
+              <Text color="swapWidget.secondary">{t('settings.percent')}</Text>
             </Box>
           }
           isNumeric={true}
@@ -45,17 +45,17 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
       </InputOptions>
       {Number(slippageTolerance) <= 0.1 && (
         <Text color="swapWidget.secondary" fontSize={12} marginBottom={10}>
-          {t('transactionSettings.transactionMayFail') as string}
+          {t('transactionSettings.transactionMayFail')}
         </Text>
       )}
       {Number(slippageTolerance) > 50 && !expertMode ? (
         <Text color="error" fontSize="10px" marginBottom={10}>
-          {t('transactionSettings.transactionActiveExpertMode') as string}
+          {t('transactionSettings.transactionActiveExpertMode')}
         </Text>
       ) : (
         Number(slippageTolerance) > 5 && (
           <Text color="primary" fontSize={12} marginBottom={10}>
-            {t('transactionSettings.transactionMayFrontrun') as string}
+            {t('transactionSettings.transactionMayFrontrun')}
           </Text>
         )
       )}

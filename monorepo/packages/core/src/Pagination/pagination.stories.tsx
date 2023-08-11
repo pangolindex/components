@@ -1,6 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import Pagination from '.';
+import Pagination, { PaginationProps } from '.';
 
 export default {
   component: Pagination,
@@ -18,4 +18,4 @@ export const Default = PaginationWidget.bind({});
 Default.args = {
   pageCount: 10,
   onPageChange: (event: any) => {},
-};
+} as Partial<PaginationProps>;

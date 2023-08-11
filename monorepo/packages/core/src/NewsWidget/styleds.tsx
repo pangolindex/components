@@ -76,17 +76,6 @@ export const NewsContent = styled(Box)`
   }
 `;
 
-export const NewsDate = styled(Box)`
-  font-size: 10px;
-  line-height: 15px;
-  display: flex;
-  align-items: center;
-  color: #929292;
-  margin-bottom: 15px;
-  height: 10% !important;
-  padding: 0px 10px;
-`;
-
 export const SlickNext = styled(Box)<{ onClick: () => void }>`
   background: ${({ theme }) => theme.primary};
   width: 32px;
