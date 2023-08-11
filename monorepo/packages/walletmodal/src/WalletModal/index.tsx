@@ -1,21 +1,16 @@
 import { CHAINS, Chain, ChainId } from '@pangolindex/sdk';
-import { UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector';
+import { UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector'; // TODO FIX
 import { useWeb3React } from '@web3-react/core';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { useMedia } from 'react-use';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@pangolindex/core';
-import { usePangolinWeb3 } from 'src/hooks';
-import useDebounce from 'src/hooks/useDebounce';
-import { useApplicationState } from 'src/state/papplication/atom';
-import { useUserAtom } from 'src/state/puser/atom';
-import { MEDIA_WIDTHS } from 'src/theme';
-import { wait } from 'src/utils/retry';
-import { changeNetwork, getWalletKey } from 'src/utils/wallet';
+import { usePangolinWeb3, useDebounce, useTranslation, MEDIA_WIDTHS, wait } from '@pangolindex/shared';
+import { useApplicationState, useUserAtom } from '@pangolindex/state';
+import { changeNetwork, getWalletKey } from 'src/utils';
 import { SUPPORTED_CHAINS, SUPPORTED_WALLETS } from 'src/wallet';
 import { Wallet } from 'src/wallet/classes/wallet';
 import { NETWORK_TYPE } from '../NetworkSelection/types';

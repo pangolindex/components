@@ -3,7 +3,7 @@ import { isMobile } from 'react-device-detect';
 import injectWalletIcon from 'src/assets/images/inject-wallet.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
 import rabbyIcon from 'src/assets/images/rabby.svg';
-import { SUPPORTED_EVM_CHAINS_ID } from 'src/connectors';
+import { SUPPORTED_EVM_CHAINS_ID } from 'src/connectors'; // TODO FIX
 import { AvalancheCoreWallet, BitKeepWallet, InjectedWallet, TalismanWallet } from './classes/injected';
 import { HashPackWallet, NearWallet, XDefiWallet } from './classes/nonInjected';
 import { CoinbaseWallet, GnosisSafeWallet } from './classes/others';

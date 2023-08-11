@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { Box } from 'src/components/Box';
-import Logo from '../Logo';
+import { Box, Logo } from '@pangolindex/core';
 
 export const Frame = styled(Box)`
   width: 40vw;

@@ -1,6 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
-import { Button } from '../Button';
+import { Button } from '@pangolindex/core';
 import Docs from './docs.md';
 import NetworkSelection from '.';
 

@@ -5,8 +5,8 @@ import coinbaseWalletIcon from 'src/assets/images/coinbaseWalletIcon.png';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';
 import walletConnectIcon from 'src/assets/images/walletConnectIcon.svg';
 import { gnosisSafe, walletlink } from 'src/connectors';
-import { WalletConnectConnector, WalletConnectConnectorArguments } from 'src/connectors/WalletConnectConnector';
-import { IS_IN_IFRAME } from 'src/constants';
+import { WalletConnectConnector, WalletConnectConnectorArguments } from 'src/connectors/WalletConnectConnector'; // TODO FIX
+import { IS_IN_IFRAME } from '@pangolindex/shared';
 import { Wallet, activeFunctionType } from './wallet';
 
 export class GnosisSafeWallet extends Wallet {

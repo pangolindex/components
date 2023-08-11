@@ -1,17 +1,15 @@
-import { Chain } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@pangolindex/core';
-import { network } from 'src/connectors';
-import { usePangolinWeb3 } from 'src/hooks';
-import { useActiveWeb3React } from 'src/hooks/useConnector';
-import useDebounce from 'src/hooks/useDebounce';
-import { useApplicationState } from 'src/state/papplication/atom';
-import { onChangeNetwork } from 'src/utils/wallet';
+import { Chain } from '@pangolindex/sdk';
+import { useTranslation, usePangolinWeb3,  useDebounce} from '@pangolindex/shared';
+import { useApplicationState } from '@pangolindex/state';
+import { network } from 'src/connectors'; // TODO FIX
+import { useActiveWeb3React } from 'src/hooks/useConnector'; // TODO FIX  
+import { onChangeNetwork } from 'src/utils';
 import { SUPPORTED_CHAINS } from 'src/wallet';
 import ChainItem from './ChainItem';
 import { ChainsList, Frame, Inputs, Wrapper } from './styled';

@@ -2,7 +2,7 @@ import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import avalancheCoreIcon from 'src/assets/images/avalancheCore.svg';
 import bitKeepIcon from 'src/assets/images/bitkeep.svg';
 import talismanIcon from 'src/assets/images/talisman.svg';
-import { SUPPORTED_EVM_CHAINS_ID, avalancheCore, bitKeep, injected, talisman } from 'src/connectors';
+import { SUPPORTED_EVM_CHAINS_ID, avalancheCore, bitKeep, injected, talisman } from 'src/connectors'; // TODO FIX
 import { Wallet } from './wallet';
 
 export class InjectedWallet extends Wallet {
