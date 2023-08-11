@@ -1,4 +1,4 @@
-import { useTranslation } from '@pangolindex/locales';
+import { useTranslation } from '@pangolindex/shared';
 import * as React from 'react';
 import { ChevronDown } from 'react-feather';
 import { Box } from '../Box';
@@ -46,7 +46,7 @@ const CurrencyInput = ({
             ? currency.symbol.slice(0, 4) +
               '...' +
               currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-            : currency?.symbol) || `${t('swapPage.selectToken')}`}
+            : currency?.symbol) || t('swapPage.selectToken')}
         </StyledTokenName>
       );
   };

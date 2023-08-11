@@ -63,6 +63,7 @@ const EMPTY_LIST: TokenAddressMap = {
   [ChainId.MOONRIVER]: {},
   [ChainId.MOONBEAM]: {},
   [ChainId.OP]: {},
+  [ChainId.SKALE_BELLATRIX_TESTNET]: {},
 };
 
 const listCache: WeakMap<TokenList, TokenAddressMap> | null =

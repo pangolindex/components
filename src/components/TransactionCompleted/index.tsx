@@ -3,6 +3,7 @@ import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/images/circleTick.svg';
 import { Box, Button, Text } from 'src/components';
 import { CloseIcon } from 'src/theme/components';
+import { BoxProps } from '../Box/Box';
 import { Root } from './styled';
 
 export interface TransactionCompletedProps {
@@ -12,6 +13,7 @@ export interface TransactionCompletedProps {
   isShowButtton?: boolean;
   onButtonClick?: () => void;
   buttonText?: string;
+  rootStyle?: BoxProps;
 }
 
 const TransactionCompleted = ({
@@ -21,10 +23,11 @@ const TransactionCompleted = ({
   isShowButtton,
   onButtonClick,
   buttonText,
+  rootStyle,
 }: TransactionCompletedProps) => {
   const theme = useContext(ThemeContext);
   return (
-    <Root>
+    <Root {...rootStyle}>
       {showCloseIcon && (
         <Box display="flex" justifyContent="flex-end">
           <CloseIcon onClick={() => onClose && onClose()} color={theme.text4} />

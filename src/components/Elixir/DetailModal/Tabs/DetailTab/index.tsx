@@ -91,7 +91,7 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
   const totalData = [
     {
       title: 'Total Stake',
-      stat: totalFiatValueOfPool?.greaterThan(new Fraction('1', '100'))
+      stat: totalFiatValueOfPool?.greaterThan(new Fraction('1', '10000'))
         ? numeral(totalFiatValueOfPool?.toFixed(2)).format('$0.00a')
         : '-',
     },
@@ -110,7 +110,7 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
   const userData = [
     {
       title: 'Your Stake',
-      stat: fiatValueOfLiquidity?.greaterThan(new Fraction('1', '100'))
+      stat: fiatValueOfLiquidity?.greaterThan(new Fraction('1', '10000'))
         ? numeral(fiatValueOfLiquidity?.toFixed(2)).format('$0.00a')
         : '-',
     },

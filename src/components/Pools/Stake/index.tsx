@@ -15,7 +15,7 @@ import {
   TextInput,
   TransactionCompleted,
 } from 'src/components';
-import { FARM_TYPE } from 'src/constants';
+import { BIG_INT_ZERO, FARM_TYPE } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { usePair } from 'src/data/Reserves';
 import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
@@ -31,7 +31,7 @@ import {
   useGetPoolDollerWorth,
   useMinichefPools,
 } from 'src/state/pstake/hooks/common';
-import { DoubleSideStakingInfo, SpaceType } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo, MinichefStakingInfo, SpaceType } from 'src/state/pstake/types';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
 import { waitForTransaction } from 'src/utils';
@@ -129,6 +129,7 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
   const refetchMinichefSubgraph = useRefetchMinichefSubgraph();
 
   const onChangePercentage = (value: number) => {
+    setSignatureData(null);
     if (!userLiquidityUnstaked) {
       setTypedValue('0');
       return;
@@ -136,10 +137,9 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
     if (value === 100) {
       setTypedValue((userLiquidityUnstaked as TokenAmount).toExact());
     } else {
-      const newAmount = (userLiquidityUnstaked as TokenAmount)
-        .multiply(JSBI.BigInt(value))
-        .divide(JSBI.BigInt(100)) as TokenAmount;
-      setTypedValue(newAmount.toSignificant(6));
+      const lpToken = userLiquidityUnstaked.token;
+      const newAmount = userLiquidityUnstaked.multiply(JSBI.BigInt(value)).divide(JSBI.BigInt(100)) as TokenAmount;
+      setTypedValue(newAmount?.toFixed(lpToken.decimals));
     }
   };
 
@@ -199,8 +199,8 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
 
           mixpanel.track(MixPanelEvents.ADD_FARM, {
             chainId: chainId,
-            tokenA: token0,
-            tokenB: token1,
+            tokenA: token0?.symbol,
+            tokenB: token1?.symbol,
             tokenA_Address: token0.address,
             tokenB_Address: token1.address,
             farmType: FARM_TYPE[version]?.toLowerCase(),
@@ -511,7 +511,15 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
             <Button
               variant={approval === ApprovalState.APPROVED || signatureData !== null ? 'confirm' : 'primary'}
               onClick={onAttemptToApprove}
-              isDisabled={approval !== ApprovalState.NOT_APPROVED || signatureData !== null}
+              isDisabled={
+                approval !== ApprovalState.NOT_APPROVED ||
+                signatureData !== null ||
+                (JSBI.equal(stakingInfo?.multiplier, BIG_INT_ZERO) &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.length > 0 &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.some((pendigRewards) =>
+                    JSBI.equal(pendigRewards, BIG_INT_ZERO),
+                  ))
+              }
               loading={attempting && !hash}
               loadingText={t('migratePage.loading')}
             >
@@ -520,7 +528,15 @@ const Stake = ({ version, onComplete, type, stakingInfo, combinedApr }: StakePro
 
             <Button
               variant="primary"
-              isDisabled={!!error || (signatureData === null && approval !== ApprovalState.APPROVED)}
+              isDisabled={
+                !!error ||
+                (signatureData === null && approval !== ApprovalState.APPROVED) ||
+                (JSBI.equal(stakingInfo?.multiplier, BIG_INT_ZERO) &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.length > 0 &&
+                  (stakingInfo as MinichefStakingInfo)?.extraPendingRewards.some((pendigRewards) =>
+                    JSBI.equal(pendigRewards, BIG_INT_ZERO),
+                  ))
+              }
               onClick={onStake}
               loading={attempting && !hash}
               loadingText={t('migratePage.loading')}

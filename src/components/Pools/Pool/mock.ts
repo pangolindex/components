@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers';
 import { BIG_INT_ZERO } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
-import { PangoChefInfo, PoolType } from 'src/state/ppangoChef/types';
+import { PangoChefInfo } from 'src/state/ppangoChef/types';
 import { MinichefStakingInfo } from 'src/state/pstake/types';
 
 // get data for all farms
@@ -47,6 +47,7 @@ export const useGetMinichefStakingInfos = (): MinichefStakingInfo => {
     getHypotheticalWeeklyRewardRate: () => {
       return new TokenAmount(png, JSBI.BigInt(0));
     },
+    extraPendingRewards: [],
   } as MinichefStakingInfo;
 };
 
@@ -65,6 +66,8 @@ export const useGetPangoChefInfos = (): PangoChefInfo => {
     },
     userRewardRate: new Fraction('1000000000000000'),
     pairPrice: new Fraction('1', '20'),
-    poolType: PoolType.ERC20_POOL,
+    poolRewardRate: new Fraction('1000', '1'),
+    userApr: 0,
+    lockCount: undefined,
   } as PangoChefInfo;
 };

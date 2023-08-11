@@ -8,7 +8,7 @@ const Collapsed: React.FC<CollapsedProps> = (props) => {
   return (
     <Root>
       <div {...getToggleProps()}>{isExpanded ? props.collapse || 'Collapse' : props.expand || 'Expand'}</div>
-      <section {...getCollapseProps()}>{props.children}</section>
+      <section {...getCollapseProps()}>{props?.children}</section>
     </Root>
   );
 };

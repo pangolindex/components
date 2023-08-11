@@ -107,6 +107,7 @@ export const useLastBlockHook: useLastBlockType = {
   [ChainId.MOONRIVER]: useLastBlock,
   [ChainId.MOONBEAM]: useLastBlock,
   [ChainId.OP]: useLastBlock,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useLastBlock,
 };
 
 /**
@@ -160,4 +161,5 @@ export const useLastBlockTimestampHook: useLastBlockTimestampType = {
   [ChainId.MOONRIVER]: useLastBlockTimestamp,
   [ChainId.MOONBEAM]: useLastBlockTimestamp,
   [ChainId.OP]: useLastBlockTimestamp,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useLastBlockTimestamp,
 };

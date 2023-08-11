@@ -23,7 +23,7 @@ export type UsePoolsHookType = {
 
 export const usePoolsHook: UsePoolsHookType = {
   [ChainId.FUJI]: usePoolsViaSubgraph,
-  [ChainId.AVALANCHE]: useDummyPools,
+  [ChainId.AVALANCHE]: usePoolsViaSubgraph,
   [ChainId.WAGMI]: useDummyPools,
   [ChainId.COSTON]: useDummyPools,
   [ChainId.SONGBIRD]: useDummyPools,
@@ -50,6 +50,7 @@ export const usePoolsHook: UsePoolsHookType = {
   [ChainId.MOONRIVER]: useDummyPools,
   [ChainId.MOONBEAM]: useDummyPools,
   [ChainId.OP]: useDummyPools,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: usePoolsViaSubgraph,
 };
 
 export type UsePoolTVLHookType = {
@@ -58,7 +59,7 @@ export type UsePoolTVLHookType = {
 
 export const usePoolTVLHook: UsePoolTVLHookType = {
   [ChainId.FUJI]: usePoolTVL,
-  [ChainId.AVALANCHE]: useDummyPoolTVL,
+  [ChainId.AVALANCHE]: usePoolTVL,
   [ChainId.WAGMI]: useDummyPoolTVL,
   [ChainId.COSTON]: useDummyPoolTVL,
   [ChainId.SONGBIRD]: useDummyPoolTVL,
@@ -85,6 +86,7 @@ export const usePoolTVLHook: UsePoolTVLHookType = {
   [ChainId.MOONRIVER]: useDummyPoolTVL,
   [ChainId.MOONBEAM]: useDummyPoolTVL,
   [ChainId.OP]: useDummyPoolTVL,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: usePoolTVL,
 };
 
 export type UseFeeTierDistributionHookType = {
@@ -93,7 +95,7 @@ export type UseFeeTierDistributionHookType = {
 
 export const useFeeTierDistributionHook: UseFeeTierDistributionHookType = {
   [ChainId.FUJI]: useFeeTierDistribution,
-  [ChainId.AVALANCHE]: useDummyFeeTierDistribution,
+  [ChainId.AVALANCHE]: useFeeTierDistribution,
   [ChainId.WAGMI]: useDummyFeeTierDistribution,
   [ChainId.COSTON]: useDummyFeeTierDistribution,
   [ChainId.SONGBIRD]: useDummyFeeTierDistribution,
@@ -120,6 +122,7 @@ export const useFeeTierDistributionHook: UseFeeTierDistributionHookType = {
   [ChainId.MOONRIVER]: useDummyFeeTierDistribution,
   [ChainId.MOONBEAM]: useDummyFeeTierDistribution,
   [ChainId.OP]: useDummyFeeTierDistribution,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useFeeTierDistribution,
 };
 
 export type UseUnderlyingTokensHookType = {
@@ -128,7 +131,7 @@ export type UseUnderlyingTokensHookType = {
 
 export const useUnderlyingTokensHook: UseUnderlyingTokensHookType = {
   [ChainId.FUJI]: useUnderlyingTokens,
-  [ChainId.AVALANCHE]: useDummyUnderlyingTokens,
+  [ChainId.AVALANCHE]: useUnderlyingTokens,
   [ChainId.WAGMI]: useDummyUnderlyingTokens,
   [ChainId.COSTON]: useDummyUnderlyingTokens,
   [ChainId.SONGBIRD]: useDummyUnderlyingTokens,
@@ -155,6 +158,7 @@ export const useUnderlyingTokensHook: UseUnderlyingTokensHookType = {
   [ChainId.MOONRIVER]: useDummyUnderlyingTokens,
   [ChainId.MOONBEAM]: useDummyUnderlyingTokens,
   [ChainId.OP]: useDummyUnderlyingTokens,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useUnderlyingTokens,
 };
 
 export type UseConcLiqPositionFeesHookType = {
@@ -163,7 +167,7 @@ export type UseConcLiqPositionFeesHookType = {
 
 export const useConcLiqPositionFeesHook: UseConcLiqPositionFeesHookType = {
   [ChainId.FUJI]: useConcLiqPositionFees,
-  [ChainId.AVALANCHE]: useDummyConcLiqPositionFees,
+  [ChainId.AVALANCHE]: useConcLiqPositionFees,
   [ChainId.WAGMI]: useDummyConcLiqPositionFees,
   [ChainId.COSTON]: useDummyConcLiqPositionFees,
   [ChainId.SONGBIRD]: useDummyConcLiqPositionFees,
@@ -190,6 +194,7 @@ export const useConcLiqPositionFeesHook: UseConcLiqPositionFeesHookType = {
   [ChainId.MOONRIVER]: useDummyConcLiqPositionFees,
   [ChainId.MOONBEAM]: useDummyConcLiqPositionFees,
   [ChainId.OP]: useDummyConcLiqPositionFees,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useConcLiqPositionFees,
 };
 
 export type UsePositionTokenURIHookType = {
@@ -198,7 +203,7 @@ export type UsePositionTokenURIHookType = {
 
 export const usePositionTokenURIHook: UsePositionTokenURIHookType = {
   [ChainId.FUJI]: usePositionTokenURI,
-  [ChainId.AVALANCHE]: useDummyPositionTokenURI,
+  [ChainId.AVALANCHE]: usePositionTokenURI,
   [ChainId.WAGMI]: useDummyPositionTokenURI,
   [ChainId.COSTON]: useDummyPositionTokenURI,
   [ChainId.SONGBIRD]: useDummyPositionTokenURI,
@@ -225,4 +230,5 @@ export const usePositionTokenURIHook: UsePositionTokenURIHookType = {
   [ChainId.MOONRIVER]: useDummyPositionTokenURI,
   [ChainId.MOONBEAM]: useDummyPositionTokenURI,
   [ChainId.OP]: useDummyPositionTokenURI,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: usePositionTokenURI,
 };

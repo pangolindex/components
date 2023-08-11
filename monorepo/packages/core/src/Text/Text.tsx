@@ -1,4 +1,4 @@
-import { ThemeColorsType } from '@pangolindex/theme';
+import { ThemeColorsType } from '@pangolindex/shared';
 import get from 'lodash.get';
 import styled from 'styled-components';
 import { PositionProps, SpaceProps, TypographyProps, position, space, typography } from 'styled-system';

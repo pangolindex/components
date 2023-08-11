@@ -1,4 +1,4 @@
-import { useTranslation } from '@pangolindex/locales';
+import { useTranslation } from '@pangolindex/shared';
 import * as React from 'react';
 import { ChevronDown } from 'react-feather';
 import { Box } from '../Box';

@@ -1,4 +1,4 @@
-import { CHAINS, Fraction, Token, TokenAmount } from '@pangolindex/sdk';
+import { CHAINS, Fraction, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -95,6 +95,7 @@ const PoolCardView = ({
           backgroundColor="bg2"
           color="text1"
           height="45px"
+          isDisabled={!JSBI.greaterThan(stakingInfo.multiplier, JSBI.BigInt(0))}
         >
           {t('header.farm')}
         </ActionButon>
@@ -155,7 +156,7 @@ const PoolCardView = ({
 
           <Stat
             title={`APR`}
-            stat={combinedApr ? `${numeral(combinedApr).format('0a')}%` : '-'}
+            stat={combinedApr !== undefined ? `${numeral(combinedApr).format('0a')}%` : '-'}
             titlePosition="top"
             titleFontSize={[16, 14]}
             statFontSize={[24, 18]}

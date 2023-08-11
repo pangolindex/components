@@ -1,8 +1,10 @@
 import { Token } from '@pangolindex/sdk';
 import mixpanel from 'mixpanel-browser';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { AlertTriangle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
+import { ThemeContext } from 'styled-components';
+import { Box, Button, Loader, Stat, Text, Tooltip, TransactionCompleted } from 'src/components';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { useConcLiqPositionFeesHook } from 'src/hooks/elixir/hooks';
 import { usePool } from 'src/hooks/elixir/hooks/common';
@@ -10,7 +12,7 @@ import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useElixirCollectEarnedFeesHook } from 'src/state/pwallet/elixir/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RemoveDrawer from './RemoveDrawer';
-import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styles';
+import { ClaimWrapper, ErrorBox, ErrorWrapper, RewardWrapper, Root, StatWrapper } from './styles';
 import { EarnWidgetProps } from './types';
 
 const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
@@ -22,12 +24,15 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
   const useConcLiqPositionFees = useConcLiqPositionFeesHook[chainId];
   const [hash, setHash] = useState<string | undefined>();
   const [attempting, setAttempting] = useState<boolean>(false);
+  const [error, setError] = useState<string | undefined>();
   function wrappedOnDismiss() {
     setHash(undefined);
     setAttempting(false);
+    setError(undefined);
   }
-  const _error = null;
+
   const [isRemoveDrawerVisible, setShowRemoveDrawer] = useState(false);
+  const theme = useContext(ThemeContext);
 
   const [, pool] = usePool(position?.token0 ?? undefined, position?.token1 ?? undefined, position?.fee);
   // inverted is default false. We need to change it when we decide to show an inverted price
@@ -41,7 +46,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
   // these currencies will match the feeValue{0,1} currencies for the purposes of fee collection
   const currency0ForFeeCollectionPurposes = pool ? (unwrappedToken(pool.token0, chainId) as Token) : undefined;
   const currency1ForFeeCollectionPurposes = pool ? (unwrappedToken(pool.token1, chainId) as Token) : undefined;
-  const canClaim = feeValue0 && feeValue1 && feeValue0.greaterThan('0') && feeValue1.greaterThan('0');
+  const canClaim = (feeValue0?.greaterThan?.('0') ?? false) || (feeValue1?.greaterThan?.('0') ?? false);
 
   const collectFees = useElixirCollectEarnedFeesHook[chainId]();
   const onClaim = async () => {
@@ -62,15 +67,17 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
       });
 
       setHash(collectFeesResponse?.hash as string);
-      mixpanel.track(MixPanelEvents.CLAIM_REWARDS, {
-        chainId: chainId,
-        token0: currency0ForFeeCollectionPurposes.symbol,
-        token1: currency1ForFeeCollectionPurposes.symbol,
-        tokenId: position?.tokenId,
-      });
+      if (collectFeesResponse?.hash) {
+        mixpanel.track(MixPanelEvents.CLAIM_REWARDS, {
+          chainId: chainId,
+          token0: currency0ForFeeCollectionPurposes.symbol,
+          token1: currency1ForFeeCollectionPurposes.symbol,
+          tokenId: position?.tokenId,
+        });
+      }
     } catch (err) {
-      const _err = err as any;
-
+      const _err = typeof err === 'string' ? new Error(err) : (err as any);
+      setError(_err?.message);
       console.error(_err);
     } finally {
       setAttempting(false);
@@ -94,14 +101,35 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
         </Button>
       </Box>
 
-      {!attempting && !hash && (
+      {error && (
+        <ErrorWrapper>
+          <ErrorBox paddingY={'20px'}>
+            <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
+            <Text fontWeight={500} fontSize={16} color={'red1'} textAlign="center" style={{ width: '85%' }}>
+              {error}
+            </Text>
+          </ErrorBox>
+          <Button variant="primary" onClick={wrappedOnDismiss}>
+            {t('transactionConfirmation.dismiss')}
+          </Button>
+        </ErrorWrapper>
+      )}
+
+      {!attempting && !hash && !error && (
         <Root>
           <Box mt={'6px'} flex="1" display="flex" flexDirection="column" justifyContent="center">
             <RewardWrapper>
-              <StatWrapper>
+              {feeValueUpper && currency0ForFeeCollectionPurposes && (
+                <Tooltip id="unclaimedReward-1" effect="solid" backgroundColor={theme.primary}>
+                  <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+                    {feeValueUpper?.toSignificant(8)}
+                  </Text>
+                </Tooltip>
+              )}
+              <StatWrapper data-tip data-for="unclaimedReward-1">
                 <Stat
                   title={t('earn.unclaimedReward', { symbol: `${currency0ForFeeCollectionPurposes?.symbol}` })}
-                  stat={feeValueUpper ? feeValueUpper?.toSignificant(4) : '-'}
+                  stat={feeValueUpper ? feeValueUpper?.toFixed(2) : '-'}
                   titlePosition="top"
                   titleFontSize={12}
                   statFontSize={[24, 18]}
@@ -109,11 +137,17 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
                   statAlign="center"
                 />
               </StatWrapper>
-
-              <StatWrapper>
+              {feeValueLower && currency1ForFeeCollectionPurposes && (
+                <Tooltip id="unclaimedReward-2" effect="solid" backgroundColor={theme.primary}>
+                  <Text color="eerieBlack" fontSize="12px" fontWeight={500} textAlign="center">
+                    {feeValueLower?.toSignificant(8)}
+                  </Text>
+                </Tooltip>
+              )}
+              <StatWrapper data-tip data-for="unclaimedReward-2">
                 <Stat
                   title={t('earn.unclaimedReward', { symbol: `${currency1ForFeeCollectionPurposes?.symbol}` })}
-                  stat={feeValueLower ? feeValueLower?.toSignificant(4) : '-'}
+                  stat={feeValueLower ? feeValueLower?.toFixed(2) : '-'}
                   titlePosition="top"
                   titleFontSize={12}
                   statFontSize={[24, 18]}
@@ -132,7 +166,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
 
           <Box my={'12px'}>
             <Button variant="primary" isDisabled={!canClaim} onClick={onClaim}>
-              {_error ?? t('earn.claimReward', { symbol: '' })}
+              {t('earn.claimReward', { symbol: '' })}
             </Button>
           </Box>
         </Root>
@@ -148,7 +182,14 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
 
       {attempting && !hash && <Loader size={100} label={` ${t('sarClaim.claiming')}...`} />}
 
-      {hash && <TransactionCompleted onClose={wrappedOnDismiss} submitText={t('earn.rewardClaimed')} />}
+      {hash && (
+        <TransactionCompleted
+          buttonText={t('common.close')}
+          isShowButtton={true}
+          onButtonClick={wrappedOnDismiss}
+          submitText={t('earn.rewardClaimed')}
+        />
+      )}
     </ClaimWrapper>
   );
 };

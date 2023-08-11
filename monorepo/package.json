@@ -6,15 +6,19 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --concurrency=15",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@pangolindex/sdk": "5.3.3",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "prettier": "^2.5.1",
     "turbo": "latest"
+  },
+  "peerDependencies": {
+    "@pangolindex/sdk": ">=2.0.1"
   }
 }

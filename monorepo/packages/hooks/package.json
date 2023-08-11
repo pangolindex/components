@@ -1,0 +1,30 @@
+{
+  "name": "@pangolindex/hooks",
+  "version": "0.0.0",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx",
+    "dev": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.5",
+    "@types/react-dom": "^18.2.4",
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "*",
+    "react": "^18.2.0",
+    "tsconfig": "*",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "@ethersproject/bignumber": "5.6.2",
+    "@ethersproject/constants": "5.6.1",
+    "@ethersproject/providers": "5.6.8",
+    "@ethersproject/units": "5.6.1",
+    "@pangolindex/shared": "*",
+    "@pangolindex/state": "*",
+    "ethers": "5.6.4",
+    "react-query": "3.39.0"
+  }
+}

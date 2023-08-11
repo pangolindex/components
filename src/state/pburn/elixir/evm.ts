@@ -68,28 +68,29 @@ export function useElixirRemoveLiquidity() {
       };
 
       const response = await library.getSigner().sendTransaction(newTxn);
-
       await waitForTransaction(response, 5);
 
       addTransaction(response, {
         summary:
-          'Remove' +
-          ' ' +
-          liquidityValue0?.toExact() +
-          ' ' +
-          liquidityValue0.currency?.symbol +
-          'AND' +
-          ' ' +
-          liquidityValue1?.toExact() +
-          ' ' +
-          liquidityValue0.currency?.symbol +
-          ' ' +
-          'Fees' +
-          ' ' +
-          parameters?.collectOptions?.expectedCurrencyOwed0?.toExact() +
-          'AND' +
-          ' ' +
-          parameters?.collectOptions?.expectedCurrencyOwed1?.toExact(),
+          'Removed' + ' ' + liquidityValue0 &&
+          parseFloat(liquidityValue0.toSignificant(6)) / 100 +
+            ' ' +
+            liquidityValue0.currency?.symbol +
+            ' ' +
+            'AND' +
+            ' ' +
+            liquidityValue1 &&
+          parseFloat(liquidityValue1.toSignificant(6)) / 100 +
+            ' ' +
+            liquidityValue1.currency?.symbol +
+            ' ' +
+            'Fees' +
+            ' ' +
+            parameters?.collectOptions?.expectedCurrencyOwed0?.toExact() +
+            ' ' +
+            'AND' +
+            ' ' +
+            parameters?.collectOptions?.expectedCurrencyOwed1?.toExact(),
       });
 
       return response;
@@ -97,7 +98,9 @@ export function useElixirRemoveLiquidity() {
       const _err = err as any;
       if (_err?.code !== 4001) {
         console.error(_err);
+        throw new Error('User Rejected Transaction');
       }
+      throw _err;
     }
   };
 }

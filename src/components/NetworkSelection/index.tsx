@@ -1,5 +1,4 @@
-import { CHAINS, Chain, ChainId } from '@pangolindex/sdk';
-import { useWeb3React } from '@web3-react/core';
+import { Chain } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';
@@ -7,21 +6,27 @@ import { useTranslation } from 'react-i18next';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from 'src/components';
-import { hashConnect } from 'src/connectors';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
+import { network } from 'src/connectors';
+import { usePangolinWeb3 } from 'src/hooks';
+import { useActiveWeb3React } from 'src/hooks/useConnector';
 import useDebounce from 'src/hooks/useDebounce';
-import { changeNetwork } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
+import { useApplicationState } from 'src/state/papplication/atom';
+import { onChangeNetwork } from 'src/utils/wallet';
+import { SUPPORTED_CHAINS } from 'src/wallet';
 import ChainItem from './ChainItem';
 import { ChainsList, Frame, Inputs, Wrapper } from './styled';
 import { NETWORK_TYPE, NetworkProps } from './types';
 
-export default function NetworkSelection({ open, closeModal }: NetworkProps) {
-  const { activate } = useWeb3React();
-  const mixpanel = useMixpanel();
+export default function NetworkSelection({ open, closeModal, onToogleWalletModal }: NetworkProps) {
   const { t } = useTranslation();
+  const { account } = usePangolinWeb3();
+  const { connector, activate, deactivate } = useActiveWeb3React();
+
   const [mainnet, setMainnet] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // get wallet object in app state because if a dev add custom wallet we neet to get this
+  const { wallets } = useApplicationState();
 
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());
@@ -35,7 +40,7 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
   const debouncedSearchQuery = useDebounce(searchQuery.toLowerCase(), 250);
 
   const chains = useMemo(() => {
-    const seletectedChainsType = Object.values(CHAINS).filter((chain) => chain.mainnet === mainnet);
+    const seletectedChainsType = SUPPORTED_CHAINS.filter((chain) => chain.mainnet === mainnet);
 
     if (debouncedSearchQuery.length === 0) return seletectedChainsType;
 
@@ -54,22 +59,20 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
     return maxHeight <= 0 ? 125 : maxHeight;
   }
 
-  const onChainClick = async (chain: Chain) => {
-    try {
-      const isHedera = hederaFn.isHederaChain(chain?.chain_id as ChainId);
-
-      if (isHedera) {
-        await activate(hashConnect, undefined, true);
-
-        mixpanel.track(MixPanelEvents.WALLET_CONNECT, {
-          wallet_name: 'HashPack Wallet',
-          source: 'pangolin-components',
-        });
-      } else {
-        await changeNetwork(chain, closeModal);
-      }
-    } catch (e) {}
-  };
+  const onChainClick = useCallback(
+    async (chain: Chain) => {
+      await onChangeNetwork({
+        chain,
+        account,
+        activate,
+        deactivate,
+        onToogleWalletModal,
+        connector: connector ?? network,
+        wallets: Object.values(wallets),
+      });
+    },
+    [account, connector, wallets, activate, deactivate, onToogleWalletModal],
+  );
 
   return (
     <Modal isOpen={open} onDismiss={closeModal}>
@@ -94,11 +97,17 @@ export default function NetworkSelection({ open, closeModal }: NetworkProps) {
         </Inputs>
         <Wrapper>
           <Scrollbars autoHeight autoHeightMin={125} autoHeightMax={calcHeightMax()}>
-            <ChainsList>
-              {chains.map((chain) => {
-                return <ChainItem key={chain.chain_id ?? 43114} chain={chain} onClick={() => onChainClick(chain)} />;
-              })}
-            </ChainsList>
+            {chains.length === 0 ? (
+              <Text color="text1" textAlign="center">
+                {t('walletModal.noChainsFound')}
+              </Text>
+            ) : (
+              <ChainsList>
+                {chains.map((chain) => {
+                  return <ChainItem key={chain.chain_id ?? 43114} chain={chain} onClick={() => onChainClick(chain)} />;
+                })}
+              </ChainsList>
+            )}
           </Scrollbars>
         </Wrapper>
       </Frame>

@@ -6,14 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
-    "@pangolindex/sdk": "5.1.1",
+    "@pangolindex/sdk": "5.3.1",
     "@types/react-router-dom": "^5.3.3",
     "@web3-react/core": "6.0.9",
     "@web3-react/injected-connector": "6.0.7",
+    "patch-package": "6.4.7",
     "react": "17.0.2",
     "react-device-detect": "^2.2.2",
     "react-dom": "17.0.2",

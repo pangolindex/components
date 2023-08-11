@@ -34,4 +34,5 @@ export const useElixirRemoveLiquidityHook: useElixirRemoveLiquidityHookType = {
   [ChainId.MOONRIVER]: useElixirRemoveLiquidity,
   [ChainId.MOONBEAM]: useElixirRemoveLiquidity,
   [ChainId.OP]: useElixirRemoveLiquidity,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useElixirRemoveLiquidity,
 };

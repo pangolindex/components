@@ -1,4 +1,4 @@
-import { ThemeColorsType } from '@pangolindex/theme';
+import { ThemeColorsType } from '@pangolindex/shared';
 import * as React from 'react';
 
 export type ReactInputKeyboardEvent = React.KeyboardEvent<HTMLInputElement>;

@@ -1,4 +1,4 @@
-import { ThemeColorsType } from '@pangolindex/theme';
+import { ThemeColorsType } from '@pangolindex/shared';
 
 export type CheckboxProps = {
   name?: string;

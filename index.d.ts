@@ -19,3 +19,5 @@ declare type PathsToStringProps<T> = T extends string
     }[Extract<keyof T, string>];
 
 declare type NestedObjectDotNotation<T> = Join<PathsToStringProps<T>, '.'>;
+
+declare module '*.md';
