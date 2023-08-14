@@ -4,7 +4,7 @@ import { Hedera, PNG, ZERO_ADDRESS, getBuyUrl, useChainId, usePangolinWeb3, useT
 import {
   ApprovalState,
   useHederaTokenAssociated,
-  useTokenBalanceHook,
+  useTokenBalancesHook,
   useWalletModalToggle,
 } from '@pangolindex/state-hooks';
 import numeral from 'numeral';
@@ -24,8 +24,9 @@ export default function SarManageWidget() {
   const { account } = usePangolinWeb3();
 
   const png = PNG[chainId];
-  const useTokenBalance = useTokenBalanceHook[chainId];
-  const userPngBalance = useTokenBalance(account ?? ZERO_ADDRESS, png);
+  const useTokenBalance = useTokenBalancesHook[chainId];
+  const tokensBalances = useTokenBalance(account ?? ZERO_ADDRESS, [png]);
+  const userPngBalance = tokensBalances[png.address];
   const { t } = useTranslation();
 
   const { apr, weeklyPNG } = useSarStakeInfo();

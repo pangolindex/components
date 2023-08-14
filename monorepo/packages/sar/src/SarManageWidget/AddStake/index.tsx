@@ -13,9 +13,9 @@ import {
 } from '@pangolindex/shared';
 import {
   ApprovalState,
-  useHederaTokenAssociated,
-  useTokenBalanceHook,
+  useTokenBalancesHook,
   useWalletModalToggle,
+  useHederaTokenAssociated
 } from '@pangolindex/state-hooks';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -42,8 +42,9 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
   const { account } = usePangolinWeb3();
 
   const png = PNG[chainId];
-  const useTokenBalance = useTokenBalanceHook[chainId];
-  const userPngBalance = useTokenBalance(account ?? ZERO_ADDRESS, png);
+  const useTokenBalance = useTokenBalancesHook[chainId];
+  const tokensBalances = useTokenBalance(account ?? ZERO_ADDRESS, [png]);
+  const userPngBalance = tokensBalances[png.address]
   const { t } = useTranslation();
 
   const { apr } = useSarStakeInfo();
