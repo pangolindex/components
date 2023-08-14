@@ -28,10 +28,11 @@ import {
   Trade,
   currencyEquals,
 } from '@pangolindex/sdk';
-import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from 'src/constants';
+import { MIN_ETH, ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from 'src/constants';
 import { TokenAddressMap } from '../types';
 import { Hedera } from './hedera';
 import { wait } from './retry';
+import { parseUnits } from '@ethersproject/units';
 // import { Bound } from 'src/state/pmint/elixir/atom';  TODO: when add elixir
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -586,6 +587,46 @@ export function decimalToFraction(number: number): Fraction {
 
 export function capitalizeWord(word = '') {
   return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+}
+
+// try to parse a user entered amount for a given token
+export function tryParseAmount(
+  value?: string,
+  currency?: Currency,
+  chainId: ChainId = ChainId.AVALANCHE,
+): CurrencyAmount | undefined {
+  if (!value || !currency) {
+    return undefined;
+  }
+  try {
+    const typedValueParsed = parseUnits(value, currency.decimals).toString();
+    if (typedValueParsed !== '0') {
+      return currency instanceof Token
+        ? new TokenAmount(currency, JSBI.BigInt(typedValueParsed))
+        : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed), chainId);
+    }
+  } catch (error) {
+    // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
+    console.debug(`Failed to parse input amount: "${value}"`, error);
+  }
+  // necessary for all paths to return a value
+  return undefined;
+}
+
+/**
+ * Given some token amount, return the max that can be spent of it
+ * @param currencyAmount to return max of
+ */
+export function maxAmountSpend(chainId: ChainId, currencyAmount?: CurrencyAmount): CurrencyAmount | undefined {
+  if (!currencyAmount) return undefined;
+  if (chainId && currencyAmount.currency === CAVAX[chainId]) {
+    if (JSBI.greaterThan(currencyAmount.raw, MIN_ETH)) {
+      return CurrencyAmount.ether(JSBI.subtract(currencyAmount.raw, MIN_ETH), chainId);
+    } else {
+      return CurrencyAmount.ether(JSBI.BigInt(0), chainId);
+    }
+  }
+  return currencyAmount;
 }
 
 // TODO: when add elixir
