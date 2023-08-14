@@ -1,7 +1,7 @@
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@pangolindex/core';
 import { Chain } from '@pangolindex/sdk';
 import { useDebounce, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { useApplicationState } from '@pangolindex/state';
+import { useApplicationState } from '@pangolindex/state-hooks';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';

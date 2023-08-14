@@ -73,7 +73,7 @@
     "styled-system": "5.1.5",
     "@pangolindex/core": "*",
     "@pangolindex/shared": "*",
-    "@pangolindex/state": "*"
+    "@pangolindex/state-hooks": "*"
   },
   "peerDependencies": {
     "react": ">=17.0.2",

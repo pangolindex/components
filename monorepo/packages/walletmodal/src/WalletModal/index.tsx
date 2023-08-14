@@ -1,7 +1,7 @@
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@pangolindex/core';
 import { CHAINS, Chain, ChainId } from '@pangolindex/sdk';
 import { MEDIA_WIDTHS, useDebounce, usePangolinWeb3, useTranslation, wait } from '@pangolindex/shared';
-import { useApplicationState, useUserAtom } from '@pangolindex/state';
+import { useApplicationState, useUserAtom } from '@pangolindex/state-hooks';
 import { UserRejectedRequestError } from '@pangolindex/web3-react-injected-connector'; // TODO FIX
 import { useWeb3React } from '@web3-react/core';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
