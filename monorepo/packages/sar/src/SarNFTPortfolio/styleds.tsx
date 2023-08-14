@@ -1,6 +1,6 @@
+import { Box } from '@pangolindex/core';
 import React from 'react';
 import styled from 'styled-components';
-import { Box } from '../Box';
 
 export const Root = styled(Box)`
   display: flex;

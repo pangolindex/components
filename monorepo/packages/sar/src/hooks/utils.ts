@@ -1,23 +1,89 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
-import { ChainId, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import {
+  Hedera,
+  PNG,
+  SAR_STAKING_ADDRESS,
+  ZERO_ADDRESS,
+  hederaFn,
+  maxAmountSpend,
+  tryParseAmount,
+  useChainId,
+  useContract,
+  useMixpanel,
+  usePangolinWeb3,
+  useTranslation,
+} from '@pangolindex/shared';
+import {
+  useApproveCallbackHook,
+  useTokenBalanceHook,
+  useTransactionAdder,
+  useUSDCPriceHook,
+} from '@pangolindex/state-hooks';
 import numeral from 'numeral';
 import { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ZERO_ADDRESS } from 'src/constants';
-import { PNG } from 'src/constants/tokens';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useMixpanel } from 'src/hooks/mixpanel';
-import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
-import { useSarStakingContract } from 'src/hooks/useContract';
-import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
-import { maxAmountSpend } from 'src/utils/maxAmountSpend';
-import { useDerivedStakeInfo } from '../pstake/hooks/common';
-import { tryParseAmount } from '../pswap/hooks/common';
-import { useTransactionAdder } from '../ptransactions/hooks';
-import { useTokenBalanceHook } from '../pwallet/hooks';
+import SarStaking from 'src/constants/abis/sar.json';
 import { Position, URI } from './types';
+
+export function useSarStakingContract() {
+  const chainId = useChainId();
+  return useContract(SAR_STAKING_ADDRESS[chainId], SarStaking, true);
+}
+
+// this is designed for Hedera
+export function useHederaSarNFTContract() {
+  const chainId = useChainId();
+  const sarContractAddress = SAR_STAKING_ADDRESS[chainId];
+
+  let nftTokenAddress: string | undefined = undefined;
+
+  if (sarContractAddress && Hedera.isHederaChain(chainId)) {
+    const sarContractId = hederaFn.hederaId(sarContractAddress ?? '');
+    const nftTokenId = hederaFn.contractToTokenId(sarContractId);
+    nftTokenAddress = hederaFn.idToAddress(nftTokenId);
+  }
+
+  return useContract(nftTokenAddress, SarStaking, true);
+}
+
+// based on typed value
+export function useDerivedStakeInfo(
+  typedValue: string,
+  stakingToken: Token,
+  userLiquidityUnstaked: TokenAmount | undefined,
+): {
+  parsedAmount?: CurrencyAmount;
+  error?: string;
+} {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+
+  const { t } = useTranslation();
+
+  const parsedInput: CurrencyAmount | undefined = tryParseAmount(typedValue, stakingToken, chainId);
+  const parsedAmount =
+    parsedInput && userLiquidityUnstaked && JSBI.lessThanOrEqual(parsedInput.raw, userLiquidityUnstaked.raw)
+      ? parsedInput
+      : undefined;
+
+  let error: string | undefined;
+  if (!account) {
+    error = t('stakeHooks.connectWallet');
+  }
+  if (parsedInput && !parsedAmount) {
+    error = error ?? t('stakeHooks.insufficientBalance', { symbol: stakingToken.symbol });
+  }
+  if (!parsedAmount) {
+    error = error ?? t('stakeHooks.enterAmount');
+  }
+
+  return {
+    parsedAmount,
+    error,
+  };
+}
 
 /**
  *

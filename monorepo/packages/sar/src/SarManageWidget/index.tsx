@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Position } from 'src/state/psarstake/types';
+import { Position } from 'src/hooks/types';
 import AddStake from './AddStake';
 import Claim from './Claim';
 import Compound from './Compound';

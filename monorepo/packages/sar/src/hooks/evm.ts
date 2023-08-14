@@ -2,21 +2,30 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { TokenAmount } from '@pangolindex/sdk';
+import {
+  BIGNUMBER_ZERO,
+  MixPanelEvents,
+  PNG,
+  calculateGasMargin,
+  calculateUserRewardRate,
+  existSarContract,
+  useChainId,
+  usePangolinWeb3,
+  useSubgraphSarPositions,
+  useSubgraphStakingContractInfo,
+  waitForTransaction,
+} from '@pangolindex/shared';
+import {
+  useLastBlockTimestampHook,
+  useSarStakingContract,
+  useShouldUseSubgraph,
+  useSingleCallResult,
+  useSingleContractMultipleData,
+} from '@pangolindex/state-hooks';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { useSubgraphSarPositions, useSubgraphStakingContractInfo } from 'src/apollo/singleStake';
-import { BIGNUMBER_ZERO } from 'src/constants';
-import { PNG } from 'src/constants/tokens';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useLastBlockTimestampHook } from 'src/hooks/block';
-import { MixPanelEvents } from 'src/hooks/mixpanel';
-import { useSarStakingContract } from 'src/hooks/useContract';
-import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
-import { calculateUserRewardRate } from 'src/state/ppangoChef/utils';
-import { calculateGasMargin, existSarContract, waitForTransaction } from 'src/utils';
-import { useSingleCallResult, useSingleContractMultipleData } from '../../pmulticall/hooks';
-import { Position, URI } from '../types';
-import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from '../utils';
+import { Position, URI } from './types';
+import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from './utils';
 
 // Return the info of the sar stake
 export function useSarStakeInfo() {

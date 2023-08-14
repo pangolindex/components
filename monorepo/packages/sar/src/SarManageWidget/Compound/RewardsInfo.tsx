@@ -1,11 +1,10 @@
+import { Box, CurrencyLogo, Text, Tooltip } from '@pangolindex/core';
+import { PNG, useChainId } from '@pangolindex/shared';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, CurrencyLogo, Text, Tooltip } from 'src/components';
-import { PNG } from 'src/constants/tokens';
-import { useChainId } from 'src/hooks';
-import { Position } from 'src/state/psarstake/types';
+import { Position } from 'src/hooks/types';
 import Title from '../Title';
 import { Options } from '../types';
 

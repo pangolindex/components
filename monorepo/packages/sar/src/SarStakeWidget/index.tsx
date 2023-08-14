@@ -1,25 +1,18 @@
 import { formatUnits } from '@ethersproject/units';
+import { Box, Button, CurrencyLogo, Stat, Text, TextInput } from '@pangolindex/core';
+import { Hedera, PNG, ZERO_ADDRESS, getBuyUrl, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import {
+  ApprovalState,
+  useHederaTokenAssociated,
+  useTokenBalanceHook,
+  useWalletModalToggle,
+} from '@pangolindex/state-hooks';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box } from 'src/components/Box';
-import { Button } from 'src/components/Button';
-import CurrencyLogo from 'src/components/CurrencyLogo';
-import { Stat } from 'src/components/Stat';
-import { Text } from 'src/components/Text';
-import { TextInput } from 'src/components/TextInput';
-import { ZERO_ADDRESS } from 'src/constants';
-import { PNG } from 'src/constants/tokens';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
-import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
-import { useHederaSarNFTContract } from 'src/hooks/useContract';
-import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/state/psarstake/hooks';
-import { useSarStakeInfo } from 'src/state/psarstake/hooks/evm';
-import { useTokenBalanceHook } from 'src/state/pwallet/hooks';
-import { getBuyUrl } from 'src/utils';
-import { Hedera } from 'src/utils/hedera';
+
+import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/hooks';
+import { useSarStakeInfo } from 'src/hooks/evm';
+import { useHederaSarNFTContract } from 'src/hooks/utils';
 import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../SarManageWidget/ConfirmDrawer/styled';
 import { Buttons, Root, Wrapper } from './styleds';

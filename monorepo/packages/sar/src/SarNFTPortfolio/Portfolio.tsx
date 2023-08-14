@@ -1,15 +1,10 @@
 import { formatEther } from '@ethersproject/units';
+import { Box, DropdownMenu, Pagination, Text } from '@pangolindex/core';
+import { MEDIA_WIDTHS, scrollElementIntoView, useTranslation } from '@pangolindex/shared';
 import { BigNumber } from 'ethers';
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useMedia, useWindowSize } from 'react-use';
-import { Position } from 'src/state/psarstake/types';
-import { MEDIA_WIDTHS } from 'src/theme';
-import { scrollElementIntoView } from 'src/utils';
-import { Box } from '../Box';
-import DropdownMenu from '../DropdownMenu';
-import Pagination from '../Pagination';
-import { Text } from '../Text';
+import { Position } from 'src/hooks/types';
 import { Frame, StyledSVG } from './styleds';
 
 interface Props {

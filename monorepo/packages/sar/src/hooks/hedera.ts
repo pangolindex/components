@@ -1,22 +1,34 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { Fraction, JSBI } from '@pangolindex/sdk';
+import {
+  BIGNUMBER_ZERO,
+  MixPanelEvents,
+  calculateUserRewardRate,
+  existSarContract,
+  hederaFn,
+  useChainId,
+  usePangolinWeb3,
+  useSubgraphSarPositions,
+  useSubgraphStakingContractInfo,
+} from '@pangolindex/shared';
+import {
+  useHederaTokenAssociated,
+  useLastBlockTimestampHook,
+  useShouldUseSubgraph,
+  useSingleContractMultipleData,
+} from '@pangolindex/state-hooks';
 import { useMemo } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { useSubgraphSarPositions, useSubgraphStakingContractInfo } from 'src/apollo/singleStake';
-import { BIGNUMBER_ZERO } from 'src/constants';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useLastBlockTimestampHook } from 'src/hooks/block';
-import { MixPanelEvents } from 'src/hooks/mixpanel';
-import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
-import { useHederaSarNFTContract, useSarStakingContract } from 'src/hooks/useContract';
-import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
-import { calculateUserRewardRate } from 'src/state/ppangoChef/utils';
-import { existSarContract } from 'src/utils';
-import { hederaFn } from 'src/utils/hedera';
-import { useSingleContractMultipleData } from '../../pmulticall/hooks';
-import { Position, URI } from '../types';
-import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from '../utils';
+import { Position, URI } from './types';
+import {
+  formatPosition,
+  useDefaultSarClaimOrCompound,
+  useDefaultSarStake,
+  useDefaultSarUnstake,
+  useHederaSarNFTContract,
+  useSarStakingContract,
+} from './utils';
 
 export function useHederaExchangeRate() {
   return useQuery(

@@ -18,4 +18,4 @@ const TemplateSarManageWidget: ComponentStory<typeof SarManageWidget> = () => (
   </div>
 );
 
-export const Default = TemplateSarManageWidget.bind({});
+export const DefaultTemplate = TemplateSarManageWidget.bind({});

@@ -1,12 +1,9 @@
+import { Box, Button, Drawer, Loader, Text } from '@pangolindex/core';
+import { getEtherscanLink, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import CircleTick from 'src/assets/images/circleTick.svg';
-import { Drawer } from 'src/components';
-import { usePangolinWeb3 } from 'src/hooks';
-import { getEtherscanLink } from 'src/utils';
-import { Box, Button, Loader, Text } from '../../..';
+import CircleTick from 'src/assets/circleTick.svg';
 import { ErrorBox, ErrorText, ErrorWrapper, Link, SubmittedWrapper } from './styled';
 
 interface Props {

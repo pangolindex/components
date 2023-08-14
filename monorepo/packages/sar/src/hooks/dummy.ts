@@ -1,9 +1,8 @@
 import { TokenAmount } from '@pangolindex/sdk';
+import { PNG, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { ApprovalState } from '@pangolindex/state-hooks';
 import { useState } from 'react';
-import { PNG } from 'src/constants/tokens';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
-import { Position } from '../types';
+import { Position } from './types';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export function useDummySarPositions(): {

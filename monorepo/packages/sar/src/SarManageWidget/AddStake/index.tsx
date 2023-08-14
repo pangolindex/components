@@ -1,32 +1,32 @@
 import { formatEther } from '@ethersproject/units';
+import { Box, Button, CurrencyLogo, Stat, Text, TextInput } from '@pangolindex/core';
+import {
+  Hedera,
+  PNG,
+  SAR_STAKING_ADDRESS,
+  ZERO_ADDRESS,
+  getBuyUrl,
+  hederaFn,
+  useChainId,
+  usePangolinWeb3,
+  useTranslation,
+} from '@pangolindex/shared';
+import {
+  ApprovalState,
+  useHederaTokenAssociated,
+  useTokenBalanceHook,
+  useWalletModalToggle,
+} from '@pangolindex/state-hooks';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box } from 'src/components/Box';
-import { Button } from 'src/components/Button';
-import CurrencyLogo from 'src/components/CurrencyLogo';
-import { Stat } from 'src/components/Stat';
-import { Text } from 'src/components/Text';
-import { TextInput } from 'src/components/TextInput';
-import { ZERO_ADDRESS } from 'src/constants';
-import { SAR_STAKING_ADDRESS } from 'src/constants/address';
-import { PNG } from 'src/constants/tokens';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
-import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
-import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useDerivativeSarStakeHook } from 'src/state/psarstake/hooks';
-import { useSarStakeInfo } from 'src/state/psarstake/hooks/evm';
-import { Position } from 'src/state/psarstake/types';
-import { useTokenBalanceHook } from 'src/state/pwallet/hooks';
-import { getBuyUrl } from 'src/utils';
-import { Hedera, hederaFn } from 'src/utils/hedera';
+import { useDerivativeSarStakeHook } from 'src/hooks';
+import { useSarStakeInfo } from 'src/hooks/evm';
+import { Position } from 'src/hooks/types';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import Title from '../Title';
 import { Options } from '../types';
 import { Buttons, Root, Wrapper } from './styleds';
-
 interface Props {
   selectedOption: Options;
   selectedPosition: Position | null;

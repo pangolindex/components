@@ -1,14 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
+import { Box, Button, Text } from '@pangolindex/core';
+import { PNG, useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box } from 'src/components/Box';
-import { Button } from 'src/components/Button';
-import { Text } from 'src/components/Text';
-import { PNG } from 'src/constants/tokens';
-import { useChainId } from 'src/hooks';
-import { useDerivativeSarClaimHook } from 'src/state/psarstake/hooks';
-import { Position } from 'src/state/psarstake/types';
+import { useDerivativeSarClaimHook } from 'src/hooks';
+import { Position } from 'src/hooks/types';
 import RewardsInfo from '../Compound/RewardsInfo';
 import ConfirmDrawer from '../ConfirmDrawer';
 import { Options } from '../types';

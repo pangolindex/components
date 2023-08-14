@@ -1,14 +1,9 @@
+import { Box, Button, Loader, Text } from '@pangolindex/core';
+import { scrollElementIntoView, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import { useWalletModalToggle } from '@pangolindex/state-hooks';
 import React, { useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useSarPositionsHook } from 'src/state/psarstake/hooks';
-import { Position } from 'src/state/psarstake/types';
-import { scrollElementIntoView } from 'src/utils';
-import { Box } from '../Box';
-import { Button } from '../Button';
-import { Loader } from '../Loader';
-import { Text } from '../Text';
+import { useSarPositionsHook } from 'src/hooks';
+import { Position } from 'src/hooks/types';
 import Portfolio from './Portfolio';
 import { Overlay, Root } from './styleds';
 
