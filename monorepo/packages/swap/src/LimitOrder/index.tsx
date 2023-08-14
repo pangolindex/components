@@ -9,12 +9,13 @@ import {
   useChainId,
   usePangolinWeb3,
   useTranslation,
+  MixPanelEvents,
+  useMixpanel,
 } from '@pangolindex/shared';
 import { useTransactionAdder, useUserSlippageTolerance, useWalletModalToggle } from '@pangolindex/state';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useTokenHook } from 'src/hooks/tokens';
 import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
 import { galetoMaxAmountSpend } from 'src/utils/maxAmountSpend';

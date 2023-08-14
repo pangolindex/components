@@ -30,3 +30,17 @@ export enum Field {
   INPUT = 'INPUT',
   OUTPUT = 'OUTPUT',
 }
+
+/* Pair */
+export enum PairState {
+  LOADING,
+  NOT_EXISTS,
+  EXISTS,
+  INVALID,
+}
+
+export enum PoolType {
+  SIMPLE_POOL = 'SIMPLE_POOL',
+  STABLE_SWAP = 'STABLE_SWAP',
+  RATED_SWAP = 'RATED_SWAP',
+}

@@ -1,6 +1,5 @@
 import { Box, Switch, Text } from '@pangolindex/core';
-import { useOnClickOutside } from '@pangolindex/hooks';
-import { useTranslation } from '@pangolindex/shared';
+import { useTranslation, useOnClickOutside } from '@pangolindex/shared';
 import React, { useCallback, useRef, useState } from 'react';
 import { ChevronDown } from 'react-feather';
 import { useListsStateAtom } from 'src/state/plists/atom';

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box, Text } from '../../';
+import { Box, Text } from '@pangolindex/core';
 
 export const ContentBox = styled(Box)`
   background-color: ${({ theme }) => theme.swapWidget?.detailsBackground};
