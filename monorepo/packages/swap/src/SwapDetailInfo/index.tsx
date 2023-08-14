@@ -1,11 +1,12 @@
-import { Text } from '@pangolindex/core';
-import { ElixirTrade, Percent, Trade, TradeType } from '@pangolindex/sdk';
+import { Text, Tooltip } from '@pangolindex/core';
+import { ElixirTrade, Percent, Trade, TradeType, Fraction } from '@pangolindex/sdk';
 import {
   INITIAL_ALLOWED_SLIPPAGE,
   ONE_BIPS,
   computeSlippageAdjustedAmounts,
   useTranslation,
 } from '@pangolindex/shared';
+import _uniqueId from 'lodash/uniqueId';
 import { useUserSlippageTolerance } from '@pangolindex/state';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';

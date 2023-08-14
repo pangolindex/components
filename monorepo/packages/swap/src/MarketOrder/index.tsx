@@ -25,11 +25,12 @@ import {
   useTranslation,
   validateAddressMapping,
   wrappedCurrency,
+  MixPanelEvents,
+  useMixpanel,
 } from '@pangolindex/shared';
 import { useExpertModeManager, useUserSlippageTolerance, useWalletModalToggle } from '@pangolindex/state';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
-import { MixPanelEvents, useMixpanel } from 'src/hooks';
 import { useTokenHook } from 'src/hooks/tokens';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';

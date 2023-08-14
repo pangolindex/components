@@ -35,3 +35,7 @@ export function useMulticallContract(): Contract | null {
   const { chainId } = usePangolinWeb3();
   return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false);
 }
+
+export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible);
+}
