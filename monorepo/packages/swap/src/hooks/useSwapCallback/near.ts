@@ -13,7 +13,7 @@ import {
 import { useTransactionAdder } from '@pangolindex/state';
 import { useMemo } from 'react';
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS } from 'src/connectors';
-import { useGetNearPoolId } from 'src/data/Reserves';
+import { useGetNearPoolId } from '@pangolindex/hooks';
 import { SwapCallbackState } from './constant';
 
 export function useNearSwapCallback(

@@ -1,6 +1,6 @@
 import { Box, Drawer, Text, TextInput } from '@pangolindex/core';
 import { CAVAX, ChainId, Currency, Token, WAVAX, currencyEquals } from '@pangolindex/sdk';
-import { Hedera, useChainId, useTranslation } from '@pangolindex/shared';
+import { Hedera, useChainId, useTranslation, filterTokenOrChain, isAddress } from '@pangolindex/shared';
 import { useAddUserToken } from '@pangolindex/state';
 import deepEqual from 'deep-equal';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -11,7 +11,6 @@ import { useTokenHook } from 'src/hooks/tokens';
 import { useAllTokens } from 'src/hooks/useAllTokens';
 import usePrevious from 'src/hooks/usePrevious';
 import { useSelectedListInfo } from 'src/state/plists/hooks';
-import { filterTokenOrChain, isAddress } from 'src/utils';
 import { Field } from 'src/state/pswap/atom';
 import { useTokenComparator } from '../SearchModal/sorting';
 import TokenListDrawer from '../TokenListDrawer';
