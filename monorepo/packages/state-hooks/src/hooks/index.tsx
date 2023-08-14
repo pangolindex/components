@@ -8,6 +8,7 @@ import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import { useAllTokens } from './useAllTokens';
+import { useHederaTokenAssociated } from './tokens/hedera';
 
 // hooks
 export {
@@ -21,6 +22,7 @@ export {
   usePairsHook,
   useGetNearPoolId,
   useAllTokens,
+  useHederaTokenAssociated
 };
 
 export { ApprovalState };
