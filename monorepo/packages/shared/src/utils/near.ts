@@ -7,6 +7,7 @@ import { Contract, providers, transactions, utils } from 'near-api-js';
 // @ts-expect-error because this code we enable after wallet package done
 // TODO: when add wallet package
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src/connectors';
+import { PoolType } from 'src/types';
 import {
   NEAR_ACCOUNT_MIN_STORAGE_AMOUNT,
   NEAR_API_BASE_URL,
@@ -15,12 +16,6 @@ import {
   ONE_YOCTO_NEAR,
 } from '../constants';
 import { cache } from './cache';
-
-export enum PoolType {
-  SIMPLE_POOL = 'SIMPLE_POOL',
-  STABLE_SWAP = 'STABLE_SWAP',
-  RATED_SWAP = 'RATED_SWAP',
-}
 
 export interface ViewFunctionOptions {
   methodName: string;
