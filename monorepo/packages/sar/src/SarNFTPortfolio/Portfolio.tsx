@@ -1,7 +1,7 @@
 import { formatEther } from '@ethersproject/units';
 import { Box, DropdownMenu, Pagination, Text } from '@pangolindex/core';
 import { MEDIA_WIDTHS, scrollElementIntoView, useTranslation } from '@pangolindex/shared';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import React, { useEffect, useRef, useState } from 'react';
 import { useMedia, useWindowSize } from 'react-use';
 import { Position } from 'src/hooks/types';
