@@ -1,7 +1,7 @@
 import { Token } from '@pangolindex/sdk';
-import { useMemo } from 'react';
-import { useAllTokenBalances } from 'src/state/pwallet/hooks/common';
 import { getTokenComparator } from '@pangolindex/shared';
+import { useAllTokenBalances } from '@pangolindex/state-hooks';
+import { useMemo } from 'react';
 
 export function useTokenComparator(inverted: boolean): (tokenA: Token, tokenB: Token) => number {
   const balances = useAllTokenBalances();

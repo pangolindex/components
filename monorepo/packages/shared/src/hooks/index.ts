@@ -5,6 +5,7 @@ export { useInterval } from './useInterval';
 export { useOnClickOutside } from './useOnClickOutside';
 export { useIsWindowVisible } from './useIsWindowVisible';
 export { useENS } from './useENS';
+export { usePrevious } from './usePrevious';
 
 export * from './useContract';
 export * from './mixpanel';

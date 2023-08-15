@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
 import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
-import { useParsedQueryString } from '@pangolindex/hooks';
 import {
   CAVAX,
   ChainId,
@@ -16,6 +15,7 @@ import {
   Trade,
 } from '@pangolindex/sdk';
 import {
+  AEB_TOKENS,
   NATIVE,
   ROUTER_ADDRESS,
   ROUTER_DAAS_ADDRESS,
@@ -28,14 +28,17 @@ import {
   validateAddressMapping,
   wrappedCurrency,
 } from '@pangolindex/shared';
-import { useUserSlippageTolerance } from '@pangolindex/state';
+import {
+  useCurrency,
+  useCurrencyBalances,
+  useParsedQueryString,
+  useUserSlippageTolerance,
+} from '@pangolindex/state-hooks';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useCurrency } from 'src/hooks/useCurrency';
 import { SWAP_DEFAULT_CURRENCY } from 'src/constants';
 import { useElixirTradeExactIn, useElixirTradeExactOut, useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
-import { useCurrencyBalances } from '../../pwallet/hooks/common';
 import { DefaultSwapState, FeeInfo, Field, SwapParams, useSwapState as useSwapStateAtom } from '../atom';
 
 export interface LimitOrderInfo extends Order {
@@ -541,4 +544,15 @@ export function useDaasFeeInfo(): [FeeInfo, (feeInfo: FeeInfo) => void] {
 
   return [feeInfo, setFeeInfo];
 }
+
+export function useIsSelectedAEBToken(): boolean {
+  const chainId = useChainId();
+
+  const { swapState: state } = useSwapStateAtom();
+
+  const selectedOutputToken = state[chainId]?.OUTPUT;
+
+  return AEB_TOKENS.some((tokenAddress) => tokenAddress === selectedOutputToken?.currencyId);
+}
+
 /* eslint-enable max-lines */

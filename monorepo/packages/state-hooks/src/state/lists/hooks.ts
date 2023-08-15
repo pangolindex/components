@@ -1,8 +1,6 @@
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
-// import { AEB_TOKENS, useChainId } from '@pangolindex/shared';
 import { Tags, TokenInfo, TokenList } from '@pangolindex/token-lists';
 import { useMemo } from 'react';
-// import { useSwapState } from 'src/state/swap/atom';
 import { useListsStateAtom } from './atom';
 
 type TagDetails = Tags[keyof Tags];
@@ -178,14 +176,3 @@ export function useAllLists(): TokenList[] {
     [lists],
   );
 }
-
-//TODO : need to think for swap state 
-// export function useIsSelectedAEBToken(): boolean {
-//   const chainId = useChainId();
-
-//   const { swapState: state } = useSwapState();
-
-//   const selectedOutputToken = state[chainId]?.OUTPUT;
-
-//   return AEB_TOKENS.some((tokenAddress) => tokenAddress === selectedOutputToken?.currencyId);
-// }

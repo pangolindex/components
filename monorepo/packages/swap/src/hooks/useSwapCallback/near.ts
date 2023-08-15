@@ -10,10 +10,11 @@ import {
   useLibrary,
   usePangolinWeb3,
 } from '@pangolindex/shared';
-import { useTransactionAdder } from '@pangolindex/state';
+import { useGetNearPoolId, useTransactionAdder } from '@pangolindex/state-hooks';
 import { useMemo } from 'react';
+// @ts-expect-error because this code we enable after connector package done
+// TODO: when add connector package
 import { NEAR_EXCHANGE_CONTRACT_ADDRESS } from 'src/connectors';
-import { useGetNearPoolId } from '@pangolindex/hooks';
 import { SwapCallbackState } from './constant';
 
 export function useNearSwapCallback(

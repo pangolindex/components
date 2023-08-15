@@ -1,9 +1,8 @@
 import { Box, Button, Drawer, Text, TextInput } from '@pangolindex/core';
 import { parseENSAddress, uriToHttp, useTranslation } from '@pangolindex/shared';
+import { useFetchListCallback, useListsStateAtom } from '@pangolindex/state-hooks';
 import React, { useCallback, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
-import { useFetchListCallback } from 'src/hooks/useFetchListCallback';
-import { useListsStateAtom } from 'src/state/plists/atom';
 import TokenListRow from './TokenListRow';
 import { AddInputWrapper, List } from './styled';
 
