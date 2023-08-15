@@ -1,8 +1,8 @@
-import { CurrencyLogo, Text, LoaderIcon } from '@pangolindex/core';
+import { CurrencyLogo, LoaderIcon, Text } from '@pangolindex/core';
 import { Currency } from '@pangolindex/sdk';
 import { useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { useCurrencyBalance } from '@pangolindex/state-hooks';
 import React, { useCallback } from 'react';
-import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
 import { Balance, CurrencyRoot } from './styled';
 
 interface Props {

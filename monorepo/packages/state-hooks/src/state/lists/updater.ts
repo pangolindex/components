@@ -4,7 +4,7 @@ import { useCallback, useEffect } from 'react';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';
 import { useListsStateAtom } from './atom';
 
-export default function Updater(): null {
+export function Updater(): null {
   const { library } = useLibrary();
 
   const { listsState, acceptListUpdate } = useListsStateAtom();

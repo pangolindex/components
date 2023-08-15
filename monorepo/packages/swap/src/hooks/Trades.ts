@@ -9,17 +9,17 @@ import {
   Token,
   Trade,
 } from '@pangolindex/sdk';
+import { PairState, useChainId, wrappedCurrency } from '@pangolindex/shared';
+import { usePairsHook } from '@pangolindex/state-hooks';
 import flatMap from 'lodash.flatmap';
 import { useEffect, useMemo, useState } from 'react';
-import { BASES_TO_CHECK_TRADES_AGAINST, BIPS_BASE, CUSTOM_BASES } from 'src/constants';
-import { usePairsHook } from '@pangolindex/hooks';
-import { useChainId, wrappedCurrency, PairState } from '@pangolindex/shared';
 // @ts-expect-error because this code we enable after elixir package done
 // TODO: when add elixir package
 import { usePoolsHook } from 'src/hooks/elixir/hooks';
 // @ts-expect-error because this code we enable after elixir package done
 // TODO: when add elixir package
 import { PoolState } from 'src/hooks/elixir/hooks/types';
+import { BASES_TO_CHECK_TRADES_AGAINST, BIPS_BASE, CUSTOM_BASES } from 'src/constants';
 import { useDaasFeeInfo, useDaasFeeTo } from '../state/pswap/hooks/common';
 
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): { pairs: Pair[]; isLoading: boolean } {
