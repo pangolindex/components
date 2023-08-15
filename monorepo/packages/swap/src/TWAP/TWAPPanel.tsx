@@ -1,8 +1,7 @@
 import { Loader } from '@pangolindex/core';
 import { ZERO_ADDRESS, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useWalletModalToggle } from '@pangolindex/state';
+import { useAllTokens, useWalletModalToggle } from '@pangolindex/state-hooks';
 import React, { Suspense, useCallback, useContext } from 'react';
-import { useAllTokens } from 'src/hooks/useAllTokens';
 import { ThemeContext } from 'styled-components';
 import { SwapTypes } from 'src/constants';
 import { Field } from 'src/state/pswap/atom';

@@ -1,7 +1,5 @@
 /* eslint-disable max-lines */
-import { parseUnits } from '@ethersproject/units';
 import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
-import { useParsedQueryString } from '@pangolindex/hooks';
 import {
   CAVAX,
   ChainId,
@@ -9,13 +7,13 @@ import {
   CurrencyAmount,
   ElixirTrade,
   FACTORY_ADDRESS,
-  JSBI,
   Price,
   Token,
   TokenAmount,
   Trade,
 } from '@pangolindex/sdk';
 import {
+  AEB_TOKENS,
   NATIVE,
   ROUTER_ADDRESS,
   ROUTER_DAAS_ADDRESS,
@@ -28,14 +26,17 @@ import {
   validateAddressMapping,
   wrappedCurrency,
 } from '@pangolindex/shared';
-import { useUserSlippageTolerance } from '@pangolindex/state';
+import {
+  useCurrency,
+  useCurrencyBalances,
+  useParsedQueryString,
+  useUserSlippageTolerance,
+} from '@pangolindex/state-hooks';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useCurrency } from 'src/hooks/useCurrency';
 import { SWAP_DEFAULT_CURRENCY } from 'src/constants';
 import { useElixirTradeExactIn, useElixirTradeExactOut, useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
-import { useCurrencyBalances } from '../../pwallet/hooks/common';
 import { DefaultSwapState, FeeInfo, Field, SwapParams, useSwapState as useSwapStateAtom } from '../atom';
 
 export interface LimitOrderInfo extends Order {
@@ -98,30 +99,6 @@ export function useSwapActionHandlers(chainId: ChainId): {
     onUserInput,
     onChangeRecipient,
   };
-}
-
-// try to parse a user entered amount for a given token
-export function tryParseAmount(
-  value?: string,
-  currency?: Currency,
-  chainId: ChainId = ChainId.AVALANCHE,
-): CurrencyAmount | undefined {
-  if (!value || !currency) {
-    return undefined;
-  }
-  try {
-    const typedValueParsed = parseUnits(value, currency.decimals).toString();
-    if (typedValueParsed !== '0') {
-      return currency instanceof Token
-        ? new TokenAmount(currency, JSBI.BigInt(typedValueParsed))
-        : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed), chainId);
-    }
-  } catch (error) {
-    // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
-    console.debug(`Failed to parse input amount: "${value}"`, error);
-  }
-  // necessary for all paths to return a value
-  return undefined;
 }
 
 const BAD_RECIPIENT_ADDRESSES: string[] = [
@@ -541,4 +518,15 @@ export function useDaasFeeInfo(): [FeeInfo, (feeInfo: FeeInfo) => void] {
 
   return [feeInfo, setFeeInfo];
 }
+
+export function useIsSelectedAEBToken(): boolean {
+  const chainId = useChainId();
+
+  const { swapState: state } = useSwapStateAtom();
+
+  const selectedOutputToken = state[chainId]?.OUTPUT;
+
+  return AEB_TOKENS.some((tokenAddress) => tokenAddress === selectedOutputToken?.currencyId);
+}
+
 /* eslint-enable max-lines */

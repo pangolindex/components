@@ -1,30 +1,33 @@
 /* eslint-disable max-lines */
 import { Box, Button, Text, ToggleButtons } from '@pangolindex/core';
-import { ApprovalState } from '@pangolindex/hooks';
 import { CAVAX, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import {
+  MixPanelEvents,
   NATIVE,
   capitalizeWord,
   unwrappedToken,
   useChainId,
+  useMixpanel,
   usePangolinWeb3,
   useTranslation,
-  MixPanelEvents,
-  useMixpanel,
 } from '@pangolindex/shared';
-import { useTransactionAdder, useUserSlippageTolerance, useWalletModalToggle } from '@pangolindex/state';
+import {
+  ApprovalState,
+  useTokenHook,
+  useTransactionAdder,
+  useUserSlippageTolerance,
+  useWalletModalToggle,
+} from '@pangolindex/state-hooks';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
-import { useTokenHook } from 'src/hooks/tokens';
-import { useIsSelectedAEBToken } from 'src/state/plists/hooks';
-import { galetoMaxAmountSpend } from 'src/utils/maxAmountSpend';
 import { ThemeContext } from 'styled-components';
 import { SwapTypes } from 'src/constants';
 import { useApproveCallbackFromInputCurrencyAmount } from 'src/hooks/useApproveCallbackFromInputCurrencyAmount';
 import { LimitField, LimitNewField } from 'src/state/pswap/atom';
 import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
-import { useSwapActionHandlers } from 'src/state/pswap/hooks/common';
+import { useIsSelectedAEBToken, useSwapActionHandlers } from 'src/state/pswap/hooks/common';
+import { galetoMaxAmountSpend } from 'src/utils/galetoMaxAmountSpend';
 import { wrappedGelatoCurrency } from 'src/utils/wrappedGelatoCurrency';
 import ConfirmLimitOrderDrawer from '../ConfirmLimitOrderDrawer';
 import LimitOrderDetailInfo from '../LimitOrderDetailInfo';

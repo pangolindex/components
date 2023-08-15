@@ -48,6 +48,8 @@ if (process.env.ENV === 'production') {
 }
 
 export default {
+   // we are ignoring gifwrap here because we have added @gelatonetwork/limit-orders-react to dependancies. and it is throwing error "gifcodec is not constructor"
+  external: ['gifwrap'],
   input: 'src/index.tsx',
   output: [
     {
