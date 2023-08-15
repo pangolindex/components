@@ -8,6 +8,7 @@ import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import { useAllTokens } from './useAllTokens';
+import { useTotalSupplyHook } from './useTotalSupply';
 
 // hooks
 export {
@@ -21,6 +22,7 @@ export {
   usePairsHook,
   useGetNearPoolId,
   useAllTokens,
+  useTotalSupplyHook,
 };
 
 export { ApprovalState };
