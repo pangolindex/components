@@ -17,7 +17,7 @@ export function useLiFiSwapChains() {
   return useQuery(['lifiChains'], async () => {
     const lifi = new LIFI();
     const chains = await lifi.getChains();
-    const formattedChains: BridgeChain[] = chains.map((chain: EVMChain) => {
+    const formattedChains: BridgeChain[] = chains.map((chain) => {
       return {
         id: `${chain?.name.toLowerCase()}_mainnet`,
         network_type: NetworkType.EVM,

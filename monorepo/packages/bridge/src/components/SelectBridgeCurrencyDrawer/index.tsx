@@ -1,10 +1,9 @@
 import { Box, Drawer, TextInput } from '@pangolindex/core';
 import { BridgeCurrency, Currency, currencyEquals } from '@pangolindex/sdk';
-import { filterTokenOrChain, isAddress, useChainId, usePrevious } from '@pangolindex/shared';
+import { filterTokenOrChain, isAddress, useChainId, usePrevious, useTranslation } from '@pangolindex/shared';
 import { useToken } from '@pangolindex/state-hooks';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
-import { useTranslation } from 'react-i18next';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import BridgeCurrencyRow from './BridgeCurrencyRow';

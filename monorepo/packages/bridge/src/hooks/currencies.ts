@@ -14,7 +14,7 @@ export function useLiFiSwapCurrencies() {
     let formattedCurrencies: BridgeCurrency[] = [];
 
     Object.entries(data?.tokens).forEach(([chainId, tokens]) => {
-      const chainTokens: BridgeCurrency[] = tokens.map((token: Token) => {
+      const chainTokens: BridgeCurrency[] = tokens.map((token) => {
         return new BridgeCurrency(token?.address, chainId, token?.decimals, token?.logoURI, token?.symbol, token?.name);
       });
       formattedCurrencies = [...formattedCurrencies, ...chainTokens];

@@ -3,7 +3,7 @@ import { Squid, RouteData as SquidRouteData } from '@0xsquid/sdk';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { parseUnits } from '@ethersproject/units';
 import LIFI from '@lifi/sdk';
-import { Route as LifiRoute } from '@lifi/types';
+import { Route as LifiRoute } from '@lifi/sdk';
 import {
   BRIDGES,
   Bridge,
@@ -18,11 +18,10 @@ import {
   Token,
   TokenAmount,
 } from '@pangolindex/sdk';
-import { RANGO_API_KEY, SQUID_API, getSigner, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { RANGO_API_KEY, SQUID_API, getSigner, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import { useCurrencyBalances } from '@pangolindex/state-hooks';
 import { RangoClient, SwapResponse as RangoRoute } from 'rango-sdk-basic';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { BridgeState, ChainField, CurrencyField, TransactionStatus, useBridgeStateAtom } from './atom';
 import { useBridgeChains } from './chains';
 import { useBridgeCurrencies } from './currencies';
