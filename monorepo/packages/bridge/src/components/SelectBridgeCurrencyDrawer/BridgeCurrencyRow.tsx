@@ -1,8 +1,8 @@
+import { Text } from '@pangolindex/core';
 import { BridgeCurrency } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import { HelpCircle } from 'react-feather';
 import { BridgeCurrencyLogo, BridgeCurrencyRowRoot } from './styled';
-import { Text } from '@pangolindex/core';
 
 interface Props {
   bridgeCurrency: BridgeCurrency;

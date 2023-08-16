@@ -2,6 +2,7 @@ import { ChainData, Squid } from '@0xsquid/sdk';
 import LIFI from '@lifi/sdk';
 import { EVMChain } from '@lifi/types';
 import { BridgeChain, LIFI as LIFIBridge, NetworkType, RANGO, SQUID } from '@pangolindex/sdk';
+import { RANGO_API_KEY, SQUID_API } from '@pangolindex/shared';
 import {
   BlockchainMeta as RangoChainMeta,
   TransactionType as RangoChainType,
@@ -11,7 +12,6 @@ import {
 } from 'rango-sdk-basic';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { RANGO_API_KEY, SQUID_API } from '@pangolindex/shared';
 
 export function useLiFiSwapChains() {
   return useQuery(['lifiChains'], async () => {

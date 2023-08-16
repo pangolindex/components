@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Box, TabPanel } from '@pangolindex/core';
+import styled from 'styled-components';
 
 export const PageWrapper = styled(Box)`
   width: 100%;

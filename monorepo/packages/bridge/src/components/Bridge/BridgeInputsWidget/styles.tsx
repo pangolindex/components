@@ -1,6 +1,6 @@
+import { Box } from '@pangolindex/core';
 import React from 'react';
 import styled from 'styled-components';
-import { Box } from '@pangolindex/core';
 
 export const Currencies = styled(Box)`
   display: grid;

@@ -1,8 +1,8 @@
+import { Box, Button, DoubleCurrencyLogo, Text } from '@pangolindex/core';
+import { useTranslation } from '@pangolindex/shared';
 import React, { useContext } from 'react';
 import { Play, Trash } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, DoubleCurrencyLogo, Text } from 'src/components';
 import { Buttons, Data, ResumeLayout, Transfer } from './styles';
 import { BridgeState, BridgeTransferProps } from './types';
 

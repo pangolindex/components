@@ -1,7 +1,7 @@
 import { LIFI } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { BridgePrioritizations, Step } from 'src/state/pbridge/types';
+import { BridgePrioritizations, Step } from 'src/hooks/types';
 import { BridgeRouteProps } from './types';
 import BridgeRoute from '.';
 

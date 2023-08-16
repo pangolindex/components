@@ -1,11 +1,11 @@
+import { Box, CountdownCounter, Loader, Tab, TabList, Tabs, Text, Tooltip } from '@pangolindex/core';
 import { BRIDGE_PARTNERS } from '@pangolindex/sdk';
-import React, { useCallback, useState } from 'react';
-import { Box, CountdownCounter, Loader, Text, Tooltip, Tab, TabList, Tabs  } from '@pangolindex/core';
-import { usePangolinWeb3, useTranslation } from '@pangolindex/shared;
-import { ChainField, CurrencyField } from 'src/hooks/atom';
-import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/state/pbridge/hooks';
-import { Route } from 'src/hooks/types';
+import { usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import { useUserSlippageTolerance } from '@pangolindex/state-hooks';
+import React, { useCallback, useState } from 'react';
+import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/hooks';
+import { ChainField, CurrencyField } from 'src/hooks/atom';
+import { Route } from 'src/hooks/types';
 import BridgeCard from './BridgeCard';
 import BridgeRoute from './BridgeRoute';
 import { CustomTabPanel, LoaderWrapper, PageWrapper, PartnerLogos, Partners, Routes, Transactions } from './styles';

@@ -1,6 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { Box } from '../';
+import { Box } from '@pangolindex/core';
 import Bridge from '.';
 
 export default {

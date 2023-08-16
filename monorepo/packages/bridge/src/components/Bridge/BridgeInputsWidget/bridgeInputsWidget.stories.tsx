@@ -1,6 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { Box } from 'src/components';
+import { Box } from '@pangolindex/core';
 import { BridgeInputsWidgetProps } from './types';
 import BridgeInputsWidget from '.';
 

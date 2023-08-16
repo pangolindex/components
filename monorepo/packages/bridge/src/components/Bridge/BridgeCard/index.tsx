@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import { Box, Button, Collapsed, DropdownMenu, Loader, SlippageInput, Text } from '@pangolindex/core';
 import {
   BRIDGES,
   Bridge,
@@ -12,31 +13,30 @@ import {
   SQUID,
   // THORSWAP,
 } from '@pangolindex/sdk';
+import {
+  checkAddressNetworkBaseMapping,
+  maxAmountSpend,
+  useChainId,
+  useDebounce,
+  useLibrary,
+  useTranslation,
+} from '@pangolindex/shared';
+import { useApplicationState, useWalletModalToggle } from '@pangolindex/state-hooks';
+import { injected } from '@pangolindex/wallet-connectors';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { MultiValue } from 'react-select';
+import { useActiveWeb3React } from 'src/hooks/useConnector'; // TODO FIX
+import { changeNetwork } from 'src/utils/wallet'; // TODO FIX;
 import { ThemeContext } from 'styled-components';
-import CircleTick from 'src/assets/images/circleTick.svg';
-import ErrorTick from 'src/assets/images/errorTick.svg';
-import {
-  Box,
-  Button,
-  Collapsed,
-  DropdownMenu,
-  Loader,
-  SlippageInput,
-  Text,
-} from '@pangolindex/core';
-import { injected } from 'src/connectors'; // TODO FIX
-import { useChainId, useLibrary, useDebounce, useTranslation, maxAmountSpend, checkAddressNetworkBaseMapping } from '@pangolindex/shared';
+import CircleTick from 'src/assets/circleTick.svg';
+import ErrorTick from 'src/assets/errorTick.svg';
+import SelectBridgeCurrencyDrawer from 'src/components/SelectBridgeCurrencyDrawer';
+import SelectChainDrawer from 'src/components/SelectChainDrawer';
+import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/hooks';
+import { ChainField, CurrencyField, TransactionStatus } from 'src/hooks/atom';
 import { useBridgeChains } from 'src/hooks/chains';
 import { useBridgeCurrencies } from 'src/hooks/currencies';
-import { useActiveWeb3React } from 'src/hooks/useConnector'; // TODO FIX
-import { useApplicationState } from '@pangolindex/state-hooks'
-import { useWalletModalToggle } from 'src/state/papplication/hooks'; // TODO FIX
-import { ChainField, CurrencyField, TransactionStatus } from 'src/hooks/atom';
-import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/hooks';
-import { changeNetwork } from 'src/utils/wallet'; // TODO FIX;
 import BridgeInputsWidget from '../BridgeInputsWidget';
 import {
   ArrowWrapper,
@@ -49,7 +49,6 @@ import {
   Wrapper,
 } from './styles';
 import { BridgeCardProps } from './types';
-import SelectBridgeCurrencyDrawer from 'src/components/SelectBridgeCurrencyDrawer';
 
 type Option = {
   label: string;

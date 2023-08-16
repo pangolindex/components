@@ -1,10 +1,10 @@
-import React from 'react';
+import { Box, Button, Hidden, Text, Visible } from '@pangolindex/core';
 import { useTranslation } from '@pangolindex/shared';
+import React from 'react';
 import { useDerivedBridgeInfo } from 'src/hooks';
-import { Box, Button, Text, Hidden, Visible } from '@pangolindex/core';
+import { BridgePrioritizations, BridgeStep, Step } from 'src/hooks/types';
 import { Information, Informations, Route, StepDetail } from './styles';
 import { BridgeRouteProps } from './types';
-import { BridgePrioritizations, BridgeStep, Step } from 'src/hooks/types';
 
 const BridgeRoute: React.FC<BridgeRouteProps> = (props) => {
   const { t } = useTranslation();

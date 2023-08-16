@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box, Text } from 'src/components';
+import { Box, Text } from '@pangolindex/core';
 
 export const Wrapper = styled(Box)`
   background-color: ${({ theme }) => theme.bridge?.secondaryBgColor};

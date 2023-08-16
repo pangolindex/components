@@ -1,9 +1,9 @@
+import { Box, Button, ChainInput, CurrencyInput, Text, TextInput, Tooltip } from '@pangolindex/core';
 import { Chain, Currency, NetworkType } from '@pangolindex/sdk';
+import { checkAddressNetworkBaseMapping, useTranslation } from '@pangolindex/shared';
 import React, { useCallback, useContext } from 'react';
 import { Info } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, ChainInput, CurrencyInput, Text, TextInput, Tooltip } from '@pangolindex/core';
-import { checkAddressNetworkBaseMapping, useTranslation } from '@pangolindex/shared';
 import { Currencies } from './styles';
 import { BridgeInputsWidgetProps } from './types';
 

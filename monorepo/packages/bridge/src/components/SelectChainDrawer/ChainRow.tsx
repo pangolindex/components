@@ -1,6 +1,6 @@
 import { Chain } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
-import { Text } from '..';
+import { Text } from '@pangolindex/core';
 import { ChainLogo, ChainRowRoot } from './styled';
 
 interface Props {

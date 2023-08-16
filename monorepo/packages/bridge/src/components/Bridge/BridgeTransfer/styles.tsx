@@ -1,5 +1,5 @@
+import { Box } from '@pangolindex/core';
 import styled from 'styled-components';
-import { Box } from 'src/components';
 
 export const Transfer = styled.tr`
   background-color: ${({ theme }) => theme.bridge?.primaryBgColor};

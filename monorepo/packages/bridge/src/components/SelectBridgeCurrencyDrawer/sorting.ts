@@ -1,7 +1,7 @@
 import { BridgeCurrency } from '@pangolindex/sdk';
-import { useMemo } from 'react';
-import { useAllTokenBalances } from '@pangolindex/state-hooks';
 import { getTokenComparator } from '@pangolindex/shared';
+import { useAllTokenBalances } from '@pangolindex/state-hooks';
+import { useMemo } from 'react';
 
 export function useTokenComparator(inverted: boolean): (tokenA: BridgeCurrency, tokenB: BridgeCurrency) => number {
   const balances = useAllTokenBalances();

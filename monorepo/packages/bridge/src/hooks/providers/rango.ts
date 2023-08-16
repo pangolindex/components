@@ -1,5 +1,6 @@
 import { parseUnits } from '@ethersproject/units';
 import { Currency, RANGO, Token, TokenAmount } from '@pangolindex/sdk';
+import { NATIVE, RANGO_API_KEY, ZERO_ADDRESS, calculateTransactionTime } from '@pangolindex/shared';
 import {
   BlockchainMeta,
   EvmBlockchainMeta,
@@ -11,7 +12,6 @@ import {
   SwapResponse,
   TransactionType,
 } from 'rango-sdk-basic';
-import { NATIVE, RANGO_API_KEY, ZERO_ADDRESS, calculateTransactionTime } from '@pangolindex/shared';
 import { BridgePrioritizations, GetRoutes, GetRoutesProps, Route, Step } from '../types';
 
 export const getRangoRoutes: GetRoutes = async ({

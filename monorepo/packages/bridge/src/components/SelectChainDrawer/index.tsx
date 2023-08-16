@@ -1,11 +1,10 @@
+import { Box, Drawer, TextInput } from '@pangolindex/core';
 import { BridgeChain, Chain, Currency, currencyEquals } from '@pangolindex/sdk';
+import { filterTokenOrChain, usePrevious, useTranslation } from '@pangolindex/shared';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
-import Drawer from '@pangolindex/core';
-import { usePrevious, filterTokenOrChain, useTranslation } from '@pangolindex/shared';
-import { Box, TextInput } from '@pangolindex/core';
 import ChainRow from './ChainRow';
 import { ChainList } from './styled';
 

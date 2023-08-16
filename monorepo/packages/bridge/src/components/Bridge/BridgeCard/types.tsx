@@ -1,5 +1,5 @@
 import { BridgeChain, BridgeCurrency } from '@pangolindex/sdk';
-import { GetRoutesProps } from 'src/state/pbridge/types';
+import { GetRoutesProps } from 'src/hooks/types';
 
 export type BridgeCardProps = {
   slippageTolerance: string;

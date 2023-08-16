@@ -18,14 +18,14 @@ import {
   Token,
   TokenAmount,
 } from '@pangolindex/sdk';
+import { RANGO_API_KEY, SQUID_API, getSigner, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { useCurrencyBalances } from '@pangolindex/state-hooks';
 import { RangoClient, SwapResponse as RangoRoute } from 'rango-sdk-basic';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RANGO_API_KEY, SQUID_API, getSigner, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { BridgeState, ChainField, CurrencyField, TransactionStatus, useBridgeStateAtom } from './atom';
 import { useBridgeChains } from './chains';
 import { useBridgeCurrencies } from './currencies';
-import { useCurrencyBalances } from '@pangolindex/state-hooks';
-import { BridgeState, ChainField, CurrencyField, TransactionStatus, useBridgeStateAtom } from './atom';
 import { getRoutesProviders } from './providers';
 import { BridgePrioritizations, GetRoutesProps, Route, SendTransaction } from './types';
 

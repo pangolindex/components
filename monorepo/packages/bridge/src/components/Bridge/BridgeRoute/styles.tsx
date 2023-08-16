@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Box } from '@pangolindex/core';
+import styled from 'styled-components';
 
 export const Route = styled(Box)<{ selected: boolean }>`
   background-color: ${({ theme }) => theme.bridge?.primaryBgColor};
