@@ -12,13 +12,19 @@ import {
   TokenAssociateTransaction,
 } from '@hashgraph/sdk';
 import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
+import {
+  PANGOCHEF_ADDRESS,
+  ROUTER_ADDRESS,
+  SAR_STAKING_ADDRESS,
+  checkIsHederaChain,
+  isHederaAddress,
+} from '@pangolindex/shared';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { ethers } from 'ethers';
 
 // @ts-expect-error because this code we enable after wallet package done
 // TODO: when add wallet package
 import { HashConnector, hashConnect } from 'src/connectors';
-import { PANGOCHEF_ADDRESS, ROUTER_ADDRESS, SAR_STAKING_ADDRESS } from '../constants';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
@@ -349,7 +355,7 @@ export class Hedera {
   }
 
   static isHederaChain = (chainId: ChainId) => {
-    return chainId === ChainId.HEDERA_TESTNET || chainId === ChainId.HEDERA_MAINNET;
+    return checkIsHederaChain(chainId);
   };
 
   isHederaIdValid = (hederaId: string): string | false => {
@@ -364,11 +370,7 @@ export class Hedera {
   };
 
   static isAddressValid = (address: string): string | false => {
-    if (address && hethers.utils.isAddress(address.toLowerCase())) {
-      return hethers.utils.getChecksumAddress(address);
-    } else {
-      return false;
-    }
+    return isHederaAddress(address);
   };
 
   hederaId = (address: string) => {

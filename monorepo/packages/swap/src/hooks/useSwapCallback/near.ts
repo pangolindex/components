@@ -1,16 +1,8 @@
 import { parseUnits } from '@ethersproject/units';
 import { Token, Trade } from '@pangolindex/sdk';
-import {
-  FunctionCallOptions,
-  INITIAL_ALLOWED_SLIPPAGE,
-  ONE_YOCTO_NEAR,
-  Transaction,
-  nearFn,
-  useChainId,
-  useLibrary,
-  usePangolinWeb3,
-} from '@pangolindex/shared';
+import { INITIAL_ALLOWED_SLIPPAGE, ONE_YOCTO_NEAR, useChainId, useLibrary, usePangolinWeb3 } from '@pangolindex/shared';
 import { useGetNearPoolId, useTransactionAdder } from '@pangolindex/state-hooks';
+import { FunctionCallOptions, Transaction, nearFn } from '@pangolindex/wallet-connectors';
 import { useMemo } from 'react';
 // @ts-expect-error because this code we enable after connector package done
 // TODO: when add connector package
