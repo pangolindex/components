@@ -1,5 +1,6 @@
 import { Token } from '@pangolindex/sdk';
-import { Hedera, hederaFn, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
 import { useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useTransactionAdder } from 'src/state/transactions/hooks';

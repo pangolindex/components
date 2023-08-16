@@ -30,9 +30,12 @@ import {
 } from '@pangolindex/sdk';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from 'src/constants';
 import { TokenAddressMap } from '../types';
-import { Hedera } from './hedera';
 import { wait } from './retry';
 // import { Bound } from 'src/state/pmint/elixir/atom';  TODO: when add elixir
+
+export function checkIsHederaChain(chainId: ChainId) {
+  return chainId === ChainId.HEDERA_TESTNET || chainId === ChainId.HEDERA_MAINNET;
+}
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -59,6 +62,14 @@ export function isCosmosAddress(value: string | undefined, bridgeChain: BridgeCh
   }
 }
 
+export function isHederaAddress(address: string): string | false {
+  if (address && hethers.utils.isAddress(address.toLowerCase())) {
+    return hethers.utils.getChecksumAddress(address);
+  } else {
+    return false;
+  }
+}
+
 export function isDummyAddress(value: any): string | false {
   return value;
 }
@@ -70,8 +81,8 @@ export const validateAddressMapping: { [chainId in ChainId]: (value: any) => str
   [ChainId.COSTON]: isAddress,
   [ChainId.SONGBIRD]: isAddress,
   [ChainId.FLARE_MAINNET]: isAddress,
-  [ChainId.HEDERA_TESTNET]: Hedera.isAddressValid,
-  [ChainId.HEDERA_MAINNET]: Hedera.isAddressValid,
+  [ChainId.HEDERA_TESTNET]: isHederaAddress,
+  [ChainId.HEDERA_MAINNET]: isHederaAddress,
   [ChainId.NEAR_MAINNET]: isDummyAddress,
   [ChainId.NEAR_TESTNET]: isDummyAddress,
   [ChainId.COSTON2]: isAddress,

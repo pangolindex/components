@@ -1,12 +1,10 @@
 /* eslint-disable max-lines */
 
 import { ChainId, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
-import { nearFn, useChainId } from '@pangolindex/shared';
+import { useChainId } from '@pangolindex/shared';
+import { near, nearFn } from '@pangolindex/wallet-connectors';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries } from 'react-query';
-// @ts-expect-error because this code we enable after connector package done
-// TODO: when add connector package
-import { near } from 'src/connectors';
 
 /**
  * Returns a Near Wallet balance.

@@ -13,11 +13,9 @@ import {
 } from '@pangolindex/sdk';
 import {
   DEFAULT_TOKEN_LISTS_SELECTED,
-  Hedera,
   MixPanelEvents,
   TRUSTED_TOKEN_ADDRESSES,
   ZERO_ADDRESS,
-  hederaFn,
   isTokenOnList,
   maxAmountSpend,
   unwrappedToken,
@@ -41,6 +39,7 @@ import {
   useUserSlippageTolerance,
   useWalletModalToggle,
 } from '@pangolindex/state-hooks';
+import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { ThemeContext } from 'styled-components';
