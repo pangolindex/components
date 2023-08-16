@@ -13,7 +13,7 @@ import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
-
+import { useToken } from './tokens/evm';
 // hooks
 export {
   useUSDCPrice,
@@ -31,6 +31,7 @@ export {
   useHederaTokenAssociated,
   useHederaApproveCallback,
   useCurrency,
+  useToken
 };
 
 export { ApprovalState };
