@@ -46,6 +46,7 @@
     "@hashgraph/hethers": "1.2.2",
     "@pangolindex/exchange-contracts": "2.1.7",
     "@pangolindex/token-lists": "1.0.2",
+    "@web3-react/abstract-connector": "6.0.7",
     "axios": "0.26.1",
     "bn.js": "5.2.1",
     "graphql-request": "4.2.0",
