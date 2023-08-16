@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "main": "lib/index.cjs.js",
   "module": "lib/index.esm.js",
+  "types": "lib/index.d.ts",
   "license": "MIT",
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",

@@ -1,6 +1,6 @@
-import { NoEthereumProviderError, UserRejectedRequestError } from '../Web3ReactInjectedConnector';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
+import { NoEthereumProviderError, UserRejectedRequestError } from '../Web3ReactInjectedConnector';
 
 import { Send, SendOld, SendReturn, SendReturnResult } from './types';
 

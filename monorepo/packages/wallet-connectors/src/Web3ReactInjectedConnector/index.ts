@@ -1,6 +1,6 @@
-import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { SendReturnResult, SendReturn, Send, SendOld } from './types';
+import { AbstractConnectorArguments, ConnectorUpdate } from '@web3-react/types';
+import { Send, SendOld, SendReturn, SendReturnResult } from './types';
 
 function parseSendReturn(sendReturn: SendReturnResult | SendReturn): any {
   return sendReturn.hasOwnProperty('result') ? sendReturn.result : sendReturn;

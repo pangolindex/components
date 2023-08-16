@@ -21,10 +21,7 @@ import {
 } from '@pangolindex/shared';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { ethers } from 'ethers';
-
-// @ts-expect-error because this code we enable after wallet package done
-// TODO: when add wallet package
-import { HashConnector, hashConnect } from 'src/connectors';
+import { HashConnector, hashConnect } from 'src';
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,

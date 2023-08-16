@@ -11,6 +11,8 @@ interface Window {
     isXDEFI?: true;
     isRabby?: true;
     isTalisman?: true;
+    send: unknown;
+    enable: () => Promise<string[]>;
     on?: (...args: any[]) => void;
     removeListener?: (...args: any[]) => void;
     request: (...args: any[]) => Promise<any>;
@@ -31,3 +33,5 @@ interface Window {
     removeAllListeners(event?: string | symbol): this;
   };
 }
+
+declare const __DEV__: boolean;

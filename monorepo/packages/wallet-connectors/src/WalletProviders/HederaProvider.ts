@@ -1,4 +1,4 @@
-import { hederaFn } from 'src/library/hedera';
+import { hederaFn } from 'src/HashConnector/hedera';
 
 export const HederaProvider = (provider: any) => {
   if (provider) {

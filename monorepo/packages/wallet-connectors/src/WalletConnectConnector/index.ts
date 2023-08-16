@@ -1,8 +1,8 @@
 import { ChainId } from '@pangolindex/sdk';
-import { UserRejectedRequestError } from '../Web3ReactInjectedConnector';
 import WalletProvider, { EthereumProvider } from '@walletconnect/ethereum-provider';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { ConnectorUpdate } from '@web3-react/types';
+import { UserRejectedRequestError } from '../Web3ReactInjectedConnector';
 
 export interface WalletConnectConnectorArguments {
   rpcMap: { [chainId: number]: string };

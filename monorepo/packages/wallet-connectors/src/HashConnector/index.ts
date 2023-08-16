@@ -7,7 +7,7 @@ import { AbstractConnectorArguments } from '@web3-react/types';
 import EventEmitter from 'eventemitter3';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
-import { TransactionResponse } from 'src/library/hedera';
+import { TransactionResponse } from './hedera';
 
 // hashconnectEvent will expose event-emitter interface
 // with this we can handle/emit any event to outside class
