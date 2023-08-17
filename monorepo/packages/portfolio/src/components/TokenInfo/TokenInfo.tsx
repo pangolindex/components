@@ -5,7 +5,7 @@ import { useTokenBalancesHook, useTotalSupplyHook, useUSDCPriceHook } from '@pan
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
-import { StyledLogo } from 'src/MyPortfolio/styleds';
+import { StyledLogo } from 'src/components/MyPortfolio/styleds';
 import { TextInfo } from './TextInfo';
 import { Container, Frame, Wrapper } from './styled';
 import { TokenInfoProps } from './types';
