@@ -1,7 +1,7 @@
 import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
+import { SUPPORTED_EVM_CHAINS_ID } from '@pangolindex/wallet-connectors';
 import { isMobile } from 'react-device-detect';
 import rabbyIcon from 'src/assets/images/rabby.svg';
-import { SUPPORTED_EVM_CHAINS_ID } from 'src/connectors'; // TODO FIX
 import injectWalletIcon from 'src/assets/images/inject-wallet.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
 import { AvalancheCoreWallet, BitKeepWallet, InjectedWallet, TalismanWallet } from './classes/injected';

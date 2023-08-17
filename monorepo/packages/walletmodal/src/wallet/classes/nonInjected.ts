@@ -1,8 +1,8 @@
 import { ChainId, NetworkType } from '@pangolindex/sdk';
-import nearIcon from 'src/assets/svg/near.svg';
-import { HashConnector, SUPPORTED_XDEFI_CHAINS, hashConnect, near, xDefi } from 'src/connectors'; // TODO FIX
+import { HashConnector, SUPPORTED_XDEFI_CHAINS, hashConnect, near, xDefi } from '@pangolindex/wallet-connectors';
 import hashIcon from 'src/assets/images/hashConnect.png';
 import xDefiIcon from 'src/assets/images/xDefi.png';
+import nearIcon from 'src/assets/svg/near.svg';
 import { Wallet, activeFunctionType } from './wallet';
 
 export class XDefiWallet extends Wallet {

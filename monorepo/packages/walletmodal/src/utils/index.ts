@@ -1,9 +1,8 @@
 import { CHAINS, Chain, ChainId, NetworkType } from '@pangolindex/sdk';
 import { wait } from '@pangolindex/shared';
+import { HashConnector, NetworkConnector } from '@pangolindex/wallet-connectors';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import deepEqual from 'deep-equal';
-import { HashConnector } from 'src/connectors'; // TODO FIX
-import { NetworkConnector } from 'src/connectors/NetworkConnector'; // TODO FIX
 import { injectWallet } from 'src/wallet';
 import { Wallet, activeFunctionType } from 'src/wallet/classes/wallet';
 

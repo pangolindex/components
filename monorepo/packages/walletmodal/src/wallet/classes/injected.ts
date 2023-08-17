@@ -1,5 +1,5 @@
 import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
-import { SUPPORTED_EVM_CHAINS_ID, avalancheCore, bitKeep, injected, talisman } from 'src/connectors'; // TODO FIX
+import { SUPPORTED_EVM_CHAINS_ID, avalancheCore, bitKeep, injected, talisman } from '@pangolindex/wallet-connectors';
 import avalancheCoreIcon from 'src/assets/svg/avalancheCore.svg';
 import bitKeepIcon from 'src/assets/svg/bitkeep.svg';
 import talismanIcon from 'src/assets/svg/talisman.svg';
