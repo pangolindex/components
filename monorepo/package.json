@@ -16,7 +16,8 @@
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
     "prettier": "^2.5.1",
-    "turbo": "latest"
+    "turbo": "latest",
+    "tsc-alias": "1.8.7"
   },
   "peerDependencies": {
     "@pangolindex/sdk": ">=2.0.1"

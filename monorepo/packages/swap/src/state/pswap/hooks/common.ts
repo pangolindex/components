@@ -20,6 +20,7 @@ import {
   computeSlippageAdjustedAmounts,
   isAddress,
   isEvmChain,
+  tryParseAmount,
   useChainId,
   usePangolinWeb3,
   useTranslation,

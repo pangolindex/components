@@ -1,7 +1,8 @@
 import { Box, Drawer, Text, TextInput } from '@pangolindex/core';
 import { CAVAX, ChainId, Currency, Token, WAVAX, currencyEquals } from '@pangolindex/sdk';
-import { Hedera, filterTokenOrChain, isAddress, useChainId, usePrevious, useTranslation } from '@pangolindex/shared';
+import { filterTokenOrChain, isAddress, useChainId, usePrevious, useTranslation } from '@pangolindex/shared';
 import { useAddUserToken, useAllTokens, useSelectedListInfo, useTokenHook } from '@pangolindex/state-hooks';
+import { Hedera } from '@pangolindex/wallet-connectors';
 import deepEqual from 'deep-equal';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
