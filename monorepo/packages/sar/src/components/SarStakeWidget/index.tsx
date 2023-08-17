@@ -1,16 +1,6 @@
-import { formatEther } from '@ethersproject/units';
+import { formatUnits } from '@ethersproject/units';
 import { Box, Button, CurrencyLogo, Stat, Text, TextInput } from '@pangolindex/core';
-import {
-  Hedera,
-  PNG,
-  SAR_STAKING_ADDRESS,
-  ZERO_ADDRESS,
-  getBuyUrl,
-  hederaFn,
-  useChainId,
-  usePangolinWeb3,
-  useTranslation,
-} from '@pangolindex/shared';
+import { Hedera, PNG, ZERO_ADDRESS, getBuyUrl, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import {
   ApprovalState,
   useHederaTokenAssociated,
@@ -18,24 +8,16 @@ import {
   useWalletModalToggle,
 } from '@pangolindex/state-hooks';
 import numeral from 'numeral';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDerivativeSarStakeHook } from 'src/hooks';
-import { useSarStakeInfo } from 'src/hooks/evm';
-import { Position } from 'src/hooks/types';
-import ConfirmDrawer from '../ConfirmDrawer';
-import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
-import Title from '../Title';
-import { Options } from '../types';
-import { Buttons, Root, Wrapper } from './styleds';
-interface Props {
-  selectedOption: Options;
-  selectedPosition: Position | null;
-  onChange: (value: Options) => void;
-  onSelectPosition: (position: Position | null) => void;
-}
+import React, { useCallback, useEffect, useState } from 'react';
 
-// Add more png on existing position
-export default function AddStake({ selectedOption, selectedPosition, onChange, onSelectPosition }: Props) {
+import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/hooks';
+import { useSarStakeInfo } from 'src/hooks/evm';
+import { useHederaSarNFTContract } from 'src/hooks/utils';
+import ConfirmDrawer from '../SarManageWidget/ConfirmDrawer';
+import { Footer, Header, TokenRow } from '../SarManageWidget/ConfirmDrawer/styled';
+import { Buttons, Root, Wrapper } from './styleds';
+
+export default function SarManageWidget() {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const chainId = useChainId();
@@ -47,9 +29,15 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
   const userPngBalance = tokensBalances[png.address];
   const { t } = useTranslation();
 
-  const { apr } = useSarStakeInfo();
+  const { apr, weeklyPNG } = useSarStakeInfo();
 
   const toggleWalletModal = useWalletModalToggle();
+
+  const useSarPositions = useSarPositionsHook[chainId];
+  const { positions, isLoading } = useSarPositions();
+
+  // get fist position with balance 0
+  const position = positions?.find((value) => value.balance.isZero());
 
   const useDerivativeSarStake = useDerivativeSarStakeHook[chainId];
 
@@ -67,17 +55,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
     wrappedOnDismiss,
     handleMax,
     onStake,
-  } = useDerivativeSarStake(selectedPosition);
-
-  const oldBalance = selectedPosition?.balance;
-  const newBalance = oldBalance?.add((parsedAmount?.raw ?? 0).toString()).add(selectedPosition?.pendingRewards ?? 0);
-
-  // if new balance is zero return 1, if not exist position return 1 , if exist position return new balance
-  const _newBalance = newBalance?.isZero() ? 1 : newBalance ?? 1;
-
-  const newAPR = selectedPosition?.rewardRate.mul(86400).mul(365).mul(100).div(_newBalance);
-
-  const weeklyPNG = selectedPosition?.rewardRate.mul(86400).mul(7);
+  } = useDerivativeSarStake(position);
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
@@ -89,20 +67,30 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
     }
   }, [approval, approvalSubmitted]);
 
-  // if changed the position and the drawer is open, close
-  useEffect(() => {
-    if (openDrawer) setOpenDrawer(false);
-  }, [selectedPosition]);
-
   const handleConfirmDismiss = useCallback(() => {
     setOpenDrawer(false);
     // if there was a tx hash, we want to clear the input
     if (hash) {
       onUserInput('');
-      onSelectPosition(null);
     }
     wrappedOnDismiss();
-  }, [hash, onUserInput]);
+  }, [onUserInput]);
+
+  const deactivateOverlay = () => {
+    const sarOverlayElement = document.getElementById('sar-portfolio-overlay');
+    if (sarOverlayElement) {
+      sarOverlayElement.style.display = 'none';
+    }
+  };
+
+  const isHedera = Hedera.isHederaChain(chainId);
+  const sarNftContract = useHederaSarNFTContract();
+
+  const {
+    associate: onAssociate,
+    hederaAssociated: isHederaTokenAssociated,
+    isLoading: isLoadingAssociate,
+  } = useHederaTokenAssociated(sarNftContract?.address, 'Pangolin Sar NFT');
 
   const showApproveFlow =
     !error &&
@@ -110,42 +98,23 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
       approval === ApprovalState.PENDING ||
       (approvalSubmitted && approval === ApprovalState.APPROVED));
 
-  const isHedera = Hedera.isHederaChain(chainId);
-
-  const nftTokenAddress = useMemo(() => {
-    const sarContractAddress = SAR_STAKING_ADDRESS[chainId];
-
-    if (sarContractAddress && isHedera) {
-      const sarContractId = hederaFn.hederaId(sarContractAddress ?? '');
-      const nftTokenId = hederaFn.contractToTokenId(sarContractId);
-      return hederaFn.idToAddress(nftTokenId);
-    }
-    return undefined;
-  }, [chainId]);
-
-  const {
-    associate: onAssociate,
-    hederaAssociated: isHederaTokenAssociated,
-    isLoading: isLoadingAssociate,
-  } = useHederaTokenAssociated(nftTokenAddress, 'Pangolin Sar NFT');
-
   const renderButtons = () => {
     if (!account) {
       return (
         <Button padding="15px 18px" variant="primary" onClick={toggleWalletModal}>
-          {t('earn.connectWallet')}
+          {t('removeLiquidity.connectWallet')}
         </Button>
       );
     } else if (!userPngBalance?.greaterThan('0')) {
       return (
-        <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png, chainId)}>
+        <Button padding="15px 18px" variant="primary" as="a" href={getBuyUrl(png, chainId)} onClick={deactivateOverlay}>
           {t('sarStake.buy', { symbol: png.symbol })}
         </Button>
       );
     } else if (!isHederaTokenAssociated && isHedera) {
       return (
         <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-          {isLoadingAssociate ? `${t('pool.associating')}` : `${t('pool.associate')} `}
+          {isLoadingAssociate ? 'Associating' : 'Associate'}
         </Button>
       );
     } else {
@@ -154,7 +123,7 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
           {showApproveFlow && (
             <Button
               variant={approval === ApprovalState.APPROVED ? 'confirm' : 'primary'}
-              isDisabled={approval !== ApprovalState.NOT_APPROVED}
+              isDisabled={approval !== ApprovalState.NOT_APPROVED || isLoading || !positions}
               onClick={onAttemptToApprove}
               height="46px"
             >
@@ -163,79 +132,102 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
           )}
           <Button
             variant={'primary'}
-            isDisabled={!selectedPosition || !!error || approval !== ApprovalState.APPROVED}
-            onClick={() => setOpenDrawer(true)}
+            isDisabled={!!error || approval !== ApprovalState.APPROVED || isLoading || !positions}
+            onClick={() => {
+              setOpenDrawer(true);
+              deactivateOverlay();
+            }}
             height="46px"
           >
-            {!selectedPosition ? t('sarStakeMore.choosePosition') : error ?? t('sarStakeMore.add')}
+            {error ?? t('sarStake.stake')}
           </Button>
         </Buttons>
       );
     }
   };
 
+  const handleInput = useCallback(
+    (value: string) => {
+      onUserInput(value);
+    },
+    [onUserInput],
+  );
+
   const ConfirmContent = (
-    <Wrapper paddingX="20px" paddingBottom="20px">
+    <Box width="100%" height="100%" paddingX="20px" paddingBottom="20px">
       <Header>
         <TokenRow>
-          <Text fontSize={24} fontWeight={500} color="text1" style={{ marginRight: '12px' }}>
+          <Text fontSize={20} fontWeight={500} color="text1" style={{ marginRight: '12px' }}>
             {parsedAmount?.toSignificant(6) ?? 0}
           </Text>
           <CurrencyLogo currency={png} size={24} imageSize={48} />
         </TokenRow>
-        <Box display="inline-grid" style={{ gridGap: '10px', gridTemplateColumns: 'auto auto' }}>
+        <Box display="inline-grid" style={{ gridGap: '10px', gridTemplateColumns: '1fr 1fr' }}>
           <Stat
             title={t('sarStake.dollarValue')}
             titlePosition="top"
-            stat={`$${(dollerWorth ?? 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}`}
+            titleFontSize={16}
+            statFontSize={12}
+            stat={`$${dollerWorth ?? 0}`}
             titleColor="text2"
           />
-          <Stat title={t('sarStakeMore.newAPR')} titlePosition="top" stat={`${newAPR}%`} titleColor="text2" />
+          <Stat
+            title={t('sarStake.startingApr')}
+            titlePosition="top"
+            stat={'0%'}
+            titleColor="text2"
+            titleFontSize={16}
+            statFontSize={12}
+          />
         </Box>
         <Box display="flex" flexDirection="row" justifyContent="space-between">
           <Text color="text1">{t('sarStake.weeklyDistributed', { symbol: png.symbol })}</Text>
-          <Text color="text1">{numeral(formatEther(weeklyPNG ?? 0)).format('0.00a')}</Text>
+          <Text color="text1">{numeral(formatUnits(weeklyPNG, png.decimals)).format('0.00a')}</Text>
         </Box>
-        <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-          {t('sarStake.confirmDescription', { symbol: png.symbol })}
-          <br />
-          <br />
-          {t('sarStakeMore.confirmDescription', { symbol: png.symbol })}
-        </Text>
+        <Box bgColor="color3" borderRadius="8px" padding="10px">
+          <Text color="text1" fontWeight={400} fontSize="12px" textAlign="center">
+            {t('sarStake.confirmDescription', { symbol: png.symbol })}
+          </Text>
+        </Box>
       </Header>
       <Footer>
         <Box my={'10px'}>
           <Button variant="primary" onClick={onStake}>
-            {t('sarStakeMore.add')}
+            {t('sarStake.stake')}
           </Button>
         </Box>
       </Footer>
-    </Wrapper>
+    </Box>
   );
 
   return (
-    <Box>
-      <Root>
-        <Title selectPosition={selectedPosition} selectedOption={selectedOption} onChange={onChange} />
+    <Wrapper id="create-sar-position-widget" zIndex={100}>
+      <Root padding="30px">
         <Box>
+          <Box mb={18}>
+            <Text color="text1" fontSize="21px" fontWeight={700}>
+              {t('sarStake.createNewPosition')}
+            </Text>
+          </Box>
           <Box justifyContent="space-between" display="flex">
             <Text color="text1" fontSize="18px" fontWeight={500}>
-              {t('sarStakeMore.stakeMore')}
+              {t('sarStake.stake')}
             </Text>
             <Text color="text4">
               {t('sarStake.walletBalance', { symbol: png.symbol, balance: userPngBalance?.toFixed(2) ?? 0 })}
             </Text>
           </Box>
           <TextInput
+            id="sar-stake-input"
             value={typedValue}
-            isNumeric={true}
             placeholder="0.00"
+            isNumeric={true}
             onChange={(value: any) => {
-              onUserInput(value);
+              handleInput(value);
             }}
             addonAfter={
               <Button variant="plain" backgroundColor="color2" padding="6px" height="auto" onClick={handleMax}>
-                <Text color="text1">MAX</Text>
+                <Text color="text1">{t('sarStake.max')}</Text>
               </Button>
             }
           />
@@ -248,27 +240,24 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
             </Box>
             <Box>
               <Text color="text2">{t('sarStake.averageAPR')}</Text>
-              <Text color="text1">{`${(apr ?? '-').toString()}%`}</Text>
+              <Text color="text1">{`${apr ?? '-'.toString()}%`}</Text>
             </Box>
           </Box>
-          <Text color="text1" fontWeight={400} fontSize="14px" textAlign="center">
-            {t('sarStakeMore.confirmDescription', { symbol: png.symbol })}
-          </Text>
         </Box>
         {renderButtons()}
       </Root>
 
       <ConfirmDrawer
         title={stakeError || hash || attempting ? '' : t('sarStake.summary')}
-        isOpen={openDrawer && !!selectedPosition}
+        isOpen={openDrawer}
         onClose={handleConfirmDismiss}
         attemptingTxn={attempting}
         txHash={hash}
         errorMessage={stakeError}
-        pendingMessage={t('sarStakeMore.pending', { balance: parsedAmount?.toFixed(2) ?? 0, symbol: png.symbol })}
+        pendingMessage={t('sarStake.pending', { balance: parsedAmount?.toFixed(2) ?? 0, symbol: png.symbol })}
         successMessage={t('sarStake.successSubmit')}
         confirmContent={ConfirmContent}
       />
-    </Box>
+    </Wrapper>
   );
 }
