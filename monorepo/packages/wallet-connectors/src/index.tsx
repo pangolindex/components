@@ -9,7 +9,7 @@ import { HashConnector, mainnetHederaConfig } from './HashConnector';
 import { NearConnector } from './NearConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
-import { WalletConnectConnector } from './WalletConnectConnector';
+import { WalletConnectConnector, WalletConnectConnectorArguments } from './WalletConnectConnector';
 import { WalletLinkConnector } from './WalletLinkConnector';
 import { InjectedConnector } from './Web3ReactInjectedConnector';
 
@@ -132,6 +132,7 @@ export const avalancheCore = new AvalancheCoreConnector({
 });
 
 export { NearConnector, HashConnector, WalletConnectConnector, NetworkConnector };
+export type { WalletConnectConnectorArguments };
 
 export * from './NearConnector/near';
 export * from './HashConnector/hedera';
