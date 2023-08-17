@@ -131,7 +131,7 @@ export const avalancheCore = new AvalancheCoreConnector({
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
-export { NearConnector, HashConnector, WalletConnectConnector };
+export { NearConnector, HashConnector, WalletConnectConnector, NetworkConnector };
 
 export * from './NearConnector/near';
 export * from './HashConnector/hedera';
