@@ -1,15 +1,15 @@
 import { formatUnits } from '@ethersproject/units';
 import { Box, Button, CurrencyLogo, Stat, Text, TextInput } from '@pangolindex/core';
-import { Hedera, PNG, ZERO_ADDRESS, getBuyUrl, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import { PNG, ZERO_ADDRESS, getBuyUrl, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import {
   ApprovalState,
   useHederaTokenAssociated,
   useTokenBalancesHook,
   useWalletModalToggle,
 } from '@pangolindex/state-hooks';
+import { Hedera } from '@pangolindex/wallet-connectors';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useState } from 'react';
-
 import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/hooks';
 import { useSarStakeInfo } from 'src/hooks/evm';
 import { useHederaSarNFTContract } from 'src/hooks/utils';

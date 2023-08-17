@@ -45,6 +45,7 @@
     "@pangolindex/sdk": "5.3.4-rc.1",
     "@pangolindex/shared": "*",
     "@pangolindex/state-hooks": "*",
+    "@pangolindex/wallet-connectors": "*",
     "@rollup/plugin-json": "4.1.0",
     "numeral": "2.0.6",
     "react-feather": "2.0.9",

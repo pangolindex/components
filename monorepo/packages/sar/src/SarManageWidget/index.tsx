@@ -7,7 +7,7 @@ import Unstake from './Unstake';
 import { Wrapper } from './styleds';
 import { Options } from './types';
 
-interface Props {
+export interface Props {
   selectedPosition: Position | null;
   onSelectPosition: (position: Position | null) => void;
 }

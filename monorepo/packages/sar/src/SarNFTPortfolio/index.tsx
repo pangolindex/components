@@ -7,7 +7,7 @@ import { Position } from 'src/hooks/types';
 import Portfolio from './Portfolio';
 import { Overlay, Root } from './styleds';
 
-interface Props {
+export interface Props {
   onSelectPosition: (position: Position | null) => void;
 }
 

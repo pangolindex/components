@@ -6,18 +6,18 @@ import {
   MixPanelEvents,
   calculateUserRewardRate,
   existSarContract,
-  hederaFn,
   useChainId,
+  useLastBlockTimestampHook,
   usePangolinWeb3,
   useSubgraphSarPositions,
   useSubgraphStakingContractInfo,
 } from '@pangolindex/shared';
 import {
   useHederaTokenAssociated,
-  useLastBlockTimestampHook,
   useShouldUseSubgraph,
   useSingleContractMultipleData,
 } from '@pangolindex/state-hooks';
+import { hederaFn } from '@pangolindex/wallet-connectors';
 import { useMemo } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { Position, URI } from './types';

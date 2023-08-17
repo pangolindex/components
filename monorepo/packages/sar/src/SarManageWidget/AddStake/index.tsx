@@ -1,12 +1,10 @@
 import { formatEther } from '@ethersproject/units';
 import { Box, Button, CurrencyLogo, Stat, Text, TextInput } from '@pangolindex/core';
 import {
-  Hedera,
   PNG,
   SAR_STAKING_ADDRESS,
   ZERO_ADDRESS,
   getBuyUrl,
-  hederaFn,
   useChainId,
   usePangolinWeb3,
   useTranslation,
@@ -17,6 +15,7 @@ import {
   useTokenBalancesHook,
   useWalletModalToggle,
 } from '@pangolindex/state-hooks';
+import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDerivativeSarStakeHook } from 'src/hooks';
@@ -27,6 +26,7 @@ import { Footer, Header, TokenRow } from '../ConfirmDrawer/styled';
 import Title from '../Title';
 import { Options } from '../types';
 import { Buttons, Root, Wrapper } from './styleds';
+
 interface Props {
   selectedOption: Options;
   selectedPosition: Position | null;

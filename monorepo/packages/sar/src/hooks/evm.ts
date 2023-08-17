@@ -10,22 +10,23 @@ import {
   calculateUserRewardRate,
   existSarContract,
   useChainId,
+  useLastBlockTimestampHook,
   usePangolinWeb3,
   useSubgraphSarPositions,
   useSubgraphStakingContractInfo,
   waitForTransaction,
 } from '@pangolindex/shared';
-import {
-  useLastBlockTimestampHook,
-  useSarStakingContract,
-  useShouldUseSubgraph,
-  useSingleCallResult,
-  useSingleContractMultipleData,
-} from '@pangolindex/state-hooks';
+import { useShouldUseSubgraph, useSingleCallResult, useSingleContractMultipleData } from '@pangolindex/state-hooks';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { Position, URI } from './types';
-import { formatPosition, useDefaultSarClaimOrCompound, useDefaultSarStake, useDefaultSarUnstake } from './utils';
+import {
+  formatPosition,
+  useDefaultSarClaimOrCompound,
+  useDefaultSarStake,
+  useDefaultSarUnstake,
+  useSarStakingContract,
+} from './utils';
 
 // Return the info of the sar stake
 export function useSarStakeInfo() {

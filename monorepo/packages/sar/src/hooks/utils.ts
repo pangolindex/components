@@ -3,11 +3,9 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import {
-  Hedera,
   PNG,
   SAR_STAKING_ADDRESS,
   ZERO_ADDRESS,
-  hederaFn,
   maxAmountSpend,
   tryParseAmount,
   useChainId,
@@ -18,10 +16,11 @@ import {
 } from '@pangolindex/shared';
 import {
   useApproveCallbackHook,
-  useTokenBalanceHook,
+  useTokenBalancesHook,
   useTransactionAdder,
   useUSDCPriceHook,
 } from '@pangolindex/state-hooks';
+import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
 import numeral from 'numeral';
 import { useCallback, useState } from 'react';
 import SarStaking from 'src/constants/abis/sar.json';
@@ -106,8 +105,9 @@ export function useDefaultSarStake() {
 
   const png = PNG[chainId];
 
-  const useTokenBalance = useTokenBalanceHook[chainId];
-  const userPngBalance = useTokenBalance(account ?? ZERO_ADDRESS, png);
+  const useTokensBalance = useTokenBalancesHook[chainId];
+  const tokenBalance = useTokensBalance(account ?? ZERO_ADDRESS, [png]);
+  const userPngBalance = tokenBalance[png.address];
 
   // used for max input button
   const maxAmountInput = maxAmountSpend(chainId, userPngBalance);
