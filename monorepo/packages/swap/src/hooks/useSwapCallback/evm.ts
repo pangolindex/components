@@ -1,6 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
-import { useENS, useTransactionDeadline } from '@pangolindex/hooks';
 import {
   CHAINS,
   ElixirTrade,
@@ -22,10 +21,11 @@ import {
   isZero,
   shortenAddress,
   useChainId,
+  useENS,
   useLibrary,
   usePangolinWeb3,
 } from '@pangolindex/shared';
-import { useTransactionAdder } from '@pangolindex/state';
+import { useTransactionAdder, useTransactionDeadline } from '@pangolindex/state-hooks';
 import { useMemo } from 'react';
 import { BIPS_BASE } from 'src/constants';
 import { useDaasFeeTo } from 'src/state/pswap/hooks/common';

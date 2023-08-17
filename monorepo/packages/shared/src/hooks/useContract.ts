@@ -1,7 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { ERC20_ABI, MULTICALL_ABI, WETH_ABI } from 'src/abis';
+import { ERC20_ABI, ERC20_BYTES32_ABI, MULTICALL_ABI, WETH_ABI } from 'src/abis';
 import { MULTICALL_NETWORKS, ZERO_ADDRESS } from 'src/constants';
 import { useLibrary, usePangolinWeb3 } from 'src/provider';
 import { getContract } from 'src/utils';

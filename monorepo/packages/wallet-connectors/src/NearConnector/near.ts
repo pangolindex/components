@@ -1,21 +1,18 @@
 /* eslint-disable max-lines */
 import { Token } from '@pangolindex/sdk';
-import BN from 'bn.js';
-import { baseDecode } from 'borsh';
-import { Contract, providers, transactions, utils } from 'near-api-js';
-
-// @ts-expect-error because this code we enable after wallet package done
-// TODO: when add wallet package
-import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src/connectors';
-import { PoolType } from 'src/types';
 import {
   NEAR_ACCOUNT_MIN_STORAGE_AMOUNT,
   NEAR_API_BASE_URL,
   NEAR_MIN_DEPOSIT_PER_TOKEN,
   NEAR_STORAGE_PER_TOKEN,
   ONE_YOCTO_NEAR,
-} from '../constants';
-import { cache } from './cache';
+  PoolType,
+  cache,
+} from '@pangolindex/shared';
+import BN from 'bn.js';
+import { baseDecode } from 'borsh';
+import { Contract, providers, transactions, utils } from 'near-api-js';
+import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src';
 
 export interface ViewFunctionOptions {
   methodName: string;

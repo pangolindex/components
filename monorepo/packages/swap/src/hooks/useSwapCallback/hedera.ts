@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { useTransactionDeadline } from '@pangolindex/hooks';
 import { CAVAX, JSBI, Percent, Router, Trade, TradeType } from '@pangolindex/sdk';
-import { INITIAL_ALLOWED_SLIPPAGE, hederaFn, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useTransactionAdder } from '@pangolindex/state';
+import { INITIAL_ALLOWED_SLIPPAGE, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { useTransactionAdder, useTransactionDeadline } from '@pangolindex/state-hooks';
+import { hederaFn } from '@pangolindex/wallet-connectors';
 import { useMemo } from 'react';
 import { BIPS_BASE } from 'src/constants';
 import { Version } from '../useToggledVersion';
