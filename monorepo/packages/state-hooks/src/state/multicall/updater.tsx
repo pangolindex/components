@@ -2,7 +2,6 @@ import { Contract } from '@ethersproject/contracts';
 import { ChainId, NetworkType } from '@pangolindex/sdk';
 import {
   CancelledError,
-  Hedera,
   RetryableError,
   chunkArray,
   getChainByNumber,
@@ -11,6 +10,7 @@ import {
   useDebounce,
   useMulticallContract,
 } from '@pangolindex/shared';
+import { Hedera } from '@pangolindex/wallet-connectors';
 import { useEffect, useMemo, useRef } from 'react';
 import { useBlockNumber } from '../application/hooks';
 import { Call, MulticallState, parseCallKey, useMulticallAtom } from './atom';

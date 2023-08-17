@@ -1,5 +1,6 @@
 import { Token } from '@pangolindex/sdk';
-import { NearTokenMetadata, nearFn, useChainId } from '@pangolindex/shared';
+import { useChainId } from '@pangolindex/shared';
+import { NearTokenMetadata, nearFn } from '@pangolindex/wallet-connectors';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries } from 'react-query';
 import { useAllTokens } from '../useAllTokens';

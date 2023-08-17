@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import { Box, Button, Text, TextInput } from '@pangolindex/core';
-import useENS, { ApprovalState, useApproveCallbackFromTradeHook } from '@pangolindex/hooks';
 import {
   CAVAX,
   CurrencyAmount,
@@ -14,26 +13,35 @@ import {
 } from '@pangolindex/sdk';
 import {
   DEFAULT_TOKEN_LISTS_SELECTED,
-  Hedera,
+  MixPanelEvents,
   TRUSTED_TOKEN_ADDRESSES,
   ZERO_ADDRESS,
-  hederaFn,
   isTokenOnList,
+  maxAmountSpend,
   unwrappedToken,
   useChainId,
+  useENS,
+  useMixpanel,
   usePangolinWeb3,
   useTranslation,
   validateAddressMapping,
   wrappedCurrency,
-  MixPanelEvents,
-  useMixpanel,
 } from '@pangolindex/shared';
-import { useExpertModeManager, useUserSlippageTolerance, useWalletModalToggle } from '@pangolindex/state';
+import {
+  ApprovalState,
+  useApproveCallbackFromTradeHook,
+  useCurrency,
+  useExpertModeManager,
+  useHederaApproveCallback,
+  useSelectedTokenList,
+  useTokenHook,
+  useTokenList,
+  useUserSlippageTolerance,
+  useWalletModalToggle,
+} from '@pangolindex/state-hooks';
+import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
-import { useTokenHook } from 'src/hooks/tokens';
-import { useCurrency } from 'src/hooks/useCurrency';
-import { useIsSelectedAEBToken, useSelectedTokenList, useTokenList } from 'src/state/plists/hooks';
 import { ThemeContext } from 'styled-components';
 import { SwapTypes } from 'src/constants';
 import { useSwapCallbackHook } from 'src/hooks/useSwapCallback';
@@ -46,6 +54,7 @@ import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
+  useIsSelectedAEBToken,
   useSwapActionHandlers,
   useSwapState,
 } from 'src/state/pswap/hooks/common';

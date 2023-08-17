@@ -6,10 +6,10 @@ import {
   ROUTER_DAAS_ADDRESS,
   ZERO_ADDRESS,
   computeSlippageAdjustedAmounts,
-  hederaFn,
   usePangolinWeb3,
   wait,
 } from '@pangolindex/shared';
+import { hederaFn } from '@pangolindex/wallet-connectors';
 import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHederaTokenAllowance } from 'src/hooks/useTokenAllowance/hedera';
