@@ -16,6 +16,7 @@ import {
 import {
   checkAddressNetworkBaseMapping,
   maxAmountSpend,
+  useActiveWeb3React,
   useChainId,
   useDebounce,
   useLibrary,
@@ -26,7 +27,6 @@ import { injected } from '@pangolindex/wallet-connectors';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { MultiValue } from 'react-select';
-import { useActiveWeb3React } from 'src/hooks/useConnector'; // TODO FIX
 import { changeNetwork } from 'src/utils/wallet'; // TODO FIX;
 import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/circleTick.svg';

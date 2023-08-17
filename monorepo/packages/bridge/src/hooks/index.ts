@@ -2,8 +2,7 @@
 import { Squid, RouteData as SquidRouteData } from '@0xsquid/sdk';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { parseUnits } from '@ethersproject/units';
-import LIFI from '@lifi/sdk';
-import { Route as LifiRoute } from '@lifi/sdk';
+import LIFI, { Route as LifiRoute } from '@lifi/sdk';
 import {
   BRIDGES,
   Bridge,
