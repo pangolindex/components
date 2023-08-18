@@ -1,7 +1,7 @@
 import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@pangolindex/core';
 import { Chain } from '@pangolindex/sdk';
 import { useActiveWeb3React, useDebounce, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { useApplicationState } from '@pangolindex/state-hooks';
+import { useWalletState } from 'src/state/atom';
 import { network } from '@pangolindex/wallet-connectors';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
@@ -23,7 +23,7 @@ export default function NetworkSelection({ open, closeModal, onToogleWalletModal
   const [searchQuery, setSearchQuery] = useState('');
 
   // get wallet object in app state because if a dev add custom wallet we neet to get this
-  const { wallets } = useApplicationState();
+  const { wallets } = useWalletState();
 
   const handleSearch = useCallback((value) => {
     setSearchQuery(value.trim());

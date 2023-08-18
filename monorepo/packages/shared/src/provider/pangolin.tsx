@@ -97,10 +97,6 @@ export function useLibrary(): { library: any; provider: any } {
 
   useEffect(() => {
     async function load() {
-      // const walletKey = Object.keys(SUPPORTED_WALLETS).find(
-      //   (key) => SUPPORTED_WALLETS[key].connector === connector,
-      // ) as string;
-
       // convert window.ethereum to ethers
       const ethersDefaultProvider = new Web3ProviderEthers((window.ethereum as ExternalProvider) || network.provider);
       // try to wrap connector provider
