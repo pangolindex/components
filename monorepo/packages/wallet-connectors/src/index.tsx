@@ -7,9 +7,9 @@ import { DefiConnector } from './DefiConnector';
 import { HashConnector } from './HashConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
-import { WalletConnectConnector } from './WalletConnectConnector';
+import { WalletConnectConnector, WalletConnectConnectorArguments } from './WalletConnectConnector';
 import { WalletLinkConnector } from './WalletLinkConnector';
-import { InjectedConnector } from './Web3ReactInjectedConnector';
+import { InjectedConnector, NoEthereumProviderError, UserRejectedRequestError } from './Web3ReactInjectedConnector';
 
 export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter(
   (chain) => (chain.pangolin_is_live || chain.supported_by_bridge) && chain?.network_type === NetworkType.EVM,
@@ -70,7 +70,9 @@ export const avalancheCore = new AvalancheCoreConnector({
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
-export { HashConnector, WalletConnectConnector };
+export { HashConnector, WalletConnectConnector, NetworkConnector };
+export { UserRejectedRequestError, NoEthereumProviderError };
+export type { WalletConnectConnectorArguments };
 
 export * from './NearConnector/near';
 export * from './HashConnector/hedera';
