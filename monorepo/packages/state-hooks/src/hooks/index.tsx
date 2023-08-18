@@ -11,8 +11,8 @@ import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
-import { useTotalSupplyHook } from './useTotalSupply';
 
+export * from './useTotalSupply';
 export * from 'src/hooks/usePair';
 export * from 'src/hooks/tokens';
 
@@ -31,7 +31,6 @@ export {
   useHederaTokenAssociated,
   useHederaApproveCallback,
   useCurrency,
-  useTotalSupplyHook,
 };
 
 export { ApprovalState };

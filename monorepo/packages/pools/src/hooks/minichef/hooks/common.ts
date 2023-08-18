@@ -1,19 +1,13 @@
 import { CHAINS, ChefType, CurrencyAmount, JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { BIG_INT_ZERO, ZERO_ADDRESS } from 'src/constants';
-import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
-import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTokensHook } from 'src/hooks/tokens';
-import { useMiniChefContract } from 'src/hooks/useContract';
-import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
-import { CallState, useMultipleContractMultipleData, useSingleCallResult } from 'src/state/pmulticall/hooks';
-import { tryParseAmount } from 'src/state/pswap/hooks/common';
-import { usePairBalanceHook } from 'src/state/pwallet/hooks';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { DoubleSideStakingInfo, MinichefStakingInfo } from '../types';
+import { CallState, useMultipleContractMultipleData, useSingleCallResult, useTokensHook, useUSDCPriceHook } from '@pangolindex/state-hooks';
+import { BIG_INT_ZERO, ZERO_ADDRESS, tryParseAmount, unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import { usePairBalanceHook } from 'src/hooks/wallet/hooks';
+import { useMiniChefContract } from 'src/hooks/useContract';
+import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';
+import { usePairTotalSupplyHook } from 'src/hooks/pair';
 
 export const useMinichefPools = (): { [key: string]: number } => {
   const minichefContract = useMiniChefContract();

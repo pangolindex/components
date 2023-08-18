@@ -1,27 +1,9 @@
 /* eslint-disable max-lines */
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 import { CHAINS, ChainId, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
-import { SubgraphEnum, getSubgraphClient } from 'src/apollo/client';
-import { GET_MINICHEF } from 'src/apollo/minichef';
-import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_TWO, BIG_INT_ZERO, ONE_TOKEN, ZERO_ADDRESS } from 'src/constants';
-import ERC20_INTERFACE from 'src/constants/abis/erc20';
-import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
-import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
-import { MINICHEF_ADDRESS } from 'src/constants/address';
-import { DAIe, PNG, USDC, USDCe, USDTe } from 'src/constants/tokens';
-import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useTokensContract } from 'src/hooks/tokens/evm';
-import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
-import { useMiniChefContract } from '../../../hooks/useContract';
-import {
-  useMultipleContractSingleData,
-  useSingleCallResult,
-  useSingleContractMultipleData,
-} from '../../pmulticall/hooks';
 import { DoubleSideStaking, MinichefFarmReward, MinichefStakingInfo, MinichefV2 } from '../types';
 import {
   AprResult,
@@ -32,6 +14,11 @@ import {
   tokenComparator,
 } from '../utils';
 import { useGetExtraPendingRewards, useMinichefPools } from './common';
+import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_TWO, BIG_INT_ZERO, DAIe, ERC20_INTERFACE, GET_MINICHEF, MINICHEF_ADDRESS, ONE_TOKEN, PNG, PairState, SubgraphEnum, USDC, USDCe, USDTe, ZERO_ADDRESS, getSubgraphClient, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { useMiniChefContract } from 'src/hooks/useContract';
+import { useMultipleContractSingleData, usePair, usePairsContract, useSingleCallResult, useSingleContractMultipleData, useTokensContract, useUSDCPrice } from '@pangolindex/state-hooks';
+import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
+import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis';
 
 export function useMichefFarmsAprs(pids: string[]) {
   const chainId = useChainId();

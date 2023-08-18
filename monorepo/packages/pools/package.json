@@ -54,6 +54,7 @@
   "dependencies": {
     "@ethersproject/providers": "5.7.2",
     "@pangolindex/core": "*",
+    "@pangolindex/exchange-contracts": "2.1.7",
     "@pangolindex/shared": "*",
     "@pangolindex/state-hooks": "*",
     "@pangolindex/wallet-connectors": "*",

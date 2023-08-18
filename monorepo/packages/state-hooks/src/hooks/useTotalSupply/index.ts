@@ -48,3 +48,5 @@ export const useTotalSupplyHook: UseTotalSupplyHookType = {
   [ChainId.OP]: useDummyHook,
   [ChainId.SKALE_BELLATRIX_TESTNET]: useTotalSupply,
 };
+
+export { useTotalSupply, useHederaTotalSupply, useNearTotalSupply };

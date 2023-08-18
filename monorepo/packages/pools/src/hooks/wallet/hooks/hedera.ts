@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery, useQueryClient } from 'react-query';
 import { AddLiquidityProps, AttemptToApproveProps, CreatePoolProps, RemoveLiquidityProps } from '../types';
 import { HederaTokenMetadata, hederaFn } from '@pangolindex/wallet-connectors';
-import { useBlockNumber, usePairsHook, usePair, useTransactionAdder } from '@pangolindex/state-hooks';
+import { useBlockNumber, usePairsHook, usePair, useTransactionAdder, useHederaTokensMetaData } from '@pangolindex/state-hooks';
 import { calculateSlippageAmount, getRouterContract, isAddress, unwrappedToken, useChainId, useLibrary, usePangolinWeb3, useTranslation, wait, wrappedCurrency } from '@pangolindex/shared';
 import { useGetAllHederaAssociatedTokens, useHederaTokenAssociated } from '@pangolindex/state-hooks/lib/hooks/tokens/hedera';
 import { Field } from '../../burn/atom';
@@ -506,32 +506,6 @@ export function fetchHederaTokenMetaData(tokenAddress: string | undefined) {
     }
   }
   return fetch;
-}
-
-/**
- * This hook get all hedera token metadata from rest api
- * @param addresses address array of tokens to be queried
- * @returns object with key is the address and the value is the metadata
- */
-export function useHederaTokensMetaData(addresses: (string | undefined)[]) {
-  const queries = useMemo(() => {
-    return addresses.map((address) => ({
-      queryKey: ['get-hedera-token-metadata', address, hederaFn.HEDERA_API_BASE_URL],
-      queryFn: fetchHederaTokenMetaData(address),
-    }));
-  }, [addresses]);
-
-  const results = useQueries(queries);
-
-  return useMemo(() => {
-    const result: { [x: string]: HederaTokenMetadata | undefined } = {};
-    addresses.forEach((address, index) => {
-      if (address) {
-        result[address] = results[index].data;
-      }
-    });
-    return result;
-  }, [results]);
 }
 
 /**
