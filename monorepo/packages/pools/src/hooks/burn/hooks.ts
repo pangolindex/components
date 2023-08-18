@@ -1,14 +1,10 @@
 import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@pangolindex/sdk';
 import { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { BIG_INT_ZERO } from 'src/constants';
-import { usePair } from 'src/data/Reserves';
-import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { tryParseAmount } from 'src/state/pswap/hooks/common';
-import { usePairBalanceHook } from 'src/state/pwallet/hooks';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { Field, initialKeyState, useBurnStateAtom } from './atom';
+import { BIG_INT_ZERO, tryParseAmount, useChainId, usePangolinWeb3, useTranslation, wrappedCurrency } from '@pangolindex/shared';
+import { usePairBalanceHook } from '../wallet/hooks';
+import { usePairTotalSupplyHook } from '../pair';
+import { usePair } from '@pangolindex/state-hooks';
 
 export function useBurnState(pairAddress: string) {
   const { burnState } = useBurnStateAtom();

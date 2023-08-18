@@ -10,14 +10,10 @@ import {
   TokenAmount,
 } from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { PairState, usePair } from '../../data/Reserves';
-import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurrency';
-import { tryParseAmount } from '../pswap/hooks/common';
-import { useCurrencyBalances } from '../pwallet/hooks/common';
 import { Field, initialKeyState, useMintStateAtom } from './atom';
+import { PairState, tryParseAmount, useChainId, usePangolinWeb3, useTranslation, wrappedCurrency, wrappedCurrencyAmount } from '@pangolindex/shared';
+import { usePairTotalSupplyHook } from '../pair';
+import { useCurrencyBalances, usePair } from '@pangolindex/state-hooks';
 
 const ZERO = JSBI.BigInt(0);
 
