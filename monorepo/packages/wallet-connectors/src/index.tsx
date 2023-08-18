@@ -6,7 +6,7 @@ import { AvalancheCoreConnector } from './AvalancheCoreConnector';
 import { BitKeepConnector } from './BitKeepConnector';
 import { DefiConnector } from './DefiConnector';
 import { HashConnector, mainnetHederaConfig } from './HashConnector';
-import { NearConnector } from './NearConnector';
+import { NEAR_EXCHANGE_CONTRACT_ADDRESS, NearConnector, near } from './NearConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
 import { WalletConnectConnector } from './WalletConnectConnector';
@@ -16,12 +16,6 @@ import { InjectedConnector } from './Web3ReactInjectedConnector';
 export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter(
   (chain) => (chain.pangolin_is_live || chain.supported_by_bridge) && chain?.network_type === NetworkType.EVM,
 ).map((chain) => chain.chain_id ?? 43114);
-
-// Near Exchnage Contract
-export const NEAR_EXCHANGE_CONTRACT_ADDRESS = {
-  [ChainId.NEAR_MAINNET]: 'png-exchange-v1.mainnet',
-  [ChainId.NEAR_TESTNET]: 'png-exchange-v1.testnet',
-};
 
 const urls = Object.entries(CHAINS).reduce((acc, [key, chain]) => {
   acc[key] = chain.rpc_uri;
@@ -80,47 +74,6 @@ export const venly = new VenlyConnector({
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
-function getNearMainnetConfig() {
-  return {
-    networkId: 'mainnet',
-    nodeUrl: 'https://rpc.mainnet.near.org',
-    walletUrl: 'https://wallet.near.org',
-    helperUrl: 'https://helper.mainnet.near.org',
-    explorerUrl: 'https://nearblocks.io',
-    indexerUrl: 'https://indexer.ref-finance.net',
-    chainId: ChainId.NEAR_MAINNET,
-    contractId: NEAR_EXCHANGE_CONTRACT_ADDRESS[ChainId.NEAR_MAINNET],
-  };
-}
-
-// TODO: set configuration dynemically as per env
-function getNearConfig(env = 'testnet') {
-  switch (env) {
-    case 'production':
-    case 'mainnet':
-      return getNearMainnetConfig();
-
-    case 'testnet':
-      return {
-        networkId: 'testnet',
-        nodeUrl: 'https://rpc.testnet.near.org',
-        walletUrl: 'https://wallet.testnet.near.org',
-        helperUrl: 'https://helper.testnet.near.org',
-        explorerUrl: 'https://testnet.nearblocks.io',
-        chainId: ChainId.NEAR_TESTNET,
-        contractId: NEAR_EXCHANGE_CONTRACT_ADDRESS[ChainId.NEAR_TESTNET],
-      };
-    default:
-      return getNearMainnetConfig();
-  }
-}
-
-export const near = new NearConnector({
-  normalizeChainId: false,
-  normalizeAccount: false,
-  config: getNearConfig('testnet'),
-});
-
 export const hashConnect = new HashConnector({
   normalizeChainId: false,
   normalizeAccount: false,
@@ -131,7 +84,8 @@ export const avalancheCore = new AvalancheCoreConnector({
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
-export { NearConnector, HashConnector, WalletConnectConnector };
+export { NearConnector, HashConnector, WalletConnectConnector, NEAR_EXCHANGE_CONTRACT_ADDRESS, near };
 
 export * from './NearConnector/near';
+export * from './NearConnector/types';
 export * from './HashConnector/hedera';

@@ -12,53 +12,15 @@ import {
 import BN from 'bn.js';
 import { baseDecode } from 'borsh';
 import { Contract, providers, transactions, utils } from 'near-api-js';
-import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src';
-
-export interface ViewFunctionOptions {
-  methodName: string;
-  args?: object;
-}
-
-export interface FunctionCallOptions extends ViewFunctionOptions {
-  gas?: string;
-  amount?: string | null;
-}
-
-export interface Transaction {
-  receiverId: string;
-  functionCalls: FunctionCallOptions[];
-}
-
-export interface PoolData {
-  id: number;
-  token_account_ids: string[];
-  token_symbols: string[];
-  amounts: string[];
-  total_fee: number;
-  shares_total_supply: string;
-  pool_kind: string;
-}
-
-export interface NearTokenMetadata {
-  id: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-  icon: string;
-}
-
-interface StorageDepositActionOptions {
-  accountId?: string;
-  registrationOnly?: boolean;
-  amount: string;
-}
-
-interface WithdrawActionOptions {
-  tokenId: string;
-  amount: string;
-  unregister?: boolean;
-  singleTx?: boolean;
-}
+import {
+  FunctionCallOptions,
+  NearPoolData,
+  NearTokenMetadata,
+  NearTransaction,
+  StorageDepositActionOptions,
+  WithdrawActionOptions,
+} from './types';
+import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from '.';
 
 class Near {
   public async viewFunction(
@@ -203,7 +165,7 @@ class Near {
     });
   }
 
-  public async getPool(chainId: number, tokenA?: Token, tokenB?: Token): Promise<PoolData> {
+  public async getPool(chainId: number, tokenA?: Token, tokenB?: Token): Promise<NearPoolData> {
     if (cache.has(`near:pool:${tokenA?.address}-${tokenB?.address}`)) {
       return cache.get(`near:pool:${tokenA?.address}-${tokenB?.address}`);
     }
@@ -337,7 +299,7 @@ class Near {
     }
   };
 
-  public async executeMultipleTransactions(allTransactions: Transaction[], callbackUrl?: string) {
+  public async executeMultipleTransactions(allTransactions: NearTransaction[], callbackUrl?: string) {
     const currentTransactions = await Promise.all(
       allTransactions.map((t, i) => {
         return this.createNearTransaction({
@@ -405,7 +367,7 @@ class Near {
     };
   }
 
-  public async getYourPools(): Promise<PoolData[]> {
+  public async getYourPools(): Promise<NearPoolData[]> {
     return fetch(NEAR_API_BASE_URL + '/liquidity-pools/' + nearFn.getAccountId(), {
       method: 'GET',
       headers: { 'Content-type': 'application/json; charset=UTF-8' },

@@ -1,7 +1,14 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { ChainId } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { AbstractConnectorArguments } from '@web3-react/types';
 import { Near, WalletConnection, keyStores } from 'near-api-js';
+
+// Near Exchnage Contract
+export const NEAR_EXCHANGE_CONTRACT_ADDRESS = {
+  [ChainId.NEAR_MAINNET]: 'png-exchange-v1.mainnet',
+  [ChainId.NEAR_TESTNET]: 'png-exchange-v1.testnet',
+};
 
 export interface NearConfigType {
   networkId: string;
@@ -131,3 +138,44 @@ export class NearConnector extends AbstractConnector {
     return false;
   }
 }
+
+function getNearMainnetConfig() {
+  return {
+    networkId: 'mainnet',
+    nodeUrl: 'https://rpc.mainnet.near.org',
+    walletUrl: 'https://wallet.near.org',
+    helperUrl: 'https://helper.mainnet.near.org',
+    explorerUrl: 'https://nearblocks.io',
+    indexerUrl: 'https://indexer.ref-finance.net',
+    chainId: ChainId.NEAR_MAINNET,
+    contractId: NEAR_EXCHANGE_CONTRACT_ADDRESS[ChainId.NEAR_MAINNET],
+  };
+}
+
+// TODO: set configuration dynemically as per env
+function getNearConfig(env = 'testnet') {
+  switch (env) {
+    case 'production':
+    case 'mainnet':
+      return getNearMainnetConfig();
+
+    case 'testnet':
+      return {
+        networkId: 'testnet',
+        nodeUrl: 'https://rpc.testnet.near.org',
+        walletUrl: 'https://wallet.testnet.near.org',
+        helperUrl: 'https://helper.testnet.near.org',
+        explorerUrl: 'https://testnet.nearblocks.io',
+        chainId: ChainId.NEAR_TESTNET,
+        contractId: NEAR_EXCHANGE_CONTRACT_ADDRESS[ChainId.NEAR_TESTNET],
+      };
+    default:
+      return getNearMainnetConfig();
+  }
+}
+
+export const near = new NearConnector({
+  normalizeChainId: false,
+  normalizeAccount: false,
+  config: getNearConfig('testnet'),
+});

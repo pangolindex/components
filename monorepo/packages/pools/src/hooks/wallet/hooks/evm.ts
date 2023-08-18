@@ -2,105 +2,32 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { CAVAX, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
-import { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import ERC20_INTERFACE from 'src/constants/abis/erc20';
-import { ROUTER_ADDRESS } from 'src/constants/address';
-import { usePairsContract } from 'src/data/Reserves';
-import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
-import { useMulticallContract, usePairContract } from 'src/hooks/useContract';
-import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
-import { Field } from 'src/state/pburn/atom';
-import { Field as AddField } from 'src/state/pmint/atom';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import {
   calculateGasMargin,
   calculateSlippageAmount,
   getRouterContract,
-  isAddress,
+  useChainId,
+  useLibrary,
+  usePangolinWeb3,
+  useTranslation,
   waitForTransaction,
-} from 'src/utils';
-import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { useMultipleContractSingleData, useSingleContractMultipleData } from '../../pmulticall/hooks';
-import { toV2LiquidityToken, useTrackedTokenPairs } from '../../puser/hooks';
+  wrappedCurrency,
+  usePairContract,
+  unwrappedToken,
+  ROUTER_ADDRESS,
+} from '@pangolindex/shared';
+import {
+  ApprovalState,
+  toV2LiquidityToken,
+  useTokenBalances,
+  useTransactionAdder,
+} from '@pangolindex/state-hooks';
+import { useMemo, useState } from 'react';
 import { AddLiquidityProps, AttemptToApproveProps, RemoveLiquidityProps } from '../types';
-
-/**
- * Returns a map of the given addresses to their eventually consistent ETH balances.
- */
-export function useETHBalances(
-  chainId: ChainId,
-  uncheckedAddresses?: (string | undefined)[],
-): { [address: string]: CurrencyAmount | undefined } {
-  const multicallContract = useMulticallContract();
-
-  const addresses: string[] = useMemo(
-    () =>
-      uncheckedAddresses
-        ? uncheckedAddresses
-            .map(isAddress)
-            .filter((a): a is string => a !== false)
-            .sort()
-        : [],
-    [uncheckedAddresses],
-  );
-
-  const results = useSingleContractMultipleData(
-    multicallContract,
-    'getEthBalance',
-    addresses.map((address) => [address]),
-  );
-
-  return useMemo(
-    () =>
-      addresses.reduce<{ [address: string]: CurrencyAmount }>((memo, address, i) => {
-        const value = results?.[i]?.result?.[0];
-        if (value) memo[address] = CurrencyAmount.ether(JSBI.BigInt(value.toString()), chainId);
-        return memo;
-      }, {}),
-    [chainId, addresses, results],
-  );
-}
-
-export function useTokenBalances(
-  address?: string,
-  tokens?: (Token | undefined)[],
-): [{ [tokenAddress: string]: TokenAmount | undefined }, boolean] {
-  const validatedTokens: Token[] = useMemo(
-    () => tokens?.filter((t?: Token): t is Token => isAddress(t?.address) !== false) ?? [],
-    [tokens],
-  );
-
-  const validatedTokenAddresses = useMemo(() => validatedTokens.map((vt) => vt.address), [validatedTokens]);
-
-  const balances = useMultipleContractSingleData(validatedTokenAddresses, ERC20_INTERFACE, 'balanceOf', [address]);
-
-  const anyLoading: boolean = useMemo(() => balances.some((callState) => callState.loading), [balances]);
-
-  const tokenBalances = useMemo(
-    () =>
-      address && validatedTokens.length > 0
-        ? validatedTokens.reduce<{ [tokenAddress: string]: TokenAmount | undefined }>((memo, token, i) => {
-            const value = balances?.[i]?.result?.[0];
-            const amount = value ? JSBI.BigInt(value.toString()) : undefined;
-            if (amount) {
-              memo[token.address] = new TokenAmount(token, amount);
-            }
-            return memo;
-          }, {})
-        : {},
-    [address, validatedTokens, balances],
-  );
-  return [tokenBalances, anyLoading];
-}
-
-// get the balance for a single token/account combo
-export function useTokenBalance(account?: string, token?: Token): TokenAmount | undefined {
-  const [tokenBalances] = useTokenBalances(account, [token]);
-  if (!token) return undefined;
-  return tokenBalances[token.address];
-}
+import { Field } from '../../burn/atom';
+import { Field as AddField } from '../../mint/atom';
+import { usePairsContract } from '@pangolindex/state-hooks/lib/hooks/usePair/evm';
+import { useGetTransactionSignature, useRefetchMinichefSubgraph, useTrackedTokenPairs } from '../utils';
 
 /**
  * this hook is used to fetch pair balance of given EVM pair

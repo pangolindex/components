@@ -4,19 +4,31 @@ import { ChainId, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
 import qs from 'qs';
 import { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useQueries } from 'react-query';
-import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from 'src/connectors';
-import { NEAR_LP_STORAGE_AMOUNT, NEAR_STORAGE_TO_REGISTER_WITH_FT, ONE_YOCTO_NEAR, ONLY_ZEROS } from 'src/constants';
-import { useGetNearAllPool, useNearPairs } from 'src/data/Reserves';
-import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
-import { useNearTokens } from 'src/hooks/tokens/near';
-import { Field } from 'src/state/pburn/atom';
-import { Field as AddField } from 'src/state/pmint/atom';
-import { calculateSlippageAmount } from 'src/utils';
-import { FunctionCallOptions, Transaction as NearTransaction, nearFn } from 'src/utils/near';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import { AddLiquidityProps, CreatePoolProps, RemoveLiquidityProps } from '../types';
+import {
+  FunctionCallOptions,
+  NEAR_EXCHANGE_CONTRACT_ADDRESS,
+  NearTransaction,
+  near,
+  nearFn,
+} from '@pangolindex/wallet-connectors';
+import {
+  NEAR_LP_STORAGE_AMOUNT,
+  NEAR_STORAGE_TO_REGISTER_WITH_FT,
+  ONE_YOCTO_NEAR,
+  ONLY_ZEROS,
+  calculateSlippageAmount,
+  useChainId,
+  useLibrary,
+  usePangolinWeb3,
+  useTranslation,
+  wrappedCurrency,
+} from '@pangolindex/shared';
+import { Field } from '../../burn/atom';
+import { Field as AddField } from '../../mint/atom';
+import { useGetNearAllPool, useNearPairs, useNearTokens } from '@pangolindex/state-hooks';
+
 /**
  * Returns a Near Wallet balance.
  */

@@ -1,8 +1,7 @@
 import { CAVAX, ChainId, Currency, CurrencyAmount, Token, TokenAmount } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useAllTokens } from 'src/hooks/useAllTokens';
-import { useAccountBalanceHook, useTokenBalancesHook } from './index';
+import { useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { useAccountBalanceHook, useAllTokens, useTokenBalancesHook } from '@pangolindex/state-hooks';
 
 export function useCurrencyBalances(
   chainId: ChainId,

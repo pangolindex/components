@@ -80,3 +80,5 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.OP]: useDummyHook,
   [ChainId.SKALE_BELLATRIX_TESTNET]: useTokensContract,
 };
+
+export { useToken, useTokensContract, useNearToken, useNearTokens, useTokens, useTokensViaSubGraph };

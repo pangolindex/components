@@ -2,22 +2,15 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { CAVAX, ChainId, Currency, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useQueries, useQuery, useQueryClient } from 'react-query';
-import { usePair } from 'src/data/Reserves';
-import { usePairsHook } from 'src/data/multiChainsHooks';
-import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
-import { useGetAllHederaAssociatedTokens, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
-import { useBlockNumber } from 'src/state/papplication/hooks';
-import { Field } from 'src/state/pburn/atom';
-import { Field as AddField } from 'src/state/pmint/atom';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { calculateSlippageAmount, getRouterContract, isAddress } from 'src/utils';
-import { HederaTokenMetadata, hederaFn } from 'src/utils/hedera';
-import { wait } from 'src/utils/retry';
-import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { useTrackedTokenPairs } from '../../puser/hooks';
 import { AddLiquidityProps, AttemptToApproveProps, CreatePoolProps, RemoveLiquidityProps } from '../types';
+import { HederaTokenMetadata, hederaFn } from '@pangolindex/wallet-connectors';
+import { useBlockNumber, usePairsHook, usePair, useTransactionAdder } from '@pangolindex/state-hooks';
+import { calculateSlippageAmount, getRouterContract, isAddress, unwrappedToken, useChainId, useLibrary, usePangolinWeb3, useTranslation, wait, wrappedCurrency } from '@pangolindex/shared';
+import { useGetAllHederaAssociatedTokens, useHederaTokenAssociated } from '@pangolindex/state-hooks/lib/hooks/tokens/hedera';
+import { Field } from '../../burn/atom';
+import { Field as AddField } from '../../mint/atom';
+import { useTrackedTokenPairs } from '../utils';
 
 /**
  * Returns a Hedera Wallet balance.

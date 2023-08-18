@@ -3,7 +3,6 @@ import { ChainId, Currency, Pair, TokenAmount } from '@pangolindex/sdk';
 import { PAIR_INTERFACE, PairState, useChainId, useSubgraphPairs, wrappedCurrency } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { useMultipleContractSingleData, useShouldUseSubgraph } from 'src/state';
-import { usePairsHook } from '.';
 
 export function usePairsContract(
   currencies: [Currency | undefined, Currency | undefined][],
@@ -52,15 +51,6 @@ export function usePairsContract(
       ];
     });
   }, [results, tokens, chainId]);
-}
-
-export function usePair(tokenA?: Currency, tokenB?: Currency): [PairState, Pair | null] {
-  const chainId = useChainId();
-
-  const tokens: [Currency | undefined, Currency | undefined][] = useMemo(() => [[tokenA, tokenB]], [tokenA, tokenB]);
-
-  const usePairs_ = usePairsHook[chainId];
-  return usePairs_(tokens)[0];
 }
 
 export function usePairsViaSubgraph(

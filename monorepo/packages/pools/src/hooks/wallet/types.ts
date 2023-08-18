@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Currency, CurrencyAmount, Percent, Token, TokenAmount } from '@pangolindex/sdk';
-import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
+import { ApprovalState } from '@pangolindex/state-hooks';
 
 export interface AddLiquidityProps {
   parsedAmounts: {
