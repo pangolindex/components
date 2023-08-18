@@ -18,6 +18,7 @@ interface Props {
   txHash: string | undefined;
   poolErrorMessage: string | undefined;
   onClose: () => void;
+  onComplete: () => void;
   noLiquidity?: boolean;
   currencies: { [field in Field]?: Currency };
   onAdd: () => void;
@@ -29,6 +30,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
   const {
     isOpen,
     onClose,
+    onComplete,
     attemptingTxn,
     poolErrorMessage,
     txHash,
@@ -189,7 +191,7 @@ const ConfirmDrawer: React.FC<Props> = (props) => {
         submitText={t('pool.liquidityAdded')}
         isShowButtton={true}
         onButtonClick={() => {
-          onClose();
+          onComplete();
         }}
         buttonText={t('transactionConfirmation.close')}
       />
