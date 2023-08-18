@@ -1,4 +1,3 @@
-import { Web3Provider } from '@ethersproject/providers';
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
 import { ALL_CHAINS, AVALANCHE_MAINNET, CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { TalismanConnector } from '@talismn/web3react-v6-connector';
@@ -26,12 +25,6 @@ export const network = new NetworkConnector({
   urls: urls,
   defaultChainId: ChainId.AVALANCHE,
 });
-
-let networkLibrary: Web3Provider | undefined;
-export function getNetworkLibrary(): Web3Provider {
-  networkLibrary = networkLibrary ?? new Web3Provider(network.provider as any);
-  return networkLibrary;
-}
 
 export const injected = new InjectedConnector({
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
@@ -89,3 +82,4 @@ export { NearConnector, HashConnector, WalletConnectConnector, NEAR_EXCHANGE_CON
 export * from './NearConnector/near';
 export * from './NearConnector/types';
 export * from './HashConnector/hedera';
+export * from './constants';

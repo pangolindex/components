@@ -1,14 +1,5 @@
 /* eslint-disable max-lines */
-import { Token } from '@pangolindex/sdk';
-import {
-  NEAR_ACCOUNT_MIN_STORAGE_AMOUNT,
-  NEAR_API_BASE_URL,
-  NEAR_MIN_DEPOSIT_PER_TOKEN,
-  NEAR_STORAGE_PER_TOKEN,
-  ONE_YOCTO_NEAR,
-  PoolType,
-  cache,
-} from '@pangolindex/shared';
+import { ChainId, Token } from '@pangolindex/sdk';
 import BN from 'bn.js';
 import { baseDecode } from 'borsh';
 import { Contract, providers, transactions, utils } from 'near-api-js';
@@ -20,7 +11,63 @@ import {
   StorageDepositActionOptions,
   WithdrawActionOptions,
 } from './types';
-import { NEAR_EXCHANGE_CONTRACT_ADDRESS, near } from '.';
+import { cache } from './cache';
+import { near } from '.';
+
+//this will be duplicate same as share constant
+const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
+const ONE_YOCTO_NEAR = '0.000000000000000000000001';
+const NEAR_STORAGE_PER_TOKEN = '0.005';
+const NEAR_MIN_DEPOSIT_PER_TOKEN = new BN('5000000000000000000000');
+const NEAR_ACCOUNT_MIN_STORAGE_AMOUNT = '0.005';
+
+//this will be duplicate same as share types
+enum PoolType {
+  SIMPLE_POOL = 'SIMPLE_POOL',
+  STABLE_SWAP = 'STABLE_SWAP',
+  RATED_SWAP = 'RATED_SWAP',
+}
+
+// Near Exchnage Contract
+export const NEAR_EXCHANGE_CONTRACT_ADDRESS = {
+  [ChainId.NEAR_MAINNET]: 'png-exchange-v1.mainnet',
+  [ChainId.NEAR_TESTNET]: 'png-exchange-v1.testnet',
+};
+
+function getNearMainnetConfig() {
+  return {
+    networkId: 'mainnet',
+    nodeUrl: 'https://rpc.mainnet.near.org',
+    walletUrl: 'https://wallet.near.org',
+    helperUrl: 'https://helper.mainnet.near.org',
+    explorerUrl: 'https://nearblocks.io',
+    indexerUrl: 'https://indexer.ref-finance.net',
+    chainId: ChainId.NEAR_MAINNET,
+    contractId: NEAR_EXCHANGE_CONTRACT_ADDRESS[ChainId.NEAR_MAINNET],
+  };
+}
+
+// TODO: set configuration dynemically as per env
+function getNearConfig(env = 'testnet') {
+  switch (env) {
+    case 'production':
+    case 'mainnet':
+      return getNearMainnetConfig();
+
+    case 'testnet':
+      return {
+        networkId: 'testnet',
+        nodeUrl: 'https://rpc.testnet.near.org',
+        walletUrl: 'https://wallet.testnet.near.org',
+        helperUrl: 'https://helper.testnet.near.org',
+        explorerUrl: 'https://testnet.nearblocks.io',
+        chainId: ChainId.NEAR_TESTNET,
+        contractId: NEAR_EXCHANGE_CONTRACT_ADDRESS[ChainId.NEAR_TESTNET],
+      };
+    default:
+      return getNearMainnetConfig();
+  }
+}
 
 class Near {
   public async viewFunction(
