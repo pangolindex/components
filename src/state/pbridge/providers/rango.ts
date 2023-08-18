@@ -55,6 +55,7 @@ export const getRangoRoutes: GetRoutes = async ({
     },
     amount: parsedAmount,
   };
+  if (!request.from.blockchain || !request.to.blockchain || !fromCurrency?.symbol || !toCurrency?.symbol) return [];
   let rangoRouteRes: QuoteResponse | SwapResponse;
 
   if (!fromAddress) {
