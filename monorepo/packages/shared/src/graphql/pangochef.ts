@@ -1,7 +1,7 @@
+import { Hedera } from '@pangolindex/wallet-connectors';
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/provider';
-import { checkIsHederaChain } from 'src/utils';
 import { SubgraphEnum, useSubgraphClient } from './client';
 import { SubgraphToken } from './tokens';
 
@@ -177,7 +177,7 @@ export function useSubgraphFarmsStakedAmount() {
     },
     {
       refetchInterval: 1000 * 60 * 1, // 1 minutes
-      enabled: checkIsHederaChain(chainId) && Boolean(account),
+      enabled: Hedera.isHederaChain(chainId) && Boolean(account),
     },
   );
 }

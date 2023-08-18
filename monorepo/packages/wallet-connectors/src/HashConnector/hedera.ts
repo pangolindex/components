@@ -11,17 +11,16 @@ import {
   HbarUnit,
   TokenAssociateTransaction,
 } from '@hashgraph/sdk';
-import { CHAINS, ChainId, CurrencyAmount, Fraction, Token, WAVAX } from '@pangolindex/sdk';
-import {
-  PANGOCHEF_ADDRESS,
-  ROUTER_ADDRESS,
-  SAR_STAKING_ADDRESS,
-  checkIsHederaChain,
-  isHederaAddress,
-} from '@pangolindex/shared';
+import { CHAINS, ChainId, ChefType, CurrencyAmount, Fraction, StakingType, Token, WAVAX } from '@pangolindex/sdk';
 import { AxiosInstance, AxiosRequestConfig, default as BaseAxios } from 'axios';
 import { ethers } from 'ethers';
-import { HashConnector, hashConnect } from 'src';
+import { HashConnector, mainnetHederaConfig } from './index';
+
+export const hashConnect = new HashConnector({
+  normalizeChainId: false,
+  normalizeAccount: false,
+  config: mainnetHederaConfig,
+});
 
 export const TRANSACTION_MAX_FEES = {
   APPROVE_HTS: 850000,
@@ -352,7 +351,7 @@ export class Hedera {
   }
 
   static isHederaChain = (chainId: ChainId) => {
-    return checkIsHederaChain(chainId);
+    return chainId === ChainId.HEDERA_TESTNET || chainId === ChainId.HEDERA_MAINNET;
   };
 
   isHederaIdValid = (hederaId: string): string | false => {
@@ -367,11 +366,31 @@ export class Hedera {
   };
 
   static isAddressValid = (address: string): string | false => {
-    return isHederaAddress(address);
+    if (address && hethers.utils.isAddress(address.toLowerCase())) {
+      return hethers.utils.getChecksumAddress(address);
+    } else {
+      return false;
+    }
   };
 
   hederaId = (address: string) => {
     return hethers.utils.asAccountString(address);
+  };
+
+  pangoChefAddress = (chainId: ChainId) => {
+    const minichefObj = CHAINS[chainId].contracts?.mini_chef;
+    if (minichefObj?.type === ChefType.PANGO_CHEF) {
+      return minichefObj.address;
+    }
+    return undefined;
+  };
+
+  routerAddress = (chainId: ChainId) => {
+    return CHAINS[chainId].contracts!.router;
+  };
+
+  sarStakingAddress = (chainId: ChainId) => {
+    return CHAINS[chainId]?.contracts?.staking?.find((c) => c.type === StakingType.SAR_POSITIONS && c.active)?.address;
   };
 
   idToAddress = (tokenId: string) => {
@@ -666,7 +685,7 @@ export class Hedera {
 
     const tokenAddress = token ? token?.address : '';
     const accountId = account ? this.hederaId(account) : '';
-    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(this.routerAddress(chainId));
     const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
 
     const transaction = new ContractExecuteTransaction()
@@ -705,7 +724,7 @@ export class Hedera {
     const tokenBAddress = tokenB ? tokenB?.address : '';
 
     const accountId = account ? this.hederaId(account) : '';
-    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(this.routerAddress(chainId));
 
     const maxGas = poolExists ? TRANSACTION_MAX_FEES.PROVIDE_LIQUIDITY : TRANSACTION_MAX_FEES.CREATE_POOL;
 
@@ -737,7 +756,7 @@ export class Hedera {
 
     const tokenAddress = token ? token?.address : '';
     const accountId = account ? this.hederaId(account) : '';
-    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(this.routerAddress(chainId));
 
     const maxGas = TRANSACTION_MAX_FEES.REMOVE_NATIVE_LIQUIDITY;
 
@@ -769,7 +788,7 @@ export class Hedera {
     const tokenBAddress = tokenB ? tokenB?.address : '';
 
     const accountId = account ? this.hederaId(account) : '';
-    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(this.routerAddress(chainId));
 
     const maxGas = TRANSACTION_MAX_FEES.REMOVE_LIQUIDITY;
     const transaction = new ContractExecuteTransaction()
@@ -842,7 +861,7 @@ export class Hedera {
     } = swapData;
 
     const accountId = account ? this.hederaId(account) : '';
-    const contractId = this.hederaId(ROUTER_ADDRESS[chainId]);
+    const contractId = this.hederaId(this.routerAddress(chainId));
 
     const extraSwaps = path.length - 2;
 
@@ -887,7 +906,7 @@ export class Hedera {
     const { positionId, amount, methodName, account, chainId, rent } = stakeData;
 
     const accountId = account ? this.hederaId(account) : '';
-    const address = SAR_STAKING_ADDRESS[chainId];
+    const address = this.sarStakingAddress(chainId);
     const contractId = address ? this.hederaId(address) : '';
 
     const error = new Error('Unpredictable HBAR amount to pay rent');
@@ -929,7 +948,7 @@ export class Hedera {
     const { positionId, amount, account, chainId, rent } = unstakeData;
 
     const accountId = account ? this.hederaId(account) : '';
-    const address = SAR_STAKING_ADDRESS[chainId];
+    const address = this.sarStakingAddress(chainId);
     const contractId = address ? this.hederaId(address) : '';
 
     const error = new Error('Unpredictable HBAR amount to pay rent');
@@ -963,7 +982,7 @@ export class Hedera {
     const { positionId, account, chainId, rent } = baseData;
 
     const accountId = account ? this.hederaId(account) : '';
-    const address = SAR_STAKING_ADDRESS[chainId];
+    const address = this.sarStakingAddress(chainId);
     const contractId = address ? this.hederaId(address) : '';
 
     const error = new Error('Unpredictable HBAR amount to pay rent');
@@ -991,7 +1010,7 @@ export class Hedera {
   }
 
   public async createPangoChefUserStorageContract(chainId: ChainId, account: string) {
-    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const pangoChefId = this.pangoChefAddress(chainId);
 
     const maxGas = TRANSACTION_MAX_FEES.CREATE_POOL;
     const accountId = account ? this.hederaId(account) : '';
@@ -1037,7 +1056,7 @@ export class Hedera {
   public async stakeOrWithdraw(stakeOrWithdrawData: StakeOrWithdrawData) {
     const { account, amount, poolId, chainId, methodName } = stakeOrWithdrawData;
 
-    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const pangoChefId = this.pangoChefAddress(chainId);
     const accountId = account ? this.hederaId(account) : '';
     const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
 
@@ -1063,7 +1082,7 @@ export class Hedera {
   public async claimReward(claimRewardData: ClaimRewardData) {
     const { account, methodName, poolId, chainId } = claimRewardData;
 
-    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const pangoChefId = this.pangoChefAddress(chainId);
     const accountId = account ? this.hederaId(account) : '';
     const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
 
@@ -1083,7 +1102,7 @@ export class Hedera {
   public async compound(compoundData: CompoundData) {
     const { account, methodName, poolId, chainId, slippage, contract } = compoundData;
 
-    const pangoChefId = PANGOCHEF_ADDRESS[chainId];
+    const pangoChefId = this.pangoChefAddress(chainId);
     const accountId = account ? this.hederaId(account) : '';
     const contractId = pangoChefId ? this.hederaId(pangoChefId) : '';
 
