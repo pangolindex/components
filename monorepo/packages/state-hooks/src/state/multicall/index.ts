@@ -1,3 +1,4 @@
+import MulticallUpdater from './updater';
 export * from './atom';
 export * from './hooks';
-export * from './updater';
+export { MulticallUpdater };
