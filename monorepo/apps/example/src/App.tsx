@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Layout from './layout';
 import Sample from './pages/Sample';
 import SarStake from './pages/SarSingleStake';
+import Swap from './pages/Swap';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -41,6 +42,7 @@ export default function App() {
             <Route index element={<Sample />} />
             <Route path="sample" element={<Sample />} />
             <Route path="sar" element={<SarStake />} />
+            <Route path="swap" element={<Swap />} />
 
             <Route path="*" element={<Sample />} />
           </Route>
