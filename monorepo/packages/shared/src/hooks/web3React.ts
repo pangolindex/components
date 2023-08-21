@@ -1,8 +1,8 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { ChainId } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { useWeb3React } from '@web3-react/core';
 import { NetworkContextName } from '../constants';
-import { ChainId } from '@pangolindex/sdk';
 
 interface Web3ReactContextInterface<T = any> {
   activate: (connector: AbstractConnector, onError?: (error: Error) => void, throwErrors?: boolean) => Promise<void>;
