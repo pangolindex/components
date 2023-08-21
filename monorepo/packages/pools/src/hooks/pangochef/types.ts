@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { CurrencyAmount, Fraction, TokenAmount } from '@pangolindex/sdk';
-import { MinichefStakingInfo } from '../pstake/types';
+import { MinichefStakingInfo } from '../minichef/types';
 
 export enum PoolType {
   UNSET_POOL,

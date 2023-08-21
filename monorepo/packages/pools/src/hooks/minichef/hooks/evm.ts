@@ -17,8 +17,7 @@ import { useGetExtraPendingRewards, useMinichefPools } from './common';
 import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_TWO, BIG_INT_ZERO, DAIe, ERC20_INTERFACE, GET_MINICHEF, MINICHEF_ADDRESS, ONE_TOKEN, PNG, PairState, SubgraphEnum, USDC, USDCe, USDTe, ZERO_ADDRESS, getSubgraphClient, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
 import { useMiniChefContract } from 'src/hooks/useContract';
 import { useMultipleContractSingleData, usePair, usePairsContract, useSingleCallResult, useSingleContractMultipleData, useTokensContract, useUSDCPrice } from '@pangolindex/state-hooks';
-import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
-import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis';
+import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';
 
 export function useMichefFarmsAprs(pids: string[]) {
   const chainId = useChainId();

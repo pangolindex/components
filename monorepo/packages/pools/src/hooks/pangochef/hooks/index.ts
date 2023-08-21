@@ -9,7 +9,6 @@ import {
   usePangoChefInfos,
 } from './evm';
 import {
-  useGetPangoChefInfosViaSubgraph,
   useHederaPangoChefClaimRewardCallback,
   useHederaPangoChefCompoundCallback,
   useHederaPangoChefInfos,
@@ -17,6 +16,7 @@ import {
   useHederaPangoChefWithdrawCallback,
   useHederaPangochef,
 } from './hedera';
+import { useGetPangoChefInfosViaSubgraph } from './subgraph';
 
 export type UsePangoChefInfosHookType = {
   [chainId in ChainId]:

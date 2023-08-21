@@ -3,30 +3,16 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { CHAINS, ChainId, Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ZERO_ADDRESS, ZERO_FRACTION } from 'src/constants';
-import ERC20_INTERFACE from 'src/constants/abis/erc20';
-import { PANGOLIN_PAIR_INTERFACE } from 'src/constants/abis/pangolinPair';
-import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis/rewarderViaMultiplier';
-import { PNG, USDC } from 'src/constants/tokens';
-import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3, useRefetchMinichefSubgraph, useRefetchPangoChefSubgraph } from 'src/hooks';
-import { useLastBlockTimestampHook } from 'src/hooks/block';
-import { useTokensContract } from 'src/hooks/tokens/evm';
-import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
-import { usePairsCurrencyPrice } from 'src/hooks/useCurrencyPrice';
-import { useCoinGeckoCurrencyPrice } from 'src/state/pcoingecko/hooks';
-import { useGetExtraPendingRewards, useMinichefPools } from 'src/state/pstake/hooks/common';
-import { getExtraTokensWeeklyRewardRate } from 'src/state/pstake/utils';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { calculateGasMargin, decimalToFraction, waitForTransaction } from 'src/utils';
-import {
-  useMultipleContractSingleData,
-  useSingleCallResult,
-  useSingleContractMultipleData,
-} from '../../pmulticall/hooks';
 import { PangoChefCompoundData, PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables, WithdrawData } from '../types';
 import { calculateCompoundSlippage, calculateUserAPR, calculateUserRewardRate } from '../utils';
+import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_ZERO, ERC20_INTERFACE, PNG, PairState, USDC, ZERO_ADDRESS, ZERO_FRACTION, calculateGasMargin, decimalToFraction, useChainId, useLastBlockTimestampHook, usePangolinWeb3, useRefetchPangoChefSubgraph, useTranslation, waitForTransaction } from '@pangolindex/shared';
+import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
+import { useCoinGeckoCurrencyPrice, useMultipleContractSingleData, usePair, usePairsContract, useSingleCallResult, useSingleContractMultipleData, useTokensContract, useTransactionAdder } from '@pangolindex/state-hooks';
+import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';
+import { useGetExtraPendingRewards, useMinichefPools } from 'src/hooks/minichef/hooks/common';
+import { usePairsCurrencyPrice } from '@pangolindex/state-hooks/lib/hooks/useCurrencyPrice';
+import { getExtraTokensWeeklyRewardRate } from 'src/hooks/minichef/utils';
+import { useRefetchMinichefSubgraph } from 'src/hooks/wallet/utils';
 
 export function usePangoChefInfos() {
   const { account } = usePangolinWeb3();

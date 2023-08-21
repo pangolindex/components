@@ -1,6 +1,6 @@
 import { CurrencyAmount, Fraction, JSBI, Price, Token, TokenAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
-import { BIGNUMBER_ZERO, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE } from 'src/constants';
+import { BIGNUMBER_ZERO, BIG_INT_SECONDS_IN_WEEK, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE } from '@pangolindex/shared';
 import { ValueVariables } from './types';
 
 /**
@@ -87,4 +87,21 @@ export function calculateUserAPR(args: CalculateAprArgs) {
           .divide(pairBalance.multiply(JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(png.decimals))))
           .toFixed(4),
       );
+}
+
+export function getHypotheticalWeeklyRewardRate(
+  stakedAmount: TokenAmount,
+  totalStakedAmount: TokenAmount,
+  totalRewardRatePerSecond: TokenAmount,
+): TokenAmount {
+  const png = totalRewardRatePerSecond?.token;
+  return new TokenAmount(
+    png,
+    JSBI.greaterThan(totalStakedAmount?.raw, JSBI.BigInt(0))
+      ? JSBI.divide(
+          JSBI.multiply(JSBI.multiply(totalRewardRatePerSecond?.raw, stakedAmount?.raw), BIG_INT_SECONDS_IN_WEEK),
+          totalStakedAmount?.raw,
+        )
+      : JSBI.BigInt(0),
+  );
 }

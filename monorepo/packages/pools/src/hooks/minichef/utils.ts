@@ -1,8 +1,7 @@
 import { ChainId, JSBI, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import axios from 'axios';
-import { BIG_INT_ZERO, PANGOLIN_API_BASE_URL } from 'src/constants';
-import { PNG, USDC, USDCe } from 'src/constants/tokens';
 import { DoubleSideStakingInfo } from './types';
+import { BIG_INT_ZERO, PANGOLIN_API_BASE_URL, PNG, USDC, USDCe } from '@pangolindex/shared';
 
 const pangolinApi = axios.create({
   baseURL: PANGOLIN_API_BASE_URL,
