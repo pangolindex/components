@@ -1,7 +1,7 @@
 import { Box } from '@pangolindex/core';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import SwapWidget, { SwapWidgetProps } from '.';
+import { SwapWidget, SwapWidgetProps } from '.';
 
 export default {
   component: SwapWidget,
