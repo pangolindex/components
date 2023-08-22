@@ -57,8 +57,7 @@ export default function Header() {
       <Logo />
       <Box display="flex" flex={1}>
         <Menuwrapper>
-
-        <MenuLink id="dashboard" to="/dashboard">
+          <MenuLink id="dashboard" to="/dashboard">
             Dashboard
           </MenuLink>
           <MenuLink id="swap" to="/swap">
