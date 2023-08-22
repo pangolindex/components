@@ -10,10 +10,10 @@ export const GridContainer = styled(Box)`
     grid-template-columns: none;
     grid-template-rows: max-content;
   `};
-   height: 600px;
+  height: 600px;
 `;
 
 export const PortfolioContainer = styled(GridContainer)`
   grid-template-columns: 1fr 1fr;
   height: 400px;
-`
+`;

@@ -1,4 +1,5 @@
 import { Box, Button } from '@pangolindex/core';
+import { TokenInfoModal } from '@pangolindex/portfolio';
 import { CHAINS, Chain, TokenAmount } from '@pangolindex/sdk';
 import { PNG, shortenAddressMapping, useActiveWeb3React, useChainId } from '@pangolindex/shared';
 import {
@@ -13,7 +14,6 @@ import React, { useCallback, useState } from 'react';
 import { supportedWallets } from '../../constants';
 import Logo from '../Logo';
 import { HeaderFrame, MenuLink, Menuwrapper } from './styled';
-import { TokenInfoModal } from '@pangolindex/portfolio';
 
 export default function Header() {
   const context = useActiveWeb3React();
@@ -57,6 +57,10 @@ export default function Header() {
       <Logo />
       <Box display="flex" flex={1}>
         <Menuwrapper>
+
+        <MenuLink id="dashboard" to="/dashboard">
+            Dashboard
+          </MenuLink>
           <MenuLink id="swap" to="/swap">
             Swap
           </MenuLink>
