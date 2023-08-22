@@ -43,13 +43,14 @@ import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { ThemeContext } from 'styled-components';
+import confirmPriceImpactWithoutFee from 'src/confirmPriceImpactWithoutFee';
 import { SwapTypes } from 'src/constants';
 import { useSwapCallbackHook } from 'src/hooks/useSwapCallback';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { useWrapCallbackHook } from 'src/hooks/useWrapCallback';
 import { WrapType } from 'src/hooks/useWrapCallback/constant';
-import { Field, LimitNewField } from 'src/state/pswap/atom';
-import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
+import { Field, LimitNewField } from 'src/state/atom';
+import { useGelatoLimitOrdersHook } from 'src/state/hooks';
 import {
   useDaasFeeTo,
   useDefaultsFromURLSearch,
@@ -57,8 +58,8 @@ import {
   useIsSelectedAEBToken,
   useSwapActionHandlers,
   useSwapState,
-} from 'src/state/pswap/hooks/common';
-import { useHederaSwapTokenAssociated } from 'src/state/pswap/hooks/hedera';
+} from 'src/state/hooks/common';
+import { useHederaSwapTokenAssociated } from 'src/state/hooks/hedera';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
 import SelectTokenDrawer from '../SelectTokenDrawer';
@@ -68,7 +69,6 @@ import SwapRoute from '../SwapRoute';
 import TokenWarningModal from '../TokenWarningModal';
 import TradeOption from '../TradeOption';
 import { DeprecatedWarning } from '../Warning';
-import confirmPriceImpactWithoutFee from '../confirmPriceImpactWithoutFee';
 import { ArrowWrapper, CurrencyInputTextBox, LinkStyledButton, PValue, Root, SwapWrapper } from './styled';
 
 interface Props {
