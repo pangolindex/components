@@ -4,11 +4,11 @@ import { useAllTokens, useWalletModalToggle } from '@pangolindex/state-hooks';
 import React, { Suspense, useCallback, useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import { SwapTypes } from 'src/constants';
-import { Field } from 'src/state/pswap/atom';
-import { useSwapActionHandlers } from 'src/state/pswap/hooks/common';
+import { Field } from 'src/state/atom';
+import { useSwapActionHandlers } from 'src/state/hooks/common';
+import { Root } from 'src/styled';
 import SelectTokenDrawer from '../SelectTokenDrawer';
 import TradeOption from '../TradeOption';
-import { Root } from '../styled';
 
 const PangolinTWAP = React.lazy(() =>
   import('@orbs-network/twap-ui-pangolin').then((module) => {

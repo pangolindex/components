@@ -3,8 +3,8 @@ import { tryParseAmount, useChainId, usePangolinWeb3, useTranslation } from '@pa
 import { useCurrencyBalance, useTransactionAdder } from '@pangolindex/state-hooks';
 import { hederaFn } from '@pangolindex/wallet-connectors';
 import { useMemo, useState } from 'react';
-import { Field } from 'src/state/pswap/atom';
-import { useSwapActionHandlers } from 'src/state/pswap/hooks/common';
+import { Field } from 'src/state/atom';
+import { useSwapActionHandlers } from 'src/state/hooks/common';
 import { NOT_APPLICABLE, WrapType } from './constant';
 
 /**

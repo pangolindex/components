@@ -28,7 +28,7 @@ import {
 import { useTransactionAdder, useTransactionDeadline } from '@pangolindex/state-hooks';
 import { useMemo } from 'react';
 import { BIPS_BASE } from 'src/constants';
-import { useDaasFeeTo } from 'src/state/pswap/hooks/common';
+import { useDaasFeeTo } from 'src/state/hooks/common';
 import { Version } from '../useToggledVersion';
 import { SwapCallbackState } from './constant';
 

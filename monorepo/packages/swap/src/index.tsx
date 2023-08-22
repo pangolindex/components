@@ -5,11 +5,11 @@ import { ZERO_ADDRESS, isEvmChain, useChainId, useLibrary, usePangolinWeb3 } fro
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import { SwapTypes } from 'src/constants';
-import LimitOrder from './LimitOrder';
-import MarketOrder from './MarketOrder';
-import TWAP from './TWAP/TWAPPanel';
+import LimitOrder from './components/LimitOrder';
+import MarketOrder from './components/MarketOrder';
+import TWAP from './components/TWAP/TWAPPanel';
 import { galetoStore } from './state';
-import SwapUpdater from './state/pswap/updater';
+import SwapUpdater from './state/updater';
 import { Root } from './styled';
 export interface SwapWidgetProps {
   onSwapTypeChange?: React.Dispatch<React.SetStateAction<SwapTypes>>;

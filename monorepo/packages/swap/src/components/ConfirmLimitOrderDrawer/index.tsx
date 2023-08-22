@@ -5,7 +5,7 @@ import { useUSDCPrice } from '@pangolindex/state-hooks';
 import React, { useCallback, useContext, useState } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
+import { useGelatoLimitOrdersHook } from 'src/state/hooks';
 import { computeFiatValuePriceImpact } from 'src/utils/computeFiatValuePriceImpact';
 import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
 import { FiatValue } from './FiateValue';
