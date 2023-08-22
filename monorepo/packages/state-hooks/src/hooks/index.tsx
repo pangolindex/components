@@ -14,6 +14,8 @@ import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import { useToken } from './tokens/evm';
+import { useTotalSupplyHook } from './useTotalSupply';
+
 // hooks
 export {
   useUSDCPrice,
@@ -26,6 +28,7 @@ export {
   usePairsHook,
   useGetNearPoolId,
   useAllTokens,
+  useTotalSupplyHook,
   useTokenHook,
   useFetchListCallback,
   useHederaTokenAssociated,

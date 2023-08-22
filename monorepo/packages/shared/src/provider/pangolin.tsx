@@ -1,17 +1,10 @@
 import { getAddress } from '@ethersproject/address';
 import { ExternalProvider, Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
 import { ALL_CHAINS, CHAINS, ChainId } from '@pangolindex/sdk';
+import { PROVIDER_MAPPING, network } from '@pangolindex/wallet-connectors';
 import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { FC, ReactNode } from 'react';
-
-// @ts-expect-error because this code we enable after wallet package done
-// TODO: when add wallet package
-import { network } from 'src/connectors';
-
-// @ts-expect-error because this code we enable after wallet package done
-// TODO: when add wallet package
-import { PROVIDER_MAPPING } from 'src/constants/wallets';
 import { isAddress, isEvmChain } from '../utils';
 
 interface Web3State {
@@ -104,10 +97,6 @@ export function useLibrary(): { library: any; provider: any } {
 
   useEffect(() => {
     async function load() {
-      // const walletKey = Object.keys(SUPPORTED_WALLETS).find(
-      //   (key) => SUPPORTED_WALLETS[key].connector === connector,
-      // ) as string;
-
       // convert window.ethereum to ethers
       const ethersDefaultProvider = new Web3ProviderEthers((window.ethereum as ExternalProvider) || network.provider);
       // try to wrap connector provider

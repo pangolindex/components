@@ -2,8 +2,8 @@ import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { tryParseAmount, useChainId, usePangolinWeb3, useTranslation, useWETHContract } from '@pangolindex/shared';
 import { useCurrencyBalance, useTransactionAdder } from '@pangolindex/state-hooks';
 import { useMemo, useState } from 'react';
-import { Field } from 'src/state/pswap/atom';
-import { useSwapActionHandlers } from 'src/state/pswap/hooks/common';
+import { Field } from 'src/state/atom';
+import { useSwapActionHandlers } from 'src/state/hooks/common';
 import { NOT_APPLICABLE, WrapType } from './constant';
 
 /**

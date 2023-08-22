@@ -1,9 +1,10 @@
 import {
   Currency,
   CurrencyAmount,
-  ElixirPool,
-  ElixirTrade,
-  FeeAmount,
+  // TODO: when add elixir package
+  // ElixirPool,
+  // ElixirTrade,
+  // FeeAmount,
   Pair,
   Percent,
   Token,
@@ -12,15 +13,14 @@ import {
 import { PairState, useChainId, wrappedCurrency } from '@pangolindex/shared';
 import { usePairsHook } from '@pangolindex/state-hooks';
 import flatMap from 'lodash.flatmap';
-import { useEffect, useMemo, useState } from 'react';
-// @ts-expect-error because this code we enable after elixir package done
+import { useMemo } from 'react';
+
 // TODO: when add elixir package
-import { usePoolsHook } from 'src/hooks/elixir/hooks';
-// @ts-expect-error because this code we enable after elixir package done
+// import { usePoolsHook } from 'src/hooks/elixir/hooks';
 // TODO: when add elixir package
-import { PoolState } from 'src/hooks/elixir/hooks/types';
+// import { PoolState } from 'src/hooks/elixir/hooks/types';
 import { BASES_TO_CHECK_TRADES_AGAINST, BIPS_BASE, CUSTOM_BASES } from 'src/constants';
-import { useDaasFeeInfo, useDaasFeeTo } from '../state/pswap/hooks/common';
+import { useDaasFeeInfo, useDaasFeeTo } from '../state/hooks/common';
 
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): { pairs: Pair[]; isLoading: boolean } {
   const chainId = useChainId();
@@ -145,160 +145,162 @@ export function useTradeExactOut(
     return { trade: null, isLoading: true };
   }, [allowedPairs, isLoading, currencyIn, currencyAmountOut, feeTo, feeInfo]);
 }
+// TODO: when add elixir package
+// function useAllElixirCommonPools(
+//   currencyA?: Currency,
+//   currencyB?: Currency,
+// ): {
+//   pools: ElixirPool[];
+//   isLoading: boolean;
+// } {
+//   const chainId = useChainId();
 
-function useAllElixirCommonPools(
-  currencyA?: Currency,
-  currencyB?: Currency,
-): {
-  pools: ElixirPool[];
-  isLoading: boolean;
-} {
-  const chainId = useChainId();
+//   const usePools = usePoolsHook[chainId];
 
-  const usePools = usePoolsHook[chainId];
+//   const bases: Token[] = chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []; // eslint-disable-line react-hooks/exhaustive-deps
 
-  const bases: Token[] = chainId ? BASES_TO_CHECK_TRADES_AGAINST[chainId] : []; // eslint-disable-line react-hooks/exhaustive-deps
+//   const [tokenA, tokenB] = chainId
+//     ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
+//     : [undefined, undefined];
 
-  const [tokenA, tokenB] = chainId
-    ? [wrappedCurrency(currencyA, chainId), wrappedCurrency(currencyB, chainId)]
-    : [undefined, undefined];
+//   const basePairs: [Token, Token][] = useMemo(
+//     () =>
+//       bases
+//         .flatMap((base): [Token, Token][] => bases.map((otherBase) => [base, otherBase]))
+//         // though redundant with the first filter below, that expression runs more often, so this is probably worthwhile
+//         .filter(([t0, t1]) => !t0.equals(t1)),
+//     [bases],
+//   );
 
-  const basePairs: [Token, Token][] = useMemo(
-    () =>
-      bases
-        .flatMap((base): [Token, Token][] => bases.map((otherBase) => [base, otherBase]))
-        // though redundant with the first filter below, that expression runs more often, so this is probably worthwhile
-        .filter(([t0, t1]) => !t0.equals(t1)),
-    [bases],
-  );
+//   const allCurrencyCombinations = useMemo(
+//     () =>
+//       tokenA && tokenB
+//         ? [
+//             // the direct pair
+//             [tokenA, tokenB] as [Token, Token],
+//             // token A against all bases
+//             ...bases.map((base): [Token, Token] => [tokenA, base]),
+//             // token B against all bases
+//             ...bases.map((base): [Token, Token] => [tokenB, base]),
+//             // each base against all bases
+//             ...basePairs,
+//           ]
+//             // filter out invalid pairs comprised of the same asset (e.g. WETH<>WETH)
+//             .filter(([t0, t1]) => !t0.equals(t1))
+//             // filter out duplicate pairs
+//             .filter(([t0, t1], i, otherPairs) => {
+//               // find the first index in the array at which there are the same 2 tokens as the current
+//               const firstIndexInOtherPairs = otherPairs.findIndex(([t0Other, t1Other]) => {
+//                 return (t0.equals(t0Other) && t1.equals(t1Other)) || (t0.equals(t1Other) && t1.equals(t0Other));
+//               });
+//               // only accept the first occurrence of the same 2 tokens
+//               return firstIndexInOtherPairs === i;
+//             })
+//             // optionally filter out some pairs for tokens with custom bases defined
+//             .filter(([tokenA, tokenB]) => {
+//               if (!chainId) return true;
+//               const customBases = CUSTOM_BASES[chainId];
 
-  const allCurrencyCombinations = useMemo(
-    () =>
-      tokenA && tokenB
-        ? [
-            // the direct pair
-            [tokenA, tokenB] as [Token, Token],
-            // token A against all bases
-            ...bases.map((base): [Token, Token] => [tokenA, base]),
-            // token B against all bases
-            ...bases.map((base): [Token, Token] => [tokenB, base]),
-            // each base against all bases
-            ...basePairs,
-          ]
-            // filter out invalid pairs comprised of the same asset (e.g. WETH<>WETH)
-            .filter(([t0, t1]) => !t0.equals(t1))
-            // filter out duplicate pairs
-            .filter(([t0, t1], i, otherPairs) => {
-              // find the first index in the array at which there are the same 2 tokens as the current
-              const firstIndexInOtherPairs = otherPairs.findIndex(([t0Other, t1Other]) => {
-                return (t0.equals(t0Other) && t1.equals(t1Other)) || (t0.equals(t1Other) && t1.equals(t0Other));
-              });
-              // only accept the first occurrence of the same 2 tokens
-              return firstIndexInOtherPairs === i;
-            })
-            // optionally filter out some pairs for tokens with custom bases defined
-            .filter(([tokenA, tokenB]) => {
-              if (!chainId) return true;
-              const customBases = CUSTOM_BASES[chainId];
+//               const customBasesA: Token[] | undefined = customBases?.[tokenA.address];
+//               const customBasesB: Token[] | undefined = customBases?.[tokenB.address];
 
-              const customBasesA: Token[] | undefined = customBases?.[tokenA.address];
-              const customBasesB: Token[] | undefined = customBases?.[tokenB.address];
+//               if (!customBasesA && !customBasesB) return true;
 
-              if (!customBasesA && !customBasesB) return true;
+//               if (customBasesA && !customBasesA.find((base) => tokenB.equals(base))) return false;
+//               if (customBasesB && !customBasesB.find((base) => tokenA.equals(base))) return false;
 
-              if (customBasesA && !customBasesA.find((base) => tokenB.equals(base))) return false;
-              if (customBasesB && !customBasesB.find((base) => tokenA.equals(base))) return false;
+//               return true;
+//             })
+//         : [],
+//     [tokenA, tokenB, bases, basePairs, chainId],
+//   );
 
-              return true;
-            })
-        : [],
-    [tokenA, tokenB, bases, basePairs, chainId],
-  );
+//   const allCurrencyCombinationsWithAllFees: [Token, Token, FeeAmount][] = useMemo(
+//     () =>
+//       allCurrencyCombinations.reduce<[Token, Token, FeeAmount][]>((list, [tokenA, tokenB]) => {
+//         return list.concat([
+//           [tokenA, tokenB, FeeAmount.LOW],
+//           [tokenA, tokenB, FeeAmount.MEDIUM],
+//           [tokenA, tokenB, FeeAmount.HIGH],
+//         ]);
+//       }, []),
+//     [allCurrencyCombinations, chainId],
+//   );
 
-  const allCurrencyCombinationsWithAllFees: [Token, Token, FeeAmount][] = useMemo(
-    () =>
-      allCurrencyCombinations.reduce<[Token, Token, FeeAmount][]>((list, [tokenA, tokenB]) => {
-        return list.concat([
-          [tokenA, tokenB, FeeAmount.LOW],
-          [tokenA, tokenB, FeeAmount.MEDIUM],
-          [tokenA, tokenB, FeeAmount.HIGH],
-        ]);
-      }, []),
-    [allCurrencyCombinations, chainId],
-  );
+//   const pools = usePools(allCurrencyCombinationsWithAllFees);
 
-  const pools = usePools(allCurrencyCombinationsWithAllFees);
+//   return useMemo(() => {
+//     return {
+//       pools: pools
+//         .filter((tuple): tuple is [PoolState.EXISTS, ElixirPool] => {
+//           return tuple[0] === PoolState.EXISTS && tuple[1] !== null;
+//         })
+//         .map(([, pool]) => pool),
+//       isLoading: pools.some(([state]) => state === PoolState.LOADING),
+//     };
+//   }, [pools]);
+// }
 
-  return useMemo(() => {
-    return {
-      pools: pools
-        .filter((tuple): tuple is [PoolState.EXISTS, ElixirPool] => {
-          return tuple[0] === PoolState.EXISTS && tuple[1] !== null;
-        })
-        .map(([, pool]) => pool),
-      isLoading: pools.some(([state]) => state === PoolState.LOADING),
-    };
-  }, [pools]);
-}
-
+// TODO: when add elixir package
 /**
  * Returns the best trade for the exact amount of tokens in to the given token out
  */
-export function useElixirTradeExactIn(
-  currencyAmountIn?: CurrencyAmount,
-  currencyOut?: Currency,
-): { trade: ElixirTrade | null; isLoading: boolean } {
-  const [tradeData, setTradeData] = useState<{ trade: ElixirTrade | null; isLoading: boolean }>({
-    trade: null,
-    isLoading: true,
-  });
+// export function useElixirTradeExactIn(
+//   currencyAmountIn?: CurrencyAmount,
+//   currencyOut?: Currency,
+// ): { trade: ElixirTrade | null; isLoading: boolean } {
+//   const [tradeData, setTradeData] = useState<{ trade: ElixirTrade | null; isLoading: boolean }>({
+//     trade: null,
+//     isLoading: true,
+//   });
 
-  const { pools: allowedPools, isLoading } = useAllElixirCommonPools(currencyAmountIn?.currency, currencyOut);
+//   const { pools: allowedPools, isLoading } = useAllElixirCommonPools(currencyAmountIn?.currency, currencyOut);
 
-  useEffect(() => {
-    const getBestTradeExactIn = async () => {
-      if (currencyAmountIn && currencyOut && allowedPools.length > 0 && !isLoading) {
-        const trades = await ElixirTrade.bestTradeExactIn(allowedPools, currencyAmountIn, currencyOut, {
-          maxHops: 3,
-          maxNumResults: 1,
-        });
+//   useEffect(() => {
+//     const getBestTradeExactIn = async () => {
+//       if (currencyAmountIn && currencyOut && allowedPools.length > 0 && !isLoading) {
+//         const trades = await ElixirTrade.bestTradeExactIn(allowedPools, currencyAmountIn, currencyOut, {
+//           maxHops: 3,
+//           maxNumResults: 1,
+//         });
 
-        const finalTrade = trades?.[0];
-        setTradeData({ trade: finalTrade, isLoading: isLoading });
-      }
-    };
-    getBestTradeExactIn();
-  }, [allowedPools, isLoading, currencyAmountIn, currencyOut]);
-  return tradeData;
-}
+//         const finalTrade = trades?.[0];
+//         setTradeData({ trade: finalTrade, isLoading: isLoading });
+//       }
+//     };
+//     getBestTradeExactIn();
+//   }, [allowedPools, isLoading, currencyAmountIn, currencyOut]);
+//   return tradeData;
+// }
 
+// TODO: when add elixir package
 /**
  * Returns the best trade for the token in to the exact amount of token out
  */
-export function useElixirTradeExactOut(
-  currencyIn?: Currency,
-  currencyAmountOut?: CurrencyAmount,
-): { trade: ElixirTrade | null; isLoading: boolean } {
-  const [tradeData, setTradeData] = useState<{ trade: ElixirTrade | null; isLoading: boolean }>({
-    trade: null,
-    isLoading: true,
-  });
+// export function useElixirTradeExactOut(
+//   currencyIn?: Currency,
+//   currencyAmountOut?: CurrencyAmount,
+// ): { trade: ElixirTrade | null; isLoading: boolean } {
+//   const [tradeData, setTradeData] = useState<{ trade: ElixirTrade | null; isLoading: boolean }>({
+//     trade: null,
+//     isLoading: true,
+//   });
 
-  const { pools: allowedPools, isLoading } = useAllElixirCommonPools(currencyIn, currencyAmountOut?.currency);
+//   const { pools: allowedPools, isLoading } = useAllElixirCommonPools(currencyIn, currencyAmountOut?.currency);
 
-  useEffect(() => {
-    const getBestTradeExactOut = async () => {
-      if (currencyIn && currencyAmountOut && allowedPools.length > 0 && !isLoading) {
-        const trades = await ElixirTrade.bestTradeExactOut(allowedPools, currencyIn, currencyAmountOut, {
-          maxHops: 3,
-          maxNumResults: 1,
-        });
+//   useEffect(() => {
+//     const getBestTradeExactOut = async () => {
+//       if (currencyIn && currencyAmountOut && allowedPools.length > 0 && !isLoading) {
+//         const trades = await ElixirTrade.bestTradeExactOut(allowedPools, currencyIn, currencyAmountOut, {
+//           maxHops: 3,
+//           maxNumResults: 1,
+//         });
 
-        const finalTrade = trades?.[0];
-        setTradeData({ trade: finalTrade, isLoading: isLoading });
-      }
-    };
-    getBestTradeExactOut();
-  }, [allowedPools, isLoading, currencyIn, currencyAmountOut]);
-  return tradeData;
-}
+//         const finalTrade = trades?.[0];
+//         setTradeData({ trade: finalTrade, isLoading: isLoading });
+//       }
+//     };
+//     getBestTradeExactOut();
+//   }, [allowedPools, isLoading, currencyIn, currencyAmountOut]);
+//   return tradeData;
+// }

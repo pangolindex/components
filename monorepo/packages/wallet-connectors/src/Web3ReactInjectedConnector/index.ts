@@ -32,16 +32,14 @@ export class InjectedConnector extends AbstractConnector {
   }
 
   private handleChainChanged(chainId: string | number): void {
-    if (__DEV__) {
-      console.log("Handling 'chainChanged' event with payload", chainId);
-    }
+    console.log("Handling 'chainChanged' event with payload", chainId);
+
     this.emitUpdate({ chainId, provider: window.ethereum });
   }
 
   private handleAccountsChanged(accounts: string[]): void {
-    if (__DEV__) {
-      console.log("Handling 'accountsChanged' event with payload", accounts);
-    }
+    console.log("Handling 'accountsChanged' event with payload", accounts);
+
     if (accounts.length === 0) {
       this.emitDeactivate();
     } else {
@@ -50,9 +48,8 @@ export class InjectedConnector extends AbstractConnector {
   }
 
   private handleClose(code: number, reason: string): void {
-    if (__DEV__) {
-      console.log("Handling 'close' event with payload", code, reason);
-    }
+    console.log("Handling 'close' event with payload", code, reason);
+
     this.emitDeactivate();
   }
 
