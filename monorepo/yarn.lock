@@ -3717,18 +3717,6 @@
     tiny-warning "^1.0.3"
     toformat "^2.0.0"
 
-"@pangolindex/sdk@5.3.4-rc.1":
-  version "5.3.4-rc.1"
-  resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-5.3.4-rc.1.tgz#54761bd6dc11de67e9492cfd741d6af826b6f15c"
-  integrity sha512-JH4Yr62TahqMtaAK+skkAJ8JjpHwWwylqIJaYngIsbbVJ8ZXMbm7ymaq8T8n8A5o/UdFPktpNRnXl20uy/4LUw==
-  dependencies:
-    big.js "^5.2.2"
-    decimal.js-light "^2.5.0"
-    jsbi "^3.1.1"
-    tiny-invariant "^1.1.0"
-    tiny-warning "^1.0.3"
-    toformat "^2.0.0"
-
 "@pangolindex/sdk@^1.4.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@pangolindex/sdk/-/sdk-1.5.0.tgz#5b51d76775b2e6fc23aa82264dea291fc12fbd8a"

@@ -43,7 +43,7 @@
     "@ethersproject/providers": "5.7.2",
     "@ethersproject/units": "5.7.0",
     "@pangolindex/core": "*",
-    "@pangolindex/sdk": "5.3.4",
+    "@pangolindex/sdk": "5.3.3",
     "@pangolindex/shared": "*",
     "@pangolindex/state-hooks": "*",
     "@pangolindex/wallet-connectors": "*",
