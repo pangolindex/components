@@ -1,6 +1,6 @@
+import { Box } from '@pangolindex/core';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { Box } from '../../../Box';
 import { useGetMinichefStakingInfos } from '../../Pool/mock';
 import EarnedDetail from '.';
 

@@ -1,21 +1,37 @@
 /* eslint-disable max-lines */
 import { formatUnits } from '@ethersproject/units';
+import { Box, Button, Loader, Text, TextInput, Tooltip, TransactionCompleted } from '@pangolindex/core';
 import { CAVAX, ChainId, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import {
+  FARM_TYPE,
+  MixPanelEvents,
+  PNG,
+  ZERO_ADDRESS,
+  unwrappedToken,
+  useChainId,
+  useMixpanel,
+  usePangolinWeb3,
+  useTranslation,
+} from '@pangolindex/shared';
+import {
+  ApprovalState,
+  useAccountBalanceHook,
+  useApproveCallbackHook,
+  usePair,
+  useTokenBalancesHook,
+} from '@pangolindex/state-hooks';
+import { useTokensCurrencyPriceHook } from '@pangolindex/state-hooks/lib/hooks/multiChainsHooks';
+import { Hedera } from '@pangolindex/wallet-connectors';
 import { parseUnits } from 'ethers/lib/utils';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AlertTriangle, HelpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Loader, Text, TextInput, Tooltip, TransactionCompleted } from '@pangolindex/core';
-import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root, WarningMessageWrapper } from './styleds';
-import { usePangoChefContract } from 'src/hooks/useContract';
 import { usePangoChefCompoundCallbackHook } from 'src/hooks/pangochef/hooks';
-import { ApprovalState, useAccountBalanceHook, useApproveCallbackHook, usePair, useTokenBalancesHook } from '@pangolindex/state-hooks';
-import { useTokensCurrencyPriceHook } from '@pangolindex/state-hooks/lib/hooks/multiChainsHooks';
-import { FARM_TYPE, MixPanelEvents, PNG, ZERO_ADDRESS, unwrappedToken, useChainId, useMixpanel, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { Hedera } from '@pangolindex/wallet-connectors';
-import { calculateCompoundSlippage } from 'src/hooks/pangochef/utils';
 import { PangoChefInfo } from 'src/hooks/pangochef/types';
+import { calculateCompoundSlippage } from 'src/hooks/pangochef/utils';
+import { usePangoChefContract } from 'src/hooks/useContract';
+import { Buttons, CompoundWrapper, ErrorBox, ErrorWrapper, Root, WarningMessageWrapper } from './styleds';
 
 export interface CompoundProps {
   stakingInfo: PangoChefInfo;

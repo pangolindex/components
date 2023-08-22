@@ -1,16 +1,27 @@
 /* eslint-disable max-lines */
+import {
+  Box,
+  Button,
+  CurrencyLogo,
+  DoubleCurrencyLogo,
+  Drawer,
+  Hidden,
+  Loader,
+  Stat,
+  Text,
+  TransactionCompleted,
+} from '@pangolindex/core';
 import { Currency, CurrencyAmount, Fraction, Percent, TokenAmount } from '@pangolindex/sdk';
+import { ONE_BIPS } from '@pangolindex/shared';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
-import { ThemeContext } from 'styled-components';
-import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
-import { Field } from 'src/hooks/mint/atom';
-import { SpaceType } from 'src/hooks/minichef/types';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
+import { SpaceType } from 'src/hooks/minichef/types';
+import { Field } from 'src/hooks/mint/atom';
 import { useHederaPGLAssociated } from 'src/hooks/wallet/hooks/hedera';
-import { ONE_BIPS } from '@pangolindex/shared';
-import { Box, Button, CurrencyLogo, DoubleCurrencyLogo, Drawer, Hidden, Loader, Stat, Text, TransactionCompleted } from '@pangolindex/core';
+import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
 
 interface Props {
   isOpen: boolean;

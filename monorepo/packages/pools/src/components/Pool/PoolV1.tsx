@@ -1,5 +1,5 @@
 import React from 'react';
-import { DoubleSideStakingInfo, PoolType } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo, PoolType } from 'src/hooks/minichef/types';
 import PoolListV1 from '../PoolList/PoolListV1';
 
 interface Props {

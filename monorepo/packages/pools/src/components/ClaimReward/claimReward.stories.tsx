@@ -1,8 +1,8 @@
+import { Box } from '@pangolindex/core';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { useGetMinichefStakingInfos } from '../Pool/mock';
 import ClaimReward from '.';
-import { Box } from '@pangolindex/core';
 
 export default {
   component: ClaimReward,

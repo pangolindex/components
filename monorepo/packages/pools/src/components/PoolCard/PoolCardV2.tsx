@@ -1,6 +1,6 @@
 import React from 'react';
-import { useGetRewardTokens } from 'src/state/pstake/hooks/common';
-import { MinichefStakingInfo } from 'src/state/pstake/types';
+import { useGetRewardTokens } from 'src/hooks/minichef/hooks/common';
+import { MinichefStakingInfo } from 'src/hooks/minichef/types';
 import PoolCardView from './PoolCardView';
 
 export interface PoolCardProps {

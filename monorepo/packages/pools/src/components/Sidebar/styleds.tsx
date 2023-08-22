@@ -1,6 +1,6 @@
+import { Box, Text } from '@pangolindex/core';
 import { darken } from 'polished';
 import styled from 'styled-components';
-import { Box, Text } from 'src/components';
 
 export const SidebarWrapper = styled(Box)`
   width: 100%;

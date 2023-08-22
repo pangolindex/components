@@ -3,6 +3,7 @@ import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { useToken, useTokensContract } from './evm';
 import { useNearToken, useNearTokens } from './near';
 import { useTokens, useTokensViaSubGraph } from './subgraph';
+import { useGetAllHederaAssociatedTokens } from './hedera';
 
 export type UseTokenHookType = {
   [chainId in ChainId]: typeof useToken | typeof useNearToken | typeof useDummyHook;
@@ -81,4 +82,4 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.SKALE_BELLATRIX_TESTNET]: useTokensContract,
 };
 
-export { useToken, useTokensContract, useNearToken, useNearTokens, useTokens, useTokensViaSubGraph };
+export { useToken, useTokensContract, useNearToken, useNearTokens, useTokens, useTokensViaSubGraph , useGetAllHederaAssociatedTokens};

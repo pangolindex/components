@@ -1,10 +1,10 @@
-import { Token } from '@pangolindex/sdk';
-import React from 'react';
-import AddLiquidity from '../AddLiquidity';
-import { useTranslation } from 'react-i18next';
-import { unwrappedToken, useChainId } from '@pangolindex/shared';
-import { SpaceType } from 'src/hooks/minichef/types';
 import { Drawer } from '@pangolindex/core';
+import { Token } from '@pangolindex/sdk';
+import { unwrappedToken, useChainId } from '@pangolindex/shared';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { SpaceType } from 'src/hooks/minichef/types';
+import AddLiquidity from '../AddLiquidity';
 
 type Props = {
   isOpen: boolean;

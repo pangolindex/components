@@ -1,16 +1,14 @@
+import { Box } from '@pangolindex/core';
 import { CHAINS, ChefType, JSBI } from '@pangolindex/sdk';
+import { BIG_INT_ZERO, useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { BIG_INT_ZERO } from 'src/constants';
-import { useChainId } from 'src/hooks';
-import { usePangoChefInfosHook } from 'src/state/ppangoChef/hooks';
-import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useMinichefStakingInfosHook } from 'src/state/pstake/hooks';
-import { MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
-import { Box } from '../Box';
-import Pool from './Pool';
-import Sidebar, { MenuType } from './Sidebar';
-import Wallet from './Wallet';
+import { useMinichefStakingInfosHook } from 'src/hooks/minichef/hooks';
+import { MinichefStakingInfo, PoolType } from 'src/hooks/minichef/types';
+import { usePangoChefInfosHook } from 'src/hooks/pangochef/hooks';
+import { PangoChefInfo } from 'src/hooks/pangochef/types';
+import Pool from '../Pool';
+import Sidebar, { MenuType } from '../Sidebar';
+import Wallet from '../Wallet';
 import { GridContainer, PageWrapper } from './styleds';
 
 const PoolsUI = () => {

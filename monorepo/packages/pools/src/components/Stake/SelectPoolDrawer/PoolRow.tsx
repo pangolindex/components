@@ -1,9 +1,9 @@
-import { Pair } from '@pangolindex/sdk';
-import React, { useCallback } from 'react';
 import { Box, DoubleCurrencyLogo, Text } from '@pangolindex/core';
-import { Balance, CurrencyRowRoot } from './styled';
+import { Pair } from '@pangolindex/sdk';
 import { unwrappedToken, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
 import { useTokenBalance } from '@pangolindex/state-hooks';
+import React, { useCallback } from 'react';
+import { Balance, CurrencyRowRoot } from './styled';
 
 interface Props {
   pair: Pair;

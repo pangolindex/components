@@ -1,12 +1,10 @@
+import { Box, Button, DoubleCurrencyLogo, Stat, Text } from '@pangolindex/core';
 import { Currency, JSBI, Pair, Percent } from '@pangolindex/sdk';
+import { BIG_INT_ZERO, ONE_BIPS, unwrappedToken, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, DoubleCurrencyLogo, Stat, Text } from 'src/components';
-import { BIG_INT_ZERO, ONE_BIPS } from 'src/constants';
-import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { usePairBalanceHook } from 'src/state/pwallet/hooks';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
+import { usePairTotalSupplyHook } from 'src/hooks/pair';
+import { usePairBalanceHook } from 'src/hooks/wallet/hooks';
 import { InnerWrapper, Wrapper } from './styleds';
 
 export interface PositionCardProps {

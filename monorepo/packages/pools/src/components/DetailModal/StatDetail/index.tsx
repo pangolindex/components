@@ -1,13 +1,12 @@
+import { Box, Stat, Text } from '@pangolindex/core';
 import { Currency, JSBI, Pair, TokenAmount } from '@pangolindex/sdk';
+import { BIG_INT_ZERO, useChainId } from '@pangolindex/shared';
 import numeral from 'numeral';
 import React from 'react';
 import AnalyticsIcon from 'src/assets/images/analytics.svg';
-import { Box, Stat, Text } from 'src/components';
-import { AnalyticsLink } from 'src/components/Stat/styled';
-import { BIG_INT_ZERO } from 'src/constants';
-import { usePairTotalSupplyHook } from 'src/data/multiChainsHooks';
-import { useChainId } from 'src/hooks';
-import { StateContainer } from './styleds';
+
+import { usePairTotalSupplyHook } from 'src/hooks/pair';
+import { AnalyticsLink, StateContainer } from './styleds';
 
 interface Props {
   title: string;

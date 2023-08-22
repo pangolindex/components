@@ -1,16 +1,15 @@
+import { Box, DoubleCurrencyLogo, RewardTokens, Stat, Text } from '@pangolindex/core';
 import { CHAINS, Fraction, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
+import { unwrappedToken, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { usePair, useTokenBalance } from '@pangolindex/state-hooks';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, DoubleCurrencyLogo, RewardTokens, Stat, Text } from 'src/components';
-import { usePair } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { DoubleSideStakingInfo } from 'src/state/pstake/types';
-import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
+import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import ClaimDrawer from '../ClaimDrawer';
 import FarmDrawer from '../FarmDrawer';
+import { DataBox } from '../Stake/styleds';
 import {
   ActionButon,
   DetailButton,

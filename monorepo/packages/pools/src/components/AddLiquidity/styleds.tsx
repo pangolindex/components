@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Box } from '@pangolindex/core';
+import styled from 'styled-components';
 import { SpaceType } from 'src/hooks/minichef/types';
 
 export const AddWrapper = styled(Box)`

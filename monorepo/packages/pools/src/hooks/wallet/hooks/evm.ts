@@ -3,30 +3,25 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
 import { CAVAX, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import {
+  ROUTER_ADDRESS,
   calculateGasMargin,
   calculateSlippageAmount,
   getRouterContract,
+  unwrappedToken,
   useChainId,
   useLibrary,
+  usePairContract,
   usePangolinWeb3,
   useTranslation,
   waitForTransaction,
   wrappedCurrency,
-  usePairContract,
-  unwrappedToken,
-  ROUTER_ADDRESS,
 } from '@pangolindex/shared';
-import {
-  ApprovalState,
-  toV2LiquidityToken,
-  useTokenBalances,
-  useTransactionAdder,
-} from '@pangolindex/state-hooks';
+import { ApprovalState, toV2LiquidityToken, useTokenBalances, useTransactionAdder } from '@pangolindex/state-hooks';
+import { usePairsContract } from '@pangolindex/state-hooks/lib/hooks/usePair/evm';
 import { useMemo, useState } from 'react';
-import { AddLiquidityProps, AttemptToApproveProps, RemoveLiquidityProps } from '../types';
 import { Field } from '../../burn/atom';
 import { Field as AddField } from '../../mint/atom';
-import { usePairsContract } from '@pangolindex/state-hooks/lib/hooks/usePair/evm';
+import { AddLiquidityProps, AttemptToApproveProps, RemoveLiquidityProps } from '../types';
 import { useGetTransactionSignature, useRefetchMinichefSubgraph, useTrackedTokenPairs } from '../utils';
 
 /**

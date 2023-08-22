@@ -1,7 +1,7 @@
 import { JSBI } from '@pangolindex/sdk';
+import { BIG_INT_ZERO } from '@pangolindex/shared';
 import React, { useMemo } from 'react';
-import { BIG_INT_ZERO } from 'src/constants';
-import { MinichefStakingInfo, PoolType } from 'src/state/pstake/types';
+import { MinichefStakingInfo, PoolType } from 'src/hooks/minichef/types';
 import PoolListV2 from '../PoolList/PoolListV2';
 
 interface Props {

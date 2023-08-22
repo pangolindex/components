@@ -1,11 +1,17 @@
 import { Token } from '@pangolindex/sdk';
-import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS, useChainId, useLibrary, usePangolinWeb3 } from '@pangolindex/shared';
+import {
+  BASES_TO_TRACK_LIQUIDITY_FOR,
+  PINNED_PAIRS,
+  useChainId,
+  useLibrary,
+  usePangolinWeb3,
+} from '@pangolindex/shared';
 import { useAllTokens, useUserAtom } from '@pangolindex/state-hooks';
+import { splitSignature } from 'ethers/lib/utils';
+import flatMap from 'lodash.flatmap';
 import { useMemo } from 'react';
 import { useQueryClient } from 'react-query';
-import flatMap from 'lodash.flatmap';
 import { deserializeToken } from 'src/utils';
-import { splitSignature } from 'ethers/lib/utils';
 
 export const useRefetchMinichefSubgraph = () => {
   const { account } = usePangolinWeb3();
@@ -84,21 +90,19 @@ export function useTrackedTokenPairs(): [Token, Token][] {
 }
 
 export function useGetTransactionSignature() {
-    const { provider } = useLibrary();
-    const { account } = usePangolinWeb3();
-  
-    const getSignature = async (data) => {
-      try {
-        const rawSignature = await provider.execute('eth_signTypedData_v4', [account, data]);
-        return splitSignature(rawSignature);
-      } catch (err: any) {
-        if (err?.code !== 4001) {
-          throw err;
-        }
-      }
-    };
-  
-    return getSignature;
-  }
+  const { provider } = useLibrary();
+  const { account } = usePangolinWeb3();
 
-  
+  const getSignature = async (data) => {
+    try {
+      const rawSignature = await provider.execute('eth_signTypedData_v4', [account, data]);
+      return splitSignature(rawSignature);
+    } catch (err: any) {
+      if (err?.code !== 4001) {
+        throw err;
+      }
+    }
+  };
+
+  return getSignature;
+}

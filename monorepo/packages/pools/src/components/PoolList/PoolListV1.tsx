@@ -1,10 +1,8 @@
+import { BIG_INT_ZERO, useChainId, useDebounce } from '@pangolindex/shared';
+import { usePoolDetailnModalToggle } from '@pangolindex/state-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
-import { BIG_INT_ZERO } from 'src/constants';
-import { useChainId } from 'src/hooks';
-import useDebounce from 'src/hooks/useDebounce';
-import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
-import { DoubleSideStakingInfo } from 'src/state/pstake/types';
-import { fetchChunkedAprs, sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/utils';
+import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
+import { fetchChunkedAprs, sortingOnAvaxStake, sortingOnStakedAmount } from 'src/hooks/minichef/utils';
 import PoolCardV1 from '../PoolCard/PoolCardV1';
 import PoolCardListView, { SortingType } from './PoolCardListView';
 

@@ -1,11 +1,11 @@
+import { Box, Text, ToggleButtons } from '@pangolindex/core';
+import { unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useState } from 'react';
+import { useDerivedBurnInfo } from 'src/hooks/burn/hooks';
+import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import RemoveFarm from '../RemoveFarm';
 import RemoveLiquidity from '../RemoveLiquidity';
 import { RemoveWrapper } from './styleds';
-import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
-import { unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
-import { useDerivedBurnInfo } from 'src/hooks/burn/hooks';
-import { Box, Text, ToggleButtons } from '@pangolindex/core';
 
 enum REMOVE_TYPE {
   FARM = 'Farm',

@@ -1,13 +1,6 @@
 /* eslint-disable max-lines */
-import { Currency, Pair, TokenAmount } from '@pangolindex/sdk';
-import React, { useCallback, useContext, useState } from 'react';
-import { Plus } from 'react-feather';
-import { ThemeContext } from 'styled-components';
-import ConfirmPoolDrawer from './ConfirmPoolDrawer';
-import PoolPriceBar from './PoolPriceBar';
-import { AddWrapper, ArrowWrapper, ButtonWrapper, Buttons, InputWrapper, LightCard, StyledBalanceMax } from './styleds';
-import { SpaceType } from 'src/hooks/minichef/types';
 import { Box, Button, Text, TextInput } from '@pangolindex/core';
+import { Currency, Pair, TokenAmount } from '@pangolindex/sdk';
 import {
   MixPanelEvents,
   PairState,
@@ -20,7 +13,6 @@ import {
   useTranslation,
   wrappedCurrency,
 } from '@pangolindex/shared';
-import { Field, useMintStateAtom } from 'src/hooks/mint/atom';
 import {
   ApprovalState,
   useApproveCallbackHook,
@@ -30,8 +22,16 @@ import {
   useUserSlippageTolerance,
   useWalletModalToggle,
 } from '@pangolindex/state-hooks';
+import React, { useCallback, useContext, useState } from 'react';
+import { Plus } from 'react-feather';
+import { ThemeContext } from 'styled-components';
+import { SpaceType } from 'src/hooks/minichef/types';
+import { Field, useMintStateAtom } from 'src/hooks/mint/atom';
 import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/hooks/mint/hooks';
 import { useAddLiquidityHook } from 'src/hooks/wallet/hooks';
+import ConfirmPoolDrawer from './ConfirmPoolDrawer';
+import PoolPriceBar from './PoolPriceBar';
+import { AddWrapper, ArrowWrapper, ButtonWrapper, Buttons, InputWrapper, LightCard, StyledBalanceMax } from './styleds';
 
 interface AddLiquidityProps {
   currencyA: Currency;

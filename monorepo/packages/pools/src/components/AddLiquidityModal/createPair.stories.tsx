@@ -1,7 +1,7 @@
+import { Button } from '@pangolindex/core';
 import { ComponentStory } from '@storybook/react';
 import React, { useCallback, useState } from 'react';
 import AddLiquidityModal from '.';
-import { Button } from '@pangolindex/core';
 
 export default {
   component: AddLiquidityModal,

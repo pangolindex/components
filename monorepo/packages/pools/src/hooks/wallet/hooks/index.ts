@@ -1,12 +1,8 @@
 /* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
+import { useDummyHook } from '@pangolindex/shared';
 import { useDummyCreatePair, useDummyGetUserLP } from './dummy';
-import {
-  useAddLiquidity,
-  useEVMPairBalance,
-  useGetUserLP,
-  useRemoveLiquidity,
-} from './evm';
+import { useAddLiquidity, useEVMPairBalance, useGetUserLP, useRemoveLiquidity } from './evm';
 import {
   useGetHederaUserLP,
   useHederaAddLiquidity,
@@ -21,7 +17,6 @@ import {
   useNearPairBalance,
   useNearRemoveLiquidity,
 } from './near';
-import { useDummyHook } from '@pangolindex/shared';
 
 export type UsePairBalanceHookType = {
   [chainId in ChainId]: typeof useEVMPairBalance | typeof useHederaPairBalance | typeof useNearPairBalance;

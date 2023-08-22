@@ -1,13 +1,11 @@
 import { CHAINS } from '@pangolindex/sdk';
+import { BIG_INT_ZERO, useChainId, useDebounce } from '@pangolindex/shared';
+import { useGetSelectedPoolId, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from '@pangolindex/state-hooks';
 import React, { memo, useCallback, useEffect, useState } from 'react';
-import { BIG_INT_ZERO } from 'src/constants';
-import { useChainId } from 'src/hooks';
-import useDebounce from 'src/hooks/useDebounce';
-import { useGetSelectedPoolId, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
-import { usePangoChefUserExtraFarmsApr } from 'src/state/ppangoChef/hooks/common';
-import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { MinichefStakingInfo } from 'src/state/pstake/types';
-import { sortingOnAvaxStake, sortingOnStakedAmount } from 'src/state/pstake/utils';
+import { MinichefStakingInfo } from 'src/hooks/minichef/types';
+import { sortingOnAvaxStake, sortingOnStakedAmount } from 'src/hooks/minichef/utils';
+import { usePangoChefUserExtraFarmsApr } from 'src/hooks/pangochef/hooks/common';
+import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import PoolCardV3 from '../PoolCard/PoolCardV3';
 import PoolCardListView, { SortingType } from './PoolCardListView';
 

@@ -1,5 +1,5 @@
+import { Box, TextInput } from '@pangolindex/core';
 import styled from 'styled-components';
-import { Box, TextInput } from 'src/components';
 
 export const PoolsWrapper = styled(Box)`
   width: 100%;

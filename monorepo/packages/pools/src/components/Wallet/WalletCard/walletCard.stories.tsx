@@ -1,9 +1,9 @@
+import { Box } from '@pangolindex/core';
 import { Pair, Token, TokenAmount } from '@pangolindex/sdk';
+import { useChainId } from '@pangolindex/shared';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import WalletCard from '.';
-import { useChainId } from '@pangolindex/shared';
-import { Box } from '@pangolindex/core';
 
 export default {
   component: WalletCard,

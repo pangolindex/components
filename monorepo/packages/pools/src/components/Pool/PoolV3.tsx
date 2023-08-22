@@ -1,8 +1,8 @@
 import { JSBI } from '@pangolindex/sdk';
+import { BIG_INT_ZERO } from '@pangolindex/shared';
 import React, { useMemo } from 'react';
-import { BIG_INT_ZERO } from 'src/constants';
-import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { PoolType } from 'src/state/pstake/types';
+import { PoolType } from 'src/hooks/minichef/types';
+import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import PoolListV3 from '../PoolList/PoolListV3';
 
 interface Props {

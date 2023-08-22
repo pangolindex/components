@@ -1,17 +1,15 @@
+import { Box } from '@pangolindex/core';
+import { ANALYTICS_PAGE_MAPPING } from '@pangolindex/core/lib/constants';
 import { CHAINS, Fraction, Token } from '@pangolindex/sdk';
+import { unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import { convertCoingeckoTokens, usePair } from '@pangolindex/state-hooks';
 import deepEqual from 'deep-equal';
 import numeral from 'numeral';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, CoinDescription } from 'src/components';
-import StatDetail from 'src/components/Pools/DetailModal/StatDetail';
-import { ANALYTICS_PAGE_MAPPING } from 'src/constants';
-import { usePair } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { convertCoingeckoTokens } from 'src/state/pcoingecko/hooks';
-import { useGetPoolDollerWorth } from 'src/state/pstake/hooks/common';
-import { DoubleSideStakingInfo } from 'src/state/pstake/types';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
+import CoinDescription from 'src/components/CoinDescription copy';
+import { useGetPoolDollerWorth } from 'src/hooks/minichef/hooks/common';
+import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
+import StatDetail from '../StatDetail';
 import { DetailsContainer } from './styled';
 
 type Props = {

@@ -1,5 +1,5 @@
+import { Box, Button } from '@pangolindex/core';
 import styled from 'styled-components';
-import { Box, Button } from 'src/components';
 
 export const Panel = styled(Box)`
   background-color: ${({ theme }) => theme.color5};

@@ -1,9 +1,40 @@
 /* eslint-disable max-lines */
-import { BigNumber } from 'ethers';
 import { CHAINS, ChainId, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import {
+  BIG_INT_SECONDS_IN_WEEK,
+  BIG_INT_TWO,
+  BIG_INT_ZERO,
+  DAIe,
+  ERC20_INTERFACE,
+  GET_MINICHEF,
+  MINICHEF_ADDRESS,
+  ONE_TOKEN,
+  PNG,
+  PairState,
+  SubgraphEnum,
+  USDC,
+  USDCe,
+  USDTe,
+  ZERO_ADDRESS,
+  getSubgraphClient,
+  useChainId,
+  usePangolinWeb3,
+} from '@pangolindex/shared';
+import {
+  useMultipleContractSingleData,
+  usePair,
+  usePairsContract,
+  useSingleCallResult,
+  useSingleContractMultipleData,
+  useTokensContract,
+  useUSDCPrice,
+} from '@pangolindex/state-hooks';
+import { BigNumber } from 'ethers';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
+import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';
+import { useMiniChefContract } from 'src/hooks/useContract';
 import { DoubleSideStaking, MinichefFarmReward, MinichefStakingInfo, MinichefV2 } from '../types';
 import {
   AprResult,
@@ -14,10 +45,6 @@ import {
   tokenComparator,
 } from '../utils';
 import { useGetExtraPendingRewards, useMinichefPools } from './common';
-import { BIG_INT_SECONDS_IN_WEEK, BIG_INT_TWO, BIG_INT_ZERO, DAIe, ERC20_INTERFACE, GET_MINICHEF, MINICHEF_ADDRESS, ONE_TOKEN, PNG, PairState, SubgraphEnum, USDC, USDCe, USDTe, ZERO_ADDRESS, getSubgraphClient, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useMiniChefContract } from 'src/hooks/useContract';
-import { useMultipleContractSingleData, usePair, usePairsContract, useSingleCallResult, useSingleContractMultipleData, useTokensContract, useUSDCPrice } from '@pangolindex/state-hooks';
-import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';
 
 export function useMichefFarmsAprs(pids: string[]) {
   const chainId = useChainId();

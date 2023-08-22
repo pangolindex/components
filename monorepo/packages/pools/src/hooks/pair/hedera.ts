@@ -1,8 +1,8 @@
 import { Pair, TokenAmount } from '@pangolindex/sdk';
-import { useHederaPGLTokenAddresses } from '../wallet/hooks/hedera';
+import { useSubgraphPairs } from '@pangolindex/shared';
 import { useHederaTokensMetaData } from '@pangolindex/state-hooks';
 import { useMemo } from 'react';
-import { useSubgraphPairs } from '@pangolindex/shared';
+import { useHederaPGLTokenAddresses } from '../wallet/hooks/hedera';
 
 /**
  * this hook is used to fetch total supply of given pair

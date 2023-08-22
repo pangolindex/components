@@ -14,16 +14,16 @@ import {
   usePangolinWeb3,
   useSubgraphFarms,
 } from '@pangolindex/shared';
+import { usePair, useSingleContractMultipleData } from '@pangolindex/state-hooks';
 import { BigNumber } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
+import { useMemo } from 'react';
+import { useGetExtraPendingRewards } from 'src/hooks/minichef/hooks/common';
 import { getExtraTokensWeeklyRewardRate } from 'src/hooks/minichef/utils';
+import { usePangoChefContract } from 'src/hooks/useContract';
+import { PangoChefInfo, UserInfo, ValueVariables } from '../types';
 import { calculateUserAPR, calculateUserRewardRate } from '../utils';
 import { useHederaPangochefContractCreateCallback } from './hedera';
-import { usePangoChefContract } from 'src/hooks/useContract';
-import { usePair, useSingleContractMultipleData } from '@pangolindex/state-hooks';
-import { useMemo } from 'react';
-import { PangoChefInfo, UserInfo, ValueVariables } from '../types';
-import { useGetExtraPendingRewards } from 'src/hooks/minichef/hooks/common';
 
 export function useGetPangoChefInfosViaSubgraph() {
   const { account } = usePangolinWeb3();

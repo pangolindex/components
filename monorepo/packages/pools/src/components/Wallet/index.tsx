@@ -1,10 +1,10 @@
+import { Box, DropdownMenu, Loader, Text } from '@pangolindex/core';
+import { useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
+import { useGetUserLPHook } from 'src/hooks/wallet/hooks';
 import WalletCard from './WalletCard';
 import { EmptyProposals, MobileContainer, PageWrapper, PanelWrapper } from './styleds';
-import { useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { useGetUserLPHook } from 'src/hooks/wallet/hooks';
-import { Box, DropdownMenu, Loader, Text } from '@pangolindex/core';
 
 interface Props {
   setMenu: (value: string) => void;

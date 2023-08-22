@@ -1,8 +1,8 @@
 import { CHAINS, ChefType, Currency } from '@pangolindex/sdk';
+import { useChainId } from '@pangolindex/shared';
 import React, { useState } from 'react';
-import { useChainId } from 'src/hooks';
-import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { DoubleSideStakingInfo, SpaceType } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo, SpaceType } from 'src/hooks/minichef/types';
+import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import AddLiquidity from '../AddLiquidity';
 import StakeV3 from '../PangoChef/Stake';
 import Stake from '../Stake';

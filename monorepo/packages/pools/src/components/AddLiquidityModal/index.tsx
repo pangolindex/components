@@ -1,16 +1,16 @@
+import { Box, CloseIcon, Modal, Text } from '@pangolindex/core';
 import { CAVAX, Currency } from '@pangolindex/sdk';
+import { useChainId, wrappedCurrency } from '@pangolindex/shared';
+import { useCurrency, useParsedQueryString } from '@pangolindex/state-hooks';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
+import { SpaceType } from 'src/hooks/minichef/types';
+import { useCreatePairHook } from 'src/hooks/wallet/hooks';
 import AddLiquidity from '../AddLiquidity';
+import SelectTokenDrawer from '../SelectTokenDrawer';
 import SearchTokenSection, { BodyState, Fields } from './SearchToken';
 import { Wrapper } from './styleds';
-import { useTranslation } from 'react-i18next';
-import { useChainId, wrappedCurrency } from '@pangolindex/shared';
-import { useCreatePairHook } from 'src/hooks/wallet/hooks';
-import { useCurrency, useParsedQueryString } from '@pangolindex/state-hooks';
-import { Box, CloseIcon, Modal, Text } from '@pangolindex/core';
-import { SpaceType } from 'src/hooks/minichef/types';
-import SelectTokenDrawer from '../SelectTokenDrawer';
 
 export interface AddLiquidityModalProps {
   isOpen: boolean;
@@ -149,7 +149,7 @@ const AddLiquidityModal = ({ isOpen, onClose }: AddLiquidityModalProps) => {
         <AddLiquidity
           currencyA={currency0}
           currencyB={currency1}
-          type={SpaceType .card}
+          type={SpaceType.card}
           onComplete={() => setBodyState(0)}
         />
       );

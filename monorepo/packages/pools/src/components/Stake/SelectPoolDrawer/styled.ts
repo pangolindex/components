@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Text } from '@pangolindex/core';
+import styled from 'styled-components';
 
 export const CurrencyList = styled.div`
   display: flex;

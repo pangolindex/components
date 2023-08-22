@@ -1,6 +1,6 @@
+import { useTokensContract } from '@pangolindex/state-hooks';
 import React from 'react';
-import { useTokensContract } from 'src/hooks/tokens/evm';
-import { DoubleSideStakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import PoolCardView from './PoolCardView';
 
 export interface PoolCardV1Props {

@@ -1,26 +1,30 @@
 /* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
+import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput, Tooltip } from '@pangolindex/core';
 import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
+import {
+  BIG_INT_ZERO,
+  FARM_TYPE,
+  MixPanelEvents,
+  PNG,
+  unwrappedToken,
+  useChainId,
+  useMixpanel,
+  usePairContract,
+  usePangolinWeb3,
+  wrappedCurrencyAmount,
+} from '@pangolindex/shared';
+import { ApprovalState, useApproveCallbackHook, usePair, useTransactionDeadline } from '@pangolindex/state-hooks';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput, Tooltip } from 'src/components';
-import { BIG_INT_ZERO, FARM_TYPE } from 'src/constants';
-import { PNG } from 'src/constants/tokens';
-import { usePair } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
-import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
+import { useDerivedStakeInfo, useExtraPendingRewards, useGetPoolDollerWorth } from 'src/hooks/minichef/hooks/common';
+import { SpaceType } from 'src/hooks/minichef/types';
+import { usePangoChefStakeCallbackHook } from 'src/hooks/pangochef/hooks';
+import { useHederaPangochefContractCreateCallback } from 'src/hooks/pangochef/hooks/hedera';
+import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import { usePangoChefContract } from 'src/hooks/useContract';
-import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
-import { usePangoChefStakeCallbackHook } from 'src/state/ppangoChef/hooks';
-import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/hooks/hedera';
-import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useDerivedStakeInfo, useExtraPendingRewards, useGetPoolDollerWorth } from 'src/state/pstake/hooks/common';
-import { SpaceType } from 'src/state/pstake/types';
-import { usePairBalanceHook } from 'src/state/pwallet/hooks';
-import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
+import { usePairBalanceHook } from 'src/hooks/wallet/hooks';
 import ConfirmDrawer from './ConfirmDrawer';
 import {
   Buttons,

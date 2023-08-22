@@ -1,12 +1,12 @@
+import { Box, Button, DoubleCurrencyLogo, Drawer, Loader, Stat, Text } from '@pangolindex/core';
 import { Currency, CurrencyAmount, Token } from '@pangolindex/sdk';
+import { getEtherscanLink, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
-import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/images/circleTick.svg';
-import { Box, Button, DoubleCurrencyLogo, Drawer, Loader, Stat, Text } from '@pangolindex/core';
-import { ContentWrapper, ErrorBox, ErrorWrapper, Link, SubmittedWrapper } from './styleds';
-import { getEtherscanLink, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import { ThemeContext } from 'styled-components';
 import { SpaceType } from 'src/hooks/minichef/types';
+import { ContentWrapper, ErrorBox, ErrorWrapper, Link, SubmittedWrapper } from './styleds';
 
 interface Props {
   isOpen: boolean;

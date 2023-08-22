@@ -1,13 +1,11 @@
+import { Box, CurrencyLogo, Text } from '@pangolindex/core';
 import { Currency, JSBI, TokenAmount } from '@pangolindex/sdk';
+import { PairState, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import { usePair, usePairAdder } from '@pangolindex/state-hooks';
 import React, { useContext, useEffect } from 'react';
 import { ChevronDown, Plus } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, CurrencyLogo, Text } from 'src/components';
-import { PairState, usePair } from 'src/data/Reserves';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { usePairAdder } from 'src/state/puser/hooks';
-import { usePairBalanceHook } from 'src/state/pwallet/hooks';
+import { usePairBalanceHook } from 'src/hooks/wallet/hooks';
 import PositionCard from '../PositionCard';
 import { ArrowWrapper, CurrencySelectWrapper, Dots, LightCard, PoolImportWrapper } from './styleds';
 

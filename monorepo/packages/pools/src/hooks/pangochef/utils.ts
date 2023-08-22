@@ -1,6 +1,11 @@
 import { CurrencyAmount, Fraction, JSBI, Price, Token, TokenAmount } from '@pangolindex/sdk';
+import {
+  BIGNUMBER_ZERO,
+  BIG_INT_SECONDS_IN_WEEK,
+  ONE_FRACTION,
+  PANGOCHEF_COMPOUND_SLIPPAGE,
+} from '@pangolindex/shared';
 import { BigNumber } from 'ethers';
-import { BIGNUMBER_ZERO, BIG_INT_SECONDS_IN_WEEK, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE } from '@pangolindex/shared';
 import { ValueVariables } from './types';
 
 /**

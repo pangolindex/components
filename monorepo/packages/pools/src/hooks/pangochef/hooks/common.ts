@@ -1,12 +1,12 @@
-import { BigNumber } from 'ethers';
 import { Fraction, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
-import { useMemo } from 'react';
-import { PangoChefInfo } from '../types';
-import { usePangoChefInfosHook } from './index';
-import { useTokensCurrencyPriceHook } from '@pangolindex/state-hooks/lib/hooks/multiChainsHooks';
 import { PNG, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
 import { useSingleContractMultipleData, useTokensHook } from '@pangolindex/state-hooks';
+import { useTokensCurrencyPriceHook } from '@pangolindex/state-hooks/lib/hooks/multiChainsHooks';
+import { BigNumber } from 'ethers';
+import { useMemo } from 'react';
 import { usePangoChefContract } from 'src/hooks/useContract';
+import { PangoChefInfo } from '../types';
+import { usePangoChefInfosHook } from './index';
 
 /**
  * This hook returns the extra value provided by super farm extra reward tokens

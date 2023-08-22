@@ -1,12 +1,16 @@
+import { Modal } from '@pangolindex/core';
 import { Pair } from '@pangolindex/sdk';
+import {
+  ApplicationModal,
+  useModalOpen,
+  usePoolDetailnModalToggle,
+  useUpdateSelectedPoolId,
+} from '@pangolindex/state-hooks';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
-import { Modal } from 'src/components';
-import { ApplicationModal } from 'src/state/papplication/atom';
-import { useModalOpen, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from 'src/state/papplication/hooks';
-import { useBurnStateAtom } from 'src/state/pburn/atom';
-import { useMintStateAtom } from 'src/state/pmint/atom';
-import { DoubleSideStakingInfo } from 'src/state/pstake/types';
+import { useBurnStateAtom } from 'src/hooks/burn/atom';
+import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
+import { useMintStateAtom } from 'src/hooks/mint/atom';
 import DetailView from './DetailView';
 
 export interface DetailModalProps {

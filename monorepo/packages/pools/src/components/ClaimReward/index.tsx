@@ -1,12 +1,21 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import React, { useState } from 'react';
 import { Box, Button, Loader, Stat, Text, TransactionCompleted } from '@pangolindex/core';
-import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
-import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/hooks/minichef/types';
-import { FARM_TYPE, MixPanelEvents, PNG, useChainId, useMixpanel, usePangolinWeb3, useTranslation, waitForTransaction } from '@pangolindex/shared';
+import {
+  FARM_TYPE,
+  MixPanelEvents,
+  PNG,
+  useChainId,
+  useMixpanel,
+  usePangolinWeb3,
+  useTranslation,
+  waitForTransaction,
+} from '@pangolindex/shared';
 import { useTransactionAdder } from '@pangolindex/state-hooks';
+import React, { useState } from 'react';
 import { useExtraPendingRewards, useMinichefPools } from 'src/hooks/minichef/hooks/common';
+import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/hooks/minichef/types';
 import { useStakingContract } from 'src/hooks/useContract';
+import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
 
 export interface ClaimProps {
   stakingInfo: DoubleSideStakingInfo;

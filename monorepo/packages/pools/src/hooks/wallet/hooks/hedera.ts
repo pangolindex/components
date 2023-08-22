@@ -1,15 +1,33 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { CAVAX, ChainId, Currency, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import {
+  calculateSlippageAmount,
+  getRouterContract,
+  isAddress,
+  unwrappedToken,
+  useChainId,
+  useLibrary,
+  usePangolinWeb3,
+  useTranslation,
+  wait,
+  wrappedCurrency,
+} from '@pangolindex/shared';
+import {
+  useBlockNumber,
+  useGetAllHederaAssociatedTokens,
+  useHederaTokenAssociated,
+  useHederaTokensMetaData,
+  usePair,
+  usePairsHook,
+  useTransactionAdder,
+} from '@pangolindex/state-hooks';
+import { hederaFn } from '@pangolindex/wallet-connectors';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery, useQueryClient } from 'react-query';
-import { AddLiquidityProps, AttemptToApproveProps, CreatePoolProps, RemoveLiquidityProps } from '../types';
-import { HederaTokenMetadata, hederaFn } from '@pangolindex/wallet-connectors';
-import { useBlockNumber, usePairsHook, usePair, useTransactionAdder, useHederaTokensMetaData } from '@pangolindex/state-hooks';
-import { calculateSlippageAmount, getRouterContract, isAddress, unwrappedToken, useChainId, useLibrary, usePangolinWeb3, useTranslation, wait, wrappedCurrency } from '@pangolindex/shared';
-import { useGetAllHederaAssociatedTokens, useHederaTokenAssociated } from '@pangolindex/state-hooks/lib/hooks/tokens/hedera';
 import { Field } from '../../burn/atom';
 import { Field as AddField } from '../../mint/atom';
+import { AddLiquidityProps, AttemptToApproveProps, CreatePoolProps, RemoveLiquidityProps } from '../types';
 import { useTrackedTokenPairs } from '../utils';
 
 /**

@@ -1,15 +1,6 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
-import { useCallback, useMemo } from 'react';
-import { useQuery } from 'react-query';
-import { PangoChefCompoundData, PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables, WithdrawData } from '../types';
-import {
-  calculateCompoundSlippage,
-  calculateUserAPR,
-  calculateUserRewardRate,
-  getHypotheticalWeeklyRewardRate,
-} from '../utils';
 import {
   BIG_INT_SECONDS_IN_WEEK,
   BIG_INT_ZERO,
@@ -27,7 +18,6 @@ import {
   useSubgraphFarmsStakedAmount,
   useTranslation,
 } from '@pangolindex/shared';
-import { usePangoChefContract } from 'src/hooks/useContract';
 import {
   useCoinGeckoCurrencyPrice,
   useMultipleContractSingleData,
@@ -39,12 +29,22 @@ import {
   useTokensContract,
   useTransactionAdder,
 } from '@pangolindex/state-hooks';
-import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';
-import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/hooks/wallet/hooks/hedera';
-import { useGetExtraPendingRewards } from 'src/hooks/minichef/hooks/common';
 import { usePairsCurrencyPrice } from '@pangolindex/state-hooks/lib/hooks/useCurrencyPrice';
-import { getExtraTokensWeeklyRewardRate } from 'src/hooks/minichef/utils';
 import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
+import { useCallback, useMemo } from 'react';
+import { useQuery } from 'react-query';
+import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';
+import { useGetExtraPendingRewards } from 'src/hooks/minichef/hooks/common';
+import { getExtraTokensWeeklyRewardRate } from 'src/hooks/minichef/utils';
+import { usePangoChefContract } from 'src/hooks/useContract';
+import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/hooks/wallet/hooks/hedera';
+import { PangoChefCompoundData, PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables, WithdrawData } from '../types';
+import {
+  calculateCompoundSlippage,
+  calculateUserAPR,
+  calculateUserRewardRate,
+  getHypotheticalWeeklyRewardRate,
+} from '../utils';
 import { useGetPangoChefInfosViaSubgraph } from './subgraph';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */

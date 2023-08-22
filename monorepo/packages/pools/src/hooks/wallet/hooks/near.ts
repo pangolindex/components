@@ -1,18 +1,6 @@
 /* eslint-disable max-lines */
 
 import { ChainId, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
-import { parseUnits } from 'ethers/lib/utils';
-import qs from 'qs';
-import { useEffect, useMemo, useState } from 'react';
-import { useQueries } from 'react-query';
-import { AddLiquidityProps, CreatePoolProps, RemoveLiquidityProps } from '../types';
-import {
-  FunctionCallOptions,
-  NEAR_EXCHANGE_CONTRACT_ADDRESS,
-  NearTransaction,
-  near,
-  nearFn,
-} from '@pangolindex/wallet-connectors';
 import {
   NEAR_LP_STORAGE_AMOUNT,
   NEAR_STORAGE_TO_REGISTER_WITH_FT,
@@ -25,9 +13,21 @@ import {
   useTranslation,
   wrappedCurrency,
 } from '@pangolindex/shared';
+import { useGetNearAllPool, useNearPairs, useNearTokens } from '@pangolindex/state-hooks';
+import {
+  FunctionCallOptions,
+  NEAR_EXCHANGE_CONTRACT_ADDRESS,
+  NearTransaction,
+  near,
+  nearFn,
+} from '@pangolindex/wallet-connectors';
+import { parseUnits } from 'ethers/lib/utils';
+import qs from 'qs';
+import { useEffect, useMemo, useState } from 'react';
+import { useQueries } from 'react-query';
 import { Field } from '../../burn/atom';
 import { Field as AddField } from '../../mint/atom';
-import { useGetNearAllPool, useNearPairs, useNearTokens } from '@pangolindex/state-hooks';
+import { AddLiquidityProps, CreatePoolProps, RemoveLiquidityProps } from '../types';
 
 /**
  * Returns a Near Wallet balance.

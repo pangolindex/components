@@ -9,11 +9,19 @@ import {
   Price,
   TokenAmount,
 } from '@pangolindex/sdk';
-import { useCallback, useMemo } from 'react';
-import { Field, initialKeyState, useMintStateAtom } from './atom';
-import { PairState, tryParseAmount, useChainId, usePangolinWeb3, useTranslation, wrappedCurrency, wrappedCurrencyAmount } from '@pangolindex/shared';
-import { usePairTotalSupplyHook } from '../pair';
+import {
+  PairState,
+  tryParseAmount,
+  useChainId,
+  usePangolinWeb3,
+  useTranslation,
+  wrappedCurrency,
+  wrappedCurrencyAmount,
+} from '@pangolindex/shared';
 import { useCurrencyBalances, usePair } from '@pangolindex/state-hooks';
+import { useCallback, useMemo } from 'react';
+import { usePairTotalSupplyHook } from '../pair';
+import { Field, initialKeyState, useMintStateAtom } from './atom';
 
 const ZERO = JSBI.BigInt(0);
 

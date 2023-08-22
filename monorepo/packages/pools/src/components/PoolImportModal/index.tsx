@@ -1,11 +1,9 @@
+import { Box, CloseIcon, Modal, Text } from '@pangolindex/core';
 import { CAVAX, Currency } from '@pangolindex/sdk';
+import { useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useCallback, useContext, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Modal, Text } from 'src/components';
-import SelectTokenDrawer from 'src/components/SwapWidget/SelectTokenDrawer';
-import { useChainId } from 'src/hooks';
-import { CloseIcon } from 'src/theme/components';
+import SelectTokenDrawer from '../SelectTokenDrawer';
 import PoolImport from './PoolImport';
 import { Wrapper } from './styleds';
 

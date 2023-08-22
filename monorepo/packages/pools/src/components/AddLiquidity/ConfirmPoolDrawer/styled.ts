@@ -1,5 +1,5 @@
+import { Box, Text } from '@pangolindex/core';
 import styled from 'styled-components';
-import { Box, Text } from 'src/components';
 
 export const Root = styled(Box)`
   display: grid;

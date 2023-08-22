@@ -1,12 +1,12 @@
+import { Box, CurrencyLogo, Text } from '@pangolindex/core';
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
+import { PairState, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import { usePair } from '@pangolindex/state-hooks';
 import React, { useContext } from 'react';
 import { ChevronDown, Plus } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { CurrencySelectWrapper, LightCard } from '../PoolImportModal/PoolImport/styleds';
 import { ConfirmButton } from './styleds';
-import { PairState, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { Box, CurrencyLogo, Text } from '@pangolindex/core';
-import { usePair } from '@pangolindex/state-hooks';
 
 export enum Fields {
   TOKEN0 = 0,

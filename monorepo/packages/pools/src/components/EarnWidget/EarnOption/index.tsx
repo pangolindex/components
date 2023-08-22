@@ -1,6 +1,6 @@
+import { Box, Text, ToggleButtons } from '@pangolindex/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Text, ToggleButtons } from 'src/components';
 import { EarnWrapper } from './styled';
 
 interface Props {

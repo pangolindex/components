@@ -1,13 +1,10 @@
+import { Box, Button, Stat, Text } from '@pangolindex/core';
 import { TokenAmount } from '@pangolindex/sdk';
+import { BIG_INT_ZERO, PNG, useChainId, useTranslation } from '@pangolindex/shared';
 import numeral from 'numeral';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, Button, Stat, Text } from 'src/components';
-import { BIG_INT_ZERO } from 'src/constants';
-import { PNG } from 'src/constants/tokens';
-import { useChainId } from 'src/hooks';
-import { useExtraPendingRewards } from 'src/state/pstake/hooks/common';
-import { DoubleSideStakingInfo } from 'src/state/pstake/types';
+import { useExtraPendingRewards } from 'src/hooks/minichef/hooks/common';
+import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import ClaimDrawer from '../../ClaimDrawer';
 import RemoveDrawer from '../../RemoveDrawer';
 import { InnerWrapper, Wrapper } from './styleds';

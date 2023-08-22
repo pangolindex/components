@@ -5,7 +5,7 @@ import { AvalancheCoreConnector } from './AvalancheCoreConnector';
 import { BitKeepConnector } from './BitKeepConnector';
 import { DefiConnector } from './DefiConnector';
 import { HashConnector, mainnetHederaConfig } from './HashConnector';
-import { NEAR_EXCHANGE_CONTRACT_ADDRESS, NearConnector, near } from './NearConnector';
+import { near } from './NearConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
 import { WalletConnectConnector, WalletConnectConnectorArguments } from './WalletConnectConnector';
@@ -81,6 +81,7 @@ export { HashConnector, WalletConnectConnector, NetworkConnector };
 export { UserRejectedRequestError, NoEthereumProviderError };
 export type { WalletConnectConnectorArguments };
 
+export { near };
 export * from './NearConnector/near';
 export * from './NearConnector/types';
 export * from './HashConnector/hedera';

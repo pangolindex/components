@@ -1,8 +1,6 @@
 /* eslint-disable max-lines */
-import { Currency, Pair, Percent } from '@pangolindex/sdk';
-import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from '@pangolindex/core';
-import { ButtonWrapper, RemoveWrapper } from './styleds';
+import { Currency, Pair, Percent } from '@pangolindex/sdk';
 import {
   MixPanelEvents,
   ROUTER_ADDRESS,
@@ -20,13 +18,15 @@ import {
   useUserSlippageTolerance,
   useWalletModalToggle,
 } from '@pangolindex/state-hooks';
-import { useRemoveLiquidityHook } from 'src/hooks/wallet/hooks';
-import { Field, useBurnStateAtom } from 'src/hooks/burn/atom';
-import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/hooks/burn/hooks';
 import {
   useGetHederaTokenNotAssociated,
   useHederaTokenAssociated,
 } from '@pangolindex/state-hooks/lib/hooks/tokens/hedera';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Field, useBurnStateAtom } from 'src/hooks/burn/atom';
+import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/hooks/burn/hooks';
+import { useRemoveLiquidityHook } from 'src/hooks/wallet/hooks';
+import { ButtonWrapper, RemoveWrapper } from './styleds';
 
 interface RemoveLiquidityProps {
   currencyA?: Currency;

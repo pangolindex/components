@@ -1,6 +1,6 @@
+import { Button } from '@pangolindex/core';
 import { ComponentStory } from '@storybook/react';
 import React, { useCallback, useState } from 'react';
-import { Button } from '../../Button';
 import PoolImportModal from '.';
 
 export default {

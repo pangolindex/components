@@ -3,7 +3,7 @@ import { listVersionLabel, useOnClickOutside, useTranslation } from '@pangolinde
 import { useListsStateAtom, useSelectedListUrl } from '@pangolindex/state-hooks';
 import React, { useCallback, useRef, useState } from 'react';
 import { ChevronDown } from 'react-feather';
-import TokenListOrigin from '../TokenListOrigin';
+import TokenListOrigin from './TokenListOrigin';
 import { DownArrow, ListLogo, PopoverContainer, RowRoot, Separator, ViewLink } from './styled';
 
 interface Props {

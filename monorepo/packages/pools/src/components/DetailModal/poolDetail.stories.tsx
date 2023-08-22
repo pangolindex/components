@@ -1,7 +1,7 @@
+import { Button } from '@pangolindex/core';
+import { usePoolDetailnModalToggle } from '@pangolindex/state-hooks';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { usePoolDetailnModalToggle } from 'src/state/papplication/hooks';
-import { Button } from '../../Button';
 import { useGetMinichefStakingInfos } from '../Pool/mock';
 import DetailModal from '.';
 

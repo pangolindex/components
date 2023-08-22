@@ -1,7 +1,7 @@
+import { Box, Text } from '@pangolindex/core';
+import { useTranslation } from '@pangolindex/shared';
+import { useParsedQueryString } from '@pangolindex/state-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, Text } from 'src/components';
-import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import AddLiquidityModal from '../AddLiquidityModal';
 import PoolImportModal from '../PoolImportModal';
 import { Circle, Menu, MenuItem, MenuLink, MenuName, SidebarWrapper } from './styleds';

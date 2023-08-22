@@ -1,13 +1,27 @@
 import { CHAINS, ChefType, CurrencyAmount, JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
+import {
+  BIG_INT_ZERO,
+  ZERO_ADDRESS,
+  tryParseAmount,
+  unwrappedToken,
+  useChainId,
+  usePangolinWeb3,
+  useTranslation,
+} from '@pangolindex/shared';
+import {
+  CallState,
+  useMultipleContractMultipleData,
+  useSingleCallResult,
+  useTokensHook,
+  useUSDCPriceHook,
+} from '@pangolindex/state-hooks';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
-import { DoubleSideStakingInfo, MinichefStakingInfo } from '../types';
-import { CallState, useMultipleContractMultipleData, useSingleCallResult, useTokensHook, useUSDCPriceHook } from '@pangolindex/state-hooks';
-import { BIG_INT_ZERO, ZERO_ADDRESS, tryParseAmount, unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { usePairBalanceHook } from 'src/hooks/wallet/hooks';
-import { useMiniChefContract } from 'src/hooks/useContract';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';
 import { usePairTotalSupplyHook } from 'src/hooks/pair';
+import { useMiniChefContract } from 'src/hooks/useContract';
+import { usePairBalanceHook } from 'src/hooks/wallet/hooks';
+import { DoubleSideStakingInfo, MinichefStakingInfo } from '../types';
 
 export const useMinichefPools = (): { [key: string]: number } => {
   const minichefContract = useMiniChefContract();

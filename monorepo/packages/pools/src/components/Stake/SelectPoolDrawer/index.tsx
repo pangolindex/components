@@ -1,13 +1,13 @@
+import { Drawer } from '@pangolindex/core';
 import { Pair } from '@pangolindex/sdk';
+import { useChainId } from '@pangolindex/shared';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
+import { useGetUserLPHook } from 'src/hooks/wallet/hooks';
 import PoolRow from './PoolRow';
 import { CurrencyList } from './styled';
-import { useGetUserLPHook } from 'src/hooks/wallet/hooks';
-import { useChainId } from '@pangolindex/shared';
-import { Drawer } from '@pangolindex/core';
 
 interface Props {
   isOpen: boolean;

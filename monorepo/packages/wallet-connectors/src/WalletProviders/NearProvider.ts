@@ -1,5 +1,5 @@
 import React from 'react';
-import { near } from '../NearConnector/near';
+import { near } from 'src/NearConnector';
 
 export const NearProvider = (provider) => {
   if (provider) {

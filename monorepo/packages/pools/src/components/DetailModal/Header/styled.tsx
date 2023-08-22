@@ -1,6 +1,6 @@
+import { Box } from '@pangolindex/core';
 import { ChefType } from '@pangolindex/sdk';
 import styled from 'styled-components';
-import { Box } from 'src/components';
 
 export const HeaderRoot = styled(Box)`
   display: flex;

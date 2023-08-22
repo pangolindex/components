@@ -1,17 +1,13 @@
+import { Box, CloseIcon, DoubleCurrencyLogo, Hidden, RewardTokens, Stat, Text, Visible } from '@pangolindex/core';
 import { CHAINS, ChefType } from '@pangolindex/sdk';
+import { ZERO_FRACTION, unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, DoubleCurrencyLogo, RewardTokens, Stat, Text } from 'src/components';
-import { ZERO_FRACTION } from 'src/constants';
-import { useChainId } from 'src/hooks';
-import { usePangoChefExtraFarmApr } from 'src/state/ppangoChef/hooks/common';
-import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useGetRewardTokens } from 'src/state/pstake/hooks/common';
-import { DoubleSideStakingInfo } from 'src/state/pstake/types';
-import { CloseIcon, Hidden, Visible } from 'src/theme/components';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
+import { useGetRewardTokens } from 'src/hooks/minichef/hooks/common';
+import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
+import { usePangoChefExtraFarmApr } from 'src/hooks/pangochef/hooks/common';
+import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import { HeaderRoot, HeaderWrapper, StatsWrapper } from './styled';
 
 type Props = {

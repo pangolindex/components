@@ -1,16 +1,16 @@
+import { Box, Button, Drawer, Stat, Text, Tooltip } from '@pangolindex/core';
 import { ChainId, TokenAmount } from '@pangolindex/sdk';
+import { BIG_INT_ZERO, PNG, unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
 import numeral from 'numeral';
 import React, { useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Drawer, Stat, Text, Tooltip } from '@pangolindex/core';
+import { useExtraPendingRewards } from 'src/hooks/minichef/hooks/common';
+import { useGetLockingPoolsForPoolIdHook } from 'src/hooks/pangochef/hooks';
+import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import RemoveDrawer from '../../RemoveDrawer';
 import ClaimRewardV3 from '../ClaimReward';
 import CompoundV3 from '../Compound';
 import { Buttons, Container, InnerWrapper, Wrapper } from './styleds';
-import { PangoChefInfo } from 'src/hooks/pangochef/types';
-import { BIG_INT_ZERO, PNG, unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
-import { useExtraPendingRewards } from 'src/hooks/minichef/hooks/common';
-import { useGetLockingPoolsForPoolIdHook } from 'src/hooks/pangochef/hooks';
 
 export interface EarnDetailProps {
   stakingInfo: PangoChefInfo;

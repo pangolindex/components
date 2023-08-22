@@ -1,6 +1,6 @@
 import React from 'react';
-import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
+import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/hooks/minichef/types';
+import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import PoolV1 from './PoolV1';
 import PoolV2 from './PoolV2';
 import PoolV3 from './PoolV3';

@@ -1,8 +1,8 @@
-import React from 'react';
-import Remove from '../Remove';
-import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import { Drawer } from '@pangolindex/core';
 import { useTranslation } from '@pangolindex/shared';
+import React from 'react';
+import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
+import Remove from '../Remove';
 
 type Props = {
   isOpen: boolean;

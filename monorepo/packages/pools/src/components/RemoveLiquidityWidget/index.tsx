@@ -1,9 +1,9 @@
-import { Currency } from '@pangolindex/sdk';
-import React from 'react';
 import { Text } from '@pangolindex/core';
+import { Currency } from '@pangolindex/sdk';
+import { useTranslation } from '@pangolindex/shared';
+import React from 'react';
 import RemoveLiquidity from '../RemoveLiquidity';
 import { Wrapper } from './styleds';
-import { useTranslation } from '@pangolindex/shared';
 interface Props {
   currencyA: Currency;
   currencyB: Currency;

@@ -1,9 +1,6 @@
 /* eslint-disable max-lines */
 import { TransactionResponse } from '@ethersproject/providers';
 import { parseUnits } from '@ethersproject/units';
-import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -15,6 +12,41 @@ import {
   TextInput,
   TransactionCompleted,
 } from '@pangolindex/core';
+import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
+import {
+  BIG_INT_ZERO,
+  FARM_TYPE,
+  MixPanelEvents,
+  PNG,
+  unwrappedToken,
+  useChainId,
+  useLibrary,
+  useMixpanel,
+  usePairContract,
+  usePangolinWeb3,
+  waitForTransaction,
+  wrappedCurrencyAmount,
+} from '@pangolindex/shared';
+import {
+  ApprovalState,
+  useApproveCallback,
+  usePair,
+  usePairsContract,
+  useTokenBalance,
+  useTransactionAdder,
+  useTransactionDeadline,
+} from '@pangolindex/state-hooks';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  useDerivedStakeInfo,
+  useExtraPendingRewards,
+  useGetPoolDollerWorth,
+  useMinichefPools,
+} from 'src/hooks/minichef/hooks/common';
+import { DoubleSideStakingInfo, MinichefStakingInfo, SpaceType } from 'src/hooks/minichef/types';
+import { useStakingContract } from 'src/hooks/useContract';
+import { useGetTransactionSignature, useRefetchMinichefSubgraph } from 'src/hooks/wallet/utils';
 import SelectPoolDrawer from './SelectPoolDrawer';
 import {
   Buttons,
@@ -26,12 +58,6 @@ import {
   PoolSelectWrapper,
   StakeWrapper,
 } from './styleds';
-import { DoubleSideStakingInfo, MinichefStakingInfo, SpaceType } from 'src/hooks/minichef/types';
-import { BIG_INT_ZERO, FARM_TYPE, MixPanelEvents, PNG, unwrappedToken, useChainId, useLibrary, useMixpanel, usePairContract, usePangolinWeb3, waitForTransaction, wrappedCurrencyAmount } from '@pangolindex/shared';
-import { ApprovalState, useApproveCallback, usePair, usePairsContract, useTokenBalance, useTransactionAdder, useTransactionDeadline } from '@pangolindex/state-hooks';
-import { useDerivedStakeInfo, useExtraPendingRewards, useGetPoolDollerWorth, useMinichefPools } from 'src/hooks/minichef/hooks/common';
-import { useGetTransactionSignature, useRefetchMinichefSubgraph } from 'src/hooks/wallet/utils';
-import { useStakingContract } from 'src/hooks/useContract';
 
 interface StakeProps {
   version: number;

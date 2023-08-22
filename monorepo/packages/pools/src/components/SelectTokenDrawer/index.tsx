@@ -1,18 +1,18 @@
+import { Box, Drawer, Text, TextInput } from '@pangolindex/core';
 import { CAVAX, ChainId, Currency, Token, WAVAX, currencyEquals } from '@pangolindex/sdk';
+import { Field, filterTokenOrChain, isAddress, useChainId, usePrevious } from '@pangolindex/shared';
+import { useAddUserToken, useAllTokens, useSelectedListInfo, useTokenHook } from '@pangolindex/state-hooks';
+import { Hedera } from '@pangolindex/wallet-connectors';
 import deepEqual from 'deep-equal';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useTranslation } from 'react-i18next';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
-import CurrencyGrid from './CurrencyGrid';
-import { CurrencyList, ListLogo, ManageList } from './styled';
-import { Field, filterTokenOrChain, isAddress, useChainId, usePrevious } from '@pangolindex/shared';
-import { useAddUserToken, useAllTokens, useSelectedListInfo, useTokenHook } from '@pangolindex/state-hooks';
-import { Hedera } from '@pangolindex/wallet-connectors';
-import { Box, Drawer, Text, TextInput } from '@pangolindex/core';
 import { useTokenComparator } from 'src/hooks/sorting';
 import TokenListDrawer from '../TokenListDrawer';
+import CurrencyGrid from './CurrencyGrid';
+import { CurrencyList, ListLogo, ManageList } from './styled';
 
 interface Props {
   isOpen: boolean;
