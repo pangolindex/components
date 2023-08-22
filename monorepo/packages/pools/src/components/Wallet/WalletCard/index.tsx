@@ -1,13 +1,12 @@
 import { Pair } from '@pangolindex/sdk';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
-import { useChainId } from 'src/hooks';
-import { useGetPoolDollerWorth } from 'src/state/pstake/hooks/common';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import AddLiquidityDrawer from '../../AddLiquidityDrawer';
 import RemoveLiquidityDrawer from '../../RemoveLiquidityDrawer';
 import { ActionButon, DetailButton, Divider, InnerWrapper, Panel, StatWrapper } from './styleds';
+import { useTranslation } from 'react-i18next';
+import { unwrappedToken, useChainId } from '@pangolindex/shared';
+import { Box, DoubleCurrencyLogo, Stat, Text } from '@pangolindex/core';
+import { useGetPoolDollerWorth } from 'src/hooks/minichef/hooks/common';
 
 export interface WalletCardProps {
   pair: Pair;

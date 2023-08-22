@@ -3,10 +3,11 @@ import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
-import Drawer from 'src/components/Drawer';
-import { useGetUserLP } from 'src/state/pwallet/hooks/evm';
 import PoolRow from './PoolRow';
 import { CurrencyList } from './styled';
+import { useGetUserLPHook } from 'src/hooks/wallet/hooks';
+import { useChainId } from '@pangolindex/shared';
+import { Drawer } from '@pangolindex/core';
 
 interface Props {
   isOpen: boolean;
@@ -18,7 +19,9 @@ interface Props {
 const SelectPoolDrawer: React.FC<Props> = (props) => {
   const { isOpen, onClose, onPoolSelect, selectedPair } = props;
   const { t } = useTranslation();
+  const chainId = useChainId();
   // fetch the user's balances of all tracked V2 LP tokens
+  const useGetUserLP = useGetUserLPHook[chainId];
   const { allV2PairsWithLiquidity } = useGetUserLP();
 
   const onSelect = useCallback(

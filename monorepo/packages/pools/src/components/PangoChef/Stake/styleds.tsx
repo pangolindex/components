@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { Box, Text, TextInput } from 'src/components';
-import { SpaceType } from 'src/state/pstake/types';
+import { Box, Text, TextInput } from '@pangolindex/core';
+import { SpaceType } from 'src/hooks/minichef/types';
 
 export const StakeWrapper = styled(Box)`
   width: 100%;

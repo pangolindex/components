@@ -1,14 +1,12 @@
 import { Currency, CurrencyAmount, Token } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/images/circleTick.svg';
-import { Box, Button, DoubleCurrencyLogo, Drawer, Loader, Stat, Text } from 'src/components';
-import { usePangolinWeb3 } from 'src/hooks';
-import { SpaceType } from 'src/state/pstake/types';
-import { getEtherscanLink } from 'src/utils';
+import { Box, Button, DoubleCurrencyLogo, Drawer, Loader, Stat, Text } from '@pangolindex/core';
 import { ContentWrapper, ErrorBox, ErrorWrapper, Link, SubmittedWrapper } from './styleds';
+import { getEtherscanLink, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import { SpaceType } from 'src/hooks/minichef/types';
 
 interface Props {
   isOpen: boolean;

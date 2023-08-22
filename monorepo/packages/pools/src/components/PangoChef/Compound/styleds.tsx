@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box } from 'src/components';
+import { Box } from '@pangolindex/core';
 
 export const CompoundWrapper = styled(Box)`
   width: 100%;

@@ -1,18 +1,14 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Loader, Text, TransactionCompleted } from 'src/components';
-import { FARM_TYPE } from 'src/constants';
-import { PNG } from 'src/constants/tokens';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
-import { usePangoChefContract } from 'src/hooks/useContract';
-import { usePangoChefClaimRewardCallbackHook } from 'src/state/ppangoChef/hooks';
-import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { useGetRewardTokens } from 'src/state/pstake/hooks/common';
+import { Box, Button, Loader, Text, TransactionCompleted } from '@pangolindex/core';
 import { Buttons, ClaimWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';
+import { FARM_TYPE, MixPanelEvents, PNG, useChainId, useMixpanel, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import { usePangoChefClaimRewardCallbackHook } from 'src/hooks/pangochef/hooks';
+import { usePangoChefContract } from 'src/hooks/useContract';
+import { useGetRewardTokens } from 'src/hooks/minichef/hooks/common';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from '@pangolindex/state-hooks/lib/hooks/tokens/hedera';
+import { PangoChefInfo } from 'src/hooks/pangochef/types';
 
 export interface ClaimProps {
   stakingInfo: PangoChefInfo;

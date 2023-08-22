@@ -12,7 +12,7 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
 import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
-import { usePairContract, usePangoChefContract } from 'src/hooks/useContract';
+import { usePangoChefContract } from 'src/hooks/useContract';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { usePangoChefStakeCallbackHook } from 'src/state/ppangoChef/hooks';
 import { useHederaPangochefContractCreateCallback } from 'src/state/ppangoChef/hooks/hedera';

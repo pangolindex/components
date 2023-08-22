@@ -14,28 +14,7 @@ import {
   Text,
   TextInput,
   TransactionCompleted,
-} from 'src/components';
-import { BIG_INT_ZERO, FARM_TYPE } from 'src/constants';
-import { PNG } from 'src/constants/tokens';
-import { usePair } from 'src/data/Reserves';
-import { useChainId, useLibrary, usePangolinWeb3, useRefetchMinichefSubgraph } from 'src/hooks';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
-import { useApproveCallback } from 'src/hooks/useApproveCallback/evm';
-import { usePairContract, useStakingContract } from 'src/hooks/useContract';
-import { useGetTransactionSignature } from 'src/hooks/useGetTransactionSignature';
-import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
-import {
-  useDerivedStakeInfo,
-  useExtraPendingRewards,
-  useGetPoolDollerWorth,
-  useMinichefPools,
-} from 'src/state/pstake/hooks/common';
-import { DoubleSideStakingInfo, MinichefStakingInfo, SpaceType } from 'src/state/pstake/types';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { useTokenBalance } from 'src/state/pwallet/hooks/evm';
-import { waitForTransaction } from 'src/utils';
-import { unwrappedToken, wrappedCurrencyAmount } from 'src/utils/wrappedCurrency';
+} from '@pangolindex/core';
 import SelectPoolDrawer from './SelectPoolDrawer';
 import {
   Buttons,
@@ -47,6 +26,12 @@ import {
   PoolSelectWrapper,
   StakeWrapper,
 } from './styleds';
+import { DoubleSideStakingInfo, MinichefStakingInfo, SpaceType } from 'src/hooks/minichef/types';
+import { BIG_INT_ZERO, FARM_TYPE, MixPanelEvents, PNG, unwrappedToken, useChainId, useLibrary, useMixpanel, usePairContract, usePangolinWeb3, waitForTransaction, wrappedCurrencyAmount } from '@pangolindex/shared';
+import { ApprovalState, useApproveCallback, usePair, usePairsContract, useTokenBalance, useTransactionAdder, useTransactionDeadline } from '@pangolindex/state-hooks';
+import { useDerivedStakeInfo, useExtraPendingRewards, useGetPoolDollerWorth, useMinichefPools } from 'src/hooks/minichef/hooks/common';
+import { useGetTransactionSignature, useRefetchMinichefSubgraph } from 'src/hooks/wallet/utils';
+import { useStakingContract } from 'src/hooks/useContract';
 
 interface StakeProps {
   version: number;

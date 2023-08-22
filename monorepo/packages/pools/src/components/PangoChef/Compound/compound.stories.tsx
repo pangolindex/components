@@ -1,6 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import { Box } from 'src/components/Box';
+import { Box } from '@pangolindex/core';
 import { useGetPangoChefInfos } from '../../Pool/mock';
 import CompoundV3 from '.';
 
