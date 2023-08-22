@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { BigNumber } from 'ethers';
 import { TransactionResponse } from '@ethersproject/providers';
 import { TokenAmount } from '@pangolindex/sdk';
 import {
@@ -17,6 +16,7 @@ import {
   waitForTransaction,
 } from '@pangolindex/shared';
 import { useShouldUseSubgraph, useSingleCallResult, useSingleContractMultipleData } from '@pangolindex/state-hooks';
+import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { Position, URI } from './types';

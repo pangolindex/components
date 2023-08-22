@@ -1,5 +1,5 @@
 import { Box } from '@pangolindex/core';
-import { SarNFTPortfolio, SarStakeWidget, SarManageWidget, Position } from '@pangolindex/sar';
+import { Position, SarManageWidget, SarNFTPortfolio, SarStakeWidget } from '@pangolindex/sar';
 import React, { useCallback, useState } from 'react';
 import { PageWrapper } from './styled';
 
@@ -8,7 +8,7 @@ export default function SarStake() {
 
   const onSelectPosition = useCallback((position: Position | null) => {
     setSelectedPosition(position);
-  }, [])
+  }, []);
 
   return (
     <PageWrapper>

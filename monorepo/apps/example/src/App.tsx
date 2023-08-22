@@ -6,7 +6,6 @@ import Sample from './pages/Sample';
 import SarStake from './pages/SarSingleStake';
 import Swap from './pages/Swap';
 
-
 const AppWrapper = styled.div`
   display: flex;
   flex-flow: column;

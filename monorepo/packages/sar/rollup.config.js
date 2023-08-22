@@ -43,7 +43,7 @@ if (process.env.ENV === 'production') {
 }
 
 export default {
-  input: 'src/index.ts',
+  input: 'src/index.tsx',
   output: [
     {
       file: pkg.main,
