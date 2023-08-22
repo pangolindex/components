@@ -1,22 +1,32 @@
 /* eslint-disable max-lines */
 import { Currency, Pair, Percent } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
-import { ROUTER_ADDRESS } from 'src/constants/address';
-import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
-import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
-import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
-import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
-import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Field, useBurnStateAtom } from 'src/state/pburn/atom';
-import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/state/pburn/hooks';
-import { useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { useRemoveLiquidityHook } from 'src/state/pwallet/hooks';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
+import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from '@pangolindex/core';
 import { ButtonWrapper, RemoveWrapper } from './styleds';
+import {
+  MixPanelEvents,
+  ROUTER_ADDRESS,
+  useChainId,
+  useLibrary,
+  useMixpanel,
+  usePangolinWeb3,
+  useTranslation,
+  wrappedCurrency,
+} from '@pangolindex/shared';
+import {
+  ApprovalState,
+  useApproveCallbackHook,
+  useTransactionDeadline,
+  useUserSlippageTolerance,
+  useWalletModalToggle,
+} from '@pangolindex/state-hooks';
+import { useRemoveLiquidityHook } from 'src/hooks/wallet/hooks';
+import { Field, useBurnStateAtom } from 'src/hooks/burn/atom';
+import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/hooks/burn/hooks';
+import {
+  useGetHederaTokenNotAssociated,
+  useHederaTokenAssociated,
+} from '@pangolindex/state-hooks/lib/hooks/tokens/hedera';
 
 interface RemoveLiquidityProps {
   currencyA?: Currency;

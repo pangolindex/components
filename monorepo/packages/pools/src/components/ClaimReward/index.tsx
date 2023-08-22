@@ -1,17 +1,12 @@
 import { TransactionResponse } from '@ethersproject/providers';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
-import { FARM_TYPE } from 'src/constants';
-import { PNG } from 'src/constants/tokens';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useStakingContract } from 'src/hooks/useContract';
-import { useExtraPendingRewards, useMinichefPools } from 'src/state/pstake/hooks/common';
-import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
-import { useTransactionAdder } from 'src/state/ptransactions/hooks';
-import { waitForTransaction } from 'src/utils';
+import { Box, Button, Loader, Stat, Text, TransactionCompleted } from '@pangolindex/core';
 import { ClaimWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
+import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/hooks/minichef/types';
+import { FARM_TYPE, MixPanelEvents, PNG, useChainId, useMixpanel, usePangolinWeb3, useTranslation, waitForTransaction } from '@pangolindex/shared';
+import { useTransactionAdder } from '@pangolindex/state-hooks';
+import { useExtraPendingRewards, useMinichefPools } from 'src/hooks/minichef/hooks/common';
+import { useStakingContract } from 'src/hooks/useContract';
 
 export interface ClaimProps {
   stakingInfo: DoubleSideStakingInfo;

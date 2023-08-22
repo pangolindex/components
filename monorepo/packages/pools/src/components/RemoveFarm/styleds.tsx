@@ -1,6 +1,6 @@
 import { ChefType } from '@pangolindex/sdk';
 import styled from 'styled-components';
-import { Box } from 'src/components';
+import { Box } from '@pangolindex/core';
 
 export const FarmRemoveWrapper = styled(Box)`
   width: 100%;

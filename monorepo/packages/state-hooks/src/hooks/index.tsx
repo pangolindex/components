@@ -6,7 +6,6 @@ import { useApproveCallback } from 'src/hooks/useApproveCallback/evm';
 import { useHederaApproveCallback } from 'src/hooks/useApproveCallback/hedera';
 import { useCurrency } from 'src/hooks/useCurrency';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';
-import { useGetNearPoolId } from 'src/hooks/usePair/near';
 import useParsedQueryString from 'src/hooks/useParsedQueryString';
 import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
@@ -25,7 +24,6 @@ export {
   useApproveCallback,
   useTransactionDeadline,
   useParsedQueryString,
-  useGetNearPoolId,
   useAllTokens,
   useFetchListCallback,
   useHederaTokenAssociated,

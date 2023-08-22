@@ -1,20 +1,16 @@
 import { CHAINS, ChefType, Token } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, Button, Loader, Stat, Text, TransactionCompleted } from 'src/components';
-import { FARM_TYPE } from 'src/constants';
-import { PNG } from 'src/constants/tokens';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
-import { usePangoChefWithdrawCallbackHook } from 'src/state/ppangoChef/hooks';
-import { useExtraPendingRewards, useGetRewardTokens } from 'src/state/pstake/hooks/common';
-import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/state/pstake/types';
-import { useHederaPGLToken } from 'src/state/pwallet/hooks/hedera';
-import { Hedera } from 'src/utils/hedera';
+import { Box, Button, Loader, Stat, Text, TransactionCompleted } from '@pangolindex/core';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';
+import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/hooks/minichef/types';
+import { FARM_TYPE, MixPanelEvents, PNG, useChainId, useMixpanel, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import { usePangoChefWithdrawCallbackHook } from 'src/hooks/pangochef/hooks';
+import { useExtraPendingRewards, useGetRewardTokens } from 'src/hooks/minichef/hooks/common';
+import { Hedera } from '@pangolindex/wallet-connectors';
+import { useHederaPGLToken } from 'src/hooks/wallet/hooks/hedera';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from '@pangolindex/state-hooks/lib/hooks/tokens/hedera';
 
 interface RemoveFarmProps {
   stakingInfo: DoubleSideStakingInfo;

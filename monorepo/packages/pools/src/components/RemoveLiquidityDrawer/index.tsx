@@ -1,11 +1,9 @@
 import { Token } from '@pangolindex/sdk';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box } from 'src/components';
-import Drawer from 'src/components/Drawer';
-import { useChainId } from 'src/hooks';
-import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import RemoveLiquidity from '../RemoveLiquidity';
+import { useTranslation } from 'react-i18next';
+import { unwrappedToken, useChainId } from '@pangolindex/shared';
+import { Box, Drawer } from '@pangolindex/core';
 
 type Props = {
   isOpen: boolean;

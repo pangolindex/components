@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Drawer from 'src/components/Drawer';
-import { DoubleSideStakingInfo } from 'src/state/pstake/types';
 import ClaimReward from '../ClaimReward';
+import { Drawer } from '@pangolindex/core';
+import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 
 type Props = {
   isOpen: boolean;

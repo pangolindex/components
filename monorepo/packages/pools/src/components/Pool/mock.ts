@@ -1,10 +1,8 @@
 import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { BIG_INT_ZERO, PNG, useChainId } from '@pangolindex/shared';
 import { BigNumber } from 'ethers';
-import { BIG_INT_ZERO } from 'src/constants';
-import { PNG } from 'src/constants/tokens';
-import { useChainId } from 'src/hooks';
-import { PangoChefInfo } from 'src/state/ppangoChef/types';
-import { MinichefStakingInfo } from 'src/state/pstake/types';
+import { MinichefStakingInfo } from 'src/hooks/minichef/types';
+import { PangoChefInfo } from 'src/hooks/pangochef/types';
 
 // get data for all farms
 export const useGetMinichefStakingInfos = (): MinichefStakingInfo => {
