@@ -5,6 +5,7 @@ import cleaner from 'rollup-plugin-cleaner';
 import resolve from '@rollup/plugin-node-resolve';
 import url from '@rollup/plugin-url';
 import json from '@rollup/plugin-json';
+import includePaths from 'rollup-plugin-includepaths';
 import path from 'path';
 import externals from 'rollup-plugin-node-externals';
 import { terser } from 'rollup-plugin-terser';
@@ -13,6 +14,10 @@ import pkg from './package.json';
 let plugins = [
   externals(),
   peerDepsExternal(),
+  includePaths({
+    paths: ['./'],
+    extensions: ['.tsx', '.ts', '.js'],
+  }),
   resolve(),
   url({
     include: ['**/*.svg', '**/*.png', '**/*.jp(e)?g', '**/*.gif', '**/*.webp'],
@@ -38,7 +43,7 @@ if (process.env.ENV === 'production') {
 }
 
 export default {
-  input: 'src/index.ts',
+  input: 'src/index.tsx',
   output: [
     {
       file: pkg.main,
