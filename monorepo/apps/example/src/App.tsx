@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import Layout from './layout';
 import Swap from './pages/Swap';
+import Sample from './pages/Sample';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Swap />} />
             <Route path="swap" element={<Swap />} />
+            <Route path="dashboard" element={<Sample />} />
 
             <Route path="*" element={<Swap />} />
           </Route>
