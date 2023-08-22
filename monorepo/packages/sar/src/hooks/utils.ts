@@ -106,7 +106,7 @@ export function useDefaultSarStake() {
   const png = PNG[chainId];
 
   const useTokensBalance = useTokenBalancesHook[chainId];
-  const tokenBalance = useTokensBalance(account ?? ZERO_ADDRESS, [png]);
+  const [tokenBalance] = useTokensBalance(account ?? ZERO_ADDRESS, [png]);
   const userPngBalance = tokenBalance[png.address];
 
   // used for max input button

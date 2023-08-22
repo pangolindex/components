@@ -25,7 +25,7 @@ export default function SarManageWidget() {
 
   const png = PNG[chainId];
   const useTokenBalance = useTokenBalancesHook[chainId];
-  const tokensBalances = useTokenBalance(account ?? ZERO_ADDRESS, [png]);
+  const [tokensBalances] = useTokenBalance(account ?? ZERO_ADDRESS, [png]);
   const userPngBalance = tokensBalances[png.address];
   const { t } = useTranslation();
 

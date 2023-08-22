@@ -43,8 +43,9 @@ export default function AddStake({ selectedOption, selectedPosition, onChange, o
 
   const png = PNG[chainId];
   const useTokenBalance = useTokenBalancesHook[chainId];
-  const tokensBalances = useTokenBalance(account ?? ZERO_ADDRESS, [png]);
+  const [tokensBalances] = useTokenBalance(account ?? ZERO_ADDRESS, [png]);
   const userPngBalance = tokensBalances[png.address];
+  console.log({ userPngBalance, tokensBalances, account });
   const { t } = useTranslation();
 
   const { apr } = useSarStakeInfo();
