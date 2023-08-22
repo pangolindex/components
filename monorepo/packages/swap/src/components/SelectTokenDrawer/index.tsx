@@ -8,7 +8,7 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
-import { Field } from 'src/state/pswap/atom';
+import { Field } from 'src/state/atom';
 import { useTokenComparator } from '../SearchModal/sorting';
 import TokenListDrawer from '../TokenListDrawer';
 import CurrencyGrid from './CurrencyGrid';

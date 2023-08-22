@@ -11,8 +11,8 @@ import _uniqueId from 'lodash/uniqueId';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import { BIPS_BASE } from 'src/constants';
-import { Field } from 'src/state/pswap/atom';
-import { useDaasFeeInfo } from 'src/state/pswap/hooks/common';
+import { Field } from 'src/state/atom';
+import { useDaasFeeInfo } from 'src/state/hooks/common';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { ContentBox, DataBox, ValueText } from './styled';
 

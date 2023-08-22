@@ -4,7 +4,7 @@ import { Text } from '@pangolindex/core';
 import { TokenAmount } from '@pangolindex/sdk';
 import { INITIAL_ALLOWED_SLIPPAGE, useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useMemo } from 'react';
-import { useGelatoLimitOrdersHook } from 'src/state/pswap/hooks';
+import { useGelatoLimitOrdersHook } from 'src/state/hooks';
 import { ContentBox, DataBox, ValueText } from './styled';
 
 type Props = { trade: any };

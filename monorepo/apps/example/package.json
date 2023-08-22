@@ -17,7 +17,7 @@
     "@pangolindex/honeycomb-provider": "*",
     "@pangolindex/portfolio": "*",
     "@pangolindex/shared": "*",
-    "@pangolindex/state-hooks": "*",
+    "@pangolindex/swap": "*",
     "@pangolindex/walletmodal": "*",
     "@pangolindex/wallet-connectors": "*",
     "@types/react-router-dom": "^5.3.3",
