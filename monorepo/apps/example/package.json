@@ -15,6 +15,7 @@
     "@pangolindex/sdk": "5.3.1",
     "@pangolindex/core": "*",
     "@pangolindex/honeycomb-provider": "*",
+    "@pangolindex/portfolio": "*",
     "@pangolindex/shared": "*",
     "@pangolindex/state-hooks": "*",
     "@pangolindex/walletmodal": "*",
