@@ -43,7 +43,6 @@
   },
   "dependencies": {
     "@ethersproject/providers": "5.7.2",
-    "@pangolindex/sdk": " 5.3.4-rc.1",
     "@pangolindex/shared": "*",
     "@pangolindex/core": "*",
     "@pangolindex/state-hooks": "*",

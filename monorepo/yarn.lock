@@ -3680,18 +3680,6 @@
   dependencies:
     hardhat-tracer "^1.0.0-alpha.5"
 
-"@pangolindex/sdk@ 5.3.4-rc.1":
-  version "5.3.4-rc.1"
-  resolved "https://registry.npmjs.org/@pangolindex/sdk/-/sdk-5.3.4-rc.1.tgz"
-  integrity sha512-JH4Yr62TahqMtaAK+skkAJ8JjpHwWwylqIJaYngIsbbVJ8ZXMbm7ymaq8T8n8A5o/UdFPktpNRnXl20uy/4LUw==
-  dependencies:
-    big.js "^5.2.2"
-    decimal.js-light "^2.5.0"
-    jsbi "^3.1.1"
-    tiny-invariant "^1.1.0"
-    tiny-warning "^1.0.3"
-    toformat "^2.0.0"
-
 "@pangolindex/sdk@3.1.0":
   version "3.1.0"
   resolved "https://registry.npmjs.org/@pangolindex/sdk/-/sdk-3.1.0.tgz"
