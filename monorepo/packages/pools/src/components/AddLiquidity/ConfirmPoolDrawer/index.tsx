@@ -3,25 +3,14 @@ import { Currency, CurrencyAmount, Fraction, Percent, TokenAmount } from '@pango
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import {
-  Box,
-  Button,
-  CurrencyLogo,
-  DoubleCurrencyLogo,
-  Loader,
-  Stat,
-  Text,
-  TransactionCompleted,
-} from 'src/components';
-import Drawer from 'src/components/Drawer';
-import { ONE_BIPS } from 'src/constants';
-import { Field } from 'src/state/pmint/atom';
-import { SpaceType } from 'src/state/pstake/types';
-import { useHederaPGLAssociated } from 'src/state/pwallet/hooks/hedera';
-import { Hidden } from 'src/theme/components';
 import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
+import { Field } from 'src/hooks/mint/atom';
+import { SpaceType } from 'src/hooks/minichef/types';
+import { useTranslation } from 'react-i18next';
+import { useHederaPGLAssociated } from 'src/hooks/wallet/hooks/hedera';
+import { ONE_BIPS } from '@pangolindex/shared';
+import { Box, Button, CurrencyLogo, DoubleCurrencyLogo, Drawer, Hidden, Loader, Stat, Text, TransactionCompleted } from '@pangolindex/core';
 
 interface Props {
   isOpen: boolean;

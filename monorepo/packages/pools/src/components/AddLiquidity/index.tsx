@@ -2,28 +2,36 @@
 import { Currency, Pair, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import { Plus } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Text, TextInput } from 'src/components';
-import { ROUTER_ADDRESS } from 'src/constants/address';
-import { PairState } from 'src/data/Reserves';
-import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
-import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
-import { ApprovalState } from 'src/hooks/useApproveCallback/constant';
-import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
-import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { Field, useMintStateAtom } from 'src/state/pmint/atom';
-import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/state/pmint/hooks';
-import { SpaceType } from 'src/state/pstake/types';
-import { useIsExpertMode, useUserSlippageTolerance } from 'src/state/puser/hooks';
-import { useAddLiquidityHook } from 'src/state/pwallet/hooks';
-import { useCurrencyBalance } from 'src/state/pwallet/hooks/common';
-import { maxAmountSpend } from 'src/utils/maxAmountSpend';
-import { wrappedCurrency } from 'src/utils/wrappedCurrency';
 import ConfirmPoolDrawer from './ConfirmPoolDrawer';
 import PoolPriceBar from './PoolPriceBar';
 import { AddWrapper, ArrowWrapper, ButtonWrapper, Buttons, InputWrapper, LightCard, StyledBalanceMax } from './styleds';
+import { SpaceType } from 'src/hooks/minichef/types';
+import { Box, Button, Text, TextInput } from '@pangolindex/core';
+import {
+  MixPanelEvents,
+  PairState,
+  ROUTER_ADDRESS,
+  maxAmountSpend,
+  useChainId,
+  useLibrary,
+  useMixpanel,
+  usePangolinWeb3,
+  useTranslation,
+  wrappedCurrency,
+} from '@pangolindex/shared';
+import { Field, useMintStateAtom } from 'src/hooks/mint/atom';
+import {
+  ApprovalState,
+  useApproveCallbackHook,
+  useCurrencyBalance,
+  useIsExpertMode,
+  useTransactionDeadline,
+  useUserSlippageTolerance,
+  useWalletModalToggle,
+} from '@pangolindex/state-hooks';
+import { useDerivedMintInfo, useMintActionHandlers, useMintState } from 'src/hooks/mint/hooks';
+import { useAddLiquidityHook } from 'src/hooks/wallet/hooks';
 
 interface AddLiquidityProps {
   currencyA: Currency;

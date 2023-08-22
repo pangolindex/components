@@ -1,12 +1,11 @@
 import { CHAINS, Currency, CurrencyAmount, Percent, Price } from '@pangolindex/sdk';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, Stat } from 'src/components';
-import { ONE_BIPS } from 'src/constants';
-import { useChainId } from 'src/hooks';
-import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
-import { Field } from 'src/state/pmint/atom';
 import { GridContainer, Root } from './styled';
+import { Field } from 'src/hooks/mint/atom';
+import { useTranslation } from 'react-i18next';
+import { ONE_BIPS, useChainId } from '@pangolindex/shared';
+import { useUSDCPriceHook } from '@pangolindex/state-hooks';
+import { Box, Stat } from '@pangolindex/core';
 
 interface BarProps {
   currencies: { [field in Field]?: Currency };

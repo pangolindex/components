@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { Box } from 'src/components';
-import { SpaceType } from 'src/state/pstake/types';
+import { Box } from '@pangolindex/core';
+import { SpaceType } from 'src/hooks/minichef/types';
 
 export const AddWrapper = styled(Box)`
   width: 100%;
