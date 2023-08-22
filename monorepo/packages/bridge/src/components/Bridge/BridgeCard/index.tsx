@@ -22,12 +22,12 @@ import {
   useLibrary,
   useTranslation,
 } from '@pangolindex/shared';
-import { useApplicationState, useWalletModalToggle } from '@pangolindex/state-hooks';
+import { useWalletModalToggle } from '@pangolindex/state-hooks';
 import { injected } from '@pangolindex/wallet-connectors';
+import { changeNetwork, useWalletState } from '@pangolindex/walletmodal'; // TODO FIx in future to bridge package works standalone from walletmodal
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { MultiValue } from 'react-select';
-import { changeNetwork } from 'src/utils/wallet'; // TODO FIX;
 import { ThemeContext } from 'styled-components';
 import CircleTick from 'src/assets/circleTick.svg';
 import ErrorTick from 'src/assets/errorTick.svg';
@@ -94,7 +94,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
   const sdkChainId = useChainId();
   const [drawerType, setDrawerType] = useState(ChainField.FROM);
 
-  const { wallets } = useApplicationState();
+  const { wallets } = useWalletState(); // TODO FIX
 
   const { library } = useLibrary();
 
@@ -334,7 +334,7 @@ const BridgeCard: React.FC<BridgeCardProps> = (props) => {
                   activate,
                   deactivate,
                   connector: connector ?? injected,
-                });
+                }); // TODO FIX
             }}
             isDisabled={!fromChain || (toChain?.network_type === NetworkType.EVM && !recipient)}
           >

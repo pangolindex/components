@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Layout from './layout';
 import Swap from './pages/Swap';
 import Sample from './pages/Sample';
+import BridgeUI from './pages/Bridge';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -41,6 +42,7 @@ export default function App() {
             <Route index element={<Swap />} />
             <Route path="swap" element={<Swap />} />
             <Route path="dashboard" element={<Sample />} />
+            <Route path="bridge" element={<BridgeUI />} />
 
             <Route path="*" element={<Swap />} />
           </Route>

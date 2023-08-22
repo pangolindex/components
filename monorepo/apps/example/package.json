@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
-    "@pangolindex/sdk": "5.3.1",
+    "@pangolindex/sdk": "5.3.4",
+    "@pangolindex/bridge": "*",
     "@pangolindex/core": "*",
     "@pangolindex/honeycomb-provider": "*",
     "@pangolindex/portfolio": "*",
