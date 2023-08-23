@@ -11,3 +11,4 @@ export * from './common';
 export * from './prices';
 export * from './retry';
 export * from './wrappedCurrency';
+export * from './pangochef';

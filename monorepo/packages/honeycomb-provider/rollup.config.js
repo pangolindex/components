@@ -9,9 +9,11 @@ import json from '@rollup/plugin-json';
 import path from 'path';
 import externals from 'rollup-plugin-node-externals';
 import { terser } from 'rollup-plugin-terser';
+import tscAlias from 'rollup-plugin-tsc-alias';
 import pkg from './package.json';
 
 let plugins = [
+  tscAlias(),
   externals({
     // we dont want to put below packages in rollup->externals
     // meaning, we want to include them in the final build
