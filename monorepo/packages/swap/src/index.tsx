@@ -1,11 +1,16 @@
-import { ZERO_ADDRESS } from '@pangolindex/shared';
+import { Web3Provider } from '@ethersproject/providers';
+import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
+import { CHAINS } from '@pangolindex/sdk';
+import { ZERO_ADDRESS, isEvmChain, useChainId, useLibrary, usePangolinWeb3 } from '@pangolindex/shared';
 import React, { useState } from 'react';
+import { Provider } from 'react-redux';
 import { SwapTypes } from 'src/constants';
-import LimitOrder from './LimitOrder';
-import MarketOrder from './MarketOrder';
-import TWAP from './TWAP/TWAPPanel';
+import LimitOrder from './components/LimitOrder';
+import MarketOrder from './components/MarketOrder';
+import TWAP from './components/TWAP/TWAPPanel';
+import { galetoStore } from './state';
+import SwapUpdater from './state/updater';
 import { Root } from './styled';
-
 export interface SwapWidgetProps {
   onSwapTypeChange?: React.Dispatch<React.SetStateAction<SwapTypes>>;
   isLimitOrderVisible?: boolean;
@@ -25,11 +30,14 @@ const SwapWidget: React.FC<SwapWidgetProps> = ({
   defaultInputToken,
   defaultOutputToken,
 }) => {
+  const chainId = useChainId();
+  const { account } = usePangolinWeb3();
+  const { library } = useLibrary();
   const [swapType, setSwapType] = useState(SwapTypes.MARKET);
 
-  return (
-    <Root>
-      {swapType === SwapTypes.LIMIT ? (
+  const render = () => {
+    if (swapType === SwapTypes.LIMIT) {
+      return (
         <LimitOrder
           swapType={swapType}
           setSwapType={(type: SwapTypes) => {
@@ -41,7 +49,9 @@ const SwapWidget: React.FC<SwapWidgetProps> = ({
           defaultInputAddress={defaultInputToken}
           defaultOutputAddress={defaultOutputToken}
         />
-      ) : swapType === SwapTypes.TWAP ? (
+      );
+    } else if (swapType === SwapTypes.TWAP) {
+      return (
         <TWAP
           swapType={swapType}
           setSwapType={(type: SwapTypes) => {
@@ -54,7 +64,9 @@ const SwapWidget: React.FC<SwapWidgetProps> = ({
           defaultOutputAddress={defaultOutputToken}
           partnerDaaS={partnerDaaS}
         />
-      ) : (
+      );
+    } else
+      return (
         <MarketOrder
           swapType={swapType}
           setSwapType={(type: SwapTypes) => {
@@ -68,8 +80,31 @@ const SwapWidget: React.FC<SwapWidgetProps> = ({
           defaultInputAddress={defaultInputToken}
           defaultOutputAddress={defaultOutputToken}
         />
+      );
+  };
+
+  const ethersLibrary = library && !library?._isProvider ? new Web3Provider(library) : library;
+
+  return (
+    <Root>
+      <SwapUpdater />
+
+      {isEvmChain(chainId) && CHAINS[chainId]?.supported_by_gelato ? (
+        <Provider store={galetoStore}>
+          <GelatoProvider
+            library={ethersLibrary}
+            chainId={chainId}
+            account={account ?? undefined}
+            useDefaultTheme={false}
+            handler={'pangolin'}
+          >
+            {render()}
+          </GelatoProvider>
+        </Provider>
+      ) : (
+        render()
       )}
     </Root>
   );
 };
-export default SwapWidget;
+export { SwapWidget };

@@ -1,6 +1,7 @@
 import { Box, Button } from '@pangolindex/core';
-import { CHAINS, Chain } from '@pangolindex/sdk';
-import { shortenAddressMapping, useActiveWeb3React, useChainId } from '@pangolindex/shared';
+import { TokenInfoModal } from '@pangolindex/portfolio';
+import { CHAINS, Chain, TokenAmount } from '@pangolindex/sdk';
+import { PNG, shortenAddressMapping, useActiveWeb3React, useChainId } from '@pangolindex/shared';
 import {
   ApplicationModal,
   useApplicationState,
@@ -25,9 +26,11 @@ export default function Header() {
   const { walletModalChainId } = useApplicationState();
 
   const [openNetworkSelection, setOpenNetworkSelection] = useState<boolean>(false);
+  const [showTokenInfoModal, setShowTokenInfoModal] = useState<boolean>(false);
 
   const shortenAddress = shortenAddressMapping[chainId];
   const chain = CHAINS[chainId];
+  const png = PNG[chainId];
 
   function closeNetworkSelection() {
     setOpenNetworkSelection(true);
@@ -41,6 +44,10 @@ export default function Header() {
     [setOpenNetworkSelection, onToogleWalletModal],
   );
 
+  const toggleTokenInfoModal = () => {
+    setShowTokenInfoModal((prev) => !prev);
+  };
+
   const closeWalletModal = useCallback(() => {
     onToogleWalletModal(undefined);
   }, [onToogleWalletModal]);
@@ -50,6 +57,9 @@ export default function Header() {
       <Logo />
       <Box display="flex" flex={1}>
         <Menuwrapper>
+          <MenuLink id="dashboard" to="/dashboard">
+            Dashboard
+          </MenuLink>
           <MenuLink id="swap" to="/swap">
             Swap
           </MenuLink>
@@ -74,6 +84,9 @@ export default function Header() {
           </MenuLink>
         </Menuwrapper>
         <Box display="grid" style={{ gap: '10px', gridAutoFlow: 'column' }}>
+          <Button variant="primary" onClick={toggleTokenInfoModal} padding="10px" height="40px">
+            {chain.png_symbol}
+          </Button>
           <Button variant="primary" onClick={closeNetworkSelection} padding="10px" height="40px">
             {chain.name}
           </Button>
@@ -95,6 +108,13 @@ export default function Header() {
           setOpenNetworkSelection(false);
         }}
         onToogleWalletModal={handleSelectChain}
+      />
+      <TokenInfoModal
+        open={showTokenInfoModal}
+        unclaimedAmount={new TokenAmount(png, '0')}
+        circulationSupply={new TokenAmount(png, '0')}
+        closeModal={toggleTokenInfoModal}
+        token={png}
       />
     </HeaderFrame>
   );

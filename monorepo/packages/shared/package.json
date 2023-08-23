@@ -48,6 +48,7 @@
     "@pangolindex/token-lists": "1.0.2",
     "@pangolindex/wallet-connectors": "*",
     "@web3-react/abstract-connector": "6.0.7",
+    "@web3-react/core": "6.0.9",
     "axios": "0.26.1",
     "bn.js": "5.2.1",
     "graphql-request": "4.2.0",

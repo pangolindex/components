@@ -4,8 +4,8 @@ import { TalismanConnector } from '@talismn/web3react-v6-connector';
 import { AvalancheCoreConnector } from './AvalancheCoreConnector';
 import { BitKeepConnector } from './BitKeepConnector';
 import { DefiConnector } from './DefiConnector';
-import { HashConnector, mainnetHederaConfig } from './HashConnector';
 import { near } from './NearConnector';
+import { HashConnectEvents, HashConnector, hashconnectEvent, mainnetHederaConfig } from './HashConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
 import { WalletConnectConnector, WalletConnectConnectorArguments } from './WalletConnectConnector';
@@ -77,7 +77,7 @@ export const avalancheCore = new AvalancheCoreConnector({
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
-export { HashConnector, WalletConnectConnector, NetworkConnector };
+export { HashConnector, HashConnectEvents, hashconnectEvent, WalletConnectConnector, NetworkConnector };
 export { UserRejectedRequestError, NoEthereumProviderError };
 export type { WalletConnectConnectorArguments };
 

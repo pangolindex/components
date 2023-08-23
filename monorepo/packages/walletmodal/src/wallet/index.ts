@@ -1,14 +1,13 @@
 import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import { SUPPORTED_EVM_CHAINS_ID } from '@pangolindex/wallet-connectors';
 import { isMobile } from 'react-device-detect';
-import rabbyIcon from 'src/assets/svg/rabby.svg';
 import injectWalletIcon from 'src/assets/images/inject-wallet.png';
 import metamaskIcon from 'src/assets/images/metamask.png';
+import rabbyIcon from 'src/assets/svg/rabby.svg';
 import { AvalancheCoreWallet, BitKeepWallet, InjectedWallet, TalismanWallet } from './classes/injected';
 import { HashPackWallet, NearWallet, XDefiWallet } from './classes/nonInjected';
-import { CoinbaseWallet, GnosisSafeWallet } from './classes/others';
+import { CoinbaseWallet, GnosisSafeWallet, WalletConnectWallet } from './classes/others';
 import { Wallet } from './classes/wallet';
-import { WalletConnectWallet } from './classes/others';
 
 export const injectWallet = new InjectedWallet({
   name: 'Inject',
@@ -65,4 +64,10 @@ export const SUPPORTED_CHAINS = Object.values(CHAINS).filter(
   (chain) => chain.pangolin_is_live || chain.supported_by_bridge,
 );
 
-export { Wallet as PangolinWallet, WalletConnectWallet as PangolinWalletConnectWallet };
+export { WalletConnectWallet as PangolinWalletConnectWallet };
+
+export {
+  Wallet as PangolinWallet,
+  WalletEvents as PangolinWalletEvents,
+  walletEvent as pangolinWalletEvent,
+} from './classes/wallet';

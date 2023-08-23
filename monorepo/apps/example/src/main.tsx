@@ -1,10 +1,11 @@
+import { HoneycombProvider } from '@pangolindex/honeycomb-provider';
+import { NetworkContextName, useActiveWeb3React } from '@pangolindex/shared';
+import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core';
-import { HoneycombProvider, NetworkContextName, useActiveWeb3React } from '@pangolindex/shared';
 import getLibrary from './utils/getLibrary';
 import { theme } from './utils/theme';
 

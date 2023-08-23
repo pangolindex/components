@@ -5,3 +5,4 @@ export * from './tokens';
 export * from './pairs';
 export * from './minichef';
 export * from './pangochef';
+export * from './singleStake';
