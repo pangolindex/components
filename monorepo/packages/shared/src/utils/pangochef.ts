@@ -16,11 +16,11 @@ export function calculateUserRewardRate(
     return BIGNUMBER_ZERO;
   }
 
-  const userBalance = userValueVariables.balance || BigNumber.from(0);
-  const userSumOfEntryTimes = userValueVariables.sumOfEntryTimes || BigNumber.from(0);
+  const userBalance = userValueVariables?.balance ?? BIGNUMBER_ZERO;
+  const userSumOfEntryTimes = userValueVariables?.sumOfEntryTimes ?? BIGNUMBER_ZERO;
 
-  const poolBalance = poolValueVariables.balance || BigNumber.from(0);
-  const poolSumOfEntryTimes = poolValueVariables.sumOfEntryTimes || BigNumber.from(0);
+  const poolBalance = poolValueVariables?.balance ?? BIGNUMBER_ZERO;
+  const poolSumOfEntryTimes = poolValueVariables?.sumOfEntryTimes ?? BIGNUMBER_ZERO;
 
   if (userBalance.isZero() || poolBalance.isZero()) {
     return BIGNUMBER_ZERO;
