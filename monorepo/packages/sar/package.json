@@ -9,7 +9,7 @@
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx",
     "build": "rollup -c --environment ENV:production",
-    "dev": "yarn run build -- --watch",
+    "dev": "rollup -c --watch",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -34,6 +34,7 @@
     "rollup-plugin-node-externals": "^4.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-tsc-alias": "*",
     "rollup-plugin-typescript2": "^0.34.1",
     "storybook": "7.0.10",
     "tslib": "^2.3.1",

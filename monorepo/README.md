@@ -1,80 +1,43 @@
-# Turborepo starter with Rollup
+# Honeycomb
 
-This is an official starter Turborepo, showing how Turborepo can be used with Rollup for bundling a `ui` package.
+Honeycomb is combination of various web3 components. This repo is using Turborepo to manage monorepo packages.
 
-## Using this example
+### Packages
 
-Run the following command:
+It contains below packages.
 
-```sh
-npx create-turbo@latest -e with-rollup
-```
-
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `@pangolidex/core`: a pangolin core component library used by the interface application, compiled with Rollup
-- `web`: a [Next.js](https://nextjs.org) app
+- `@pangolidex/core`: honeycomb core component library
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+- `rollup-plugin-tsc-alias`: rollup plugin to transform absolute path to relative path in declaration files
+- `@pangolidex/honeycomb-provider`: main entrypoint
+- `@pangolidex/portfolio`: Portfolio related components
+- `@pangolidex/sar`: Sunshine and Rainbow widget
+- `@pangolidex/shared`: shared things
+- `@pangolidex/state-hooks`: state manager and common hooks
+- `@pangolidex/swap`: swap widget
+- `@pangolidex/tsconfig`: common typescript configuration
+- `@pangolidex/wallet-connectors`:
+- `@pangolidex/walletmodal`: wallet modal ui
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## Running Example App
 
-### Utilities
+In monorepo root run below commands
 
-This Turborepo has some additional tools already setup for you:
+1. `yarn install`
+2. `yarn start:app` which will start app on `5173` port.
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+## Development
 
-### Build
+In monorepo root run below commands
 
-To build all apps and packages, run the following command:
+1. `yarn install`
+2. `yarn dev:packages` and keep that terminal running
+3. In another terminal run `yarn dev:app` which will start app on `5173` port.
 
-```
-cd components
-yarn run build
-```
+## Contrinuting Guide
 
-### Develop
+Coming Soon
 
-To develop all apps and packages, run the following command:
+## CI/CD
 
-```
-cd components
-pnpm run dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Pipelines](https://turborepo.org/docs/core-concepts/pipelines)
-- [Caching](https://turborepo.org/docs/core-concepts/caching)
-- [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching)
-- [Scoped Tasks](https://turborepo.org/docs/core-concepts/scopes)
-- [Configuration Options](https://turborepo.org/docs/reference/configuration)
-- [CLI Usage](https://turborepo.org/docs/reference/command-line-reference)
+Coming Soon
