@@ -7,9 +7,9 @@ export interface ValueVariables {
 }
 
 export function calculateUserRewardRate(
-  userValueVariables: ValueVariables,
-  poolValueVariables: ValueVariables,
-  poolRewardRate: BigNumber,
+  userValueVariables: ValueVariables | undefined,
+  poolValueVariables: ValueVariables | undefined,
+  poolRewardRate: BigNumber | undefined,
   blockTime?: number,
 ) {
   if (!blockTime) {
@@ -30,5 +30,7 @@ export function calculateUserRewardRate(
   const userValue = blockTimestamp.mul(userBalance).sub(userSumOfEntryTimes);
   const poolValue = blockTimestamp.mul(poolBalance).sub(poolSumOfEntryTimes);
 
-  return userValue.lte(0) || poolValue.lte(0) ? BIGNUMBER_ZERO : poolRewardRate?.mul(userValue).div(poolValue);
+  const _poolRewardRate = poolRewardRate ?? BIGNUMBER_ZERO;
+
+  return userValue.lte(0) || poolValue.lte(0) ? BIGNUMBER_ZERO : _poolRewardRate.mul(userValue).div(poolValue);
 }
