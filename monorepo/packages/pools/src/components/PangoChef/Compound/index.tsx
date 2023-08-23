@@ -27,7 +27,7 @@ import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AlertTriangle, HelpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import { usePangoChefCompoundCallbackHook } from 'src/hooks/pangochef/hooks';
+import { usePangoChefCompoundCallbackHook } from 'src/hooks/pangochef';
 import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import { calculateCompoundSlippage } from 'src/hooks/pangochef/utils';
 import { usePangoChefContract } from 'src/hooks/useContract';

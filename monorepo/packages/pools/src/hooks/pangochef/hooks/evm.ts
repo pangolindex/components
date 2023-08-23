@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { BigNumber } from 'ethers';
 import { TransactionResponse } from '@ethersproject/providers';
 import { CHAINS, ChainId, Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
@@ -12,6 +11,7 @@ import {
   ZERO_ADDRESS,
   ZERO_FRACTION,
   calculateGasMargin,
+  calculateUserRewardRate,
   decimalToFraction,
   useChainId,
   useLastBlockTimestampHook,
@@ -19,7 +19,6 @@ import {
   useRefetchPangoChefSubgraph,
   useTranslation,
   waitForTransaction,
-  calculateUserRewardRate
 } from '@pangolindex/shared';
 import {
   useCoinGeckoCurrencyPrice,
@@ -32,6 +31,7 @@ import {
   useTokensContract,
   useTransactionAdder,
 } from '@pangolindex/state-hooks';
+import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';
 import { useGetExtraPendingRewards, useMinichefPools } from 'src/hooks/minichef/hooks/common';

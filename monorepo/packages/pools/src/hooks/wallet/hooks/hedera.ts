@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { BigNumber } from 'ethers';
 import { CAVAX, ChainId, Currency, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
   calculateSlippageAmount,
@@ -23,6 +22,7 @@ import {
   useTransactionAdder,
 } from '@pangolindex/state-hooks';
 import { hederaFn } from '@pangolindex/wallet-connectors';
+import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery, useQueryClient } from 'react-query';
 import { Field } from '../../burn/atom';

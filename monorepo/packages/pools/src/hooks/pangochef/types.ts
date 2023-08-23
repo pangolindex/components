@@ -1,5 +1,5 @@
-import { BigNumber } from 'ethers';
 import { CurrencyAmount, Fraction, TokenAmount } from '@pangolindex/sdk';
+import { BigNumber } from 'ethers';
 import { MinichefStakingInfo } from '../minichef/types';
 
 export enum PoolType {

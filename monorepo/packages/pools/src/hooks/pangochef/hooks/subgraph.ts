@@ -25,7 +25,7 @@ import { getExtraTokensWeeklyRewardRate } from 'src/hooks/minichef/utils';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { PangoChefInfo, UserInfo, ValueVariables } from '../types';
 import { calculateUserAPR } from '../utils';
-import { useHederaPangochefContractCreateCallback } from './hedera';
+import { useHederaPangochefContractCreateCallback } from './common';
 
 export function useGetPangoChefInfosViaSubgraph() {
   const { account } = usePangolinWeb3();

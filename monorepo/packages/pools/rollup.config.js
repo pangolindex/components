@@ -5,14 +5,21 @@ import cleaner from 'rollup-plugin-cleaner';
 import resolve from '@rollup/plugin-node-resolve';
 import url from '@rollup/plugin-url';
 import json from '@rollup/plugin-json';
+import includePaths from 'rollup-plugin-includepaths';
 import path from 'path';
 import externals from 'rollup-plugin-node-externals';
 import { terser } from 'rollup-plugin-terser';
+import tscAlias from 'rollup-plugin-tsc-alias';
 import pkg from './package.json';
 
 let plugins = [
+  tscAlias(),
   externals(),
   peerDepsExternal(),
+  includePaths({
+    paths: ['./'],
+    extensions: ['.tsx', '.ts', '.js'],
+  }),
   resolve(),
   url({
     include: ['**/*.svg', '**/*.png', '**/*.jp(e)?g', '**/*.gif', '**/*.webp'],

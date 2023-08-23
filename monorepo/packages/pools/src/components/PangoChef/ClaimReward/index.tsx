@@ -13,7 +13,7 @@ import React, { useContext, useMemo, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { useGetRewardTokens } from 'src/hooks/minichef/hooks/common';
-import { usePangoChefClaimRewardCallbackHook } from 'src/hooks/pangochef/hooks';
+import { usePangoChefClaimRewardCallbackHook } from 'src/hooks/pangochef';
 import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { Buttons, ClaimWrapper, ErrorBox, ErrorWrapper, Root } from './styleds';

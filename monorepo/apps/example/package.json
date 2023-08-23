@@ -17,6 +17,7 @@
     "@pangolindex/core": "*",
     "@pangolindex/sar": "*",
     "@pangolindex/honeycomb-provider": "*",
+    "@pangolindex/pool": "*",
     "@pangolindex/portfolio": "*",
     "@pangolindex/shared": "*",
     "@pangolindex/swap": "*",

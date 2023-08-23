@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { BigNumber } from 'ethers';
 import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
   BIG_INT_SECONDS_IN_WEEK,
@@ -16,7 +15,6 @@ import {
   useLastBlockTimestampHook,
   usePangolinWeb3,
   useRefetchPangoChefSubgraph,
-  useSubgraphFarmsStakedAmount,
   useTranslation,
 } from '@pangolindex/shared';
 import {
@@ -31,20 +29,17 @@ import {
   useTokensContract,
   useTransactionAdder,
 } from '@pangolindex/state-hooks';
-import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
-import { useCallback, useMemo } from 'react';
-import { useQuery } from 'react-query';
+import { hederaFn } from '@pangolindex/wallet-connectors';
+import { BigNumber } from 'ethers';
+import { useMemo } from 'react';
 import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';
 import { useGetExtraPendingRewards } from 'src/hooks/minichef/hooks/common';
 import { getExtraTokensWeeklyRewardRate } from 'src/hooks/minichef/utils';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { useHederaPGLTokenAddresses, useHederaPairContractEVMAddresses } from 'src/hooks/wallet/hooks/hedera';
 import { PangoChefCompoundData, PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables, WithdrawData } from '../types';
-import {
-  calculateCompoundSlippage,
-  calculateUserAPR,
-  getHypotheticalWeeklyRewardRate,
-} from '../utils';
+import { calculateCompoundSlippage, calculateUserAPR, getHypotheticalWeeklyRewardRate } from '../utils';
+import { useHederaPangochefContractCreateCallback } from './common';
 import { useGetPangoChefInfosViaSubgraph } from './subgraph';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -481,79 +476,6 @@ export function useHederaPangochef() {
   const useHook = shouldUseSubgraph ? useGetPangoChefInfosViaSubgraph : useHederaPangoChefInfos;
   const res = useHook();
   return res;
-}
-
-/**
- * this hook is useful to check whether user has created pangochef storage contract or not
- * if not then using this hook we can create user's storage contract
- * @returns [boolean, function_to_create]
- */
-export function useHederaPangochefContractCreateCallback(): [boolean, () => Promise<void>] {
-  const { account } = usePangolinWeb3();
-  const chainId = useChainId();
-  const pangoChefContract = usePangoChefContract();
-  const addTransaction = useTransactionAdder();
-
-  // get on chain data
-  const { data: userStorageAddress, refetch } = useQuery(
-    ['hedera-pangochef-user-storage', account],
-    async (): Promise<string | undefined> => {
-      try {
-        const response = await pangoChefContract?.getUserStorageContract(account);
-        return response as string;
-      } catch (error) {
-        return undefined;
-      }
-    },
-    { enabled: Boolean(pangoChefContract) && Boolean(account) && Hedera.isHederaChain(chainId) },
-  );
-
-  // we need on chain fallback
-  // because user might have created a storage contract but haven't staked into anything yet
-  // if we replace subgraph logic without fallback then user will be stuck forever in
-  // "create storage contract" flow because subgraph thinking that there is no farmingPositions
-  // but actually user has created storage contract
-  const hasOnChainData = typeof userStorageAddress !== 'undefined';
-  const onChainShouldCreateStorage = userStorageAddress === ZERO_ADDRESS || !userStorageAddress ? true : false;
-
-  // get off chain data using subgraph
-  // we also get data from subgraph just to make sure user doesn't stuck anywhere in flow
-  const { data, refetch: refetchSubgraph } = useSubgraphFarmsStakedAmount();
-  const offChainShouldCreateStorage = Boolean(!data || data.length === 0);
-
-  const shouldCreateStorage = hasOnChainData ? onChainShouldCreateStorage : offChainShouldCreateStorage;
-
-  const create = useCallback(async (): Promise<void> => {
-    if (!account) {
-      console.error('no account');
-      return;
-    }
-
-    try {
-      const response = await hederaFn.createPangoChefUserStorageContract(chainId, account);
-
-      if (response) {
-        refetch();
-        refetchSubgraph();
-        addTransaction(response, {
-          summary: 'Created Pangochef User Storage Contract',
-        });
-      }
-    } catch (error) {
-      console.debug('Failed to create pangochef contract', error);
-    }
-  }, [account, chainId, addTransaction]);
-
-  if (!Hedera.isHederaChain(chainId)) {
-    return [
-      false,
-      () => {
-        return Promise.resolve();
-      },
-    ];
-  }
-
-  return [shouldCreateStorage, create];
 }
 
 /**

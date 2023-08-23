@@ -5,7 +5,7 @@ import { convertCoingeckoTokens, usePair } from '@pangolindex/state-hooks';
 import deepEqual from 'deep-equal';
 import numeral from 'numeral';
 import React from 'react';
-import CoinDescription from 'src/components/CoinDescription copy';
+import CoinDescription from 'src/components/CoinDescription';
 import { useGetPoolDollerWorth } from 'src/hooks/minichef/hooks/common';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import StatDetail from '../StatDetail';

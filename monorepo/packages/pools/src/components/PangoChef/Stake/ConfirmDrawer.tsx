@@ -3,8 +3,8 @@ import { Currency, CurrencyAmount, Token } from '@pangolindex/sdk';
 import { getEtherscanLink, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
-import CircleTick from 'src/assets/images/circleTick.svg';
 import { ThemeContext } from 'styled-components';
+import CircleTick from 'src/assets/circleTick.svg';
 import { SpaceType } from 'src/hooks/minichef/types';
 import { ContentWrapper, ErrorBox, ErrorWrapper, Link, SubmittedWrapper } from './styleds';
 

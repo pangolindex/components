@@ -3,8 +3,7 @@ import { Currency, JSBI, Pair, TokenAmount } from '@pangolindex/sdk';
 import { BIG_INT_ZERO, useChainId } from '@pangolindex/shared';
 import numeral from 'numeral';
 import React from 'react';
-import AnalyticsIcon from 'src/assets/images/analytics.svg';
-
+import AnalyticsIcon from 'src/assets/analytics.svg';
 import { usePairTotalSupplyHook } from 'src/hooks/pair';
 import { AnalyticsLink, StateContainer } from './styleds';
 

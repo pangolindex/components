@@ -1,5 +1,10 @@
-import { ChainId } from '@pangolindex/sdk';
-import { useGetLockingPoolsForPoolId, useGetLockingPoolsForPoolZero } from './common';
+/* eslint-disable max-lines */
+import { ChainId, Token } from '@pangolindex/sdk';
+import { useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { useSingleContractMultipleData } from '@pangolindex/state-hooks';
+import { BigNumber } from 'ethers';
+import { useMemo } from 'react';
+import { usePangoChefContract } from 'src/hooks/useContract';
 import { useDummyIsLockingPoolZero, useDummyPangoChefCallback, useDummyPangoChefInfos } from './dummy';
 import {
   useEVMPangoChefClaimRewardCallback,
@@ -253,3 +258,103 @@ export const useGetLockingPoolsForPoolIdHook: UseGetLockingPoolsForPoolIdHookTyp
   [ChainId.EVMOS_MAINNET]: useDummyIsLockingPoolZero,
   [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyIsLockingPoolZero,
 };
+
+/**
+ * this hook is basically for PangoChef v1, which is only used by Songbird right now
+ * this hook returns pairs which are locking Pool Zero
+ * @returns [Token, Token][] pairs array
+ */
+export function useGetLockingPoolsForPoolZero() {
+  const chainId = useChainId();
+  const usePangoChefInfos = usePangoChefInfosHook[chainId];
+
+  const stakingInfos = usePangoChefInfos();
+
+  const pairs: [Token, Token][] = useMemo(() => {
+    const _pairs: [Token, Token][] = [];
+    stakingInfos?.forEach((stakingInfo) => {
+      if (stakingInfo?.lockCount && stakingInfo?.lockCount > 0) {
+        const [token0, token1] = stakingInfo.tokens;
+        _pairs.push([token0, token1]);
+      }
+    });
+    return _pairs;
+  }, [stakingInfos]);
+
+  return pairs;
+}
+
+/**
+ * To get how many pools locked to given pool
+ * @param poolId
+ * @returns  [Token, Token][] pairs array
+ */
+export function useGetLockingPoolsForPoolId(poolId: string) {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const pangoChefContract = usePangoChefContract();
+
+  const usePangoChefInfos = usePangoChefInfosHook[chainId];
+
+  const stakingInfos = usePangoChefInfos();
+
+  const allPoolsIds = useMemo(() => {
+    return (stakingInfos || []).map((stakingInfo) => {
+      if (!account || !chainId) {
+        return undefined;
+      }
+
+      return [stakingInfo?.pid?.toString(), account];
+    });
+  }, [stakingInfos, account, chainId]);
+
+  const lockPoolState = useSingleContractMultipleData(pangoChefContract, 'getLockedPools', allPoolsIds);
+
+  const _lockpools = useMemo(() => {
+    const container = {} as { [poolId: string]: Array<string> };
+
+    allPoolsIds.forEach((value, index) => {
+      const result = lockPoolState[index]?.result;
+      const pid = value?.[0];
+
+      if (result?.[0]?.[0]?.toString() && pid) {
+        container[`${pid}`] = result?.[0]?.map((item: BigNumber) => item.toString());
+      }
+    });
+
+    return container;
+  }, [allPoolsIds]);
+
+  const lockingPools = useMemo(() => {
+    const internalLockingPools = [] as Array<string>;
+    Object.entries(_lockpools).forEach(([pid, pidsLocked]) => {
+      if (pidsLocked.includes(poolId?.toString())) {
+        internalLockingPools.push(pid);
+      }
+    });
+    return internalLockingPools;
+  }, [_lockpools]);
+
+  const pairs: [Token, Token][] = useMemo(() => {
+    const _pairs: [Token, Token][] = [];
+
+    if (lockingPools?.length > 0) {
+      stakingInfos?.forEach((stakingInfo) => {
+        if (lockingPools.includes(stakingInfo?.pid)) {
+          const [token0, token1] = stakingInfo.tokens;
+          _pairs.push([token0, token1]);
+        }
+      });
+    }
+
+    return _pairs;
+  }, [stakingInfos, lockingPools]);
+
+  return pairs;
+}
+
+export * from './hedera';
+export * from './evm';
+export * from './subgraph';
+export * from './common';
+/* eslint-enable max-lines */

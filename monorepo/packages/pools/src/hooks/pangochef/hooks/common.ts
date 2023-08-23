@@ -1,11 +1,11 @@
 import { Fraction, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
-import { PNG, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useSingleContractMultipleData, useTokensCurrencyPriceHook, useTokensHook } from '@pangolindex/state-hooks';
-import { BigNumber } from 'ethers';
-import { useMemo } from 'react';
+import { PNG, ZERO_ADDRESS, useChainId, usePangolinWeb3, useSubgraphFarmsStakedAmount } from '@pangolindex/shared';
+import { useTokensCurrencyPriceHook, useTokensHook, useTransactionAdder } from '@pangolindex/state-hooks';
+import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
+import { useCallback, useMemo } from 'react';
+import { useQuery } from 'react-query';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { PangoChefInfo } from '../types';
-import { usePangoChefInfosHook } from './index';
 
 /**
  * This hook returns the extra value provided by super farm extra reward tokens
@@ -173,95 +173,74 @@ export function usePangoChefUserExtraFarmsApr(stakingInfos: PangoChefInfo[]) {
 }
 
 /**
- * this hook is basically for PangoChef v1, which is only used by Songbird right now
- * this hook returns pairs which are locking Pool Zero
- * @returns [Token, Token][] pairs array
+ * this hook is useful to check whether user has created pangochef storage contract or not
+ * if not then using this hook we can create user's storage contract
+ * @returns [boolean, function_to_create]
  */
-export function useGetLockingPoolsForPoolZero() {
-  const chainId = useChainId();
-  const usePangoChefInfos = usePangoChefInfosHook[chainId];
-
-  const stakingInfos = usePangoChefInfos();
-
-  const pairs: [Token, Token][] = useMemo(() => {
-    const _pairs: [Token, Token][] = [];
-    stakingInfos?.forEach((stakingInfo) => {
-      if (stakingInfo?.lockCount && stakingInfo?.lockCount > 0) {
-        const [token0, token1] = stakingInfo.tokens;
-        _pairs.push([token0, token1]);
-      }
-    });
-    return _pairs;
-  }, [stakingInfos]);
-
-  return pairs;
-}
-
-/**
- * To get how many pools locked to given pool
- * @param poolId
- * @returns  [Token, Token][] pairs array
- */
-export function useGetLockingPoolsForPoolId(poolId: string) {
+export function useHederaPangochefContractCreateCallback(): [boolean, () => Promise<void>] {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const pangoChefContract = usePangoChefContract();
+  const addTransaction = useTransactionAdder();
 
-  const usePangoChefInfos = usePangoChefInfosHook[chainId];
-
-  const stakingInfos = usePangoChefInfos();
-
-  const allPoolsIds = useMemo(() => {
-    return (stakingInfos || []).map((stakingInfo) => {
-      if (!account || !chainId) {
+  // get on chain data
+  const { data: userStorageAddress, refetch } = useQuery(
+    ['hedera-pangochef-user-storage', account],
+    async (): Promise<string | undefined> => {
+      try {
+        const response = await pangoChefContract?.getUserStorageContract(account);
+        return response as string;
+      } catch (error) {
         return undefined;
       }
+    },
+    { enabled: Boolean(pangoChefContract) && Boolean(account) && Hedera.isHederaChain(chainId) },
+  );
 
-      return [stakingInfo?.pid?.toString(), account];
-    });
-  }, [stakingInfos, account, chainId]);
+  // we need on chain fallback
+  // because user might have created a storage contract but haven't staked into anything yet
+  // if we replace subgraph logic without fallback then user will be stuck forever in
+  // "create storage contract" flow because subgraph thinking that there is no farmingPositions
+  // but actually user has created storage contract
+  const hasOnChainData = typeof userStorageAddress !== 'undefined';
+  const onChainShouldCreateStorage = userStorageAddress === ZERO_ADDRESS || !userStorageAddress ? true : false;
 
-  const lockPoolState = useSingleContractMultipleData(pangoChefContract, 'getLockedPools', allPoolsIds);
+  // get off chain data using subgraph
+  // we also get data from subgraph just to make sure user doesn't stuck anywhere in flow
+  const { data, refetch: refetchSubgraph } = useSubgraphFarmsStakedAmount();
+  const offChainShouldCreateStorage = Boolean(!data || data.length === 0);
 
-  const _lockpools = useMemo(() => {
-    const container = {} as { [poolId: string]: Array<string> };
+  const shouldCreateStorage = hasOnChainData ? onChainShouldCreateStorage : offChainShouldCreateStorage;
 
-    allPoolsIds.forEach((value, index) => {
-      const result = lockPoolState[index]?.result;
-      const pid = value?.[0];
-
-      if (result?.[0]?.[0]?.toString() && pid) {
-        container[`${pid}`] = result?.[0]?.map((item: BigNumber) => item.toString());
-      }
-    });
-
-    return container;
-  }, [allPoolsIds]);
-
-  const lockingPools = useMemo(() => {
-    const internalLockingPools = [] as Array<string>;
-    Object.entries(_lockpools).forEach(([pid, pidsLocked]) => {
-      if (pidsLocked.includes(poolId?.toString())) {
-        internalLockingPools.push(pid);
-      }
-    });
-    return internalLockingPools;
-  }, [_lockpools]);
-
-  const pairs: [Token, Token][] = useMemo(() => {
-    const _pairs: [Token, Token][] = [];
-
-    if (lockingPools?.length > 0) {
-      stakingInfos?.forEach((stakingInfo) => {
-        if (lockingPools.includes(stakingInfo?.pid)) {
-          const [token0, token1] = stakingInfo.tokens;
-          _pairs.push([token0, token1]);
-        }
-      });
+  const create = useCallback(async (): Promise<void> => {
+    if (!account) {
+      console.error('no account');
+      return;
     }
 
-    return _pairs;
-  }, [stakingInfos, lockingPools]);
+    try {
+      const response = await hederaFn.createPangoChefUserStorageContract(chainId, account);
 
-  return pairs;
+      if (response) {
+        refetch();
+        refetchSubgraph();
+        addTransaction(response, {
+          summary: 'Created Pangochef User Storage Contract',
+        });
+      }
+    } catch (error) {
+      console.debug('Failed to create pangochef contract', error);
+    }
+  }, [account, chainId, addTransaction]);
+
+  if (!Hedera.isHederaChain(chainId)) {
+    return [
+      false,
+      () => {
+        return Promise.resolve();
+      },
+    ];
+  }
+
+  return [shouldCreateStorage, create];
 }

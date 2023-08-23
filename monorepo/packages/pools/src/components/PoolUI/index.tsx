@@ -4,7 +4,7 @@ import { BIG_INT_ZERO, useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useMinichefStakingInfosHook } from 'src/hooks/minichef/hooks';
 import { MinichefStakingInfo, PoolType } from 'src/hooks/minichef/types';
-import { usePangoChefInfosHook } from 'src/hooks/pangochef/hooks';
+import { usePangoChefInfosHook } from 'src/hooks/pangochef';
 import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import Pool from '../Pool';
 import Sidebar, { MenuType } from '../Sidebar';

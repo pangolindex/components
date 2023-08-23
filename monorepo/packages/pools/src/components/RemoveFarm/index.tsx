@@ -15,7 +15,7 @@ import numeral from 'numeral';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useExtraPendingRewards, useGetRewardTokens } from 'src/hooks/minichef/hooks/common';
 import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/hooks/minichef/types';
-import { usePangoChefWithdrawCallbackHook } from 'src/hooks/pangochef/hooks';
+import { usePangoChefWithdrawCallbackHook } from 'src/hooks/pangochef';
 import { useHederaPGLToken } from 'src/hooks/wallet/hooks/hedera';
 import RemoveLiquidityDrawer from '../RemoveLiquidityDrawer';
 import { Buttons, FarmRemoveWrapper, RewardWrapper, Root, StatWrapper } from './styleds';

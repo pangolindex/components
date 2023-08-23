@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { BigNumber } from 'ethers';
 import { TransactionResponse } from '@ethersproject/providers';
 import { CAVAX, Pair, TokenAmount } from '@pangolindex/sdk';
 import {
@@ -23,6 +22,7 @@ import {
   useTokenBalances,
   useTransactionAdder,
 } from '@pangolindex/state-hooks';
+import { BigNumber } from 'ethers';
 import { useMemo, useState } from 'react';
 import { Field } from '../../burn/atom';
 import { Field as AddField } from '../../mint/atom';

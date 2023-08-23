@@ -5,7 +5,7 @@ import numeral from 'numeral';
 import React, { useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';
 import { useExtraPendingRewards } from 'src/hooks/minichef/hooks/common';
-import { useGetLockingPoolsForPoolIdHook } from 'src/hooks/pangochef/hooks';
+import { useGetLockingPoolsForPoolIdHook } from 'src/hooks/pangochef';
 import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import RemoveDrawer from '../../RemoveDrawer';
 import ClaimRewardV3 from '../ClaimReward';
