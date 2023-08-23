@@ -34,7 +34,7 @@ export {
   useHederaTokenAssociated,
   useHederaApproveCallback,
   useCurrency,
-  useToken
+  useToken,
 };
 
 export { ApprovalState };

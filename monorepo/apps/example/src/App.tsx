@@ -2,8 +2,8 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import Layout from './layout';
-import Sample from './pages/Sample';
 import BridgeUI from './pages/Bridge';
+import Sample from './pages/Sample';
 import SarStake from './pages/SarSingleStake';
 import Swap from './pages/Swap';
 

@@ -1,5 +1,5 @@
-import React from 'react';
 import { Bridge } from '@pangolindex/bridge';
+import React from 'react';
 
 function BridgeUI() {
   return (
