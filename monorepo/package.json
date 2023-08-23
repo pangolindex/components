@@ -5,11 +5,13 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --concurrency=15",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "dev:app": "turbo run dev:app --concurrency=15",
+    "dev:packages": "turbo run dev --concurrency=15",
+    "start:app": "turbo run start --filter=example-app",
+    "build:packages": "turbo run build --filter=@pangolindex/*"
   },
   "devDependencies": {
     "@pangolindex/sdk": "5.3.4",
