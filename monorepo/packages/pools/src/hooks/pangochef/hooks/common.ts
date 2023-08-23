@@ -1,7 +1,6 @@
 import { Fraction, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import { PNG, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useSingleContractMultipleData, useTokensHook } from '@pangolindex/state-hooks';
-import { useTokensCurrencyPriceHook } from '@pangolindex/state-hooks/lib/hooks/multiChainsHooks';
+import { useSingleContractMultipleData, useTokensCurrencyPriceHook, useTokensHook } from '@pangolindex/state-hooks';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { usePangoChefContract } from 'src/hooks/useContract';

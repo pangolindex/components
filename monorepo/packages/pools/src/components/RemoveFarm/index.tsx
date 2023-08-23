@@ -9,10 +9,7 @@ import {
   usePangolinWeb3,
   useTranslation,
 } from '@pangolindex/shared';
-import {
-  useGetHederaTokenNotAssociated,
-  useHederaTokenAssociated,
-} from '@pangolindex/state-hooks/lib/hooks/tokens/hedera';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from '@pangolindex/state-hooks';
 import { Hedera } from '@pangolindex/wallet-connectors';
 import numeral from 'numeral';
 import React, { useEffect, useMemo, useState } from 'react';

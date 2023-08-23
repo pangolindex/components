@@ -31,7 +31,6 @@ import {
   ApprovalState,
   useApproveCallback,
   usePair,
-  usePairsContract,
   useTokenBalance,
   useTransactionAdder,
   useTransactionDeadline,

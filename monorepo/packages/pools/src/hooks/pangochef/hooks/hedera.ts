@@ -23,13 +23,13 @@ import {
   useMultipleContractSingleData,
   usePair,
   usePairsContract,
+  usePairsCurrencyPrice,
   useShouldUseSubgraph,
   useSingleCallResult,
   useSingleContractMultipleData,
   useTokensContract,
   useTransactionAdder,
 } from '@pangolindex/state-hooks';
-import { usePairsCurrencyPrice } from '@pangolindex/state-hooks/lib/hooks/useCurrencyPrice';
 import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
 import { useCallback, useMemo } from 'react';
 import { useQuery } from 'react-query';

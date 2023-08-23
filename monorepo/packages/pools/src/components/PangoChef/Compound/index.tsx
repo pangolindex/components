@@ -19,8 +19,8 @@ import {
   useApproveCallbackHook,
   usePair,
   useTokenBalancesHook,
+  useTokensCurrencyPriceHook,
 } from '@pangolindex/state-hooks';
-import { useTokensCurrencyPriceHook } from '@pangolindex/state-hooks/lib/hooks/multiChainsHooks';
 import { Hedera } from '@pangolindex/wallet-connectors';
 import { parseUnits } from 'ethers/lib/utils';
 import numeral from 'numeral';

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
 import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
@@ -444,3 +445,4 @@ export function useGetPangoChefInfosViaSubgraph() {
     extraPendingTokensRewardsState,
   ]);
 }
+/* eslint-enable max-lines */

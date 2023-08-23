@@ -25,12 +25,12 @@ import {
   useMultipleContractSingleData,
   usePair,
   usePairsContract,
+  usePairsCurrencyPrice,
   useSingleCallResult,
   useSingleContractMultipleData,
   useTokensContract,
   useTransactionAdder,
 } from '@pangolindex/state-hooks';
-import { usePairsCurrencyPrice } from '@pangolindex/state-hooks/lib/hooks/useCurrencyPrice';
 import { useMemo } from 'react';
 import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';
 import { useGetExtraPendingRewards, useMinichefPools } from 'src/hooks/minichef/hooks/common';

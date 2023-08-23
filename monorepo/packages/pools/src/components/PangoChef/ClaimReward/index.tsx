@@ -8,10 +8,7 @@ import {
   usePangolinWeb3,
   useTranslation,
 } from '@pangolindex/shared';
-import {
-  useGetHederaTokenNotAssociated,
-  useHederaTokenAssociated,
-} from '@pangolindex/state-hooks/lib/hooks/tokens/hedera';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from '@pangolindex/state-hooks';
 import React, { useContext, useMemo, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { ThemeContext } from 'styled-components';

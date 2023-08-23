@@ -1,5 +1,4 @@
-import { Box } from '@pangolindex/core';
-import { ANALYTICS_PAGE_MAPPING } from '@pangolindex/core/lib/constants';
+import { ANALYTICS_PAGE_MAPPING, Box } from '@pangolindex/core';
 import { CHAINS, Fraction, Token } from '@pangolindex/sdk';
 import { unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import { convertCoingeckoTokens, usePair } from '@pangolindex/state-hooks';

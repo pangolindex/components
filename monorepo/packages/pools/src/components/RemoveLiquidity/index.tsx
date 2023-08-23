@@ -14,14 +14,12 @@ import {
 import {
   ApprovalState,
   useApproveCallbackHook,
+  useGetHederaTokenNotAssociated,
+  useHederaTokenAssociated,
   useTransactionDeadline,
   useUserSlippageTolerance,
   useWalletModalToggle,
 } from '@pangolindex/state-hooks';
-import {
-  useGetHederaTokenNotAssociated,
-  useHederaTokenAssociated,
-} from '@pangolindex/state-hooks/lib/hooks/tokens/hedera';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Field, useBurnStateAtom } from 'src/hooks/burn/atom';
 import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/hooks/burn/hooks';

@@ -3,7 +3,6 @@ import { Currency, Token } from '@pangolindex/sdk';
 import { ExternalLink, useTranslation } from '@pangolindex/shared';
 import { useCoinGeckoTokenData } from '@pangolindex/state-hooks';
 import React from 'react';
-import ReactHtmlParser from 'react-html-parser';
 
 interface Props {
   coin: Token | Currency;
@@ -23,7 +22,7 @@ export default function CoinDescription({ coin }: Props) {
       </Text>
 
       <Text color="text1" fontSize={14}>
-        {ReactHtmlParser(data?.description.replace('\n', '<br />'))}
+        {data?.description}
       </Text>
 
       <Box mt="5px">

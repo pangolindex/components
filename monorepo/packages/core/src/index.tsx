@@ -38,3 +38,5 @@ export { NewsWidget } from './NewsWidget';
 export { ExternalLink } from './ExternalLink';
 export * from './Icons';
 export * from './Column';
+
+export { ANALYTICS_PAGE_MAPPING } from './constants';

@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { TransactionResponse } from '@ethersproject/providers';
-import { CAVAX, ChainId, CurrencyAmount, JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
+import { CAVAX, Pair, TokenAmount } from '@pangolindex/sdk';
 import {
   ROUTER_ADDRESS,
   calculateGasMargin,
@@ -16,8 +16,13 @@ import {
   waitForTransaction,
   wrappedCurrency,
 } from '@pangolindex/shared';
-import { ApprovalState, toV2LiquidityToken, useTokenBalances, useTransactionAdder } from '@pangolindex/state-hooks';
-import { usePairsContract } from '@pangolindex/state-hooks/lib/hooks/usePair/evm';
+import {
+  ApprovalState,
+  toV2LiquidityToken,
+  usePairsContract,
+  useTokenBalances,
+  useTransactionAdder,
+} from '@pangolindex/state-hooks';
 import { useMemo, useState } from 'react';
 import { Field } from '../../burn/atom';
 import { Field as AddField } from '../../mint/atom';

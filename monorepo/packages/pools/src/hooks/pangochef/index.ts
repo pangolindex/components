@@ -1,2 +1,2 @@
 export * from './hooks';
-export * from './types';
+export type { PoolType as PangochefPoolType, PangoChefInfo, ValueVariables, UserInfo, Pool } from './types';

@@ -9,7 +9,6 @@ import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import ClaimDrawer from '../ClaimDrawer';
 import FarmDrawer from '../FarmDrawer';
-import { DataBox } from '../Stake/styleds';
 import {
   ActionButon,
   DetailButton,
