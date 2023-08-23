@@ -1,10 +1,9 @@
 import { Box, DoubleCurrencyLogo, RewardTokens, Stat, Text } from '@pangolindex/core';
 import { CHAINS, Fraction, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import { usePair, useTokenBalance } from '@pangolindex/state-hooks';
 import numeral from 'numeral';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import AddLiquidityDrawer from '../AddLiquidityDrawer';
 import ClaimDrawer from '../ClaimDrawer';

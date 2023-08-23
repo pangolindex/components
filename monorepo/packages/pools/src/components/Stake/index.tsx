@@ -24,6 +24,7 @@ import {
   useMixpanel,
   usePairContract,
   usePangolinWeb3,
+  useTranslation,
   waitForTransaction,
   wrappedCurrencyAmount,
 } from '@pangolindex/shared';
@@ -36,7 +37,6 @@ import {
   useTransactionDeadline,
 } from '@pangolindex/state-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   useDerivedStakeInfo,
   useExtraPendingRewards,

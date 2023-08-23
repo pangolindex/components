@@ -1,9 +1,8 @@
 import { Box, Stat } from '@pangolindex/core';
 import { CHAINS, Currency, CurrencyAmount, Percent, Price } from '@pangolindex/sdk';
-import { ONE_BIPS, useChainId } from '@pangolindex/shared';
+import { ONE_BIPS, useChainId, useTranslation } from '@pangolindex/shared';
 import { useUSDCPriceHook } from '@pangolindex/state-hooks';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Field } from 'src/hooks/mint/atom';
 import { GridContainer, Root } from './styled';
 

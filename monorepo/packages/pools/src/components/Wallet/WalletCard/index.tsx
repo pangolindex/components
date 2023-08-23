@@ -1,8 +1,7 @@
 import { Box, DoubleCurrencyLogo, Stat, Text } from '@pangolindex/core';
 import { Pair } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId } from '@pangolindex/shared';
+import { unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useGetPoolDollerWorth } from 'src/hooks/minichef/hooks/common';
 import AddLiquidityDrawer from '../../AddLiquidityDrawer';
 import RemoveLiquidityDrawer from '../../RemoveLiquidityDrawer';

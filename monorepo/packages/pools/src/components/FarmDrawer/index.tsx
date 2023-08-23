@@ -1,8 +1,7 @@
 import { Drawer } from '@pangolindex/core';
 import { CHAINS, ChefType } from '@pangolindex/sdk';
-import { useChainId } from '@pangolindex/shared';
+import { useChainId, useTranslation } from '@pangolindex/shared';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { DoubleSideStakingInfo, SpaceType } from 'src/hooks/minichef/types';
 import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import StakeV3 from '../PangoChef/Stake';

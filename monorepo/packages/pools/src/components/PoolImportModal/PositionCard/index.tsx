@@ -1,8 +1,14 @@
 import { Box, Button, DoubleCurrencyLogo, Stat, Text } from '@pangolindex/core';
 import { Currency, JSBI, Pair, Percent } from '@pangolindex/sdk';
-import { BIG_INT_ZERO, ONE_BIPS, unwrappedToken, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import {
+  BIG_INT_ZERO,
+  ONE_BIPS,
+  unwrappedToken,
+  useChainId,
+  usePangolinWeb3,
+  useTranslation,
+} from '@pangolindex/shared';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { usePairTotalSupplyHook } from 'src/hooks/pair';
 import { usePairBalanceHook } from 'src/hooks/wallet/hooks';
 import { InnerWrapper, Wrapper } from './styleds';

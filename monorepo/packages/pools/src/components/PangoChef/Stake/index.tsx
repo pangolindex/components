@@ -12,11 +12,11 @@ import {
   useMixpanel,
   usePairContract,
   usePangolinWeb3,
+  useTranslation,
   wrappedCurrencyAmount,
 } from '@pangolindex/shared';
 import { ApprovalState, useApproveCallbackHook, usePair, useTransactionDeadline } from '@pangolindex/state-hooks';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { useDerivedStakeInfo, useExtraPendingRewards, useGetPoolDollerWorth } from 'src/hooks/minichef/hooks/common';
 import { SpaceType } from 'src/hooks/minichef/types';

@@ -1,9 +1,8 @@
 import { Box, CloseIcon, Modal, Text } from '@pangolindex/core';
 import { CAVAX, Currency } from '@pangolindex/sdk';
-import { useChainId, wrappedCurrency } from '@pangolindex/shared';
+import { useChainId, useTranslation, wrappedCurrency } from '@pangolindex/shared';
 import { useCurrency, useParsedQueryString } from '@pangolindex/state-hooks';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { SpaceType } from 'src/hooks/minichef/types';
 import { useCreatePairHook } from 'src/hooks/wallet/hooks';

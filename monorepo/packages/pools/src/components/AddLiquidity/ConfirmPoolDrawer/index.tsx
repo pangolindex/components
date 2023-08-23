@@ -12,11 +12,10 @@ import {
   TransactionCompleted,
 } from '@pangolindex/core';
 import { Currency, CurrencyAmount, Fraction, Percent, TokenAmount } from '@pangolindex/sdk';
-import { ONE_BIPS } from '@pangolindex/shared';
+import { ONE_BIPS, useTranslation } from '@pangolindex/shared';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { SpaceType } from 'src/hooks/minichef/types';
 import { Field } from 'src/hooks/mint/atom';

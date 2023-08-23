@@ -1,8 +1,7 @@
 import { Drawer } from '@pangolindex/core';
 import { Token } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId } from '@pangolindex/shared';
+import { unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { SpaceType } from 'src/hooks/minichef/types';
 import AddLiquidity from '../AddLiquidity';
 

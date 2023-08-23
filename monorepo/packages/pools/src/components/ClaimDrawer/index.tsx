@@ -1,6 +1,6 @@
 import { Drawer } from '@pangolindex/core';
+import { useTranslation } from '@pangolindex/shared';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import ClaimReward from '../ClaimReward';
 

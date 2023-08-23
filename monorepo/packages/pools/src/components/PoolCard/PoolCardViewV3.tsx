@@ -1,10 +1,9 @@
 import { Box, DoubleCurrencyLogo, Drawer, RewardTokens, Stat, Text } from '@pangolindex/core';
 import { CHAINS, Fraction, JSBI, Token } from '@pangolindex/sdk';
-import { BIG_INT_ZERO, unwrappedToken, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { BIG_INT_ZERO, unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
 import { usePair } from '@pangolindex/state-hooks';
 import numeral from 'numeral';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { usePangoChefExtraFarmApr } from 'src/hooks/pangochef/hooks/common';
 import { PangoChefInfo } from 'src/hooks/pangochef/types';
 import { usePairBalanceHook } from 'src/hooks/wallet/hooks';
