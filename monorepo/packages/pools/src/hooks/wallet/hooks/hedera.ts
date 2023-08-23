@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 import { CAVAX, ChainId, Currency, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
   calculateSlippageAmount,

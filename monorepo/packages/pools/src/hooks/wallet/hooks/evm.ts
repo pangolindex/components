@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 import { TransactionResponse } from '@ethersproject/providers';
 import { CAVAX, Pair, TokenAmount } from '@pangolindex/sdk';
 import {

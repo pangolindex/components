@@ -1,4 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 import { CurrencyAmount, Fraction, TokenAmount } from '@pangolindex/sdk';
 import { MinichefStakingInfo } from '../minichef/types';
 

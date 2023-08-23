@@ -1,4 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 import { Currency, CurrencyAmount, Percent, Token, TokenAmount } from '@pangolindex/sdk';
 import { ApprovalState } from '@pangolindex/state-hooks';
 

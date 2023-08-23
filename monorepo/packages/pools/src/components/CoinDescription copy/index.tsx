@@ -3,6 +3,7 @@ import { Currency, Token } from '@pangolindex/sdk';
 import { ExternalLink, useTranslation } from '@pangolindex/shared';
 import { useCoinGeckoTokenData } from '@pangolindex/state-hooks';
 import React from 'react';
+import sanitizeHtml from 'sanitize-html';
 
 interface Props {
   coin: Token | Currency;
@@ -11,7 +12,7 @@ interface Props {
 export default function CoinDescription({ coin }: Props) {
   const { data } = useCoinGeckoTokenData(coin);
   const { t } = useTranslation();
-  if (!data || !data?.description || !data.homePage) {
+  if (!data || !data?.description) {
     return null;
   }
 
@@ -22,7 +23,9 @@ export default function CoinDescription({ coin }: Props) {
       </Text>
 
       <Text color="text1" fontSize={14}>
-        {data?.description}
+        {sanitizeHtml(data?.description, {
+          allowedTags: sanitizeHtml.defaults.allowedTags.filter((tag) => tag !== 'a'),
+        })}
       </Text>
 
       <Box mt="5px">

@@ -10,6 +10,7 @@ import {
   PangochefFarmReward,
   USDC,
   ZERO_ADDRESS,
+  calculateUserRewardRate,
   useChainId,
   useLastBlockTimestampHook,
   usePangolinWeb3,
@@ -23,7 +24,7 @@ import { useGetExtraPendingRewards } from 'src/hooks/minichef/hooks/common';
 import { getExtraTokensWeeklyRewardRate } from 'src/hooks/minichef/utils';
 import { usePangoChefContract } from 'src/hooks/useContract';
 import { PangoChefInfo, UserInfo, ValueVariables } from '../types';
-import { calculateUserAPR, calculateUserRewardRate } from '../utils';
+import { calculateUserAPR } from '../utils';
 import { useHederaPangochefContractCreateCallback } from './hedera';
 
 export function useGetPangoChefInfosViaSubgraph() {

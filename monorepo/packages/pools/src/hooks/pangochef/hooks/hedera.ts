@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
   BIG_INT_SECONDS_IN_WEEK,
@@ -10,6 +10,7 @@ import {
   USDC,
   ZERO_ADDRESS,
   ZERO_FRACTION,
+  calculateUserRewardRate,
   decimalToFraction,
   useChainId,
   useLastBlockTimestampHook,
@@ -42,7 +43,6 @@ import { PangoChefCompoundData, PangoChefInfo, Pool, PoolType, UserInfo, ValueVa
 import {
   calculateCompoundSlippage,
   calculateUserAPR,
-  calculateUserRewardRate,
   getHypotheticalWeeklyRewardRate,
 } from '../utils';
 import { useGetPangoChefInfosViaSubgraph } from './subgraph';

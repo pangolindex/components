@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { BigNumber } from '@ethersproject/bignumber';
+import { BigNumber } from 'ethers';
 import { TransactionResponse } from '@ethersproject/providers';
 import { CHAINS, ChainId, Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
@@ -19,6 +19,7 @@ import {
   useRefetchPangoChefSubgraph,
   useTranslation,
   waitForTransaction,
+  calculateUserRewardRate
 } from '@pangolindex/shared';
 import {
   useCoinGeckoCurrencyPrice,
@@ -38,7 +39,7 @@ import { getExtraTokensWeeklyRewardRate } from 'src/hooks/minichef/utils';
 import { usePangoChefContract, useStakingContract } from 'src/hooks/useContract';
 import { useRefetchMinichefSubgraph } from 'src/hooks/wallet/utils';
 import { PangoChefCompoundData, PangoChefInfo, Pool, PoolType, UserInfo, ValueVariables, WithdrawData } from '../types';
-import { calculateCompoundSlippage, calculateUserAPR, calculateUserRewardRate } from '../utils';
+import { calculateCompoundSlippage, calculateUserAPR } from '../utils';
 
 export function usePangoChefInfos() {
   const { account } = usePangolinWeb3();
