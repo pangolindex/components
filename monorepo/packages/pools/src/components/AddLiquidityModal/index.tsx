@@ -7,7 +7,7 @@ import { ThemeContext } from 'styled-components';
 import { SpaceType } from 'src/hooks/minichef/types';
 import { useCreatePairHook } from 'src/hooks/wallet/hooks';
 import AddLiquidity from '../AddLiquidity';
-import SelectTokenDrawer from '../SelectTokenDrawer';
+import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import SearchTokenSection, { BodyState, Fields } from './SearchToken';
 import { Wrapper } from './styleds';
 

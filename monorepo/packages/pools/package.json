@@ -50,6 +50,7 @@
     "@pangolindex/exchange-contracts": "2.1.7",
     "@pangolindex/shared": "*",
     "@pangolindex/state-hooks": "*",
+    "@pangolindex/token-drawer": "*",
     "@pangolindex/wallet-connectors": "*",
     "axios": "^0.26.0",
     "deep-equal": "^2.0.5",
@@ -73,6 +74,5 @@
     "ethers": ">=5.5.4",
     "react": ">=17.0.2",
     "react-dom": ">=17.0.2"
-
   }
 }

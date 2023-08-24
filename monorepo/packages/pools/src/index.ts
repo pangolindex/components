@@ -9,11 +9,9 @@ export {
   EarnWidget,
   FarmDrawer,
   Pools,
-  SelectTokenDrawer,
   RemoveDrawer,
   RemoveLiquidityDrawer,
   RemoveLiquidityWidget,
-  TokenListDrawer,
   Wallet,
 } from './components';
 

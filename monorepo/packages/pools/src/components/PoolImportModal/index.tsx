@@ -3,7 +3,7 @@ import { CAVAX, Currency } from '@pangolindex/sdk';
 import { useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useCallback, useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';
-import SelectTokenDrawer from '../SelectTokenDrawer';
+import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import PoolImport from './PoolImport';
 import { Wrapper } from './styleds';
 

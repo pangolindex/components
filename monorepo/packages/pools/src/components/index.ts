@@ -10,8 +10,6 @@ import PoolsUI from './PoolUI';
 import RemoveDrawer from './RemoveDrawer';
 import RemoveLiquidityDrawer from './RemoveLiquidityDrawer';
 import RemoveLiquidityWidget from './RemoveLiquidityWidget';
-import SelectTokenDrawer from './SelectTokenDrawer';
-import TokenListDrawer from './TokenListDrawer';
 import Wallet from './Wallet';
 
 export {
@@ -23,11 +21,9 @@ export {
   EarnWidget,
   FarmDrawer,
   Pools,
-  SelectTokenDrawer,
   RemoveDrawer,
   RemoveLiquidityDrawer,
   RemoveLiquidityWidget,
-  TokenListDrawer,
   Wallet,
 };
 export default PoolsUI;
