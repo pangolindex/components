@@ -39,3 +39,5 @@ export { ExternalLink } from './ExternalLink';
 export * from './Icons';
 export * from './Column';
 export * from './Tabs';
+
+export { getTokenLogoURL } from './utils/getTokenLogoURL';
