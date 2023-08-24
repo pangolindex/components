@@ -4,3 +4,4 @@ export * from './block';
 export * from './tokens';
 export * from './pairs';
 export * from './singleStake';
+export * from './vote'

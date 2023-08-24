@@ -8,8 +8,8 @@
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "dev:app": "turbo run dev:app --concurrency=15",
-    "dev:packages": "turbo run dev --concurrency=15",
+    "dev:app": "turbo run dev:app --concurrency=20",
+    "dev:packages": "turbo run dev --concurrency=20",
     "start:app": "turbo run start --filter=example-app",
     "build:packages": "turbo run build --filter=@pangolindex/*"
   },
