@@ -18,6 +18,7 @@ import {
   useUserSlippageTolerance,
   useWalletModalToggle,
 } from '@pangolindex/state-hooks';
+import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Divide, RefreshCcw, X } from 'react-feather';
@@ -31,7 +32,6 @@ import { galetoMaxAmountSpend } from 'src/utils/galetoMaxAmountSpend';
 import { wrappedGelatoCurrency } from 'src/utils/wrappedGelatoCurrency';
 import ConfirmLimitOrderDrawer from '../ConfirmLimitOrderDrawer';
 import LimitOrderDetailInfo from '../LimitOrderDetailInfo';
-import SelectTokenDrawer from '../SelectTokenDrawer';
 import TradeOption from '../TradeOption';
 import { DeprecatedWarning } from '../Warning';
 import { ArrowWrapper, CurrencyInputTextBox, InputText, PValue, Root, SwapWrapper } from './styled';

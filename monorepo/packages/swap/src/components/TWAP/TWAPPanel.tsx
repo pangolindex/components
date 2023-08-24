@@ -1,13 +1,13 @@
 import { Loader } from '@pangolindex/core';
 import { ZERO_ADDRESS, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
 import { useAllTokens, useWalletModalToggle } from '@pangolindex/state-hooks';
+import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import React, { Suspense, useCallback, useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import { SwapTypes } from 'src/constants';
 import { Field } from 'src/state/atom';
 import { useSwapActionHandlers } from 'src/state/hooks/common';
 import { Root } from 'src/styled';
-import SelectTokenDrawer from '../SelectTokenDrawer';
 import TradeOption from '../TradeOption';
 
 const PangolinTWAP = React.lazy(() =>

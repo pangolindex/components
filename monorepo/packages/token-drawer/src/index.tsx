@@ -1,6 +1,6 @@
 import { Box, Drawer, Text, TextInput } from '@pangolindex/core';
 import { CAVAX, ChainId, Currency, Token, WAVAX, currencyEquals } from '@pangolindex/sdk';
-import { filterTokenOrChain, isAddress, useChainId, usePrevious, useTranslation } from '@pangolindex/shared';
+import { Field, filterTokenOrChain, isAddress, useChainId, usePrevious, useTranslation } from '@pangolindex/shared';
 import { useAddUserToken, useAllTokens, useSelectedListInfo, useTokenHook } from '@pangolindex/state-hooks';
 import { Hedera } from '@pangolindex/wallet-connectors';
 import deepEqual from 'deep-equal';
@@ -8,10 +8,9 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
-import { Field } from 'src/state/atom';
-import { useTokenComparator } from '../SearchModal/sorting';
-import TokenListDrawer from '../TokenListDrawer';
-import CurrencyGrid from './CurrencyGrid';
+import CurrencyGrid from 'src/components/CurrencyGrid';
+import { useTokenComparator } from 'src/components/SearchModal/sorting';
+import TokenListDrawer from 'src/components/TokenListDrawer';
 import { CurrencyList, ListLogo, ManageList } from './styled';
 
 interface Props {
@@ -34,7 +33,7 @@ const currencyKey = (columnIndex: number, rowIndex: number, data: Currency[], ch
     : `${rowIndex}-${columnIndex}`;
 };
 
-const SelectTokenDrawer: React.FC<Props> = (props) => {
+const TokenDrawer: React.FC<Props> = (props) => {
   const { isOpen, onClose, onCurrencySelect, otherSelectedCurrency, selectedCurrency, seletedField } = props;
   const chainId = useChainId();
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -244,7 +243,7 @@ const SelectTokenDrawer: React.FC<Props> = (props) => {
   );
 };
 
-export default memo(SelectTokenDrawer, (prevProps, nextProps) => {
+const SelectTokenDrawer = memo(TokenDrawer, (prevProps, nextProps) => {
   const isEqual =
     prevProps.isOpen === nextProps.isOpen &&
     prevProps.onClose === nextProps.onClose &&
@@ -258,3 +257,5 @@ export default memo(SelectTokenDrawer, (prevProps, nextProps) => {
       : true);
   return isEqual;
 });
+
+export { SelectTokenDrawer };
