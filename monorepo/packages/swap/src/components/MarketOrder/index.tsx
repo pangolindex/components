@@ -39,6 +39,7 @@ import {
   useUserSlippageTolerance,
   useWalletModalToggle,
 } from '@pangolindex/state-hooks';
+import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
@@ -62,7 +63,6 @@ import {
 import { useHederaSwapTokenAssociated } from 'src/state/hooks/hedera';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
-import SelectTokenDrawer from '../SelectTokenDrawer';
 import SwapSettingsDrawer from '../Settings';
 import SwapDetailInfo from '../SwapDetailInfo';
 import SwapRoute from '../SwapRoute';

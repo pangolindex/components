@@ -1,13 +1,12 @@
-import { Box, Text } from '@pangolindex/core';
+import { Text } from '@pangolindex/core';
 import { opacify } from 'polished';
 import styled from 'styled-components';
 
-export const CurrencyList = styled.div`
+export const BridgeCurrencyList = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
   overflow-y: auto;
-  padding: 0px 10px;
   &::-webkit-scrollbar {
     display: none !important;
   }
@@ -15,15 +14,17 @@ export const CurrencyList = styled.div`
   scrollbar-width: none;
 `;
 
-export const CurrencyRoot = styled(Box)<{ disabled: boolean; selected: boolean }>`
+export const BridgeCurrencyRowRoot = styled.div<{ disabled: boolean; selected: boolean }>`
+  min-height: 56px;
+  font-size: 16px;
   cursor: ${({ disabled }) => !disabled && 'pointer'};
   pointer-events: ${({ disabled }) => disabled && 'none'};
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: auto minmax(auto, 1fr) minmax(0, 72px);
+  grid-gap: 16px;
   align-items: center;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.color3};
-  border-radius: 8px;
+  padding: 10px 30px;
+  overflow: hidden;
 
   &:hover {
     background-color: ${({ theme, disabled }) =>
@@ -35,19 +36,11 @@ export const CurrencyRoot = styled(Box)<{ disabled: boolean; selected: boolean }
 
 export const Balance = styled(Text)`
   justify-self: flex-end;
-  text-align: center;
-  word-break: break-all;
-  width: 100%;
-  hyphens: manual;
+  white-space: nowrap;
 `;
 
-export const ManageList = styled.div`
-  background-color: ${({ theme }) => theme.swapWidget?.detailsBackground};
-  padding: 10px 20px;
-  cursor: pointer;
-`;
-
-export const ListLogo = styled.img<{ size: number }>`
+export const BridgeCurrencyLogo = styled.img<{ size: number }>`
+  border-radius: 50%;
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   margin-right: 10px;

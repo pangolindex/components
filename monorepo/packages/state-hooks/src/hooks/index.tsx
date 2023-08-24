@@ -15,6 +15,7 @@ import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import { usePair } from './usePair/evm';
+import { useToken } from './tokens/evm';
 import { useTotalSupplyHook } from './useTotalSupply';
 
 // hooks
@@ -37,6 +38,7 @@ export {
   useHederaApproveCallback,
   useCurrency,
   usePair,
+  useToken,
 };
 
 export { ApprovalState, type TokenReturnType };
