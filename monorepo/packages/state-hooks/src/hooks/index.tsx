@@ -12,9 +12,10 @@ import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import { useTokensCurrencyPriceHook } from './multiChainsHooks';
 
 export * from './useTotalSupply';
-export * from 'src/hooks/usePair';
-export * from 'src/hooks/tokens';
+export * from './usePair';
+export * from './tokens';
 export * from './useCurrencyPrice';
+
 
 // hooks
 export {
