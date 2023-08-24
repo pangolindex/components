@@ -1,17 +1,17 @@
 import { Box, Button, Loader, Text, Visible } from '@pangolindex/core';
 import { BIG_INT_ZERO, useChainId, useDebounce, useTranslation } from '@pangolindex/shared';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useMintActionHandlers } from 'src/state/mint/elixir/hooks';
-import { useGetUserPositionsHook } from 'src/state/wallet/elixir/hooks';
-import { PositionDetails } from 'src/state/wallet/elixir/types';
-import AddLiquidity from './AddLiquidity';
-import DetailModal from './DetailModal';
-import PoolList from './PoolList';
-import PositionCard from './PositionCard';
-import PositionList from './PositionList';
-import { SortingType } from './PositionList/types';
-import Sidebar from './Sidebar';
-import { MenuType } from './Sidebar/types';
+import AddLiquidity from 'src/components/AddLiquidity';
+import DetailModal from 'src/components/DetailModal';
+import PoolList from 'src/components/PoolList';
+import PositionCard from 'src/components/PositionCard';
+import PositionList from 'src/components/PositionList';
+import { SortingType } from 'src/components/PositionList/types';
+import Sidebar from 'src/components/Sidebar';
+import { MenuType } from 'src/components/Sidebar/types';
+import { useMintActionHandlers } from 'src/state/mint/hooks';
+import { useGetUserPositionsHook } from 'src/state/wallet/hooks';
+import { PositionDetails } from 'src/state/wallet/types';
 import { Cards, Content, GridContainer, Link, MobileHeader, PageWrapper } from './styles';
 
 const Elixir = () => {
@@ -222,4 +222,4 @@ const Elixir = () => {
     </PageWrapper>
   );
 };
-export default Elixir;
+export { Elixir };

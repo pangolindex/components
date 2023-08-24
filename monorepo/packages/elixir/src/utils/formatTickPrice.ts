@@ -1,5 +1,5 @@
 import { NumberType, Price, formatPrice } from '@pangolindex/sdk';
-import { Bound } from 'src/state/mint/elixir/atom';
+import { Bound } from 'src/state/mint/atom';
 
 export function formatTickPrice({
   price,

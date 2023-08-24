@@ -24,10 +24,10 @@ import {
   useENS,
   useLibrary,
   usePangolinWeb3,
+  BIPS_BASE
 } from '@pangolindex/shared';
 import { useTransactionAdder, useTransactionDeadline } from '@pangolindex/state-hooks';
 import { useMemo } from 'react';
-import { BIPS_BASE } from 'src/constants';
 import { useDaasFeeTo } from 'src/state/hooks/common';
 import { Version } from '../useToggledVersion';
 import { SwapCallbackState } from './constant';

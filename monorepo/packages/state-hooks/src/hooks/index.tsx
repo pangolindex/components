@@ -1,5 +1,4 @@
 import { useTokenHook, useTokensHook } from 'src/hooks/tokens';
-import { TokenReturnType } from 'src/hooks/tokens/constant';
 import { useHederaTokenAssociated } from 'src/hooks/tokens/hedera';
 import { useAllTokens } from 'src/hooks/useAllTokens';
 import { useApproveCallbackFromTradeHook, useApproveCallbackHook } from 'src/hooks/useApproveCallback';
@@ -41,4 +40,6 @@ export {
   useToken,
 };
 
-export { ApprovalState, type TokenReturnType };
+export { ApprovalState };
+
+export type { TokenReturnType } from 'src/hooks/tokens/constant';

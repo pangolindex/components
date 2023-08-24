@@ -10,7 +10,7 @@ import {
   Token,
   Trade,
 } from '@pangolindex/sdk';
-import { PairState, useChainId, wrappedCurrency } from '@pangolindex/shared';
+import { PairState, useChainId, wrappedCurrency, BIPS_BASE } from '@pangolindex/shared';
 import { usePairsHook } from '@pangolindex/state-hooks';
 import flatMap from 'lodash.flatmap';
 import { useMemo } from 'react';
@@ -19,7 +19,7 @@ import { useMemo } from 'react';
 // import { usePoolsHook } from 'src/hooks/elixir/hooks';
 // TODO: when add elixir package
 // import { PoolState } from 'src/hooks/elixir/hooks/types';
-import { BASES_TO_CHECK_TRADES_AGAINST, BIPS_BASE, CUSTOM_BASES } from 'src/constants';
+import { BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES } from 'src/constants';
 import { useDaasFeeInfo, useDaasFeeTo } from '../state/hooks/common';
 
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): { pairs: Pair[]; isLoading: boolean } {

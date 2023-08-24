@@ -13,7 +13,7 @@ import {
 import { useChainId } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { usePoolsHook } from 'src/hooks';
-import { Bound } from 'src/state/mint/elixir/atom';
+import { Bound } from 'src/state/mint/atom';
 import { PoolState } from './types';
 
 export function usePool(

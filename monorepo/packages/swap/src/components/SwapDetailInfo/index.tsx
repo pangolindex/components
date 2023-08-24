@@ -5,12 +5,12 @@ import {
   ONE_BIPS,
   computeSlippageAdjustedAmounts,
   useTranslation,
+  BIPS_BASE
 } from '@pangolindex/shared';
 import { useUserSlippageTolerance } from '@pangolindex/state-hooks';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
-import { BIPS_BASE } from 'src/constants';
 import { Field } from 'src/state/atom';
 import { useDaasFeeInfo } from 'src/state/hooks/common';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';

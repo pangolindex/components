@@ -6,6 +6,7 @@ import BridgeUI from './pages/Bridge';
 import Sample from './pages/Sample';
 import SarStake from './pages/SarSingleStake';
 import Swap from './pages/Swap';
+import ElixirUI from './pages/Elixir';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -45,7 +46,7 @@ export default function App() {
             <Route path="swap" element={<Swap />} />
             <Route path="dashboard" element={<Sample />} />
             <Route path="bridge" element={<BridgeUI />} />
-
+            <Route path="elixir" element={<ElixirUI />} />
             <Route path="*" element={<Swap />} />
           </Route>
         </Routes>

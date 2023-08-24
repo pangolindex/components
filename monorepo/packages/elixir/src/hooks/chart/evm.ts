@@ -11,9 +11,9 @@ import {
 import { TickData, Ticks, ZERO_ADDRESS, useAllV3TicksQuery, useChainId, wrappedCurrency } from '@pangolindex/shared';
 import { useSingleContractMultipleData } from '@pangolindex/state-hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ChartEntry } from 'src/components/LiquidityChartRangeInput/types';
-import { useTickLensContract } from 'src/hooks/useContract';
+import { useTickLensContract } from 'src/utils/contracts';
 import computeSurroundingTicks from 'src/utils/computeSurroundingTicks';
+import { ChartEntry } from 'src/components/LiquidityChartRangeInput/types';
 import { usePool } from 'src/hooks/common';
 import { PoolState } from 'src/hooks/types';
 import { TickProcessed } from './types';

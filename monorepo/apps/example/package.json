@@ -16,6 +16,7 @@
     "@pangolindex/sdk": "5.3.4",
     "@pangolindex/bridge": "*",
     "@pangolindex/core": "*",
+    "@pangolindex/elixir": "*",
     "@pangolindex/sar": "*",
     "@pangolindex/honeycomb-provider": "*",
     "@pangolindex/portfolio": "*",
