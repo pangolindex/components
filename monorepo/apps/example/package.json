@@ -17,6 +17,7 @@
     "@pangolindex/airdrop": "*",
     "@pangolindex/bridge": "*",
     "@pangolindex/core": "*",
+    "@pangolindex/elixir": "*",
     "@pangolindex/sar": "*",
     "@pangolindex/honeycomb-provider": "*",
     "@pangolindex/portfolio": "*",

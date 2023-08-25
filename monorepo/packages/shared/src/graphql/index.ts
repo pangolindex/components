@@ -4,3 +4,6 @@ export * from './block';
 export * from './tokens';
 export * from './pairs';
 export * from './singleStake';
+export * from './feeTierDistribution';
+export * from './elixirPools';
+export * from './allTicks';

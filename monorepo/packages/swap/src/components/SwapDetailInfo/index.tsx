@@ -1,6 +1,7 @@
 import { Text, Tooltip } from '@pangolindex/core';
 import { ElixirTrade, Fraction, Percent, Trade, TradeType } from '@pangolindex/sdk';
 import {
+  BIPS_BASE,
   INITIAL_ALLOWED_SLIPPAGE,
   ONE_BIPS,
   computeSlippageAdjustedAmounts,
@@ -10,7 +11,6 @@ import { useUserSlippageTolerance } from '@pangolindex/state-hooks';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
-import { BIPS_BASE } from 'src/constants';
 import { Field } from 'src/state/atom';
 import { useDaasFeeInfo } from 'src/state/hooks/common';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
