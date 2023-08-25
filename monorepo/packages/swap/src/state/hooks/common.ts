@@ -36,9 +36,7 @@ import {
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { SWAP_DEFAULT_CURRENCY } from 'src/constants';
-import { useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
-// TODO: when add elixir package
-// import { useElixirTradeExactIn, useElixirTradeExactOut, useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
+import { useElixirTradeExactIn, useElixirTradeExactOut, useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { DefaultSwapState, FeeInfo, Field, SwapParams, useSwapState as useSwapStateAtom } from '../atom';
 
@@ -159,10 +157,10 @@ export function useDerivedSwapInfo(): {
 
   const isExactIn: boolean = independentField === Field.INPUT;
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId);
-  // TODO: when add elixir package
-  // const memoParsedAmount = useMemo(() => {
-  //   return tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId);
-  // }, [typedValue, chainId, inputCurrency, outputCurrency, isExactIn]);
+
+  const memoParsedAmount = useMemo(() => {
+    return tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined, chainId);
+  }, [typedValue, chainId, inputCurrency, outputCurrency, isExactIn]);
 
   const { trade: v2BestTradeExactIn, isLoading: isLoadingIn } = useTradeExactIn(
     isExactIn ? parsedAmount : undefined,
@@ -173,44 +171,37 @@ export function useDerivedSwapInfo(): {
     !isExactIn ? parsedAmount : undefined,
   );
 
-  // TODO: when add elixir package
-  // const { trade: bestElixirTradeExactIn, isLoading: isElixirLoadingIn } = useElixirTradeExactIn(
-  //   isExactIn ? memoParsedAmount : undefined,
-  //   outputCurrency ?? undefined,
-  // );
-  // const { trade: bestElixirTradeExactOut, isLoading: isElixirLoadingOut } = useElixirTradeExactOut(
-  //   inputCurrency ?? undefined,
-  //   !isExactIn ? memoParsedAmount : undefined,
-  // );
+  const { trade: bestElixirTradeExactIn, isLoading: isElixirLoadingIn } = useElixirTradeExactIn(
+    isExactIn ? memoParsedAmount : undefined,
+    outputCurrency ?? undefined,
+  );
+  const { trade: bestElixirTradeExactOut, isLoading: isElixirLoadingOut } = useElixirTradeExactOut(
+    inputCurrency ?? undefined,
+    !isExactIn ? memoParsedAmount : undefined,
+  );
 
   // get trade from elixir pools
   // v2BestTradeExactIn?.outputAmount > bestElixirTradeExactIn?.outputAmount => take v2 trade
   // v2BestTradeExactIn?.outputAmount < bestElixirTradeExactIn?.outputAmount => take v3 trade
 
-  // TODO: when add elixir package
-  // const bestTradeIn = v2BestTradeExactIn
-  //   ? bestElixirTradeExactIn?.outputAmount.greaterThan(v2BestTradeExactIn?.outputAmount)
-  //     ? bestElixirTradeExactIn
-  //     : v2BestTradeExactIn
-  //   : bestElixirTradeExactIn
-  //   ? bestElixirTradeExactIn
-  //   : undefined;
-
-  const bestTradeIn = v2BestTradeExactIn;
+  const bestTradeIn = v2BestTradeExactIn
+    ? bestElixirTradeExactIn?.outputAmount.greaterThan(v2BestTradeExactIn?.outputAmount)
+      ? bestElixirTradeExactIn
+      : v2BestTradeExactIn
+    : bestElixirTradeExactIn
+    ? bestElixirTradeExactIn
+    : undefined;
 
   // v2BestTradeExactOut?.inputAmount < bestElixirTradeExactOut?.inputAmount => take v2 trade
   // v2BestTradeExactOut?.inputAmount > bestElixirTradeExactOut?.inputAmount => take v3 trade
 
-  // TODO: when add elixir package
-  // const bestTradeOut = v2BestTradeExactOut
-  //   ? bestElixirTradeExactOut?.inputAmount.lessThan(v2BestTradeExactOut?.inputAmount)
-  //     ? bestElixirTradeExactOut
-  //     : v2BestTradeExactOut
-  //   : bestElixirTradeExactOut
-  //   ? bestElixirTradeExactOut
-  //   : undefined;
-
-  const bestTradeOut = v2BestTradeExactOut;
+  const bestTradeOut = v2BestTradeExactOut
+    ? bestElixirTradeExactOut?.inputAmount.lessThan(v2BestTradeExactOut?.inputAmount)
+      ? bestElixirTradeExactOut
+      : v2BestTradeExactOut
+    : bestElixirTradeExactOut
+    ? bestElixirTradeExactOut
+    : undefined;
 
   const v2Trade = isExactIn ? bestTradeIn : bestTradeOut;
 
@@ -278,16 +269,13 @@ export function useDerivedSwapInfo(): {
     inputError = 'Insufficient ' + amountIn.currency.symbol + ' balance';
   }
 
-  // TODO: when add elixir package
-  // const isLoading = isExactIn
-  //   ? v2Trade instanceof ElixirTrade
-  //     ? isElixirLoadingIn
-  //     : isLoadingIn
-  //   : v2Trade instanceof ElixirTrade
-  //   ? isElixirLoadingOut
-  //   : isLoadingOut;
-
-  const isLoading = isExactIn ? isLoadingIn : isLoadingOut;
+  const isLoading = isExactIn
+    ? v2Trade instanceof ElixirTrade
+      ? isElixirLoadingIn
+      : isLoadingIn
+    : v2Trade instanceof ElixirTrade
+    ? isElixirLoadingOut
+    : isLoadingOut;
 
   return {
     currencies,
