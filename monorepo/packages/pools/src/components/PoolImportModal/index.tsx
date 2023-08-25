@@ -1,9 +1,9 @@
 import { Box, CloseIcon, Modal, Text } from '@pangolindex/core';
 import { CAVAX, Currency } from '@pangolindex/sdk';
 import { useChainId, useTranslation } from '@pangolindex/shared';
+import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import React, { useCallback, useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';
-import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import PoolImport from './PoolImport';
 import { Wrapper } from './styleds';
 

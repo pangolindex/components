@@ -1,5 +1,3 @@
-import PoolsUI from './components';
-
 export {
   AddLiquidityDrawer,
   AddLiquidityModal,
@@ -9,6 +7,7 @@ export {
   EarnWidget,
   FarmDrawer,
   Pools,
+  PoolsUI,
   RemoveDrawer,
   RemoveLiquidityDrawer,
   RemoveLiquidityWidget,
@@ -17,5 +16,3 @@ export {
 
 export * from './hooks';
 export * from './utils';
-
-export default PoolsUI;
