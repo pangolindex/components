@@ -21,9 +21,9 @@ export {
   EarnWidget,
   FarmDrawer,
   Pools,
+  PoolsUI,
   RemoveDrawer,
   RemoveLiquidityDrawer,
   RemoveLiquidityWidget,
   Wallet,
 };
-export default PoolsUI;
