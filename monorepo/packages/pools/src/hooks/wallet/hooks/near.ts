@@ -15,7 +15,7 @@ import {
 } from '@pangolindex/shared';
 import { useGetNearAllPool, useNearPairs, useNearTokens } from '@pangolindex/state-hooks';
 import {
-  FunctionCallOptions,
+  NearFunctionCallOptions,
   NEAR_EXCHANGE_CONTRACT_ADDRESS,
   NearTransaction,
   near,
@@ -231,7 +231,7 @@ export function useNearAddLiquidity() {
       });
     }
 
-    const actions: FunctionCallOptions[] = [
+    const actions: NearFunctionCallOptions[] = [
       {
         methodName: 'add_liquidity',
         args: { pool_id: poolId, amounts },
@@ -349,7 +349,7 @@ export function useNearRemoveLiquidity(pair: Pair) {
 
     const withdrawActions = tokens.map((token) => nearFn.withdrawAction({ tokenId: token?.address, amount: '0' }));
 
-    const actions: FunctionCallOptions[] = [
+    const actions: NearFunctionCallOptions[] = [
       {
         methodName: 'remove_liquidity',
         args: { pool_id: poolId, shares: liquidityAmount?.raw.toString(), min_amounts: amountsMin },

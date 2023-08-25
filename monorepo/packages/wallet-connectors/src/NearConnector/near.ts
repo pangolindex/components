@@ -3,16 +3,9 @@ import { ChainId, Token } from '@pangolindex/sdk';
 import BN from 'bn.js';
 import { baseDecode } from 'borsh';
 import { Contract, providers, transactions, utils } from 'near-api-js';
-import {
-  FunctionCallOptions,
-  NearPoolData,
-  NearTokenMetadata,
-  NearTransaction,
-  StorageDepositActionOptions,
-  WithdrawActionOptions,
-} from './types';
 import { cache } from './cache';
-import { near } from '.';
+import { NearConnector } from './index';
+import { FunctionCallOptions, NearPoolData, NearTokenMetadata, NearTransaction, StorageDepositActionOptions, WithdrawActionOptions } from './types';
 
 //this will be duplicate same as share constant
 const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
@@ -68,6 +61,12 @@ function getNearConfig(env = 'testnet') {
       return getNearMainnetConfig();
   }
 }
+
+export const near = new NearConnector({
+  normalizeChainId: false,
+  normalizeAccount: false,
+  config: getNearConfig('testnet'),
+});
 
 class Near {
   public async viewFunction(

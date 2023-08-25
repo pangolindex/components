@@ -4,13 +4,13 @@ import { TalismanConnector } from '@talismn/web3react-v6-connector';
 import { AvalancheCoreConnector } from './AvalancheCoreConnector';
 import { BitKeepConnector } from './BitKeepConnector';
 import { DefiConnector } from './DefiConnector';
-import { near } from './NearConnector';
-import { HashConnectEvents, HashConnector, hashconnectEvent, mainnetHederaConfig } from './HashConnector';
+import { HashConnectEvents, HashConnector, hashconnectEvent } from './HashConnector';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
 import { WalletConnectConnector, WalletConnectConnectorArguments } from './WalletConnectConnector';
 import { WalletLinkConnector } from './WalletLinkConnector';
 import { InjectedConnector, NoEthereumProviderError, UserRejectedRequestError } from './Web3ReactInjectedConnector';
+import { NearTransaction, FunctionCallOptions as NearFunctionCallOptions } from './NearConnector/types';
 
 export const SUPPORTED_EVM_CHAINS_ID: number[] = ALL_CHAINS.filter(
   (chain) => (chain.pangolin_is_live || chain.supported_by_bridge) && chain?.network_type === NetworkType.EVM,
@@ -67,22 +67,14 @@ export const venly = new VenlyConnector({
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
-export const hashConnect = new HashConnector({
-  normalizeChainId: false,
-  normalizeAccount: false,
-  config: mainnetHederaConfig,
-});
-
 export const avalancheCore = new AvalancheCoreConnector({
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
 export { HashConnector, HashConnectEvents, hashconnectEvent, WalletConnectConnector, NetworkConnector };
 export { UserRejectedRequestError, NoEthereumProviderError };
-export type { WalletConnectConnectorArguments };
+export type { WalletConnectConnectorArguments, NearTransaction, NearFunctionCallOptions };
 
-export { near };
 export * from './NearConnector/near';
-export * from './NearConnector/types';
 export * from './HashConnector/hedera';
 export * from './constants';
