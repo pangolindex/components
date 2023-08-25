@@ -2,7 +2,9 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import Layout from './layout';
+import AirdropUI from './pages/Airdrop';
 import BridgeUI from './pages/Bridge';
+import ElixirUI from './pages/Elixir';
 import Sample from './pages/Sample';
 import SarStake from './pages/SarSingleStake';
 import Swap from './pages/Swap';
@@ -47,7 +49,8 @@ export default function App() {
             <Route path="pool" element={<Pool />} />
             <Route path="dashboard" element={<Sample />} />
             <Route path="bridge" element={<BridgeUI />} />
-
+            <Route path="airdrop" element={<AirdropUI />} />
+            <Route path="elixir" element={<ElixirUI />} />
             <Route path="*" element={<Swap />} />
           </Route>
         </Routes>

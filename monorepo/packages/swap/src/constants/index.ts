@@ -1,12 +1,10 @@
 import { ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
-import { DAIe, PNG, USDC, USDCe, USDTe } from '@pangolindex/shared';
+import { BIPS_BASE, DAIe, PNG, USDC, USDCe, USDTe } from '@pangolindex/shared';
 
 // a list of tokens by chain
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[];
 };
-
-export const BIPS_BASE = JSBI.BigInt(10000);
 
 // used for warning states
 export const ALLOWED_PRICE_IMPACT_LOW: Percent = new Percent(JSBI.BigInt(100), BIPS_BASE); // 1%
