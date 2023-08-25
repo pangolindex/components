@@ -16,7 +16,6 @@ export * from './usePair';
 export * from './tokens';
 export * from './useCurrencyPrice';
 
-
 // hooks
 export {
   useUSDCPrice,
@@ -34,3 +33,5 @@ export {
 };
 
 export { ApprovalState };
+
+export type { TokenReturnType } from 'src/hooks/tokens/constant';

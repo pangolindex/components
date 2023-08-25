@@ -6,3 +6,6 @@ export * from './pairs';
 export * from './minichef';
 export * from './pangochef';
 export * from './singleStake';
+export * from './feeTierDistribution';
+export * from './elixirPools';
+export * from './allTicks';

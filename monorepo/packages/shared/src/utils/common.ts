@@ -32,7 +32,6 @@ import { Hedera } from '@pangolindex/wallet-connectors';
 import { ROUTER_ADDRESS, ROUTER_DAAS_ADDRESS, SAR_STAKING_ADDRESS, ZERO_ADDRESS } from 'src/constants';
 import { TokenAddressMap } from '../types';
 import { wait } from './retry';
-// import { Bound } from 'src/state/pmint/elixir/atom';  TODO: when add elixir
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -587,28 +586,3 @@ export function decimalToFraction(number: number): Fraction {
 export function capitalizeWord(word = '') {
   return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 }
-
-// TODO: when add elixir
-// export function formatTickPrice({
-//   price,
-//   atLimit,
-//   direction,
-//   placeholder,
-//   numberType,
-// }: {
-//   price: Price | undefined;
-//   atLimit: { [bound in Bound]?: boolean | undefined };
-//   direction: Bound;
-//   placeholder?: string;
-//   numberType?: NumberType;
-// }) {
-//   if (atLimit[direction]) {
-//     return direction === Bound.LOWER ? '0' : '∞';
-//   }
-
-//   if (!price && placeholder !== undefined) {
-//     return placeholder;
-//   }
-
-//   return formatPrice(price, numberType ?? NumberType.TokenNonTx);
-// }

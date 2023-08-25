@@ -18,6 +18,7 @@ export enum MixPanelEvents {
   HIDE_BALANCES = 'Hidden Balance',
   ADD_WATCHLIST = 'Added Token in Watchlist',
   REMOVE_WATCHLIST = 'Removed Token from Watchlist',
+  CLAIM_AIRDROP = 'Claimed Airdrop',
 }
 
 interface MixPanelProviderProps {
