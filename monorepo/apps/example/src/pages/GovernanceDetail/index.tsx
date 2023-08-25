@@ -1,4 +1,4 @@
-import { GovernanceDetail } from '@pangolindex/governance-components';
+import { GovernanceDetail } from '@honeycomb/governance';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 

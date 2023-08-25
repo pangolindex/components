@@ -1,4 +1,4 @@
-import { GovernanceList } from '@pangolindex/governance-components';
+import { GovernanceList } from '@honeycomb/governance';
 import React from 'react';
 
 function Governance() {

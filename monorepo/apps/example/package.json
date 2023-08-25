@@ -13,12 +13,12 @@
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
+    "@honeycomb/governance": "*",
     "@pangolindex/sdk": "5.3.4",
     "@pangolindex/airdrop": "*",
     "@pangolindex/bridge": "*",
     "@pangolindex/core": "*",
     "@pangolindex/elixir": "*",
-    "@pangolindex/governance-components": "*",
     "@pangolindex/sar": "*",
     "@pangolindex/honeycomb-provider": "*",
     "@pangolindex/portfolio": "*",

@@ -1,5 +1,5 @@
 {
-  "name": "@pangolindex/governance-components",
+  "name": "@honeycomb/governance",
   "version": "0.0.0",
   "main": "lib/index.cjs.js",
   "module": "lib/index.esm.js",
