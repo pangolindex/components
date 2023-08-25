@@ -18,7 +18,7 @@ import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { ThemeContext } from 'styled-components';
 import { SpaceType } from 'src/hooks/minichef/types';
-import { Field } from 'src/hooks/mint/atom';
+import { Field } from 'src/hooks/state/mint/atom';
 import { useHederaPGLAssociated } from 'src/hooks/wallet/hooks/hedera';
 import { ErrorBox, ErrorWrapper, Footer, Header, OutputText, Root, StatWrapper } from './styled';
 

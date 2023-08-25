@@ -25,8 +25,8 @@ import { hederaFn } from '@pangolindex/wallet-connectors';
 import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery, useQueryClient } from 'react-query';
-import { Field } from '../../burn/atom';
-import { Field as AddField } from '../../mint/atom';
+import { Field } from '../../state/burn/atom';
+import { Field as AddField } from '../../state/mint/atom';
 import { AddLiquidityProps, AttemptToApproveProps, CreatePoolProps, RemoveLiquidityProps } from '../types';
 import { useTrackedTokenPairs } from '../utils';
 

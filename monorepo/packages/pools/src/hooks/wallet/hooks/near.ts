@@ -15,8 +15,8 @@ import {
 } from '@pangolindex/shared';
 import { useGetNearAllPool, useNearPairs, useNearTokens } from '@pangolindex/state-hooks';
 import {
-  NearFunctionCallOptions,
   NEAR_EXCHANGE_CONTRACT_ADDRESS,
+  NearFunctionCallOptions,
   NearTransaction,
   near,
   nearFn,
@@ -25,8 +25,8 @@ import { parseUnits } from 'ethers/lib/utils';
 import qs from 'qs';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries } from 'react-query';
-import { Field } from '../../burn/atom';
-import { Field as AddField } from '../../mint/atom';
+import { Field } from '../../state/burn/atom';
+import { Field as AddField } from '../../state/mint/atom';
 import { AddLiquidityProps, CreatePoolProps, RemoveLiquidityProps } from '../types';
 
 /**

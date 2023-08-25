@@ -8,9 +8,9 @@ import {
 } from '@pangolindex/state-hooks';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
-import { useBurnStateAtom } from 'src/hooks/burn/atom';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
-import { useMintStateAtom } from 'src/hooks/mint/atom';
+import { useBurnStateAtom } from 'src/hooks/state/burn/atom';
+import { useMintStateAtom } from 'src/hooks/state/mint/atom';
 import DetailView from './DetailView';
 
 export interface DetailModalProps {
