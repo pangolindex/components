@@ -10,6 +10,7 @@ import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useUSDCPriceHook } from 'src/hooks/useUSDCPrice';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
 import { useTokensCurrencyPriceHook } from './multiChainsHooks';
+import { useTokenComparator } from './sorting';
 
 export * from './useTotalSupply';
 export * from './usePair';
@@ -30,6 +31,7 @@ export {
   useHederaApproveCallback,
   useCurrency,
   useTokensCurrencyPriceHook,
+  useTokenComparator
 };
 
 export { ApprovalState };

@@ -9,7 +9,7 @@ import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
 import CurrencyGrid from 'src/components/CurrencyGrid';
-import { useTokenComparator } from 'src/components/SearchModal/sorting';
+import { useTokenComparator } from '@pangolindex/state-hooks';
 import TokenListDrawer from 'src/components/TokenListDrawer';
 import { CurrencyList, ListLogo, ManageList } from './styled';
 
