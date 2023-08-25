@@ -1,13 +1,13 @@
+import { AutoColumn, ColumnCenter, Loader, Text } from '@pangolindex/core';
+import { useChainId, wrappedCurrency } from '@pangolindex/shared';
 import { format } from 'd3';
 import { saturate } from 'polished';
 import React, { ReactNode, useCallback, useContext, useMemo } from 'react';
 import { BarChart2, CloudOff, Inbox } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { batch } from 'react-redux';
-import { Loader, Text, AutoColumn, ColumnCenter } from '@pangolindex/core';
-import { useDensityChartData } from 'src/hooks/chart/evm';
 import { ThemeContext } from 'styled-components';
-import { useChainId, wrappedCurrency } from '@pangolindex/shared';
+import { useDensityChartData } from 'src/hooks/chart/evm';
 import { Chart } from './Chart';
 import { ChartWrapper } from './styles';
 import { Bound, FeeAmount, LiquidityChartRangeInputProps, ZOOM_LEVELS } from './types';

@@ -3,10 +3,10 @@ import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import Layout from './layout';
 import BridgeUI from './pages/Bridge';
+import ElixirUI from './pages/Elixir';
 import Sample from './pages/Sample';
 import SarStake from './pages/SarSingleStake';
 import Swap from './pages/Swap';
-import ElixirUI from './pages/Elixir';
 
 const AppWrapper = styled.div`
   display: flex;

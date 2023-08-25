@@ -9,13 +9,13 @@ import {
   TokenAmount,
 } from '@pangolindex/sdk';
 import {
+  BIPS_BASE,
   calculateGasMargin,
   useChainId,
   useLibrary,
   usePangolinWeb3,
   waitForTransaction,
   wrappedCurrency,
-  BIPS_BASE,
 } from '@pangolindex/shared';
 import {
   useCurrency,
@@ -26,9 +26,9 @@ import {
 } from '@pangolindex/state-hooks';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
-import { useConcLiqNFTPositionManagerContract as useElixirNFTPositionManagerContract } from 'src/utils/contracts';
 import { usePool } from 'src/hooks/common';
 import { Field } from 'src/state/mint/atom';
+import { useConcLiqNFTPositionManagerContract as useElixirNFTPositionManagerContract } from 'src/utils/contracts';
 import {
   ElixirAddLiquidityProps,
   ElixirLiquidityCollectFeesProps,

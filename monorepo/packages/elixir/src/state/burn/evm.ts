@@ -1,11 +1,11 @@
 import { CHAINS, NonfungiblePositionManager, Token, TokenAmount } from '@pangolindex/sdk';
 import {
+  calculateGasMargin,
   useChainId,
   useLibrary,
   usePangolinWeb3,
-  wrappedCurrency,
-  calculateGasMargin,
   waitForTransaction,
+  wrappedCurrency,
 } from '@pangolindex/shared';
 import { useTransactionAdder } from '@pangolindex/state-hooks';
 import { RemoveElixirLiquidityProps } from './types';

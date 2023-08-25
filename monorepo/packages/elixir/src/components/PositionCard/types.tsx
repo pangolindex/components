@@ -1,6 +1,6 @@
 import { FeeAmount } from '@pangolindex/sdk';
-import { BigNumber } from 'ethers';
 import { TokenReturnType } from '@pangolindex/state-hooks';
+import { BigNumber } from 'ethers';
 
 export type PositionCardProps = {
   token0: TokenReturnType;

@@ -23,15 +23,15 @@ import {
   wrappedCurrency,
 } from '@pangolindex/shared';
 import {
+  TokenReturnType,
   useBlockNumber,
   useMultipleContractSingleData,
   useSingleCallResult,
-  TokenReturnType,
 } from '@pangolindex/state-hooks';
 import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
-import { useConcLiqNFTPositionManagerContract } from 'src/utils/contracts';
 import { ELIXIR_POOL_STATE_INTERFACE } from 'src/constants/abis/elixirPool';
+import { useConcLiqNFTPositionManagerContract } from 'src/utils/contracts';
 import { usePool } from './common';
 import { FeeTierDistribution, PoolState, TokenId, UsePositionTokenURIResult } from './types';
 

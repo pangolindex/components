@@ -1,8 +1,8 @@
 import { Contract } from '@ethersproject/contracts';
 import { CHAINS } from '@pangolindex/sdk';
+import { useChainId, useContract } from '@pangolindex/shared';
 import NonFungiblePositionManager from 'src/constants/abis/nonfungiblePositionManager.json';
 import TickLensABI from 'src/constants/abis/tickLens.json';
-import { useChainId, useContract } from '@pangolindex/shared';
 
 export function useConcLiqNFTPositionManagerContract(withSignerIfPossible?: boolean): Contract | null {
   const chainId = useChainId();

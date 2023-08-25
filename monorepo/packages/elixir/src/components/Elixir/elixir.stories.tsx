@@ -1,6 +1,6 @@
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
-import Elixir from '.';
+import { Elixir } from '.';
 
 export default {
   component: Elixir,

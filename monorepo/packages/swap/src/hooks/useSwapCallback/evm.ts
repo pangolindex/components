@@ -12,6 +12,7 @@ import {
   TradeType,
 } from '@pangolindex/sdk';
 import {
+  BIPS_BASE,
   INITIAL_ALLOWED_SLIPPAGE,
   ZERO_ADDRESS,
   calculateGasMargin,
@@ -24,7 +25,6 @@ import {
   useENS,
   useLibrary,
   usePangolinWeb3,
-  BIPS_BASE
 } from '@pangolindex/shared';
 import { useTransactionAdder, useTransactionDeadline } from '@pangolindex/state-hooks';
 import { useMemo } from 'react';
