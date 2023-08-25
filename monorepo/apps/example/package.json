@@ -18,6 +18,7 @@
     "@pangolindex/bridge": "*",
     "@pangolindex/core": "*",
     "@pangolindex/elixir": "*",
+    "@pangolindex/governance-components": "*",
     "@pangolindex/sar": "*",
     "@pangolindex/honeycomb-provider": "*",
     "@pangolindex/portfolio": "*",

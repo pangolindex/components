@@ -5,6 +5,8 @@ import Layout from './layout';
 import AirdropUI from './pages/Airdrop';
 import BridgeUI from './pages/Bridge';
 import ElixirUI from './pages/Elixir';
+import Governance from './pages/Governance';
+import GovernanceDetailV2 from './pages/GovernanceDetail';
 import Sample from './pages/Sample';
 import SarStake from './pages/SarSingleStake';
 import Swap from './pages/Swap';
@@ -49,6 +51,8 @@ export default function App() {
             <Route path="bridge" element={<BridgeUI />} />
             <Route path="airdrop" element={<AirdropUI />} />
             <Route path="elixir" element={<ElixirUI />} />
+            <Route path="vote" element={<Governance />} />
+            <Route path="vote/:id" element={<GovernanceDetailV2 />} />
             <Route path="*" element={<Swap />} />
           </Route>
         </Routes>
