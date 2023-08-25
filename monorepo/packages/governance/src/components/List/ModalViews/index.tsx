@@ -1,8 +1,7 @@
 import { AutoColumn, Box, CloseIcon, ColumnCenter, Text } from '@pangolindex/core';
-import { ExternalLink, getEtherscanLink, useChainId } from '@pangolindex/shared';
+import { ExternalLink, getEtherscanLink, useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useContext } from 'react';
 import { ArrowUpCircle } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import styled, { ThemeContext, keyframes } from 'styled-components';
 import Circle from 'src/assets/blue-loader.svg';
 

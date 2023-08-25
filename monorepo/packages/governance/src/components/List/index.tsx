@@ -1,5 +1,5 @@
 import { Box, Loader, Text } from '@pangolindex/core';
-import { ChainId, JSBI, TokenAmount } from '@pangolindex/sdk';
+import { JSBI, TokenAmount } from '@pangolindex/sdk';
 import {
   PNG,
   ZERO_ADDRESS,
@@ -119,7 +119,7 @@ const GovernanceList = () => {
                     </Text>
                     <AddressButton>
                       <StyledExternalLink
-                        href={getEtherscanLink(ChainId.FUJI, userDelegatee, 'address')}
+                        href={getEtherscanLink(chainId, userDelegatee, 'address')}
                         style={{ margin: '0 4px' }}
                       >
                         {getAddress()}

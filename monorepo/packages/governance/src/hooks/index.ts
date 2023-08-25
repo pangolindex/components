@@ -1,9 +1,11 @@
 /* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
+import { useChainId } from '@pangolindex/shared';
 import { useSarNftAllProposalData } from './common';
 import { useDummyAllProposalData, useDummyVoteCallback } from './dummy';
 import { useAllProposalData, useVoteCallback } from './evm';
 import { useHederaVoteCallback } from './hedera';
+import { ProposalData } from './types';
 
 export type UseAllProposalDataHookType = {
   [chainId in ChainId]: typeof useSarNftAllProposalData | typeof useAllProposalData | typeof useDummyAllProposalData;
@@ -78,3 +80,12 @@ export const useVoteCallbackHook: UseVoteCallbackHookType = {
   [ChainId.OP]: useDummyVoteCallback,
   [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyVoteCallback,
 };
+
+export function useProposalData(id: string): ProposalData | undefined {
+  const chainId = useChainId();
+
+  const useAllProposalData = useAllProposalDataHook[chainId];
+
+  const allProposalData = useAllProposalData();
+  return allProposalData?.find((p) => p.id === id);
+}

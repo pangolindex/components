@@ -1,5 +1,5 @@
+import { useTranslation } from '@pangolindex/shared';
 import React, { useContext } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import { StyledLink } from 'src/components/Detail/styleds';
 import { Card, CardButtons, CardTitle, DetailsButton, NumberId, Title, VoteButton } from './styleds';

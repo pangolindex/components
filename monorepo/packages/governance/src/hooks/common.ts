@@ -10,7 +10,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { PROPOSAL_STORAGE_INTERFACE } from 'src/constants';
 import { ProposalData, ProposalState } from './types';
 import { useSarNftGovernanceAssistantContract, useSarNftGovernanceContract } from './useContract';
-import { useAllProposalDataHook } from '.';
 
 export const enumerateProposalState = (state: number) => {
   const proposalStates = ['pending', 'active', 'canceled', 'defeated', 'succeeded', 'queued', 'expired', 'executed'];
@@ -104,15 +103,6 @@ export function useGetProposalsViaSubgraph(id?: string) {
 export function useGetProposalDetailViaSubgraph(id: string): ProposalData | undefined {
   const allProposalData = useGetProposalsViaSubgraph(id);
   return allProposalData?.find((p: ProposalData) => p.id === id);
-}
-
-export function useProposalData(id: string): ProposalData | undefined {
-  const chainId = useChainId();
-
-  const useAllProposalData = useAllProposalDataHook[chainId];
-
-  const allProposalData = useAllProposalData();
-  return allProposalData?.find((p) => p.id === id);
 }
 
 // get count of all proposals made

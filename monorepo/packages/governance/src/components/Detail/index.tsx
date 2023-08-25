@@ -9,12 +9,12 @@ import {
   isAddress,
   useChainId,
   usePangolinWeb3,
+  useTranslation,
 } from '@pangolindex/shared';
 import { useTokenBalance } from '@pangolindex/state-hooks';
 import { DateTime } from 'luxon';
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useGetProposalDetailViaSubgraph } from 'src/hooks/common';
