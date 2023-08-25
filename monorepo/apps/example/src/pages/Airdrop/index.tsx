@@ -1,9 +1,9 @@
-import React from 'react';
-import { ChainId, SONGBIRD_CANARY, FLARE_MAINNET, HEDERA_MAINNET } from '@pangolindex/sdk';
-import { PNG } from '@pangolindex/shared';
-import { Frame } from './styleds';
 import { Airdrop, ComingSoon } from '@pangolindex/airdrop';
 import { getTokenLogoURL } from '@pangolindex/core';
+import { ChainId, FLARE_MAINNET, HEDERA_MAINNET, SONGBIRD_CANARY } from '@pangolindex/sdk';
+import { PNG } from '@pangolindex/shared';
+import React from 'react';
+import { Frame } from './styleds';
 
 const activeAirdrops = [
   {

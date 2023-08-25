@@ -2,12 +2,12 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import Layout from './layout';
+import AirdropUI from './pages/Airdrop';
 import BridgeUI from './pages/Bridge';
 import ElixirUI from './pages/Elixir';
 import Sample from './pages/Sample';
 import SarStake from './pages/SarSingleStake';
 import Swap from './pages/Swap';
-import AirdropUI from './pages/Airdrop';
 
 const AppWrapper = styled.div`
   display: flex;
