@@ -9,7 +9,7 @@ export enum SubgraphEnum {
   Elixir = 'elixir',
   SingleStaking = 'singleStaking',
   Governance = 'governance',
-  Blocks = 'blocks'
+  Blocks = 'blocks',
 }
 
 export const getSubgraphClient = (chainId: ChainId, subgraph: SubgraphEnum) => {

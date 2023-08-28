@@ -189,4 +189,3 @@ export function useRefetchPangoChefSubgraph() {
 
   return async () => await queryClient.refetchQueries(['get-pangochef-subgraph-farms', chainId, account]);
 }
-

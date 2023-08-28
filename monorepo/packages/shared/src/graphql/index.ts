@@ -6,7 +6,7 @@ export * from './pairs';
 export * from './minichef';
 export * from './pangochef';
 export * from './singleStake';
-export * from './vote'
+export * from './vote';
 export * from './feeTierDistribution';
 export * from './elixirPools';
 export * from './allTicks';
