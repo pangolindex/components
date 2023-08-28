@@ -1,6 +1,8 @@
-import { ChainId } from '@pangolindex/sdk';
+import { ChainId, Currency, Pair } from '@pangolindex/sdk';
+import { PairState, useChainId } from '@pangolindex/shared';
+import { useMemo } from 'react';
 import { usePairs, usePairsContract, usePairsViaSubgraph } from './evm';
-import { useNearPairs } from './near';
+import { useGetNearAllPool, useGetNearPoolId, useNearPairs } from './near';
 
 export type UsePairsHookType = {
   [chainId in ChainId]: typeof usePairsContract | typeof useNearPairs | typeof usePairsViaSubgraph | typeof usePairs;
@@ -8,7 +10,7 @@ export type UsePairsHookType = {
 
 export const usePairsHook: UsePairsHookType = {
   [ChainId.FUJI]: usePairsContract,
-  [ChainId.AVALANCHE]: usePairs,
+  [ChainId.AVALANCHE]: usePairsContract,
   [ChainId.WAGMI]: usePairsContract,
   [ChainId.COSTON]: usePairsContract,
   [ChainId.SONGBIRD]: usePairsContract,
@@ -38,3 +40,14 @@ export const usePairsHook: UsePairsHookType = {
   [ChainId.OP]: usePairsContract,
   [ChainId.SKALE_BELLATRIX_TESTNET]: usePairsContract,
 };
+
+export function usePair(tokenA?: Currency, tokenB?: Currency): [PairState, Pair | null] {
+  const chainId = useChainId();
+
+  const tokens: [Currency | undefined, Currency | undefined][] = useMemo(() => [[tokenA, tokenB]], [tokenA, tokenB]);
+
+  const usePairs_ = usePairsHook[chainId];
+  return usePairs_(tokens)[0];
+}
+
+export { usePairs, usePairsContract, usePairsViaSubgraph, useNearPairs, useGetNearAllPool, useGetNearPoolId };

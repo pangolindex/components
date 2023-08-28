@@ -1,6 +1,7 @@
 import { ChainId } from '@pangolindex/sdk';
 import { useDummyHook } from 'src/hooks/multiChainsHooks';
 import { useToken, useTokensContract } from './evm';
+import { useGetAllHederaAssociatedTokens, useGetHederaTokenNotAssociated, useHederaTokenAssociated } from './hedera';
 import { useNearToken, useNearTokens } from './near';
 import { useTokens, useTokensViaSubGraph } from './subgraph';
 
@@ -79,4 +80,16 @@ export const useTokensHook: UseTokensHookType = {
   [ChainId.MOONBEAM]: useDummyHook,
   [ChainId.OP]: useDummyHook,
   [ChainId.SKALE_BELLATRIX_TESTNET]: useTokensContract,
+};
+
+export {
+  useToken,
+  useTokensContract,
+  useNearToken,
+  useNearTokens,
+  useTokens,
+  useTokensViaSubGraph,
+  useGetAllHederaAssociatedTokens,
+  useGetHederaTokenNotAssociated,
+  useHederaTokenAssociated,
 };

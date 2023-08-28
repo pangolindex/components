@@ -3,6 +3,8 @@ export * from './news';
 export * from './block';
 export * from './tokens';
 export * from './pairs';
+export * from './minichef';
+export * from './pangochef';
 export * from './singleStake';
 export * from './feeTierDistribution';
 export * from './elixirPools';

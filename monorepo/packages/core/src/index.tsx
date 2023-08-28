@@ -40,4 +40,5 @@ export * from './Icons';
 export * from './Column';
 export * from './Tabs';
 
+export { ANALYTICS_PAGE_MAPPING } from './constants';
 export { getTokenLogoURL } from './utils/getTokenLogoURL';

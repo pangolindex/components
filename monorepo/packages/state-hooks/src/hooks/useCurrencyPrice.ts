@@ -9,8 +9,7 @@ import {
   useSubgraphTokens,
 } from '@pangolindex/shared';
 import { useMemo } from 'react';
-import { usePairsHook } from 'src/hooks/usePair';
-import { usePair } from 'src/hooks/usePair/evm';
+import { usePair, usePairsHook } from 'src/hooks/usePair';
 import { useShouldUseSubgraph } from 'src/state';
 import { useTokensCurrencyPriceHook } from './multiChainsHooks';
 

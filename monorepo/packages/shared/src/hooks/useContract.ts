@@ -2,6 +2,7 @@ import { Contract } from '@ethersproject/contracts';
 import { WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { ERC20_ABI, ERC20_BYTES32_ABI, MULTICALL_ABI, WETH_ABI } from 'src/abis';
+import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
 import { MULTICALL_NETWORKS, ZERO_ADDRESS } from 'src/constants';
 import { useLibrary, usePangolinWeb3 } from 'src/provider';
 import { getContract } from 'src/utils';
@@ -38,4 +39,8 @@ export function useMulticallContract(): Contract | null {
 
 export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible);
+}
+
+export function usePairContract(pairAddress?: string, withSignerIfPossible?: boolean): Contract | null {
+  return useContract(pairAddress, IPangolinPair.abi, withSignerIfPossible);
 }
