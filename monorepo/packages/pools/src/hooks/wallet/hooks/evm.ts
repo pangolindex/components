@@ -24,8 +24,8 @@ import {
 } from '@pangolindex/state-hooks';
 import { BigNumber } from 'ethers';
 import { useMemo, useState } from 'react';
-import { Field } from '../../state/burn/atom';
-import { Field as AddField } from '../../state/mint/atom';
+import { Field } from 'src/state/burn/atom';
+import { Field as AddField } from 'src/state/mint/atom';
 import { AddLiquidityProps, AttemptToApproveProps, RemoveLiquidityProps } from '../types';
 import { useGetTransactionSignature, useRefetchMinichefSubgraph, useTrackedTokenPairs } from '../utils';
 

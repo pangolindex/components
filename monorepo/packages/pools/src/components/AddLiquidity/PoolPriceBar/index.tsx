@@ -3,7 +3,7 @@ import { CHAINS, Currency, CurrencyAmount, Percent, Price } from '@pangolindex/s
 import { ONE_BIPS, useChainId, useTranslation } from '@pangolindex/shared';
 import { useUSDCPriceHook } from '@pangolindex/state-hooks';
 import React from 'react';
-import { Field } from 'src/hooks/state/mint/atom';
+import { Field } from 'src/state/mint/atom';
 import { GridContainer, Root } from './styled';
 
 interface BarProps {

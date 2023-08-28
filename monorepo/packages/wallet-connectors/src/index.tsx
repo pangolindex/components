@@ -7,8 +7,8 @@ import { DefiConnector } from './DefiConnector';
 import { HashConnectEvents, HashConnector, hashconnectEvent } from './HashConnector';
 import {
   FunctionCallOptions as NearFunctionCallOptions,
-  NearTransaction,
   NearTokenMetadata,
+  NearTransaction,
 } from './NearConnector/types';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';

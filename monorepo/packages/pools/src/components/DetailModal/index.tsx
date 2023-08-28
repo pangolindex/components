@@ -9,8 +9,8 @@ import {
 import React, { useCallback, useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
-import { useBurnStateAtom } from 'src/hooks/state/burn/atom';
-import { useMintStateAtom } from 'src/hooks/state/mint/atom';
+import { useBurnStateAtom } from 'src/state/burn/atom';
+import { useMintStateAtom } from 'src/state/mint/atom';
 import DetailView from './DetailView';
 
 export interface DetailModalProps {
