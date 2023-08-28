@@ -31,7 +31,7 @@ export {
   useHederaApproveCallback,
   useCurrency,
   useTokensCurrencyPriceHook,
-  useTokenComparator
+  useTokenComparator,
 };
 
 export { ApprovalState };

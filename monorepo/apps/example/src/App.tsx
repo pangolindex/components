@@ -5,10 +5,10 @@ import Layout from './layout';
 import AirdropUI from './pages/Airdrop';
 import BridgeUI from './pages/Bridge';
 import ElixirUI from './pages/Elixir';
+import Pool from './pages/Pool';
 import Sample from './pages/Sample';
 import SarStake from './pages/SarSingleStake';
 import Swap from './pages/Swap';
-import Pool from './pages/Pool';
 
 const AppWrapper = styled.div`
   display: flex;

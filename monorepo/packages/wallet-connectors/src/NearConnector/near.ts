@@ -4,8 +4,15 @@ import BN from 'bn.js';
 import { baseDecode } from 'borsh';
 import { Contract, providers, transactions, utils } from 'near-api-js';
 import { cache } from './cache';
+import {
+  FunctionCallOptions,
+  NearPoolData,
+  NearTokenMetadata,
+  NearTransaction,
+  StorageDepositActionOptions,
+  WithdrawActionOptions,
+} from './types';
 import { NearConnector } from './index';
-import { FunctionCallOptions, NearPoolData, NearTokenMetadata, NearTransaction, StorageDepositActionOptions, WithdrawActionOptions } from './types';
 
 //this will be duplicate same as share constant
 const NEAR_API_BASE_URL = `https://testnet-indexer.ref-finance.com`;
