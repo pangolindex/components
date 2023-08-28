@@ -25,8 +25,8 @@ import { parseUnits } from 'ethers/lib/utils';
 import qs from 'qs';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries } from 'react-query';
-import { Field } from '../../state/burn/atom';
-import { Field as AddField } from '../../state/mint/atom';
+import { Field } from 'src/state/burn/atom';
+import { Field as AddField } from 'src/state/mint/atom';
 import { AddLiquidityProps, CreatePoolProps, RemoveLiquidityProps } from '../types';
 
 /**

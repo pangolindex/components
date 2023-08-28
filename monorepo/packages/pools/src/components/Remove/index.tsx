@@ -2,7 +2,7 @@ import { Box, Text, ToggleButtons } from '@pangolindex/core';
 import { unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useState } from 'react';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
-import { useDerivedBurnInfo } from 'src/hooks/state/burn/hooks';
+import { useDerivedBurnInfo } from 'src/state/burn/hooks';
 import RemoveFarm from '../RemoveFarm';
 import RemoveLiquidity from '../RemoveLiquidity';
 import { RemoveWrapper } from './styleds';

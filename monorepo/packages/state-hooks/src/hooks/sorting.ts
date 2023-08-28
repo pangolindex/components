@@ -1,7 +1,7 @@
-import { Token, BridgeCurrency } from '@pangolindex/sdk';
+import { BridgeCurrency, Token } from '@pangolindex/sdk';
+import { getTokenComparator } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { useAllTokenBalances } from '..';
-import { getTokenComparator } from '@pangolindex/shared';
 
 type SortCurrency = Token | BridgeCurrency;
 

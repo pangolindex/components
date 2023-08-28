@@ -1,5 +1,5 @@
-import React from 'react';
 import { PoolsUI } from '@pangolindex/pools';
+import React from 'react';
 
 function Pool() {
   return (

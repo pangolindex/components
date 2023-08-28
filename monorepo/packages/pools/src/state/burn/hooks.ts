@@ -9,8 +9,8 @@ import {
 } from '@pangolindex/shared';
 import { usePair } from '@pangolindex/state-hooks';
 import { useCallback } from 'react';
-import { usePairTotalSupplyHook } from '../../pair';
-import { usePairBalanceHook } from '../../wallet/hooks';
+import { usePairTotalSupplyHook } from 'src/hooks/pair';
+import { usePairBalanceHook } from 'src/hooks/wallet/hooks';
 import { Field, initialKeyState, useBurnStateAtom } from './atom';
 
 export function useBurnState(pairAddress: string) {

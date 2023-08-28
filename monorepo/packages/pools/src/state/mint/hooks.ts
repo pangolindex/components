@@ -20,7 +20,7 @@ import {
 } from '@pangolindex/shared';
 import { useCurrencyBalances, usePair } from '@pangolindex/state-hooks';
 import { useCallback, useMemo } from 'react';
-import { usePairTotalSupplyHook } from '../../pair';
+import { usePairTotalSupplyHook } from 'src/hooks/pair';
 import { Field, initialKeyState, useMintStateAtom } from './atom';
 
 const ZERO = JSBI.BigInt(0);

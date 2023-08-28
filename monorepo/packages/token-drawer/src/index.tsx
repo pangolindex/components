@@ -1,7 +1,13 @@
 import { Box, Drawer, Text, TextInput } from '@pangolindex/core';
 import { CAVAX, ChainId, Currency, Token, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { Field, filterTokenOrChain, isAddress, useChainId, usePrevious, useTranslation } from '@pangolindex/shared';
-import { useAddUserToken, useAllTokens, useSelectedListInfo, useTokenHook } from '@pangolindex/state-hooks';
+import {
+  useAddUserToken,
+  useAllTokens,
+  useSelectedListInfo,
+  useTokenComparator,
+  useTokenHook,
+} from '@pangolindex/state-hooks';
 import { Hedera } from '@pangolindex/wallet-connectors';
 import deepEqual from 'deep-equal';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -9,7 +15,6 @@ import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeGrid } from 'react-window';
 import CurrencyGrid from 'src/components/CurrencyGrid';
-import { useTokenComparator } from '@pangolindex/state-hooks';
 import TokenListDrawer from 'src/components/TokenListDrawer';
 import { CurrencyList, ListLogo, ManageList } from './styled';
 

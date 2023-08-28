@@ -21,9 +21,9 @@ import {
   useWalletModalToggle,
 } from '@pangolindex/state-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Field, useBurnStateAtom } from 'src/hooks/state/burn/atom';
-import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/hooks/state/burn/hooks';
 import { useRemoveLiquidityHook } from 'src/hooks/wallet/hooks';
+import { Field, useBurnStateAtom } from 'src/state/burn/atom';
+import { useBurnActionHandlers, useBurnState, useDerivedBurnInfo } from 'src/state/burn/hooks';
 import { ButtonWrapper, RemoveWrapper } from './styleds';
 
 interface RemoveLiquidityProps {
