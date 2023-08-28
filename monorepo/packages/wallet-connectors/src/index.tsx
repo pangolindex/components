@@ -5,6 +5,11 @@ import { AvalancheCoreConnector } from './AvalancheCoreConnector';
 import { BitKeepConnector } from './BitKeepConnector';
 import { DefiConnector } from './DefiConnector';
 import { HashConnectEvents, HashConnector, hashconnectEvent } from './HashConnector';
+import {
+  FunctionCallOptions as NearFunctionCallOptions,
+  NearTokenMetadata,
+  NearTransaction,
+} from './NearConnector/types';
 import { NetworkConnector } from './NetworkConnector';
 import { VenlyConnector } from './Venly';
 import { WalletConnectConnector, WalletConnectConnectorArguments } from './WalletConnectConnector';
@@ -72,7 +77,7 @@ export const avalancheCore = new AvalancheCoreConnector({
 
 export { HashConnector, HashConnectEvents, hashconnectEvent, WalletConnectConnector, NetworkConnector };
 export { UserRejectedRequestError, NoEthereumProviderError };
-export type { WalletConnectConnectorArguments };
+export type { WalletConnectConnectorArguments, NearTransaction, NearFunctionCallOptions, NearTokenMetadata };
 
 export * from './NearConnector/near';
 export * from './HashConnector/hedera';

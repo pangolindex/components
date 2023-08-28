@@ -1,6 +1,6 @@
 import { Hedera } from '@pangolindex/wallet-connectors';
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/provider';
 import { SubgraphEnum, useSubgraphClient } from './client';
 import { SubgraphToken } from './tokens';
@@ -181,3 +181,12 @@ export function useSubgraphFarmsStakedAmount() {
     },
   );
 }
+
+export function useRefetchPangoChefSubgraph() {
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const queryClient = useQueryClient();
+
+  return async () => await queryClient.refetchQueries(['get-pangochef-subgraph-farms', chainId, account]);
+}
+

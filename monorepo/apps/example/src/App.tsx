@@ -7,6 +7,7 @@ import BridgeUI from './pages/Bridge';
 import ElixirUI from './pages/Elixir';
 import Governance from './pages/Governance';
 import GovernanceDetailV2 from './pages/GovernanceDetail';
+import Pool from './pages/Pool';
 import Sample from './pages/Sample';
 import SarStake from './pages/SarSingleStake';
 import Swap from './pages/Swap';
@@ -47,6 +48,7 @@ export default function App() {
             <Route index element={<Sample />} />
             <Route path="sar" element={<SarStake />} />
             <Route path="swap" element={<Swap />} />
+            <Route path="pool" element={<Pool />} />
             <Route path="dashboard" element={<Sample />} />
             <Route path="bridge" element={<BridgeUI />} />
             <Route path="airdrop" element={<AirdropUI />} />

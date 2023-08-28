@@ -21,6 +21,7 @@
     "@pangolindex/elixir": "*",
     "@pangolindex/sar": "*",
     "@pangolindex/honeycomb-provider": "*",
+    "@pangolindex/pools": "*",
     "@pangolindex/portfolio": "*",
     "@pangolindex/shared": "*",
     "@pangolindex/swap": "*",
