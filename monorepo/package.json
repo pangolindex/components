@@ -11,12 +11,14 @@
     "dev:app": "turbo run dev:app --concurrency=20",
     "dev:packages": "turbo run dev --concurrency=20",
     "start:app": "turbo run start --filter=example-app",
-    "build:packages": "turbo run build --filter=@pangolindex/* --filter=@honeycomb/*"
+    "build:packages": "turbo run build --filter=@pangolindex/* --filter=@honeycomb/*",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@pangolindex/sdk": "5.3.4",
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",
+    "patch-package": "6.4.7",
     "prettier": "^2.5.1",
     "turbo": "latest",
     "tsc-alias": "1.8.7"
