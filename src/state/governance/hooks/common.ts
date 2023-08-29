@@ -137,11 +137,7 @@ export function useSarNftAllProposalData() {
   }
 
   // get all proposal entities
-  const allProposalsAddressesState = useSingleContractMultipleData(
-    govContract,
-    'locateProposal',
-    proposalIndexes,
-  );
+  const allProposalsAddressesState = useSingleContractMultipleData(govContract, 'locateProposal', proposalIndexes);
 
   // get the address of the rewarder for each pool
   const allProposalsAddresses = useMemo(() => {
