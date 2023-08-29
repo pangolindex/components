@@ -8,6 +8,13 @@ or
 
 `npm install @pangolindex/wallet-connectors`
 
+## Development
+
+1. `yarn install`
+2. `yarn dev` and keep that terminal running
+
+or see the [README file](/monorepo/README.md) in monorepo to run the example app.
+
 ## Getting Start
 This is used together with `@web3-react/core`, where the connector is activated and deactivated.
 

@@ -60,6 +60,18 @@ ReactDOM.render(
 );
 ```
 
+## Story Book
+
+1. do `yarn storybook` to start the storybook
+2. now connect to http://localhost:6006 to see the components
+
+## Development
+
+1. `yarn install`
+2. `yarn dev` and keep that terminal running
+
+or see the [README file](/monorepo/README.md) in monorepo to run the example app.
+
 ## Components
 
 ### SarManageWidget
