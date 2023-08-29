@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useSarNftGovernanceContract } from 'src/hooks/useContract';
+import { useHederaGovernorPangoContract } from 'src/hooks/useContract';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { hederaFn } from 'src/utils/hedera';
 
@@ -13,7 +13,7 @@ export function useHederaVoteCallback(): {
 } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const govContract = useSarNftGovernanceContract();
+  const govContract = useHederaGovernorPangoContract();
   const addTransaction = useTransactionAdder();
 
   const voteCallback = async (proposalId: string | undefined, support: boolean, nftId?: BigNumber) => {

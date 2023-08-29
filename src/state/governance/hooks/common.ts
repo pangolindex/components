@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { NFT_PROPOSAL, getAllProposalData } from 'src/apollo/vote';
 import { PROPOSAL_STORAGE_INTERFACE } from 'src/constants/governance/proposalStorage';
 import { useChainId } from 'src/hooks';
-import { useSarNftGovernanceAssistantContract, useSarNftGovernanceContract } from 'src/hooks/useContract';
+import { useHederaGovernorPangoContract } from 'src/hooks/useContract';
 import { useAllProposalDataHook } from 'src/state/governance/hooks';
 import {
   useMultipleContractSingleData,
@@ -118,7 +118,7 @@ export function useProposalData(id: string): ProposalData | undefined {
 
 // get count of all proposals made
 export function useProposalCount(): number | undefined {
-  const gov = useSarNftGovernanceContract();
+  const gov = useHederaGovernorPangoContract();
   const res = useSingleCallResult(gov, 'proposalCount');
   if (res.result && !res.loading) {
     return parseInt(res.result[0]) ?? 0;
@@ -129,8 +129,7 @@ export function useProposalCount(): number | undefined {
 // get data for all past and active proposals
 export function useSarNftAllProposalData() {
   const proposalCount = useProposalCount();
-  const govContract = useSarNftGovernanceContract();
-  const govAssistantContract = useSarNftGovernanceAssistantContract();
+  const govContract = useHederaGovernorPangoContract();
 
   const proposalIndexes = [] as any;
   for (let i = 1; i <= (proposalCount ?? 0); i++) {
@@ -139,7 +138,7 @@ export function useSarNftAllProposalData() {
 
   // get all proposal entities
   const allProposalsAddressesState = useSingleContractMultipleData(
-    govAssistantContract,
+    govContract,
     'locateProposal',
     proposalIndexes,
   );

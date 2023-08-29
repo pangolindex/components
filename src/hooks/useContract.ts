@@ -17,8 +17,7 @@ import WETH_ABI from 'src/constants/abis/weth.json';
 import { MINICHEF_ADDRESS, PANGOCHEF_ADDRESS, SAR_STAKING_ADDRESS } from 'src/constants/address';
 import NonFungiblePositionManager from 'src/constants/elixir/abis/nonfungiblePositionManager.json';
 import TickLensABI from 'src/constants/elixir/abis/tickLens.json';
-import GovernorABI from 'src/constants/governance/governor.json';
-import GovernorAssistantABI from 'src/constants/governance/governorAssistant.json';
+import GovernorPangoHedera from 'src/constants/governance/GovernorPangoHedera.json';
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from 'src/constants/multicall';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
@@ -142,16 +141,9 @@ export function useGovernorAlphaContract(): Contract | null {
   return useContract(address, GovernorAlpha.abi, true);
 }
 
-export function useSarNftGovernanceContract(): Contract | null {
+export function useHederaGovernorPangoContract(): Contract | null {
   const chainId = useChainId();
   const address = chainId ? CHAINS[chainId]?.contracts?.governor?.address : undefined;
 
-  return useContract(address, GovernorABI.abi, true);
-}
-
-export function useSarNftGovernanceAssistantContract(): Contract | null {
-  const chainId = useChainId();
-  const address = chainId ? CHAINS[chainId]?.contracts?.governor_assistant : undefined;
-
-  return useContract(address, GovernorAssistantABI.abi, true);
+  return useContract(address, GovernorPangoHedera.abi, true);
 }
