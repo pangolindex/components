@@ -8,6 +8,8 @@ export enum SubgraphEnum {
   Minichef = 'minichef',
   Elixir = 'elixir',
   SingleStaking = 'singleStaking',
+  Governance = 'governance',
+  Blocks = 'blocks',
 }
 
 export const getSubgraphClient = (chainId: ChainId, subgraph: SubgraphEnum) => {
