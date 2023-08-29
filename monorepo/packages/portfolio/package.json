@@ -48,7 +48,7 @@
     "@pangolindex/shared": "*",
     "@pangolindex/core": "*",
     "@pangolindex/state-hooks": "*",
-    "axios": "0.26.1",
+    "axios": "0.26.0",
     "dayjs": "1.10.7",
     "jotai": "2.0.3",
     "lodash": "4.0.1",

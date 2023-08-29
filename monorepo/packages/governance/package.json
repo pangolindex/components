@@ -1,5 +1,5 @@
 {
-  "name": "@pangolindex/wallet-connectors",
+  "name": "@honeycomb/governance",
   "version": "0.0.0",
   "main": "lib/index.cjs.js",
   "module": "lib/index.esm.js",
@@ -9,7 +9,9 @@
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx",
     "build": "rollup -c --environment ENV:production",
-    "dev": "rollup -c --watch"
+    "dev": "rollup -c --watch",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.21.5",
@@ -19,38 +21,43 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
     "@rollup/plugin-url": "^7.0.0",
+    "@storybook/react": "7.0.10",
+    "@storybook/react-webpack5": "7.0.10",
     "@types/react": "^18.2.5",
-    "@types/react-dom": "^18.2.4",
+    "@types/styled-components": "5.1.15",
     "eslint": "^7.32.0",
-    "eslint-config-custom": "*",
     "react": "^18.2.0",
+    "react-dom": "18.2.0",
     "rollup": "^2.79.0",
     "rollup-plugin-cleaner": "^1.0.0",
+    "rollup-plugin-includepaths": "^0.2.4",
     "rollup-plugin-node-externals": "^4.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-tsc-alias": "*",
     "rollup-plugin-typescript2": "^0.34.1",
-    "tsconfig": "*",
-    "typescript": "4.5.2"
+    "storybook": "7.0.10",
+    "typescript": "^4.5.2"
   },
   "dependencies": {
-    "@coinbase/wallet-sdk": "^3.6.3",
-    "@gnosis.pm/safe-apps-web3-react": "0.6.7",
-    "@ethersproject/contracts": "5.6.2",
-    "@ethersproject/providers": "5.6.8",
-    "@hashgraph/hethers": "1.2.2",
-    "@hashgraph/sdk": "2.24.1",
-    "@talismn/web3react-v6-connector": "6.0.1",
-    "@walletconnect/ethereum-provider": "2.8.6",
-    "@web3-react/abstract-connector": "6.0.7",
-    "@web3-react/types": "6.0.7",
-    "axios": "0.26.0",
-    "bn.js": "5.2.1",
-    "borsh": "0.7.0",
-    "ethers": "5.6.4",
-    "eventemitter3": "5.0.0",
-    "hashconnect": "0.2.4",
-    "near-api-js": "0.44.2"
+    "@ethersproject/abi": "5.6.4",
+    "@ethersproject/providers": "5.7.2",
+    "@pangolindex/exchange-contracts": "2.1.7",
+    "@pangolindex/governance": "^1.2.0",
+    "@pangolindex/shared": "*",
+    "@pangolindex/core": "*",
+    "@pangolindex/sar": "*",
+    "@pangolindex/state-hooks": "*",
+    "@pangolindex/wallet-connectors": "*",
+    "ethers": "5.5.4",
+    "luxon": "1.28.1",
+    "react-markdown": "8.0.0",
+    "remark-gfm": "3.0.1",
+    "styled-components": "5.3.3",
+    "react-feather": "2.0.9"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2",
+    "react-dom": ">=17.0.2"
   }
 }
