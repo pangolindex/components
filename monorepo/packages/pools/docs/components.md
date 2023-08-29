@@ -7,7 +7,7 @@ This is the **main** component, it contains all the components to add/remove liq
 ## AddLiquidity
 This component handle with logic to add a liquidity in a pool.
 
-There is two variations
+Variations:
 - **AddLiquidityDrawer**, this is the AddLiquidity wrapped with the Drawer component to behave like a Drawer.
 - **AddLiquidityModal**, this is the AddLiquidity wrapped with the Modal component to behave like a Modal and with a sectgion to select the tokens to add liquidity.
 
@@ -56,7 +56,7 @@ This component handle with logict to remove the liquidity from a farm.
 ## RemoveLiquidity
 This component handle with logict to remove the liquidity.
 
-There is two variations
+Variations:
 - **RemoveLiquidityDrawer** this is the RemoveLiquidity wrapped in a Drawer.
 - **RemoveLiquidityWidget** this is the RemoveLiquidity with a text.
 
