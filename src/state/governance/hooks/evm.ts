@@ -8,7 +8,7 @@ import { GET_BLOCK } from 'src/apollo/block';
 import { getBlockSubgraphApolloClient } from 'src/apollo/client';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
-import { useGovernanceContract, usePngContract } from 'src/hooks/useContract';
+import { useGovernorAlphaContract, usePngContract } from 'src/hooks/useContract';
 import { useSingleCallResult, useSingleContractMultipleData } from 'src/state/pmulticall/hooks';
 import { useTransactionAdder } from 'src/state/ptransactions/hooks';
 import { calculateGasMargin } from 'src/utils';
@@ -17,7 +17,7 @@ import { enumerateProposalState } from './common';
 
 // get count of all proposals made
 export function useProposalCount(): number | undefined {
-  const gov = useGovernanceContract();
+  const gov = useGovernorAlphaContract();
   const res = useSingleCallResult(gov, 'proposalCount');
   if (res.result && !res.loading) {
     return parseInt(res.result[0]) ?? 0;
@@ -55,7 +55,7 @@ export function useDataFromEventLogs() {
   const { library } = useLibrary();
   const chainId = useChainId();
   const [formattedEvents, setFormattedEvents] = useState<any>();
-  const govContract = useGovernanceContract();
+  const govContract = useGovernorAlphaContract();
 
   const proposalCount = useProposalCount();
 
@@ -129,7 +129,7 @@ export function useDataFromEventLogs() {
 // get data for all past and active proposals
 export function useAllProposalData() {
   const proposalCount = useProposalCount();
-  const govContract = useGovernanceContract();
+  const govContract = useGovernorAlphaContract();
 
   const proposalIndexes = [] as any;
   for (let i = 1; i <= (proposalCount ?? 0); i++) {
@@ -225,7 +225,7 @@ export function useVoteCallback(): {
 } {
   const { account } = usePangolinWeb3();
 
-  const govContract = useGovernanceContract();
+  const govContract = useGovernorAlphaContract();
   const addTransaction = useTransactionAdder();
 
   const voteCallback = useCallback(

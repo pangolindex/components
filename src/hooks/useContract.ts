@@ -135,7 +135,7 @@ export function useTickLensContract(): Contract | null {
   return useContract(address, TickLensABI.abi);
 }
 
-export function useGovernanceContract(): Contract | null {
+export function useGovernorAlphaContract(): Contract | null {
   const chainId = useChainId();
   const address = chainId ? CHAINS[chainId]?.contracts?.governor?.address : undefined;
 
