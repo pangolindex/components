@@ -1,15 +1,15 @@
 /* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
-import {
-  useAllProposalDataViaSubgraph,
-  useSarNftAllProposalDataViaContract
-} from './common';
+import { useAllProposalDataViaSubgraph, useSarNftAllProposalDataViaContract } from './common';
 import { useDummyAllProposalData, useDummyVoteCallback } from './dummy';
 import { useAllProposalData, useVoteCallback } from './evm';
 import { useHederaVoteCallback } from './hedera';
 
 export type UseAllProposalDataHookType = {
-  [chainId in ChainId]: typeof useAllProposalDataViaSubgraph | typeof useAllProposalData | typeof useDummyAllProposalData;
+  [chainId in ChainId]:
+    | typeof useAllProposalDataViaSubgraph
+    | typeof useAllProposalData
+    | typeof useDummyAllProposalData;
 };
 
 export const useAllProposalDataHook: UseAllProposalDataHookType = {

@@ -1,7 +1,7 @@
 import { CHAINS, GovernanceType, JSBI } from '@pangolindex/sdk';
 import { ethers, utils } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
-import { getAllProposalData, NFT_PROPOSAL } from 'src/apollo/vote';
+import { NFT_PROPOSAL, getAllProposalData } from 'src/apollo/vote';
 import { PROPOSAL_STORAGE_INTERFACE } from 'src/constants/governance/proposalStorage';
 import { useChainId } from 'src/hooks';
 import { useGovernorPangoContract, useGovernorPangoContractHedera } from 'src/hooks/useContract';
@@ -9,7 +9,7 @@ import { useAllProposalDataHook } from 'src/state/governance/hooks';
 import {
   useMultipleContractSingleData,
   useSingleCallResult,
-  useSingleContractMultipleData
+  useSingleContractMultipleData,
 } from 'src/state/pmulticall/hooks';
 import { ProposalData, ProposalState } from '../types';
 
@@ -144,18 +144,8 @@ export function useSarNftAllProposalDataViaContract() {
     proposalIndexes.push([i]);
   }
 
-  const allProposals = useSingleContractMultipleData(
-    govContract,
-    'proposals',
-    proposalIndexes,
-  );
-
-  const allProposalActions = useSingleContractMultipleData(
-    govContract,
-    'proposalActions',
-    proposalIndexes,
-  );
-
+  const allProposals = useSingleContractMultipleData(govContract, 'proposals', proposalIndexes);
+  const allProposalActions = useSingleContractMultipleData(govContract, 'proposalActions', proposalIndexes);
   const allProposalStates = useSingleContractMultipleData(govContract, 'state', proposalIndexes);
 
   if (allProposals && allProposalActions && allProposalStates) {
@@ -199,7 +189,6 @@ export function useSarNftAllProposalDataViaContract() {
     return [];
   }
 }
-
 
 export function useSarNftAllProposalDataViaContractHedera() {
   const proposalCount = useProposalCountHedera();
