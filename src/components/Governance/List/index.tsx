@@ -5,7 +5,7 @@ import { Box, Loader, Text } from 'src/components';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChain, useChainId, usePangolinWeb3, usePngSymbol } from 'src/hooks';
-import { useGetProposalsViaSubgraph } from 'src/state/governance/hooks/common';
+import { useAllProposalData } from 'src/state/governance/hooks/common';
 import { useUserDelegatee, useUserVotes } from 'src/state/governance/hooks/evm';
 import { ProposalData } from 'src/state/governance/types';
 import { ApplicationModal } from 'src/state/papplication/atom';
@@ -42,7 +42,7 @@ const GovernanceList = () => {
   const toggleDelegateModal = useToggleDelegateModal();
 
   // get data to list all proposals
-  const allProposals: ProposalData[] = useGetProposalsViaSubgraph();
+  const allProposals: ProposalData[] | undefined = useAllProposalData();
 
   // user data
   const availableVotes: TokenAmount | undefined = useUserVotes();

@@ -10,7 +10,7 @@ import { AutoColumn } from 'src/components/Column';
 import { ZERO_ADDRESS } from 'src/constants';
 import { PNG } from 'src/constants/tokens';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
-import { useGetProposalDetailViaSubgraph } from 'src/state/governance/hooks/common';
+import { useProposalData } from 'src/state/governance/hooks/common';
 import { useUserDelegatee, useUserVotes } from 'src/state/governance/hooks/evm';
 import { ProposalData } from 'src/state/governance/types';
 import { useSarPositionsHook } from 'src/state/psarstake/hooks';
@@ -43,7 +43,7 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
   const { t } = useTranslation();
 
   // get data for this specific proposal
-  const proposalData: ProposalData | undefined = useGetProposalDetailViaSubgraph(id as string);
+  const proposalData: ProposalData | undefined = useProposalData(id as string);
 
   // update support based on button interactions
   const [support, setSupport] = useState<boolean>(true);

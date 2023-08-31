@@ -1,15 +1,15 @@
 import { CHAINS, GovernanceType, JSBI } from '@pangolindex/sdk';
 import { ethers, utils } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
-import { NFT_PROPOSAL, getAllProposalData } from 'src/apollo/vote';
+import { getAllProposalData, NFT_PROPOSAL } from 'src/apollo/vote';
 import { PROPOSAL_STORAGE_INTERFACE } from 'src/constants/governance/proposalStorage';
 import { useChainId } from 'src/hooks';
-import { useHederaGovernorPangoContract } from 'src/hooks/useContract';
+import { useGovernorPangoContract, useGovernorPangoContractHedera } from 'src/hooks/useContract';
 import { useAllProposalDataHook } from 'src/state/governance/hooks';
 import {
   useMultipleContractSingleData,
   useSingleCallResult,
-  useSingleContractMultipleData,
+  useSingleContractMultipleData
 } from 'src/state/pmulticall/hooks';
 import { ProposalData, ProposalState } from '../types';
 
@@ -43,14 +43,13 @@ export const getProposalState = (proposal: NFT_PROPOSAL) => {
   }
 };
 
-// get data for all past and active proposals
-export function useGetProposalsViaSubgraph(id?: string) {
+export function useAllProposalDataViaSubgraph() {
   const chainId = useChainId();
   const [allProposalsData, setAllProposalsData] = useState<Array<ProposalData>>([]);
 
   useEffect(() => {
     async function checkForChartData() {
-      const allProposals = await getAllProposalData(chainId, id);
+      const allProposals = await getAllProposalData(chainId);
 
       if (allProposals) {
         const allData = allProposals.map((proposal) => {
@@ -97,14 +96,9 @@ export function useGetProposalsViaSubgraph(id?: string) {
     }
 
     checkForChartData().catch((error) => console.error(error));
-  }, [id, chainId]);
+  }, [chainId]);
 
   return allProposalsData;
-}
-
-export function useGetProposalDetailViaSubgraph(id: string): ProposalData | undefined {
-  const allProposalData = useGetProposalsViaSubgraph(id);
-  return allProposalData?.find((p: ProposalData) => p.id === id);
 }
 
 export function useProposalData(id: string): ProposalData | undefined {
@@ -116,9 +110,15 @@ export function useProposalData(id: string): ProposalData | undefined {
   return allProposalData?.find((p) => p.id === id);
 }
 
+export function useAllProposalData(): ProposalData[] | undefined {
+  const chainId = useChainId();
+  const useAllProposalData = useAllProposalDataHook[chainId];
+  return useAllProposalData();
+}
+
 // get count of all proposals made
 export function useProposalCount(): number | undefined {
-  const gov = useHederaGovernorPangoContract();
+  const gov = useGovernorPangoContract();
   const res = useSingleCallResult(gov, 'proposalCount');
   if (res.result && !res.loading) {
     return parseInt(res.result[0]) ?? 0;
@@ -126,17 +126,90 @@ export function useProposalCount(): number | undefined {
   return undefined;
 }
 
-// get data for all past and active proposals
-export function useSarNftAllProposalData() {
+export function useProposalCountHedera(): number | undefined {
+  const gov = useGovernorPangoContractHedera();
+  const res = useSingleCallResult(gov, 'proposalCount');
+  if (res.result && !res.loading) {
+    return parseInt(res.result[0]) ?? 0;
+  }
+  return undefined;
+}
+
+export function useSarNftAllProposalDataViaContract() {
   const proposalCount = useProposalCount();
-  const govContract = useHederaGovernorPangoContract();
+  const govContract = useGovernorPangoContract();
 
   const proposalIndexes = [] as any;
   for (let i = 1; i <= (proposalCount ?? 0); i++) {
     proposalIndexes.push([i]);
   }
 
-  // get all proposal entities
+  const allProposals = useSingleContractMultipleData(
+    govContract,
+    'proposals',
+    proposalIndexes,
+  );
+
+  const allProposalActions = useSingleContractMultipleData(
+    govContract,
+    'proposalActions',
+    proposalIndexes,
+  );
+
+  const allProposalStates = useSingleContractMultipleData(govContract, 'state', proposalIndexes);
+
+  if (allProposals && allProposalActions && allProposalStates) {
+    const formattedProposals = allProposals
+      .filter((p, i) => {
+        return Boolean(p.result) && Boolean(allProposalStates[i]?.result) && Boolean(allProposalActions[i]?.result);
+      })
+      .map((_p, i) => {
+        const details = (allProposalActions[i]?.result?.targets || []).map((target: string, i: number) => {
+          const signature = allProposalActions[i]?.result?.signatures[i];
+
+          const [name, types] = signature?.substr(0, signature?.length - 1)?.split('(') || [];
+
+          const calldata = allProposalActions[i]?.result?.calldatas[i];
+
+          const decoded = utils.defaultAbiCoder.decode(types.split(','), calldata);
+
+          return {
+            target,
+            functionSig: name,
+            callData: decoded.join(', '),
+          };
+        });
+
+        const formattedProposal: ProposalData = {
+          id: proposalIndexes[i].toString(),
+          title: 'Unknown', // Title is parsed from description which is emitted in Proposal event
+          description: 'Unknown description.', // Description emitted in Proposal event
+          status: enumerateProposalState(allProposalStates[i]?.result?.[0]) ?? 'Undetermined',
+          forCount: parseFloat(allProposals[i]?.result?.forVotes.toString()),
+          againstCount: parseFloat(allProposals[i]?.result?.againstVotes.toString()),
+          startTime: parseInt(allProposals[i]?.result?.startTime?.toString()),
+          endTime: parseInt(allProposals[i]?.result?.endTime?.toString()),
+          details: details,
+        };
+        return formattedProposal;
+      });
+    formattedProposals.reverse();
+    return formattedProposals;
+  } else {
+    return [];
+  }
+}
+
+
+export function useSarNftAllProposalDataViaContractHedera() {
+  const proposalCount = useProposalCountHedera();
+  const govContract = useGovernorPangoContractHedera();
+
+  const proposalIndexes = [] as any;
+  for (let i = 1; i <= (proposalCount ?? 0); i++) {
+    proposalIndexes.push([i]);
+  }
+
   const allProposalsAddressesState = useSingleContractMultipleData(govContract, 'locateProposal', proposalIndexes);
 
   // get the address of the rewarder for each pool
@@ -157,20 +230,14 @@ export function useSarNftAllProposalData() {
     [],
   );
 
-  // get all proposal states
   const allProposalStates = useSingleContractMultipleData(govContract, 'state', proposalIndexes);
 
   if (allProposals && allProposalStates) {
-    allProposals.reverse();
-    allProposalStates.reverse();
-
-    return allProposals
+    const formattedProposals = allProposals
       .filter((p, i) => {
         return Boolean(p.result) && Boolean(allProposalStates[i]?.result);
       })
       .map((_p, i) => {
-        const description = allProposals[i]?.result?.description;
-
         const details = (allProposals[i]?.result?.targets || []).map((target: string, i: number) => {
           const signature = allProposals[i]?.result?.signatures[i];
 
@@ -188,19 +255,20 @@ export function useSarNftAllProposalData() {
         });
 
         const formattedProposal: ProposalData = {
-          id: allProposals[i]?.result?.id.toString(),
-          title: description?.split(/# |\n/g)[1] || 'Untitled',
-          description: description || 'No description.',
+          id: proposalIndexes[i].toString(),
+          title: 'Unknown', // Title is parsed from description which is emitted in Proposal event
+          description: 'Unknown description.', // Description emitted in Proposal event
           status: enumerateProposalState(allProposalStates[i]?.result?.[0]) ?? 'Undetermined',
           forCount: parseFloat(allProposals[i]?.result?.forVotes.toString()),
           againstCount: parseFloat(allProposals[i]?.result?.againstVotes.toString()),
           startTime: parseInt(allProposals[i]?.result?.startTime?.toString()),
           endTime: parseInt(allProposals[i]?.result?.endTime?.toString()),
-          startBlock: parseInt(allProposals[i]?.result?.startBlock?.toString()),
           details: details,
         };
         return formattedProposal;
       });
+    formattedProposals.reverse();
+    return formattedProposals;
   } else {
     return [];
   }

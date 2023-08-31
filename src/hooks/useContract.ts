@@ -1,4 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
+import GovernorPango from '@pangolindex/exchange-contracts/artifacts/contracts/governance/GovernorPango.sol/GovernorPango.json';
 import MiniChefV2 from '@pangolindex/exchange-contracts/artifacts/contracts/mini-chef/MiniChefV2.sol/MiniChefV2.json';
 import IPangolinPair from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-core/interfaces/IPangolinPair.sol/IPangolinPair.json';
 import Png from '@pangolindex/exchange-contracts/artifacts/contracts/pangolin-token/Png.sol/Png.json';
@@ -141,7 +142,14 @@ export function useGovernorAlphaContract(): Contract | null {
   return useContract(address, GovernorAlpha.abi, true);
 }
 
-export function useHederaGovernorPangoContract(): Contract | null {
+export function useGovernorPangoContract(): Contract | null {
+  const chainId = useChainId();
+  const address = chainId ? CHAINS[chainId]?.contracts?.governor?.address : undefined;
+
+  return useContract(address, GovernorPango.abi, true);
+}
+
+export function useGovernorPangoContractHedera(): Contract | null {
   const chainId = useChainId();
   const address = chainId ? CHAINS[chainId]?.contracts?.governor?.address : undefined;
 
