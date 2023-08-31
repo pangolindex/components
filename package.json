@@ -51,7 +51,7 @@
     "@lifi/sdk": "^1.6.0",
     "@orbs-network/twap-ui": "0.5.x",
     "@orbs-network/twap-ui-pangolin": "0.5.4",
-    "@pangolindex/exchange-contracts": "2.1.7",
+    "@pangolindex/exchange-contracts": "2.1.9",
     "@pangolindex/governance": "^1.2.0",
     "@pangolindex/token-lists": "^1.0.2",
     "@pangolindex/web3-react-injected-connector": "1.0.2",
