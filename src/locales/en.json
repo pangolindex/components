@@ -765,7 +765,8 @@
       "topPools": "Top Pools",
       "allPositions": "All Positions",
       "openPositions": "Open Positions",
-      "closedPositions": "Closed Positions"
+      "closedPositions": "Closed Positions",
+      "elixirVaults": "Elixir Vaults"
     },
     "sortTypes": {
       "liquidity": "Liquidity",

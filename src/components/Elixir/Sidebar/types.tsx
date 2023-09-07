@@ -10,4 +10,5 @@ export enum MenuType {
   allPositions = 'allPositions',
   openPositions = 'openPositions',
   closedPositions = 'closedPositions',
+  elixirVaults = 'elixirVaults',
 }

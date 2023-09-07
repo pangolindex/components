@@ -33,8 +33,8 @@ const DataTable: React.FC<DataTableProps> = (props) => {
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                     {{
-                      asc: ' 🔼',
-                      desc: ' 🔽',
+                      asc: ' ⌃',
+                      desc: ' ⌄',
                     }[header.column.getIsSorted() as string] ?? null}
                   </SortableHeader>
                 )}

@@ -70,6 +70,9 @@ export default function Header() {
           <MenuLink id="elixir" to="/elixir">
             Elixir
           </MenuLink>
+          <MenuLink id="elixirVaults" to="/elixirVaults">
+            ElixirVaults
+          </MenuLink>
           <MenuLink id="bridge" to="/bridge">
             Bridge
           </MenuLink>

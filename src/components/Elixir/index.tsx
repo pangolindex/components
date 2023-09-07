@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Loader, Text } from 'src/components';
+import { Box, Button, ElixirVaults, Loader, Text } from 'src/components';
 import { BIG_INT_ZERO } from 'src/constants';
 import { useChainId } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
@@ -174,7 +174,10 @@ const Elixir = () => {
             {activeMenu === MenuType.topPools && (
               <PoolList setMenu={handleSetMenu} activeMenu={activeMenu} menuItems={menuItems} />
             )}
-            {activeMenu !== MenuType.topPools && (
+            {activeMenu === MenuType.elixirVaults && (
+              <ElixirVaults setMenu={handleSetMenu} activeMenu={activeMenu} menuItems={menuItems} />
+            )}
+            {activeMenu !== MenuType.topPools && activeMenu !== MenuType.elixirVaults && (
               <>
                 {positionsLoading ? (
                   <Loader height={'auto'} size={100} />

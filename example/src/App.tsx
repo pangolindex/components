@@ -10,6 +10,7 @@ import ElixirUI from './pages/Elixir';
 import Governance from './pages/Governance';
 import GovernanceDetailV2 from './pages/GovernanceDetail';
 import AirdropUI from './pages/Airdrop';
+import ElixirVaultsUI from './pages/ElixirVaults';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -48,6 +49,7 @@ export default function App() {
             <Route path="swap" element={<Swap />} />
             <Route path="pool" element={<Pool />} />
             <Route path="elixir" element={<ElixirUI />} />
+            <Route path="elixirVaults" element={<ElixirVaultsUI />} />
             <Route path="bridge" element={<Bridge />} />
             <Route path="sar" element={<SarStake />} />
             <Route path="vote" element={<Governance />} />

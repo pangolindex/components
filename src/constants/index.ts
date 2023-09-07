@@ -28,7 +28,7 @@ export const ONE_BIPS = new Percent(JSBI.BigInt(1), JSBI.BigInt(10000));
 
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)); // .01 ETH
-export type LogoSize = 24 | 48;
+export type LogoSize = 24 | 38 | 48;
 
 export const SQUID_API = 'https://api.0xsquid.com';
 export const PANGOLIN_TOKENS_REPO_RAW_BASE_URL = `https://raw.githubusercontent.com/pangolindex/tokens`;

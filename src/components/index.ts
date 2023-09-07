@@ -37,6 +37,7 @@ export { MyPortfolio } from './MyPortfolio';
 export { Stat } from './Stat';
 export { default as PoolsUI } from './Pools';
 export { default as Elixir } from './Elixir';
+export { default as ElixirVaults } from './ElixirVaults';
 export { default as Pools } from './Pools/Pool';
 export { default as DropdownMenu } from './DropdownMenu';
 export { default as Wallet } from './Pools/Wallet';
