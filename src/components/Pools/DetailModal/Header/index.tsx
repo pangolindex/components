@@ -109,16 +109,6 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
             <RewardTokens rewardTokens={rewardTokens} size={24} />
           </Box>
         </Box>
-        {cheftType === ChefType.PANGO_CHEF && isStaking && (
-          <Stat
-            title={`${t('pool.yourAPR')}:`}
-            stat={`${numeral(userApr).format('0.00a')}%`}
-            titlePosition="top"
-            titleFontSize={14}
-            statFontSize={[24, 18]}
-            titleColor="text2"
-          />
-        )}
         <Stat
           title={`${t('pool.swapFeeAPR')}:`}
           stat={swapFeeApr && !stakingInfo?.isPeriodFinished ? `${numeral(swapFeeApr).format('0a')}%` : '-'}
@@ -143,6 +133,16 @@ const Header: React.FC<Props> = ({ stakingInfo, onClose }) => {
           statFontSize={[24, 18]}
           titleColor="text2"
         />
+        {cheftType === ChefType.PANGO_CHEF && isStaking && (
+          <Stat
+            title={`${t('pool.yourAPR')}:`}
+            stat={`${numeral(userApr).format('0.00a')}%`}
+            titlePosition="top"
+            titleFontSize={14}
+            statFontSize={[24, 18]}
+            titleColor="text2"
+          />
+        )}
         <Hidden upToSmall={true} upToMedium={true}>
           <CloseIcon onClick={onClose} color={theme.text3} />
         </Hidden>
