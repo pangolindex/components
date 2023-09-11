@@ -2,18 +2,14 @@ import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import enTranslation from './locales/en.json';
-import trTranslation from './locales/tr.json';
 
 const resources = {
   en: {
     translation: enTranslation,
   },
-  tr: {
-    translation: trTranslation,
-  },
 };
 
-export const availableLanguages = ['en', 'tr'];
+export const availableLanguages = ['en'];
 export const defaultLocale = 'en';
 
 const determineLngFn = (code: string): string => {
