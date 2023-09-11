@@ -15,6 +15,7 @@ import {
 import { ElixirVault } from 'src/state/pelixirVaults/types';
 import DataTable from '../DataTable';
 import { DataTableProps } from '../DataTable/types';
+import DetailModal from './DetailModal';
 import { DoubleLogo, ErrorContainer, LoaderWrapper, LogoImage, MobileGridContainer, Row } from './styles';
 import { ElixirVaultProps } from './types';
 
@@ -86,6 +87,24 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
 
     return vaults;
   }, [elixirVaults, debouncedSearchQuery]);
+
+  const selectedVault = useMemo(() => {
+    if (!finalVaults) {
+      return undefined;
+    } else {
+      const selectedPositionExists = finalVaults.some((vault) => vault.id.toString() === selectedVaultId);
+
+      if (!selectedPositionExists) {
+        return undefined;
+      } else {
+        const newSelectedPosition = finalVaults.find((vault) => vault.id.toString() === selectedVaultId);
+
+        if (newSelectedPosition) {
+          return newSelectedPosition;
+        }
+      }
+    }
+  }, [finalVaults, selectedVaultId]);
 
   const poolNameRenderer = (info) => {
     const value: Token[] = info.getValue();
@@ -224,6 +243,14 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
           </Box>
         </ErrorContainer>
       )}
+      <DetailModal
+        isOpen={detailModalIsOpen}
+        vault={selectedVault}
+        onClose={() => {
+          onChangeDetailModalStatus(undefined);
+          // onResetMintState();
+        }}
+      />
     </div>
   );
 };
