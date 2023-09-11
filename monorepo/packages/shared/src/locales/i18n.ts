@@ -1,43 +1,19 @@
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
-import deTranslation from './de.json';
 import enTranslation from './en.json';
-import esTranslation from './es.json';
-import frTranslation from './fr.json';
-import ptBrTranslation from './pt-br.json';
 import trTranslation from './tr.json';
-import vnTranslation from './vn.json';
-import zhTranslation from './zh.json';
 
 const resources = {
   en: {
     translation: enTranslation,
   },
-  de: {
-    translation: deTranslation,
-  },
   tr: {
     translation: trTranslation,
   },
-  zh: {
-    translation: zhTranslation,
-  },
-  es: {
-    translation: esTranslation,
-  },
-  fr: {
-    translation: frTranslation,
-  },
-  pt: {
-    translation: ptBrTranslation,
-  },
-  vn: {
-    translation: vnTranslation,
-  },
 };
 
-export const availableLanguages = ['en', 'de', 'tr', 'zh', 'es', 'fr', 'pt-br', 'vn'];
+export const availableLanguages = ['en', 'tr'];
 export const defaultLocale = 'en';
 
 const determineLngFn = (code: string): string => {
