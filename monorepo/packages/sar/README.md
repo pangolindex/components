@@ -2,11 +2,11 @@
 Components to interact with Pangolin's Sunshine and Rainbows Single Stake contracts, [see more about Sunshine and Rainbows](https://blog.pangolin.exchange/pangolin-launches-sunshine-and-rainbows-the-ultimate-staking-algorithm-for-sticky-liquidity-80a099515bea).
 
 ## Installation
-`yarn add @pangolindex/sar`
+`yarn add @honeycomb/sar`
 
 or
 
-`npm install @pangolindex/sar`
+`npm install @honeycomb/sar`
 
 ### Install below dependancies as its peer dependancies
 
@@ -22,8 +22,8 @@ In your main file wrap your app with `HoneycombProvider` and `Web3ReactProvider`
 _Use version **6.0.9** of `@web3-react/core` package._
 
 ```tsx
-import { HoneycombProvider } from '@pangolindex/honeycomb-provider';
-import { NetworkContextName, useActiveWeb3React } from '@pangolindex/shared';
+import { HoneycombProvider } from '@honeycomb/honeycomb-provider';
+import { NetworkContextName, useActiveWeb3React } from '@honeycomb/shared';
 import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core';
 import React from 'react';
 import ReactDOM from 'react-dom';

@@ -1,6 +1,6 @@
-import { Box, CloseIcon, Modal, Text } from '@pangolindex/core';
+import { Box, CloseIcon, Modal, Text } from '@honeycomb/core';
 import { CAVAX, Currency } from '@pangolindex/sdk';
-import { useChainId, useTranslation } from '@pangolindex/shared';
+import { useChainId, useTranslation } from '@honeycomb/shared';
 import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import React, { useCallback, useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';

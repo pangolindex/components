@@ -1,4 +1,4 @@
-import { Box, Button, DoubleCurrencyLogo, Stat, Text } from '@pangolindex/core';
+import { Box, Button, DoubleCurrencyLogo, Stat, Text } from '@honeycomb/core';
 import { Currency, JSBI, Pair, Percent } from '@pangolindex/sdk';
 import {
   BIG_INT_ZERO,
@@ -7,7 +7,7 @@ import {
   useChainId,
   usePangolinWeb3,
   useTranslation,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import React from 'react';
 import { usePairTotalSupplyHook } from 'src/hooks/pair';
 import { usePairBalanceHook } from 'src/hooks/wallet/hooks';

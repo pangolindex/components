@@ -1,6 +1,6 @@
-import { Box, Text } from '@pangolindex/core';
-import { MixPanelEvents, useMixpanel } from '@pangolindex/shared';
-import { CoingeckoWatchListToken } from '@pangolindex/state-hooks';
+import { Box, Text } from '@honeycomb/core';
+import { MixPanelEvents, useMixpanel } from '@honeycomb/shared';
+import { CoingeckoWatchListToken } from '@honeycomb/state-hooks';
 import React, { useContext, useEffect, useState } from 'react';
 import { X } from 'react-feather';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';

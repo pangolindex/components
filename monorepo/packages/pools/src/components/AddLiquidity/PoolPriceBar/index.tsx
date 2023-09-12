@@ -1,7 +1,7 @@
-import { Box, Stat } from '@pangolindex/core';
+import { Box, Stat } from '@honeycomb/core';
 import { CHAINS, Currency, CurrencyAmount, Percent, Price } from '@pangolindex/sdk';
-import { ONE_BIPS, useChainId, useTranslation } from '@pangolindex/shared';
-import { useUSDCPriceHook } from '@pangolindex/state-hooks';
+import { ONE_BIPS, useChainId, useTranslation } from '@honeycomb/shared';
+import { useUSDCPriceHook } from '@honeycomb/state-hooks';
 import React from 'react';
 import { Field } from 'src/state/mint/atom';
 import { GridContainer, Root } from './styled';

@@ -1,5 +1,4 @@
-import { Box, Button, Loader, Stat, Text, Tooltip, TransactionCompleted } from '@pangolindex/core';
-import { Token } from '@pangolindex/sdk';
+import { Box, Button, Loader, Stat, Text, Tooltip, TransactionCompleted } from '@honeycomb/core';
 import {
   MixPanelEvents,
   unwrappedToken,
@@ -8,7 +7,8 @@ import {
   useMixpanel,
   usePangolinWeb3,
   useTranslation,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
+import { Token } from '@pangolindex/sdk';
 import React, { useContext, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { ThemeContext } from 'styled-components';

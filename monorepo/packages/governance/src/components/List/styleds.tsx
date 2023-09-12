@@ -1,5 +1,5 @@
-import { Box, Button, Text } from '@pangolindex/core';
-import { ExternalLink } from '@pangolindex/shared';
+import { Box, Button, Text } from '@honeycomb/core';
+import { ExternalLink } from '@honeycomb/shared';
 import styled from 'styled-components';
 
 export const PageWrapper = styled(Box)`

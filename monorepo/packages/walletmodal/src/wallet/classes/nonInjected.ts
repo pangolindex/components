@@ -1,5 +1,5 @@
+import { HashConnector, SUPPORTED_XDEFI_CHAINS, hashConnect, near, xDefi } from '@honeycomb/wallet-connectors';
 import { ChainId, NetworkType } from '@pangolindex/sdk';
-import { HashConnector, SUPPORTED_XDEFI_CHAINS, hashConnect, near, xDefi } from '@pangolindex/wallet-connectors';
 import hashIcon from 'src/assets/images/hashConnect.png';
 import xDefiIcon from 'src/assets/images/xDefi.png';
 import nearIcon from 'src/assets/svg/near.svg';

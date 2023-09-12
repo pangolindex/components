@@ -1,5 +1,5 @@
-import { Drawer } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/shared';
+import { Drawer } from '@honeycomb/core';
+import { useTranslation } from '@honeycomb/shared';
 import React from 'react';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import Remove from '../Remove';

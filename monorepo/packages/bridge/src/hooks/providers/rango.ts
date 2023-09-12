@@ -1,6 +1,6 @@
 import { parseUnits } from '@ethersproject/units';
+import { NATIVE, RANGO_API_KEY, ZERO_ADDRESS, calculateTransactionTime } from '@honeycomb/shared';
 import { Currency, RANGO, Token, TokenAmount } from '@pangolindex/sdk';
-import { NATIVE, RANGO_API_KEY, ZERO_ADDRESS, calculateTransactionTime } from '@pangolindex/shared';
 import {
   BlockchainMeta,
   EvmBlockchainMeta,

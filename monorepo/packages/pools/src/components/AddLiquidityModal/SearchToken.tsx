@@ -1,7 +1,7 @@
-import { Box, CurrencyLogo, Text } from '@pangolindex/core';
+import { Box, CurrencyLogo, Text } from '@honeycomb/core';
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
-import { PairState, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { usePair } from '@pangolindex/state-hooks';
+import { PairState, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
+import { usePair } from '@honeycomb/state-hooks';
 import React, { useContext } from 'react';
 import { ChevronDown, Plus } from 'react-feather';
 import { ThemeContext } from 'styled-components';

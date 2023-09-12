@@ -1,5 +1,5 @@
 import { ChainId } from '@pangolindex/sdk';
-import { MINICHEF_ADDRESS, PANGOCHEF_ADDRESS, useChainId, useContract } from '@pangolindex/shared';
+import { MINICHEF_ADDRESS, PANGOCHEF_ADDRESS, useChainId, useContract } from '@honeycomb/shared';
 import { MINICHEFV2_ABI, PANGOCHEF_ABI, PANGOCHEF_V1_ABI, STAKINGREWARDS_ABI } from 'src/constants/abis';
 
 export function useMiniChefContract() {

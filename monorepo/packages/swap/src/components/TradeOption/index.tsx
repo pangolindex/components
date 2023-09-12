@@ -1,4 +1,4 @@
-import { Box, Text, ToggleButtons } from '@pangolindex/core';
+import { Box, Text, ToggleButtons } from '@honeycomb/core';
 import React, { useMemo } from 'react';
 import { Settings } from 'react-feather';
 import { SwapTypes } from 'src/constants';

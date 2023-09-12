@@ -1,6 +1,6 @@
-import { Box, Button, Drawer, Stat, Text, Tooltip } from '@pangolindex/core';
+import { Box, Button, Drawer, Stat, Text, Tooltip } from '@honeycomb/core';
 import { ChainId, TokenAmount } from '@pangolindex/sdk';
-import { BIG_INT_ZERO, PNG, unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
+import { BIG_INT_ZERO, PNG, unwrappedToken, useChainId, useTranslation } from '@honeycomb/shared';
 import numeral from 'numeral';
 import React, { useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';

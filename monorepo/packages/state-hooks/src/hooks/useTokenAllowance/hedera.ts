@@ -1,5 +1,5 @@
 import { Token, TokenAmount } from '@pangolindex/sdk';
-import { hederaFn } from '@pangolindex/wallet-connectors';
+import { hederaFn } from '@honeycomb/wallet-connectors';
 import { useQuery } from 'react-query';
 import { useIsApprovingInfinite } from 'src/state';
 

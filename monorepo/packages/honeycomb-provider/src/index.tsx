@@ -1,13 +1,13 @@
-import { ChainId } from '@pangolindex/sdk';
 import {
   HasuraContext,
   MixPanelProvider,
   NetworkContextName,
   PangolinWeb3Provider,
   ThemeProvider,
-} from '@pangolindex/shared';
-import { ApplicationUpdater, ListsUpdater, MulticallUpdater, TransactionUpdater } from '@pangolindex/state-hooks';
-import { network } from '@pangolindex/wallet-connectors';
+} from '@honeycomb/shared';
+import { ApplicationUpdater, ListsUpdater, MulticallUpdater, TransactionUpdater } from '@honeycomb/state-hooks';
+import { network } from '@honeycomb/wallet-connectors';
+import { ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';

@@ -1,4 +1,4 @@
-import { Box, Text } from '@pangolindex/core';
+import { Box, Text } from '@honeycomb/core';
 import styled from 'styled-components';
 
 export const Root = styled(Box)`

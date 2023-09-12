@@ -1,6 +1,6 @@
-import { Box, Button, Drawer, Loader, Text } from '@pangolindex/core';
+import { Box, Button, Drawer, Loader, Text } from '@honeycomb/core';
 import { AirdropType } from '@pangolindex/sdk';
-import { getEtherscanLink, useChainId, useTranslation } from '@pangolindex/shared';
+import { getEtherscanLink, useChainId, useTranslation } from '@honeycomb/shared';
 import React, { useContext } from 'react';
 import { AlertTriangle, CheckCircle } from 'react-feather';
 import GiftBox from 'src/assets/images/giftbox.png';

@@ -1,4 +1,4 @@
-import { Box, Loader, Text } from '@pangolindex/core';
+import { Box, Loader, Text } from '@honeycomb/core';
 import { JSBI, TokenAmount } from '@pangolindex/sdk';
 import {
   PNG,
@@ -10,8 +10,8 @@ import {
   usePangolinWeb3,
   usePngSymbol,
   useTranslation,
-} from '@pangolindex/shared';
-import { ApplicationModal, useModalOpen, useToggleDelegateModal, useTokenBalance } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { ApplicationModal, useModalOpen, useToggleDelegateModal, useTokenBalance } from '@honeycomb/state-hooks';
 import React from 'react';
 import { useGetProposalsViaSubgraph } from 'src/hooks/common';
 import { useUserDelegate, useUserVotes } from 'src/hooks/evm';

@@ -1,4 +1,4 @@
-import { MixPanelEvents, News, useGetNews, useMixpanel, useTranslation } from '@pangolindex/shared';
+import { MixPanelEvents, News, useGetNews, useMixpanel, useTranslation } from '@honeycomb/shared';
 import React, { useContext, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { ArrowLeft, ArrowRight } from 'react-feather';

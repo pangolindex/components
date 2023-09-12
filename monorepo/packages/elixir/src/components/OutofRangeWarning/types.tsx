@@ -1,4 +1,4 @@
-import { ThemeColorsType } from '@pangolindex/shared';
+import { ThemeColorsType } from '@honeycomb/shared';
 import * as React from 'react';
 
 export type OutofRangeWarningProps = {

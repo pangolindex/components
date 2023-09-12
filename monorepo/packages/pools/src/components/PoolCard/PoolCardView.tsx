@@ -1,7 +1,7 @@
-import { Box, DoubleCurrencyLogo, RewardTokens, Stat, Text } from '@pangolindex/core';
+import { Box, DoubleCurrencyLogo, RewardTokens, Stat, Text } from '@honeycomb/core';
 import { CHAINS, Fraction, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { usePair, useTokenBalance } from '@pangolindex/state-hooks';
+import { unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
+import { usePair, useTokenBalance } from '@honeycomb/state-hooks';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';

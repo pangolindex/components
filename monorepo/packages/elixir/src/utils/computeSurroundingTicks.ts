@@ -1,5 +1,5 @@
+import { Ticks } from '@honeycomb/shared';
 import { JSBI, Token, tickToPrice } from '@pangolindex/sdk';
-import { Ticks } from '@pangolindex/shared';
 import { TickProcessed } from 'src/hooks/chart/types';
 
 const PRICE_FIXED_DIGITS = 8;

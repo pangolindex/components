@@ -11,9 +11,9 @@ import {
   usePangolinWeb3,
   usePngSymbol,
   waitForTransaction,
-} from '@pangolindex/shared';
-import { useTransactionAdder } from '@pangolindex/state-hooks';
-import { hederaFn } from '@pangolindex/wallet-connectors';
+} from '@honeycomb/shared';
+import { useTransactionAdder } from '@honeycomb/state-hooks';
+import { hederaFn } from '@honeycomb/wallet-connectors';
 import axios from 'axios';
 import { BigNumber } from 'ethers';
 import { useState } from 'react';

@@ -1,3 +1,5 @@
+import { TickData, Ticks, ZERO_ADDRESS, useAllV3TicksQuery, useChainId, wrappedCurrency } from '@honeycomb/shared';
+import { useSingleContractMultipleData } from '@honeycomb/state-hooks';
 import {
   CHAINS,
   Currency,
@@ -8,8 +10,6 @@ import {
   nearestUsableTick,
   tickToPrice,
 } from '@pangolindex/sdk';
-import { TickData, Ticks, ZERO_ADDRESS, useAllV3TicksQuery, useChainId, wrappedCurrency } from '@pangolindex/shared';
-import { useSingleContractMultipleData } from '@pangolindex/state-hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ChartEntry } from 'src/components/LiquidityChartRangeInput/types';
 import { usePool } from 'src/hooks/common';

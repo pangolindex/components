@@ -1,4 +1,4 @@
-import { useTranslation } from '@pangolindex/shared';
+import { useTranslation } from '@honeycomb/shared';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import { StyledLink } from 'src/components/Detail/styleds';

@@ -1,6 +1,6 @@
-import { useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useTransactionAdder } from '@pangolindex/state-hooks';
-import { hederaFn } from '@pangolindex/wallet-connectors';
+import { useChainId, usePangolinWeb3 } from '@honeycomb/shared';
+import { useTransactionAdder } from '@honeycomb/state-hooks';
+import { hederaFn } from '@honeycomb/wallet-connectors';
 import { BigNumber } from 'ethers';
 import { useSarNftGovernanceContract } from './useContract';
 

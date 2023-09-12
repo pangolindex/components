@@ -1,4 +1,4 @@
-import { Box, Text, Tooltip } from '@pangolindex/core';
+import { Box, Text, Tooltip } from '@honeycomb/core';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';

@@ -1,7 +1,7 @@
-import { AutoColumn, Box, Button, CurrencyLogo, ExternalLink, Modal, Text } from '@pangolindex/core';
+import { AutoColumn, Box, Button, CurrencyLogo, ExternalLink, Modal, Text } from '@honeycomb/core';
 import { Token } from '@pangolindex/sdk';
-import { getEtherscanLink, shortenAddress, usePangolinWeb3 } from '@pangolindex/shared';
-import { useAllTokens } from '@pangolindex/state-hooks';
+import { getEtherscanLink, shortenAddress, usePangolinWeb3 } from '@honeycomb/shared';
+import { useAllTokens } from '@honeycomb/state-hooks';
 import React, { useCallback, useMemo, useState } from 'react';
 import { StyledWarningIcon, WarningContainer, Wrapper } from './styled';
 

@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from '@pangolindex/core';
+import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from '@honeycomb/core';
 import { Currency, Pair, Percent } from '@pangolindex/sdk';
 import {
   MixPanelEvents,
@@ -10,7 +10,7 @@ import {
   usePangolinWeb3,
   useTranslation,
   wrappedCurrency,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   ApprovalState,
   useApproveCallbackHook,
@@ -19,7 +19,7 @@ import {
   useTransactionDeadline,
   useUserSlippageTolerance,
   useWalletModalToggle,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb/state-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRemoveLiquidityHook } from 'src/hooks/wallet/hooks';
 import { Field, useBurnStateAtom } from 'src/state/burn/atom';

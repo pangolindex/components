@@ -1,4 +1,4 @@
-import { Button } from '@pangolindex/core';
+import { Button } from '@honeycomb/core';
 import styled from 'styled-components';
 
 export const ChartWrapper = styled.div`

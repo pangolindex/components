@@ -1,6 +1,6 @@
-import { Box, Drawer, TextInput } from '@pangolindex/core';
+import { Box, Drawer, TextInput } from '@honeycomb/core';
+import { filterTokenOrChain, usePrevious, useTranslation } from '@honeycomb/shared';
 import { BridgeChain, Chain, Currency, currencyEquals } from '@pangolindex/sdk';
-import { filterTokenOrChain, usePrevious, useTranslation } from '@pangolindex/shared';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';

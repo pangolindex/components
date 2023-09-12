@@ -1,6 +1,6 @@
-import { Box, Stat, Text } from '@pangolindex/core';
+import { Box, Stat, Text } from '@honeycomb/core';
 import { Currency, JSBI, Pair, TokenAmount } from '@pangolindex/sdk';
-import { BIG_INT_ZERO, useChainId } from '@pangolindex/shared';
+import { BIG_INT_ZERO, useChainId } from '@honeycomb/shared';
 import numeral from 'numeral';
 import React from 'react';
 import AnalyticsIcon from 'src/assets/analytics.svg';

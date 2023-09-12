@@ -1,6 +1,6 @@
-import { Box, Text, TextInput } from '@pangolindex/core';
-import { MixPanelEvents, useDebounce, useMixpanel, useTranslation } from '@pangolindex/shared';
-import { CoingeckoWatchListState, CoingeckoWatchListToken, useCoinGeckoSearchTokens } from '@pangolindex/state-hooks';
+import { Box, Text, TextInput } from '@honeycomb/core';
+import { MixPanelEvents, useDebounce, useMixpanel, useTranslation } from '@honeycomb/shared';
+import { CoingeckoWatchListState, CoingeckoWatchListToken, useCoinGeckoSearchTokens } from '@honeycomb/state-hooks';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePrevious } from 'react-use';
 import { FixedSizeList } from 'react-window';

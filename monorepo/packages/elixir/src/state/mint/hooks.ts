@@ -1,5 +1,15 @@
 /* eslint-disable max-lines */
 import {
+  BIG_INT_ZERO,
+  PairState,
+  tryParseAmount,
+  useChainId,
+  usePangolinWeb3,
+  wrappedCurrency,
+  wrappedCurrencyAmount,
+} from '@honeycomb/shared';
+import { useCurrency, useCurrencyBalances, usePair } from '@honeycomb/state-hooks';
+import {
   CAVAX,
   Currency,
   CurrencyAmount,
@@ -17,16 +27,6 @@ import {
   priceToClosestTick,
   tickToPrice,
 } from '@pangolindex/sdk';
-import {
-  BIG_INT_ZERO,
-  PairState,
-  tryParseAmount,
-  useChainId,
-  usePangolinWeb3,
-  wrappedCurrency,
-  wrappedCurrencyAmount,
-} from '@pangolindex/shared';
-import { useCurrency, useCurrencyBalances, usePair } from '@pangolindex/state-hooks';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePool } from 'src/hooks/common';

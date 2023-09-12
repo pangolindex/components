@@ -1,5 +1,5 @@
+import { PNG } from '@honeycomb/shared';
 import { ChainId } from '@pangolindex/sdk';
-import { PNG } from '@pangolindex/shared';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import TokenInfo from './TokenInfo';

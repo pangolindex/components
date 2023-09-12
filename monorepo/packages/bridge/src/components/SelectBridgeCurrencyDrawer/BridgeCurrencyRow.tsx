@@ -1,4 +1,4 @@
-import { Text } from '@pangolindex/core';
+import { Text } from '@honeycomb/core';
 import { BridgeCurrency } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import { HelpCircle } from 'react-feather';

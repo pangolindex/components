@@ -16,7 +16,7 @@ import {
   usePangolinWeb3,
   useRefetchPangoChefSubgraph,
   useTranslation,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   useCoinGeckoCurrencyPrice,
   useMultipleContractSingleData,
@@ -28,8 +28,8 @@ import {
   useSingleContractMultipleData,
   useTokensContract,
   useTransactionAdder,
-} from '@pangolindex/state-hooks';
-import { hederaFn } from '@pangolindex/wallet-connectors';
+} from '@honeycomb/state-hooks';
+import { hederaFn } from '@honeycomb/wallet-connectors';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';

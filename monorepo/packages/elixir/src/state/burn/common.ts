@@ -1,6 +1,6 @@
+import { unwrappedToken, useChainId } from '@honeycomb/shared';
+import { useTokenHook } from '@honeycomb/state-hooks';
 import { Percent, Position, Token, TokenAmount } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId } from '@pangolindex/shared';
-import { useTokenHook } from '@pangolindex/state-hooks';
 import { useConcLiqPositionFeesHook } from 'src/hooks';
 import { useDerivedPositionInfo } from 'src/state/wallet/hooks/evm';
 import { PositionDetails } from 'src/state/wallet/types';

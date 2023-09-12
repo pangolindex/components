@@ -1,6 +1,6 @@
 import { CAVAX, ChainId, WAVAX } from '@pangolindex/sdk';
-import { ZERO_ADDRESS } from '@pangolindex/shared';
-import { Hedera } from '@pangolindex/wallet-connectors';
+import { ZERO_ADDRESS } from '@honeycomb/shared';
+import { Hedera } from '@honeycomb/wallet-connectors';
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
 

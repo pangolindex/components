@@ -15,8 +15,8 @@ import {
   useLastBlockTimestampHook,
   usePangolinWeb3,
   useSubgraphFarms,
-} from '@pangolindex/shared';
-import { usePair, useSingleContractMultipleData } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { usePair, useSingleContractMultipleData } from '@honeycomb/state-hooks';
 import { BigNumber } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import { useMemo } from 'react';

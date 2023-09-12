@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Box, Button, Text, ToggleButtons } from '@pangolindex/core';
+import { Box, Button, Text, ToggleButtons } from '@honeycomb/core';
 import { CAVAX, JSBI, Token, TokenAmount, Trade } from '@pangolindex/sdk';
 import {
   MixPanelEvents,
@@ -10,14 +10,14 @@ import {
   useMixpanel,
   usePangolinWeb3,
   useTranslation,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   ApprovalState,
   useTokenHook,
   useTransactionAdder,
   useUserSlippageTolerance,
   useWalletModalToggle,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb/state-hooks';
 import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import { CurrencyAmount, Currency as UniCurrency } from '@uniswap/sdk-core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';

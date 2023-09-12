@@ -1,4 +1,4 @@
-import { Text, Tooltip } from '@pangolindex/core';
+import { Text, Tooltip } from '@honeycomb/core';
 import { ElixirTrade, Fraction, Percent, Trade, TradeType } from '@pangolindex/sdk';
 import {
   BIPS_BASE,
@@ -6,8 +6,8 @@ import {
   ONE_BIPS,
   computeSlippageAdjustedAmounts,
   useTranslation,
-} from '@pangolindex/shared';
-import { useUserSlippageTolerance } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { useUserSlippageTolerance } from '@honeycomb/state-hooks';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';

@@ -1,6 +1,6 @@
-import { Box, Button, Loader, Text } from '@pangolindex/core';
-import { scrollElementIntoView, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { useWalletModalToggle } from '@pangolindex/state-hooks';
+import { Box, Button, Loader, Text } from '@honeycomb/core';
+import { scrollElementIntoView, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
+import { useWalletModalToggle } from '@honeycomb/state-hooks';
 import React, { useEffect, useMemo } from 'react';
 import { useSarPositionsHook } from 'src/hooks';
 import { Position } from 'src/hooks/types';

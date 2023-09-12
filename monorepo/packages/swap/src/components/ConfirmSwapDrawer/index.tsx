@@ -1,4 +1,4 @@
-import { Box, Button, CurrencyLogo, Drawer, Loader, Text } from '@pangolindex/core';
+import { Box, Button, CurrencyLogo, Drawer, Loader, Text } from '@honeycomb/core';
 import { ElixirTrade, Trade, TradeType } from '@pangolindex/sdk';
 import {
   Trans,
@@ -7,7 +7,7 @@ import {
   tradeMeaningfullyDiffers,
   usePangolinWeb3,
   useTranslation,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import React, { useContext, useMemo } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';

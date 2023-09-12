@@ -19,7 +19,7 @@ import {
   useRefetchPangoChefSubgraph,
   useTranslation,
   waitForTransaction,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   useCoinGeckoCurrencyPrice,
   useMultipleContractSingleData,
@@ -30,7 +30,7 @@ import {
   useSingleContractMultipleData,
   useTokensContract,
   useTransactionAdder,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb/state-hooks';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';

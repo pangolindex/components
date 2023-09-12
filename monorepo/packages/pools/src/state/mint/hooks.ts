@@ -17,8 +17,8 @@ import {
   useTranslation,
   wrappedCurrency,
   wrappedCurrencyAmount,
-} from '@pangolindex/shared';
-import { useCurrencyBalances, usePair } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { useCurrencyBalances, usePair } from '@honeycomb/state-hooks';
 import { useCallback, useMemo } from 'react';
 import { usePairTotalSupplyHook } from 'src/hooks/pair';
 import { Field, initialKeyState, useMintStateAtom } from './atom';

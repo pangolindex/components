@@ -1,7 +1,7 @@
-import { Box, Loader, Text } from '@pangolindex/core';
+import { Box, Loader, Text } from '@honeycomb/core';
+import { MixPanelEvents, useChainId, useMixpanel, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
+import { useShowBalancesManager } from '@honeycomb/state-hooks';
 import { ALL_CHAINS, CHAINS, Chain } from '@pangolindex/sdk';
-import { MixPanelEvents, useChainId, useMixpanel, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { useShowBalancesManager } from '@pangolindex/state-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { PairDataUser, TokenDataUser, useGetChainsBalances, useGetWalletChainTokens } from 'src/hooks';

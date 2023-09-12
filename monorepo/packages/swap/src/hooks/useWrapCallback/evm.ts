@@ -1,6 +1,6 @@
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
-import { tryParseAmount, useChainId, usePangolinWeb3, useTranslation, useWETHContract } from '@pangolindex/shared';
-import { useCurrencyBalance, useTransactionAdder } from '@pangolindex/state-hooks';
+import { tryParseAmount, useChainId, usePangolinWeb3, useTranslation, useWETHContract } from '@honeycomb/shared';
+import { useCurrencyBalance, useTransactionAdder } from '@honeycomb/state-hooks';
 import { useMemo, useState } from 'react';
 import { Field } from 'src/state/atom';
 import { useSwapActionHandlers } from 'src/state/hooks/common';

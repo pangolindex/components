@@ -1,4 +1,4 @@
-import { Text } from '@pangolindex/core';
+import { Text } from '@honeycomb/core';
 import styled from 'styled-components';
 
 export const CurrencyList = styled.div`

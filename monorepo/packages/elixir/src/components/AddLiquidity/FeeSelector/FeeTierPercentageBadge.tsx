@@ -1,5 +1,5 @@
-import { Text } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/shared';
+import { Text } from '@honeycomb/core';
+import { useTranslation } from '@honeycomb/shared';
 import React from 'react';
 import { PoolState } from 'src/hooks/types';
 import { BlackBox } from './styles';

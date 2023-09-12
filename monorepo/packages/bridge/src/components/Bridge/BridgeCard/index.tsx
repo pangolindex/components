@@ -1,5 +1,17 @@
 /* eslint-disable max-lines */
-import { Box, Button, Collapsed, DropdownMenu, Loader, SlippageInput, Text } from '@pangolindex/core';
+import { Box, Button, Collapsed, DropdownMenu, Loader, SlippageInput, Text } from '@honeycomb/core';
+import {
+  checkAddressNetworkBaseMapping,
+  maxAmountSpend,
+  useActiveWeb3React,
+  useChainId,
+  useDebounce,
+  useLibrary,
+  useTranslation,
+} from '@honeycomb/shared';
+import { useWalletModalToggle } from '@honeycomb/state-hooks';
+import { injected } from '@honeycomb/wallet-connectors';
+import { changeNetwork, useWalletState } from '@honeycomb/walletmodal'; // TODO FIx in future to bridge package works standalone from walletmodal
 import {
   BRIDGES,
   Bridge,
@@ -13,18 +25,6 @@ import {
   SQUID,
   // THORSWAP,
 } from '@pangolindex/sdk';
-import {
-  checkAddressNetworkBaseMapping,
-  maxAmountSpend,
-  useActiveWeb3React,
-  useChainId,
-  useDebounce,
-  useLibrary,
-  useTranslation,
-} from '@pangolindex/shared';
-import { useWalletModalToggle } from '@pangolindex/state-hooks';
-import { injected } from '@pangolindex/wallet-connectors';
-import { changeNetwork, useWalletState } from '@pangolindex/walletmodal'; // TODO FIx in future to bridge package works standalone from walletmodal
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, RefreshCcw, X } from 'react-feather';
 import { MultiValue } from 'react-select';

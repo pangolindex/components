@@ -1,6 +1,6 @@
-import { Box, Modal, Tabs } from '@pangolindex/core';
+import { Box, Modal, Tabs } from '@honeycomb/core';
+import { useTranslation } from '@honeycomb/shared';
 import { Token } from '@pangolindex/sdk';
-import { useTranslation } from '@pangolindex/shared';
 import React, { useContext, useState } from 'react';
 import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';

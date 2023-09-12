@@ -1,5 +1,5 @@
-import { Box, Button, Text } from '@pangolindex/core';
-import { CoingeckoWatchListToken, useCoinGeckoTokenPriceChart } from '@pangolindex/state-hooks';
+import { Box, Button, Text } from '@honeycomb/core';
+import { CoingeckoWatchListToken, useCoinGeckoTokenPriceChart } from '@honeycomb/state-hooks';
 import React, { useState } from 'react';
 import { Line, LineChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { TIMEFRAME } from 'src/constants';

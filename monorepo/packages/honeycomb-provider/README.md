@@ -2,11 +2,11 @@
 Contains the Provider componento used to wrap the main app. Is necessary to use this to use some packages.
 
 ## Installation
-`yarn add @pangolindex/honeycomb-provider`
+`yarn add @honeycomb/honeycomb-provider`
 
 or
 
-`npm install @pangolindex/honeycomb-provider`
+`npm install @honeycomb/honeycomb-provider`
 
 ### Install below dependancies as its peer dependancies
 
@@ -28,8 +28,8 @@ In your main file wrap your app with `HoneycombProvider` and `Web3ReactProvider`
 _Use version **6.0.9** of `@web3-react/core` package._
 
 ```tsx
-import { HoneycombProvider } from '@pangolindex/honeycomb-provider';
-import { NetworkContextName, useActiveWeb3React } from '@pangolindex/shared';
+import { HoneycombProvider } from '@honeycomb/honeycomb-provider';
+import { NetworkContextName, useActiveWeb3React } from '@honeycomb/shared';
 import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core';
 import React from 'react';
 import ReactDOM from 'react-dom';

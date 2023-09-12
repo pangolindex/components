@@ -1,5 +1,5 @@
 import { Token, TokenAmount } from '@pangolindex/sdk';
-import { useTokenContract } from '@pangolindex/shared';
+import { useTokenContract } from '@honeycomb/shared';
 import { useMemo } from 'react';
 import { useSingleCallResult } from 'src/state';
 

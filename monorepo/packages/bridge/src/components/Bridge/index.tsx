@@ -1,7 +1,7 @@
-import { Box, CountdownCounter, Loader, Tab, TabList, Tabs, Text, Tooltip } from '@pangolindex/core';
+import { Box, CountdownCounter, Loader, Tab, TabList, Tabs, Text, Tooltip } from '@honeycomb/core';
+import { usePangolinWeb3, useTranslation } from '@honeycomb/shared';
+import { useUserSlippageTolerance } from '@honeycomb/state-hooks';
 import { BRIDGE_PARTNERS } from '@pangolindex/sdk';
-import { usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { useUserSlippageTolerance } from '@pangolindex/state-hooks';
 import React, { useCallback, useState } from 'react';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/hooks';
 import { ChainField, CurrencyField } from 'src/hooks/atom';

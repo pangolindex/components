@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { ChainId, Token } from '@pangolindex/sdk';
-import { useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useSingleContractMultipleData } from '@pangolindex/state-hooks';
+import { useChainId, usePangolinWeb3 } from '@honeycomb/shared';
+import { useSingleContractMultipleData } from '@honeycomb/state-hooks';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { usePangoChefContract } from 'src/hooks/useContract';

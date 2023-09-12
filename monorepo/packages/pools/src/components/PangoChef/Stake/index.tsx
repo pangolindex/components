@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
-import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput, Tooltip } from '@pangolindex/core';
+import { Box, Button, DoubleCurrencyLogo, NumberOptions, Stat, Text, TextInput, Tooltip } from '@honeycomb/core';
 import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import {
   BIG_INT_ZERO,
@@ -14,8 +14,8 @@ import {
   usePangolinWeb3,
   useTranslation,
   wrappedCurrencyAmount,
-} from '@pangolindex/shared';
-import { ApprovalState, useApproveCallbackHook, usePair, useTransactionDeadline } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { ApprovalState, useApproveCallbackHook, usePair, useTransactionDeadline } from '@honeycomb/state-hooks';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ThemeContext } from 'styled-components';
 import { useDerivedStakeInfo, useExtraPendingRewards, useGetPoolDollerWorth } from 'src/hooks/minichef/hooks/common';

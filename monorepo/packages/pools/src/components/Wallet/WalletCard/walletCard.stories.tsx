@@ -1,6 +1,6 @@
-import { Box } from '@pangolindex/core';
+import { Box } from '@honeycomb/core';
 import { Pair, Token, TokenAmount } from '@pangolindex/sdk';
-import { useChainId } from '@pangolindex/shared';
+import { useChainId } from '@honeycomb/shared';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import WalletCard from '.';

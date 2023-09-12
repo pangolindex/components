@@ -6,8 +6,8 @@ import {
   usePangolinWeb3,
   useTranslation,
   wrappedCurrency,
-} from '@pangolindex/shared';
-import { usePair } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { usePair } from '@honeycomb/state-hooks';
 import { useCallback } from 'react';
 import { usePairTotalSupplyHook } from 'src/hooks/pair';
 import { usePairBalanceHook } from 'src/hooks/wallet/hooks';

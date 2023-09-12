@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
-import { Box, Button, Text } from '@pangolindex/core';
-import { PNG, useChainId, useTranslation } from '@pangolindex/shared';
+import { Box, Button, Text } from '@honeycomb/core';
+import { PNG, useChainId, useTranslation } from '@honeycomb/shared';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDerivativeSarClaimHook } from 'src/hooks';
 import { Position } from 'src/hooks/types';

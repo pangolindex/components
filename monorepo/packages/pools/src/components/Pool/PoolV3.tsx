@@ -1,5 +1,5 @@
 import { JSBI } from '@pangolindex/sdk';
-import { BIG_INT_ZERO } from '@pangolindex/shared';
+import { BIG_INT_ZERO } from '@honeycomb/shared';
 import React, { useMemo } from 'react';
 import { PoolType } from 'src/hooks/minichef/types';
 import { PangoChefInfo } from 'src/hooks/pangochef/types';

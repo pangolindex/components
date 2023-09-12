@@ -1,5 +1,5 @@
-import { AutoColumn, Box, CloseIcon, ColumnCenter, Text } from '@pangolindex/core';
-import { ExternalLink, getEtherscanLink, useChainId, useTranslation } from '@pangolindex/shared';
+import { AutoColumn, Box, CloseIcon, ColumnCenter, Text } from '@honeycomb/core';
+import { ExternalLink, getEtherscanLink, useChainId, useTranslation } from '@honeycomb/shared';
 import React, { useContext } from 'react';
 import { ArrowUpCircle } from 'react-feather';
 import styled, { ThemeContext, keyframes } from 'styled-components';

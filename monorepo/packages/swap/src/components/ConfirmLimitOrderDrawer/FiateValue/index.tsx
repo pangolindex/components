@@ -1,4 +1,4 @@
-import { Text } from '@pangolindex/core';
+import { Text } from '@honeycomb/core';
 import { CurrencyAmount, Percent } from '@pangolindex/sdk';
 import React, { useContext, useMemo } from 'react';
 import { ThemeContext } from 'styled-components';

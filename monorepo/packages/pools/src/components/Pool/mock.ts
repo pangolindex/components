@@ -1,5 +1,5 @@
 import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
-import { BIG_INT_ZERO, PNG, useChainId } from '@pangolindex/shared';
+import { BIG_INT_ZERO, PNG, useChainId } from '@honeycomb/shared';
 import { BigNumber } from 'ethers';
 import { MinichefStakingInfo } from 'src/hooks/minichef/types';
 import { PangoChefInfo } from 'src/hooks/pangochef/types';

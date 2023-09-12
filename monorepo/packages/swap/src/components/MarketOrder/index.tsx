@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Box, Button, Text, TextInput } from '@pangolindex/core';
+import { Box, Button, Text, TextInput } from '@honeycomb/core';
 import {
   CAVAX,
   CurrencyAmount,
@@ -26,7 +26,7 @@ import {
   useTranslation,
   validateAddressMapping,
   wrappedCurrency,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   ApprovalState,
   useApproveCallbackFromTradeHook,
@@ -38,9 +38,9 @@ import {
   useTokenList,
   useUserSlippageTolerance,
   useWalletModalToggle,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb/state-hooks';
 import { SelectTokenDrawer } from '@pangolindex/token-drawer';
-import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
+import { Hedera, hederaFn } from '@honeycomb/wallet-connectors';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { ThemeContext } from 'styled-components';

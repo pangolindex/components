@@ -1,4 +1,4 @@
-import { Box, Logo } from '@pangolindex/core';
+import { Box, Logo } from '@honeycomb/core';
 import styled from 'styled-components';
 
 export const Frame = styled(Box)`

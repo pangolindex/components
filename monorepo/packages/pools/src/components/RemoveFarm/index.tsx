@@ -1,4 +1,4 @@
-import { Box, Button, Loader, Stat, Text, TransactionCompleted } from '@pangolindex/core';
+import { Box, Button, Loader, Stat, Text, TransactionCompleted } from '@honeycomb/core';
 import { CHAINS, ChefType, Token } from '@pangolindex/sdk';
 import {
   FARM_TYPE,
@@ -8,9 +8,9 @@ import {
   useMixpanel,
   usePangolinWeb3,
   useTranslation,
-} from '@pangolindex/shared';
-import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from '@pangolindex/state-hooks';
-import { Hedera } from '@pangolindex/wallet-connectors';
+} from '@honeycomb/shared';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from '@honeycomb/state-hooks';
+import { Hedera } from '@honeycomb/wallet-connectors';
 import numeral from 'numeral';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useExtraPendingRewards, useGetRewardTokens } from 'src/hooks/minichef/hooks/common';

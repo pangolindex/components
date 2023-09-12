@@ -1,5 +1,5 @@
-import { Box, DropdownMenu, Hidden, Loader, TextInput } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/shared';
+import { Box, DropdownMenu, Hidden, Loader, TextInput } from '@honeycomb/core';
+import { useTranslation } from '@honeycomb/shared';
 import React, { useContext } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';

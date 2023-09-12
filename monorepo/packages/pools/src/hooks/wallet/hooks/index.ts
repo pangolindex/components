@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyHook } from '@pangolindex/shared';
+import { useDummyHook } from '@honeycomb/shared';
 import { useDummyCreatePair, useDummyGetUserLP } from './dummy';
 import { useAddLiquidity, useEVMPairBalance, useGetUserLP, useRemoveLiquidity } from './evm';
 import {

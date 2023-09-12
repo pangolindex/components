@@ -1,6 +1,6 @@
 import { Pair, TokenAmount } from '@pangolindex/sdk';
-import { useSubgraphPairs } from '@pangolindex/shared';
-import { useHederaTokensMetaData } from '@pangolindex/state-hooks';
+import { useSubgraphPairs } from '@honeycomb/shared';
+import { useHederaTokensMetaData } from '@honeycomb/state-hooks';
 import { useMemo } from 'react';
 import { useHederaPGLTokenAddresses } from '../wallet/hooks/hedera';
 

@@ -1,4 +1,4 @@
-import { PNG } from '@pangolindex/shared';
+import { PNG } from '@honeycomb/shared';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import ComingSong from '.';

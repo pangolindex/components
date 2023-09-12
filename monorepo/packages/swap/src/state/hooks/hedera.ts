@@ -1,6 +1,6 @@
 import { CAVAX } from '@pangolindex/sdk';
-import { useChainId, wrappedCurrency } from '@pangolindex/shared';
-import { useCurrency, useHederaTokenAssociated } from '@pangolindex/state-hooks';
+import { useChainId, wrappedCurrency } from '@honeycomb/shared';
+import { useCurrency, useHederaTokenAssociated } from '@honeycomb/state-hooks';
 import { Field } from '../atom';
 import { useSwapState } from './common';
 

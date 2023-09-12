@@ -1,5 +1,5 @@
-import { Box, Button, Loader, Text, Visible } from '@pangolindex/core';
-import { BIG_INT_ZERO, useChainId, useDebounce, useTranslation } from '@pangolindex/shared';
+import { Box, Button, Loader, Text, Visible } from '@honeycomb/core';
+import { BIG_INT_ZERO, useChainId, useDebounce, useTranslation } from '@honeycomb/shared';
 import React, { useCallback, useMemo, useState } from 'react';
 import AddLiquidity from 'src/components/AddLiquidity';
 import DetailModal from 'src/components/DetailModal';

@@ -1,6 +1,6 @@
-import { Text } from '@pangolindex/core';
+import { Text } from '@honeycomb/core';
 import { Currency } from '@pangolindex/sdk';
-import { useTranslation } from '@pangolindex/shared';
+import { useTranslation } from '@honeycomb/shared';
 import React from 'react';
 import RemoveLiquidity from '../RemoveLiquidity';
 import { Wrapper } from './styleds';

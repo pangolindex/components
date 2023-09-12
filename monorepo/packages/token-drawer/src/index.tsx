@@ -1,14 +1,14 @@
-import { Box, Drawer, Text, TextInput } from '@pangolindex/core';
-import { CAVAX, ChainId, Currency, Token, WAVAX, currencyEquals } from '@pangolindex/sdk';
-import { Field, filterTokenOrChain, isAddress, useChainId, usePrevious, useTranslation } from '@pangolindex/shared';
+import { Box, Drawer, Text, TextInput } from '@honeycomb/core';
+import { Field, filterTokenOrChain, isAddress, useChainId, usePrevious, useTranslation } from '@honeycomb/shared';
 import {
   useAddUserToken,
   useAllTokens,
   useSelectedListInfo,
   useTokenComparator,
   useTokenHook,
-} from '@pangolindex/state-hooks';
-import { Hedera } from '@pangolindex/wallet-connectors';
+} from '@honeycomb/state-hooks';
+import { Hedera } from '@honeycomb/wallet-connectors';
+import { CAVAX, ChainId, Currency, Token, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import deepEqual from 'deep-equal';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';

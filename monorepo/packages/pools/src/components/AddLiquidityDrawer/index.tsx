@@ -1,6 +1,6 @@
-import { Drawer } from '@pangolindex/core';
+import { Drawer } from '@honeycomb/core';
 import { Token } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
+import { unwrappedToken, useChainId, useTranslation } from '@honeycomb/shared';
 import React from 'react';
 import { SpaceType } from 'src/hooks/minichef/types';
 import AddLiquidity from '../AddLiquidity';

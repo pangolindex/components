@@ -9,8 +9,8 @@ import {
   useChainId,
   useDebounce,
   useMulticallContract,
-} from '@pangolindex/shared';
-import { Hedera } from '@pangolindex/wallet-connectors';
+} from '@honeycomb/shared';
+import { Hedera } from '@honeycomb/wallet-connectors';
 import { useEffect, useMemo, useRef } from 'react';
 import { useBlockNumber } from '../application/hooks';
 import { Call, MulticallState, parseCallKey, useMulticallAtom } from './atom';

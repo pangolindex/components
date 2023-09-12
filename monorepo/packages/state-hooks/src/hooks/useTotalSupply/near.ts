@@ -1,6 +1,6 @@
 import { Pair, Token, TokenAmount } from '@pangolindex/sdk';
-import { useChainId } from '@pangolindex/shared';
-import { nearFn } from '@pangolindex/wallet-connectors';
+import { useChainId } from '@honeycomb/shared';
+import { nearFn } from '@honeycomb/wallet-connectors';
 import { useEffect, useMemo, useState } from 'react';
 
 export function useNearTotalSupply(tokenOrPair?: Token | Pair): TokenAmount | undefined {

@@ -1,5 +1,5 @@
+import { wrappedCurrency } from '@honeycomb/shared';
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
-import { wrappedCurrency } from '@pangolindex/shared';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { PriceInputProps } from './types';

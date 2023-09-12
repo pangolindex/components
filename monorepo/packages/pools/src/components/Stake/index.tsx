@@ -11,7 +11,7 @@ import {
   Text,
   TextInput,
   TransactionCompleted,
-} from '@pangolindex/core';
+} from '@honeycomb/core';
 import { JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import {
   BIG_INT_ZERO,
@@ -27,7 +27,7 @@ import {
   useTranslation,
   waitForTransaction,
   wrappedCurrencyAmount,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   ApprovalState,
   useApproveCallback,
@@ -35,7 +35,7 @@ import {
   useTokenBalance,
   useTransactionAdder,
   useTransactionDeadline,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb/state-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   useDerivedStakeInfo,

@@ -1,7 +1,7 @@
-import { Box, Button, Loader, Text, Tooltip } from '@pangolindex/core';
+import { Box, Button, Loader, Text, Tooltip } from '@honeycomb/core';
 import { AVALANCHE_MAINNET, AirdropType, Chain, NetworkType, Token, TokenAmount } from '@pangolindex/sdk';
-import { getChainByNumber, usePangolinWeb3 } from '@pangolindex/shared';
-import { useHederaTokenAssociated } from '@pangolindex/state-hooks';
+import { getChainByNumber, usePangolinWeb3 } from '@honeycomb/shared';
+import { useHederaTokenAssociated } from '@honeycomb/state-hooks';
 import { formatUnits } from 'ethers/lib/utils';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useClaimAirdrop, useMerkledropClaimedAmounts, useMerkledropProof } from '../../hooks';

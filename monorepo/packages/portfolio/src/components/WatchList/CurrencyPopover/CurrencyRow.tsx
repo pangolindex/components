@@ -1,5 +1,5 @@
-import { Box, Button, Text } from '@pangolindex/core';
-import { CoingeckoWatchListToken } from '@pangolindex/state-hooks';
+import { Box, Button, Text } from '@honeycomb/core';
+import { CoingeckoWatchListToken } from '@honeycomb/state-hooks';
 import React, { useCallback } from 'react';
 import { RowWrapper } from './styled';
 

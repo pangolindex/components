@@ -1,4 +1,4 @@
-import { useTranslation } from '@pangolindex/shared';
+import { useTranslation } from '@honeycomb/shared';
 import React, { useContext } from 'react';
 import Select, { MenuPlacement, MultiValue, OptionsOrGroups, SingleValue } from 'react-select';
 import { ThemeContext } from 'styled-components';

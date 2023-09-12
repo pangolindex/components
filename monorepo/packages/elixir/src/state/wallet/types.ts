@@ -1,5 +1,5 @@
+import { TokenReturnType } from '@honeycomb/state-hooks';
 import { Currency, CurrencyAmount, FeeAmount, Position, Token, TokenAmount } from '@pangolindex/sdk';
-import { TokenReturnType } from '@pangolindex/state-hooks';
 import { BigNumber } from 'ethers';
 
 export interface PositionDetails {

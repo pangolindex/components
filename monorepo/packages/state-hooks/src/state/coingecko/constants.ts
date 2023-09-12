@@ -1,5 +1,5 @@
 import { ChainId, Token } from '@pangolindex/sdk';
-import { USDC, USDCe, USDTe } from '@pangolindex/shared';
+import { USDC, USDCe, USDTe } from '@honeycomb/shared';
 
 export const COINGEKO_BASE_URL = `https://api.coingecko.com/api/v3`;
 

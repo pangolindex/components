@@ -1,11 +1,11 @@
-import { Modal } from '@pangolindex/core';
+import { Modal } from '@honeycomb/core';
 import { Pair } from '@pangolindex/sdk';
 import {
   ApplicationModal,
   useModalOpen,
   usePoolDetailnModalToggle,
   useUpdateSelectedPoolId,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb/state-hooks';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';

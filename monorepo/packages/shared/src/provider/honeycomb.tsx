@@ -2,7 +2,7 @@ import { ChainId } from '@pangolindex/sdk';
 // import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-// import { network } from '@pangolindex/wallet-connectors';
+// import { network } from '@honeycomb/wallet-connectors';
 // import { NetworkContextName } from 'src/constants';
 import { MixPanelProvider } from 'src/hooks/mixpanel';
 // import { useEagerConnect, useWalletUpdater } from './hooks/useConnector';

@@ -1,4 +1,4 @@
-import { Box } from '@pangolindex/core';
+import { Box } from '@honeycomb/core';
 import { ChefType } from '@pangolindex/sdk';
 import styled from 'styled-components';
 

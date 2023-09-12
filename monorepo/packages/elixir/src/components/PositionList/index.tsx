@@ -1,6 +1,6 @@
-import { Box, Button, DropdownMenu, Hidden, Loader, Text, TextInput } from '@pangolindex/core';
-import { usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { useWalletModalToggle } from '@pangolindex/state-hooks';
+import { Box, Button, DropdownMenu, Hidden, Loader, Text, TextInput } from '@honeycomb/core';
+import { usePangolinWeb3, useTranslation } from '@honeycomb/shared';
+import { useWalletModalToggle } from '@honeycomb/state-hooks';
 import React, { useContext } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Inbox, Search } from 'react-feather';

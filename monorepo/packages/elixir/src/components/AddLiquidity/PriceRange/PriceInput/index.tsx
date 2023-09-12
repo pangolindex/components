@@ -1,4 +1,4 @@
-import { Box, Text } from '@pangolindex/core';
+import { Box, Text } from '@honeycomb/core';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Minus, Plus } from 'react-feather';
 import { ThemeContext } from 'styled-components';

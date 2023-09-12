@@ -1,5 +1,5 @@
 import { CAVAX, Currency } from '@pangolindex/sdk';
-import { useChainId } from '@pangolindex/shared';
+import { useChainId } from '@honeycomb/shared';
 import { useTokenHook } from 'src/hooks/tokens';
 
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {

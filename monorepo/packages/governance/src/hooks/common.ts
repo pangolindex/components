@@ -1,10 +1,10 @@
 import { CHAINS, GovernanceType, JSBI } from '@pangolindex/sdk';
-import { NFT_PROPOSAL, getAllProposalData, useChainId } from '@pangolindex/shared';
+import { NFT_PROPOSAL, getAllProposalData, useChainId } from '@honeycomb/shared';
 import {
   useMultipleContractSingleData,
   useSingleCallResult,
   useSingleContractMultipleData,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb/state-hooks';
 import { ethers, utils } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { PROPOSAL_STORAGE_INTERFACE } from 'src/constants';

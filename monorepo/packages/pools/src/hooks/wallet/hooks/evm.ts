@@ -14,14 +14,14 @@ import {
   useTranslation,
   waitForTransaction,
   wrappedCurrency,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   ApprovalState,
   toV2LiquidityToken,
   usePairsContract,
   useTokenBalances,
   useTransactionAdder,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb/state-hooks';
 import { BigNumber } from 'ethers';
 import { useMemo, useState } from 'react';
 import { Field } from 'src/state/burn/atom';

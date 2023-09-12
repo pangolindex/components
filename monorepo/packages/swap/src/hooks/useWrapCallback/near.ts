@@ -1,7 +1,7 @@
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
-import { tryParseAmount, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useCurrencyBalance, useTransactionAdder } from '@pangolindex/state-hooks';
-import { Transaction, nearFn } from '@pangolindex/wallet-connectors';
+import { tryParseAmount, useChainId, usePangolinWeb3 } from '@honeycomb/shared';
+import { useCurrencyBalance, useTransactionAdder } from '@honeycomb/state-hooks';
+import { Transaction, nearFn } from '@honeycomb/wallet-connectors';
 import { parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';
 import { NOT_APPLICABLE, WrapType } from './constant';

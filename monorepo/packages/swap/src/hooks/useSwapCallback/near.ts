@@ -1,13 +1,13 @@
 import { parseUnits } from '@ethersproject/units';
 import { Token, Trade } from '@pangolindex/sdk';
-import { INITIAL_ALLOWED_SLIPPAGE, ONE_YOCTO_NEAR, useChainId, useLibrary, usePangolinWeb3 } from '@pangolindex/shared';
-import { useGetNearPoolId, useTransactionAdder } from '@pangolindex/state-hooks';
+import { INITIAL_ALLOWED_SLIPPAGE, ONE_YOCTO_NEAR, useChainId, useLibrary, usePangolinWeb3 } from '@honeycomb/shared';
+import { useGetNearPoolId, useTransactionAdder } from '@honeycomb/state-hooks';
 import {
   FunctionCallOptions,
   NEAR_EXCHANGE_CONTRACT_ADDRESS,
   Transaction,
   nearFn,
-} from '@pangolindex/wallet-connectors';
+} from '@honeycomb/wallet-connectors';
 import { useMemo } from 'react';
 import { SwapCallbackState } from './constant';
 

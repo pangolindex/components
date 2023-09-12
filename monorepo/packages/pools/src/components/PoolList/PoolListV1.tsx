@@ -1,5 +1,5 @@
-import { BIG_INT_ZERO, useChainId, useDebounce } from '@pangolindex/shared';
-import { usePoolDetailnModalToggle } from '@pangolindex/state-hooks';
+import { BIG_INT_ZERO, useChainId, useDebounce } from '@honeycomb/shared';
+import { usePoolDetailnModalToggle } from '@honeycomb/state-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import { fetchChunkedAprs, sortingOnAvaxStake, sortingOnStakedAmount } from 'src/hooks/minichef/utils';

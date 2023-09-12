@@ -1,7 +1,7 @@
-import { ANALYTICS_PAGE_MAPPING, Box } from '@pangolindex/core';
+import { ANALYTICS_PAGE_MAPPING, Box } from '@honeycomb/core';
 import { CHAINS, Fraction, Token } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { convertCoingeckoTokens, usePair } from '@pangolindex/state-hooks';
+import { unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
+import { convertCoingeckoTokens, usePair } from '@honeycomb/state-hooks';
 import deepEqual from 'deep-equal';
 import numeral from 'numeral';
 import React from 'react';

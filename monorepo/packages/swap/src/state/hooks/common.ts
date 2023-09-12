@@ -26,13 +26,13 @@ import {
   useTranslation,
   validateAddressMapping,
   wrappedCurrency,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   useCurrency,
   useCurrencyBalances,
   useParsedQueryString,
   useUserSlippageTolerance,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb/state-hooks';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { SWAP_DEFAULT_CURRENCY } from 'src/constants';

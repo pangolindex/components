@@ -12,7 +12,7 @@ import {
   useTokenContract,
   wait,
   waitForTransaction,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import { useCallback, useMemo, useState } from 'react';
 import { useTokenAllowance } from 'src/hooks/useTokenAllowance/evm';
 import { useHasPendingApproval, useIsApprovingInfinite, useTransactionAdder } from 'src/state';

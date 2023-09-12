@@ -1,6 +1,6 @@
-import { Loader } from '@pangolindex/core';
-import { ZERO_ADDRESS, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useAllTokens, useWalletModalToggle } from '@pangolindex/state-hooks';
+import { Loader } from '@honeycomb/core';
+import { ZERO_ADDRESS, useChainId, usePangolinWeb3 } from '@honeycomb/shared';
+import { useAllTokens, useWalletModalToggle } from '@honeycomb/state-hooks';
 import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import React, { Suspense, useCallback, useContext } from 'react';
 import { ThemeContext } from 'styled-components';

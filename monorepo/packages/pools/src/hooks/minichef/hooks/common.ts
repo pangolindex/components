@@ -7,14 +7,14 @@ import {
   useChainId,
   usePangolinWeb3,
   useTranslation,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   CallState,
   useMultipleContractMultipleData,
   useSingleCallResult,
   useTokensHook,
   useUSDCPriceHook,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb/state-hooks';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';

@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
-import { useChainId } from '@pangolindex/shared';
+import { useChainId } from '@honeycomb/shared';
 import { useSarNftAllProposalData } from './common';
 import { useDummyAllProposalData, useDummyVoteCallback } from './dummy';
 import { useAllProposalData, useVoteCallback } from './evm';

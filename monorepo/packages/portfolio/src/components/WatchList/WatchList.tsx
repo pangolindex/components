@@ -1,6 +1,6 @@
-import { Box, Button, Hidden, ShowMore } from '@pangolindex/core';
-import { useOnClickOutside, useTranslation } from '@pangolindex/shared';
-import { CoingeckoWatchListToken, useCoinGeckoTokens } from '@pangolindex/state-hooks';
+import { Box, Button, Hidden, ShowMore } from '@honeycomb/core';
+import { useOnClickOutside, useTranslation } from '@honeycomb/shared';
+import { CoingeckoWatchListToken, useCoinGeckoTokens } from '@honeycomb/state-hooks';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Plus } from 'react-feather';

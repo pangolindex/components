@@ -1,5 +1,5 @@
 import { CAVAX, ChainId, CurrencyAmount, JSBI } from '@pangolindex/sdk';
-import { MIN_ETH } from '@pangolindex/shared';
+import { MIN_ETH } from '@honeycomb/shared';
 import { Currency, CurrencyAmount as UniCurrencyAmount } from '@uniswap/sdk-core';
 
 export function galetoMaxAmountSpend(chainId: ChainId, currencyAmount?: UniCurrencyAmount<Currency>): any | undefined {

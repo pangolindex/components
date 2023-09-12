@@ -1,6 +1,6 @@
-import { Box, Text } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/shared';
-import { useParsedQueryString } from '@pangolindex/state-hooks';
+import { Box, Text } from '@honeycomb/core';
+import { useTranslation } from '@honeycomb/shared';
+import { useParsedQueryString } from '@honeycomb/state-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
 import AddLiquidityModal from '../AddLiquidityModal';
 import PoolImportModal from '../PoolImportModal';

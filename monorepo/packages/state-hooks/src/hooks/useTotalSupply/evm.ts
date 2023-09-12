@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { ChainId, Token, TokenAmount } from '@pangolindex/sdk';
-import { PNG, useTokenContract } from '@pangolindex/shared';
+import { PNG, useTokenContract } from '@honeycomb/shared';
 import { useSingleCallResult } from 'src/state';
 
 // returns undefined if input token is undefined, or fails to get token contract,

@@ -2,11 +2,11 @@
 A widget for projects to embed Pangolin's Swap functionality within their dApp.
 
 ## Installation
-`yarn add @pangolindex/swap`
+`yarn add @honeycomb/swap`
 
 or
 
-`npm install @pangolindex/swap`
+`npm install @honeycomb/swap`
 
 ### Install below dependancies as its peer dependancies
 
@@ -34,8 +34,8 @@ In your main file wrap your app with `HoneycombProvider` and `Web3ReactProvider`
 _Use version **6.0.9** of `@web3-react/core` package._
 
 ```tsx
-import { HoneycombProvider } from '@pangolindex/honeycomb-provider';
-import { NetworkContextName, useActiveWeb3React } from '@pangolindex/shared';
+import { HoneycombProvider } from '@honeycomb/honeycomb-provider';
+import { NetworkContextName, useActiveWeb3React } from '@honeycomb/shared';
 import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -75,8 +75,8 @@ ReactDOM.render(
 Now you can import the widget in your app
 
 ```tsx
-import { useChainId } from '@pangolindex/shared';
-import { SwapWidget } from '@pangolindex/swap';
+import { useChainId } from '@honeycomb/shared';
+import { SwapWidget } from '@honeycomb/swap';
 import React from 'react';
 export default function Swap() {
   const chainId = useChainId();

@@ -1,7 +1,7 @@
-import { Airdrop, ComingSoon } from '@pangolindex/airdrop';
-import { getTokenLogoURL } from '@pangolindex/core';
+import { Airdrop, ComingSoon } from '@honeycomb/airdrop';
+import { getTokenLogoURL } from '@honeycomb/core';
+import { PNG } from '@honeycomb/shared';
 import { ChainId, FLARE_MAINNET, HEDERA_MAINNET, SONGBIRD_CANARY } from '@pangolindex/sdk';
-import { PNG } from '@pangolindex/shared';
 import React from 'react';
 import { Frame } from './styleds';
 

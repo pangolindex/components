@@ -1,5 +1,5 @@
 import { Token } from '@pangolindex/sdk';
-import { useChainId } from '@pangolindex/shared';
+import { useChainId } from '@honeycomb/shared';
 import { useMemo } from 'react';
 import { useSelectedTokenList } from 'src/state/lists/hooks';
 import { useUserAddedTokens } from 'src/state/user/hooks';

@@ -1,5 +1,5 @@
-import { Box, Button, NewsWidget } from '@pangolindex/core';
-import { MyPortfolio, Portfolio, WatchList } from '@pangolindex/portfolio';
+import { Box, Button, NewsWidget } from '@honeycomb/core';
+import { MyPortfolio, Portfolio, WatchList } from '@honeycomb/portfolio';
 import React from 'react';
 import { GridContainer, PortfolioContainer } from './styled';
 

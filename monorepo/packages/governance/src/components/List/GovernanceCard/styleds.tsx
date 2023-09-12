@@ -1,4 +1,4 @@
-import { Box, Button, Text } from '@pangolindex/core';
+import { Box, Button, Text } from '@honeycomb/core';
 import styled from 'styled-components';
 
 export const Card = styled(Box)`

@@ -1,4 +1,4 @@
-import { AutoColumn, Box, Button, CloseIcon, Loader, Modal, Text } from '@pangolindex/core';
+import { AutoColumn, Box, Button, CloseIcon, Loader, Modal, Text } from '@honeycomb/core';
 import {
   ExternalLink,
   PNG,
@@ -8,8 +8,8 @@ import {
   usePangolinWeb3,
   usePngSymbol,
   useTranslation,
-} from '@pangolindex/shared';
-import { useTokenBalance } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { useTokenBalance } from '@honeycomb/state-hooks';
 import { isAddress } from 'ethers/lib/utils';
 import React, { useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';

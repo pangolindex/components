@@ -12,15 +12,15 @@ import {
   usePangolinWeb3,
   useTranslation,
   wrappedCurrency,
-} from '@pangolindex/shared';
-import { useGetNearAllPool, useNearPairs, useNearTokens } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { useGetNearAllPool, useNearPairs, useNearTokens } from '@honeycomb/state-hooks';
 import {
   NEAR_EXCHANGE_CONTRACT_ADDRESS,
   NearFunctionCallOptions,
   NearTransaction,
   near,
   nearFn,
-} from '@pangolindex/wallet-connectors';
+} from '@honeycomb/wallet-connectors';
 import { parseUnits } from 'ethers/lib/utils';
 import qs from 'qs';
 import { useEffect, useMemo, useState } from 'react';

@@ -1,4 +1,4 @@
-import { Box, TextInput } from '@pangolindex/core';
+import { Box, TextInput } from '@honeycomb/core';
 import styled from 'styled-components';
 
 export const Wrapper = styled(Box)`

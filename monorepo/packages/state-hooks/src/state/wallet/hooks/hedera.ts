@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { ChainId, JSBI, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
-import { isAddress } from '@pangolindex/shared';
-import { HederaTokenMetadata, hederaFn } from '@pangolindex/wallet-connectors';
+import { isAddress } from '@honeycomb/shared';
+import { HederaTokenMetadata, hederaFn } from '@honeycomb/wallet-connectors';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries } from 'react-query';
 import { useGetAllHederaAssociatedTokens } from 'src/hooks/tokens/hedera';

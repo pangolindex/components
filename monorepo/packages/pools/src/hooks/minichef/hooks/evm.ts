@@ -19,7 +19,7 @@ import {
   getSubgraphClient,
   useChainId,
   usePangolinWeb3,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   useMultipleContractSingleData,
   usePair,
@@ -28,7 +28,7 @@ import {
   useSingleContractMultipleData,
   useTokensContract,
   useUSDCPrice,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb/state-hooks';
 import { BigNumber } from 'ethers';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';

@@ -1,5 +1,5 @@
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyHook } from '@pangolindex/shared';
+import { useDummyHook } from '@honeycomb/shared';
 import { useEvmPairTotalSupply } from './evm';
 import { useHederaPairTotalSupply, usePairTotalSupplyViaSubgraph } from './hedera';
 import { useNearPairTotalSupply } from './near';

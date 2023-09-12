@@ -1,4 +1,4 @@
-import { Button } from '@pangolindex/core';
+import { Button } from '@honeycomb/core';
 import { CHAINS, ChainId, FeeAmount, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import { BigNumber } from 'ethers';

@@ -1,4 +1,4 @@
-import { Text } from '@pangolindex/core';
+import { Text } from '@honeycomb/core';
 import { opacify } from 'polished';
 import styled from 'styled-components';
 

@@ -1,5 +1,5 @@
 import { ChainId, Currency, Price } from '@pangolindex/sdk';
-import { USDC, decimalToFraction, wrappedCurrency } from '@pangolindex/shared';
+import { USDC, decimalToFraction, wrappedCurrency } from '@honeycomb/shared';
 import { useMemo } from 'react';
 import { useCoinGeckoCurrencyPrice } from 'src/state';
 import { useTokenCurrencyPrice } from '../useCurrencyPrice';

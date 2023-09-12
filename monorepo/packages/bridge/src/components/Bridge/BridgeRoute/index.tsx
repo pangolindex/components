@@ -1,5 +1,5 @@
-import { Box, Button, Hidden, Text, Visible } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/shared';
+import { Box, Button, Hidden, Text, Visible } from '@honeycomb/core';
+import { useTranslation } from '@honeycomb/shared';
 import React from 'react';
 import { useDerivedBridgeInfo } from 'src/hooks';
 import { BridgePrioritizations, BridgeStep, Step } from 'src/hooks/types';

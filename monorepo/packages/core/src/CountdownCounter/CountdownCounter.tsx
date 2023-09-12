@@ -1,4 +1,4 @@
-import { useInterval } from '@pangolindex/shared';
+import { useInterval } from '@honeycomb/shared';
 import React, { useContext, useEffect } from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { ThemeContext } from 'styled-components';

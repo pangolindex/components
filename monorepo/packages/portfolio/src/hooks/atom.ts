@@ -1,4 +1,4 @@
-import { CoingeckoWatchListToken } from '@pangolindex/state-hooks';
+import { CoingeckoWatchListToken } from '@honeycomb/state-hooks';
 import { useAtom } from 'jotai/react';
 import { atomWithStorage } from 'jotai/utils';
 import { useCallback } from 'react';

@@ -10,9 +10,9 @@ import {
   Stat,
   Text,
   TransactionCompleted,
-} from '@pangolindex/core';
+} from '@honeycomb/core';
 import { Currency, CurrencyAmount, Fraction, Percent, TokenAmount } from '@pangolindex/sdk';
-import { ONE_BIPS, useTranslation } from '@pangolindex/shared';
+import { ONE_BIPS, useTranslation } from '@honeycomb/shared';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';

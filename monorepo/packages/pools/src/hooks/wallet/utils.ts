@@ -5,8 +5,8 @@ import {
   useChainId,
   useLibrary,
   usePangolinWeb3,
-} from '@pangolindex/shared';
-import { useAllTokens, useUserAtom } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { useAllTokens, useUserAtom } from '@honeycomb/state-hooks';
 import { splitSignature } from 'ethers/lib/utils';
 import flatMap from 'lodash.flatmap';
 import { useMemo } from 'react';

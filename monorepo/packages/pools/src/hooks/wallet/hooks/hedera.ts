@@ -11,7 +11,7 @@ import {
   useTranslation,
   wait,
   wrappedCurrency,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   useBlockNumber,
   useGetAllHederaAssociatedTokens,
@@ -20,8 +20,8 @@ import {
   usePair,
   usePairsHook,
   useTransactionAdder,
-} from '@pangolindex/state-hooks';
-import { hederaFn } from '@pangolindex/wallet-connectors';
+} from '@honeycomb/state-hooks';
+import { hederaFn } from '@honeycomb/wallet-connectors';
 import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery, useQueryClient } from 'react-query';

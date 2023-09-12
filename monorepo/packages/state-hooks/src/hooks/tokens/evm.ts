@@ -7,7 +7,7 @@ import {
   useBytes32TokenContract,
   useChainId,
   useTokenContract,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import { useMemo } from 'react';
 import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/multicall/hooks';
 import { useAllTokens } from '../useAllTokens';

@@ -1,4 +1,4 @@
-import { PoolState, usePoolsHook } from '@pangolindex/elixir';
+import { PoolState, usePoolsHook } from '@honeycomb/elixir';
 import {
   Currency,
   CurrencyAmount,
@@ -10,8 +10,8 @@ import {
   Token,
   Trade,
 } from '@pangolindex/sdk';
-import { BIPS_BASE, PairState, useChainId, wrappedCurrency } from '@pangolindex/shared';
-import { usePairsHook } from '@pangolindex/state-hooks';
+import { BIPS_BASE, PairState, useChainId, wrappedCurrency } from '@honeycomb/shared';
+import { usePairsHook } from '@honeycomb/state-hooks';
 import flatMap from 'lodash.flatmap';
 import { useEffect, useMemo, useState } from 'react';
 import { BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES } from 'src/constants';

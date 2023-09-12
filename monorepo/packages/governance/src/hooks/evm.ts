@@ -9,8 +9,8 @@ import {
   useChainId,
   useLibrary,
   usePangolinWeb3,
-} from '@pangolindex/shared';
-import { useSingleCallResult, useSingleContractMultipleData, useTransactionAdder } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { useSingleCallResult, useSingleContractMultipleData, useTransactionAdder } from '@honeycomb/state-hooks';
 import { ethers, utils } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { useCallback, useEffect, useState } from 'react';

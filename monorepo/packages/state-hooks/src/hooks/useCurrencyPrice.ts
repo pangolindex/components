@@ -7,7 +7,7 @@ import {
   decimalToFraction,
   useChainId,
   useSubgraphTokens,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import { useMemo } from 'react';
 import { usePair, usePairsHook } from 'src/hooks/usePair';
 import { useShouldUseSubgraph } from 'src/state';

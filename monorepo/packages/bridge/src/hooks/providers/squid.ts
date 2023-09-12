@@ -1,7 +1,7 @@
 import { Call, GetRoute, RouteResponse, Route as SquidRoute, RouteData as SquidRouteData } from '@0xsquid/sdk';
 import { parseUnits } from '@ethersproject/units';
+import { SQUID_API, calculateTransactionTime } from '@honeycomb/shared';
 import { Currency, SQUID, Token, TokenAmount } from '@pangolindex/sdk';
-import { SQUID_API, calculateTransactionTime } from '@pangolindex/shared';
 import axios from 'axios';
 import { BridgePrioritizations, GetRoutes, GetRoutesProps, Route, Step } from '../types';
 

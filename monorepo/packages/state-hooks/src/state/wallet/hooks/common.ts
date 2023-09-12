@@ -1,5 +1,5 @@
 import { CAVAX, ChainId, Currency, CurrencyAmount, Token, TokenAmount } from '@pangolindex/sdk';
-import { useChainId, usePangolinWeb3 } from '@pangolindex/shared';
+import { useChainId, usePangolinWeb3 } from '@honeycomb/shared';
 import { useMemo } from 'react';
 import { useAllTokens } from 'src/hooks/useAllTokens';
 import { useAccountBalanceHook, useTokenBalancesHook } from './index';

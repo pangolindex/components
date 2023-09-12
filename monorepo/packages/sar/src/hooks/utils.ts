@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
-import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import {
   PNG,
   SAR_STAKING_ADDRESS,
@@ -13,14 +12,15 @@ import {
   useMixpanel,
   usePangolinWeb3,
   useTranslation,
-} from '@pangolindex/shared';
+} from '@honeycomb/shared';
 import {
   useApproveCallbackHook,
   useTokenBalancesHook,
   useTransactionAdder,
   useUSDCPriceHook,
-} from '@pangolindex/state-hooks';
-import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
+} from '@honeycomb/state-hooks';
+import { Hedera, hederaFn } from '@honeycomb/wallet-connectors';
+import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import { useCallback, useState } from 'react';
 import SarStaking from 'src/constants/abis/sar.json';

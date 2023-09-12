@@ -2,11 +2,11 @@
 Building components to use in your react app, such Box, Dropdown, Modal, and etc.
 
 ## Installation
-`yarn add @pangolindex/core`
+`yarn add @honeycomb/core`
 
 or
 
-`npm install @pangolindex/core`
+`npm install @honeycomb/core`
 
 ### Install below dependancies as its peer dependancies
 

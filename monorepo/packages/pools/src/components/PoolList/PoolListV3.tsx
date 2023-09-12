@@ -1,6 +1,6 @@
 import { CHAINS } from '@pangolindex/sdk';
-import { BIG_INT_ZERO, useChainId, useDebounce } from '@pangolindex/shared';
-import { useGetSelectedPoolId, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from '@pangolindex/state-hooks';
+import { BIG_INT_ZERO, useChainId, useDebounce } from '@honeycomb/shared';
+import { useGetSelectedPoolId, usePoolDetailnModalToggle, useUpdateSelectedPoolId } from '@honeycomb/state-hooks';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { MinichefStakingInfo } from 'src/hooks/minichef/types';
 import { sortingOnAvaxStake, sortingOnStakedAmount } from 'src/hooks/minichef/utils';

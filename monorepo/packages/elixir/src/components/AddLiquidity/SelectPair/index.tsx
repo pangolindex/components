@@ -1,6 +1,6 @@
-import { Box, CurrencyLogo, Text } from '@pangolindex/core';
+import { Box, CurrencyLogo, Text } from '@honeycomb/core';
+import { useTranslation } from '@honeycomb/shared';
 import { Currency } from '@pangolindex/sdk';
-import { useTranslation } from '@pangolindex/shared';
 import React, { useContext } from 'react';
 import { ChevronDown, RefreshCcw } from 'react-feather';
 import { ThemeContext } from 'styled-components';

@@ -1,15 +1,15 @@
-import { Box, Button } from '@pangolindex/core';
-import { TokenInfoModal } from '@pangolindex/portfolio';
-import { CHAINS, Chain, TokenAmount } from '@pangolindex/sdk';
-import { PNG, shortenAddressMapping, useActiveWeb3React, useChainId } from '@pangolindex/shared';
+import { Box, Button } from '@honeycomb/core';
+import { TokenInfoModal } from '@honeycomb/portfolio';
+import { PNG, shortenAddressMapping, useActiveWeb3React, useChainId } from '@honeycomb/shared';
 import {
   ApplicationModal,
   useApplicationState,
   useModalOpen,
   useWalletModalToggle,
   useWalletModalToggleWithChainId,
-} from '@pangolindex/state-hooks';
-import { NetworkSelection, WalletModal } from '@pangolindex/walletmodal';
+} from '@honeycomb/state-hooks';
+import { NetworkSelection, WalletModal } from '@honeycomb/walletmodal';
+import { CHAINS, Chain, TokenAmount } from '@pangolindex/sdk';
 import React, { useCallback, useState } from 'react';
 import { supportedWallets } from '../../constants';
 import Logo from '../Logo';

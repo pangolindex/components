@@ -1,4 +1,4 @@
-import { useTokensContract } from '@pangolindex/state-hooks';
+import { useTokensContract } from '@honeycomb/state-hooks';
 import React from 'react';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import PoolCardView from './PoolCardView';

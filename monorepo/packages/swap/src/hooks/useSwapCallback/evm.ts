@@ -25,8 +25,8 @@ import {
   useENS,
   useLibrary,
   usePangolinWeb3,
-} from '@pangolindex/shared';
-import { useTransactionAdder, useTransactionDeadline } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { useTransactionAdder, useTransactionDeadline } from '@honeycomb/state-hooks';
 import { useMemo } from 'react';
 import { useDaasFeeTo } from 'src/state/hooks/common';
 import { Version } from '../useToggledVersion';

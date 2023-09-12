@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyHook } from '@pangolindex/shared';
+import { useDummyHook } from '@honeycomb/shared';
 import { useETHBalances, useTokenBalances } from './evm';
 import { useHederaBalance, useHederaTokenBalances } from './hedera';
 import { useNearBalance, useNearTokenBalances } from './near';

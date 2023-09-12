@@ -1,7 +1,7 @@
-import { Box } from '@pangolindex/core';
+import { Box } from '@honeycomb/core';
 import { CHAINS, ChefType } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
-import { usePair } from '@pangolindex/state-hooks';
+import { unwrappedToken, useChainId, useTranslation } from '@honeycomb/shared';
+import { usePair } from '@honeycomb/state-hooks';
 import React from 'react';
 import { useWindowSize } from 'react-use';
 import { useGetPoolDollerWorth } from 'src/hooks/minichef/hooks/common';

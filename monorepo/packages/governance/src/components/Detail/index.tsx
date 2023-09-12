@@ -1,5 +1,5 @@
-import { AutoColumn, Box, Button, Loader, Text } from '@pangolindex/core';
-import { useSarPositionsHook } from '@pangolindex/sar';
+import { AutoColumn, Box, Button, Loader, Text } from '@honeycomb/core';
+import { useSarPositionsHook } from '@honeycomb/sar';
 import { CHAINS, GovernanceType, JSBI, TokenAmount } from '@pangolindex/sdk';
 import {
   ExternalLink,
@@ -10,8 +10,8 @@ import {
   useChainId,
   usePangolinWeb3,
   useTranslation,
-} from '@pangolindex/shared';
-import { useTokenBalance } from '@pangolindex/state-hooks';
+} from '@honeycomb/shared';
+import { useTokenBalance } from '@honeycomb/state-hooks';
 import { DateTime } from 'luxon';
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft } from 'react-feather';

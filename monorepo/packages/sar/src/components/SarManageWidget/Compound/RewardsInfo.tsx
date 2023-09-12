@@ -1,5 +1,5 @@
-import { Box, CurrencyLogo, Text, Tooltip } from '@pangolindex/core';
-import { PNG, useChainId, useTranslation } from '@pangolindex/shared';
+import { Box, CurrencyLogo, Text, Tooltip } from '@honeycomb/core';
+import { PNG, useChainId, useTranslation } from '@honeycomb/shared';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';

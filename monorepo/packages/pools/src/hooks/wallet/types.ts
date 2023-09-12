@@ -1,5 +1,5 @@
 import { Currency, CurrencyAmount, Percent, Token, TokenAmount } from '@pangolindex/sdk';
-import { ApprovalState } from '@pangolindex/state-hooks';
+import { ApprovalState } from '@honeycomb/state-hooks';
 import { BigNumber } from 'ethers';
 
 export interface AddLiquidityProps {

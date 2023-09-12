@@ -1,5 +1,5 @@
 import { Token } from '@pangolindex/sdk';
-import { SerializedToken } from '@pangolindex/state-hooks';
+import { SerializedToken } from '@honeycomb/state-hooks';
 
 export function deserializeToken(serializedToken: SerializedToken): Token {
   return new Token(

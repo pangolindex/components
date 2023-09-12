@@ -8,8 +8,8 @@ import {
   computeSlippageAdjustedAmounts,
   usePangolinWeb3,
   wait,
-} from '@pangolindex/shared';
-import { hederaFn } from '@pangolindex/wallet-connectors';
+} from '@honeycomb/shared';
+import { hederaFn } from '@honeycomb/wallet-connectors';
 import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHederaTokenAllowance } from 'src/hooks/useTokenAllowance/hedera';

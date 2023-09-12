@@ -1,5 +1,5 @@
-import { Box } from '@pangolindex/core';
-import { Position, SarManageWidget, SarNFTPortfolio, SarStakeWidget } from '@pangolindex/sar';
+import { Box } from '@honeycomb/core';
+import { Position, SarManageWidget, SarNFTPortfolio, SarStakeWidget } from '@honeycomb/sar';
 import React, { useCallback, useState } from 'react';
 import { PageWrapper } from './styled';
 

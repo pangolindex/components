@@ -1,7 +1,7 @@
-import { Box, DoubleCurrencyLogo, Drawer, RewardTokens, Stat, Text } from '@pangolindex/core';
+import { Box, DoubleCurrencyLogo, Drawer, RewardTokens, Stat, Text } from '@honeycomb/core';
 import { CHAINS, Fraction, JSBI, Token } from '@pangolindex/sdk';
-import { BIG_INT_ZERO, unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { usePair } from '@pangolindex/state-hooks';
+import { BIG_INT_ZERO, unwrappedToken, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
+import { usePair } from '@honeycomb/state-hooks';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { usePangoChefExtraFarmApr } from 'src/hooks/pangochef/hooks/common';

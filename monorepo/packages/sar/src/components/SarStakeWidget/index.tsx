@@ -1,13 +1,13 @@
 import { formatUnits } from '@ethersproject/units';
-import { Box, Button, CurrencyLogo, Stat, Text, TextInput } from '@pangolindex/core';
-import { PNG, ZERO_ADDRESS, getBuyUrl, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
+import { Box, Button, CurrencyLogo, Stat, Text, TextInput } from '@honeycomb/core';
+import { PNG, ZERO_ADDRESS, getBuyUrl, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
 import {
   ApprovalState,
   useHederaTokenAssociated,
   useTokenBalancesHook,
   useWalletModalToggle,
-} from '@pangolindex/state-hooks';
-import { Hedera } from '@pangolindex/wallet-connectors';
+} from '@honeycomb/state-hooks';
+import { Hedera } from '@honeycomb/wallet-connectors';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDerivativeSarStakeHook, useSarPositionsHook } from 'src/hooks';

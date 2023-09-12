@@ -1,4 +1,4 @@
-import { Box } from '@pangolindex/core';
+import { Box } from '@honeycomb/core';
 import React from 'react';
 import LogoDark from '../../assets/svg/logoSloganDark.svg';
 import { LogoWrapper } from './styled';

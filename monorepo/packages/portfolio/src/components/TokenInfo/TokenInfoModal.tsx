@@ -1,4 +1,4 @@
-import { Box, CloseButton, Modal } from '@pangolindex/core';
+import { Box, CloseButton, Modal } from '@honeycomb/core';
 import React from 'react';
 import TokenInfo from './TokenInfo';
 import { TokenInfoModalProps } from './types';

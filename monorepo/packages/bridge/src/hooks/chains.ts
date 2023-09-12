@@ -1,7 +1,7 @@
 import { ChainData, Squid } from '@0xsquid/sdk';
+import { RANGO_API_KEY, SQUID_API } from '@honeycomb/shared';
 import LIFI from '@lifi/sdk';
 import { BridgeChain, LIFI as LIFIBridge, NetworkType, RANGO, SQUID } from '@pangolindex/sdk';
-import { RANGO_API_KEY, SQUID_API } from '@pangolindex/shared';
 import {
   BlockchainMeta as RangoChainMeta,
   TransactionType as RangoChainType,

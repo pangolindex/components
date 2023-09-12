@@ -1,5 +1,5 @@
 import { BridgeCurrency, Token } from '@pangolindex/sdk';
-import { getTokenComparator } from '@pangolindex/shared';
+import { getTokenComparator } from '@honeycomb/shared';
 import { useMemo } from 'react';
 import { useAllTokenBalances } from '..';
 

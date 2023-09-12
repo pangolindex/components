@@ -1,4 +1,4 @@
-import { useChainId } from '@pangolindex/shared';
+import { useChainId } from '@honeycomb/shared';
 import { useCallback, useMemo } from 'react';
 import { ApplicationModal, PopupContent, PopupList, useApplicationState } from './atom';
 
