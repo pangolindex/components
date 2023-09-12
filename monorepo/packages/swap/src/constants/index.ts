@@ -24,8 +24,8 @@ export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: To
 
 export const SWAP_DEFAULT_CURRENCY = {
   [ChainId.AVALANCHE]: {
-    inputCurrency: 'AVAX',
-    outputCurrency: USDC[ChainId.AVALANCHE].address,
+    inputCurrency: USDC[ChainId.AVALANCHE].address,
+    outputCurrency: 'AVAX',
   },
   [ChainId.FUJI]: {
     inputCurrency: '',
@@ -45,11 +45,11 @@ export const SWAP_DEFAULT_CURRENCY = {
   },
   [ChainId.FLARE_MAINNET]: {
     inputCurrency: 'FLR',
-    outputCurrency: '',
+    outputCurrency: PNG[ChainId.FLARE_MAINNET].address,
   },
   [ChainId.HEDERA_TESTNET]: {
     inputCurrency: 'HBAR',
-    outputCurrency: WAVAX[ChainId.HEDERA_TESTNET].address,
+    outputCurrency: PNG[ChainId.HEDERA_TESTNET].address,
   },
   [ChainId.HEDERA_MAINNET]: {
     inputCurrency: 'HBAR',
