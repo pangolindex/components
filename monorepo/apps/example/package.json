@@ -16,7 +16,7 @@
     "@honeycomb/governance": "*",
     "@pangolindex/sdk": "5.3.4",
     "@honeycomb/airdrop": "*",
-    "@pangolindex/bridge": "*",
+    "@honeycomb/bridge": "*",
     "@honeycomb/core": "*",
     "@honeycomb/elixir": "*",
     "@honeycomb/sar": "*",

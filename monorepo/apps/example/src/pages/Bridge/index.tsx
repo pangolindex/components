@@ -1,4 +1,4 @@
-import { Bridge } from '@pangolindex/bridge';
+import { Bridge } from '@honeycomb/bridge';
 import React from 'react';
 
 function BridgeUI() {

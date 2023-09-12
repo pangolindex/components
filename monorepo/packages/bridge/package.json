@@ -1,5 +1,5 @@
 {
-  "name": "@pangolindex/bridge",
+  "name": "@honeycomb/bridge",
   "version": "0.0.0",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
