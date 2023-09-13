@@ -11,7 +11,9 @@ Wrap your react app with `Web3ReactProvider` and `PangolinProvider`.
 
 ```tsx
 // index.tsx
-import { PangolinProvider, NetworkContextName, useActiveWeb3React } from '@pangolindex/components';
+import { HoneycombProvider } from '@honeycomb-finance/honeycomb-provider';
+import { NetworkContextName, useActiveWeb3React } from '@honeycomb-finance/shared';
+
 import { Web3ReactProvider, useWeb3React } from '@web3-react/core';
 import App from './App';
 
@@ -27,9 +29,9 @@ const AppProvider = () => {
   const { library, account, chainId } = useActiveWeb3React();
 
   return (
-    <PangolinProvider library={library} chainId={chainId} account={account ?? undefined} theme={theme as any}>
+    <HoneycombProvider library={library} chainId={chainId} account={account ?? undefined} theme={theme as any}>
         <App />
-    </PangolinProvider>
+    </HoneycombProvider>
   );
 };
 
@@ -49,7 +51,7 @@ You can now use the component in your application.
 
 ```tsx
 // example.tsx
-import { WalletModal } from '@pangolindex/components';
+import { WalletModal } from '@honeycomb-finance/walletmodal';
 
 export default function Example(){
   const [open, setOpen] = useState(false);
@@ -96,7 +98,7 @@ You need extends the ```PangolinWallet class``` and edit the methods or you can 
 **The supportedWallets parameter will override the default supported wallets above**
 
 ```tsx
-import { PangolinWallet, PangolinInjectedWallet } from "@pangolindex/components";
+import { PangolinWallet, PangolinInjectedWallet } from '@honeycomb-finance/walletmodal';
 
 class CustomWallet extends PangolinWallet{
   constructor() {
@@ -188,7 +190,8 @@ export default function Example(){
 You need do import `PangolinWalletConnectWallet` and create a new object and add it on supportedWallets mapping 
 
 ```tsx
-import { PangolinWalletConnectWallet } from "@pangolindex/components";
+
+import {  PangolinWalletConnectWallet } from '@honeycomb-finance/walletmodal';
 
 const walletConnect = new PangolinWalletConnectWallet({
   rpcMap: rpcs,
