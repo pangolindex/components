@@ -1,4 +1,4 @@
-import { useTranslation } from '@honeycomb/shared';
+import { useTranslation } from '@honeycomb-finance/shared';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import { StyledLink } from 'src/components/Detail/styleds';

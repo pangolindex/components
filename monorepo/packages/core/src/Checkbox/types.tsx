@@ -1,4 +1,4 @@
-import { ThemeColorsType } from '@honeycomb/shared';
+import { ThemeColorsType } from '@honeycomb-finance/shared';
 
 export type CheckboxProps = {
   name?: string;

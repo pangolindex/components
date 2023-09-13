@@ -1,5 +1,5 @@
-import { Box, Button, Text } from '@honeycomb/core';
-import { ExternalLink } from '@honeycomb/shared';
+import { Box, Button, Text } from '@honeycomb-finance/core';
+import { ExternalLink } from '@honeycomb-finance/shared';
 import styled from 'styled-components';
 
 export const PageWrapper = styled(Box)`

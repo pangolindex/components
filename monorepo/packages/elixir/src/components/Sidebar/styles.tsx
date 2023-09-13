@@ -1,4 +1,4 @@
-import { Box, Text } from '@honeycomb/core';
+import { Box, Text } from '@honeycomb-finance/core';
 import { darken } from 'polished';
 import styled from 'styled-components';
 

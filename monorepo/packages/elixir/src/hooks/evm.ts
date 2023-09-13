@@ -8,13 +8,13 @@ import {
   useFeeTierDistributionQuery,
   useTokenContract,
   wrappedCurrency,
-} from '@honeycomb/shared';
+} from '@honeycomb-finance/shared';
 import {
   TokenReturnType,
   useBlockNumber,
   useMultipleContractSingleData,
   useSingleCallResult,
-} from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/state-hooks';
 import {
   BigintIsh,
   CHAINS,

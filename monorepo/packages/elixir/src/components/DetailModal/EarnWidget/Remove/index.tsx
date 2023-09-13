@@ -1,4 +1,4 @@
-import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from '@honeycomb/core';
+import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from '@honeycomb-finance/core';
 import {
   MixPanelEvents,
   useChainId,
@@ -6,8 +6,8 @@ import {
   useMixpanel,
   usePangolinWeb3,
   useTranslation,
-} from '@honeycomb/shared';
-import { useTransactionDeadline, useUserSlippageTolerance, useWalletModalToggle } from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/shared';
+import { useTransactionDeadline, useUserSlippageTolerance, useWalletModalToggle } from '@honeycomb-finance/state-hooks';
 import { Percent } from '@pangolindex/sdk';
 import React, { useContext, useState } from 'react';
 import { AlertTriangle } from 'react-feather';

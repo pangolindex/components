@@ -1,4 +1,4 @@
-import { useChainId } from '@honeycomb/shared';
+import { useChainId } from '@honeycomb-finance/shared';
 import {
   Currency,
   ElixirPool,

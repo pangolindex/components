@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Box, Button, CurrencyInput, Loader, Stat, Text, TransactionCompleted } from '@honeycomb/core';
+import { Box, Button, CurrencyInput, Loader, Stat, Text, TransactionCompleted } from '@honeycomb-finance/core';
 import {
   MixPanelEvents,
   unwrappedToken,
@@ -9,7 +9,7 @@ import {
   usePangolinWeb3,
   useTranslation,
   wrappedCurrency,
-} from '@honeycomb/shared';
+} from '@honeycomb-finance/shared';
 import {
   ApprovalState,
   useApproveCallbackHook,
@@ -18,7 +18,7 @@ import {
   useUSDCPriceHook,
   useUserSlippageTolerance,
   useWalletModalToggle,
-} from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/state-hooks';
 import { CHAINS } from '@pangolindex/sdk';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, Lock } from 'react-feather';

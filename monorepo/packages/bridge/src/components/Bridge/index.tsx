@@ -1,6 +1,6 @@
-import { Box, CountdownCounter, Loader, Tab, TabList, Tabs, Text, Tooltip } from '@honeycomb/core';
-import { usePangolinWeb3, useTranslation } from '@honeycomb/shared';
-import { useUserSlippageTolerance } from '@honeycomb/state-hooks';
+import { Box, CountdownCounter, Loader, Tab, TabList, Tabs, Text, Tooltip } from '@honeycomb-finance/core';
+import { usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
+import { useUserSlippageTolerance } from '@honeycomb-finance/state-hooks';
 import { BRIDGE_PARTNERS } from '@pangolindex/sdk';
 import React, { useCallback, useState } from 'react';
 import { useBridgeActionHandlers, useBridgeSwapActionHandlers, useDerivedBridgeInfo } from 'src/hooks';

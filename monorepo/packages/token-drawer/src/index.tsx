@@ -1,13 +1,20 @@
-import { Box, Drawer, Text, TextInput } from '@honeycomb/core';
-import { Field, filterTokenOrChain, isAddress, useChainId, usePrevious, useTranslation } from '@honeycomb/shared';
+import { Box, Drawer, Text, TextInput } from '@honeycomb-finance/core';
+import {
+  Field,
+  filterTokenOrChain,
+  isAddress,
+  useChainId,
+  usePrevious,
+  useTranslation,
+} from '@honeycomb-finance/shared';
 import {
   useAddUserToken,
   useAllTokens,
   useSelectedListInfo,
   useTokenComparator,
   useTokenHook,
-} from '@honeycomb/state-hooks';
-import { Hedera } from '@honeycomb/wallet-connectors';
+} from '@honeycomb-finance/state-hooks';
+import { Hedera } from '@honeycomb-finance/wallet-connectors';
 import { CAVAX, ChainId, Currency, Token, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import deepEqual from 'deep-equal';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';

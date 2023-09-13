@@ -4,9 +4,9 @@ import {
   NetworkContextName,
   PangolinWeb3Provider,
   ThemeProvider,
-} from '@honeycomb/shared';
-import { ApplicationUpdater, ListsUpdater, MulticallUpdater, TransactionUpdater } from '@honeycomb/state-hooks';
-import { network } from '@honeycomb/wallet-connectors';
+} from '@honeycomb-finance/shared';
+import { ApplicationUpdater, ListsUpdater, MulticallUpdater, TransactionUpdater } from '@honeycomb-finance/state-hooks';
+import { network } from '@honeycomb-finance/wallet-connectors';
 import { ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { useEffect } from 'react';

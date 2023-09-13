@@ -1,4 +1,4 @@
-import { Box, Button } from '@honeycomb/core';
+import { Box, Button } from '@honeycomb-finance/core';
 import styled from 'styled-components';
 
 export const Frame = styled(Box)`

@@ -1,6 +1,6 @@
+import { useChainId, useDummyHook, useLibrary } from '@honeycomb-finance/shared';
+import { nearFn } from '@honeycomb-finance/wallet-connectors';
 import { ChainId } from '@pangolindex/sdk';
-import { useChainId, useDummyHook, useLibrary } from '@honeycomb/shared';
-import { nearFn } from '@honeycomb/wallet-connectors';
 import { useEffect } from 'react';
 import { useAddPopup, useBlockNumber } from '../application/hooks';
 import { AddTransactionDetails, TransactionDetails, useTransactionState } from './atom';

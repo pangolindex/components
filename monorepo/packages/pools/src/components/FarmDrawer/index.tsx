@@ -1,6 +1,6 @@
-import { Drawer } from '@honeycomb/core';
+import { Drawer } from '@honeycomb-finance/core';
+import { useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { CHAINS, ChefType } from '@pangolindex/sdk';
-import { useChainId, useTranslation } from '@honeycomb/shared';
 import React from 'react';
 import { DoubleSideStakingInfo, SpaceType } from 'src/hooks/minichef/types';
 import { PangoChefInfo } from 'src/hooks/pangochef/types';

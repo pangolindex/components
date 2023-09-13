@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
-import { IS_IN_IFRAME, MixPanelEvents, NetworkContextName, useMixpanel } from '@honeycomb/shared';
-import { useApplicationState, useUserAtom } from '@honeycomb/state-hooks';
-import { HashConnectEvents, gnosisSafe, hashconnectEvent } from '@honeycomb/wallet-connectors';
+import { IS_IN_IFRAME, MixPanelEvents, NetworkContextName, useMixpanel } from '@honeycomb-finance/shared';
+import { useApplicationState, useUserAtom } from '@honeycomb-finance/state-hooks';
+import { HashConnectEvents, gnosisSafe, hashconnectEvent } from '@honeycomb-finance/wallet-connectors';
 import {
   PangolinWallet,
   PangolinWalletEvents,
@@ -13,7 +13,7 @@ import {
   injectWallet,
   pangolinWalletEvent,
   useWalletState,
-} from '@honeycomb/walletmodal';
+} from '@honeycomb-finance/walletmodal';
 import { AVALANCHE_MAINNET, ChainId } from '@pangolindex/sdk';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';

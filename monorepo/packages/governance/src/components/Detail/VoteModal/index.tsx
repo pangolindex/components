@@ -1,7 +1,7 @@
-import { AutoColumn, Box, Button, CloseIcon, Loader, Modal, Text } from '@honeycomb/core';
-import { Portfolio, Position } from '@honeycomb/sar';
+import { AutoColumn, Box, Button, CloseIcon, Loader, Modal, Text } from '@honeycomb-finance/core';
+import { Portfolio, Position } from '@honeycomb-finance/sar';
+import { ExternalLink, getEtherscanLink, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { CHAINS, GovernanceType, TokenAmount } from '@pangolindex/sdk';
-import { ExternalLink, getEtherscanLink, useChainId, useTranslation } from '@honeycomb/shared';
 import { BigNumber } from 'ethers';
 import React, { useContext, useState } from 'react';
 import { AlertTriangle, ArrowUpCircle } from 'react-feather';

@@ -1,5 +1,5 @@
-import { Box, Button, Hidden, Text, Visible } from '@honeycomb/core';
-import { useTranslation } from '@honeycomb/shared';
+import { Box, Button, Hidden, Text, Visible } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
 import React from 'react';
 import { useDerivedBridgeInfo } from 'src/hooks';
 import { BridgePrioritizations, BridgeStep, Step } from 'src/hooks/types';

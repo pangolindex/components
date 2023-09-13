@@ -1,4 +1,4 @@
-import { ThemeColorsType, useChainId } from '@honeycomb/shared';
+import { ThemeColorsType, useChainId } from '@honeycomb-finance/shared';
 import { Currency, Token, WAVAX } from '@pangolindex/sdk';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useContext, useState } from 'react';

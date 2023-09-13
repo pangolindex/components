@@ -1,5 +1,5 @@
-import { Box, Button, ChainInput, CurrencyInput, Text, TextInput, Tooltip } from '@honeycomb/core';
-import { checkAddressNetworkBaseMapping, useTranslation } from '@honeycomb/shared';
+import { Box, Button, ChainInput, CurrencyInput, Text, TextInput, Tooltip } from '@honeycomb-finance/core';
+import { checkAddressNetworkBaseMapping, useTranslation } from '@honeycomb-finance/shared';
 import { Chain, Currency, NetworkType } from '@pangolindex/sdk';
 import React, { useCallback, useContext } from 'react';
 import { Info } from 'react-feather';

@@ -1,4 +1,4 @@
-import { TokenReturnType } from '@honeycomb/state-hooks';
+import { TokenReturnType } from '@honeycomb-finance/state-hooks';
 import { FeeAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 

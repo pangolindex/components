@@ -1,4 +1,4 @@
-import { Box, CurrencyLogo, Text } from '@honeycomb/core';
+import { Box, CurrencyLogo, Text } from '@honeycomb-finance/core';
 import { ElixirTrade, Trade } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
 import { ChevronRight } from 'react-feather';

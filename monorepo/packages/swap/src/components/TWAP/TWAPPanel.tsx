@@ -1,7 +1,7 @@
-import { Loader } from '@honeycomb/core';
-import { ZERO_ADDRESS, useChainId, usePangolinWeb3 } from '@honeycomb/shared';
-import { useAllTokens, useWalletModalToggle } from '@honeycomb/state-hooks';
-import { SelectTokenDrawer } from '@pangolindex/token-drawer';
+import { Loader } from '@honeycomb-finance/core';
+import { ZERO_ADDRESS, useChainId, usePangolinWeb3 } from '@honeycomb-finance/shared';
+import { useAllTokens, useWalletModalToggle } from '@honeycomb-finance/state-hooks';
+import { SelectTokenDrawer } from '@honeycomb-finance/token-drawer';
 import React, { Suspense, useCallback, useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import { SwapTypes } from 'src/constants';

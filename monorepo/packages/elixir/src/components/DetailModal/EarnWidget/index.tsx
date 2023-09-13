@@ -1,4 +1,4 @@
-import { Box, Button, Loader, Stat, Text, Tooltip, TransactionCompleted } from '@honeycomb/core';
+import { Box, Button, Loader, Stat, Text, Tooltip, TransactionCompleted } from '@honeycomb-finance/core';
 import {
   MixPanelEvents,
   unwrappedToken,
@@ -7,7 +7,7 @@ import {
   useMixpanel,
   usePangolinWeb3,
   useTranslation,
-} from '@honeycomb/shared';
+} from '@honeycomb-finance/shared';
 import { Token } from '@pangolindex/sdk';
 import React, { useContext, useState } from 'react';
 import { AlertTriangle } from 'react-feather';

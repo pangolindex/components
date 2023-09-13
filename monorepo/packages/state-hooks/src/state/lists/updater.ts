@@ -1,4 +1,4 @@
-import { DEFAULT_TOKEN_LISTS, useInterval, useIsWindowVisible, useLibrary } from '@honeycomb/shared';
+import { DEFAULT_TOKEN_LISTS, useInterval, useIsWindowVisible, useLibrary } from '@honeycomb-finance/shared';
 import { VersionUpgrade, getVersionUpgrade, minVersionBump } from '@pangolindex/token-lists';
 import { useCallback, useEffect } from 'react';
 import { useFetchListCallback } from 'src/hooks/useFetchListCallback';

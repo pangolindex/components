@@ -1,7 +1,7 @@
-import { AutoColumn, Box, Button, CurrencyLogo, ExternalLink, Modal, Text } from '@honeycomb/core';
+import { AutoColumn, Box, Button, CurrencyLogo, ExternalLink, Modal, Text } from '@honeycomb-finance/core';
+import { getEtherscanLink, shortenAddress, usePangolinWeb3 } from '@honeycomb-finance/shared';
+import { useAllTokens } from '@honeycomb-finance/state-hooks';
 import { Token } from '@pangolindex/sdk';
-import { getEtherscanLink, shortenAddress, usePangolinWeb3 } from '@honeycomb/shared';
-import { useAllTokens } from '@honeycomb/state-hooks';
 import React, { useCallback, useMemo, useState } from 'react';
 import { StyledWarningIcon, WarningContainer, Wrapper } from './styled';
 

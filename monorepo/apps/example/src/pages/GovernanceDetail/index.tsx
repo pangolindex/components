@@ -1,4 +1,4 @@
-import { GovernanceDetail } from '@honeycomb/governance';
+import { GovernanceDetail } from '@honeycomb-finance/governance';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 

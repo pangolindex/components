@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { Box, Button, Collapsed, DropdownMenu, Loader, SlippageInput, Text } from '@honeycomb/core';
+import { Box, Button, Collapsed, DropdownMenu, Loader, SlippageInput, Text } from '@honeycomb-finance/core';
 import {
   checkAddressNetworkBaseMapping,
   maxAmountSpend,
@@ -8,10 +8,10 @@ import {
   useDebounce,
   useLibrary,
   useTranslation,
-} from '@honeycomb/shared';
-import { useWalletModalToggle } from '@honeycomb/state-hooks';
-import { injected } from '@honeycomb/wallet-connectors';
-import { changeNetwork, useWalletState } from '@honeycomb/walletmodal'; // TODO FIx in future to bridge package works standalone from walletmodal
+} from '@honeycomb-finance/shared';
+import { useWalletModalToggle } from '@honeycomb-finance/state-hooks';
+import { injected } from '@honeycomb-finance/wallet-connectors';
+import { changeNetwork, useWalletState } from '@honeycomb-finance/walletmodal'; // TODO FIx in future to bridge package works standalone from walletmodal
 import {
   BRIDGES,
   Bridge,

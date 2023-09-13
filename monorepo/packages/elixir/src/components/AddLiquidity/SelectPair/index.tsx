@@ -1,5 +1,5 @@
-import { Box, CurrencyLogo, Text } from '@honeycomb/core';
-import { useTranslation } from '@honeycomb/shared';
+import { Box, CurrencyLogo, Text } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
 import { Currency } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
 import { ChevronDown, RefreshCcw } from 'react-feather';

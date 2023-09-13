@@ -1,5 +1,4 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { CAVAX, ChainId, CurrencyAmount, JSBI, TokenAmount, Trade } from '@pangolindex/sdk';
 import {
   Field,
   ROUTER_ADDRESS,
@@ -8,8 +7,9 @@ import {
   computeSlippageAdjustedAmounts,
   usePangolinWeb3,
   wait,
-} from '@honeycomb/shared';
-import { hederaFn } from '@honeycomb/wallet-connectors';
+} from '@honeycomb-finance/shared';
+import { hederaFn } from '@honeycomb-finance/wallet-connectors';
+import { CAVAX, ChainId, CurrencyAmount, JSBI, TokenAmount, Trade } from '@pangolindex/sdk';
 import { useCallback, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useHederaTokenAllowance } from 'src/hooks/useTokenAllowance/hedera';

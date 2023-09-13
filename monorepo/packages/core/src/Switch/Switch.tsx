@@ -1,4 +1,4 @@
-import { useTheme } from '@honeycomb/shared';
+import { useTheme } from '@honeycomb-finance/shared';
 import React from 'react';
 import ReactSwitch from 'react-switch';
 import { SwitchProps } from './types';

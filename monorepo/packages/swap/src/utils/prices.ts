@@ -1,5 +1,5 @@
+import { useChainId } from '@honeycomb-finance/shared';
 import { CurrencyAmount, ElixirTrade, Fraction, JSBI, Percent, Pool, TokenAmount, Trade } from '@pangolindex/sdk';
-import { useChainId } from '@honeycomb/shared';
 import {
   ALLOWED_PRICE_IMPACT_HIGH,
   ALLOWED_PRICE_IMPACT_LOW,

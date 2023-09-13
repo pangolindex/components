@@ -1,5 +1,5 @@
-import { Box, DropdownMenu, Loader, Text } from '@honeycomb/core';
-import { useChainId, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
+import { Box, DropdownMenu, Loader, Text } from '@honeycomb-finance/core';
+import { useChainId, usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
 import React from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useGetUserLPHook } from 'src/hooks/wallet/hooks';

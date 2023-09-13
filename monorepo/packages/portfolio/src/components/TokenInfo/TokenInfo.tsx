@@ -1,6 +1,6 @@
-import { CurrencyLogo, Text, Tooltip } from '@honeycomb/core';
-import { usePangolinWeb3, useTranslation } from '@honeycomb/shared';
-import { useTokenBalancesHook, useTotalSupplyHook, useUSDCPriceHook } from '@honeycomb/state-hooks';
+import { CurrencyLogo, Text, Tooltip } from '@honeycomb-finance/core';
+import { usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
+import { useTokenBalancesHook, useTotalSupplyHook, useUSDCPriceHook } from '@honeycomb-finance/state-hooks';
 import { TokenAmount } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useContext } from 'react';

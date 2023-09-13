@@ -2,11 +2,11 @@
 Building components to use in your react app, such Box, Dropdown, Modal, and etc.
 
 ## Installation
-`yarn add @honeycomb/core`
+`yarn add @honeycomb-finance/core`
 
 or
 
-`npm install @honeycomb/core`
+`npm install @honeycomb-finance/core`
 
 ### Install below dependancies as its peer dependancies
 

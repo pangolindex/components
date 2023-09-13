@@ -1,5 +1,5 @@
-import { Box, Button, DoubleCurrencyLogo, Text, Tooltip } from '@honeycomb/core';
-import { unwrappedToken, useChainId, useTranslation } from '@honeycomb/shared';
+import { Box, Button, DoubleCurrencyLogo, Text, Tooltip } from '@honeycomb-finance/core';
+import { unwrappedToken, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { Position } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
 import { Bound } from 'src/components/LiquidityChartRangeInput/types';

@@ -1,7 +1,7 @@
 import { FunctionFragment, Interface } from '@ethersproject/abi';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
-import { useChainId } from '@honeycomb/shared';
+import { useChainId } from '@honeycomb-finance/shared';
 import { useEffect, useMemo } from 'react';
 import { useBlockNumber } from '../application/hooks';
 import { Call, ListenerOptions, parseCallKey, toCallKey, useMulticallAtom } from './atom';

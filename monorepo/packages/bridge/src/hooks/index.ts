@@ -2,8 +2,15 @@
 import { Squid, RouteData as SquidRouteData } from '@0xsquid/sdk';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { parseUnits } from '@ethersproject/units';
-import { RANGO_API_KEY, SQUID_API, getSigner, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
-import { useCurrencyBalances } from '@honeycomb/state-hooks';
+import {
+  RANGO_API_KEY,
+  SQUID_API,
+  getSigner,
+  useChainId,
+  usePangolinWeb3,
+  useTranslation,
+} from '@honeycomb-finance/shared';
+import { useCurrencyBalances } from '@honeycomb-finance/state-hooks';
 import LIFI, { Route as LifiRoute } from '@lifi/sdk';
 import {
   BRIDGES,

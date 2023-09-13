@@ -1,4 +1,4 @@
-import { Box, Text } from '@honeycomb/core';
+import { Box, Text } from '@honeycomb-finance/core';
 import React from 'react';
 import { WarningWrapper } from './styles';
 import { OutofRangeWarningProps } from './types';

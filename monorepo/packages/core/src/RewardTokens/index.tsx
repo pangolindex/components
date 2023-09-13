@@ -1,4 +1,4 @@
-import { PNG, useChainId } from '@honeycomb/shared';
+import { PNG, useChainId } from '@honeycomb-finance/shared';
 import { Token } from '@pangolindex/sdk';
 import React, { useMemo } from 'react';
 import { Box } from '../Box';

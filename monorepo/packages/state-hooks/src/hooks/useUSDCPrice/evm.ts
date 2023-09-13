@@ -1,5 +1,5 @@
+import { PairState, USDCe, useChainId, wrappedCurrency } from '@honeycomb-finance/shared';
 import { ChainId, Currency, JSBI, Price, WAVAX, currencyEquals } from '@pangolindex/sdk';
-import { PairState, USDCe, useChainId, wrappedCurrency } from '@honeycomb/shared';
 import { useMemo } from 'react';
 import { usePairsContract } from 'src/hooks/usePair/evm';
 

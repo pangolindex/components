@@ -1,5 +1,5 @@
-import { Box, Text } from '@honeycomb/core';
-import { useTranslation } from '@honeycomb/shared';
+import { Box, Text } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
 import React from 'react';
 import { Circle, Link, Menu, MenuItem, MenuLink, MenuName, SidebarWrapper } from './styles';
 import { SidebarProps } from './types';

@@ -1,4 +1,14 @@
 import {
+  PairState,
+  tryParseAmount,
+  useChainId,
+  usePangolinWeb3,
+  useTranslation,
+  wrappedCurrency,
+  wrappedCurrencyAmount,
+} from '@honeycomb-finance/shared';
+import { useCurrencyBalances, usePair } from '@honeycomb-finance/state-hooks';
+import {
   CAVAX,
   Currency,
   CurrencyAmount,
@@ -9,16 +19,6 @@ import {
   Price,
   TokenAmount,
 } from '@pangolindex/sdk';
-import {
-  PairState,
-  tryParseAmount,
-  useChainId,
-  usePangolinWeb3,
-  useTranslation,
-  wrappedCurrency,
-  wrappedCurrencyAmount,
-} from '@honeycomb/shared';
-import { useCurrencyBalances, usePair } from '@honeycomb/state-hooks';
 import { useCallback, useMemo } from 'react';
 import { usePairTotalSupplyHook } from 'src/hooks/pair';
 import { Field, initialKeyState, useMintStateAtom } from './atom';

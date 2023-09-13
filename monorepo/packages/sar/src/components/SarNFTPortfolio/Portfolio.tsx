@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatEther } from '@ethersproject/units';
-import { Box, DropdownMenu, Pagination, Text } from '@honeycomb/core';
-import { MEDIA_WIDTHS, scrollElementIntoView, useTranslation } from '@honeycomb/shared';
+import { Box, DropdownMenu, Pagination, Text } from '@honeycomb-finance/core';
+import { MEDIA_WIDTHS, scrollElementIntoView, useTranslation } from '@honeycomb-finance/shared';
 import React, { useEffect, useRef, useState } from 'react';
 import { useMedia, useWindowSize } from 'react-use';
 import { Position } from 'src/hooks/types';

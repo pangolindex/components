@@ -1,6 +1,6 @@
-import { Box, Text } from '@honeycomb/core';
-import { useTranslation } from '@honeycomb/shared';
-import { useParsedQueryString } from '@honeycomb/state-hooks';
+import { Box, Text } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
+import { useParsedQueryString } from '@honeycomb-finance/state-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
 import AddLiquidityModal from '../AddLiquidityModal';
 import PoolImportModal from '../PoolImportModal';

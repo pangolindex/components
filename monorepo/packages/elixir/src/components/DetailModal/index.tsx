@@ -1,5 +1,5 @@
-import { Box, Modal, Tabs } from '@honeycomb/core';
-import { useTranslation } from '@honeycomb/shared';
+import { Box, Modal, Tabs } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
 import { Token } from '@pangolindex/sdk';
 import React, { useContext, useState } from 'react';
 import { useWindowSize } from 'react-use';

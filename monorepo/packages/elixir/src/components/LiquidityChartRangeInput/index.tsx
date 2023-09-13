@@ -1,5 +1,5 @@
-import { AutoColumn, ColumnCenter, Loader, Text } from '@honeycomb/core';
-import { useChainId, wrappedCurrency } from '@honeycomb/shared';
+import { AutoColumn, ColumnCenter, Loader, Text } from '@honeycomb-finance/core';
+import { useChainId, wrappedCurrency } from '@honeycomb-finance/shared';
 import { format } from 'd3';
 import { saturate } from 'polished';
 import React, { ReactNode, useCallback, useContext, useMemo } from 'react';

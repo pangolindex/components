@@ -1,6 +1,6 @@
-import { useChainId, usePangolinWeb3 } from '@honeycomb/shared';
-import { useTransactionAdder } from '@honeycomb/state-hooks';
-import { hederaFn } from '@honeycomb/wallet-connectors';
+import { useChainId, usePangolinWeb3 } from '@honeycomb-finance/shared';
+import { useTransactionAdder } from '@honeycomb-finance/state-hooks';
+import { hederaFn } from '@honeycomb-finance/wallet-connectors';
 import { BigNumber } from 'ethers';
 import { useSarNftGovernanceContract } from './useContract';
 

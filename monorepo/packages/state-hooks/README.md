@@ -2,11 +2,11 @@
 Contains useful functions, and hooks, used in anothers packages.
 
 ## Installation
-`yarn add @honeycomb/state-hooks`
+`yarn add @honeycomb-finance/state-hooks`
 
 or
 
-`npm install @honeycomb/state-hooks`
+`npm install @honeycomb-finance/state-hooks`
 
 ### Install below dependancies as its peer dependancies
 
@@ -26,8 +26,8 @@ In your main file wrap your app with `HoneycombProvider` and `Web3ReactProvider`
 _Use version **6.0.9** of `@web3-react/core` package._
 
 ```tsx
-import { HoneycombProvider } from '@honeycomb/honeycomb-provider';
-import { NetworkContextName, useActiveWeb3React } from '@honeycomb/shared';
+import { HoneycombProvider } from '@honeycomb-finance/honeycomb-provider';
+import { NetworkContextName, useActiveWeb3React } from '@honeycomb-finance/shared';
 import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core';
 import React from 'react';
 import ReactDOM from 'react-dom';

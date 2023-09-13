@@ -1,6 +1,15 @@
 /* eslint-disable max-lines */
-import { Box, Button, DoubleCurrencyLogo, Drawer, Loader, Stat, Text, TransactionCompleted } from '@honeycomb/core';
-import { unwrappedToken, useChainId, useTranslation } from '@honeycomb/shared';
+import {
+  Box,
+  Button,
+  DoubleCurrencyLogo,
+  Drawer,
+  Loader,
+  Stat,
+  Text,
+  TransactionCompleted,
+} from '@honeycomb-finance/core';
+import { unwrappedToken, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { Currency, Position } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';

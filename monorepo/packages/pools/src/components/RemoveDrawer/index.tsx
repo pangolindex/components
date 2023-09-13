@@ -1,5 +1,5 @@
-import { Drawer } from '@honeycomb/core';
-import { useTranslation } from '@honeycomb/shared';
+import { Drawer } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
 import React from 'react';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import Remove from '../Remove';

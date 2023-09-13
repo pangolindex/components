@@ -1,5 +1,5 @@
-import { Box, Button, Drawer, Loader, Text } from '@honeycomb/core';
-import { getEtherscanLink, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
+import { Box, Button, Drawer, Loader, Text } from '@honeycomb-finance/core';
+import { getEtherscanLink, usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { ThemeContext } from 'styled-components';

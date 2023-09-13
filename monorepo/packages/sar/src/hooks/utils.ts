@@ -12,14 +12,14 @@ import {
   useMixpanel,
   usePangolinWeb3,
   useTranslation,
-} from '@honeycomb/shared';
+} from '@honeycomb-finance/shared';
 import {
   useApproveCallbackHook,
   useTokenBalancesHook,
   useTransactionAdder,
   useUSDCPriceHook,
-} from '@honeycomb/state-hooks';
-import { Hedera, hederaFn } from '@honeycomb/wallet-connectors';
+} from '@honeycomb-finance/state-hooks';
+import { Hedera, hederaFn } from '@honeycomb-finance/wallet-connectors';
 import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import { useCallback, useState } from 'react';

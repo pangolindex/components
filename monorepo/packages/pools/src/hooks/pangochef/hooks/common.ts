@@ -1,7 +1,13 @@
+import {
+  PNG,
+  ZERO_ADDRESS,
+  useChainId,
+  usePangolinWeb3,
+  useSubgraphFarmsStakedAmount,
+} from '@honeycomb-finance/shared';
+import { useTokensCurrencyPriceHook, useTokensHook, useTransactionAdder } from '@honeycomb-finance/state-hooks';
+import { Hedera, hederaFn } from '@honeycomb-finance/wallet-connectors';
 import { Fraction, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
-import { PNG, ZERO_ADDRESS, useChainId, usePangolinWeb3, useSubgraphFarmsStakedAmount } from '@honeycomb/shared';
-import { useTokensCurrencyPriceHook, useTokensHook, useTransactionAdder } from '@honeycomb/state-hooks';
-import { Hedera, hederaFn } from '@honeycomb/wallet-connectors';
 import { useCallback, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { usePangoChefContract } from 'src/hooks/useContract';

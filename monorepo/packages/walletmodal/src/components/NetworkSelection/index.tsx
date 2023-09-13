@@ -1,6 +1,6 @@
-import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@honeycomb/core';
-import { useActiveWeb3React, useDebounce, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
-import { network } from '@honeycomb/wallet-connectors';
+import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@honeycomb-finance/core';
+import { useActiveWeb3React, useDebounce, usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
+import { network } from '@honeycomb-finance/wallet-connectors';
 import { Chain } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';

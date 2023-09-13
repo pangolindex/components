@@ -1,4 +1,4 @@
-import { AutoColumn, Box, ColumnCenter } from '@honeycomb/core';
+import { AutoColumn, Box, ColumnCenter } from '@honeycomb-finance/core';
 import { GovernanceType } from '@pangolindex/sdk';
 import styled from 'styled-components';
 

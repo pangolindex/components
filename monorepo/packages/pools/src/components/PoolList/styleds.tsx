@@ -1,4 +1,4 @@
-import { Box, TextInput } from '@honeycomb/core';
+import { Box, TextInput } from '@honeycomb-finance/core';
 import styled from 'styled-components';
 
 export const PoolsWrapper = styled(Box)`

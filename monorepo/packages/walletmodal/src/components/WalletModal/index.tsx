@@ -1,7 +1,7 @@
-import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@honeycomb/core';
-import { MEDIA_WIDTHS, useDebounce, usePangolinWeb3, useTranslation, wait } from '@honeycomb/shared';
-import { useUserAtom } from '@honeycomb/state-hooks';
-import { UserRejectedRequestError } from '@honeycomb/wallet-connectors';
+import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@honeycomb-finance/core';
+import { MEDIA_WIDTHS, useDebounce, usePangolinWeb3, useTranslation, wait } from '@honeycomb-finance/shared';
+import { useUserAtom } from '@honeycomb-finance/state-hooks';
+import { UserRejectedRequestError } from '@honeycomb-finance/wallet-connectors';
 import { CHAINS, Chain, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { useContext, useEffect, useMemo, useState } from 'react';

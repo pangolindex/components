@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import { formatUnits } from '@ethersproject/units';
-import { Box, Button, Loader, Text, TextInput, Tooltip, TransactionCompleted } from '@honeycomb/core';
-import { CAVAX, ChainId, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
+import { Box, Button, Loader, Text, TextInput, Tooltip, TransactionCompleted } from '@honeycomb-finance/core';
 import {
   FARM_TYPE,
   MixPanelEvents,
@@ -12,7 +11,7 @@ import {
   useMixpanel,
   usePangolinWeb3,
   useTranslation,
-} from '@honeycomb/shared';
+} from '@honeycomb-finance/shared';
 import {
   ApprovalState,
   useAccountBalanceHook,
@@ -20,8 +19,9 @@ import {
   usePair,
   useTokenBalancesHook,
   useTokensCurrencyPriceHook,
-} from '@honeycomb/state-hooks';
-import { Hedera } from '@honeycomb/wallet-connectors';
+} from '@honeycomb-finance/state-hooks';
+import { Hedera } from '@honeycomb-finance/wallet-connectors';
+import { CAVAX, ChainId, CurrencyAmount, Fraction, JSBI, Price, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';

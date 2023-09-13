@@ -1,4 +1,4 @@
-import { Box, CurrencyLogo, DoubleCurrencyLogo, Text } from '@honeycomb/core';
+import { Box, CurrencyLogo, DoubleCurrencyLogo, Text } from '@honeycomb-finance/core';
 import { ChainId, Token } from '@pangolindex/sdk';
 import React from 'react';
 import { HelpCircle } from 'react-feather';

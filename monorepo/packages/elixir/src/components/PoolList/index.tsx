@@ -1,6 +1,6 @@
-import { Box, Button, DropdownMenu, Hidden, Loader, Text, TextInput } from '@honeycomb/core';
-import { BIG_INT_ZERO, useDebounce, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
-import { useWalletModalToggle } from '@honeycomb/state-hooks';
+import { Box, Button, DropdownMenu, Hidden, Loader, Text, TextInput } from '@honeycomb-finance/core';
+import { BIG_INT_ZERO, useDebounce, usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
+import { useWalletModalToggle } from '@honeycomb-finance/state-hooks';
 import { Currency, ElixirPool, JSBI } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';

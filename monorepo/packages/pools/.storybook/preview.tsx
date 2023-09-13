@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Preview } from '@storybook/react';
-import { ThemeProvider } from '@honeycomb/shared';
+import { ThemeProvider } from '@honeycomb-finance/shared';
 
 const InternalProvider = ({ children, theme }) => {
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;

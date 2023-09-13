@@ -1,4 +1,4 @@
-import { wrappedCurrency } from '@honeycomb/shared';
+import { wrappedCurrency } from '@honeycomb-finance/shared';
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';

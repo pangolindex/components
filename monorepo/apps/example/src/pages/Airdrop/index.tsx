@@ -1,6 +1,6 @@
-import { Airdrop, ComingSoon } from '@honeycomb/airdrop';
-import { getTokenLogoURL } from '@honeycomb/core';
-import { PNG } from '@honeycomb/shared';
+import { Airdrop, ComingSoon } from '@honeycomb-finance/airdrop';
+import { getTokenLogoURL } from '@honeycomb-finance/core';
+import { PNG } from '@honeycomb-finance/shared';
 import { ChainId, FLARE_MAINNET, HEDERA_MAINNET, SONGBIRD_CANARY } from '@pangolindex/sdk';
 import React from 'react';
 import { Frame } from './styleds';

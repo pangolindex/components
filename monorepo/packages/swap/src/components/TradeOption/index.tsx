@@ -1,4 +1,4 @@
-import { Box, Text, ToggleButtons } from '@honeycomb/core';
+import { Box, Text, ToggleButtons } from '@honeycomb-finance/core';
 import React, { useMemo } from 'react';
 import { Settings } from 'react-feather';
 import { SwapTypes } from 'src/constants';

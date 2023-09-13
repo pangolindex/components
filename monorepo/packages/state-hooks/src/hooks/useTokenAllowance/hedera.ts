@@ -1,5 +1,5 @@
+import { hederaFn } from '@honeycomb-finance/wallet-connectors';
 import { Token, TokenAmount } from '@pangolindex/sdk';
-import { hederaFn } from '@honeycomb/wallet-connectors';
 import { useQuery } from 'react-query';
 import { useIsApprovingInfinite } from 'src/state';
 

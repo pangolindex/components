@@ -1,6 +1,6 @@
-import { Drawer } from '@honeycomb/core';
+import { Drawer } from '@honeycomb-finance/core';
+import { useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { Pair } from '@pangolindex/sdk';
-import { useChainId, useTranslation } from '@honeycomb/shared';
 import React, { useCallback } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';

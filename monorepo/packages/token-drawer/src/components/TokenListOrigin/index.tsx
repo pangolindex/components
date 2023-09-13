@@ -1,4 +1,4 @@
-import { parseENSAddress } from '@honeycomb/shared';
+import { parseENSAddress } from '@honeycomb-finance/shared';
 import React, { useMemo } from 'react';
 
 function TokenListOrigin({ listUrl }: { listUrl: string }) {

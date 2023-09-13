@@ -1,11 +1,11 @@
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react';
-import { IS_IN_IFRAME } from '@honeycomb/shared';
+import { IS_IN_IFRAME } from '@honeycomb-finance/shared';
 import {
   WalletConnectConnector,
   WalletConnectConnectorArguments,
   gnosisSafe,
   walletlink,
-} from '@honeycomb/wallet-connectors';
+} from '@honeycomb-finance/wallet-connectors';
 import { NetworkType } from '@pangolindex/sdk';
 import { isMobile } from 'react-device-detect';
 import gnosisSafeIcon from 'src/assets/images/gnosis_safe.png';

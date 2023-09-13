@@ -1,5 +1,5 @@
+import { useChainId } from '@honeycomb-finance/shared';
 import { CHAINS, ChefType, Currency } from '@pangolindex/sdk';
-import { useChainId } from '@honeycomb/shared';
 import React, { useState } from 'react';
 import { DoubleSideStakingInfo, SpaceType } from 'src/hooks/minichef/types';
 import { PangoChefInfo } from 'src/hooks/pangochef/types';

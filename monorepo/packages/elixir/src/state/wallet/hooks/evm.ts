@@ -6,14 +6,14 @@ import {
   usePangolinWeb3,
   waitForTransaction,
   wrappedCurrency,
-} from '@honeycomb/shared';
+} from '@honeycomb-finance/shared';
 import {
   useCurrency,
   useSingleCallResult,
   useSingleContractMultipleData,
   useTokensHook,
   useTransactionAdder,
-} from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/state-hooks';
 import {
   CAVAX,
   CHAINS,

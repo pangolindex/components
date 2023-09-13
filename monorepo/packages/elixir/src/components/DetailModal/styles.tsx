@@ -1,4 +1,4 @@
-import { Box, Tab, TabList, TabPanel } from '@honeycomb/core';
+import { Box, Tab, TabList, TabPanel } from '@honeycomb-finance/core';
 import styled from 'styled-components';
 
 export const DesktopWrapper = styled(Box)`

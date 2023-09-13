@@ -13,8 +13,12 @@ import {
   useSubgraphSarPositions,
   useSubgraphStakingContractInfo,
   waitForTransaction,
-} from '@honeycomb/shared';
-import { useShouldUseSubgraph, useSingleCallResult, useSingleContractMultipleData } from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/shared';
+import {
+  useShouldUseSubgraph,
+  useSingleCallResult,
+  useSingleContractMultipleData,
+} from '@honeycomb-finance/state-hooks';
 import { TokenAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';

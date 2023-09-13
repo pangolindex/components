@@ -1,4 +1,4 @@
-import { Box } from '@honeycomb/core';
+import { Box } from '@honeycomb-finance/core';
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';

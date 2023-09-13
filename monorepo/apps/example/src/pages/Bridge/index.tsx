@@ -1,4 +1,4 @@
-import { Bridge } from '@honeycomb/bridge';
+import { Bridge } from '@honeycomb-finance/bridge';
 import React from 'react';
 
 function BridgeUI() {

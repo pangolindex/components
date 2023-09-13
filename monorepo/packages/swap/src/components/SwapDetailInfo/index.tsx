@@ -1,13 +1,13 @@
-import { Text, Tooltip } from '@honeycomb/core';
-import { ElixirTrade, Fraction, Percent, Trade, TradeType } from '@pangolindex/sdk';
+import { Text, Tooltip } from '@honeycomb-finance/core';
 import {
   BIPS_BASE,
   INITIAL_ALLOWED_SLIPPAGE,
   ONE_BIPS,
   computeSlippageAdjustedAmounts,
   useTranslation,
-} from '@honeycomb/shared';
-import { useUserSlippageTolerance } from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/shared';
+import { useUserSlippageTolerance } from '@honeycomb-finance/state-hooks';
+import { ElixirTrade, Fraction, Percent, Trade, TradeType } from '@pangolindex/sdk';
 import _uniqueId from 'lodash/uniqueId';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';

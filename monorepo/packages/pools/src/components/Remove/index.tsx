@@ -1,5 +1,5 @@
-import { Box, Text, ToggleButtons } from '@honeycomb/core';
-import { unwrappedToken, useChainId, useTranslation } from '@honeycomb/shared';
+import { Box, Text, ToggleButtons } from '@honeycomb-finance/core';
+import { unwrappedToken, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import React, { useState } from 'react';
 import { DoubleSideStakingInfo } from 'src/hooks/minichef/types';
 import { useDerivedBurnInfo } from 'src/state/burn/hooks';

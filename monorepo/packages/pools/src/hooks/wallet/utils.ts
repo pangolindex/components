@@ -1,12 +1,12 @@
-import { Token } from '@pangolindex/sdk';
 import {
   BASES_TO_TRACK_LIQUIDITY_FOR,
   PINNED_PAIRS,
   useChainId,
   useLibrary,
   usePangolinWeb3,
-} from '@honeycomb/shared';
-import { useAllTokens, useUserAtom } from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/shared';
+import { useAllTokens, useUserAtom } from '@honeycomb-finance/state-hooks';
+import { Token } from '@pangolindex/sdk';
 import { splitSignature } from 'ethers/lib/utils';
 import flatMap from 'lodash.flatmap';
 import { useMemo } from 'react';

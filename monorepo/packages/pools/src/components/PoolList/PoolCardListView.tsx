@@ -1,5 +1,5 @@
-import { Box, DropdownMenu, Hidden, Loader, TextInput } from '@honeycomb/core';
-import { useTranslation } from '@honeycomb/shared';
+import { Box, DropdownMenu, Hidden, Loader, TextInput } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
 import React, { useContext } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Search } from 'react-feather';

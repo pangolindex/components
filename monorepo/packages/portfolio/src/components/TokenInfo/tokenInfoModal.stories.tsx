@@ -1,5 +1,5 @@
-import { Button } from '@honeycomb/core';
-import { PNG } from '@honeycomb/shared';
+import { Button } from '@honeycomb-finance/core';
+import { PNG } from '@honeycomb-finance/shared';
 import { ChainId } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';

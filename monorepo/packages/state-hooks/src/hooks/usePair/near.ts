@@ -1,6 +1,6 @@
+import { PairState, PoolType, useChainId, wrappedCurrency } from '@honeycomb-finance/shared';
+import { nearFn } from '@honeycomb-finance/wallet-connectors';
 import { ChainId, Currency, Pair, Token, TokenAmount } from '@pangolindex/sdk';
-import { PairState, PoolType, useChainId, wrappedCurrency } from '@honeycomb/shared';
-import { nearFn } from '@honeycomb/wallet-connectors';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 

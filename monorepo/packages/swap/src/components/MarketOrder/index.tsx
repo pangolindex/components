@@ -1,16 +1,5 @@
 /* eslint-disable max-lines */
-import { Box, Button, Text, TextInput } from '@honeycomb/core';
-import {
-  CAVAX,
-  CurrencyAmount,
-  ElixirTrade,
-  JSBI,
-  Token,
-  TokenAmount,
-  Trade,
-  WAVAX,
-  currencyEquals,
-} from '@pangolindex/sdk';
+import { Box, Button, Text, TextInput } from '@honeycomb-finance/core';
 import {
   DEFAULT_TOKEN_LISTS_SELECTED,
   MixPanelEvents,
@@ -26,7 +15,7 @@ import {
   useTranslation,
   validateAddressMapping,
   wrappedCurrency,
-} from '@honeycomb/shared';
+} from '@honeycomb-finance/shared';
 import {
   ApprovalState,
   useApproveCallbackFromTradeHook,
@@ -38,9 +27,20 @@ import {
   useTokenList,
   useUserSlippageTolerance,
   useWalletModalToggle,
-} from '@honeycomb/state-hooks';
-import { SelectTokenDrawer } from '@pangolindex/token-drawer';
-import { Hedera, hederaFn } from '@honeycomb/wallet-connectors';
+} from '@honeycomb-finance/state-hooks';
+import { SelectTokenDrawer } from '@honeycomb-finance/token-drawer';
+import { Hedera, hederaFn } from '@honeycomb-finance/wallet-connectors';
+import {
+  CAVAX,
+  CurrencyAmount,
+  ElixirTrade,
+  JSBI,
+  Token,
+  TokenAmount,
+  Trade,
+  WAVAX,
+  currencyEquals,
+} from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { ThemeContext } from 'styled-components';

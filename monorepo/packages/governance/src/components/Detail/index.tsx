@@ -1,6 +1,5 @@
-import { AutoColumn, Box, Button, Loader, Text } from '@honeycomb/core';
-import { useSarPositionsHook } from '@honeycomb/sar';
-import { CHAINS, GovernanceType, JSBI, TokenAmount } from '@pangolindex/sdk';
+import { AutoColumn, Box, Button, Loader, Text } from '@honeycomb-finance/core';
+import { useSarPositionsHook } from '@honeycomb-finance/sar';
 import {
   ExternalLink,
   PNG,
@@ -10,8 +9,9 @@ import {
   useChainId,
   usePangolinWeb3,
   useTranslation,
-} from '@honeycomb/shared';
-import { useTokenBalance } from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/shared';
+import { useTokenBalance } from '@honeycomb-finance/state-hooks';
+import { CHAINS, GovernanceType, JSBI, TokenAmount } from '@pangolindex/sdk';
 import { DateTime } from 'luxon';
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft } from 'react-feather';

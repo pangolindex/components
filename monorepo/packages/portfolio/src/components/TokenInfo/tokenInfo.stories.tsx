@@ -1,4 +1,4 @@
-import { PNG } from '@honeycomb/shared';
+import { PNG } from '@honeycomb-finance/shared';
 import { ChainId } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';

@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
   BIG_INT_SECONDS_IN_WEEK,
   BIG_INT_ZERO,
@@ -16,7 +15,7 @@ import {
   usePangolinWeb3,
   useRefetchPangoChefSubgraph,
   useTranslation,
-} from '@honeycomb/shared';
+} from '@honeycomb-finance/shared';
 import {
   useCoinGeckoCurrencyPrice,
   useMultipleContractSingleData,
@@ -28,8 +27,9 @@ import {
   useSingleContractMultipleData,
   useTokensContract,
   useTransactionAdder,
-} from '@honeycomb/state-hooks';
-import { hederaFn } from '@honeycomb/wallet-connectors';
+} from '@honeycomb-finance/state-hooks';
+import { hederaFn } from '@honeycomb-finance/wallet-connectors';
+import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';

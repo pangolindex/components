@@ -1,6 +1,6 @@
-import { Box, Loader, Text } from '@honeycomb/core';
-import { MixPanelEvents, useChainId, useMixpanel, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
-import { useShowBalancesManager } from '@honeycomb/state-hooks';
+import { Box, Loader, Text } from '@honeycomb-finance/core';
+import { MixPanelEvents, useChainId, useMixpanel, usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
+import { useShowBalancesManager } from '@honeycomb-finance/state-hooks';
 import { ALL_CHAINS, CHAINS, Chain } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';

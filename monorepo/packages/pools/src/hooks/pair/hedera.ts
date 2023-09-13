@@ -1,6 +1,6 @@
+import { useSubgraphPairs } from '@honeycomb-finance/shared';
+import { useHederaTokensMetaData } from '@honeycomb-finance/state-hooks';
 import { Pair, TokenAmount } from '@pangolindex/sdk';
-import { useSubgraphPairs } from '@honeycomb/shared';
-import { useHederaTokensMetaData } from '@honeycomb/state-hooks';
 import { useMemo } from 'react';
 import { useHederaPGLTokenAddresses } from '../wallet/hooks/hedera';
 

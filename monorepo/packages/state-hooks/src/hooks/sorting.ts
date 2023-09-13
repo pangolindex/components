@@ -1,5 +1,5 @@
+import { getTokenComparator } from '@honeycomb-finance/shared';
 import { BridgeCurrency, Token } from '@pangolindex/sdk';
-import { getTokenComparator } from '@honeycomb/shared';
 import { useMemo } from 'react';
 import { useAllTokenBalances } from '..';
 

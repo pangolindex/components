@@ -1,4 +1,4 @@
-import { Box, Button, Loader, Text, TransactionCompleted } from '@honeycomb/core';
+import { Box, Button, Loader, Text, TransactionCompleted } from '@honeycomb-finance/core';
 import {
   FARM_TYPE,
   MixPanelEvents,
@@ -7,8 +7,8 @@ import {
   useMixpanel,
   usePangolinWeb3,
   useTranslation,
-} from '@honeycomb/shared';
-import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/shared';
+import { useGetHederaTokenNotAssociated, useHederaTokenAssociated } from '@honeycomb-finance/state-hooks';
 import React, { useContext, useMemo, useState } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { ThemeContext } from 'styled-components';

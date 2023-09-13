@@ -1,5 +1,5 @@
-import { Button } from '@honeycomb/core';
-import { usePangolinWeb3 } from '@honeycomb/shared';
+import { Button } from '@honeycomb-finance/core';
+import { usePangolinWeb3 } from '@honeycomb-finance/shared';
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
 import Docs from './docs.md';

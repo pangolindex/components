@@ -1,5 +1,5 @@
-import { Box, Button, NewsWidget } from '@honeycomb/core';
-import { MyPortfolio, Portfolio, WatchList } from '@honeycomb/portfolio';
+import { Box, Button, NewsWidget } from '@honeycomb-finance/core';
+import { MyPortfolio, Portfolio, WatchList } from '@honeycomb-finance/portfolio';
 import React from 'react';
 import { GridContainer, PortfolioContainer } from './styled';
 

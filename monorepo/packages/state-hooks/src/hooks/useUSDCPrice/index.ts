@@ -1,5 +1,5 @@
+import { useDummyHook } from '@honeycomb-finance/shared';
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyHook } from '@honeycomb/shared';
 import { useUsdPriceCoingecko } from './coingecko';
 import { useUSDCPrice } from './evm';
 import { useNearUSDCPrice } from './near';

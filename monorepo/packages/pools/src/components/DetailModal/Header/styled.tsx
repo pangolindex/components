@@ -1,4 +1,4 @@
-import { Box } from '@honeycomb/core';
+import { Box } from '@honeycomb-finance/core';
 import { ChefType } from '@pangolindex/sdk';
 import styled from 'styled-components';
 

@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { useChainId, useContract } from '@honeycomb/shared';
+import { useChainId, useContract } from '@honeycomb-finance/shared';
 import { CHAINS } from '@pangolindex/sdk';
 import NonFungiblePositionManager from 'src/constants/abis/nonfungiblePositionManager.json';
 import TickLensABI from 'src/constants/abis/tickLens.json';

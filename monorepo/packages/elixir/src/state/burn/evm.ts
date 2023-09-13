@@ -5,8 +5,8 @@ import {
   usePangolinWeb3,
   waitForTransaction,
   wrappedCurrency,
-} from '@honeycomb/shared';
-import { useTransactionAdder } from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/shared';
+import { useTransactionAdder } from '@honeycomb-finance/state-hooks';
 import { CHAINS, NonfungiblePositionManager, Token, TokenAmount } from '@pangolindex/sdk';
 import { RemoveElixirLiquidityProps } from './types';
 

@@ -1,5 +1,5 @@
 import { parseUnits } from '@ethersproject/units';
-import { calculateTransactionTime } from '@honeycomb/shared';
+import { calculateTransactionTime } from '@honeycomb-finance/shared';
 import LIFI, { Step as LifiStep, RouteOptions, RoutesRequest, isLifiStep } from '@lifi/sdk';
 import { Currency, LIFI as LIFIBridge, Token, TokenAmount } from '@pangolindex/sdk';
 import { BridgePrioritizations, GetRoutes, GetRoutesProps, Route } from '../types';

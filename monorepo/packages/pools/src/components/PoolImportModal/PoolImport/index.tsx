@@ -1,7 +1,7 @@
-import { Box, CurrencyLogo, Text } from '@honeycomb/core';
+import { Box, CurrencyLogo, Text } from '@honeycomb-finance/core';
+import { PairState, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
+import { usePair, usePairAdder } from '@honeycomb-finance/state-hooks';
 import { Currency, JSBI, TokenAmount } from '@pangolindex/sdk';
-import { PairState, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
-import { usePair, usePairAdder } from '@honeycomb/state-hooks';
 import React, { useContext, useEffect } from 'react';
 import { ChevronDown, Plus } from 'react-feather';
 import { ThemeContext } from 'styled-components';

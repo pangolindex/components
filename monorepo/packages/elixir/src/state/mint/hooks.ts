@@ -7,8 +7,8 @@ import {
   usePangolinWeb3,
   wrappedCurrency,
   wrappedCurrencyAmount,
-} from '@honeycomb/shared';
-import { useCurrency, useCurrencyBalances, usePair } from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/shared';
+import { useCurrency, useCurrencyBalances, usePair } from '@honeycomb-finance/state-hooks';
 import {
   CAVAX,
   Currency,

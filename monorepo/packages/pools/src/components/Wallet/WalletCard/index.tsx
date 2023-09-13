@@ -1,6 +1,6 @@
-import { Box, DoubleCurrencyLogo, Stat, Text } from '@honeycomb/core';
+import { Box, DoubleCurrencyLogo, Stat, Text } from '@honeycomb-finance/core';
+import { unwrappedToken, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { Pair } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId, useTranslation } from '@honeycomb/shared';
 import React, { useState } from 'react';
 import { useGetPoolDollerWorth } from 'src/hooks/minichef/hooks/common';
 import AddLiquidityDrawer from '../../AddLiquidityDrawer';

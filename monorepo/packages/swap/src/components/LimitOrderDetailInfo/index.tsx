@@ -1,8 +1,8 @@
 import { formatUnits } from '@ethersproject/units';
 import { useGasOverhead, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
-import { Text } from '@honeycomb/core';
+import { Text } from '@honeycomb-finance/core';
+import { INITIAL_ALLOWED_SLIPPAGE, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { TokenAmount } from '@pangolindex/sdk';
-import { INITIAL_ALLOWED_SLIPPAGE, useChainId, useTranslation } from '@honeycomb/shared';
 import React, { useMemo } from 'react';
 import { useGelatoLimitOrdersHook } from 'src/state/hooks';
 import { ContentBox, DataBox, ValueText } from './styled';

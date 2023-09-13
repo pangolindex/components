@@ -1,4 +1,4 @@
-import { useEscapeKey, useOnClickOutside } from '@honeycomb/shared';
+import { useEscapeKey, useOnClickOutside } from '@honeycomb-finance/shared';
 import React, { useCallback, useRef } from 'react';
 import { Portal } from 'react-portal';
 import styled from 'styled-components';

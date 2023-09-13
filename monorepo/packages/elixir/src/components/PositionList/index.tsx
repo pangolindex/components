@@ -1,6 +1,6 @@
-import { Box, Button, DropdownMenu, Hidden, Loader, Text, TextInput } from '@honeycomb/core';
-import { usePangolinWeb3, useTranslation } from '@honeycomb/shared';
-import { useWalletModalToggle } from '@honeycomb/state-hooks';
+import { Box, Button, DropdownMenu, Hidden, Loader, Text, TextInput } from '@honeycomb-finance/core';
+import { usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
+import { useWalletModalToggle } from '@honeycomb-finance/state-hooks';
 import React, { useContext } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { Inbox, Search } from 'react-feather';

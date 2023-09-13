@@ -1,4 +1,4 @@
-import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '@honeycomb/shared';
+import { DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '@honeycomb-finance/shared';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { useCallback } from 'react';

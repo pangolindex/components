@@ -1,4 +1,4 @@
-import { DEFAULT_TOKEN_LISTS, DEFAULT_TOKEN_LISTS_SELECTED } from '@honeycomb/shared';
+import { DEFAULT_TOKEN_LISTS, DEFAULT_TOKEN_LISTS_SELECTED } from '@honeycomb-finance/shared';
 import { VersionUpgrade, getVersionUpgrade } from '@pangolindex/token-lists';
 // eslint-disable-next-line import/no-unresolved
 import { TokenList } from '@pangolindex/token-lists/dist/types';

@@ -1,7 +1,7 @@
+import { tryParseAmount, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
+import { useCurrencyBalance, useTransactionAdder } from '@honeycomb-finance/state-hooks';
+import { hederaFn } from '@honeycomb-finance/wallet-connectors';
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
-import { tryParseAmount, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
-import { useCurrencyBalance, useTransactionAdder } from '@honeycomb/state-hooks';
-import { hederaFn } from '@honeycomb/wallet-connectors';
 import { useMemo, useState } from 'react';
 import { Field } from 'src/state/atom';
 import { useSwapActionHandlers } from 'src/state/hooks/common';

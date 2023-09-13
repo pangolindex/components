@@ -1,4 +1,4 @@
-import { Ticks } from '@honeycomb/shared';
+import { Ticks } from '@honeycomb-finance/shared';
 import { JSBI, Token, tickToPrice } from '@pangolindex/sdk';
 import { TickProcessed } from 'src/hooks/chart/types';
 

@@ -1,9 +1,9 @@
-import { Box, Button, Text } from '@honeycomb/core';
+import { Box, Button, Text } from '@honeycomb-finance/core';
+import { useActiveWeb3React, usePangolinWeb3 } from '@honeycomb-finance/shared';
+import { useWalletModalToggleWithChainId } from '@honeycomb-finance/state-hooks';
+import { network } from '@honeycomb-finance/wallet-connectors';
+import { onChangeNetwork, useWalletState } from '@honeycomb-finance/walletmodal';
 import { Chain } from '@pangolindex/sdk';
-import { useActiveWeb3React, usePangolinWeb3 } from '@honeycomb/shared';
-import { useWalletModalToggleWithChainId } from '@honeycomb/state-hooks';
-import { network } from '@honeycomb/wallet-connectors';
-import { onChangeNetwork, useWalletState } from '@honeycomb/walletmodal';
 import React, { useCallback } from 'react';
 import Title from '../../Title';
 import { Wrapper } from '../../Title/styleds';

@@ -1,6 +1,6 @@
 import { getAddress } from '@ethersproject/address';
 import { ExternalProvider, Web3Provider as Web3ProviderEthers } from '@ethersproject/providers';
-import { PROVIDER_MAPPING, network } from '@honeycomb/wallet-connectors';
+import { PROVIDER_MAPPING, network } from '@honeycomb-finance/wallet-connectors';
 import { ALL_CHAINS, CHAINS, ChainId } from '@pangolindex/sdk';
 import { useWeb3React } from '@web3-react/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';

@@ -1,4 +1,4 @@
-import { AutoColumn, Box } from '@honeycomb/core';
+import { AutoColumn, Box } from '@honeycomb-finance/core';
 import styled from 'styled-components';
 
 export const PageWrapper = styled(AutoColumn)`

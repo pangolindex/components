@@ -1,4 +1,4 @@
-import { Box, TextInput } from '@honeycomb/core';
+import { Box, TextInput } from '@honeycomb-finance/core';
 import styled from 'styled-components';
 import { SpaceType } from 'src/hooks/minichef/types';
 

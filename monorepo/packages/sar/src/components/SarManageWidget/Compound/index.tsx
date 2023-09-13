@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
-import { Box, Button, Text, Tooltip } from '@honeycomb/core';
-import { PNG, useChainId, useTranslation } from '@honeycomb/shared';
-import { useUSDCPriceHook } from '@honeycomb/state-hooks';
+import { Box, Button, Text, Tooltip } from '@honeycomb-finance/core';
+import { PNG, useChainId, useTranslation } from '@honeycomb-finance/shared';
+import { useUSDCPriceHook } from '@honeycomb-finance/state-hooks';
 import numeral from 'numeral';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ThemeContext } from 'styled-components';

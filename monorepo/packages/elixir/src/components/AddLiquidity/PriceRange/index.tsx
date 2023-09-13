@@ -1,5 +1,5 @@
-import { Box, Text, Tooltip } from '@honeycomb/core';
-import { useChainId, useTranslation, wrappedCurrency } from '@honeycomb/shared';
+import { Box, Text, Tooltip } from '@honeycomb-finance/core';
+import { useChainId, useTranslation, wrappedCurrency } from '@honeycomb-finance/shared';
 import React, { useContext } from 'react';
 import { Code, Info } from 'react-feather';
 import { ThemeContext } from 'styled-components';

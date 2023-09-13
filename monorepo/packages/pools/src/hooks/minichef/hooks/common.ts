@@ -1,4 +1,3 @@
-import { CHAINS, ChefType, CurrencyAmount, JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import {
   BIG_INT_ZERO,
   ZERO_ADDRESS,
@@ -7,14 +6,15 @@ import {
   useChainId,
   usePangolinWeb3,
   useTranslation,
-} from '@honeycomb/shared';
+} from '@honeycomb-finance/shared';
 import {
   CallState,
   useMultipleContractMultipleData,
   useSingleCallResult,
   useTokensHook,
   useUSDCPriceHook,
-} from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/state-hooks';
+import { CHAINS, ChefType, CurrencyAmount, JSBI, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';

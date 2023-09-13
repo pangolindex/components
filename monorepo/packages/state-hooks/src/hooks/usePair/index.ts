@@ -1,5 +1,5 @@
+import { PairState, useChainId } from '@honeycomb-finance/shared';
 import { ChainId, Currency, Pair } from '@pangolindex/sdk';
-import { PairState, useChainId } from '@honeycomb/shared';
 import { useMemo } from 'react';
 import { usePairs, usePairsContract, usePairsViaSubgraph } from './evm';
 import { useGetNearAllPool, useGetNearPoolId, useNearPairs } from './near';

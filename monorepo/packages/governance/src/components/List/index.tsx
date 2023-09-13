@@ -1,5 +1,4 @@
-import { Box, Loader, Text } from '@honeycomb/core';
-import { JSBI, TokenAmount } from '@pangolindex/sdk';
+import { Box, Loader, Text } from '@honeycomb-finance/core';
 import {
   PNG,
   ZERO_ADDRESS,
@@ -10,8 +9,14 @@ import {
   usePangolinWeb3,
   usePngSymbol,
   useTranslation,
-} from '@honeycomb/shared';
-import { ApplicationModal, useModalOpen, useToggleDelegateModal, useTokenBalance } from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/shared';
+import {
+  ApplicationModal,
+  useModalOpen,
+  useToggleDelegateModal,
+  useTokenBalance,
+} from '@honeycomb-finance/state-hooks';
+import { JSBI, TokenAmount } from '@pangolindex/sdk';
 import React from 'react';
 import { useGetProposalsViaSubgraph } from 'src/hooks/common';
 import { useUserDelegate, useUserVotes } from 'src/hooks/evm';

@@ -10,9 +10,13 @@ import {
   usePangolinWeb3,
   useSubgraphSarPositions,
   useSubgraphStakingContractInfo,
-} from '@honeycomb/shared';
-import { useHederaTokenAssociated, useShouldUseSubgraph, useSingleContractMultipleData } from '@honeycomb/state-hooks';
-import { hederaFn } from '@honeycomb/wallet-connectors';
+} from '@honeycomb-finance/shared';
+import {
+  useHederaTokenAssociated,
+  useShouldUseSubgraph,
+  useSingleContractMultipleData,
+} from '@honeycomb-finance/state-hooks';
+import { hederaFn } from '@honeycomb-finance/wallet-connectors';
 import { Fraction, JSBI } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery, useQueryClient } from 'react-query';

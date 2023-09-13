@@ -1,5 +1,5 @@
-import { Box, CloseIcon, DoubleCurrencyLogo, Hidden, Stat, Text, Visible } from '@honeycomb/core';
-import { unwrappedToken, useChainId, useTranslation } from '@honeycomb/shared';
+import { Box, CloseIcon, DoubleCurrencyLogo, Hidden, Stat, Text, Visible } from '@honeycomb-finance/core';
+import { unwrappedToken, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
 import { HeaderRoot, HeaderWrapper, StatsWrapper } from './styles';

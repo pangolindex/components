@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
-import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from '@honeycomb/core';
-import { Currency, Pair, Percent } from '@pangolindex/sdk';
+import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from '@honeycomb-finance/core';
 import {
   MixPanelEvents,
   ROUTER_ADDRESS,
@@ -10,7 +9,7 @@ import {
   usePangolinWeb3,
   useTranslation,
   wrappedCurrency,
-} from '@honeycomb/shared';
+} from '@honeycomb-finance/shared';
 import {
   ApprovalState,
   useApproveCallbackHook,
@@ -19,7 +18,8 @@ import {
   useTransactionDeadline,
   useUserSlippageTolerance,
   useWalletModalToggle,
-} from '@honeycomb/state-hooks';
+} from '@honeycomb-finance/state-hooks';
+import { Currency, Pair, Percent } from '@pangolindex/sdk';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRemoveLiquidityHook } from 'src/hooks/wallet/hooks';
 import { Field, useBurnStateAtom } from 'src/state/burn/atom';

@@ -1,7 +1,7 @@
 import { useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
+import { useChainId } from '@honeycomb-finance/shared';
+import { useApproveCallback } from '@honeycomb-finance/state-hooks';
 import { TokenAmount } from '@pangolindex/sdk';
-import { useChainId } from '@honeycomb/shared';
-import { useApproveCallback } from '@honeycomb/state-hooks';
 // TODO: Transfer From useApproveCallBack
 // wraps useApproveCallback in the context of a swap
 export function useApproveCallbackFromInputCurrencyAmount(currencyAmountIn: any | undefined) {

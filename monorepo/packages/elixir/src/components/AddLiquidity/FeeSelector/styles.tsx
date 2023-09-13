@@ -1,4 +1,4 @@
-import { Box } from '@honeycomb/core';
+import { Box } from '@honeycomb-finance/core';
 import styled, { keyframes } from 'styled-components';
 
 const pulse = (color: string) => keyframes`

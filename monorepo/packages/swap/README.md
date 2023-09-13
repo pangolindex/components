@@ -2,11 +2,11 @@
 A widget for projects to embed Pangolin's Swap functionality within their dApp.
 
 ## Installation
-`yarn add @honeycomb/swap`
+`yarn add @honeycomb-finance/swap`
 
 or
 
-`npm install @honeycomb/swap`
+`npm install @honeycomb-finance/swap`
 
 ### Install below dependancies as its peer dependancies
 
@@ -34,8 +34,8 @@ In your main file wrap your app with `HoneycombProvider` and `Web3ReactProvider`
 _Use version **6.0.9** of `@web3-react/core` package._
 
 ```tsx
-import { HoneycombProvider } from '@honeycomb/honeycomb-provider';
-import { NetworkContextName, useActiveWeb3React } from '@honeycomb/shared';
+import { HoneycombProvider } from '@honeycomb-finance/honeycomb-provider';
+import { NetworkContextName, useActiveWeb3React } from '@honeycomb-finance/shared';
 import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -75,8 +75,8 @@ ReactDOM.render(
 Now you can import the widget in your app
 
 ```tsx
-import { useChainId } from '@honeycomb/shared';
-import { SwapWidget } from '@honeycomb/swap';
+import { useChainId } from '@honeycomb-finance/shared';
+import { SwapWidget } from '@honeycomb-finance/swap';
 import React from 'react';
 export default function Swap() {
   const chainId = useChainId();

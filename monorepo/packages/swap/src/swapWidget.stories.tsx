@@ -1,4 +1,4 @@
-import { Box } from '@honeycomb/core';
+import { Box } from '@honeycomb-finance/core';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { SwapWidget, SwapWidgetProps } from '.';

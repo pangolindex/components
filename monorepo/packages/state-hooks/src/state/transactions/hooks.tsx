@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { useChainId, usePangolinWeb3 } from '@honeycomb/shared';
+import { useChainId, usePangolinWeb3 } from '@honeycomb-finance/shared';
 import { useCallback, useMemo } from 'react';
 import { TransactionDetails, useTransactionState } from './atom';
 

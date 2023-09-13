@@ -1,4 +1,10 @@
-import { SUPPORTED_EVM_CHAINS_ID, avalancheCore, bitKeep, injected, talisman } from '@honeycomb/wallet-connectors';
+import {
+  SUPPORTED_EVM_CHAINS_ID,
+  avalancheCore,
+  bitKeep,
+  injected,
+  talisman,
+} from '@honeycomb-finance/wallet-connectors';
 import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
 import avalancheCoreIcon from 'src/assets/svg/avalancheCore.svg';
 import bitKeepIcon from 'src/assets/svg/bitkeep.svg';

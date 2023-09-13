@@ -1,5 +1,5 @@
-import { SUPPORTED_EVM_CHAINS_ID } from '@honeycomb/wallet-connectors';
-import { PangolinWallet, PangolinWalletConnectWallet, SUPPORTED_WALLETS } from '@honeycomb/walletmodal';
+import { SUPPORTED_EVM_CHAINS_ID } from '@honeycomb-finance/wallet-connectors';
+import { PangolinWallet, PangolinWalletConnectWallet, SUPPORTED_WALLETS } from '@honeycomb-finance/walletmodal';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 
 const walletConnectProjectId = import.meta.env.VITE_WALLETCONNECT_PROJECTID;

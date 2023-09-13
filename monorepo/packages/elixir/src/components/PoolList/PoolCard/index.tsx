@@ -1,6 +1,6 @@
-import { Box, Button, DoubleCurrencyLogo, Text, Tooltip } from '@honeycomb/core';
-import { unwrappedToken, useChainId, useTranslation } from '@honeycomb/shared';
-import { useUSDCPriceHook } from '@honeycomb/state-hooks';
+import { Box, Button, DoubleCurrencyLogo, Text, Tooltip } from '@honeycomb-finance/core';
+import { unwrappedToken, useChainId, useTranslation } from '@honeycomb-finance/shared';
+import { useUSDCPriceHook } from '@honeycomb-finance/state-hooks';
 import { CurrencyAmount, Fraction } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useMemo } from 'react';

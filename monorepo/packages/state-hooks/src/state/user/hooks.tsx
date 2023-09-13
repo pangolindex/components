@@ -1,4 +1,4 @@
-import { usePangolinWeb3 } from '@honeycomb/shared';
+import { usePangolinWeb3 } from '@honeycomb-finance/shared';
 import { ChainId, Pair, Token } from '@pangolindex/sdk';
 import { useCallback, useMemo } from 'react';
 import { SerializedPair, SerializedToken, useUserAtom } from './atom';

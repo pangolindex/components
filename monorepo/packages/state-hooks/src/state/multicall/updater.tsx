@@ -1,5 +1,4 @@
 import { Contract } from '@ethersproject/contracts';
-import { ChainId, NetworkType } from '@pangolindex/sdk';
 import {
   CancelledError,
   RetryableError,
@@ -9,8 +8,9 @@ import {
   useChainId,
   useDebounce,
   useMulticallContract,
-} from '@honeycomb/shared';
-import { Hedera } from '@honeycomb/wallet-connectors';
+} from '@honeycomb-finance/shared';
+import { Hedera } from '@honeycomb-finance/wallet-connectors';
+import { ChainId, NetworkType } from '@pangolindex/sdk';
 import { useEffect, useMemo, useRef } from 'react';
 import { useBlockNumber } from '../application/hooks';
 import { Call, MulticallState, parseCallKey, useMulticallAtom } from './atom';

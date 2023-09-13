@@ -1,7 +1,7 @@
-import { Box, Button, Text } from '@honeycomb/core';
+import { Box, Button, Text } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
+import { useWalletModalToggleWithChainId } from '@honeycomb-finance/state-hooks';
 import { Token } from '@pangolindex/sdk';
-import { useTranslation } from '@honeycomb/shared';
-import { useWalletModalToggleWithChainId } from '@honeycomb/state-hooks';
 import React from 'react';
 import Title from '../../Title';
 import { Wrapper } from '../../Title/styleds';

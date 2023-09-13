@@ -1,5 +1,12 @@
-import { TickData, Ticks, ZERO_ADDRESS, useAllV3TicksQuery, useChainId, wrappedCurrency } from '@honeycomb/shared';
-import { useSingleContractMultipleData } from '@honeycomb/state-hooks';
+import {
+  TickData,
+  Ticks,
+  ZERO_ADDRESS,
+  useAllV3TicksQuery,
+  useChainId,
+  wrappedCurrency,
+} from '@honeycomb-finance/shared';
+import { useSingleContractMultipleData } from '@honeycomb-finance/state-hooks';
 import {
   CHAINS,
   Currency,

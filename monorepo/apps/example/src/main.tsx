@@ -1,5 +1,5 @@
-import { HoneycombProvider } from '@honeycomb/honeycomb-provider';
-import { NetworkContextName, useActiveWeb3React } from '@honeycomb/shared';
+import { HoneycombProvider } from '@honeycomb-finance/honeycomb-provider';
+import { NetworkContextName, useActiveWeb3React } from '@honeycomb-finance/shared';
 import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core';
 import React from 'react';
 import ReactDOM from 'react-dom';

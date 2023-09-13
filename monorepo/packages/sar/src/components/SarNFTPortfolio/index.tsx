@@ -1,6 +1,6 @@
-import { Box, Button, Loader, Text } from '@honeycomb/core';
-import { scrollElementIntoView, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
-import { useWalletModalToggle } from '@honeycomb/state-hooks';
+import { Box, Button, Loader, Text } from '@honeycomb-finance/core';
+import { scrollElementIntoView, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
+import { useWalletModalToggle } from '@honeycomb-finance/state-hooks';
 import React, { useEffect, useMemo } from 'react';
 import { useSarPositionsHook } from 'src/hooks';
 import { Position } from 'src/hooks/types';

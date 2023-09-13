@@ -1,4 +1,4 @@
-import { Text } from '@honeycomb/core';
+import { Text } from '@honeycomb-finance/core';
 import { BridgeCurrency } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import { HelpCircle } from 'react-feather';

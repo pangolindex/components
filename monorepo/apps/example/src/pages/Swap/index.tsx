@@ -1,5 +1,5 @@
-import { useChainId } from '@honeycomb/shared';
-import { SwapWidget } from '@honeycomb/swap';
+import { useChainId } from '@honeycomb-finance/shared';
+import { SwapWidget } from '@honeycomb-finance/swap';
 import { CHAINS } from '@pangolindex/sdk';
 import React from 'react';
 import { GridContainer, SwapWidgetWrapper } from './styled';

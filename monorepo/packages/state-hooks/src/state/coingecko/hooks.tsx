@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
+import { useChainId } from '@honeycomb-finance/shared';
 import { CHAINS, ChainId, Currency, Token } from '@pangolindex/sdk';
-import { useChainId } from '@honeycomb/shared';
 import axios, { AxiosResponse } from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { UseQueryResult, useQueries, useQuery } from 'react-query';

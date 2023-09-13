@@ -1,5 +1,5 @@
-import { Box, Drawer, TextInput } from '@honeycomb/core';
-import { filterTokenOrChain, usePrevious, useTranslation } from '@honeycomb/shared';
+import { Box, Drawer, TextInput } from '@honeycomb-finance/core';
+import { filterTokenOrChain, usePrevious, useTranslation } from '@honeycomb-finance/shared';
 import { BridgeChain, Chain, Currency, currencyEquals } from '@pangolindex/sdk';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';

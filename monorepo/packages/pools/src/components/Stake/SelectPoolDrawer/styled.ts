@@ -1,4 +1,4 @@
-import { Text } from '@honeycomb/core';
+import { Text } from '@honeycomb-finance/core';
 import styled from 'styled-components';
 
 export const CurrencyList = styled.div`

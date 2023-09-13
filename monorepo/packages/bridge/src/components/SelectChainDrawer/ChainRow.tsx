@@ -1,4 +1,4 @@
-import { Text } from '@honeycomb/core';
+import { Text } from '@honeycomb-finance/core';
 import { Chain } from '@pangolindex/sdk';
 import React, { useCallback } from 'react';
 import { ChainLogo, ChainRowRoot } from './styled';

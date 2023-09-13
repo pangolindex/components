@@ -1,4 +1,4 @@
-import { Text } from '@honeycomb/core';
+import { Text } from '@honeycomb-finance/core';
 import { Chain } from '@pangolindex/sdk';
 import React from 'react';
 import { Item, StyledLogo } from './styled';

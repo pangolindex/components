@@ -1,6 +1,6 @@
-import { Box, Button, DoubleCurrencyLogo, Drawer, Loader, Stat, Text } from '@honeycomb/core';
+import { Box, Button, DoubleCurrencyLogo, Drawer, Loader, Stat, Text } from '@honeycomb-finance/core';
+import { getEtherscanLink, usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
 import { Currency, CurrencyAmount, Token } from '@pangolindex/sdk';
-import { getEtherscanLink, usePangolinWeb3, useTranslation } from '@honeycomb/shared';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { ThemeContext } from 'styled-components';

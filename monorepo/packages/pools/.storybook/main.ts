@@ -21,7 +21,7 @@ const config: StorybookConfig = {
       // make sure webpack find turborepo packages from root node_modules
       updatedConfig.resolve.alias = {
         ...updatedConfig.resolve.alias,
-        '@honeycomb/shared': path.join(process.cwd(), '../../node_modules/@honeycomb/shared'),
+        '@honeycomb-finance/shared': path.join(process.cwd(), '../../node_modules/@honeycomb-finance/shared'),
       };
     }
 

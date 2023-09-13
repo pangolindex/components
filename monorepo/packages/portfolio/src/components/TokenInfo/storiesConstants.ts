@@ -1,4 +1,4 @@
-import { ZERO_ADDRESS } from '@honeycomb/shared';
+import { ZERO_ADDRESS } from '@honeycomb-finance/shared';
 import { ChainId, Token, TokenAmount } from '@pangolindex/sdk';
 
 export const customToken = new Token(ChainId.AVALANCHE, ZERO_ADDRESS, 18, 'DUMMY', 'DUMMY TOKEN');

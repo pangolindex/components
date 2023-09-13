@@ -1,5 +1,5 @@
 {
-  "name": "@honeycomb/honeycomb-provider",
+  "name": "@honeycomb-finance/honeycomb-provider",
   "version": "0.0.0",
   "main": "lib/index.cjs.js",
   "module": "lib/index.esm.js",
@@ -37,10 +37,10 @@
   },
   "dependencies": {
     "@ethersproject/providers": "5.6.8",
-    "@honeycomb/shared": "*",
-    "@honeycomb/state-hooks": "*",
-    "@honeycomb/walletmodal": "*",
-    "@honeycomb/wallet-connectors": "*",
+    "@honeycomb-finance/shared": "*",
+    "@honeycomb-finance/state-hooks": "*",
+    "@honeycomb-finance/walletmodal": "*",
+    "@honeycomb-finance/wallet-connectors": "*",
     "@web3-react/abstract-connector": "6.0.7",
     "@web3-react/core": "6.0.9",
     "react-device-detect": "1.6.2",
