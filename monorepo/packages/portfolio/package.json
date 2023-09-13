@@ -48,6 +48,7 @@
     "@honeycomb-finance/shared": "*",
     "@honeycomb-finance/core": "*",
     "@honeycomb-finance/state-hooks": "*",
+    "@web3-react/core": "6.0.9",
     "axios": "0.26.0",
     "dayjs": "1.10.7",
     "jotai": "2.0.3",
