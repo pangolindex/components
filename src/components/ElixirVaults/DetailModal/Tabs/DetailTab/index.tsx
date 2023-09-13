@@ -1,7 +1,10 @@
+import { Token } from '@pangolindex/sdk';
+import deepEqual from 'deep-equal';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Stat, Text } from 'src/components';
+import { Box, CoinDescription, Stat, Text } from 'src/components';
 import { useChainId } from 'src/hooks';
+import { convertCoingeckoTokens } from 'src/state/pcoingecko/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { Information, StateContainer, Wrapper } from './styles';
 import { DetailTabProps } from './types';
@@ -48,6 +51,31 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
     },
   ];
 
+  const getCoinDescriptions = () => {
+    const _tokenA = !(vault?.poolTokens?.[0] instanceof Token)
+      ? vault?.poolTokens?.[0]
+      : convertCoingeckoTokens(vault?.poolTokens?.[0]);
+    const _tokenB = !(vault?.poolTokens?.[1] instanceof Token)
+      ? vault?.poolTokens?.[1]
+      : convertCoingeckoTokens(vault?.poolTokens?.[1]);
+
+    return (
+      <>
+        {_tokenA && (
+          <Box mt={20}>
+            <CoinDescription coin={_tokenA} />
+          </Box>
+        )}
+
+        {_tokenB && !deepEqual(_tokenA, _tokenB) && (
+          <Box mt={20}>
+            <CoinDescription coin={_tokenB} />
+          </Box>
+        )}
+      </>
+    );
+  };
+
   return (
     <Wrapper>
       <Information>
@@ -88,6 +116,7 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
           ))}
         </StateContainer>
       </Information>
+      <Information>{getCoinDescriptions()}</Information>
     </Wrapper>
   );
 };

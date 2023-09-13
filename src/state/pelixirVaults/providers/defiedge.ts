@@ -1,4 +1,4 @@
-import { CHAINS, ChainId, DEFIEDGE, Token } from '@pangolindex/sdk';
+import { ChainId, DEFIEDGE, Token } from '@pangolindex/sdk';
 import axios from 'axios';
 import { DefiEdgeAllStrategyData, ElixirVault, GetElixirVaultsProps } from '../types';
 
@@ -26,15 +26,14 @@ export const getDefiEdgeVaults: any = async ({ chain }: GetElixirVaultsProps) =>
     // ------------------->
     // ------DUMMY DATA--->
     // ------------------->
-    console.log('response: ', response);
-    const currency0 = new Token(ChainId.AVALANCHE, '0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15', 18, 'ETH', 'Ether');
-    const currency1 = new Token(
-      ChainId.AVALANCHE,
-      CHAINS[ChainId.AVALANCHE].contracts!.png,
+    const currency0 = new Token(
+      ChainId.POLYGON,
+      '0x0000000000000000000000000000000000001010',
       18,
-      CHAINS[ChainId.AVALANCHE].png_symbol!,
-      'Pangolin',
+      'MATIC',
+      'Matic Token',
     );
+    const currency1 = new Token(ChainId.POLYGON, '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', 18, 'USDC', 'USD Coin');
     // ------------------->
     // ------------------->
     const data: ElixirVault[] = response.data.data.strategies.map((strategy: DefiEdgeAllStrategyData) => {
