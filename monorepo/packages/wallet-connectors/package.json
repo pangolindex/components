@@ -52,5 +52,8 @@
     "eventemitter3": "5.0.0",
     "hashconnect": "0.2.4",
     "near-api-js": "0.44.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
