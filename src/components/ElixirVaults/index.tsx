@@ -25,9 +25,9 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
   const [detailModalIsOpen, setDetailModalIsOpen] = useState<boolean>(false);
-  const [selectedVaultId, setSelectedVaultId] = useState<string | undefined>(undefined);
+  const [selectedVaultAddress, setSelectedVaultAddress] = useState<string | undefined>(undefined);
   const { getVaults } = useVaultActionHandlers();
-  const { onChangeElixirVaultLoaderStatus } = useElixirVaultActionHandlers();
+  const { onChangeElixirVaultLoaderStatus, onCloseDetailModal } = useElixirVaultActionHandlers();
   const { menuItems, activeMenu, setMenu } = props;
 
   const { elixirVaults, elixirVaultsLoaderStatus } = useDerivedElixirVaultInfo();
@@ -39,12 +39,10 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
   }, []);
 
   const onChangeDetailModalStatus = useCallback(
-    // TODO:
-    (vaultId: string | undefined) => {
-      console.log('vaultId: ', vaultId);
+    (vaultAddress: string | undefined) => {
       setDetailModalIsOpen(!detailModalIsOpen);
-      setSelectedVaultId(vaultId);
-      console.log('selectedVaultId: ', selectedVaultId);
+      setSelectedVaultAddress(vaultAddress);
+      onCloseDetailModal();
     },
     [detailModalIsOpen],
   );
@@ -92,19 +90,19 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
     if (!finalVaults) {
       return undefined;
     } else {
-      const selectedPositionExists = finalVaults.some((vault) => vault.id.toString() === selectedVaultId);
+      const selectedPositionExists = finalVaults.some((vault) => vault.address.toString() === selectedVaultAddress);
 
       if (!selectedPositionExists) {
         return undefined;
       } else {
-        const newSelectedPosition = finalVaults.find((vault) => vault.id.toString() === selectedVaultId);
+        const newSelectedPosition = finalVaults.find((vault) => vault.address.toString() === selectedVaultAddress);
 
         if (newSelectedPosition) {
           return newSelectedPosition;
         }
       }
     }
-  }, [finalVaults, selectedVaultId]);
+  }, [finalVaults, selectedVaultAddress]);
 
   const poolNameRenderer = (info) => {
     const value: Token[] = info.getValue();
@@ -169,7 +167,7 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
     },
     {
       header: '',
-      accessorKey: 'id',
+      accessorKey: 'address',
       cell: (info) => (
         <div>
           <Button

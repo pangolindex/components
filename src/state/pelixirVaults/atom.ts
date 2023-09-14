@@ -1,6 +1,6 @@
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
-import { CurrencyField, ElixirVault, TransactionStatus } from './types';
+import { CurrencyField, ElixirVault, ElixirVaultDetail, TransactionStatus } from './types';
 
 export interface ElixirVaultState {
   readonly typedValue: string;
@@ -12,6 +12,7 @@ export interface ElixirVaultState {
   };
   readonly elixirVaults: ElixirVault[];
   readonly selectedElixirVault: number | undefined;
+  readonly selectedVaultDetails: ElixirVaultDetail | undefined;
   readonly elixirVaultsLoaderStatus: boolean;
   readonly transactionLoaderStatus: boolean;
   readonly transactionError: Error | undefined;
@@ -28,6 +29,7 @@ const initialElixirVaultState: ElixirVaultState = {
   },
   elixirVaults: [],
   selectedElixirVault: undefined,
+  selectedVaultDetails: undefined,
   elixirVaultsLoaderStatus: false,
   transactionLoaderStatus: false,
   transactionError: undefined,
@@ -37,11 +39,11 @@ const initialElixirVaultState: ElixirVaultState = {
 const elixirVaultStateAtom = atom<ElixirVaultState>(initialElixirVaultState);
 
 export const useElixirVaultStateAtom = () => {
-  const [elixirVaultState, setBridgeState] = useAtom(elixirVaultStateAtom);
+  const [elixirVaultState, setElixirVaultState] = useAtom(elixirVaultStateAtom);
 
-  const replaceBridgeState = useCallback(
+  const replaceElixirVaultState = useCallback(
     ({ inputCurrencyId, outputCurrencyId }) => {
-      setBridgeState((state) => ({
+      setElixirVaultState((state) => ({
         ...state,
         typedValue: '',
         [CurrencyField.CURRENCY0]: {
@@ -52,22 +54,22 @@ export const useElixirVaultStateAtom = () => {
         },
       }));
     },
-    [setBridgeState],
+    [setElixirVaultState],
   );
 
   const selectCurrency = useCallback(
     ({ currencyId, field }) => {
-      setBridgeState((state) => ({
+      setElixirVaultState((state) => ({
         ...state,
         [field]: { currencyId: currencyId },
       }));
     },
-    [setBridgeState],
+    [setElixirVaultState],
   );
 
   const selectElixirVault = useCallback(
     ({ selectedElixirVault }) => {
-      setBridgeState((state) => ({
+      setElixirVaultState((state) => ({
         ...state,
         elixirVaults: state.elixirVaults.map((vault, index) => {
           return {
@@ -77,93 +79,112 @@ export const useElixirVaultStateAtom = () => {
         }),
       }));
     },
-    [setBridgeState],
+    [setElixirVaultState],
   );
 
   const changeElixirVaultLoaderStatus = useCallback(
     ({ elixirVaultsLoaderStatus }) => {
-      setBridgeState((state) => ({
+      setElixirVaultState((state) => ({
         ...state,
         elixirVaultsLoaderStatus,
       }));
     },
-    [setBridgeState],
+    [setElixirVaultState],
   );
 
   const typeAmount = useCallback(
     ({ field, typedValue }) => {
-      setBridgeState((state) => ({
+      setElixirVaultState((state) => ({
         ...state,
         field: field,
         typedValue,
       }));
     },
-    [setBridgeState],
+    [setElixirVaultState],
   );
 
   const switchCurrencies = useCallback(() => {
-    setBridgeState((state) => ({
+    setElixirVaultState((state) => ({
       ...state,
       [CurrencyField.CURRENCY0]: { currencyId: state[CurrencyField.CURRENCY0].currencyId },
       [CurrencyField.CURRENCY1]: { currencyId: state[CurrencyField.CURRENCY1].currencyId },
     }));
-  }, [setBridgeState]);
+  }, [setElixirVaultState]);
 
   const clearTransactionData = useCallback(() => {
-    setBridgeState((state) => ({
+    setElixirVaultState((state) => ({
       ...state,
       transactionLoaderStatus: false,
       transactionError: undefined,
       transactionStatus: undefined,
     }));
-  }, [setBridgeState]);
+  }, [setElixirVaultState]);
 
   const setRecipient = useCallback(
     ({ recipient }) => {
-      setBridgeState((state) => ({
+      setElixirVaultState((state) => ({
         ...state,
         recipient,
       }));
     },
-    [setBridgeState],
+    [setElixirVaultState],
   );
 
   const setElixirVaults = useCallback(
     ({ elixirVaults, elixirVaultsLoaderStatus }) => {
-      setBridgeState((state) => ({
+      setElixirVaultState((state) => ({
         ...state,
         elixirVaults,
         elixirVaultsLoaderStatus,
         selectedElixirVault: undefined,
       }));
     },
-    [setBridgeState],
+    [setElixirVaultState],
   );
+
+  const setElixirVaultDetail = useCallback(
+    ({ selectedVaultDetails }) => {
+      setElixirVaultState((state) => ({
+        ...state,
+        selectedVaultDetails,
+      }));
+    },
+    [setElixirVaultState],
+  );
+
+  const resetSelectedVaultDetails = useCallback(() => {
+    setElixirVaultState((state) => ({
+      ...state,
+      selectedVaultDetails: undefined,
+    }));
+  }, [setElixirVaultState]);
 
   const changeTransactionLoaderStatus = useCallback(
     ({ transactionLoaderStatus, transactionStatus }) => {
-      setBridgeState((state) => ({
+      setElixirVaultState((state) => ({
         ...state,
         transactionLoaderStatus,
         transactionStatus,
       }));
     },
-    [setBridgeState],
+    [setElixirVaultState],
   );
 
   const setTransactionError = useCallback(
     ({ transactionError }) => {
-      setBridgeState((state) => ({
+      setElixirVaultState((state) => ({
         ...state,
         transactionError,
       }));
     },
-    [setBridgeState],
+    [setElixirVaultState],
   );
 
   return {
     elixirVaultState,
-    replaceBridgeState,
+    replaceElixirVaultState,
+    setElixirVaultDetail,
+    resetSelectedVaultDetails,
     selectCurrency,
     selectElixirVault,
     changeElixirVaultLoaderStatus,

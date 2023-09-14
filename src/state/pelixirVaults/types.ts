@@ -2,7 +2,7 @@ import { Chain, ElixirVaultProvider, Token } from '@pangolindex/sdk';
 
 export type ElixirVault = {
   selected: boolean;
-  id: string;
+  address: string;
   poolTokens: Token[];
   strategyProvider: ElixirVaultProvider[];
   sharePrice: string;
@@ -11,11 +11,25 @@ export type ElixirVault = {
   incentivizationApr: string;
 };
 
+export type ElixirVaultDetail = {
+  underlyingToken0?: string;
+  underlyingToken1?: string;
+  underlyingToken0Price?: string;
+  underlyingToken1Price?: string;
+  strategyDetailWebsite: string;
+};
+
 export type GetElixirVaultsProps = {
   chain: Chain;
 };
 
+export type GetElixirVaultDetailsProps = {
+  chain: Chain;
+  vaultAddress: string;
+};
+
 export type GetElixirVaults = (props: GetElixirVaultsProps) => Promise<ElixirVault[]>;
+export type GetElixirVaultDetails = (props: GetElixirVaultDetailsProps) => Promise<ElixirVaultDetail>;
 
 export enum CurrencyField {
   CURRENCY0 = 'CURRENCY0',
@@ -35,20 +49,81 @@ export type SendTransaction = {
 };
 
 export type DefiEdgeAllStrategyData = {
-  id: string;
-  title: string;
-  subTitle: string;
-  description: string;
-  updatedAt: string;
-  network: string;
-  sharePrice: number;
   address: string;
+  apr24Hour?: number;
+  apr7Day?: number;
   aum: number;
-  createdAt: string;
-  since_inception: {
-    USD: number;
-    BTC: number;
-    MATIC: number;
-    ETH: number;
+  dataFeed: string;
+  dex: string;
+  fees: number;
+  network: string;
+  owner: string;
+  poolAddress: string;
+  sharePrice: number;
+  subTitle: string;
+  title: string;
+  updatedAt: string;
+  inceptionDate: string;
+};
+
+export type DefiEdgeStrategyData = {
+  strategy: {
+    address: string;
+    apr24Hour: number;
+    apr7Day: number;
+    createdAt: string;
+    dataFeed: string;
+    dex: string;
+    fees_apr_usd: number;
+    network: string;
+    poolAddress: string;
+    title: string;
+    token0Symbol: string;
+    token1Symbol: string;
+    transactionHash: string;
+    updatedAt: string;
+    fees_apr: number;
+    token0: {
+      id: string;
+      decimals: number;
+      name: string;
+      symbol: string;
+      totalSupply: number;
+    };
+    token1: {
+      id: string;
+      decimals: number;
+      name: string;
+      symbol: string;
+      totalSupply: number;
+    };
+  };
+  feeOtz?: number;
+  feeZto?: number;
+  token0Price?: string;
+  token1Price?: string;
+  sharePrice?: number;
+  aum?: number;
+  totalSupply?: number;
+  totalSupplyBN?: {
+    type: string;
+    hex: string;
+  };
+};
+
+export type DefiEdgeStrategyLiquidityData = {
+  amount0: string;
+  amount1: string;
+  unusedAmount0: string;
+  unusedAmount1: string;
+  amount0Total: string;
+  amount1Total: string;
+  unusedAmount0BigNumber?: {
+    type: string;
+    hex: string;
+  };
+  unusedAmount1BigNumber?: {
+    type: string;
+    hex: string;
   };
 };

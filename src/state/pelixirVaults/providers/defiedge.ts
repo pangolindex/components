@@ -1,24 +1,21 @@
+// import { getStrategyMetaData } from '@defiedge/sdk';
+// import { SupportedChainId } from '@defiedge/sdk/dist/src/types';
+// import { Strategy } from '@defiedge/sdk/dist/src/types/strategyMetaQuery';
 import { ChainId, DEFIEDGE, Token } from '@pangolindex/sdk';
 import axios from 'axios';
-import { DefiEdgeAllStrategyData, ElixirVault, GetElixirVaultsProps } from '../types';
+import {
+  DefiEdgeAllStrategyData,
+  DefiEdgeStrategyData,
+  DefiEdgeStrategyLiquidityData,
+  ElixirVault,
+  ElixirVaultDetail,
+  GetElixirVaultsProps,
+} from '../types';
 
 export const getDefiEdgeVaults: any = async ({ chain }: GetElixirVaultsProps) => {
   try {
-    const url = 'https://api.defiedge.io/graphql';
-    const query = `{
-      "query": "query Strategies($where: StrategyWhereInput!) { strategies(where: $where) { id title subTitle description updatedAt network sharePrice address aum createdAt since_inception { USD BTC MATIC ETH } } }",
-      "variables": {
-        "where": {
-          "dex": {
-            "equals": "Uniswap"
-          },
-          "network": {
-            "equals": "${chain?.name?.toLocaleLowerCase()}"
-          }
-        }
-      }
-    }`;
-    const response = await axios.post(url, query, {
+    const url = `https://api.defiedge.io/strategies?dex=Uniswap&network=${chain?.name?.toLocaleLowerCase()}`;
+    const response = await axios.get(url, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -36,20 +33,48 @@ export const getDefiEdgeVaults: any = async ({ chain }: GetElixirVaultsProps) =>
     const currency1 = new Token(ChainId.POLYGON, '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', 18, 'USDC', 'USD Coin');
     // ------------------->
     // ------------------->
-    const data: ElixirVault[] = response.data.data.strategies.map((strategy: DefiEdgeAllStrategyData) => {
-      return {
-        strategyProvider: [DEFIEDGE],
-        selected: false,
-        id: strategy.id,
-        poolTokens: [currency0, currency1],
-        sharePrice: strategy.sharePrice.toString(),
-        incentivized: false,
-        feesApr: '0',
-        incentivizationApr: '0',
-      };
-    });
+    const data: ElixirVault[] = response.data
+      .filter((x) => x.network === 'polygon') //TODO: Remove this filter
+      .map((strategy: DefiEdgeAllStrategyData) => {
+        return {
+          strategyProvider: [DEFIEDGE],
+          selected: false,
+          address: strategy.address,
+          poolTokens: [currency0, currency1],
+          sharePrice: strategy.sharePrice.toString(),
+          incentivized: false,
+          feesApr: '0',
+          incentivizationApr: '0',
+        };
+      });
     return data;
   } catch (error) {
     console.log(error);
   }
+};
+
+export const getDefiEdgeVaultDetails: any = async ({ chain, vaultAddress }) => {
+  const strategyDetailUrl = `https://api.defiedge.io/${chain?.name?.toLocaleLowerCase()}/details?strategies=${vaultAddress}`;
+  const strategyLiquidityDetailUrl = `https://api.defiedge.io/${chain?.name?.toLocaleLowerCase()}/${vaultAddress}/liquidity`;
+  const strategyDetailWebsite = `https://app.defiedge.io/s/${chain?.name?.toLocaleLowerCase()}/${vaultAddress}`;
+  const reqHeader = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const detailResponse = await axios.get(strategyDetailUrl, reqHeader);
+  const data = detailResponse.data?.[0] as DefiEdgeStrategyData;
+
+  const liqResponse = await axios.get(strategyLiquidityDetailUrl, reqHeader);
+  const liqData = liqResponse.data as DefiEdgeStrategyLiquidityData;
+
+  const res: ElixirVaultDetail = {
+    underlyingToken0: liqData.amount0Total,
+    underlyingToken1: liqData.amount1Total,
+    underlyingToken0Price: data.token0Price,
+    underlyingToken1Price: data.token1Price,
+    strategyDetailWebsite,
+  };
+  return res;
 };
