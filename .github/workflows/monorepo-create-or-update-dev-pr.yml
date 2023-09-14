@@ -33,13 +33,16 @@ jobs:
           node-version: '18'
           cache: 'yarn'
           registry-url: 'https://registry.npmjs.org/'
+      
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
 
       - name: Install dependencies
         run: |
-          npm install @octokit/rest ts-node typescript @types/node
+          yarn add @octokit/rest ts-node typescript @types/node -W
 
       - name: Run TypeScript script
-        run: npx ts-node ./scripts/test.ts
+        run: node ./scripts/test.js
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
