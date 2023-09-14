@@ -1,5 +1,5 @@
-import { Button } from '@pangolindex/core';
-import { usePangolinWeb3 } from '@pangolindex/shared';
+import { Button } from '@honeycomb-finance/core';
+import { usePangolinWeb3 } from '@honeycomb-finance/shared';
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
 import Docs from './docs.md';

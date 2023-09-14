@@ -1,6 +1,6 @@
-import { Box, Drawer } from '@pangolindex/core';
+import { Box, Drawer } from '@honeycomb-finance/core';
+import { unwrappedToken, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { Token } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
 import React from 'react';
 import RemoveLiquidity from '../RemoveLiquidity';
 

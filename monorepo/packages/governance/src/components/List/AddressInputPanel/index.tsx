@@ -1,5 +1,5 @@
-import { AutoColumn, Text } from '@pangolindex/core';
-import { ExternalLink, getEtherscanLink, useChainId, useENS, useTranslation } from '@pangolindex/shared';
+import { AutoColumn, Text } from '@honeycomb-finance/core';
+import { ExternalLink, getEtherscanLink, useChainId, useENS, useTranslation } from '@honeycomb-finance/shared';
 import React, { useCallback } from 'react';
 import { ContainerRow, Input, InputContainer, InputPanel, Wrapper } from './styleds';
 

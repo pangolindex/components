@@ -1,7 +1,7 @@
 import { formatUnits } from '@ethersproject/units';
-import { Box, Button, CurrencyLogo, Stat, Text, TextInput } from '@pangolindex/core';
-import { PNG, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { useWalletModalToggle } from '@pangolindex/state-hooks';
+import { Box, Button, CurrencyLogo, Stat, Text, TextInput } from '@honeycomb-finance/core';
+import { PNG, useChainId, usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
+import { useWalletModalToggle } from '@honeycomb-finance/state-hooks';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDerivativeSarUnstakeHook } from 'src/hooks';

@@ -1,5 +1,5 @@
-import { Box, Modal, Text } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/shared';
+import { Box, Modal, Text } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
 import React from 'react';
 import { X } from 'react-feather';
 import { Close, ModalFrame, WarningButton } from './styled';

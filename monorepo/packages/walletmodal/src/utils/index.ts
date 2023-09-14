@@ -1,6 +1,6 @@
+import { wait } from '@honeycomb-finance/shared';
+import { HashConnector, NetworkConnector } from '@honeycomb-finance/wallet-connectors';
 import { CHAINS, Chain, ChainId, NetworkType } from '@pangolindex/sdk';
-import { wait } from '@pangolindex/shared';
-import { HashConnector, NetworkConnector } from '@pangolindex/wallet-connectors';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import deepEqual from 'deep-equal';
 import { injectWallet } from 'src/wallet';

@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { CHAINS, ChainId, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
   BIG_INT_SECONDS_IN_WEEK,
   BIG_INT_TWO,
@@ -19,7 +18,7 @@ import {
   getSubgraphClient,
   useChainId,
   usePangolinWeb3,
-} from '@pangolindex/shared';
+} from '@honeycomb-finance/shared';
 import {
   useMultipleContractSingleData,
   usePair,
@@ -28,7 +27,8 @@ import {
   useSingleContractMultipleData,
   useTokensContract,
   useUSDCPrice,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/state-hooks';
+import { CHAINS, ChainId, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { getAddress, parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';

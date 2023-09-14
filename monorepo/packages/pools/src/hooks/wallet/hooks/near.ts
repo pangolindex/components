@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 
-import { ChainId, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
   NEAR_LP_STORAGE_AMOUNT,
   NEAR_STORAGE_TO_REGISTER_WITH_FT,
@@ -12,15 +11,16 @@ import {
   usePangolinWeb3,
   useTranslation,
   wrappedCurrency,
-} from '@pangolindex/shared';
-import { useGetNearAllPool, useNearPairs, useNearTokens } from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/shared';
+import { useGetNearAllPool, useNearPairs, useNearTokens } from '@honeycomb-finance/state-hooks';
 import {
   NEAR_EXCHANGE_CONTRACT_ADDRESS,
   NearFunctionCallOptions,
   NearTransaction,
   near,
   nearFn,
-} from '@pangolindex/wallet-connectors';
+} from '@honeycomb-finance/wallet-connectors';
+import { ChainId, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
 import qs from 'qs';
 import { useEffect, useMemo, useState } from 'react';

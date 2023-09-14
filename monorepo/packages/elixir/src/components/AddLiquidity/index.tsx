@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
-import { Box, Button, CloseIcon, Modal, Text, Tooltip } from '@pangolindex/core';
-import { CHAINS, Currency, FeeAmount } from '@pangolindex/sdk';
+import { Box, Button, CloseIcon, Modal, Text, Tooltip } from '@honeycomb-finance/core';
 import {
   MixPanelEvents,
   useChainId,
@@ -9,7 +8,7 @@ import {
   usePangolinWeb3,
   useTranslation,
   wrappedCurrency,
-} from '@pangolindex/shared';
+} from '@honeycomb-finance/shared';
 import {
   ApprovalState,
   useApproveCallbackHook,
@@ -18,8 +17,9 @@ import {
   useTransactionDeadline,
   useUserSlippageTolerance,
   useWalletModalToggle,
-} from '@pangolindex/state-hooks';
-import { SelectTokenDrawer } from '@pangolindex/token-drawer';
+} from '@honeycomb-finance/state-hooks';
+import { SelectTokenDrawer } from '@honeycomb-finance/token-drawer';
+import { CHAINS, Currency, FeeAmount } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useState } from 'react';
 import { Info, Lock } from 'react-feather';
 import { useWindowSize } from 'react-use';

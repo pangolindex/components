@@ -1,6 +1,6 @@
-import { Box, Button, Stat, Text } from '@pangolindex/core';
+import { Box, Button, Stat, Text } from '@honeycomb-finance/core';
+import { BIG_INT_ZERO, PNG, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { TokenAmount } from '@pangolindex/sdk';
-import { BIG_INT_ZERO, PNG, useChainId, useTranslation } from '@pangolindex/shared';
 import numeral from 'numeral';
 import React, { useState } from 'react';
 import { useExtraPendingRewards } from 'src/hooks/minichef/hooks/common';

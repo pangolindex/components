@@ -1,5 +1,5 @@
+import { PNG, useChainId, useContract } from '@honeycomb-finance/shared';
 import { CHAINS } from '@pangolindex/sdk';
-import { PNG, useChainId, useContract } from '@pangolindex/shared';
 import { GovernorABI, GovernorAlphaABI, GovernorAssistantABI, PNGABI } from 'src/constants';
 
 export function usePngContract() {

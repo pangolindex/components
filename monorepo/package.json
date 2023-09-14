@@ -11,7 +11,7 @@
     "dev:app": "turbo run dev:app --concurrency=20",
     "dev:packages": "turbo run dev --concurrency=20",
     "start:app": "turbo run start --filter=example-app",
-    "build:packages": "turbo run build --filter=@pangolindex/* --filter=@honeycomb/*",
+    "build:packages": "turbo run build --filter=@pangolindex/* --filter=@honeycomb-finance/*",
     "changeset": "changeset",
     "release": "changeset publish",
     "version": "changeset version",

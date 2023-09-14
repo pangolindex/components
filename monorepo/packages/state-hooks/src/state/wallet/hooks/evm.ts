@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 
+import { ERC20_INTERFACE, isAddress, useMulticallContract } from '@honeycomb-finance/shared';
 import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount } from '@pangolindex/sdk';
-import { ERC20_INTERFACE, isAddress, useMulticallContract } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { useMultipleContractSingleData, useSingleContractMultipleData } from 'src/state/multicall/hooks';
 

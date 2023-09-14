@@ -1,4 +1,4 @@
-import { GovernanceList } from '@honeycomb/governance';
+import { GovernanceList } from '@honeycomb-finance/governance';
 import React from 'react';
 
 function Governance() {

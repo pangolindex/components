@@ -1,4 +1,3 @@
-import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
   PNG,
   PairState,
@@ -7,7 +6,8 @@ import {
   decimalToFraction,
   useChainId,
   useSubgraphTokens,
-} from '@pangolindex/shared';
+} from '@honeycomb-finance/shared';
+import { JSBI, Pair, Price, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { usePair, usePairsHook } from 'src/hooks/usePair';
 import { useShouldUseSubgraph } from 'src/state';

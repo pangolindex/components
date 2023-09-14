@@ -1,7 +1,16 @@
 /* eslint-disable max-lines */
-import { Box, Button, DoubleCurrencyLogo, Drawer, Loader, Stat, Text, TransactionCompleted } from '@pangolindex/core';
+import {
+  Box,
+  Button,
+  DoubleCurrencyLogo,
+  Drawer,
+  Loader,
+  Stat,
+  Text,
+  TransactionCompleted,
+} from '@honeycomb-finance/core';
+import { unwrappedToken, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { Currency, Position } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useContext } from 'react';
 import { AlertTriangle } from 'react-feather';
 import { ThemeContext } from 'styled-components';

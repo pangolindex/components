@@ -1,17 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import {
-  CHAINS,
-  ElixirTrade,
-  JSBI,
-  Percent,
-  Router,
-  SwapParameters,
-  SwapRouter,
-  Trade,
-  TradeType,
-} from '@pangolindex/sdk';
-import {
   BIPS_BASE,
   INITIAL_ALLOWED_SLIPPAGE,
   ZERO_ADDRESS,
@@ -25,8 +14,19 @@ import {
   useENS,
   useLibrary,
   usePangolinWeb3,
-} from '@pangolindex/shared';
-import { useTransactionAdder, useTransactionDeadline } from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/shared';
+import { useTransactionAdder, useTransactionDeadline } from '@honeycomb-finance/state-hooks';
+import {
+  CHAINS,
+  ElixirTrade,
+  JSBI,
+  Percent,
+  Router,
+  SwapParameters,
+  SwapRouter,
+  Trade,
+  TradeType,
+} from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useDaasFeeTo } from 'src/state/hooks/common';
 import { Version } from '../useToggledVersion';

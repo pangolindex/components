@@ -1,7 +1,7 @@
-import { Box, DoubleCurrencyLogo, Text } from '@pangolindex/core';
+import { Box, DoubleCurrencyLogo, Text } from '@honeycomb-finance/core';
+import { unwrappedToken, useChainId, usePangolinWeb3 } from '@honeycomb-finance/shared';
+import { useTokenBalance } from '@honeycomb-finance/state-hooks';
 import { Pair } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useTokenBalance } from '@pangolindex/state-hooks';
 import React, { useCallback } from 'react';
 import { Balance, CurrencyRowRoot } from './styled';
 

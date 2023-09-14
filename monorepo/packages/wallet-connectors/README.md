@@ -2,11 +2,11 @@
 This package contains connectors that are used to help connect wallets in react apps.
 
 ## Installation
-`yarn add @pangolindex/wallet-connectors`
+`yarn add @honeycomb-finance/wallet-connectors`
 
 or
 
-`npm install @pangolindex/wallet-connectors`
+`npm install @honeycomb-finance/wallet-connectors`
 
 ## Development
 
@@ -21,7 +21,7 @@ This is used together with `@web3-react/core`, where the connector is activated 
 _Use version **6.0.9** of `@web3-react/core` package._
 
 ```tsx
-import { InjectedConnector } from "@pangolindex/wallet-connectors";
+import { InjectedConnector } from "@honeycomb-finance/wallet-connectors";
 import { useWeb3React } from '@web3-react/core';
 
 const metamaskConnector = new InjectedConnector({

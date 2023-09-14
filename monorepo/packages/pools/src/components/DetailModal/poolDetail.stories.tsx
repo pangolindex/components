@@ -1,5 +1,5 @@
-import { Button } from '@pangolindex/core';
-import { usePoolDetailnModalToggle } from '@pangolindex/state-hooks';
+import { Button } from '@honeycomb-finance/core';
+import { usePoolDetailnModalToggle } from '@honeycomb-finance/state-hooks';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { useGetMinichefStakingInfos } from '../Pool/mock';

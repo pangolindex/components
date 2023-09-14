@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
+import { useDummyHook } from '@honeycomb-finance/shared';
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyHook } from '@pangolindex/shared';
 import { useETHBalances, useTokenBalances } from './evm';
 import { useHederaBalance, useHederaTokenBalances } from './hedera';
 import { useNearBalance, useNearTokenBalances } from './near';

@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import { TransactionResponse } from '@ethersproject/providers';
-import { CHAINS, ChainId, Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
   BIG_INT_SECONDS_IN_WEEK,
   BIG_INT_ZERO,
@@ -19,7 +18,7 @@ import {
   useRefetchPangoChefSubgraph,
   useTranslation,
   waitForTransaction,
-} from '@pangolindex/shared';
+} from '@honeycomb-finance/shared';
 import {
   useCoinGeckoCurrencyPrice,
   useMultipleContractSingleData,
@@ -30,7 +29,8 @@ import {
   useSingleContractMultipleData,
   useTokensContract,
   useTransactionAdder,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/state-hooks';
+import { CHAINS, ChainId, Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { PANGOLIN_PAIR_INTERFACE, REWARDER_VIA_MULTIPLIER_INTERFACE } from 'src/constants/abis';

@@ -1,7 +1,7 @@
-import { CurrencyLogo, LoaderIcon, Text } from '@pangolindex/core';
+import { CurrencyLogo, LoaderIcon, Text } from '@honeycomb-finance/core';
+import { useChainId, usePangolinWeb3 } from '@honeycomb-finance/shared';
+import { useCurrencyBalance } from '@honeycomb-finance/state-hooks';
 import { Currency } from '@pangolindex/sdk';
-import { useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useCurrencyBalance } from '@pangolindex/state-hooks';
 import React, { useCallback } from 'react';
 import { Balance, CurrencyRoot } from './styled';
 

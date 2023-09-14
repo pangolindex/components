@@ -1,4 +1,20 @@
 import {
+  BIPS_BASE,
+  calculateGasMargin,
+  useChainId,
+  useLibrary,
+  usePangolinWeb3,
+  waitForTransaction,
+  wrappedCurrency,
+} from '@honeycomb-finance/shared';
+import {
+  useCurrency,
+  useSingleCallResult,
+  useSingleContractMultipleData,
+  useTokensHook,
+  useTransactionAdder,
+} from '@honeycomb-finance/state-hooks';
+import {
   CAVAX,
   CHAINS,
   ElixirPool,
@@ -8,22 +24,6 @@ import {
   Position,
   TokenAmount,
 } from '@pangolindex/sdk';
-import {
-  BIPS_BASE,
-  calculateGasMargin,
-  useChainId,
-  useLibrary,
-  usePangolinWeb3,
-  waitForTransaction,
-  wrappedCurrency,
-} from '@pangolindex/shared';
-import {
-  useCurrency,
-  useSingleCallResult,
-  useSingleContractMultipleData,
-  useTokensHook,
-  useTransactionAdder,
-} from '@pangolindex/state-hooks';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { usePool } from 'src/hooks/common';

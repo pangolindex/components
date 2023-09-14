@@ -1,5 +1,5 @@
-import { Box, Text } from '@pangolindex/core';
-import { ThemeColorsType } from '@pangolindex/shared';
+import { Box, Text } from '@honeycomb-finance/core';
+import { ThemeColorsType } from '@honeycomb-finance/shared';
 import React from 'react';
 import { Separator, StyledLogo, TitleWrapper } from './styleds';
 

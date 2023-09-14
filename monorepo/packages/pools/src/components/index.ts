@@ -1,6 +1,6 @@
+import AddLiquidity from './AddLiquidity';
 import AddLiquidityDrawer from './AddLiquidityDrawer';
 import AddLiquidityModal from './AddLiquidityModal';
-import AddLiquidity from './AddLiquidity';
 import ClaimDrawer from './ClaimDrawer';
 import CoinDescription from './CoinDescription';
 import DetailModal from './DetailModal';

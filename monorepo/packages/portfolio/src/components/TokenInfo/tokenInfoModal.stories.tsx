@@ -1,6 +1,6 @@
-import { Button } from '@pangolindex/core';
+import { Button } from '@honeycomb-finance/core';
+import { PNG } from '@honeycomb-finance/shared';
 import { ChainId } from '@pangolindex/sdk';
-import { PNG } from '@pangolindex/shared';
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
 import TokenInfoModal from './TokenInfoModal';

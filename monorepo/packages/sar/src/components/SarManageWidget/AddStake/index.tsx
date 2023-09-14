@@ -1,5 +1,5 @@
 import { formatEther } from '@ethersproject/units';
-import { Box, Button, CurrencyLogo, Stat, Text, TextInput } from '@pangolindex/core';
+import { Box, Button, CurrencyLogo, Stat, Text, TextInput } from '@honeycomb-finance/core';
 import {
   PNG,
   SAR_STAKING_ADDRESS,
@@ -8,14 +8,14 @@ import {
   useChainId,
   usePangolinWeb3,
   useTranslation,
-} from '@pangolindex/shared';
+} from '@honeycomb-finance/shared';
 import {
   ApprovalState,
   useHederaTokenAssociated,
   useTokenBalancesHook,
   useWalletModalToggle,
-} from '@pangolindex/state-hooks';
-import { Hedera, hederaFn } from '@pangolindex/wallet-connectors';
+} from '@honeycomb-finance/state-hooks';
+import { Hedera, hederaFn } from '@honeycomb-finance/wallet-connectors';
 import numeral from 'numeral';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDerivativeSarStakeHook } from 'src/hooks';

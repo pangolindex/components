@@ -1,4 +1,3 @@
-import { CHAINS, NonfungiblePositionManager, Token, TokenAmount } from '@pangolindex/sdk';
 import {
   calculateGasMargin,
   useChainId,
@@ -6,8 +5,9 @@ import {
   usePangolinWeb3,
   waitForTransaction,
   wrappedCurrency,
-} from '@pangolindex/shared';
-import { useTransactionAdder } from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/shared';
+import { useTransactionAdder } from '@honeycomb-finance/state-hooks';
+import { CHAINS, NonfungiblePositionManager, Token, TokenAmount } from '@pangolindex/sdk';
 import { RemoveElixirLiquidityProps } from './types';
 
 export function useElixirRemoveLiquidity() {

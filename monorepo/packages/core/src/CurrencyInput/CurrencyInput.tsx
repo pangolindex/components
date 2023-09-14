@@ -1,4 +1,4 @@
-import { useTranslation } from '@pangolindex/shared';
+import { useTranslation } from '@honeycomb-finance/shared';
 import * as React from 'react';
 import { ChevronDown } from 'react-feather';
 import { Box } from '../Box';

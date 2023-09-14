@@ -1,5 +1,5 @@
+import { BIG_INT_ZERO, PANGOLIN_API_BASE_URL, PNG, USDC, USDCe } from '@honeycomb-finance/shared';
 import { ChainId, JSBI, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
-import { BIG_INT_ZERO, PANGOLIN_API_BASE_URL, PNG, USDC, USDCe } from '@pangolindex/shared';
 import axios from 'axios';
 import { DoubleSideStakingInfo } from './types';
 

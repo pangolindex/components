@@ -1,7 +1,7 @@
-import { Box, CloseIcon, Modal, Text } from '@pangolindex/core';
+import { Box, CloseIcon, Modal, Text } from '@honeycomb-finance/core';
+import { useChainId, useTranslation } from '@honeycomb-finance/shared';
+import { SelectTokenDrawer } from '@honeycomb-finance/token-drawer';
 import { CAVAX, Currency } from '@pangolindex/sdk';
-import { useChainId, useTranslation } from '@pangolindex/shared';
-import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import React, { useCallback, useContext, useState } from 'react';
 import { ThemeContext } from 'styled-components';
 import PoolImport from './PoolImport';

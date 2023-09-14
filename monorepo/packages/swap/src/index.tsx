@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers';
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
+import { ZERO_ADDRESS, isEvmChain, useChainId, useLibrary, usePangolinWeb3 } from '@honeycomb-finance/shared';
 import { CHAINS } from '@pangolindex/sdk';
-import { ZERO_ADDRESS, isEvmChain, useChainId, useLibrary, usePangolinWeb3 } from '@pangolindex/shared';
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import { SwapTypes } from 'src/constants';

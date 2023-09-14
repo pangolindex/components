@@ -1,5 +1,5 @@
+import { PNG, useChainId } from '@honeycomb-finance/shared';
 import { Token } from '@pangolindex/sdk';
-import { PNG, useChainId } from '@pangolindex/shared';
 import React, { useMemo } from 'react';
 import { Box } from '../Box';
 import CurrencyLogo from '../CurrencyLogo';

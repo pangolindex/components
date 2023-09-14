@@ -1,5 +1,5 @@
+import { BIPS_BASE, DAIe, PNG, USDC, USDCe, USDTe } from '@honeycomb-finance/shared';
 import { ChainId, JSBI, Percent, Token, WAVAX } from '@pangolindex/sdk';
-import { BIPS_BASE, DAIe, PNG, USDC, USDCe, USDTe } from '@pangolindex/shared';
 
 // a list of tokens by chain
 type ChainTokenList = {

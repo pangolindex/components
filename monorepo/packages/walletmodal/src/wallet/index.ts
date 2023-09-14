@@ -1,5 +1,5 @@
+import { SUPPORTED_EVM_CHAINS_ID } from '@honeycomb-finance/wallet-connectors';
 import { CHAINS, ChainId, NetworkType } from '@pangolindex/sdk';
-import { SUPPORTED_EVM_CHAINS_ID } from '@pangolindex/wallet-connectors';
 import { isMobile } from 'react-device-detect';
 import injectWalletIcon from 'src/assets/images/inject-wallet.png';
 import metamaskIcon from 'src/assets/images/metamask.png';

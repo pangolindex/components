@@ -1,4 +1,4 @@
-import { Box, Drawer, Text } from '@pangolindex/core';
+import { Box, Drawer, Text } from '@honeycomb-finance/core';
 import React from 'react';
 import { Divider } from './styled';
 

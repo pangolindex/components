@@ -1,8 +1,8 @@
-import { Box, CloseIcon, Modal, Text } from '@pangolindex/core';
+import { Box, CloseIcon, Modal, Text } from '@honeycomb-finance/core';
+import { useChainId, useTranslation, wrappedCurrency } from '@honeycomb-finance/shared';
+import { useCurrency, useParsedQueryString } from '@honeycomb-finance/state-hooks';
+import { SelectTokenDrawer } from '@honeycomb-finance/token-drawer';
 import { CAVAX, Currency } from '@pangolindex/sdk';
-import { useChainId, useTranslation, wrappedCurrency } from '@pangolindex/shared';
-import { useCurrency, useParsedQueryString } from '@pangolindex/state-hooks';
-import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ThemeContext } from 'styled-components';
 import { SpaceType } from 'src/hooks/minichef/types';

@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import { TransactionResponse } from '@ethersproject/providers';
-import { CAVAX, Pair, TokenAmount } from '@pangolindex/sdk';
 import {
   ROUTER_ADDRESS,
   calculateGasMargin,
@@ -14,14 +13,15 @@ import {
   useTranslation,
   waitForTransaction,
   wrappedCurrency,
-} from '@pangolindex/shared';
+} from '@honeycomb-finance/shared';
 import {
   ApprovalState,
   toV2LiquidityToken,
   usePairsContract,
   useTokenBalances,
   useTransactionAdder,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/state-hooks';
+import { CAVAX, Pair, TokenAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useMemo, useState } from 'react';
 import { Field } from 'src/state/burn/atom';

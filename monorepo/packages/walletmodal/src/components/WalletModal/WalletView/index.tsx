@@ -1,5 +1,5 @@
-import { Box, Button, Text } from '@pangolindex/core';
-import { useActiveWeb3React, useTranslation } from '@pangolindex/shared';
+import { Box, Button, Text } from '@honeycomb-finance/core';
+import { useActiveWeb3React, useTranslation } from '@honeycomb-finance/shared';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AlertCircle, ArrowLeft, Download, LogIn, LogOut } from 'react-feather';
 import QRCode from 'react-qr-code';

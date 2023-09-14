@@ -1,3 +1,4 @@
+import { useChainId } from '@honeycomb-finance/shared';
 import {
   Currency,
   ElixirPool,
@@ -10,7 +11,6 @@ import {
   Token,
   nearestUsableTick,
 } from '@pangolindex/sdk';
-import { useChainId } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { usePoolsHook } from 'src/hooks';
 import { Bound } from 'src/state/mint/atom';

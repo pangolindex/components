@@ -1,11 +1,11 @@
-import { AVALANCHE_MAINNET, CAVAX, ChainId, Currency, Pair, Token, TokenAmount } from '@pangolindex/sdk';
-import { OPEN_API_DEBANK, ZERO_ADDRESS, getChainByNumber, isAddress, usePangolinWeb3 } from '@pangolindex/shared';
+import { OPEN_API_DEBANK, ZERO_ADDRESS, getChainByNumber, isAddress, usePangolinWeb3 } from '@honeycomb-finance/shared';
 import {
   CoingeckoWatchListToken,
   MarketCoinsAPIResponse,
   fetchCoinMarketData,
   makeCoingeckoTokenData,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/state-hooks';
+import { AVALANCHE_MAINNET, CAVAX, ChainId, Currency, Pair, Token, TokenAmount } from '@pangolindex/sdk';
 import axios from 'axios';
 import qs from 'qs';
 import { useEffect, useMemo } from 'react';

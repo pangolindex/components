@@ -1,5 +1,4 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { ChainId, TokenAmount } from '@pangolindex/sdk';
 import {
   GET_BLOCK,
   PNG,
@@ -9,8 +8,13 @@ import {
   useChainId,
   useLibrary,
   usePangolinWeb3,
-} from '@pangolindex/shared';
-import { useSingleCallResult, useSingleContractMultipleData, useTransactionAdder } from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/shared';
+import {
+  useSingleCallResult,
+  useSingleContractMultipleData,
+  useTransactionAdder,
+} from '@honeycomb-finance/state-hooks';
+import { ChainId, TokenAmount } from '@pangolindex/sdk';
 import { ethers, utils } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { useCallback, useEffect, useState } from 'react';

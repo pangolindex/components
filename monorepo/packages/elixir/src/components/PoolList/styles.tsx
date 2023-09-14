@@ -1,4 +1,4 @@
-import { Box } from '@pangolindex/core';
+import { Box } from '@honeycomb-finance/core';
 import styled from 'styled-components';
 
 export const ErrorContainer = styled.div`

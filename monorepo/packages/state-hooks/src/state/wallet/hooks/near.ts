@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 
+import { useChainId } from '@honeycomb-finance/shared';
+import { near, nearFn } from '@honeycomb-finance/wallet-connectors';
 import { ChainId, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
-import { useChainId } from '@pangolindex/shared';
-import { near, nearFn } from '@pangolindex/wallet-connectors';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries } from 'react-query';
 

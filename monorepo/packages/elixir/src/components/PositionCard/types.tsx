@@ -1,5 +1,5 @@
+import { TokenReturnType } from '@honeycomb-finance/state-hooks';
 import { FeeAmount } from '@pangolindex/sdk';
-import { TokenReturnType } from '@pangolindex/state-hooks';
 import { BigNumber } from 'ethers';
 
 export type PositionCardProps = {

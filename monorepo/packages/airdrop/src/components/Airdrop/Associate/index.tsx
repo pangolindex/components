@@ -1,7 +1,7 @@
-import { Box, Button, Text } from '@pangolindex/core';
+import { Box, Button, Text } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
+import { useHederaTokenAssociated } from '@honeycomb-finance/state-hooks';
 import { Token } from '@pangolindex/sdk';
-import { useTranslation } from '@pangolindex/shared';
-import { useHederaTokenAssociated } from '@pangolindex/state-hooks';
 import React from 'react';
 import Title from 'src/components/Title';
 import { Wrapper } from '../../Title/styleds';

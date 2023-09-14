@@ -1,6 +1,6 @@
-import { Box, Button, Drawer, Text, TextInput } from '@pangolindex/core';
-import { parseENSAddress, uriToHttp, useTranslation } from '@pangolindex/shared';
-import { useFetchListCallback, useListsStateAtom } from '@pangolindex/state-hooks';
+import { Box, Button, Drawer, Text, TextInput } from '@honeycomb-finance/core';
+import { parseENSAddress, uriToHttp, useTranslation } from '@honeycomb-finance/shared';
+import { useFetchListCallback, useListsStateAtom } from '@honeycomb-finance/state-hooks';
 import React, { useCallback, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import TokenListRow from './TokenListRow';

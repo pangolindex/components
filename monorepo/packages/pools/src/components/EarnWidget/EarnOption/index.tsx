@@ -1,5 +1,5 @@
-import { Box, Text, ToggleButtons } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/shared';
+import { Box, Text, ToggleButtons } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
 import React from 'react';
 import { EarnWrapper } from './styled';
 

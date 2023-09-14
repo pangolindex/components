@@ -1,6 +1,6 @@
 import { parseUnits } from '@ethersproject/units';
+import { USDC, decimalToFraction, useChainId, wrappedCurrency } from '@honeycomb-finance/shared';
 import { Currency, Price } from '@pangolindex/sdk';
-import { USDC, decimalToFraction, useChainId, wrappedCurrency } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { useCoinGeckoCurrencyPrice } from 'src/state';
 import { useTokenCurrencyPriceHook } from '../multiChainsHooks';

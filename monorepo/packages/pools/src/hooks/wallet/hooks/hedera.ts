@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-import { CAVAX, ChainId, Currency, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
   calculateSlippageAmount,
   getRouterContract,
@@ -11,7 +10,7 @@ import {
   useTranslation,
   wait,
   wrappedCurrency,
-} from '@pangolindex/shared';
+} from '@honeycomb-finance/shared';
 import {
   useBlockNumber,
   useGetAllHederaAssociatedTokens,
@@ -20,8 +19,9 @@ import {
   usePair,
   usePairsHook,
   useTransactionAdder,
-} from '@pangolindex/state-hooks';
-import { hederaFn } from '@pangolindex/wallet-connectors';
+} from '@honeycomb-finance/state-hooks';
+import { hederaFn } from '@honeycomb-finance/wallet-connectors';
+import { CAVAX, ChainId, Currency, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries, useQuery, useQueryClient } from 'react-query';

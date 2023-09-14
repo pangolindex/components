@@ -1,5 +1,5 @@
-import { Box, Button, DoubleCurrencyLogo, Text } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/shared';
+import { Box, Button, DoubleCurrencyLogo, Text } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
 import React, { useContext } from 'react';
 import { Play, Trash } from 'react-feather';
 import { ThemeContext } from 'styled-components';

@@ -1,7 +1,7 @@
-import { Box, Button, CurrencyLogo, Drawer, Loader, Text } from '@pangolindex/core';
+import { Box, Button, CurrencyLogo, Drawer, Loader, Text } from '@honeycomb-finance/core';
+import { getEtherscanLink, isAddress, shortenAddress, useChainId, useTranslation } from '@honeycomb-finance/shared';
+import { useUSDCPrice } from '@honeycomb-finance/state-hooks';
 import { CAVAX, Token, Trade, TradeType } from '@pangolindex/sdk';
-import { getEtherscanLink, isAddress, shortenAddress, useChainId, useTranslation } from '@pangolindex/shared';
-import { useUSDCPrice } from '@pangolindex/state-hooks';
 import React, { useCallback, useContext, useState } from 'react';
 import { AlertTriangle, ArrowDown, ArrowUpCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';

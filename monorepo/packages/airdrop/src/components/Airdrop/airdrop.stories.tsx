@@ -1,5 +1,5 @@
+import { PNG, ZERO_ADDRESS } from '@honeycomb-finance/shared';
 import { AirdropType } from '@pangolindex/sdk';
-import { PNG, ZERO_ADDRESS } from '@pangolindex/shared';
 import { ComponentStory } from '@storybook/react';
 import React from 'react';
 import { argTypes } from './argTypes';

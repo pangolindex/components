@@ -1,5 +1,5 @@
+import { useChainId, useSubgraphTokens, validateAddressMapping } from '@honeycomb-finance/shared';
 import { Token } from '@pangolindex/sdk';
-import { useChainId, useSubgraphTokens, validateAddressMapping } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { useShouldUseSubgraph } from 'src/state/application/hooks';
 import { useAllTokens } from '../useAllTokens';

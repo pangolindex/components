@@ -1,4 +1,4 @@
-import { Hedera } from '@pangolindex/wallet-connectors';
+import { Hedera } from '@honeycomb-finance/wallet-connectors';
 import gql from 'graphql-tag'; // eslint-disable-line import/no-named-as-default
 import { useQuery, useQueryClient } from 'react-query';
 import { useChainId, usePangolinWeb3 } from 'src/provider';

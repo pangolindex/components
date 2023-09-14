@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
+import { useDummyHook } from '@honeycomb-finance/shared';
 import { ChainId } from '@pangolindex/sdk';
-import { useDummyHook } from '@pangolindex/shared';
 import { useDummyCreatePair, useDummyGetUserLP } from './dummy';
 import { useAddLiquidity, useEVMPairBalance, useGetUserLP, useRemoveLiquidity } from './evm';
 import {

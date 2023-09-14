@@ -1,7 +1,7 @@
-import { Box, Text } from '@pangolindex/core';
+import { Box, Text } from '@honeycomb-finance/core';
+import { ExternalLink, useTranslation } from '@honeycomb-finance/shared';
+import { useCoinGeckoTokenData } from '@honeycomb-finance/state-hooks';
 import { Currency, Token } from '@pangolindex/sdk';
-import { ExternalLink, useTranslation } from '@pangolindex/shared';
-import { useCoinGeckoTokenData } from '@pangolindex/state-hooks';
 import React from 'react';
 import sanitizeHtml from 'sanitize-html';
 

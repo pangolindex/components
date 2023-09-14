@@ -1,5 +1,5 @@
 {
-  "name": "@pangolindex/state-hooks",
+  "name": "@honeycomb-finance/state-hooks",
   "version": "0.0.0",
   "main": "lib/index.cjs.js",
   "module": "lib/index.esm.js",
@@ -41,9 +41,9 @@
     "@ethersproject/providers": "5.6.8",
     "@ethersproject/strings": "5.6.1",
     "@ethersproject/units": "5.6.1",
-    "@pangolindex/shared": "*",
+    "@honeycomb-finance/shared": "*",
     "@pangolindex/token-lists": "1.0.2",
-    "@pangolindex/wallet-connectors": "*",
+    "@honeycomb-finance/wallet-connectors": "*",
     "ajv": "6.12.6",
     "ethers": "5.6.4",
     "jotai": "2.0.3",

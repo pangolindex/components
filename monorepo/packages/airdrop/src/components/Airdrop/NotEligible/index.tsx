@@ -1,4 +1,4 @@
-import { Box, Text } from '@pangolindex/core';
+import { Box, Text } from '@honeycomb-finance/core';
 import { Token } from '@pangolindex/sdk';
 import React from 'react';
 import Title from '../../Title';

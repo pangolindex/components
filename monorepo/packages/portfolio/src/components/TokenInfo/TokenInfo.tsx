@@ -1,7 +1,7 @@
-import { CurrencyLogo, Text, Tooltip } from '@pangolindex/core';
+import { CurrencyLogo, Text, Tooltip } from '@honeycomb-finance/core';
+import { usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
+import { useTokenBalancesHook, useTotalSupplyHook, useUSDCPriceHook } from '@honeycomb-finance/state-hooks';
 import { TokenAmount } from '@pangolindex/sdk';
-import { usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { useTokenBalancesHook, useTotalSupplyHook, useUSDCPriceHook } from '@pangolindex/state-hooks';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';

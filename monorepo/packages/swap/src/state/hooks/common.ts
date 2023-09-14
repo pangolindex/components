@@ -1,18 +1,6 @@
 /* eslint-disable max-lines */
 import { Order, useGelatoLimitOrdersHistory, useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import {
-  CAVAX,
-  ChainId,
-  Currency,
-  CurrencyAmount,
-  ElixirTrade,
-  FACTORY_ADDRESS,
-  Price,
-  Token,
-  TokenAmount,
-  Trade,
-} from '@pangolindex/sdk';
-import {
   AEB_TOKENS,
   NATIVE,
   ROUTER_ADDRESS,
@@ -26,13 +14,25 @@ import {
   useTranslation,
   validateAddressMapping,
   wrappedCurrency,
-} from '@pangolindex/shared';
+} from '@honeycomb-finance/shared';
 import {
   useCurrency,
   useCurrencyBalances,
   useParsedQueryString,
   useUserSlippageTolerance,
-} from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/state-hooks';
+import {
+  CAVAX,
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  ElixirTrade,
+  FACTORY_ADDRESS,
+  Price,
+  Token,
+  TokenAmount,
+  Trade,
+} from '@pangolindex/sdk';
 import { ParsedQs } from 'qs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { SWAP_DEFAULT_CURRENCY } from 'src/constants';

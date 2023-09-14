@@ -1,4 +1,4 @@
-import { Elixir } from '@pangolindex/elixir';
+import { Elixir } from '@honeycomb-finance/elixir';
 import React from 'react';
 
 function ElixirUI() {

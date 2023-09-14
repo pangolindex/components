@@ -1,5 +1,5 @@
 {
-  "name": "@pangolindex/portfolio",
+  "name": "@honeycomb-finance/portfolio",
   "version": "0.0.0",
   "main": "lib/index.cjs.js",
   "module": "lib/index.esm.js",
@@ -45,9 +45,9 @@
   },
   "dependencies": {
     "@ethersproject/providers": "5.7.2",
-    "@pangolindex/shared": "*",
-    "@pangolindex/core": "*",
-    "@pangolindex/state-hooks": "*",
+    "@honeycomb-finance/shared": "*",
+    "@honeycomb-finance/core": "*",
+    "@honeycomb-finance/state-hooks": "*",
     "axios": "0.26.0",
     "dayjs": "1.10.7",
     "jotai": "2.0.3",

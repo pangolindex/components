@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE, useChainId, usePangolinWeb3 } from '@honeycomb-finance/shared';
+import { useTransactionAdder, useTransactionDeadline } from '@honeycomb-finance/state-hooks';
+import { hederaFn } from '@honeycomb-finance/wallet-connectors';
 import { CAVAX, JSBI, Percent, Router, Trade, TradeType } from '@pangolindex/sdk';
-import { BIPS_BASE, INITIAL_ALLOWED_SLIPPAGE, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { useTransactionAdder, useTransactionDeadline } from '@pangolindex/state-hooks';
-import { hederaFn } from '@pangolindex/wallet-connectors';
 import { useMemo } from 'react';
 import { Version } from '../useToggledVersion';
 import { SwapCallbackState } from './constant';

@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import { BigNumber } from '@ethersproject/bignumber';
-import { Fraction, JSBI } from '@pangolindex/sdk';
 import {
   BIGNUMBER_ZERO,
   MixPanelEvents,
@@ -11,13 +10,14 @@ import {
   usePangolinWeb3,
   useSubgraphSarPositions,
   useSubgraphStakingContractInfo,
-} from '@pangolindex/shared';
+} from '@honeycomb-finance/shared';
 import {
   useHederaTokenAssociated,
   useShouldUseSubgraph,
   useSingleContractMultipleData,
-} from '@pangolindex/state-hooks';
-import { hederaFn } from '@pangolindex/wallet-connectors';
+} from '@honeycomb-finance/state-hooks';
+import { hederaFn } from '@honeycomb-finance/wallet-connectors';
+import { Fraction, JSBI } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { Position, URI } from './types';

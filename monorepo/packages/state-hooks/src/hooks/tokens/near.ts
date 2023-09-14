@@ -1,6 +1,6 @@
+import { useChainId } from '@honeycomb-finance/shared';
+import { NearTokenMetadata, nearFn } from '@honeycomb-finance/wallet-connectors';
 import { Token } from '@pangolindex/sdk';
-import { useChainId } from '@pangolindex/shared';
-import { NearTokenMetadata, nearFn } from '@pangolindex/wallet-connectors';
 import { useEffect, useMemo, useState } from 'react';
 import { useQueries } from 'react-query';
 import { useAllTokens } from '../useAllTokens';

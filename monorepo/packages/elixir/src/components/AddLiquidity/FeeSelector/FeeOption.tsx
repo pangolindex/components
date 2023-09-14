@@ -1,4 +1,4 @@
-import { Box, Text } from '@pangolindex/core';
+import { Box, Text } from '@honeycomb-finance/core';
 import React, { useContext } from 'react';
 import { CheckCircle } from 'react-feather';
 import { ThemeContext } from 'styled-components';

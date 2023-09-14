@@ -12,7 +12,8 @@ Wrap your react react app with `Web3ReactProvider` and `PangolinProvider`.
 
 ```tsx
 // index.tsx
-import { PangolinProvider, NetworkContextName, useActiveWeb3React } from '@pangolindex/components';
+import { HoneycombProvider } from '@honeycomb-finance/honeycomb-provider';
+import { NetworkContextName, useActiveWeb3React } from '@honeycomb-finance/shared';
 import { Web3ReactProvider, useWeb3React } from '@web3-react/core';
 import App from './App';
 
@@ -28,9 +29,9 @@ const AppProvider = () => {
   const { library, account, chainId } = useActiveWeb3React();
 
   return (
-    <PangolinProvider library={library} chainId={chainId} account={account ?? undefined} theme={theme as any}>
+    <HoneycombProvider library={library} chainId={chainId} account={account ?? undefined} theme={theme as any}>
         <App />
-    </PangolinProvider>
+    </HoneycombProvider>
   );
 };
 
@@ -50,7 +51,7 @@ You can now use the component in your application.
 
 ```tsx
 // example.tsx
-import { NetworkSelection } from '@pangolindex/components';
+import { NetworkSelection } from '@honeycomb-finance/walletmodal';
 
 export default function Example(){
   const [openNetworkSelection, setOpenNetworkSelection] = useState(false);

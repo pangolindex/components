@@ -1,6 +1,6 @@
-import { Box } from '@pangolindex/core';
+import { Box } from '@honeycomb-finance/core';
+import { BIG_INT_ZERO, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { CHAINS, ChefType, JSBI } from '@pangolindex/sdk';
-import { BIG_INT_ZERO, useChainId, useTranslation } from '@pangolindex/shared';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useMinichefStakingInfosHook } from 'src/hooks/minichef/hooks';
 import { MinichefStakingInfo, PoolType } from 'src/hooks/minichef/types';

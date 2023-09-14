@@ -1,6 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
-import { ZERO_ADDRESS, getRouterContractDaaS, useChainId, useLibrary } from '@pangolindex/shared';
-import { NEVER_RELOAD, useSingleCallResult } from '@pangolindex/state-hooks';
+import { ZERO_ADDRESS, getRouterContractDaaS, useChainId, useLibrary } from '@honeycomb-finance/shared';
+import { NEVER_RELOAD, useSingleCallResult } from '@honeycomb-finance/state-hooks';
 import { useEffect, useMemo } from 'react';
 import { useSwapState } from './atom';
 

@@ -1,8 +1,8 @@
-import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@pangolindex/core';
+import { Box, CloseButton, Modal, Text, TextInput, ToggleButtons } from '@honeycomb-finance/core';
+import { MEDIA_WIDTHS, useDebounce, usePangolinWeb3, useTranslation, wait } from '@honeycomb-finance/shared';
+import { useUserAtom } from '@honeycomb-finance/state-hooks';
+import { UserRejectedRequestError } from '@honeycomb-finance/wallet-connectors';
 import { CHAINS, Chain, ChainId } from '@pangolindex/sdk';
-import { MEDIA_WIDTHS, useDebounce, usePangolinWeb3, useTranslation, wait } from '@pangolindex/shared';
-import { useUserAtom } from '@pangolindex/state-hooks';
-import { UserRejectedRequestError } from '@pangolindex/wallet-connectors';
 import { useWeb3React } from '@web3-react/core';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';

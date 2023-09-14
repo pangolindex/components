@@ -1,5 +1,5 @@
 {
-  "name": "@pangolindex/walletmodal",
+  "name": "@honeycomb-finance/walletmodal",
   "version": "0.0.0",
   "main": "lib/index.cjs.js",
   "module": "lib/index.esm.js",
@@ -44,10 +44,10 @@
   },
   "dependencies": {
     "@ethersproject/providers": "5.7.2",
-    "@pangolindex/core": "*",
-    "@pangolindex/shared": "*",
-    "@pangolindex/state-hooks": "*",
-    "@pangolindex/wallet-connectors": "*",
+    "@honeycomb-finance/core": "*",
+    "@honeycomb-finance/shared": "*",
+    "@honeycomb-finance/state-hooks": "*",
+    "@honeycomb-finance/wallet-connectors": "*",
     "@web3-react/abstract-connector": "6.0.7",
     "@web3-react/core": "6.0.9",
     "deep-equal": "2.0.5",

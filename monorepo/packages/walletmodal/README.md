@@ -2,11 +2,11 @@
 Components to interact wallet such Wallet Modal and NetworkSelection.
 
 ## Installation
-`yarn add @pangolindex/walletmodal`
+`yarn add @honeycomb-finance/walletmodal`
 
 or
 
-`npm install @pangolindex/walletmodal`
+`npm install @honeycomb-finance/walletmodal`
 
 ### Install below dependancies as its peer dependancies
 
@@ -34,8 +34,8 @@ In your main file wrap your app with `HoneycombProvider` and `Web3ReactProvider`
 _Use version **6.0.9** of `@web3-react/core` package._
 
 ```tsx
-import { HoneycombProvider } from '@pangolindex/honeycomb-provider';
-import { NetworkContextName, useActiveWeb3React } from '@pangolindex/shared';
+import { HoneycombProvider } from '@honeycomb-finance/honeycomb-provider';
+import { NetworkContextName, useActiveWeb3React } from '@honeycomb-finance/shared';
 import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core';
 import React from 'react';
 import ReactDOM from 'react-dom';

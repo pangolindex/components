@@ -1,6 +1,5 @@
 import { MaxUint256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
-import { CAVAX, CHAINS, ChainId, CurrencyAmount, ElixirTrade, TokenAmount, Trade } from '@pangolindex/sdk';
 import {
   Field,
   ROUTER_ADDRESS,
@@ -12,7 +11,8 @@ import {
   useTokenContract,
   wait,
   waitForTransaction,
-} from '@pangolindex/shared';
+} from '@honeycomb-finance/shared';
+import { CAVAX, CHAINS, ChainId, CurrencyAmount, ElixirTrade, TokenAmount, Trade } from '@pangolindex/sdk';
 import { useCallback, useMemo, useState } from 'react';
 import { useTokenAllowance } from 'src/hooks/useTokenAllowance/evm';
 import { useHasPendingApproval, useIsApprovingInfinite, useTransactionAdder } from 'src/state';

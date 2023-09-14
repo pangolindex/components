@@ -1,4 +1,4 @@
-import { Box, Button, Logo } from '@pangolindex/core';
+import { Box, Button, Logo } from '@honeycomb-finance/core';
 import styled from 'styled-components';
 
 export const Wrapper = styled(Box)`

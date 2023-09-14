@@ -1,7 +1,7 @@
-import { Box, Drawer, TextInput } from '@pangolindex/core';
+import { Box, Drawer, TextInput } from '@honeycomb-finance/core';
+import { filterTokenOrChain, isAddress, useChainId, usePrevious, useTranslation } from '@honeycomb-finance/shared';
+import { useToken, useTokenComparator } from '@honeycomb-finance/state-hooks';
 import { BridgeCurrency, Currency, currencyEquals } from '@pangolindex/sdk';
-import { filterTokenOrChain, isAddress, useChainId, usePrevious, useTranslation } from '@pangolindex/shared';
-import { useToken, useTokenComparator } from '@pangolindex/state-hooks';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import AutoSizer from 'react-virtualized-auto-sizer';

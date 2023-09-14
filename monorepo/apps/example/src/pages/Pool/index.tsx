@@ -1,4 +1,4 @@
-import { PoolsUI } from '@pangolindex/pools';
+import { PoolsUI } from '@honeycomb-finance/pools';
 import React from 'react';
 
 function Pool() {

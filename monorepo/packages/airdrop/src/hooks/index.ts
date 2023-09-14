@@ -1,5 +1,4 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { AirdropType, NetworkType, Token, TokenAmount } from '@pangolindex/sdk';
 import {
   MixPanelEvents,
   calculateGasMargin,
@@ -11,9 +10,10 @@ import {
   usePangolinWeb3,
   usePngSymbol,
   waitForTransaction,
-} from '@pangolindex/shared';
-import { useTransactionAdder } from '@pangolindex/state-hooks';
-import { hederaFn } from '@pangolindex/wallet-connectors';
+} from '@honeycomb-finance/shared';
+import { useTransactionAdder } from '@honeycomb-finance/state-hooks';
+import { hederaFn } from '@honeycomb-finance/wallet-connectors';
+import { AirdropType, NetworkType, Token, TokenAmount } from '@pangolindex/sdk';
 import axios from 'axios';
 import { BigNumber } from 'ethers';
 import { useState } from 'react';

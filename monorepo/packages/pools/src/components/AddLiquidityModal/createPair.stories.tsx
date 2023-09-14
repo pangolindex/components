@@ -1,4 +1,4 @@
-import { Button } from '@pangolindex/core';
+import { Button } from '@honeycomb-finance/core';
 import { ComponentStory } from '@storybook/react';
 import React, { useCallback, useState } from 'react';
 import AddLiquidityModal from '.';

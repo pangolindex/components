@@ -1,4 +1,4 @@
-import { Text } from '@pangolindex/core';
+import { Text } from '@honeycomb-finance/core';
 import { opacify } from 'polished';
 import styled from 'styled-components';
 

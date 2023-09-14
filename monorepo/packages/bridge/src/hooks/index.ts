@@ -2,6 +2,15 @@
 import { Squid, RouteData as SquidRouteData } from '@0xsquid/sdk';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { parseUnits } from '@ethersproject/units';
+import {
+  RANGO_API_KEY,
+  SQUID_API,
+  getSigner,
+  useChainId,
+  usePangolinWeb3,
+  useTranslation,
+} from '@honeycomb-finance/shared';
+import { useCurrencyBalances } from '@honeycomb-finance/state-hooks';
 import LIFI, { Route as LifiRoute } from '@lifi/sdk';
 import {
   BRIDGES,
@@ -17,8 +26,6 @@ import {
   Token,
   TokenAmount,
 } from '@pangolindex/sdk';
-import { RANGO_API_KEY, SQUID_API, getSigner, useChainId, usePangolinWeb3, useTranslation } from '@pangolindex/shared';
-import { useCurrencyBalances } from '@pangolindex/state-hooks';
 import { RangoClient, SwapResponse as RangoRoute } from 'rango-sdk-basic';
 import React, { useCallback, useEffect, useState } from 'react';
 import { BridgeState, ChainField, CurrencyField, TransactionStatus, useBridgeStateAtom } from './atom';

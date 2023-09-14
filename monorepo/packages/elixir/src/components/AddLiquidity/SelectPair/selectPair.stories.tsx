@@ -1,5 +1,5 @@
+import { SelectTokenDrawer } from '@honeycomb-finance/token-drawer';
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
-import { SelectTokenDrawer } from '@pangolindex/token-drawer';
 import { ComponentStory } from '@storybook/react';
 import React, { useCallback, useState } from 'react';
 import { SelectPairProps } from './types';

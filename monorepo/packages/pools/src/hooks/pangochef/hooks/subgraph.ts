@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import { parseUnits } from '@ethersproject/units';
-import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import {
   BIGNUMBER_ZERO,
   BIG_INT_SECONDS_IN_WEEK,
@@ -15,8 +14,9 @@ import {
   useLastBlockTimestampHook,
   usePangolinWeb3,
   useSubgraphFarms,
-} from '@pangolindex/shared';
-import { usePair, useSingleContractMultipleData } from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/shared';
+import { usePair, useSingleContractMultipleData } from '@honeycomb-finance/state-hooks';
+import { Fraction, JSBI, Pair, Token, TokenAmount, WAVAX } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import { useMemo } from 'react';

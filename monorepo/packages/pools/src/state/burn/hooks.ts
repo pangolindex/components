@@ -1,4 +1,3 @@
-import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@pangolindex/sdk';
 import {
   BIG_INT_ZERO,
   tryParseAmount,
@@ -6,8 +5,9 @@ import {
   usePangolinWeb3,
   useTranslation,
   wrappedCurrency,
-} from '@pangolindex/shared';
-import { usePair } from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/shared';
+import { usePair } from '@honeycomb-finance/state-hooks';
+import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@pangolindex/sdk';
 import { useCallback } from 'react';
 import { usePairTotalSupplyHook } from 'src/hooks/pair';
 import { usePairBalanceHook } from 'src/hooks/wallet/hooks';

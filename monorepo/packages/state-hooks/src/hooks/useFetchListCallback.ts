@@ -1,4 +1,4 @@
-import { uriToHttp } from '@pangolindex/shared';
+import { uriToHttp } from '@honeycomb-finance/shared';
 import { TokenList } from '@pangolindex/token-lists';
 import schema from '@pangolindex/token-lists/src/tokenlist.schema.json';
 import { nanoid } from '@reduxjs/toolkit';

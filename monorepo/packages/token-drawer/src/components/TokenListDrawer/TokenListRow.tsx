@@ -1,6 +1,6 @@
-import { Box, Switch, Text } from '@pangolindex/core';
-import { listVersionLabel, useOnClickOutside, useTranslation } from '@pangolindex/shared';
-import { useListsStateAtom, useSelectedListUrl } from '@pangolindex/state-hooks';
+import { Box, Switch, Text } from '@honeycomb-finance/core';
+import { listVersionLabel, useOnClickOutside, useTranslation } from '@honeycomb-finance/shared';
+import { useListsStateAtom, useSelectedListUrl } from '@honeycomb-finance/state-hooks';
 import React, { useCallback, useRef, useState } from 'react';
 import { ChevronDown } from 'react-feather';
 import TokenListOrigin from '../TokenListOrigin';

@@ -1,4 +1,4 @@
-import { Box } from '@pangolindex/core';
+import { Box } from '@honeycomb-finance/core';
 import { ComponentStory } from '@storybook/react';
 import React, { useState } from 'react';
 import { MenuType } from '../Sidebar/types';

@@ -1,5 +1,5 @@
-import { Drawer } from '@pangolindex/core';
-import { useTranslation } from '@pangolindex/shared';
+import { Drawer } from '@honeycomb-finance/core';
+import { useTranslation } from '@honeycomb-finance/shared';
 import React from 'react';
 import Remove from '../Remove';
 import { RemoveDrawerProps } from './types';

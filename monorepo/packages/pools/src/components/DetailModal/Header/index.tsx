@@ -1,6 +1,6 @@
-import { Box, CloseIcon, DoubleCurrencyLogo, Hidden, RewardTokens, Stat, Text, Visible } from '@pangolindex/core';
+import { Box, CloseIcon, DoubleCurrencyLogo, Hidden, RewardTokens, Stat, Text, Visible } from '@honeycomb-finance/core';
+import { ZERO_FRACTION, unwrappedToken, useChainId, useTranslation } from '@honeycomb-finance/shared';
 import { CHAINS, ChefType } from '@pangolindex/sdk';
-import { ZERO_FRACTION, unwrappedToken, useChainId, useTranslation } from '@pangolindex/shared';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';

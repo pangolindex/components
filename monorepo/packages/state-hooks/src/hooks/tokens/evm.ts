@@ -1,5 +1,4 @@
 import { parseBytes32String } from '@ethersproject/strings';
-import { Token } from '@pangolindex/sdk';
 import {
   ERC20_BYTES32_INTERFACE,
   ERC20_INTERFACE,
@@ -7,7 +6,8 @@ import {
   useBytes32TokenContract,
   useChainId,
   useTokenContract,
-} from '@pangolindex/shared';
+} from '@honeycomb-finance/shared';
+import { Token } from '@pangolindex/sdk';
 import { useMemo } from 'react';
 import { NEVER_RELOAD, useMultipleContractSingleData, useSingleCallResult } from 'src/state/multicall/hooks';
 import { useAllTokens } from '../useAllTokens';

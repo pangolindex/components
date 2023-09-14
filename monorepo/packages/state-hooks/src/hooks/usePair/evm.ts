@@ -1,6 +1,6 @@
 import { parseUnits } from '@ethersproject/units';
+import { PAIR_INTERFACE, PairState, useChainId, useSubgraphPairs, wrappedCurrency } from '@honeycomb-finance/shared';
 import { ChainId, Currency, Pair, TokenAmount } from '@pangolindex/sdk';
-import { PAIR_INTERFACE, PairState, useChainId, useSubgraphPairs, wrappedCurrency } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { useMultipleContractSingleData, useShouldUseSubgraph } from 'src/state';
 

@@ -1,4 +1,4 @@
-import { useTranslation } from '@pangolindex/shared';
+import { useTranslation } from '@honeycomb-finance/shared';
 import React from 'react';
 import { Box, NumberOptions, Text, TextInput } from '../';
 import { InputOptions } from './styled';

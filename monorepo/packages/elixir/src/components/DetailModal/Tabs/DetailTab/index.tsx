@@ -1,7 +1,7 @@
-import { Box, Stat, Text } from '@pangolindex/core';
+import { Box, Stat, Text } from '@honeycomb-finance/core';
+import { unwrappedToken, useChainId, useInverter, useTranslation } from '@honeycomb-finance/shared';
+import { useUSDCPriceHook } from '@honeycomb-finance/state-hooks';
 import { CurrencyAmount, Fraction, NumberType, Position, formatPrice } from '@pangolindex/sdk';
-import { unwrappedToken, useChainId, useInverter, useTranslation } from '@pangolindex/shared';
-import { useUSDCPriceHook } from '@pangolindex/state-hooks';
 import numeral from 'numeral';
 import React, { useContext, useMemo } from 'react';
 import ContentLoader from 'react-content-loader';

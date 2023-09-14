@@ -1,5 +1,5 @@
+import { useTokenContract } from '@honeycomb-finance/shared';
 import { Token, TokenAmount } from '@pangolindex/sdk';
-import { useTokenContract } from '@pangolindex/shared';
 import { useMemo } from 'react';
 import { useSingleCallResult } from 'src/state';
 

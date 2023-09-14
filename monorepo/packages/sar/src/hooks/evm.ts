@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import { TransactionResponse } from '@ethersproject/providers';
-import { TokenAmount } from '@pangolindex/sdk';
 import {
   BIGNUMBER_ZERO,
   MixPanelEvents,
@@ -14,8 +13,13 @@ import {
   useSubgraphSarPositions,
   useSubgraphStakingContractInfo,
   waitForTransaction,
-} from '@pangolindex/shared';
-import { useShouldUseSubgraph, useSingleCallResult, useSingleContractMultipleData } from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/shared';
+import {
+  useShouldUseSubgraph,
+  useSingleCallResult,
+  useSingleContractMultipleData,
+} from '@honeycomb-finance/state-hooks';
+import { TokenAmount } from '@pangolindex/sdk';
 import { BigNumber } from 'ethers';
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';

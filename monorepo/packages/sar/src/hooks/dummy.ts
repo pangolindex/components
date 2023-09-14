@@ -1,6 +1,6 @@
+import { PNG, useChainId, usePangolinWeb3 } from '@honeycomb-finance/shared';
+import { ApprovalState } from '@honeycomb-finance/state-hooks';
 import { TokenAmount } from '@pangolindex/sdk';
-import { PNG, useChainId, usePangolinWeb3 } from '@pangolindex/shared';
-import { ApprovalState } from '@pangolindex/state-hooks';
 import { useState } from 'react';
 import { Position } from './types';
 

@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { Box, Button, Loader, Stat, Text, TransactionCompleted } from '@pangolindex/core';
+import { Box, Button, Loader, Stat, Text, TransactionCompleted } from '@honeycomb-finance/core';
 import {
   FARM_TYPE,
   MixPanelEvents,
@@ -9,8 +9,8 @@ import {
   usePangolinWeb3,
   useTranslation,
   waitForTransaction,
-} from '@pangolindex/shared';
-import { useTransactionAdder } from '@pangolindex/state-hooks';
+} from '@honeycomb-finance/shared';
+import { useTransactionAdder } from '@honeycomb-finance/state-hooks';
 import React, { useState } from 'react';
 import { useExtraPendingRewards, useMinichefPools } from 'src/hooks/minichef/hooks/common';
 import { DoubleSideStakingInfo, MinichefStakingInfo } from 'src/hooks/minichef/types';

@@ -1,6 +1,6 @@
-import { Box, Button, Text } from '@pangolindex/core';
+import { Box, Button, Text } from '@honeycomb-finance/core';
+import { useChainId, usePrevious, useTranslation } from '@honeycomb-finance/shared';
 import { FeeAmount } from '@pangolindex/sdk';
-import { useChainId, usePrevious, useTranslation } from '@pangolindex/shared';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFeeTierDistributionHook, usePoolsHook } from 'src/hooks';
 import { PoolState } from 'src/hooks/types';

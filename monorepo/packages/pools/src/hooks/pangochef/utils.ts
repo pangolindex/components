@@ -1,5 +1,5 @@
+import { BIG_INT_SECONDS_IN_WEEK, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE } from '@honeycomb-finance/shared';
 import { CurrencyAmount, Fraction, JSBI, Price, Token, TokenAmount } from '@pangolindex/sdk';
-import { BIG_INT_SECONDS_IN_WEEK, ONE_FRACTION, PANGOCHEF_COMPOUND_SLIPPAGE } from '@pangolindex/shared';
 
 /**
  * This function calculates the minimum and maximum value of the slippage used in the pangochef compound

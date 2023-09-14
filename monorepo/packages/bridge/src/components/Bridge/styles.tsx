@@ -1,4 +1,4 @@
-import { Box, TabPanel } from '@pangolindex/core';
+import { Box, TabPanel } from '@honeycomb-finance/core';
 import styled from 'styled-components';
 
 export const PageWrapper = styled(Box)`

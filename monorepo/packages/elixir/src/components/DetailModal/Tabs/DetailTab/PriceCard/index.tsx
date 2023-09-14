@@ -1,4 +1,4 @@
-import { Text } from '@pangolindex/core';
+import { Text } from '@honeycomb-finance/core';
 import React from 'react';
 import { Description, Wrapper } from './styles';
 import { PriceCardProps } from './types';
