@@ -48,6 +48,7 @@
     "@honeycomb-finance/shared": "*",
     "@honeycomb-finance/core": "*",
     "@honeycomb-finance/state-hooks": "*",
+    "@web3-react/core": "6.0.9",
     "axios": "0.26.0",
     "dayjs": "1.10.7",
     "jotai": "2.0.3",
@@ -59,7 +60,7 @@
     "react-custom-scrollbars": "4.2.1",
     "react-feather": "2.0.9",
     "react-window": "1.8.5",
-    "react-query": "3.39.0",
+    "react-query": "3.39.3",
     "react-use": "15.3.8",
     "recharts": "2.1.13"
   },

@@ -64,7 +64,7 @@
     "react-custom-scrollbars": "4.2.1",
     "react-device-detect": "1.6.2",
     "react-feather": "2.0.9",
-    "react-query": "3.39.0",
+    "react-query": "3.39.3",
     "react-use": "15.3.8",
     "react-virtualized-auto-sizer": "1.0.2",
     "react-window": "1.8.5",

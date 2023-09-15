@@ -1,6 +1,7 @@
 import { Box } from '@honeycomb-finance/core';
 import { CHAINS, ChainId, Token } from '@pangolindex/sdk';
 import { ComponentStory } from '@storybook/react';
+import { BigNumber } from 'ethers';
 import React from 'react';
 import { PositionCardProps } from './types';
 import PositionCard from '.';
@@ -51,4 +52,5 @@ export const Default = TemplatePositionCard.bind({});
 Default.args = {
   currency0,
   currency1,
+  liquidity: BigNumber.from(645742),
 } as Partial<PositionCardProps>;

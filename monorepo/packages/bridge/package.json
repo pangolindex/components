@@ -49,6 +49,7 @@
     "@honeycomb-finance/state-hooks": "*",
     "@honeycomb-finance/wallet-connectors": "*",
     "@honeycomb-finance/walletmodal": "*",
+    "@web3-react/core": "6.0.9",
     "axios": "0.26.0",
     "jotai": "2.3.1",
     "polished": "4.1.3",
