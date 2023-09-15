@@ -60,7 +60,7 @@
     "i18next-browser-languagedetector": "7.1.0",
     "lru-cache": "7.13.2",
     "react-i18next": "13.0.3",
-    "react-query": "3.39.0",
+    "react-query": "3.39.3",
     "styled-components": "5.3.3",
     "styled-system": "5.1.5"
   },

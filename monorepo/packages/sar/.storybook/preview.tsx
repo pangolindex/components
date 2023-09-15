@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import type { Preview } from '@storybook/react';
 import { useWeb3React as useWeb3ReactCore, createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core';
 import { ThemeProvider, PangolinWeb3Provider, NetworkContextName, getLibrary } from '@honeycomb-finance/shared';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, useQueryClient } from 'react-query';
 import { injected } from '@honeycomb-finance/wallet-connectors';
 
 const queryClient = new QueryClient({
@@ -29,7 +29,9 @@ const InternalProvider = ({ children, theme }) => {
 
   return (
     <PangolinWeb3Provider chainId={chainId} library={library} account={account} key={chainId}>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </ThemeProvider>
     </PangolinWeb3Provider>
   );
 };
