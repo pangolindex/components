@@ -3,8 +3,8 @@ import { getEtherscanLink, useChainId, useTranslation } from '@honeycomb-finance
 import { AirdropType } from '@pangolindex/sdk';
 import React, { useContext } from 'react';
 import { AlertTriangle, CheckCircle } from 'react-feather';
-import GiftBox from 'src/assets/images/giftbox.png';
 import { ThemeContext } from 'styled-components';
+import GiftBox from 'src/assets/images/giftbox.png';
 import Title from '../Title';
 import { Wrapper } from '../Title/styleds';
 

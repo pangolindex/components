@@ -52,5 +52,5 @@ export const Default = TemplatePositionCard.bind({});
 Default.args = {
   currency0,
   currency1,
-  liquidity: BigNumber.from(645742)
+  liquidity: BigNumber.from(645742),
 } as Partial<PositionCardProps>;
