@@ -1,1 +1,0 @@
-You can find the code and more information about the component on UniSwap GitHub page at the following link: https://github.com/Uniswap/interface/tree/main/src/components/LiquidityChartRangeInput

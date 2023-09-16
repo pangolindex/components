@@ -1,4 +1,0 @@
-// this babel file is specifically for storybook. this is not being used for creating build of components
-{
-  "presets": ["@babel/preset-typescript", "@babel/preset-env"]
-}

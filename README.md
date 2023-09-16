@@ -1,18 +1,43 @@
-# components
-Ui Kit for Pangolin
+# Honeycomb
 
-## Getting started
+Honeycomb is combination of various web3 components. This repo is using Turborepo to manage monorepo packages.
 
-For getting started please follow this [guide](src/stories/introduction.stories.mdx)
+### Packages
 
-# setup example repo
-1. do `yarn` in example directory.
-2. copy `.env.sample` to `.env`
+It contains below packages.
 
-# development flow
+- `@pangolidex/core`: honeycomb core component library
+- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `rollup-plugin-tsc-alias`: rollup plugin to transform absolute path to relative path in declaration files
+- `@pangolidex/honeycomb-provider`: main entrypoint
+- `@pangolidex/portfolio`: Portfolio related components
+- `@pangolidex/sar`: Sunshine and Rainbow widget
+- `@pangolidex/shared`: shared things
+- `@pangolidex/state-hooks`: state manager and common hooks
+- `@pangolidex/swap`: swap widget
+- `@pangolidex/tsconfig`: common typescript configuration
+- `@pangolidex/wallet-connectors`:
+- `@pangolidex/walletmodal`: wallet modal ui
 
-1. do `yarn` in components.
-2. make sure you follow `setup example repo` steps
-3. do `yarn dev:example` which will start app from `example` directory.
-4. as you develop components in `src` folder, you can keep testing it in example app.
-5. once its developed you can use those new changes in interface repo.
+## Running Example App
+
+In monorepo root run below commands
+
+1. `yarn install`
+2. `yarn start:app` which will start app on `5173` port.
+
+## Development
+
+In monorepo root run below commands
+
+1. `yarn install`
+2. `yarn dev:packages` and keep that terminal running
+3. In another terminal run `yarn dev:app` which will start app on `5173` port.
+
+## Contrinuting Guide
+
+Coming Soon
+
+## CI/CD
+
+Coming Soon
