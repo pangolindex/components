@@ -166,7 +166,7 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
               </Text>
 
               <Text color="text1" fontSize={14}>
-                {ReactHtmlParser(vault.strategyProvider[0]?.name?.replace('\n', '<br />') || '')}
+                {ReactHtmlParser(vault.strategyProvider[0]?.description?.replace('\n', '<br />') || '')}
               </Text>
               {selectedVaultDetails && (
                 <Box mt="5px">

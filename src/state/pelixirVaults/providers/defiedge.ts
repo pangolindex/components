@@ -1,7 +1,4 @@
-// import { getStrategyMetaData } from '@defiedge/sdk';
-// import { SupportedChainId } from '@defiedge/sdk/dist/src/types';
-// import { Strategy } from '@defiedge/sdk/dist/src/types/strategyMetaQuery';
-import { ChainId, DEFIEDGE, Token } from '@pangolindex/sdk';
+import { DEFIEDGE, Token } from '@pangolindex/sdk';
 import axios from 'axios';
 import {
   DefiEdgeAllStrategyData,
@@ -20,33 +17,18 @@ export const getDefiEdgeVaults: any = async ({ chain }: GetElixirVaultsProps) =>
         'Content-Type': 'application/json',
       },
     });
-    // ------------------->
-    // ------DUMMY DATA--->
-    // ------------------->
-    const currency0 = new Token(
-      ChainId.POLYGON,
-      '0x0000000000000000000000000000000000001010',
-      18,
-      'MATIC',
-      'Matic Token',
-    );
-    const currency1 = new Token(ChainId.POLYGON, '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', 18, 'USDC', 'USD Coin');
-    // ------------------->
-    // ------------------->
-    const data: ElixirVault[] = response.data
-      .filter((x) => x.network === 'polygon') //TODO: Remove this filter
-      .map((strategy: DefiEdgeAllStrategyData) => {
-        return {
-          strategyProvider: [DEFIEDGE],
-          selected: false,
-          address: strategy.address,
-          poolTokens: [currency0, currency1],
-          sharePrice: strategy.sharePrice.toString(),
-          incentivized: false,
-          feesApr: '0',
-          incentivizationApr: '0',
-        };
-      });
+    const data: ElixirVault[] = response.data.map((strategy: DefiEdgeAllStrategyData) => {
+      return {
+        strategyProvider: [DEFIEDGE],
+        selected: false,
+        address: strategy.address,
+        poolTokens: [strategy.token0 as unknown as Token, strategy.token1 as unknown as Token],
+        sharePrice: strategy.sharePrice.toString(),
+        incentivized: false,
+        feesApr: '0',
+        incentivizationApr: '0',
+      };
+    });
     return data;
   } catch (error) {
     console.log(error);

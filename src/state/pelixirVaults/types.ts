@@ -58,6 +58,20 @@ export type DefiEdgeAllStrategyData = {
   fees: number;
   network: string;
   owner: string;
+  token0: {
+    id: string;
+    decimals: number;
+    name: string;
+    symbol: string;
+    totalSupply: number;
+  };
+  token1: {
+    id: string;
+    decimals: number;
+    name: string;
+    symbol: string;
+    totalSupply: number;
+  };
   poolAddress: string;
   sharePrice: number;
   subTitle: string;
