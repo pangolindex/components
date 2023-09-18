@@ -7,6 +7,7 @@
   "scripts": {
     "lint": "turbo run lint --concurrency=20",
     "lint:fix": "turbo run lint:fix --concurrency=20",
+    "tsc": "turbo run tsc --concurrency=20",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "dev:app": "turbo run dev:app --concurrency=20",
     "dev:packages": "turbo run dev --concurrency=20",

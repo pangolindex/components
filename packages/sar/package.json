@@ -8,6 +8,7 @@
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint --fix ./src --ext .js,.jsx,.ts,.tsx",
+    "tsc": "tsc",
     "build": "rollup -c --environment ENV:production",
     "dev": "rollup -c --watch",
     "storybook": "storybook dev -p 6006",

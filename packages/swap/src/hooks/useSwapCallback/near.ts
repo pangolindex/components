@@ -8,9 +8,9 @@ import {
 } from '@honeycomb-finance/shared';
 import { useGetNearPoolId, useTransactionAdder } from '@honeycomb-finance/state-hooks';
 import {
-  FunctionCallOptions,
+  NearFunctionCallOptions as FunctionCallOptions,
   NEAR_EXCHANGE_CONTRACT_ADDRESS,
-  Transaction,
+  NearTransaction as Transaction,
   nearFn,
 } from '@honeycomb-finance/wallet-connectors';
 import { Token, Trade } from '@pangolindex/sdk';
