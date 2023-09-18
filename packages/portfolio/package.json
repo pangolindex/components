@@ -41,7 +41,7 @@
     "rollup-plugin-tsc-alias": "*",
     "rollup-plugin-typescript2": "^0.34.1",
     "storybook": "7.0.10",
-    "typescript": "^4.5.2"
+    "typescript": "4.5.2"
   },
   "dependencies": {
     "@ethersproject/providers": "5.7.2",

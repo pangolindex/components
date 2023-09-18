@@ -36,8 +36,6 @@
     "@types/react-tabs": "2.3.4",
     "@types/styled-components": "5.1.15",
     "@types/styled-system": "5.1.13",
-    "eslint": "^7.32.0",
-    "eslint-config-custom": "*",
     "prop-types": "15.8.1",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
