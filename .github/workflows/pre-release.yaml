@@ -1,0 +1,177 @@
+name: Pre-Release
+
+on:
+  issue_comment:
+    types:
+      - created
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
+
+jobs:
+  check_validity:
+    name: Should Run ?
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      should_run: ${{ steps.should_run_action.outputs.result }}
+    steps:
+      - name: Validate pull request
+        uses: actions/github-script@v6
+        id: should_run_action
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
+        with:
+          script: |
+            // only run action if
+            // 1. comment is = "/pre-release"
+            // 2. is made on dev -> main pull request
+            const eventData = context.payload;
+            if (eventData.issue.pull_request && eventData.comment.body === "/pre-release") {
+              try {
+                const { data } = await github.rest.pulls.get({
+                  owner: eventData.repository.owner.login,
+                  repo: eventData.repository.name,
+                  pull_number: eventData.issue.number,
+                });
+
+                const baseBranch = data.base.ref;
+                const headBranch = data.head.ref;
+
+                return baseBranch === "main" && headBranch === "dev";
+              } catch (err) {
+                core.setFailed(`Request failed with error ${err}`);
+              }
+            }
+  pre-release:
+    name: Pre Release
+    needs: check_validity
+    if: ${{ needs.check_validity.outputs.should_run == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+
+      - name: Enforce permission requirement
+        uses: prince-chrismc/check-actor-permissions-action@v1
+        with:
+          permission: write
+
+      - name: Add initial reaction
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reactions: eyes
+
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GIT_ACCESS_TOKEN }}
+
+      - run: git config user.name "github-actions[bot]"
+      - run: git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          registry-url: 'https://registry.npmjs.org/'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Creating .npmrc
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install Dependencies
+        run: yarn
+
+      - name: enter into pre release mode
+        run: yarn changeset pre enter rc
+
+      - name: do yarn changeset version
+        run: yarn changeset version
+
+      - name: exit from pre release mode
+        run: yarn changeset pre exit
+
+      - run: git add .
+
+      - name: Commit changes & push
+        run: |
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "[skip ci] pre-release version"
+            git push
+          fi
+
+      # this step is needed when we do actual npm publish
+      # - name: do yarn release
+      #   run: yarn release
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: check running directory3
+        run: pwd
+
+      - name: do yarn release
+        uses: actions/github-script@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
+        with:
+          script: |
+
+            const childProcesses = require("child_process");
+            const util = require("util");
+
+            const execAsync = util.promisify(childProcesses.exec);
+            const eventData = context.payload;
+
+            try {
+              // Asynchronous execution with await and execAsync
+              const { stdout } = await execAsync("yarn release");
+
+              const newTags = Array.from(stdout.matchAll(/New tag:\s+([^\s\n]+)/g)).map(
+                ([_, tag]) => tag
+              );
+
+              if (newTags.length) {
+                const multiple = newTags.length > 1;
+
+                const body =
+                  `🫰✨ **Thanks @${context.actor}! ` +
+                  `Your pre-release ${
+                    multiple ? "s have" : " has"
+                  } been published to npm.**\n\n` +
+                  `Test the pre-release${
+                    multiple ? "s" : ""
+                  } by updating your \`package.json\` ` +
+                  `with the newly published version${multiple ? "s" : ""}:\n` +
+                  newTags.map((tag) => "```sh\n" + `yarn add ${tag}\n` + "```").join("\n");
+                await github.rest.issues.createComment({
+                  issue_number: eventData.issue.number,
+                  owner: eventData.repository.owner.login,
+                  repo: eventData.repository.name,
+                  body,
+                });
+              }
+            } catch (error) {
+              console.error(error);
+            }
+
+
+      - name: Add final reaction
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reactions: rocket

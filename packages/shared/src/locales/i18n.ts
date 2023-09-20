@@ -32,6 +32,7 @@ const determineLngFn = (code: string): string => {
   return (i18next.language = defaultLocale);
 };
 
+// eslint-disable-next-line import/no-named-as-default-member
 i18next
   .use(LanguageDetector)
   .use(initReactI18next)

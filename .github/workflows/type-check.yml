@@ -15,10 +15,21 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: '18'
           cache: 'yarn'
           registry-url: 'https://registry.npmjs.org/'
 
+      # we are increasing swap size to make sure below commands
+      # doesn't result into operation cancelled due to memory
+      - name: Increase Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 10
+
       - run: yarn --frozen-lockfile
 
-      - run: yarn tsc && yarn lint
+      - run: yarn build:packages
+
+      - run: yarn tsc
+
+      - run: yarn lint

@@ -1,6 +1,6 @@
 import { tryParseAmount, useChainId, usePangolinWeb3 } from '@honeycomb-finance/shared';
 import { useCurrencyBalance, useTransactionAdder } from '@honeycomb-finance/state-hooks';
-import { Transaction, nearFn } from '@honeycomb-finance/wallet-connectors';
+import { NearTransaction as Transaction, nearFn } from '@honeycomb-finance/wallet-connectors';
 import { CAVAX, Currency, WAVAX, currencyEquals } from '@pangolindex/sdk';
 import { parseUnits } from 'ethers/lib/utils';
 import { useMemo } from 'react';

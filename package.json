@@ -19,6 +19,8 @@
     "postinstall": "patch-package"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
     "@pangolindex/sdk": "5.3.4",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
@@ -35,7 +37,8 @@
     "patch-package": "6.4.7",
     "prettier": "^2.5.1",
     "tsc-alias": "1.8.7",
-    "turbo": "latest"
+    "turbo": "latest",
+    "@octokit/rest": "^20.0.1"
   },
   "peerDependencies": {
     "@pangolindex/sdk": ">=2.0.1"
