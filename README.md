@@ -6,18 +6,23 @@ Honeycomb is combination of various web3 components. This repo is using Turborep
 
 It contains below packages.
 
-- `@pangolidex/core`: honeycomb core component library
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@honeycomb-finance/airdrop`: Airdrop Widget
+- `@honeycomb-finance/bridge`: Bridge Widget
+- `@honeycomb-finance/core`: honeycomb core component library
+- `@honeycomb-finance/elixir`: Elixir Widget which is based on Pangolin v2 pools
+- `@honeycomb-finance/governance`: Governance Widget 
+- `@honeycomb-finance/honeycomb-provider`: main entrypoint package for most of the consumer
+- `@honeycomb-finance/pools`: Pangolin Pools Widget 
+- `@honeycomb-finance/portfolio`: Portfolio related components
 - `rollup-plugin-tsc-alias`: rollup plugin to transform absolute path to relative path in declaration files
-- `@pangolidex/honeycomb-provider`: main entrypoint
-- `@pangolidex/portfolio`: Portfolio related components
-- `@pangolidex/sar`: Sunshine and Rainbow widget
-- `@pangolidex/shared`: shared things
-- `@pangolidex/state-hooks`: state manager and common hooks
-- `@pangolidex/swap`: swap widget
-- `@pangolidex/tsconfig`: common typescript configuration
-- `@pangolidex/wallet-connectors`:
-- `@pangolidex/walletmodal`: wallet modal ui
+- `@honeycomb-finance/sar`: Sunshine and Rainbow widget
+- `@honeycomb-finance/shared`: shared stuff across all packages
+- `@honeycomb-finance/state-hooks`: state manager and common hooks
+- `@honeycomb-finance/swap`: swap widget
+- `@honeycomb-finance/token-drawer`: Token Drawer widget
+- `@honeycomb-finance/tsconfig`: common typescript configuration
+- `@honeycomb-finance/wallet-connectors`: Wallet connectors
+- `@honeycomb-finance/walletmodal`: wallet modal ui
 
 ## Running Example App
 
@@ -36,8 +41,8 @@ In monorepo root run below commands
 
 ## Contrinuting Guide
 
-Coming Soon
+Please see [our guide to contributing](CONTRIBUTING.md).
 
-## CI/CD
+## Release
 
-Coming Soon
+Please see [our guide to releasing](RELEASING.md).

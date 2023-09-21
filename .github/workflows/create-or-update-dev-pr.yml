@@ -8,7 +8,8 @@ on:
       - dev
 
 jobs:
-  create-or-update-pr:
+  create-or-update-pr:  
+    name: Auto Create/Update dev->main PR
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:

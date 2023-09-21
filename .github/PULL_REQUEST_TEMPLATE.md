@@ -1,28 +1,29 @@
-<!--
-  Thanks for submitting a pull request!
-  Before submitting a pull request, please make sure the following is done:
+# Pull Request Template
 
-  1. Run `yarn` in the repository root.
-  2. Run `yarn lint` make sure to fix if any linting issues
-  3. Run `yarn tsc` make sure to fix any typescript issues
-  4. if you have added new components make sure to add storybook for those components
--->
+## Description
 
-## Summary
+Please include a summary of the changes and which issue is fixed. Please also include relevant context and motivation. List any dependencies that are required for this change.
 
-<!--
- Explain summary of the change
--->
+Fixes # (issue)
 
-## Tasks
+## Type of Change
 
-<!--
- Please attach task links here
--->
+Please delete options that are not relevant.
 
-## Screenshots/Videos
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] This change requires a documentation update
 
-<!--
-  Please attach screenshots / videos if the pull request changes the user interface
--->
+## How Has This Been Tested?
 
+Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration.
+
+- [ ] Test A
+- [ ] Test B
+
+## Checklist:
+
+- [ ] I have followed the [CONTRIBUTING](CONTRIBUTING.md) document.
+- [ ] I have included Changeset
+- [ ] I have included screenshot/video if required
