@@ -4,10 +4,10 @@ import { useAllTokens, useWalletModalToggle } from '@honeycomb-finance/state-hoo
 import { SelectTokenDrawer } from '@honeycomb-finance/token-drawer';
 import React, { Suspense, useCallback, useContext } from 'react';
 import { ThemeContext } from 'styled-components';
+import { Root } from 'src/SwapWidget/styled';
 import { SwapTypes } from 'src/constants';
 import { Field } from 'src/state/atom';
 import { useSwapActionHandlers } from 'src/state/hooks/common';
-import { Root } from 'src/styled';
 import TradeOption from '../TradeOption';
 
 const PangolinTWAP = React.lazy(() =>

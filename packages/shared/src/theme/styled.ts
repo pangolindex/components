@@ -174,12 +174,12 @@ export interface Colors {
     primaryBgColor?: Color;
   };
 
-  chainInput: {
+  chainInput?: {
     text?: Color;
     primaryBgColor?: Color;
   };
 
-  liquidityChartRangeInput: {
+  liquidityChartRangeInput?: {
     bgColor?: Color;
     tooltipBackground?: Color;
     tooltipText?: Color;

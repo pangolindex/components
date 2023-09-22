@@ -8,7 +8,7 @@ import { MixPanelProvider } from 'src/hooks/mixpanel';
 // import { useEagerConnect, useWalletUpdater } from './hooks/useConnector';
 import { ThemeProvider } from 'src/theme';
 import { HasuraContext } from './hasura';
-import { PangolinWeb3Provider } from './pangolin';
+import { HoneycombWeb3Provider } from './pangolin';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -61,7 +61,7 @@ export function HoneycombProvider({
   //const ethersLibrary = library && !library?._isProvider ? new Web3Provider(library) : library;
 
   return (
-    <PangolinWeb3Provider chainId={chainId} library={library} account={account} key={chainId}>
+    <HoneycombWeb3Provider chainId={chainId} library={library} account={account} key={chainId}>
       <MixPanelProvider mixpanelToken={config?.mixpanelToken}>
         <HasuraContext.Provider value={config?.hasuraApiKey}>
           <ThemeProvider theme={theme}>
@@ -69,6 +69,6 @@ export function HoneycombProvider({
           </ThemeProvider>
         </HasuraContext.Provider>
       </MixPanelProvider>
-    </PangolinWeb3Provider>
+    </HoneycombWeb3Provider>
   );
 }

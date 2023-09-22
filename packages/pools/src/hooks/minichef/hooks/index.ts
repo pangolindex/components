@@ -1,4 +1,5 @@
 import { ChainId } from '@pangolindex/sdk';
+import { useDerivedStakeInfo, useMinichefPools } from './common';
 import { useDummyMinichefHook } from './dummy';
 import { useGetMinichefStakingInfosViaSubgraph, useMinichefStakingInfos } from './evm';
 
@@ -41,4 +42,4 @@ export const useMinichefStakingInfosHook: UseMinichefStakingInfosHookType = {
   [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyMinichefHook,
 };
 
-export { useMinichefStakingInfos, useGetMinichefStakingInfosViaSubgraph };
+export { useMinichefStakingInfos, useGetMinichefStakingInfosViaSubgraph, useDerivedStakeInfo, useMinichefPools };

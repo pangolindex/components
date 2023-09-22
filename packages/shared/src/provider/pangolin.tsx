@@ -25,12 +25,12 @@ const Web3Context = createContext<Web3State>({} as Web3State);
 export const usePangolinWeb3 = () => {
   const context = useContext(Web3Context);
   if (context === undefined) {
-    throw new Error('usePangolinWeb3 must be used within a component wrapped with PangolinWeb3Provider');
+    throw new Error('usePangolinWeb3 must be used within a component wrapped with HoneycombWeb3Provider');
   }
   return context;
 };
 
-export const PangolinWeb3Provider: FC<Web3ProviderProps> = ({
+export const HoneycombWeb3Provider: FC<Web3ProviderProps> = ({
   children,
   library,
   chainId,

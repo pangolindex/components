@@ -25,7 +25,7 @@ const NewsFeedSettings: Settings = {
   autoplaySpeed: 10000,
 };
 
-const NewsSection: React.FC<NewsProps> = ({ boxHeight = '400px' }) => {
+const NewsSection: React.FC<NewsProps> = ({ boxHeight }) => {
   const [interactedNewsIds, setInteractedNewsIds] = useState<number[]>([]);
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);

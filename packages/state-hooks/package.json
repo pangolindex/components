@@ -48,5 +48,8 @@
     "jotai": "2.0.3",
     "lodash.flatmap": "4.5.0",
     "react-query": "3.39.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

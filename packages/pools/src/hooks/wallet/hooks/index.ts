@@ -213,3 +213,5 @@ export const useCreatePairHook: UseCreatePairHookType = {
   [ChainId.OP]: useDummyHook,
   [ChainId.SKALE_BELLATRIX_TESTNET]: useDummyCreatePair,
 };
+
+export { useGetUserLP };

@@ -93,14 +93,14 @@ The component supports wallets where it is in the[ CHAINS mapping in the sdk](ht
 
 ## How to add custom wallets
 
-You need extends the ```PangolinWallet class``` and edit the methods or you can use an existing wallet in our components.
+You need extends the ```HoneycombWallet class``` and edit the methods or you can use an existing wallet in our components.
 
 **The supportedWallets parameter will override the default supported wallets above**
 
 ```tsx
-import { PangolinWallet, PangolinInjectedWallet } from '@honeycomb-finance/walletmodal';
+import { HoneycombWallet, HoneycombInjectedWallet } from '@honeycomb-finance/walletmodal';
 
-class CustomWallet extends PangolinWallet{
+class CustomWallet extends HoneycombWallet{
   constructor() {
     super({
       connector: walletConnector, // AbstractConnector from @web3-react/abstract-connector
@@ -114,7 +114,7 @@ class CustomWallet extends PangolinWallet{
   }
 }
 
-const customInjected = new PangolinInjectedWallet({
+const customInjected = new HoneycombInjectedWallet({
   name: 'custom injected',
   href: 'web site url',
   icon: 'icon ',
@@ -187,13 +187,13 @@ export default function Example(){
 
 ## How to use WalletConnet
 
-You need do import `PangolinWalletConnectWallet` and create a new object and add it on supportedWallets mapping 
+You need do import `HoneycombWalletConnectWallet` and create a new object and add it on supportedWallets mapping 
 
 ```tsx
 
-import {  PangolinWalletConnectWallet } from '@honeycomb-finance/walletmodal';
+import {  HoneycombWalletConnectWallet } from '@honeycomb-finance/walletmodal';
 
-const walletConnect = new PangolinWalletConnectWallet({
+const walletConnect = new HoneycombWalletConnectWallet({
   rpcMap: rpcs,
   projectId: "walletconnnect project id here",
   metadata: {

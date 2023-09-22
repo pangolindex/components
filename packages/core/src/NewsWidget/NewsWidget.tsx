@@ -1,6 +1,7 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import NewsSection from './NewsSection';
+import { NewsProps } from './types';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -11,10 +12,10 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function NewsWidget() {
+export default function NewsWidget({ boxHeight = '400px' }: NewsProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <NewsSection />
+      <NewsSection boxHeight={boxHeight} />
     </QueryClientProvider>
   );
 }

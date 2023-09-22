@@ -1,10 +1,10 @@
 import { SUPPORTED_EVM_CHAINS_ID } from '@honeycomb-finance/wallet-connectors';
-import { PangolinWallet, PangolinWalletConnectWallet, SUPPORTED_WALLETS } from '@honeycomb-finance/walletmodal';
+import { HoneycombWallet, HoneycombWalletConnectWallet, SUPPORTED_WALLETS } from '@honeycomb-finance/walletmodal';
 import { CHAINS, ChainId } from '@pangolindex/sdk';
 
 const walletConnectProjectId = import.meta.env.VITE_WALLETCONNECT_PROJECTID;
 
-export const supportedWallets: { [key: string]: PangolinWallet } = {
+export const supportedWallets: { [key: string]: HoneycombWallet } = {
   ...SUPPORTED_WALLETS,
 };
 
@@ -18,7 +18,7 @@ if (walletConnectProjectId) {
     return acc;
   }, {} as { [chainId in number]: string });
 
-  const walletConnectWallet = new PangolinWalletConnectWallet({
+  const walletConnectWallet = new HoneycombWalletConnectWallet({
     rpcMap: rpcs,
     projectId: walletConnectProjectId,
     metadata: {

@@ -67,6 +67,7 @@ export interface ApplicationState {
     [ChainId.OP]: boolean;
     [ChainId.EVMOS_TESTNET]: boolean;
     [ChainId.EVMOS_MAINNET]: boolean;
+    [ChainId.SKALE_BELLATRIX_TESTNET]: boolean;
   };
 
   readonly walletModalChainId: number | undefined;
@@ -101,6 +102,7 @@ const useSubgraphInitialState = {
   [ChainId.OP]: false,
   [ChainId.EVMOS_TESTNET]: false,
   [ChainId.EVMOS_MAINNET]: false,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: false,
 };
 
 const blockNumbersAtom = atom<ApplicationState['blockNumbers']>({});

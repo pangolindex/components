@@ -3,15 +3,15 @@ import { IS_IN_IFRAME, MixPanelEvents, NetworkContextName, useMixpanel } from '@
 import { useApplicationState, useUserAtom } from '@honeycomb-finance/state-hooks';
 import { HashConnectEvents, gnosisSafe, hashconnectEvent } from '@honeycomb-finance/wallet-connectors';
 import {
-  PangolinWallet,
-  PangolinWalletEvents,
+  HoneycombWallet,
+  HoneycombWalletEvents,
   SUPPORTED_WALLETS,
   disconnectWallets,
   getWalletKey,
   gnosisSafeWallet,
   hashPack,
+  honeycombWalletEvent,
   injectWallet,
-  pangolinWalletEvent,
   useWalletState,
 } from '@honeycomb-finance/walletmodal';
 import { AVALANCHE_MAINNET, ChainId } from '@pangolindex/sdk';
@@ -67,7 +67,7 @@ export function useEagerConnect(tryToActive: boolean) {
   const { setAvailableHashpack } = useApplicationState();
 
   // either previously used connector, or window.ethereum if exists (important for mobile)
-  const previusWallet: PangolinWallet | null = useMemo(() => {
+  const previusWallet: HoneycombWallet | null = useMemo(() => {
     const wallet = userState.wallet;
     if (wallet) {
       return SUPPORTED_WALLETS[wallet];
@@ -219,7 +219,7 @@ export function useWalletUpdater() {
   const { updateWallet } = useUserAtom();
 
   useEffect(() => {
-    function onConnect(wallet: PangolinWallet) {
+    function onConnect(wallet: HoneycombWallet) {
       const walletKey = getWalletKey(wallet, wallets);
       console.debug('Wallet connected ', wallet);
       updateWallet(walletKey);
@@ -236,11 +236,11 @@ export function useWalletUpdater() {
     }
 
     console.debug('Setuping Wallet Events');
-    pangolinWalletEvent.on(PangolinWalletEvents.CONNECTED, onConnect);
+    honeycombWalletEvent.on(HoneycombWalletEvents.CONNECTED, onConnect);
 
     return () => {
       console.debug('Removing Wallet Events');
-      pangolinWalletEvent.off(PangolinWalletEvents.CONNECTED, onConnect);
+      honeycombWalletEvent.off(HoneycombWalletEvents.CONNECTED, onConnect);
     };
   }, [wallets]);
 }

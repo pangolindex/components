@@ -1,9 +1,15 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
+import { Order, useGelatoLimitOrders } from '@gelatonetwork/limit-orders-react';
 import { ChainId } from '@pangolindex/sdk';
 import { useGelatoLimitOrderList } from './common';
 
-const useDummyGelatoLimitOrdersList = () => [];
+const useDummyGelatoLimitOrdersList = () =>
+  ({} as {
+    allOrders: any[];
+    allOpenOrders: any[];
+    allCancelledOrders: Order[];
+    executed: Order[];
+  });
 
 export type UseGelatoLimitOrdersListHookType = {
   [chainId in ChainId]: typeof useGelatoLimitOrderList | typeof useDummyGelatoLimitOrdersList;

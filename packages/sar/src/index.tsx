@@ -8,4 +8,6 @@ export {
   useDerivativeSarUnstakeHook,
 } from './hooks';
 
+export { useSarStakeInfo } from './hooks/evm';
+
 export type { Position, URI } from './hooks/types';

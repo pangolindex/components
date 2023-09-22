@@ -14,7 +14,7 @@
     "start:app": "turbo run start --filter=example-app",
     "build:packages": "turbo run build --filter=@honeycomb-finance/*",
     "changeset": "changeset",
-    "release": "changeset publish",
+    "release": "yarn build:packages && changeset publish",
     "version": "changeset version",
     "postinstall": "patch-package"
   },

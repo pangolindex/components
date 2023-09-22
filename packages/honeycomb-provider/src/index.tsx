@@ -1,8 +1,8 @@
 import {
   HasuraContext,
+  HoneycombWeb3Provider,
   MixPanelProvider,
   NetworkContextName,
-  PangolinWeb3Provider,
   ThemeProvider,
 } from '@honeycomb-finance/shared';
 import { ApplicationUpdater, ListsUpdater, MulticallUpdater, TransactionUpdater } from '@honeycomb-finance/state-hooks';
@@ -62,7 +62,7 @@ export function HoneycombProvider({
   useWalletUpdater();
 
   return (
-    <PangolinWeb3Provider chainId={chainId} library={library} account={account} key={chainId}>
+    <HoneycombWeb3Provider chainId={chainId} library={library} account={account} key={chainId}>
       <MixPanelProvider mixpanelToken={config?.mixpanelToken}>
         <HasuraContext.Provider value={config?.hasuraApiKey}>
           <ThemeProvider theme={theme}>
@@ -76,6 +76,6 @@ export function HoneycombProvider({
           </ThemeProvider>
         </HasuraContext.Provider>
       </MixPanelProvider>
-    </PangolinWeb3Provider>
+    </HoneycombWeb3Provider>
   );
 }

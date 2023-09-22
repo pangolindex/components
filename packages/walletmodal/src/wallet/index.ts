@@ -6,7 +6,7 @@ import metamaskIcon from 'src/assets/images/metamask.png';
 import rabbyIcon from 'src/assets/svg/rabby.svg';
 import { AvalancheCoreWallet, BitKeepWallet, InjectedWallet, TalismanWallet } from './classes/injected';
 import { HashPackWallet, NearWallet, XDefiWallet } from './classes/nonInjected';
-import { CoinbaseWallet, GnosisSafeWallet, WalletConnectWallet } from './classes/others';
+import { CoinbaseWallet, GnosisSafeWallet } from './classes/others';
 import { Wallet } from './classes/wallet';
 
 export const injectWallet = new InjectedWallet({
@@ -64,10 +64,12 @@ export const SUPPORTED_CHAINS = Object.values(CHAINS).filter(
   (chain) => chain.pangolin_is_live || chain.supported_by_bridge,
 );
 
-export { WalletConnectWallet as PangolinWalletConnectWallet };
+// wallet misc
+export { InjectedWallet as HoneycombInjectedWallet } from './classes/injected';
+export { WalletConnectWallet as HoneycombWalletConnectWallet } from './classes/others';
 
 export {
-  Wallet as PangolinWallet,
-  WalletEvents as PangolinWalletEvents,
-  walletEvent as pangolinWalletEvent,
+  Wallet as HoneycombWallet,
+  WalletEvents as HoneycombWalletEvents,
+  walletEvent as honeycombWalletEvent,
 } from './classes/wallet';

@@ -5,6 +5,7 @@ import { AvalancheCoreConnector } from './AvalancheCoreConnector';
 import { BitKeepConnector } from './BitKeepConnector';
 import { DefiConnector } from './DefiConnector';
 import { HashConnectEvents, HashConnector, hashconnectEvent } from './HashConnector';
+import { NearConnector } from './NearConnector';
 import {
   FunctionCallOptions as NearFunctionCallOptions,
   NearTokenMetadata,
@@ -75,7 +76,7 @@ export const avalancheCore = new AvalancheCoreConnector({
   supportedChainIds: SUPPORTED_EVM_CHAINS_ID,
 });
 
-export { HashConnector, HashConnectEvents, hashconnectEvent, WalletConnectConnector, NetworkConnector };
+export { NearConnector, HashConnector, HashConnectEvents, hashconnectEvent, WalletConnectConnector, NetworkConnector };
 export { UserRejectedRequestError, NoEthereumProviderError };
 export type { WalletConnectConnectorArguments, NearTransaction, NearFunctionCallOptions, NearTokenMetadata };
 

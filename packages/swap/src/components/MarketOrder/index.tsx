@@ -44,7 +44,6 @@ import {
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshCcw } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import confirmPriceImpactWithoutFee from 'src/confirmPriceImpactWithoutFee';
 import { SwapTypes } from 'src/constants';
 import { useSwapCallbackHook } from 'src/hooks/useSwapCallback';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
@@ -61,6 +60,7 @@ import {
   useSwapState,
 } from 'src/state/hooks/common';
 import { useHederaSwapTokenAssociated } from 'src/state/hooks/hedera';
+import confirmPriceImpactWithoutFee from 'src/utils/confirmPriceImpactWithoutFee';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import ConfirmSwapDrawer from '../ConfirmSwapDrawer';
 import SwapSettingsDrawer from '../Settings';
