@@ -1,29 +1,32 @@
-# Pull Request Template
+## Summary
 
-## Description
+- **What** does this PR do?
+  - (Replace this text)
+- **Why** is this change needed?
+  - (Replace this text, include issue link if any)
 
-Please include a summary of the changes and which issue is fixed. Please also include relevant context and motivation. List any dependencies that are required for this change.
+---
 
-Fixes # (issue)
+## Details
+
+Please provide enough information so that others can review your pull request.
 
 ## Type of Change
 
-Please delete options that are not relevant.
+- [ ] Bug Fix (a non-breaking change that solves an issue)
+- [ ] New Feature (a non-breaking change that adds functionality)
+- [ ] Breaking Change (fix or feature that would change existing functionality)
+- [ ] Refactoring (improves code quality but has no user-facing effect)
+- [ ] Documentation Update (if none of the other choices apply)
 
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] This change requires a documentation update
+## Related Issue(s)
 
-## How Has This Been Tested?
+- Give link to the issues
 
-Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration.
+## Checklist
 
-- [ ] Test A
-- [ ] Test B
-
-## Checklist:
-
-- [ ] I have followed the [CONTRIBUTING](CONTRIBUTING.md) document.
+- [ ] I have read the **[CONTRIBUTING](CONTRIBUTING.md)** document.
 - [ ] I have included Changeset
 - [ ] I have included screenshot/video if required
+- [ ] I have tested my changes.
+- [ ] I have made corresponding changes to the documentation if needed.

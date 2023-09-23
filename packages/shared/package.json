@@ -20,6 +20,7 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
     "@rollup/plugin-url": "^7.0.0",
+    "@types/mixpanel-browser": "^2.38.0",
     "@types/react": "^18.2.5",
     "@types/react-dom": "^18.2.4",
     "@types/styled-components": "5.1.15",
