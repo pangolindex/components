@@ -5,22 +5,6 @@ export function useDummyPools() {
   return [[PoolState.NOT_EXISTS, null]] as [PoolState, ElixirPool | null][];
 }
 
-export function useDummyPoolTVL() {
-  return {
-    isLoading: false,
-    error: null,
-  };
-}
-
-export function useDummyFeeTierDistribution() {
-  return {
-    isLoading: false,
-    isError: false,
-    largestUsageFeeTier: undefined,
-    distributions: undefined,
-  };
-}
-
 export function useDummyUnderlyingTokens() {
   return [undefined, undefined];
 }

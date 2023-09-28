@@ -7,8 +7,13 @@ import { AbstractConnectorArguments } from '@web3-react/types';
 import EventEmitter from 'eventemitter3';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { HashConnectConnectionState } from 'hashconnect/dist/types';
-import { TransactionResponse } from './hedera';
 
+export interface TransactionResponse {
+  nodeId: string;
+  transactionHash: string;
+  transactionId: string;
+  consensusTimestamp: string;
+}
 // hashconnectEvent will expose event-emitter interface
 // with this we can handle/emit any event to outside class
 // for now this is specifically used for checking hashpack available or now

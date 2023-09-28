@@ -60,6 +60,7 @@
     "@honeycomb-finance/shared": "*",
     "@honeycomb-finance/state-hooks": "*",
     "@honeycomb-finance/wallet-connectors": "*",
+    "@orbs-network/twap-ui": "0.5.x",
     "@orbs-network/twap-ui-pangolin": "0.5.4",
     "@reduxjs/toolkit": "1.8.0",
     "@web3-react/core": "6.0.9",

@@ -4,23 +4,8 @@ import { CHAINS, ChainId, Currency, Token } from '@pangolindex/sdk';
 import axios, { AxiosResponse } from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { UseQueryResult, useQueries, useQuery } from 'react-query';
-import { CoingeckoWatchListState, useCoingeckoWatchList } from './atom';
+import { CoingeckoTokenData, CoingeckoWatchListState, CoingeckoWatchListToken, useCoingeckoWatchList } from './atom';
 import { COINGECKO_CURRENCY_ID, COINGECKO_TOKENS_MAPPING, COINGEKO_BASE_URL } from './constants';
-
-export interface CoingeckoTokenData {
-  id: string;
-  symbol: string;
-  name: string;
-}
-
-export interface CoingeckoWatchListToken extends CoingeckoTokenData {
-  price: string | null;
-  imageUrl: string | null;
-  weeklyChartData: Array<{
-    timestamp: string;
-    priceUSD: number;
-  }>;
-}
 
 export interface CoingeckoData {
   coinId: string;

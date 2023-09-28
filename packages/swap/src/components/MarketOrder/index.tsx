@@ -49,10 +49,9 @@ import { useSwapCallbackHook } from 'src/hooks/useSwapCallback';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
 import { useWrapCallbackHook } from 'src/hooks/useWrapCallback';
 import { WrapType } from 'src/hooks/useWrapCallback/constant';
-import { Field, LimitNewField } from 'src/state/atom';
+import { Field, LimitNewField, useDaasFeeTo } from 'src/state/atom';
 import { useGelatoLimitOrdersHook } from 'src/state/hooks';
 import {
-  useDaasFeeTo,
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
   useIsSelectedAEBToken,

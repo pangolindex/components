@@ -5,7 +5,6 @@ import {
   unwrappedToken,
   useChainId,
   useElixirPools,
-  useFeeTierDistributionQuery,
   useTokenContract,
   wrappedCurrency,
 } from '@honeycomb-finance/shared';
@@ -32,8 +31,7 @@ import { BigNumber } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { ELIXIR_POOL_STATE_INTERFACE } from 'src/constants/abis/elixirPool';
 import { useConcLiqNFTPositionManagerContract } from 'src/utils/contracts';
-import { usePool } from './common';
-import { FeeTierDistribution, PoolState, TokenId, UsePositionTokenURIResult } from './types';
+import { PoolState, TokenId, UsePositionTokenURIResult } from './types';
 
 // Classes are expensive to instantiate, so this caches the recently instantiated pools.
 // This avoids re-instantiating pools as the other pools in the same request are loaded.
@@ -297,150 +295,6 @@ export function useAllPoolsViaSubgraph(): { isLoading: boolean; allPools: [PoolS
   return { isLoading, allPools };
 }
 
-// maximum number of blocks past which we consider the data stale
-const MAX_DATA_BLOCK_AGE = 20;
-
-export function useFeeTierDistribution(
-  currencyA: Currency | undefined,
-  currencyB: Currency | undefined,
-): FeeTierDistribution {
-  const chainId = useChainId();
-  const tokenA = wrappedCurrency(currencyA, chainId);
-  const tokenB = wrappedCurrency(currencyB, chainId);
-
-  const { isLoading, error, distributions } = usePoolTVL(tokenA, tokenB);
-
-  // fetch all pool states to determine pool state
-  const [poolStateVeryLow] = usePool(currencyA, currencyB, FeeAmount.LOWEST);
-  const [poolStateLow] = usePool(currencyA, currencyB, FeeAmount.LOW);
-  const [poolStateMedium] = usePool(currencyA, currencyB, FeeAmount.MEDIUM);
-  const [poolStateHigh] = usePool(currencyA, currencyB, FeeAmount.HIGH);
-
-  return useMemo(() => {
-    if (isLoading || error || !distributions) {
-      return {
-        isLoading,
-        isError: !!error,
-        distributions,
-      };
-    }
-
-    const largestUsageFeeTier = Object.keys(distributions)
-      .map((d) => Number(d))
-      .filter((d: FeeAmount) => distributions[d] !== 0 && distributions[d] !== undefined)
-      .reduce((a: FeeAmount, b: FeeAmount) => ((distributions[a] ?? 0) > (distributions[b] ?? 0) ? a : b), -1);
-
-    const percentages =
-      !isLoading &&
-      !error &&
-      distributions &&
-      poolStateVeryLow !== PoolState.LOADING &&
-      poolStateLow !== PoolState.LOADING &&
-      poolStateMedium !== PoolState.LOADING &&
-      poolStateHigh !== PoolState.LOADING
-        ? {
-            [FeeAmount.LOWEST]:
-              poolStateVeryLow === PoolState.EXISTS ? (distributions[FeeAmount.LOWEST] ?? 0) * 100 : undefined,
-            [FeeAmount.LOW]: poolStateLow === PoolState.EXISTS ? (distributions[FeeAmount.LOW] ?? 0) * 100 : undefined,
-            [FeeAmount.MEDIUM]:
-              poolStateMedium === PoolState.EXISTS ? (distributions[FeeAmount.MEDIUM] ?? 0) * 100 : undefined,
-            [FeeAmount.HIGH]:
-              poolStateHigh === PoolState.EXISTS ? (distributions[FeeAmount.HIGH] ?? 0) * 100 : undefined,
-          }
-        : undefined;
-
-    return {
-      isLoading,
-      isError: !!error,
-      distributions: percentages,
-      largestUsageFeeTier: largestUsageFeeTier === -1 ? undefined : largestUsageFeeTier,
-    };
-  }, [isLoading, error, distributions, poolStateVeryLow, poolStateLow, poolStateMedium, poolStateHigh]);
-}
-
-export function usePoolTVL(token0: Token | undefined, token1: Token | undefined) {
-  const latestBlock = useBlockNumber();
-  const { isLoading, error, data } = useFeeTierDistributionQuery(token0?.address, token1?.address, 30000);
-
-  const { asToken0, asToken1, _meta } = data ?? {};
-
-  return useMemo(() => {
-    if (!latestBlock || !_meta || !asToken0 || !asToken1) {
-      return {
-        isLoading,
-        error,
-      };
-    }
-
-    if (latestBlock - (_meta?.block?.number ?? 0) > MAX_DATA_BLOCK_AGE) {
-      console.log(`Graph stale (latest block: ${latestBlock})`);
-      return {
-        isLoading,
-        error,
-      };
-    }
-
-    const all = asToken0.concat(asToken1);
-
-    // sum tvl for token0 and token1 by fee tier
-    const tvlByFeeTier = all.reduce<{ [feeAmount: number]: [number | undefined, number | undefined] }>(
-      (acc, value) => {
-        acc[value.feeTier][0] = (acc[value.feeTier][0] ?? 0) + Number(value.totalValueLockedToken0);
-        acc[value.feeTier][1] = (acc[value.feeTier][1] ?? 0) + Number(value.totalValueLockedToken1);
-        return acc;
-      },
-      {
-        [FeeAmount.LOWEST]: [undefined, undefined],
-        [FeeAmount.LOW]: [undefined, undefined],
-        [FeeAmount.MEDIUM]: [undefined, undefined],
-        [FeeAmount.HIGH]: [undefined, undefined],
-      } as Record<FeeAmount, [number | undefined, number | undefined]>,
-    );
-    // const tvlByFeeTier = {};
-    // sum total tvl for token0 and token1
-    const [sumToken0Tvl, sumToken1Tvl] = Object.values(tvlByFeeTier).reduce(
-      (acc: [number, number], value: any) => {
-        acc[0] += value[0] ?? 0;
-        acc[1] += value[1] ?? 0;
-        return acc;
-      },
-      [0, 0],
-    );
-
-    // returns undefined if both tvl0 and tvl1 are undefined (pool not created)
-    const mean = (tvl0: number | undefined, sumTvl0: number, tvl1: number | undefined, sumTvl1: number) =>
-      tvl0 === undefined && tvl1 === undefined ? undefined : ((tvl0 ?? 0) + (tvl1 ?? 0)) / (sumTvl0 + sumTvl1) || 0;
-
-    const distributions: Record<FeeAmount, number | undefined> = {
-      [FeeAmount.LOWEST]: mean(
-        tvlByFeeTier[FeeAmount.LOWEST][0],
-        sumToken0Tvl,
-        tvlByFeeTier[FeeAmount.LOWEST][1],
-        sumToken1Tvl,
-      ),
-      [FeeAmount.LOW]: mean(tvlByFeeTier[FeeAmount.LOW][0], sumToken0Tvl, tvlByFeeTier[FeeAmount.LOW][1], sumToken1Tvl),
-      [FeeAmount.MEDIUM]: mean(
-        tvlByFeeTier[FeeAmount.MEDIUM][0],
-        sumToken0Tvl,
-        tvlByFeeTier[FeeAmount.MEDIUM][1],
-        sumToken1Tvl,
-      ),
-      [FeeAmount.HIGH]: mean(
-        tvlByFeeTier[FeeAmount.HIGH][0],
-        sumToken0Tvl,
-        tvlByFeeTier[FeeAmount.HIGH][1],
-        sumToken1Tvl,
-      ),
-    };
-
-    return {
-      isLoading,
-      error,
-      distributions,
-    };
-  }, [_meta, asToken0, asToken1, isLoading, error, latestBlock]);
-}
-
 export function useUnderlyingTokens(
   token0?: TokenReturnType,
   token1?: TokenReturnType,
@@ -563,3 +417,4 @@ export function usePositionTokenURI(tokenId: TokenId | undefined): UsePositionTo
 
   return res;
 }
+/* eslint-enable max-lines */

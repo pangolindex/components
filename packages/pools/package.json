@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@ethersproject/abi": "5.6.4",
-    "@ethersproject/providers": "5.7.2",
+    "@ethersproject/providers": "5.6.8",
     "@ethersproject/units": "5.6.1",
     "@honeycomb-finance/core": "*",
     "@pangolindex/exchange-contracts": "2.1.7",
@@ -57,7 +57,7 @@
     "@honeycomb-finance/wallet-connectors": "*",
     "axios": "0.26.0",
     "deep-equal": "2.0.5",
-    "ethers": "5.5.4",
+    "ethers": "5.6.4",
     "jotai": "2.0.3",
     "lodash.flatmap": "4.5.0",
     "numeral": "2.0.6",

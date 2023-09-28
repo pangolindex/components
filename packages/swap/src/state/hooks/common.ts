@@ -38,7 +38,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { SWAP_DEFAULT_CURRENCY } from 'src/constants';
 import { useElixirTradeExactIn, useElixirTradeExactOut, useTradeExactIn, useTradeExactOut } from 'src/hooks/Trades';
 import useToggledVersion, { Version } from 'src/hooks/useToggledVersion';
-import { DefaultSwapState, FeeInfo, Field, SwapParams, useSwapState as useSwapStateAtom } from '../atom';
+import { DefaultSwapState, Field, SwapParams, useSwapState as useSwapStateAtom } from '../atom';
 
 export interface LimitOrderInfo extends Order {
   pending?: boolean;
@@ -488,39 +488,6 @@ export function useGelatoLimitOrderList() {
     }),
     [allOrders, allOpenOrders, allCancelledOrders, executed],
   );
-}
-
-export function useDaasFeeTo(): [string, (feeTo: string) => void] {
-  const chainId = useChainId();
-
-  const { swapState: state, updateFeeTo } = useSwapStateAtom();
-
-  const feeTo = state[chainId]?.feeTo;
-  const setFeeTo = useCallback(
-    (newFeeTo: string) => {
-      updateFeeTo({ feeTo: newFeeTo, chainId });
-    },
-    [updateFeeTo],
-  );
-
-  return [feeTo, setFeeTo];
-}
-
-export function useDaasFeeInfo(): [FeeInfo, (feeInfo: FeeInfo) => void] {
-  const chainId = useChainId();
-
-  const { swapState: state, updateFeeInfo } = useSwapStateAtom();
-
-  const feeInfo = state[chainId]?.feeInfo;
-
-  const setFeeInfo = useCallback(
-    (newFeeInfo: FeeInfo) => {
-      updateFeeInfo({ feeInfo: newFeeInfo, chainId });
-    },
-    [updateFeeInfo],
-  );
-
-  return [feeInfo, setFeeInfo];
 }
 
 export function useIsSelectedAEBToken(): boolean {

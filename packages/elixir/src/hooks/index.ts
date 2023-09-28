@@ -1,16 +1,12 @@
 import { ChainId } from '@pangolindex/sdk';
 import {
   useDummyConcLiqPositionFees,
-  useDummyFeeTierDistribution,
-  useDummyPoolTVL,
   useDummyPools,
   useDummyPositionTokenURI,
   useDummyUnderlyingTokens,
 } from './dummy';
 import {
   useConcLiqPositionFees,
-  useFeeTierDistribution,
-  usePoolTVL,
   usePoolsViaContract,
   usePoolsViaSubgraph,
   usePositionTokenURI,
@@ -51,78 +47,6 @@ export const usePoolsHook: UsePoolsHookType = {
   [ChainId.MOONBEAM]: useDummyPools,
   [ChainId.OP]: useDummyPools,
   [ChainId.SKALE_BELLATRIX_TESTNET]: usePoolsViaSubgraph,
-};
-
-export type UsePoolTVLHookType = {
-  [chainId in ChainId]: typeof usePoolTVL | typeof useDummyPoolTVL;
-};
-
-export const usePoolTVLHook: UsePoolTVLHookType = {
-  [ChainId.FUJI]: usePoolTVL,
-  [ChainId.AVALANCHE]: usePoolTVL,
-  [ChainId.WAGMI]: useDummyPoolTVL,
-  [ChainId.COSTON]: useDummyPoolTVL,
-  [ChainId.SONGBIRD]: useDummyPoolTVL,
-  [ChainId.FLARE_MAINNET]: useDummyPoolTVL,
-  [ChainId.HEDERA_TESTNET]: useDummyPoolTVL,
-  [ChainId.HEDERA_MAINNET]: useDummyPoolTVL,
-  [ChainId.NEAR_MAINNET]: useDummyPoolTVL,
-  [ChainId.NEAR_TESTNET]: useDummyPoolTVL,
-  [ChainId.COSTON2]: useDummyPoolTVL,
-  [ChainId.EVMOS_TESTNET]: usePoolTVL,
-  [ChainId.EVMOS_MAINNET]: usePoolTVL,
-  [ChainId.ETHEREUM]: useDummyPoolTVL,
-  [ChainId.POLYGON]: useDummyPoolTVL,
-  [ChainId.FANTOM]: useDummyPoolTVL,
-  [ChainId.XDAI]: useDummyPoolTVL,
-  [ChainId.BSC]: useDummyPoolTVL,
-  [ChainId.ARBITRUM]: useDummyPoolTVL,
-  [ChainId.CELO]: useDummyPoolTVL,
-  [ChainId.OKXCHAIN]: useDummyPoolTVL,
-  [ChainId.VELAS]: useDummyPoolTVL,
-  [ChainId.AURORA]: useDummyPoolTVL,
-  [ChainId.CRONOS]: useDummyPoolTVL,
-  [ChainId.FUSE]: useDummyPoolTVL,
-  [ChainId.MOONRIVER]: useDummyPoolTVL,
-  [ChainId.MOONBEAM]: useDummyPoolTVL,
-  [ChainId.OP]: useDummyPoolTVL,
-  [ChainId.SKALE_BELLATRIX_TESTNET]: usePoolTVL,
-};
-
-export type UseFeeTierDistributionHookType = {
-  [chainId in ChainId]: typeof useFeeTierDistribution | typeof useDummyFeeTierDistribution;
-};
-
-export const useFeeTierDistributionHook: UseFeeTierDistributionHookType = {
-  [ChainId.FUJI]: useFeeTierDistribution,
-  [ChainId.AVALANCHE]: useFeeTierDistribution,
-  [ChainId.WAGMI]: useDummyFeeTierDistribution,
-  [ChainId.COSTON]: useDummyFeeTierDistribution,
-  [ChainId.SONGBIRD]: useDummyFeeTierDistribution,
-  [ChainId.FLARE_MAINNET]: useDummyFeeTierDistribution,
-  [ChainId.HEDERA_TESTNET]: useDummyFeeTierDistribution,
-  [ChainId.HEDERA_MAINNET]: useDummyFeeTierDistribution,
-  [ChainId.NEAR_MAINNET]: useDummyFeeTierDistribution,
-  [ChainId.NEAR_TESTNET]: useDummyFeeTierDistribution,
-  [ChainId.COSTON2]: useDummyFeeTierDistribution,
-  [ChainId.EVMOS_TESTNET]: useFeeTierDistribution,
-  [ChainId.EVMOS_MAINNET]: useFeeTierDistribution,
-  [ChainId.ETHEREUM]: useDummyFeeTierDistribution,
-  [ChainId.POLYGON]: useDummyFeeTierDistribution,
-  [ChainId.FANTOM]: useDummyFeeTierDistribution,
-  [ChainId.XDAI]: useDummyFeeTierDistribution,
-  [ChainId.BSC]: useDummyFeeTierDistribution,
-  [ChainId.ARBITRUM]: useDummyFeeTierDistribution,
-  [ChainId.CELO]: useDummyFeeTierDistribution,
-  [ChainId.OKXCHAIN]: useDummyFeeTierDistribution,
-  [ChainId.VELAS]: useDummyFeeTierDistribution,
-  [ChainId.AURORA]: useDummyFeeTierDistribution,
-  [ChainId.CRONOS]: useDummyFeeTierDistribution,
-  [ChainId.FUSE]: useDummyFeeTierDistribution,
-  [ChainId.MOONRIVER]: useDummyFeeTierDistribution,
-  [ChainId.MOONBEAM]: useDummyFeeTierDistribution,
-  [ChainId.OP]: useDummyFeeTierDistribution,
-  [ChainId.SKALE_BELLATRIX_TESTNET]: useFeeTierDistribution,
 };
 
 export type UseUnderlyingTokensHookType = {

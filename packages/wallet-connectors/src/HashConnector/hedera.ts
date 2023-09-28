@@ -86,13 +86,6 @@ export interface TokenResponse {
   type: string;
 }
 
-export interface TransactionResponse {
-  nodeId: string;
-  transactionHash: string;
-  transactionId: string;
-  consensusTimestamp: string;
-}
-
 export interface APITransactionResponse {
   transactions: Array<{
     entity_id: string;

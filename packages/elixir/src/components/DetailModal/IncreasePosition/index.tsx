@@ -492,3 +492,4 @@ const IncreasePosition: React.FC<IncreasePositionProps> = (props) => {
 };
 
 export default IncreasePosition;
+/* eslint-enable max-lines */

@@ -16,6 +16,7 @@ export * from './useTotalSupply';
 export * from './usePair';
 export * from './tokens';
 export * from './useCurrencyPrice';
+export * from './usePairCurrencyPrice';
 
 // hooks
 export {

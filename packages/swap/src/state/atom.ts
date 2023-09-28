@@ -1,4 +1,4 @@
-import { ZERO_ADDRESS } from '@honeycomb-finance/shared';
+import { ZERO_ADDRESS, useChainId } from '@honeycomb-finance/shared';
 import { Hedera } from '@honeycomb-finance/wallet-connectors';
 import { CAVAX, ChainId, WAVAX } from '@pangolindex/sdk';
 import { atom, useAtom } from 'jotai';
@@ -260,3 +260,36 @@ export const useSwapState = () => {
     updateFeeInfo,
   };
 };
+
+export function useDaasFeeTo(): [string, (feeTo: string) => void] {
+  const chainId = useChainId();
+
+  const { swapState: state, updateFeeTo } = useSwapState();
+
+  const feeTo = state[chainId]?.feeTo;
+  const setFeeTo = useCallback(
+    (newFeeTo: string) => {
+      updateFeeTo({ feeTo: newFeeTo, chainId });
+    },
+    [updateFeeTo],
+  );
+
+  return [feeTo, setFeeTo];
+}
+
+export function useDaasFeeInfo(): [FeeInfo, (feeInfo: FeeInfo) => void] {
+  const chainId = useChainId();
+
+  const { swapState: state, updateFeeInfo } = useSwapState();
+
+  const feeInfo = state[chainId]?.feeInfo;
+
+  const setFeeInfo = useCallback(
+    (newFeeInfo: FeeInfo) => {
+      updateFeeInfo({ feeInfo: newFeeInfo, chainId });
+    },
+    [updateFeeInfo],
+  );
+
+  return [feeInfo, setFeeInfo];
+}

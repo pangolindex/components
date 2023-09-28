@@ -11,8 +11,7 @@ import { ElixirTrade, Fraction, Percent, Trade, TradeType } from '@pangolindex/s
 import _uniqueId from 'lodash/uniqueId';
 import React, { useContext } from 'react';
 import { ThemeContext } from 'styled-components';
-import { Field } from 'src/state/atom';
-import { useDaasFeeInfo } from 'src/state/hooks/common';
+import { Field, useDaasFeeInfo } from 'src/state/atom';
 import { computeTradePriceBreakdown, warningSeverity } from 'src/utils/prices';
 import { ContentBox, DataBox, ValueText } from './styled';
 

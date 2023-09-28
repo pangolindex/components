@@ -64,4 +64,8 @@ export default {
     },
   ],
   plugins: plugins,
+  onwarn: function (message, defaultHandler) {
+    if (message.code === 'THIS_IS_UNDEFINED') return;
+    defaultHandler(message);
+  },
 };

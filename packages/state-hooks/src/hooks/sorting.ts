@@ -1,7 +1,7 @@
 import { getTokenComparator } from '@honeycomb-finance/shared';
 import { BridgeCurrency, Token } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { useAllTokenBalances } from '..';
+import { useAllTokenBalances } from '../state/wallet/hooks/common';
 
 type SortCurrency = Token | BridgeCurrency;
 

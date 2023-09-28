@@ -1,6 +1,9 @@
 import { useTranslation } from '@honeycomb-finance/shared';
 import React from 'react';
-import { Box, NumberOptions, Text, TextInput } from '../';
+import { Box } from '../Box';
+import { NumberOptions } from '../NumberOptions';
+import { Text } from '../Text';
+import { TextInput } from '../TextInput';
 import { InputOptions } from './styled';
 
 export interface SlippageInputProps {

@@ -33,10 +33,8 @@ import {
   ElixirAddLiquidityProps,
   ElixirLiquidityCollectFeesProps,
   PositionDetails,
-  UseElixirPositionResults,
   UseElixirPositionsResults,
 } from '../types';
-import { useElixirPositionsFromTokenIdsHook } from './index';
 
 // It returns the positions based on the tokenIds.
 export function useElixirPositionsFromTokenIds(tokenIds: BigNumber[] | undefined): UseElixirPositionsResults {
@@ -75,18 +73,6 @@ export function useElixirPositionsFromTokenIds(tokenIds: BigNumber[] | undefined
   return {
     loading,
     positions: positions?.map((position, i) => ({ ...position, tokenId: inputs[i][0] })),
-  };
-}
-
-export function useElixirPositionFromTokenId(tokenId: BigNumber | undefined): UseElixirPositionResults {
-  const chainId = useChainId();
-
-  const useElixirPositionsFromTokenIds = useElixirPositionsFromTokenIdsHook[chainId];
-
-  const position = useElixirPositionsFromTokenIds(tokenId ? [tokenId] : undefined);
-  return {
-    loading: position.loading,
-    position: position.positions?.[0],
   };
 }
 

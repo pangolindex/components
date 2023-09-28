@@ -1,6 +1,20 @@
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
-import { CoingeckoWatchListToken } from './hooks';
+
+export interface CoingeckoTokenData {
+  id: string;
+  symbol: string;
+  name: string;
+}
+
+export interface CoingeckoWatchListToken extends CoingeckoTokenData {
+  price: string | null;
+  imageUrl: string | null;
+  weeklyChartData: Array<{
+    timestamp: string;
+    priceUSD: number;
+  }>;
+}
 
 export interface CoingeckoWatchListState {
   [id: string]: CoingeckoWatchListToken;

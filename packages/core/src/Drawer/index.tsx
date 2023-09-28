@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { X } from 'react-feather';
 import { ThemeContext } from 'styled-components';
-import { Box, Text } from '../';
+import { Box } from '../Box';
+import { Text } from '../Text';
 import { CloseCircle, DrawerContent, DrawerRoot } from './styled';
 
 export interface DrawerProps {

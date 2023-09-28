@@ -28,7 +28,7 @@ import {
   TradeType,
 } from '@pangolindex/sdk';
 import { useMemo } from 'react';
-import { useDaasFeeTo } from 'src/state/hooks/common';
+import { useDaasFeeTo } from 'src/state/atom';
 import { Version } from '../useToggledVersion';
 import { SwapCallbackState } from './constant';
 

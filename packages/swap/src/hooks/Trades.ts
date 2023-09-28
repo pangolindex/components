@@ -15,7 +15,7 @@ import {
 import flatMap from 'lodash.flatmap';
 import { useEffect, useMemo, useState } from 'react';
 import { BASES_TO_CHECK_TRADES_AGAINST, CUSTOM_BASES } from 'src/constants';
-import { useDaasFeeInfo, useDaasFeeTo } from '../state/hooks/common';
+import { useDaasFeeInfo, useDaasFeeTo } from '../state/atom';
 
 function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): { pairs: Pair[]; isLoading: boolean } {
   const chainId = useChainId();
