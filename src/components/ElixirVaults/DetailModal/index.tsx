@@ -8,6 +8,7 @@ import { Tabs } from 'src/components/Tabs';
 import Header from './Header';
 import { HeaderProps } from './Header/types';
 // import DetailTab from './Tabs/DetailTab';
+import Join from './Join';
 import DetailTab from './Tabs/DetailTab';
 import {
   CustomTab,
@@ -64,7 +65,9 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
           <Header {...headerArgs} />
           <Box p={10}>
             <Box mt={'20px'}>
-              <Root>{/* <IncreasePosition position={position} /> */}</Root>
+              <Root>
+                <Join vault={vault} />
+              </Root>
             </Box>
             <Box mt={25}>{renderTabs()}</Box>
           </Box>
@@ -74,7 +77,9 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
           <DetailsWrapper>
             <LeftSection>{renderTabs()}</LeftSection>
             <RightSection>
-              <Root>{/* <IncreasePosition position={position} /> */}</Root>
+              <Root>
+                <Join vault={vault} />
+              </Root>
             </RightSection>
           </DetailsWrapper>
         </DesktopWrapper>

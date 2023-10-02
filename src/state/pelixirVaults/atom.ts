@@ -1,71 +1,47 @@
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
-import { CurrencyField, ElixirVault, ElixirVaultDetail, TransactionStatus } from './types';
+import { ElixirVault, ElixirVaultDetail, Field, TransactionStatus } from './types';
 
 export interface ElixirVaultState {
+  readonly independentField: Field;
   readonly typedValue: string;
-  readonly [CurrencyField.CURRENCY0]: {
+  readonly [Field.CURRENCY_A]: {
     readonly currencyId: string | undefined;
   };
-  readonly [CurrencyField.CURRENCY1]: {
+  readonly [Field.CURRENCY_B]: {
     readonly currencyId: string | undefined;
   };
   readonly elixirVaults: ElixirVault[];
   readonly selectedElixirVault: number | undefined;
   readonly selectedVaultDetails: ElixirVaultDetail | undefined;
   readonly elixirVaultsLoaderStatus: boolean;
-  readonly transactionLoaderStatus: boolean;
-  readonly transactionError: Error | undefined;
-  readonly transactionStatus: TransactionStatus | undefined;
+  readonly depositTransactionLoaderStatus: boolean;
+  readonly depositTransactionError: Error | undefined;
+  readonly depositTransactionStatus: TransactionStatus | undefined;
 }
 
 const initialElixirVaultState: ElixirVaultState = {
+  independentField: Field.CURRENCY_A,
   typedValue: '',
-  [CurrencyField.CURRENCY0]: {
+  [Field.CURRENCY_A]: {
     currencyId: '',
   },
-  [CurrencyField.CURRENCY1]: {
+  [Field.CURRENCY_B]: {
     currencyId: '',
   },
   elixirVaults: [],
   selectedElixirVault: undefined,
   selectedVaultDetails: undefined,
   elixirVaultsLoaderStatus: false,
-  transactionLoaderStatus: false,
-  transactionError: undefined,
-  transactionStatus: undefined,
+  depositTransactionLoaderStatus: false,
+  depositTransactionError: undefined,
+  depositTransactionStatus: undefined,
 };
 
 const elixirVaultStateAtom = atom<ElixirVaultState>(initialElixirVaultState);
 
 export const useElixirVaultStateAtom = () => {
   const [elixirVaultState, setElixirVaultState] = useAtom(elixirVaultStateAtom);
-
-  const replaceElixirVaultState = useCallback(
-    ({ inputCurrencyId, outputCurrencyId }) => {
-      setElixirVaultState((state) => ({
-        ...state,
-        typedValue: '',
-        [CurrencyField.CURRENCY0]: {
-          currencyId: inputCurrencyId,
-        },
-        [CurrencyField.CURRENCY1]: {
-          currencyId: outputCurrencyId,
-        },
-      }));
-    },
-    [setElixirVaultState],
-  );
-
-  const selectCurrency = useCallback(
-    ({ currencyId, field }) => {
-      setElixirVaultState((state) => ({
-        ...state,
-        [field]: { currencyId: currencyId },
-      }));
-    },
-    [setElixirVaultState],
-  );
 
   const selectElixirVault = useCallback(
     ({ selectedElixirVault }) => {
@@ -92,25 +68,6 @@ export const useElixirVaultStateAtom = () => {
     [setElixirVaultState],
   );
 
-  const typeAmount = useCallback(
-    ({ field, typedValue }) => {
-      setElixirVaultState((state) => ({
-        ...state,
-        field: field,
-        typedValue,
-      }));
-    },
-    [setElixirVaultState],
-  );
-
-  const switchCurrencies = useCallback(() => {
-    setElixirVaultState((state) => ({
-      ...state,
-      [CurrencyField.CURRENCY0]: { currencyId: state[CurrencyField.CURRENCY0].currencyId },
-      [CurrencyField.CURRENCY1]: { currencyId: state[CurrencyField.CURRENCY1].currencyId },
-    }));
-  }, [setElixirVaultState]);
-
   const clearTransactionData = useCallback(() => {
     setElixirVaultState((state) => ({
       ...state,
@@ -119,16 +76,6 @@ export const useElixirVaultStateAtom = () => {
       transactionStatus: undefined,
     }));
   }, [setElixirVaultState]);
-
-  const setRecipient = useCallback(
-    ({ recipient }) => {
-      setElixirVaultState((state) => ({
-        ...state,
-        recipient,
-      }));
-    },
-    [setElixirVaultState],
-  );
 
   const setElixirVaults = useCallback(
     ({ elixirVaults, elixirVaultsLoaderStatus }) => {
@@ -159,41 +106,86 @@ export const useElixirVaultStateAtom = () => {
     }));
   }, [setElixirVaultState]);
 
-  const changeTransactionLoaderStatus = useCallback(
-    ({ transactionLoaderStatus, transactionStatus }) => {
+  const changeDepositTransactionLoaderStatus = useCallback(
+    ({ depositTransactionLoaderStatus, depositTransactionStatus }) => {
       setElixirVaultState((state) => ({
         ...state,
-        transactionLoaderStatus,
-        transactionStatus,
+        depositTransactionLoaderStatus,
+        depositTransactionStatus,
       }));
     },
     [setElixirVaultState],
   );
 
-  const setTransactionError = useCallback(
-    ({ transactionError }) => {
+  const setDepositTransactionError = useCallback(
+    ({ depositTransactionError }) => {
       setElixirVaultState((state) => ({
         ...state,
-        transactionError,
+        depositTransactionError,
       }));
     },
     [setElixirVaultState],
   );
+
+  // pmint - Mint actions
+  const setTypeInput = useCallback(
+    ({ field, typedValue }: { field: Field; typedValue: string }) => {
+      setElixirVaultState((state) => ({
+        ...state,
+        independentField: field,
+        typedValue,
+      }));
+    },
+    [setElixirVaultState, elixirVaultState],
+  );
+
+  const selectCurrency = useCallback(
+    ({ currencyId, field }: { currencyId: string; field: Field }) => {
+      const otherField = field === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A;
+
+      if (currencyId === elixirVaultState[otherField].currencyId) {
+        // the case where we have to swap the order
+        setElixirVaultState((prev) => ({
+          ...prev,
+          independentField: prev?.independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A,
+          [field]: { currencyId: currencyId },
+          [otherField]: { currencyId: prev[field].currencyId },
+        }));
+      } else {
+        // the normal case
+        setElixirVaultState((prev) => ({
+          ...prev,
+          [field]: { currencyId: currencyId },
+        }));
+      }
+    },
+    [setElixirVaultState, elixirVaultState],
+  );
+
+  const resetState = useCallback(() => {
+    setElixirVaultState(initialElixirVaultState);
+  }, [setElixirVaultState]);
+
+  const resetMintStateOnToggle = useCallback(() => {
+    setElixirVaultState((state) => ({
+      ...state,
+      typedValue: '',
+    }));
+  }, [setElixirVaultState]);
 
   return {
     elixirVaultState,
-    replaceElixirVaultState,
     setElixirVaultDetail,
+    resetState,
     resetSelectedVaultDetails,
-    selectCurrency,
     selectElixirVault,
     changeElixirVaultLoaderStatus,
-    typeAmount,
-    switchCurrencies,
     clearTransactionData,
-    setRecipient,
     setElixirVaults,
-    changeTransactionLoaderStatus,
-    setTransactionError,
+    changeDepositTransactionLoaderStatus,
+    setDepositTransactionError,
+    resetMintStateOnToggle,
+    selectCurrency,
+    setTypeInput,
   };
 };

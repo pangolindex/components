@@ -1,14 +1,18 @@
 /* eslint-disable max-lines */
-import { Currency, ElixirVaultProvider } from '@pangolindex/sdk';
-import React, { useCallback } from 'react';
+import { Currency, CurrencyAmount, ElixirVaultProvider, Token } from '@pangolindex/sdk';
+import React, { useCallback, useMemo } from 'react';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { tryParseAmount } from '../pswap/hooks/common';
+import { useCurrencyBalances } from '../pwallet/hooks/common';
 import { ElixirVaultState, useElixirVaultStateAtom } from './atom';
 import { getElixirVaultDetailFromProviders, getElixirVaultsFromProviders } from './providers';
 import {
-  CurrencyField,
   ElixirVault,
   ElixirVaultDetail,
+  Field,
   GetElixirVaultDetailsProps,
   GetElixirVaultsProps,
+  SendTransaction,
   TransactionStatus,
 } from './types';
 
@@ -18,25 +22,26 @@ export function useElixirVaultState(): ElixirVaultState {
 }
 
 export function useElixirVaultActionHandlers(): {
-  onCurrencySelection: (field: CurrencyField, currency: Currency) => void;
-  onSwitchTokens: () => void;
+  onCurrencySelection: (field: Field, currency: Token) => void;
   onCloseDetailModal: () => void;
+  onResetState: () => void;
   onSelectElixirVault: (elixirVault: ElixirVault) => void;
-  onUserInput: (field: CurrencyField, typedValue: string) => void;
+  onUserInput: (field: Field, typedValue: string) => void;
   onChangeElixirVaultLoaderStatus: () => void;
   onClearTransactionData: (transactionStatus: TransactionStatus) => void;
 } {
   const {
     selectElixirVault,
     selectCurrency,
-    switchCurrencies,
     clearTransactionData,
     setElixirVaults,
-    typeAmount,
     changeElixirVaultLoaderStatus,
     resetSelectedVaultDetails,
+    setTypeInput,
+    resetState,
   } = useElixirVaultStateAtom();
   const { elixirVaults, elixirVaultsLoaderStatus } = useElixirVaultState();
+  const chainId = useChainId();
 
   const onSelectElixirVault = (elixirVault: ElixirVault) => {
     const selectedElixirVaultIndex = elixirVaults.findIndex((r) => r === elixirVault);
@@ -48,20 +53,18 @@ export function useElixirVaultActionHandlers(): {
   }, [resetSelectedVaultDetails]);
 
   const onCurrencySelection = useCallback(
-    (field: CurrencyField, currency: Currency) => {
-      typeAmount({ field, typedValue: '0' }); //TODO:
-
+    (field: Field, token: Token) => {
       selectCurrency({
         field,
-        currencyId: currency?.symbol || '',
+        currencyId: token ? token.address : '',
       });
     },
-    [selectCurrency, typeAmount],
+    [selectCurrency, chainId],
   );
 
-  const onSwitchTokens = useCallback(() => {
-    switchCurrencies();
-  }, [switchCurrencies]);
+  const onResetState = useCallback(() => {
+    resetState();
+  }, [resetState]);
 
   const onClearTransactionData = useCallback(
     (transactionStatus?: TransactionStatus) => {
@@ -74,10 +77,10 @@ export function useElixirVaultActionHandlers(): {
   );
 
   const onUserInput = useCallback(
-    (field: CurrencyField, typedValue: string) => {
-      typeAmount({ field, typedValue });
+    (field: Field, typedValue: string) => {
+      setTypeInput({ field, typedValue });
     },
-    [typeAmount],
+    [setTypeInput],
   );
 
   const onChangeElixirVaultLoaderStatus = useCallback(() => {
@@ -85,9 +88,9 @@ export function useElixirVaultActionHandlers(): {
   }, [changeElixirVaultLoaderStatus]);
 
   return {
-    onSwitchTokens,
     onCloseDetailModal,
     onCurrencySelection,
+    onResetState,
     onSelectElixirVault,
     onUserInput,
     onChangeElixirVaultLoaderStatus,
@@ -99,21 +102,89 @@ export function useDerivedElixirVaultInfo(): {
   elixirVaults?: ElixirVault[];
   selectedVaultDetails?: ElixirVaultDetail;
   elixirVaultsLoaderStatus?: boolean;
+  dependentField: Field;
+  currencies: { [field in Field]?: Currency };
+  currencyBalances: { [field in Field]?: CurrencyAmount };
+  parsedAmounts: { [field in Field]?: CurrencyAmount };
+  depositTransactionLoaderStatus: boolean;
+  depositTransactionStatus?: TransactionStatus;
+  depositTransactionError?: Error;
 } {
-  const { elixirVaults, elixirVaultsLoaderStatus, selectedVaultDetails } = useElixirVaultState();
+  const { account } = usePangolinWeb3();
+  const chainId = useChainId();
+  const {
+    independentField,
+    typedValue,
+    elixirVaults,
+    elixirVaultsLoaderStatus,
+    selectedVaultDetails,
+    depositTransactionLoaderStatus,
+    depositTransactionStatus,
+    depositTransactionError,
+  } = useElixirVaultState();
+
+  const dependentField = independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A;
+
+  const tokenA = selectedVaultDetails?.poolTokens?.[0];
+  const tokenB = selectedVaultDetails?.poolTokens?.[1];
+
+  const [currencies] = useMemo(() => {
+    const currencies: { [field in Field]?: Currency | undefined } = {
+      [Field.CURRENCY_A]: (tokenA && tokenB && tokenA.equals(tokenB) ? tokenB : tokenA) ?? undefined,
+      [Field.CURRENCY_B]: (tokenA && tokenB && tokenA.equals(tokenB) ? undefined : tokenB) ?? undefined,
+    };
+
+    return [currencies];
+  }, [tokenA, tokenB]);
+
+  // Balances
+  const balances = useCurrencyBalances(
+    chainId,
+    account ?? undefined,
+    useMemo(() => [currencies[Field.CURRENCY_A], currencies[Field.CURRENCY_B]], [currencies]),
+  );
+  const currencyBalances: { [field in Field]?: CurrencyAmount } = {
+    [Field.CURRENCY_A]: balances[0],
+    [Field.CURRENCY_B]: balances[1],
+  };
+
+  // amounts
+  const independentAmount: CurrencyAmount | undefined = tryParseAmount(
+    typedValue,
+    currencies[independentField],
+    chainId,
+  );
+
+  const dependentAmount: CurrencyAmount | undefined = tryParseAmount('21', currencies[dependentField], chainId); //TODO: remove 21
+  // TODO: Add logic for calculating dependent amount
+
+  const parsedAmounts: { [field in Field]: CurrencyAmount | undefined } = useMemo(() => {
+    return {
+      [Field.CURRENCY_A]: independentField === Field.CURRENCY_A ? independentAmount : dependentAmount,
+      [Field.CURRENCY_B]: independentField === Field.CURRENCY_A ? dependentAmount : independentAmount,
+    };
+  }, [dependentAmount, independentAmount, independentField]);
 
   return {
     elixirVaults,
     selectedVaultDetails,
+    currencyBalances,
+    dependentField,
+    currencies,
+    parsedAmounts,
     elixirVaultsLoaderStatus,
+    depositTransactionLoaderStatus,
+    depositTransactionStatus,
+    depositTransactionError,
   };
 }
 
 export function useVaultActionHandlers(): {
   getVaults: (props: GetElixirVaultsProps) => void;
   getVaultDetails: (props: GetElixirVaultDetailsProps, vaultProvider: ElixirVaultProvider) => void;
+  sendTransaction: SendTransaction;
 } {
-  const { setElixirVaults, setElixirVaultDetail } = useElixirVaultStateAtom();
+  const { changeDepositTransactionLoaderStatus, setElixirVaults, setElixirVaultDetail } = useElixirVaultStateAtom();
   const getVaults = async (routesProps: GetElixirVaultsProps) => {
     const promises = Object.values(getElixirVaultsFromProviders).map((getVaults) => getVaults(routesProps));
     const elixirVaults = (await Promise.allSettled(promises)).flatMap((p) => (p.status === 'fulfilled' ? p.value : []));
@@ -135,8 +206,22 @@ export function useVaultActionHandlers(): {
     return res;
   };
 
+  const sendDefiEdgeDepositTransaction = async () => {
+    changeDepositTransactionLoaderStatus({ depositTransactionLoaderStatus: true, depositTransactionStatus: undefined });
+
+    changeDepositTransactionLoaderStatus({
+      depositTransactionLoaderStatus: false,
+      depositTransactionStatus: TransactionStatus.SUCCESS,
+    });
+  };
+
+  const sendTransaction: SendTransaction = {
+    defiedge: sendDefiEdgeDepositTransaction,
+  };
+
   return {
     getVaults,
     getVaultDetails,
+    sendTransaction,
   };
 }

@@ -11,7 +11,7 @@ export type ElixirVault = {
   incentivizationApr: string;
 };
 
-export type ElixirVaultDetail = {
+export type ElixirVaultDetail = ElixirVault & {
   underlyingToken0?: string;
   underlyingToken1?: string;
   underlyingToken0Price?: string;
@@ -25,15 +25,15 @@ export type GetElixirVaultsProps = {
 
 export type GetElixirVaultDetailsProps = {
   chain: Chain;
-  vaultAddress: string;
+  vault: ElixirVault;
 };
 
 export type GetElixirVaults = (props: GetElixirVaultsProps) => Promise<ElixirVault[]>;
 export type GetElixirVaultDetails = (props: GetElixirVaultDetailsProps) => Promise<ElixirVaultDetail>;
 
-export enum CurrencyField {
-  CURRENCY0 = 'CURRENCY0',
-  CURRENCY1 = 'CURRENCY1',
+export enum Field {
+  CURRENCY_A = 'CURRENCY_A',
+  CURRENCY_B = 'CURRENCY_B',
 }
 
 export enum TransactionStatus {
@@ -45,7 +45,6 @@ export type SendTransactionFunc = (selectedElixirVault?: ElixirVault, account?: 
 
 export type SendTransaction = {
   defiedge: SendTransactionFunc;
-  ichi: SendTransactionFunc;
 };
 
 export type DefiEdgeAllStrategyData = {

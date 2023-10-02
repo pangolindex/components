@@ -18,11 +18,17 @@ export const getDefiEdgeVaults: any = async ({ chain }: GetElixirVaultsProps) =>
       },
     });
     const data: ElixirVault[] = response.data.map((strategy: DefiEdgeAllStrategyData) => {
+      const { token0, token1 } = strategy;
+      const tokenA =
+        token0 && chain.chain_id && new Token(chain.chain_id, token0.id, token0.decimals, token0.symbol, token0.name);
+      const tokenB =
+        token1 && chain.chain_id && new Token(chain.chain_id, token1.id, token1.decimals, token1.symbol, token1.name);
+
       return {
         strategyProvider: [DEFIEDGE],
         selected: false,
         address: strategy.address,
-        poolTokens: [strategy.token0 as unknown as Token, strategy.token1 as unknown as Token],
+        poolTokens: [tokenA, tokenB],
         sharePrice: strategy.sharePrice.toString(),
         incentivized: false,
         feesApr: '0',
@@ -35,10 +41,14 @@ export const getDefiEdgeVaults: any = async ({ chain }: GetElixirVaultsProps) =>
   }
 };
 
-export const getDefiEdgeVaultDetails: any = async ({ chain, vaultAddress }) => {
-  const strategyDetailUrl = `https://api.defiedge.io/${chain?.name?.toLocaleLowerCase()}/details?strategies=${vaultAddress}`;
-  const strategyLiquidityDetailUrl = `https://api.defiedge.io/${chain?.name?.toLocaleLowerCase()}/${vaultAddress}/liquidity`;
-  const strategyDetailWebsite = `https://app.defiedge.io/s/${chain?.name?.toLocaleLowerCase()}/${vaultAddress}`;
+export const getDefiEdgeVaultDetails: any = async ({ chain, vault }) => {
+  const strategyDetailUrl = `https://api.defiedge.io/${chain?.name?.toLocaleLowerCase()}/details?strategies=${
+    vault?.address
+  }`;
+  const strategyLiquidityDetailUrl = `https://api.defiedge.io/${chain?.name?.toLocaleLowerCase()}/${
+    vault?.address
+  }/liquidity`;
+  const strategyDetailWebsite = `https://app.defiedge.io/s/${chain?.name?.toLocaleLowerCase()}/${vault?.address}`;
   const reqHeader = {
     headers: {
       'Content-Type': 'application/json',
@@ -52,6 +62,7 @@ export const getDefiEdgeVaultDetails: any = async ({ chain, vaultAddress }) => {
   const liqData = liqResponse.data as DefiEdgeStrategyLiquidityData;
 
   const res: ElixirVaultDetail = {
+    ...vault,
     underlyingToken0: liqData.amount0Total,
     underlyingToken1: liqData.amount1Total,
     underlyingToken0Price: data.token0Price,

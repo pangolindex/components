@@ -25,19 +25,6 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
   const currency0 = vault?.poolTokens?.[0] ? unwrappedToken(vault?.poolTokens?.[0], chainId) : undefined;
   const currency1 = vault?.poolTokens?.[1] ? unwrappedToken(vault?.poolTokens?.[1], chainId) : undefined;
 
-  // ------------------ Total Stake ------------------
-  // TODO:
-  // const useUSDCPrice = useUSDCPriceHook[chainId];
-  // const price0 = useUSDCPrice(currency0 ?? undefined);
-  // const price1 = useUSDCPrice(currency1 ?? undefined);
-  // const fiatValueOfLiquidity: CurrencyAmount | null = useMemo(() => {
-  //   if (!price0 || !price1 || !nativePosition) return null;
-  //   const amount0 = price0.quote(nativePosition?.amount0, chainId);
-  //   const amount1 = price1.quote(nativePosition?.amount1, chainId);
-  //   return amount0.add(amount1);
-  // }, [price0, price1]);
-  // ------------------ Total Stake ------------------
-
   const calculateTotalStakeValue = (): string => {
     if (!selectedVaultDetails) return '-';
     else {
@@ -112,7 +99,7 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
 
   useEffect(() => {
     if (vault) {
-      getVaultDetails({ vaultAddress: vault.address, chain: relatedChain }, vault?.strategyProvider?.[0]);
+      getVaultDetails({ vault: vault, chain: relatedChain }, vault?.strategyProvider?.[0]);
     }
   }, [vault]);
 
