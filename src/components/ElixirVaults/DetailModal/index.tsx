@@ -5,9 +5,9 @@ import { useWindowSize } from 'react-use';
 import { ThemeContext } from 'styled-components';
 import { Box, Modal } from 'src/components';
 import { Tabs } from 'src/components/Tabs';
+import EarnWidget from './EarnWidget';
 import Header from './Header';
 import { HeaderProps } from './Header/types';
-// import DetailTab from './Tabs/DetailTab';
 import Join from './Join';
 import DetailTab from './Tabs/DetailTab';
 import {
@@ -69,6 +69,11 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
                 <Join vault={vault} />
               </Root>
             </Box>
+            <Box mt={'20px'}>
+              <Root>
+                <EarnWidget vault={vault} />
+              </Root>
+            </Box>
             <Box mt={25}>{renderTabs()}</Box>
           </Box>
         </MobileWrapper>
@@ -79,6 +84,9 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
             <RightSection>
               <Root>
                 <Join vault={vault} />
+              </Root>
+              <Root verticalPadding={'35px'}>
+                <EarnWidget vault={vault} />
               </Root>
             </RightSection>
           </DetailsWrapper>

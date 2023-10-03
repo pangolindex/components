@@ -144,12 +144,7 @@ const Join: React.FC<JoinProps> = (props) => {
     [dependentField]: parsedAmounts[dependentField]?.toSignificant(6) ?? '',
   };
 
-  const { sendTransaction } = useVaultActionHandlers();
-  const addLiquidity = useMemo(() => {
-    if (vault) {
-      return sendTransaction[vault.strategyProvider?.[0]?.id](vault?.strategyProvider?.[0], account || '');
-    }
-  }, [vault]);
+  const { depositLiquidity } = useVaultActionHandlers();
 
   async function onJoin() {
     if (!chainId || !library || !account || !provider) return;
@@ -161,9 +156,12 @@ const Join: React.FC<JoinProps> = (props) => {
     try {
       setAttempting(true);
 
-      const dataForDeposit = {};
+      const dataForDeposit = {
+        selectedElixirVault: vault,
+        account: account || '',
+      };
 
-      const response = addLiquidity && (await addLiquidity(dataForDeposit));
+      const response: any = depositLiquidity && (await depositLiquidity(dataForDeposit, vault.strategyProvider?.[0])); // TODO: Change type
 
       setHash(response?.hash as string);
       if (response?.hash) {

@@ -17,6 +17,7 @@ export type ElixirVaultDetail = ElixirVault & {
   underlyingToken0Price?: string;
   underlyingToken1Price?: string;
   strategyDetailWebsite: string;
+  userLiquidity?: string;
 };
 
 export type GetElixirVaultsProps = {
@@ -26,10 +27,31 @@ export type GetElixirVaultsProps = {
 export type GetElixirVaultDetailsProps = {
   chain: Chain;
   vault: ElixirVault;
+  account?: string;
+};
+
+export type RemoveElixirVaultLiquidityProps = {
+  vault: ElixirVault;
+  account?: string;
+  shares?: number;
+};
+
+export type DepositElixirVaultLiquidityProps = {
+  selectedElixirVault?: ElixirVault;
+  account?: string;
+};
+
+export type ProviderVaultTokenProcessProps = {
+  vaultAddress: string;
+  account?: string;
 };
 
 export type GetElixirVaults = (props: GetElixirVaultsProps) => Promise<ElixirVault[]>;
 export type GetElixirVaultDetails = (props: GetElixirVaultDetailsProps) => Promise<ElixirVaultDetail>;
+export type RemoveElixirVaultLiquidity = (props: RemoveElixirVaultLiquidityProps) => Promise<void>;
+export type DepositElixirVaultLiquidity = (props: DepositElixirVaultLiquidityProps) => Promise<void>;
+export type ProviderVaultTokenIsApproved = (props: ProviderVaultTokenProcessProps) => Promise<boolean>;
+export type ProviderVaultTokenApproveProcess = (props: ProviderVaultTokenProcessProps) => Promise<void>;
 
 export enum Field {
   CURRENCY_A = 'CURRENCY_A',
@@ -40,12 +62,6 @@ export enum TransactionStatus {
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
 }
-
-export type SendTransactionFunc = (selectedElixirVault?: ElixirVault, account?: string | null) => Promise<void>;
-
-export type SendTransaction = {
-  defiedge: SendTransactionFunc;
-};
 
 export type DefiEdgeAllStrategyData = {
   address: string;

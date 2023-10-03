@@ -4,9 +4,12 @@ import {
   DefiEdgeAllStrategyData,
   DefiEdgeStrategyData,
   DefiEdgeStrategyLiquidityData,
+  DepositElixirVaultLiquidityProps,
   ElixirVault,
   ElixirVaultDetail,
   GetElixirVaultsProps,
+  ProviderVaultTokenProcessProps,
+  RemoveElixirVaultLiquidityProps,
 } from '../types';
 
 export const getDefiEdgeVaults: any = async ({ chain }: GetElixirVaultsProps) => {
@@ -41,7 +44,7 @@ export const getDefiEdgeVaults: any = async ({ chain }: GetElixirVaultsProps) =>
   }
 };
 
-export const getDefiEdgeVaultDetails: any = async ({ chain, vault }) => {
+export const getDefiEdgeVaultDetails: any = async ({ chain, vault, account }) => {
   const strategyDetailUrl = `https://api.defiedge.io/${chain?.name?.toLocaleLowerCase()}/details?strategies=${
     vault?.address
   }`;
@@ -60,7 +63,10 @@ export const getDefiEdgeVaultDetails: any = async ({ chain, vault }) => {
 
   const liqResponse = await axios.get(strategyLiquidityDetailUrl, reqHeader);
   const liqData = liqResponse.data as DefiEdgeStrategyLiquidityData;
-
+  let userLiquidity;
+  if (account) {
+    userLiquidity = 11; //TODO:
+  }
   const res: ElixirVaultDetail = {
     ...vault,
     underlyingToken0: liqData.amount0Total,
@@ -68,6 +74,31 @@ export const getDefiEdgeVaultDetails: any = async ({ chain, vault }) => {
     underlyingToken0Price: data.token0Price,
     underlyingToken1Price: data.token1Price,
     strategyDetailWebsite,
+    ...(userLiquidity ? { userLiquidity } : {}),
   };
   return res;
+};
+
+// TODO:
+export const depositDefiEdgeLiquidity: any = async ({ selectedElixirVault }: DepositElixirVaultLiquidityProps) => {
+  console.log(selectedElixirVault);
+};
+
+// TODO:
+export const removeDefiEdgeVaultLiquidity: any = async ({ vault }: RemoveElixirVaultLiquidityProps) => {
+  console.log(vault);
+};
+
+// TODO:
+export const isDefiEdgeStrategyTokenApproved: any = async ({
+  vaultAddress,
+  account,
+}: ProviderVaultTokenProcessProps) => {
+  console.log('vaultAddress: ', vaultAddress, ' account: ', account);
+  return true;
+};
+
+// TODO:
+export const approveDefiEdgeStrategyToken: any = async ({ vaultAddress, account }: ProviderVaultTokenProcessProps) => {
+  console.log('vaultAddress: ', vaultAddress, ' account: ', account);
 };

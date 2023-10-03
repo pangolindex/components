@@ -18,6 +18,9 @@ export interface ElixirVaultState {
   readonly depositTransactionLoaderStatus: boolean;
   readonly depositTransactionError: Error | undefined;
   readonly depositTransactionStatus: TransactionStatus | undefined;
+  readonly removeTransactionLoaderStatus: boolean;
+  readonly removeTransactionError: Error | undefined;
+  readonly removeTransactionStatus: TransactionStatus | undefined;
 }
 
 const initialElixirVaultState: ElixirVaultState = {
@@ -36,6 +39,9 @@ const initialElixirVaultState: ElixirVaultState = {
   depositTransactionLoaderStatus: false,
   depositTransactionError: undefined,
   depositTransactionStatus: undefined,
+  removeTransactionLoaderStatus: false,
+  removeTransactionError: undefined,
+  removeTransactionStatus: undefined,
 };
 
 const elixirVaultStateAtom = atom<ElixirVaultState>(initialElixirVaultState);
@@ -127,6 +133,27 @@ export const useElixirVaultStateAtom = () => {
     [setElixirVaultState],
   );
 
+  const changeRemoveTransactionLoaderStatus = useCallback(
+    ({ removeTransactionLoaderStatus, removeTransactionStatus }) => {
+      setElixirVaultState((state) => ({
+        ...state,
+        removeTransactionLoaderStatus,
+        removeTransactionStatus,
+      }));
+    },
+    [setElixirVaultState],
+  );
+
+  const setRemoveTransactionError = useCallback(
+    ({ removeTransactionError }) => {
+      setElixirVaultState((state) => ({
+        ...state,
+        removeTransactionError,
+      }));
+    },
+    [setElixirVaultState],
+  );
+
   // pmint - Mint actions
   const setTypeInput = useCallback(
     ({ field, typedValue }: { field: Field; typedValue: string }) => {
@@ -184,6 +211,8 @@ export const useElixirVaultStateAtom = () => {
     setElixirVaults,
     changeDepositTransactionLoaderStatus,
     setDepositTransactionError,
+    changeRemoveTransactionLoaderStatus,
+    setRemoveTransactionError,
     resetMintStateOnToggle,
     selectCurrency,
     setTypeInput,

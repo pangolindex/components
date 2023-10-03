@@ -5,16 +5,23 @@ import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { tryParseAmount } from '../pswap/hooks/common';
 import { useCurrencyBalances } from '../pwallet/hooks/common';
 import { ElixirVaultState, useElixirVaultStateAtom } from './atom';
-import { getElixirVaultDetailFromProviders, getElixirVaultsFromProviders } from './providers';
 import {
+  depositElixirVaultLiquidity,
+  getElixirVaultDetailFromProviders,
+  getElixirVaultsFromProviders,
+  removeElixirVaultLiquidity,
+} from './providers';
+import {
+  DepositElixirVaultLiquidityProps,
   ElixirVault,
   ElixirVaultDetail,
   Field,
   GetElixirVaultDetailsProps,
   GetElixirVaultsProps,
-  SendTransaction,
+  RemoveElixirVaultLiquidityProps,
   TransactionStatus,
 } from './types';
+// import { waitForTransaction } from 'src/utils';
 
 export function useElixirVaultState(): ElixirVaultState {
   const { elixirVaultState } = useElixirVaultStateAtom();
@@ -182,9 +189,15 @@ export function useDerivedElixirVaultInfo(): {
 export function useVaultActionHandlers(): {
   getVaults: (props: GetElixirVaultsProps) => void;
   getVaultDetails: (props: GetElixirVaultDetailsProps, vaultProvider: ElixirVaultProvider) => void;
-  sendTransaction: SendTransaction;
+  removeLiquidity: (props: RemoveElixirVaultLiquidityProps, vaultProvider: ElixirVaultProvider) => void;
+  depositLiquidity: (props: DepositElixirVaultLiquidityProps, vaultProvider: ElixirVaultProvider) => void;
 } {
-  const { changeDepositTransactionLoaderStatus, setElixirVaults, setElixirVaultDetail } = useElixirVaultStateAtom();
+  const {
+    changeDepositTransactionLoaderStatus,
+    changeRemoveTransactionLoaderStatus,
+    setElixirVaults,
+    setElixirVaultDetail,
+  } = useElixirVaultStateAtom();
   const getVaults = async (routesProps: GetElixirVaultsProps) => {
     const promises = Object.values(getElixirVaultsFromProviders).map((getVaults) => getVaults(routesProps));
     const elixirVaults = (await Promise.allSettled(promises)).flatMap((p) => (p.status === 'fulfilled' ? p.value : []));
@@ -206,8 +219,20 @@ export function useVaultActionHandlers(): {
     return res;
   };
 
-  const sendDefiEdgeDepositTransaction = async () => {
+  const removeLiquidity = async (props: RemoveElixirVaultLiquidityProps, vaultProvider: ElixirVaultProvider) => {
+    changeRemoveTransactionLoaderStatus({ removeTransactionLoaderStatus: true, removeTransactionStatus: undefined });
+    const promise = removeElixirVaultLiquidity[vaultProvider.id](props);
+    await Promise.allSettled([promise]);
+    changeRemoveTransactionLoaderStatus({
+      removeTransactionLoaderStatus: false,
+      removeTransactionStatus: TransactionStatus.SUCCESS,
+    });
+  };
+
+  const depositLiquidity = async (props: DepositElixirVaultLiquidityProps, vaultProvider: ElixirVaultProvider) => {
     changeDepositTransactionLoaderStatus({ depositTransactionLoaderStatus: true, depositTransactionStatus: undefined });
+    const promise = depositElixirVaultLiquidity[vaultProvider.id](props);
+    await Promise.allSettled([promise]);
 
     changeDepositTransactionLoaderStatus({
       depositTransactionLoaderStatus: false,
@@ -215,13 +240,10 @@ export function useVaultActionHandlers(): {
     });
   };
 
-  const sendTransaction: SendTransaction = {
-    defiedge: sendDefiEdgeDepositTransaction,
-  };
-
   return {
     getVaults,
     getVaultDetails,
-    sendTransaction,
+    removeLiquidity,
+    depositLiquidity,
   };
 }

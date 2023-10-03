@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import { useTranslation } from 'react-i18next';
 import { Box, CoinDescription, Stat, Text } from 'src/components';
-import { useChainId } from 'src/hooks';
+import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { convertCoingeckoTokens } from 'src/state/pcoingecko/hooks';
 import { useDerivedElixirVaultInfo, useVaultActionHandlers } from 'src/state/pelixirVaults/hooks';
 import { ExternalLink } from 'src/theme';
@@ -18,6 +18,8 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
   const { vault } = props;
   const { t } = useTranslation();
   const chainId = useChainId();
+  const { account } = usePangolinWeb3();
+
   const relatedChain: Chain = ALL_CHAINS.find((x) => x.chain_id === chainId) as Chain;
   const { getVaultDetails } = useVaultActionHandlers();
   const { selectedVaultDetails } = useDerivedElixirVaultInfo();
@@ -35,6 +37,17 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
         parseFloat(underlyingToken1) * parseFloat(underlyingToken1Price)
       ).toFixed(2);
       return totalStakeValue;
+    }
+  };
+
+  const calculateYourStakeValue = (): string => {
+    if (!selectedVaultDetails) return '-';
+    else if (!selectedVaultDetails.userLiquidity) return '-';
+    else {
+      const yourStakeValue = (
+        parseFloat(selectedVaultDetails.sharePrice) * parseFloat(selectedVaultDetails.userLiquidity)
+      ).toFixed(2);
+      return yourStakeValue;
     }
   };
 
@@ -58,7 +71,7 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
   const userData = [
     {
       title: 'Your Stake',
-      stat: '-',
+      stat: selectedVaultDetails ? `${numeral(calculateYourStakeValue()).format('$0.00a')}` : '-',
     },
     {
       title: `Underlying ${currency0?.symbol}`,
@@ -99,7 +112,10 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
 
   useEffect(() => {
     if (vault) {
-      getVaultDetails({ vault: vault, chain: relatedChain }, vault?.strategyProvider?.[0]);
+      getVaultDetails(
+        { vault: vault, chain: relatedChain, ...(account ? { account } : {}) },
+        vault?.strategyProvider?.[0],
+      );
     }
   }, [vault]);
 
@@ -124,25 +140,28 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
           ))}
         </StateContainer>
       </Information>
-      <Information>
-        <Text fontSize={24} fontWeight={500} color={'text2'} mb={'20px'}>
-          {t('common.yourStake')}
-        </Text>
-        <StateContainer colNumber={userData.length}>
-          {userData.map((item, index) => (
-            <Stat
-              key={index}
-              title={item.title}
-              stat={item.stat}
-              titlePosition="top"
-              titleFontSize={14}
-              titleColor="text8"
-              {...(item.currency && { currency: item.currency })}
-              statFontSize={[24, 18]}
-            />
-          ))}
-        </StateContainer>
-      </Information>
+      {selectedVaultDetails?.userLiquidity && (
+        <Information>
+          <Text fontSize={24} fontWeight={500} color={'text2'} mb={'20px'}>
+            {t('common.yourStake')}
+          </Text>
+          <StateContainer colNumber={userData.length}>
+            {userData.map((item, index) => (
+              <Stat
+                key={index}
+                title={item.title}
+                stat={item.stat}
+                titlePosition="top"
+                titleFontSize={14}
+                titleColor="text8"
+                {...(item.currency && { currency: item.currency })}
+                statFontSize={[24, 18]}
+              />
+            ))}
+          </StateContainer>
+        </Information>
+      )}
+
       <Information>{getCoinDescriptions()}</Information>
       {vault?.strategyProvider?.[0] && (
         <Information>

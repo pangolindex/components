@@ -1,6 +1,20 @@
 import { DEFIEDGE } from '@pangolindex/sdk';
-import { GetElixirVaultDetails, GetElixirVaults } from '../types';
-import { getDefiEdgeVaultDetails, getDefiEdgeVaults } from './defiedge';
+import {
+  DepositElixirVaultLiquidity,
+  GetElixirVaultDetails,
+  GetElixirVaults,
+  ProviderVaultTokenApproveProcess,
+  ProviderVaultTokenIsApproved,
+  RemoveElixirVaultLiquidity,
+} from '../types';
+import {
+  approveDefiEdgeStrategyToken,
+  depositDefiEdgeLiquidity,
+  getDefiEdgeVaultDetails,
+  getDefiEdgeVaults,
+  isDefiEdgeStrategyTokenApproved,
+  removeDefiEdgeVaultLiquidity,
+} from './defiedge';
 
 type ElixirVaultProviderId = string;
 
@@ -10,4 +24,20 @@ export const getElixirVaultsFromProviders: { [key: ElixirVaultProviderId]: GetEl
 
 export const getElixirVaultDetailFromProviders: { [key: ElixirVaultProviderId]: GetElixirVaultDetails } = {
   [DEFIEDGE.id]: getDefiEdgeVaultDetails,
+};
+
+export const depositElixirVaultLiquidity: { [key: ElixirVaultProviderId]: DepositElixirVaultLiquidity } = {
+  [DEFIEDGE.id]: depositDefiEdgeLiquidity,
+};
+
+export const removeElixirVaultLiquidity: { [key: ElixirVaultProviderId]: RemoveElixirVaultLiquidity } = {
+  [DEFIEDGE.id]: removeDefiEdgeVaultLiquidity,
+};
+
+export const isVaultTokenApproved: { [key: ElixirVaultProviderId]: ProviderVaultTokenIsApproved } = {
+  [DEFIEDGE.id]: () => isDefiEdgeStrategyTokenApproved,
+};
+
+export const approveVaultToken: { [key: ElixirVaultProviderId]: ProviderVaultTokenApproveProcess } = {
+  [DEFIEDGE.id]: () => approveDefiEdgeStrategyToken,
 };
