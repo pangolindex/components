@@ -145,7 +145,7 @@ export function useSarNftAllProposalDataViaContract() {
   }
 
   const allProposals = useSingleContractMultipleData(govContract, 'proposals', proposalIndexes);
-  const allProposalActions = useSingleContractMultipleData(govContract, 'proposalActions', proposalIndexes);
+  const allProposalActions = useSingleContractMultipleData(govContract, 'getActions', proposalIndexes);
   const allProposalStates = useSingleContractMultipleData(govContract, 'state', proposalIndexes);
 
   if (allProposals && allProposalActions && allProposalStates) {
@@ -154,12 +154,12 @@ export function useSarNftAllProposalDataViaContract() {
         return Boolean(p.result) && Boolean(allProposalStates[i]?.result) && Boolean(allProposalActions[i]?.result);
       })
       .map((_p, i) => {
-        const details = (allProposalActions[i]?.result?.targets || []).map((target: string, i: number) => {
-          const signature = allProposalActions[i]?.result?.signatures[i];
+        const details = (allProposalActions[i]?.result?.[0]?.targets || []).map((target: string, i: number) => {
+          const signature = allProposalActions[i]?.result?.[0]?.signatures[i];
 
           const [name, types] = signature?.substr(0, signature?.length - 1)?.split('(') || [];
 
-          const calldata = allProposalActions[i]?.result?.calldatas[i];
+          const calldata = allProposalActions[i]?.result?.[0]?.calldatas[i];
 
           const decoded = utils.defaultAbiCoder.decode(types.split(','), calldata);
 
