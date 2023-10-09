@@ -89,7 +89,7 @@ export default function Unstake({ selectedOption, selectedPosition, onChange, on
       <Header>
         <TokenRow>
           <Text fontSize={24} fontWeight={500} color="text1" style={{ marginRight: '12px' }}>
-            {t('sarUnstake.unstaking', { balance: parsedAmount?.toSignificant(6) ?? 0 })}
+            {t('sarUnstake.unstaking', { balance: parsedAmount?.toSignificant(6) ?? 0, symbol: png.symbol })}
           </Text>
           <CurrencyLogo currency={png} size={24} imageSize={48} />
         </TokenRow>

@@ -1,6 +1,6 @@
 import { CurrencyLogo, Text, Tooltip } from '@honeycomb-finance/core';
 import { usePangolinWeb3, useTranslation } from '@honeycomb-finance/shared';
-import { useTokenBalancesHook, useTotalSupplyHook, useUSDCPriceHook } from '@honeycomb-finance/state-hooks';
+import { useTokenBalanceHook, useTotalSupplyHook, useUSDCPriceHook } from '@honeycomb-finance/state-hooks';
 import { TokenAmount } from '@pangolindex/sdk';
 import numeral from 'numeral';
 import React, { useContext } from 'react';
@@ -24,12 +24,11 @@ export default function TokenInfo({
 
   const chainId = token.chainId;
 
-  const useTokenBalance = useTokenBalancesHook[chainId];
+  const useTokenBalance = useTokenBalanceHook[chainId];
   const useUSDCPrice = useUSDCPriceHook[chainId];
   const useTotalSupply = useTotalSupplyHook[chainId];
 
-  const tokensBalance = useTokenBalance(account ?? undefined, [token]);
-  const balance = tokensBalance[token.address];
+  const balance = useTokenBalance(account ?? undefined, token);
 
   const tokenPrice = useUSDCPrice(token);
 

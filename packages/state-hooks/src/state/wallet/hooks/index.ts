@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 import { useDummyHook } from '@honeycomb-finance/shared';
 import { ChainId } from '@pangolindex/sdk';
-import { useETHBalances, useTokenBalances } from './evm';
-import { useHederaBalance, useHederaTokenBalances } from './hedera';
-import { useNearBalance, useNearTokenBalances } from './near';
+import { useETHBalances, useTokenBalance, useTokenBalances } from './evm';
+import { useHederaBalance, useHederaTokenBalance, useHederaTokenBalances } from './hedera';
+import { useNearBalance, useNearTokenBalance, useNearTokenBalances } from './near';
 
 export type UseAccountBalanceHookType = {
   [chainId in ChainId]: typeof useETHBalances | typeof useNearBalance | typeof useHederaBalance | typeof useDummyHook;
@@ -77,6 +77,46 @@ export const useTokenBalancesHook: UseTokenBalancesHookType = {
   [ChainId.MOONBEAM]: useTokenBalances,
   [ChainId.OP]: useTokenBalances,
   [ChainId.SKALE_BELLATRIX_TESTNET]: useTokenBalances,
+};
+
+export type UseTokenBalanceHookType = {
+  [chainId in ChainId]:
+    | typeof useTokenBalance
+    | typeof useNearTokenBalance
+    | typeof useHederaTokenBalance
+    | typeof useDummyHook;
+};
+
+export const useTokenBalanceHook: UseTokenBalanceHookType = {
+  [ChainId.FUJI]: useTokenBalance,
+  [ChainId.AVALANCHE]: useTokenBalance,
+  [ChainId.WAGMI]: useTokenBalance,
+  [ChainId.COSTON]: useTokenBalance,
+  [ChainId.SONGBIRD]: useTokenBalance,
+  [ChainId.FLARE_MAINNET]: useTokenBalance,
+  [ChainId.HEDERA_TESTNET]: useHederaTokenBalance,
+  [ChainId.HEDERA_MAINNET]: useHederaTokenBalance,
+  [ChainId.NEAR_MAINNET]: useNearTokenBalance,
+  [ChainId.NEAR_TESTNET]: useNearTokenBalance,
+  [ChainId.COSTON2]: useTokenBalance,
+  [ChainId.ETHEREUM]: useDummyHook,
+  [ChainId.POLYGON]: useDummyHook,
+  [ChainId.FANTOM]: useDummyHook,
+  [ChainId.XDAI]: useDummyHook,
+  [ChainId.BSC]: useDummyHook,
+  [ChainId.ARBITRUM]: useDummyHook,
+  [ChainId.CELO]: useDummyHook,
+  [ChainId.OKXCHAIN]: useDummyHook,
+  [ChainId.VELAS]: useDummyHook,
+  [ChainId.AURORA]: useDummyHook,
+  [ChainId.CRONOS]: useDummyHook,
+  [ChainId.FUSE]: useDummyHook,
+  [ChainId.MOONRIVER]: useDummyHook,
+  [ChainId.MOONBEAM]: useDummyHook,
+  [ChainId.OP]: useDummyHook,
+  [ChainId.EVMOS_TESTNET]: useTokenBalance,
+  [ChainId.EVMOS_MAINNET]: useTokenBalance,
+  [ChainId.SKALE_BELLATRIX_TESTNET]: useTokenBalance,
 };
 
 export * from './hedera';

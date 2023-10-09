@@ -1,10 +1,9 @@
 import { AutoColumn, ColumnCenter, Loader, Text } from '@honeycomb-finance/core';
-import { useChainId, wrappedCurrency } from '@honeycomb-finance/shared';
+import { useChainId, useTranslation, wrappedCurrency } from '@honeycomb-finance/shared';
 import { format } from 'd3';
 import { saturate } from 'polished';
 import React, { ReactNode, useCallback, useContext, useMemo } from 'react';
 import { BarChart2, CloudOff, Inbox } from 'react-feather';
-import { useTranslation } from 'react-i18next';
 import { batch } from 'react-redux';
 import { ThemeContext } from 'styled-components';
 import { useDensityChartData } from 'src/hooks/chart/evm';
