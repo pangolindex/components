@@ -66,13 +66,14 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GIT_ACCESS_TOKEN }}
+          ref: refs/pull/${{ github.event.issue.number }}/head
 
       # issue_comment requires us to checkout the branch
       # https://github.com/actions/checkout/issues/331#issuecomment-1120113003
-      - name: Checkout pull request branch
-        run: hub pr checkout ${{ github.event.issue.number }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
+      # - name: Checkout pull request branch
+      #   run: hub pr checkout ${{ github.event.issue.number }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
 
       # Because changeset entries are consumed and removed on the
       # 'changeset-release/main' branch, we need to reset the files
