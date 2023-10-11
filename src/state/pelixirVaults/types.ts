@@ -18,6 +18,7 @@ export type ElixirVaultDetail = ElixirVault & {
   underlyingToken1Price?: string;
   strategyDetailWebsite: string;
   userLiquidity?: string;
+  ratio?: number;
 };
 
 export type GetElixirVaultsProps = {
@@ -28,6 +29,7 @@ export type GetElixirVaultDetailsProps = {
   chain: Chain;
   vault: ElixirVault;
   account?: string;
+  library?: any;
 };
 
 export type RemoveElixirVaultLiquidityProps = {

@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import { useTranslation } from 'react-i18next';
 import { Box, CoinDescription, Stat, Text } from 'src/components';
-import { useChainId, usePangolinWeb3 } from 'src/hooks';
+import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { convertCoingeckoTokens } from 'src/state/pcoingecko/hooks';
 import { useDerivedElixirVaultInfo, useVaultActionHandlers } from 'src/state/pelixirVaults/hooks';
 import { ExternalLink } from 'src/theme';
@@ -19,6 +19,7 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
   const { t } = useTranslation();
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
+  const { library } = useLibrary();
 
   const relatedChain: Chain = ALL_CHAINS.find((x) => x.chain_id === chainId) as Chain;
   const { getVaultDetails } = useVaultActionHandlers();
@@ -111,13 +112,13 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
   };
 
   useEffect(() => {
-    if (vault) {
+    if (vault && library) {
       getVaultDetails(
-        { vault: vault, chain: relatedChain, ...(account ? { account } : {}) },
+        { vault: vault, chain: relatedChain, ...(account ? { account } : {}), ...(library ? { library } : {}) },
         vault?.strategyProvider?.[0],
       );
     }
-  }, [vault]);
+  }, [vault, library, account]);
 
   return (
     <Wrapper>

@@ -162,8 +162,18 @@ export function useDerivedElixirVaultInfo(): {
     chainId,
   );
 
-  const dependentAmount: CurrencyAmount | undefined = tryParseAmount('21', currencies[dependentField], chainId); //TODO: remove 21
-  // TODO: Add logic for calculating dependent amount
+  // TODO: check this value
+  const relatedAmount =
+    selectedVaultDetails?.ratio &&
+    (independentField === Field.CURRENCY_A
+      ? parseFloat(typedValue) * (selectedVaultDetails?.ratio || 1)
+      : parseFloat(typedValue) * (1 / (selectedVaultDetails?.ratio || 1)));
+
+  const dependentAmount: CurrencyAmount | undefined = tryParseAmount(
+    (relatedAmount && relatedAmount.toString()) || '0',
+    currencies[dependentField],
+    chainId,
+  );
 
   const parsedAmounts: { [field in Field]: CurrencyAmount | undefined } = useMemo(() => {
     return {
@@ -198,6 +208,7 @@ export function useVaultActionHandlers(): {
     setElixirVaults,
     setElixirVaultDetail,
   } = useElixirVaultStateAtom();
+
   const getVaults = async (routesProps: GetElixirVaultsProps) => {
     const promises = Object.values(getElixirVaultsFromProviders).map((getVaults) => getVaults(routesProps));
     const elixirVaults = (await Promise.allSettled(promises)).flatMap((p) => (p.status === 'fulfilled' ? p.value : []));

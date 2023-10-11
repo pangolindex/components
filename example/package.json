@@ -16,6 +16,7 @@
     "@web3-react/core": "6.0.9",
     "@web3-react/injected-connector": "6.0.7",
     "patch-package": "6.4.7",
+    "@defiedge/sdk": "0.0.7-a",
     "react": "17.0.2",
     "react-device-detect": "^2.2.2",
     "react-dom": "17.0.2",

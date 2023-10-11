@@ -1,3 +1,4 @@
+import { getLiquidityRatio, getUserDeshareBalance } from '@defiedge/sdk';
 import { DEFIEDGE, Token } from '@pangolindex/sdk';
 import axios from 'axios';
 import {
@@ -7,6 +8,7 @@ import {
   DepositElixirVaultLiquidityProps,
   ElixirVault,
   ElixirVaultDetail,
+  GetElixirVaultDetailsProps,
   GetElixirVaultsProps,
   ProviderVaultTokenProcessProps,
   RemoveElixirVaultLiquidityProps,
@@ -44,7 +46,7 @@ export const getDefiEdgeVaults: any = async ({ chain }: GetElixirVaultsProps) =>
   }
 };
 
-export const getDefiEdgeVaultDetails: any = async ({ chain, vault, account }) => {
+export const getDefiEdgeVaultDetails: any = async ({ chain, vault, account, library }: GetElixirVaultDetailsProps) => {
   const strategyDetailUrl = `https://api.defiedge.io/${chain?.name?.toLocaleLowerCase()}/details?strategies=${
     vault?.address
   }`;
@@ -63,18 +65,31 @@ export const getDefiEdgeVaultDetails: any = async ({ chain, vault, account }) =>
 
   const liqResponse = await axios.get(strategyLiquidityDetailUrl, reqHeader);
   const liqData = liqResponse.data as DefiEdgeStrategyLiquidityData;
-  let userLiquidity;
-  if (account) {
-    userLiquidity = 11; //TODO:
+  let ratio: number | undefined;
+  if (library) {
+    try {
+      ratio = await getLiquidityRatio(vault.address, library);
+    } catch (e) {
+      console.log(e); //TODO:
+    }
+  }
+  let userLiquidity: string | undefined;
+  if (account && library) {
+    try {
+      userLiquidity = await getUserDeshareBalance(vault.address, account, library);
+    } catch (e) {
+      console.log(e); //TODO:
+    }
   }
   const res: ElixirVaultDetail = {
     ...vault,
-    underlyingToken0: liqData.amount0Total,
-    underlyingToken1: liqData.amount1Total,
-    underlyingToken0Price: data.token0Price,
-    underlyingToken1Price: data.token1Price,
+    underlyingToken0: liqData?.amount0Total,
+    underlyingToken1: liqData?.amount1Total,
+    underlyingToken0Price: data?.token0Price,
+    underlyingToken1Price: data?.token1Price,
     strategyDetailWebsite,
     ...(userLiquidity ? { userLiquidity } : {}),
+    ...(ratio ? { ratio } : {}),
   };
   return res;
 };
