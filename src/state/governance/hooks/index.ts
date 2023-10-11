@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { ChainId } from '@pangolindex/sdk';
-import { useAllProposalDataViaSubgraph, useSarNftAllProposalDataViaContract } from './common';
+import { useAllProposalDataViaSubgraph } from './common';
 import { useDummyAllProposalData, useDummyVoteCallback } from './dummy';
 import { useAllProposalData, useVoteCallback } from './evm';
 import { useHederaVoteCallback } from './hedera';
@@ -17,8 +17,8 @@ export const useAllProposalDataHook: UseAllProposalDataHookType = {
   [ChainId.AVALANCHE]: useAllProposalData,
   [ChainId.WAGMI]: useDummyAllProposalData,
   [ChainId.COSTON]: useAllProposalDataViaSubgraph,
-  [ChainId.SONGBIRD]: useSarNftAllProposalDataViaContract,
-  [ChainId.FLARE_MAINNET]: useSarNftAllProposalDataViaContract,
+  [ChainId.SONGBIRD]: useAllProposalDataViaSubgraph,
+  [ChainId.FLARE_MAINNET]: useAllProposalDataViaSubgraph,
   [ChainId.HEDERA_TESTNET]: useAllProposalDataViaSubgraph,
   [ChainId.HEDERA_MAINNET]: useAllProposalDataViaSubgraph,
   [ChainId.NEAR_MAINNET]: useDummyAllProposalData,
