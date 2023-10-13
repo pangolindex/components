@@ -17,7 +17,7 @@ import React, { useMemo, useState } from 'react';
 import { ArrowLeft } from 'react-feather';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { useGetProposalDetailViaSubgraph } from 'src/hooks/common';
+import { useProposalData } from 'src/hooks/common';
 import { useUserDelegate, useUserVotes } from 'src/hooks/evm';
 import VoteModal from './VoteModal';
 import {
@@ -36,6 +36,7 @@ import {
   WrapSmall,
   Wrapper,
 } from './styleds';
+import { ProposalData } from 'src/hooks/types';
 
 export type GovernanceDetailProps = Record<'id', 'string'>;
 
@@ -45,7 +46,7 @@ const GovernanceDetail: React.FC<GovernanceDetailProps> = ({ id }) => {
   const { t } = useTranslation();
 
   // get data for this specific proposal
-  const proposalData = useGetProposalDetailViaSubgraph(id as string);
+  const proposalData: ProposalData | undefined = useProposalData(id as string);
 
   // update support based on button interactions
   const [support, setSupport] = useState<boolean>(true);

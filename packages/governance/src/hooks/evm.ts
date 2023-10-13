@@ -18,14 +18,14 @@ import { ChainId, TokenAmount } from '@pangolindex/sdk';
 import { ethers, utils } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import { useCallback, useEffect, useState } from 'react';
-import { GovernorABI } from 'src/constants';
 import { enumerateProposalState } from './common';
 import { ProposalData } from './types';
-import { useGovernanceContract, usePngContract } from './useContract';
+import { useGovernorAlphaContract, usePngContract } from './useContract';
+import { GovernorAlphaABI } from 'src/constants';
 
 // get count of all proposals made
 export function useProposalCount(): number | undefined {
-  const gov = useGovernanceContract();
+  const gov = useGovernorAlphaContract();
   const res = useSingleCallResult(gov, 'proposalCount');
   if (res.result && !res.loading) {
     return parseInt(res.result[0]) ?? 0;
@@ -59,7 +59,7 @@ export function useDataFromEventLogs() {
   const { library } = useLibrary();
   const chainId = useChainId();
   const [formattedEvents, setFormattedEvents] = useState<any>();
-  const govContract = useGovernanceContract();
+  const govContract = useGovernorAlphaContract();
 
   const proposalCount = useProposalCount();
 
@@ -72,8 +72,7 @@ export function useDataFromEventLogs() {
 
   useEffect(() => {
     const voteDelay: number = 60 * 60 * 24;
-    const eventParser = new ethers.utils.Interface(GovernorABI);
-
+    const eventParser = new ethers.utils.Interface(GovernorAlphaABI);
     async function fetchData() {
       let pastEvents = [] as any[];
 
@@ -133,7 +132,7 @@ export function useDataFromEventLogs() {
 // get data for all past and active proposals
 export function useAllProposalData() {
   const proposalCount = useProposalCount();
-  const govContract = useGovernanceContract();
+  const govContract = useGovernorAlphaContract();
 
   const proposalIndexes = [] as any;
   for (let i = 1; i <= (proposalCount ?? 0); i++) {
@@ -229,7 +228,7 @@ export function useVoteCallback(): {
 } {
   const { account } = usePangolinWeb3();
 
-  const govContract = useGovernanceContract();
+  const govContract = useGovernorAlphaContract();
   const addTransaction = useTransactionAdder();
 
   const voteCallback = useCallback(

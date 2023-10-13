@@ -2,7 +2,7 @@ import { useChainId, usePangolinWeb3 } from '@honeycomb-finance/shared';
 import { useTransactionAdder } from '@honeycomb-finance/state-hooks';
 import { hederaFn } from '@honeycomb-finance/wallet-connectors';
 import { BigNumber } from 'ethers';
-import { useSarNftGovernanceContract } from './useContract';
+import { useGovernorPangoContract } from './useContract';
 
 export function useHederaVoteCallback(): {
   voteCallback: (
@@ -13,12 +13,11 @@ export function useHederaVoteCallback(): {
 } {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
-  const govContract = useSarNftGovernanceContract();
+  const govContract = useGovernorPangoContract();
   const addTransaction = useTransactionAdder();
 
   const voteCallback = async (proposalId: string | undefined, support: boolean, nftId?: BigNumber) => {
     if (!account || !govContract || !proposalId || !nftId) return;
-
     try {
       const args = {
         proposalId,
@@ -27,13 +26,11 @@ export function useHederaVoteCallback(): {
         account,
         chainId,
       };
-
       const response = await hederaFn.castVote(args);
       if (response) {
         addTransaction(response, {
           summary: `Voted ${support ? 'for ' : 'against'} proposal ${proposalId}`,
         });
-
         return response?.hash;
       }
       return;
@@ -45,6 +42,5 @@ export function useHederaVoteCallback(): {
       }
     }
   };
-
   return { voteCallback };
 }

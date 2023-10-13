@@ -18,7 +18,7 @@ import {
 } from '@honeycomb-finance/state-hooks';
 import { JSBI, TokenAmount } from '@pangolindex/sdk';
 import React from 'react';
-import { useGetProposalsViaSubgraph } from 'src/hooks/common';
+import { useAllProposalData } from 'src/hooks/common';
 import { useUserDelegate, useUserVotes } from 'src/hooks/evm';
 import { ProposalData } from 'src/hooks/types';
 import DelegateModal from './DelegateModal';
@@ -50,7 +50,7 @@ const GovernanceList = () => {
   const toggleDelegateModal = useToggleDelegateModal();
 
   // get data to list all proposals
-  const allProposals = useGetProposalsViaSubgraph();
+  const allProposals: ProposalData[] | undefined = useAllProposalData();
 
   // user data
   const availableVotes: TokenAmount | undefined = useUserVotes();

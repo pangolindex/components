@@ -1,29 +1,29 @@
 import { PNG, useChainId, useContract } from '@honeycomb-finance/shared';
 import { CHAINS } from '@pangolindex/sdk';
-import { GovernorABI, GovernorAlphaABI, GovernorAssistantABI, PNGABI } from 'src/constants';
+import { GovernorAlphaABI, GovernorPangoABI, GovernorPangoHederaABI, PNGABI } from 'src/constants';
 
 export function usePngContract() {
   const chainId = useChainId();
   return useContract(PNG[chainId].address, PNGABI, true);
 }
 
-export function useGovernanceContract() {
+export function useGovernorAlphaContract() {
   const chainId = useChainId();
   const address = chainId ? CHAINS[chainId]?.contracts?.governor?.address : undefined;
 
   return useContract(address, GovernorAlphaABI, true);
 }
 
-export function useSarNftGovernanceContract() {
+export function useGovernorPangoContract() {
   const chainId = useChainId();
   const address = chainId ? CHAINS[chainId]?.contracts?.governor?.address : undefined;
 
-  return useContract(address, GovernorABI, true);
+  return useContract(address, GovernorPangoABI, true);
 }
 
-export function useSarNftGovernanceAssistantContract() {
+export function useGovernorPangoContractHedera() {
   const chainId = useChainId();
-  const address = chainId ? CHAINS[chainId]?.contracts?.governor_assistant : undefined;
+  const address = chainId ? CHAINS[chainId]?.contracts?.governor?.address : undefined;
 
-  return useContract(address, GovernorAssistantABI, true);
+  return useContract(address, GovernorPangoHederaABI, true);
 }
