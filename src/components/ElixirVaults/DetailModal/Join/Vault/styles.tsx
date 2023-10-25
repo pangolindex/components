@@ -82,13 +82,6 @@ export const ButtonWrapper = styled(Box)`
   align-items: center;
 `;
 
-export const ErrorWrapper = styled(Box)`
-  display: grid;
-  grid-template-rows: minmax(100px, auto) max-content;
-  height: 100%;
-  padding: 10px;
-`;
-
 export const ErrorBox = styled(Box)`
   display: flex;
   width: 100%;

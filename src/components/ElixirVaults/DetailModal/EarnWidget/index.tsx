@@ -12,7 +12,7 @@ import { ClaimWrapper, ErrorBox, ErrorWrapper, RewardWrapper, Root, StatWrapper 
 import { EarnWidgetProps } from './types';
 
 const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
-  const { vault } = props;
+  const { vault, stakingInfo } = props;
   const { t } = useTranslation();
   const chainId = useChainId();
   const { account } = usePangolinWeb3();
@@ -131,6 +131,7 @@ const EarnWidget: React.FC<EarnWidgetProps> = (props) => {
       <RemoveDrawer
         isOpen={isRemoveDrawerVisible}
         vault={vault}
+        stakingInfo={stakingInfo}
         onClose={() => {
           setShowRemoveDrawer(false);
         }}

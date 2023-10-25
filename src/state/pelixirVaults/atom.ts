@@ -77,9 +77,12 @@ export const useElixirVaultStateAtom = () => {
   const clearTransactionData = useCallback(() => {
     setElixirVaultState((state) => ({
       ...state,
-      transactionLoaderStatus: false,
-      transactionError: undefined,
-      transactionStatus: undefined,
+      depositTransactionLoaderStatus: false,
+      depositTransactionError: undefined,
+      depositTransactionStatus: undefined,
+      removeTransactionLoaderStatus: false,
+      removeTransactionError: undefined,
+      removeTransactionStatus: undefined,
     }));
   }, [setElixirVaultState]);
 

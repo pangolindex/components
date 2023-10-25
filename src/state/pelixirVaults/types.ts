@@ -1,4 +1,5 @@
 import { Chain, ElixirVaultProvider, Token } from '@pangolindex/sdk';
+import { BigNumber } from 'ethers';
 
 export type ElixirVault = {
   selected: boolean;
@@ -34,26 +35,27 @@ export type GetElixirVaultDetailsProps = {
 
 export type RemoveElixirVaultLiquidityProps = {
   vault: ElixirVault;
-  account?: string;
-  shares?: number;
+  account: string;
+  shares: string | number | BigNumber;
+  library?: any;
+  changeRemoveTransactionLoaderStatus?: ({ removeTransactionLoaderStatus, removeTransactionStatus }: any) => void;
+  setRemoveTransactionError?: ({ removeTransactionError }: any) => void;
 };
 
 export type DepositElixirVaultLiquidityProps = {
-  selectedElixirVault?: ElixirVault;
-  account?: string;
-};
-
-export type ProviderVaultTokenProcessProps = {
-  vaultAddress: string;
-  account?: string;
+  amount0: string | number | BigNumber;
+  amount1: string | number | BigNumber;
+  selectedElixirVault: ElixirVault;
+  account: string;
+  library?: any;
+  changeDepositTransactionLoaderStatus?: ({ depositTransactionLoaderStatus, depositTransactionStatus }: any) => void;
+  setDepositTransactionError?: ({ depositTransactionError }: any) => void;
 };
 
 export type GetElixirVaults = (props: GetElixirVaultsProps) => Promise<ElixirVault[]>;
 export type GetElixirVaultDetails = (props: GetElixirVaultDetailsProps) => Promise<ElixirVaultDetail>;
 export type RemoveElixirVaultLiquidity = (props: RemoveElixirVaultLiquidityProps) => Promise<void>;
 export type DepositElixirVaultLiquidity = (props: DepositElixirVaultLiquidityProps) => Promise<void>;
-export type ProviderVaultTokenIsApproved = (props: ProviderVaultTokenProcessProps) => Promise<boolean>;
-export type ProviderVaultTokenApproveProcess = (props: ProviderVaultTokenProcessProps) => Promise<void>;
 
 export enum Field {
   CURRENCY_A = 'CURRENCY_A',

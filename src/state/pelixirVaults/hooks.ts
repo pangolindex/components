@@ -35,13 +35,12 @@ export function useElixirVaultActionHandlers(): {
   onSelectElixirVault: (elixirVault: ElixirVault) => void;
   onUserInput: (field: Field, typedValue: string) => void;
   onChangeElixirVaultLoaderStatus: () => void;
-  onClearTransactionData: (transactionStatus: TransactionStatus) => void;
+  onClearTransactionData: () => void;
 } {
   const {
     selectElixirVault,
     selectCurrency,
     clearTransactionData,
-    setElixirVaults,
     changeElixirVaultLoaderStatus,
     resetSelectedVaultDetails,
     setTypeInput,
@@ -73,15 +72,9 @@ export function useElixirVaultActionHandlers(): {
     resetState();
   }, [resetState]);
 
-  const onClearTransactionData = useCallback(
-    (transactionStatus?: TransactionStatus) => {
-      clearTransactionData();
-      if (transactionStatus === TransactionStatus.SUCCESS) {
-        setElixirVaults({ elixirVaults: [], elixirVaultsLoaderStatus: false });
-      }
-    },
-    [clearTransactionData, setElixirVaults],
-  );
+  const onClearTransactionData = useCallback(() => {
+    clearTransactionData();
+  }, [clearTransactionData]);
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
@@ -162,15 +155,15 @@ export function useDerivedElixirVaultInfo(): {
     chainId,
   );
 
-  // TODO: check this value
   const relatedAmount =
-    selectedVaultDetails?.ratio &&
-    (independentField === Field.CURRENCY_A
-      ? parseFloat(typedValue) * (selectedVaultDetails?.ratio || 1)
-      : parseFloat(typedValue) * (1 / (selectedVaultDetails?.ratio || 1)));
+    selectedVaultDetails?.ratio && selectedVaultDetails?.ratio > 0
+      ? independentField === Field.CURRENCY_A
+        ? parseFloat(typedValue) * selectedVaultDetails?.ratio
+        : parseFloat(typedValue) * (1 / selectedVaultDetails?.ratio)
+      : 0;
 
   const dependentAmount: CurrencyAmount | undefined = tryParseAmount(
-    (relatedAmount && relatedAmount.toString()) || '0',
+    relatedAmount?.toFixed(6)?.toString(),
     currencies[dependentField],
     chainId,
   );
@@ -199,14 +192,22 @@ export function useDerivedElixirVaultInfo(): {
 export function useVaultActionHandlers(): {
   getVaults: (props: GetElixirVaultsProps) => void;
   getVaultDetails: (props: GetElixirVaultDetailsProps, vaultProvider: ElixirVaultProvider) => void;
-  removeLiquidity: (props: RemoveElixirVaultLiquidityProps, vaultProvider: ElixirVaultProvider) => void;
-  depositLiquidity: (props: DepositElixirVaultLiquidityProps, vaultProvider: ElixirVaultProvider) => void;
+  removeLiquidity: (
+    props: RemoveElixirVaultLiquidityProps,
+    vaultProvider: ElixirVaultProvider,
+  ) => Promise<PromiseSettledResult<void>>;
+  depositLiquidity: (
+    props: DepositElixirVaultLiquidityProps,
+    vaultProvider: ElixirVaultProvider,
+  ) => Promise<PromiseSettledResult<void>>;
 } {
   const {
     changeDepositTransactionLoaderStatus,
     changeRemoveTransactionLoaderStatus,
     setElixirVaults,
     setElixirVaultDetail,
+    setDepositTransactionError,
+    setRemoveTransactionError,
   } = useElixirVaultStateAtom();
 
   const getVaults = async (routesProps: GetElixirVaultsProps) => {
@@ -231,24 +232,30 @@ export function useVaultActionHandlers(): {
   };
 
   const removeLiquidity = async (props: RemoveElixirVaultLiquidityProps, vaultProvider: ElixirVaultProvider) => {
-    changeRemoveTransactionLoaderStatus({ removeTransactionLoaderStatus: true, removeTransactionStatus: undefined });
-    const promise = removeElixirVaultLiquidity[vaultProvider.id](props);
-    await Promise.allSettled([promise]);
-    changeRemoveTransactionLoaderStatus({
-      removeTransactionLoaderStatus: false,
-      removeTransactionStatus: TransactionStatus.SUCCESS,
-    });
+    try {
+      changeRemoveTransactionLoaderStatus({ removeTransactionLoaderStatus: true, removeTransactionStatus: undefined });
+      const extendedProps = { ...props, changeRemoveTransactionLoaderStatus, setRemoveTransactionError };
+      const promise = removeElixirVaultLiquidity[vaultProvider.id](extendedProps);
+      const result = await Promise.allSettled([promise]);
+      return result[0];
+    } catch (err) {
+      throw err;
+    }
   };
 
   const depositLiquidity = async (props: DepositElixirVaultLiquidityProps, vaultProvider: ElixirVaultProvider) => {
-    changeDepositTransactionLoaderStatus({ depositTransactionLoaderStatus: true, depositTransactionStatus: undefined });
-    const promise = depositElixirVaultLiquidity[vaultProvider.id](props);
-    await Promise.allSettled([promise]);
-
-    changeDepositTransactionLoaderStatus({
-      depositTransactionLoaderStatus: false,
-      depositTransactionStatus: TransactionStatus.SUCCESS,
-    });
+    try {
+      changeDepositTransactionLoaderStatus({
+        depositTransactionLoaderStatus: true,
+        depositTransactionStatus: undefined,
+      });
+      const extendedProps = { ...props, changeDepositTransactionLoaderStatus, setDepositTransactionError };
+      const promise = depositElixirVaultLiquidity[vaultProvider.id](extendedProps);
+      const results = await Promise.allSettled([promise]);
+      return results[0];
+    } catch (err) {
+      throw err;
+    }
   };
 
   return {

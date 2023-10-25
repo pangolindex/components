@@ -3,16 +3,12 @@ import {
   DepositElixirVaultLiquidity,
   GetElixirVaultDetails,
   GetElixirVaults,
-  ProviderVaultTokenApproveProcess,
-  ProviderVaultTokenIsApproved,
   RemoveElixirVaultLiquidity,
 } from '../types';
 import {
-  approveDefiEdgeStrategyToken,
   depositDefiEdgeLiquidity,
   getDefiEdgeVaultDetails,
   getDefiEdgeVaults,
-  isDefiEdgeStrategyTokenApproved,
   removeDefiEdgeVaultLiquidity,
 } from './defiedge';
 
@@ -32,12 +28,4 @@ export const depositElixirVaultLiquidity: { [key: ElixirVaultProviderId]: Deposi
 
 export const removeElixirVaultLiquidity: { [key: ElixirVaultProviderId]: RemoveElixirVaultLiquidity } = {
   [DEFIEDGE.id]: removeDefiEdgeVaultLiquidity,
-};
-
-export const isVaultTokenApproved: { [key: ElixirVaultProviderId]: ProviderVaultTokenIsApproved } = {
-  [DEFIEDGE.id]: () => isDefiEdgeStrategyTokenApproved,
-};
-
-export const approveVaultToken: { [key: ElixirVaultProviderId]: ProviderVaultTokenApproveProcess } = {
-  [DEFIEDGE.id]: () => approveDefiEdgeStrategyToken,
 };

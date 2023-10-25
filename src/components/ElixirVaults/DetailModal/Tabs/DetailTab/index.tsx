@@ -43,7 +43,7 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
 
   const calculateYourStakeValue = (): string => {
     if (!selectedVaultDetails) return '-';
-    else if (!selectedVaultDetails.userLiquidity) return '-';
+    else if (!selectedVaultDetails.userLiquidity || selectedVaultDetails?.userLiquidity === '0') return '-';
     else {
       const yourStakeValue = (
         parseFloat(selectedVaultDetails.sharePrice) * parseFloat(selectedVaultDetails.userLiquidity)
@@ -141,7 +141,7 @@ const DetailTab: React.FC<DetailTabProps> = (props) => {
           ))}
         </StateContainer>
       </Information>
-      {selectedVaultDetails?.userLiquidity && (
+      {selectedVaultDetails?.userLiquidity && selectedVaultDetails?.userLiquidity !== '0' && (
         <Information>
           <Text fontSize={24} fontWeight={500} color={'text2'} mb={'20px'}>
             {t('common.yourStake')}

@@ -1,9 +1,16 @@
-import { ALL_CHAINS, Chain, ElixirVaultProvider, Token } from '@pangolindex/sdk';
+import { ALL_CHAINS, Chain, ElixirVaultProvider, JSBI, Token } from '@pangolindex/sdk';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Inbox, Search } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Button, DoubleCurrencyLogo } from 'src';
+import {
+  BIG_INT_ZERO,
+  Button,
+  DoubleCurrencyLogo,
+  DoubleSideStakingInfo,
+  MinichefStakingInfo,
+  unwrappedToken,
+} from 'src';
 import { Box, DropdownMenu, Loader, Text, TextInput } from 'src/components';
 import { useChainId } from 'src/hooks';
 import useDebounce from 'src/hooks/useDebounce';
@@ -13,6 +20,7 @@ import {
   useVaultActionHandlers,
 } from 'src/state/pelixirVaults/hooks';
 import { ElixirVault } from 'src/state/pelixirVaults/types';
+import { useMinichefStakingInfosHook } from 'src/state/pstake/hooks';
 import DataTable from '../DataTable';
 import { DataTableProps } from '../DataTable/types';
 import DetailModal from './DetailModal';
@@ -29,6 +37,10 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
   const { getVaults } = useVaultActionHandlers();
   const { onChangeElixirVaultLoaderStatus, onCloseDetailModal } = useElixirVaultActionHandlers();
   const { menuItems, activeMenu, setMenu } = props;
+  const [stakingInfo, setStakingInfo] = useState<DoubleSideStakingInfo | undefined>(undefined);
+
+  const useMiniChefStakingInfos = useMinichefStakingInfosHook[chainId];
+  const miniChefFarmStakingInfos = useMiniChefStakingInfos();
 
   const { elixirVaults, elixirVaultsLoaderStatus } = useDerivedElixirVaultInfo();
   const relatedChain: Chain = ALL_CHAINS.find((x) => x.chain_id === chainId) as Chain;
@@ -58,6 +70,18 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
     onChangeElixirVaultLoaderStatus();
     getVaults({ chain: relatedChain });
   }, []);
+
+  const ownMiniChefStakingInfos = useMemo(
+    () =>
+      (miniChefFarmStakingInfos || []).filter((stakingInfo: MinichefStakingInfo) => {
+        return Boolean(
+          stakingInfo.stakedAmount.greaterThan('0') ||
+            stakingInfo.earnedAmount.greaterThan('0') ||
+            stakingInfo.extraPendingRewards.some((pendingRewards) => JSBI.greaterThan(pendingRewards, BIG_INT_ZERO)),
+        );
+      }),
+    [miniChefFarmStakingInfos],
+  );
 
   const finalVaults = useMemo(() => {
     let vaults: ElixirVault[] | undefined = elixirVaults;
@@ -98,6 +122,9 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
         const newSelectedPosition = finalVaults.find((vault) => vault.address.toString() === selectedVaultAddress);
 
         if (newSelectedPosition) {
+          setStakingInfo(
+            ownMiniChefStakingInfos?.find((stakingInfo) => stakingInfo?.pairAddress === selectedVaultAddress),
+          );
           return newSelectedPosition;
         }
       }
@@ -106,9 +133,11 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
 
   const poolNameRenderer = (info) => {
     const value: Token[] = info.getValue();
+    const currency0 = value[0] ? unwrappedToken(value[0], chainId) : undefined;
+    const currency1 = value[1] ? unwrappedToken(value[1], chainId) : undefined;
     return (
       <Row>
-        <DoubleCurrencyLogo size={38} currency0={value[0]} currency1={value[1]} />
+        <DoubleCurrencyLogo size={24} currency0={currency0} currency1={currency1} />
         {value.map((token) => token.symbol).join('-')}
       </Row>
     );
@@ -125,6 +154,12 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
         </DoubleLogo>
       </Row>
     );
+  };
+
+  const incentivizedRenderer = (info) => {
+    const address: string = info.getValue();
+    const isFarmExists = ownMiniChefStakingInfos?.some((stakingInfo) => stakingInfo?.pairAddress === address);
+    return isFarmExists ? 'Yes' : 'No';
   };
 
   const columns = [
@@ -151,8 +186,9 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
     },
     {
       header: 'INCENTIVIZED',
-      accessorKey: 'incentivized',
-      cell: (info) => (info.getValue() ? 'Yes' : 'No'),
+      accessorKey: 'address',
+      id: 'incentivized',
+      cell: incentivizedRenderer,
     },
     {
       header: 'FEES APR',
@@ -244,6 +280,7 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
       <DetailModal
         isOpen={detailModalIsOpen}
         vault={selectedVault}
+        stakingInfo={stakingInfo}
         onClose={() => {
           onChangeDetailModalStatus(undefined);
           // onResetMintState();

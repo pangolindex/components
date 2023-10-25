@@ -25,7 +25,7 @@ import { DetailModalProps } from './types';
 
 const DetailModal: React.FC<DetailModalProps> = (props) => {
   const { height } = useWindowSize();
-  const { isOpen, onClose, vault } = props;
+  const { isOpen, onClose, vault, stakingInfo } = props;
   const theme = useContext(ThemeContext);
   const { t } = useTranslation();
   const [tabIndex, setTabIndex] = useState(0);
@@ -66,12 +66,12 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
           <Box p={10}>
             <Box mt={'20px'}>
               <Root>
-                <Join vault={vault} />
+                <Join vault={vault} stakingInfo={stakingInfo} />
               </Root>
             </Box>
             <Box mt={'20px'}>
               <Root>
-                <EarnWidget vault={vault} />
+                <EarnWidget vault={vault} stakingInfo={stakingInfo} />
               </Root>
             </Box>
             <Box mt={25}>{renderTabs()}</Box>
@@ -83,10 +83,10 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
             <LeftSection>{renderTabs()}</LeftSection>
             <RightSection>
               <Root>
-                <Join vault={vault} />
+                <Join vault={vault} stakingInfo={stakingInfo} />
               </Root>
               <Root verticalPadding={'35px'}>
-                <EarnWidget vault={vault} />
+                <EarnWidget vault={vault} stakingInfo={stakingInfo} />
               </Root>
             </RightSection>
           </DetailsWrapper>

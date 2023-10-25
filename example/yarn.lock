@@ -209,10 +209,10 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@defiedge/sdk@0.0.7-a":
-  version "0.0.7-a"
-  resolved "https://registry.yarnpkg.com/@defiedge/sdk/-/sdk-0.0.7-a.tgz#276a2be5dd2e4dec850a87ad043a68a46c29c243"
-  integrity sha512-rwVSxAV/qDGQx/ZxxZ0U7EO2+0eNby+voXLmnUgm2kzQ3okNqf40k3ouM6vgOP4j1pwo7lhs7eGi5CGgFB0cJw==
+"@defiedge/sdk@0.0.7-b":
+  version "0.0.7-b"
+  resolved "https://registry.yarnpkg.com/@defiedge/sdk/-/sdk-0.0.7-b.tgz#ec88531e483854e823469d5c8bd708871f4097c2"
+  integrity sha512-mFbOncgdIbH3X1TUWGPFh4VlFdVuFU8h9mM5cv/duXJN2a6pBF0Kw1AVC2UpINRyab94s3wDRbmBGB6UUhpJhA==
   dependencies:
     "@ethersproject/abstract-signer" "^5.6.2"
     "@ethersproject/address" "^5.6.0"

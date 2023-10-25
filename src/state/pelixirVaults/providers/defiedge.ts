@@ -1,4 +1,4 @@
-import { getLiquidityRatio, getUserDeshareBalance } from '@defiedge/sdk';
+import { depositLP, getLiquidityRatio, getUserDeshareBalance, removeLP } from '@defiedge/sdk';
 import { DEFIEDGE, Token } from '@pangolindex/sdk';
 import axios from 'axios';
 import {
@@ -10,13 +10,13 @@ import {
   ElixirVaultDetail,
   GetElixirVaultDetailsProps,
   GetElixirVaultsProps,
-  ProviderVaultTokenProcessProps,
   RemoveElixirVaultLiquidityProps,
+  TransactionStatus,
 } from '../types';
 
 export const getDefiEdgeVaults: any = async ({ chain }: GetElixirVaultsProps) => {
   try {
-    const url = `https://api.defiedge.io/strategies?dex=Uniswap&network=${chain?.name?.toLocaleLowerCase()}`;
+    const url = `https://api.defiedge.io/strategies?dex=Pangolin&network=${chain?.name?.toLocaleLowerCase()}`;
     const response = await axios.get(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -63,22 +63,28 @@ export const getDefiEdgeVaultDetails: any = async ({ chain, vault, account, libr
   const detailResponse = await axios.get(strategyDetailUrl, reqHeader);
   const data = detailResponse.data?.[0] as DefiEdgeStrategyData;
 
-  const liqResponse = await axios.get(strategyLiquidityDetailUrl, reqHeader);
-  const liqData = liqResponse.data as DefiEdgeStrategyLiquidityData;
+  let liqData;
+  try {
+    const liqResponse = await axios.get(strategyLiquidityDetailUrl, reqHeader);
+    liqData = liqResponse.data as DefiEdgeStrategyLiquidityData;
+  } catch (err) {
+    console.log(err);
+  }
+
   let ratio: number | undefined;
   if (library) {
     try {
       ratio = await getLiquidityRatio(vault.address, library);
-    } catch (e) {
-      console.log(e); //TODO:
+    } catch (err) {
+      console.log(err);
     }
   }
   let userLiquidity: string | undefined;
   if (account && library) {
     try {
-      userLiquidity = await getUserDeshareBalance(vault.address, account, library);
-    } catch (e) {
-      console.log(e); //TODO:
+      userLiquidity = await getUserDeshareBalance(account, vault.address, library);
+    } catch (err) {
+      console.log(err);
     }
   }
   const res: ElixirVaultDetail = {
@@ -94,26 +100,63 @@ export const getDefiEdgeVaultDetails: any = async ({ chain, vault, account, libr
   return res;
 };
 
-// TODO:
-export const depositDefiEdgeLiquidity: any = async ({ selectedElixirVault }: DepositElixirVaultLiquidityProps) => {
-  console.log(selectedElixirVault);
-};
-
-// TODO:
-export const removeDefiEdgeVaultLiquidity: any = async ({ vault }: RemoveElixirVaultLiquidityProps) => {
-  console.log(vault);
-};
-
-// TODO:
-export const isDefiEdgeStrategyTokenApproved: any = async ({
-  vaultAddress,
+export const depositDefiEdgeLiquidity: any = async ({
+  selectedElixirVault,
+  amount0,
+  amount1,
   account,
-}: ProviderVaultTokenProcessProps) => {
-  console.log('vaultAddress: ', vaultAddress, ' account: ', account);
-  return true;
+  library,
+  changeDepositTransactionLoaderStatus,
+  setDepositTransactionError,
+}: DepositElixirVaultLiquidityProps) => {
+  try {
+    const res = await depositLP(
+      account,
+      amount0, // can be 0 when only depositing amount1 or verse
+      amount1,
+      selectedElixirVault.address,
+      library,
+    );
+    changeDepositTransactionLoaderStatus &&
+      changeDepositTransactionLoaderStatus({
+        depositTransactionLoaderStatus: false,
+        depositTransactionStatus: TransactionStatus.SUCCESS,
+      });
+    return res;
+  } catch (err: any) {
+    setDepositTransactionError && setDepositTransactionError(err);
+    changeDepositTransactionLoaderStatus &&
+      changeDepositTransactionLoaderStatus({
+        depositTransactionLoaderStatus: false,
+        depositTransactionStatus: TransactionStatus.FAILED,
+      });
+    throw err;
+  }
 };
 
-// TODO:
-export const approveDefiEdgeStrategyToken: any = async ({ vaultAddress, account }: ProviderVaultTokenProcessProps) => {
-  console.log('vaultAddress: ', vaultAddress, ' account: ', account);
+export const removeDefiEdgeVaultLiquidity: any = async ({
+  vault,
+  shares,
+  account,
+  library,
+  changeRemoveTransactionLoaderStatus,
+  setRemoveTransactionError,
+}: RemoveElixirVaultLiquidityProps) => {
+  try {
+    const txnDetails = await removeLP(account, shares, vault?.address, library);
+    changeRemoveTransactionLoaderStatus &&
+      changeRemoveTransactionLoaderStatus({
+        removeTransactionLoaderStatus: false,
+        removeTransactionStatus: TransactionStatus.SUCCESS,
+      });
+    return txnDetails;
+  } catch (err) {
+    setRemoveTransactionError && setRemoveTransactionError(err);
+    changeRemoveTransactionLoaderStatus &&
+      changeRemoveTransactionLoaderStatus({
+        removeTransactionLoaderStatus: false,
+        removeTransactionStatus: TransactionStatus.FAILED,
+      });
+    throw err;
+  }
 };

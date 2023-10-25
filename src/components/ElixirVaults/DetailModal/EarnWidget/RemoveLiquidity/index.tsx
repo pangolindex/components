@@ -1,24 +1,25 @@
 /* eslint-disable max-lines */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { AlertTriangle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
+import { ThemeContext } from 'styled-components';
 import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
-import useTransactionDeadline from 'src/hooks/useTransactionDeadline';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
-import { useVaultActionHandlers } from 'src/state/pelixirVaults/hooks';
-import { ElixirVault } from 'src/state/pelixirVaults/types';
+import { useElixirVaultActionHandlers, useVaultActionHandlers } from 'src/state/pelixirVaults/hooks';
+import { ElixirVault, RemoveElixirVaultLiquidityProps } from 'src/state/pelixirVaults/types';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { ButtonWrapper, RemoveWrapper } from './styleds';
+import { BlackWrapper, ButtonWrapper, ErrorBox, RemoveWrapper } from './styleds';
 
 interface RemoveLiquidityProps {
   vault: ElixirVault;
-  userLiquidityUnstaked: string;
+  userVaultLiquidity: string;
   onLoading?: (value: boolean) => void;
   onComplete?: (percentage: number) => void;
 }
 
-const RemoveLiquidity = ({ vault, userLiquidityUnstaked, onLoading, onComplete }: RemoveLiquidityProps) => {
+const RemoveLiquidity = ({ vault, userVaultLiquidity, onLoading, onComplete }: RemoveLiquidityProps) => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
   const { library } = useLibrary();
@@ -33,19 +34,26 @@ const RemoveLiquidity = ({ vault, userLiquidityUnstaked, onLoading, onComplete }
 
   const [attempting, setAttempting] = useState<boolean>(false);
   const [hash, setHash] = useState<string | undefined>();
-  const deadline = useTransactionDeadline();
-  // const [allowedSlippage] = useUserSlippageTolerance();
-  const userLiquidity = parseFloat(userLiquidityUnstaked);
+  const [error, setError] = useState<string | undefined>();
+  function wrappedOnDismiss() {
+    setHash(undefined);
+    setAttempting(false);
+    setError(undefined);
+    onClearTransactionData();
+  }
+
+  const userLiquidity = parseFloat(userVaultLiquidity);
 
   //TODO: Remove static data
-  const error = null;
   const isValid = true;
 
   const { t } = useTranslation();
   const [percentage, setPercentage] = useState(100);
+  const theme = useContext(ThemeContext);
   const [amount, setAmount] = useState(userLiquidity);
   const mixpanel = useMixpanel();
   const { removeLiquidity } = useVaultActionHandlers();
+  const { onClearTransactionData } = useElixirVaultActionHandlers();
 
   useEffect(() => {
     if (onLoading) {
@@ -95,36 +103,43 @@ const RemoveLiquidity = ({ vault, userLiquidityUnstaked, onLoading, onComplete }
   }, [setAmount, setPercentage]);
 
   async function onRemove() {
-    if (!chainId || !library || !account || !deadline) throw new Error(t('error.missingDependencies'));
+    if (!chainId || !library || !account) return;
 
     try {
       setAttempting(true);
-      const removeData = {
+
+      const percentageLookup = [0, 25, 50, 75, 100];
+      const shares = percentageLookup[percentage];
+      const removeData: RemoveElixirVaultLiquidityProps = {
         account,
-        shares: 2,
+        shares: shares, // 0% - 100%
         vault,
+        library,
       };
+      const response: any = await removeLiquidity(removeData, vault?.strategyProvider[0]);
 
-      const response: any = await removeLiquidity(removeData, vault?.strategyProvider[0]); //TODO: Change type
+      if (response?.status === 'rejected') {
+        setError(response?.reason?.message);
+        return;
+      } else if (response?.status === 'fulfilled') {
+        setHash(response?.value?.hash as string);
+        if (onComplete) {
+          onComplete(percentage);
+        }
 
-      setHash(response?.hash);
-
-      if (onComplete) {
-        onComplete(percentage);
+        mixpanel.track(MixPanelEvents.REMOVE_LIQUIDITY, {
+          chainId: chainId,
+          tokenA: tokenA?.symbol,
+          tokenB: tokenB?.symbol,
+          tokenA_Address: wrappedCurrencyA?.address,
+          tokenB_Address: wrappedCurrencyB?.address,
+        });
       }
 
-      mixpanel.track(MixPanelEvents.REMOVE_LIQUIDITY, {
-        chainId: chainId,
-        tokenA: tokenA?.symbol,
-        tokenB: tokenB?.symbol,
-        tokenA_Address: wrappedCurrencyA?.address,
-        tokenB_Address: wrappedCurrencyB?.address,
-      });
       resetFields();
     } catch (err) {
-      const _err = err as any;
-
-      console.error(_err);
+      const _err = typeof err === 'string' ? new Error(err) : (err as any);
+      setError(_err?.message);
     } finally {
       setAttempting(false);
     }
@@ -147,11 +162,6 @@ const RemoveLiquidity = ({ vault, userLiquidityUnstaked, onLoading, onComplete }
   //   return t('removeLiquidity.approve');
   // }
 
-  function wrappedOnDismiss() {
-    setHash(undefined);
-    setAttempting(false);
-  }
-
   const renderButton = () => {
     if (!account) {
       return (
@@ -170,7 +180,8 @@ const RemoveLiquidity = ({ vault, userLiquidityUnstaked, onLoading, onComplete }
     //         : `${t('pool.associate')} ` + notAssociateTokens?.[0]?.symbol}
     //     </Button>
     //   );
-    // } else {
+    // }
+    // else {
     return (
       <ButtonWrapper>
         {/* <Box mr="5px" width="100%">
@@ -263,6 +274,22 @@ const RemoveLiquidity = ({ vault, userLiquidityUnstaked, onLoading, onComplete }
           submitText={t('removeLiquidity.removedLiquidity')}
           isShowButtton={true}
         />
+      )}
+
+      {error && (
+        <BlackWrapper>
+          <ErrorBox>
+            <AlertTriangle color={theme.red1} style={{ strokeWidth: 1.5 }} size={64} />
+            <Text fontWeight={500} fontSize={16} color={'red1'} textAlign="center" style={{ width: '85%' }}>
+              {error.substring(0, 200)}
+            </Text>
+          </ErrorBox>
+          <ButtonWrapper>
+            <Button height="46px" variant="primary" borderRadius="4px" onClick={wrappedOnDismiss}>
+              {t('transactionConfirmation.dismiss')}
+            </Button>
+          </ButtonWrapper>
+        </BlackWrapper>
       )}
     </RemoveWrapper>
   );
