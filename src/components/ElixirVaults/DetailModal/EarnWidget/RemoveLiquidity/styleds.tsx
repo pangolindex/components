@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box } from 'src/components';
+import { Box, Text } from 'src/components';
 
 export const RemoveWrapper = styled(Box)`
   width: 100%;
@@ -39,4 +39,8 @@ export const ErrorBox = styled(Box)`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+`;
+
+export const Link = styled(Text)`
+  text-decoration: none;
 `;

@@ -1,11 +1,11 @@
 /* eslint-disable max-lines */
 import mixpanel from 'mixpanel-browser';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, Lock } from 'react-feather';
+import { AlertTriangle, ArrowUpCircle, Lock } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
 import shuffle from 'src/assets/images/shuffle.svg';
-import { Box, Button, CurrencyInput, Loader, Stat, Text, TransactionCompleted } from 'src/components';
+import { Box, Button, CurrencyInput, Loader, Stat, Text } from 'src/components';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents } from 'src/hooks/mixpanel';
 import { useApproveCallbackHook } from 'src/hooks/useApproveCallback';
@@ -21,6 +21,7 @@ import {
 } from 'src/state/pelixirVaults/hooks';
 import { DepositElixirVaultLiquidityProps, Field } from 'src/state/pelixirVaults/types';
 // import { useUserSlippageTolerance } from 'src/state/puser/hooks';
+import { getEtherscanLink } from 'src/utils';
 import { unwrappedToken, wrappedCurrency } from 'src/utils/wrappedCurrency';
 import OutofRangeWarning from './OutofRangeWarning';
 import {
@@ -32,6 +33,7 @@ import {
   GridContainer,
   InformationBar,
   InputWrapper,
+  Link,
 } from './styles';
 import { JoinVaultProps } from './types';
 
@@ -283,7 +285,6 @@ const JoinVault: React.FC<JoinVaultProps> = (props) => {
   const disableCurrencyA = useMemo(() => {
     return shouldDisableOtherInput(Field.CURRENCY_A);
   }, [selectedVaultDetails?.ratio, formattedAmounts]);
-
   const disableCurrencyB = useMemo(() => {
     return shouldDisableOtherInput(Field.CURRENCY_B);
   }, [selectedVaultDetails?.ratio, formattedAmounts]);
@@ -305,13 +306,26 @@ const JoinVault: React.FC<JoinVaultProps> = (props) => {
 
       {hash && (
         <BlackWrapper>
-          <TransactionCompleted
-            rootStyle={{ width: '100%' }}
-            buttonText={t('common.close')}
-            isShowButtton={true}
-            onButtonClick={wrappedOnDismiss}
-            submitText={t('pool.liquidityAdded')}
-          />
+          <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" paddingY={'20px'}>
+            <Box flex="1" display="flex" alignItems="center">
+              <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary} />
+            </Box>
+            <Text color="swapWidget.primary" fontWeight={500} fontSize={20}>
+              {t('earn.transactionSubmitted')}
+            </Text>
+            {chainId && hash && (
+              <Link
+                as="a"
+                fontWeight={500}
+                fontSize={14}
+                color={'primary'}
+                href={getEtherscanLink(chainId, hash, 'transaction')}
+                target="_blank"
+              >
+                {t('transactionConfirmation.viewExplorer')}
+              </Link>
+            )}
+          </Box>
         </BlackWrapper>
       )}
 

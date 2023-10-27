@@ -1,16 +1,17 @@
 /* eslint-disable max-lines */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { AlertTriangle } from 'react-feather';
+import { AlertTriangle, ArrowUpCircle } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, Button, Loader, NumberOptions, Text, TextInput, TransactionCompleted } from 'src/components';
+import { Box, Button, Loader, NumberOptions, Text, TextInput } from 'src/components';
 import { useChainId, useLibrary, usePangolinWeb3 } from 'src/hooks';
 import { MixPanelEvents, useMixpanel } from 'src/hooks/mixpanel';
 import { useWalletModalToggle } from 'src/state/papplication/hooks';
 import { useElixirVaultActionHandlers, useVaultActionHandlers } from 'src/state/pelixirVaults/hooks';
 import { ElixirVault, RemoveElixirVaultLiquidityProps } from 'src/state/pelixirVaults/types';
+import { getEtherscanLink } from 'src/utils';
 import { wrappedCurrency } from 'src/utils/wrappedCurrency';
-import { BlackWrapper, ButtonWrapper, ErrorBox, RemoveWrapper } from './styleds';
+import { BlackWrapper, ButtonWrapper, ErrorBox, Link, RemoveWrapper } from './styleds';
 
 interface RemoveLiquidityProps {
   vault: ElixirVault;
@@ -108,11 +109,13 @@ const RemoveLiquidity = ({ vault, userVaultLiquidity, onLoading, onComplete }: R
     try {
       setAttempting(true);
 
-      const percentageLookup = [0, 25, 50, 75, 100];
-      const shares = percentageLookup[percentage];
+      const percentageLookup = [0, 0.25, 0.5, 0.75, 1];
+      const ratio = percentageLookup[percentage];
+
+      const shares = ratio * userLiquidity;
       const removeData: RemoveElixirVaultLiquidityProps = {
         account,
-        shares: shares, // 0% - 100%
+        shares: shares,
         vault,
         library,
       };
@@ -268,12 +271,26 @@ const RemoveLiquidity = ({ vault, userVaultLiquidity, onLoading, onComplete }: R
 
       {attempting && !hash && <Loader size={100} label={`${t('removeLiquidity.removingLiquidity')}...`} />}
       {hash && (
-        <TransactionCompleted
-          onButtonClick={wrappedOnDismiss}
-          buttonText={t('transactionConfirmation.close')}
-          submitText={t('removeLiquidity.removedLiquidity')}
-          isShowButtton={true}
-        />
+        <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" paddingY={'20px'}>
+          <Box flex="1" display="flex" alignItems="center">
+            <ArrowUpCircle strokeWidth={0.5} size={90} color={theme.primary} />
+          </Box>
+          <Text color="swapWidget.primary" fontWeight={500} fontSize={20}>
+            {t('earn.transactionSubmitted')}
+          </Text>
+          {chainId && hash && (
+            <Link
+              as="a"
+              fontWeight={500}
+              fontSize={14}
+              color={'primary'}
+              href={getEtherscanLink(chainId, hash, 'transaction')}
+              target="_blank"
+            >
+              {t('transactionConfirmation.viewExplorer')}
+            </Link>
+          )}
+        </Box>
       )}
 
       {error && (
