@@ -1,4 +1,4 @@
-import { MaxUint256 } from '@ethersproject/constants';
+import { MaxInt256 } from '@ethersproject/constants';
 import { TransactionResponse } from '@ethersproject/providers';
 import { useGelatoLimitOrdersLib } from '@gelatonetwork/limit-orders-react';
 import { CAVAX, CHAINS, ChainId, CurrencyAmount, ElixirTrade, TokenAmount, Trade } from '@pangolindex/sdk';
@@ -79,7 +79,7 @@ export function useApproveCallback(
       return;
     }
 
-    let approveAmount = approvingInfinite ? MaxUint256.toString() : amountToApprove.raw.toString();
+    let approveAmount = approvingInfinite ? MaxInt256.toString() : amountToApprove.raw.toString();
     const estimatedGas = await tokenContract.estimateGas.approve(spender, approveAmount).catch(() => {
       // general fallback for tokens who restrict approval amounts
       approveAmount = amountToApprove.raw.toString();
