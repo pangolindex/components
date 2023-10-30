@@ -135,10 +135,11 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
     const value: Token[] = info.getValue();
     const currency0 = value[0] ? unwrappedToken(value[0], chainId) : undefined;
     const currency1 = value[1] ? unwrappedToken(value[1], chainId) : undefined;
+    const currencies = [currency0, currency1];
     return (
       <Row>
         <DoubleCurrencyLogo size={24} currency0={currency0} currency1={currency1} />
-        {value.map((token) => token.symbol).join('-')}
+        {currencies?.map((token) => token?.symbol).join('-')}
       </Row>
     );
   };
