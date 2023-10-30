@@ -156,6 +156,7 @@ const RemoveLiquidity = ({ vault, userVaultLiquidity, onLoading, onComplete }: R
       <ButtonWrapper>
         <Box width="100%">
           <Button
+            isDisabled={percentage === 0}
             variant="primary"
             onClick={onRemove}
             loading={attempting && !hash}
