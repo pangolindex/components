@@ -26,8 +26,6 @@ const RemoveLiquidity = ({ vault, userVaultLiquidity, onLoading, onComplete }: R
   const { library } = useLibrary();
   const tokenA = vault?.poolTokens[0];
   const tokenB = vault?.poolTokens[1];
-  // const useApproveCallback = useApproveCallbackHook[chainId];
-  // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle();
 
   const wrappedCurrencyA = wrappedCurrency(tokenA, chainId);
@@ -44,9 +42,6 @@ const RemoveLiquidity = ({ vault, userVaultLiquidity, onLoading, onComplete }: R
   }
 
   const userLiquidity = parseFloat(userVaultLiquidity);
-
-  //TODO: Remove static data
-  const isValid = true;
 
   const { t } = useTranslation();
   const [percentage, setPercentage] = useState(100);
@@ -148,23 +143,6 @@ const RemoveLiquidity = ({ vault, userVaultLiquidity, onLoading, onComplete }: R
     }
   }
 
-  //TODO:
-  // function getApproveButtonVariant() {
-  //   if (approval === ApprovalState.APPROVED) {
-  //     return 'confirm';
-  //   }
-  //   return 'primary';
-  // }
-
-  // function getApproveButtonText() {
-  //   if (approval === ApprovalState.PENDING) {
-  //     return t('removeLiquidity.approving');
-  //   } else if (approval === ApprovalState.APPROVED) {
-  //     return t('removeLiquidity.approved');
-  //   }
-  //   return t('removeLiquidity.approve');
-  // }
-
   const renderButton = () => {
     if (!account) {
       return (
@@ -174,38 +152,11 @@ const RemoveLiquidity = ({ vault, userVaultLiquidity, onLoading, onComplete }: R
       );
     }
 
-    // TODO: Probably provider will handle this if not we need to approve reward token
-    // if (notAssociateTokens?.length > 0) {
-    //   return (
-    //     <Button variant="primary" isDisabled={Boolean(isLoadingAssociate)} onClick={onAssociate}>
-    //       {isLoadingAssociate
-    //         ? `${t('pool.associating')}`
-    //         : `${t('pool.associate')} ` + notAssociateTokens?.[0]?.symbol}
-    //     </Button>
-    //   );
-    // }
-    // else {
     return (
       <ButtonWrapper>
-        {/* <Box mr="5px" width="100%">
-          <Button
-            variant={getApproveButtonVariant()}
-            onClick={() => {
-              onAttemptToApprove({ parsedAmounts, deadline, approveCallback });
-            }}
-            isDisabled={approval !== ApprovalState.NOT_APPROVED}
-            loading={attempting && !hash}
-            loadingText={t('removeLiquidity.approving')}
-            height="46px"
-          >
-            {getApproveButtonText()}
-          </Button>
-        </Box> */}
-
         <Box width="100%">
           <Button
             variant="primary"
-            isDisabled={!isValid}
             onClick={onRemove}
             loading={attempting && !hash}
             loadingText={t('migratePage.loading')}
@@ -227,7 +178,7 @@ const RemoveLiquidity = ({ vault, userVaultLiquidity, onLoading, onComplete }: R
             <Box>
               <Box display="flex" flexDirection="column">
                 <TextInput
-                  value={amount}
+                  value={amount?.toFixed(8)}
                   addonAfter={
                     <Box display="flex" alignItems="center">
                       <Text color="text4" fontSize={[24, 18]}>
@@ -244,9 +195,7 @@ const RemoveLiquidity = ({ vault, userVaultLiquidity, onLoading, onComplete }: R
                   addonLabel={
                     account && (
                       <Text color="text2" fontWeight={500} fontSize={14}>
-                        {!!userLiquidity
-                          ? t('currencyInputPanel.balance') + userLiquidity // userLiquidity?.toFixed(Math.min(2, userLiquidity.token.decimals)) //TODO:
-                          : '-'}
+                        {!!userLiquidity ? t('currencyInputPanel.balance') + userLiquidity?.toFixed(8) : '-'}
                       </Text>
                     )
                   }
