@@ -156,6 +156,19 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
     );
   };
 
+  const ErrorDisplay = () => {
+    return (
+      <ErrorContainer>
+        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+          <Inbox size={'121px'} />
+          <Text pt={'25px'} pb={'25px'} color="color11" fontSize={[18, 22]} fontWeight={400}>
+            Not Found
+          </Text>
+        </Box>
+      </ErrorContainer>
+    );
+  };
+
   const incentivizedRenderer = (info) => {
     const address: string = info.getValue();
     const isFarmExists = ownMiniChefStakingInfos?.some((stakingInfo) => stakingInfo?.pairAddress === address);
@@ -265,17 +278,10 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
               </MobileGridContainer>
             )}
           </Box>
-          <DataTable {...dataArgs} />
+          {finalVaults && finalVaults.length > 0 ? <DataTable {...dataArgs} /> : <ErrorDisplay />}
         </>
       ) : (
-        <ErrorContainer>
-          <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-            <Inbox size={'121px'} />
-            <Text pt={'25px'} pb={'25px'} color="color11" fontSize={[18, 22]} fontWeight={400}>
-              Not Found
-            </Text>
-          </Box>
-        </ErrorContainer>
+        <ErrorDisplay />
       )}
       <DetailModal
         isOpen={detailModalIsOpen}
