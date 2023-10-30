@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from 'styled-components';
-import { Box, DoubleCurrencyLogo, Stat, Text } from 'src/components';
+import { Box, CurrencyLogo, DoubleCurrencyLogo, Stat, Text } from 'src/components';
+import { PNG } from 'src/constants/tokens';
 import { useChainId } from 'src/hooks';
 import { CloseIcon, Hidden, Visible } from 'src/theme/components';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
@@ -9,10 +10,11 @@ import { HeaderRoot, HeaderWrapper, StatsWrapper } from './styles';
 import { HeaderProps } from './types';
 
 const Header: React.FC<HeaderProps> = (props) => {
-  const { token0, token1, statItems, onClose } = props;
+  const { token0, token1, statItems, stakeActive, onClose } = props;
   const { t } = useTranslation();
   const theme = useContext(ThemeContext);
   const chainId = useChainId();
+  const png = PNG[chainId];
   const currency0 = token0 ? unwrappedToken(token0, chainId) : undefined;
   const currency1 = token1 ? unwrappedToken(token1, chainId) : undefined;
   // const [selectedProvider, setSelectedProvider] = useState<string>('');
@@ -32,15 +34,17 @@ const Header: React.FC<HeaderProps> = (props) => {
       </HeaderWrapper>
 
       <StatsWrapper colNumber={statItems.length + 2}>
-        <Box display="inline-block">
-          <Text color="text8" fontSize={14}>
-            {t('common.poolRewards')}
-          </Text>
+        {stakeActive && (
+          <Box display="inline-block">
+            <Text color="text8" fontSize={14}>
+              {t('common.poolRewards')}
+            </Text>
 
-          <Box display="flex" alignItems="center" mt="8px">
-            {currency0 && currency1 && <DoubleCurrencyLogo currency0={currency0} currency1={currency1} size={24} />}
+            <Box display="flex" alignItems="center" mt="8px">
+              {png && <CurrencyLogo currency={png} size={24} />}
+            </Box>
           </Box>
-        </Box>
+        )}
         {statItems?.map((item, index) => (
           <Stat
             key={index}

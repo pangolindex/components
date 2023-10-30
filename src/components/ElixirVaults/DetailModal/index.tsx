@@ -33,6 +33,7 @@ const DetailModal: React.FC<DetailModalProps> = (props) => {
   const headerArgs: HeaderProps = {
     token0: vault?.poolTokens[0] as Token,
     token1: vault?.poolTokens[1] as Token,
+    stakeActive: stakingInfo ? true : false,
     statItems: [
       {
         title: 'Fees APR',
