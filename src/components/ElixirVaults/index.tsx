@@ -191,7 +191,7 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
       header: 'SHARE PRICE',
       accessorKey: 'sharePrice',
       // cell: (info) => info.getValue(),
-      cell: (info) => info.getValue(),
+      cell: (info) => info.getValue() + '%',
       sortType: (rowA, rowB) => {
         const valueA = parseFloat(rowA.values['sharePrice'].replace('$', ''));
         const valueB = parseFloat(rowB.values['sharePrice'].replace('$', ''));
@@ -207,7 +207,7 @@ const ElixirVaults: React.FC<ElixirVaultProps> = (props) => {
     {
       header: 'FEES APR',
       accessorKey: 'feesApr',
-      cell: (info) => info.getValue(),
+      cell: (info) => info.getValue() + '%',
     },
     {
       header: 'INCENTIVIZATION APR',
