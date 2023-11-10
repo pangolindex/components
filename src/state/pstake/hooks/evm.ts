@@ -16,6 +16,7 @@ import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTokensContract } from 'src/hooks/tokens/evm';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
+import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
 import { useMiniChefContract } from '../../../hooks/useContract';
 import {
   useMultipleContractSingleData,
@@ -61,6 +62,8 @@ const dummyApr: AprResult = {
   swapFeeApr: 0,
 };
 
+const DEFIEDGE_TOKEN = '0xd947375F78df5B8FeEa6814eCd999ee64507a057';
+
 export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | null): MinichefStakingInfo[] => {
   const { account } = usePangolinWeb3();
   const chainId = useChainId();
@@ -76,6 +79,11 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
   // if chain is not avalanche skip the first pool because it's dummyERC20
   if (chainId !== ChainId.AVALANCHE) {
     lpTokens.shift();
+  }
+
+  if (chainId === ChainId.AVALANCHE) {
+    const index = lpTokens.indexOf(DEFIEDGE_TOKEN);
+    index >= 0 && delete lpTokens[index];
   }
 
   const _tokens0Call = useMultipleContractSingleData(lpTokens, PANGOLIN_PAIR_INTERFACE, 'token0', []);
@@ -696,5 +704,16 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
     return _farms;
   }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms, farmsAprs, userPendingRewardsState]);
 };
+
+/**
+ * its wrapper hook to check which hook need to use based on subgraph on off
+ * @returns
+ */
+export function useMinicheInfos() {
+  const shouldUseSubgraph = useShouldUseSubgraph();
+  const useHook = shouldUseSubgraph ? useGetMinichefStakingInfosViaSubgraph : useMinichefStakingInfos;
+  const res = useHook();
+  return res;
+}
 
 /* eslint-enable max-lines */
