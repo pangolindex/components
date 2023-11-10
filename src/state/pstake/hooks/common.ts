@@ -15,16 +15,21 @@ import { usePairBalanceHook } from 'src/state/pwallet/hooks';
 import { unwrappedToken } from 'src/utils/wrappedCurrency';
 import { DoubleSideStakingInfo, MinichefStakingInfo } from '../types';
 
+const DEFIEDGE_TOKEN = '0xd947375F78df5B8FeEa6814eCd999ee64507a057';
+
 export const useMinichefPools = (): { [key: string]: number } => {
   const minichefContract = useMiniChefContract();
-  const lpTokens = useSingleCallResult(minichefContract, 'lpTokens', []).result;
+  const blocksPerFetch = useMemo(() => ({ blocksPerFetch: 100 }), []);
+  const lpTokens = useSingleCallResult(minichefContract, 'lpTokens', undefined, blocksPerFetch).result;
   const lpTokensArr = lpTokens?.[0];
 
   return useMemo(() => {
     const poolMap: { [key: string]: number } = {};
     if (lpTokensArr) {
       lpTokensArr.forEach((address: string, index: number) => {
-        poolMap[address] = index;
+        if (address !== DEFIEDGE_TOKEN) {
+          poolMap[address] = index;
+        }
       });
     }
     return poolMap;

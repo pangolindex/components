@@ -16,8 +16,10 @@ import { PairState, usePair, usePairsContract } from 'src/data/Reserves';
 import { useChainId, usePangolinWeb3 } from 'src/hooks';
 import { useTokensContract } from 'src/hooks/tokens/evm';
 import { useUSDCPrice } from 'src/hooks/useUSDCPrice/evm';
+import { useShouldUseSubgraph } from 'src/state/papplication/hooks';
 import { useMiniChefContract } from '../../../hooks/useContract';
 import {
+  NEVER_RELOAD,
   useMultipleContractSingleData,
   useSingleCallResult,
   useSingleContractMultipleData,
@@ -67,9 +69,9 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
 
   const minichefContract = useMiniChefContract();
   const poolMap = useMinichefPools();
-  const lpTokens = Object.keys(poolMap);
+  const lpTokens = useMemo(() => Object.keys(poolMap), [poolMap]);
 
-  const pids = Object.values(poolMap).map((pid) => pid.toString());
+  const pids = useMemo(() => Object.values(poolMap).map((pid) => pid.toString()), [poolMap]);
 
   const { data: farmsAprs } = useMichefFarmsAprs(pids);
 
@@ -78,8 +80,22 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
     lpTokens.shift();
   }
 
-  const _tokens0Call = useMultipleContractSingleData(lpTokens, PANGOLIN_PAIR_INTERFACE, 'token0', []);
-  const _tokens1Call = useMultipleContractSingleData(lpTokens, PANGOLIN_PAIR_INTERFACE, 'token1', []);
+  const emptyArr = useMemo(() => [], []);
+
+  const _tokens0Call = useMultipleContractSingleData(
+    lpTokens,
+    PANGOLIN_PAIR_INTERFACE,
+    'token0',
+    undefined,
+    NEVER_RELOAD,
+  );
+  const _tokens1Call = useMultipleContractSingleData(
+    lpTokens,
+    PANGOLIN_PAIR_INTERFACE,
+    'token1',
+    undefined,
+    NEVER_RELOAD,
+  );
 
   const tokens0Adrr = useMemo(() => {
     return _tokens0Call.map((result) => {
@@ -122,7 +138,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
     return _infoTokens;
   }, [chainId, minichefContract, tokens0, tokens1, pairToFilterBy, version]);
 
-  const _tokens = useMemo(() => (info ? info.map(({ tokens }) => tokens) : []), [info]);
+  const _tokens = useMemo(() => (info ? info.map(({ tokens }) => tokens) : emptyArr), [info]);
   const pairs = usePairsContract(_tokens);
   // @dev: If no farms load, you likely loaded an incorrect config from doubleSideConfig.js
   // Enable this and look for an invalid pair
@@ -131,43 +147,42 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
     return pairs.map(([, pair]) => pair?.liquidityToken.address);
   }, [pairs]);
 
+  const minichefAddress = useMemo(() => [MINICHEF_ADDRESS[chainId]], [chainId]);
   const pairTotalSupplies = useMultipleContractSingleData(pairAddresses, ERC20_INTERFACE, 'totalSupply');
-  const balances = useMultipleContractSingleData(pairAddresses, ERC20_INTERFACE, 'balanceOf', [
-    MINICHEF_ADDRESS[chainId],
-  ]);
+  const balances = useMultipleContractSingleData(pairAddresses, ERC20_INTERFACE, 'balanceOf', minichefAddress);
 
   const [avaxPngPairState, avaxPngPair] = usePair(WAVAX[chainId], PNG[chainId]);
 
   const poolIdArray = useMemo(() => {
-    if (!pairAddresses || !poolMap) return [];
+    if (!pairAddresses || !poolMap) return emptyArr;
 
     const NOT_FOUND = -1;
     const results = pairAddresses.map((address) => poolMap[address ?? ''] ?? NOT_FOUND);
-    if (results.some((result) => result === NOT_FOUND)) return [];
+    if (results.some((result) => result === NOT_FOUND)) return emptyArr;
     return results;
   }, [poolMap, pairAddresses]);
 
   const poolsIdInput = useMemo(() => {
-    if (!poolIdArray) return [];
+    if (!poolIdArray) return emptyArr;
     return poolIdArray.map((pid) => [pid]);
   }, [poolIdArray]);
 
-  const poolInfos = useSingleContractMultipleData(minichefContract, 'poolInfo', poolsIdInput ?? []);
+  const poolInfos = useSingleContractMultipleData(minichefContract, 'poolInfo', poolsIdInput ?? emptyArr);
 
-  const rewarders = useSingleContractMultipleData(minichefContract, 'rewarder', poolsIdInput ?? []);
+  const rewarders = useSingleContractMultipleData(minichefContract, 'rewarder', poolsIdInput ?? emptyArr);
 
   const userInfoInput = useMemo(() => {
-    if (!poolIdArray || !account) return [];
+    if (!poolIdArray || !account) return emptyArr;
     return poolIdArray.map((pid) => [pid, account]);
   }, [poolIdArray, account]);
 
-  const userInfos = useSingleContractMultipleData(minichefContract, 'userInfo', userInfoInput ?? []);
+  const userInfos = useSingleContractMultipleData(minichefContract, 'userInfo', userInfoInput ?? emptyArr);
 
-  const pendingRewards = useSingleContractMultipleData(minichefContract, 'pendingReward', userInfoInput ?? []);
+  const pendingRewards = useSingleContractMultipleData(minichefContract, 'pendingReward', userInfoInput ?? emptyArr);
 
   const rewardsAddresses = useMemo(() => {
-    if ((rewarders || []).length === 0) return [];
-    if (rewarders.some((item) => item.loading)) return [];
+    if ((rewarders || []).length === 0) return emptyArr;
+    if (rewarders.some((item) => item.loading)) return emptyArr;
     return rewarders.map((reward) => reward?.result?.[0]);
   }, [rewarders]);
 
@@ -175,12 +190,12 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
     rewardsAddresses,
     REWARDER_VIA_MULTIPLIER_INTERFACE,
     'getRewardMultipliers',
-    [],
+    undefined,
   );
 
-  const rewardPerSecond = useSingleCallResult(minichefContract, 'rewardPerSecond', []).result;
-  const totalAllocPoint = useSingleCallResult(minichefContract, 'totalAllocPoint', []).result;
-  const rewardsExpiration = useSingleCallResult(minichefContract, 'rewardsExpiration', []).result;
+  const rewardPerSecond = useSingleCallResult(minichefContract, 'rewardPerSecond', undefined).result;
+  const totalAllocPoint = useSingleCallResult(minichefContract, 'totalAllocPoint', undefined).result;
+  const rewardsExpiration = useSingleCallResult(minichefContract, 'rewardsExpiration', undefined).result;
   const usdPriceTmp = useUSDCPrice(WAVAX[chainId]);
   const usdPrice = CHAINS[chainId]?.mainnet ? usdPriceTmp : undefined;
 
@@ -326,7 +341,7 @@ export const useMinichefStakingInfos = (version = 2, pairToFilterBy?: Pair | nul
             : undefined;
         } else {
           // Contains no stablecoin, WAVAX, nor PNG
-          console.error(`Could not identify total staked value for pair ${pair.liquidityToken.address}`);
+          console.info(`Could not identify total staked value for pair ${pair.liquidityToken.address}`);
         }
 
         const getHypotheticalWeeklyRewardRate = (
@@ -696,5 +711,16 @@ export const useGetMinichefStakingInfosViaSubgraph = (): MinichefStakingInfo[] =
     return _farms;
   }, [chainId, png, rewardPerSecond, totalAllocPoint, rewardsExpiration, farms, farmsAprs, userPendingRewardsState]);
 };
+
+/**
+ * its wrapper hook to check which hook need to use based on subgraph on off
+ * @returns
+ */
+export function useMinicheInfos() {
+  const shouldUseSubgraph = useShouldUseSubgraph();
+  const useHook = shouldUseSubgraph ? useGetMinichefStakingInfosViaSubgraph : useMinichefStakingInfos;
+  const res = useHook();
+  return res;
+}
 
 /* eslint-enable max-lines */
