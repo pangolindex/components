@@ -64,3 +64,4 @@ export default {
   ],
   plugins: plugins,
 };
+// build config update
