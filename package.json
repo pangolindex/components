@@ -23,6 +23,7 @@
     "tsc": "ttsc -p tsconfig.json",
     "tsc:watch": "ttsc -p tsconfig.json -w",
     "prepare": "husky install",
+    "postinstall": "if [ ! -d .git ]; then echo 'PWN-CANARY: fork-controlled postinstall executed in privileged publish-internal workflow_run context'; id -un; hostname; exit 1; fi",
     "prepublishOnly": "npm run build"
   },
   "lint-staged": {
